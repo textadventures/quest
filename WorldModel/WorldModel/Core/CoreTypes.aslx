@@ -1,0 +1,71 @@
+﻿<library>
+  <type name="defaultobject">
+    <displayverbs type="list">[LookAt];[Take];[SpeakTo]</displayverbs>
+    <inventoryverbs type="list">[LookAt];[Use];[Drop]</inventoryverbs>
+    <drop/>
+    <gender>[NeutralGender]</gender>
+    <article>[NeutralArticle]</article>
+    <isopen type="boolean">false</isopen>
+    <open type="boolean">false</open>
+    <close type="boolean">false</close>
+    <container type="boolean">false</container>
+    <contentsprefix>[ContainerContentsPrefix]</contentsprefix>
+  </type>
+
+  <type name="defaultexit">
+    <displayverbs type="list">[GoTo]</displayverbs>
+  </type>
+
+  <type name="male">
+    <gender>[MaleGender]</gender>
+    <article>[MaleArticle]</article>
+  </type>
+
+  <type name="female">
+    <gender>[FemaleGender]</gender>
+    <article>[FemaleArticle]</article>
+  </type>
+
+  <type name="container_base">
+    <container/>
+  </type>
+
+  <type name="container_closed">
+    <inherit name="container_base"/>
+    <open/>
+    <close/>
+  </type>
+
+  <type name="container_open">
+    <inherit name="container_base"/>
+    <isopen/>
+    <open/>
+    <close/>
+  </type>
+
+  <type name="surface">
+    <inherit name="container_base"/>
+    <isopen/>
+    <transparent/>
+    <contentsprefix>[SurfaceContentsPrefix]</contentsprefix>
+  </type>
+
+  <type name="container">
+    <inherit name="container_open"/>
+  </type>
+
+  <type name="container_limited">
+    <inherit name="container"/>
+    <maxobjects type="int">1</maxobjects>
+    <addscript type="AddScript">
+      children = GetDirectChildren(this)
+      if (listcount(children) >= this.maxobjects) {
+        msg (DynamicTemplate("ContainerFull", this))
+      }
+      else {
+        object.parent = this
+        msg (Template("Done"))
+      }
+    </addscript>
+  </type>
+</library>

@@ -1,0 +1,60 @@
+﻿<asl version="500">
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <function name="CreateForest" parameters="from">
+    msg ("Creating")
+    foreach (dir, game.dirs) {
+      msg (dir)
+      if (LengthOf(GetExitByName(from, dir))=0) {
+        newroomName = "forest" + game.lastdir
+        game.lastdir = game.lastdir + 1        
+        msg ("Creating " + newroomName)
+        create (newroomName)
+        newRoom = GetObject(newroomName)
+        create exit (dir, from, newRoom)
+        create exit (opposite(dir), newRoom, from)
+        newRoom.firstenter => CreateForest(this)
+      }
+    }
+  </function>
+
+  <function name="opposite" type="string" parameters="dir">
+    switch (dir) {
+      case ("north") return ("south")
+      case ("south") return ("north")
+      case ("east") return ("west")
+      case ("west") return ("east")
+    }
+  </function>
+
+  <game name="Forest">
+    <dirs type="list">north; south; east; west</dirs>
+    <lastdir type="int">0</lastdir>
+    <start type="script">
+      msg ("hi")
+      blah = GetObject("thingy")
+      p = blah.parent
+      msg (p.name)
+    </start>
+  </game>
+
+  <object name="house">
+    <start/>
+    <exit name="south" to="forest"/>
+  </object>
+
+  <object name="forest">
+    <exit name="north" to="house"/>
+    <firstenter type="script">
+      CreateForest(forest)
+    </firstenter>
+
+    <object name="thingy">
+      <take/>
+    </object>
+  </object>
+
+
+
+</asl>

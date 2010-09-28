@@ -1,0 +1,35 @@
+<asl version="500">
+  
+  <!--
+  An example of using a custom HTML file to do whatever you like inside the Quest 5.0 interface.
+  Here we use YouTube.htm as our interface, which imports JavaScript from YouTube.js. This
+  JavaScript file defines an AddYouTube function, which we call here when the player looks at
+  the screen.
+  
+  The important thing to note is that Quest itself didn't need to do anything special for us to
+  be able to embed a YouTube clip in the game - all the logic for adding the video is entirely
+  within these example files.
+  -->
+  
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <interface src="YouTube.htm"/>
+  
+  <game name="YouTube Example">
+  </game>
+
+  <object name="cinema">
+    <start/>
+    
+    <prefix>the</prefix>
+    
+    <object name="screen">
+      <look type="script">
+        request (RunScript, "AddYouTube; ZXZWepU7zC8")
+      </look>
+    </object>
+
+  </object>
+
+</asl>

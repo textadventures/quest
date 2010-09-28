@@ -1,0 +1,165 @@
+﻿<library>  
+  <template name="UnresolvedObject">I can't see that.</template>
+  <template name="UnresolvedLocation">You can't go there.</template>
+  <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
+  <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
+  <dynamictemplate name="TakeUnsuccessful">"You can't take " + object.article + "."</dynamictemplate>
+  <template name="SeeListHeader">You can see</template>
+  <template name="GoListHeader">You can go</template>
+  <template name="And">and</template>
+  <template name="Or">or</template>
+  <template name="NothingToUndo">Nothing to undo!</template>
+  <template name="NotCarryingAnything">You are not carrying anything.</template>
+  <template name="CarryingListHeader">You are carrying</template>
+  <dynamictemplate name="DropSuccessful">"You drop " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DropUnsuccessful">"You can't drop " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyTaken">"You are already carrying " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="NotCarrying">"You are not carrying " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantUse">"You can't use " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">CapFirst(object.gender) + " says nothing."</dynamictemplate>
+  <template name="UnrecognisedCommand">I don't understand your command.</template>
+  <template name="YouAreIn">You are in</template>
+  <template name="LookAt">Look at</template>
+  <template name="Take">Take</template>
+  <template name="SpeakTo">Speak to</template>
+  <template name="Use">Use</template>
+  <template name="Drop">Drop</template>
+  <template name="GoTo">Go to</template>
+  <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " is not open."</dynamictemplate>
+  <template name="NeutralGender">it</template>
+  <template name="MaleGender">he</template>
+  <template name="FemaleGender">she</template>
+  <template name="NeutralArticle">it</template>
+  <template name="MaleArticle">him</template>
+  <template name="FemaleArticle">her</template>
+  <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " is already open."</dynamictemplate>
+  <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " is already closed."</dynamictemplate>
+  <dynamictemplate name="CantOpen">"You can't open " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantClose">"You can't close " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="OpenSuccessful">"You open " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CloseSuccessful">"You close " + object.article + "."</dynamictemplate>
+  <template name="CannotDoThat">You can't do that.</template>
+  <dynamictemplate name="AlreadyThere">CapFirst(object.gender) + " is already there."</dynamictemplate>
+  <template name="Done">Done.</template>
+  <template name="ContainerContentsPrefix">containing</template>
+  <template name="SurfaceContentsPrefix">on which there is</template>
+  <dynamictemplate name="ContainerFull">CapFirst(object.gender) + " is full."</dynamictemplate>
+  <dynamictemplate name="DisambiguateMenu">"Please choose which '" + text + "' you mean:"</dynamictemplate>
+  <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
+  
+  <template name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template name="look">^look$</template>
+  <verbtemplate name="lookat">look at</verbtemplate>
+  <verbtemplate name="lookat">x</verbtemplate>
+  <verbtemplate name="take">take</verbtemplate>
+  <verbtemplate name="take">get</verbtemplate>
+  <verbtemplate name="take">pick up</verbtemplate>
+  <template name="undo">^undo$</template>
+  <template name="inventory">^i$|^inv$|^inventory$</template>
+  <template name="quit">^quit$</template>
+  <verbtemplate name="drop">drop</verbtemplate>
+  <verbtemplate name="use">use</verbtemplate>
+  <verbtemplate name="speakto">speak to</verbtemplate>
+  <verbtemplate name="speakto">speak</verbtemplate>
+  <verbtemplate name="speakto">talk to</verbtemplate>
+  <verbtemplate name="speakto">talk</verbtemplate>
+  <verbtemplate name="open">open</verbtemplate>
+  <verbtemplate name="close">close</verbtemplate>
+  <template name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>  <!-- don't need those brackets (on|in) maybe square ones? -->
+
+  <verbtemplate name="buy">buy</verbtemplate>
+  <dynamictemplate name="DefaultBuy">"You can't buy " + object.article + "."</dynamictemplate>
+  <verbtemplate name="climb">climb</verbtemplate>
+  <dynamictemplate name="DefaultClimb">"You can't climb " + object.article + "."</dynamictemplate>
+  <verbtemplate name="drink">drink</verbtemplate>
+  <dynamictemplate name="DefaultDrink">"You can't drink " + object.article + "."</dynamictemplate>
+  <verbtemplate name="eat">eat</verbtemplate>
+  <dynamictemplate name="DefaultEat">"You can't eat " + object.article + "."</dynamictemplate>
+  <verbtemplate name="hit">hit</verbtemplate>
+  <dynamictemplate name="DefaultHit">"You can't hit " + object.article + "."</dynamictemplate>
+  <verbtemplate name="kill">kill</verbtemplate>
+  <dynamictemplate name="DefaultKill">"You can't kill " + object.article + "."</dynamictemplate>
+  <verbtemplate name="kiss">kiss</verbtemplate>
+  <dynamictemplate name="DefaultKiss">"You can't kiss " + object.article + "."</dynamictemplate>
+  <verbtemplate name="knock">knock</verbtemplate>
+  <dynamictemplate name="DefaultKnock">"You can't knock " + object.article + "."</dynamictemplate>
+  <verbtemplate name="lick">lick</verbtemplate>
+  <dynamictemplate name="DefaultLick">"You can't lick " + object.article + "."</dynamictemplate>
+  <verbtemplate name="lie">lie on</verbtemplate>
+  <verbtemplate name="lie">lie upon</verbtemplate>
+  <verbtemplate name="lie">lie down on</verbtemplate>
+  <verbtemplate name="lie">lie down upon</verbtemplate>
+  <dynamictemplate name="DefaultLie">"You can't lie on " + object.article + "."</dynamictemplate>
+  <verbtemplate name="listento">listen to</verbtemplate>
+  <dynamictemplate name="DefaultListenTo">"You listen, but " + object.article + " makes no sound."</dynamictemplate>
+  <verbtemplate name="lock">lock</verbtemplate>
+  <dynamictemplate name="DefaultLock">"You can't lock " + object.article + "."</dynamictemplate>
+  <verbtemplate name="move">move</verbtemplate>
+  <dynamictemplate name="DefaultMove">"You can't move " + object.article + "."</dynamictemplate>
+  <verbtemplate name="pull">pull</verbtemplate>
+  <dynamictemplate name="DefaultPull">"You can't pull " + object.article + "."</dynamictemplate>
+  <verbtemplate name="push">push</verbtemplate>
+  <dynamictemplate name="DefaultPush">"You can't push " + object.article + "."</dynamictemplate>
+  <verbtemplate name="read">read</verbtemplate>
+  <dynamictemplate name="DefaultRead">"You can't read " + object.article + "."</dynamictemplate>
+  <verbtemplate name="search">search</verbtemplate>
+  <dynamictemplate name="DefaultSearch">"You can't search " + object.article + "."</dynamictemplate>
+  <verbtemplate name="show">show</verbtemplate>
+  <dynamictemplate name="DefaultShow">"You can't show " + object.article + "."</dynamictemplate>
+  <verbtemplate name="sit">sit on</verbtemplate>
+  <verbtemplate name="sit">sit upon</verbtemplate>
+  <verbtemplate name="sit">sit down on</verbtemplate>
+  <verbtemplate name="sit">sit down upon</verbtemplate>
+  <dynamictemplate name="DefaultSit">"You can't sit on " + object.article + "."</dynamictemplate>
+  <verbtemplate name="smell">smell</verbtemplate>
+  <verbtemplate name="smell">sniff</verbtemplate>
+  <dynamictemplate name="DefaultSmell">"You sniff, but " + object.article + " doesn't smell of much."</dynamictemplate>
+  <verbtemplate name="taste">taste</verbtemplate>
+  <dynamictemplate name="DefaultTaste">"You can't taste " + object.article + "."</dynamictemplate>
+  <verbtemplate name="throw">throw</verbtemplate>
+  <dynamictemplate name="DefaultThrow">"You can't throw " + object.article + "."</dynamictemplate>
+  <verbtemplate name="tie">tie</verbtemplate>
+  <dynamictemplate name="DefaultTie">"You can't tie " + object.article + "."</dynamictemplate>
+  <verbtemplate name="touch">touch</verbtemplate>
+  <dynamictemplate name="DefaultTouch">"You can't touch " + object.article + "."</dynamictemplate>
+  <template name="turnon"><![CDATA[^turn on (?<object>.*)$|^turn (?<object>.*) on$|^switch on (?<object>.*)$|^switch (?<object>.*) on$]]></template>
+  <dynamictemplate name="DefaultTurnOn">"You can't turn " + object.article + " on."</dynamictemplate>
+  <verbtemplate name="turnoff">turn off</verbtemplate>
+  <verbtemplate name="turnoff">switch off</verbtemplate>
+  <!-- TO DO: Fix -->
+  <!-- <template name="turnoff"><![CDATA[^turn off (?<object>.*)$|^turn (?<object>.*) off$|^switch off (?<object>.*)$|^switch (?<object>.*) off$]]></template> -->
+  <dynamictemplate name="DefaultTurnOff">"You can't turn " + object.article + " off."</dynamictemplate>
+  <verbtemplate name="turn">turn</verbtemplate>
+  <dynamictemplate name="DefaultTurn">"You can't turn " + object.article + "."</dynamictemplate>
+  <verbtemplate name="unlock">unlock</verbtemplate>
+  <dynamictemplate name="DefaultUnlock">"You can't unlock " + object.article + "."</dynamictemplate>
+  <verbtemplate name="untie">untie</verbtemplate>
+  <dynamictemplate name="DefaultTie">"You can't untie " + object.article + "."</dynamictemplate>
+  <verbtemplate name="wear">wear</verbtemplate>
+  <dynamictemplate name="DefaultWear">"You can't wear " + object.article + "."</dynamictemplate>
+  <template name="listen">^listen$</template>
+  <template name="DefaultListen">You can't hear much.</template>
+  <template name="jump">^jump$</template>
+  <template name="DefaultJump">You jump, but nothing happens.</template>
+  <template name="sitdown">^sit$|^sit down$</template>
+  <template name="DefaultSitDown">No time for lounging about now.</template>
+  <template name="liedown">^lie$|^lie down$</template>
+  <template name="DefaultLieDown">No time for lounging about now.</template>
+  <template name="sleep">^sleep$|^rest$</template>
+  <template name="DefaultSleep">No time for lounging about now.</template>
+  <template name="wait">^wait$</template>
+  <template name="DefaultWait">Time passes.</template>
+  <template name="xyzzy">^xyzzy$</template>
+  <template name="DefaultXyzzy">Surprisingly, absolutely nothing happens.</template>
+
+  <function name="GetDefaultPrefix" type="string" parameters="obj">
+    if (Instr("aeiou", Left(GetDisplayAlias(obj), 1)) > 0) {
+      return ("an")
+    }
+    else {
+      return ("a")
+    }
+  </function>
+
+
+</library>

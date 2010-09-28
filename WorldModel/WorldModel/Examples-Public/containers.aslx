@@ -1,0 +1,64 @@
+﻿<asl version="500">
+  
+  <!--
+  An example of containers in Quest 5.0. You can pick up various objects and put them in or on others, and then type
+  "look" to see the effect on the room description. 
+  -->
+  
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+  
+  <game name="Container Test"/>
+
+  <object name="lounge">
+
+    <start/>
+
+    <object name="table">
+      <inherit name="surface"/>
+      <look>Just a table.</look>
+
+      <object name="lamp">
+        <take/>
+      </object>
+      
+    </object>
+
+    <object name="apple">
+      <take/>
+    </object>
+
+    <object name="box">
+      <inherit name="container"/>
+      <look>Just a box.</look>
+    </object>
+
+    <object name="purse">
+      <inherit name="container_closed"/>
+
+      <object name="coin">
+        <take/>
+        <look>A pound coin.</look>
+      </object>
+    </object>
+
+    <object name="cube">
+      <take/>
+      <inherit name="container_closed"/>
+      <transparent/>
+
+      <object name="sphere">
+        <look>It's just an ordinary sphere - you know, the kind of sphere you usually get just randomly lying about the place.</look>
+        <take/>
+      </object>
+    </object>
+
+    <object name="bag">
+      <look>This is a bag which can contain a maximum of two objects at a time.</look>
+      <inherit name="container_limited"/>
+      <maxobjects type="int">2</maxobjects>
+    </object>
+
+  </object>
+
+</asl>

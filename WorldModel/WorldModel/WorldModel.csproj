@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AxeSoftware.Quest</RootNamespace>
+    <AssemblyName>WorldModel</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseSetup|AnyCPU' ">
+    <OutputPath>bin\ReleaseSetup\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ciloci.Flee, Version=0.9.26.0, Culture=neutral, PublicKeyToken=c8526a021ef298ed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Ciloci.Flee.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Element.cs" />
+    <Compile Include="Elements.cs" />
+    <Compile Include="Fields.cs" />
+    <Compile Include="Functions\Expression.cs" />
+    <Compile Include="Functions\IFunction.cs" />
+    <Compile Include="Functions\QuestFunctions.cs" />
+    <Compile Include="Functions\StringFunctions.cs" />
+    <Compile Include="GameLoader\AttributeLoaders.cs" />
+    <Compile Include="GameLoader\ElementLoaders.cs" />
+    <Compile Include="GameLoader\ElementSavers.cs" />
+    <Compile Include="GameLoader\FieldSaver.cs" />
+    <Compile Include="GameLoader\GameLoader.cs" />
+    <Compile Include="GameLoader\GameSaver.cs" />
+    <Compile Include="GameLoader\GameXmlWriter.cs" />
+    <Compile Include="GameLoader\ObjectSaver.cs" />
+    <Compile Include="ObjectFactory.cs" />
+    <Compile Include="QuestDictionary.cs" />
+    <Compile Include="QuestList.cs" />
+    <Compile Include="Scripts\CreateScript.cs" />
+    <Compile Include="Scripts\DelegateImplementation.cs" />
+    <Compile Include="Scripts\DestroyScript.cs" />
+    <Compile Include="Scripts\DictionaryAddScript.cs" />
+    <Compile Include="Scripts\ErrorScript.cs" />
+    <Compile Include="Scripts\FinishScript.cs" />
+    <Compile Include="Scripts\ForEachScript.cs" />
+    <Compile Include="Scripts\ForScript.cs" />
+    <Compile Include="Scripts\ListAddScript.cs" />
+    <Compile Include="Scripts\PopulateScript.cs" />
+    <Compile Include="ScriptFactory.cs" />
+    <Compile Include="Scripts\Context.cs" />
+    <Compile Include="Scripts\DoScript.cs" />
+    <Compile Include="Scripts\IfScript.cs" />
+    <Compile Include="Scripts\IScript.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Core\Core.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\English.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples-Internal\forest.aslx" />
+    <None Include="Examples-Internal\media.aslx" />
+    <None Include="Examples-Internal\test.aslx" />
+    <None Include="Examples-Internal\test2.aslx" />
+    <None Include="Examples-Public\forest.aslx" />
+    <None Include="Examples-Public\YouTube\YouTube.aslx" />
+    <None Include="Examples-Public\YouTube\YouTube.htm" />
+    <None Include="Examples-Public\YouTube\YouTube.js" />
+    <None Include="Examples-Public\test.aslx" />
+    <None Include="Examples-Public\containers.aslx" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Scripts\MsgScript.cs" />
+    <Compile Include="Scripts\MultiScript.cs" />
+    <Compile Include="Scripts\RequestScript.cs" />
+    <Compile Include="Scripts\ReturnScript.cs" />
+    <Compile Include="Scripts\ScriptConstructorBase.cs" />
+    <Compile Include="Scripts\SetFieldScript.cs" />
+    <Compile Include="Scripts\SetScript.cs" />
+    <Compile Include="Scripts\SortScript.cs" />
+    <Compile Include="Scripts\SwitchScript.cs" />
+    <Compile Include="Scripts\UndoScript.cs" />
+    <Compile Include="Templates.cs" />
+    <Compile Include="Types\EditorCommandPattern.cs" />
+    <Compile Include="UndoLogger.cs" />
+    <Compile Include="Utility.cs" />
+    <Compile Include="Walkthrough.cs" />
+    <Compile Include="WorldModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\IASL\IASL.csproj">
+      <Project>{BE34CB28-317F-4732-AA32-9D715B4F2C7E}</Project>
+      <Name>IASL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Utility\Utility.csproj">
+      <Project>{0E926905-F750-49F9-AEBD-CE14B2B231D8}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\CoreCommands.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\CoreParser.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\CoreDescriptions.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\CoreScopes.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\CoreTypes.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\CoreEditor.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="Examples-Internal\Media.js" />
+    <Content Include="PlayerDefault.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebFunctions.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

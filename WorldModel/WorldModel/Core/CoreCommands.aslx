@@ -1,0 +1,253 @@
+﻿<library>
+
+  <command name="take" pattern="[take]">
+    if (ListContains(ScopeInventory(), object)) {
+      msg (DynamicTemplate("AlreadyTaken", object))
+    }
+    else if (not ListContains(ScopeReachable(), object)) {
+      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+    }
+    else {
+      found = true
+      
+      switch (TypeOf(object, "take")) {
+        case ("script") {
+          do (object, "take")
+        }
+        case ("boolean") {
+          if (object.take = true) {
+            object.parent = player
+            msg (DynamicTemplate("TakeSuccessful", object))
+          }
+          else {
+            found = false
+          }
+        }
+        case ("string") {
+          object.parent = player
+          msg (object.take)
+        }
+        default {
+          found = false
+        }
+      }
+      
+      if (not found) msg (DynamicTemplate("TakeUnsuccessful", object))
+    }
+  </command>
+  <command name="drop" pattern="[drop]">
+    if (not ListContains(ScopeInventory(), object)) {
+      msg (DynamicTemplate("NotCarrying", object))
+    }
+    else if (not ListContains(ScopeReachable(), object)) {
+      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+    }
+    else {
+      found = true
+      
+      switch (TypeOf(object, "drop")) {
+        case ("script") {
+          do (object, "drop")
+        }
+        case ("boolean") {
+          if (object.drop = true) {
+            object.parent = player.parent
+            msg (DynamicTemplate("DropSuccessful", object))
+          }
+          else {
+            found = false
+          }
+        }
+        case ("string") {
+          object.parent = player.parent
+          msg (object.drop)
+        }
+        default {
+          found = false
+        }
+      }
+      
+      if (not found) msg (DynamicTemplate("DropUnsuccessful", object))
+    }
+  </command>
+  
+  <command name="use" pattern="[use]">
+    if (HasScript(object, "use")) {
+      do (object, "use")
+    }
+    else {
+      msg (DynamicTemplate("CantUse", object))
+    }
+  </command>
+  
+  <command name="undo">
+    <pattern type="string">[undo]</pattern>
+    <script>undo</script>
+    <isundo/>
+  </command>
+  
+  <command name="inventory" pattern="[inventory]">
+    list = FormatObjectList(Template("CarryingListHeader"), player, Template("And"), ".")
+    if (list = "") {
+      msg (Template("NotCarryingAnything"))
+    }
+    else {
+      msg (list)
+    }
+  </command>
+  <command name="look" pattern="[look]">
+    ShowRoomDescription
+  </command>
+  <command name="quit" pattern="[quit]">
+    request (Quit, "")
+  </command>
+  <command name="go" pattern="[go]" unresolved="[UnresolvedLocation]">
+    player.parent = exit.to
+  </command>
+
+  <function name="TryOpenClose" parameters="open, object">
+    if (open) {
+      action = "open"
+    }
+    else {
+      action = "close"
+    }
+
+    if (not ListContains(ScopeReachable(), object)) {
+      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+    }
+    else if (open and object.isopen) {
+      msg (DynamicTemplate("AlreadyOpen", object))
+    }
+    else if (not open and not object.isopen) {
+      msg (DynamicTemplate("AlreadyClosed", object))
+    }
+    else {
+      found = true
+      
+      switch (TypeOf(object, action)) {
+        case ("script") {
+          do (object, action)
+        }
+        case ("boolean") {
+          if ((open and object.open) or (not open and object.close)) {
+            object.isopen = open
+            if (open) {
+              msg (DynamicTemplate("OpenSuccessful", object))
+            }
+            else {
+              msg (DynamicTemplate("CloseSuccessful", object))
+            }
+          }
+          else {
+            found = false
+          }
+        }
+        case ("string") {
+          object.isopen = open
+          msg (GetString(object, action))
+        }
+        default {
+          found = false
+        }
+      }
+      
+      if (not found) {
+        if (open) {
+          msg (DynamicTemplate("CantOpen", object))
+        }
+        else {
+          msg (DynamicTemplate("CantClose", object))
+        }
+      }
+    }
+  </function>
+
+  <command name="open" pattern="[open]">
+    TryOpenClose(true, object)
+  </command>
+
+  <command name="close" pattern="[close]">
+    TryOpenClose(false, object)
+  </command>
+
+  <command name="put" pattern="[put]">
+    // put object1 in/on object 2
+    
+    if (Contains(object2, object1)) {
+      msg (DynamicTemplate("AlreadyThere", object1))
+    }
+    // must be carrying object1
+    else if (not ListContains(ScopeInventory(), object1)) {
+      msg (DynamicTemplate("NotCarrying", object1))
+    }
+    // object1 must not be inside a closed container
+    else if (not ListContains(ScopeReachable(), object1)) {
+      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object1)))
+    }
+    // object2 must not be inside a closed container
+    else if (not ListContains(ScopeReachable(), object2)) {
+      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object2)))
+    }
+    // object2 must be an open container or surface
+    else if (not object2.container) {
+      msg (Template("CannotDoThat"))
+    }
+    else if (not object2.isopen) {
+      msg (DynamicTemplate("ObjectNotOpen", object2))
+    }
+    else {
+      if (HasDelegateImplementation(object2, "addscript")) {
+        rundelegate (object2, "addscript", object1)
+      }
+      else {
+        object1.parent = object2
+        msg (Template("Done"))
+      }
+    }
+    
+  </command>
+
+  <!-- The object name for a verb defaults to the same thing as its property, unless we explictly specify a name,
+       as we do here e.g. to prevent a clash with the "look" command -->
+  <verb name="lookat" pattern="[lookat]" property="look" response="DefaultObjectDescription"/>
+  <verb pattern="[speakto]" property="speak" response="DefaultSpeakTo"/>
+  <verb pattern="[buy]" property="buy" response="DefaultBuy"/>
+  <verb pattern="[climb]" property="climb" response="DefaultClimb"/>
+  <verb pattern="[drink]" property="drink" response="DefaultDrink"/>
+  <verb pattern="[eat]" property="eat" response="DefaultEat"/>
+  <verb pattern="[hit]" property="hit" response="DefaultHit"/>
+  <verb pattern="[kill]" property="kill" response="DefaultKill"/>
+  <verb pattern="[kiss]" property="kiss" response="DefaultKiss"/>
+  <verb pattern="[knock]" property="knock" response="DefaultKnock"/>
+  <verb pattern="[lick]" property="lick" response="DefaultLick"/>
+  <verb name="lieon" pattern="[lie]" property="lie" response="DefaultLie"/>
+  <verb name="listento" pattern="[listento]" property="listen" response="DefaultListenTo"/>
+  <verb pattern="[lock]" property="lock" response="DefaultLock"/>
+  <verb pattern="[move]" property="move" response="DefaultMove"/>
+  <verb pattern="[pull]" property="pull" response="DefaultPull"/>
+  <verb pattern="[push]" property="push" response="DefaultPush"/>
+  <verb pattern="[read]" property="read" response="DefaultRead"/>
+  <verb pattern="[search]" property="search" response="DefaultSearch"/>
+  <verb name="siton" pattern="[sit]" property="sit" response="DefaultSit"/>
+  <verb pattern="[smell]" property="smell" response="DefaultSmell"/>
+  <verb pattern="[taste]" property="taste" response="DefaultTaste"/>
+  <verb pattern="[throw]" property="throw" response="DefaultThrow"/>
+  <verb pattern="[tie]" property="tie" response="DefaultThrow"/>
+  <verb pattern="[touch]" property="touch" response="DefaultTouch"/>
+  <verb pattern="[turnon]" property="turnon" response="DefaultTurnOn"/>
+  <verb pattern="[turnoff]" property="turnoff" response="DefaultTurnOff"/>
+  <verb pattern="[turn]" property="turn" response="DefaultTurn"/>
+  <verb pattern="[unlock]" property="unlock" response="DefaultUnlock"/>
+  <verb pattern="[untie]" property="untie" response="DefaultUntie"/>
+  <verb pattern="[wear]" property="wear" response="DefaultWear"/>
+
+  <command name="listen" pattern="[listen]">msg (Template("DefaultListen"))</command>
+  <command name="jump" pattern="[jump]">msg (Template("DefaultJump"))</command>
+  <command name="sit" pattern="[sitdown]">msg (Template("DefaultSitDown"))</command>
+  <command name="lie" pattern="[liedown]">msg (Template("DefaultLieDown"))</command>
+  <command name="sleep" pattern="[sleep]">msg (Template("DefaultSleep"))</command>
+  <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
+  <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
+
+</library>

@@ -1,0 +1,162 @@
+﻿<library>
+  <function name="ScopeInventory" type="objectlist">
+    result = NewObjectList()
+    foreach (obj, AllObjects()) {
+      if (ContainsVisible(player, obj)) {
+        list add(result, obj)
+      }
+    }
+    return (result)
+  </function>
+
+  <function name="ScopeReachableInventory" type="objectlist">
+    result = NewObjectList()
+    foreach (obj, AllObjects()) {
+      if (ContainsReachable(player, obj)) {
+        list add(result, obj)
+      }
+    }
+    return (result)
+  </function>
+  
+  <function name="ScopeVisibleNotHeld" type="objectlist">
+    return (ScopeReachableNotHeld() + ScopeVisibleNotReachable())
+  </function>
+
+  <function name="ScopeReachable" type="objectlist">
+    result = ScopeReachableNotHeld() + ScopeReachableInventory()
+    list add(result, player)
+    return (result)
+  </function>
+
+  <function name="ScopeVisibleNotReachable" type="objectlist">
+    result = NewObjectList()
+    exclude = ScopeReachable()
+    list add(exclude, player)
+    newParent = GetNonTransparentParent(player.parent)
+    foreach (obj, AllObjects()) {
+      if (ContainsVisible(newParent, obj) and not ListContains(exclude, obj)) {
+        list add(result, obj)
+      }
+    }    
+    return (result)
+  </function>
+
+  <function name="GetNonTransparentParent" type="object" parameters="room">
+    if (GetBoolean(room, "transparent")) {
+      if (room.parent = null) {
+        return (room)
+      }
+      else {
+        return (GetNonTransparentParent(room.parent))
+      }
+    }
+    else {
+      return (room)
+    }
+  </function>
+
+  <function name="ScopeReachableNotHeld" type="objectlist">    
+  <![CDATA[
+    result = NewObjectList()
+    foreach (obj, AllObjects()) {
+      if (ContainsReachable(player.parent, obj) and obj <> player and not Contains(player, obj)) {
+        list add(result, obj)
+      }
+    }
+    return (result)
+  ]]>
+  </function>
+
+  <function name="ScopeVisible" type="objectlist">
+    return (ScopeVisibleNotHeld() + ScopeInventory())
+  </function>
+
+  <function name="ScopeExits" type="objectlist">
+    result = NewObjectList()
+    foreach (exit, AllExits()) {
+      if (exit.parent = player.parent) {
+        list add(result, exit)
+      }
+    }
+    return (result)
+  </function>
+  
+  <function name="ScopeCommands" type="objectlist">
+    result = NewObjectList()
+    foreach (command, AllCommands()) {
+      if (command.parent = null or command.parent = player.parent) {
+        list add(result, command)
+      }
+    }
+    return (result)
+  </function>
+
+  <function name="GetBlockingObject" type="object" parameters="obj">
+    result = null
+    foreach (obj, ListParents(obj)) {
+      if (result = null and not CanReachThrough(obj)) {
+        result = obj
+      }
+    }
+    return (result)
+  </function>
+
+  <function name="ListParents" type="objectlist" parameters="obj">
+    <![CDATA[
+    result = NewObjectList()
+    if (obj.parent <> null) {
+      result = obj.parent + ListParents(obj.parent)
+    }
+    return (result)
+    ]]>
+  </function>
+  
+  <function name="ContainsVisible" type="boolean" parameters="parentObj, searchObj">
+    return (ContainsAccessible(parentObj, searchObj, false))
+  </function>
+
+  <function name="ContainsReachable" type="boolean" parameters="parentObj, searchObj">
+    return (ContainsAccessible(parentObj, searchObj, true))
+  </function>
+
+  <function name="ContainsAccessible" type="boolean" parameters="parentObj, searchObj, onlyReachable">
+    if (not HasObject(searchObj, "parent")) {
+      return (false)
+    }
+    else {
+      if (searchObj.parent = null) {
+        return (false)
+      }
+      else if (searchObj.parent = parentObj) {
+        return (true)
+      } else {
+        if (onlyReachable) {
+          canAdd = CanReachThrough(searchObj.parent)
+        }
+        else {
+          canAdd = CanSeeThrough(searchObj.parent)
+        }
+        
+        if (canAdd) {
+          return (ContainsAccessible(parentObj, searchObj.parent, onlyReachable))
+        } else {
+          return (false)
+        }
+      }
+    }
+  </function>
+
+  <function name="CanSeeThrough" type="boolean" parameters="obj">
+    return (GetBoolean(obj, "transparent") or CanReachThrough(obj))
+  </function>
+
+  <function name="CanReachThrough" type="boolean" parameters="obj">
+    return (GetBoolean(obj, "isopen"))
+  </function>
+
+  <function name="Got" type="boolean" parameters="obj">
+    return (ListContains(ScopeInventory(), obj))
+  </function>
+  
+</library>

@@ -1,0 +1,177 @@
+﻿<library>
+  <function name="CompareNames" parameters="name, value, obj, fullmatches, partialmatches">
+    if (name = value) {
+      if (not ListContains(fullmatches, obj)) {
+        list add (fullmatches, obj)
+      }
+    }
+    else {
+      if (StartsWith(name, value)) {
+        if (not ListContains(partialmatches, obj)) {
+          list add (partialmatches, obj)
+        }
+      }
+      else {
+        // check if input matches the start of any word in the name
+        if (Instr(name, " " + value) > 0) {
+          if (not ListContains(partialmatches, obj)) {
+            list add (partialmatches, obj)
+          }
+        }
+      }
+    }
+  </function>
+  
+  <function name="GenerateMenuChoices" parameters="dictionary, objects">
+    foreach (obj, objects) {
+      dictionary add (dictionary, obj.name, GetDisplayAlias(obj))
+    }
+  </function>
+  
+  <function name="ResolveName" parameters="value, objtype" type="object">
+    fullmatches = NewObjectList()
+    partialmatches = NewObjectList()
+    
+    if (objtype = "object") {
+      scope = ScopeVisible()
+    }
+    else if (objtype = "exit") {
+      scope = ScopeExits()
+    }
+    
+    foreach (obj, scope) {
+      name = LCase(GetDisplayAlias(obj))
+      CompareNames (name, value, obj, fullmatches, partialmatches)
+      if (not obj.alt = null) {
+        foreach (altname, obj.alt) {
+          CompareNames (altname, value, obj, fullmatches, partialmatches)
+        }
+      }
+    }
+    
+    if (ListCount(fullmatches) = 1) {
+      return (ListItem(fullmatches, 0))
+    }
+    else if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 1) {
+      return (ListItem(partialmatches, 0))
+    }
+    else if (ListCount(fullmatches) + ListCount(partialmatches) = 0) {
+      return (null)
+    }
+    else {
+      menu = NewStringDictionary()
+      GenerateMenuChoices(menu, fullmatches)
+      GenerateMenuChoices(menu, partialmatches)
+      result = ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu, true)
+      if (result = null) {
+        return (null)
+      }
+      else {
+        return (GetObject(result))
+      }
+    }
+  </function>
+
+  <function name="HandleCommand" parameters="command">
+    candidates = NewObjectList()
+    foreach (cmd, ScopeCommands()) {
+      if (IsRegexMatch(cmd.pattern, command)) {
+        list add (candidates, cmd)
+      }
+    }
+    
+    maxstrength = -1
+    thiscommand = null
+        
+    foreach (candidate, candidates) {
+      strength = GetMatchStrength(candidate.pattern, command)
+      if (strength > maxstrength) {
+        thiscommand = candidate
+        maxstrength = strength
+      }
+    }
+    
+    if (thiscommand = null) {
+      msg (Template("UnrecognisedCommand"))
+    }
+    else {
+      varlist = Populate(candidate.pattern, command)
+      
+      resolved = true
+      resolvedobjects = NewObjectDictionary()
+
+      foreach (var, varlist) {
+        if (resolved) {
+          value = LCase(StringDictionaryItem(varlist, var))
+          result = null
+          
+          if (StartsWith(var, "object")) {
+            result = ResolveName(value, "object")
+          }
+          else if (StartsWith(var, "exit")) {
+            result = ResolveName(value, "exit")
+          }
+          else if (StartsWith(var, "text")) {
+            result = value
+          }
+          else {
+            error ("Unhandled command variable '" + var + "'")
+          }
+            
+          if (result = null) {
+            resolved = false
+          }
+          else {
+            dictionary add(resolvedobjects, var, result)
+          }
+
+        }
+      }
+      
+      if (resolved) {
+        if (not GetBoolean(candidate, "isundo")) {
+          start transaction (command)
+        }
+        do (candidate, "script", resolvedobjects)
+        if (not GetBoolean(candidate, "isundo")) {
+          end transaction
+        }
+      }
+      else {
+        if (HasString(candidate, "unresolved")) {
+          msg (candidate.unresolved)
+        }
+        else {
+          msg (Template("UnresolvedObject"))
+        }
+      }
+    }
+  </function>
+
+  <type name="defaultverb">
+    <script type="script">
+      switch (TypeOf(object, this.property)) {
+        case ("script") {
+          do (object, this.property)
+        }
+        case ("string") {
+          msg (GetString(object, this.property))
+        }
+        case ("null") {
+          if (not this.defaulttext = null) {
+            msg (this.defaulttext)
+          }
+          else if (not this.defaulttemplate = null) {
+            msg (DynamicTemplate(this.defaulttemplate, object))
+          }
+          else {
+            error ("No verb response defined")
+          }
+        }
+        default {
+          error ("No verb response defined")
+        }
+      }
+    </script>
+  </type>
+</library>

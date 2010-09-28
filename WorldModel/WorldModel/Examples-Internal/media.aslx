@@ -1,0 +1,21 @@
+<asl version="500">
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <interface src="media.htm"/>
+  
+  <game name="Media Test">
+  </game>
+
+  <object name="cinema">
+    <start/>
+
+    <object name="screen">
+      <look type="script">
+        request (RunScript, "AddYouTube; ZXZWepU7zC8")
+      </look>
+    </object>
+
+  </object>
+
+</asl>

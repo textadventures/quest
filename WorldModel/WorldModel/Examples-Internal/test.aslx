@@ -1,0 +1,476 @@
+<asl version="500">
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+  <function name="someproc" parameters="input">msg ("Some proc... " + input)</function>
+  <function name="somefunc" type="string">
+    return ("Hello")
+  </function>
+  <function name="adder" parameters="val1, val2" type="int">
+    return (val1 + val2)
+  </function>
+
+  <template name="YouAreIn">You're in</template>
+  <template name="UnresolvedObject">There's nothing of that name here.</template>
+
+  <command>
+    <pattern>lazy</pattern>
+    <script>
+      SomeFunction()
+    </script>
+  </command>
+
+  <function name="SomeFunction">
+    msg ("Hello!")
+  </function>
+  
+  <command>
+    <pattern>die</pattern>
+    <script>finish</script>
+  </command>
+
+  <command>
+    <pattern>t</pattern>
+    <script>
+      create ("temp1")
+      temp1.parent = lounge
+      temp1.look => {
+        msg ("Hi there..." + this.name + " in " + this.parent.name)
+        this.parent = player
+      }
+      create ("temp2")
+      temp2.parent = temp1.parent
+      temp2.look = temp1.look
+    </script>
+  </command>
+  
+  <command>
+    <pattern>test</pattern>
+    <script>
+      someproc("blah")
+    </script>
+  </command>
+
+  <command>
+    <pattern>fn</pattern>
+    <script>msg ("Function: " + somefunc() + "... " + adder(1+2, 5+1+adder(6,6)))</script>
+  </command>
+  
+  <command>
+    <pattern>for</pattern>
+    <script>
+      for (i, 1, 100000) {
+        game.blah = game.blah + 1
+      }
+      msg ("Done " + game.blah )
+    </script>
+  </command>
+
+  <command>
+    <pattern>fe</pattern>
+    <script>
+      foreach (val, sofa.alt) {
+        msg ("Alt name: " + val)
+      }
+      foreach (val, ScopeVisible()) {
+        msg ("Visible: " + val.name)
+      }
+    </script>
+  </command>
+
+  <command>
+    <pattern>reach</pattern>
+    <script>
+      foreach (obj, ScopeReachable()) {
+        msg ("Reachable: " + obj.name)
+      }
+    </script>
+  </command>
+  
+  <command>
+    <pattern>sc</pattern>
+    <script>
+      switch (game.somenum) {
+        case (1) {
+          msg ("One")
+        }
+        case (2) {
+          msg ("Two")
+        }
+        case (3) {
+          msg ("Three")
+        }
+        default {
+          msg ("Something else")
+        }
+      }
+    </script>
+  </command>
+  
+  <command>
+    <pattern>sc2</pattern>
+    <script>
+      switch (game.somestring) {
+        case ("blah") {
+          msg ("blah...")
+        }
+        case ("teststring") {
+          msg ("a test")
+        }
+      }
+    </script>
+  </command>
+  
+  <command>
+    <pattern>create</pattern>
+    <script>
+      create ("dynamic")
+      dynamic.parent=lounge
+      create ("space")
+      create exit ("space", lounge, space)
+      create exit ("down", space, lounge)
+    </script>
+  </command>
+  
+  <command>
+    <pattern>destroy</pattern>
+    <script>
+      // msg ("Exit ID: " + GetExitByName(lounge, "east").name)   .... to make this work we need to get rid of the underscore business and use a function
+      destroy ("sofa")
+      destroy (GetExitByName(lounge, "east"))
+    </script>
+  </command>
+  
+  <command>
+    <pattern>action</pattern>
+    <script>
+      sofa.look => { 
+        msg ("New look action for the sofa.")
+        msg ("which is nice...")
+      }
+    </script>
+  </command>
+
+  <command>
+    <pattern>listadd</pattern>
+    <script>
+      list add (sofa.alt, "test123")
+    </script>
+  </command>
+
+  <command>
+    <pattern>listremove</pattern>
+    <script>
+      list remove (sofa.alt, "chair")
+    </script>
+  </command>
+
+  <command>
+    <pattern>dict</pattern>
+    <script>
+      foreach (key, man.knowledge) {
+        msg (key + ": " + DictionaryItem(man.knowledge, key))
+      }
+    </script>
+  </command>
+
+  <command>
+    <pattern>ask man about #text#</pattern>
+    <script>
+      if (not DictionaryContains(man.knowledge, text)) {
+        msg ("Alas, I do not know the answer to your question.")
+      }
+      else {
+        msg ("All I can say is '" + DictionaryString(man.knowledge, text) + "'")
+      }
+    </script>
+  </command>
+
+  <command>
+    <pattern>menu</pattern>
+    <script>
+      choices = NewStringDictionary()
+      dictionary add (choices, "opt1", "Option one")
+      dictionary add (choices, "opt2", "Option two")
+      dictionary add (choices, "opt3", "Option three")
+      msg ("You chose: " + ShowMenu("Please choose from these options...", choices, false))
+    </script>
+  </command>
+
+  <command>
+    <pattern>menu2</pattern>
+    <script>
+      choices = NewStringDictionary()
+      dictionary add (choices, "opt1", "Option one")
+      dictionary add (choices, "opt2", "Option two")
+      dictionary add (choices, "opt3", "Option three")
+      result = ShowMenu("Please choose from these options, or click Cancel", choices, true)
+      if (result = null) {
+        msg ("You cancelled.")
+      }
+      else {
+        msg ("You chose: " + result)
+      }
+    </script>
+  </command>
+
+  <command>
+    <pattern>menu3</pattern>
+    <script>
+      choices = NewStringList()
+      list add (choices, "Option one")
+      list add (choices, "Option two")
+      list add (choices, "Option three")
+      msg ("You chose: " + ShowMenu("Please choose from these options...", choices, false))
+    </script>
+  </command>
+  
+  <command>
+    <pattern>dictadd</pattern>
+    <script>
+      dictionary add (man.knowledge, "potatoes", "Potatoes grow in the ground.")
+    </script>
+  </command>
+
+  <command>
+    <pattern>dictrem</pattern>
+    <script>
+      dictionary remove (man.knowledge, "lottery")
+    </script>
+  </command>
+
+  <command>
+    <pattern>listdupe</pattern>
+    <script>
+      test.alt = sofa.alt
+    </script>
+  </command>
+
+  <command>
+    <pattern>fail</pattern>
+    <script>
+      // this has to fail as the displayverbs are defined on an underlying type, so shouldn't be modifyable
+      // this works for cloning: food.displayverbs = food.displayverbs
+      list add (food.displayverbs, "blah")
+    </script>
+  </command>
+
+  <type name="edible">
+    <eat>This is a tasty thing.</eat>
+    <displayverbs type="list">[LookAt];Eat</displayverbs>
+    <!-- nested types also work, just use an inherit tag in a type -->
+  </type>
+
+  <game name="Test ASLX Game">
+    <somestring>teststring</somestring>
+    <somenum type="int">3</somenum>
+    <blah type="int">0</blah>
+    <changedsomenum type="script">msg ("You changed somenum!")</changedsomenum>
+  </game>
+
+  <object name="lounge">
+    <start/>
+    <prefix>the</prefix>
+    <object name="sofa">
+      <prefix>a</prefix>
+      <look>Just a sofa.</look>
+      <alt type="list">settee; chair</alt>
+      <speak>Hi there, I'm a sofa!</speak>
+      <sit>It looks comfy, but there are more important things to be doing.</sit>
+      <blah type="double">2.3</blah>
+    </object>
+
+    <object name="test">
+      <take>Test take property</take>
+    </object>
+
+    <object name="food">
+      <inherit name="edible"/>
+    </object>
+
+    <object name="apple">
+      <inherit name="edible"/>
+    </object>
+
+    <object name="newspaper">
+      <take/>
+      <prefix>a</prefix>
+      <look>A copy of The Times.</look>
+      <use type="script">
+        msg("There are no flies to swat with this.")
+        game.somestring = game.somestring + "hi"
+      </use>
+      <speak type="script">
+        msg("You talk to the newspaper...")
+        msg("...it doesn't seem to be listening.")
+        game.somenum = game.somenum + 4
+      </speak>
+      <eat>There's not a lot of nutritional value in the paper.</eat>
+    </object>
+
+    <object name="table">
+      <inherit name="surface"/>
+      <look type="script">
+        if (Got(newspaper)) {
+          msg("It's a table, and you have the newspaper by the way!")
+        }
+        else {
+          msg ("It's a table, and you don't have the newspaper.")
+        }
+      </look>
+      
+      <object name="lamp">
+        <take type="script">
+          msg ("The lamp is too heavy to lift.")
+        </take>
+        <look type="script">
+          msg ("This is an action...")
+          msg ("...running when you look at the lamp.")
+        </look>
+      </object>
+    </object>
+
+    <object name="man">
+      <knowledge type="stringdictionary">
+        weather=The weather is nice.;himself=I am a man.;lottery=A tax on stupidity.
+      </knowledge>
+    </object>
+
+    <object name="character1">
+      <alias>John the Blacksmith</alias>
+      <look>It's the village blacksmith.</look>
+      <prefix type="string"></prefix>
+    </object>
+
+    <object name="character2">
+      <alias>Dave the Blacksmith</alias>
+      <look>It's the other village blacksmith.</look>
+      <prefix type="string"></prefix>
+    </object>
+    
+    <exit name="myexit" alias="east" to="hall"/>
+    <exit alias="cupboard" to="cupboard">
+      <prefix>into the magical</prefix>
+    </exit>
+
+    <object name="cupboard">
+      <transparent/>
+      <exit alias="out" to="lounge"/>
+      <object name="coat"/>
+    </object>
+
+  </object>
+
+  <object name="hall">
+    <exit alias="up" to="upstairs"/>
+    <exit alias="east" to="kitchen"/>
+    <exit alias="west" to="lounge"/>
+    <firstenter type="script">
+      msg ("It's the first time you've entered the hall.")
+    </firstenter>
+  </object>
+
+  <object name="upstairs">
+    <exit alias="down" to="hall"/>
+  </object>
+
+  <object name="kitchen">
+    <object name="sink">
+      <look>Just an ordinary sink</look>
+    </object>
+
+    <object name="cup">
+      <lookcount type="int">0</lookcount>
+      <look type="script">
+        <![CDATA[
+        cup.lookcount = cup.lookcount+1
+        msg ("You have looked at the cup " + cup.lookcount + " times.")
+        if (cup.lookcount<3) msg ("That's less than three times!!")
+        ]]>
+      </look>
+    </object>
+    <exit alias="west" to="hall"/>
+    <enter type="script">
+      msg ("Welcome to the lair!")
+      msg ("Muah ha ha!")
+    </enter>
+  </object>
+
+  <walkthrough>
+    x sofa
+    x sett
+    look at chair
+    take test
+    take test
+    drop test
+    drop test
+    take test
+    eat food
+    x table
+    speak to news
+    take news
+    use news
+    eat news
+    x table
+    take lamp
+    x lamp
+    go to cup
+    x sofa
+    out
+    e
+    w
+    e
+    u
+    d
+    e
+    x sink
+    x cup
+    x cup
+    x cup
+    x cup
+    test
+    fn
+    for
+    fe
+    sc
+    sc2
+    create
+    w
+    w
+    x sofa
+    action
+    x sofa
+    destroy
+  </walkthrough>
+    
+    <!--            // Lounge
+            Object labrador = worldModel.CreateObject("labrador", "lounge");
+            labrador.Look.Property = "Nice dog.";
+  
+            // Garden
+            Object garden = worldModel.CreateObject("garden");
+            Object fence = worldModel.CreateObject("fence", "garden");
+            Object garden_top = worldModel.CreateObject("garden_top", "garden");
+            garden_top.Alias = "garden (top)";
+            garden_top.Transparent = true;  // being transparent means we should see fence in both top and bottom
+            Object garden_bottom = worldModel.CreateObject("garden_bottom", "garden");
+            garden_bottom.Alias = "garden (bottom)";
+            garden_bottom.Transparent = true;
+
+            // still need to stop player from seeing the other garden object when they're in the garden
+            // so these should be set up as scenery
+
+            // Lounge - Kitchen
+            worldModel.CreateExit("east", "lounge", "kitchen");
+            worldModel.CreateExit("west", "kitchen", "lounge");
+
+            // Kitchen - Garden (top)
+            worldModel.CreateExit("south", "kitchen", "garden_top");
+            worldModel.CreateExit("north", "garden_top", "kitchen");
+
+            // Garden (top) - Garden (bottom)
+            worldModel.CreateExit("south", "garden_top", "garden_bottom");
+            worldModel.CreateExit("north", "garden_bottom", "garden_top");
+
+            // Begin
+            worldModel.Player.Parent = "lounge"; -->
+</asl>

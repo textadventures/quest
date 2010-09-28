@@ -1,0 +1,146 @@
+﻿<library>
+  <function name="ShowRoomDescription">
+    desc = FormatObjectList(Template("SeeListHeader"), GetNonTransparentParent(player.parent), Template("And"), ".")
+    exits = FormatExitList(Template("GoListHeader"), ScopeExits(), Template("Or"), ".")
+    fulldesc = ""
+    if (LengthOf(desc) > 0) {
+      fulldesc = desc
+      if (LengthOf(exits) > 0) {
+        fulldesc = fulldesc + "&lt;br /&gt;"
+      }
+    }
+    if (LengthOf(exits) > 0) {
+      fulldesc = fulldesc + exits
+    }
+    msg (fulldesc)
+    if (HasString(player.parent, "description")) {
+      msg (player.parent.description)
+    }
+  </function>
+
+  <function name="OnEnterRoom">
+    if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "beforefirstenter")) {
+      do (player.parent, "beforefirstenter")
+    }
+    request (UpdateLocation, CapFirst(GetDisplayName(player.parent, "")))
+    if (HasString(player.parent, "descprefix")) {
+      youarein = player.parent.descprefix
+    } else {
+      youarein = Template("YouAreIn")
+    }
+    msg (youarein + " " + GetDisplayName(player.parent, "") + ".")
+    ShowRoomDescription
+    if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "firstenter")) {
+      do (player.parent, "firstenter")
+    }
+    set (player.parent, "visited", true)
+    if (HasScript(player.parent, "enter")) {
+      do (player.parent, "enter")
+    }
+  </function>
+
+  <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList">
+    <![CDATA[
+    result = ""
+    count = 0
+    list = GetDirectChildren(parent)
+    listLength = ListCount(list)
+    foreach (item, list) {
+      if (LengthOf(result) = 0) result = preList + " "
+      result = result + GetDisplayName(item, "object")
+      if (CanSeeThrough(item)) {
+        result = result + FormatObjectList(" (" + item.contentsprefix, item, preFinal, ")")
+      }
+      count = count + 1
+      if (count = listLength - 1) {
+        result = result + " " + preFinal + " "
+      }
+      else if (count < listLength) {
+        result = result + ", "
+      }
+      else {
+        result = result + postList
+      }
+    }
+    return (result)
+  ]]>
+  </function>
+
+  <function name="GetDirectChildren" type="objectlist" parameters="parent">
+    <![CDATA[
+    result = NewObjectList()
+    foreach (obj, AllObjects()) {
+      if (obj.parent = parent and obj <> player) {
+        list add (result, obj)
+      }
+    }
+    return (result)
+    ]]>
+  </function>
+  
+  <function name="FormatExitList" type="string" parameters="preList, list, preFinal, postList">
+    <![CDATA[
+    result = ""
+    count = 0
+    listLength = ListCount(list)
+    foreach (item, list) {
+      if (LengthOf(result) = 0) result = preList + " "
+      result = result + GetDisplayName(item, "exit")
+      count = count + 1
+      if (count = listLength - 1) {
+        result = result + " " + preFinal + " "
+      }
+      else if (count < listLength) {
+        result = result + ", "
+      }
+      else {
+        result = result + postList
+      }
+    }
+    return (result)
+  ]]>
+  </function>
+
+  <function name="GetDisplayAlias" type="string" parameters="obj">
+    <![CDATA[
+    if (HasString(obj, "alias")) {
+      result = obj.alias
+    }
+    else {
+      result = obj.name
+    }
+    return (result)
+  ]]>
+  </function>
+
+  <function name="GetDisplayName" type="string" parameters="obj, tag">
+  <![CDATA[
+    result = GetTaggedName(obj, tag)
+    if (obj.prefix <> null) {
+      prefix = obj.prefix
+    }
+    else if (tag = "exit") {
+      prefix = ""
+    }
+    else {
+      prefix = GetDefaultPrefix(obj)
+    }
+    if (LengthOf(prefix)>0) prefix = prefix + " "
+    result = prefix + result
+    if (HasString(obj, "suffix")) {
+      result = result + " " + suffix
+    }
+    return (result)
+  ]]>
+  </function>
+
+  <function name="GetTaggedName" type="string" parameters="obj, tag">
+    <![CDATA[
+    result = GetDisplayAlias(obj)
+    if (not tag = "") {
+      result = "<" + tag + ">" + result + "</" + tag + ">"
+    }
+    return (result)
+  ]]>
+  </function>
+</library>
