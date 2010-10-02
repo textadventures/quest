@@ -23,15 +23,15 @@ Partial Class ScriptEditor
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ScriptEditor))
-        Me.ctlContainer = New System.Windows.Forms.SplitContainer
-        Me.lstScripts = New System.Windows.Forms.ListView
-        Me.ctlToolStrip = New System.Windows.Forms.ToolStrip
-        Me.cmdAdd = New System.Windows.Forms.ToolStripSplitButton
-        Me.cmdDelete = New System.Windows.Forms.ToolStripButton
-        Me.cmdMoveUp = New System.Windows.Forms.ToolStripButton
-        Me.cmdMoveDown = New System.Windows.Forms.ToolStripButton
-        Me.ctlScriptAdder = New AxeSoftware.Quest.ScriptAdder
-        Me.ctlScriptCommandEditor = New AxeSoftware.Quest.ScriptCommandEditor
+        Me.ctlContainer = New System.Windows.Forms.SplitContainer()
+        Me.lstScripts = New System.Windows.Forms.ListView()
+        Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
+        Me.cmdAdd = New System.Windows.Forms.ToolStripSplitButton()
+        Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
+        Me.cmdMoveUp = New System.Windows.Forms.ToolStripButton()
+        Me.cmdMoveDown = New System.Windows.Forms.ToolStripButton()
+        Me.ctlScriptAdder = New AxeSoftware.Quest.ScriptAdder()
+        Me.ctlScriptCommandEditor = New AxeSoftware.Quest.ScriptCommandEditor()
         Me.ctlContainer.Panel1.SuspendLayout()
         Me.ctlContainer.Panel2.SuspendLayout()
         Me.ctlContainer.SuspendLayout()
@@ -83,7 +83,7 @@ Partial Class ScriptEditor
         Me.cmdAdd.Image = CType(resources.GetObject("cmdAdd.Image"), System.Drawing.Image)
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(58, 22)
+        Me.cmdAdd.Size = New System.Drawing.Size(61, 22)
         Me.cmdAdd.Text = "Add"
         '
         'cmdDelete
