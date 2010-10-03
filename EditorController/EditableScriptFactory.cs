@@ -42,7 +42,7 @@ namespace AxeSoftware.Quest
 
         private bool IsScriptEditor(Element editor)
         {
-            return !string.IsNullOrEmpty(editor.Fields.GetString("display"));
+            return !string.IsNullOrEmpty(editor.Fields.GetString("category"));
         }
 
         internal EditableScript CreateScript(string keyword, string parent)

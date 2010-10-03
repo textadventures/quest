@@ -83,7 +83,8 @@ namespace AxeSoftware.Quest.Scripts
             {
                 result = SaveScript(keyword, args);
             }
-            return result + " {" + Environment.NewLine + script.Save() + Environment.NewLine + "}";
+            string scriptString = script != null ? script.Save() : string.Empty;
+            return result + " {" + Environment.NewLine + scriptString + Environment.NewLine + "}";
         }
 
         protected void NotifyUpdate(int index, string newValue)

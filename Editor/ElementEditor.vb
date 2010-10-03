@@ -1,5 +1,7 @@
 ﻿Public Class ElementEditor
 
+    Implements ICommandEditor
+
     Private k_padding As Integer = 8
     Private m_tabs As List(Of ElementEditor)
     Private m_controls As List(Of EditorControl)
@@ -7,7 +9,7 @@
     Private m_data As IEditorData
     Private m_controller As EditorController
 
-    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
     Public Event DataUpdated()
 
     Public Sub Initialise(ByVal controller As EditorController, ByVal definition As IEditorDefinition)
@@ -71,7 +73,7 @@
             newControl.Controller = m_controller
             newControl.Initialise(editorControl)
             newControl.Caption = editorControl.Caption
-            newControl.Control.Top = Top
+            newControl.Control.Top = top
             newControl.Control.Width = Me.Width - k_padding
             newControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
             AddHandler newControl.Dirty, AddressOf Control_Dirty
@@ -79,7 +81,7 @@
                 newControl.SetControlHeight(editorControl.Height)
             End If
 
-            Top = Top + newControl.Control.Height + k_padding
+            top = top + newControl.Control.Height + k_padding
 
             If newControl.CaptionTextWidth > maxCaptionWidth Then
                 maxCaptionWidth = newControl.CaptionTextWidth
@@ -119,7 +121,7 @@
     End Sub
 
     Public Sub UpdateField(ByVal attribute As String, ByVal newValue As Object, ByVal setFocus As Boolean)
-        ' find the control that's currently showing the attribute, and set it's value - it's just been updated...
+        ' find the control that's currently showing the attribute, and set its value - it's just been updated...
 
         If Not m_tabs Is Nothing Then
             For Each tab As ElementEditor In m_tabs
@@ -136,7 +138,7 @@
         End If
     End Sub
 
-    Public Sub SaveData()
+    Public Sub SaveData() Implements ICommandEditor.SaveData
 
         If Not m_tabs Is Nothing Then
             For Each tab As ElementEditor In m_tabs

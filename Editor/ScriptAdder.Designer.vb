@@ -22,8 +22,8 @@ Partial Class ScriptAdder
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.ctlEditorTree = New AxeSoftware.Quest.EditorTree
-        Me.cmdAdd = New System.Windows.Forms.Button
+        Me.ctlEditorTree = New AxeSoftware.Quest.EditorTree()
+        Me.cmdAdd = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'ctlEditorTree
@@ -34,13 +34,13 @@ Partial Class ScriptAdder
         Me.ctlEditorTree.Location = New System.Drawing.Point(0, 0)
         Me.ctlEditorTree.Name = "ctlEditorTree"
         Me.ctlEditorTree.ShowFilterBar = False
-        Me.ctlEditorTree.Size = New System.Drawing.Size(359, 172)
+        Me.ctlEditorTree.Size = New System.Drawing.Size(359, 169)
         Me.ctlEditorTree.TabIndex = 2
         '
         'cmdAdd
         '
         Me.cmdAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.cmdAdd.Location = New System.Drawing.Point(3, 178)
+        Me.cmdAdd.Location = New System.Drawing.Point(3, 175)
         Me.cmdAdd.Name = "cmdAdd"
         Me.cmdAdd.Size = New System.Drawing.Size(75, 23)
         Me.cmdAdd.TabIndex = 3

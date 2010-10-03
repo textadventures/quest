@@ -1,7 +1,7 @@
 ﻿Public Class ScriptCommandEditor
 
     Private m_controller As EditorController
-    Private WithEvents m_currentEditor As ElementEditor
+    Private WithEvents m_currentEditor As ICommandEditor
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
 
@@ -15,18 +15,24 @@
     End Property
 
     Public Sub ShowEditor(ByVal script As IEditableScript)
-        Dim newEditor As ElementEditor
+        Dim newEditor As Control
         Dim newEditorKey As String = script.EditorName
 
-        newEditor = New ElementEditor
+        If script.EditorName = "if" Then
+            newEditor = New IfEditor
+        Else
+            Dim newElemEditor = New ElementEditor
+            newEditor = newElemEditor
+            newElemEditor.Initialise(m_controller, m_controller.GetEditorDefinition(script.EditorName))
+            newElemEditor.Populate(m_controller.GetScriptEditorData(script))
+        End If
+
         newEditor.Parent = Me
         newEditor.Dock = DockStyle.Fill
-        newEditor.Initialise(m_controller, m_controller.GetEditorDefinition(script.EditorName))
-        newEditor.Populate(m_controller.GetScriptEditorData(script))
 
         If Not m_currentEditor Is Nothing Then
             newEditor.Visible = True
-            m_currentEditor.Visible = False
+            DirectCast(m_currentEditor, Control).Visible = False
         End If
 
         m_currentEditor = newEditor
@@ -43,6 +49,8 @@
     End Sub
 
     Public Sub UpdateField(ByVal index As Integer, ByVal newValue As String)
-        m_currentEditor.UpdateField(index.ToString(), newValue, True)
+        Dim elemEditor As ElementEditor = TryCast(m_currentEditor, ElementEditor)
+        If elemEditor Is Nothing Then Exit Sub
+        elemEditor.UpdateField(index.ToString(), newValue, True)
     End Sub
 End Class

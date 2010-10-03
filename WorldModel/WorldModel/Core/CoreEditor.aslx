@@ -116,27 +116,11 @@
     </control>
   </editor>
   
-  <!-- TO DO: How to handle "if" - need a way to handle mutiple "elseif"s -->
-
-  <!--
   <editor>
     <appliesto>if</appliesto>
-    <display>If #0, then #1</display>
     <category>Conditions</category>
-    <create>if (true) {
-      msg ("Test")
-    }</create>
     <add>If...</add>
-    <control>
-      <controltype>textbox</controltype>
-      <caption>Expression</caption>
-      <attribute>0</attribute>
-    </control>
-    <control>
-      <controltype>script</controltype>
-      <caption>Then...</caption>
-      <attribute>1</attribute>
-    </control>
+    <create>if ()</create>
   </editor>
-  -->
+
 </library>

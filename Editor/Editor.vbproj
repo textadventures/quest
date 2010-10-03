@@ -90,7 +90,14 @@
     <Compile Include="ElementEditor.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ICommandEditor.vb" />
     <Compile Include="IElementEditorControl.vb" />
+    <Compile Include="IfEditor.Designer.vb">
+      <DependentUpon>IfEditor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="IfEditor.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="MainToolbar.Designer.vb">
       <DependentUpon>MainToolbar.vb</DependentUpon>
     </Compile>
@@ -158,6 +165,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ElementEditor.resx">
       <DependentUpon>ElementEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IfEditor.resx">
+      <DependentUpon>IfEditor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainToolbar.resx">
       <DependentUpon>MainToolbar.vb</DependentUpon>
