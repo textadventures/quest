@@ -21,7 +21,15 @@ namespace AxeSoftware.Quest
 
     public interface IMutableField
     {
+        /// <summary>
+        /// This is used PURELY so the field can get hold of the UndoLogger - why not just pass it in directly then!
+        /// </summary>
         Fields Parent { get; set; }
+
+        /// <summary>
+        /// True if we're in an inherited type, so we must be unmodifable. Implementors must check this and throw an exception
+        /// if an attempt is made to change a locked object
+        /// </summary>
         bool Locked { get; set; }
 
         // QuestLists etc. require cloning as you want to be able to assign a.list = b.list and modify

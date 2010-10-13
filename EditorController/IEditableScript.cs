@@ -23,6 +23,12 @@ namespace AxeSoftware.Quest
         public bool IsParameterUpdate { get; private set; }
     }
 
+    public enum ScriptType
+    {
+        Normal,
+        If
+    }
+
     public interface IEditableScript
     {
         string DisplayString();
@@ -31,5 +37,6 @@ namespace AxeSoftware.Quest
         string GetParameter(int index);
         void SetParameter(int index, string value);
         event EventHandler<EditableScriptUpdatedEventArgs> Updated;
+        ScriptType Type { get; }
     }
 }

@@ -165,4 +165,12 @@
         End If
     End Sub
 
+    Public Property Controller As EditorController Implements ICommandEditor.Controller
+        Get
+            Return m_controller
+        End Get
+        Set(ByVal value As EditorController)
+            m_controller = value
+        End Set
+    End Property
 End Class

@@ -70,8 +70,14 @@ Public Class ScriptControl
         Value = data.GetAttribute(AttributeName)
     End Sub
 
+    Public Sub Populate(ByVal data As IEditableScripts)
+        Value = data
+    End Sub
+
     Public Sub Initialise(ByVal controlData As IEditorControl) Implements IElementEditorControl.Initialise
-        ctlScriptEditor.AttributeName = controlData.Attribute
+        If Not controlData Is Nothing Then
+            ctlScriptEditor.AttributeName = controlData.Attribute
+        End If
         ctlScriptEditor.Initialise()
     End Sub
 End Class

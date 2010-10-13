@@ -87,7 +87,7 @@ namespace AxeSoftware.Quest
 
             // need to initialise the EditableScriptFactory after we've loaded the game XML above,
             // as the editor definitions contain the "friendly" templates for script commands.
-            m_editableScriptFactory = new EditableScriptFactory(m_scriptFactory, m_worldModel);
+            m_editableScriptFactory = new EditableScriptFactory(this, m_scriptFactory, m_worldModel);
 
             m_initialised = true;
 
@@ -284,7 +284,16 @@ namespace AxeSoftware.Quest
 
         public IEditorData GetScriptEditorData(IEditableScript script)
         {
-            return new ScriptCommandEditorData(script);
+            switch (script.Type)
+            {
+                case ScriptType.Normal:
+                    return new ScriptCommandEditorData(script);
+                // not sure we need ScriptIfCommandEditorData now
+                case ScriptType.If:
+                    return new ScriptIfCommandEditorData(script);
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         public string Save()
@@ -362,9 +371,9 @@ namespace AxeSoftware.Quest
         public EditableScripts CreateNewEditableScripts(string parent, string attribute, string keyword)
         {
             WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} script to '{2}'", parent, attribute, keyword));
-            Element element = m_worldModel.Elements.Get(parent);
+            Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
             EditableScripts newValue = new EditableScripts(this, element, attribute);
-            element.Fields.Set(attribute, newValue);
+            if (element != null) element.Fields.Set(attribute, newValue);
             newValue.AddNewInternal(keyword, parent);
             WorldModel.UndoLogger.EndTransaction();
 

@@ -55,12 +55,12 @@ namespace AxeSoftware.Quest
             get { return m_scripts.AsReadOnly(); }
         }
 
-        private void Add(EditableScript script, bool fromUpdate)
+        private void Add(EditableScriptBase script, bool fromUpdate)
         {
             Add(script, null, fromUpdate);
         }
 
-        private void Add(EditableScript script, int? index, bool fromUpdate)
+        private void Add(EditableScriptBase script, int? index, bool fromUpdate)
         {
             bool setField = false;
 
@@ -108,7 +108,7 @@ namespace AxeSoftware.Quest
 
         private void UpdateField()
         {
-            m_parent.Fields.Set(m_attribute, m_underlyingScript);
+            if (m_parent != null) m_parent.Fields.Set(m_attribute, m_underlyingScript);
         }
 
         public void AddNew(string keyword, string elementName)

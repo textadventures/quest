@@ -24,12 +24,14 @@ namespace AxeSoftware.Quest
 
     internal class EditableScriptFactory
     {
+        private EditorController m_controller;
         private ScriptFactory m_scriptFactory;
         private WorldModel m_worldModel;
         private Dictionary<string, EditableScriptData> m_scriptData = new Dictionary<string, EditableScriptData>();
 
-        internal EditableScriptFactory(ScriptFactory factory, WorldModel worldModel)
+        internal EditableScriptFactory(EditorController controller, ScriptFactory factory, WorldModel worldModel)
         {
+            m_controller = controller;
             m_scriptFactory = factory;
             m_worldModel = worldModel;
 
@@ -45,21 +47,31 @@ namespace AxeSoftware.Quest
             return !string.IsNullOrEmpty(editor.Fields.GetString("category"));
         }
 
-        internal EditableScript CreateScript(string keyword, string parent)
+        internal EditableScriptBase CreateScript(string keyword, string parent)
         {
-            return CreateScript(keyword, m_worldModel.Elements.Get(parent));
+            return CreateScript(keyword, (parent == null) ? null : m_worldModel.Elements.Get(parent));
         }
 
-        internal EditableScript CreateScript(string keyword, Element parent)
+        internal EditableScriptBase CreateScript(string keyword, Element parent)
         {
             IScript script = m_scriptFactory.CreateScript(keyword);
             return CreateScript(script, parent);
         }
 
-        internal EditableScript CreateScript(IScript script, Element parent)
+        internal EditableScriptBase CreateScript(IScript script, Element parent)
         {
-            EditableScript newScript = new EditableScript(script, parent);
-            if (m_scriptData.ContainsKey(script.Keyword)) newScript.DisplayTemplate = m_scriptData[script.Keyword].DisplayString;
+            EditableScriptBase newScript;
+            IfScript ifScript = script as IfScript;
+            if (ifScript != null)
+            {
+                newScript = new EditableIfScript(m_controller, ifScript, parent);
+            }
+            else
+            {
+                EditableScript newEditableScript = new EditableScript(script, parent);
+                if (script != null && m_scriptData.ContainsKey(script.Keyword)) newEditableScript.DisplayTemplate = m_scriptData[script.Keyword].DisplayString;
+                newScript = newEditableScript;
+            }
             return newScript;
         }
 

@@ -18,14 +18,19 @@
         Dim newEditor As Control
         Dim newEditorKey As String = script.EditorName
 
-        If script.EditorName = "if" Then
-            newEditor = New IfEditor
+        If script.Type = ScriptType.If Then
+            Dim newIfEditor = New IfEditor
+            newEditor = newIfEditor
+            newIfEditor.Populate(script)
         Else
             Dim newElemEditor = New ElementEditor
             newEditor = newElemEditor
             newElemEditor.Initialise(m_controller, m_controller.GetEditorDefinition(script.EditorName))
             newElemEditor.Populate(m_controller.GetScriptEditorData(script))
         End If
+
+        Dim newCommandEditor As ICommandEditor = newEditor
+        newCommandEditor.Controller = m_controller
 
         newEditor.Parent = Me
         newEditor.Dock = DockStyle.Fill

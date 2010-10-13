@@ -159,5 +159,15 @@ namespace AxeSoftware.Quest.Scripts
             }
             return false;
         }
+
+        public string Expression
+        {
+            get { return m_expression.Save(); }
+        }
+
+        public IScript ThenScript
+        {
+            get { return m_thenScript; }
+        }
     }
 }
