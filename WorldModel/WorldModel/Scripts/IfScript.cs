@@ -98,7 +98,7 @@ namespace AxeSoftware.Quest.Scripts
                         // All IScripts in m_elseIfScript are just simple
                         // IfScript objects with only one "if". If any of them run
                         // successfully then we're finished with this if block.
-                        if (((IfScript)elseIfScript).ExecuteWithResult(c)) return;
+                        if (((IfScript)((MultiScript)elseIfScript).Scripts.First()).ExecuteWithResult(c)) return;
                     }
                 }
 

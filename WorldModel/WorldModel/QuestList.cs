@@ -35,7 +35,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        public Fields Parent
+        public UndoLogger UndoLog
         {
             get;
             set;
@@ -105,17 +105,17 @@ namespace AxeSoftware.Quest
 
         private void UndoLogAdd(object item)
         {
-            if (Parent != null)
+            if (UndoLog != null)
             {
-                Parent.UndoLog(new UndoListAdd(this, item));
+                UndoLog.AddUndoAction(new UndoListAdd(this, item));
             }
         }
 
         private void UndoLogRemove(object item)
         {
-            if (Parent != null)
+            if (UndoLog != null)
             {
-                Parent.UndoLog(new UndoListRemove(this, item));
+                UndoLog.AddUndoAction(new UndoListRemove(this, item));
             }
         }
 

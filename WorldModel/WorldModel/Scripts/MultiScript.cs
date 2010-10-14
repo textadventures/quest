@@ -17,20 +17,20 @@ namespace AxeSoftware.Quest.Scripts
         public void Add(params IScript[] scripts)
         {
             m_scripts.AddRange(scripts);
-            if (base.Parent != null)
+            if (base.UndoLog != null)
             {
                 foreach (IScript script in scripts)
                 {
-                    base.Parent.UndoLog(new UndoMultiScriptAddRemove(this, script, true, null));
+                    base.UndoLog.AddUndoAction(new UndoMultiScriptAddRemove(this, script, true, null));
                 }
             }
         }
 
         public void Remove(int index)
         {
-            if (base.Parent != null)
+            if (base.UndoLog != null)
             {
-                base.Parent.UndoLog(new UndoMultiScriptAddRemove(this, m_scripts[index], false, index));
+                base.UndoLog.AddUndoAction(new UndoMultiScriptAddRemove(this, m_scripts[index], false, index));
             }
             RemoveSilent(m_scripts[index]);
         }

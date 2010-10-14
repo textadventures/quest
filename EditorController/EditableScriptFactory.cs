@@ -68,7 +68,7 @@ namespace AxeSoftware.Quest
             }
             else
             {
-                EditableScript newEditableScript = new EditableScript(script, parent);
+                EditableScript newEditableScript = new EditableScript(script, m_worldModel.UndoLogger);
                 if (script != null && m_scriptData.ContainsKey(script.Keyword)) newEditableScript.DisplayTemplate = m_scriptData[script.Keyword].DisplayString;
                 newScript = newEditableScript;
             }

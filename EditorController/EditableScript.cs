@@ -15,12 +15,12 @@ namespace AxeSoftware.Quest
         private string m_displayTemplate = null;
         private static Regex s_regex = new Regex("#(?<attribute>\\d+)");
 
-        internal EditableScript(IScript script, Element parent)
+        internal EditableScript(IScript script, UndoLogger undoLogger)
         {
             Script = script;
             if (script != null)
             {
-                ((IMutableField)Script).Parent = (parent == null) ? null : parent.Fields;
+                ((IMutableField)script).UndoLog = undoLogger;
             }
         }
 

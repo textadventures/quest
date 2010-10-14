@@ -127,9 +127,9 @@ namespace AxeSoftware.Quest.Scripts
         {
             string oldValue = GetParameter(index);
             SetParameterSilent(index, value);
-            if (Parent != null)
+            if (UndoLog != null)
             {
-                Parent.UndoLog(new UndoScriptChange(this, index, oldValue, value));
+                UndoLog.AddUndoAction(new UndoScriptChange(this, index, oldValue, value));
             }
         }
 
@@ -163,7 +163,7 @@ namespace AxeSoftware.Quest.Scripts
 
         #region IMutableField Members
 
-        public Fields Parent { get; set; }
+        public UndoLogger UndoLog { get; set; }
         public bool Locked
         {
             get { return false; }

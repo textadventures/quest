@@ -21,10 +21,7 @@ namespace AxeSoftware.Quest
 
     public interface IMutableField
     {
-        /// <summary>
-        /// This is used PURELY so the field can get hold of the UndoLogger - why not just pass it in directly then!
-        /// </summary>
-        Fields Parent { get; set; }
+        UndoLogger UndoLog { get; set; }
 
         /// <summary>
         /// True if we're in an inherited type, so we must be unmodifable. Implementors must check this and throw an exception
@@ -258,13 +255,11 @@ namespace AxeSoftware.Quest
                 IMutableField mutableNewValue = value as IMutableField;
                 if (mutableOldValue != null)
                 {
-                    mutableOldValue.Parent = null;
                     if (mutableOldValue.RequiresCloning) oldValue = mutableOldValue.Clone();
                 }
                 if (mutableNewValue != null)
                 {
                     if (mutableNewValue.RequiresCloning) value = mutableNewValue.Clone();
-                    ((IMutableField)value).Parent = this;
                     ((IMutableField)value).Locked = m_mutableFieldsLocked;
                 }
             }

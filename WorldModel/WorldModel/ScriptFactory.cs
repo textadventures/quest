@@ -68,9 +68,8 @@ namespace AxeSoftware.Quest
         {
             string remainingScript;
             IScript newScript;
-            IScript result = null;
+            MultiScript result = null;
             bool finished = false;
-            bool isMulti = false;
             IScript lastIf = null;
             bool dontAdd;
             bool addedError;
@@ -170,21 +169,12 @@ namespace AxeSoftware.Quest
 
                             if (result == null)
                             {
-                                result = newScript;
+                                result = new MultiScript(newScript);
                             }
                             else
                             {
-                                if (!isMulti)
-                                {
-                                    result = new MultiScript(result, newScript);
-                                    isMulti = true;
-                                }
-                                else
-                                {
-                                    ((MultiScript)result).Add(newScript);
-                                }
+                                result.Add(newScript);
                             }
-
                         }
                     }
                 }

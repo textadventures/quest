@@ -18,23 +18,23 @@ namespace AxeSoftware.Quest
 
         private void UndoLogAdd(object key)
         {
-            if (Parent != null)
+            if (UndoLog != null)
             {
-                Parent.UndoLog(new UndoDictionaryAdd(this, key, m_dictionary[(string)key]));
+                UndoLog.AddUndoAction(new UndoDictionaryAdd(this, key, m_dictionary[(string)key]));
             }
         }
 
         private void UndoLogRemove(object key)
         {
-            if (Parent != null)
+            if (UndoLog != null)
             {
-                Parent.UndoLog(new UndoDictionaryRemove(this, key, m_dictionary[(string)key]));
+                UndoLog.AddUndoAction(new UndoDictionaryRemove(this, key, m_dictionary[(string)key]));
             }
         }
 
         #region IMutableField Members
 
-        public Fields Parent
+        public UndoLogger UndoLog
         {
             get;
             set;
