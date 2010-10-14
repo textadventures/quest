@@ -10,8 +10,7 @@ namespace AxeSoftware.Quest
     {
         private List<IEditableScript> m_scripts;
         private EditorController m_controller;
-        private IScript m_underlyingScript;
-        private bool m_isMulti = false;
+        private MultiScript m_underlyingScript;
         private Element m_parent;
         private string m_attribute;
 
@@ -26,26 +25,23 @@ namespace AxeSoftware.Quest
         internal EditableScripts(EditorController controller, IScript script, Element parent, string attribute)
             : this(controller, parent, attribute)
         {
-            m_underlyingScript = script;
-            MultiScript multiScript = script as MultiScript;
-            if (multiScript != null)
+            InitialiseMultiScript((MultiScript)script);
+            foreach (IScript scriptItem in m_underlyingScript.Scripts)
             {
-                m_isMulti = true;
-                multiScript.ScriptUpdated += multiScript_ScriptUpdated;
-                foreach (IScript scriptItem in multiScript.Scripts)
-                {
-                    m_scripts.Add(m_controller.ScriptFactory.CreateScript(scriptItem, parent));
-                }
-            }
-            else
-            {
-                m_scripts.Add(m_controller.ScriptFactory.CreateScript(script, parent));
+                m_scripts.Add(m_controller.ScriptFactory.CreateEditableScript(scriptItem, parent));
             }
 
             foreach (IEditableScript editableScript in m_scripts)
             {
                 editableScript.Updated += script_Updated;
             }
+        }
+
+        private void InitialiseMultiScript(MultiScript script)
+        {
+            m_underlyingScript = script;
+            m_underlyingScript.ScriptUpdated += multiScript_ScriptUpdated;
+            m_underlyingScript.UndoLog = m_controller.WorldModel.UndoLogger;
         }
 
         #region IEditableScripts Members
@@ -62,8 +58,6 @@ namespace AxeSoftware.Quest
 
         private void Add(EditableScriptBase script, int? index, bool fromUpdate)
         {
-            bool setField = false;
-
             script.Updated += script_Updated;
             if (index.HasValue)
             {
@@ -74,41 +68,20 @@ namespace AxeSoftware.Quest
                 m_scripts.Add(script);
             }
 
-            if (m_scripts.Count == 1)
+            if (m_underlyingScript == null)
             {
-                m_underlyingScript = script.Script;
-                UpdateField();
+                InitialiseMultiScript(new MultiScript());
             }
-            else
+
+            if (!fromUpdate)
             {
-                if (!m_isMulti)
-                {
-                    // move existing script to multiscript first, then add
-                    m_underlyingScript = new MultiScript(m_underlyingScript);
-                    m_underlyingScript.ScriptUpdated += multiScript_ScriptUpdated;
-                    m_isMulti = true;
-                    setField = true;
-                }
+                // Add underlying script to multiscript.
+                // We don't always want to do this - we might be responding
+                // to a multiscript update in the first place so no point adding the same
+                // script again!
 
-                MultiScript multiScript = (MultiScript)m_underlyingScript;
-
-                if (!fromUpdate)
-                {
-                    // Add underlying script to multiscript.
-                    // We don't always want to do this - we might be responding
-                    // to a multiscript update in the first place so no point adding the same
-                    // script again!
-
-                    multiScript.Add(script.Script);
-                }
-
-                if (setField) UpdateField();
+                m_underlyingScript.Add(script.Script);
             }
-        }
-
-        private void UpdateField()
-        {
-            if (m_parent != null) m_parent.Fields.Set(m_attribute, m_underlyingScript);
         }
 
         public void AddNew(string keyword, string elementName)
@@ -120,7 +93,7 @@ namespace AxeSoftware.Quest
 
         internal void AddNewInternal(string keyword, string elementName)
         {
-            Add(m_controller.ScriptFactory.CreateScript(keyword, elementName), false);
+            Add(m_controller.ScriptFactory.CreateEditableScript(keyword, elementName), false);
         }
 
         public IEditableScript this[int index]
@@ -134,17 +107,7 @@ namespace AxeSoftware.Quest
         {
             m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Remove '{0}' script", m_scripts[index].DisplayString()));
             m_scripts.Remove(m_scripts[index]);
-            if (m_isMulti)
-            {
-                MultiScript multiScript = (MultiScript)m_underlyingScript;
-                multiScript.Remove(index);
-            }
-            else
-            {
-                // only one script so set field to null
-                m_underlyingScript = null;
-                UpdateField();
-            }
+            m_underlyingScript.Remove(index);
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
@@ -173,11 +136,11 @@ namespace AxeSoftware.Quest
             }
             if (e.AddedScript != null)
             {
-                Add(m_controller.ScriptFactory.CreateScript(e.AddedScript, m_parent), true);
+                Add(m_controller.ScriptFactory.CreateEditableScript(e.AddedScript, m_parent), true);
             }
             if (e.InsertedScript != null)
             {
-                Add(m_controller.ScriptFactory.CreateScript(e.InsertedScript, m_parent), e.Index, true);
+                Add(m_controller.ScriptFactory.CreateEditableScript(e.InsertedScript, m_parent), e.Index, true);
             }
             if (Updated != null) Updated(this, new EditableScriptsUpdatedEventArgs());
         }

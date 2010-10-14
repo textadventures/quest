@@ -59,6 +59,17 @@ namespace AxeSoftware.Quest
             return constructor;
         }
 
+        /// <summary>
+        /// For single-line scripts only - used by the editor to create new script lines
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public IScript CreateSimpleScript(string line)
+        {
+            IScriptConstructor constructor = GetScriptConstructor(line);
+            return constructor.Create(line, null);
+        }
+
         public IScript CreateScript(string line)
         {
             return CreateScript(line, null);
@@ -107,19 +118,7 @@ namespace AxeSoftware.Quest
                     else
                     {
                         lastIf = null;
-                        IScriptConstructor constructor = null;
-                        int strength = 0;
-                        foreach (IScriptConstructor c in m_scriptConstructors.Values)
-                        {
-                            if (line.StartsWith(c.Keyword))
-                            {
-                                if (c.Keyword.Length > strength)
-                                {
-                                    constructor = c;
-                                    strength = c.Keyword.Length;
-                                }
-                            }
-                        }
+                        IScriptConstructor constructor = GetScriptConstructor(line);
 
                         if (constructor != null)
                         {
@@ -184,6 +183,24 @@ namespace AxeSoftware.Quest
             }
 
             return result;
+        }
+
+        private IScriptConstructor GetScriptConstructor(string line)
+        {
+            IScriptConstructor constructor = null;
+            int strength = 0;
+            foreach (IScriptConstructor c in m_scriptConstructors.Values)
+            {
+                if (line.StartsWith(c.Keyword))
+                {
+                    if (c.Keyword.Length > strength)
+                    {
+                        constructor = c;
+                        strength = c.Keyword.Length;
+                    }
+                }
+            }
+            return constructor;
         }
 
         private void AddError(string error)

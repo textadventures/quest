@@ -47,18 +47,18 @@ namespace AxeSoftware.Quest
             return !string.IsNullOrEmpty(editor.Fields.GetString("category"));
         }
 
-        internal EditableScriptBase CreateScript(string keyword, string parent)
+        internal EditableScriptBase CreateEditableScript(string keyword, string parent)
         {
-            return CreateScript(keyword, (parent == null) ? null : m_worldModel.Elements.Get(parent));
+            return CreateEditableScript(keyword, (parent == null) ? null : m_worldModel.Elements.Get(parent));
         }
 
-        internal EditableScriptBase CreateScript(string keyword, Element parent)
+        internal EditableScriptBase CreateEditableScript(string keyword, Element parent)
         {
-            IScript script = m_scriptFactory.CreateScript(keyword);
-            return CreateScript(script, parent);
+            IScript script = m_scriptFactory.CreateSimpleScript(keyword);
+            return CreateEditableScript(script, parent);
         }
 
-        internal EditableScriptBase CreateScript(IScript script, Element parent)
+        internal EditableScriptBase CreateEditableScript(IScript script, Element parent)
         {
             EditableScriptBase newScript;
             IfScript ifScript = script as IfScript;
