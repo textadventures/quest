@@ -130,7 +130,7 @@ namespace AxeSoftware.Quest
             {
                 foreach (IEditableScript es in m_scripts.ToArray())
                 {
-                    EditableScript s = (EditableScript)es;
+                    EditableScriptBase s = (EditableScriptBase)es;
                     if (s.Script == e.RemovedScript) m_scripts.Remove(es);
                 }
             }

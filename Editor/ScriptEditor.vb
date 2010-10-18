@@ -68,7 +68,9 @@
         ctlScriptAdder.Visible = showAdder
         ctlScriptCommandEditor.Visible = Not showAdder
 
-        If Not showAdder Then
+        If showAdder Then
+            m_currentScript = Nothing
+        Else
             m_currentScript = m_scripts(index)
             ctlScriptCommandEditor.ShowEditor(m_currentScript)
         End If
