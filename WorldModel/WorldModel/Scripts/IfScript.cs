@@ -168,6 +168,7 @@ namespace AxeSoftware.Quest.Scripts
         public IScript ThenScript
         {
             get { return m_thenScript; }
+            set { m_thenScript = value; }
         }
     }
 }

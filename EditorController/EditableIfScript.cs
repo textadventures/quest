@@ -8,15 +8,23 @@ namespace AxeSoftware.Quest
 {
     public class EditableIfScript : EditableScriptBase, IEditableScript
     {
-        IfScript m_ifScript;
-        Element m_parent;
-        EditorController m_controller;
+        private IfScript m_ifScript;
+        private Element m_parent;
+        private EditorController m_controller;
+        private EditableScripts m_thenScript;
 
         internal EditableIfScript(EditorController controller, IfScript script, Element parent)
         {
             m_controller = controller;
             m_ifScript = script;
             m_parent = parent;
+
+            if (m_ifScript.ThenScript == null)
+            {
+                m_ifScript.ThenScript = new MultiScript();
+            }
+
+            m_thenScript = new EditableScripts(m_controller, m_ifScript.ThenScript, m_parent, null);
         }
 
         public override string DisplayString()
@@ -43,7 +51,7 @@ namespace AxeSoftware.Quest
         {
             get
             {
-                return new EditableScripts(m_controller, m_ifScript.ThenScript, m_parent, null);
+                return m_thenScript;
             }
         }
 
