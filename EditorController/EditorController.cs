@@ -373,8 +373,8 @@ namespace AxeSoftware.Quest
             WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} script to '{2}'", parent, attribute, keyword));
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
             EditableScripts newValue = new EditableScripts(this, element, attribute);
-            if (element != null) element.Fields.Set(attribute, newValue);
             newValue.AddNewInternal(keyword, parent);
+            if (element != null) element.Fields.Set(attribute, newValue.GetUnderlyingValue());
             WorldModel.UndoLogger.EndTransaction();
 
             return newValue;

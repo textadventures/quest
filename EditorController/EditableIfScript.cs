@@ -14,6 +14,7 @@ namespace AxeSoftware.Quest
         private EditableScripts m_thenScript;
 
         internal EditableIfScript(EditorController controller, IfScript script, Element parent)
+            : base(script)
         {
             m_controller = controller;
             m_ifScript = script;

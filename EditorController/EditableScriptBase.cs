@@ -19,6 +19,11 @@ namespace AxeSoftware.Quest
 
         private IScript m_script;
 
+        public EditableScriptBase(IScript script)
+        {
+            Script = script;
+        }
+
         internal IScript Script
         {
             get
