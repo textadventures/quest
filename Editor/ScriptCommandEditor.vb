@@ -54,8 +54,6 @@
     End Sub
 
     Public Sub UpdateField(ByVal index As Integer, ByVal newValue As String)
-        Dim elemEditor As ElementEditor = TryCast(m_currentEditor, ElementEditor)
-        If elemEditor Is Nothing Then Exit Sub
-        elemEditor.UpdateField(index.ToString(), newValue, True)
+        m_currentEditor.UpdateField(index.ToString(), newValue, True)
     End Sub
 End Class

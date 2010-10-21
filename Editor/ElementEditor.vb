@@ -10,7 +10,6 @@
     Private m_controller As EditorController
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
-    Public Event DataUpdated()
 
     Public Sub Initialise(ByVal controller As EditorController, ByVal definition As IEditorDefinition)
         m_controller = controller
@@ -35,7 +34,6 @@
                 tabEditor.Parent = tabPage
                 tabEditor.Dock = DockStyle.Fill
                 AddHandler tabEditor.Dirty, AddressOf Tab_Dirty
-                AddHandler tabEditor.DataUpdated, AddressOf Tab_DataUpdated
                 m_tabs.Add(tabEditor)
             Next
 
@@ -46,10 +44,6 @@
 
     Private Sub Tab_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
         RaiseEvent Dirty(sender, args)
-    End Sub
-
-    Private Sub Tab_DataUpdated()
-        RaiseEvent DataUpdated()
     End Sub
 
     Public Sub InitialiseControls(ByVal controller As EditorController, ByVal definition As IEditorTab)
@@ -120,7 +114,7 @@
 
     End Sub
 
-    Public Sub UpdateField(ByVal attribute As String, ByVal newValue As Object, ByVal setFocus As Boolean)
+    Public Sub UpdateField(ByVal attribute As String, ByVal newValue As Object, ByVal setFocus As Boolean) Implements ICommandEditor.UpdateField
         ' find the control that's currently showing the attribute, and set its value - it's just been updated...
 
         If Not m_tabs Is Nothing Then
@@ -133,7 +127,6 @@
             For Each ctl As EditorControl In m_controls.Where(Function(c) c.AttributeName = attribute)
                 ctl.Value = newValue
                 If setFocus Then ctl.Focus()
-                RaiseEvent DataUpdated()
             Next
         End If
     End Sub

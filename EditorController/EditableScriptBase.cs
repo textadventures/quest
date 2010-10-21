@@ -19,9 +19,13 @@ namespace AxeSoftware.Quest
 
         private IScript m_script;
 
-        public EditableScriptBase(IScript script)
+        public EditableScriptBase(IScript script, UndoLogger undoLogger)
         {
             Script = script;
+            if (script != null)
+            {
+                ((IMutableField)script).UndoLog = undoLogger;
+            }
         }
 
         internal IScript Script

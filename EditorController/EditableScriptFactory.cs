@@ -64,7 +64,7 @@ namespace AxeSoftware.Quest
             IfScript ifScript = script as IfScript;
             if (ifScript != null)
             {
-                newScript = new EditableIfScript(m_controller, ifScript, parent);
+                newScript = new EditableIfScript(m_controller, ifScript, parent, m_worldModel.UndoLogger);
             }
             else
             {

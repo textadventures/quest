@@ -79,4 +79,9 @@ Public Class TextBoxControl
         m_attribute = controlData.Attribute
         m_attributeName = controlData.Caption
     End Sub
+
+    Public Sub Initialise(ByVal attributeName As String)
+        m_attribute = attributeName
+        m_attributeName = attributeName
+    End Sub
 End Class

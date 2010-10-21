@@ -163,12 +163,47 @@ namespace AxeSoftware.Quest.Scripts
         public string Expression
         {
             get { return m_expression.Save(); }
+            set
+            {
+                base.UndoLog.AddUndoAction(new UndoChangeExpression(this, m_expression.Save(), value));
+                SetExpressionSilent(value);
+            }
+        }
+
+        private void SetExpressionSilent(string newValue)
+        {
+            m_expression = new Expression<bool>(newValue);
+            NotifyUpdate(0, newValue);
         }
 
         public IScript ThenScript
         {
             get { return m_thenScript; }
             set { m_thenScript = value; }
+        }
+
+        private class UndoChangeExpression : UndoLogger.IUndoAction
+        {
+            private IfScript m_script;
+            private string m_oldValue;
+            private string m_newValue;
+
+            public UndoChangeExpression(IfScript script, string oldValue, string newValue)
+            {
+                m_script = script;
+                m_oldValue = oldValue;
+                m_newValue = newValue;
+            }
+
+            public void DoUndo(WorldModel worldModel)
+            {
+                m_script.SetExpressionSilent(m_oldValue);
+            }
+
+            public void DoRedo(WorldModel worldModel)
+            {
+                m_script.SetExpressionSilent(m_newValue);
+            }
         }
     }
 }

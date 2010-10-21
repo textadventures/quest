@@ -16,12 +16,8 @@ namespace AxeSoftware.Quest
         private static Regex s_regex = new Regex("#(?<attribute>\\d+)");
 
         internal EditableScript(IScript script, UndoLogger undoLogger)
-            : base(script)
+            : base(script, undoLogger)
         {
-            if (script != null)
-            {
-                ((IMutableField)script).UndoLog = undoLogger;
-            }
         }
 
         internal string DisplayTemplate

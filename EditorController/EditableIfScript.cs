@@ -6,15 +6,15 @@ using AxeSoftware.Quest.Scripts;
 
 namespace AxeSoftware.Quest
 {
-    public class EditableIfScript : EditableScriptBase, IEditableScript
+    public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     {
         private IfScript m_ifScript;
         private Element m_parent;
         private EditorController m_controller;
         private EditableScripts m_thenScript;
 
-        internal EditableIfScript(EditorController controller, IfScript script, Element parent)
-            : base(script)
+        internal EditableIfScript(EditorController controller, IfScript script, Element parent, UndoLogger undoLogger)
+            : base(script, undoLogger)
         {
             m_controller = controller;
             m_ifScript = script;
@@ -70,6 +70,32 @@ namespace AxeSoftware.Quest
         public override ScriptType Type
         {
             get { return ScriptType.If; }
+        }
+
+        public string Name
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public object GetAttribute(string attribute)
+        {
+            if (attribute == "expression")
+            {
+                return m_ifScript.Expression;
+            }
+            throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
+        }
+
+        public void SetAttribute(string attribute, object value)
+        {
+            if (attribute == "expression")
+            {
+                m_ifScript.Expression = (string)value;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
+            }
         }
     }
 }
