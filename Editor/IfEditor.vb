@@ -7,7 +7,7 @@
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
     Public Sub SaveData() Implements ICommandEditor.SaveData
-
+        ctlThenScript.Save(Nothing)
     End Sub
 
     Public Property Controller As EditorController Implements ICommandEditor.Controller
@@ -23,5 +23,9 @@
 
     Public Sub Populate(ByVal data As EditableIfScript)
         ctlThenScript.Populate(data.ThenScript)
+    End Sub
+
+    Private Sub ctlThenScript_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlThenScript.Dirty
+        RaiseEvent Dirty(sender, args)
     End Sub
 End Class
