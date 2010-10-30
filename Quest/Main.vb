@@ -47,8 +47,8 @@ Public Class Main
     End Sub
 
     Private Sub Browse()
-        Dim startFolder As String = Registry.GetSetting("Quest", "Settings", "StartFolder", _
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
+        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder", _
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)), String)
 
         dlgOpenFile.InitialDirectory = startFolder
         dlgOpenFile.Multiselect = False
@@ -156,8 +156,8 @@ Public Class Main
     End Sub
 
     Private Sub BrowseEdit()
-        Dim startFolder As String = Registry.GetSetting("Quest", "Settings", "StartFolder", _
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
+        Dim startFolder As String = DirectCast(Registry.GetSetting("Quest", "Settings", "StartFolder", _
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)), String)
 
         dlgOpenFile.InitialDirectory = startFolder
         dlgOpenFile.Multiselect = False
