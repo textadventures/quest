@@ -35,7 +35,7 @@ Public Class Compass
                 If i >= 9 Then
                     .Left = 3 * (buttonSize + buttonSpacing)
                     ' up and down buttons are displaced half a button height downwards
-                    .Top = ((i - 9) + 0.5) * (buttonSize + buttonSpacing)
+                    .Top = CInt(((i - 9) + 0.5) * (buttonSize + buttonSpacing))
                 End If
 
                 If i <> 4 Then
@@ -62,11 +62,11 @@ Public Class Compass
     End Sub
 
     Private Sub Compass_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
-        pnlContainer.Left = (Me.Width - pnlContainer.Width) / 2
+        pnlContainer.Left = CInt((Me.Width - pnlContainer.Width) / 2)
     End Sub
 
     Private Sub ButtonClicked(ByVal sender As Object, ByVal e As System.EventArgs)
-        RaiseEvent RunCommand(buttonCommands(CType(sender, System.Windows.Forms.Button).Tag))
+        RaiseEvent RunCommand(buttonCommands(CInt(DirectCast(sender, Button).Tag)))
     End Sub
 
     Public Sub SetAvailableExits(ByVal exits As List(Of ListData))

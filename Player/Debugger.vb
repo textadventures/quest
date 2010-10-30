@@ -46,11 +46,11 @@ Public Class Debugger
         End If
     End Sub
 
-    Public Property Game()
+    Public Property Game() As IASLDebug
         Get
             Return m_game
         End Get
-        Set(ByVal value)
+        Set(ByVal value As IASLDebug)
             m_game = value
             InitialiseTabs()
             UpdateObjectList()

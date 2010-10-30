@@ -6,11 +6,11 @@ Public Class ElementList
     Private m_ignoreNames As New List(Of String)
     Private m_verbs() As List(Of String)
 
-    Public Property Title()
+    Public Property Title() As String
         Get
             Return lblTitle.Text
         End Get
-        Set(ByVal value)
+        Set(ByVal value As String)
             lblTitle.Text = value
         End Set
     End Property

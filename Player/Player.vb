@@ -97,11 +97,11 @@ Public Class Player
         lstPlacesObjects.Clear()
     End Sub
 
-    Public Property PanesVisible()
+    Public Property PanesVisible() As Boolean
         Get
             Return m_panesVisible
         End Get
-        Set(ByVal value)
+        Set(ByVal value As Boolean)
             m_panesVisible = value
             splitMain.Panel2Collapsed = Not m_panesVisible
             If m_panesVisible Then
@@ -368,7 +368,7 @@ Public Class Player
     Private Sub tmrTimer_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles tmrTimer.Tick
         tmrTimer.Enabled = False
         If Not tmrTimer.Tag Is Nothing Then
-            RunCommand(tmrTimer.Tag)
+            RunCommand(DirectCast(tmrTimer.Tag, String))
         Else
             EnterText()
         End If
@@ -448,7 +448,7 @@ Public Class Player
         If show Then
             If m_debugger Is Nothing Then
                 m_debugger = New Debugger
-                m_debugger.Game = m_game
+                m_debugger.Game = DirectCast(m_game, IASLDebug)
             End If
             m_debugger.Show()
             m_debugger.LoadSplitterPositions()
@@ -591,7 +591,7 @@ Public Class Player
         Dim dataList As List(Of String)
         Dim args As New List(Of String)
 
-        dataList = New List(Of String)(data.Split(";"))
+        dataList = New List(Of String)(data.Split(CChar(";")))
 
         For Each value As String In dataList
             If functionName.Length = 0 Then

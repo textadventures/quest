@@ -5,11 +5,11 @@ Public Class DebuggerPane
     Private WithEvents m_game As IASLDebug
     Private m_filter As String
 
-    Public Property Game()
+    Public Property Game() As IASLDebug
         Get
             Return m_game
         End Get
-        Set(ByVal value)
+        Set(ByVal value As IASLDebug)
             m_game = value
             UpdateObjectList()
         End Set
@@ -46,11 +46,11 @@ Public Class DebuggerPane
         UpdateObjectList()
     End Sub
 
-    Friend Property Filter()
+    Friend Property Filter() As String
         Get
             Return m_filter
         End Get
-        Set(ByVal value)
+        Set(ByVal value As String)
             m_filter = value
         End Set
     End Property
