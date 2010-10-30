@@ -7,13 +7,13 @@
         m_name = gameName
     End Sub
 
-    Public ReadOnly Property Filename()
+    Public ReadOnly Property Filename() As String
         Get
             Return m_filename
         End Get
     End Property
 
-    Public ReadOnly Property GameName()
+    Public ReadOnly Property GameName() As String
         Get
             Return m_name
         End Get

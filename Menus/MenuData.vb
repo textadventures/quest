@@ -8,7 +8,7 @@ Friend Class MenuData
         m_modes = New List(Of MenuMode)(modes)
     End Sub
 
-    Public Function IsApplicable(ByVal mode As MenuMode)
+    Public Function IsApplicable(ByVal mode As MenuMode) As Boolean
         Return m_modes.Contains(mode)
     End Function
 

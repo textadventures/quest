@@ -47,31 +47,32 @@
 
     Private Sub AddHandlers()
         For Each item In ctlMenuStrip.Items
-            AddHandlers(item)
+            AddHandlers(DirectCast(item, ToolStripMenuItem))
         Next
     End Sub
 
     Private Sub AddHandlers(ByVal menu As ToolStripMenuItem)
         AddHandler menu.Click, AddressOf Menu_Click
 
-        If Not String.IsNullOrEmpty(menu.Tag) Then
-            m_menus.Add(menu.Tag, menu)
+        If Not String.IsNullOrEmpty(DirectCast(menu.Tag, String)) Then
+            m_menus.Add(DirectCast(menu.Tag, String), menu)
         End If
 
         For Each item As ToolStripItem In menu.DropDownItems
             If TypeOf item Is ToolStripMenuItem Then
-                AddHandlers(item)
+                AddHandlers(DirectCast(item, ToolStripMenuItem))
             ElseIf TypeOf item Is ToolStripSeparator Then
-                m_separators.Add(item)
+                m_separators.Add(DirectCast(item, ToolStripSeparator))
             End If
         Next
     End Sub
 
-    Private Sub Menu_Click(ByVal sender As ToolStripMenuItem, ByVal e As EventArgs)
-        If sender.Tag Is Nothing Then Exit Sub
+    Private Sub Menu_Click(ByVal sender As Object, ByVal e As EventArgs)
+        Dim menu As ToolStripMenuItem = DirectCast(sender, ToolStripMenuItem)
+        If menu.Tag Is Nothing Then Exit Sub
 
-        If m_handlers.ContainsKey(sender.Tag) Then
-            m_handlers(sender.Tag).Invoke()
+        If m_handlers.ContainsKey(DirectCast(menu.Tag, String)) Then
+            m_handlers(DirectCast(menu.Tag, String)).Invoke()
         End If
     End Sub
 
@@ -125,7 +126,7 @@
             sep.Available = True
         Next
 
-        For Each item In ctlMenuStrip.Items
+        For Each item As ToolStripMenuItem In ctlMenuStrip.Items
             HideDuplicateSeparators(item)
         Next
     End Sub
@@ -137,7 +138,7 @@
             If item.Available Then
                 If TypeOf item Is ToolStripMenuItem Then
                     lastWasSeparator = False
-                    HideDuplicateSeparators(item)
+                    HideDuplicateSeparators(DirectCast(item, ToolStripMenuItem))
                 ElseIf TypeOf item Is ToolStripSeparator Then
                     If lastWasSeparator Then
                         item.Available = False
@@ -150,7 +151,7 @@
     End Sub
 
     Private Sub HideEmptyMenus()
-        For Each item In ctlMenuStrip.Items
+        For Each item As ToolStripMenuItem In ctlMenuStrip.Items
             HideEmptyMenus(item)
         Next
     End Sub

@@ -35,12 +35,12 @@ Friend Class RecentItems
                 Dim name As String = Nothing
                 nameValue = "Name" + value.Substring(6)
                 If values.Contains(nameValue) Then
-                    name = key.GetValue(nameValue)
+                    name = DirectCast(key.GetValue(nameValue), String)
                 End If
 
                 If String.IsNullOrEmpty(name) Then name = "(unknown)"
 
-                m_recent.Add(New GameListItemData(key.GetValue(value), name))
+                m_recent.Add(New GameListItemData(DirectCast(key.GetValue(value), String), name))
             End If
         Next
     End Sub

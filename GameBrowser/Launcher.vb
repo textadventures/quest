@@ -8,7 +8,7 @@
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        ctlTabs.SelectedIndex = AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "SelectedTab", 0)
+        ctlTabs.SelectedIndex = CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "SelectedTab", 0))
     End Sub
 
     Public Sub AddToRecent(ByVal filename As String, ByVal name As String)
