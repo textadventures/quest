@@ -52,8 +52,8 @@
     End Sub
 
     Private Sub ctlScriptCommandEditor_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlScriptCommandEditor.Dirty
-        lstScripts.Items(m_editIndex).Text = FormatScript(args.NewValue)
-        Dim newArgs As New DataModifiedEventArgs(String.Empty, m_scripts.DisplayString(m_editIndex, args.NewValue))
+        lstScripts.Items(m_editIndex).Text = FormatScript(DirectCast(args.NewValue, String))
+        Dim newArgs As New DataModifiedEventArgs(String.Empty, m_scripts.DisplayString(m_editIndex, DirectCast(args.NewValue, String)))
         RaiseEvent Dirty(Me, newArgs)
     End Sub
 

@@ -25,7 +25,7 @@
         newNode = parent.Add(key, text)
         newNode.Tag = key
         If foreColor.HasValue Then
-            newNode.ForeColor = foreColor
+            newNode.ForeColor = foreColor.Value
         End If
 
         m_nodes.Add(key, newNode)
@@ -45,14 +45,15 @@
         Next
     End Sub
 
-    Private Sub FilterClicked(ByVal sender As System.Windows.Forms.ToolStripMenuItem, ByVal e As System.EventArgs)
-        Dim key As String = sender.Tag
+    Private Sub FilterClicked(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim menuItem As ToolStripMenuItem = DirectCast(sender, ToolStripMenuItem)
+        Dim key As String = DirectCast(menuItem.Tag, String)
         m_filterSettings.Set(key, Not m_filterSettings.IsSet(key))
-        sender.Checked = m_filterSettings.IsSet(key)
+        menuItem.Checked = m_filterSettings.IsSet(key)
         RaiseEvent FiltersUpdated()
     End Sub
 
-    Public ReadOnly Property FilterSettings()
+    Public ReadOnly Property FilterSettings() As FilterOptions
         Get
             Return m_filterSettings
         End Get
@@ -67,14 +68,14 @@
         If (ctlTreeView.SelectedNode Is Nothing) Then
             m_previousSelection = ""
         Else
-            m_previousSelection = ctlTreeView.SelectedNode.Tag
+            m_previousSelection = DirectCast(ctlTreeView.SelectedNode.Tag, String)
         End If
 
         m_openNodes = New List(Of String)
 
         For Each node As TreeNode In m_nodes.Values
             If node.IsExpanded Then
-                m_openNodes.Add(node.Tag)
+                m_openNodes.Add(DirectCast(node.Tag, String))
             End If
         Next
     End Sub
@@ -87,7 +88,7 @@
         End If
 
         For Each node As TreeNode In m_nodes.Values
-            If (m_openNodes.Contains(node.Tag)) Then
+            If (m_openNodes.Contains(DirectCast(node.Tag, String))) Then
                 node.Expand()
             End If
         Next
@@ -101,7 +102,7 @@
         If ctlTreeView.SelectedNode Is Nothing Then
             key = Nothing
         Else
-            key = ctlTreeView.SelectedNode.Tag
+            key = DirectCast(ctlTreeView.SelectedNode.Tag, String)
         End If
 
         If key <> m_selection Then

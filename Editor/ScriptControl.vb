@@ -19,8 +19,8 @@ Public Class ScriptControl
             Return ctlScriptEditor.Value
         End Get
         Set(ByVal value As Object)
-            ctlScriptEditor.Value = value
-            m_oldValue = value
+            ctlScriptEditor.Value = DirectCast(value, IEditableScripts)
+            m_oldValue = DirectCast(value, IEditableScripts)
         End Set
     End Property
 

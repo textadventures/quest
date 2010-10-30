@@ -79,7 +79,7 @@ Public Class MainToolbar
         ResetUndoMenu()
     End Sub
 
-    Private Sub InitialiseHistoryMenus(ByRef aMenuItem As Array, ByRef butParent As System.Windows.Forms.ToolStripSplitButton, ByRef name As String)
+    Private Sub InitialiseHistoryMenus(ByRef aMenuItem() As ToolStripMenuItem, ByRef butParent As System.Windows.Forms.ToolStripSplitButton, ByRef name As String)
         Dim i As Integer
         Dim mnuMenu As System.Windows.Forms.ToolStripMenuItem
 
@@ -97,7 +97,7 @@ Public Class MainToolbar
         Next
     End Sub
 
-    Private Sub InitialiseUndoMenus(ByRef aMenuItem As Array, ByRef butParent As System.Windows.Forms.ToolStripSplitButton, ByRef name As String, ByRef clickHandler As EventHandler, ByRef enterHandler As EventHandler, ByRef leaveHandler As EventHandler)
+    Private Sub InitialiseUndoMenus(ByRef aMenuItem() As ToolStripMenuItem, ByRef butParent As System.Windows.Forms.ToolStripSplitButton, ByRef name As String, ByRef clickHandler As EventHandler, ByRef enterHandler As EventHandler, ByRef leaveHandler As EventHandler)
         Dim i As Integer
         Dim mnuMenu As System.Windows.Forms.ToolStripMenuItem
 
@@ -125,11 +125,11 @@ Public Class MainToolbar
         Next
     End Sub
 
-    Private Sub HandleClick(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Dim menu As System.Windows.Forms.ToolStripItem = sender
+    Private Sub HandleClick(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim menu As ToolStripItem = DirectCast(sender, ToolStripItem)
 
         If Not menu.Tag Is Nothing Then
-            HandleClick(menu.Tag)
+            HandleClick(DirectCast(menu.Tag, String))
         End If
     End Sub
 
@@ -139,12 +139,9 @@ Public Class MainToolbar
         End If
     End Sub
 
-    Private Sub HandleHistoryClick(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Dim menu As System.Windows.Forms.ToolStripItem
-        Dim jump As Integer
-
-        menu = sender
-        jump = menu.Tag.ToString
+    Private Sub HandleHistoryClick(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim menu As ToolStripItem = DirectCast(sender, ToolStripItem)
+        Dim jump As Integer = CType(menu.Tag, Integer)
 
         Select Case menu.Name
             Case "back"
@@ -155,12 +152,12 @@ Public Class MainToolbar
 
     End Sub
 
-    Private Sub HandleUndoClick(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        RaiseEvent UndoClicked(DirectCast(sender, ToolStripMenuItem).Tag)
+    Private Sub HandleUndoClick(ByVal sender As Object, ByVal e As System.EventArgs)
+        RaiseEvent UndoClicked(CType(DirectCast(sender, ToolStripMenuItem).Tag, Integer))
     End Sub
 
-    Private Sub HandleRedoClick(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        RaiseEvent RedoClicked(DirectCast(sender, ToolStripMenuItem).Tag)
+    Private Sub HandleRedoClick(ByVal sender As Object, ByVal e As System.EventArgs)
+        RaiseEvent RedoClicked(CType(DirectCast(sender, ToolStripMenuItem).Tag, Integer))
     End Sub
 
     Public Sub AddHistory(ByVal TreeKey As String, ByVal Text As String)
@@ -321,7 +318,7 @@ Public Class MainToolbar
 
     Private Sub UndoRedoMenu_MouseEnter(ByRef menu() As ToolStripMenuItem, ByVal sender As Object)
         tmrUndoTimer.Enabled = False
-        HighlightMenu(menu, DirectCast(sender, ToolStripMenuItem).Tag)
+        HighlightMenu(menu, CType(DirectCast(sender, ToolStripMenuItem).Tag, Integer))
     End Sub
 
     Private Sub UndoRedoMenu_MouseLeave()

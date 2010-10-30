@@ -22,8 +22,8 @@ Public Class TextBoxControl
             Return Text
         End Get
         Set(ByVal value As Object)
-            Text = value
-            m_oldValue = value
+            Text = DirectCast(value, String)
+            m_oldValue = DirectCast(value, String)
         End Set
     End Property
 

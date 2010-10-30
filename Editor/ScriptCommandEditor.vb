@@ -22,7 +22,7 @@
         If script.Type = ScriptType.If Then
             Dim newIfEditor = New IfEditor
             newEditor = newIfEditor
-            newIfEditor.Populate(script)
+            newIfEditor.Populate(DirectCast(script, EditableIfScript))
         Else
             Dim newElemEditor = New ElementEditor
             newEditor = newElemEditor
@@ -30,7 +30,7 @@
             newElemEditor.Populate(m_controller.GetScriptEditorData(script))
         End If
 
-        Dim newCommandEditor As ICommandEditor = newEditor
+        Dim newCommandEditor As ICommandEditor = DirectCast(newEditor, ICommandEditor)
         newCommandEditor.Controller = m_controller
 
         newEditor.Parent = Me
@@ -41,7 +41,7 @@
             DirectCast(m_currentEditor, Control).Visible = False
         End If
 
-        m_currentEditor = newEditor
+        m_currentEditor = newCommandEditor
         m_script = script
     End Sub
 
@@ -52,7 +52,7 @@
     End Sub
 
     Private Sub m_editor_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles m_currentEditor.Dirty
-        Dim newArgs As New DataModifiedEventArgs(String.Empty, m_script.DisplayString(CInt(args.Attribute), args.NewValue))
+        Dim newArgs As New DataModifiedEventArgs(String.Empty, m_script.DisplayString(CInt(args.Attribute), DirectCast(args.NewValue, String)))
         RaiseEvent Dirty(Me, newArgs)
     End Sub
 

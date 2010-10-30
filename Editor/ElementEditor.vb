@@ -72,7 +72,7 @@
             newControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
             AddHandler newControl.Dirty, AddressOf Control_Dirty
             If editorControl.Height.HasValue Then
-                newControl.SetControlHeight(editorControl.Height)
+                newControl.SetControlHeight(editorControl.Height.Value)
             End If
 
             top = top + newControl.Control.Height + k_padding
@@ -151,9 +151,9 @@
         ctl.SaveData(m_data)
     End Sub
 
-    Private Sub Control_Dirty(ByVal sender As EditorControl, ByVal args As DataModifiedEventArgs)
+    Private Sub Control_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
         If Not m_populating Then
-            args.Attribute = sender.AttributeName
+            args.Attribute = DirectCast(sender, EditorControl).AttributeName
             RaiseEvent Dirty(sender, args)
         End If
     End Sub

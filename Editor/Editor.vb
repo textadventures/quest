@@ -55,7 +55,7 @@
         m_elementEditors.Add(name, editor)
     End Sub
 
-    Private Sub Editor_Dirty()
+    Private Sub Editor_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
         ctlToolbar.EnableUndo()
         ' TO DO: Set status saying game not saved
     End Sub
