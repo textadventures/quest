@@ -28,14 +28,16 @@ namespace AxeSoftware.Quest
             m_thenScript = new EditableScripts(m_controller, m_ifScript.ThenScript, m_parent, null);
         }
 
-        public override string DisplayString()
-        {
-            return "If...";
-        }
-
         public override string DisplayString(int index, string newValue)
         {
-            return "If...";
+            string expression = (index == 0) ? newValue : IfExpression;
+            string thenScript = (index == 1) ? newValue : ThenScript.DisplayString();
+
+            string result = string.Format("If ({0}) Then '{1}'", expression, thenScript);
+
+            // TO DO: Will then need to add elseif, else etc.
+
+            return result;
         }
 
         public override string EditorName

@@ -10,7 +10,11 @@ namespace AxeSoftware.Quest
     {
         public event EventHandler<EditableScriptUpdatedEventArgs> Updated;
 
-        public abstract string DisplayString();
+        public virtual string DisplayString()
+        {
+            return DisplayString(-1, string.Empty);
+        }
+
         public abstract string DisplayString(int index, string newValue);
         public abstract string EditorName { get; }
         public abstract string GetParameter(int index);

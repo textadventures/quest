@@ -7,6 +7,9 @@
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
+    ' TO DO: We should use the fact that ctlExpression and ctlThenScript are controls implementing IElementEditorControl,
+    ' then we just need a list of embedded controls and we don't have to manually specify each control when populating/saving
+
     Public Sub SaveData() Implements ICommandEditor.SaveData
         ctlExpression.Save(m_data)
         ctlThenScript.Save(m_data)
@@ -32,10 +35,12 @@
     End Sub
 
     Private Sub ctlThenScript_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlThenScript.Dirty
+        args.Attribute = "1"
         RaiseEvent Dirty(sender, args)
     End Sub
 
     Private Sub ctlExpression_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlExpression.Dirty
+        args.Attribute = "0"
         RaiseEvent Dirty(sender, args)
     End Sub
 

@@ -2,6 +2,7 @@
 
     Private m_controller As EditorController
     Private WithEvents m_currentEditor As ICommandEditor
+    Private m_script As IEditableScript
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
 
@@ -41,6 +42,7 @@
         End If
 
         m_currentEditor = newEditor
+        m_script = script
     End Sub
 
     Public Sub Save()
@@ -50,7 +52,8 @@
     End Sub
 
     Private Sub m_editor_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles m_currentEditor.Dirty
-        RaiseEvent Dirty(sender, args)
+        Dim newArgs As New DataModifiedEventArgs(String.Empty, m_script.DisplayString(CInt(args.Attribute), args.NewValue))
+        RaiseEvent Dirty(Me, newArgs)
     End Sub
 
     Public Sub UpdateField(ByVal index As Integer, ByVal newValue As String)

@@ -26,11 +26,6 @@ namespace AxeSoftware.Quest
             set { m_displayTemplate = value; }
         }
 
-        public override string DisplayString()
-        {
-            return DisplayString(-1, "");
-        }
-
         public override string DisplayString(int index, string newValue)
         {
             // This version of DisplayString is used while we are editing an attribute value

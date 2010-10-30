@@ -152,5 +152,31 @@ namespace AxeSoftware.Quest
                 Updated(this, new EditableScriptsUpdatedEventArgs((IEditableScript)sender, e));
             }
         }
+
+        public string DisplayString()
+        {
+            return DisplayString(-1, string.Empty);
+        }
+
+        public string DisplayString(int index, string newValue)
+        {
+            int count = 0;
+            StringBuilder result = new StringBuilder();
+            foreach (IEditableScript script in m_scripts)
+            {
+                if (result.Length > 0) result.Append(Environment.NewLine);
+                if (index == count)
+                {
+                    result.Append(newValue);
+                }
+                else
+                {
+                    result.Append(script.DisplayString());
+                }
+                count++;
+            }
+            return result.ToString();
+
+        }
     }
 }
