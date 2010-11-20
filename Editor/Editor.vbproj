@@ -151,6 +151,12 @@
     <Compile Include="ScriptEditor.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ScriptEditorPopOut.Designer.vb">
+      <DependentUpon>ScriptEditorPopOut.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptEditorPopOut.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="TextBoxControl.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -192,6 +198,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ScriptEditor.resx">
       <DependentUpon>ScriptEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScriptEditorPopOut.resx">
+      <DependentUpon>ScriptEditorPopOut.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

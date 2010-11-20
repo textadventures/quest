@@ -26,6 +26,12 @@ namespace AxeSoftware.Quest
             }
 
             m_thenScript = new EditableScripts(m_controller, m_ifScript.ThenScript, m_parent, null);
+            m_thenScript.Updated += m_thenScript_Updated;
+        }
+
+        void m_thenScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
+        {
+            RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
         }
 
         public override string DisplayString(int index, string newValue)

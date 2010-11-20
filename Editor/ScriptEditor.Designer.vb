@@ -32,6 +32,7 @@ Partial Class ScriptEditor
         Me.cmdMoveDown = New System.Windows.Forms.ToolStripButton()
         Me.ctlScriptAdder = New AxeSoftware.Quest.ScriptAdder()
         Me.ctlScriptCommandEditor = New AxeSoftware.Quest.ScriptCommandEditor()
+        Me.cmdPopOut = New System.Windows.Forms.ToolStripButton()
         Me.ctlContainer.Panel1.SuspendLayout()
         Me.ctlContainer.Panel2.SuspendLayout()
         Me.ctlContainer.SuspendLayout()
@@ -71,7 +72,7 @@ Partial Class ScriptEditor
         '
         'ctlToolStrip
         '
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.cmdDelete, Me.cmdMoveUp, Me.cmdMoveDown})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.cmdDelete, Me.cmdMoveUp, Me.cmdMoveDown, Me.cmdPopOut})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
         Me.ctlToolStrip.Size = New System.Drawing.Size(604, 25)
@@ -131,6 +132,15 @@ Partial Class ScriptEditor
         Me.ctlScriptCommandEditor.Size = New System.Drawing.Size(604, 201)
         Me.ctlScriptCommandEditor.TabIndex = 1
         '
+        'cmdPopOut
+        '
+        Me.cmdPopOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.cmdPopOut.Image = CType(resources.GetObject("cmdPopOut.Image"), System.Drawing.Image)
+        Me.cmdPopOut.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdPopOut.Name = "cmdPopOut"
+        Me.cmdPopOut.Size = New System.Drawing.Size(23, 22)
+        Me.cmdPopOut.Text = "Pop out"
+        '
         'ScriptEditor
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -156,5 +166,6 @@ Partial Class ScriptEditor
     Friend WithEvents cmdDelete As System.Windows.Forms.ToolStripButton
     Friend WithEvents cmdMoveUp As System.Windows.Forms.ToolStripButton
     Friend WithEvents cmdMoveDown As System.Windows.Forms.ToolStripButton
+    Friend WithEvents cmdPopOut As System.Windows.Forms.ToolStripButton
 
 End Class

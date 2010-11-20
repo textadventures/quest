@@ -52,11 +52,11 @@ namespace AxeSoftware.Quest
             }
         }
 
-        void ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
+        private void ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
         {
             if (Updated != null)
             {
-                if (e.IsParameterUpdate)
+                if (e != null && e.IsParameterUpdate)
                 {
                     Updated(this, new EditableScriptUpdatedEventArgs(e.Index, e.NewValue));
                 }
@@ -64,6 +64,14 @@ namespace AxeSoftware.Quest
                 {
                     Updated(this, new EditableScriptUpdatedEventArgs());
                 }
+            }
+        }
+
+        protected void RaiseUpdated(EditableScriptUpdatedEventArgs e)
+        {
+            if (Updated != null)
+            {
+                Updated(this, e);
             }
         }
     }

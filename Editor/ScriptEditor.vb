@@ -57,7 +57,7 @@
         lstScripts.Items.Add("Add a new command...")
 
         If (oldSelection.HasValue) Then
-            If lstScripts.Items.Count - 1 >= oldSelection Then
+            If oldSelection > -1 And lstScripts.Items.Count - 1 >= oldSelection Then
                 lstScripts.Items(oldSelection.Value).Selected = True
             End If
         End If
@@ -155,5 +155,23 @@
 
     Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click
         m_scripts.Remove(m_editIndex)
+    End Sub
+
+    Private Sub cmdPopOut_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPopOut.Click
+        Dim popOut As New ScriptEditorPopOut
+
+        Save()
+
+        With popOut.ctlScriptEditor
+            .m_scripts = m_scripts
+            .Controller = m_controller
+            .Initialise()
+            .UpdateList()
+        End With
+        popOut.ShowDialog()
+        popOut.ctlScriptEditor.Save()
+
+        UpdateList()
+
     End Sub
 End Class
