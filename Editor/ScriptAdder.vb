@@ -39,6 +39,9 @@
     End Sub
 
     Public Sub AddCurrent()
-        RaiseEvent AddScript(m_controller.GetScriptEditorData()(m_selection).CreateString)
+        Dim data As EditableScriptData = Nothing
+        If m_controller.GetScriptEditorData().TryGetValue(m_selection, data) Then
+            RaiseEvent AddScript(data.CreateString)
+        End If
     End Sub
 End Class
