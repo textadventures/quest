@@ -42,6 +42,12 @@
     End Property
 
     Private Sub UpdateList()
+        Dim oldSelection As Integer? = Nothing
+
+        If lstScripts.SelectedIndices.Count > 0 Then
+            oldSelection = lstScripts.SelectedIndices(0)
+        End If
+
         lstScripts.Items.Clear()
         If Not m_scripts Is Nothing Then
             For Each script As IEditableScript In m_scripts.Scripts
@@ -49,6 +55,21 @@
             Next
         End If
         lstScripts.Items.Add("Add a new command...")
+
+        If (oldSelection.HasValue) Then
+            If lstScripts.Items.Count - 1 >= oldSelection Then
+                lstScripts.Items(oldSelection.Value).Selected = True
+            End If
+        End If
+
+        If lstScripts.SelectedIndices.Count = 0 Then
+            lstScripts.Items(0).Selected = True
+        End If
+
+        If Not m_scripts Is Nothing Then
+            Dim newArgs As New DataModifiedEventArgs(String.Empty, m_scripts.DisplayString())
+            RaiseEvent Dirty(Me, newArgs)
+        End If
     End Sub
 
     Private Sub ctlScriptCommandEditor_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlScriptCommandEditor.Dirty
