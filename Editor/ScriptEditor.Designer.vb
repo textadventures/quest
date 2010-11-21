@@ -33,6 +33,7 @@ Partial Class ScriptEditor
         Me.cmdPopOut = New System.Windows.Forms.ToolStripButton()
         Me.ctlScriptAdder = New AxeSoftware.Quest.ScriptAdder()
         Me.ctlScriptCommandEditor = New AxeSoftware.Quest.ScriptCommandEditor()
+        Me.chScript = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlContainer.Panel1.SuspendLayout()
         Me.ctlContainer.Panel2.SuspendLayout()
         Me.ctlContainer.SuspendLayout()
@@ -61,14 +62,16 @@ Partial Class ScriptEditor
         '
         'lstScripts
         '
+        Me.lstScripts.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.chScript})
         Me.lstScripts.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lstScripts.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.lstScripts.HideSelection = False
         Me.lstScripts.Location = New System.Drawing.Point(0, 25)
         Me.lstScripts.Name = "lstScripts"
         Me.lstScripts.Size = New System.Drawing.Size(604, 55)
         Me.lstScripts.TabIndex = 0
         Me.lstScripts.UseCompatibleStateImageBehavior = False
-        Me.lstScripts.View = System.Windows.Forms.View.List
+        Me.lstScripts.View = System.Windows.Forms.View.Details
         '
         'ctlToolStrip
         '
@@ -129,6 +132,7 @@ Partial Class ScriptEditor
         Me.ctlScriptAdder.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlScriptAdder.Location = New System.Drawing.Point(0, 0)
         Me.ctlScriptAdder.Name = "ctlScriptAdder"
+        Me.ctlScriptAdder.ShowCloseButton = False
         Me.ctlScriptAdder.Size = New System.Drawing.Size(604, 201)
         Me.ctlScriptAdder.TabIndex = 0
         '
@@ -138,8 +142,13 @@ Partial Class ScriptEditor
         Me.ctlScriptCommandEditor.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlScriptCommandEditor.Location = New System.Drawing.Point(0, 0)
         Me.ctlScriptCommandEditor.Name = "ctlScriptCommandEditor"
+        Me.ctlScriptCommandEditor.ShowCloseButton = False
         Me.ctlScriptCommandEditor.Size = New System.Drawing.Size(604, 201)
         Me.ctlScriptCommandEditor.TabIndex = 1
+        '
+        'chScript
+        '
+        Me.chScript.Text = "Script"
         '
         'ScriptEditor
         '
@@ -167,5 +176,6 @@ Partial Class ScriptEditor
     Friend WithEvents cmdMoveUp As System.Windows.Forms.ToolStripButton
     Friend WithEvents cmdMoveDown As System.Windows.Forms.ToolStripButton
     Friend WithEvents cmdPopOut As System.Windows.Forms.ToolStripButton
+    Friend WithEvents chScript As System.Windows.Forms.ColumnHeader
 
 End Class

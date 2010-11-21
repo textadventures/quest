@@ -199,4 +199,8 @@
     Private Sub ctlScriptAdder_CloseButtonClicked() Handles ctlScriptAdder.CloseButtonClicked
         RaiseEvent CloseButtonClicked()
     End Sub
+
+    Private Sub ScriptEditor_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
+        chScript.Width = lstScripts.Width - lstScripts.Margin.Left * 2 - SystemInformation.VerticalScrollBarWidth
+    End Sub
 End Class
