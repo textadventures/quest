@@ -45,6 +45,9 @@
 
         newEditor.Parent = Me
         newEditor.Dock = DockStyle.Fill
+        ' Send pnlButtons to the back when in pop-out mode so that the docking works correctly,
+        ' and pnlButtons doesn't obsure the bottom of newEditor.
+        If pnlButtons.Visible Then pnlButtons.SendToBack()
 
         If Not m_currentEditor Is Nothing Then
             newEditor.Visible = True
