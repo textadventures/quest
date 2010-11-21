@@ -22,70 +22,48 @@ Partial Class IfEditor
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.lblIf = New System.Windows.Forms.Label()
-        Me.lblThen = New System.Windows.Forms.Label()
-        Me.ctlThenScript = New AxeSoftware.Quest.ScriptControl()
-        Me.ctlExpression = New AxeSoftware.Quest.TextBoxControl()
+        Me.ctlSplitContainer = New System.Windows.Forms.SplitContainer()
+        Me.ctlChild = New AxeSoftware.Quest.IfEditorChild()
+        Me.ctlSplitContainer.Panel1.SuspendLayout()
+        Me.ctlSplitContainer.SuspendLayout()
         Me.SuspendLayout()
         '
-        'lblIf
+        'ctlSplitContainer
         '
-        Me.lblIf.AutoSize = True
-        Me.lblIf.Location = New System.Drawing.Point(3, 9)
-        Me.lblIf.Name = "lblIf"
-        Me.lblIf.Size = New System.Drawing.Size(16, 13)
-        Me.lblIf.TabIndex = 0
-        Me.lblIf.Text = "If:"
+        Me.ctlSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlSplitContainer.Location = New System.Drawing.Point(0, 0)
+        Me.ctlSplitContainer.Name = "ctlSplitContainer"
+        Me.ctlSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
-        'lblThen
+        'ctlSplitContainer.Panel1
         '
-        Me.lblThen.AutoSize = True
-        Me.lblThen.Location = New System.Drawing.Point(4, 37)
-        Me.lblThen.Name = "lblThen"
-        Me.lblThen.Size = New System.Drawing.Size(35, 13)
-        Me.lblThen.TabIndex = 2
-        Me.lblThen.Text = "Then:"
+        Me.ctlSplitContainer.Panel1.Controls.Add(Me.ctlChild)
+        Me.ctlSplitContainer.Size = New System.Drawing.Size(414, 360)
+        Me.ctlSplitContainer.SplitterDistance = 280
+        Me.ctlSplitContainer.TabIndex = 4
         '
-        'ctlThenScript
+        'ctlChild
         '
-        Me.ctlThenScript.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ctlThenScript.Controller = Nothing
-        Me.ctlThenScript.Location = New System.Drawing.Point(46, 37)
-        Me.ctlThenScript.Name = "ctlThenScript"
-        Me.ctlThenScript.Size = New System.Drawing.Size(332, 320)
-        Me.ctlThenScript.TabIndex = 3
-        Me.ctlThenScript.Value = Nothing
-        '
-        'ctlExpression
-        '
-        Me.ctlExpression.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ctlExpression.Controller = Nothing
-        Me.ctlExpression.Location = New System.Drawing.Point(26, 9)
-        Me.ctlExpression.Name = "ctlExpression"
-        Me.ctlExpression.Size = New System.Drawing.Size(352, 20)
-        Me.ctlExpression.TabIndex = 1
-        Me.ctlExpression.Value = ""
+        Me.ctlChild.Controller = Nothing
+        Me.ctlChild.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlChild.Location = New System.Drawing.Point(0, 0)
+        Me.ctlChild.Name = "ctlChild"
+        Me.ctlChild.Size = New System.Drawing.Size(414, 280)
+        Me.ctlChild.TabIndex = 0
         '
         'IfEditor
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.Controls.Add(Me.ctlThenScript)
-        Me.Controls.Add(Me.lblThen)
-        Me.Controls.Add(Me.ctlExpression)
-        Me.Controls.Add(Me.lblIf)
+        Me.Controls.Add(Me.ctlSplitContainer)
         Me.Name = "IfEditor"
-        Me.Size = New System.Drawing.Size(381, 360)
+        Me.Size = New System.Drawing.Size(414, 360)
+        Me.ctlSplitContainer.Panel1.ResumeLayout(False)
+        Me.ctlSplitContainer.ResumeLayout(False)
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
-    Friend WithEvents lblIf As System.Windows.Forms.Label
-    Friend WithEvents ctlExpression As AxeSoftware.Quest.TextBoxControl
-    Friend WithEvents lblThen As System.Windows.Forms.Label
-    Friend WithEvents ctlThenScript As AxeSoftware.Quest.ScriptControl
+    Friend WithEvents ctlSplitContainer As System.Windows.Forms.SplitContainer
+    Friend WithEvents ctlChild As AxeSoftware.Quest.IfEditorChild
 
 End Class

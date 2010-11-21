@@ -100,6 +100,12 @@
     <Compile Include="IfEditor.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="IfEditorChild.Designer.vb">
+      <DependentUpon>IfEditorChild.vb</DependentUpon>
+    </Compile>
+    <Compile Include="IfEditorChild.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="MainToolbar.Designer.vb">
       <DependentUpon>MainToolbar.vb</DependentUpon>
     </Compile>
@@ -176,6 +182,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="IfEditor.resx">
       <DependentUpon>IfEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IfEditorChild.resx">
+      <DependentUpon>IfEditorChild.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainToolbar.resx">
       <DependentUpon>MainToolbar.vb</DependentUpon>
