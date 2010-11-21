@@ -24,11 +24,11 @@ Partial Class IfEditor
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(IfEditor))
         Me.ctlSplitContainer = New System.Windows.Forms.SplitContainer()
-        Me.ctlChild = New AxeSoftware.Quest.IfEditorChild()
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
         Me.cmdAddElse = New System.Windows.Forms.ToolStripSplitButton()
         Me.AddElseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddElseIfToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ctlChild = New AxeSoftware.Quest.IfEditorChild()
         Me.ctlSplitContainer.Panel1.SuspendLayout()
         Me.ctlSplitContainer.SuspendLayout()
         Me.ctlToolStrip.SuspendLayout()
@@ -44,19 +44,12 @@ Partial Class IfEditor
         'ctlSplitContainer.Panel1
         '
         Me.ctlSplitContainer.Panel1.Controls.Add(Me.ctlChild)
+        Me.ctlSplitContainer.Panel1MinSize = 0
         Me.ctlSplitContainer.Panel2Collapsed = True
+        Me.ctlSplitContainer.Panel2MinSize = 0
         Me.ctlSplitContainer.Size = New System.Drawing.Size(435, 278)
-        Me.ctlSplitContainer.SplitterDistance = 260
+        Me.ctlSplitContainer.SplitterDistance = 160
         Me.ctlSplitContainer.TabIndex = 4
-        '
-        'ctlChild
-        '
-        Me.ctlChild.Controller = Nothing
-        Me.ctlChild.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlChild.Location = New System.Drawing.Point(0, 0)
-        Me.ctlChild.Name = "ctlChild"
-        Me.ctlChild.Size = New System.Drawing.Size(435, 278)
-        Me.ctlChild.TabIndex = 0
         '
         'ctlToolStrip
         '
@@ -89,6 +82,16 @@ Partial Class IfEditor
         Me.AddElseIfToolStripMenuItem.Name = "AddElseIfToolStripMenuItem"
         Me.AddElseIfToolStripMenuItem.Size = New System.Drawing.Size(129, 22)
         Me.AddElseIfToolStripMenuItem.Text = "Add Else If"
+        '
+        'ctlChild
+        '
+        Me.ctlChild.Controller = Nothing
+        Me.ctlChild.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlChild.ElseIfMode = False
+        Me.ctlChild.Location = New System.Drawing.Point(0, 0)
+        Me.ctlChild.Name = "ctlChild"
+        Me.ctlChild.Size = New System.Drawing.Size(435, 278)
+        Me.ctlChild.TabIndex = 0
         '
         'IfEditor
         '

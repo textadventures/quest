@@ -54,9 +54,9 @@ Partial Class IfEditorChild
         Me.ctlExpression.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ctlExpression.Controller = Nothing
-        Me.ctlExpression.Location = New System.Drawing.Point(26, 0)
+        Me.ctlExpression.Location = New System.Drawing.Point(46, 0)
         Me.ctlExpression.Name = "ctlExpression"
-        Me.ctlExpression.Size = New System.Drawing.Size(332, 20)
+        Me.ctlExpression.Size = New System.Drawing.Size(312, 20)
         Me.ctlExpression.TabIndex = 5
         Me.ctlExpression.Value = ""
         '

@@ -1,7 +1,18 @@
 ﻿Public Class IfEditorChild
 
     Private m_controller As EditorController
+    Private m_elseIfMode As Boolean
+
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        ElseIfMode = False
+    End Sub
 
     Public Sub SaveData(ByVal data As IEditorData)
         ctlExpression.Save(data)
@@ -48,4 +59,18 @@
         End If
     End Sub
 
+    Public Property ElseIfMode As Boolean
+        Get
+            Return m_elseIfMode
+        End Get
+        Set(ByVal value As Boolean)
+            m_elseIfMode = value
+
+            If value Then
+                lblIf.Text = "Else If:"
+            Else
+                lblIf.Text = "If:"
+            End If
+        End Set
+    End Property
 End Class
