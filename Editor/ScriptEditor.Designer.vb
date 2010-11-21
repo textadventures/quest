@@ -30,9 +30,9 @@ Partial Class ScriptEditor
         Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
         Me.cmdMoveUp = New System.Windows.Forms.ToolStripButton()
         Me.cmdMoveDown = New System.Windows.Forms.ToolStripButton()
+        Me.cmdPopOut = New System.Windows.Forms.ToolStripButton()
         Me.ctlScriptAdder = New AxeSoftware.Quest.ScriptAdder()
         Me.ctlScriptCommandEditor = New AxeSoftware.Quest.ScriptCommandEditor()
-        Me.cmdPopOut = New System.Windows.Forms.ToolStripButton()
         Me.ctlContainer.Panel1.SuspendLayout()
         Me.ctlContainer.Panel2.SuspendLayout()
         Me.ctlContainer.SuspendLayout()
@@ -114,6 +114,15 @@ Partial Class ScriptEditor
         Me.cmdMoveDown.Size = New System.Drawing.Size(23, 22)
         Me.cmdMoveDown.Text = "Move down"
         '
+        'cmdPopOut
+        '
+        Me.cmdPopOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.cmdPopOut.Image = CType(resources.GetObject("cmdPopOut.Image"), System.Drawing.Image)
+        Me.cmdPopOut.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdPopOut.Name = "cmdPopOut"
+        Me.cmdPopOut.Size = New System.Drawing.Size(23, 22)
+        Me.cmdPopOut.Text = "Pop out"
+        '
         'ctlScriptAdder
         '
         Me.ctlScriptAdder.Controller = Nothing
@@ -131,15 +140,6 @@ Partial Class ScriptEditor
         Me.ctlScriptCommandEditor.Name = "ctlScriptCommandEditor"
         Me.ctlScriptCommandEditor.Size = New System.Drawing.Size(604, 201)
         Me.ctlScriptCommandEditor.TabIndex = 1
-        '
-        'cmdPopOut
-        '
-        Me.cmdPopOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.cmdPopOut.Image = CType(resources.GetObject("cmdPopOut.Image"), System.Drawing.Image)
-        Me.cmdPopOut.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.cmdPopOut.Name = "cmdPopOut"
-        Me.cmdPopOut.Size = New System.Drawing.Size(23, 22)
-        Me.cmdPopOut.Text = "Pop out"
         '
         'ScriptEditor
         '

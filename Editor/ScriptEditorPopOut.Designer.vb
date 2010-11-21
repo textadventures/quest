@@ -43,6 +43,7 @@ Partial Class ScriptEditorPopOut
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(570, 302)
         Me.Controls.Add(Me.ctlScriptEditor)
+        Me.KeyPreview = True
         Me.Name = "ScriptEditorPopOut"
         Me.ShowIcon = False
         Me.Text = "Script Editor"

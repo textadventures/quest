@@ -4,6 +4,16 @@
     Private m_selection As String
 
     Public Event AddScript(ByVal keyword As String)
+    Public Event CloseButtonClicked()
+
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        ShowCloseButton = False
+    End Sub
 
     Public Property Controller() As EditorController
         Get
@@ -11,6 +21,15 @@
         End Get
         Set(ByVal value As EditorController)
             m_controller = value
+        End Set
+    End Property
+
+    Public Property ShowCloseButton() As Boolean
+        Get
+            Return cmdClose.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            cmdClose.Visible = value
         End Set
     End Property
 
@@ -40,8 +59,12 @@
 
     Public Sub AddCurrent()
         Dim data As EditableScriptData = Nothing
-        If m_controller.GetScriptEditorData().TryGetValue(m_selection, data) Then
+        If (Not m_selection Is Nothing) AndAlso m_controller.GetScriptEditorData().TryGetValue(m_selection, data) Then
             RaiseEvent AddScript(data.CreateString)
         End If
+    End Sub
+
+    Private Sub cmdClose_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdClose.Click
+        RaiseEvent CloseButtonClicked()
     End Sub
 End Class

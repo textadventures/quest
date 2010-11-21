@@ -5,6 +5,16 @@
     Private m_script As IEditableScript
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Public Event CloseButtonClicked()
+
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        ShowCloseButton = False
+    End Sub
 
     Public Property Controller() As EditorController
         Get
@@ -58,5 +68,18 @@
 
     Public Sub UpdateField(ByVal index As Integer, ByVal newValue As String)
         m_currentEditor.UpdateField(index.ToString(), newValue, True)
+    End Sub
+
+    Public Property ShowCloseButton() As Boolean
+        Get
+            Return pnlButtons.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            pnlButtons.Visible = value
+        End Set
+    End Property
+
+    Private Sub cmdClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdClose.Click
+        RaiseEvent CloseButtonClicked()
     End Sub
 End Class

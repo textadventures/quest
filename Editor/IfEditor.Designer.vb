@@ -48,10 +48,13 @@ Partial Class IfEditor
         '
         'ctlThenScript
         '
+        Me.ctlThenScript.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ctlThenScript.Controller = Nothing
         Me.ctlThenScript.Location = New System.Drawing.Point(46, 37)
         Me.ctlThenScript.Name = "ctlThenScript"
-        Me.ctlThenScript.Size = New System.Drawing.Size(289, 253)
+        Me.ctlThenScript.Size = New System.Drawing.Size(332, 320)
         Me.ctlThenScript.TabIndex = 3
         Me.ctlThenScript.Value = Nothing
         '
@@ -62,7 +65,7 @@ Partial Class IfEditor
         Me.ctlExpression.Controller = Nothing
         Me.ctlExpression.Location = New System.Drawing.Point(26, 9)
         Me.ctlExpression.Name = "ctlExpression"
-        Me.ctlExpression.Size = New System.Drawing.Size(321, 20)
+        Me.ctlExpression.Size = New System.Drawing.Size(352, 20)
         Me.ctlExpression.TabIndex = 1
         Me.ctlExpression.Value = ""
         '
@@ -75,7 +78,7 @@ Partial Class IfEditor
         Me.Controls.Add(Me.ctlExpression)
         Me.Controls.Add(Me.lblIf)
         Me.Name = "IfEditor"
-        Me.Size = New System.Drawing.Size(350, 325)
+        Me.Size = New System.Drawing.Size(381, 360)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

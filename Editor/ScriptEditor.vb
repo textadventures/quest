@@ -6,8 +6,10 @@
     Private m_elementName As String
     Private m_attribute As String
     Private m_currentScript As IEditableScript
+    Private m_isPopOut As Boolean
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Public Event CloseButtonClicked()
 
     Public Sub New()
 
@@ -15,6 +17,7 @@
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        PopOut = False
         UpdateList()
         lstScripts.Items(0).Selected = True
     End Sub
@@ -70,6 +73,10 @@
             Dim newArgs As New DataModifiedEventArgs(String.Empty, m_scripts.DisplayString())
             RaiseEvent Dirty(Me, newArgs)
         End If
+    End Sub
+
+    Private Sub ctlScriptCommandEditor_CloseButtonClicked() Handles ctlScriptCommandEditor.CloseButtonClicked
+        RaiseEvent CloseButtonClicked()
     End Sub
 
     Private Sub ctlScriptCommandEditor_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlScriptCommandEditor.Dirty
@@ -163,15 +170,33 @@
         Save()
 
         With popOut.ctlScriptEditor
+            .PopOut = True
             .m_scripts = m_scripts
             .Controller = m_controller
             .Initialise()
             .UpdateList()
         End With
         popOut.ShowDialog()
+        m_scripts = popOut.ctlScriptEditor.m_scripts
         popOut.ctlScriptEditor.Save()
 
         UpdateList()
 
+    End Sub
+
+    Private Property PopOut() As Boolean
+        Get
+            Return m_isPopOut
+        End Get
+        Set(ByVal value As Boolean)
+            m_isPopOut = value
+            cmdPopOut.Visible = Not value
+            ctlScriptAdder.ShowCloseButton = value
+            ctlScriptCommandEditor.ShowCloseButton = value
+        End Set
+    End Property
+
+    Private Sub ctlScriptAdder_CloseButtonClicked() Handles ctlScriptAdder.CloseButtonClicked
+        RaiseEvent CloseButtonClicked()
     End Sub
 End Class
