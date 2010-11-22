@@ -22,11 +22,29 @@ Partial Class IfEditorChild
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.ctlThenScript = New AxeSoftware.Quest.ScriptControl()
         Me.lblThen = New System.Windows.Forms.Label()
-        Me.ctlExpression = New AxeSoftware.Quest.TextBoxControl()
         Me.lblIf = New System.Windows.Forms.Label()
+        Me.ctlThenScript = New AxeSoftware.Quest.ScriptControl()
+        Me.ctlExpression = New AxeSoftware.Quest.TextBoxControl()
         Me.SuspendLayout()
+        '
+        'lblThen
+        '
+        Me.lblThen.AutoSize = True
+        Me.lblThen.Location = New System.Drawing.Point(4, 28)
+        Me.lblThen.Name = "lblThen"
+        Me.lblThen.Size = New System.Drawing.Size(35, 13)
+        Me.lblThen.TabIndex = 6
+        Me.lblThen.Text = "Then:"
+        '
+        'lblIf
+        '
+        Me.lblIf.AutoSize = True
+        Me.lblIf.Location = New System.Drawing.Point(3, 0)
+        Me.lblIf.Name = "lblIf"
+        Me.lblIf.Size = New System.Drawing.Size(16, 13)
+        Me.lblIf.TabIndex = 4
+        Me.lblIf.Text = "If:"
         '
         'ctlThenScript
         '
@@ -40,15 +58,6 @@ Partial Class IfEditorChild
         Me.ctlThenScript.TabIndex = 7
         Me.ctlThenScript.Value = Nothing
         '
-        'lblThen
-        '
-        Me.lblThen.AutoSize = True
-        Me.lblThen.Location = New System.Drawing.Point(4, 28)
-        Me.lblThen.Name = "lblThen"
-        Me.lblThen.Size = New System.Drawing.Size(35, 13)
-        Me.lblThen.TabIndex = 6
-        Me.lblThen.Text = "Then:"
-        '
         'ctlExpression
         '
         Me.ctlExpression.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
@@ -59,15 +68,6 @@ Partial Class IfEditorChild
         Me.ctlExpression.Size = New System.Drawing.Size(312, 20)
         Me.ctlExpression.TabIndex = 5
         Me.ctlExpression.Value = ""
-        '
-        'lblIf
-        '
-        Me.lblIf.AutoSize = True
-        Me.lblIf.Location = New System.Drawing.Point(3, 0)
-        Me.lblIf.Name = "lblIf"
-        Me.lblIf.Size = New System.Drawing.Size(16, 13)
-        Me.lblIf.TabIndex = 4
-        Me.lblIf.Text = "If:"
         '
         'IfEditorChild
         '

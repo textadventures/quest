@@ -4,7 +4,8 @@
 
     Private m_controller As EditorController
     Private m_data As IEditorData
-    Private m_currentSplitter As SplitContainer
+    Private m_children As New List(Of IfEditorChild)
+    Private m_lastEditorChild As IfEditorChild
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
@@ -14,7 +15,13 @@
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        m_currentSplitter = ctlSplitContainer
+        AddChild(ctlChild)
+    End Sub
+
+    Private Sub AddChild(ByVal child As IfEditorChild)
+        m_children.Add(child)
+        AddHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
+        m_lastEditorChild = child
     End Sub
 
     Public Sub SaveData() Implements ICommandEditor.SaveData
@@ -40,30 +47,31 @@
         ctlChild.UpdateField(attribute, newValue, setFocus)
     End Sub
 
-    Private Sub ctlChild_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlChild.Dirty
+    Private Sub ctlChild_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
         RaiseEvent Dirty(sender, args)
     End Sub
 
     Private Sub AddElseIf()
-        m_currentSplitter.Panel2Collapsed = False
-        Dim newSplitter As New SplitContainer
-        newSplitter.Panel1MinSize = 0
-        newSplitter.Panel2MinSize = 0
-        newSplitter.Parent = m_currentSplitter.Panel2
-        newSplitter.Dock = DockStyle.Fill
-        newSplitter.Panel2Collapsed = True
-        newSplitter.Orientation = Orientation.Horizontal
+        ctlChild.Dock = DockStyle.None
         Dim newIfEditorChild As New IfEditorChild
-        newIfEditorChild.Parent = newSplitter.Panel1
-        newIfEditorChild.Dock = DockStyle.Fill
+        newIfEditorChild.Parent = pnlContainer
         newIfEditorChild.Controller = m_controller
+        newIfEditorChild.Top = m_lastEditorChild.Top + m_lastEditorChild.Height
+        newIfEditorChild.Visible = True
+        AddChild(newIfEditorChild)
 
         ' also need to populate newchild?
         ' also need to hook up Dirty event
+    End Sub
 
-        newSplitter.Visible = True
-        newIfEditorChild.Visible = True
-        m_currentSplitter = newSplitter
+    Private Sub IfEditorChild_HeightChanged(ByVal sender As IfEditorChild, ByVal newHeight As Integer)
+        sender.Height = newHeight
+        Dim currentTop = 0
+        For Each child As IfEditorChild In m_children
+            child.Top = currentTop
+            Debug.Assert(Not (child Is ctlChild And currentTop > 0))
+            currentTop += child.Height
+        Next
     End Sub
 
     ' need logic to only add an "else" once, and update button/menu accordingly
@@ -73,4 +81,6 @@
     Private Sub cmdAddElse_ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddElse.ButtonClick
         AddElseIf()
     End Sub
+
+
 End Class

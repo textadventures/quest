@@ -2,8 +2,10 @@
 
     Private m_controller As EditorController
     Private m_elseIfMode As Boolean
+    Private m_expanded As Boolean
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Public Event ChangeHeight(ByVal sender As IfEditorChild, ByVal newHeight As Integer)
 
     Public Sub New()
 
@@ -12,6 +14,7 @@
 
         ' Add any initialization after the InitializeComponent() call.
         ElseIfMode = False
+        Expanded = True
     End Sub
 
     Public Sub SaveData(ByVal data As IEditorData)
@@ -73,4 +76,28 @@
             End If
         End Set
     End Property
+
+    Public Property Expanded As Boolean
+        Get
+            Return m_expanded
+        End Get
+        Set(ByVal value As Boolean)
+            Dim oldValue As Boolean = m_expanded
+            m_expanded = value
+            ctlThenScript.Visible = Expanded
+            Dim newHeight As Integer
+            If Expanded Then
+                newHeight = 300
+            Else
+                newHeight = lblThen.Top + lblThen.Height
+            End If
+
+            If (oldValue <> value) Then RaiseEvent ChangeHeight(Me, newHeight)
+        End Set
+    End Property
+
+    Private Sub IfEditorChild_DoubleClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DoubleClick
+        Expanded = Not Expanded
+    End Sub
+
 End Class
