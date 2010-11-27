@@ -22,20 +22,20 @@ Partial Class Player
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
-        Me.splitMain = New System.Windows.Forms.SplitContainer
-        Me.wbOutput = New System.Windows.Forms.WebBrowser
-        Me.cmdPanes = New System.Windows.Forms.Button
-        Me.lblBanner = New System.Windows.Forms.Label
-        Me.cmdGo = New System.Windows.Forms.Button
-        Me.txtCommand = New System.Windows.Forms.TextBox
-        Me.lblCompass = New System.Windows.Forms.Label
-        Me.ctlCompass = New AxeSoftware.Quest.Compass
-        Me.splitPane = New System.Windows.Forms.SplitContainer
-        Me.lstInventory = New AxeSoftware.Quest.ElementList
-        Me.lstPlacesObjects = New AxeSoftware.Quest.ElementList
+        Me.components = New System.ComponentModel.Container()
+        Me.splitMain = New System.Windows.Forms.SplitContainer()
+        Me.wbOutput = New System.Windows.Forms.WebBrowser()
+        Me.cmdPanes = New System.Windows.Forms.Button()
+        Me.lblBanner = New System.Windows.Forms.Label()
+        Me.cmdGo = New System.Windows.Forms.Button()
+        Me.txtCommand = New System.Windows.Forms.TextBox()
+        Me.lblCompass = New System.Windows.Forms.Label()
+        Me.ctlCompass = New AxeSoftware.Quest.Compass()
+        Me.splitPane = New System.Windows.Forms.SplitContainer()
+        Me.lstInventory = New AxeSoftware.Quest.ElementList()
+        Me.lstPlacesObjects = New AxeSoftware.Quest.ElementList()
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog
+        Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.Panel2.SuspendLayout()
         Me.splitMain.SuspendLayout()

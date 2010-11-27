@@ -15,6 +15,7 @@
         ' Add any initialization after the InitializeComponent() call.
         ElseIfMode = False
         Expanded = True
+        cmdExpand.Font = New Font("Marlett", cmdExpand.Font.Size * 1.1F)
     End Sub
 
     Public Sub SaveData(ByVal data As IEditorData)
@@ -97,7 +98,14 @@
     End Property
 
     Private Sub IfEditorChild_DoubleClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DoubleClick
-        Expanded = Not Expanded
+        ToggleExpand()
     End Sub
 
+    Private Sub cmdExpand_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdExpand.Click
+        ToggleExpand()
+    End Sub
+
+    Private Sub ToggleExpand()
+        Expanded = Not Expanded
+    End Sub
 End Class

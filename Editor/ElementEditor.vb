@@ -74,6 +74,10 @@
             If editorControl.Height.HasValue Then
                 newControl.SetControlHeight(editorControl.Height.Value)
             End If
+            If editorControl.Expand Then
+                newControl.SetControlHeight(Me.Height - top - k_padding)
+                newControl.Anchor = newControl.Anchor Or AnchorStyles.Bottom
+            End If
 
             top = top + newControl.Control.Height + k_padding
 

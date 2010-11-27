@@ -28,6 +28,7 @@ Partial Class IfEditor
         Me.AddElseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddElseIfToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.pnlContainer = New System.Windows.Forms.Panel()
+        Me.ToolStripLabel1 = New System.Windows.Forms.ToolStripLabel()
         Me.ctlChild = New AxeSoftware.Quest.IfEditorChild()
         Me.ctlToolStrip.SuspendLayout()
         Me.pnlContainer.SuspendLayout()
@@ -35,9 +36,8 @@ Partial Class IfEditor
         '
         'ctlToolStrip
         '
-        Me.ctlToolStrip.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAddElse})
-        Me.ctlToolStrip.Location = New System.Drawing.Point(0, 278)
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripLabel1, Me.cmdAddElse})
+        Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
         Me.ctlToolStrip.Size = New System.Drawing.Size(435, 25)
         Me.ctlToolStrip.TabIndex = 5
@@ -70,19 +70,28 @@ Partial Class IfEditor
         Me.pnlContainer.AutoScroll = True
         Me.pnlContainer.Controls.Add(Me.ctlChild)
         Me.pnlContainer.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlContainer.Location = New System.Drawing.Point(0, 0)
+        Me.pnlContainer.Location = New System.Drawing.Point(0, 25)
         Me.pnlContainer.Name = "pnlContainer"
         Me.pnlContainer.Size = New System.Drawing.Size(435, 278)
         Me.pnlContainer.TabIndex = 7
         '
+        'ToolStripLabel1
+        '
+        Me.ToolStripLabel1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.ToolStripLabel1.Name = "ToolStripLabel1"
+        Me.ToolStripLabel1.Size = New System.Drawing.Size(25, 22)
+        Me.ToolStripLabel1.Text = "If..."
+        '
         'ctlChild
         '
+        Me.ctlChild.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ctlChild.Controller = Nothing
-        Me.ctlChild.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlChild.ElseIfMode = False
         Me.ctlChild.Expanded = True
         Me.ctlChild.Location = New System.Drawing.Point(0, 0)
         Me.ctlChild.Name = "ctlChild"
+        Me.ctlChild.Padding = New System.Windows.Forms.Padding(0, 3, 0, 0)
         Me.ctlChild.Size = New System.Drawing.Size(435, 278)
         Me.ctlChild.TabIndex = 7
         '
@@ -107,5 +116,6 @@ Partial Class IfEditor
     Friend WithEvents AddElseIfToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents pnlContainer As System.Windows.Forms.Panel
     Friend WithEvents ctlChild As AxeSoftware.Quest.IfEditorChild
+    Friend WithEvents ToolStripLabel1 As System.Windows.Forms.ToolStripLabel
 
 End Class

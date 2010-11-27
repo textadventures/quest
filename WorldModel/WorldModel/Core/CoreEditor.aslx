@@ -29,8 +29,7 @@
         <controltype>script</controltype>
         <caption>Start script</caption>
         <attribute>start</attribute>
-        <!-- TO DO: Should script editor take full remaining height?? -->
-        <height>400</height>
+        <expand/>
       </control>
 
     </tab>

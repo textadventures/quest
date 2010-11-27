@@ -11,5 +11,6 @@ namespace AxeSoftware.Quest
         string Caption { get; }
         int? Height { get; }
         string Attribute { get; }
+        bool Expand { get; }
     }
 }

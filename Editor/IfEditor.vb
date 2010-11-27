@@ -57,6 +57,8 @@
         newIfEditorChild.Parent = pnlContainer
         newIfEditorChild.Controller = m_controller
         newIfEditorChild.Top = m_lastEditorChild.Top + m_lastEditorChild.Height
+        newIfEditorChild.Width = pnlContainer.Width
+        newIfEditorChild.Anchor = newIfEditorChild.Anchor Or AnchorStyles.Right
         newIfEditorChild.Visible = True
         AddChild(newIfEditorChild)
 
