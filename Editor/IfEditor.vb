@@ -21,6 +21,7 @@
     Private Sub AddChild(ByVal child As IfEditorChild)
         m_children.Add(child)
         AddHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
+        AddHandler child.Dirty, AddressOf ctlChild_Dirty
         m_lastEditorChild = child
     End Sub
 

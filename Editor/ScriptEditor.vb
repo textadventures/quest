@@ -86,7 +86,10 @@
     End Sub
 
     Private Sub lstScripts_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles lstScripts.SelectedIndexChanged
-        If lstScripts.SelectedIndices.Count = 0 Then Exit Sub
+        If lstScripts.SelectedIndices.Count = 0 Then
+            SetEditButtonsEnabled(False)
+            Exit Sub
+        End If
 
         m_editIndex = lstScripts.SelectedIndices.Item(0)
         ShowEditor(m_editIndex)
@@ -102,8 +105,10 @@
         ctlScriptCommandEditor.Visible = Not showAdder
 
         If showAdder Then
+            SetEditButtonsEnabled(False)
             m_currentScript = Nothing
         Else
+            SetEditButtonsEnabled(True)
             m_currentScript = m_scripts(index)
             ctlScriptCommandEditor.ShowEditor(m_currentScript)
         End If
@@ -161,7 +166,9 @@
     End Sub
 
     Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click
-        m_scripts.Remove(m_editIndex)
+        If m_editIndex < m_scripts.Count Then
+            m_scripts.Remove(m_editIndex)
+        End If
     End Sub
 
     Private Sub cmdPopOut_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPopOut.Click
@@ -202,5 +209,11 @@
 
     Private Sub ScriptEditor_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
         chScript.Width = lstScripts.Width - lstScripts.Margin.Left * 2 - SystemInformation.VerticalScrollBarWidth
+    End Sub
+
+    Private Sub SetEditButtonsEnabled(ByVal enabled As Boolean)
+        cmdDelete.Enabled = enabled
+        cmdMoveUp.Enabled = enabled
+        cmdMoveDown.Enabled = enabled
     End Sub
 End Class

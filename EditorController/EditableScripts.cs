@@ -111,6 +111,11 @@ namespace AxeSoftware.Quest
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
+        public int Count
+        {
+            get { return m_scripts.Count; }
+        }
+
         #endregion
 
         #region IDataWrapper Members

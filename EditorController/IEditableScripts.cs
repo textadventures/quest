@@ -30,5 +30,6 @@ namespace AxeSoftware.Quest
         void Remove(int index);
         string DisplayString();
         string DisplayString(int index, string newValue);
+        int Count { get; }
     }
 }
