@@ -54,6 +54,8 @@ namespace AxeSoftware.Quest
 
         private void ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
         {
+            // this hasn't been designed to cope with things like "adding else"...
+
             if (Updated != null)
             {
                 if (e != null && e.IsParameterUpdate)

@@ -167,6 +167,7 @@
   <ItemGroup>
     <None Include="Core\CoreCommands.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreParser.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -1,7 +1,13 @@
 ﻿Public Class IfEditorChild
 
+    Public Enum IfEditorChildMode
+        IfMode
+        ElseIfMode
+        ElseMode
+    End Enum
+
     Private m_controller As EditorController
-    Private m_elseIfMode As Boolean
+    Private m_mode As IfEditorChildMode
     Private m_expanded As Boolean
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
@@ -13,7 +19,7 @@
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        ElseIfMode = False
+        ElseIfMode = IfEditorChildMode.IfMode
         Expanded = True
         cmdExpand.Font = New Font("Marlett", cmdExpand.Font.Size * 1.1F)
     End Sub
@@ -63,18 +69,26 @@
         End If
     End Sub
 
-    Public Property ElseIfMode As Boolean
+    Public Property ElseIfMode As IfEditorChildMode
         Get
-            Return m_elseIfMode
+            Return m_mode
         End Get
-        Set(ByVal value As Boolean)
-            m_elseIfMode = value
+        Set(ByVal value As IfEditorChildMode)
+            m_mode = value
 
-            If value Then
-                lblIf.Text = "Else If:"
-            Else
-                lblIf.Text = "If:"
-            End If
+            Select Case value
+                Case IfEditorChildMode.IfMode
+                    lblIf.Text = "If:"
+                Case IfEditorChildMode.ElseIfMode
+                    lblIf.Text = "Else If:"
+                Case IfEditorChildMode.ElseMode
+                    lblIf.Text = "Else:"
+                    ctlThenScript.Height += ctlThenScript.Top - ctlExpression.Top
+                    ctlThenScript.Top = ctlExpression.Top
+                    lblThen.Visible = False
+                    ctlExpression.Visible = False
+            End Select
+
         End Set
     End Property
 

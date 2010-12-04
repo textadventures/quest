@@ -1,0 +1,8 @@
+<asl version="500">
+  <!--  
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+  -->
+  <game name="Test Game"/>
+    
+</asl>

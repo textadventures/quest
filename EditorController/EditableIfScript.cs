@@ -105,5 +105,26 @@ namespace AxeSoftware.Quest
                 throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
             }
         }
+
+        public void AddElse()
+        {
+            m_ifScript.SetElse(null);
+        }
+
+        public void AddElseIf()
+        {
+            // expects an IfScript with an expression and just a "then" script
+            //m_ifScript.AddElseIf(null);
+        }
+
+        public void RemoveElseIf()
+        {
+
+        }
+
+        public void RemoveElse()
+        {
+            m_ifScript.SetElse(null);
+        }
     }
 }

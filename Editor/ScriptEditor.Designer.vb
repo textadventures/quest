@@ -25,6 +25,7 @@ Partial Class ScriptEditor
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ScriptEditor))
         Me.ctlContainer = New System.Windows.Forms.SplitContainer()
         Me.lstScripts = New System.Windows.Forms.ListView()
+        Me.chScript = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
         Me.cmdAdd = New System.Windows.Forms.ToolStripSplitButton()
         Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
@@ -33,7 +34,6 @@ Partial Class ScriptEditor
         Me.cmdPopOut = New System.Windows.Forms.ToolStripButton()
         Me.ctlScriptAdder = New AxeSoftware.Quest.ScriptAdder()
         Me.ctlScriptCommandEditor = New AxeSoftware.Quest.ScriptCommandEditor()
-        Me.chScript = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlContainer.Panel1.SuspendLayout()
         Me.ctlContainer.Panel2.SuspendLayout()
         Me.ctlContainer.SuspendLayout()
@@ -72,6 +72,10 @@ Partial Class ScriptEditor
         Me.lstScripts.TabIndex = 0
         Me.lstScripts.UseCompatibleStateImageBehavior = False
         Me.lstScripts.View = System.Windows.Forms.View.Details
+        '
+        'chScript
+        '
+        Me.chScript.Text = "Script"
         '
         'ctlToolStrip
         '
@@ -145,10 +149,6 @@ Partial Class ScriptEditor
         Me.ctlScriptCommandEditor.ShowCloseButton = False
         Me.ctlScriptCommandEditor.Size = New System.Drawing.Size(604, 201)
         Me.ctlScriptCommandEditor.TabIndex = 1
-        '
-        'chScript
-        '
-        Me.chScript.Text = "Script"
         '
         'ScriptEditor
         '

@@ -22,7 +22,19 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Editor", "Editor\Editor.vbp
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Menus", "Menus\Menus.vbproj", "{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorControllerTests", "EditorControllerTests\EditorControllerTests.csproj", "{647ED8C3-08D0-4E68-817E-AA4714AB1448}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE40EC95-3D0D-4289-B71B-3CF204C4C050}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		Quest 5.0.vsmdi = Quest 5.0.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Quest 5.0.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -93,6 +105,12 @@ Global
 		{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}.ReleaseSetup|Any CPU.ActiveCfg = Release|Any CPU
 		{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}.ReleaseSetup|Any CPU.Build.0 = Release|Any CPU
+		{647ED8C3-08D0-4E68-817E-AA4714AB1448}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{647ED8C3-08D0-4E68-817E-AA4714AB1448}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{647ED8C3-08D0-4E68-817E-AA4714AB1448}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{647ED8C3-08D0-4E68-817E-AA4714AB1448}.Release|Any CPU.Build.0 = Release|Any CPU
+		{647ED8C3-08D0-4E68-817E-AA4714AB1448}.ReleaseSetup|Any CPU.ActiveCfg = Release|Any CPU
+		{647ED8C3-08D0-4E68-817E-AA4714AB1448}.ReleaseSetup|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

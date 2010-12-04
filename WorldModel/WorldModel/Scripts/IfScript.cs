@@ -57,6 +57,7 @@ namespace AxeSoftware.Quest.Scripts
         private IScript m_thenScript;
         private IScript m_elseScript;
         private List<IScript> m_elseIfScript;
+        private bool m_hasElse = false;
         
         public IfScript(IFunction<bool> expression, IScript thenScript)
             : this(expression, thenScript, null)
@@ -72,7 +73,19 @@ namespace AxeSoftware.Quest.Scripts
 
         public void SetElse(IScript elseScript)
         {
+            System.Diagnostics.Debug.Assert(!m_hasElse, "UndoSetElse assumes that we only ever set the Else script once");
+            m_hasElse = true;
+            if (base.UndoLog != null)
+            {
+                base.UndoLog.AddUndoAction(new UndoSetElse(this, elseScript));
+            }
+            SetElseSilent(elseScript);
+        }
+
+        private void SetElseSilent(IScript elseScript)
+        {
             m_elseScript = elseScript;
+            NotifyUpdate(elseScript, -1);   // hacky hack
         }
 
         public void AddElseIf(IScript elseIfScript)
@@ -203,6 +216,34 @@ namespace AxeSoftware.Quest.Scripts
             public void DoRedo(WorldModel worldModel)
             {
                 m_script.SetExpressionSilent(m_newValue);
+            }
+        }
+
+        // We only need an UndoSetElse and not an UndoSetThen, because an "if" *always*
+        // has a "then". So here we implictly assume that the old value was null, and that
+        // m_hasElse was false.
+
+        private class UndoSetElse : UndoLogger.IUndoAction
+        {
+            private IfScript m_script;
+            private IScript m_newValue;
+
+            public UndoSetElse(IfScript script, IScript newValue)
+            {
+                m_script = script;
+                m_newValue = newValue;
+            }
+
+            public void DoUndo(WorldModel worldModel)
+            {
+                m_script.m_hasElse = false;
+                m_script.SetElseSilent(null);
+            }
+
+            public void DoRedo(WorldModel worldModel)
+            {
+                m_script.m_hasElse = true;
+                m_script.SetElseSilent(m_newValue);
             }
         }
     }

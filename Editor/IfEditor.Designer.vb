@@ -24,11 +24,11 @@ Partial Class IfEditor
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(IfEditor))
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
-        Me.cmdAddElse = New System.Windows.Forms.ToolStripSplitButton()
-        Me.AddElseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.AddElseIfToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.pnlContainer = New System.Windows.Forms.Panel()
         Me.ToolStripLabel1 = New System.Windows.Forms.ToolStripLabel()
+        Me.cmdAddElse = New System.Windows.Forms.ToolStripSplitButton()
+        Me.mnuAddElse = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuAddElseIf = New System.Windows.Forms.ToolStripMenuItem()
+        Me.pnlContainer = New System.Windows.Forms.Panel()
         Me.ctlChild = New AxeSoftware.Quest.IfEditorChild()
         Me.ctlToolStrip.SuspendLayout()
         Me.pnlContainer.SuspendLayout()
@@ -43,27 +43,34 @@ Partial Class IfEditor
         Me.ctlToolStrip.TabIndex = 5
         Me.ctlToolStrip.Text = "ToolStrip1"
         '
+        'ToolStripLabel1
+        '
+        Me.ToolStripLabel1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.ToolStripLabel1.Name = "ToolStripLabel1"
+        Me.ToolStripLabel1.Size = New System.Drawing.Size(25, 22)
+        Me.ToolStripLabel1.Text = "If..."
+        '
         'cmdAddElse
         '
         Me.cmdAddElse.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.cmdAddElse.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddElseToolStripMenuItem, Me.AddElseIfToolStripMenuItem})
+        Me.cmdAddElse.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuAddElse, Me.mnuAddElseIf})
         Me.cmdAddElse.Image = CType(resources.GetObject("cmdAddElse.Image"), System.Drawing.Image)
         Me.cmdAddElse.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAddElse.Name = "cmdAddElse"
         Me.cmdAddElse.Size = New System.Drawing.Size(68, 22)
         Me.cmdAddElse.Text = "Add Else"
         '
-        'AddElseToolStripMenuItem
+        'mnuAddElse
         '
-        Me.AddElseToolStripMenuItem.Name = "AddElseToolStripMenuItem"
-        Me.AddElseToolStripMenuItem.Size = New System.Drawing.Size(129, 22)
-        Me.AddElseToolStripMenuItem.Text = "Add Else"
+        Me.mnuAddElse.Name = "mnuAddElse"
+        Me.mnuAddElse.Size = New System.Drawing.Size(152, 22)
+        Me.mnuAddElse.Text = "Add Else"
         '
-        'AddElseIfToolStripMenuItem
+        'mnuAddElseIf
         '
-        Me.AddElseIfToolStripMenuItem.Name = "AddElseIfToolStripMenuItem"
-        Me.AddElseIfToolStripMenuItem.Size = New System.Drawing.Size(129, 22)
-        Me.AddElseIfToolStripMenuItem.Text = "Add Else If"
+        Me.mnuAddElseIf.Name = "mnuAddElseIf"
+        Me.mnuAddElseIf.Size = New System.Drawing.Size(152, 22)
+        Me.mnuAddElseIf.Text = "Add Else If"
         '
         'pnlContainer
         '
@@ -75,19 +82,12 @@ Partial Class IfEditor
         Me.pnlContainer.Size = New System.Drawing.Size(435, 278)
         Me.pnlContainer.TabIndex = 7
         '
-        'ToolStripLabel1
-        '
-        Me.ToolStripLabel1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold)
-        Me.ToolStripLabel1.Name = "ToolStripLabel1"
-        Me.ToolStripLabel1.Size = New System.Drawing.Size(25, 22)
-        Me.ToolStripLabel1.Text = "If..."
-        '
         'ctlChild
         '
         Me.ctlChild.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ctlChild.Controller = Nothing
-        Me.ctlChild.ElseIfMode = False
+        Me.ctlChild.ElseIfMode = AxeSoftware.Quest.IfEditorChild.IfEditorChildMode.IfMode
         Me.ctlChild.Expanded = True
         Me.ctlChild.Location = New System.Drawing.Point(0, 0)
         Me.ctlChild.Name = "ctlChild"
@@ -112,8 +112,8 @@ Partial Class IfEditor
     End Sub
     Friend WithEvents ctlToolStrip As System.Windows.Forms.ToolStrip
     Friend WithEvents cmdAddElse As System.Windows.Forms.ToolStripSplitButton
-    Friend WithEvents AddElseToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents AddElseIfToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents mnuAddElse As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents mnuAddElseIf As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents pnlContainer As System.Windows.Forms.Panel
     Friend WithEvents ctlChild As AxeSoftware.Quest.IfEditorChild
     Friend WithEvents ToolStripLabel1 As System.Windows.Forms.ToolStripLabel

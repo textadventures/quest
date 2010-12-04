@@ -3,9 +3,10 @@
     Implements ICommandEditor
 
     Private m_controller As EditorController
-    Private m_data As IEditorData
+    Private m_data As EditableIfScript
     Private m_children As New List(Of IfEditorChild)
     Private m_lastEditorChild As IfEditorChild
+    Private m_hasElse As Boolean
 
     Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
@@ -19,7 +20,17 @@
     End Sub
 
     Private Sub AddChild(ByVal child As IfEditorChild)
-        m_children.Add(child)
+        If Not m_hasElse Then
+            m_children.Add(child)
+        Else
+            ' if we have an "else" then we want to insert a new "else if" before the "else"
+            m_children.Insert(m_children.Count - 2, child)
+        End If
+
+        If child.ElseIfMode = IfEditorChild.IfEditorChildMode.ElseMode Then
+            m_hasElse = True
+        End If
+
         AddHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
         AddHandler child.Dirty, AddressOf ctlChild_Dirty
         m_lastEditorChild = child
@@ -52,19 +63,19 @@
         RaiseEvent Dirty(sender, args)
     End Sub
 
-    Private Sub AddElseIf()
+    Private Sub AddElseChildControl(ByVal addElseIf As Boolean)
         ctlChild.Dock = DockStyle.None
         Dim newIfEditorChild As New IfEditorChild
         newIfEditorChild.Parent = pnlContainer
         newIfEditorChild.Controller = m_controller
-        newIfEditorChild.Top = m_lastEditorChild.Top + m_lastEditorChild.Height
+        newIfEditorChild.Top = m_lastEditorChild.Top + m_lastEditorChild.Height     ' not necessarily....
         newIfEditorChild.Width = pnlContainer.Width
         newIfEditorChild.Anchor = newIfEditorChild.Anchor Or AnchorStyles.Right
+        newIfEditorChild.ElseIfMode = If(addElseIf, IfEditorChild.IfEditorChildMode.ElseIfMode, IfEditorChild.IfEditorChildMode.ElseMode)
         newIfEditorChild.Visible = True
         AddChild(newIfEditorChild)
 
         ' also need to populate newchild?
-        ' also need to hook up Dirty event
     End Sub
 
     Private Sub IfEditorChild_HeightChanged(ByVal sender As IfEditorChild, ByVal newHeight As Integer)
@@ -82,8 +93,20 @@
     ' "else" should appear at the bottom so have a separate parent splitter
 
     Private Sub cmdAddElse_ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddElse.ButtonClick
-        AddElseIf()
+        'AddElse(False)
+        AddElse()
     End Sub
 
+    Private Sub mnuAddElse_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuAddElse.Click
+        'AddElse(False)
+        AddElse()
+    End Sub
 
+    Private Sub mnuAddElseIf_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuAddElseIf.Click
+        'AddElse(True)
+    End Sub
+
+    Private Sub AddElse()
+        m_data.AddElse()
+    End Sub
 End Class

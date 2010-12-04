@@ -698,7 +698,10 @@ namespace AxeSoftware.Quest
 
             if (TryPath(current, file, out path)) return path;
             if (TryPath(Environment.CurrentDirectory, file, out path)) return path;
-            if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path)) return path;
+            if (System.Reflection.Assembly.GetEntryAssembly() != null)
+            {
+                if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path)) return path;
+            }
             throw new Exception(string.Format("Cannot find a file called '{0}' in current path or application path", file));
         }
 

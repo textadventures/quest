@@ -216,4 +216,5 @@
         cmdMoveUp.Enabled = enabled
         cmdMoveDown.Enabled = enabled
     End Sub
+
 End Class
