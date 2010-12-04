@@ -36,8 +36,6 @@ namespace AxeSoftware.Quest
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
         private static Dictionary<Type, string> s_typesToTypeNames = new Dictionary<Type, string>();
 
-        private bool m_finished = true;
-
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementFieldUpdated;
 
         public class ElementFieldUpdatedEventArgs : EventArgs
@@ -82,7 +80,7 @@ namespace AxeSoftware.Quest
 
         public WorldModel(string filename)
         {
-            if (!m_finished)
+            if (State == GameState.Loading || State == GameState.Running)
             {
                 throw new Exception("Attempt to initialise game without deactivating previous game.");
             }
@@ -99,7 +97,6 @@ namespace AxeSoftware.Quest
             m_undoLogger = new UndoLogger(this);
             m_saver = new GameSaver(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
-            m_finished = false;
         }
 
         private void InitialiseElementFactories()
@@ -137,7 +134,7 @@ namespace AxeSoftware.Quest
 
         public void FinishGame()
         {
-            m_finished = true;
+            m_state = GameState.Finished;
             if (Finished != null) Finished();
         }
 
@@ -348,7 +345,7 @@ namespace AxeSoftware.Quest
             RunProcedure("HandleCommand", new Parameters("command", command), false);
 
             // m_instance is set to null if the game finishes
-            if (!m_finished)
+            if (State != GameState.Finished)
             {
                 UpdateLists();
             }
