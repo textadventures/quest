@@ -4,5 +4,18 @@
   <include ref="Core.aslx"/>
   -->
   <game name="Test Game"/>
+
+  <editor>
+    <appliesto>msg</appliesto>
+    <display>Print #0</display>
+    <category>Output</category>
+    <create>msg ("")</create>
+    <add>Print a message</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Message</caption>
+      <attribute>0</attribute>
+    </control>
+  </editor>
     
 </asl>

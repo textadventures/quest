@@ -11,6 +11,7 @@ namespace EditorControllerTests
     public class EditableScriptTests
     {
         private EditorController m_controller;
+        private EditorTreeData m_tree = new EditorTreeData();
 
         [TestInitialize]
         public void Init()
@@ -25,25 +26,39 @@ namespace EditorControllerTests
 
         void m_controller_ClearTree()
         {
+            m_tree.Clear();
         }
 
         void m_controller_BeginTreeUpdate()
         {
+            m_tree.BeginUpdate();
         }
 
         void m_controller_EndTreeUpdate()
         {
+            m_tree.EndUpdate();
         }
 
         void m_controller_AddedNode(string key, string text, string parent, System.Drawing.Color? foreColor, System.Drawing.Color? backColor)
         {
+            m_tree.Add(key, text, parent);
         }
 
         [TestMethod]
         public void CreateScript()
         {
-            EditableScripts newScripts = m_controller.CreateNewEditableScripts("game", "somescript", "msg (\"\")");
-            Assert.IsTrue(newScripts.Scripts.Count() == 1);
+            EditableScripts newScripts = m_controller.CreateNewEditableScripts("game", "somescript", "msg (\"hello\")");
+            Assert.AreEqual(1, newScripts.Scripts.Count());
+            IEditableScript script = newScripts[0];
+            Assert.AreEqual("Print \"hello\"", script.DisplayString());
+            m_controller.StartTransaction("Change msg script value");
+            script.SetParameter(0, "\"new value\"");
+            m_controller.EndTransaction();
+            Assert.AreEqual("Print \"new value\"", script.DisplayString());
+            m_controller.Undo();
+            Assert.AreEqual("Print \"hello\"", script.DisplayString());
+            m_controller.Redo();
+            Assert.AreEqual("Print \"new value\"", script.DisplayString());
         }
     }
 }

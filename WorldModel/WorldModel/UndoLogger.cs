@@ -45,7 +45,7 @@ namespace AxeSoftware.Quest
             public void DoUndo(WorldModel worldModel)
             {
                 m_attributes.Reverse();
-                worldModel.Print(worldModel.Template.GetDynamicText("UndoTurn", m_command));
+                if (!worldModel.EditMode) worldModel.Print(worldModel.Template.GetDynamicText("UndoTurn", m_command));
                 foreach (IUndoAction l in m_attributes)
                 {
                     l.DoUndo(worldModel);

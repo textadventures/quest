@@ -29,6 +29,7 @@ namespace AxeSoftware.Quest
         private GameSaver m_saver;
         private bool m_loadedFromSaved = false;
         private string m_saveFilename = string.Empty;
+        private bool m_editMode = false;
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -279,12 +280,14 @@ namespace AxeSoftware.Quest
 
         public bool Initialise()
         {
+            m_editMode = false;
             GameLoader loader = new GameLoader(this, GameLoader.LoadMode.Play);
             return InitialiseInternal(loader);
         }
 
         public bool InitialiseEdit()
         {
+            m_editMode = true;
             GameLoader loader = new GameLoader(this, GameLoader.LoadMode.Edit);
             return InitialiseInternal(loader);
         }
@@ -715,6 +718,11 @@ namespace AxeSoftware.Quest
         internal void NotifyElementFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
         {
             if (ElementFieldUpdated != null) ElementFieldUpdated(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
+        }
+
+        public bool EditMode
+        {
+            get { return m_editMode; }
         }
     }
 }
