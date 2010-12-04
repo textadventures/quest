@@ -28,7 +28,7 @@ namespace AxeSoftware.Quest.Scripts
             }
             IScript loopScript = ScriptFactory.CreateScript(loop);
 
-            return new ForScript(parameters[0], new Expression<int>(parameters[1]), new Expression<int>(parameters[2]), loopScript);
+            return new ForScript(parameters[0], new Expression<int>(parameters[1], WorldModel), new Expression<int>(parameters[2], WorldModel), loopScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }

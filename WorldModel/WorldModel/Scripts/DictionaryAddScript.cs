@@ -22,7 +22,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new DictionaryAddScript(new ExpressionGeneric(parameters[0]), new Expression<string>(parameters[1]), new Expression<object>(parameters[2]));
+            return new DictionaryAddScript(new ExpressionGeneric(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel), new Expression<object>(parameters[2], WorldModel));
         }
 
         protected override int[] ExpectedParameters
@@ -84,7 +84,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new DictionaryRemoveScript(new ExpressionGeneric(parameters[0]), new Expression<string>(parameters[1]));
+            return new DictionaryRemoveScript(new ExpressionGeneric(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel));
         }
 
         protected override int[] ExpectedParameters

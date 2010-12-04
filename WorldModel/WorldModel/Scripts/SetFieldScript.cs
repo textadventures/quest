@@ -17,7 +17,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new SetFieldScript(WorldModel, new Expression<Element>(parameters[0]), new Expression<string>(parameters[1]), new Expression<object>(parameters[2]));
+            return new SetFieldScript(WorldModel, new Expression<Element>(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel), new Expression<object>(parameters[2], WorldModel));
         }
 
         protected override int[] ExpectedParameters

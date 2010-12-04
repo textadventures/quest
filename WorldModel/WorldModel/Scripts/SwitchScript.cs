@@ -22,7 +22,7 @@ namespace AxeSoftware.Quest.Scripts
             IScript defaultScript;
             Dictionary<IFunctionGeneric, IScript> cases = ProcessCases(Utility.GetScript(afterExpr), out defaultScript, proc);
 
-            return new SwitchScript(new ExpressionGeneric(param), cases, defaultScript);
+            return new SwitchScript(new ExpressionGeneric(param, WorldModel), cases, defaultScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -54,7 +54,7 @@ namespace AxeSoftware.Quest.Scripts
                         string caseScript = Utility.GetScript(afterExpr);
                         IScript script = ScriptFactory.CreateScript(caseScript, proc);
 
-                        result.Add(new ExpressionGeneric(expr), script);
+                        result.Add(new ExpressionGeneric(expr, WorldModel), script);
                     }
                     else if (cases.StartsWith("default"))
                     {

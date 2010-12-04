@@ -42,6 +42,12 @@ namespace EditorControllerTests
             m_controller.Initialise(@"..\..\..\EditorControllerTests\test.aslx");
         }
 
+        [TestCleanup]
+        public void Cleanup()
+        {
+            m_controller.Dispose();
+        }
+
         void m_controller_ClearTree()
         {
             m_tree.Clear();

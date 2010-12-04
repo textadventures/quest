@@ -22,7 +22,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters, Element proc)
         {
-            return new ReturnScript(WorldModel, new ExpressionGeneric(parameters[0]));
+            return new ReturnScript(WorldModel, new ExpressionGeneric(parameters[0], WorldModel));
         }
 
         protected override int[] ExpectedParameters

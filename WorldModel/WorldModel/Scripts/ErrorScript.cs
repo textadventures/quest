@@ -17,7 +17,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new ErrorScript(new ExpressionGeneric(parameters[0]));
+            return new ErrorScript(new ExpressionGeneric(parameters[0], WorldModel));
         }
 
         protected override int[] ExpectedParameters

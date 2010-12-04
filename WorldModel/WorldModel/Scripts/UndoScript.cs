@@ -62,7 +62,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new StartTransactionScript(WorldModel, new Expression<string>(parameters[0]));
+            return new StartTransactionScript(WorldModel, new Expression<string>(parameters[0], WorldModel));
         }
 
         protected override int[] ExpectedParameters

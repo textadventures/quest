@@ -17,7 +17,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new MsgScript(WorldModel, new ExpressionGeneric(parameters[0]));
+            return new MsgScript(WorldModel, new ExpressionGeneric(parameters[0], WorldModel));
         }
 
         protected override int[] ExpectedParameters
@@ -60,7 +60,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, string value)
         {
-            m_function = new ExpressionGeneric(value);
+            m_function = new ExpressionGeneric(value, m_worldModel);
         }
 
         public override string Keyword

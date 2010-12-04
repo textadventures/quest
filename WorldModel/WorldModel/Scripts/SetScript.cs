@@ -42,11 +42,11 @@ namespace AxeSoftware.Quest.Scripts
                 string obj;
                 string variable;
                 Utility.ResolveVariableName(var, out obj, out variable);
-                IFunction<Element> expr = (obj == null) ? null : new Expression<Element>(obj);
+                IFunction<Element> expr = (obj == null) ? null : new Expression<Element>(obj, WorldModel);
 
                 if (!isScript)
                 {
-                    return new SetScript(WorldModel, expr, variable, new Expression<object>(value));
+                    return new SetScript(WorldModel, expr, variable, new Expression<object>(value, WorldModel));
                 }
                 else
                 {

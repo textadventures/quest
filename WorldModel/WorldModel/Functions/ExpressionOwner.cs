@@ -7,61 +7,68 @@ using System.Collections;
 
 namespace AxeSoftware.Quest.Functions
 {
-    public static class QuestFunctions
+    internal class ExpressionOwner
     {
-        public static string Template(string template)
+        private WorldModel m_worldModel;
+
+        public ExpressionOwner(WorldModel worldModel)
         {
-            return WorldModel.Instance.Template.GetText(template);
+            m_worldModel = worldModel;
         }
 
-        public static string DynamicTemplate(string template, Element obj)
+        public string Template(string template)
         {
-            return WorldModel.Instance.Template.GetDynamicText(template, obj);
+            return m_worldModel.Template.GetText(template);
         }
 
-        public static string DynamicTemplate(string template, string text)
+        public string DynamicTemplate(string template, Element obj)
         {
-            return WorldModel.Instance.Template.GetDynamicText(template, text);
-        }        
+            return m_worldModel.Template.GetDynamicText(template, obj);
+        }
 
-        public static bool HasString(Element obj, string property)
+        public string DynamicTemplate(string template, string text)
+        {
+            return m_worldModel.Template.GetDynamicText(template, text);
+        }
+
+        public bool HasString(Element obj, string property)
         {
             return obj.Fields.HasString(property);
         }
 
-        public static string GetString(Element obj, string property)
+        public string GetString(Element obj, string property)
         {
             return obj.Fields.GetString(property);
         }
 
-        public static bool HasBoolean(Element obj, string property)
+        public bool HasBoolean(Element obj, string property)
         {
             return obj.Fields.HasType<bool>(property);
         }
 
-        public static bool GetBoolean(Element obj, string property)
+        public bool GetBoolean(Element obj, string property)
         {
             return obj.Fields.GetAsType<bool>(property);
         }
 
-        public static bool HasScript(Element obj, string property)
+        public bool HasScript(Element obj, string property)
         {
             return obj.Fields.HasType<IScript>(property);
         }
 
-        public static bool HasObject(Element obj, string property)
+        public bool HasObject(Element obj, string property)
         {
             return obj.Fields.HasType<Element>(property);
         }
 
-        public static bool HasDelegateImplementation(Element obj, string property)
+        public bool HasDelegateImplementation(Element obj, string property)
         {
             return obj.Fields.HasType<DelegateImplementation>(property);
         }
 
-        public static string GetExitByLink(Element from, Element to)
+        public string GetExitByLink(Element from, Element to)
         {
-            foreach (Element e in WorldModel.Instance.Objects)
+            foreach (Element e in m_worldModel.Objects)
             {
                 if (e.Parent == from && e.Fields[FieldDefinitions.To] == to) return e.Name;
             }
@@ -69,9 +76,9 @@ namespace AxeSoftware.Quest.Functions
             return null;
         }
 
-        public static string GetExitByName(Element parent, string name)
+        public string GetExitByName(Element parent, string name)
         {
-            foreach (Element e in WorldModel.Instance.Objects)
+            foreach (Element e in m_worldModel.Objects)
             {
                 if (e.Parent == parent && e.Fields[FieldDefinitions.Alias] == name) return e.Name;
             }
@@ -79,62 +86,62 @@ namespace AxeSoftware.Quest.Functions
             return null;
         }
 
-        public static bool Contains(Element parent, Element name)
+        public bool Contains(Element parent, Element name)
         {
-            return WorldModel.Instance.ObjectContains(parent, name);
+            return m_worldModel.ObjectContains(parent, name);
         }
 
-        public static QuestList<Element> NewObjectList()
+        public QuestList<Element> NewObjectList()
         {
             return new QuestList<Element>();
         }
 
-        public static QuestList<string> NewStringList()
+        public QuestList<string> NewStringList()
         {
             return new QuestList<string>();
         }
 
-        public static QuestDictionary<string> NewStringDictionary()
+        public QuestDictionary<string> NewStringDictionary()
         {
             return new QuestDictionary<string>();
         }
 
-        public static QuestDictionary<Element> NewObjectDictionary()
+        public QuestDictionary<Element> NewObjectDictionary()
         {
             return new QuestDictionary<Element>();
         }
 
-        public static bool ListContains(IQuestList list, object item)
+        public bool ListContains(IQuestList list, object item)
         {
             return list.Contains(item);
         }
 
-        public static QuestList<Element> AllObjects()
+        public QuestList<Element> AllObjects()
         {
             QuestList<Element> result = new QuestList<Element>();
 
-            foreach (Element item in WorldModel.Instance.GetAllObjects().Where(o => o.Type == ObjectType.Object))
+            foreach (Element item in m_worldModel.GetAllObjects().Where(o => o.Type == ObjectType.Object))
             {
                 result.Add(item);
             }
             return result;
         }
 
-        public static QuestList<Element> AllExits()
+        public QuestList<Element> AllExits()
         {
             QuestList<Element> result = new QuestList<Element>();
 
-            foreach (Element item in WorldModel.Instance.GetAllObjects().Where(o => o.Type == ObjectType.Exit))
+            foreach (Element item in m_worldModel.GetAllObjects().Where(o => o.Type == ObjectType.Exit))
             {
                 result.Add(item);
             }
             return result;
         }
 
-        public static QuestList<Element> AllCommands()
+        public QuestList<Element> AllCommands()
         {
             QuestList<Element> result = new QuestList<Element>();
-            foreach (Element item in WorldModel.Instance.GetAllObjects())
+            foreach (Element item in m_worldModel.GetAllObjects())
             {
                 if (item.Type == ObjectType.Command)
                     result.Add(item);
@@ -142,32 +149,32 @@ namespace AxeSoftware.Quest.Functions
             return result;
         }
 
-        public static int ListCount(ICollection list)
+        public int ListCount(ICollection list)
         {
             return list.Count;
         }
 
-        public static object ListItem(IQuestList list, int index)
+        public object ListItem(IQuestList list, int index)
         {
             return list[index];
         }
 
-        public static string StringListItem(IQuestList list, int index)
+        public string StringListItem(IQuestList list, int index)
         {
             return list[index] as string;
         }
 
-        public static Element ObjectListItem(IQuestList list, int index)
+        public Element ObjectListItem(IQuestList list, int index)
         {
             return list[index] as Element;
         }
 
-        public static Element GetObject(string name)
+        public Element GetObject(string name)
         {
-            return WorldModel.Instance.Object(name);
+            return m_worldModel.Object(name);
         }
 
-        public static string TypeOf(Element obj, string attribute)
+        public string TypeOf(Element obj, string attribute)
         {
             object value = obj.Fields.Get(attribute);
 
@@ -177,7 +184,7 @@ namespace AxeSoftware.Quest.Functions
             return WorldModel.ConvertTypeToTypeName(value.GetType());
         }
 
-        public static object RunDelegateFunction(Element obj, string del, params object[] parameters)
+        public object RunDelegateFunction(Element obj, string del, params object[] parameters)
         {
             DelegateImplementation impl = obj.Fields.Get(del) as DelegateImplementation;
 
@@ -195,21 +202,21 @@ namespace AxeSoftware.Quest.Functions
                 cnt++;
             }
 
-            return WorldModel.Instance.RunDelegateScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
+            return m_worldModel.RunDelegateScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
         }
 
-        //public static string SafeXML(string input)
+        //public string SafeXML(string input)
         //{
         //    return Utility.SafeXML(input);
         //}
 
-        public static bool IsRegexMatch(string regexPattern, string input)
+        public bool IsRegexMatch(string regexPattern, string input)
         {
             System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
             return regex.IsMatch(input);
         }
 
-        public static int GetMatchStrength(string regexPattern, string input)
+        public int GetMatchStrength(string regexPattern, string input)
         {
             System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
             if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regexPattern));
@@ -237,7 +244,7 @@ namespace AxeSoftware.Quest.Functions
             return input.Length - lengthOfTextMatchedByGroups;
         }
 
-        public static QuestDictionary<string> Populate(string regexPattern, string input)
+        public QuestDictionary<string> Populate(string regexPattern, string input)
         {
             System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
             if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regexPattern));
@@ -256,37 +263,37 @@ namespace AxeSoftware.Quest.Functions
             return result;
         }
 
-        public static object DictionaryItem(IDictionary dictionary, string key)
+        public object DictionaryItem(IDictionary dictionary, string key)
         {
             return dictionary[key];
         }
 
-        public static string StringDictionaryItem(IDictionary dictionary, string key)
+        public string StringDictionaryItem(IDictionary dictionary, string key)
         {
             return dictionary[key] as string;
         }
 
-        public static Element ObjectDictionaryItem(IDictionary dictionary, string key)
+        public Element ObjectDictionaryItem(IDictionary dictionary, string key)
         {
             return dictionary[key] as Element;
         }
 
-        public static string ShowMenu(string caption, QuestDictionary<string> options, bool allowCancel)
+        public string ShowMenu(string caption, QuestDictionary<string> options, bool allowCancel)
         {
-            return WorldModel.Instance.DisplayMenu(caption, options, allowCancel);
+            return m_worldModel.DisplayMenu(caption, options, allowCancel);
         }
 
-        public static string ShowMenu(string caption, QuestList<string> options, bool allowCancel)
+        public string ShowMenu(string caption, QuestList<string> options, bool allowCancel)
         {
-            return WorldModel.Instance.DisplayMenu(caption, options, allowCancel);
+            return m_worldModel.DisplayMenu(caption, options, allowCancel);
         }
 
-        public static bool DictionaryContains(IDictionary dictionary, string key)
+        public bool DictionaryContains(IDictionary dictionary, string key)
         {
             return dictionary.Contains(key);
         }
 
-        public static int DictionaryCount(IDictionary dictionary)
+        public int DictionaryCount(IDictionary dictionary)
         {
             return dictionary.Count;
         }

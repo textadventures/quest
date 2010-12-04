@@ -72,8 +72,8 @@
     <Compile Include="Elements.cs" />
     <Compile Include="Fields.cs" />
     <Compile Include="Functions\Expression.cs" />
+    <Compile Include="Functions\ExpressionOwner.cs" />
     <Compile Include="Functions\IFunction.cs" />
-    <Compile Include="Functions\QuestFunctions.cs" />
     <Compile Include="Functions\StringFunctions.cs" />
     <Compile Include="GameLoader\AttributeLoaders.cs" />
     <Compile Include="GameLoader\ElementLoaders.cs" />

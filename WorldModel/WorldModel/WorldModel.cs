@@ -30,12 +30,13 @@ namespace AxeSoftware.Quest
         private bool m_loadedFromSaved = false;
         private string m_saveFilename = string.Empty;
         private bool m_editMode = false;
+        private Functions.ExpressionOwner m_expressionOwner;
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
         private static Dictionary<Type, string> s_typesToTypeNames = new Dictionary<Type, string>();
 
-        private static WorldModel m_instance;
+        private bool m_finished = true;
 
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementFieldUpdated;
 
@@ -55,11 +56,6 @@ namespace AxeSoftware.Quest
             public bool IsUndo { get; private set; }
         }
         
-        public static WorldModel Instance
-        {
-            get { return m_instance; }
-        }
-
         static WorldModel()
         {
             s_defaultTypeNames.Add(ObjectType.Object, "defaultobject");
@@ -86,15 +82,12 @@ namespace AxeSoftware.Quest
 
         public WorldModel(string filename)
         {
-            if (m_instance != null)
+            if (!m_finished)
             {
-                // So that QuestFunctions can give static functions to FLEE, it is a static class
-                // that has a reference to the currently running WorldModel instance. So we cannot
-                // have more than one WorldModel running at once. The Finish() function should be
-                // called to indicate that the previous instance is no longer being used.
                 throw new Exception("Attempt to initialise game without deactivating previous game.");
             }
 
+            m_expressionOwner = new Functions.ExpressionOwner(this);
             m_template = new Template(this);
             InitialiseElementFactories();
             m_objectFactory = (ObjectFactory)m_elementFactories[ElementType.Object];
@@ -106,7 +99,7 @@ namespace AxeSoftware.Quest
             m_undoLogger = new UndoLogger(this);
             m_saver = new GameSaver(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
-            m_instance = this;
+            m_finished = false;
         }
 
         private void InitialiseElementFactories()
@@ -144,7 +137,7 @@ namespace AxeSoftware.Quest
 
         public void FinishGame()
         {
-            m_instance = null;
+            m_finished = true;
             if (Finished != null) Finished();
         }
 
@@ -355,7 +348,7 @@ namespace AxeSoftware.Quest
             RunProcedure("HandleCommand", new Parameters("command", command), false);
 
             // m_instance is set to null if the game finishes
-            if (m_instance != null)
+            if (!m_finished)
             {
                 UpdateLists();
             }
@@ -723,6 +716,11 @@ namespace AxeSoftware.Quest
         public bool EditMode
         {
             get { return m_editMode; }
+        }
+
+        internal Functions.ExpressionOwner ExpressionOwner
+        {
+            get { return m_expressionOwner; }
         }
     }
 }

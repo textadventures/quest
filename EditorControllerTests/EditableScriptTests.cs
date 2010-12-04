@@ -39,5 +39,11 @@ namespace EditorControllerTests
             Assert.AreEqual("Change msg script value", UndoList[0]);
             Assert.AreEqual("Print \"new value\"", script.DisplayString());
         }
+
+        [TestMethod]
+        public void TestIf()
+        {
+            EditableScripts newScripts = Controller.CreateNewEditableScripts("game", "somescript", "if () { }");
+        }
     }
 }

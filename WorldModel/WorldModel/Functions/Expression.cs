@@ -9,16 +9,18 @@ namespace AxeSoftware.Quest.Functions
 {
     public abstract class ExpressionBase
     {
-        protected ExpressionContext m_expressionContext = new ExpressionContext();
+        protected ExpressionContext m_expressionContext;
         protected Context m_context;
         protected string m_originalExpression;
         protected string m_expression;
         private Dictionary<string, Type> m_types = new Dictionary<string, Type>();
+        private WorldModel m_worldModel;
 
-        public ExpressionBase(string expression)
+        public ExpressionBase(string expression, WorldModel worldModel)
         {
+            m_worldModel = worldModel;
+            m_expressionContext = new ExpressionContext(worldModel.ExpressionOwner);
             m_expressionContext.Imports.AddType(typeof(StringFunctions));
-            m_expressionContext.Imports.AddType(typeof(QuestFunctions));
 
             m_expressionContext.Variables.ResolveVariableType += new EventHandler<ResolveVariableTypeEventArgs>(Variables_ResolveVariableType);
             m_expressionContext.Variables.ResolveVariableValue += new EventHandler<ResolveVariableValueEventArgs>(Variables_ResolveVariableValue);
@@ -39,7 +41,7 @@ namespace AxeSoftware.Quest.Functions
 
         void Variables_ResolveFunction(object sender, ResolveFunctionEventArgs e)
         {
-            Element proc = WorldModel.Instance.Procedure(e.FunctionName);
+            Element proc = m_worldModel.Procedure(e.FunctionName);
             if (proc != null)
             {
                 e.ReturnType = WorldModel.ConvertTypeNameToType(proc.Fields[FieldDefinitions.ReturnType]);
@@ -48,7 +50,7 @@ namespace AxeSoftware.Quest.Functions
 
         void Variables_InvokeFunction(object sender, InvokeFunctionEventArgs e)
         {
-            Element proc = WorldModel.Instance.Procedure(e.FunctionName);
+            Element proc = m_worldModel.Procedure(e.FunctionName);
             Parameters parameters = new Parameters();
             int cnt = 0;
             // TO DO: Check number of parameters matches
@@ -58,7 +60,7 @@ namespace AxeSoftware.Quest.Functions
                 cnt++;
             }
 
-            e.Result = WorldModel.Instance.RunProcedure(e.FunctionName, parameters, true);
+            e.Result = m_worldModel.RunProcedure(e.FunctionName, parameters, true);
         }
 
         void Variables_ResolveVariableValue(object sender, ResolveVariableValueEventArgs e)
@@ -96,9 +98,9 @@ namespace AxeSoftware.Quest.Functions
             }
             else
             {
-                if (WorldModel.Instance.ObjectExists(name))
+                if (m_worldModel.ObjectExists(name))
                 {
-                    return WorldModel.Instance.Object(name);
+                    return m_worldModel.Object(name);
                 }
                 else
                 {
@@ -130,9 +132,9 @@ namespace AxeSoftware.Quest.Functions
         {
             string obj;
             Utility.ResolveVariableName(name, out obj, out variable);
-            if (WorldModel.Instance.ObjectExists(name))
+            if (m_worldModel.ObjectExists(name))
             {
-                fields = WorldModel.Instance.Object(obj).Fields;
+                fields = m_worldModel.Object(obj).Fields;
             }
             else
             {
@@ -159,8 +161,8 @@ namespace AxeSoftware.Quest.Functions
     {
         private IGenericExpression<T> m_compiledExpression = null;
 
-        public Expression(string expression)
-            : base(expression)
+        public Expression(string expression, WorldModel worldModel)
+            : base(expression, worldModel)
         {
         }
 
@@ -197,8 +199,8 @@ namespace AxeSoftware.Quest.Functions
     {
         private IDynamicExpression m_compiledExpression = null;
 
-        public ExpressionGeneric(string expression)
-            : base(expression)
+        public ExpressionGeneric(string expression, WorldModel worldModel)
+            : base(expression, worldModel)
         {
         }
 

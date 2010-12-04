@@ -21,9 +21,9 @@ namespace AxeSoftware.Quest.Scripts
             switch (parameters.Count)
             {
                 case 2:
-                    return new DoActionScript(WorldModel, new Expression<Element>(parameters[0]), new Expression<string>(parameters[1]));
+                    return new DoActionScript(WorldModel, new Expression<Element>(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel));
                 case 3:
-                    return new DoActionScript(WorldModel, new Expression<Element>(parameters[0]), new Expression<string>(parameters[1]), new Expression<IDictionary>(parameters[2]));
+                    return new DoActionScript(WorldModel, new Expression<Element>(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel), new Expression<IDictionary>(parameters[2], WorldModel));
             }
             return null;
         }
@@ -62,13 +62,13 @@ namespace AxeSoftware.Quest.Scripts
                 switch (cnt)
                 {
                     case 1:
-                        obj = new Expression<Element>(param);
+                        obj = new Expression<Element>(param, WorldModel);
                         break;
                     case 2:
-                        delegateName = new Expression<string>(param);
+                        delegateName = new Expression<string>(param, WorldModel);
                         break;
                     default:
-                        paramExpressions.Add(new Expression<object>(param));
+                        paramExpressions.Add(new Expression<object>(param, WorldModel));
                         break;
                 }
             }
@@ -102,7 +102,7 @@ namespace AxeSoftware.Quest.Scripts
                 paramExpressions = new List<IFunction<object>>();
                 foreach (string s in parameters)
                 {
-                    paramExpressions.Add(new Expression<object>(s));
+                    paramExpressions.Add(new Expression<object>(s, WorldModel));
                 }
             }
 

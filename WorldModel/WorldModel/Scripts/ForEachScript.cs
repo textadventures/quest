@@ -31,7 +31,7 @@ namespace AxeSoftware.Quest.Scripts
 
             string type = parameters[0];
 
-            return new ForEachScript(parameters[0], new ExpressionGeneric(parameters[1]), loopScript);
+            return new ForEachScript(parameters[0], new ExpressionGeneric(parameters[1], WorldModel), loopScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }

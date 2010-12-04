@@ -6,7 +6,7 @@ using AxeSoftware.Quest.Scripts;
 
 namespace AxeSoftware.Quest
 {
-    public class EditorController
+    public class EditorController : IDisposable
     {
         private const string k_commands = "_gameCommands";
         private const string k_verbs = "_gameVerbs";
@@ -378,6 +378,11 @@ namespace AxeSoftware.Quest
             WorldModel.UndoLogger.EndTransaction();
 
             return newValue;
+        }
+
+        public void Dispose()
+        {
+            m_worldModel.FinishGame();
         }
     }
 }

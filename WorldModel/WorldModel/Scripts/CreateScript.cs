@@ -17,7 +17,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new CreateScript(WorldModel, new Expression<string>(parameters[0]));
+            return new CreateScript(WorldModel, new Expression<string>(parameters[0], WorldModel));
         }
 
         protected override int[] ExpectedParameters
@@ -65,7 +65,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, string value)
         {
-            m_expr = new Expression<string>(value);
+            m_expr = new Expression<string>(value, m_worldModel);
         }
 
         #endregion
@@ -82,7 +82,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new CreateExitScript(WorldModel, new Expression<string>(parameters[0]), new Expression<Element>(parameters[1]), new Expression<Element>(parameters[2]));
+            return new CreateExitScript(WorldModel, new Expression<string>(parameters[0], WorldModel), new Expression<Element>(parameters[1], WorldModel), new Expression<Element>(parameters[2], WorldModel));
         }
 
         protected override int[] ExpectedParameters

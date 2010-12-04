@@ -23,7 +23,7 @@ namespace AxeSoftware.Quest.Scripts
 
             IScript thenScript = ScriptFactory.CreateScript(then, proc);
 
-            return new IfScript(new Expression<bool>(expr), thenScript);
+            return new IfScript(new Expression<bool>(expr, WorldModel), thenScript, WorldModel);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -58,17 +58,19 @@ namespace AxeSoftware.Quest.Scripts
         private IScript m_elseScript;
         private List<IScript> m_elseIfScript;
         private bool m_hasElse = false;
-        
-        public IfScript(IFunction<bool> expression, IScript thenScript)
-            : this(expression, thenScript, null)
+        private WorldModel m_worldModel;
+
+        public IfScript(IFunction<bool> expression, IScript thenScript, WorldModel worldModel)
+            : this(expression, thenScript, null, worldModel)
         {
         }
 
-        public IfScript(IFunction<bool> expression, IScript thenScript, IScript elseScript)
+        public IfScript(IFunction<bool> expression, IScript thenScript, IScript elseScript, WorldModel worldModel)
         {
             m_expression = expression;
             m_thenScript = thenScript;
             m_elseScript = elseScript;
+            m_worldModel = worldModel;
         }
 
         public void SetElse(IScript elseScript)
@@ -185,7 +187,7 @@ namespace AxeSoftware.Quest.Scripts
 
         private void SetExpressionSilent(string newValue)
         {
-            m_expression = new Expression<bool>(newValue);
+            m_expression = new Expression<bool>(newValue, m_worldModel);
             NotifyUpdate(0, newValue);
         }
 
