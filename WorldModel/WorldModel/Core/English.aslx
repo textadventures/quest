@@ -1,4 +1,4 @@
-﻿<library>  
+<library>  
   <template name="UnresolvedObject">I can't see that.</template>
   <template name="UnresolvedLocation">You can't go there.</template>
   <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
@@ -134,7 +134,7 @@
   <verbtemplate name="unlock">unlock</verbtemplate>
   <dynamictemplate name="DefaultUnlock">"You can't unlock " + object.article + "."</dynamictemplate>
   <verbtemplate name="untie">untie</verbtemplate>
-  <dynamictemplate name="DefaultTie">"You can't untie " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultUntie">"You can't untie " + object.article + "."</dynamictemplate>
   <verbtemplate name="wear">wear</verbtemplate>
   <dynamictemplate name="DefaultWear">"You can't wear " + object.article + "."</dynamictemplate>
   <template name="listen">^listen$</template>
