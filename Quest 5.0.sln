@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LegacyASL", "Legacy\LegacyASL.vbproj", "{42EEDC11-C395-4CE8-80E3-057AF4100DDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPlayer", "WebPlayer\WebPlayer.csproj", "{803A5B78-3FBA-4836-80EF-9BA104FC1D3E}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Quest 5.0.vsmdi
@@ -111,6 +113,12 @@ Global
 		{42EEDC11-C395-4CE8-80E3-057AF4100DDE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{42EEDC11-C395-4CE8-80E3-057AF4100DDE}.ReleaseSetup|Any CPU.ActiveCfg = Release|Any CPU
 		{42EEDC11-C395-4CE8-80E3-057AF4100DDE}.ReleaseSetup|Any CPU.Build.0 = Release|Any CPU
+		{803A5B78-3FBA-4836-80EF-9BA104FC1D3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{803A5B78-3FBA-4836-80EF-9BA104FC1D3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{803A5B78-3FBA-4836-80EF-9BA104FC1D3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{803A5B78-3FBA-4836-80EF-9BA104FC1D3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{803A5B78-3FBA-4836-80EF-9BA104FC1D3E}.ReleaseSetup|Any CPU.ActiveCfg = Release|Any CPU
+		{803A5B78-3FBA-4836-80EF-9BA104FC1D3E}.ReleaseSetup|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
