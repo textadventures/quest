@@ -70,13 +70,13 @@ Public Class Main
             m_currentFile = filename
             ctlPlayer.Reset()
 
-            ext = System.IO.Path.GetExtension(filename)
+            ext = System.IO.Path.GetExtension(filename).ToLower()
 
             Select ext
                 Case ".aslx"
                     game = New AxeSoftware.Quest.WorldModel(filename)
                 Case ".asl", ".cas", ".qsg"
-                    game = New AxeSoftware.Quest.LegacyASL.LegacyASL(filename)
+                    game = New AxeSoftware.Quest.LegacyASL.LegacyGame(filename)
             End Select
 
             If game Is Nothing Then
@@ -174,5 +174,13 @@ Public Class Main
 
     Private Sub ctlEditor_AddToRecent(ByVal filename As String, ByVal name As String) Handles ctlEditor.AddToRecent
         ctlLauncher.AddToEditorRecent(filename, name)
+    End Sub
+
+    Private Sub Main_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+        ctlPlayer.WindowClosing()
+    End Sub
+
+    Private Sub Main_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles Me.KeyPress
+        e.Handled = ctlPlayer.KeyPressed()
     End Sub
 End Class

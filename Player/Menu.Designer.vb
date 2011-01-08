@@ -22,11 +22,11 @@ Partial Class Menu
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.lblCaption = New System.Windows.Forms.Label
-        Me.cmdSelect = New System.Windows.Forms.Button
-        Me.cmdCancel = New System.Windows.Forms.Button
-        Me.lstOptions = New System.Windows.Forms.ListView
-        Me.colName = New System.Windows.Forms.ColumnHeader
+        Me.lblCaption = New System.Windows.Forms.Label()
+        Me.cmdSelect = New System.Windows.Forms.Button()
+        Me.cmdCancel = New System.Windows.Forms.Button()
+        Me.lstOptions = New System.Windows.Forms.ListView()
+        Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'lblCaption
@@ -88,7 +88,10 @@ Partial Class Menu
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdSelect)
         Me.Controls.Add(Me.lblCaption)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "Menu"
+        Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Menu"
         Me.ResumeLayout(False)

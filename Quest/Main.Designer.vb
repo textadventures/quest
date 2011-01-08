@@ -25,11 +25,11 @@ Partial Class Main
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main))
-        Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog
-        Me.ctlPlayer = New AxeSoftware.Quest.Player
-        Me.ctlEditor = New AxeSoftware.Quest.Editor
-        Me.ctlMenu = New AxeSoftware.Quest.Controls.Menu
-        Me.ctlLauncher = New GameBrowser.Launcher
+        Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
+        Me.ctlPlayer = New AxeSoftware.Quest.Player()
+        Me.ctlEditor = New AxeSoftware.Quest.Editor()
+        Me.ctlMenu = New AxeSoftware.Quest.Controls.Menu()
+        Me.ctlLauncher = New GameBrowser.Launcher()
         Me.SuspendLayout()
         '
         'dlgOpenFile
@@ -43,6 +43,7 @@ Partial Class Main
         Me.ctlPlayer.FontName = "Arial"
         Me.ctlPlayer.FontSize = 9
         Me.ctlPlayer.Foreground = Nothing
+        Me.ctlPlayer.ForegroundOverride = Nothing
         Me.ctlPlayer.Italic = False
         Me.ctlPlayer.LinkForeground = Nothing
         Me.ctlPlayer.Location = New System.Drawing.Point(0, 24)
@@ -89,6 +90,7 @@ Partial Class Main
         Me.Controls.Add(Me.ctlPlayer)
         Me.Controls.Add(Me.ctlMenu)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.KeyPreview = True
         Me.Name = "Main"
         Me.Text = "Quest"
         Me.ResumeLayout(False)

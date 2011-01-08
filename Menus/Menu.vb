@@ -12,6 +12,7 @@
     Private m_separators As New List(Of ToolStripSeparator)
     Private m_needToHideDuplicateSeparators As Boolean = False
     Public Delegate Sub MenuClickHandler()
+    Public Delegate Sub WindowMenuClickHandler(ByVal command As String)
     Private m_handlers As New Dictionary(Of String, MenuClickHandler)
 
     Public Sub New()
@@ -39,6 +40,7 @@
         AddMenuData("copy", MenuMode.Player, MenuMode.Editor)
         AddMenuData("walkthrough", MenuMode.Player)
         AddMenuData("debugger", MenuMode.Player)
+        AddMenuData("windowmenu", MenuMode.Player)
     End Sub
 
     Private Sub AddMenuData(ByVal key As String, ByVal ParamArray modes() As MenuMode)
@@ -175,6 +177,24 @@
         End If
 
         m_handlers.Add(key, handler)
+    End Sub
+
+    Public Sub CreateWindowMenu(ByVal title As String, ByVal options As IDictionary(Of String, String), ByVal handler As WindowMenuClickHandler)
+        WindowMenuToolStripMenuItem.Text = title
+
+        For Each kvp As KeyValuePair(Of String, String) In options
+            Dim text As String = kvp.Value
+            If text = "-" Then
+                Dim newItem As New ToolStripSeparator()
+                WindowMenuToolStripMenuItem.DropDownItems.Add(newItem)
+            Else
+                Dim newItem As ToolStripItem = WindowMenuToolStripMenuItem.DropDownItems.Add(text)
+                newItem.Tag = kvp.Key
+                AddHandler newItem.Click, Sub(sender As Object, e As System.EventArgs) handler(DirectCast(DirectCast(sender, ToolStripItem).Tag, String))
+            End If
+        Next
+
+        WindowMenuToolStripMenuItem.Visible = True
     End Sub
 
 End Class

@@ -31,6 +31,7 @@ namespace AxeSoftware.Quest
         private string m_saveFilename = string.Empty;
         private bool m_editMode = false;
         private Functions.ExpressionOwner m_expressionOwner;
+        private IPlayer m_playerUI = null;
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -217,9 +218,8 @@ namespace AxeSoftware.Quest
 
         internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel)
         {
-            if (ShowMenu == null) throw new NotImplementedException();
             MenuData menuData = new MenuData(caption, options, allowCancel);
-            return ShowMenu(menuData);
+            return m_playerUI.ShowMenu(menuData);
         }
 
         internal string DisplayMenu(string caption, IList<string> options, bool allowCancel)
@@ -268,9 +268,10 @@ namespace AxeSoftware.Quest
 
         #region IASL Members
 
-        public bool Initialise()
+        public bool Initialise(IPlayer player)
         {
             m_editMode = false;
+            m_playerUI = player;
             GameLoader loader = new GameLoader(this, GameLoader.LoadMode.Play);
             return InitialiseInternal(loader);
         }
@@ -388,10 +389,11 @@ namespace AxeSoftware.Quest
             FinishGame();
         }
 
+        public string SaveExtension { get { return "aslx"; } }
+
         public event PrintTextHandler PrintText;
         public event RequestHandler RequestRaised;
         public event UpdateListHandler UpdateList;
-        public event MenuHandler ShowMenu;
         public event FinishedHandler Finished;
         public event ObjectsUpdatedHandler ObjectsUpdated;
 
@@ -640,9 +642,10 @@ namespace AxeSoftware.Quest
             get { return m_elements; }
         }
 
-        public string Save()
+        public void Save(string filename)
         {            
-            return Save(SaveMode.SavedGame);
+            string saveData = Save(SaveMode.SavedGame);
+            System.IO.File.WriteAllText(filename, saveData);
         }
 
         public string Save(SaveMode mode)

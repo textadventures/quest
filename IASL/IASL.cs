@@ -8,13 +8,12 @@ namespace AxeSoftware.Quest
     public delegate void PrintTextHandler(string text);
     public delegate void RequestHandler(Request request, string data);
     public delegate void UpdateListHandler(ListType listType, List<ListData> items);
-    public delegate string MenuHandler(MenuData menuData);
     public delegate void FinishedHandler();
     public delegate void ObjectsUpdatedHandler();
 
     public interface IASL
     {
-        bool Initialise();
+        bool Initialise(IPlayer player);
         string GetInterface();
         void Begin();
         void SendCommand(string command);
@@ -22,14 +21,26 @@ namespace AxeSoftware.Quest
         event PrintTextHandler PrintText;
         event RequestHandler RequestRaised;
         event UpdateListHandler UpdateList;
-        event MenuHandler ShowMenu;
         event FinishedHandler Finished;
         List<string> Errors { get; }
         string Filename { get; }
         string SaveFilename { get; }
         void Finish();
         IWalkthrough Walkthrough { get; }
-        string Save();
+        void Save(string filename);
+        string SaveExtension { get; }
+    }
+
+    public interface IPlayer
+    {
+        string ShowMenu(MenuData menuData);
+        void DoWait();
+        bool ShowMsgBox(string caption);
+        void DoInvoke(System.Delegate method);
+        void SetWindowMenu(MenuData menuData);
+        string GetNewGameFile(string originalFilename, string extensions);
+        void PlaySound(string filename, bool synchronous, bool looped);
+        void StopSound();
     }
 
     public enum HyperlinkType
@@ -50,7 +61,13 @@ namespace AxeSoftware.Quest
         Background,
         Foreground,
         LinkForeground,
-        RunScript
+        RunScript,
+        SetStatus,
+        ClearScreen,
+        PanesVisible,
+        ShowPicture,
+        Speak,
+        Restart
     }
 
     public enum ListType

@@ -1,8 +1,8 @@
-﻿Imports AxeSoftware.Quest
-Imports System.Text.RegularExpressions
-Imports System.Xml
+﻿Imports System.Xml
 
 Public Class Player
+
+    Implements IPlayer
 
     Private m_panesVisible As Boolean
     Private WithEvents m_game As IASL
@@ -16,9 +16,11 @@ Public Class Player
     Private WithEvents m_debugger As Debugger
     Private m_fontName As String = "Arial"
     Private m_fontSize As Integer = 9
+    Private m_fontSizeOverride As Integer = 0
     Private m_style As String
     Private m_linkStyle As String
-    Private m_foreground As String
+    Private m_foreground As String  ' base foreground colour
+    Private m_foregroundOverride As String  ' foreground colour overridden by a <color> tag
     Private m_linkForeground As String
     Private m_bold As Boolean
     Private m_italic As Boolean
@@ -29,6 +31,11 @@ Public Class Player
     Private m_splitHelpers As New List(Of AxeSoftware.Utility.SplitterHelper)
     Private m_menu As AxeSoftware.Quest.Controls.Menu = Nothing
     Private m_saveFile As String
+    Private m_waiting As Boolean = False
+    Private m_currentElement As System.Windows.Forms.HtmlElement = Nothing
+    Private m_speech As New System.Speech.Synthesis.SpeechSynthesizer
+    Private m_loopSound As Boolean = False
+    Private m_soundPlaying As Boolean = False
 
     Public Event Quit()
     Public Event AddToRecent(ByVal filename As String, ByVal name As String)
@@ -69,6 +76,7 @@ Public Class Player
 
     Public Sub Initialise(ByRef game As IASL)
         Try
+            m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
             m_browserReady = False
             m_stage = 0
             wbOutput.Navigate(My.Application.Info.DirectoryPath() & "\Blank.htm")
@@ -171,13 +179,14 @@ Public Class Player
 
         If Not m_initialised Then Exit Sub
 
+        txtCommand.Text = ""
+
         Try
             m_game.SendCommand(command)
         Catch ex As Exception
             WriteLine(String.Format("Error running command '{0}':<br>{1}", command, ex.Message))
         End Try
 
-        txtCommand.Text = ""
         txtCommand.Focus()
 
     End Sub
@@ -192,6 +201,13 @@ Public Class Player
         Return "k" + id.ToString()
     End Function
 
+    Private Function CurrentElement() As HtmlElement
+        If m_currentElement = Nothing Then
+            Return wbOutput.Document.Body
+        End If
+        Return m_currentElement
+    End Function
+
     Private Sub WriteText(ByVal text As String)
         ' If text starts with a space then IE won't print it.
         ' TO DO: This needs to be replaced with a regex of some kind
@@ -200,8 +216,19 @@ Public Class Player
         Dim newText As HtmlElement = wbOutput.Document.CreateElement("span")
         newText.Style = GetCurrentStyle(False)
         newText.InnerHtml = text
-        wbOutput.Document.Body.AppendChild(newText)
+        CurrentElement.AppendChild(newText)
         newText.ScrollIntoView(True)
+    End Sub
+
+    Private Sub SetAlignment(ByVal align As String)
+        If align.Length = 0 Or align = "left" Then
+            m_currentElement = Nothing
+        Else
+            Dim newDiv As HtmlElement = wbOutput.Document.CreateElement("div")
+            newDiv.Style = "text-align:" + align
+            wbOutput.Document.Body.AppendChild(newDiv)
+            m_currentElement = newDiv
+        End If
     End Sub
 
     Private Sub WriteLine(ByVal text As String)
@@ -215,9 +242,12 @@ Public Class Player
     Private Sub GameFinished()
         m_initialised = False
         SetEnabledState(False)
+        StopSound()
     End Sub
 
     Private Sub m_game_PrintText(ByVal text As String) Handles m_game.PrintText
+
+        If Not m_initialised Then Exit Sub
 
         Dim currentTag As String = ""
         Dim currentTagValue As String = ""
@@ -243,6 +273,12 @@ Public Class Player
                             Italic = True
                         Case "u"
                             Underline = True
+                        Case "color"
+                            ForegroundOverride = reader.GetAttribute("color")
+                        Case "font"
+                            FontSizeOverride = CInt(reader.GetAttribute("size"))
+                        Case "align"
+                            SetAlignment(reader.GetAttribute("align"))
                         Case Else
                             Throw New Exception(String.Format("Unrecognised element '{0}'", reader.Name))
                     End Select
@@ -270,6 +306,12 @@ Public Class Player
                             Italic = False
                         Case "u"
                             Underline = False
+                        Case "color"
+                            ForegroundOverride = ""
+                        Case "font"
+                            FontSizeOverride = 0
+                        Case "align"
+                            SetAlignment("")
                         Case Else
                             Throw New Exception(String.Format("Unrecognised element '{0}'", reader.Name))
                     End Select
@@ -288,14 +330,17 @@ Public Class Player
         newLink.InnerHtml = linkText
         newLink.SetAttribute("href", "javascript:")
         newLink.Style = GetCurrentStyle(True)
-        wbOutput.Document.Body.AppendChild(newLink)
+        CurrentElement.AppendChild(newLink)
         AddHandler newLink.Click, AddressOf InLineLinkClicked
     End Sub
 
     Private Sub wbOutput_DocumentCompleted(ByVal sender As Object, ByVal e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
         m_browserReady = True
         m_stage = m_stage + 1
-        TryInitialise()
+
+        ' The call to TryInitialise() happens in a timer. This is so the DocumentCompleted event
+        ' has finished before trying to output text to the webbrowser control.
+        tmrInitialise.Enabled = True
     End Sub
 
     Private Sub TryInitialise()
@@ -305,7 +350,7 @@ Public Class Player
 
             If m_stage = 1 Then
 
-                success = m_game.Initialise()
+                success = m_game.Initialise(Me)
 
                 If Not success Then
                     WriteLine("<b>Failed to load game.</b>")
@@ -319,6 +364,7 @@ Public Class Player
                 Else
                     If Not String.IsNullOrEmpty(m_game.SaveFilename) Then
                         RaiseEvent AddToRecent(m_game.SaveFilename, m_gameName + " (Saved)")
+                        m_saveFile = m_game.SaveFilename
                     ElseIf Not m_game.Filename Is Nothing Then
                         RaiseEvent AddToRecent(m_game.Filename, m_gameName)
                     End If
@@ -332,18 +378,23 @@ Public Class Player
                     If Not URL Is Nothing Then
                         wbOutput.Navigate(m_game.GetInterface())
                     Else
-                        m_game.Begin()
+                        TryInitialiseStage2()
                     End If
                 End If
 
             ElseIf m_stage = 2 Then
-                m_initialised = True
-                m_game.Begin()
-                txtCommand.Focus()
+                TryInitialiseStage2()
             Else
                 Throw New Exception("Undefined startup stage")
             End If
         End If
+    End Sub
+
+    Private Sub TryInitialiseStage2()
+        m_menu.MenuEnabled("walkthrough") = Not m_game.Walkthrough Is Nothing
+        m_initialised = True
+        m_game.Begin()
+        txtCommand.Focus()
     End Sub
 
     Private Sub InLineLinkClicked(ByVal sender As Object, ByVal e As EventArgs)
@@ -374,45 +425,47 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub m_game_RequestRaised(ByVal request As AxeSoftware.Quest.Request, ByVal data As String) Handles m_game.RequestRaised
+    Private Sub m_game_RequestRaised(ByVal request As Quest.Request, ByVal data As String) Handles m_game.RequestRaised
         Select Case request
-            Case AxeSoftware.Quest.Request.Quit
+            Case Quest.Request.Quit
                 RaiseEvent Quit()
-            Case AxeSoftware.Quest.Request.Load
-            Case AxeSoftware.Quest.Request.Save
-            Case AxeSoftware.Quest.Request.UpdateLocation
+            Case Quest.Request.Load
+                ' TO DO: Raise event
+            Case Quest.Request.Save
+                Save()
+            Case Quest.Request.Restart
+                ' TO DO: Raise event
+            Case Quest.Request.UpdateLocation
                 lblBanner.Text = data
-            Case AxeSoftware.Quest.Request.GameName
+            Case Quest.Request.GameName
                 m_gameName = data
                 RaiseEvent SetGameName(data)
-            Case AxeSoftware.Quest.Request.FontName
+            Case Quest.Request.FontName
                 FontName = data
-            Case AxeSoftware.Quest.Request.FontSize
+            Case Quest.Request.FontSize
                 FontSize = CInt(data)
-            Case AxeSoftware.Quest.Request.Background
+            Case Quest.Request.Background
                 SetBackground(data)
-            Case AxeSoftware.Quest.Request.Foreground
+            Case Quest.Request.Foreground
                 Foreground = data
-            Case AxeSoftware.Quest.Request.LinkForeground
+            Case Quest.Request.LinkForeground
                 LinkForeground = data
-            Case AxeSoftware.Quest.Request.RunScript
+            Case Quest.Request.RunScript
                 RunScript(data)
+            Case Quest.Request.SetStatus
+                lstInventory.Status = data
+            Case Quest.Request.ClearScreen
+                DoClear()
+            Case Quest.Request.PanesVisible
+                SetPanesVisible(data)
+            Case Quest.Request.ShowPicture
+                ShowPicture(data)
+            Case Quest.Request.Speak
+                Speak(data)
             Case Else
                 Throw New Exception("Unhandled request")
         End Select
     End Sub
-
-    Private Function m_game_ShowMenu(ByVal menuData As AxeSoftware.Quest.MenuData) As String Handles m_game.ShowMenu
-        Dim menuForm As Menu
-        menuForm = New Menu()
-
-        menuForm.Caption = menuData.Caption
-        menuForm.Options = menuData.Options
-        menuForm.AllowCancel = menuData.AllowCancel
-        menuForm.ShowDialog()
-
-        Return menuForm.SelectedItem
-    End Function
 
     Private Sub m_game_UpdateList(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData)) Handles m_game.UpdateList
 
@@ -474,8 +527,11 @@ Public Class Player
 
     Private Function GetCurrentStyle(ByVal link As Boolean) As String
         If Len(m_style) = 0 Then
+            Dim fontSize As Integer = m_fontSize
+            If m_fontSizeOverride > 0 Then fontSize = m_fontSizeOverride
+
             m_style = "font-family:" + m_fontName _
-                + ";font-size:" + CStr(m_fontSize) + "pt"
+                + ";font-size:" + CStr(fontSize) + "pt"
 
             If Bold Then
                 m_style += ";font-weight:bold"
@@ -489,10 +545,12 @@ Public Class Player
             m_linkStyle = m_style
 
             If Underline Then
-                m_style = m_style + ";text-decoration:underline"
+                m_style += ";text-decoration:underline"
             End If
 
-            If Len(m_foreground) > 0 Then
+            If Len(m_foregroundOverride) > 0 Then
+                m_style += ";color:" + m_foregroundOverride
+            ElseIf Len(m_foreground) > 0 Then
                 m_style += ";color:" + m_foreground
             End If
             If Len(m_linkForeground) > 0 Then
@@ -528,6 +586,16 @@ Public Class Player
         End Set
     End Property
 
+    Public Property FontSizeOverride() As Integer
+        Get
+            Return m_fontSizeOverride
+        End Get
+        Set(ByVal value As Integer)
+            m_fontSizeOverride = value
+            m_style = ""
+        End Set
+    End Property
+
     Public Property Foreground() As String
         Get
             Return m_foreground
@@ -544,6 +612,16 @@ Public Class Player
         End Get
         Set(ByVal value As String)
             m_linkForeground = value
+            m_style = ""
+        End Set
+    End Property
+
+    Public Property ForegroundOverride() As String
+        Get
+            Return m_foregroundOverride
+        End Get
+        Set(ByVal value As String)
+            m_foregroundOverride = value
             m_style = ""
         End Set
     End Property
@@ -643,8 +721,8 @@ Public Class Player
     End Sub
 
     Private Sub SaveAs()
-        ctlSaveFile.DefaultExt = "aslx"
-        ctlSaveFile.Filter = "Quest Games|*.aslx|All files|*.*"
+        ctlSaveFile.DefaultExt = m_game.SaveExtension
+        ctlSaveFile.Filter = "Saved Games|*." + m_game.SaveExtension + "|All files|*.*"
         ctlSaveFile.FileName = m_saveFile
         If ctlSaveFile.ShowDialog() = DialogResult.OK Then
             m_saveFile = ctlSaveFile.FileName
@@ -654,13 +732,150 @@ Public Class Player
 
     Private Sub Save(ByVal filename As String)
         Try
-            System.IO.File.WriteAllText(filename, m_game.Save())
+            m_game.Save(filename)
             RaiseEvent AddToRecent(filename, m_gameName + " (Saved)")
             WriteLine("")
             WriteLine("Saved: " + filename)
         Catch ex As Exception
             MsgBox("Unable to save the file due to the following error:" + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
         End Try
+    End Sub
+
+    Public Function ShowMenu(ByVal menuData As MenuData) As String Implements IPlayer.ShowMenu
+        Dim menuForm As Menu
+        menuForm = New Menu()
+
+        menuForm.Caption = menuData.Caption
+        menuForm.Options = menuData.Options
+        menuForm.AllowCancel = menuData.AllowCancel
+        menuForm.ShowDialog()
+
+        Return menuForm.SelectedItem
+    End Function
+
+    Public Sub DoWait() Implements IPlayer.DoWait
+        m_waiting = True
+        Do
+            Threading.Thread.Sleep(100)
+            Application.DoEvents()
+        Loop Until m_waiting = False
+    End Sub
+
+    Public Function ShowMsgBox(ByVal caption As String) As Boolean Implements IPlayer.ShowMsgBox
+        Return MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes
+    End Function
+
+    Public Function KeyPressed() As Boolean
+        If m_waiting Then
+            m_waiting = False
+            Return True
+        End If
+
+        Return False
+    End Function
+
+    Private Sub tmrInitialise_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles tmrInitialise.Tick
+        tmrInitialise.Enabled = False
+        TryInitialise()
+    End Sub
+
+    Private Sub wbOutput_PreviewKeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.PreviewKeyDownEventArgs) Handles wbOutput.PreviewKeyDown
+        KeyPressed()
+    End Sub
+
+    Private Sub DoClear()
+        m_currentElement = Nothing
+        wbOutput.Document.Body.InnerHtml = ""
+    End Sub
+
+    Private Sub SetPanesVisible(ByVal data As String)
+        Select Case data
+            Case "on"
+                PanesVisible = True
+                cmdPanes.Visible = True
+            Case "off"
+                PanesVisible = False
+                cmdPanes.Visible = True
+            Case "disabled"
+                PanesVisible = False
+                cmdPanes.Visible = False
+        End Select
+
+        If cmdPanes.Visible Then
+            lblBanner.Width = cmdPanes.Left - 1
+        Else
+            lblBanner.Width = wbOutput.Width
+        End If
+    End Sub
+
+    Private Sub ShowPicture(ByVal filename As String)
+        Dim newImage As HtmlElement = wbOutput.Document.CreateElement("img")
+        newImage.SetAttribute("src", filename)
+        CurrentElement.AppendChild(newImage)
+        newImage.ScrollIntoView(True)
+    End Sub
+
+    Private Sub PlaySound(ByVal filename As String, ByVal synchronous As Boolean, ByVal looped As Boolean) Implements IPlayer.PlaySound
+        If synchronous And looped Then
+            Throw New Exception("Can't play sound that is both synchronous and looped")
+        End If
+        m_loopSound = looped
+        m_soundPlaying = True
+        ctlMediaPlayer.URL = filename
+        ctlMediaPlayer.Ctlcontrols.play()
+
+        If synchronous Then
+            Do
+                Threading.Thread.Sleep(10)
+                Application.DoEvents()
+            Loop Until Not m_soundPlaying
+        End If
+    End Sub
+
+    Private Sub StopSound() Implements IPlayer.StopSound
+        m_loopSound = False
+        ctlMediaPlayer.Ctlcontrols.stop()
+    End Sub
+
+    Private Sub ctlMediaPlayer_PlayStateChange(ByVal sender As Object, ByVal e As AxWMPLib._WMPOCXEvents_PlayStateChangeEvent) Handles ctlMediaPlayer.PlayStateChange
+        If ctlMediaPlayer.playState = WMPLib.WMPPlayState.wmppsStopped Then
+            m_soundPlaying = False
+            If m_loopSound Then
+                ctlMediaPlayer.Ctlcontrols.play()
+            End If
+        End If
+    End Sub
+
+    Private Sub Speak(ByVal text As String)
+        m_speech.Speak(text)
+    End Sub
+
+    Public Sub DoInvoke(ByVal method As System.Delegate) Implements IPlayer.DoInvoke
+        Invoke(method)
+    End Sub
+
+    Public Sub SetWindowMenu(ByVal menuData As MenuData) Implements IPlayer.SetWindowMenu
+        m_menu.CreateWindowMenu(menuData.Caption, menuData.Options, AddressOf WindowMenuClicked)
+    End Sub
+
+    Private Sub WindowMenuClicked(ByVal command As String)
+        RunCommand(command)
+    End Sub
+
+    Public Function GetNewGameFile(ByVal originalFilename As String, ByVal extensions As String) As String Implements IPlayer.GetNewGameFile
+        If MsgBox(String.Format("The game file {0} does not exist.{1}Would you like to find the file yourself?", originalFilename, vbCrLf + vbCrLf), MsgBoxStyle.Question Or MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+            ctlOpenFile.Filter = "Game files|" + extensions
+            ctlOpenFile.ShowDialog()
+            Return ctlOpenFile.FileName
+        Else
+            Return ""
+        End If
+    End Function
+
+    Public Sub WindowClosing()
+        If Not m_game Is Nothing Then
+            m_game.Finish()
+        End If
     End Sub
 
 End Class

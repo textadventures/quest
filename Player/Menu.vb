@@ -20,6 +20,7 @@
     Public WriteOnly Property AllowCancel() As Boolean
         Set(ByVal value As Boolean)
             cmdCancel.Visible = value
+            Me.ControlBox = value
         End Set
     End Property
 

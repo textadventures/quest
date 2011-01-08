@@ -22,10 +22,15 @@ Partial Class ElementList
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.lblTitle = New System.Windows.Forms.Label
-        Me.lstList = New System.Windows.Forms.ListView
-        Me.colItems = New System.Windows.Forms.ColumnHeader
-        Me.tlbToolbar = New System.Windows.Forms.ToolStrip
+        Me.lblTitle = New System.Windows.Forms.Label()
+        Me.tlbToolbar = New System.Windows.Forms.ToolStrip()
+        Me.ctlSplitContainer = New System.Windows.Forms.SplitContainer()
+        Me.lstList = New System.Windows.Forms.ListView()
+        Me.colItems = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.txtStatus = New System.Windows.Forms.TextBox()
+        Me.ctlSplitContainer.Panel1.SuspendLayout()
+        Me.ctlSplitContainer.Panel2.SuspendLayout()
+        Me.ctlSplitContainer.SuspendLayout()
         Me.SuspendLayout()
         '
         'lblTitle
@@ -42,27 +47,6 @@ Partial Class ElementList
         Me.lblTitle.TabIndex = 8
         Me.lblTitle.Text = "Title"
         '
-        'lstList
-        '
-        Me.lstList.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lstList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colItems})
-        Me.lstList.HideSelection = False
-        Me.lstList.Location = New System.Drawing.Point(0, 45)
-        Me.lstList.Margin = New System.Windows.Forms.Padding(0)
-        Me.lstList.MultiSelect = False
-        Me.lstList.Name = "lstList"
-        Me.lstList.Size = New System.Drawing.Size(360, 238)
-        Me.lstList.TabIndex = 10
-        Me.lstList.UseCompatibleStateImageBehavior = False
-        Me.lstList.View = System.Windows.Forms.View.List
-        '
-        'colItems
-        '
-        Me.colItems.Text = "Items"
-        Me.colItems.Width = 214
-        '
         'tlbToolbar
         '
         Me.tlbToolbar.Location = New System.Drawing.Point(0, 20)
@@ -71,22 +55,76 @@ Partial Class ElementList
         Me.tlbToolbar.TabIndex = 11
         Me.tlbToolbar.Text = "ToolStrip1"
         '
+        'ctlSplitContainer
+        '
+        Me.ctlSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlSplitContainer.Location = New System.Drawing.Point(0, 45)
+        Me.ctlSplitContainer.Name = "ctlSplitContainer"
+        Me.ctlSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal
+        '
+        'ctlSplitContainer.Panel1
+        '
+        Me.ctlSplitContainer.Panel1.Controls.Add(Me.lstList)
+        '
+        'ctlSplitContainer.Panel2
+        '
+        Me.ctlSplitContainer.Panel2.Controls.Add(Me.txtStatus)
+        Me.ctlSplitContainer.Panel2Collapsed = True
+        Me.ctlSplitContainer.Size = New System.Drawing.Size(360, 238)
+        Me.ctlSplitContainer.SplitterDistance = 120
+        Me.ctlSplitContainer.TabIndex = 12
+        '
+        'lstList
+        '
+        Me.lstList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colItems})
+        Me.lstList.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lstList.HideSelection = False
+        Me.lstList.Location = New System.Drawing.Point(0, 0)
+        Me.lstList.Margin = New System.Windows.Forms.Padding(0)
+        Me.lstList.MultiSelect = False
+        Me.lstList.Name = "lstList"
+        Me.lstList.Size = New System.Drawing.Size(360, 238)
+        Me.lstList.TabIndex = 11
+        Me.lstList.UseCompatibleStateImageBehavior = False
+        Me.lstList.View = System.Windows.Forms.View.List
+        '
+        'colItems
+        '
+        Me.colItems.Text = "Items"
+        Me.colItems.Width = 214
+        '
+        'txtStatus
+        '
+        Me.txtStatus.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtStatus.Location = New System.Drawing.Point(0, 0)
+        Me.txtStatus.Multiline = True
+        Me.txtStatus.Name = "txtStatus"
+        Me.txtStatus.ReadOnly = True
+        Me.txtStatus.Size = New System.Drawing.Size(150, 46)
+        Me.txtStatus.TabIndex = 0
+        '
         'ElementList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.ctlSplitContainer)
         Me.Controls.Add(Me.tlbToolbar)
-        Me.Controls.Add(Me.lstList)
         Me.Controls.Add(Me.lblTitle)
         Me.Name = "ElementList"
         Me.Size = New System.Drawing.Size(360, 283)
+        Me.ctlSplitContainer.Panel1.ResumeLayout(False)
+        Me.ctlSplitContainer.Panel2.ResumeLayout(False)
+        Me.ctlSplitContainer.Panel2.PerformLayout()
+        Me.ctlSplitContainer.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
     Friend WithEvents lblTitle As System.Windows.Forms.Label
-    Friend WithEvents lstList As System.Windows.Forms.ListView
     Friend WithEvents tlbToolbar As System.Windows.Forms.ToolStrip
+    Friend WithEvents ctlSplitContainer As System.Windows.Forms.SplitContainer
+    Friend WithEvents lstList As System.Windows.Forms.ListView
     Friend WithEvents colItems As System.Windows.Forms.ColumnHeader
+    Friend WithEvents txtStatus As System.Windows.Forms.TextBox
 
 End Class

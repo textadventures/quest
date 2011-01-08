@@ -23,22 +23,27 @@ Partial Class Player
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Player))
         Me.splitMain = New System.Windows.Forms.SplitContainer()
+        Me.ctlMediaPlayer = New AxWMPLib.AxWindowsMediaPlayer()
         Me.wbOutput = New System.Windows.Forms.WebBrowser()
         Me.cmdPanes = New System.Windows.Forms.Button()
         Me.lblBanner = New System.Windows.Forms.Label()
         Me.cmdGo = New System.Windows.Forms.Button()
         Me.txtCommand = New System.Windows.Forms.TextBox()
         Me.lblCompass = New System.Windows.Forms.Label()
-        Me.ctlCompass = New AxeSoftware.Quest.Compass()
         Me.splitPane = New System.Windows.Forms.SplitContainer()
-        Me.lstInventory = New AxeSoftware.Quest.ElementList()
-        Me.lstPlacesObjects = New AxeSoftware.Quest.ElementList()
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
+        Me.tmrInitialise = New System.Windows.Forms.Timer(Me.components)
+        Me.ctlCompass = New AxeSoftware.Quest.Compass()
+        Me.lstInventory = New AxeSoftware.Quest.ElementList()
+        Me.lstPlacesObjects = New AxeSoftware.Quest.ElementList()
+        Me.ctlOpenFile = New System.Windows.Forms.OpenFileDialog()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.Panel2.SuspendLayout()
         Me.splitMain.SuspendLayout()
+        CType(Me.ctlMediaPlayer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitPane.Panel1.SuspendLayout()
         Me.splitPane.Panel2.SuspendLayout()
         Me.splitPane.SuspendLayout()
@@ -52,6 +57,7 @@ Partial Class Player
         '
         'splitMain.Panel1
         '
+        Me.splitMain.Panel1.Controls.Add(Me.ctlMediaPlayer)
         Me.splitMain.Panel1.Controls.Add(Me.wbOutput)
         Me.splitMain.Panel1.Controls.Add(Me.cmdPanes)
         Me.splitMain.Panel1.Controls.Add(Me.lblBanner)
@@ -66,6 +72,16 @@ Partial Class Player
         Me.splitMain.Size = New System.Drawing.Size(695, 482)
         Me.splitMain.SplitterDistance = 510
         Me.splitMain.TabIndex = 1
+        '
+        'ctlMediaPlayer
+        '
+        Me.ctlMediaPlayer.Enabled = True
+        Me.ctlMediaPlayer.Location = New System.Drawing.Point(8, 28)
+        Me.ctlMediaPlayer.Name = "ctlMediaPlayer"
+        Me.ctlMediaPlayer.OcxState = CType(resources.GetObject("ctlMediaPlayer.OcxState"), System.Windows.Forms.AxHost.State)
+        Me.ctlMediaPlayer.Size = New System.Drawing.Size(75, 23)
+        Me.ctlMediaPlayer.TabIndex = 7
+        Me.ctlMediaPlayer.Visible = False
         '
         'wbOutput
         '
@@ -141,16 +157,6 @@ Partial Class Player
         Me.lblCompass.TabIndex = 11
         Me.lblCompass.Text = "Compass"
         '
-        'ctlCompass
-        '
-        Me.ctlCompass.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ctlCompass.Location = New System.Drawing.Point(0, 388)
-        Me.ctlCompass.Margin = New System.Windows.Forms.Padding(0)
-        Me.ctlCompass.Name = "ctlCompass"
-        Me.ctlCompass.Size = New System.Drawing.Size(181, 94)
-        Me.ctlCompass.TabIndex = 10
-        '
         'splitPane
         '
         Me.splitPane.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -171,6 +177,24 @@ Partial Class Player
         Me.splitPane.SplitterDistance = 128
         Me.splitPane.TabIndex = 0
         '
+        'tmrTimer
+        '
+        Me.tmrTimer.Interval = 50
+        '
+        'tmrInitialise
+        '
+        Me.tmrInitialise.Interval = 50
+        '
+        'ctlCompass
+        '
+        Me.ctlCompass.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ctlCompass.Location = New System.Drawing.Point(0, 388)
+        Me.ctlCompass.Margin = New System.Windows.Forms.Padding(0)
+        Me.ctlCompass.Name = "ctlCompass"
+        Me.ctlCompass.Size = New System.Drawing.Size(181, 94)
+        Me.ctlCompass.TabIndex = 10
+        '
         'lstInventory
         '
         Me.lstInventory.Dock = System.Windows.Forms.DockStyle.Fill
@@ -189,10 +213,6 @@ Partial Class Player
         Me.lstPlacesObjects.TabIndex = 0
         Me.lstPlacesObjects.Title = "Places and Objects"
         '
-        'tmrTimer
-        '
-        Me.tmrTimer.Interval = 50
-        '
         'Player
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -204,6 +224,7 @@ Partial Class Player
         Me.splitMain.Panel1.PerformLayout()
         Me.splitMain.Panel2.ResumeLayout(False)
         Me.splitMain.ResumeLayout(False)
+        CType(Me.ctlMediaPlayer, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitPane.Panel1.ResumeLayout(False)
         Me.splitPane.Panel2.ResumeLayout(False)
         Me.splitPane.ResumeLayout(False)
@@ -223,5 +244,8 @@ Partial Class Player
     Friend WithEvents lstPlacesObjects As Quest.ElementList
     Friend WithEvents tmrTimer As System.Windows.Forms.Timer
     Friend WithEvents ctlSaveFile As System.Windows.Forms.SaveFileDialog
+    Friend WithEvents tmrInitialise As System.Windows.Forms.Timer
+    Friend WithEvents ctlMediaPlayer As AxWMPLib.AxWindowsMediaPlayer
+    Friend WithEvents ctlOpenFile As System.Windows.Forms.OpenFileDialog
 
 End Class

@@ -23,36 +23,37 @@ Partial Class Menu
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Menu))
-        Me.ctlMenuStrip = New System.Windows.Forms.MenuStrip
-        Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.OpenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.OpenEditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.RestartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.toolStripSeparator = New System.Windows.Forms.ToolStripSeparator
-        Me.SaveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.SaveAsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.toolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator
-        Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.EditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.UndoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.RedoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.toolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator
-        Me.SelectAllToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.CopyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.ToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.OptionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.DebuggerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.WalkthroughToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.ContentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.toolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator
-        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+        Me.ctlMenuStrip = New System.Windows.Forms.MenuStrip()
+        Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenEditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RestartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.toolStripSeparator = New System.Windows.Forms.ToolStripSeparator()
+        Me.SaveToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SaveAsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.toolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.UndoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RedoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.toolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.SelectAllToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CopyToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OptionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DebuggerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.WalkthroughToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ContentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.toolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.WindowMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlMenuStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlMenuStrip
         '
-        Me.ctlMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.EditToolStripMenuItem, Me.ToolsToolStripMenuItem, Me.HelpToolStripMenuItem})
+        Me.ctlMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.EditToolStripMenuItem, Me.ToolsToolStripMenuItem, Me.HelpToolStripMenuItem, Me.WindowMenuToolStripMenuItem})
         Me.ctlMenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlMenuStrip.Name = "ctlMenuStrip"
         Me.ctlMenuStrip.Size = New System.Drawing.Size(426, 24)
@@ -213,22 +214,29 @@ Partial Class Menu
         'ContentsToolStripMenuItem
         '
         Me.ContentsToolStripMenuItem.Name = "ContentsToolStripMenuItem"
-        Me.ContentsToolStripMenuItem.Size = New System.Drawing.Size(122, 22)
+        Me.ContentsToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.ContentsToolStripMenuItem.Text = "&Contents"
         Me.ContentsToolStripMenuItem.Visible = False
         '
         'toolStripSeparator5
         '
         Me.toolStripSeparator5.Name = "toolStripSeparator5"
-        Me.toolStripSeparator5.Size = New System.Drawing.Size(119, 6)
+        Me.toolStripSeparator5.Size = New System.Drawing.Size(149, 6)
         Me.toolStripSeparator5.Visible = False
         '
         'AboutToolStripMenuItem
         '
         Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(122, 22)
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.AboutToolStripMenuItem.Tag = "about"
         Me.AboutToolStripMenuItem.Text = "&About..."
+        '
+        'WindowMenuToolStripMenuItem
+        '
+        Me.WindowMenuToolStripMenuItem.Name = "WindowMenuToolStripMenuItem"
+        Me.WindowMenuToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
+        Me.WindowMenuToolStripMenuItem.Tag = "windowmenu"
+        Me.WindowMenuToolStripMenuItem.Text = "WindowMenu"
         '
         'Menu
         '
@@ -267,5 +275,6 @@ Partial Class Menu
     Friend WithEvents toolStripSeparator5 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents AboutToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RedoToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents WindowMenuToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

@@ -114,6 +114,7 @@
     </Compile>
     <None Include="Core\Core.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\English.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -188,7 +189,9 @@
     <Content Include="PlayerDefault.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="WebFunctions.js" />
+    <Content Include="WebFunctions.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

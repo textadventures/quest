@@ -112,4 +112,11 @@ Public Class ElementList
         lstList.Clear()
         RefreshToolbarButtons()
     End Sub
+
+    Public WriteOnly Property Status As String
+        Set(ByVal value As String)
+            ctlSplitContainer.Panel2Collapsed = (value.Length = 0)
+            txtStatus.Text = value
+        End Set
+    End Property
 End Class
