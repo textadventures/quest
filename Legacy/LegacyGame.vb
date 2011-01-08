@@ -5728,7 +5728,7 @@ ErrorHandler:
         GetPropertiesInType = PropertyList
     End Function
 
-    Friend Function GetRoomID(ByRef RoomName As String, ByRef Thread As ThreadData) As Integer
+    Friend Function GetRoomID(ByVal RoomName As String, ByRef Thread As ThreadData) As Integer
         Dim Found As Boolean
         Dim ArrayIndex, i As Integer
         Found = False
@@ -11700,8 +11700,7 @@ ErrorHandler:
         LogASLError("Quest ASL4 Interpreter " & QuestVersion, LOGTYPE_INIT)
 
         Dim LogMsg As String
-        LogMsg = "Opening file " & afilename & " on " & Today.ToString()
-        LogMsg = LogMsg & " at " & TimeOfDay.ToString()
+        LogMsg = "Opening file " & afilename & " on " & Date.Now.ToString()
         LogASLError(LogMsg, LOGTYPE_INIT)
 
         ' Parse file and find where the 'define' blocks are:

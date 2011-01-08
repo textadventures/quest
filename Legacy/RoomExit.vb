@@ -182,7 +182,12 @@ Friend Class RoomExit
             sObjName = sObjName & "." & m_oParent.GetDirectionName(m_lDirection)
             m_game.Objs(m_lObjID).ObjectAlias = m_oParent.GetDirectionName(m_lDirection)
         Else
-            lLastExitID = CInt(m_game.GetObjectProperty("quest.lastexitid", (m_oParent.ObjID), , False))
+            Dim lastExitID As String = m_game.GetObjectProperty("quest.lastexitid", (m_oParent.ObjID), , False)
+            If lastExitID.Length = 0 Then
+                lLastExitID = 0
+            Else
+                lLastExitID = CInt(lLastExitID)
+            End If
             lLastExitID = lLastExitID + 1
             m_game.AddToObjectProperties("quest.lastexitid=" & CStr(lLastExitID), (m_oParent.ObjID), m_game.NullThread)
             sObjName = sObjName & ".exit" & CStr(lLastExitID)
