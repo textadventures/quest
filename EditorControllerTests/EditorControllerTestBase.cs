@@ -7,6 +7,7 @@ using AxeSoftware.Quest;
 
 namespace EditorControllerTests
 {
+    [TestClass]
     public abstract class EditorControllerTestBase
     {
         private EditorController m_controller;
