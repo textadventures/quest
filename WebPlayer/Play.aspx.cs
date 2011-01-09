@@ -31,8 +31,9 @@ namespace WebPlayer
                 string command = txtCommand.Text;
                 txtCommand.Text = "";
                 m_player.SendCommand(command);
-                divOutput.InnerHtml += m_player.ClearBuffer();
+                string output = m_player.ClearBuffer();
                 txtCommand.Focus();
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "addText(\"" + output + "\")", true);
             }
         }
     }

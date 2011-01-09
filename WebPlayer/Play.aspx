@@ -5,9 +5,11 @@
 <head runat="server">
     <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.4.min.js"></script>
     <script type="text/javascript">
-        function ClearInput() {
-            //$("#txtCommand").val("");
+        function addText(text) {
+            $("#divOutput").html($("#divOutput").html() + text);
+            $("#divOutput").scrollTop($("#divOutput").scrollTop() + 500);
         }
+
     </script>
     <title>Player</title>
 </head>
@@ -15,13 +17,12 @@
     <form id="form1" runat="server">
     <asp:ScriptManager ID="ctlScriptManager" runat="server">
     </asp:ScriptManager>
-    <h1>
-        Player</h1>
+    <h1>Player</h1>
+    <div id="divOutput" runat="server" style="height: 400px; border: 1px solid silver; overflow: auto;">
+        Output<br />
+    </div>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
-            <div id="divOutput" runat="server" style="height: 400px; border: 1px solid silver; overflow: auto;">
-                Output<br />
-            </div>
             <asp:TextBox ID="txtCommand" runat="server" Width="500px"></asp:TextBox>
             <asp:Button ID="cmdSubmit" runat="server" Width="20px" OnClick="cmdSubmit_Click"
                 OnClientClick="ClearInput()" />
