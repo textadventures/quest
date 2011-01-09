@@ -20,6 +20,9 @@
         }
 
     </script>
+    <style type="text/css">
+        a.cmdlink { text-decoration: underline; color: Blue; cursor: pointer };
+    </style>
     <title>Player</title>
 </head>
 <body>

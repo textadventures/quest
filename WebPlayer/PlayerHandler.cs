@@ -54,7 +54,7 @@ namespace WebPlayer
                                 currentCommand = "look at";
                                 break;
                             case "exit":
-                                currentCommand = "go to";
+                                currentCommand = "go";
                                 break;
                             case "br":
                                 WriteText("<br />");
@@ -141,7 +141,7 @@ namespace WebPlayer
 
         private void AddLink(string text, string command)
         {
-            WriteText(string.Format("<a href=\"javascript:enterCommand('{0}')\">{1}</a>", command, text));
+            WriteText(string.Format("<a class=\"cmdlink\" onclick=\"enterCommand('{0}')\">{1}</a>", command, text));
         }
 
         public void SendCommand(string command)
