@@ -7,14 +7,23 @@
     <script type="text/javascript">
         function addText(text) {
             $("#divOutput").html($("#divOutput").html() + text);
+
+            // TO DO: Add text within its own <div> with its own id, then use
+            // jQuery's .position() to get actual position of latest text, and use
+            // that value for scrollTop.
             $("#divOutput").scrollTop($("#divOutput").scrollTop() + 500);
+        }
+
+        function enterCommand(command) {
+            $("#txtCommand").val(command);
+            $("#cmdSubmit").click();
         }
 
     </script>
     <title>Player</title>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="playerform" runat="server">
     <asp:ScriptManager ID="ctlScriptManager" runat="server">
     </asp:ScriptManager>
     <h1>Player</h1>
@@ -24,8 +33,7 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <asp:TextBox ID="txtCommand" runat="server" Width="500px"></asp:TextBox>
-            <asp:Button ID="cmdSubmit" runat="server" Width="20px" OnClick="cmdSubmit_Click"
-                OnClientClick="ClearInput()" />
+            <asp:Button ID="cmdSubmit" runat="server" Width="20px" OnClick="cmdSubmit_Click" />
             <asp:UpdateProgress ID="UpdateProgress1" runat="server">
                 <ProgressTemplate>
                     Working

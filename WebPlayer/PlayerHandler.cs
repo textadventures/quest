@@ -34,7 +34,7 @@ namespace WebPlayer
 
         private void ProcessOutput(string text)
         {
-            string currentTag = "";
+            string currentCommand = "";
             string currentTagValue = "";
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
@@ -51,20 +51,23 @@ namespace WebPlayer
                                 // do nothing
                                 break;
                             case "object":
-                                currentTag = "object";
+                                currentCommand = "look at";
                                 break;
                             case "exit":
-                                currentTag = "exit";
+                                currentCommand = "go to";
                                 break;
                             case "br":
                                 WriteText("<br />");
                                 break;
                             case "b":
-                            //Bold = True
+                                WriteText("<b>");
+                                break;
                             case "i":
-                            //Italic = True
+                                WriteText("<i>");
+                                break;
                             case "u":
-                            //Underline = True
+                                WriteText("<u>");
+                                break;
                             case "color":
                             //ForegroundOverride = reader.GetAttribute("color")
                             case "font":
@@ -76,7 +79,7 @@ namespace WebPlayer
                         }
                         break;
                     case XmlNodeType.Text:
-                        if (currentTag.Length == 0)
+                        if (currentCommand.Length == 0)
                         {
                             WriteText(reader.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"));
                         }
@@ -95,23 +98,21 @@ namespace WebPlayer
                                 // do nothing
                                 break;
                             case "object":
-                                currentTag = "";
-                                //AddLink(currentTagValue, HyperlinkType.ObjectLink)
-                                WriteText(currentTagValue);
+                                AddLink(currentTagValue, currentCommand + " " + currentTagValue);
+                                currentCommand = "";
                                 break;
                             case "exit":
-                                currentTag = "";
-                                //AddLink(currentTagValue, HyperlinkType.ExitLink)
-                                WriteText(currentTagValue);
+                                AddLink(currentTagValue, currentCommand + " " + currentTagValue);
+                                currentCommand = "";
                                 break;
                             case "b":
-                                //Bold = False
+                                WriteText("</b>");
                                 break;
                             case "i":
-                                //Italic = False
+                                WriteText("</i>");
                                 break;
                             case "u":
-                                //Underline = False
+                                WriteText("</u>");
                                 break;
                             case "color":
                                 //ForegroundOverride = ""
@@ -136,6 +137,11 @@ namespace WebPlayer
         private void WriteText(string text)
         {
             m_buffer += text;
+        }
+
+        private void AddLink(string text, string command)
+        {
+            WriteText(string.Format("<a href=\"javascript:enterCommand('{0}')\">{1}</a>", command, text));
         }
 
         public void SendCommand(string command)

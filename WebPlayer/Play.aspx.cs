@@ -17,6 +17,9 @@ namespace WebPlayer
             {
                 m_player = new PlayerHandler(@"C:\VBProjects\Quest\trunk\WorldModel\WorldModel\Examples-Internal\test.aslx");
                 Session["Player"] = m_player;
+
+                // TO DO: would prefer an AJAX call to get the buffer when the page has finished loading
+                divOutput.InnerHtml = m_player.ClearBuffer();
             }
             else
             {
@@ -33,7 +36,7 @@ namespace WebPlayer
                 m_player.SendCommand(command);
                 string output = m_player.ClearBuffer();
                 txtCommand.Focus();
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "addText(\"" + output + "\")", true);
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "addText(\"" + output.Replace("\"", "\\\"") + "\")", true);
             }
         }
     }
