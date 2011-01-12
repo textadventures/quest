@@ -81,7 +81,7 @@ namespace AxeSoftware.Quest
             {
                 return e;
             }
-            throw new InvalidOperationException("No elements to return");
+            return null;
         }
     }
 }

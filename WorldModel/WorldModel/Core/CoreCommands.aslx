@@ -116,12 +116,6 @@
     if (not ListContains(ScopeReachable(), object)) {
       msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
     }
-    else if (open and object.isopen) {
-      msg (DynamicTemplate("AlreadyOpen", object))
-    }
-    else if (not open and not object.isopen) {
-      msg (DynamicTemplate("AlreadyClosed", object))
-    }
     else {
       found = true
       
@@ -130,12 +124,21 @@
           do (object, action)
         }
         case ("boolean") {
-          if ((open and object.open) or (not open and object.close)) {
-            object.isopen = open
-            if (open) {
-              msg (DynamicTemplate("OpenSuccessful", object))
+          if (open and object.open) {
+            if (object.isopen) {
+              msg (DynamicTemplate("AlreadyOpen", object))
             }
             else {
+              object.isopen = true
+              msg (DynamicTemplate("OpenSuccessful", object))
+            }
+          }
+          else if (not open and object.close) {
+            if (not object.isopen) {
+              msg (DynamicTemplate("AlreadyClosed", object))
+            }
+            else {
+              object.isopen = false
               msg (DynamicTemplate("CloseSuccessful", object))
             }
           }

@@ -331,7 +331,11 @@ namespace AxeSoftware.Quest
 
         public IWalkthrough Walkthrough
         {
-            get { return new Walkthrough(m_elements.GetSingle(ElementType.Walkthrough)); }
+            get {
+                Element walkthroughElement = m_elements.GetSingle(ElementType.Walkthrough);
+                if (walkthroughElement == null) return null;
+                return new Walkthrough(walkthroughElement); 
+            }
         }
 
         public List<string> DebuggerObjectTypes
