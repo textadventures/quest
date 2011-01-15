@@ -21,6 +21,7 @@ namespace AxeSoftware.Quest
         private Template m_template;
         private UndoLogger m_undoLogger;
         private string m_filename;
+        private string m_libFolder = null;
         private List<string> m_errors;
         private Dictionary<string, ObjectType> m_debuggerObjectTypes = new Dictionary<string, ObjectType>();
         private GameState m_state = GameState.NotStarted;
@@ -98,6 +99,12 @@ namespace AxeSoftware.Quest
             m_undoLogger = new UndoLogger(this);
             m_saver = new GameSaver(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
+        }
+
+        public WorldModel(string filename, string libFolder)
+            : this(filename)
+        {
+            m_libFolder = libFolder;
         }
 
         private void InitialiseElementFactories()
@@ -494,6 +501,11 @@ namespace AxeSoftware.Quest
             return m_elements.Get(ElementType.Object, obj).GetDebugData();
         }
 
+        public void Tick()
+        {
+            // TO DO: This is for timers
+        }
+
         #endregion
 
         public void RunScript(IScript script)
@@ -698,6 +710,7 @@ namespace AxeSoftware.Quest
 
             if (TryPath(current, file, out path)) return path;
             if (TryPath(Environment.CurrentDirectory, file, out path)) return path;
+            if (m_libFolder != null && TryPath(m_libFolder, file, out path)) return path;
             if (System.Reflection.Assembly.GetEntryAssembly() != null)
             {
                 if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path)) return path;

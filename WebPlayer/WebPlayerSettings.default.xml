@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" ?>
+
+<!-- After entering settings, this file should be saved as WebPlayerSettings.xml -->
+
+<appSettings>
+  <add key="GameFolder" value="C:\Games\"/>
+  <add key="LibraryFolder" value="C:\Libraries\"/>
+</appSettings>
+

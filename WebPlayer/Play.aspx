@@ -12,6 +12,7 @@
             // jQuery's .position() to get actual position of latest text, and use
             // that value for scrollTop.
             $("#divOutput").scrollTop($("#divOutput").scrollTop() + 500);
+            $("#txtCommand").focus();
         }
 
         function enterCommand(command) {
@@ -21,17 +22,17 @@
 
     </script>
     <style type="text/css">
-        a.cmdlink { text-decoration: underline; color: Blue; cursor: pointer };
+        a.cmdlink { text-decoration: underline; color: Blue; cursor: pointer; }
+        div#divOutput { padding: 8px; }
     </style>
     <title>Player</title>
 </head>
 <body>
-    <form id="playerform" runat="server">
+    <form id="playerform" runat="server" defaultbutton="cmdSubmit">
     <asp:ScriptManager ID="ctlScriptManager" runat="server">
     </asp:ScriptManager>
     <h1>Player</h1>
     <div id="divOutput" runat="server" style="height: 400px; border: 1px solid silver; overflow: auto;">
-        Output<br />
     </div>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
@@ -42,6 +43,10 @@
                     Working
                 </ProgressTemplate>
             </asp:UpdateProgress>
+            <asp:Timer ID="tmrInit" runat="server" Interval="50" ontick="InitTimerTick">
+            </asp:Timer>
+            <asp:Timer ID="tmrTick" runat="server" Interval="1000" ontick="TimerTick" Enabled="False">
+            </asp:Timer>
         </ContentTemplate>
     </asp:UpdatePanel>
     </form>

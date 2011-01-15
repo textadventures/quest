@@ -29,6 +29,7 @@ namespace AxeSoftware.Quest
         IWalkthrough Walkthrough { get; }
         void Save(string filename);
         string SaveExtension { get; }
+        void Tick();
     }
 
     public interface IPlayer
@@ -36,7 +37,6 @@ namespace AxeSoftware.Quest
         string ShowMenu(MenuData menuData);
         void DoWait();
         bool ShowMsgBox(string caption);
-        void DoInvoke(System.Delegate method);
         void SetWindowMenu(MenuData menuData);
         string GetNewGameFile(string originalFilename, string extensions);
         void PlaySound(string filename, bool synchronous, bool looped);

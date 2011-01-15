@@ -241,6 +241,7 @@ Public Class Player
 
     Private Sub GameFinished()
         m_initialised = False
+        tmrTick.Enabled = False
         SetEnabledState(False)
         StopSound()
     End Sub
@@ -393,6 +394,7 @@ Public Class Player
     Private Sub TryInitialiseStage2()
         m_menu.MenuEnabled("walkthrough") = Not m_game.Walkthrough Is Nothing
         m_initialised = True
+        tmrTick.Enabled = True
         m_game.Begin()
         txtCommand.Focus()
     End Sub
@@ -758,7 +760,7 @@ Public Class Player
         Do
             Threading.Thread.Sleep(100)
             Application.DoEvents()
-        Loop Until m_waiting = False
+        Loop Until Not m_waiting Or Not m_initialised
     End Sub
 
     Public Function ShowMsgBox(ByVal caption As String) As Boolean Implements IPlayer.ShowMsgBox
@@ -850,10 +852,6 @@ Public Class Player
         m_speech.Speak(text)
     End Sub
 
-    Public Sub DoInvoke(ByVal method As System.Delegate) Implements IPlayer.DoInvoke
-        Invoke(method)
-    End Sub
-
     Public Sub SetWindowMenu(ByVal menuData As MenuData) Implements IPlayer.SetWindowMenu
         m_menu.CreateWindowMenu(menuData.Caption, menuData.Options, AddressOf WindowMenuClicked)
     End Sub
@@ -878,4 +876,7 @@ Public Class Player
         End If
     End Sub
 
+    Private Sub tmrTick_Tick(sender As System.Object, e As System.EventArgs) Handles tmrTick.Tick
+        m_game.Tick()
+    End Sub
 End Class

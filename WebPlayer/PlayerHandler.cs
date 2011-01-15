@@ -10,14 +10,66 @@ namespace WebPlayer
     public class PlayerHandler : IPlayer
     {
         private IASL m_game;
+        private readonly string m_filename;
         private string m_buffer = "";
+        private string m_font = "";
+        private string m_fontSize = "";
+        private string m_foregroundOverride = "";
+        private string m_fontSizeOverride = "";
 
         public PlayerHandler(string filename)
         {
-            m_game = new WorldModel(filename);
-            m_game.PrintText += new PrintTextHandler(m_game_PrintText);
+            m_filename = filename;
+        }
+
+        public string LibraryFolder { get; set; }
+
+        public bool StartGame(out List<string> errors)
+        {
+            switch (System.IO.Path.GetExtension(m_filename).ToLower())
+            {
+                case ".aslx":
+                    m_game = new WorldModel(m_filename, LibraryFolder);
+                    break;
+                case ".asl":
+                case ".cas":
+                    m_game = new AxeSoftware.Quest.LegacyASL.LegacyGame(m_filename);
+                    break;
+                default:
+                    errors = new List<string> { "Unrecognised file type" };
+                    return false;
+            }
+
+            m_game.PrintText += m_game_PrintText;
+            m_game.RequestRaised += m_game_RequestRaised;
             m_game.Initialise(this);
-            m_game.Begin();
+            if (m_game.Errors.Count > 0)
+            {
+                errors = m_game.Errors;
+                return false;
+            }
+            else
+            {
+                errors = null;
+                m_game.Begin();
+                return true;
+            }
+        }
+
+        void m_game_RequestRaised(Request request, string data)
+        {
+            switch (request)
+            {
+                case Request.FontName:
+                    m_font = data;
+                    break;
+                case Request.FontSize:
+                    m_fontSize = data;
+                    break;
+                default:
+                    // TO DO: Print error or throw exception
+                    break;
+            }
         }
 
         void m_game_PrintText(string text)
@@ -39,6 +91,7 @@ namespace WebPlayer
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
             XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
+            System.Diagnostics.Debug.WriteLine(text);
 
             while (reader.Read())
             {
@@ -69,11 +122,14 @@ namespace WebPlayer
                                 WriteText("<u>");
                                 break;
                             case "color":
-                            //ForegroundOverride = reader.GetAttribute("color")
+                                m_foregroundOverride = reader.GetAttribute("color");
+                                break;
                             case "font":
-                            //FontSizeOverride = CInt(reader.GetAttribute("size"))
+                                m_fontSizeOverride = reader.GetAttribute("size");
+                                break;
                             case "align":
-                            //SetAlignment(reader.GetAttribute("align"))
+                                //SetAlignment(reader.GetAttribute("align"))
+                                break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
                         }
@@ -115,10 +171,10 @@ namespace WebPlayer
                                 WriteText("</u>");
                                 break;
                             case "color":
-                                //ForegroundOverride = ""
+                                m_foregroundOverride = "";
                                 break;
                             case "font":
-                                //FontSizeOverride = 0
+                                m_fontSizeOverride = "";
                                 break;
                             case "align":
                                 //SetAlignment("")
@@ -136,6 +192,29 @@ namespace WebPlayer
 
         private void WriteText(string text)
         {
+            string style = "";
+            if (m_font.Length > 0)
+            {
+                style += string.Format("font-family:{0};", m_font);
+            }
+            if (m_foregroundOverride.Length > 0)
+            {
+                style += string.Format("color:{0};", m_foregroundOverride);
+            }
+
+            string fontSize = m_fontSizeOverride;
+            if (fontSize.Length == 0) fontSize = m_fontSize;
+
+            if (fontSize.Length > 0)
+            {
+                style += string.Format("font-size:{0}pt;", fontSize);
+            }
+
+            if (style.Length > 0)
+            {
+                text = string.Format("<span style=\"{0}\">{1}</span>", style, text);
+            }
+
             m_buffer += text;
         }
 
@@ -156,7 +235,7 @@ namespace WebPlayer
 
         public void DoWait()
         {
-            throw new NotImplementedException();
+            WriteText("TO DO: WAIT");
         }
 
         public bool ShowMsgBox(string caption)
@@ -164,19 +243,14 @@ namespace WebPlayer
             throw new NotImplementedException();
         }
 
-        public void DoInvoke(Delegate method)
-        {
-            throw new NotImplementedException();
-        }
-
         public void SetWindowMenu(MenuData menuData)
         {
-            throw new NotImplementedException();
+            // Do nothing
         }
 
         public string GetNewGameFile(string originalFilename, string extensions)
         {
-            throw new NotImplementedException();
+            return string.Empty;
         }
 
         public void PlaySound(string filename, bool synchronous, bool looped)
@@ -187,6 +261,11 @@ namespace WebPlayer
         public void StopSound()
         {
             throw new NotImplementedException();
+        }
+
+        public void Tick()
+        {
+            m_game.Tick();
         }
     }
 }

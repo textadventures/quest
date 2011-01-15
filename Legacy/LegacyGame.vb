@@ -7822,8 +7822,6 @@ errhandle:
 
     End Sub
 
-    Private WithEvents GameTimer As Timers.Timer
-
     Private Sub SetUpTimers()
         Dim i, j As Integer
 
@@ -7847,13 +7845,6 @@ errhandle:
                 Next j
             End If
         Next i
-
-        If NumberTimers = 0 Then
-            GameTimer = Nothing
-        Else
-            GameTimer = New Timers.Timer(1000)
-            GameTimer.Enabled = True
-        End If
 
     End Sub
 
@@ -13028,26 +13019,6 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub GameTimer_Elapsed(ByVal sender As Object, ByVal e As System.Timers.ElapsedEventArgs) Handles GameTimer.Elapsed
-        ' The GameTimer is a system timer, but we want timer scripts to run on the same thread as the GUI.
-        m_player.DoInvoke(Sub() TimerElapsed())
-    End Sub
-
-    Private Sub TimerElapsed()
-        Dim i As Integer
-
-        For i = 1 To NumberTimers
-            If Timers(i).TimerActive Then
-                Timers(i).TimerTicks = Timers(i).TimerTicks + 1
-
-                If Timers(i).TimerTicks >= Timers(i).TimerInterval Then
-                    Timers(i).TimerTicks = 0
-                    ExecuteScript(Timers(i).TimerAction, NullThread)
-                End If
-            End If
-        Next i
-    End Sub
-
     Public Sub Begin() Implements IASL.Begin
         Dim gameblock As DefineBlock = GetDefineBlock("game")
         Dim NewThread As New ThreadData
@@ -13201,7 +13172,6 @@ ErrorHandler:
 
     Private Sub GameFinished()
         m_gameFinished = True
-        If Not GameTimer Is Nothing Then GameTimer.Enabled = False
         RaiseEvent Finished()
         Cleanup()
     End Sub
@@ -13267,4 +13237,19 @@ ErrorHandler:
             Return "qsg"
         End Get
     End Property
+
+    Public Sub Tick() Implements IASL.Tick
+        Dim i As Integer
+
+        For i = 1 To NumberTimers
+            If Timers(i).TimerActive Then
+                Timers(i).TimerTicks = Timers(i).TimerTicks + 1
+
+                If Timers(i).TimerTicks >= Timers(i).TimerInterval Then
+                    Timers(i).TimerTicks = 0
+                    ExecuteScript(Timers(i).TimerAction, NullThread)
+                End If
+            End If
+        Next i
+    End Sub
 End Class
