@@ -9,9 +9,10 @@ Public Class LegacyGame
     Implements IASL
 
     Public Enum State
-        Ready      ' game is not doing any processing, and is ready for a command
-        Working    ' game is processing a command
-        Waiting    ' while processing a command, game has encountered e.g. an "enter" script, and is awaiting further input
+        Ready       ' game is not doing any processing, and is ready for a command
+        Working     ' game is processing a command
+        Waiting     ' while processing a command, game has encountered e.g. an "enter" script, and is awaiting further input
+        Finished    ' game is over
     End Enum
 
     Private Structure DefineBlock
@@ -13216,6 +13217,13 @@ ErrorHandler:
 
     Private Sub GameFinished()
         m_gameFinished = True
+        ChangeState(State.Finished)
+
+        ' In case we're in the middle of processing an "enter" command, nudge the thread along
+        SyncLock m_commandLock
+            System.Threading.Monitor.Pulse(m_commandLock)
+        End SyncLock
+
         RaiseEvent Finished()
         Cleanup()
     End Sub
