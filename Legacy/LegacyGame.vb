@@ -8,6 +8,12 @@ Public Class LegacyGame
 
     Implements IASL
 
+    Public Enum State
+        Ready      ' game is not doing any processing, and is ready for a command
+        Working    ' game is processing a command
+        Waiting    ' while processing a command, game has encountered e.g. an "enter" script, and is awaiting further input
+    End Enum
+
     Private Structure DefineBlock
         Dim StartLine As Integer
         Dim EndLine As Integer
@@ -372,6 +378,8 @@ Public Class LegacyGame
     Private m_log As New List(Of String)
     Private m_fileData As String
     Private m_commandLock As Object = New Object
+    Private m_stateLock As Object = New Object
+    Private m_state As State = State.Ready
 
     Private Const NUMBER_PLAYER_ERROR_MESSAGES As Integer = 38
     Private PlayerErrorMessageString(NUMBER_PLAYER_ERROR_MESSAGES) As String
@@ -9983,7 +9991,10 @@ errhandle:
 
     End Sub
 
-    Private Sub ExecCommand(ByRef thecommand As String, ByRef Thread As ThreadData, Optional ByRef EchoCommand As Boolean = True, Optional ByRef RunUserCommand As Boolean = True, Optional ByRef DontSetIt As Boolean = False)
+    ' Returns true if the system is ready to process a new command after completion - so it will be
+    ' in most cases, except when ExecCommand just caused an "enter" script command to complete
+
+    Private Function ExecCommand(ByRef thecommand As String, ByRef Thread As ThreadData, Optional ByRef EchoCommand As Boolean = True, Optional ByRef RunUserCommand As Boolean = True, Optional ByRef DontSetIt As Boolean = False) As Boolean
         Dim cmd As String
         Dim EnteredHelpCommand As Boolean
         Dim RoomID As Integer
@@ -10003,7 +10014,7 @@ errhandle:
         RoomID = GetRoomID(CurrentRoom, Thread)
         EnteredHelpCommand = False
 
-        If thecommand = "" Then Exit Sub
+        If thecommand = "" Then Return True
 
         cmd = LCase(thecommand)
 
@@ -10015,11 +10026,12 @@ errhandle:
 
                 SetStringContents(CommandOverrideVariable, thecommand, Thread)
                 System.Threading.Monitor.Pulse(m_commandLock)
-                Exit Sub
+                Return False
             End If
         End SyncLock
 
-        If PauseMode Then Exit Sub
+        ' TO DO: Not sure if this line is necessary any more
+        If PauseMode Then Return True
 
         Dim UserCommandReturn As Boolean
         Dim newcommand As String
@@ -10315,7 +10327,8 @@ errhandle:
         End If
         If BadCmdBefore = OldBadCmdBefore Then BadCmdBefore = ""
 
-    End Sub
+        Return True
+    End Function
 
     Private Function CmdStartsWith(ByVal sCommand As String, ByVal sCheck As String) As Boolean
         ' When we are checking user input in ExecCommand, we check things like whether
@@ -11424,11 +11437,18 @@ ErrorHandler:
         ' Now, wait for CommandOverrideModeOn to be set
         ' to False by ExecCommand. Execution can then resume.
 
+        ChangeState(State.Waiting)
+
         SyncLock m_commandLock
             System.Threading.Monitor.Wait(m_commandLock)
         End SyncLock
 
         CommandOverrideModeOn = False
+
+        ' State will have been changed to Working when the user typed their response,
+        ' and will be set back to Ready when the call to ExecCommand has finished
+
+        ' TO DO: What if a timer calls the "enter" command??
 
     End Sub
 
@@ -13147,12 +13167,30 @@ ErrorHandler:
     End Property
 
     Public Sub SendCommand(ByVal command As String) Implements IASL.SendCommand
+        ' The processing of commands is done in a separate thread, so things like the "enter" command can
+        ' lock the thread while waiting for further input. After starting to process the command, we wait
+        ' for something to happen before returning from the SendCommand call - either the command will have
+        ' finished processing, or perhaps a prompt has been printed and now the game is waiting for further
+        ' user input after hitting an "enter" script command.
+
         Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf ProcessCommandInNewThread))
+        ChangeState(State.Working)
         runnerThread.Start(command)
+
+        SyncLock m_stateLock
+            While m_state = State.Working
+                System.Threading.Monitor.Wait(m_stateLock)
+            End While
+        End SyncLock
+
     End Sub
 
     Private Sub ProcessCommandInNewThread(command As Object)
-        ExecCommand(DirectCast(command, String), NullThread)
+        ' Process command, and change state to Ready if the command finished processing
+
+        If ExecCommand(DirectCast(command, String), NullThread) Then
+            ChangeState(State.Ready)
+        End If
     End Sub
 
     Public Sub SendEvent(ByVal eventName As String, ByVal param As String) Implements IASL.SendEvent
@@ -13258,4 +13296,12 @@ ErrorHandler:
             End If
         Next i
     End Sub
+
+    Private Sub ChangeState(newState As State)
+        SyncLock m_stateLock
+            m_state = newState
+            System.Threading.Monitor.Pulse(m_stateLock)
+        End SyncLock
+    End Sub
+
 End Class

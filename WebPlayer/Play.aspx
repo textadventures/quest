@@ -60,7 +60,9 @@
             //numCommands++;
             //commandsList[numCommands] = command.value;
             //thisCommand = numCommands + 1;
-            enterCommand($("#txtCommand").val());
+
+            // hitting Enter automatically causes the form to be submitted
+            $("#fldCommand").val($("#txtCommand").val());
             $("#txtCommand").val("");
         }
 

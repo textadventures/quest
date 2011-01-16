@@ -15,6 +15,11 @@ namespace WebPlayer
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // TO DO: Because the PlayerHandler is stored in the Session, odd things
+            // happen if you open game in a new tab, because it will have the same
+            // session. Maybe we should also have some extra data in the ViewState to
+            // point to a particular game within the session?
+
             if (Page.IsPostBack)
             {
                 m_player = (PlayerHandler)Session["Player"];

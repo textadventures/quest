@@ -114,7 +114,6 @@ namespace WebPlayer
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
             XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
-            System.Diagnostics.Debug.WriteLine(text);
 
             while (reader.Read())
             {
