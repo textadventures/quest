@@ -371,6 +371,7 @@ Public Class LegacyGame
     Private m_textFormatter As New TextFormatter
     Private m_log As New List(Of String)
     Private m_fileData As String
+    Private m_commandLock As Object = New Object
 
     Private Const NUMBER_PLAYER_ERROR_MESSAGES As Integer = 38
     Private PlayerErrorMessageString(NUMBER_PLAYER_ERROR_MESSAGES) As String
@@ -10006,15 +10007,17 @@ errhandle:
 
         cmd = LCase(thecommand)
 
-        If CommandOverrideModeOn Then
-            ' Commands have been overridden for this command,
-            ' so put input into previously specified variable
-            ' and exit:
+        SyncLock m_commandLock
+            If CommandOverrideModeOn Then
+                ' Commands have been overridden for this command,
+                ' so put input into previously specified variable
+                ' and exit:
 
-            SetStringContents(CommandOverrideVariable, thecommand, Thread)
-            CommandOverrideModeOn = False
-            Exit Sub
-        End If
+                SetStringContents(CommandOverrideVariable, thecommand, Thread)
+                System.Threading.Monitor.Pulse(m_commandLock)
+                Exit Sub
+            End If
+        End SyncLock
 
         If PauseMode Then Exit Sub
 
@@ -11421,13 +11424,11 @@ ErrorHandler:
         ' Now, wait for CommandOverrideModeOn to be set
         ' to False by ExecCommand. Execution can then resume.
 
-        ' TO DO: The whole game should run in a separate thread to the GUI - we don't really want to
-        ' be sleeping the entire GUI thread while players are trying to type.
+        SyncLock m_commandLock
+            System.Threading.Monitor.Wait(m_commandLock)
+        End SyncLock
 
-        Do
-            Threading.Thread.Sleep(10)
-            System.Windows.Forms.Application.DoEvents()
-        Loop Until CommandOverrideModeOn = False Or m_gameFinished
+        CommandOverrideModeOn = False
 
     End Sub
 
