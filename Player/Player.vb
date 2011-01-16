@@ -235,8 +235,10 @@ Public Class Player
         WriteText(text + "<br />")
     End Sub
 
+    Private Delegate Sub FinishedDelegate()
+
     Private Sub m_game_Finished() Handles m_game.Finished
-        GameFinished()
+        BeginInvoke(New FinishedDelegate(AddressOf GameFinished))
     End Sub
 
     Private Sub GameFinished()
@@ -246,8 +248,13 @@ Public Class Player
         StopSound()
     End Sub
 
-    Private Sub m_game_PrintText(ByVal text As String) Handles m_game.PrintText
+    Private Delegate Sub PrintDelegate(text As String)
 
+    Private Sub m_game_PrintText(ByVal text As String) Handles m_game.PrintText
+        BeginInvoke(New PrintDelegate(AddressOf PrintText), text)
+    End Sub
+
+    Private Sub PrintText(text As String)
         If Not m_initialised Then Exit Sub
 
         Dim currentTag As String = ""
@@ -427,7 +434,13 @@ Public Class Player
         End If
     End Sub
 
+    Private Delegate Sub RequestRaisedDelegate(ByVal request As Quest.Request, ByVal data As String)
+
     Private Sub m_game_RequestRaised(ByVal request As Quest.Request, ByVal data As String) Handles m_game.RequestRaised
+        BeginInvoke(New RequestRaisedDelegate(AddressOf RequestRaised), request, data)
+    End Sub
+
+    Private Sub RequestRaised(ByVal request As Quest.Request, ByVal data As String)
         Select Case request
             Case Quest.Request.Quit
                 RaiseEvent Quit()
@@ -469,8 +482,13 @@ Public Class Player
         End Select
     End Sub
 
-    Private Sub m_game_UpdateList(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData)) Handles m_game.UpdateList
+    Private Delegate Sub UpdateListDelegate(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData))
 
+    Private Sub m_game_UpdateList(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData)) Handles m_game.UpdateList
+        BeginInvoke(New UpdateListDelegate(AddressOf UpdateList), listType, items)
+    End Sub
+
+    Private Sub UpdateList(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData))
         ' Keep the IASL interface atomic, so we transmit lists of places separately to lists of objects.
         ' We can merge them when we receive them here, and then pass the merged list to the ElementList with some
         ' kind of flag so it knows what's a place and what's an object.

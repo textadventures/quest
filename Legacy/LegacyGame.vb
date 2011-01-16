@@ -13146,7 +13146,12 @@ ErrorHandler:
     End Property
 
     Public Sub SendCommand(ByVal command As String) Implements IASL.SendCommand
-        ExecCommand(command, NullThread)
+        Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf ProcessCommandInNewThread))
+        runnerThread.Start(command)
+    End Sub
+
+    Private Sub ProcessCommandInNewThread(command As Object)
+        ExecCommand(DirectCast(command, String), NullThread)
     End Sub
 
     Public Sub SendEvent(ByVal eventName As String, ByVal param As String) Implements IASL.SendEvent
