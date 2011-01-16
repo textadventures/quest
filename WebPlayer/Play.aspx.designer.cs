@@ -31,6 +31,15 @@ namespace WebPlayer {
         protected global::System.Web.UI.ScriptManager ctlScriptManager;
         
         /// <summary>
+        /// ctlUpdateProgress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdateProgress ctlUpdateProgress;
+        
+        /// <summary>
         /// divOutput control.
         /// </summary>
         /// <remarks>
@@ -49,13 +58,13 @@ namespace WebPlayer {
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
         
         /// <summary>
-        /// txtCommand control.
+        /// fldCommand control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCommand;
+        protected global::System.Web.UI.WebControls.HiddenField fldCommand;
         
         /// <summary>
         /// cmdSubmit control.
@@ -65,15 +74,6 @@ namespace WebPlayer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button cmdSubmit;
-        
-        /// <summary>
-        /// UpdateProgress1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdateProgress UpdateProgress1;
         
         /// <summary>
         /// tmrInit control.

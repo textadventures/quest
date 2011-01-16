@@ -12,18 +12,84 @@
             // jQuery's .position() to get actual position of latest text, and use
             // that value for scrollTop.
             $("#divOutput").scrollTop($("#divOutput").scrollTop() + 500);
-            $("#txtCommand").focus();
+        }
+
+        function updateLocation(text) {
+            $("#location").html("<b>" + text + "</b>");
         }
 
         function enterCommand(command) {
-            $("#txtCommand").val(command);
+            $("#fldCommand").val(command);
             $("#cmdSubmit").click();
         }
 
+        function keyPressCode(e) {
+            var keynum
+            if (window.event) { // IE
+                keynum = e.keyCode
+            } else if (e.which) { // Netscape/Firefox/Opera
+                keynum = e.which
+            }
+            return keynum;
+        }
+
+        function commandKey(e) {
+            switch (keyPressCode(e)) {
+                case 13:
+
+                    runCommand();
+                    break;
+                //                case 38: 
+                //                    thisCommand--; 
+                //                    if (thisCommand == 0) thisCommand = numCommands; 
+                //                    command.value = commandsList[thisCommand]; 
+                //                    break; 
+                //                case 40: 
+                //                    thisCommand++; 
+                //                    if (thisCommand > numCommands) thisCommand = 1; 
+                //                    command.value = commandsList[thisCommand]; 
+                //                    break; 
+                //                case 27: 
+                //                    thisCommand = numCommands + 1; 
+                //                    command.value = ''; 
+                //                    break; 
+            }
+        }
+
+        function runCommand() {
+            //numCommands++;
+            //commandsList[numCommands] = command.value;
+            //thisCommand = numCommands + 1;
+            enterCommand($("#txtCommand").val());
+            $("#txtCommand").val("");
+        }
+
+
     </script>
     <style type="text/css">
-        a.cmdlink { text-decoration: underline; color: Blue; cursor: pointer; }
-        div#divOutput { padding: 8px; }
+        a.cmdlink
+        {
+            text-decoration: underline;
+            color: Blue;
+            cursor: pointer;
+        }
+        div#status
+        {
+            background: #E0E0FF;
+            height: 20px;
+        }
+        div#updating
+        {
+            float: right;
+        }
+        div#divOutput
+        {
+            padding: 8px;
+        }
+        .hiddenbutton
+        {
+            display: none;
+        }
     </style>
     <title>Player</title>
 </head>
@@ -32,23 +98,31 @@
     <asp:ScriptManager ID="ctlScriptManager" runat="server">
     </asp:ScriptManager>
     <h1>Player</h1>
-    <div id="divOutput" runat="server" style="height: 400px; border: 1px solid silver; overflow: auto;">
+    <div id="status">
+        <div id="updating">
+            <asp:UpdateProgress ID="ctlUpdateProgress" runat="server">
+                <ProgressTemplate>
+                    <img src="updating.gif" alt="Updating..." />
+                </ProgressTemplate>
+            </asp:UpdateProgress>
+        </div>
+        <div id="location"></div>
+    </div>
+    <div id="divOutput" runat="server" style="height: 400px; border: 1px solid silver;
+        overflow: auto;">
     </div>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
-            <asp:TextBox ID="txtCommand" runat="server" Width="500px"></asp:TextBox>
-            <asp:Button ID="cmdSubmit" runat="server" Width="20px" OnClick="cmdSubmit_Click" />
-            <asp:UpdateProgress ID="UpdateProgress1" runat="server">
-                <ProgressTemplate>
-                    Working
-                </ProgressTemplate>
-            </asp:UpdateProgress>
-            <asp:Timer ID="tmrInit" runat="server" Interval="50" ontick="InitTimerTick">
+            <asp:HiddenField ID="fldCommand" runat="server" Value="" />
+            <asp:Button ID="cmdSubmit" runat="server" Width="20px" OnClick="cmdSubmit_Click"
+                CssClass="hiddenbutton" />
+            <asp:Timer ID="tmrInit" runat="server" Interval="50" OnTick="InitTimerTick">
             </asp:Timer>
-            <asp:Timer ID="tmrTick" runat="server" Interval="1000" ontick="TimerTick" Enabled="False">
+            <asp:Timer ID="tmrTick" runat="server" Interval="1000" OnTick="TimerTick" Enabled="False">
             </asp:Timer>
         </ContentTemplate>
     </asp:UpdatePanel>
+    <input type="text" id="txtCommand" style="width: 400px" onkeydown="commandKey(event);" />
     </form>
 </body>
 </html>

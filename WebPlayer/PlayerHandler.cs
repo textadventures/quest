@@ -17,6 +17,8 @@ namespace WebPlayer
         private string m_foregroundOverride = "";
         private string m_fontSizeOverride = "";
 
+        public event Action<string> LocationUpdated;
+
         public PlayerHandler(string filename)
         {
             m_filename = filename;
@@ -58,8 +60,29 @@ namespace WebPlayer
 
         void m_game_RequestRaised(Request request, string data)
         {
+        //Quit,
+        //Load,
+        //Save,
+        //UpdateLocation,
+        //GameName,
+        //FontName,
+        //FontSize,
+        //Background,
+        //Foreground,
+        //LinkForeground,
+        //RunScript,
+        //SetStatus,
+        //ClearScreen,
+        //PanesVisible,
+        //ShowPicture,
+        //Speak,
+        //Restart
+
             switch (request)
             {
+                case Request.UpdateLocation:
+                    if (LocationUpdated != null) LocationUpdated(data);
+                    break;
                 case Request.FontName:
                     m_font = data;
                     break;
@@ -67,7 +90,7 @@ namespace WebPlayer
                     m_fontSize = data;
                     break;
                 default:
-                    // TO DO: Print error or throw exception
+                    WriteText(string.Format("Unhandled request: {0}, {1}", request, data));
                     break;
             }
         }

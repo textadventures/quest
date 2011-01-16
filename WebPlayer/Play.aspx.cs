@@ -11,22 +11,34 @@ namespace WebPlayer
     public partial class Play : System.Web.UI.Page
     {
         private PlayerHandler m_player;
-        private string m_gameFile = null;
+        private OutputBuffer m_buffer;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Page.IsPostBack)
             {
                 m_player = (PlayerHandler)Session["Player"];
+                m_buffer = (OutputBuffer)Session["Buffer"];
+            }
+            else
+            {
+                m_buffer = new OutputBuffer();
+                Session["Buffer"] = m_buffer;
             }
         }
 
         protected void InitTimerTick(object sender, EventArgs e)
         {
-            string initialText = LoadGame(Request["file"]);
-            OutputText(initialText);
             tmrInit.Enabled = false;
-            if (m_player != null) tmrTick.Enabled = true;
+            tmrTick.Enabled = false;
+            string initialText = LoadGame(Request["file"]);
+            OutputTextNow(initialText);
+            if (m_player != null)
+            {
+                // TO DO: Query if the game even has timers, if not then there's no need
+                // for tmrTick to be enabled at all.
+                tmrTick.Enabled = true;
+            }
         }
 
         protected void TimerTick(object sender, EventArgs e)
@@ -34,7 +46,7 @@ namespace WebPlayer
             if (m_player == null) return;
             m_player.Tick();
             string output = m_player.ClearBuffer();
-            if (output.Length > 0) OutputText(output);
+            if (output.Length > 0) OutputTextNow(output);
         }
 
         private string LoadGame(string gameFile)
@@ -60,6 +72,7 @@ namespace WebPlayer
                 m_player = new PlayerHandler(filename);
                 m_player.LibraryFolder = libPath;
                 Session["Player"] = m_player;
+                m_player.LocationUpdated += m_player_LocationUpdated;
                 
                 if (m_player.StartGame(out errors))
                 {
@@ -82,32 +95,38 @@ namespace WebPlayer
             return output;
         }
 
+        void m_player_LocationUpdated(string location)
+        {
+            m_buffer.AddJavaScriptToBuffer("updateLocation", m_buffer.StringParameter(location));
+        }
+
         protected void cmdSubmit_Click(object sender, EventArgs e)
         {
-            if (txtCommand.Text.Length > 0)
+            if (fldCommand.Value.Length > 0)
             {
-                string command = txtCommand.Text;
-                txtCommand.Text = "";
+                string command = fldCommand.Value;
+                fldCommand.Value = "";
                 m_player.SendCommand(command);
                 string output = m_player.ClearBuffer();
-                txtCommand.Focus();
-                OutputText(output);
+                m_buffer.OutputText(output);
+                ClearJavaScriptBuffer();
             }
         }
 
-        void OutputText(string text)
+        void OutputTextNow(string text)
         {
-            CallJavaScript("addText", StringParameter(text));
+            m_buffer.OutputText(text);
+            ClearJavaScriptBuffer();
         }
 
-        string StringParameter(string parameter)
+        void ClearJavaScriptBuffer()
         {
-            return string.Format("\"{0}\"", parameter.Replace("\"", "\\\""));
-        }
-
-        void CallJavaScript(string function, params string[] parameters)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", string.Format("{0}({1})", function, string.Join(",", parameters)), true);
+            int count = 0;
+            foreach (string javaScript in m_buffer.ClearJavaScriptBuffer())
+            {
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script" + count.ToString(), javaScript, true);
+                count++;
+            }
         }
     }
 }

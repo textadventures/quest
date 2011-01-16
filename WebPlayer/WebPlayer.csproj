@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Play.aspx" />
+    <Content Include="updating.gif" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -66,6 +67,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OutputBuffer.cs" />
     <Compile Include="Play.aspx.cs">
       <DependentUpon>Play.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
