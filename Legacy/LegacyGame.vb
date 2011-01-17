@@ -11449,8 +11449,6 @@ ErrorHandler:
         ' State will have been changed to Working when the user typed their response,
         ' and will be set back to Ready when the call to ExecCommand has finished
 
-        ' TO DO: What if a timer calls the "enter" command??
-
     End Sub
 
     Private Sub ExecuteSet(ByRef SetInstruction As String, ByRef Thread As ThreadData)
@@ -13292,6 +13290,9 @@ ErrorHandler:
 
     Public Sub Tick() Implements IASL.Tick
         Dim i As Integer
+        Dim TimerScripts As New List(Of String)
+
+        If m_state <> State.Ready Then Exit Sub
 
         For i = 1 To NumberTimers
             If Timers(i).TimerActive Then
@@ -13299,10 +13300,26 @@ ErrorHandler:
 
                 If Timers(i).TimerTicks >= Timers(i).TimerInterval Then
                     Timers(i).TimerTicks = 0
-                    ExecuteScript(Timers(i).TimerAction, NullThread)
+                    TimerScripts.Add(Timers(i).TimerAction)
                 End If
             End If
         Next i
+
+        If TimerScripts.Count > 0 Then
+            Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf RunTimersInNewThread))
+            runnerThread.Start(TimerScripts)
+        End If
+
+    End Sub
+
+    Private Sub RunTimersInNewThread(scripts As Object)
+        Dim scriptList As List(Of String) = DirectCast(scripts, List(Of String))
+
+        For Each script As String In scriptList
+            ExecuteScript(script, NullThread)
+        Next
+
+        ChangeState(State.Ready)
     End Sub
 
     Private Sub ChangeState(newState As State)
