@@ -506,6 +506,10 @@ namespace AxeSoftware.Quest
             // TO DO: This is for timers
         }
 
+        public void FinishWait()
+        {
+        }
+
         #endregion
 
         public void RunScript(IScript script)

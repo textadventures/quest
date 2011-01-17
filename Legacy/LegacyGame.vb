@@ -381,6 +381,7 @@ Public Class LegacyGame
     Private m_commandLock As Object = New Object
     Private m_stateLock As Object = New Object
     Private m_state As State = State.Ready
+    Private m_waitLock As Object = New Object
 
     Private Const NUMBER_PLAYER_ERROR_MESSAGES As Integer = 38
     Private PlayerErrorMessageString(NUMBER_PLAYER_ERROR_MESSAGES) As String
@@ -3410,7 +3411,14 @@ ErrorHandler:
     End Sub
 
     Private Sub DoWait()
+
         m_player.DoWait()
+        ChangeState(State.Waiting)
+
+        SyncLock m_waitLock
+            System.Threading.Monitor.Wait(m_waitLock)
+        End SyncLock
+
     End Sub
 
     Private Sub ExecuteFlag(ByRef InputLine As String, ByRef Thread As ThreadData)
@@ -13040,6 +13048,18 @@ ErrorHandler:
     End Sub
 
     Public Sub Begin() Implements IASL.Begin
+        Dim runnerThread As New System.Threading.Thread(New System.Threading.ThreadStart(AddressOf DoBegin))
+        ChangeState(State.Working)
+        runnerThread.Start()
+
+        SyncLock m_stateLock
+            While m_state = State.Working
+                System.Threading.Monitor.Wait(m_stateLock)
+            End While
+        End SyncLock
+    End Sub
+
+    Private Sub DoBegin()
         Dim gameblock As DefineBlock = GetDefineBlock("game")
         Dim NewThread As New ThreadData
         Dim i As Integer
@@ -13126,7 +13146,7 @@ ErrorHandler:
 
         End If
 
-
+        ChangeState(State.Ready)
     End Sub
 
     Public ReadOnly Property Errors As System.Collections.Generic.List(Of String) Implements IASL.Errors
@@ -13292,8 +13312,6 @@ ErrorHandler:
         Dim i As Integer
         Dim TimerScripts As New List(Of String)
 
-        If m_state <> State.Ready Then Exit Sub
-
         For i = 1 To NumberTimers
             If Timers(i).TimerActive Then
                 Timers(i).TimerTicks = Timers(i).TimerTicks + 1
@@ -13326,6 +13344,12 @@ ErrorHandler:
         SyncLock m_stateLock
             m_state = newState
             System.Threading.Monitor.Pulse(m_stateLock)
+        End SyncLock
+    End Sub
+
+    Public Sub FinishWait() Implements IASL.FinishWait
+        SyncLock m_waitLock
+            System.Threading.Monitor.Pulse(m_waitLock)
         End SyncLock
     End Sub
 

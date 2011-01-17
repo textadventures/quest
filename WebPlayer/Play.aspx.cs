@@ -12,6 +12,7 @@ namespace WebPlayer
     {
         private PlayerHandler m_player;
         private OutputBuffer m_buffer;
+        private int m_loadStage;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -34,15 +35,32 @@ namespace WebPlayer
 
         protected void InitTimerTick(object sender, EventArgs e)
         {
-            tmrInit.Enabled = false;
-            tmrTick.Enabled = false;
-            string initialText = LoadGame(Request["file"]);
-            OutputTextNow(initialText);
-            if (m_player != null)
+            if (m_buffer == null) return;
+            m_buffer.InitStage++;
+
+            switch (m_buffer.InitStage)
             {
-                // TO DO: Query if the game even has timers, if not then there's no need
-                // for tmrTick to be enabled at all.
-                tmrTick.Enabled = true;
+                case 1:
+                    tmrTick.Enabled = false;
+                    string initialText = LoadGame(Request["file"]);
+                    OutputTextNow(initialText);
+                    if (m_player == null)
+                    {
+                        tmrInit.Enabled = false;
+                    }
+                    break;
+                case 2:
+                    tmrInit.Enabled = false;
+
+                    // We could be more sophisticated here perhaps, and only enable tmrTick
+                    // if there are any game timers running. But this timer also ensures that
+                    // the buffer is cleared every second, which keeps some of the threading
+                    // logic simpler - for example, after processing a "wait" command.
+                    tmrTick.Enabled = true;
+
+                    m_player.BeginGame();
+                    OutputTextNow(m_player.ClearBuffer());
+                    break;
             }
         }
 
@@ -78,8 +96,9 @@ namespace WebPlayer
                 m_player.LibraryFolder = libPath;
                 Session["Player"] = m_player;
                 m_player.LocationUpdated += m_player_LocationUpdated;
+                m_player.BeginWait += m_player_BeginWait;
                 
-                if (m_player.StartGame(out errors))
+                if (m_player.Initialise(out errors))
                 {
                     // Successful game start
                     return m_player.ClearBuffer();
@@ -100,6 +119,11 @@ namespace WebPlayer
             return output;
         }
 
+        void m_player_BeginWait()
+        {
+            m_buffer.AddJavaScriptToBuffer("beginWait");
+        }
+
         void m_player_LocationUpdated(string location)
         {
             m_buffer.AddJavaScriptToBuffer("updateLocation", m_buffer.StringParameter(location));
@@ -107,16 +131,28 @@ namespace WebPlayer
 
         protected void cmdSubmit_Click(object sender, EventArgs e)
         {
-            if (fldCommand.Value.Length > 0)
+            if (fldUIMsg.Value.Length > 0)
+            {
+                switch (fldUIMsg.Value)
+                {
+                    case "endwait":
+                        m_player.EndWait();
+                        break;
+                }
+                fldUIMsg.Value = "";
+            }
+            else if (fldCommand.Value.Length > 0)
             {
                 string command = fldCommand.Value;
                 fldCommand.Value = "";
                 m_player.SendCommand(command);
-                string output = m_player.ClearBuffer();
-                m_buffer.OutputText(output);
-                ClearJavaScriptBuffer();
             }
+
+            string output = m_player.ClearBuffer();
+            m_buffer.OutputText(output);
+            ClearJavaScriptBuffer();
         }
+
 
         void OutputTextNow(string text)
         {

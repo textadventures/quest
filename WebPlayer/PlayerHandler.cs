@@ -18,6 +18,7 @@ namespace WebPlayer
         private string m_fontSizeOverride = "";
 
         public event Action<string> LocationUpdated;
+        public event Action BeginWait;
 
         public PlayerHandler(string filename)
         {
@@ -26,7 +27,7 @@ namespace WebPlayer
 
         public string LibraryFolder { get; set; }
 
-        public bool StartGame(out List<string> errors)
+        public bool Initialise(out List<string> errors)
         {
             switch (System.IO.Path.GetExtension(m_filename).ToLower())
             {
@@ -53,9 +54,13 @@ namespace WebPlayer
             else
             {
                 errors = null;
-                m_game.Begin();
                 return true;
             }
+        }
+
+        public void BeginGame()
+        {
+            m_game.Begin();
         }
 
         void m_game_RequestRaised(Request request, string data)
@@ -257,7 +262,12 @@ namespace WebPlayer
 
         public void DoWait()
         {
-            WriteText("TO DO: WAIT");
+            BeginWait();
+        }
+
+        public void EndWait()
+        {
+            m_game.FinishWait();
         }
 
         public bool ShowMsgBox(string caption)

@@ -160,6 +160,10 @@ Public Class Player
     End Sub
 
     Private Sub cmdGo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdGo.Click
+        If m_waiting Then
+            m_waiting = False
+            Exit Sub
+        End If
         EnterText()
     End Sub
 
@@ -782,12 +786,19 @@ Public Class Player
         Return menuForm.SelectedItem
     End Function
 
+    ' TO DO: everything implementing an IPlayer interface will need BeginInvoke
+
     Public Sub DoWait() Implements IPlayer.DoWait
+        BeginInvoke(New Action(AddressOf BeginWait))
+    End Sub
+
+    Private Sub BeginWait()
         m_waiting = True
         Do
             Threading.Thread.Sleep(100)
             Application.DoEvents()
         Loop Until Not m_waiting Or Not m_initialised
+        m_game.FinishWait()
     End Sub
 
     Public Function ShowMsgBox(ByVal caption As String) As Boolean Implements IPlayer.ShowMsgBox

@@ -18,6 +18,22 @@
             $("#location").html("<b>" + text + "</b>");
         }
 
+        var _waitMode = false;
+
+        function beginWait() {
+            _waitMode = true;
+            $("#endWaitLink").show();
+            $("#txtCommand").hide();
+        }
+
+        function endWait() {
+            _waitMode = false;
+            $("#endWaitLink").hide();
+            $("#txtCommand").show();
+            $("#fldUIMsg").val("endwait");
+            $("#cmdSubmit").click();
+        }
+
         function enterCommand(command) {
             $("#fldCommand").val(command);
             $("#cmdSubmit").click();
@@ -31,6 +47,13 @@
                 keynum = e.which
             }
             return keynum;
+        }
+
+        function globalKey(e) {
+            if (_waitMode) {
+                endWait();
+                return;
+            }
         }
 
         function commandKey(e) {
@@ -95,7 +118,7 @@
     </style>
     <title>Player</title>
 </head>
-<body>
+<body onkeydown="globalKey(event);">
     <form id="playerform" runat="server" defaultbutton="cmdSubmit">
     <asp:ScriptManager ID="ctlScriptManager" runat="server">
     </asp:ScriptManager>
@@ -116,6 +139,7 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <asp:HiddenField ID="fldCommand" runat="server" Value="" />
+            <asp:HiddenField ID="fldUIMsg" runat="server" Value="" />
             <asp:Button ID="cmdSubmit" runat="server" Width="20px" OnClick="cmdSubmit_Click"
                 CssClass="hiddenbutton" />
             <asp:Timer ID="tmrInit" runat="server" Interval="50" OnTick="InitTimerTick">
@@ -125,6 +149,7 @@
         </ContentTemplate>
     </asp:UpdatePanel>
     <input type="text" id="txtCommand" style="width: 400px" onkeydown="commandKey(event);" />
+    <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display:none">Click here or press a key to continue...</a>
     </form>
 </body>
 </html>

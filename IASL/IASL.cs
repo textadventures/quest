@@ -30,6 +30,7 @@ namespace AxeSoftware.Quest
         void Save(string filename);
         string SaveExtension { get; }
         void Tick();
+        void FinishWait();
     }
 
     public interface IPlayer

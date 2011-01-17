@@ -30,5 +30,7 @@ namespace WebPlayer
         {
             AddJavaScriptToBuffer("addText", StringParameter(text));
         }
+
+        public int InitStage { get; set; }
     }
 }
