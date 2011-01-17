@@ -22,9 +22,11 @@ Partial Class GameListItem
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.lblName = New System.Windows.Forms.Label
-        Me.lblInfo = New System.Windows.Forms.Label
-        Me.cmdLaunch = New System.Windows.Forms.Button
+        Me.components = New System.ComponentModel.Container()
+        Me.lblName = New System.Windows.Forms.Label()
+        Me.lblInfo = New System.Windows.Forms.Label()
+        Me.cmdLaunch = New System.Windows.Forms.Button()
+        Me.ctlToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.SuspendLayout()
         '
         'lblName
@@ -56,6 +58,9 @@ Partial Class GameListItem
         Me.cmdLaunch.Text = "Play"
         Me.cmdLaunch.UseVisualStyleBackColor = True
         '
+        'ctlToolTip
+        '
+        '
         'GameListItem
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -73,5 +78,6 @@ Partial Class GameListItem
     Friend WithEvents cmdLaunch As System.Windows.Forms.Button
     Private WithEvents lblName As System.Windows.Forms.Label
     Private WithEvents lblInfo As System.Windows.Forms.Label
+    Friend WithEvents ctlToolTip As System.Windows.Forms.ToolTip
 
 End Class
