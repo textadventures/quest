@@ -4,5 +4,5 @@ rem C:\Windows\Microsoft.NET\Framework\v3.5\msbuild /property:Configuration=Rele
 rd /s /q .\Output\Samples
 svn export .\WorldModel\WorldModel\Examples-Public .\Output\Samples
 "C:\Program Files\7-Zip\7z.exe" a -r .\Output\samples.zip .\Output\Samples\*.*
-copy .\Setup\ReleaseSetup\setup.msi .\Output\quest500preview.msi
+"C:\Program Files\7-Zip\7z.exe" a -r .\Output\quest500preview.zip .\Setup\ReleaseSetup\*.*
 pause

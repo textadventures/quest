@@ -136,7 +136,7 @@ Public Class Main
         frmAbout.ShowDialog()
     End Sub
 
-    Private Sub ctlPlayer_SetGameName(ByVal name As String) Handles ctlPlayer.SetGameName
+    Private Sub ctlPlayer_GameNameSet(ByVal name As String) Handles ctlPlayer.GameNameSet
         Dim caption As String
         caption = "Quest"
         If Not String.IsNullOrEmpty(name) Then caption += " - " + name

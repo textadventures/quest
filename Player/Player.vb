@@ -39,7 +39,7 @@ Public Class Player
 
     Public Event Quit()
     Public Event AddToRecent(ByVal filename As String, ByVal name As String)
-    Public Event SetGameName(ByVal name As String)
+    Public Event GameNameSet(ByVal name As String)
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -370,12 +370,7 @@ Public Class Player
                     End If
                     GameFinished()
                 Else
-                    If Not String.IsNullOrEmpty(m_game.SaveFilename) Then
-                        RaiseEvent AddToRecent(m_game.SaveFilename, m_gameName + " (Saved)")
-                        m_saveFile = m_game.SaveFilename
-                    ElseIf Not m_game.Filename Is Nothing Then
-                        RaiseEvent AddToRecent(m_game.Filename, m_gameName)
-                    End If
+                    AddToRecentList()
                 End If
 
                 ShowDebugger(False)
@@ -404,6 +399,15 @@ Public Class Player
         tmrTick.Enabled = True
         m_game.Begin()
         txtCommand.Focus()
+    End Sub
+
+    Private Sub AddToRecentList()
+        If Not String.IsNullOrEmpty(m_game.SaveFilename) Then
+            RaiseEvent AddToRecent(m_game.SaveFilename, m_gameName + " (Saved)")
+            m_saveFile = m_game.SaveFilename
+        ElseIf Not m_game.Filename Is Nothing Then
+            RaiseEvent AddToRecent(m_game.Filename, m_gameName)
+        End If
     End Sub
 
     Private Sub InLineLinkClicked(ByVal sender As Object, ByVal e As EventArgs)
@@ -453,8 +457,7 @@ Public Class Player
             Case Quest.Request.UpdateLocation
                 lblBanner.Text = data
             Case Quest.Request.GameName
-                m_gameName = data
-                RaiseEvent SetGameName(data)
+                SetGameName(data)
             Case Quest.Request.FontName
                 FontName = data
             Case Quest.Request.FontSize
@@ -480,6 +483,12 @@ Public Class Player
             Case Else
                 Throw New Exception("Unhandled request")
         End Select
+    End Sub
+
+    Private Sub SetGameName(name As String)
+        m_gameName = name
+        AddToRecentList()
+        RaiseEvent GameNameSet(name)
     End Sub
 
     Private Delegate Sub UpdateListDelegate(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData))
