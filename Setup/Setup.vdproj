@@ -171,6 +171,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_727AAF3A993D4A8496BA3D7E15CABF6E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7AB72B8A1A564ABEBDDF31CC68581B7E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -787,6 +793,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_727AAF3A993D4A8496BA3D7E15CABF6E"
+            {
+            "SourcePath" = "8:..\\WorldModel\\WorldModel\\Core\\CoreEditor.aslx"
+            "TargetName" = "8:CoreEditor.aslx"
+            "Tag" = "8:"
+            "Folder" = "8:_0EBA58480A43464CA2794A06A62853AA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7AB72B8A1A564ABEBDDF31CC68581B7E"
             {
             "SourcePath" = "8:..\\WorldModel\\WorldModel\\Core\\CoreTypes.aslx"
@@ -1081,15 +1107,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Quest"
-        "ProductCode" = "8:{D91560A3-17BC-4A10-BD1A-47143FB336ED}"
-        "PackageCode" = "8:{217AD151-F70B-491B-AE3A-801CF783C6E1}"
+        "ProductCode" = "8:{F98DB432-2161-4BA3-83F1-663CA46C2A57}"
+        "PackageCode" = "8:{802AC734-0606-439D-82DB-DB7FD1E5CBE1}"
         "UpgradeCode" = "8:{F163741E-DB53-47C7-8E6E-1472006EECA6}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:4.9.5"
+        "ProductVersion" = "8:4.9.6"
         "Manufacturer" = "8:Axe Software"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
