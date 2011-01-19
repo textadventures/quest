@@ -6026,6 +6026,7 @@ ErrorHandler:
     End Sub
 
     Public Sub Pause(ByRef Duration As Integer)
+        ChangeState(State.Waiting)
         PauseMode = True
 
         Const k_interval As Integer = 100
@@ -6039,6 +6040,7 @@ ErrorHandler:
         Loop Until elapsed >= Duration Or m_gameFinished
 
         PauseMode = False
+        ChangeState(State.Working)
     End Sub
 
     Private Function ConvertParameter(ByRef sParameter As String, ByRef sConvertChar As String, ByRef ConvertAction As Integer, ByRef Thread As ThreadData) As String
@@ -13196,8 +13198,12 @@ ErrorHandler:
         ChangeState(State.Working)
         runnerThread.Start(command)
 
+        WaitForStateChange(State.Working)
+    End Sub
+
+    Private Sub WaitForStateChange(changedFromState As State)
         SyncLock m_stateLock
-            While m_state = State.Working
+            While m_state = changedFromState
                 System.Threading.Monitor.Wait(m_stateLock)
             End While
         End SyncLock
@@ -13343,11 +13349,19 @@ ErrorHandler:
     Private Sub ChangeState(newState As State)
         SyncLock m_stateLock
             m_state = newState
+            'Debug.Print("State changed to " + newState.ToString())
             System.Threading.Monitor.Pulse(m_stateLock)
         End SyncLock
     End Sub
 
     Public Sub FinishWait() Implements IASL.FinishWait
+        Dim runnerThread As New System.Threading.Thread(New System.Threading.ThreadStart(AddressOf FinishWaitInNewThread))
+        ChangeState(State.Working)
+        runnerThread.Start()
+        WaitForStateChange(State.Working)
+    End Sub
+
+    Private Sub FinishWaitInNewThread()
         SyncLock m_waitLock
             System.Threading.Monitor.Pulse(m_waitLock)
         End SyncLock
