@@ -12,24 +12,51 @@ namespace WebPlayer
     {
         private PlayerHandler m_player;
         private OutputBuffer m_buffer;
-        private int m_loadStage;
+        private string m_gameId;
+        private Dictionary<string, PlayerHandler> m_gamesInSession;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // TO DO: Because the PlayerHandler is stored in the Session, odd things
-            // happen if you open game in a new tab, because it will have the same
-            // session. Maybe we should also have some extra data in the ViewState to
-            // point to a particular game within the session?
+            // We store the game in the Session, but use a dictionary keyed by GUIDs which
+            // are stored in the ViewState. This allows the same user in the same browser
+            // to open multiple games in different browser tabs.
+
+            m_gamesInSession = (Dictionary<string, PlayerHandler>)Session["Games"];
+            if (m_gamesInSession == null)
+            {
+                m_gamesInSession = new Dictionary<string, PlayerHandler>();
+                Session["Games"] = m_gamesInSession;
+            }
+
+            Dictionary<string, OutputBuffer> outputBuffersInSession = (Dictionary<string, OutputBuffer>)Session["OutputBuffers"];
+            if (outputBuffersInSession == null)
+            {
+                outputBuffersInSession = new Dictionary<string, OutputBuffer>();
+                Session["OutputBuffers"] = outputBuffersInSession;
+            }
+
+            m_gameId = (string)ViewState["GameId"];
+            if (m_gameId == null)
+            {
+                m_gameId = Guid.NewGuid().ToString();
+                ViewState["GameId"] = m_gameId;
+            }
+
+            System.Diagnostics.Debug.Print(m_gameId);
 
             if (Page.IsPostBack)
             {
-                m_player = (PlayerHandler)Session["Player"];
-                m_buffer = (OutputBuffer)Session["Buffer"];
+                if (m_gamesInSession.ContainsKey(m_gameId))
+                {
+                    m_player = m_gamesInSession[m_gameId];
+                }
+
+                m_buffer = outputBuffersInSession[m_gameId];
             }
             else
             {
                 m_buffer = new OutputBuffer();
-                Session["Buffer"] = m_buffer;
+                outputBuffersInSession.Add(m_gameId, m_buffer);
             }
         }
 
@@ -95,7 +122,7 @@ namespace WebPlayer
             {
                 m_player = new PlayerHandler(filename);
                 m_player.LibraryFolder = libPath;
-                Session["Player"] = m_player;
+                m_gamesInSession[m_gameId] = m_player;
                 m_player.LocationUpdated += m_player_LocationUpdated;
                 m_player.BeginWait += m_player_BeginWait;
                 
