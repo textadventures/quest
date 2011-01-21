@@ -1,0 +1,9 @@
+﻿<asl version="500">
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <object name="room">
+    <start/>
+  </object>
+
+</asl>

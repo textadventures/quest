@@ -98,7 +98,7 @@
       varlist = Populate(candidate.pattern, command)
       
       resolved = true
-      resolvedobjects = NewObjectDictionary()
+      resolvedobjects = NewDictionary()
 
       foreach (var, varlist) {
         if (resolved) {

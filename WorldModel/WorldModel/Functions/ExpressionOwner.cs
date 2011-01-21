@@ -111,6 +111,11 @@ namespace AxeSoftware.Quest.Functions
             return new QuestDictionary<Element>();
         }
 
+        public QuestDictionary<object> NewDictionary()
+        {
+            return new QuestDictionary<object>();
+        }
+
         public bool ListContains(IQuestList list, object item)
         {
             return list.Contains(item);
@@ -296,6 +301,22 @@ namespace AxeSoftware.Quest.Functions
         public int DictionaryCount(IDictionary dictionary)
         {
             return dictionary.Count;
+        }
+
+        public int ToInt(string number)
+        {
+            return int.Parse(number);
+        }
+
+        public string ToString(int number)
+        {
+            return number.ToString();
+        }
+
+        public bool IsInt(string number)
+        {
+            int result;
+            return int.TryParse(number, out result);
         }
     }
 }

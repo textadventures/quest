@@ -122,6 +122,7 @@
     </None>
     <None Include="Examples-Internal\forest.aslx" />
     <None Include="Examples-Internal\media.aslx" />
+    <None Include="Examples-Public\template.aslx" />
     <None Include="Examples-Internal\test.aslx" />
     <None Include="Examples-Internal\test2.aslx" />
     <None Include="Examples-Public\forest.aslx" />
