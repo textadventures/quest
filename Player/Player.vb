@@ -775,17 +775,19 @@ Public Class Player
     End Sub
 
     Public Sub ShowMenu(ByVal menuData As MenuData) Implements IPlayer.ShowMenu
-        Dim menuForm As Menu
-        menuForm = New Menu()
+        BeginInvoke(New Action(Sub()
+                                   Dim menuForm As Menu
+                                   menuForm = New Menu()
 
-        menuForm.Caption = menuData.Caption
-        menuForm.Options = menuData.Options
-        menuForm.AllowCancel = menuData.AllowCancel
-        menuForm.ShowDialog()
+                                   menuForm.Caption = menuData.Caption
+                                   menuForm.Options = menuData.Options
+                                   menuForm.AllowCancel = menuData.AllowCancel
+                                   menuForm.ShowDialog()
 
-        Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetMenuResponseInNewThread))
-        runnerThread.Start(menuForm.SelectedItem)
-
+                                   Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetMenuResponseInNewThread))
+                                   runnerThread.Start(menuForm.SelectedItem)
+                               End Sub
+        ))
     End Sub
 
     Private Sub SetMenuResponseInNewThread(response As Object)

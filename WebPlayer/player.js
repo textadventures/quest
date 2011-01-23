@@ -90,7 +90,7 @@ function showMenu(title, options) {
         );
     });
 
-    // TO DO: set title
+    $("#dialogCaption").html(title);
 
     // TO DO: want to take account of allowCancel setting
 

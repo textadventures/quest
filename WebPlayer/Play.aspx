@@ -74,7 +74,7 @@
         here or press a key to continue...</a>
     </form>
     <div id="dialog" title="Menu">
-        <p>Caption</p>
+        <p id="dialogCaption"></p>
         <select id="dialogOptions" size="3">
         </select>
     </div>
