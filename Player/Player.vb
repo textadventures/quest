@@ -775,19 +775,19 @@ Public Class Player
     End Sub
 
     Public Sub ShowMenu(ByVal menuData As MenuData) Implements IPlayer.ShowMenu
-        BeginInvoke(New Action(Sub()
-                                   Dim menuForm As Menu
-                                   menuForm = New Menu()
+        BeginInvoke(Sub()
+                        Dim menuForm As Menu
+                        menuForm = New Menu()
 
-                                   menuForm.Caption = menuData.Caption
-                                   menuForm.Options = menuData.Options
-                                   menuForm.AllowCancel = menuData.AllowCancel
-                                   menuForm.ShowDialog()
+                        menuForm.Caption = menuData.Caption
+                        menuForm.Options = menuData.Options
+                        menuForm.AllowCancel = menuData.AllowCancel
+                        menuForm.ShowDialog()
 
-                                   Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetMenuResponseInNewThread))
-                                   runnerThread.Start(menuForm.SelectedItem)
-                               End Sub
-        ))
+                        Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetMenuResponseInNewThread))
+                        runnerThread.Start(menuForm.SelectedItem)
+                    End Sub
+        )
     End Sub
 
     Private Sub SetMenuResponseInNewThread(response As Object)
@@ -864,25 +864,32 @@ Public Class Player
     End Sub
 
     Private Sub PlaySound(ByVal filename As String, ByVal synchronous As Boolean, ByVal looped As Boolean) Implements IPlayer.PlaySound
-        If synchronous And looped Then
-            Throw New Exception("Can't play sound that is both synchronous and looped")
-        End If
-        m_loopSound = looped
-        m_soundPlaying = True
-        ctlMediaPlayer.URL = filename
-        ctlMediaPlayer.Ctlcontrols.play()
+        BeginInvoke(Sub()
 
-        If synchronous Then
-            Do
-                Threading.Thread.Sleep(10)
-                Application.DoEvents()
-            Loop Until Not m_soundPlaying
-        End If
+                        If synchronous And looped Then
+                            Throw New Exception("Can't play sound that is both synchronous and looped")
+                        End If
+                        m_loopSound = looped
+                        m_soundPlaying = True
+                        ctlMediaPlayer.URL = filename
+                        ctlMediaPlayer.Ctlcontrols.play()
+
+                        If synchronous Then
+                            Do
+                                Threading.Thread.Sleep(10)
+                                Application.DoEvents()
+                            Loop Until Not m_soundPlaying
+                        End If
+                    End Sub
+        )
     End Sub
 
     Private Sub StopSound() Implements IPlayer.StopSound
-        m_loopSound = False
-        ctlMediaPlayer.Ctlcontrols.stop()
+        BeginInvoke(Sub()
+                        m_loopSound = False
+                        ctlMediaPlayer.Ctlcontrols.stop()
+                    End Sub
+        )
     End Sub
 
     Private Sub ctlMediaPlayer_PlayStateChange(ByVal sender As Object, ByVal e As AxWMPLib._WMPOCXEvents_PlayStateChangeEvent) Handles ctlMediaPlayer.PlayStateChange
@@ -899,7 +906,10 @@ Public Class Player
     End Sub
 
     Public Sub SetWindowMenu(ByVal menuData As MenuData) Implements IPlayer.SetWindowMenu
-        m_menu.CreateWindowMenu(menuData.Caption, menuData.Options, AddressOf WindowMenuClicked)
+        BeginInvoke(Sub()
+                        m_menu.CreateWindowMenu(menuData.Caption, menuData.Options, AddressOf WindowMenuClicked)
+                    End Sub
+        )
     End Sub
 
     Private Sub WindowMenuClicked(ByVal command As String)
