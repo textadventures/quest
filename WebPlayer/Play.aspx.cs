@@ -165,24 +165,39 @@ namespace WebPlayer
 
         void m_player_ShowMenu(string caption, IDictionary<string, string> options, bool allowCancel)
         {
-            m_buffer.AddJavaScriptToBuffer("clearMenuOptions");
+            string optionsJSON = "";
 
             foreach (KeyValuePair<string, string> option in options)
             {
-                m_buffer.AddJavaScriptToBuffer("addMenuOption", m_buffer.StringParameter(option.Key), m_buffer.StringParameter(option.Value));
+                if (optionsJSON.Length == 0)
+                {
+                    optionsJSON += "{";
+                }
+                else
+                {
+                    optionsJSON += ",";
+                }
+
+                optionsJSON += string.Format("{0}:{1}", m_buffer.StringParameter(option.Key), m_buffer.StringParameter(option.Value));
             }
 
-            m_buffer.AddJavaScriptToBuffer("showMenu");
+            optionsJSON += "}";
+
+            m_buffer.AddJavaScriptToBuffer("showMenu", m_buffer.StringParameter(caption), optionsJSON);
         }
 
         protected void cmdSubmit_Click(object sender, EventArgs e)
         {
             if (fldUIMsg.Value.Length > 0)
             {
-                switch (fldUIMsg.Value)
+                string[] args = fldUIMsg.Value.Split(new char[] { ' ' }, 2);
+                switch (args[0])
                 {
                     case "endwait":
                         m_player.EndWait();
+                        break;
+                    case "choice":
+                        m_player.SetMenuResponse(args[1]);
                         break;
                 }
                 fldUIMsg.Value = "";
@@ -198,7 +213,6 @@ namespace WebPlayer
             m_buffer.OutputText(output);
             ClearJavaScriptBuffer();
         }
-
 
         void OutputTextNow(string text)
         {

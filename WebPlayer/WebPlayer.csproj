@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Play.aspx" />
+    <Content Include="player.js" />
     <Content Include="updating.gif" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
