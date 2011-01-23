@@ -255,9 +255,16 @@ namespace WebPlayer
             m_game.SendCommand(command);
         }
 
-        public string ShowMenu(MenuData menuData)
+        public Action<string, IDictionary<string, string>, bool> ShowMenuDelegate { get; set; }
+
+        public void ShowMenu(MenuData menuData)
         {
-            throw new NotImplementedException();
+            ShowMenuDelegate(menuData.Caption, menuData.Options, menuData.AllowCancel);
+        }
+
+        public void SetMenuResponse(string response)
+        {
+            m_game.SetMenuResponse(response);
         }
 
         public void DoWait()

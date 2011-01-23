@@ -223,10 +223,21 @@ namespace AxeSoftware.Quest
             return ObjectContains(parent, searchObj.Parent);
         }
 
+        private object m_menuLock = new object();
+        private string m_menuResponse = null;
+
         internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel)
         {
             MenuData menuData = new MenuData(caption, options, allowCancel);
-            return m_playerUI.ShowMenu(menuData);
+
+            m_playerUI.ShowMenu(menuData);
+
+            lock (m_menuLock)
+            {
+                System.Threading.Monitor.Wait(m_menuLock);
+            }
+
+            return m_menuResponse;
         }
 
         internal string DisplayMenu(string caption, IList<string> options, bool allowCancel)
@@ -237,6 +248,16 @@ namespace AxeSoftware.Quest
                 optionsDictionary.Add(option, option);
             }
             return DisplayMenu(caption, optionsDictionary, allowCancel);
+        }
+
+        public void SetMenuResponse(string response)
+        {
+            m_menuResponse = response;
+
+            lock (m_menuLock)
+            {
+                System.Threading.Monitor.Pulse(m_menuLock);
+            }
         }
 
         public IEnumerable<Element> Objects

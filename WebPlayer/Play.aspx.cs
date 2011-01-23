@@ -51,6 +51,11 @@ namespace WebPlayer
                     m_player = m_gamesInSession[m_gameId];
                 }
 
+                if (!outputBuffersInSession.ContainsKey(m_gameId))
+                {
+                    // TO DO: Think this only ever happens while debugging?
+                    return;
+                }
                 m_buffer = outputBuffersInSession[m_gameId];
             }
             else
@@ -125,6 +130,7 @@ namespace WebPlayer
                 m_gamesInSession[m_gameId] = m_player;
                 m_player.LocationUpdated += m_player_LocationUpdated;
                 m_player.BeginWait += m_player_BeginWait;
+                m_player.ShowMenuDelegate = m_player_ShowMenu;
                 
                 if (m_player.Initialise(out errors))
                 {
@@ -155,6 +161,18 @@ namespace WebPlayer
         void m_player_LocationUpdated(string location)
         {
             m_buffer.AddJavaScriptToBuffer("updateLocation", m_buffer.StringParameter(location));
+        }
+
+        void m_player_ShowMenu(string caption, IDictionary<string, string> options, bool allowCancel)
+        {
+            m_buffer.AddJavaScriptToBuffer("clearMenuOptions");
+
+            foreach (KeyValuePair<string, string> option in options)
+            {
+                m_buffer.AddJavaScriptToBuffer("addMenuOption", m_buffer.StringParameter(option.Key), m_buffer.StringParameter(option.Value));
+            }
+
+            m_buffer.AddJavaScriptToBuffer("showMenu");
         }
 
         protected void cmdSubmit_Click(object sender, EventArgs e)

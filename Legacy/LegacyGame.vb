@@ -4422,7 +4422,7 @@ ErrorHandler:
             Next i
 
             Dim mnu As New MenuData(Question, menuItems, False)
-            Dim response As String = m_player.ShowMenu(mnu)
+            Dim response As String = ShowMenu(mnu)
 
             ChoiceNumber = CInt(response)
 
@@ -7295,7 +7295,7 @@ errhandle:
         Print("- |i" & P & "|xi", Thread)
 
         Dim mnu As New MenuData(P, menuOptions, False)
-        Dim choice As String = m_player.ShowMenu(mnu)
+        Dim choice As String = ShowMenu(mnu)
 
         Print("- " & menuOptions(choice) & "|n", Thread)
         SetUpChoiceForm = menuScript(choice)
@@ -10036,7 +10036,7 @@ errhandle:
                 ' and exit:
 
                 SetStringContents(CommandOverrideVariable, thecommand, Thread)
-                System.Threading.Monitor.Pulse(m_commandLock)
+                System.Threading.Monitor.PulseAll(m_commandLock)
                 Return False
             End If
         End SyncLock
@@ -13245,7 +13245,7 @@ ErrorHandler:
 
         ' In case we're in the middle of processing an "enter" command, nudge the thread along
         SyncLock m_commandLock
-            System.Threading.Monitor.Pulse(m_commandLock)
+            System.Threading.Monitor.PulseAll(m_commandLock)
         End SyncLock
 
         RaiseEvent Finished()
@@ -13350,7 +13350,7 @@ ErrorHandler:
         SyncLock m_stateLock
             m_state = newState
             'Debug.Print("State changed to " + newState.ToString())
-            System.Threading.Monitor.Pulse(m_stateLock)
+            System.Threading.Monitor.PulseAll(m_stateLock)
         End SyncLock
     End Sub
 
@@ -13363,7 +13363,35 @@ ErrorHandler:
 
     Private Sub FinishWaitInNewThread()
         SyncLock m_waitLock
-            System.Threading.Monitor.Pulse(m_waitLock)
+            System.Threading.Monitor.PulseAll(m_waitLock)
+        End SyncLock
+    End Sub
+
+    Private m_menuResponse As String
+
+    Private Function ShowMenu(menuData As MenuData) As String
+        m_player.ShowMenu(menuData)
+        ChangeState(State.Waiting)
+
+        SyncLock m_waitLock
+            System.Threading.Monitor.Wait(m_waitLock)
+        End SyncLock
+
+        Return m_menuResponse
+    End Function
+
+    Public Sub SetMenuResponse(response As String) Implements IASL.SetMenuResponse
+        Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetMenuResponseInNewThread))
+        ChangeState(State.Working)
+        runnerThread.Start(response)
+        WaitForStateChange(State.Working)
+    End Sub
+
+    Private Sub SetMenuResponseInNewThread(response As Object)
+        m_menuResponse = DirectCast(response, String)
+
+        SyncLock m_waitLock
+            System.Threading.Monitor.PulseAll(m_waitLock)
         End SyncLock
     End Sub
 

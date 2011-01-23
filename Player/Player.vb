@@ -774,7 +774,7 @@ Public Class Player
         End Try
     End Sub
 
-    Public Function ShowMenu(ByVal menuData As MenuData) As String Implements IPlayer.ShowMenu
+    Public Sub ShowMenu(ByVal menuData As MenuData) Implements IPlayer.ShowMenu
         Dim menuForm As Menu
         menuForm = New Menu()
 
@@ -783,8 +783,14 @@ Public Class Player
         menuForm.AllowCancel = menuData.AllowCancel
         menuForm.ShowDialog()
 
-        Return menuForm.SelectedItem
-    End Function
+        Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetMenuResponseInNewThread))
+        runnerThread.Start(menuForm.SelectedItem)
+
+    End Sub
+
+    Private Sub SetMenuResponseInNewThread(response As Object)
+        m_game.SetMenuResponse(DirectCast(response, String))
+    End Sub
 
     ' TO DO: everything implementing an IPlayer interface will need BeginInvoke
 

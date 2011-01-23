@@ -119,12 +119,17 @@
     </None>
     <None Include="Core\English.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Examples-Internal\forest.aslx" />
     <None Include="Examples-Internal\media.aslx" />
     <None Include="Examples-Public\template.aslx" />
-    <None Include="Examples-Internal\test.aslx" />
-    <None Include="Examples-Internal\test2.aslx" />
+    <None Include="Examples-Internal\test.aslx">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Examples-Internal\test2.aslx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Examples-Public\forest.aslx" />
     <None Include="Examples-Public\YouTube\YouTube.aslx" />
     <None Include="Examples-Public\YouTube\YouTube.htm" />
@@ -174,6 +179,7 @@
     </None>
     <None Include="Core\CoreParser.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreDescriptions.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

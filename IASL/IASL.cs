@@ -31,11 +31,12 @@ namespace AxeSoftware.Quest
         string SaveExtension { get; }
         void Tick();
         void FinishWait();
+        void SetMenuResponse(string response);
     }
 
     public interface IPlayer
     {
-        string ShowMenu(MenuData menuData);
+        void ShowMenu(MenuData menuData);
         void DoWait();
         bool ShowMsgBox(string caption);
         void SetWindowMenu(MenuData menuData);
