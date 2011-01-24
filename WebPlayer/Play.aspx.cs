@@ -160,30 +160,12 @@ namespace WebPlayer
 
         void m_player_LocationUpdated(string location)
         {
-            m_buffer.AddJavaScriptToBuffer("updateLocation", m_buffer.StringParameter(location));
+            m_buffer.AddJavaScriptToBuffer("updateLocation", new StringParameter(location));
         }
 
         void m_player_ShowMenu(string caption, IDictionary<string, string> options, bool allowCancel)
         {
-            string optionsJSON = "";
-
-            foreach (KeyValuePair<string, string> option in options)
-            {
-                if (optionsJSON.Length == 0)
-                {
-                    optionsJSON += "{";
-                }
-                else
-                {
-                    optionsJSON += ",";
-                }
-
-                optionsJSON += string.Format("{0}:{1}", m_buffer.StringParameter(option.Key), m_buffer.StringParameter(option.Value));
-            }
-
-            optionsJSON += "}";
-
-            m_buffer.AddJavaScriptToBuffer("showMenu", m_buffer.StringParameter(caption), optionsJSON);
+            m_buffer.AddJavaScriptToBuffer("showMenu", new StringParameter(caption), new JSONParameter(options));
         }
 
         protected void cmdSubmit_Click(object sender, EventArgs e)
