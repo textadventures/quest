@@ -11,6 +11,14 @@ function updateLocation(text) {
     $("#location").html("<b>" + text + "</b>");
 }
 
+function setGameName(text) {
+    $("#gameTitle").html(text);
+}
+
+function clearScreen() {
+    $("#divOutput").html("");
+}
+
 var _waitMode = false;
 
 function beginWait() {

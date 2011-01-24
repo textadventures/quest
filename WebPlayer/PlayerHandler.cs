@@ -19,6 +19,8 @@ namespace WebPlayer
 
         public event Action<string> LocationUpdated;
         public event Action BeginWait;
+        public event Action<string> GameNameUpdated;
+        public event Action ClearScreen;
 
         public PlayerHandler(string filename)
         {
@@ -65,34 +67,36 @@ namespace WebPlayer
 
         void m_game_RequestRaised(Request request, string data)
         {
-        //Quit,
-        //Load,
-        //Save,
-        //UpdateLocation,
-        //GameName,
-        //FontName,
-        //FontSize,
-        //Background,
-        //Foreground,
-        //LinkForeground,
-        //RunScript,
-        //SetStatus,
-        //ClearScreen,
-        //PanesVisible,
-        //ShowPicture,
-        //Speak,
-        //Restart
+            // TO DO: Handle these request types:
+            //Quit,
+            //Load,
+            //Save,
+            //Background,
+            //Foreground,
+            //LinkForeground,
+            //RunScript,
+            //SetStatus,
+            //PanesVisible,
+            //ShowPicture,
+            //Speak,
+            //Restart
 
             switch (request)
             {
                 case Request.UpdateLocation:
-                    if (LocationUpdated != null) LocationUpdated(data);
+                    LocationUpdated(data);
                     break;
                 case Request.FontName:
                     m_font = data;
                     break;
                 case Request.FontSize:
                     m_fontSize = data;
+                    break;
+                case Request.GameName:
+                    GameNameUpdated(data);
+                    break;
+                case Request.ClearScreen:
+                    ClearScreen();
                     break;
                 default:
                     WriteText(string.Format("Unhandled request: {0}, {1}", request, data));

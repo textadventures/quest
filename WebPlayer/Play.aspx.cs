@@ -75,11 +75,12 @@ namespace WebPlayer
                 case 1:
                     tmrTick.Enabled = false;
                     string initialText = LoadGame(Request["file"]);
-                    OutputTextNow(initialText);
                     if (m_player == null)
                     {
                         tmrInit.Enabled = false;
+                        UpdateGameName("Error loading game");
                     }
+                    OutputTextNow(initialText);
                     break;
                 case 2:
                     tmrInit.Enabled = false;
@@ -131,6 +132,8 @@ namespace WebPlayer
                 m_player.LocationUpdated += m_player_LocationUpdated;
                 m_player.BeginWait += m_player_BeginWait;
                 m_player.ShowMenuDelegate = m_player_ShowMenu;
+                m_player.GameNameUpdated += m_player_GameNameUpdated;
+                m_player.ClearScreen += m_player_ClearScreen;
                 
                 if (m_player.Initialise(out errors))
                 {
@@ -166,6 +169,22 @@ namespace WebPlayer
         void m_player_ShowMenu(string caption, IDictionary<string, string> options, bool allowCancel)
         {
             m_buffer.AddJavaScriptToBuffer("showMenu", new StringParameter(caption), new JSONParameter(options), new BooleanParameter(allowCancel));
+        }
+
+        void m_player_GameNameUpdated(string name)
+        {
+            UpdateGameName(name);
+        }
+
+        void UpdateGameName(string name)
+        {
+            if (name.Length == 0) name = "Untitled Game";
+            m_buffer.AddJavaScriptToBuffer("setGameName", new StringParameter(name));
+        }
+
+        void m_player_ClearScreen()
+        {
+            m_buffer.AddJavaScriptToBuffer("clearScreen");
         }
 
         protected void cmdSubmit_Click(object sender, EventArgs e)

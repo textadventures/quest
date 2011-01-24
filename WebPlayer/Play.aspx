@@ -43,7 +43,7 @@
     <form id="playerform" runat="server" defaultbutton="cmdSubmit">
     <asp:ScriptManager ID="ctlScriptManager" runat="server">
     </asp:ScriptManager>
-    <h1>Player</h1>
+    <h1 id="gameTitle">Loading...</h1>
     <div id="status">
         <div id="updating">
             <asp:UpdateProgress ID="ctlUpdateProgress" runat="server">
