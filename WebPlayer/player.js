@@ -82,7 +82,9 @@ function runCommand() {
     $("#txtCommand").val("");
 }
 
-function showMenu(title, options) {
+var _menuSelection = "";
+
+function showMenu(title, options, allowCancel) {
     $("#dialogOptions").empty();
     $.each(options, function (key, value) {
         $("#dialogOptions").append(
@@ -92,24 +94,53 @@ function showMenu(title, options) {
 
     $("#dialogCaption").html(title);
 
-    // TO DO: want to take account of allowCancel setting
-
-    $("#dialog").dialog({
+    var dialogOptions = {
         modal: true,
         autoOpen: false,
-        closeOnEscape: false,
-        open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); },   // suppresses "close" button
         buttons: [{
             text: "Select",
             click: function () { dialogSelect(); }
         }]
-    });
+    };
+
+    if (allowCancel) {
+        dialogOptions.buttons = dialogOptions.buttons.concat([{
+            text: "Cancel",
+            click: function () { dialogCancel(); }
+        }]);
+        dialogOptions.close = function (event, ui) { dialogClose(); };
+    }
+    else {
+        dialogOptions.closeOnEscape = false;
+        dialogOptions.open = function (event, ui) { $(".ui-dialog-titlebar-close").hide(); };    // suppresses "close" button
+    }
+
+    _menuSelection = "";
+    $("#dialog").dialog(dialogOptions);
 
     $("#dialog").dialog("open");
 }
 
 function dialogSelect() {
+    _menuSelection = $("#dialogOptions").val();
+    if (_menuSelection.length > 0) {
+        $("#dialog").dialog("close");
+        $("#fldUIMsg").val("choice " + _menuSelection);
+        $("#cmdSubmit").click();
+    }
+}
+
+function dialogCancel() {
     $("#dialog").dialog("close");
-    $("#fldUIMsg").val("choice " + $("#dialogOptions").val());
+}
+
+function dialogClose() {
+    if (_menuSelection.length == 0) {
+        dialogSendCancel();
+    }
+}
+
+function dialogSendCancel() {
+    $("#fldUIMsg").val("choicecancel");
     $("#cmdSubmit").click();
 }

@@ -267,6 +267,11 @@ namespace WebPlayer
             m_game.SetMenuResponse(response);
         }
 
+        public void CancelMenu()
+        {
+            m_game.SetMenuResponse(null);
+        }
+
         public void DoWait()
         {
             BeginWait();

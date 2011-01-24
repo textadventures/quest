@@ -165,7 +165,7 @@ namespace WebPlayer
 
         void m_player_ShowMenu(string caption, IDictionary<string, string> options, bool allowCancel)
         {
-            m_buffer.AddJavaScriptToBuffer("showMenu", new StringParameter(caption), new JSONParameter(options));
+            m_buffer.AddJavaScriptToBuffer("showMenu", new StringParameter(caption), new JSONParameter(options), new BooleanParameter(allowCancel));
         }
 
         protected void cmdSubmit_Click(object sender, EventArgs e)
@@ -180,6 +180,9 @@ namespace WebPlayer
                         break;
                     case "choice":
                         m_player.SetMenuResponse(args[1]);
+                        break;
+                    case "choicecancel":
+                        m_player.CancelMenu();
                         break;
                 }
                 fldUIMsg.Value = "";
