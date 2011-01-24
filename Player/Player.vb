@@ -36,6 +36,7 @@ Public Class Player
     Private m_speech As New System.Speech.Synthesis.SpeechSynthesizer
     Private m_loopSound As Boolean = False
     Private m_soundPlaying As Boolean = False
+    Private m_destroyed As Boolean = False
 
     Public Event Quit()
     Public Event AddToRecent(ByVal filename As String, ByVal name As String)
@@ -885,6 +886,7 @@ Public Class Player
     End Sub
 
     Private Sub StopSound() Implements IPlayer.StopSound
+        If m_destroyed Then Exit Sub
         BeginInvoke(Sub()
                         m_loopSound = False
                         ctlMediaPlayer.Ctlcontrols.stop()
@@ -935,4 +937,9 @@ Public Class Player
     Private Sub tmrTick_Tick(sender As System.Object, e As System.EventArgs) Handles tmrTick.Tick
         m_game.Tick()
     End Sub
+
+    Private Sub Player_HandleDestroyed(sender As Object, e As System.EventArgs) Handles Me.HandleDestroyed
+        m_destroyed = True
+    End Sub
+
 End Class

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using AxeSoftware.Quest.Scripts;
 
 namespace AxeSoftware.Quest
@@ -10,6 +11,13 @@ namespace AxeSoftware.Quest
         Loading,
         Running,
         Finished
+    }
+
+    public enum ThreadState
+    {
+        Ready,
+        Working,
+        Waiting
     }
 
     public class WorldModel : IASL, IASLDebug
@@ -33,6 +41,8 @@ namespace AxeSoftware.Quest
         private bool m_editMode = false;
         private Functions.ExpressionOwner m_expressionOwner;
         private IPlayer m_playerUI = null;
+        private ThreadState m_threadState = ThreadState.Ready;
+        private object m_threadLock = new object();
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -82,11 +92,6 @@ namespace AxeSoftware.Quest
 
         public WorldModel(string filename)
         {
-            if (State == GameState.Loading || State == GameState.Running)
-            {
-                throw new Exception("Attempt to initialise game without deactivating previous game.");
-            }
-
             m_expressionOwner = new Functions.ExpressionOwner(this);
             m_template = new Template(this);
             InitialiseElementFactories();
@@ -232,10 +237,14 @@ namespace AxeSoftware.Quest
 
             m_playerUI.ShowMenu(menuData);
 
+            ChangeThreadState(ThreadState.Waiting);
+
             lock (m_menuLock)
             {
-                System.Threading.Monitor.Wait(m_menuLock);
+                Monitor.Wait(m_menuLock);
             }
+
+            ChangeThreadState(ThreadState.Working);
 
             return m_menuResponse;
         }
@@ -252,12 +261,15 @@ namespace AxeSoftware.Quest
 
         public void SetMenuResponse(string response)
         {
-            m_menuResponse = response;
-
-            lock (m_menuLock)
+            DoInNewThreadAndWait(() =>
             {
-                System.Threading.Monitor.Pulse(m_menuLock);
-            }
+                m_menuResponse = response;
+
+                lock (m_menuLock)
+                {
+                    Monitor.Pulse(m_menuLock);
+                }
+            });
         }
 
         public IEnumerable<Element> Objects
@@ -373,15 +385,19 @@ namespace AxeSoftware.Quest
 
         public void SendCommand(string command)
         {
-            Print("");
-            Print("> " + Utility.SafeXML(command));
-            RunProcedure("HandleCommand", new Parameters("command", command), false);
-
-            // m_instance is set to null if the game finishes
-            if (State != GameState.Finished)
+            DoInNewThreadAndWait(() =>
             {
-                UpdateLists();
-            }
+                Print("");
+                Print("> " + Utility.SafeXML(command));
+                RunProcedure("HandleCommand", new Parameters("command", command), false);
+
+                if (State != GameState.Finished)
+                {
+                    UpdateLists();
+                }
+
+                ChangeThreadState(ThreadState.Ready);
+            });
         }
 
         public void SendEvent(string eventName, string param)
@@ -763,6 +779,34 @@ namespace AxeSoftware.Quest
         internal Functions.ExpressionOwner ExpressionOwner
         {
             get { return m_expressionOwner; }
+        }
+
+        private void ChangeThreadState(ThreadState newState)
+        {
+            m_threadState = newState;
+            lock (m_threadLock)
+            {
+                Monitor.PulseAll(m_threadLock);
+            }
+        }
+
+        private void WaitUntilFinishedWorking()
+        {
+            lock (m_threadLock)
+            {
+                while (m_threadState == ThreadState.Working)
+                {
+                    Monitor.Wait(m_threadLock);
+                }
+            }
+        }
+
+        private void DoInNewThreadAndWait(Action routine)
+        {
+            ChangeThreadState(ThreadState.Working);
+            Thread newThread = new Thread(new ThreadStart(routine));
+            newThread.Start();
+            WaitUntilFinishedWorking();
         }
     }
 }
