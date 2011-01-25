@@ -42,8 +42,6 @@ namespace WebPlayer
                 ViewState["GameId"] = m_gameId;
             }
 
-            System.Diagnostics.Debug.Print(m_gameId);
-
             if (Page.IsPostBack)
             {
                 if (m_gamesInSession.ContainsKey(m_gameId))
@@ -189,6 +187,12 @@ namespace WebPlayer
 
         protected void cmdSubmit_Click(object sender, EventArgs e)
         {
+            if (m_player == null)
+            {
+                SessionTimeoutMessage("<b>Sorry, your session has expired and the game has finished.</b><br/><br/>Press your browser's Refresh button to start again.");
+                return;
+            }
+
             if (fldUIMsg.Value.Length > 0)
             {
                 string[] args = fldUIMsg.Value.Split(new char[] { ' ' }, 2);
@@ -221,6 +225,14 @@ namespace WebPlayer
         void OutputTextNow(string text)
         {
             m_buffer.OutputText(text);
+            ClearJavaScriptBuffer();
+        }
+
+        void SessionTimeoutMessage(string text)
+        {
+            m_buffer = new OutputBuffer();
+            m_buffer.OutputText(text);
+            m_buffer.AddJavaScriptToBuffer("sessionTimeout");
             ClearJavaScriptBuffer();
         }
 

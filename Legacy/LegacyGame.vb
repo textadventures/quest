@@ -13055,7 +13055,7 @@ ErrorHandler:
         runnerThread.Start()
 
         SyncLock m_stateLock
-            While m_state = State.Working
+            While m_state = State.Working And Not m_gameFinished
                 System.Threading.Monitor.Wait(m_stateLock)
             End While
         End SyncLock
@@ -13203,7 +13203,7 @@ ErrorHandler:
 
     Private Sub WaitForStateChange(changedFromState As State)
         SyncLock m_stateLock
-            While m_state = changedFromState
+            While m_state = changedFromState And Not m_gameFinished
                 System.Threading.Monitor.Wait(m_stateLock)
             End While
         End SyncLock
@@ -13246,6 +13246,14 @@ ErrorHandler:
         ' In case we're in the middle of processing an "enter" command, nudge the thread along
         SyncLock m_commandLock
             System.Threading.Monitor.PulseAll(m_commandLock)
+        End SyncLock
+
+        SyncLock m_waitLock
+            System.Threading.Monitor.PulseAll(m_waitLock)
+        End SyncLock
+
+        SyncLock m_stateLock
+            System.Threading.Monitor.PulseAll(m_stateLock)
         End SyncLock
 
         RaiseEvent Finished()

@@ -152,3 +152,7 @@ function dialogSendCancel() {
     $("#fldUIMsg").val("choicecancel");
     $("#cmdSubmit").click();
 }
+
+function sessionTimeout() {
+    $("#txtCommand").hide();
+}

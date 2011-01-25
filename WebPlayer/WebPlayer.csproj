@@ -51,6 +51,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Global.asax" />
     <Content Include="Play.aspx" />
     <Content Include="player.js" />
     <Content Include="updating.gif" />
@@ -68,6 +69,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="OutputBuffer.cs" />
     <Compile Include="Play.aspx.cs">
       <DependentUpon>Play.aspx</DependentUpon>

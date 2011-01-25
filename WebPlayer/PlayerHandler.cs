@@ -315,5 +315,10 @@ namespace WebPlayer
         {
             m_game.Tick();
         }
+
+        public void EndGame()
+        {
+            m_game.Finish();
+        }
     }
 }
