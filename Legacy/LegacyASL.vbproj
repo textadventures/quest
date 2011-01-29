@@ -60,7 +60,7 @@
     <DefineDebug>False</DefineDebug>
     <DefineTrace>True</DefineTrace>
     <DefineConstants>Win32=True</DefineConstants>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>42353,42354,42355</NoWarn>
     <DebugType>none</DebugType>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
