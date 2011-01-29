@@ -389,7 +389,15 @@ namespace AxeSoftware.Quest
             {
                 Print("");
                 Print("> " + Utility.SafeXML(command));
-                RunProcedure("HandleCommand", new Parameters("command", command), false);
+
+                try
+                {
+                    RunProcedure("HandleCommand", new Parameters("command", command), false);
+                }
+                catch (Exception ex)
+                {
+                    LogException(ex);
+                }
 
                 if (State != GameState.Finished)
                 {
@@ -808,6 +816,11 @@ namespace AxeSoftware.Quest
             Thread newThread = new Thread(new ThreadStart(routine));
             newThread.Start();
             WaitUntilFinishedWorking();
+        }
+
+        void LogException(Exception ex)
+        {
+            if (LogError != null) LogError(ex.Message + Environment.NewLine + ex.StackTrace);
         }
     }
 }

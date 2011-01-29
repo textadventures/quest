@@ -94,6 +94,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Logging.cs" />
     <Compile Include="OutputBuffer.cs" />
     <Compile Include="Play.aspx.cs">
       <DependentUpon>Play.aspx</DependentUpon>
