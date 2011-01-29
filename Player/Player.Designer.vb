@@ -23,9 +23,7 @@ Partial Class Player
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Player))
         Me.splitMain = New System.Windows.Forms.SplitContainer()
-        Me.ctlMediaPlayer = New AxWMPLib.AxWindowsMediaPlayer()
         Me.wbOutput = New System.Windows.Forms.WebBrowser()
         Me.cmdPanes = New System.Windows.Forms.Button()
         Me.lblBanner = New System.Windows.Forms.Label()
@@ -45,7 +43,6 @@ Partial Class Player
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.Panel2.SuspendLayout()
         Me.splitMain.SuspendLayout()
-        CType(Me.ctlMediaPlayer, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.splitPane, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitPane.Panel1.SuspendLayout()
         Me.splitPane.Panel2.SuspendLayout()
@@ -60,7 +57,6 @@ Partial Class Player
         '
         'splitMain.Panel1
         '
-        Me.splitMain.Panel1.Controls.Add(Me.ctlMediaPlayer)
         Me.splitMain.Panel1.Controls.Add(Me.wbOutput)
         Me.splitMain.Panel1.Controls.Add(Me.cmdPanes)
         Me.splitMain.Panel1.Controls.Add(Me.lblBanner)
@@ -75,16 +71,6 @@ Partial Class Player
         Me.splitMain.Size = New System.Drawing.Size(695, 482)
         Me.splitMain.SplitterDistance = 510
         Me.splitMain.TabIndex = 1
-        '
-        'ctlMediaPlayer
-        '
-        Me.ctlMediaPlayer.Enabled = True
-        Me.ctlMediaPlayer.Location = New System.Drawing.Point(8, 28)
-        Me.ctlMediaPlayer.Name = "ctlMediaPlayer"
-        Me.ctlMediaPlayer.OcxState = CType(resources.GetObject("ctlMediaPlayer.OcxState"), System.Windows.Forms.AxHost.State)
-        Me.ctlMediaPlayer.Size = New System.Drawing.Size(75, 23)
-        Me.ctlMediaPlayer.TabIndex = 7
-        Me.ctlMediaPlayer.Visible = False
         '
         'wbOutput
         '
@@ -232,7 +218,6 @@ Partial Class Player
         Me.splitMain.Panel2.ResumeLayout(False)
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitMain.ResumeLayout(False)
-        CType(Me.ctlMediaPlayer, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitPane.Panel1.ResumeLayout(False)
         Me.splitPane.Panel2.ResumeLayout(False)
         CType(Me.splitPane, System.ComponentModel.ISupportInitialize).EndInit()
@@ -254,7 +239,6 @@ Partial Class Player
     Friend WithEvents tmrTimer As System.Windows.Forms.Timer
     Friend WithEvents ctlSaveFile As System.Windows.Forms.SaveFileDialog
     Friend WithEvents tmrInitialise As System.Windows.Forms.Timer
-    Friend WithEvents ctlMediaPlayer As AxWMPLib.AxWindowsMediaPlayer
     Friend WithEvents ctlOpenFile As System.Windows.Forms.OpenFileDialog
     Friend WithEvents tmrTick As System.Windows.Forms.Timer
 

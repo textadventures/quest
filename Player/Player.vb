@@ -37,6 +37,7 @@ Public Class Player
     Private m_loopSound As Boolean = False
     Private m_soundPlaying As Boolean = False
     Private m_destroyed As Boolean = False
+    Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
 
     Public Event Quit()
     Public Event AddToRecent(ByVal filename As String, ByVal name As String)
@@ -866,15 +867,17 @@ Public Class Player
 
     Private Sub PlaySound(ByVal filename As String, ByVal synchronous As Boolean, ByVal looped As Boolean) Implements IPlayer.PlaySound
         BeginInvoke(Sub()
-
                         If synchronous And looped Then
                             Throw New Exception("Can't play sound that is both synchronous and looped")
                         End If
                         m_loopSound = looped
                         m_soundPlaying = True
-                        ctlMediaPlayer.URL = filename
-                        ctlMediaPlayer.Ctlcontrols.play()
 
+                        m_mediaPlayer.Open(New System.Uri(filename))
+                        m_mediaPlayer.Play()
+
+                        ' TO DO: This no longer works correctly. We need to pause the script-running
+                        ' thread in the same way as a "wait" instead.
                         If synchronous Then
                             Do
                                 Threading.Thread.Sleep(10)
@@ -889,17 +892,16 @@ Public Class Player
         If m_destroyed Then Exit Sub
         BeginInvoke(Sub()
                         m_loopSound = False
-                        ctlMediaPlayer.Ctlcontrols.stop()
+                        m_mediaPlayer.Stop()
                     End Sub
         )
     End Sub
 
-    Private Sub ctlMediaPlayer_PlayStateChange(ByVal sender As Object, ByVal e As AxWMPLib._WMPOCXEvents_PlayStateChangeEvent) Handles ctlMediaPlayer.PlayStateChange
-        If ctlMediaPlayer.playState = WMPLib.WMPPlayState.wmppsStopped Then
-            m_soundPlaying = False
-            If m_loopSound Then
-                ctlMediaPlayer.Ctlcontrols.play()
-            End If
+    Private Sub m_mediaPlayer_MediaEnded(sender As Object, e As System.EventArgs) Handles m_mediaPlayer.MediaEnded
+        m_soundPlaying = False
+        If m_loopSound Then
+            m_mediaPlayer.Position = New TimeSpan(0)
+            m_mediaPlayer.Play()
         End If
     End Sub
 
