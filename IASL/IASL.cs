@@ -10,6 +10,7 @@ namespace AxeSoftware.Quest
     public delegate void UpdateListHandler(ListType listType, List<ListData> items);
     public delegate void FinishedHandler();
     public delegate void ObjectsUpdatedHandler();
+    public delegate void ErrorHandler(string errorMessage);
 
     public interface IASL
     {
@@ -22,6 +23,7 @@ namespace AxeSoftware.Quest
         event RequestHandler RequestRaised;
         event UpdateListHandler UpdateList;
         event FinishedHandler Finished;
+        event ErrorHandler LogError;
         List<string> Errors { get; }
         string Filename { get; }
         string SaveFilename { get; }

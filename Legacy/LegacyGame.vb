@@ -13169,6 +13169,8 @@ ErrorHandler:
 
     Public Event Finished() Implements IASL.Finished
 
+    Public Event LogError(errorMessage As String) Implements IASL.LogError
+
     Public Function GetInterface() As String Implements IASL.GetInterface
         Return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), "PlayerDefault.htm")
     End Function
@@ -13213,9 +13215,14 @@ ErrorHandler:
     Private Sub ProcessCommandInNewThread(command As Object)
         ' Process command, and change state to Ready if the command finished processing
 
-        If ExecCommand(DirectCast(command, String), NullThread) Then
+        Try
+            If ExecCommand(DirectCast(command, String), NullThread) Then
+                ChangeState(State.Ready)
+            End If
+        Catch ex As Exception
+            LogException(ex)
             ChangeState(State.Ready)
-        End If
+        End Try
     End Sub
 
     Public Sub SendEvent(ByVal eventName As String, ByVal param As String) Implements IASL.SendEvent
@@ -13348,7 +13355,11 @@ ErrorHandler:
         Dim scriptList As List(Of String) = DirectCast(scripts, List(Of String))
 
         For Each script As String In scriptList
-            ExecuteScript(script, NullThread)
+            Try
+                ExecuteScript(script, NullThread)
+            Catch ex As Exception
+                LogException(ex)
+            End Try
         Next
 
         ChangeState(State.Ready)
@@ -13403,4 +13414,7 @@ ErrorHandler:
         End SyncLock
     End Sub
 
+    Private Sub LogException(ex As Exception)
+        RaiseEvent LogError(ex.Message + Environment.NewLine + ex.StackTrace)
+    End Sub
 End Class

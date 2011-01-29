@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using AxeSoftware.Quest;
 using System.Xml;
-using log4net;
 
 namespace WebPlayer
 {
@@ -23,7 +22,7 @@ namespace WebPlayer
         public event Action<string> GameNameUpdated;
         public event Action ClearScreen;
 
-        private static readonly ILog s_log = LogManager.GetLogger(typeof(PlayerHandler));
+        private static readonly log4net.ILog s_log = log4net.LogManager.GetLogger(typeof(PlayerHandler));
 
         static PlayerHandler()
         {
@@ -58,6 +57,7 @@ namespace WebPlayer
 
             m_game.PrintText += m_game_PrintText;
             m_game.RequestRaised += m_game_RequestRaised;
+            m_game.LogError += m_game_LogError;
             m_game.Initialise(this);
             if (m_game.Errors.Count > 0)
             {
@@ -71,6 +71,12 @@ namespace WebPlayer
                 errors = null;
                 return true;
             }
+        }
+
+        void m_game_LogError(string errorMessage)
+        {
+            WriteText("[Sorry, an error occurred]");
+            s_log.Error(errorMessage);
         }
 
         public void BeginGame()

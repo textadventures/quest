@@ -444,6 +444,7 @@ namespace AxeSoftware.Quest
         public event UpdateListHandler UpdateList;
         public event FinishedHandler Finished;
         public event ObjectsUpdatedHandler ObjectsUpdated;
+        public event ErrorHandler LogError;
 
         internal Template Template
         {
