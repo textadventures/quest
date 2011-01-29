@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using AxeSoftware.Quest;
 using System.Xml;
+using log4net;
 
 namespace WebPlayer
 {
@@ -22,15 +23,25 @@ namespace WebPlayer
         public event Action<string> GameNameUpdated;
         public event Action ClearScreen;
 
+        private static readonly ILog s_log = LogManager.GetLogger(typeof(PlayerHandler));
+
+        static PlayerHandler()
+        {
+            log4net.Config.XmlConfigurator.Configure();
+        }
+
         public PlayerHandler(string filename)
         {
             m_filename = filename;
         }
 
+        public string GameId { get; set; }
+
         public string LibraryFolder { get; set; }
 
         public bool Initialise(out List<string> errors)
         {
+            s_log.InfoFormat("{0} Initialising {1}", GameId, m_filename);
             switch (System.IO.Path.GetExtension(m_filename).ToLower())
             {
                 case ".aslx":
@@ -50,11 +61,13 @@ namespace WebPlayer
             m_game.Initialise(this);
             if (m_game.Errors.Count > 0)
             {
+                s_log.InfoFormat("{0} Failed to initialise game - errors found in file", GameId);
                 errors = m_game.Errors;
                 return false;
             }
             else
             {
+                s_log.InfoFormat("{0} Initialised successfully", GameId);
                 errors = null;
                 return true;
             }
@@ -62,11 +75,14 @@ namespace WebPlayer
 
         public void BeginGame()
         {
+            s_log.InfoFormat("{0} Beginning game", GameId);
             m_game.Begin();
         }
 
         void m_game_RequestRaised(Request request, string data)
         {
+            s_log.DebugFormat("{0} Request raised: {1}, {2}", GameId, request, data);
+
             // TO DO: Handle these request types:
             //Quit,
             //Load,
@@ -256,6 +272,7 @@ namespace WebPlayer
 
         public void SendCommand(string command)
         {
+            s_log.DebugFormat("{0} Command entered: {1}", GameId, command);
             m_game.SendCommand(command);
         }
 
@@ -263,31 +280,37 @@ namespace WebPlayer
 
         public void ShowMenu(MenuData menuData)
         {
+            s_log.DebugFormat("{0} Showing menu", GameId);
             ShowMenuDelegate(menuData.Caption, menuData.Options, menuData.AllowCancel);
         }
 
         public void SetMenuResponse(string response)
         {
+            s_log.DebugFormat("{0} Menu response received", GameId);
             m_game.SetMenuResponse(response);
         }
 
         public void CancelMenu()
         {
+            s_log.DebugFormat("{0} Menu cancelled", GameId);
             m_game.SetMenuResponse(null);
         }
 
         public void DoWait()
         {
+            s_log.DebugFormat("{0} Wait beginning", GameId);
             BeginWait();
         }
 
         public void EndWait()
         {
+            s_log.DebugFormat("{0} Wait ending", GameId);
             m_game.FinishWait();
         }
 
         public bool ShowMsgBox(string caption)
         {
+            s_log.DebugFormat("{0} Showing message box", GameId);
             throw new NotImplementedException();
         }
 
@@ -318,6 +341,7 @@ namespace WebPlayer
 
         public void EndGame()
         {
+            s_log.InfoFormat("{0} Ending game", GameId);
             m_game.Finish();
         }
     }
