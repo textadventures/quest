@@ -382,6 +382,7 @@ Public Class LegacyGame
     Private m_stateLock As Object = New Object
     Private m_state As State = State.Ready
     Private m_waitLock As Object = New Object
+    Private m_readyForCommand As Boolean = True
 
     Private Const NUMBER_PLAYER_ERROR_MESSAGES As Integer = 38
     Private PlayerErrorMessageString(NUMBER_PLAYER_ERROR_MESSAGES) As String
@@ -6838,9 +6839,19 @@ errhandle:
             m_player.StopSound()
         Else
             If looped And sync Then sync = False ' Can't loop and sync at the same time, that would just hang!
-            If sync Then PauseMode = True
+
+            If sync Then
+                ChangeState(State.Waiting)
+            End If
+
             m_player.PlaySound(GetResourcePath(filename), sync, looped)
-            PauseMode = False
+
+            If sync Then
+                SyncLock (m_waitLock)
+                    System.Threading.Monitor.Wait(m_waitLock)
+                End SyncLock
+            End If
+
         End If
     End Sub
 
@@ -11448,7 +11459,7 @@ ErrorHandler:
         ' Now, wait for CommandOverrideModeOn to be set
         ' to False by ExecCommand. Execution can then resume.
 
-        ChangeState(State.Waiting)
+        ChangeState(State.Waiting, True)
 
         SyncLock m_commandLock
             System.Threading.Monitor.Wait(m_commandLock)
@@ -13196,6 +13207,8 @@ ErrorHandler:
         ' finished processing, or perhaps a prompt has been printed and now the game is waiting for further
         ' user input after hitting an "enter" script command.
 
+        If Not m_readyForCommand Then Exit Sub
+
         Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf ProcessCommandInNewThread))
         ChangeState(State.Working)
         runnerThread.Start(command)
@@ -13366,9 +13379,14 @@ ErrorHandler:
     End Sub
 
     Private Sub ChangeState(newState As State)
+        Dim acceptCommands As Boolean = (newState = State.Ready)
+        ChangeState(newState, acceptCommands)
+    End Sub
+
+    Private Sub ChangeState(newState As State, acceptCommands As Boolean)
+        m_readyForCommand = acceptCommands
         SyncLock m_stateLock
             m_state = newState
-            'Debug.Print("State changed to " + newState.ToString())
             System.Threading.Monitor.PulseAll(m_stateLock)
         End SyncLock
     End Sub

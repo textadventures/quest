@@ -256,6 +256,10 @@ Public Class Player
 
     Private Delegate Sub PrintDelegate(text As String)
 
+    Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
+        BeginInvoke(Sub() PrintText("<output>[Sorry, an error occurred]</output>"))
+    End Sub
+
     Private Sub m_game_PrintText(ByVal text As String) Handles m_game.PrintText
         BeginInvoke(New PrintDelegate(AddressOf PrintText), text)
     End Sub
@@ -876,13 +880,12 @@ Public Class Player
                         m_mediaPlayer.Open(New System.Uri(filename))
                         m_mediaPlayer.Play()
 
-                        ' TO DO: This no longer works correctly. We need to pause the script-running
-                        ' thread in the same way as a "wait" instead.
                         If synchronous Then
                             Do
                                 Threading.Thread.Sleep(10)
                                 Application.DoEvents()
                             Loop Until Not m_soundPlaying
+                            m_game.FinishWait()
                         End If
                     End Sub
         )
