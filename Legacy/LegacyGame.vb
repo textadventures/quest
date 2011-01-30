@@ -48,17 +48,7 @@ Public Class LegacyGame
     Public Const LOGTYPE_USERERROR As Integer = 6
     Public Const LOGTYPE_INTERNALERROR As Integer = 7
 
-    Private Const PANEVIEW_ON As Integer = 1
-    Private Const PANEVIEW_OFF As Integer = 2
-    Private Const PANEVIEW_DISABLED As Integer = 3
-
     Private m_CurrentDirectory As String
-
-    Private Const LOAD_FAIL_FILENOTFOUND As Integer = 1
-    Private Const LOAD_FAIL_ERRORS As Integer = 2
-    Private Const LOAD_FAIL_INVALIDFILE As Integer = 3
-    Private Const LOAD_FAIL_BADSTRUCTURE As Integer = 4
-    Private Const LOAD_FAIL_NODEFINEGAMEBLOCK As Integer = 5
 
     Private m_oDefineBlockParams As Dictionary(Of String, Dictionary(Of String, String))
 
