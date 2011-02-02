@@ -131,6 +131,7 @@ namespace WebPlayer
                 m_player.LocationUpdated += m_player_LocationUpdated;
                 m_player.BeginWait += m_player_BeginWait;
                 m_player.ShowMenuDelegate = m_player_ShowMenu;
+                m_player.ShowQuestionDelegate = m_player_ShowQuestion;
                 m_player.GameNameUpdated += m_player_GameNameUpdated;
                 m_player.ClearScreen += m_player_ClearScreen;
                 
@@ -170,6 +171,11 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer("showMenu", new StringParameter(caption), new JSONParameter(options), new BooleanParameter(allowCancel));
         }
 
+        void m_player_ShowQuestion(string caption)
+        {
+            m_buffer.AddJavaScriptToBuffer("showQuestion", new StringParameter(caption));
+        }
+
         void m_player_GameNameUpdated(string name)
         {
             UpdateGameName(name);
@@ -207,6 +213,9 @@ namespace WebPlayer
                         break;
                     case "choicecancel":
                         m_player.CancelMenu();
+                        break;
+                    case "msgbox":
+                        m_player.SetQuestionResponse(args[1]);
                         break;
                 }
                 fldUIMsg.Value = "";

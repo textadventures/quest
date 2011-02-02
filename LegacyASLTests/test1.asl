@@ -24,6 +24,11 @@ define room <room>
 		msg <You entered: #test#>
 	}
 
+	command <ask> {
+		msg <Some text>
+		if ask <question text> then msg <response yes> else msg <response no>
+	}
+
 	define object <object>
 		look <object look desc>
 	end define

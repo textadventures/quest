@@ -815,9 +815,13 @@ Public Class Player
         m_game.FinishWait()
     End Sub
 
-    Public Function ShowMsgBox(ByVal caption As String) As Boolean Implements IPlayer.ShowMsgBox
-        Return MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes
-    End Function
+    Public Sub ShowQuestion(ByVal caption As String) Implements IPlayer.ShowQuestion
+        BeginInvoke(Sub()
+                        Dim result As Boolean = (MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes)
+                        m_game.SetQuestionResponse(result)
+                    End Sub
+        )
+    End Sub
 
     Public Function KeyPressed() As Boolean
         If m_waiting Then

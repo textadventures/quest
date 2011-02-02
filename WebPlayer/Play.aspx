@@ -36,6 +36,10 @@
         {
             display: none;
         }
+        #msgbox
+        {
+            display: none;
+        }
     </style>
     <title>Player</title>
 </head>
@@ -77,6 +81,9 @@
         <p id="dialogCaption"></p>
         <select id="dialogOptions" size="3">
         </select>
+    </div>
+    <div id="msgbox" title="Question">
+        <p id="msgboxCaption"></p>
     </div>
 </body>
 </html>

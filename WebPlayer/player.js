@@ -90,6 +90,36 @@ function runCommand() {
     $("#txtCommand").val("");
 }
 
+function showQuestion(title) {
+    $("#msgboxCaption").html(title);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        buttons: [
+            {
+                text: "Yes",
+                click: function () { msgboxSubmit("yes"); }
+            },
+            {
+                text: "No",
+                click: function () { msgboxSubmit("no"); }
+            }
+        ],
+        closeOnEscape: false,
+        open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }    // suppresses "close" button
+    };
+
+    $("#msgbox").dialog(msgboxOptions);
+    $("#msgbox").dialog("open");
+}
+
+function msgboxSubmit(text) {
+    $("#msgbox").dialog("close");
+    $("#fldUIMsg").val("msgbox " + text);
+    $("#cmdSubmit").click();
+}
+
 var _menuSelection = "";
 
 function showMenu(title, options, allowCancel) {

@@ -34,13 +34,14 @@ namespace AxeSoftware.Quest
         void Tick();
         void FinishWait();
         void SetMenuResponse(string response);
+        void SetQuestionResponse(bool response);
     }
 
     public interface IPlayer
     {
         void ShowMenu(MenuData menuData);
         void DoWait();
-        bool ShowMsgBox(string caption);
+        void ShowQuestion(string caption);
         void SetWindowMenu(MenuData menuData);
         string GetNewGameFile(string originalFilename, string extensions);
         void PlaySound(string filename, bool synchronous, bool looped);

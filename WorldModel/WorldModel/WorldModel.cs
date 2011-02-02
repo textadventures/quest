@@ -272,6 +272,9 @@ namespace AxeSoftware.Quest
             });
         }
 
+        // This is actually currently not needed, as we don't have an "if ask" equivalent for Quest 5.0 games.
+        public void SetQuestionResponse(bool response) { }
+
         public IEnumerable<Element> Objects
         {
             get

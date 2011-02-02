@@ -6552,9 +6552,33 @@ errhandle:
 
     End Sub
 
+    Private m_questionResponse As Boolean
+
     Private Function ExecuteIfAsk(ByRef askq As String) As Boolean
-        Return m_player.ShowMsgBox(askq)
+        m_player.ShowQuestion(askq)
+        ChangeState(State.Waiting)
+
+        SyncLock m_waitLock
+            System.Threading.Monitor.Wait(m_waitLock)
+        End SyncLock
+
+        Return m_questionResponse
     End Function
+
+    Private Sub SetQuestionResponse(response As Boolean) Implements IASL.SetQuestionResponse
+        Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetQuestionResponseInNewThread))
+        ChangeState(State.Working)
+        runnerThread.Start(response)
+        WaitForStateChange(State.Working)
+    End Sub
+
+    Private Sub SetQuestionResponseInNewThread(response As Object)
+        m_questionResponse = DirectCast(response, Boolean)
+
+        SyncLock m_waitLock
+            System.Threading.Monitor.PulseAll(m_waitLock)
+        End SyncLock
+    End Sub
 
     Private Function ExecuteIfGot(ByRef theitem As String) As Boolean
 

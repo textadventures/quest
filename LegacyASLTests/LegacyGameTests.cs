@@ -72,5 +72,18 @@ namespace LegacyASLTests
             m_game.SetMenuResponse(m_player.LatestMenu.Options.ElementAt(0).Key);
             Assert.AreEqual("It's twin 1", m_player.Buffer(3));
         }
+
+        [TestMethod]
+        public void TestAsk()
+        {
+            m_player.ClearBuffer();
+            m_player.QuestionData = null;
+            m_game.SendCommand("ask");
+            Assert.AreEqual("Some text", m_player.Buffer(1));
+            Assert.AreEqual(2, m_player.BufferLength, "Expected nothing else in the output buffer after question is asked");
+            Assert.AreEqual("question text", m_player.QuestionData);
+            m_game.SetQuestionResponse(true);
+            Assert.AreEqual("response yes", m_player.Buffer(2));
+        }
     }
 }

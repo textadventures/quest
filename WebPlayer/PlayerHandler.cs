@@ -307,10 +307,18 @@ namespace WebPlayer
             m_game.FinishWait();
         }
 
-        public bool ShowMsgBox(string caption)
+        public Action<string> ShowQuestionDelegate { get; set; }
+
+        public void ShowQuestion(string caption)
         {
             Logging.Log.DebugFormat("{0} Showing message box", GameId);
-            throw new NotImplementedException();
+            ShowQuestionDelegate(caption);
+        }
+
+        public void SetQuestionResponse(string response)
+        {
+            Logging.Log.DebugFormat("{0} Question response received", GameId);
+            m_game.SetQuestionResponse(response == "yes");
         }
 
         public void SetWindowMenu(MenuData menuData)

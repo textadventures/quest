@@ -54,9 +54,11 @@ namespace LegacyASLTests
 
         public bool IsWaiting { get; set; }
 
-        public bool ShowMsgBox(string caption)
+        public string QuestionData { get; set; }
+
+        public void ShowQuestion(string caption)
         {
-            throw new NotImplementedException();
+            QuestionData = caption;
         }
 
         public void SetWindowMenu(MenuData menuData)
