@@ -21,6 +21,7 @@ namespace WebPlayer
         public event Action BeginWait;
         public event Action<string> GameNameUpdated;
         public event Action ClearScreen;
+        public event Action<string> ShowPicture;
 
         public PlayerHandler(string filename)
         {
@@ -112,6 +113,9 @@ namespace WebPlayer
                     break;
                 case Request.ClearScreen:
                     ClearScreen();
+                    break;
+                case Request.ShowPicture:
+                    ShowPicture(data);
                     break;
                 default:
                     WriteText(string.Format("Unhandled request: {0}, {1}", request, data));

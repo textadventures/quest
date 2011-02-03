@@ -134,6 +134,7 @@ namespace WebPlayer
                 m_player.ShowQuestionDelegate = m_player_ShowQuestion;
                 m_player.GameNameUpdated += m_player_GameNameUpdated;
                 m_player.ClearScreen += m_player_ClearScreen;
+                m_player.ShowPicture += m_player_ShowPicture;
                 
                 if (m_player.Initialise(out errors))
                 {
@@ -154,6 +155,19 @@ namespace WebPlayer
             }
 
             return output;
+        }
+
+        void m_player_ShowPicture(string filename)
+        {
+            SessionResources resources = Session["Resources"] as SessionResources;
+            if (resources == null)
+            {
+                resources = new SessionResources();
+                Session["Resources"] = resources;
+            }
+
+            string key = resources.Add(filename);
+            m_buffer.AddJavaScriptToBuffer("showPicture", new StringParameter(key));
         }
 
         void m_player_BeginWait()

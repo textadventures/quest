@@ -186,3 +186,7 @@ function dialogSendCancel() {
 function sessionTimeout() {
     $("#txtCommand").hide();
 }
+
+function showPicture(key) {
+    addText("<img src=\"Resource.ashx?id=" + key + "\" />");
+}

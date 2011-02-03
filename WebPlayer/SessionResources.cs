@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WebPlayer
+{
+    public class SessionResources
+    {
+        private int m_count = 0;
+        private Dictionary<string, string> m_resourceList = new Dictionary<string, string>();
+
+        public string Add(string filename)
+        {
+            m_count++;
+            string key = m_count.ToString();
+            m_resourceList.Add(key, filename);
+            return key;
+        }
+
+        public string Get(string key)
+        {
+            string result;
+            if (m_resourceList.TryGetValue(key, out result))
+            {
+                return result;
+            }
+            return string.Empty;
+        }
+    }
+}
