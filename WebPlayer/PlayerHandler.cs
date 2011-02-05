@@ -23,6 +23,7 @@ namespace WebPlayer
         public event Action ClearScreen;
         public event Func<string, string> AddResource;
         public event Action<string> PlayAudio;
+        public event Action StopAudio;
 
         public PlayerHandler(string filename)
         {
@@ -349,7 +350,7 @@ namespace WebPlayer
 
         public void StopSound()
         {
-            throw new NotImplementedException();
+            StopAudio();
         }
 
         public void Tick()

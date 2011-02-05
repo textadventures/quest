@@ -66,7 +66,7 @@ namespace WebPlayer
         private string GetContentType(string filename)
         {
             string result;
-            if (m_mimeTypes.TryGetValue(System.IO.Path.GetExtension(filename), out result))
+            if (m_mimeTypes.TryGetValue(System.IO.Path.GetExtension(filename).ToLower(), out result))
             {
                 return result;
             }

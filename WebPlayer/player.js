@@ -191,11 +191,14 @@ function sessionTimeout() {
     $("#txtCommand").hide();
 }
 
+var _currentPlayer = "";
+
 function playWav(filename) {
     if (!document.createElement('audio').canPlayType) {
         // no <audio> support, so we must play WAVs using <embed> as the 
         // jPlayer Flash fallback does not support WAV.
         $("#audio_embed").html("<embed src=\"" + filename + "\" autostart=\"true\" width=\"0\" height=\"0\" type=\"audio/wav\">");
+        _currentPlayer = "embed";
     }
     else {
         playAudio(filename, "wav");
@@ -207,8 +210,18 @@ function playMp3(filename) {
 }
 
 function playAudio(filename, format) {
+    _currentPlayer = "jplayer";
     $("#jquery_jplayer").bind($.jPlayer.event.error, function (event) { alert(event.jPlayer.error.type); });
     if (format == "wav") $("#jquery_jplayer").jPlayer("setMedia", { wav: filename });
     if (format == "mp3") $("#jquery_jplayer").jPlayer("setMedia", { mp3: filename });
     $("#jquery_jplayer").jPlayer("play");
+}
+
+function stopAudio() {
+    if (_currentPlayer == "jplayer") {
+        $("#jquery_jplayer").jPlayer("stop");
+    }
+    else if (_currentPlayer == "embed") {
+        $("#audio_embed").html("");
+    }
 }

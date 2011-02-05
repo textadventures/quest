@@ -136,6 +136,7 @@ namespace WebPlayer
                 m_player.ClearScreen += m_player_ClearScreen;
                 m_player.AddResource += AddResource;
                 m_player.PlayAudio += m_player_PlayAudio;
+                m_player.StopAudio += m_player_StopAudio;
                 
                 if (m_player.Initialise(out errors))
                 {
@@ -161,13 +162,18 @@ namespace WebPlayer
         void m_player_PlayAudio(string filename)
         {
             string functionName = null;
-            if (filename.EndsWith(".wav")) functionName = "playWav";
-            if (filename.EndsWith(".mp3")) functionName = "playMp3";
+            if (filename.EndsWith(".wav", StringComparison.InvariantCultureIgnoreCase)) functionName = "playWav";
+            if (filename.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase)) functionName = "playMp3";
 
             if (functionName == null) return;
 
             string url = AddResource(filename);
             m_buffer.AddJavaScriptToBuffer(functionName, new StringParameter(url));
+        }
+
+        void m_player_StopAudio()
+        {
+            m_buffer.AddJavaScriptToBuffer("stopAudio");
         }
 
         string AddResource(string filename)
