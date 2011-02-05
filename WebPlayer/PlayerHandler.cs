@@ -17,12 +17,19 @@ namespace WebPlayer
         private string m_foregroundOverride = "";
         private string m_fontSizeOverride = "";
 
+        public class PlayAudioEventArgs : EventArgs
+        {
+            public string Filename { get; set; }
+            public bool Synchronous { get; set; }
+            public bool Looped { get; set; }
+        }
+
         public event Action<string> LocationUpdated;
         public event Action BeginWait;
         public event Action<string> GameNameUpdated;
         public event Action ClearScreen;
         public event Func<string, string> AddResource;
-        public event Action<string> PlayAudio;
+        public event EventHandler<PlayAudioEventArgs> PlayAudio;
         public event Action StopAudio;
 
         public PlayerHandler(string filename)
@@ -345,7 +352,7 @@ namespace WebPlayer
 
         public void PlaySound(string filename, bool synchronous, bool looped)
         {
-            PlayAudio(filename);
+            PlayAudio(this, new PlayAudioEventArgs { Filename = filename, Synchronous = synchronous, Looped = looped });
         }
 
         public void StopSound()

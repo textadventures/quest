@@ -159,16 +159,21 @@ namespace WebPlayer
             return output;
         }
 
-        void m_player_PlayAudio(string filename)
+        void m_player_PlayAudio(object sender, PlayerHandler.PlayAudioEventArgs e)
         {
             string functionName = null;
-            if (filename.EndsWith(".wav", StringComparison.InvariantCultureIgnoreCase)) functionName = "playWav";
-            if (filename.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase)) functionName = "playMp3";
+            if (e.Filename.EndsWith(".wav", StringComparison.InvariantCultureIgnoreCase)) functionName = "playWav";
+            if (e.Filename.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase)) functionName = "playMp3";
 
             if (functionName == null) return;
 
-            string url = AddResource(filename);
-            m_buffer.AddJavaScriptToBuffer(functionName, new StringParameter(url));
+            string url = AddResource(e.Filename);
+            
+            m_buffer.AddJavaScriptToBuffer(
+                functionName,
+                new StringParameter(url),
+                new BooleanParameter(e.Synchronous),
+                new BooleanParameter(e.Looped));
         }
 
         void m_player_StopAudio()
