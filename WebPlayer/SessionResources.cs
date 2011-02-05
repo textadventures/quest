@@ -9,12 +9,20 @@ namespace WebPlayer
     {
         private int m_count = 0;
         private Dictionary<string, string> m_resourceList = new Dictionary<string, string>();
-
+        private Dictionary<string, string> m_resourceKeys = new Dictionary<string, string>();
+        
         public string Add(string filename)
         {
+            // if adding the same filename, return the existing resource id
+            if (m_resourceKeys.ContainsKey(filename))
+            {
+                return m_resourceKeys[filename];
+            }
+
             m_count++;
             string key = m_count.ToString();
             m_resourceList.Add(key, filename);
+            m_resourceKeys.Add(filename, key);
             return key;
         }
 

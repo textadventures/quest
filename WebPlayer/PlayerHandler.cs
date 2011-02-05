@@ -21,7 +21,7 @@ namespace WebPlayer
         public event Action BeginWait;
         public event Action<string> GameNameUpdated;
         public event Action ClearScreen;
-        public event Action<string> ShowPicture;
+        public event Func<string ,string> AddPicture;
 
         public PlayerHandler(string filename)
         {
@@ -271,6 +271,12 @@ namespace WebPlayer
         private void AddLink(string text, string command)
         {
             WriteText(string.Format("<a class=\"cmdlink\" onclick=\"enterCommand('{0}')\">{1}</a>", command, text));
+        }
+
+        private void ShowPicture(string filename)
+        {
+            string key = AddPicture(filename);
+            WriteText(string.Format("<img src=\"Resource.ashx?id={0}\" onload=\"scrollToEnd();\" />", key));
         }
 
         public void SendCommand(string command)

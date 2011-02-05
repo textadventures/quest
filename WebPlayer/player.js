@@ -1,10 +1,10 @@
 ﻿function addText(text) {
-    $("#divOutput").html($("#divOutput").html() + text);
+    $("#divOutput").append(text);
+    scrollToEnd();
+}
 
-    // TO DO: Add text within its own <div> with its own id, then use
-    // jQuery's .position() to get actual position of latest text, and use
-    // that value for scrollTop.
-    $("#divOutput").scrollTop($("#divOutput").scrollTop() + 500);
+function scrollToEnd() {
+    $("#divOutput").scrollTop($("#divOutput").attr("scrollHeight"));
 }
 
 function updateLocation(text) {
@@ -185,8 +185,4 @@ function dialogSendCancel() {
 
 function sessionTimeout() {
     $("#txtCommand").hide();
-}
-
-function showPicture(key) {
-    addText("<img src=\"Resource.ashx?id=" + key + "\" />");
 }
