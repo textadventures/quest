@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=0.9" />
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.4.4.min.js"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/jquery.jplayer.min.js"></script>
     <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/redmond/jquery-ui.css" />
     <script type="text/javascript" src="player.js"></script>
     <style type="text/css">
@@ -43,7 +44,7 @@
     </style>
     <title>Player</title>
 </head>
-<body onkeydown="globalKey(event);">
+<body onkeydown="globalKey(event);" onload="init();">
     <form id="playerform" runat="server" defaultbutton="cmdSubmit">
     <asp:ScriptManager ID="ctlScriptManager" runat="server">
     </asp:ScriptManager>
@@ -85,5 +86,7 @@
     <div id="msgbox" title="Question">
         <p id="msgboxCaption"></p>
     </div>
+    <div id="jquery_jplayer"></div>
+    <div id="audio_embed"></div>
 </body>
 </html>

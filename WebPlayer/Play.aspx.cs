@@ -134,7 +134,8 @@ namespace WebPlayer
                 m_player.ShowQuestionDelegate = m_player_ShowQuestion;
                 m_player.GameNameUpdated += m_player_GameNameUpdated;
                 m_player.ClearScreen += m_player_ClearScreen;
-                m_player.AddPicture += m_player_AddPicture;
+                m_player.AddResource += AddResource;
+                m_player.PlayAudio += m_player_PlayAudio;
                 
                 if (m_player.Initialise(out errors))
                 {
@@ -157,7 +158,19 @@ namespace WebPlayer
             return output;
         }
 
-        string m_player_AddPicture(string filename)
+        void m_player_PlayAudio(string filename)
+        {
+            string functionName = null;
+            if (filename.EndsWith(".wav")) functionName = "playWav";
+            if (filename.EndsWith(".mp3")) functionName = "playMp3";
+
+            if (functionName == null) return;
+
+            string url = AddResource(filename);
+            m_buffer.AddJavaScriptToBuffer(functionName, new StringParameter(url));
+        }
+
+        string AddResource(string filename)
         {
             SessionResources resources = Session["Resources"] as SessionResources;
             if (resources == null)

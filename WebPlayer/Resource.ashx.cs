@@ -9,6 +9,20 @@ namespace WebPlayer
 {
     public class Resource : IHttpHandler, IReadOnlySessionState
     {
+        private Dictionary<string, string> m_mimeTypes = new Dictionary<string, string>();
+
+        public Resource()
+        {
+            m_mimeTypes.Add(".jpg", "image/jpeg");
+            m_mimeTypes.Add(".jpeg", "image/jpeg");
+            m_mimeTypes.Add(".gif", "image/gif");
+            m_mimeTypes.Add(".bmp", "image/bmp");
+            m_mimeTypes.Add(".png", "image/png");
+            m_mimeTypes.Add(".wav", "audio/wav");
+            m_mimeTypes.Add(".mp3", "audio/mpeg3");
+            m_mimeTypes.Add(".ogg", "audio/ogg");
+        }
+
         public void ProcessRequest(HttpContext context)
         {
             SessionResources resources = context.Session["Resources"] as SessionResources;
@@ -51,19 +65,10 @@ namespace WebPlayer
 
         private string GetContentType(string filename)
         {
-            string z = System.IO.Path.GetExtension(filename);
-
-            switch (System.IO.Path.GetExtension(filename))
+            string result;
+            if (m_mimeTypes.TryGetValue(System.IO.Path.GetExtension(filename), out result))
             {
-                case ".jpg":
-                case ".jpeg":
-                    return "image/jpeg";
-                case ".gif":
-                    return "image/gif";
-                case ".bmp":
-                    return "image/bmp";
-                case ".png":
-                    return "image/png";
+                return result;
             }
 
             return "";

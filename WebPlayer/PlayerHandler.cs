@@ -21,7 +21,8 @@ namespace WebPlayer
         public event Action BeginWait;
         public event Action<string> GameNameUpdated;
         public event Action ClearScreen;
-        public event Func<string ,string> AddPicture;
+        public event Func<string, string> AddResource;
+        public event Action<string> PlayAudio;
 
         public PlayerHandler(string filename)
         {
@@ -275,8 +276,8 @@ namespace WebPlayer
 
         private void ShowPicture(string filename)
         {
-            string key = AddPicture(filename);
-            WriteText(string.Format("<img src=\"Resource.ashx?id={0}\" onload=\"scrollToEnd();\" />", key));
+            string url = AddResource(filename);
+            WriteText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" />", url));
         }
 
         public void SendCommand(string command)
@@ -343,7 +344,7 @@ namespace WebPlayer
 
         public void PlaySound(string filename, bool synchronous, bool looped)
         {
-            throw new NotImplementedException();
+            PlayAudio(filename);
         }
 
         public void StopSound()

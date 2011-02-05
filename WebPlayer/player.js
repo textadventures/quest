@@ -1,4 +1,8 @@
-﻿function addText(text) {
+﻿function init() {
+    $("#jquery_jplayer").jPlayer( { supplied: "wav, mp3" } );
+}
+
+function addText(text) {
     $("#divOutput").append(text);
     scrollToEnd();
 }
@@ -185,4 +189,26 @@ function dialogSendCancel() {
 
 function sessionTimeout() {
     $("#txtCommand").hide();
+}
+
+function playWav(filename) {
+    if (!document.createElement('audio').canPlayType) {
+        // no <audio> support, so we must play WAVs using <embed> as the 
+        // jPlayer Flash fallback does not support WAV.
+        $("#audio_embed").html("<embed src=\"" + filename + "\" autostart=\"true\" width=\"0\" height=\"0\" type=\"audio/wav\">");
+    }
+    else {
+        playAudio(filename, "wav");
+    }
+}
+
+function playMp3(filename) {
+    playAudio(filename, "mp3");
+}
+
+function playAudio(filename, format) {
+    $("#jquery_jplayer").bind($.jPlayer.event.error, function (event) { alert(event.jPlayer.error.type); });
+    if (format == "wav") $("#jquery_jplayer").jPlayer("setMedia", { wav: filename });
+    if (format == "mp3") $("#jquery_jplayer").jPlayer("setMedia", { mp3: filename });
+    $("#jquery_jplayer").jPlayer("play");
 }
