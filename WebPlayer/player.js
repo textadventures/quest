@@ -8,7 +8,10 @@ function addText(text) {
 }
 
 function scrollToEnd() {
-    $('html, body').animate({ scrollTop: $(document).height() }, 10);
+    // Use this line instead for non-pane layout
+    // $('html, body').animate({ scrollTop: $(document).height() }, 10);
+
+    $("#divOutput").scrollTop($("#divOutput").attr("scrollHeight"));
 }
 
 function updateLocation(text) {
@@ -255,4 +258,13 @@ function stopAudio() {
 function finishSync() {
     $("#fldUIMsg").val("endwait");
     $("#cmdSubmit").click();
+}
+
+function panesVisible(visible) {
+    if (visible) {
+        $("#gamePanes").show();
+    }
+    else {
+        $("#gamePanes").hide();
+    }
 }

@@ -137,6 +137,7 @@ namespace WebPlayer
                 m_player.AddResource += AddResource;
                 m_player.PlayAudio += m_player_PlayAudio;
                 m_player.StopAudio += m_player_StopAudio;
+                m_player.SetPanesVisible += m_player_SetPanesVisible;
                 
                 if (m_player.Initialise(out errors))
                 {
@@ -157,6 +158,11 @@ namespace WebPlayer
             }
 
             return output;
+        }
+
+        void m_player_SetPanesVisible(bool visible)
+        {
+            m_buffer.AddJavaScriptToBuffer("panesVisible", new BooleanParameter(visible));
         }
 
         void m_player_PlayAudio(object sender, PlayerHandler.PlayAudioEventArgs e)

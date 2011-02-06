@@ -31,6 +31,7 @@ namespace WebPlayer
         public event Func<string, string> AddResource;
         public event EventHandler<PlayAudioEventArgs> PlayAudio;
         public event Action StopAudio;
+        public event Action<bool> SetPanesVisible;
 
         public PlayerHandler(string filename)
         {
@@ -101,8 +102,6 @@ namespace WebPlayer
             //LinkForeground,
             //RunScript,
             //SetStatus,
-            //PanesVisible,
-            //ShowPicture,
             //Speak,
             //Restart
 
@@ -125,6 +124,9 @@ namespace WebPlayer
                     break;
                 case Request.ShowPicture:
                     ShowPicture(data);
+                    break;
+                case Request.PanesVisible:
+                    SetPanesVisible(data == "on");
                     break;
                 default:
                     WriteText(string.Format("Unhandled request: {0}, {1}", request, data));
