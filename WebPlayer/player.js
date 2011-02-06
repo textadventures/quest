@@ -8,11 +8,11 @@ function addText(text) {
 }
 
 function scrollToEnd() {
-    $("#divOutput").scrollTop($("#divOutput").attr("scrollHeight"));
+    $('html, body').animate({ scrollTop: $(document).height() }, 10);
 }
 
 function updateLocation(text) {
-    $("#location").html("<b>" + text + "</b>");
+    $("#location").html(text);
 }
 
 function setGameName(text) {

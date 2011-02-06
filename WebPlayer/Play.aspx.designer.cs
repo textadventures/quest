@@ -40,15 +40,6 @@ namespace WebPlayer {
         protected global::System.Web.UI.UpdateProgress ctlUpdateProgress;
         
         /// <summary>
-        /// divOutput control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divOutput;
-        
-        /// <summary>
         /// UpdatePanel1 control.
         /// </summary>
         /// <remarks>
