@@ -44,15 +44,11 @@ namespace WebPlayer
 
         public string GetParameter()
         {
-            string result = "";
+            string result = "{";
 
             foreach (KeyValuePair<string, string> item in m_param)
             {
-                if (result.Length == 0)
-                {
-                    result += "{";
-                }
-                else
+                if (result.Length > 1)
                 {
                     result += ",";
                 }

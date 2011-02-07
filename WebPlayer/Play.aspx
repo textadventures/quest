@@ -33,20 +33,26 @@
             <input id="Button1" type="button" value="Look at" />
             <input id="Button2" type="button" value="Use" />
             <input id="Button3" type="button" value="Drop" />
-            <select id="Select1" size="8" class="elementList">
-                <option>Item</option>
+            <select id="lstInventory" size="8" class="elementList">
             </select>
             <h2>Places &amp; Objects</h2>
             <input id="Button4" type="button" value="Look at" />
             <input id="Button5" type="button" value="Take" />
             <input id="Button6" type="button" value="Speak to" />
-            <select id="Select2" size="8" class="elementList">
-                <option>Item</option>
+            <select id="lstPlacesObjects" size="8" class="elementList">
             </select>
             <h2>Compass</h2>
-            <input id="Button7" type="button" value="NE" />
+            <input id="Button7" type="button" value="NW" />
             <input id="Button8" type="button" value="N" />
-            <input id="Button9" type="button" value="NW" />
+            <input id="Button9" type="button" value="NE" />
+            <br />
+            <input id="Button10" type="button" value="W" />
+            <input id="Button11" type="button" value="out" />
+            <input id="Button12" type="button" value="E" />
+            <br />
+            <input id="Button13" type="button" value="SW" />
+            <input id="Button14" type="button" value="S" />
+            <input id="Button15" type="button" value="SE" />
 
         </div>
         <div id="gameContent">

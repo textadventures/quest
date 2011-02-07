@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace WebPlayer
 {
-    public class PlayerHandler : IPlayer
+    internal class PlayerHandler : IPlayer
     {
         private IASL m_game;
         private readonly string m_filename;
@@ -16,6 +16,7 @@ namespace WebPlayer
         private string m_fontSize = "";
         private string m_foregroundOverride = "";
         private string m_fontSizeOverride = "";
+        private InterfaceListHandler m_listHandler;
 
         public class PlayAudioEventArgs : EventArgs
         {
@@ -33,9 +34,10 @@ namespace WebPlayer
         public event Action StopAudio;
         public event Action<bool> SetPanesVisible;
 
-        public PlayerHandler(string filename)
+        public PlayerHandler(string filename, OutputBuffer buffer)
         {
             m_filename = filename;
+            m_listHandler = new InterfaceListHandler(buffer);
         }
 
         public string GameId { get; set; }
@@ -62,6 +64,7 @@ namespace WebPlayer
             m_game.PrintText += m_game_PrintText;
             m_game.RequestRaised += m_game_RequestRaised;
             m_game.LogError += m_game_LogError;
+            m_game.UpdateList += m_game_UpdateList;
             m_game.Initialise(this);
             if (m_game.Errors.Count > 0)
             {
@@ -75,6 +78,11 @@ namespace WebPlayer
                 errors = null;
                 return true;
             }
+        }
+
+        void m_game_UpdateList(ListType listType, List<ListData> items)
+        {
+            m_listHandler.UpdateList(listType, items);
         }
 
         void m_game_LogError(string errorMessage)

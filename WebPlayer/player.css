@@ -1,0 +1,80 @@
+﻿body
+{
+    margin: 0px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+h2 
+{
+    font-size: 110%;
+}
+a.cmdlink
+{
+    text-decoration: underline;
+    color: Blue;
+    cursor: pointer;
+}
+div#gameBorder
+{
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid silver;
+    margin-top: 0;
+}
+div#gameContent
+{
+    /* padding: 20px;      uncomment for non-pane layout */
+    height: 650px;      /* comment out for non-pane layout */
+}
+div#gamePanes
+{
+    float: right;
+    width: 200px;
+    margin-top: 10px;
+    padding: 10px;
+}
+div#status
+{
+    background: #E0E0FF;
+    height: 20px;
+    position: fixed;
+    top: 0px;
+    z-index: 100;
+    width: 796px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14pt;
+    padding: 2px;
+}
+div#updating
+{
+    float: right;
+}
+div#divOutput
+{
+    overflow: auto;     /* comment out for non-pane layout */
+    height: 580px;      /* comment out for non-pane layout */
+    padding: 20px;      /* comment out for non-pane layout */
+    margin-top: 20px;
+}
+#txtCommand
+{
+    width: 796px;
+    font-size: 14pt;
+}
+.hiddenbutton
+{
+    display: none;
+}
+#dialog
+{
+    display: none;
+}
+#msgbox
+{
+    display: none;
+}
+.elementList
+{
+    width: 100%;
+}

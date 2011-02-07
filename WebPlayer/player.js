@@ -268,3 +268,20 @@ function panesVisible(visible) {
         $("#gamePanes").hide();
     }
 }
+
+function updateList(listName, listData) {
+    // TO DO: We currently discard the verb data we receive - this is fine for v4.x games
+    // and earlier, but this will need to be implemented for v5 games.
+
+    var listElement = "";
+
+    if (listName == "inventory") listElement = "#lstInventory";
+    if (listName == "placesobjects") listElement = "#lstPlacesObjects";
+
+    $(listElement).empty();
+    $.each(listData, function (key, value) {
+        $(listElement).append(
+            $("<option/>").attr("value", key).text(key)
+        );
+    });
+}

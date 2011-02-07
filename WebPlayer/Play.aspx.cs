@@ -124,7 +124,7 @@ namespace WebPlayer
 
             try
             {
-                m_player = new PlayerHandler(filename);
+                m_player = new PlayerHandler(filename, m_buffer);
                 m_player.GameId = m_gameId;
                 m_player.LibraryFolder = libPath;
                 m_gamesInSession[m_gameId] = m_player;
