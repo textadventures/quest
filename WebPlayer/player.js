@@ -285,3 +285,19 @@ function updateList(listName, listData) {
         );
     });
 }
+
+function paneButtonClick(target, verb) {
+    var selectedObject = $(target).val();
+    if (selectedObject.length > 0) {
+        sendCommand(verb + " " + selectedObject);
+    }
+}
+
+function compassClick(direction) {
+    sendCommand(direction);
+}
+
+function sendCommand(text) {
+    $("#fldCommand").val(text);
+    $("#cmdSubmit").click();
+}

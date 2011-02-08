@@ -29,31 +29,67 @@
             </div>
         </div>
         <div id="gamePanes">
-            <h2>Inventory</h2>
-            <input id="Button1" type="button" value="Look at" />
-            <input id="Button2" type="button" value="Use" />
-            <input id="Button3" type="button" value="Drop" />
+            <h2>
+                Inventory</h2>
+            <input id="cmdInventory1" type="button" value="Look at" onclick="paneButtonClick('#lstInventory','look at');" />
+            <input id="cmdInventory2" type="button" value="Use" onclick="paneButtonClick('#lstInventory','use');" />
+            <input id="cmdInventory3" type="button" value="Drop" onclick="paneButtonClick('#lstInventory','drop');" />
             <select id="lstInventory" size="8" class="elementList">
             </select>
-            <h2>Places &amp; Objects</h2>
-            <input id="Button4" type="button" value="Look at" />
-            <input id="Button5" type="button" value="Take" />
-            <input id="Button6" type="button" value="Speak to" />
+            <h2>
+                Places &amp; Objects</h2>
+            <input id="cmdPlacesObjects1" type="button" value="Look at" onclick="paneButtonClick('#lstPlacesObjects','look at');" />
+            <input id="cmdPlacesObjects2" type="button" value="Take" onclick="paneButtonClick('#lstPlacesObjects','take');" />
+            <input id="cmdPlacesObjects3" type="button" value="Speak to" onclick="paneButtonClick('#lstPlacesObjects','speak to');" />
             <select id="lstPlacesObjects" size="8" class="elementList">
             </select>
-            <h2>Compass</h2>
-            <input id="Button7" type="button" value="NW" />
-            <input id="Button8" type="button" value="N" />
-            <input id="Button9" type="button" value="NE" />
-            <br />
-            <input id="Button10" type="button" value="W" />
-            <input id="Button11" type="button" value="out" />
-            <input id="Button12" type="button" value="E" />
-            <br />
-            <input id="Button13" type="button" value="SW" />
-            <input id="Button14" type="button" value="S" />
-            <input id="Button15" type="button" value="SE" />
-
+            <h2>
+                Compass</h2>
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    <input id="cmdCompassNW" class="compassbutton" type="button" value="&#8598;" title="go northwest" onclick="compassClick('northwest');" />
+                                </td>
+                                <td>
+                                    <input id="cmdCompassN" class="compassbutton" type="button" value="&#8593;" title="go north" onclick="compassClick('north');" />
+                                </td>
+                                <td>
+                                    <input id="cmdCompassNE" class="compassbutton" type="button" value="&#8599;" title="go northeast" onclick="compassClick('northeast');" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cmdCompassW" class="compassbutton" type="button" value="&#8592;" title="go west" onclick="compassClick('west');" />
+                                </td>
+                                <td>
+                                    <input id="cmdCompassOut" class="compassbutton" type="button" value="out" title="go out" onclick="compassClick('out');" />
+                                </td>
+                                <td>
+                                    <input id="cmdCompassE" class="compassbutton" type="button" value="&#8594;" title="go east" onclick="compassClick('east');" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="cmdCompassSW" class="compassbutton" type="button" value="&#8601;" title="go southwest" onclick="compassClick('southwest');" />
+                                </td>
+                                <td>
+                                    <input id="cmdCompassS" class="compassbutton" type="button" value="&#8595;" title="go south" onclick="compassClick('south');" />
+                                </td>
+                                <td>
+                                    <input id="cmdCompassSE" class="compassbutton" type="button" value="&#8600;" title="go southeast" onclick="compassClick('southeast');" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <input id="cmdCompassU" class="compassbutton" type="button" value="&#8679;" title="go up" onclick="compassClick('up');" /><br />
+                        <input id="cmdCompassD" class="compassbutton" type="button" value="&#8681;" title="go down" onclick="compassClick('down');" />
+                    </td>
+                </tr>
+            </table>
         </div>
         <div id="gameContent">
             <div id="divOutput">
