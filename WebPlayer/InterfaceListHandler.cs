@@ -52,6 +52,12 @@ namespace WebPlayer
 
         private void SendUpdatedList(ListType listType)
         {
+            if (listType == ListType.ExitsList)
+            {
+                SendCompassList(m_lists[ListType.ExitsList]);
+                return;
+            }
+
             string listName = null;
             if (listType == ListType.InventoryList) listName = "inventory";
             if (listType == ListType.ObjectsList) listName = "placesobjects";
@@ -62,15 +68,23 @@ namespace WebPlayer
             }
         }
 
+        private void SendCompassList(List<ListData> list)
+        {
+            string data = string.Join("/", list.Select(l => l.Text));
+            m_buffer.AddJavaScriptToBuffer("updateCompass", new StringParameter(data));
+        }
+
         private IJavaScriptParameter ListDataParameter(List<ListData> list)
         {
-            // TO DO: It is permissible for there to be multiple objects in the same room with the same name,
-            // so we can't key by displayed object name.
-
             var convertedList = new Dictionary<string, string>();
+            int count = 1;
             foreach (ListData data in list)
             {
-                convertedList.Add(data.Text, VerbString(data.Verbs));
+                convertedList.Add(
+                    string.Format("k{0}", count),
+                    string.Format("{0}:{1}", data.Text, VerbString(data.Verbs))
+                );
+                count++;
             }
             return new JSONParameter(convertedList);
         }

@@ -1,5 +1,6 @@
 ﻿function init() {
-    $("#jquery_jplayer").jPlayer( { supplied: "wav, mp3" } );
+    $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
+    $("#placeVerbs").hide();
 }
 
 function addText(text) {
@@ -269,25 +270,57 @@ function panesVisible(visible) {
     }
 }
 
+var _places;
+
 function updateList(listName, listData) {
     // TO DO: We currently discard the verb data we receive - this is fine for v4.x games
-    // and earlier, but this will need to be implemented for v5 games.
+    // and earlier, but this will need to be implemented for v5 games. Currently we're using
+    // a hacky _places array to store the list of objects which are actually places (and which
+    // therefore need the "go to" button to be displayed)
 
     var listElement = "";
 
     if (listName == "inventory") listElement = "#lstInventory";
-    if (listName == "placesobjects") listElement = "#lstPlacesObjects";
+    if (listName == "placesobjects") {
+        listElement = "#lstPlacesObjects";
+        _places = new Array();
+    }
 
     $(listElement).empty();
     $.each(listData, function (key, value) {
+        var splitString = value.split(":");
+        var objectDisplayName = splitString[0];
+        var objectVerbs = splitString[1];
         $(listElement).append(
-            $("<option/>").attr("value", key).text(key)
+            $("<option/>").attr("value", key).text(objectDisplayName)
         );
+        if (value.indexOf("Go to") != -1) {
+            _places.push(key);
+        }
     });
 }
 
+function updateCompass(listData) {
+    var directions = listData.split("/");
+    updateDir(directions, "NW", "northwest");
+    updateDir(directions, "N", "north");
+    updateDir(directions, "NE", "northeast");
+    updateDir(directions, "W", "west");
+    updateDir(directions, "Out", "out");
+    updateDir(directions, "E", "east");
+    updateDir(directions, "SW", "southwest");
+    updateDir(directions, "S", "south");
+    updateDir(directions, "SE", "southeast");
+    updateDir(directions, "U", "up");
+    updateDir(directions, "D", "down");
+}
+
+function updateDir(directions, label, dir) {
+    $("#cmdCompass" + label).attr("disabled", $.inArray(dir, directions) == -1);
+}
+
 function paneButtonClick(target, verb) {
-    var selectedObject = $(target).val();
+    var selectedObject = $(target + " option:selected").text();
     if (selectedObject.length > 0) {
         sendCommand(verb + " " + selectedObject);
     }
@@ -300,4 +333,19 @@ function compassClick(direction) {
 function sendCommand(text) {
     $("#fldCommand").val(text);
     $("#cmdSubmit").click();
+}
+
+function updateVerbs() {
+    var selectedObject = $("#lstPlacesObjects").val();
+    if (selectedObject.length > 0) {
+        var showGoTo = ($.inArray(selectedObject, _places) != -1);
+        if (showGoTo) {
+            $("#placeVerbs").show();
+            $("#objectVerbs").hide();
+        }
+        else {
+            $("#objectVerbs").show();
+            $("#placeVerbs").hide();
+        }
+    }
 }
