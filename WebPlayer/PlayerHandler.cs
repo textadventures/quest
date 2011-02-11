@@ -33,6 +33,7 @@ namespace WebPlayer
         public event EventHandler<PlayAudioEventArgs> PlayAudio;
         public event Action StopAudio;
         public event Action<bool> SetPanesVisible;
+        public event Action<string> SetStatusText;
 
         public PlayerHandler(string filename, OutputBuffer buffer)
         {
@@ -109,7 +110,6 @@ namespace WebPlayer
             //Foreground,
             //LinkForeground,
             //RunScript,
-            //SetStatus,
             //Speak,
             //Restart
 
@@ -135,6 +135,9 @@ namespace WebPlayer
                     break;
                 case Request.PanesVisible:
                     SetPanesVisible(data == "on");
+                    break;
+                case Request.SetStatus:
+                    SetStatusText(data);
                     break;
                 default:
                     WriteText(string.Format("Unhandled request: {0}, {1}", request, data));

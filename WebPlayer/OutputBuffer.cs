@@ -9,7 +9,7 @@ namespace WebPlayer
     {
         public static string StringParameter(string param)
         {
-            return string.Format("\"{0}\"", param.Replace("\"", "\\\""));
+            return string.Format("\"{0}\"", param.Replace("\"", "\\\"").Replace(Environment.NewLine, "<br />"));
         }
     }
 

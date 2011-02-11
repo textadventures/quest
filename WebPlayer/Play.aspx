@@ -36,6 +36,7 @@
             <input id="cmdInventory3" type="button" value="Drop" onclick="paneButtonClick('#lstInventory','drop');" />
             <select id="lstInventory" size="8" class="elementList">
             </select>
+            <div id="statusVars"></div>
             <h2>
                 Places &amp; Objects</h2>
             <div id="objectVerbs">

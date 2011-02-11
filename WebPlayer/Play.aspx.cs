@@ -138,6 +138,7 @@ namespace WebPlayer
                 m_player.PlayAudio += m_player_PlayAudio;
                 m_player.StopAudio += m_player_StopAudio;
                 m_player.SetPanesVisible += m_player_SetPanesVisible;
+                m_player.SetStatusText += m_player_SetStatusText;
                 
                 if (m_player.Initialise(out errors))
                 {
@@ -158,6 +159,11 @@ namespace WebPlayer
             }
 
             return output;
+        }
+
+        void m_player_SetStatusText(string text)
+        {
+            m_buffer.AddJavaScriptToBuffer("updateStatus", new StringParameter(text));
         }
 
         void m_player_SetPanesVisible(bool visible)

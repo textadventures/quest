@@ -1,6 +1,23 @@
-﻿function init() {
+﻿var selectSizeWithoutStatus = 8;
+var selectSizeWithStatus = 6;
+
+function init() {
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     $("#placeVerbs").hide();
+    showStatusVisible(false);
+}
+
+function showStatusVisible(visible) {
+    if (visible) {
+        $("#statusVars").show();
+        $("#lstInventory").attr("size", selectSizeWithStatus);
+        $("#lstPlacesObjects").attr("size", selectSizeWithStatus);
+    }
+    else {
+        $("#statusVars").hide();
+        $("#lstInventory").attr("size", selectSizeWithoutStatus);
+        $("#lstPlacesObjects").attr("size", selectSizeWithoutStatus);
+    }
 }
 
 function addText(text) {
@@ -347,5 +364,15 @@ function updateVerbs() {
             $("#objectVerbs").show();
             $("#placeVerbs").hide();
         }
+    }
+}
+
+function updateStatus(text) {
+    if (text.length > 0) {
+        showStatusVisible(true);
+        $("#statusVars").html(text);
+    }
+    else {
+        showStatusVisible(false);
     }
 }

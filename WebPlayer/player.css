@@ -86,3 +86,13 @@ div#divOutput
     padding: 0px;
     font-size: 12pt;
 }
+#statusVars
+{
+    display: none;
+    font-size: 80%;
+    width: 100%;
+    min-height: 50px;
+    max-height: 50px;
+    overflow: auto;
+    border: 1px solid silver;
+}
