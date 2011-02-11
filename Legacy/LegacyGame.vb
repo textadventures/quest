@@ -7361,11 +7361,11 @@ errhandle:
         Dim ThisType, DisplayString As String
         Dim iNumNumber As Integer
 
-        ReDim ThisVariable.VariableContents(0)
-
         For i = GetDefineBlock("game").StartLine + 1 To GetDefineBlock("game").EndLine - 1
             If BeginsWith(Lines(i), "define variable ") Then
                 DisplayStatus = True
+
+                ReDim ThisVariable.VariableContents(0)
 
                 With ThisVariable
                     .VariableName = RetrieveParameter(Lines(i), NullThread)

@@ -28,6 +28,7 @@ Partial Class ElementList
         Me.lstList = New System.Windows.Forms.ListView()
         Me.colItems = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.txtStatus = New System.Windows.Forms.TextBox()
+        CType(Me.ctlSplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlSplitContainer.Panel1.SuspendLayout()
         Me.ctlSplitContainer.Panel2.SuspendLayout()
         Me.ctlSplitContainer.SuspendLayout()
@@ -95,11 +96,13 @@ Partial Class ElementList
         '
         'txtStatus
         '
+        Me.txtStatus.BackColor = System.Drawing.SystemColors.Window
         Me.txtStatus.Dock = System.Windows.Forms.DockStyle.Fill
         Me.txtStatus.Location = New System.Drawing.Point(0, 0)
         Me.txtStatus.Multiline = True
         Me.txtStatus.Name = "txtStatus"
         Me.txtStatus.ReadOnly = True
+        Me.txtStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.txtStatus.Size = New System.Drawing.Size(150, 46)
         Me.txtStatus.TabIndex = 0
         '
@@ -115,6 +118,7 @@ Partial Class ElementList
         Me.ctlSplitContainer.Panel1.ResumeLayout(False)
         Me.ctlSplitContainer.Panel2.ResumeLayout(False)
         Me.ctlSplitContainer.Panel2.PerformLayout()
+        CType(Me.ctlSplitContainer, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ctlSplitContainer.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
