@@ -394,3 +394,7 @@ function updateStatus(text) {
         showStatusVisible(false);
     }
 }
+
+function setBackground(col) {
+    $("#divOutput").css("background-color", col);
+}

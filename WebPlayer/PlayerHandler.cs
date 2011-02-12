@@ -14,6 +14,7 @@ namespace WebPlayer
         private string m_textBuffer = "";
         private string m_font = "";
         private string m_fontSize = "";
+        private string m_foreground = "";
         private string m_foregroundOverride = "";
         private string m_fontSizeOverride = "";
         private InterfaceListHandler m_listHandler;
@@ -108,11 +109,8 @@ namespace WebPlayer
             //Quit,
             //Load,
             //Save,
-            //Background,
-            //Foreground,
             //LinkForeground,
             //RunScript,
-            //Speak,
             //Restart
 
             switch (request)
@@ -141,10 +139,24 @@ namespace WebPlayer
                 case Request.SetStatus:
                     SetStatusText(data);
                     break;
+                case Request.Speak:
+                    // ignore
+                    break;
+                case Request.Foreground:
+                    m_foreground = data;
+                    break;
+                case Request.Background:
+                    SetBackground(data);
+                    break;
                 default:
                     WriteText(string.Format("Unhandled request: {0}, {1}", request, data));
                     break;
             }
+        }
+
+        void SetBackground(string col)
+        {
+            m_buffer.AddJavaScriptToBuffer("setBackground", new StringParameter(col));
         }
 
         void m_game_PrintText(string text)
@@ -294,9 +306,12 @@ namespace WebPlayer
             {
                 style += string.Format("font-family:{0};", m_font);
             }
-            if (m_foregroundOverride.Length > 0)
+
+            string colour = m_foregroundOverride;
+            if (colour.Length == 0) colour = m_foreground;
+            if (colour.Length > 0)
             {
-                style += string.Format("color:{0};", m_foregroundOverride);
+                style += string.Format("color:{0};", colour);
             }
 
             string fontSize = m_fontSizeOverride;
