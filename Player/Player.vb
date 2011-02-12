@@ -272,19 +272,25 @@ Public Class Player
         Dim settings As XmlReaderSettings = New XmlReaderSettings()
         settings.IgnoreWhitespace = False
         Dim reader As XmlReader = XmlReader.Create(New System.IO.StringReader(text), settings)
+        Dim newLine As Boolean = True
+        Dim alignmentSet As Boolean = False
+        Dim textWritten As Boolean = False
 
         While reader.Read()
             Select Case reader.NodeType
                 Case XmlNodeType.Element
                     Select Case reader.Name
                         Case "output"
-                            ' do nothing
+                            If reader.GetAttribute("nobr") = "true" Then
+                                newLine = False
+                            End If
                         Case "object"
                             currentTag = "object"
                         Case "exit"
                             currentTag = "exit"
                         Case "br"
                             WriteText("<br />")
+                            textWritten = True
                         Case "b"
                             Bold = True
                         Case "i"
@@ -303,11 +309,13 @@ Public Class Player
                 Case XmlNodeType.Text
                     If Len(currentTag) = 0 Then
                         WriteText(reader.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"))
+                        textWritten = True
                     Else
                         currentTagValue = reader.Value
                     End If
                 Case XmlNodeType.Whitespace
                     WriteText(reader.Value.Replace(" ", "&nbsp;"))
+                    textWritten = True
                 Case XmlNodeType.EndElement
                     Select Case reader.Name
                         Case "output"
@@ -330,6 +338,8 @@ Public Class Player
                             FontSizeOverride = 0
                         Case "align"
                             SetAlignment("")
+                            alignmentSet = True
+                            textWritten = False
                         Case Else
                             Throw New Exception(String.Format("Unrecognised element '{0}'", reader.Name))
                     End Select
@@ -337,7 +347,15 @@ Public Class Player
 
         End While
 
-        WriteText("<br />")
+        If newLine Then
+            ' If we have just set the text alignment but then print no more text afterwards,
+            ' there's no need to submit an extra <br> tag as subsequent text will be in a
+            ' brand new <div> element.
+
+            If Not (alignmentSet And Not textWritten) Then
+                WriteText("<br />")
+            End If
+        End If
     End Sub
 
     Private Sub AddLink(ByVal linkText As String, ByVal linkType As HyperlinkType)

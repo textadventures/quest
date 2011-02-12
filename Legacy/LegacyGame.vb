@@ -3321,7 +3321,7 @@ ErrorHandler:
     End Function
 
     Private Sub DoPrint(ByRef OutputText As String)
-        RaiseEvent PrintText("<output>" + m_textFormatter.OutputHTML(OutputText) + "</output>")
+        RaiseEvent PrintText(m_textFormatter.OutputHTML(OutputText))
     End Sub
 
     Private Sub DestroyExit(ByRef ExitData As String, ByRef Thread As ThreadData)

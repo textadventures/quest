@@ -18,8 +18,14 @@ Public Class TextFormatter
         Dim position As Integer = 0
         Dim codePosition As Integer
         Dim finished As Boolean = False
+        Dim nobr As Boolean = False
 
         input = input.Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />")
+
+        If Right(input, 3) = "|xn" Then
+            nobr = True
+            input = Left(input, Len(input) - 3)
+        End If
 
         Do
             codePosition = input.IndexOf("|", position)
@@ -113,7 +119,7 @@ Public Class TextFormatter
 
         Loop Until finished Or position >= input.Length
 
-        Return output
+        Return String.Format("<output{0}>{1}</output>", If(nobr, " nobr=""true""", ""), output)
 
     End Function
 

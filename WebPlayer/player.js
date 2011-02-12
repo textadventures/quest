@@ -20,9 +20,26 @@ function showStatusVisible(visible) {
     }
 }
 
+var _currentDiv = null;
+
 function addText(text) {
-    $("#divOutput").append(text);
+    if (_currentDiv == null) {
+        createNewDiv("left");
+    }
+
+    _currentDiv.append(text);
     scrollToEnd();
+}
+
+var _divCount = 0;
+
+function createNewDiv(alignment) {
+    _divCount++;
+    jQuery("<div/>", {
+        id: "divOutputAlign" + _divCount,
+        style: "text-align: " + alignment
+    }).appendTo("#divOutput");
+    _currentDiv = $("#divOutputAlign" + _divCount);
 }
 
 function scrollToEnd() {
@@ -42,6 +59,7 @@ function setGameName(text) {
 
 function clearScreen() {
     $("#divOutput").html("");
+    createNewDiv("left");
 }
 
 var _waitMode = false;

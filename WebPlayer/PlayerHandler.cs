@@ -11,12 +11,13 @@ namespace WebPlayer
     {
         private IASL m_game;
         private readonly string m_filename;
-        private string m_buffer = "";
+        private string m_textBuffer = "";
         private string m_font = "";
         private string m_fontSize = "";
         private string m_foregroundOverride = "";
         private string m_fontSizeOverride = "";
         private InterfaceListHandler m_listHandler;
+        private OutputBuffer m_buffer;
 
         public class PlayAudioEventArgs : EventArgs
         {
@@ -38,6 +39,7 @@ namespace WebPlayer
         public PlayerHandler(string filename, OutputBuffer buffer)
         {
             m_filename = filename;
+            m_buffer = buffer;
             m_listHandler = new InterfaceListHandler(buffer);
         }
 
@@ -152,8 +154,8 @@ namespace WebPlayer
 
         public string ClearBuffer()
         {
-            string output = m_buffer;
-            m_buffer = "";
+            string output = m_textBuffer;
+            m_textBuffer = "";
             return output;
         }
 
@@ -164,6 +166,8 @@ namespace WebPlayer
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
             XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
+            bool nobr = false;
+            bool alignmentSet = false;
 
             while (reader.Read())
             {
@@ -173,7 +177,10 @@ namespace WebPlayer
                         switch (reader.Name)
                         {
                             case "output":
-                                // do nothing
+                                if (reader.GetAttribute("nobr") == "true")
+                                {
+                                    nobr = true;
+                                }
                                 break;
                             case "object":
                                 currentCommand = "look at";
@@ -200,7 +207,7 @@ namespace WebPlayer
                                 m_fontSizeOverride = reader.GetAttribute("size");
                                 break;
                             case "align":
-                                //SetAlignment(reader.GetAttribute("align"))
+                                SetAlignment(reader.GetAttribute("align"));
                                 break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
@@ -249,7 +256,8 @@ namespace WebPlayer
                                 m_fontSizeOverride = "";
                                 break;
                             case "align":
-                                //SetAlignment("")
+                                SetAlignment("");
+                                alignmentSet = true;
                                 break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
@@ -259,7 +267,24 @@ namespace WebPlayer
 
             }
 
-            WriteText("<br />");
+            if (!nobr)
+            {
+                // If we have just set the text alignment but then print no more text afterwards,
+                // there's no need to submit an extra <br> tag as subsequent text will be in a
+                // brand new <div> element.
+
+                if (!(alignmentSet && m_textBuffer.Length == 0))
+                {
+                    WriteText("<br />");
+                }
+            }
+        }
+
+        private void SetAlignment(string align)
+        {
+            if (align.Length == 0) align = "left";
+            m_buffer.OutputText(ClearBuffer());
+            m_buffer.AddJavaScriptToBuffer("createNewDiv", new StringParameter(align));
         }
 
         private void WriteText(string text)
@@ -287,7 +312,7 @@ namespace WebPlayer
                 text = string.Format("<span style=\"{0}\">{1}</span>", style, text);
             }
 
-            m_buffer += text;
+            m_textBuffer += text;
         }
 
         private void AddLink(string text, string command)

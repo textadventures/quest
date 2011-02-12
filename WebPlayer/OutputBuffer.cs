@@ -104,7 +104,10 @@ namespace WebPlayer
 
         public void OutputText(string text)
         {
-            AddJavaScriptToBuffer("addText", new StringParameter(text));
+            if (text.Length > 0)
+            {
+                AddJavaScriptToBuffer("addText", new StringParameter(text));
+            }
         }
 
         public int InitStage { get; set; }
