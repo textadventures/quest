@@ -1,5 +1,8 @@
 ﻿var selectSizeWithoutStatus = 8;
 var selectSizeWithStatus = 6;
+var numCommands = 0;
+var thisCommand = 0;
+var commandsList = new Array();
 
 function init() {
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
@@ -85,9 +88,9 @@ function enterCommand(command) {
 
 function keyPressCode(e) {
     var keynum
-    if (window.event) { // IE
+    if (window.event) {
         keynum = e.keyCode
-    } else if (e.which) { // Netscape/Firefox/Opera
+    } else if (e.which) {
         keynum = e.which
     }
     return keynum;
@@ -103,33 +106,33 @@ function globalKey(e) {
 function commandKey(e) {
     switch (keyPressCode(e)) {
         case 13:
-
             runCommand();
             break;
-        //                case 38:  
-        //                    thisCommand--;  
-        //                    if (thisCommand == 0) thisCommand = numCommands;  
-        //                    command.value = commandsList[thisCommand];  
-        //                    break;  
-        //                case 40:  
-        //                    thisCommand++;  
-        //                    if (thisCommand > numCommands) thisCommand = 1;  
-        //                    command.value = commandsList[thisCommand];  
-        //                    break;  
-        //                case 27:  
-        //                    thisCommand = numCommands + 1;  
-        //                    command.value = '';  
-        //                    break;  
+        case 38:
+            thisCommand--;
+            if (thisCommand == 0) thisCommand = numCommands;
+            $("#txtCommand").val(commandsList[thisCommand]);
+            break;
+        case 40:
+            thisCommand++;
+            if (thisCommand > numCommands) thisCommand = 1;
+            $("#txtCommand").val(commandsList[thisCommand]);
+            break;
+        case 27:
+            thisCommand = numCommands + 1;
+            $("#txtCommand").val("");
+            break;
     }
 }
 
 function runCommand() {
-    //numCommands++;
-    //commandsList[numCommands] = command.value;
-    //thisCommand = numCommands + 1;
+    var command = $("#txtCommand").val();
+    numCommands++;
+    commandsList[numCommands] = command;
+    thisCommand = numCommands + 1;
 
     // hitting Enter automatically causes the form to be submitted
-    $("#fldCommand").val($("#txtCommand").val());
+    $("#fldCommand").val(command);
     $("#txtCommand").val("");
 }
 
