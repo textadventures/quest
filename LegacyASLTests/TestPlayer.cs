@@ -80,5 +80,10 @@ namespace LegacyASLTests
         {
             throw new NotImplementedException();
         }
+
+        public void WriteHTML(string html)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

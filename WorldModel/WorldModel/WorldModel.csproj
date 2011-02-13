@@ -121,6 +121,7 @@
     <Compile Include="Scripts\FinishScript.cs" />
     <Compile Include="Scripts\ForEachScript.cs" />
     <Compile Include="Scripts\ForScript.cs" />
+    <Compile Include="Scripts\InsertScript.cs" />
     <Compile Include="Scripts\ListAddScript.cs" />
     <Compile Include="Scripts\PopulateScript.cs" />
     <Compile Include="ScriptFactory.cs" />

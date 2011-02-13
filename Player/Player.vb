@@ -969,4 +969,7 @@ Public Class Player
         m_destroyed = True
     End Sub
 
+    Public Sub WriteHTML(html As String) Implements IPlayer.WriteHTML
+        Throw New NotImplementedException()
+    End Sub
 End Class

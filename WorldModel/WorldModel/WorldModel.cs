@@ -695,7 +695,7 @@ namespace AxeSoftware.Quest
             get { return m_elements.GetSingle(ElementType.Interface).Fields[FieldDefinitions.Interface]; }
             set
             {
-                string HTMLfile = GetExternalPath(System.IO.Path.GetDirectoryName(m_filename), value);
+                string HTMLfile = GetExternalPath(value);
 
                 Element i;
                 if (m_elements.Count(ElementType.Interface) == 0)
@@ -767,7 +767,12 @@ namespace AxeSoftware.Quest
             throw new ArgumentOutOfRangeException(string.Format("Unrecognised type '{0}'", type.ToString()));
         }
 
-        public string GetExternalPath(string current, string file)
+        public string GetExternalPath(string file)
+        {
+            return GetExternalPath(System.IO.Path.GetDirectoryName(Filename), file);
+        }
+
+        private string GetExternalPath(string current, string file)
         {
             string path;
 
@@ -834,6 +839,11 @@ namespace AxeSoftware.Quest
         void LogException(Exception ex)
         {
             if (LogError != null) LogError(ex.Message + Environment.NewLine + ex.StackTrace);
+        }
+
+        internal IPlayer PlayerUI
+        {
+            get { return m_playerUI; }
         }
     }
 }

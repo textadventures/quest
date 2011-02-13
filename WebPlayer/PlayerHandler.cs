@@ -182,6 +182,9 @@ namespace WebPlayer
                 parameters.Add(new StringParameter(args[i].Trim()));
             }
 
+            // Clear text buffer before running custom JavaScript, otherwise text written
+            // before now may appear after inserted HTML.
+            m_buffer.OutputText(ClearBuffer());
             m_buffer.AddJavaScriptToBuffer(args[0], parameters.ToArray());
         }
 
@@ -453,6 +456,11 @@ namespace WebPlayer
             }
 
             return result;
+        }
+
+        public void WriteHTML(string html)
+        {
+            m_textBuffer += html;
         }
     }
 }

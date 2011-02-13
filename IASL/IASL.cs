@@ -47,6 +47,7 @@ namespace AxeSoftware.Quest
         string GetNewGameFile(string originalFilename, string extensions);
         void PlaySound(string filename, bool synchronous, bool looped);
         void StopSound();
+        void WriteHTML(string html);
     }
 
     public enum HyperlinkType

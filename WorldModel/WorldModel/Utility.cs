@@ -168,12 +168,28 @@ namespace AxeSoftware.Quest
         /// <returns></returns>
         public static string ConvertDottedPropertiesToVariable(string expression)
         {
-            // TO DO: This needs to ignore the pattern if it's inside quotes.
-            // Again as for the solution to stripping out comments in ScriptFactory.cs, solution is
-            // probably to see if we have a match for this regex, but then go through the expression
-            // one character at a time, set flag when within quote characters, and replace . with _
-            // as appropriate.
-            return s_convertVariables.Replace(expression, "$1_$2");
+            // We ignore dots which appear within quotes by splitting the string
+            // at the position of quote marks, and then alternating whether we replace or not.
+            string[] sections = expression.Split('\"');
+            string result = string.Empty;
+
+            bool insideQuote = false;
+            for (int i = 0; i <= sections.Length - 1; i++)
+            {
+                string section = sections[i];
+                if (!insideQuote)
+                {
+                    result += s_convertVariables.Replace(section, "$1_$2");
+                }
+                else
+                {
+                    result += section;
+                }
+                if (i < sections.Length - 1) result += "\"";
+                insideQuote = !insideQuote;
+            }
+
+            return result;
         }
 
         public static List<string> SplitIntoLines(string text)
