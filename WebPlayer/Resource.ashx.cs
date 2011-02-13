@@ -21,6 +21,7 @@ namespace WebPlayer
             m_mimeTypes.Add(".wav", "audio/wav");
             m_mimeTypes.Add(".mp3", "audio/mpeg3");
             m_mimeTypes.Add(".ogg", "audio/ogg");
+            m_mimeTypes.Add(".js", "application/javascript");
         }
 
         public void ProcessRequest(HttpContext context)

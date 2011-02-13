@@ -805,5 +805,25 @@ namespace AxeSoftware.Quest
                 get { return ElementType.EditorControl; }
             }
         }
+
+        // TO DO: Will need different loader for the Editor as we don't want to resolve the file path
+
+        private class JavascriptReferenceLoader : XMLLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "javascript"; }
+            }
+
+            public override object Load(XmlReader reader, ref Element current)
+            {
+                Element jsRef = WorldModel.GetElementFactory(ElementType.Javascript).Create();
+                string file = GameLoader.GetTemplateAttribute(reader, "src");
+                string path = WorldModel.GetExternalPath(System.IO.Path.GetDirectoryName(WorldModel.Filename), file);
+                jsRef.Fields[FieldDefinitions.Src] = path;
+
+                return jsRef;
+            }
+        }
     }
 }

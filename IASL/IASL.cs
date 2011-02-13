@@ -35,6 +35,7 @@ namespace AxeSoftware.Quest
         void FinishWait();
         void SetMenuResponse(string response);
         void SetQuestionResponse(bool response);
+        IEnumerable<string> GetExternalScripts();
     }
 
     public interface IPlayer

@@ -559,6 +559,16 @@ namespace AxeSoftware.Quest
         {
         }
 
+        public IEnumerable<string> GetExternalScripts()
+        {
+            var result = new List<string>();
+            foreach (Element jsRef in m_elements.GetElements(ElementType.Javascript))
+            {
+                result.Add(jsRef.Fields[FieldDefinitions.Src]);
+            }
+            return result;
+        }
+
         #endregion
 
         public void RunScript(IScript script)

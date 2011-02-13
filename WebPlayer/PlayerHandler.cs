@@ -110,7 +110,6 @@ namespace WebPlayer
             //Load,
             //Save,
             //LinkForeground,
-            //RunScript,
             //Restart
 
             switch (request)
@@ -148,6 +147,9 @@ namespace WebPlayer
                 case Request.Background:
                     SetBackground(data);
                     break;
+                case Request.RunScript:
+                    RunScript(data);
+                    break;
                 default:
                     WriteText(string.Format("Unhandled request: {0}, {1}", request, data));
                     break;
@@ -169,6 +171,18 @@ namespace WebPlayer
             string output = m_textBuffer;
             m_textBuffer = "";
             return output;
+        }
+
+        void RunScript(string data)
+        {
+            string[] args = data.Split(';');
+            var parameters = new List<IJavaScriptParameter>();
+            for (int i = 1; i < args.Length; i++)
+            {
+                parameters.Add(new StringParameter(args[i].Trim()));
+            }
+
+            m_buffer.AddJavaScriptToBuffer(args[0], parameters.ToArray());
         }
 
         private void ProcessOutput(string text)
@@ -422,6 +436,23 @@ namespace WebPlayer
         {
             Logging.Log.InfoFormat("{0} Ending game", GameId);
             m_game.Finish();
+        }
+
+        public IEnumerable<string> SetUpExternalScripts()
+        {
+            // Get all external JS scripts in the game, add them as resources, and then
+            // return the list of JS resource URLs.
+            var result = new List<string>();
+            var scripts = m_game.GetExternalScripts();
+            if (scripts == null) return result;
+            
+            foreach (string script in scripts)
+            {
+                string url = AddResource(script);
+                result.Add(url);
+            }
+
+            return result;
         }
     }
 }

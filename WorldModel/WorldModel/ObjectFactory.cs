@@ -348,4 +348,12 @@ namespace AxeSoftware.Quest
             get { return ElementType.ImpliedType; }
         }
     }
+
+    internal class JavascriptReferenceFactory : ElementFactoryBase
+    {
+        public override ElementType CreateElementType
+        {
+            get { return ElementType.Javascript; }
+        }
+    }
 }

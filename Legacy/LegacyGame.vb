@@ -13406,6 +13406,7 @@ ErrorHandler:
     End Sub
 
     Public Sub FinishWait() Implements IASL.FinishWait
+        If (m_state <> State.Waiting) Then Exit Sub
         Dim runnerThread As New System.Threading.Thread(New System.Threading.ThreadStart(AddressOf FinishWaitInNewThread))
         ChangeState(State.Working)
         runnerThread.Start()
@@ -13449,4 +13450,8 @@ ErrorHandler:
     Private Sub LogException(ex As Exception)
         RaiseEvent LogError(ex.Message + Environment.NewLine + ex.StackTrace)
     End Sub
+
+    Public Function GetExternalScripts() As IEnumerable(Of String) Implements IASL.GetExternalScripts
+        Return Nothing
+    End Function
 End Class

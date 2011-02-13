@@ -77,6 +77,7 @@ namespace AxeSoftware.Quest
         public static IField<QuestList<string>> Steps = new FieldDef<QuestList<string>>("steps");
         public static IField<string> Element = new FieldDef<string>("element");
         public static IField<string> Type = new FieldDef<string>("type");
+        public static IField<string> Src = new FieldDef<string>("src");
     }
 
     internal static class MetaFieldDefinitions

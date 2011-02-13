@@ -44,6 +44,8 @@ namespace AxeSoftware.Quest
         Interface,
         [ElementTypeInfo("walkthrough")]
         Walkthrough,
+        [ElementTypeInfo("javascript")]
+        Javascript,
     }
 
     // These are all sub-types of the "Object" element type

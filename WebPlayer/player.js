@@ -127,13 +127,15 @@ function commandKey(e) {
 
 function runCommand() {
     var command = $("#txtCommand").val();
-    numCommands++;
-    commandsList[numCommands] = command;
-    thisCommand = numCommands + 1;
+    if (command.length > 0) {
+        numCommands++;
+        commandsList[numCommands] = command;
+        thisCommand = numCommands + 1;
 
-    // hitting Enter automatically causes the form to be submitted
-    $("#fldCommand").val(command);
-    $("#txtCommand").val("");
+        // hitting Enter automatically causes the form to be submitted
+        $("#fldCommand").val(command);
+        $("#txtCommand").val("");
+    }
 }
 
 function showQuestion(title) {

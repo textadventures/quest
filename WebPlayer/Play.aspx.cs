@@ -78,6 +78,11 @@ namespace WebPlayer
                         tmrInit.Enabled = false;
                         UpdateGameName("Error loading game");
                     }
+                    else
+                    {
+                        RegisterExternalScripts();
+                    }
+
                     OutputTextNow(initialText);
                     break;
                 case 2:
@@ -159,6 +164,16 @@ namespace WebPlayer
             }
 
             return output;
+        }
+
+        void RegisterExternalScripts()
+        {
+            int count = 0;
+            foreach (string url in m_player.SetUpExternalScripts())
+            {
+                count++;
+                ScriptManager.RegisterClientScriptInclude(this, this.GetType(), "scriptResource" + count.ToString(), url);
+            }
         }
 
         void m_player_SetStatusText(string text)

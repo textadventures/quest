@@ -20,7 +20,7 @@ Public Class TextFormatter
         Dim finished As Boolean = False
         Dim nobr As Boolean = False
 
-        input = input.Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />")
+        input = input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace(vbCrLf, "<br />")
 
         If Right(input, 3) = "|xn" Then
             nobr = True
