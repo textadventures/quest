@@ -17,6 +17,15 @@ namespace WebPlayer
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            string style = Request["style"];
+            if (!string.IsNullOrEmpty(style))
+            {
+                if (style == "fluid")
+                {
+                    styleLink.Href = "fluid.css";
+                }
+            }
+
             // We store the game in the Session, but use a dictionary keyed by GUIDs which
             // are stored in the ViewState. This allows the same user in the same browser
             // to open multiple games in different browser tabs.

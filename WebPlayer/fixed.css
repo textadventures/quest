@@ -1,0 +1,18 @@
+﻿@import url("player.css");
+
+div#gameContent
+{
+    height: 650px;
+}
+div#divOutput
+{
+    overflow: auto;
+    height: 580px;
+    padding: 20px;
+    margin-top: 20px;
+}
+#txtCommand
+{
+    width: 796px;
+    font-size: 14pt;
+}

@@ -1,13 +1,28 @@
-﻿var selectSizeWithoutStatus = 8;
+﻿var $_GET = {};
+var selectSizeWithoutStatus = 8;
 var selectSizeWithStatus = 6;
 var numCommands = 0;
 var thisCommand = 0;
 var commandsList = new Array();
+var fluid = false;
+
+document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+    function decode(s) {
+        return decodeURIComponent(s.split("+").join(" "));
+    }
+
+    $_GET[decode(arguments[1])] = decode(arguments[2]);
+});
 
 function init() {
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     $("#placeVerbs").hide();
     showStatusVisible(false);
+
+    fluid = ($_GET["style"] == "fluid");
+    if (fluid) {
+        panesVisible(false);
+    }
 }
 
 function showStatusVisible(visible) {
@@ -46,10 +61,12 @@ function createNewDiv(alignment) {
 }
 
 function scrollToEnd() {
-    // Use this line instead for non-pane layout
-    // $('html, body').animate({ scrollTop: $(document).height() }, 10);
-
-    $("#divOutput").scrollTop($("#divOutput").attr("scrollHeight"));
+    if (fluid) {
+        $('html, body').animate({ scrollTop: $(document).height() }, 10);
+    }
+    else {
+        $("#divOutput").scrollTop($("#divOutput").attr("scrollHeight"));
+    }
 }
 
 function updateLocation(text) {

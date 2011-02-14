@@ -73,6 +73,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fixed.css" />
+    <Content Include="fluid.css" />
     <Content Include="Global.asax" />
     <Content Include="js\Jplayer.swf" />
     <Content Include="js\jquery.jplayer.min.js" />

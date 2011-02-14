@@ -21,11 +21,6 @@ div#gameBorder
     border: 1px solid silver;
     margin-top: 0;
 }
-div#gameContent
-{
-    /* padding: 20px;      uncomment for non-pane layout */
-    height: 650px; /* comment out for non-pane layout */
-}
 div#gamePanes
 {
     float: right;
@@ -49,18 +44,6 @@ div#status
 div#updating
 {
     float: right;
-}
-div#divOutput
-{
-    overflow: auto; /* comment out for non-pane layout */
-    height: 580px; /* comment out for non-pane layout */
-    padding: 20px; /* comment out for non-pane layout */
-    margin-top: 20px;
-}
-#txtCommand
-{
-    width: 796px;
-    font-size: 14pt;
 }
 .hiddenbutton
 {
