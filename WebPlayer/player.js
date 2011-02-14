@@ -81,11 +81,6 @@ function endWait() {
     $("#cmdSubmit").click();
 }
 
-function enterCommand(command) {
-    $("#fldCommand").val(command);
-    $("#cmdSubmit").click();
-}
-
 function keyPressCode(e) {
     var keynum
     if (window.event) {
@@ -133,9 +128,13 @@ function runCommand() {
         thisCommand = numCommands + 1;
 
         // hitting Enter automatically causes the form to be submitted
-        $("#fldCommand").val(command);
+        prepareCommand(command);
         $("#txtCommand").val("");
     }
+}
+
+function prepareCommand(command) {
+    $("#fldUIMsg").val("command " + command);
 }
 
 function showQuestion(title) {
@@ -371,7 +370,7 @@ function compassClick(direction) {
 }
 
 function sendCommand(text) {
-    $("#fldCommand").val(text);
+    prepareCommand(text);
     $("#cmdSubmit").click();
 }
 
@@ -402,4 +401,9 @@ function updateStatus(text) {
 
 function setBackground(col) {
     $("#divOutput").css("background-color", col);
+}
+
+function ASLEvent(event, parameter) {
+    $("#fldUIMsg").val("event " + event +";" + parameter);
+    $("#cmdSubmit").click();    
 }

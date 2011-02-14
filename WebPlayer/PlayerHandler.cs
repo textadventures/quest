@@ -349,7 +349,7 @@ namespace WebPlayer
 
         private void AddLink(string text, string command)
         {
-            WriteText(string.Format("<a class=\"cmdlink\" onclick=\"enterCommand('{0}')\">{1}</a>", command, text));
+            WriteText(string.Format("<a class=\"cmdlink\" onclick=\"sendCommand('{0}')\">{1}</a>", command, text));
         }
 
         private void ShowPicture(string filename)
@@ -461,6 +461,11 @@ namespace WebPlayer
         public void WriteHTML(string html)
         {
             m_textBuffer += html;
+        }
+
+        public void SendEvent(string eventName, string param)
+        {
+            m_game.SendEvent(eventName, param);
         }
     }
 }

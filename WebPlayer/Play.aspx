@@ -115,7 +115,6 @@
             </div>
             <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                 <ContentTemplate>
-                    <asp:HiddenField ID="fldCommand" runat="server" Value="" />
                     <asp:HiddenField ID="fldUIMsg" runat="server" Value="" />
                     <asp:Button ID="cmdSubmit" runat="server" Width="20px" OnClick="cmdSubmit_Click"
                         CssClass="hiddenbutton" />

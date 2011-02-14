@@ -266,9 +266,12 @@ namespace WebPlayer
 
             if (fldUIMsg.Value.Length > 0)
             {
-                string[] args = fldUIMsg.Value.Split(new char[] { ' ' }, 2);
+                string[] args = fldUIMsg.Value.Split(new[] { ' ' }, 2);
                 switch (args[0])
                 {
+                    case "command":
+                        m_player.SendCommand(args[1]);
+                        break;
                     case "endwait":
                         m_player.EndWait();
                         break;
@@ -281,14 +284,11 @@ namespace WebPlayer
                     case "msgbox":
                         m_player.SetQuestionResponse(args[1]);
                         break;
+                    case "event":
+                        SendEvent(args[1]);
+                        break;
                 }
                 fldUIMsg.Value = "";
-            }
-            else if (fldCommand.Value.Length > 0)
-            {
-                string command = fldCommand.Value;
-                fldCommand.Value = "";
-                m_player.SendCommand(command);
             }
 
             string output = m_player.ClearBuffer();
@@ -318,6 +318,12 @@ namespace WebPlayer
                 ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script" + count.ToString(), javaScript, true);
                 count++;
             }
+        }
+
+        void SendEvent(string data)
+        {
+            string[] args = data.Split(new[] { ';' }, 2);
+            m_player.SendEvent(args[0], args[1]);
         }
     }
 }
