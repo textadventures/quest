@@ -248,7 +248,17 @@ function dialogSendCancel() {
 }
 
 function sessionTimeout() {
+    disableInterface();
+}
+
+function gameFinished() {
+    disableInterface();
+}
+
+function disableInterface() {
     $("#txtCommand").hide();
+    $("#gamePanesRunning").hide();
+    $("#gamePanesFinished").show();
 }
 
 var _currentPlayer = "";

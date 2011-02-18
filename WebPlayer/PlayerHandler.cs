@@ -20,6 +20,7 @@ namespace WebPlayer
         private string m_fontSizeOverride = "";
         private InterfaceListHandler m_listHandler;
         private OutputBuffer m_buffer;
+        private bool m_finished = false;
 
         public class PlayAudioEventArgs : EventArgs
         {
@@ -70,6 +71,7 @@ namespace WebPlayer
             m_game.RequestRaised += m_game_RequestRaised;
             m_game.LogError += m_game_LogError;
             m_game.UpdateList += m_game_UpdateList;
+            m_game.Finished += m_game_Finished;
             m_game.Initialise(this);
             if (m_game.Errors.Count > 0)
             {
@@ -83,6 +85,11 @@ namespace WebPlayer
                 errors = null;
                 return true;
             }
+        }
+
+        void m_game_Finished()
+        {
+            Finished = true;
         }
 
         void m_game_UpdateList(ListType listType, List<ListData> items)
@@ -105,12 +112,6 @@ namespace WebPlayer
         void m_game_RequestRaised(Request request, string data)
         {
             Logging.Log.DebugFormat("{0} Request raised: {1}, {2}", GameId, request, data);
-
-            // TO DO: Handle these request types:
-            //Quit,
-            //Load,
-            //Save,
-            //Restart
 
             switch (request)
             {
@@ -152,6 +153,16 @@ namespace WebPlayer
                     break;
                 case Request.LinkForeground:
                     m_linkForeground = data;
+                    break;
+                case Request.Load:
+                case Request.Save:
+                    WriteText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
+                    break;
+                case Request.Restart:
+                    WriteText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
+                    break;
+                case Request.Quit:
+                    Finished = true;
                     break;
                 default:
                     WriteText(string.Format("Unhandled request: {0}, {1}", request, data));
@@ -366,6 +377,7 @@ namespace WebPlayer
 
         public void SendCommand(string command)
         {
+            if (m_finished) return;
             Logging.Log.DebugFormat("{0} Command entered: {1}", GameId, command);
             m_game.SendCommand(command);
         }
@@ -380,12 +392,14 @@ namespace WebPlayer
 
         public void SetMenuResponse(string response)
         {
+            if (m_finished) return;
             Logging.Log.DebugFormat("{0} Menu response received", GameId);
             m_game.SetMenuResponse(response);
         }
 
         public void CancelMenu()
         {
+            if (m_finished) return;
             Logging.Log.DebugFormat("{0} Menu cancelled", GameId);
             m_game.SetMenuResponse(null);
         }
@@ -398,6 +412,7 @@ namespace WebPlayer
 
         public void EndWait()
         {
+            if (m_finished) return;
             Logging.Log.DebugFormat("{0} Wait ending", GameId);
             m_game.FinishWait();
         }
@@ -412,6 +427,7 @@ namespace WebPlayer
 
         public void SetQuestionResponse(string response)
         {
+            if (m_finished) return;
             Logging.Log.DebugFormat("{0} Question response received", GameId);
             m_game.SetQuestionResponse(response == "yes");
         }
@@ -471,7 +487,20 @@ namespace WebPlayer
 
         public void SendEvent(string eventName, string param)
         {
+            if (m_finished) return;
             m_game.SendEvent(eventName, param);
+        }
+
+        private bool Finished
+        {
+            get { return m_finished; }
+            set {
+                if (value != m_finished)
+                {
+                    m_buffer.AddJavaScriptToBuffer("gameFinished");
+                    m_finished = value;
+                }
+            }
         }
     }
 }

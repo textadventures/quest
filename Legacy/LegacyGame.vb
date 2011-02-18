@@ -13275,6 +13275,7 @@ ErrorHandler:
 
     Private Sub GameFinished()
         m_gameFinished = True
+        RaiseEvent Finished()
         ChangeState(State.Finished)
 
         ' In case we're in the middle of processing an "enter" command, nudge the thread along
@@ -13290,7 +13291,6 @@ ErrorHandler:
             System.Threading.Monitor.PulseAll(m_stateLock)
         End SyncLock
 
-        RaiseEvent Finished()
         Cleanup()
     End Sub
 
