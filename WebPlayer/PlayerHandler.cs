@@ -16,6 +16,7 @@ namespace WebPlayer
         private string m_fontSize = "";
         private string m_foreground = "";
         private string m_foregroundOverride = "";
+        private string m_linkForeground = "";
         private string m_fontSizeOverride = "";
         private InterfaceListHandler m_listHandler;
         private OutputBuffer m_buffer;
@@ -109,7 +110,6 @@ namespace WebPlayer
             //Quit,
             //Load,
             //Save,
-            //LinkForeground,
             //Restart
 
             switch (request)
@@ -149,6 +149,9 @@ namespace WebPlayer
                     break;
                 case Request.RunScript:
                     RunScript(data);
+                    break;
+                case Request.LinkForeground:
+                    m_linkForeground = data;
                     break;
                 default:
                     WriteText(string.Format("Unhandled request: {0}, {1}", request, data));
@@ -349,7 +352,10 @@ namespace WebPlayer
 
         private void AddLink(string text, string command)
         {
-            WriteText(string.Format("<a class=\"cmdlink\" onclick=\"sendCommand('{0}')\">{1}</a>", command, text));
+            WriteText(string.Format("<a class=\"cmdlink\" {0}onclick=\"sendCommand('{1}')\">{2}</a>",
+                ((m_linkForeground.Length > 0) ? ("style=color:" + m_linkForeground) + " " : ""),
+                command,
+                text));
         }
 
         private void ShowPicture(string filename)
