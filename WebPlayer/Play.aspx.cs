@@ -96,13 +96,7 @@ namespace WebPlayer
                     break;
                 case 2:
                     tmrInit.Enabled = false;
-
-                    // We could be more sophisticated here perhaps, and only enable tmrTick
-                    // if there are any game timers running. But this timer also ensures that
-                    // the buffer is cleared every second, which may be useful. It is helpful
-                    // to disable this when testing things such as "wait" commands, as we want
-                    // the text that follows a "wait" command to come back synchronously.
-                    tmrTick.Enabled = true;
+                    tmrTick.Enabled = m_player.UseTimer;
 
                     m_player.BeginGame();
                     OutputTextNow(m_player.ClearBuffer());

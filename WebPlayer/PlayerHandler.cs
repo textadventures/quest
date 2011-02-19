@@ -515,5 +515,13 @@ namespace WebPlayer
                 }
             }
         }
+
+        public bool UseTimer
+        {
+            get
+            {
+                return m_gameTimer != null;
+            }
+        }
     }
 }
