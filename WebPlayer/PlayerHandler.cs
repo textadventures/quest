@@ -10,6 +10,7 @@ namespace WebPlayer
     internal class PlayerHandler : IPlayer
     {
         private IASL m_game;
+        private IASLTimer m_gameTimer;
         private readonly string m_filename;
         private string m_textBuffer = "";
         private string m_font = "";
@@ -72,6 +73,13 @@ namespace WebPlayer
             m_game.LogError += m_game_LogError;
             m_game.UpdateList += m_game_UpdateList;
             m_game.Finished += m_game_Finished;
+
+            m_gameTimer = m_game as IASLTimer;
+            if (m_gameTimer != null)
+            {
+                m_gameTimer.UpdateTimer += m_gameTimer_UpdateTimer;
+            }
+
             m_game.Initialise(this);
             if (m_game.Errors.Count > 0)
             {
@@ -85,6 +93,11 @@ namespace WebPlayer
                 errors = null;
                 return true;
             }
+        }
+
+        void m_gameTimer_UpdateTimer(int nextTick)
+        {
+            throw new NotImplementedException();
         }
 
         void m_game_Finished()
@@ -454,7 +467,7 @@ namespace WebPlayer
 
         public void Tick()
         {
-            m_game.Tick();
+            if (m_gameTimer != null) m_gameTimer.Tick();
         }
 
         public void EndGame()

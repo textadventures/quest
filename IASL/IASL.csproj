@@ -87,6 +87,7 @@
   <ItemGroup>
     <Compile Include="IASL.cs" />
     <Compile Include="IASLDebug.cs" />
+    <Compile Include="IASLTimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

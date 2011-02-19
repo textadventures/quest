@@ -6,6 +6,7 @@ Public Class Player
 
     Private m_panesVisible As Boolean
     Private WithEvents m_game As IASL
+    Private WithEvents m_gameTimer As IASLTimer
     Private m_initialised As Boolean
     Private m_browserReady As Boolean
     Private m_gameReady As Boolean
@@ -83,6 +84,7 @@ Public Class Player
             m_stage = 0
             wbOutput.Navigate(My.Application.Info.DirectoryPath() & "\Blank.htm")
             m_game = game
+            m_gameTimer = TryCast(m_game, IASLTimer)
             m_gameReady = True
             txtCommand.Text = ""
             SetEnabledState(True)
@@ -962,7 +964,9 @@ Public Class Player
     End Sub
 
     Private Sub tmrTick_Tick(sender As System.Object, e As System.EventArgs) Handles tmrTick.Tick
-        m_game.Tick()
+        If Not m_gameTimer Is Nothing Then
+            m_gameTimer.Tick()
+        End If
     End Sub
 
     Private Sub Player_HandleDestroyed(sender As Object, e As System.EventArgs) Handles Me.HandleDestroyed

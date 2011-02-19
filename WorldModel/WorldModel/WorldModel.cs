@@ -550,11 +550,6 @@ namespace AxeSoftware.Quest
             return m_elements.Get(ElementType.Object, obj).GetDebugData();
         }
 
-        public void Tick()
-        {
-            // TO DO: This is for timers
-        }
-
         public void FinishWait()
         {
         }

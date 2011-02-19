@@ -7,6 +7,7 @@ Imports System.Linq
 Public Class LegacyGame
 
     Implements IASL
+    Implements IASLTimer
 
     Public Enum State
         Ready       ' game is not doing any processing, and is ready for a command
@@ -13356,7 +13357,7 @@ ErrorHandler:
         End Get
     End Property
 
-    Public Sub Tick() Implements IASL.Tick
+    Public Sub Tick() Implements IASLTimer.Tick
         Dim i As Integer
         Dim TimerScripts As New List(Of String)
 
@@ -13454,4 +13455,8 @@ ErrorHandler:
     Public Function GetExternalScripts() As IEnumerable(Of String) Implements IASL.GetExternalScripts
         Return Nothing
     End Function
+
+    ' TO DO: Use this event to tell the UI when to send the next Tick. Currently we're always ticking every
+    ' second which is unnecessary for most games.
+    Public Event UpdateTimer(nextTick As Integer) Implements IASLTimer.UpdateTimer
 End Class

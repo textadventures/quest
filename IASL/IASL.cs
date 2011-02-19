@@ -31,7 +31,6 @@ namespace AxeSoftware.Quest
         IWalkthrough Walkthrough { get; }
         void Save(string filename);
         string SaveExtension { get; }
-        void Tick();
         void FinishWait();
         void SetMenuResponse(string response);
         void SetQuestionResponse(bool response);
