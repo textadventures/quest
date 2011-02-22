@@ -9,7 +9,7 @@ namespace WebPlayer
     {
         public static string StringParameter(string param)
         {
-            return string.Format("\"{0}\"", param.Replace("\"", "\\\"").Replace(Environment.NewLine, "<br />"));
+            return string.Format("\"{0}\"", param.Replace("\"", "\\\"").Replace(Environment.NewLine, "\\n"));
         }
     }
 
@@ -95,8 +95,6 @@ namespace WebPlayer
             return output;
         }
 
-        // TO DO: Actually, all parameters are going to be string parameters I think, so this may as well
-        // always be called
         public string StringParameter(string parameter)
         {
             return string.Format("\"{0}\"", parameter.Replace("\"", "\\\""));

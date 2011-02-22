@@ -219,6 +219,7 @@ namespace WebPlayer
         {
             string currentCommand = "";
             string currentTagValue = "";
+            string currentVerbs = "";
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
             XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
@@ -240,6 +241,7 @@ namespace WebPlayer
                                 break;
                             case "object":
                                 currentCommand = "look at";
+                                currentVerbs = reader.GetAttribute("verbs");
                                 break;
                             case "exit":
                                 currentCommand = "go";
@@ -289,11 +291,11 @@ namespace WebPlayer
                                 // do nothing
                                 break;
                             case "object":
-                                AddLink(currentTagValue, currentCommand + " " + currentTagValue);
+                                AddLink(currentTagValue, currentCommand + " " + currentTagValue, currentVerbs);
                                 currentCommand = "";
                                 break;
                             case "exit":
-                                AddLink(currentTagValue, currentCommand + " " + currentTagValue);
+                                AddLink(currentTagValue, currentCommand + " " + currentTagValue, null);
                                 currentCommand = "";
                                 break;
                             case "b":
@@ -374,11 +376,21 @@ namespace WebPlayer
             m_textBuffer += text;
         }
 
-        private void AddLink(string text, string command)
+        private void AddLink(string text, string command, string verbs)
         {
-            WriteText(string.Format("<a class=\"cmdlink\" {0}onclick=\"sendCommand('{1}')\">{2}</a>",
+            string onclick;
+            if (string.IsNullOrEmpty(verbs))
+            {
+                onclick = string.Format("sendCommand('{0}')", command);
+            }
+            else
+            {
+                onclick = string.Format("showVerbMenu('{0}','{1}')", verbs, text);
+            }
+
+            WriteText(string.Format("<a class=\"cmdlink\" {0}onclick=\"{1}\">{2}</a>",
                 ((m_linkForeground.Length > 0) ? ("style=color:" + m_linkForeground) + " " : ""),
-                command,
+                onclick,
                 text));
         }
 

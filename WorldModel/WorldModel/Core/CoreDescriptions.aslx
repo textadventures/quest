@@ -128,7 +128,7 @@
     if (LengthOf(prefix)>0) prefix = prefix + " "
     result = prefix + result
     if (HasString(obj, "suffix")) {
-      result = result + " " + suffix
+      result = result + " " + obj.suffix
     }
     return (result)
   ]]>
@@ -136,9 +136,16 @@
 
   <function name="GetTaggedName" type="string" parameters="obj, tag">
     <![CDATA[
-    result = GetDisplayAlias(obj)
+    alias = GetDisplayAlias(obj)
     if (not tag = "") {
-      result = "<" + tag + ">" + result + "</" + tag + ">"
+      result = "<" + tag
+      if (obj.displayverbs <> null) {
+        result = result + " verbs='" + Join(obj.displayverbs, "/") + "'"
+      }
+      result = result + ">" + alias + "</" + tag + ">"
+    }
+    else {
+      result = alias
     }
     return (result)
   ]]>

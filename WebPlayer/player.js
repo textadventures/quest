@@ -419,7 +419,7 @@ function updateVerbs() {
 function updateStatus(text) {
     if (text.length > 0) {
         showStatusVisible(true);
-        $("#statusVars").html(text);
+        $("#statusVars").html(text.replace(/\n/g, "<br/>"));
     }
     else {
         showStatusVisible(false);
@@ -431,6 +431,9 @@ function setBackground(col) {
 }
 
 function ASLEvent(event, parameter) {
-    $("#fldUIMsg").val("event " + event +";" + parameter);
-    $("#cmdSubmit").click();    
+    $("#fldUIMsg").val("event " + event + ";" + parameter);
+    $("#cmdSubmit").click();
+}
+
+function showVerbMenu(verbs, target) {
 }
