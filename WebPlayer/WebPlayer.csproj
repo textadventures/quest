@@ -76,11 +76,13 @@
     <Content Include="fixed.css" />
     <Content Include="fluid.css" />
     <Content Include="Global.asax" />
+    <Content Include="js\jjmenu.js" />
     <Content Include="js\Jplayer.swf" />
     <Content Include="js\jquery.jplayer.min.js" />
     <Content Include="Play.aspx" />
     <Content Include="player.css" />
     <Content Include="player.js" />
+    <Content Include="js\jjmenu.css" />
     <Content Include="updating.gif" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

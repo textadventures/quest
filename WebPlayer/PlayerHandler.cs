@@ -376,22 +376,32 @@ namespace WebPlayer
             m_textBuffer += text;
         }
 
+        int m_linkCount = 0;
+
         private void AddLink(string text, string command, string verbs)
         {
-            string onclick;
+            string onclick = string.Empty;
+            m_linkCount++;
+            string linkid = "verbLink" + m_linkCount.ToString();
+
             if (string.IsNullOrEmpty(verbs))
             {
-                onclick = string.Format("sendCommand('{0}')", command);
-            }
-            else
-            {
-                onclick = string.Format("showVerbMenu('{0}','{1}')", verbs, text);
+                onclick = string.Format(" onclick=\"sendCommand('{0}')\"", command);
             }
 
-            WriteText(string.Format("<a class=\"cmdlink\" {0}onclick=\"{1}\">{2}</a>",
-                ((m_linkForeground.Length > 0) ? ("style=color:" + m_linkForeground) + " " : ""),
+            WriteText(string.Format("<a id=\"{3}\" class=\"cmdlink\"{0}{1}>{2}</a>",
+                ((m_linkForeground.Length > 0) ? (" style=color:" + m_linkForeground) + " " : ""),
                 onclick,
-                text));
+                text,
+                linkid));
+
+            // We need to call the JavaScript that binds the pop-up menu to the link *after* it has been
+            // written. So, clear the text buffer, then add the binding.
+            if (!string.IsNullOrEmpty(verbs))
+            {
+                m_buffer.OutputText(ClearBuffer());
+                m_buffer.AddJavaScriptToBuffer("bindMenu", new StringParameter(linkid), new StringParameter(verbs), new StringParameter(text));
+            }
         }
 
         private void ShowPicture(string filename)

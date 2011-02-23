@@ -435,5 +435,18 @@ function ASLEvent(event, parameter) {
     $("#cmdSubmit").click();
 }
 
-function showVerbMenu(verbs, target) {
+function bindMenu(linkid, verbs, text) {
+    var verbsList = verbs.split("/");
+    var options = [];
+
+    $.each(verbsList, function (key, value) {
+        options = options.concat({ title: value, action: { type: "fn", callback: "doMenuClick('" + value.toLowerCase() + " " + text + "');"} });
+    });
+
+  	$("#" + linkid).jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
+}
+
+function doMenuClick(command) {
+    $("div[id^=jjmenu]").remove();
+    sendCommand(command);
 }
