@@ -3,6 +3,11 @@
     <enablehyperlinks/>
     <showdescriptiononenter/>
     <autodescription/>
+    <defaultfont>Arial</defaultfont>
+    <defaultfontsize>9</defaultfontsize>
+    <defaultbackground>white</defaultbackground>
+    <defaultforeground>black</defaultforeground>
+    <defaultlinkforeground>blue</defaultlinkforeground>
   </type>
   
   <type name="defaultobject">

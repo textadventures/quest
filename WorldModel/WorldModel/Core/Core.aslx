@@ -14,19 +14,14 @@
   <include ref="CoreEditor.aslx"/>
 
   <function name="InitInterface">
-    request (FontName, "Arial")
-    request (FontSize, "9")
-    request (Background, "white")
-    request (Foreground, "black")
-    request (LinkForeground, "blue")
+    request (FontName, game.defaultfont)
+    request (FontSize, game.defaultfontsize)
+    request (Background, game.defaultbackground)
+    request (Foreground, game.defaultforeground)
+    request (LinkForeground, game.defaultlinkforeground)
   </function>
   
   <function name="StartGame">
-    request (FontName, "Arial")
-    request (FontSize, "9")
-    request (Background, "white")
-    request (Foreground, "black")
-    request (LinkForeground, "blue")
     if (HasScript(game, "start")) do (game, "start")
     foreach (room, AllObjects()) {
       if (GetBoolean(room, "start")) {

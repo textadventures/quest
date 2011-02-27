@@ -339,6 +339,8 @@ function panesVisible(visible) {
 
 var _places;
 
+var _compassDirs = ["northwest", "north", "northeast", "west", "out", "east", "southwest", "south", "southeast", "up", "down"];
+
 function updateList(listName, listData) {
     // TO DO: We currently discard the verb data we receive - this is fine for v4.x games
     // and earlier, but this will need to be implemented for v5 games. Currently we're using
@@ -358,9 +360,11 @@ function updateList(listName, listData) {
         var splitString = value.split(":");
         var objectDisplayName = splitString[0];
         var objectVerbs = splitString[1];
-        $(listElement).append(
-            $("<option/>").attr("value", key).text(objectDisplayName)
-        );
+        if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
+            $(listElement).append(
+                $("<option/>").attr("value", key).text(objectDisplayName)
+            );
+        }
         if (value.indexOf("Go to") != -1) {
             _places.push(key);
         }
