@@ -55,14 +55,52 @@
     
     <prefix>a</prefix>
 
-    <description>I am lying on a bed, alone in a room with white walls. A bright fluorescent light hangs loosely on the ceiling.</description>
+    <description>I am lying on a bed, alone in a room with white walls. A bright fluorescent light hangs loosely on the ceiling. To my left is a mirror.</description>
     
     <object name="bed">
       <look>I can't tell if I've been in this particular bed before, but it appears to be the standard type. White starched covers, mattress too firm.</look>
     </object>
 
+    <object name="covers">
+      <look type="script">
+        switch (game.upattempt) {
+          case (0) {
+            msg ("The white bedsheets are stiff, and tucked in tightly. I can barely move.")
+          }
+          case (1) {
+            msg ("The white bedsheets are tucked in, a little less tightly than before I tried to get up. I can move only a little.")
+          }
+          case (2) {
+            msg ("The white bedsheets are loosely tucked in. I think with one more attempt I may be able to break free.")
+          }
+        }
+      </look>
+    </object>
+
+    <object name="mattress">
+      <look>Nothing special, just an ordinary hospital mattress.</look>
+    </object>
+
+    <object name="light">
+      <alt>fluorescent light; lamp</alt>
+      <look>An ordinary fluorescent light.</look>
+    </object>
+
+    <object name="mirror">
+      <look type="script">
+        <![CDATA[
+        Print (1, "It's quite a large mirror for this small room. I can see the reflection of the other walls and the light, but I can't quite see my own reflection.")
+        Print (2, "The patient is looking right at me. But I don't <i>think</i> he knows I'm here. At least, I hope not.")
+        ]]>
+      </look>
+    </object>
+
+    <object name="reflection">
+      <look>I wish I could see my own reflection. If only I was out of this bed.</look>
+    </object>
+
     <command name="getup">
-      <pattern>get up</pattern>
+      <pattern>get up; get out of bed</pattern>
       <script>
         game.upattempt = game.upattempt + 1
         switch (game.upattempt) {
@@ -88,7 +126,7 @@
   <object name="observation">
     <!-- TO DO: Want to be able to extend the scope of all objects defined in the "ward" room so they are also in ScopeVisible from here.
     But for now we just define the same objects with aliases. We will also need a way to vary the description of an object depending on the POV. -->
-    <description>I can see the patient.</description>
+    <description>I can see the patient through the one-way mirror.</description>
     
     <object name="patient">
       <look>He is lying on the bed.</look>
@@ -98,6 +136,25 @@
       <alias>bed</alias>
       <look>The patient is lying on a standard issue bed unit.</look>
     </object>
+
+    <object name="obsmirror">
+      <alias>mirror</alias>
+      <look>The one-way mirror allows me to see the patient, but the patient cannot see me.</look>
+    </object>
+
+    <object name="obsmattress">
+      <alias>mattress</alias>
+      <look>The patient's bed uses a standard hospital mattress. There's nothing special about it.</look>
+    </object>
+
+    <object name="obslight">
+      <alias>light</alias>
+    </object>
+
+    <object name="obscovers">
+      <alias>covers</alias>
+    </object>
+    
   </object>
   
 </asl>
