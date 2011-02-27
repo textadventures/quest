@@ -1,20 +1,34 @@
 ﻿<library>
   <function name="ShowRoomDescription">
-    desc = FormatObjectList(Template("SeeListHeader"), GetNonTransparentParent(player.parent), Template("And"), ".")
-    exits = FormatExitList(Template("GoListHeader"), ScopeExits(), Template("Or"), ".")
-    fulldesc = ""
-    if (LengthOf(desc) > 0) {
-      fulldesc = desc
-      if (LengthOf(exits) > 0) {
-        fulldesc = fulldesc + "&lt;br /&gt;"
+    if (HasScript(player.parent, "description")) {
+      do (player.parent, "description")
+    }
+    else {
+      if (game.autodescription) {
+        if (HasString(player.parent, "descprefix")) {
+          youarein = player.parent.descprefix
+        } else {
+          youarein = Template("YouAreIn")
+        }
+        msg (youarein + " " + GetDisplayName(player.parent, "") + ".")
+
+        desc = FormatObjectList(Template("SeeListHeader"), GetNonTransparentParent(player.parent), Template("And"), ".")
+        exits = FormatExitList(Template("GoListHeader"), ScopeExits(), Template("Or"), ".")
+        fulldesc = ""
+        if (LengthOf(desc) > 0) {
+          fulldesc = desc
+          if (LengthOf(exits) > 0) {
+            fulldesc = fulldesc + "&lt;br /&gt;"
+          }
+        }
+        if (LengthOf(exits) > 0) {
+          fulldesc = fulldesc + exits
+        }
+        msg (fulldesc)
       }
-    }
-    if (LengthOf(exits) > 0) {
-      fulldesc = fulldesc + exits
-    }
-    msg (fulldesc)
-    if (HasString(player.parent, "description")) {
-      msg (player.parent.description)
+      if (HasString(player.parent, "description")) {
+        msg (player.parent.description)
+      }
     }
   </function>
 
@@ -23,13 +37,9 @@
       do (player.parent, "beforefirstenter")
     }
     request (UpdateLocation, CapFirst(GetDisplayName(player.parent, "")))
-    if (HasString(player.parent, "descprefix")) {
-      youarein = player.parent.descprefix
-    } else {
-      youarein = Template("YouAreIn")
+    if (game.showdescriptiononenter) {
+      ShowRoomDescription
     }
-    msg (youarein + " " + GetDisplayName(player.parent, "") + ".")
-    ShowRoomDescription
     if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "firstenter")) {
       do (player.parent, "firstenter")
     }

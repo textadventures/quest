@@ -145,6 +145,7 @@ function runCommand() {
         thisCommand = numCommands + 1;
 
         // hitting Enter automatically causes the form to be submitted
+        // TO DO: returning false from onkeydown function would prevent that issue
         prepareCommand(command);
         $("#txtCommand").val("");
     }

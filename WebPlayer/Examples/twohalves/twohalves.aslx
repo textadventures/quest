@@ -8,43 +8,96 @@
   <game name="Half and Half">
   	<start type="script">
   		insert ("twohalves.htm")
-  		SetSide(1)
+      Print (1, "I am awake.")
+      Print (2, "Patient is awake.")
   	</start>
     <enablehyperlinks type="boolean">false</enablehyperlinks>
+    <showdescriptiononenter type="boolean">false</showdescriptiononenter>
+    <autodescription type="boolean">false</autodescription>
+    <upattempt type="int">0</upattempt>
   </game>
   
   <function name="SetSide" parameters="side">
     request (RunScript, "setCurrentSide; " + side)
+  </function>
+
+  <function name="Print" parameters="side, text">
+    SetSide (side)
+    msg (text)
   </function>
   
   <function name="ProcessInput" parameters="data"><![CDATA[
     parameters = Split(data, ";")
     source = StringListItem(parameters, 0)
     command = StringListItem(parameters, 1)
+    // To demonstrate a game with multiple POVs, we are currently moving the player object as required.
+    // TO DO: We want to be able to set the POV so we don't have to move one "player" object. We
+    // should just be able to set the POV as the patient or the doctor, and be able to play the
+    // game "as" any object in the game world.
     if (source = "mind1") {
-      SetSide (1)
+      thisSide = 1
+      player.parent = ward
     }
     else {
-      SetSide (2)
+      thisSide = 2
+      player.parent = observation
     }
-    msg ("<i>&gt; " + command + "</i>")
+    otherSide = 3 - thisSide
+    SetSide (otherSide)
+    msg ("<br/>")
+    SetSide (thisSide)
+    msg ("<i>&gt; " + command + "</i><br/>")
     HandleCommand(command)
   ]]></function>
 
-  <object name="room">
+  <object name="ward">
     <start/>
     
     <prefix>a</prefix>
+
+    <description>I am lying on a bed, alone in a room with white walls. A bright fluorescent light hangs loosely on the ceiling.</description>
     
-    <object name="apple">
-      <look type="script">
-        SetSide (1)
-        msg ("1 look at apple...")
-        SetSide (2)
-        msg ("...2 look at apple")
-      </look>
+    <object name="bed">
+      <look>I can't tell if I've been in this particular bed before, but it appears to be the standard type. White starched covers, mattress too firm.</look>
     </object>
+
+    <command name="getup">
+      <pattern>get up</pattern>
+      <script>
+        game.upattempt = game.upattempt + 1
+        switch (game.upattempt) {
+          case (1) {
+            Print (1, "I try to get up, but I am weak. The covers are tight. I'll try again in a short while.")
+            Print (2, "Patient appears to be struggling to get out of bed, but gives up quickly.")
+          }
+          case (2) {
+            Print (1, "I struggle again to get up. The covers have loosened. But I am still weak.")
+            Print (2, "Patient struggles again to get out of bed, but gives up. Will need to up the sedative dose.")          
+          }
+          default {
+            Print (1, "I fight with the covers again. They fall to the floor. I am up. I am heading for the door.")
+            Print (2, "Alarm raised. Evacuating building.")
+            finish
+          }
+        }
+      </script>
+    </command>
     
+  </object>
+
+  <object name="observation">
+    <!-- TO DO: Want to be able to extend the scope of all objects defined in the "ward" room so they are also in ScopeVisible from here.
+    But for now we just define the same objects with aliases. We will also need a way to vary the description of an object depending on the POV. -->
+    <description>I can see the patient.</description>
+    
+    <object name="patient">
+      <look>He is lying on the bed.</look>
+    </object>
+
+    <object name="obsbed">
+      <alias>bed</alias>
+      <look>The patient is lying on a standard issue bed unit.</look>
+    </object>
   </object>
   
 </asl>

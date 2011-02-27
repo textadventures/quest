@@ -1,4 +1,5 @@
 $("#txtCommand").hide();
+$("#location").hide();
 
 function inputKeydown(id, event) {
     if (keyPressCode(event) == 13) {
@@ -7,6 +8,8 @@ function inputKeydown(id, event) {
         $("#mind2").val("");
         addNewRow();
         ASLEvent("ProcessInput", id + ";" + text);
+        // returning false here to stop form being submitted twice
+        return false;
     }
 }
 
@@ -52,3 +55,14 @@ function addNewRow() {
     currentLeft = $("#left" + rowCount);
     currentRight = $("#right" + rowCount);
 }
+
+// using the proxy pattern http://docs.jquery.com/Types#Proxy%5FPattern to override the gameFinished function
+
+(function () {
+    var proxied = window.gameFinished;
+    window.gameFinished = function () {
+        $("#mind1").hide();
+        $("#mind2").hide();
+        proxied();
+    };
+})();

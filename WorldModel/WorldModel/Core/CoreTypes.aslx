@@ -1,6 +1,8 @@
 ﻿<library>
   <type name="defaultgame">
     <enablehyperlinks/>
+    <showdescriptiononenter/>
+    <autodescription/>
   </type>
   
   <type name="defaultobject">
