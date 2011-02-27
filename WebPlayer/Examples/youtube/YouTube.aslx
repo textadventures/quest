@@ -1,0 +1,25 @@
+<asl version="500">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <javascript src="YouTube.js"/>
+
+  <game name="The Quest for an Embedded YouTube Clip">
+  </game>
+
+  <object name="cinema">
+    <start/>
+
+    <prefix>a</prefix>
+
+    <object name="screen">
+      <prefix>a big</prefix>
+      <look type="script">
+        request (RunScript, "AddYouTube; ZXZWepU7zC8")
+      </look>
+    </object>
+
+  </object>
+
+</asl>

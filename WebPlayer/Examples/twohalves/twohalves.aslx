@@ -1,0 +1,49 @@
+<asl version="500">
+  
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <javascript src="twohalves.js"/>
+  
+  <game name="Half and Half">
+  	<start type="script">
+  		insert ("twohalves.htm")
+  		SetSide(1)
+  	</start>
+  </game>
+  
+  <function name="SetSide" parameters="side">
+    request (RunScript, "setCurrentSide; " + side)
+  </function>
+  
+  <function name="ProcessInput" parameters="data"><![CDATA[
+    parameters = Split(data, ";")
+    source = StringListItem(parameters, 0)
+    command = StringListItem(parameters, 1)
+    if (source = "mind1") {
+      SetSide (1)
+    }
+    else {
+      SetSide (2)
+    }
+    msg ("<i>&gt; " + command + "</i>")
+    HandleCommand(command)
+  ]]></function>
+
+  <object name="room">
+    <start/>
+    
+    <prefix>a</prefix>
+    
+    <object name="apple">
+      <look type="script">
+        SetSide (1)
+        msg ("1 look at apple...")
+        SetSide (2)
+        msg ("...2 look at apple")
+      </look>
+    </object>
+    
+  </object>
+  
+</asl>

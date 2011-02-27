@@ -73,6 +73,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Examples\twohalves\twohalves.htm" />
+    <Content Include="Examples\twohalves\twohalves.js" />
+    <Content Include="Examples\youtube\YouTube.js" />
     <Content Include="fixed.css" />
     <Content Include="fluid.css" />
     <Content Include="Global.asax" />
@@ -134,6 +137,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resource.ashx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Examples\twohalves\twohalves.aslx" />
+    <None Include="Examples\youtube\YouTube.aslx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

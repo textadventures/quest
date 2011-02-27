@@ -1,0 +1,40 @@
+<style>
+    .l
+    {
+        background: #FFFFCC;
+        vertical-align: top;
+        border-bottom: 1px solid gray;
+    }
+    .r
+    {
+        background: #CCFFCC;
+        vertical-align: top;
+        border-bottom: 1px solid gray;
+    }
+    td
+    {
+        padding: 10px;
+    }
+</style>
+<table width="100%" style="border-collapse: collapse" id="splitTable">
+    <tfoot>
+        <tr>
+            <td class="l" width="50%">
+                <input placeholder="Type here" type="text" id="mind1" onkeydown="inputKeydown('mind1', event);"
+                    style="width: 100%" />
+            </td>
+            <td class="r" width="50%">
+                <input placeholder="or here" type="text" id="mind2" onkeydown="inputKeydown('mind2', event);"
+                    style="width: 100%" />
+            </td>
+        </tr>
+    </tfoot>
+    <tbody>
+        <tr>
+            <td class="l">
+            </td>
+            <td class="r">
+            </td>
+        </tr>
+    </tbody>
+</table>
