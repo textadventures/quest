@@ -137,6 +137,9 @@
   <function name="GetTaggedName" type="string" parameters="obj, tag">
     <![CDATA[
     alias = GetDisplayAlias(obj)
+    if (not game.enablehyperlinks) {
+      tag = ""
+    }
     if (not tag = "") {
       result = "<" + tag
       if (obj.displayverbs <> null) {

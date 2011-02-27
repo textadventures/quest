@@ -10,6 +10,7 @@
   		insert ("twohalves.htm")
   		SetSide(1)
   	</start>
+    <enablehyperlinks type="boolean">false</enablehyperlinks>
   </game>
   
   <function name="SetSide" parameters="side">

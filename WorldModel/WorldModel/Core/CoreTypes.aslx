@@ -1,4 +1,8 @@
 ﻿<library>
+  <type name="defaultgame">
+    <enablehyperlinks/>
+  </type>
+  
   <type name="defaultobject">
     <displayverbs type="list">[LookAt];[Take];[SpeakTo]</displayverbs>
     <inventoryverbs type="list">[LookAt];[Use];[Drop]</inventoryverbs>
