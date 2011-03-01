@@ -18,6 +18,7 @@ namespace WebPlayer
         private string m_foreground = "";
         private string m_foregroundOverride = "";
         private string m_linkForeground = "";
+        private bool m_useForeground = true;
         private string m_fontSizeOverride = "";
         private InterfaceListHandler m_listHandler;
         private OutputBuffer m_buffer;
@@ -226,6 +227,9 @@ namespace WebPlayer
             bool nobr = false;
             bool alignmentSet = false;
 
+            // TO DO: Throw an exception if an <a> tag tries to embed another <a> tag.
+            // Should also apply for many of the other tags too.
+
             while (reader.Read())
             {
                 switch (reader.NodeType)
@@ -266,6 +270,13 @@ namespace WebPlayer
                                 break;
                             case "align":
                                 SetAlignment(reader.GetAttribute("align"));
+                                break;
+                            case "a":
+                                m_useForeground = false;
+                                string target = reader.GetAttribute("target");
+                                WriteText(string.Format("<a href=\"{0}\"{1}>",
+                                    reader.GetAttribute("href"),
+                                    target != null ? "target=\"" + target + "\"" : ""));
                                 break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
@@ -317,6 +328,10 @@ namespace WebPlayer
                                 SetAlignment("");
                                 alignmentSet = true;
                                 break;
+                            case "a":
+                                WriteText("</a>");
+                                m_useForeground = true;
+                                break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
                         }
@@ -353,11 +368,14 @@ namespace WebPlayer
                 style += string.Format("font-family:{0};", m_font);
             }
 
-            string colour = m_foregroundOverride;
-            if (colour.Length == 0) colour = m_foreground;
-            if (colour.Length > 0)
+            if (m_useForeground)
             {
-                style += string.Format("color:{0};", colour);
+                string colour = m_foregroundOverride;
+                if (colour.Length == 0) colour = m_foreground;
+                if (colour.Length > 0)
+                {
+                    style += string.Format("color:{0};", colour);
+                }
             }
 
             string fontSize = m_fontSizeOverride;
