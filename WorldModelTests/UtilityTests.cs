@@ -19,5 +19,16 @@ namespace WorldModelTests
             Assert.AreEqual("\"myfile.html\"", Utility.ConvertDottedPropertiesToVariable("\"myfile.html\""));
             Assert.AreEqual("obj1_prop \"test.html\" obj2_prop", Utility.ConvertDottedPropertiesToVariable("obj1.prop \"test.html\" obj2.prop"));
         }
+
+        [TestMethod]
+        public void TestRemoveComments()
+        {
+            Assert.AreEqual("msg (\"Something\")", Utility.RemoveComments("msg (\"Something\")"));
+            Assert.AreEqual("msg (\"Something\")", Utility.RemoveComments("msg (\"Something\")//comment"));
+            Assert.AreEqual("", Utility.RemoveComments("//comment"));
+            Assert.AreEqual("msg (\"Something with // two slashes\")", Utility.RemoveComments("msg (\"Something with // two slashes\")"));
+            Assert.AreEqual("msg (\"Something with // two slashes\")", Utility.RemoveComments("msg (\"Something with // two slashes\")//comment"));
+            Assert.AreEqual("msg (\"Something with // two slashes\")", Utility.RemoveComments("msg (\"Something with // two slashes\")//comment \"with a string\""));
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AxeSoftware.Quest
 {
@@ -158,7 +159,8 @@ namespace AxeSoftware.Quest
             variable = name.Substring(eqPos + 1);
         }
 
-        private static System.Text.RegularExpressions.Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.(\w)");
+        private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.(\w)");
+        private static Regex s_removeComments = new Regex("//");
         
         /// <summary>
         /// FLEE doesn't allow us to have control over dot notation i.e. "object.property",
@@ -168,18 +170,24 @@ namespace AxeSoftware.Quest
         /// <returns></returns>
         public static string ConvertDottedPropertiesToVariable(string expression)
         {
-            // We ignore dots which appear within quotes by splitting the string
+            return ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables, "$1_$2", false);
+        }
+
+        private static string ReplaceRegexMatchesRespectingQuotes(string input, Regex regex, string replaceWith, bool replaceInsideQuote)
+        {
+            // We ignore regex matches which appear within quotes by splitting the string
             // at the position of quote marks, and then alternating whether we replace or not.
-            string[] sections = expression.Split('\"');
+            string[] sections = input.Split('\"');
             string result = string.Empty;
 
             bool insideQuote = false;
             for (int i = 0; i <= sections.Length - 1; i++)
             {
                 string section = sections[i];
-                if (!insideQuote)
+                bool doReplace = (insideQuote && replaceInsideQuote) || (!insideQuote && !replaceInsideQuote);
+                if (doReplace)
                 {
-                    result += s_convertVariables.Replace(section, "$1_$2");
+                    result += regex.Replace(section, replaceWith);
                 }
                 else
                 {
@@ -190,6 +198,20 @@ namespace AxeSoftware.Quest
             }
 
             return result;
+        }
+
+        public static string RemoveComments(string input)
+        {
+            if (!input.Contains("//")) return input;
+
+            // Replace any occurrences of "//" which are inside string expressions. Then any occurrences of "//"
+            // which remain mark the beginning of a comment.
+            string obfuscateDoubleSlashesInsideStrings = ReplaceRegexMatchesRespectingQuotes(input, s_removeComments, "--", true);
+            if (obfuscateDoubleSlashesInsideStrings.Contains("//"))
+            {
+                return input.Substring(0, obfuscateDoubleSlashesInsideStrings.IndexOf("//"));
+            }
+            return input;
         }
 
         public static List<string> SplitIntoLines(string text)

@@ -23,12 +23,6 @@ namespace AxeSoftware.Quest
         private SetScriptConstructor m_setConstructor;
         private CallProcedureScriptConstructor m_procConstructor;
 
-        // TO DO: This will also cut off any strings that happen to have two consecutive slashes in them.
-        // Easiest solution I think would be run this regex on all lines, if there are lines that match
-        // then just iterate through the length of the string one character at a time, set flag when within
-        // a quoted string, then if find two consecutive slashes outside a string, trim the line.
-        private Regex m_removeComments = new Regex("//.*");
-
         public ScriptFactory(WorldModel worldModel)
         {
             m_worldModel = worldModel;
@@ -94,7 +88,7 @@ namespace AxeSoftware.Quest
                 if (line != null)
                 {
                     line = line.Trim();
-                    line = RemoveComments(line);
+                    line = Utility.RemoveComments(line);
                 }
 
                 if (!string.IsNullOrEmpty(line))
@@ -206,11 +200,6 @@ namespace AxeSoftware.Quest
         private void AddError(string error)
         {
             if (ErrorHandler != null) ErrorHandler(error);
-        }
-
-        private string RemoveComments(string input)
-        {
-            return m_removeComments.Replace(input, "");
         }
     }
 }
