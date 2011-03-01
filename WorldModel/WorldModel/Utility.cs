@@ -160,7 +160,7 @@ namespace AxeSoftware.Quest
         }
 
         private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.(\w)");
-        private static Regex s_removeComments = new Regex("//");
+        private static Regex s_detectComments = new Regex("//");
         
         /// <summary>
         /// FLEE doesn't allow us to have control over dot notation i.e. "object.property",
@@ -203,15 +203,29 @@ namespace AxeSoftware.Quest
         public static string RemoveComments(string input)
         {
             if (!input.Contains("//")) return input;
+            if (input.Contains("\n"))
+            {
+                return RemoveCommentsMultiLine(input);
+            }
 
             // Replace any occurrences of "//" which are inside string expressions. Then any occurrences of "//"
             // which remain mark the beginning of a comment.
-            string obfuscateDoubleSlashesInsideStrings = ReplaceRegexMatchesRespectingQuotes(input, s_removeComments, "--", true);
+            string obfuscateDoubleSlashesInsideStrings = ReplaceRegexMatchesRespectingQuotes(input, s_detectComments, "--", true);
             if (obfuscateDoubleSlashesInsideStrings.Contains("//"))
             {
                 return input.Substring(0, obfuscateDoubleSlashesInsideStrings.IndexOf("//"));
             }
             return input;
+        }
+
+        private static string RemoveCommentsMultiLine(string input)
+        {
+            List<string> output = new List<string>();
+            foreach (string inputLine in (input.Split(new string[] { "\n" }, StringSplitOptions.None)))
+            {
+                output.Add(RemoveComments(inputLine));
+            }
+            return string.Join("\n", output.ToArray());
         }
 
         public static List<string> SplitIntoLines(string text)
