@@ -5,6 +5,8 @@
   <implied element="object" property="alt" type="list"/>
   <implied element="command" property="pattern" type="simplepattern"/>
   <implied element="command" property="script" type="script"/>
+  <implied element="object" property="displayverbs" type="list"/>
+  <implied element="object" property="inventoryverbs" type="list"/>
 
   <include ref="CoreCommands.aslx"/>
   <include ref="CoreParser.aslx"/>

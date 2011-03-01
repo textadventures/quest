@@ -407,7 +407,7 @@ namespace WebPlayer
         private void ShowPicture(string filename)
         {
             string url = AddResource(filename);
-            WriteText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" />", url));
+            WriteText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" /><br />", url));
         }
 
         public void SendCommand(string command)

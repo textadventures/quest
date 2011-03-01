@@ -123,6 +123,7 @@
     <Compile Include="Scripts\ForScript.cs" />
     <Compile Include="Scripts\InsertScript.cs" />
     <Compile Include="Scripts\ListAddScript.cs" />
+    <Compile Include="Scripts\PictureScript.cs" />
     <Compile Include="Scripts\PopulateScript.cs" />
     <Compile Include="ScriptFactory.cs" />
     <Compile Include="Scripts\Context.cs" />
