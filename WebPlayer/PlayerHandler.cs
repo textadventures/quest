@@ -285,7 +285,7 @@ namespace WebPlayer
                     case XmlNodeType.Text:
                         if (currentCommand.Length == 0)
                         {
-                            WriteText(reader.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"));
+                            WriteText(FormatText(reader.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")));
                         }
                         else
                         {
@@ -293,7 +293,7 @@ namespace WebPlayer
                         }
                         break;
                     case XmlNodeType.Whitespace:
-                        WriteText(reader.Value.Replace(" ", "&nbsp;"));
+                        WriteText(FormatText(reader.Value.Replace(" ", "&nbsp;")));
                         break;
                     case XmlNodeType.EndElement:
                         switch (reader.Name)
@@ -360,7 +360,7 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer("createNewDiv", new StringParameter(align));
         }
 
-        private void WriteText(string text)
+        private string FormatText(string text)
         {
             string style = "";
             if (m_font.Length > 0)
@@ -391,8 +391,14 @@ namespace WebPlayer
                 text = string.Format("<span style=\"{0}\">{1}</span>", style, text);
             }
 
+            return text;
+        }
+
+        private void WriteText(string text)
+        {
             m_textBuffer += text;
         }
+
 
         int m_linkCount = 0;
 
