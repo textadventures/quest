@@ -251,7 +251,7 @@ namespace WebPlayer
                                 currentCommand = "go";
                                 break;
                             case "br":
-                                WriteText("<br />");
+                                WriteText(FormatText("<br />"));
                                 break;
                             case "b":
                                 WriteText("<b>");
@@ -413,11 +413,13 @@ namespace WebPlayer
                 onclick = string.Format(" onclick=\"sendCommand('{0}')\"", command);
             }
 
+            m_useForeground = false;
             WriteText(string.Format("<a id=\"{3}\" class=\"cmdlink\"{0}{1}>{2}</a>",
                 ((m_linkForeground.Length > 0) ? (" style=color:" + m_linkForeground) + " " : ""),
                 onclick,
-                text,
+                FormatText(text),
                 linkid));
+            m_useForeground = true;
 
             // We need to call the JavaScript that binds the pop-up menu to the link *after* it has been
             // written. So, clear the text buffer, then add the binding.
