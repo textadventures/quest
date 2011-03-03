@@ -414,10 +414,17 @@ namespace WebPlayer
             }
 
             m_useForeground = false;
+
+            // TO DO: I think we should be calling FormatText on the "text" variable below,
+            // but currently if we do this we end up with <a...><span>text</span></a> which
+            // for some reason breaks jjmenu, meaning we don't see menus when we left-click.
+            // The whole area of formatting needs looking at again anyway as it's wasteful to
+            // have loads of repeated <span> elements, and this class needs refactoring anyway...
+
             WriteText(string.Format("<a id=\"{3}\" class=\"cmdlink\"{0}{1}>{2}</a>",
                 ((m_linkForeground.Length > 0) ? (" style=color:" + m_linkForeground) + " " : ""),
                 onclick,
-                FormatText(text),
+                text,
                 linkid));
             m_useForeground = true;
 
