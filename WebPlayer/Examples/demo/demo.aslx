@@ -15,7 +15,7 @@
   <object name="guide">
     <look type="script">
       <![CDATA[
-      msg ("The guide is a small leaflet that will help you find your way back to the introduction page, because it has <a href='../Examples/index.htm'>this link</a> on it which you can click, see.")
+      msg ("The guide is a small leaflet that will help you find your way back to the introduction page, because it has <a href='Examples/index.htm'>this link</a> on it which you can click, see.")
       ]]>
     </look>
     <use type="script">msg ("The only thing you can use this guide for is to get back to the Examples index, which you can do by simply looking at it.")</use>
@@ -87,7 +87,7 @@
         <![CDATA[
         request (RunScript, "AddYouTube; ZXZWepU7zC8")
         msg ("<br/>Assuming Flash is installed, you should see an embedded YouTube clip above, which is nice. Quest in fact <i>doesn't</i> have built-in Flash support - we embedded that video using custom JavaScript. This functionality could easily be added to a library to make it easy for anyone to use, though, so in fact this will probably end up being a feature of Quest's standard library.<br/>")
-        msg ("That's pretty much it for the first demo - you've seen how we can embed a picture and a video, and you've seen hyperlinks in use for exits and objects. <a href='../Examples/index.htm'>Click here to go back to the introduction page and check out demo 2!</a>")
+        msg ("That's pretty much it for the first demo - you've seen how we can embed a picture and a video, and you've seen hyperlinks in use for exits and objects. <a href='Examples/index.htm'>Click here to go back to the introduction page and check out demo 2!</a>")
         ]]>
       </look>
     </object>
