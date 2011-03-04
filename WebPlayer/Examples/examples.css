@@ -1,0 +1,26 @@
+﻿body
+{
+    font-family: Verdana, Sans-Serif;
+}
+div#content
+{
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid silver;
+    margin-top: 0;
+    padding: 0px 30px 30px 30px;
+}
+.ui-accordion-content
+{
+    font-family: Verdana, Sans-Serif;
+    font-size: 90%;
+}
+.ui-accordion-header
+{
+    padding-left: 40px;
+}
+a, .ui-widget-content a
+{
+    color: Blue;
+}

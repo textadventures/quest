@@ -102,6 +102,7 @@
     <command name="getup">
       <pattern>get up; get out of bed</pattern>
       <script>
+        <![CDATA[
         game.upattempt = game.upattempt + 1
         switch (game.upattempt) {
           case (1) {
@@ -115,9 +116,11 @@
           default {
             Print (1, "I fight with the covers again. They fall to the floor. I am up. I am heading for the door.")
             Print (2, "Alarm raised. Evacuating building.")
+            Print (0, "<a href='../Examples/index.htm'>Game over - click here to go back to the introduction page</a>")
             finish
           }
         }
+        ]]>
       </script>
     </command>
     

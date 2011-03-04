@@ -251,5 +251,28 @@ namespace AxeSoftware.Quest
         {
             return value.Split(s_listSplitDelimiters, StringSplitOptions.None);
         }
+
+        public static string ObscureStrings(string input)
+        {
+            string[] sections = input.Split('\"');
+            string result = string.Empty;
+
+            bool insideQuote = false;
+            for (int i = 0; i <= sections.Length - 1; i++)
+            {
+                string section = sections[i];
+                if (insideQuote)
+                {
+                    result = result + new string('-', section.Length);
+                }
+                else
+                {
+                    result = result + section;
+                }
+                if (i < sections.Length - 1) result += "\"";
+                insideQuote = !insideQuote;
+            }
+            return result;
+        }
     }
 }

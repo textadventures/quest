@@ -30,5 +30,16 @@ namespace WorldModelTests
             Assert.AreEqual("msg (\"Something with // two slashes\")", Utility.RemoveComments("msg (\"Something with // two slashes\")//comment"));
             Assert.AreEqual("msg (\"Something with // two slashes\")", Utility.RemoveComments("msg (\"Something with // two slashes\")//comment \"with a string\""));
         }
+
+        [TestMethod]
+        public void TestObscureStrings()
+        {
+            string input = "This is \"a test\" of obscuring strings";
+            string result = Utility.ObscureStrings(input);
+            Assert.AreEqual(input.Length, result.Length);
+            Assert.IsTrue(result.StartsWith("This is \""));
+            Assert.IsTrue(result.EndsWith("\" of obscuring strings"));
+            Assert.IsFalse(result.Contains("a test"));
+        }
     }
 }

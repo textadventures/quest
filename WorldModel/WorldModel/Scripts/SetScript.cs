@@ -17,14 +17,14 @@ namespace AxeSoftware.Quest.Scripts
 
         public IScript Create(string script, Element proc)
         {
-            // TO DO: Need to obscure things within strings, otherwise
-            // having an equals sign inside a string will break this.
-
             bool isScript = false;
             int offset = 0;
             int eqPos;
 
-            eqPos = script.IndexOf("=>");
+            // hide text within string expressions
+            string obscuredScript = Utility.ObscureStrings(script);
+
+            eqPos = obscuredScript.IndexOf("=>");
             if (eqPos != -1)
             {
                 isScript = true;
@@ -32,7 +32,7 @@ namespace AxeSoftware.Quest.Scripts
             }
             else
             {
-                eqPos = script.IndexOf('=');
+                eqPos = obscuredScript.IndexOf('=');
             }
 
             if (eqPos != -1)

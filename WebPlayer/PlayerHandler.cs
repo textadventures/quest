@@ -142,6 +142,7 @@ namespace WebPlayer
                     GameNameUpdated(data);
                     break;
                 case Request.ClearScreen:
+                    m_buffer.OutputText(ClearBuffer());
                     ClearScreen();
                     break;
                 case Request.ShowPicture:
