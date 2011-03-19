@@ -85,7 +85,7 @@ namespace WebPlayer
                     if (m_player == null)
                     {
                         tmrInit.Enabled = false;
-                        UpdateGameName("Error loading game");
+                        m_player.UpdateGameName("Error loading game");
                     }
                     else
                     {
@@ -136,17 +136,12 @@ namespace WebPlayer
                 m_player.GameId = m_gameId;
                 m_player.LibraryFolder = libPath;
                 m_gamesInSession[m_gameId] = m_player;
-                m_player.LocationUpdated += m_player_LocationUpdated;
                 m_player.BeginWait += m_player_BeginWait;
                 m_player.ShowMenuDelegate = m_player_ShowMenu;
                 m_player.ShowQuestionDelegate = m_player_ShowQuestion;
-                m_player.GameNameUpdated += m_player_GameNameUpdated;
-                m_player.ClearScreen += m_player_ClearScreen;
                 m_player.AddResource += AddResource;
                 m_player.PlayAudio += m_player_PlayAudio;
                 m_player.StopAudio += m_player_StopAudio;
-                m_player.SetPanesVisible += m_player_SetPanesVisible;
-                m_player.SetStatusText += m_player_SetStatusText;
                 
                 if (m_player.Initialise(out errors))
                 {
@@ -177,16 +172,6 @@ namespace WebPlayer
                 count++;
                 ScriptManager.RegisterClientScriptInclude(this, this.GetType(), "scriptResource" + count.ToString(), url);
             }
-        }
-
-        void m_player_SetStatusText(string text)
-        {
-            m_buffer.AddJavaScriptToBuffer("updateStatus", new StringParameter(text));
-        }
-
-        void m_player_SetPanesVisible(bool visible)
-        {
-            m_buffer.AddJavaScriptToBuffer("panesVisible", new BooleanParameter(visible));
         }
 
         void m_player_PlayAudio(object sender, PlayerHandler.PlayAudioEventArgs e)
@@ -228,11 +213,6 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer("beginWait");
         }
 
-        void m_player_LocationUpdated(string location)
-        {
-            m_buffer.AddJavaScriptToBuffer("updateLocation", new StringParameter(location));
-        }
-
         void m_player_ShowMenu(string caption, IDictionary<string, string> options, bool allowCancel)
         {
             m_buffer.AddJavaScriptToBuffer("showMenu", new StringParameter(caption), new JSONParameter(options), new BooleanParameter(allowCancel));
@@ -241,22 +221,6 @@ namespace WebPlayer
         void m_player_ShowQuestion(string caption)
         {
             m_buffer.AddJavaScriptToBuffer("showQuestion", new StringParameter(caption));
-        }
-
-        void m_player_GameNameUpdated(string name)
-        {
-            UpdateGameName(name);
-        }
-
-        void UpdateGameName(string name)
-        {
-            if (name.Length == 0) name = "Untitled Game";
-            m_buffer.AddJavaScriptToBuffer("setGameName", new StringParameter(name));
-        }
-
-        void m_player_ClearScreen()
-        {
-            m_buffer.AddJavaScriptToBuffer("clearScreen");
         }
 
         protected void cmdSubmit_Click(object sender, EventArgs e)

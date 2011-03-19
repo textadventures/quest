@@ -72,7 +72,6 @@ namespace AxeSoftware.Quest
         public static IField<string> GameName = new FieldDef<string>("gamename");
         public static IField<string> Text = new FieldDef<string>("text");
         public static IField<IFunction<string>> Function = new FieldDef<IFunction<string>>("text");
-        public static IField<string> Interface = new FieldDef<string>("interface");
         public static IField<string> Filename = new FieldDef<string>("filename");
         public static IField<QuestList<string>> Steps = new FieldDef<QuestList<string>>("steps");
         public static IField<string> Element = new FieldDef<string>("element");

@@ -13,6 +13,7 @@
     <RootNamespace>WebPlayer</RootNamespace>
     <AssemblyName>WebPlayer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -131,6 +132,10 @@
     <ProjectReference Include="..\Legacy\LegacyASL.vbproj">
       <Project>{42EEDC11-C395-4CE8-80E3-057AF4100DDE}</Project>
       <Name>LegacyASL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PlayerController\PlayerController.csproj">
+      <Project>{5E626E4F-BB7A-4262-9EB3-B37069A1C844}</Project>
+      <Name>PlayerController</Name>
     </ProjectReference>
     <ProjectReference Include="..\WorldModel\WorldModel\WorldModel.csproj">
       <Project>{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}</Project>

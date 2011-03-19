@@ -13197,10 +13197,6 @@ ErrorHandler:
 
     Public Event LogError(errorMessage As String) Implements IASL.LogError
 
-    Public Function GetInterface() As String Implements IASL.GetInterface
-        Return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), "PlayerDefault.htm")
-    End Function
-
     Public Event PrintText(ByVal text As String) Implements IASL.PrintText
 
     Public Event RequestRaised(ByVal request As Request, ByVal data As String) Implements IASL.RequestRaised

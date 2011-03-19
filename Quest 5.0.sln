@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyASLTests", "LegacyASL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldModelTests", "WorldModelTests\WorldModelTests.csproj", "{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerController", "PlayerController\PlayerController.csproj", "{5E626E4F-BB7A-4262-9EB3-B37069A1C844}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Quest 5.0.vsmdi
@@ -135,6 +137,12 @@ Global
 		{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}.ReleaseSetup|Any CPU.ActiveCfg = Release|Any CPU
 		{EF616C5D-B02E-4BF2-9AB5-81E6F479C342}.ReleaseSetup|Any CPU.Build.0 = Release|Any CPU
+		{5E626E4F-BB7A-4262-9EB3-B37069A1C844}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E626E4F-BB7A-4262-9EB3-B37069A1C844}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E626E4F-BB7A-4262-9EB3-B37069A1C844}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E626E4F-BB7A-4262-9EB3-B37069A1C844}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E626E4F-BB7A-4262-9EB3-B37069A1C844}.ReleaseSetup|Any CPU.ActiveCfg = Release|Any CPU
+		{5E626E4F-BB7A-4262-9EB3-B37069A1C844}.ReleaseSetup|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

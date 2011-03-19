@@ -344,11 +344,6 @@ namespace AxeSoftware.Quest
             m_loadedFromSaved = true;
         }
 
-        public string GetInterface()
-        {
-            return Interface;
-        }
-
         public void Begin()
         {
             if (!m_elements.ContainsKey(ElementType.Object, "player")) throw new Exception("No player object found in game");
@@ -683,27 +678,6 @@ namespace AxeSoftware.Quest
         public void SetFontSize(int fontSize)
         {
             RaiseRequest(Request.FontSize, fontSize.ToString());
-        }
-
-        internal string Interface
-        {
-            get { return m_elements.GetSingle(ElementType.Interface).Fields[FieldDefinitions.Interface]; }
-            set
-            {
-                string HTMLfile = GetExternalPath(value);
-
-                Element i;
-                if (m_elements.Count(ElementType.Interface) == 0)
-                {
-                    i = m_elementFactories[ElementType.Interface].Create();
-                }
-                else
-                {
-                    i = m_elements.GetSingle(ElementType.Interface);
-                }
-                i.Fields[FieldDefinitions.Interface] = HTMLfile;
-                i.Fields[FieldDefinitions.Filename] = value;
-            }
         }
 
         public GameState State

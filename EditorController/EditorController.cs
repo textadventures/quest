@@ -139,7 +139,6 @@ namespace AxeSoftware.Quest
             AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced");
             AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
             AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced");
-            AddTreeHeader(ElementType.Interface, "_interface", "Interface", "_advanced");
             AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
         }
 

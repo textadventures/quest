@@ -404,12 +404,7 @@ Public Class Player
                 m_debugger = Nothing
 
                 If success Then
-                    Dim URL As String = m_game.GetInterface()
-                    If Not URL Is Nothing Then
-                        wbOutput.Navigate(m_game.GetInterface())
-                    Else
-                        TryInitialiseStage2()
-                    End If
+                    TryInitialiseStage2()
                 End If
 
             ElseIf m_stage = 2 Then

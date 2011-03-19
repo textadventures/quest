@@ -40,8 +40,6 @@ namespace AxeSoftware.Quest
         EditorTab,
         [ElementTypeInfo("control")]
         EditorControl,
-        [ElementTypeInfo("interface")]
-        Interface,
         [ElementTypeInfo("walkthrough")]
         Walkthrough,
         [ElementTypeInfo("javascript")]

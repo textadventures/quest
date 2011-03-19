@@ -15,7 +15,6 @@ namespace AxeSoftware.Quest
     public interface IASL
     {
         bool Initialise(IPlayer player);
-        string GetInterface();
         void Begin();
         void SendCommand(string command);
         void SendEvent(string eventName, string param);

@@ -1,6 +1,5 @@
 ﻿<library>
 
-  <interface src="PlayerDefault.htm"/>
   <delegate name="AddScript" parameters="object" />
   <implied element="object" property="alt" type="list"/>
   <implied element="command" property="pattern" type="simplepattern"/>

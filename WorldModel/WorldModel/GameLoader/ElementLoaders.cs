@@ -263,20 +263,6 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private class InterfaceLoader : XMLLoaderBase
-        {
-            public override string AppliesTo
-            {
-                get { return "interface"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                WorldModel.Interface = reader.GetAttribute("src");
-                return WorldModel.Elements.GetSingle(ElementType.Interface);
-            }
-        }
-
         private abstract class IncludeLoaderBase : XMLLoaderBase
         {
             public override string AppliesTo

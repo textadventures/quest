@@ -100,21 +100,6 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private class InterfaceSaver : ElementSaverBase
-        {
-            public override ElementType AppliesTo
-            {
-                get { return ElementType.Interface; }
-            }
-
-            public override void Save(GameXmlWriter writer, Element e)
-            {
-                writer.WriteStartElement("interface");
-                writer.WriteAttributeString("src", e.Fields[FieldDefinitions.Filename]);
-                writer.WriteEndElement();
-            }
-        }
-
         private class EditorsSaver : IElementsSaver
         {
             private EditorSaver m_editorSaver = new EditorSaver();

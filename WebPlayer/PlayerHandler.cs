@@ -11,15 +11,9 @@ namespace WebPlayer
     {
         private IASL m_game;
         private IASLTimer m_gameTimer;
+        private PlayerController m_controller;
         private readonly string m_filename;
-        private string m_textBuffer = "";
-        private string m_font = "";
-        private string m_fontSize = "";
-        private string m_foreground = "";
-        private string m_foregroundOverride = "";
-        private string m_linkForeground = "";
-        private bool m_useForeground = true;
-        private string m_fontSizeOverride = "";
+        
         private InterfaceListHandler m_listHandler;
         private OutputBuffer m_buffer;
         private bool m_finished = false;
@@ -31,15 +25,10 @@ namespace WebPlayer
             public bool Looped { get; set; }
         }
 
-        public event Action<string> LocationUpdated;
         public event Action BeginWait;
-        public event Action<string> GameNameUpdated;
-        public event Action ClearScreen;
         public event Func<string, string> AddResource;
         public event EventHandler<PlayAudioEventArgs> PlayAudio;
         public event Action StopAudio;
-        public event Action<bool> SetPanesVisible;
-        public event Action<string> SetStatusText;
 
         public PlayerHandler(string filename, OutputBuffer buffer)
         {
@@ -55,22 +44,23 @@ namespace WebPlayer
         public bool Initialise(out List<string> errors)
         {
             Logging.Log.InfoFormat("{0} Initialising {1}", GameId, m_filename);
-            switch (System.IO.Path.GetExtension(m_filename).ToLower())
-            {
-                case ".aslx":
-                    m_game = new WorldModel(m_filename, LibraryFolder);
-                    break;
-                case ".asl":
-                case ".cas":
-                    m_game = new AxeSoftware.Quest.LegacyASL.LegacyGame(m_filename);
-                    break;
-                default:
-                    errors = new List<string> { "Unrecognised file type" };
-                    return false;
-            }
 
-            m_game.PrintText += m_game_PrintText;
-            m_game.RequestRaised += m_game_RequestRaised;
+            m_controller = new PlayerController(m_filename, LibraryFolder);
+            m_game = m_controller.Game;
+            m_controller.SetAlignment += SetAlignment;
+            m_controller.OutputText += m_buffer.OutputText;
+            m_controller.BindMenu += BindMenu;
+            m_controller.LocationUpdated += LocationUpdated;
+            m_controller.GameNameUpdated += UpdateGameName;
+            m_controller.ClearScreen += ClearScreen;
+            m_controller.ShowPicture += ShowPicture;
+            m_controller.SetPanesVisible += SetPanesVisible;
+            m_controller.SetStatusText += SetStatusText;
+            m_controller.SetBackground += SetBackground;
+            m_controller.RunScript += RunScript;
+            m_controller.Finished += m_controller_Finished;
+
+            // TO DO *****************************************
             m_game.LogError += m_game_LogError;
             m_game.UpdateList += m_game_UpdateList;
             m_game.Finished += m_game_Finished;
@@ -80,20 +70,29 @@ namespace WebPlayer
             {
                 m_gameTimer.UpdateTimer += m_gameTimer_UpdateTimer;
             }
+            //*****************************************
 
-            m_game.Initialise(this);
-            if (m_game.Errors.Count > 0)
+            bool success = m_controller.Initialise(out errors, this);
+            if (success)
             {
-                Logging.Log.InfoFormat("{0} Failed to initialise game - errors found in file", GameId);
-                errors = m_game.Errors;
-                return false;
+                Logging.Log.InfoFormat("{0} Initialised successfully", GameId);
             }
             else
             {
-                Logging.Log.InfoFormat("{0} Initialised successfully", GameId);
-                errors = null;
-                return true;
+                Logging.Log.InfoFormat("{0} Failed to initialise game - errors found in file", GameId);
             }
+
+            return success;
+        }
+
+        void m_controller_Finished()
+        {
+            Finished = true;
+        }
+
+        void BindMenu(string linkid, string verbs, string text)
+        {
+            m_buffer.AddJavaScriptToBuffer("bindMenu", new StringParameter(linkid), new StringParameter(verbs), new StringParameter(text));
         }
 
         void m_gameTimer_UpdateTimer(int nextTick)
@@ -113,7 +112,7 @@ namespace WebPlayer
 
         void m_game_LogError(string errorMessage)
         {
-            WriteText("[Sorry, an error occurred]");
+            m_buffer.OutputText("[Sorry, an error occurred]");
             Logging.Log.Error(errorMessage);
         }
 
@@ -123,83 +122,14 @@ namespace WebPlayer
             m_game.Begin();
         }
 
-        void m_game_RequestRaised(Request request, string data)
+        public string ClearBuffer()
         {
-            Logging.Log.DebugFormat("{0} Request raised: {1}, {2}", GameId, request, data);
-
-            switch (request)
-            {
-                case Request.UpdateLocation:
-                    LocationUpdated(data);
-                    break;
-                case Request.FontName:
-                    m_font = data;
-                    break;
-                case Request.FontSize:
-                    m_fontSize = data;
-                    break;
-                case Request.GameName:
-                    GameNameUpdated(data);
-                    break;
-                case Request.ClearScreen:
-                    m_buffer.OutputText(ClearBuffer());
-                    ClearScreen();
-                    break;
-                case Request.ShowPicture:
-                    ShowPicture(data);
-                    break;
-                case Request.PanesVisible:
-                    SetPanesVisible(data == "on");
-                    break;
-                case Request.SetStatus:
-                    SetStatusText(data);
-                    break;
-                case Request.Speak:
-                    // ignore
-                    break;
-                case Request.Foreground:
-                    m_foreground = data;
-                    break;
-                case Request.Background:
-                    SetBackground(data);
-                    break;
-                case Request.RunScript:
-                    RunScript(data);
-                    break;
-                case Request.LinkForeground:
-                    m_linkForeground = data;
-                    break;
-                case Request.Load:
-                case Request.Save:
-                    WriteText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
-                    break;
-                case Request.Restart:
-                    WriteText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
-                    break;
-                case Request.Quit:
-                    Finished = true;
-                    break;
-                default:
-                    WriteText(string.Format("Unhandled request: {0}, {1}", request, data));
-                    break;
-            }
+            return m_controller.ClearBuffer();
         }
 
         void SetBackground(string col)
         {
             m_buffer.AddJavaScriptToBuffer("setBackground", new StringParameter(col));
-        }
-
-        void m_game_PrintText(string text)
-        {
-            ProcessOutput(text);
-        }
-
-        public string ClearBuffer()
-        {
-            string output = m_textBuffer;
-            m_textBuffer = "";
-            return output;
         }
 
         void RunScript(string data)
@@ -217,143 +147,6 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer(args[0], parameters.ToArray());
         }
 
-        private void ProcessOutput(string text)
-        {
-            string currentCommand = "";
-            string currentTagValue = "";
-            string currentVerbs = "";
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreWhitespace = false;
-            XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
-            bool nobr = false;
-            bool alignmentSet = false;
-
-            // TO DO: Throw an exception if an <a> tag tries to embed another <a> tag.
-            // Should also apply for many of the other tags too.
-
-            while (reader.Read())
-            {
-                switch (reader.NodeType)
-                {
-                    case XmlNodeType.Element:
-                        switch (reader.Name)
-                        {
-                            case "output":
-                                if (reader.GetAttribute("nobr") == "true")
-                                {
-                                    nobr = true;
-                                }
-                                break;
-                            case "object":
-                                currentCommand = "look at";
-                                currentVerbs = reader.GetAttribute("verbs");
-                                break;
-                            case "exit":
-                                currentCommand = "go";
-                                break;
-                            case "br":
-                                WriteText(FormatText("<br />"));
-                                break;
-                            case "b":
-                                WriteText("<b>");
-                                break;
-                            case "i":
-                                WriteText("<i>");
-                                break;
-                            case "u":
-                                WriteText("<u>");
-                                break;
-                            case "color":
-                                m_foregroundOverride = reader.GetAttribute("color");
-                                break;
-                            case "font":
-                                m_fontSizeOverride = reader.GetAttribute("size");
-                                break;
-                            case "align":
-                                SetAlignment(reader.GetAttribute("align"));
-                                break;
-                            case "a":
-                                m_useForeground = false;
-                                string target = reader.GetAttribute("target");
-                                WriteText(string.Format("<a href=\"{0}\"{1}>",
-                                    reader.GetAttribute("href"),
-                                    target != null ? "target=\"" + target + "\"" : ""));
-                                break;
-                            default:
-                                throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
-                        }
-                        break;
-                    case XmlNodeType.Text:
-                        if (currentCommand.Length == 0)
-                        {
-                            WriteText(FormatText(reader.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")));
-                        }
-                        else
-                        {
-                            currentTagValue = reader.Value;
-                        }
-                        break;
-                    case XmlNodeType.Whitespace:
-                        WriteText(FormatText(reader.Value.Replace(" ", "&nbsp;")));
-                        break;
-                    case XmlNodeType.EndElement:
-                        switch (reader.Name)
-                        {
-                            case "output":
-                                // do nothing
-                                break;
-                            case "object":
-                                AddLink(currentTagValue, currentCommand + " " + currentTagValue, currentVerbs);
-                                currentCommand = "";
-                                break;
-                            case "exit":
-                                AddLink(currentTagValue, currentCommand + " " + currentTagValue, null);
-                                currentCommand = "";
-                                break;
-                            case "b":
-                                WriteText("</b>");
-                                break;
-                            case "i":
-                                WriteText("</i>");
-                                break;
-                            case "u":
-                                WriteText("</u>");
-                                break;
-                            case "color":
-                                m_foregroundOverride = "";
-                                break;
-                            case "font":
-                                m_fontSizeOverride = "";
-                                break;
-                            case "align":
-                                SetAlignment("");
-                                alignmentSet = true;
-                                break;
-                            case "a":
-                                WriteText("</a>");
-                                m_useForeground = true;
-                                break;
-                            default:
-                                throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
-                        }
-                        break;
-                }
-
-            }
-
-            if (!nobr)
-            {
-                // If we have just set the text alignment but then print no more text afterwards,
-                // there's no need to submit an extra <br> tag as subsequent text will be in a
-                // brand new <div> element.
-
-                if (!(alignmentSet && m_textBuffer.Length == 0))
-                {
-                    WriteText("<br />");
-                }
-            }
-        }
-
         private void SetAlignment(string align)
         {
             if (align.Length == 0) align = "left";
@@ -361,87 +154,10 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer("createNewDiv", new StringParameter(align));
         }
 
-        private string FormatText(string text)
-        {
-            string style = "";
-            if (m_font.Length > 0)
-            {
-                style += string.Format("font-family:{0};", m_font);
-            }
-
-            if (m_useForeground)
-            {
-                string colour = m_foregroundOverride;
-                if (colour.Length == 0) colour = m_foreground;
-                if (colour.Length > 0)
-                {
-                    style += string.Format("color:{0};", colour);
-                }
-            }
-
-            string fontSize = m_fontSizeOverride;
-            if (fontSize.Length == 0) fontSize = m_fontSize;
-
-            if (fontSize.Length > 0)
-            {
-                style += string.Format("font-size:{0}pt;", fontSize);
-            }
-
-            if (style.Length > 0)
-            {
-                text = string.Format("<span style=\"{0}\">{1}</span>", style, text);
-            }
-
-            return text;
-        }
-
-        private void WriteText(string text)
-        {
-            m_textBuffer += text;
-        }
-
-
-        int m_linkCount = 0;
-
-        private void AddLink(string text, string command, string verbs)
-        {
-            string onclick = string.Empty;
-            m_linkCount++;
-            string linkid = "verbLink" + m_linkCount.ToString();
-
-            if (string.IsNullOrEmpty(verbs))
-            {
-                onclick = string.Format(" onclick=\"sendCommand('{0}')\"", command);
-            }
-
-            m_useForeground = false;
-
-            // TO DO: I think we should be calling FormatText on the "text" variable below,
-            // but currently if we do this we end up with <a...><span>text</span></a> which
-            // for some reason breaks jjmenu, meaning we don't see menus when we left-click.
-            // The whole area of formatting needs looking at again anyway as it's wasteful to
-            // have loads of repeated <span> elements, and this class needs refactoring anyway...
-
-            WriteText(string.Format("<a id=\"{3}\" class=\"cmdlink\"{0}{1}>{2}</a>",
-                ((m_linkForeground.Length > 0) ? (" style=color:" + m_linkForeground) + " " : ""),
-                onclick,
-                text,
-                linkid));
-            m_useForeground = true;
-
-            // We need to call the JavaScript that binds the pop-up menu to the link *after* it has been
-            // written. So, clear the text buffer, then add the binding.
-            if (!string.IsNullOrEmpty(verbs))
-            {
-                m_buffer.OutputText(ClearBuffer());
-                m_buffer.AddJavaScriptToBuffer("bindMenu", new StringParameter(linkid), new StringParameter(verbs), new StringParameter(text));
-            }
-        }
-
         private void ShowPicture(string filename)
         {
             string url = AddResource(filename);
-            WriteText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" /><br />", url));
+            m_buffer.OutputText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" /><br />", url));
         }
 
         public void SendCommand(string command)
@@ -551,7 +267,7 @@ namespace WebPlayer
 
         public void WriteHTML(string html)
         {
-            m_textBuffer += html;
+            m_buffer.OutputText(html);
         }
 
         public void SendEvent(string eventName, string param)
@@ -578,6 +294,32 @@ namespace WebPlayer
             {
                 return m_gameTimer != null;
             }
+        }
+
+        private void LocationUpdated(string location)
+        {
+            m_buffer.AddJavaScriptToBuffer("updateLocation", new StringParameter(location));
+        }
+
+        public void UpdateGameName(string name)
+        {
+            if (name.Length == 0) name = "Untitled Game";
+            m_buffer.AddJavaScriptToBuffer("setGameName", new StringParameter(name));
+        }
+
+        private void ClearScreen()
+        {
+            m_buffer.AddJavaScriptToBuffer("clearScreen");
+        }
+
+        private void SetPanesVisible(bool visible)
+        {
+            m_buffer.AddJavaScriptToBuffer("panesVisible", new BooleanParameter(visible));
+        }
+
+        private void SetStatusText(string text)
+        {
+            m_buffer.AddJavaScriptToBuffer("updateStatus", new StringParameter(text));
         }
     }
 }

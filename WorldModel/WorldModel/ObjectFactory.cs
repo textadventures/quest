@@ -317,14 +317,6 @@ namespace AxeSoftware.Quest
         }
     }
 
-    internal class InterfaceFactory : SingleElementFactory
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Interface; }
-        }
-    }
-
     internal class WalkthroughFactory : SingleElementFactory
     {
         public override ElementType CreateElementType
