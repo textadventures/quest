@@ -26,7 +26,6 @@ Public Class Player
     Private m_bold As Boolean
     Private m_italic As Boolean
     Private m_underline As Boolean
-    Private WithEvents m_webScripting As New WebScripting
     Private m_stage As Integer
     Private m_loaded As Boolean = False
     Private m_splitHelpers As New List(Of AxeSoftware.Utility.SplitterHelper)
@@ -53,8 +52,6 @@ Public Class Player
         Reset()
 
         lstPlacesObjects.IgnoreNames = New List(Of String)(ctlCompass.CompassDirections)
-
-        wbOutput.ObjectForScripting = m_webScripting
 
         m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitMain, "Quest", "MainSplitter"))
         m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitPane, "Quest", "PaneSplitter"))
@@ -424,11 +421,32 @@ Public Class Player
     End Sub
 
     Private Sub TryInitialiseStage2()
+        AddASLEventElement()
         m_menu.MenuEnabled("walkthrough") = Not m_game.Walkthrough Is Nothing
         m_initialised = True
         tmrTick.Enabled = True
         m_game.Begin()
         txtCommand.Focus()
+    End Sub
+
+    ' This is how we support JavaScript calling ASL functions (in WebFunctions.js - ASLEvent function).
+    ' We have a hidden _ASLEvent div, and simply handle the click event on it here. In WebFunctions.js
+    ' we set the InnerText of our div with the data we want to pass in, and trigger the click event using
+    ' jQuery. This may be slightly clunky but it works, and it's better than using window.external in our
+    ' JavaScript as that won't work under Mono.
+    Private Sub AddASLEventElement()
+        Dim newLink As HtmlElement = wbOutput.Document.CreateElement("div")
+        newLink.Id = "_ASLEvent"
+        newLink.Style = "display:none"
+        CurrentElement.AppendChild(newLink)
+        AddHandler newLink.Click, AddressOf HiddenCmdLinkClicked
+    End Sub
+
+    Private Sub HiddenCmdLinkClicked(ByVal sender As Object, ByVal e As EventArgs)
+        Dim element As HtmlElement = DirectCast(sender, HtmlElement)
+        Dim data As String = element.InnerText
+        Dim args As String() = data.Split({";"c}, 2)
+        m_game.SendEvent(args(0), args(1))
     End Sub
 
     Private Sub AddToRecentList()
@@ -751,10 +769,6 @@ Public Class Player
 
     Private Sub SelectAll()
         wbOutput.Document.ExecCommand("SelectAll", True, Nothing)
-    End Sub
-
-    Private Sub m_webScripting_WebEvent(ByVal name As String, ByVal param As String) Handles m_webScripting.WebEvent
-        m_game.SendEvent(name, param)
     End Sub
 
     Private Sub SetEnabledState(ByVal enabled As Boolean)

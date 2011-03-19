@@ -3,5 +3,7 @@
 }
 
 function ASLEvent(event, parameter) {
-    window.external.Trigger(event, parameter);
+    var elem = $("#_ASLEvent");
+    elem.html(event + ";" + parameter);
+    elem.click();
 }
