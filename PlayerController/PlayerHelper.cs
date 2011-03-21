@@ -7,9 +7,36 @@ using System.Xml;
 
 namespace AxeSoftware.Quest
 {
-    public class PlayerController
+    // TO DO: This should be merged with the IPlayer interface, then we should get rid of most of
+    // the RequestRaised stuff and replace it with calls to IPlayer methods.
+    public interface IPlayerHelperUI
+    {
+        void LocationUpdated(string location);
+        void UpdateGameName(string name);
+        void ClearScreen();
+        void ShowPicture(string filename);
+        void SetPanesVisible(bool visible);
+        void SetStatusText(string text);
+        void SetBackground(string colour);
+        void RunScript(string script);
+        void FinishGame();
+
+        // TO DO: Only the methods below need to remain on IPlayerHelperUI as these are the only
+        // methods called directly by PlayerHelper.
+        void OutputText(string text);
+        void SetAlignment(string alignment);
+        void BindMenu(string linkid, string verbs, string text);
+    }
+
+    /// <summary>
+    /// Helper class for wrapping functionality that is common to the UIs for both the desktop-based Player
+    /// component and WebPlayer.
+    /// </summary>
+    public class PlayerHelper
     {
         private IASL m_game;
+        private IASLTimer m_gameTimer;
+        private IPlayerHelperUI m_playerUI;
         private string m_filename;
 
         private string m_font = "";
@@ -21,21 +48,9 @@ namespace AxeSoftware.Quest
         private string m_fontSizeOverride = "";
         private string m_textBuffer = "";
 
-        public event Action<string> SetAlignment;
-        public event Action<string> OutputText;
-        public event Action<string, string, string> BindMenu;
-        public event Action<string> LocationUpdated;
-        public event Action<string> GameNameUpdated;
-        public event Action ClearScreen;
-        public event Action<string> ShowPicture;
-        public event Action<bool> SetPanesVisible;
-        public event Action<string> SetStatusText;
-        public event Action<string> SetBackground;
-        public event Action<string> RunScript;
-        public event Action Finished;
-
-        public PlayerController(string filename, string libraryFolder)
+        public PlayerHelper(string filename, string libraryFolder, IPlayerHelperUI playerUI)
         {
+            m_playerUI = playerUI;
             m_filename = filename;
 
             switch (System.IO.Path.GetExtension(m_filename).ToLower())
@@ -54,16 +69,11 @@ namespace AxeSoftware.Quest
             m_game.PrintText += m_game_PrintText;
             m_game.RequestRaised += m_game_RequestRaised;
 
-            // TO DO: All IASL and IASLTimer Events should be handled here
-            //m_game.LogError += m_game_LogError;
-            //m_game.UpdateList += m_game_UpdateList;
-            //m_game.Finished += m_game_Finished;
-
-            //m_gameTimer = m_game as IASLTimer;
-            //if (m_gameTimer != null)
-            //{
-            //    m_gameTimer.UpdateTimer += m_gameTimer_UpdateTimer;
-            //}
+            m_gameTimer = m_game as IASLTimer;
+            if (m_gameTimer != null)
+            {
+                m_gameTimer.UpdateTimer += m_gameTimer_UpdateTimer;
+            }
         }
 
         public bool Initialise(out List<string> errors, IPlayer player)
@@ -134,7 +144,7 @@ namespace AxeSoftware.Quest
                                 m_fontSizeOverride = reader.GetAttribute("size");
                                 break;
                             case "align":
-                                SetAlignment(reader.GetAttribute("align"));
+                                m_playerUI.SetAlignment(reader.GetAttribute("align"));
                                 break;
                             case "a":
                                 m_useForeground = false;
@@ -190,7 +200,7 @@ namespace AxeSoftware.Quest
                                 m_fontSizeOverride = "";
                                 break;
                             case "align":
-                                SetAlignment("");
+                                m_playerUI.SetAlignment("");
                                 alignmentSet = true;
                                 break;
                             case "a":
@@ -224,7 +234,7 @@ namespace AxeSoftware.Quest
             switch (request)
             {
                 case Request.UpdateLocation:
-                    LocationUpdated(data);
+                    m_playerUI.LocationUpdated(data);
                     break;
                 case Request.FontName:
                     m_font = data;
@@ -233,20 +243,20 @@ namespace AxeSoftware.Quest
                     m_fontSize = data;
                     break;
                 case Request.GameName:
-                    GameNameUpdated(data);
+                    m_playerUI.UpdateGameName(data);
                     break;
                 case Request.ClearScreen:
-                    OutputText(ClearBuffer());
-                    ClearScreen();
+                    m_playerUI.OutputText(ClearBuffer());
+                    m_playerUI.ClearScreen();
                     break;
                 case Request.ShowPicture:
-                    ShowPicture(data);
+                    m_playerUI.ShowPicture(data);
                     break;
                 case Request.PanesVisible:
-                    SetPanesVisible(data == "on");
+                    m_playerUI.SetPanesVisible(data == "on");
                     break;
                 case Request.SetStatus:
-                    SetStatusText(data);
+                    m_playerUI.SetStatusText(data);
                     break;
                 case Request.Speak:
                     // ignore
@@ -255,26 +265,26 @@ namespace AxeSoftware.Quest
                     m_foreground = data;
                     break;
                 case Request.Background:
-                    SetBackground(data);
+                    m_playerUI.SetBackground(data);
                     break;
                 case Request.RunScript:
-                    RunScript(data);
+                    m_playerUI.RunScript(data);
                     break;
                 case Request.LinkForeground:
                     m_linkForeground = data;
                     break;
                 case Request.Load:
                 case Request.Save:
-                    OutputText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
+                    m_playerUI.OutputText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
                     break;
                 case Request.Restart:
-                    OutputText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
+                    m_playerUI.OutputText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
                     break;
                 case Request.Quit:
-                    Finished();
+                    m_playerUI.FinishGame();
                     break;
                 default:
-                    OutputText(string.Format("Unhandled request: {0}, {1}", request, data));
+                    m_playerUI.OutputText(string.Format("Unhandled request: {0}, {1}", request, data));
                     break;
             }
         }
@@ -345,8 +355,8 @@ namespace AxeSoftware.Quest
             // written. So, clear the text buffer, then add the binding.
             if (!string.IsNullOrEmpty(verbs))
             {
-                OutputText(ClearBuffer());
-                BindMenu(linkid, verbs, text);
+                m_playerUI.OutputText(ClearBuffer());
+                m_playerUI.BindMenu(linkid, verbs, text);
             }
         }
 
@@ -362,12 +372,27 @@ namespace AxeSoftware.Quest
             return output;
         }
 
-        // TO DO: This is temporary just while we refactor. Eventually both Player and WebPlayer should
-        // have no reference to IASL
         public IASL Game
         {
             get { return m_game; }
         }
 
+        public void Tick()
+        {
+            if (m_gameTimer != null) m_gameTimer.Tick();
+        }
+
+        void m_gameTimer_UpdateTimer(int nextTick)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UseTimer
+        {
+            get
+            {
+                return m_gameTimer != null;
+            }
+        }
     }
 }

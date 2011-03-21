@@ -7,11 +7,9 @@ using System.Xml;
 
 namespace WebPlayer
 {
-    internal class PlayerHandler : IPlayer
+    internal class PlayerHandler : IPlayer, IPlayerHelperUI
     {
-        private IASL m_game;
-        private IASLTimer m_gameTimer;
-        private PlayerController m_controller;
+        private PlayerHelper m_controller;
         private readonly string m_filename;
         
         private InterfaceListHandler m_listHandler;
@@ -45,32 +43,9 @@ namespace WebPlayer
         {
             Logging.Log.InfoFormat("{0} Initialising {1}", GameId, m_filename);
 
-            m_controller = new PlayerController(m_filename, LibraryFolder);
-            m_game = m_controller.Game;
-            m_controller.SetAlignment += SetAlignment;
-            m_controller.OutputText += m_buffer.OutputText;
-            m_controller.BindMenu += BindMenu;
-            m_controller.LocationUpdated += LocationUpdated;
-            m_controller.GameNameUpdated += UpdateGameName;
-            m_controller.ClearScreen += ClearScreen;
-            m_controller.ShowPicture += ShowPicture;
-            m_controller.SetPanesVisible += SetPanesVisible;
-            m_controller.SetStatusText += SetStatusText;
-            m_controller.SetBackground += SetBackground;
-            m_controller.RunScript += RunScript;
-            m_controller.Finished += m_controller_Finished;
-
-            // TO DO *****************************************
-            m_game.LogError += m_game_LogError;
-            m_game.UpdateList += m_game_UpdateList;
-            m_game.Finished += m_game_Finished;
-
-            m_gameTimer = m_game as IASLTimer;
-            if (m_gameTimer != null)
-            {
-                m_gameTimer.UpdateTimer += m_gameTimer_UpdateTimer;
-            }
-            //*****************************************
+            m_controller = new PlayerHelper(m_filename, LibraryFolder, this);
+            m_controller.Game.LogError += LogError;
+            m_controller.Game.UpdateList += UpdateList;
 
             bool success = m_controller.Initialise(out errors, this);
             if (success)
@@ -85,32 +60,22 @@ namespace WebPlayer
             return success;
         }
 
-        void m_controller_Finished()
+        public void FinishGame()
         {
             Finished = true;
         }
 
-        void BindMenu(string linkid, string verbs, string text)
+        public void BindMenu(string linkid, string verbs, string text)
         {
             m_buffer.AddJavaScriptToBuffer("bindMenu", new StringParameter(linkid), new StringParameter(verbs), new StringParameter(text));
         }
 
-        void m_gameTimer_UpdateTimer(int nextTick)
-        {
-            throw new NotImplementedException();
-        }
-
-        void m_game_Finished()
-        {
-            Finished = true;
-        }
-
-        void m_game_UpdateList(ListType listType, List<ListData> items)
+        private void UpdateList(ListType listType, List<ListData> items)
         {
             m_listHandler.UpdateList(listType, items);
         }
 
-        void m_game_LogError(string errorMessage)
+        private void LogError(string errorMessage)
         {
             m_buffer.OutputText("[Sorry, an error occurred]");
             Logging.Log.Error(errorMessage);
@@ -119,7 +84,7 @@ namespace WebPlayer
         public void BeginGame()
         {
             Logging.Log.InfoFormat("{0} Beginning game", GameId);
-            m_game.Begin();
+            m_controller.Game.Begin();
         }
 
         public string ClearBuffer()
@@ -127,12 +92,12 @@ namespace WebPlayer
             return m_controller.ClearBuffer();
         }
 
-        void SetBackground(string col)
+        public void SetBackground(string col)
         {
             m_buffer.AddJavaScriptToBuffer("setBackground", new StringParameter(col));
         }
 
-        void RunScript(string data)
+        public void RunScript(string data)
         {
             string[] args = data.Split(';');
             var parameters = new List<IJavaScriptParameter>();
@@ -147,14 +112,14 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer(args[0], parameters.ToArray());
         }
 
-        private void SetAlignment(string align)
+        public void SetAlignment(string align)
         {
             if (align.Length == 0) align = "left";
             m_buffer.OutputText(ClearBuffer());
             m_buffer.AddJavaScriptToBuffer("createNewDiv", new StringParameter(align));
         }
 
-        private void ShowPicture(string filename)
+        public void ShowPicture(string filename)
         {
             string url = AddResource(filename);
             m_buffer.OutputText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" /><br />", url));
@@ -164,7 +129,7 @@ namespace WebPlayer
         {
             if (m_finished) return;
             Logging.Log.DebugFormat("{0} Command entered: {1}", GameId, command);
-            m_game.SendCommand(command);
+            m_controller.Game.SendCommand(command);
         }
 
         public Action<string, IDictionary<string, string>, bool> ShowMenuDelegate { get; set; }
@@ -179,14 +144,14 @@ namespace WebPlayer
         {
             if (m_finished) return;
             Logging.Log.DebugFormat("{0} Menu response received", GameId);
-            m_game.SetMenuResponse(response);
+            m_controller.Game.SetMenuResponse(response);
         }
 
         public void CancelMenu()
         {
             if (m_finished) return;
             Logging.Log.DebugFormat("{0} Menu cancelled", GameId);
-            m_game.SetMenuResponse(null);
+            m_controller.Game.SetMenuResponse(null);
         }
 
         public void DoWait()
@@ -199,7 +164,7 @@ namespace WebPlayer
         {
             if (m_finished) return;
             Logging.Log.DebugFormat("{0} Wait ending", GameId);
-            m_game.FinishWait();
+            m_controller.Game.FinishWait();
         }
 
         public Action<string> ShowQuestionDelegate { get; set; }
@@ -214,7 +179,7 @@ namespace WebPlayer
         {
             if (m_finished) return;
             Logging.Log.DebugFormat("{0} Question response received", GameId);
-            m_game.SetQuestionResponse(response == "yes");
+            m_controller.Game.SetQuestionResponse(response == "yes");
         }
 
         public void SetWindowMenu(MenuData menuData)
@@ -239,13 +204,13 @@ namespace WebPlayer
 
         public void Tick()
         {
-            if (m_gameTimer != null) m_gameTimer.Tick();
+            m_controller.Tick();
         }
 
         public void EndGame()
         {
             Logging.Log.InfoFormat("{0} Ending game", GameId);
-            m_game.Finish();
+            m_controller.Game.Finish();
         }
 
         public IEnumerable<string> SetUpExternalScripts()
@@ -253,7 +218,7 @@ namespace WebPlayer
             // Get all external JS scripts in the game, add them as resources, and then
             // return the list of JS resource URLs.
             var result = new List<string>();
-            var scripts = m_game.GetExternalScripts();
+            var scripts = m_controller.Game.GetExternalScripts();
             if (scripts == null) return result;
             
             foreach (string script in scripts)
@@ -273,7 +238,7 @@ namespace WebPlayer
         public void SendEvent(string eventName, string param)
         {
             if (m_finished) return;
-            m_game.SendEvent(eventName, param);
+            m_controller.Game.SendEvent(eventName, param);
         }
 
         private bool Finished
@@ -290,13 +255,10 @@ namespace WebPlayer
 
         public bool UseTimer
         {
-            get
-            {
-                return m_gameTimer != null;
-            }
+            get { return m_controller.UseTimer; }
         }
 
-        private void LocationUpdated(string location)
+        public void LocationUpdated(string location)
         {
             m_buffer.AddJavaScriptToBuffer("updateLocation", new StringParameter(location));
         }
@@ -307,19 +269,24 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer("setGameName", new StringParameter(name));
         }
 
-        private void ClearScreen()
+        public void ClearScreen()
         {
             m_buffer.AddJavaScriptToBuffer("clearScreen");
         }
 
-        private void SetPanesVisible(bool visible)
+        public void SetPanesVisible(bool visible)
         {
             m_buffer.AddJavaScriptToBuffer("panesVisible", new BooleanParameter(visible));
         }
 
-        private void SetStatusText(string text)
+        public void SetStatusText(string text)
         {
             m_buffer.AddJavaScriptToBuffer("updateStatus", new StringParameter(text));
+        }
+
+        public void OutputText(string text)
+        {
+            m_buffer.OutputText(text);
         }
     }
 }
