@@ -88,17 +88,14 @@ namespace LegacyASLTests
 
         public void LocationUpdated(string location)
         {
-            throw new NotImplementedException();
         }
 
         public void UpdateGameName(string name)
         {
-            throw new NotImplementedException();
         }
 
         public void ClearScreen()
         {
-            throw new NotImplementedException();
         }
     }
 }

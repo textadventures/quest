@@ -306,7 +306,7 @@ namespace AxeSoftware.Quest
 
         internal void SetGameName(string name)
         {
-            m_playerUI.UpdateGameName(name);
+            if (m_playerUI != null) m_playerUI.UpdateGameName(name);
         }
 
         #region IASL Members
