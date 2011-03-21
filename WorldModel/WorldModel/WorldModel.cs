@@ -465,6 +465,7 @@ namespace AxeSoftware.Quest
         internal void RaiseRequest(Request request, string data)
         {
             // TO DO: Replace with dictionary mapping the enum to lambda functions
+            // TO DO: Move to RequestScript.cs?
             switch (request)
             {
                 case Request.UpdateLocation:
@@ -475,6 +476,12 @@ namespace AxeSoftware.Quest
                     break;
                 case Request.ClearScreen:
                     m_playerUI.ClearScreen();
+                    break;
+                case Request.ShowPicture:
+                    m_playerUI.ShowPicture(data);
+                    break;
+                case Request.PanesVisible:
+                    m_playerUI.SetPanesVisible(data);
                     break;
                 default:
                     if (RequestRaised != null) RequestRaised(request, data);

@@ -7540,7 +7540,7 @@ errhandle:
 
             If BeginsWith(Lines(i), "panes ") Then
                 CurOpt = LCase(Trim(GetEverythingAfter(Lines(i), "panes ")))
-                RaiseEvent RequestRaised(Request.PanesVisible, CurOpt)
+                m_player.SetPanesVisible(CurOpt)
             ElseIf BeginsWith(Lines(i), "abbreviations ") Then
                 CurOpt = LCase(Trim(GetEverythingAfter(Lines(i), "abbreviations ")))
                 If CurOpt = "off" Then goptAbbreviations = False Else goptAbbreviations = True
@@ -8095,7 +8095,7 @@ errhandle:
     End Sub
 
     Private Sub ShowPictureInText(ByRef sFileName As String)
-        RaiseEvent RequestRaised(Request.ShowPicture, GetResourcePath(sFileName))
+        m_player.ShowPicture(GetResourcePath(sFileName))
     End Sub
 
     Private Sub ShowRoomInfoV2(ByRef Room As String)
@@ -11438,9 +11438,9 @@ errhandle:
         ElseIf Trim(LCase(ScriptLine)) = "outputoff" Then
             OutPutOn = False
         ElseIf Trim(LCase(ScriptLine)) = "panes off" Then
-            RaiseEvent RequestRaised(Request.PanesVisible, "off")
+            m_player.SetPanesVisible("off")
         ElseIf Trim(LCase(ScriptLine)) = "panes on" Then
-            RaiseEvent RequestRaised(Request.PanesVisible, "on")
+            m_player.SetPanesVisible("on")
         ElseIf BeginsWith(ScriptLine, "lock ") Then
             ExecuteLock(RetrieveParameter(ScriptLine, Thread), True)
         ElseIf BeginsWith(ScriptLine, "unlock ") Then

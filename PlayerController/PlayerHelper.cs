@@ -11,8 +11,6 @@ namespace AxeSoftware.Quest
     // the RequestRaised stuff and replace it with calls to IPlayer methods.
     public interface IPlayerHelperUI : IPlayer
     {
-        void ShowPicture(string filename);
-        void SetPanesVisible(bool visible);
         void SetStatusText(string text);
         void SetBackground(string colour);
         void RunScript(string script);
@@ -235,12 +233,6 @@ namespace AxeSoftware.Quest
                     break;
                 case Request.FontSize:
                     m_fontSize = data;
-                    break;
-                case Request.ShowPicture:
-                    m_playerUI.ShowPicture(data);
-                    break;
-                case Request.PanesVisible:
-                    m_playerUI.SetPanesVisible(data == "on");
                     break;
                 case Request.SetStatus:
                     m_playerUI.SetStatusText(data);

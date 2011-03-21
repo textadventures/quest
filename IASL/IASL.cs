@@ -50,6 +50,8 @@ namespace AxeSoftware.Quest
         void LocationUpdated(string location);
         void UpdateGameName(string name);
         void ClearScreen();
+        void ShowPicture(string filename);
+        void SetPanesVisible(string data);
     }
 
     public enum HyperlinkType

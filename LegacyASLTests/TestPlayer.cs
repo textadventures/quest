@@ -97,5 +97,13 @@ namespace LegacyASLTests
         public void ClearScreen()
         {
         }
+
+        public void ShowPicture(string filename)
+        {
+        }
+
+        public void SetPanesVisible(string data)
+        {
+        }
     }
 }

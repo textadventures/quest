@@ -42,7 +42,7 @@ namespace AxeSoftware.Quest.Scripts
         {
             string filename = m_filename.Execute(c);
             string path = m_worldModel.GetExternalPath(filename);
-            m_worldModel.RaiseRequest(Request.ShowPicture, path);
+            m_worldModel.PlayerUI.ShowPicture(path);
         }
 
         public override string Save()

@@ -275,8 +275,9 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer("clearScreen");
         }
 
-        public void SetPanesVisible(bool visible)
+        public void SetPanesVisible(string data)
         {
+            bool visible = (data == "on");
             m_buffer.AddJavaScriptToBuffer("panesVisible", new BooleanParameter(visible));
         }
 

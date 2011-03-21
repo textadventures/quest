@@ -511,10 +511,6 @@ Public Class Player
                 RunScript(data)
             Case Quest.Request.SetStatus
                 lstInventory.Status = data
-            Case Quest.Request.PanesVisible
-                SetPanesVisible(data)
-            Case Quest.Request.ShowPicture
-                ShowPicture(data)
             Case Quest.Request.Speak
                 Speak(data)
             Case Else
@@ -869,31 +865,35 @@ Public Class Player
         wbOutput.Document.Body.InnerHtml = ""
     End Sub
 
-    Private Sub SetPanesVisible(ByVal data As String)
-        Select Case data
-            Case "on"
-                PanesVisible = True
-                cmdPanes.Visible = True
-            Case "off"
-                PanesVisible = False
-                cmdPanes.Visible = True
-            Case "disabled"
-                PanesVisible = False
-                cmdPanes.Visible = False
-        End Select
+    Private Sub SetPanesVisible(ByVal data As String) Implements IPlayer.SetPanesVisible
+        BeginInvoke(Sub()
+                        Select Case data
+                            Case "on"
+                                PanesVisible = True
+                                cmdPanes.Visible = True
+                            Case "off"
+                                PanesVisible = False
+                                cmdPanes.Visible = True
+                            Case "disabled"
+                                PanesVisible = False
+                                cmdPanes.Visible = False
+                        End Select
 
-        If cmdPanes.Visible Then
-            lblBanner.Width = cmdPanes.Left - 1
-        Else
-            lblBanner.Width = wbOutput.Width
-        End If
+                        If cmdPanes.Visible Then
+                            lblBanner.Width = cmdPanes.Left - 1
+                        Else
+                            lblBanner.Width = wbOutput.Width
+                        End If
+                    End Sub)
     End Sub
 
-    Private Sub ShowPicture(ByVal filename As String)
-        Dim newImage As HtmlElement = wbOutput.Document.CreateElement("img")
-        newImage.SetAttribute("src", filename)
-        CurrentElement.AppendChild(newImage)
-        newImage.ScrollIntoView(True)
+    Private Sub ShowPicture(ByVal filename As String) Implements IPlayer.ShowPicture
+        BeginInvoke(Sub()
+                        Dim newImage As HtmlElement = wbOutput.Document.CreateElement("img")
+                        newImage.SetAttribute("src", filename)
+                        CurrentElement.AppendChild(newImage)
+                        newImage.ScrollIntoView(True)
+                    End Sub)
     End Sub
 
     Private Sub PlaySound(ByVal filename As String, ByVal synchronous As Boolean, ByVal looped As Boolean) Implements IPlayer.PlaySound
@@ -981,14 +981,21 @@ Public Class Player
     End Sub
 
     Public Sub LocationUpdated(location As String) Implements IPlayer.LocationUpdated
-        lblBanner.Text = location
+        BeginInvoke(Sub()
+                        lblBanner.Text = location
+                    End Sub)
     End Sub
 
     Public Sub UpdateGameName(name As String) Implements IPlayer.UpdateGameName
-        SetGameName(name)
+        BeginInvoke(Sub()
+                        SetGameName(name)
+                    End Sub)
     End Sub
 
     Public Sub ClearScreen() Implements IPlayer.ClearScreen
-        DoClear()
+        BeginInvoke(Sub()
+                        DoClear()
+                    End Sub)
     End Sub
+
 End Class
