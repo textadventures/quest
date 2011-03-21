@@ -306,7 +306,7 @@ namespace AxeSoftware.Quest
 
         internal void SetGameName(string name)
         {
-            RaiseRequest(Request.GameName, name);
+            m_playerUI.UpdateGameName(name);
         }
 
         #region IASL Members
@@ -464,7 +464,22 @@ namespace AxeSoftware.Quest
 
         internal void RaiseRequest(Request request, string data)
         {
-            if (RequestRaised != null) RequestRaised(request, data);
+            // TO DO: Replace with dictionary mapping the enum to lambda functions
+            switch (request)
+            {
+                case Request.UpdateLocation:
+                    m_playerUI.LocationUpdated(data);
+                    break;
+                case Request.GameName:
+                    m_playerUI.UpdateGameName(data);
+                    break;
+                case Request.ClearScreen:
+                    m_playerUI.ClearScreen();
+                    break;
+                default:
+                    if (RequestRaised != null) RequestRaised(request, data);
+                    break;
+            }
         }
 
         internal void UpdateLists()

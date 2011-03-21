@@ -60,7 +60,7 @@ namespace WebPlayer
             return success;
         }
 
-        public void FinishGame()
+        public void Quit()
         {
             Finished = true;
         }
@@ -271,6 +271,7 @@ namespace WebPlayer
 
         public void ClearScreen()
         {
+            OutputText(ClearBuffer());
             m_buffer.AddJavaScriptToBuffer("clearScreen");
         }
 

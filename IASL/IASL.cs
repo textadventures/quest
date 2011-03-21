@@ -46,6 +46,10 @@ namespace AxeSoftware.Quest
         void PlaySound(string filename, bool synchronous, bool looped);
         void StopSound();
         void WriteHTML(string html);
+
+        void LocationUpdated(string location);
+        void UpdateGameName(string name);
+        void ClearScreen();
     }
 
     public enum HyperlinkType

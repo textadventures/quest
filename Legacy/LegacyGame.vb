@@ -9756,7 +9756,7 @@ errhandle:
             RoomDisplayText = RoomDisplayText & "You are in " & RoomDisplayName & "." & vbCrLf
         End If
 
-        RaiseEvent RequestRaised(Request.UpdateLocation, UCase(Left(RoomAlias, 1)) & Mid(RoomAlias, 2))
+        m_player.LocationUpdated(UCase(Left(RoomAlias, 1)) & Mid(RoomAlias, 2))
 
         SetStringContents("quest.formatroom", RoomDisplayNameNoFormat, Thread)
 
@@ -11795,7 +11795,7 @@ ErrorHandler:
         ' Get the name of the game:
         GameName = RetrieveParameter(Lines(GetDefineBlock("game").StartLine), NullThread)
 
-        RaiseEvent RequestRaised(Request.GameName, GameName)
+        m_player.UpdateGameName(GameName)
 
         SetUpGameObject()
         SetUpOptions()

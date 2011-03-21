@@ -9,17 +9,14 @@ namespace AxeSoftware.Quest
 {
     // TO DO: This should be merged with the IPlayer interface, then we should get rid of most of
     // the RequestRaised stuff and replace it with calls to IPlayer methods.
-    public interface IPlayerHelperUI
+    public interface IPlayerHelperUI : IPlayer
     {
-        void LocationUpdated(string location);
-        void UpdateGameName(string name);
-        void ClearScreen();
         void ShowPicture(string filename);
         void SetPanesVisible(bool visible);
         void SetStatusText(string text);
         void SetBackground(string colour);
         void RunScript(string script);
-        void FinishGame();
+        void Quit();
 
         // TO DO: Only the methods below need to remain on IPlayerHelperUI as these are the only
         // methods called directly by PlayerHelper.
@@ -233,21 +230,11 @@ namespace AxeSoftware.Quest
 
             switch (request)
             {
-                case Request.UpdateLocation:
-                    m_playerUI.LocationUpdated(data);
-                    break;
                 case Request.FontName:
                     m_font = data;
                     break;
                 case Request.FontSize:
                     m_fontSize = data;
-                    break;
-                case Request.GameName:
-                    m_playerUI.UpdateGameName(data);
-                    break;
-                case Request.ClearScreen:
-                    m_playerUI.OutputText(ClearBuffer());
-                    m_playerUI.ClearScreen();
                     break;
                 case Request.ShowPicture:
                     m_playerUI.ShowPicture(data);
@@ -281,11 +268,10 @@ namespace AxeSoftware.Quest
                     m_playerUI.OutputText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
                     break;
                 case Request.Quit:
-                    m_playerUI.FinishGame();
+                    m_playerUI.Quit();
                     break;
                 default:
-                    m_playerUI.OutputText(string.Format("Unhandled request: {0}, {1}", request, data));
-                    break;
+                    throw new Exception("Unhandled request");
             }
         }
 

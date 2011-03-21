@@ -497,10 +497,6 @@ Public Class Player
                 Save()
             Case Quest.Request.Restart
                 ' TO DO: Raise event
-            Case Quest.Request.UpdateLocation
-                lblBanner.Text = data
-            Case Quest.Request.GameName
-                SetGameName(data)
             Case Quest.Request.FontName
                 FontName = data
             Case Quest.Request.FontSize
@@ -515,8 +511,6 @@ Public Class Player
                 RunScript(data)
             Case Quest.Request.SetStatus
                 lstInventory.Status = data
-            Case Quest.Request.ClearScreen
-                DoClear()
             Case Quest.Request.PanesVisible
                 SetPanesVisible(data)
             Case Quest.Request.ShowPicture
@@ -984,5 +978,17 @@ Public Class Player
 
     Public Sub WriteHTML(html As String) Implements IPlayer.WriteHTML
         Throw New NotImplementedException()
+    End Sub
+
+    Public Sub LocationUpdated(location As String) Implements IPlayer.LocationUpdated
+        lblBanner.Text = location
+    End Sub
+
+    Public Sub UpdateGameName(name As String) Implements IPlayer.UpdateGameName
+        SetGameName(name)
+    End Sub
+
+    Public Sub ClearScreen() Implements IPlayer.ClearScreen
+        DoClear()
     End Sub
 End Class
