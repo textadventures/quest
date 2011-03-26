@@ -34,7 +34,7 @@ Friend Class RoomExits
 
     Public Function GetDirectionExit(ByRef Direction As LegacyGame.eDirection) As RoomExit
         If m_oDirections.ContainsKey(Direction) Then
-            GetDirectionExit = m_oDirections.Item(Direction)
+            Return m_oDirections.Item(Direction)
         End If
         Return Nothing
     End Function
