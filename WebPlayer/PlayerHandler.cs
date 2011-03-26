@@ -325,5 +325,10 @@ namespace WebPlayer
         {
             m_controller.AppendText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
         }
+
+        public void SetLinkForeground(string colour)
+        {
+            m_controller.SetLinkForeground(colour);
+        }
     }
 }

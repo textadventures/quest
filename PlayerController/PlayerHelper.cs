@@ -53,7 +53,6 @@ namespace AxeSoftware.Quest
             }
 
             m_game.PrintText += m_game_PrintText;
-            m_game.RequestRaised += m_game_RequestRaised;
 
             m_gameTimer = m_game as IASLTimer;
             if (m_gameTimer != null)
@@ -213,23 +212,6 @@ namespace AxeSoftware.Quest
             }
         }
 
-        void m_game_RequestRaised(Request request, string data)
-        {
-            //Logging.Log.DebugFormat("{0} Request raised: {1}, {2}", GameId, request, data);
-
-            switch (request)
-            {
-                case Request.Speak:
-                    // ignore
-                    break;
-                case Request.LinkForeground:
-                    m_linkForeground = data;
-                    break;
-                default:
-                    throw new Exception("Unhandled request");
-            }
-        }
-
         private string FormatText(string text)
         {
             string style = "";
@@ -339,6 +321,11 @@ namespace AxeSoftware.Quest
         public void SetForeground(string colour)
         {
             m_foreground = colour;
+        }
+
+        public void SetLinkForeground(string colour)
+        {
+            m_linkForeground = colour;
         }
 
         public void SetFont(string fontName) {

@@ -446,7 +446,6 @@ namespace AxeSoftware.Quest
         public string SaveExtension { get { return "aslx"; } }
 
         public event PrintTextHandler PrintText;
-        public event RequestHandler RequestRaised;
         public event UpdateListHandler UpdateList;
         public event FinishedHandler Finished;
         public event ObjectsUpdatedHandler ObjectsUpdated;
@@ -501,9 +500,11 @@ namespace AxeSoftware.Quest
                 case Request.FontSize:
                     m_playerUI.SetFontSize(data);
                     break;
-                default:
-                    if (RequestRaised != null) RequestRaised(request, data);
+                case Request.LinkForeground:
+                    m_playerUI.SetLinkForeground(data);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException("request", "Unhandled request type");
             }
         }
 

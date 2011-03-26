@@ -172,5 +172,9 @@ namespace LegacyASLTests
         public void RequestRestart()
         {
         }
+
+        public void SetLinkForeground(string colour)
+        {
+        }
     }
 }

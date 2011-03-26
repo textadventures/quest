@@ -19,7 +19,6 @@ namespace LegacyASLTests
         {
             m_game = new LegacyGame(@"..\..\..\LegacyASLTests\test1.asl");
             m_game.PrintText += m_player.PrintText;
-            m_game.RequestRaised += m_player.RequestRaised;
             m_game.Initialise(m_player);
             m_game.Begin();
         }

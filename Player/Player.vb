@@ -483,19 +483,6 @@ Public Class Player
 
     Private Delegate Sub RequestRaisedDelegate(ByVal request As Quest.Request, ByVal data As String)
 
-    Private Sub m_game_RequestRaised(ByVal request As Quest.Request, ByVal data As String) Handles m_game.RequestRaised
-        BeginInvoke(New RequestRaisedDelegate(AddressOf RequestRaised), request, data)
-    End Sub
-
-    Private Sub RequestRaised(ByVal request As Quest.Request, ByVal data As String)
-        Select Case request
-            Case Quest.Request.LinkForeground
-                LinkForeground = data
-            Case Else
-                Throw New Exception("Unhandled request")
-        End Select
-    End Sub
-
     Private Sub SetGameName(name As String)
         m_gameName = name
         AddToRecentList()
@@ -1018,4 +1005,7 @@ Public Class Player
                     End Sub)
     End Sub
 
+    Public Sub SetLinkForeground(colour As String) Implements IPlayer.SetLinkForeground
+        LinkForeground = colour
+    End Sub
 End Class

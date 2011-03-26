@@ -6,7 +6,6 @@ using System.Text;
 namespace AxeSoftware.Quest
 {
     public delegate void PrintTextHandler(string text);
-    public delegate void RequestHandler(Request request, string data);
     public delegate void UpdateListHandler(ListType listType, List<ListData> items);
     public delegate void FinishedHandler();
     public delegate void ObjectsUpdatedHandler();
@@ -19,7 +18,6 @@ namespace AxeSoftware.Quest
         void SendCommand(string command);
         void SendEvent(string eventName, string param);
         event PrintTextHandler PrintText;
-        event RequestHandler RequestRaised;
         event UpdateListHandler UpdateList;
         event FinishedHandler Finished;
         event ErrorHandler LogError;
@@ -55,6 +53,7 @@ namespace AxeSoftware.Quest
         void SetStatusText(string text);
         void SetBackground(string colour);
         void SetForeground(string colour);
+        void SetLinkForeground(string colour);
         void RunScript(string script);
         void Quit();
         void SetFont(string fontName);

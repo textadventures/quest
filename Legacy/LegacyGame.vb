@@ -13199,8 +13199,6 @@ ErrorHandler:
 
     Public Event PrintText(ByVal text As String) Implements IASL.PrintText
 
-    Public Event RequestRaised(ByVal request As Request, ByVal data As String) Implements IASL.RequestRaised
-
     Public Sub Save(ByVal filename As String) Implements IASL.Save
         SaveGame(filename)
     End Sub
