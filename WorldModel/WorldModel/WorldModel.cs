@@ -495,6 +495,12 @@ namespace AxeSoftware.Quest
                 case Request.Quit:
                     m_playerUI.Quit();
                     break;
+                case Request.FontName:
+                    m_playerUI.SetFont(data);
+                    break;
+                case Request.FontSize:
+                    m_playerUI.SetFontSize(data);
+                    break;
                 default:
                     if (RequestRaised != null) RequestRaised(request, data);
                     break;
@@ -702,16 +708,6 @@ namespace AxeSoftware.Quest
         internal Element GetObjectType(string name)
         {
             return m_elements.Get(ElementType.ObjectType, name);
-        }
-
-        public void SetFont(string fontName)
-        {
-            RaiseRequest(Request.FontName, fontName);
-        }
-
-        public void SetFontSize(int fontSize)
-        {
-            RaiseRequest(Request.FontSize, fontSize.ToString());
         }
 
         public GameState State

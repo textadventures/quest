@@ -14,6 +14,8 @@ namespace LegacyASLTests
         private string m_gameName = string.Empty;
         private string m_background = string.Empty;
         private string m_foreground = string.Empty;
+        private string m_fontName = string.Empty;
+        private string m_fontSize = string.Empty;
 
         public void ClearBuffer()
         {
@@ -141,5 +143,18 @@ namespace LegacyASLTests
         public void Quit()
         {
         }
+
+        public void SetFont(string fontName)
+        {
+            m_fontName = fontName;
+        }
+
+        public void SetFontSize(string fontSize)
+        {
+            m_fontSize = fontSize;
+        }
+
+        public string FontName { get { return m_fontName; } }
+        public string FontSize { get { return m_fontSize; } }
     }
 }

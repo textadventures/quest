@@ -57,6 +57,8 @@ namespace AxeSoftware.Quest
         void SetForeground(string colour);
         void RunScript(string script);
         void Quit();
+        void SetFont(string fontName);
+        void SetFontSize(string fontSize);
     }
 
     public enum HyperlinkType

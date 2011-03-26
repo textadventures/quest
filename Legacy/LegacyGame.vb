@@ -7123,12 +7123,12 @@ errhandle:
 
     Private Sub SetFont(ByRef FontName As String, ByRef Thread As ThreadData, Optional ByRef OutputTo As String = "normal")
         If FontName = "" Then FontName = DefaultFontName
-        RaiseEvent RequestRaised(Request.FontName, FontName)
+        m_player.SetFont(FontName)
     End Sub
 
     Private Sub SetFontSize(ByRef FontSize As Double, ByRef Thread As ThreadData, Optional ByRef OutputTo As String = "normal")
         If FontSize = 0 Then FontSize = DefaultFontSize
-        RaiseEvent RequestRaised(Request.FontSize, CStr(FontSize))
+        m_player.SetFontSize(CStr(FontSize))
     End Sub
 
     Private Sub SetNumericVariableContents(ByRef NumName As String, ByRef NumContent As Double, ByRef Thread As ThreadData, Optional ByRef ArrayIndex As Integer = 0)

@@ -219,12 +219,6 @@ namespace AxeSoftware.Quest
 
             switch (request)
             {
-                case Request.FontName:
-                    m_font = data;
-                    break;
-                case Request.FontSize:
-                    m_fontSize = data;
-                    break;
                 case Request.Speak:
                     // ignore
                     break;
@@ -352,6 +346,14 @@ namespace AxeSoftware.Quest
         public void SetForeground(string colour)
         {
             m_foreground = colour;
+        }
+
+        public void SetFont(string fontName) {
+            m_font = fontName;
+        }
+
+        public void SetFontSize(string fontSize) {
+            m_fontSize = fontSize;
         }
     }
 }

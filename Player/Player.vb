@@ -495,10 +495,6 @@ Public Class Player
                 Save()
             Case Quest.Request.Restart
                 ' TO DO: Raise event
-            Case Quest.Request.FontName
-                FontName = data
-            Case Quest.Request.FontSize
-                FontSize = CInt(data)
             Case Quest.Request.LinkForeground
                 LinkForeground = data
             Case Quest.Request.Speak
@@ -1004,5 +1000,13 @@ Public Class Player
 
     Public Sub SetForeground(colour As String) Implements IPlayer.SetForeground
         Foreground = colour
+    End Sub
+
+    Public Sub SetFont(name As String) Implements IPlayer.SetFont
+        FontName = name
+    End Sub
+
+    Public Sub SetFontSize(size As String) Implements IPlayer.SetFontSize
+        FontSize = CInt(size)
     End Sub
 End Class

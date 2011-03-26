@@ -295,5 +295,15 @@ namespace WebPlayer
         {
             m_controller.SetForeground(colour);
         }
+
+        public void SetFont(string fontName)
+        {
+            m_controller.SetFont(fontName);
+        }
+
+        public void SetFontSize(string fontSize)
+        {
+            m_controller.SetFontSize(fontSize);
+        }
     }
 }

@@ -13,6 +13,9 @@ define game <Unit Test 1>
 	background <black>
 	foreground <white>
 
+	default fontname <TestFont>
+	default fontsize <30>
+
 end define
 
 define options
