@@ -7077,7 +7077,7 @@ errhandle:
     End Sub
 
     Private Sub SetForeground(ByRef Colour As String)
-        RaiseEvent RequestRaised(Request.Foreground, "#" + GetHTMLColour(Colour, "black"))
+        m_player.SetForeground("#" + GetHTMLColour(Colour, "black"))
     End Sub
 
     Private Sub SetDefaultPlayerErrorMessages()

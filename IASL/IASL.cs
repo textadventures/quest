@@ -54,6 +54,7 @@ namespace AxeSoftware.Quest
         void SetPanesVisible(string data);
         void SetStatusText(string text);
         void SetBackground(string colour);
+        void SetForeground(string colour);
         void RunScript(string script);
         void Quit();
     }

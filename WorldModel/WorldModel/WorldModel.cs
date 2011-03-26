@@ -486,6 +486,9 @@ namespace AxeSoftware.Quest
                 case Request.Background:
                     m_playerUI.SetBackground(data);
                     break;
+                case Request.Foreground:
+                    m_playerUI.SetForeground(data);
+                    break;
                 case Request.RunScript:
                     m_playerUI.RunScript(data);
                     break;

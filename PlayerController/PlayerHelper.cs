@@ -7,8 +7,6 @@ using System.Xml;
 
 namespace AxeSoftware.Quest
 {
-    // TO DO: This should be merged with the IPlayer interface, then we should get rid of most of
-    // the RequestRaised stuff and replace it with calls to IPlayer methods.
     public interface IPlayerHelperUI : IPlayer
     {
         void OutputText(string text);
@@ -230,9 +228,6 @@ namespace AxeSoftware.Quest
                 case Request.Speak:
                     // ignore
                     break;
-                case Request.Foreground:
-                    m_foreground = data;
-                    break;
                 case Request.LinkForeground:
                     m_linkForeground = data;
                     break;
@@ -352,6 +347,11 @@ namespace AxeSoftware.Quest
             {
                 return m_gameTimer != null;
             }
+        }
+
+        public void SetForeground(string colour)
+        {
+            m_foreground = colour;
         }
     }
 }

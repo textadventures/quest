@@ -13,6 +13,7 @@ namespace LegacyASLTests
         private string m_location = string.Empty;
         private string m_gameName = string.Empty;
         private string m_background = string.Empty;
+        private string m_foreground = string.Empty;
 
         public void ClearBuffer()
         {
@@ -125,7 +126,13 @@ namespace LegacyASLTests
             m_background = colour;
         }
 
+        public void SetForeground(string colour)
+        {
+            m_foreground = colour;
+        }
+
         public string Background { get { return m_background; } }
+        public string Foreground { get { return m_foreground; } }
 
         public void RunScript(string script)
         {

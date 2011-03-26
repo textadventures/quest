@@ -107,6 +107,7 @@ namespace LegacyASLTests
         {
             Assert.AreEqual("Unit Test 1", m_player.GameName);
             Assert.AreEqual("#000000", m_player.Background);
+            Assert.AreEqual("#FFFFFF", m_player.Foreground);
         }
     }
 }

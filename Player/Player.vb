@@ -499,8 +499,6 @@ Public Class Player
                 FontName = data
             Case Quest.Request.FontSize
                 FontSize = CInt(data)
-            Case Quest.Request.Foreground
-                Foreground = data
             Case Quest.Request.LinkForeground
                 LinkForeground = data
             Case Quest.Request.Speak
@@ -1002,5 +1000,9 @@ Public Class Player
 
     Public Sub DoQuit() Implements IPlayer.Quit
         RaiseEvent Quit()
+    End Sub
+
+    Public Sub SetForeground(colour As String) Implements IPlayer.SetForeground
+        Foreground = colour
     End Sub
 End Class

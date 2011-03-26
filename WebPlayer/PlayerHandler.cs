@@ -290,5 +290,10 @@ namespace WebPlayer
         {
             m_buffer.OutputText(text);
         }
+
+        public void SetForeground(string colour)
+        {
+            m_controller.SetForeground(colour);
+        }
     }
 }
