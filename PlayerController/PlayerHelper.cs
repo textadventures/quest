@@ -225,13 +225,6 @@ namespace AxeSoftware.Quest
                 case Request.LinkForeground:
                     m_linkForeground = data;
                     break;
-                case Request.Load:
-                case Request.Save:
-                    m_playerUI.OutputText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
-                    break;
-                case Request.Restart:
-                    m_playerUI.OutputText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
-                    break;
                 default:
                     throw new Exception("Unhandled request");
             }
@@ -354,6 +347,11 @@ namespace AxeSoftware.Quest
 
         public void SetFontSize(string fontSize) {
             m_fontSize = fontSize;
+        }
+
+        public void AppendText(string text)
+        {
+            WriteText(FormatText(text) + "<br />");
         }
     }
 }

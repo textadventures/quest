@@ -156,5 +156,21 @@ namespace LegacyASLTests
 
         public string FontName { get { return m_fontName; } }
         public string FontSize { get { return m_fontSize; } }
+
+        public void Speak(string text)
+        {
+        }
+
+        public void RequestSave()
+        {
+        }
+
+        public void RequestLoad()
+        {
+        }
+
+        public void RequestRestart()
+        {
+        }
     }
 }

@@ -305,5 +305,25 @@ namespace WebPlayer
         {
             m_controller.SetFontSize(fontSize);
         }
+
+        public void Speak(string text)
+        {
+            // Do nothing
+        }
+
+        public void RequestSave()
+        {
+            m_controller.AppendText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
+        }
+
+        public void RequestLoad()
+        {
+            m_controller.AppendText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
+        }
+
+        public void RequestRestart()
+        {
+            m_controller.AppendText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
+        }
     }
 }

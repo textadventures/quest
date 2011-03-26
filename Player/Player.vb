@@ -489,16 +489,8 @@ Public Class Player
 
     Private Sub RequestRaised(ByVal request As Quest.Request, ByVal data As String)
         Select Case request
-            Case Quest.Request.Load
-                ' TO DO: Raise event
-            Case Quest.Request.Save
-                Save()
-            Case Quest.Request.Restart
-                ' TO DO: Raise event
             Case Quest.Request.LinkForeground
                 LinkForeground = data
-            Case Quest.Request.Speak
-                Speak(data)
             Case Else
                 Throw New Exception("Unhandled request")
         End Select
@@ -925,8 +917,10 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub Speak(ByVal text As String)
-        m_speech.Speak(text)
+    Private Sub Speak(ByVal text As String) Implements IPlayer.Speak
+        BeginInvoke(Sub()
+                        m_speech.Speak(text)
+                    End Sub)
     End Sub
 
     Public Sub SetWindowMenu(ByVal menuData As MenuData) Implements IPlayer.SetWindowMenu
@@ -1009,4 +1003,19 @@ Public Class Player
     Public Sub SetFontSize(size As String) Implements IPlayer.SetFontSize
         FontSize = CInt(size)
     End Sub
+
+    Public Sub RequestLoad() Implements IPlayer.RequestLoad
+        ' TO DO: Raise event
+    End Sub
+
+    Public Sub RequestRestart() Implements IPlayer.RequestRestart
+        ' TO DO: Raise event
+    End Sub
+
+    Public Sub RequestSave() Implements IPlayer.RequestSave
+        BeginInvoke(Sub()
+                        Save()
+                    End Sub)
+    End Sub
+
 End Class

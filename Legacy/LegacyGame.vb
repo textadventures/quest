@@ -8177,7 +8177,7 @@ errhandle:
             RoomDisplayText = RoomDisplayText & "You are in " & PA & "." & vbCrLf
         End If
 
-        RaiseEvent RequestRaised(Request.UpdateLocation, PANF)
+        m_player.LocationUpdated(PANF)
 
         SetStringContents("quest.formatroom", PANF, NullThread)
 
@@ -8448,7 +8448,7 @@ errhandle:
     End Sub
 
     Private Sub Speak(ByRef Text As String)
-        RaiseEvent RequestRaised(Request.Speak, Text)
+        m_player.Speak(Text)
     End Sub
 
     Private Sub AddToObjectList(ByVal objList As List(Of ListData), ByVal exitList As List(Of ListData), ByVal ObjName As String, ByRef ObjType As Integer, Optional ByRef DisplayType As String = "")
@@ -10257,11 +10257,11 @@ errhandle:
             ElseIf CmdStartsWith(thecommand, "remove ") And GameASLVersion >= 391 Then
                 ExecAddRemove(thecommand, Thread)
             ElseIf cmd = "save" Then
-                RaiseEvent RequestRaised(Request.Save, "")
+                m_player.RequestSave()
             ElseIf cmd = "load" Or cmd = "restore" Then
-                RaiseEvent RequestRaised(Request.Load, "")
+                m_player.RequestLoad()
             ElseIf cmd = "restart" Then
-                RaiseEvent RequestRaised(Request.Restart, "")
+                m_player.RequestRestart()
             ElseIf cmd = "quit" Then
                 GameFinished()
             ElseIf BeginsWith(cmd, "help") Then
