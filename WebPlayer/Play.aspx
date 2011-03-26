@@ -133,7 +133,7 @@
                     </asp:Timer>
                 </ContentTemplate>
             </asp:UpdatePanel>
-            <input type="text" id="txtCommand" onkeydown="commandKey(event);" placeholder="Type here..."
+            <input type="text" id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
                 autofocus />
             <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Click
                 here or press a key to continue...</a>

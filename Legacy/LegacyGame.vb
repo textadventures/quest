@@ -3399,7 +3399,7 @@ ErrorHandler:
     End Sub
 
     Private Sub DoClear()
-        RaiseEvent RequestRaised(Request.ClearScreen, "")
+        m_player.ClearScreen()
     End Sub
 
     Private Sub DoWait()
@@ -7073,7 +7073,7 @@ errhandle:
     End Function
 
     Private Sub SetBackground(ByRef Colour As String)
-        RaiseEvent RequestRaised(Request.Background, "#" + GetHTMLColour(Colour, "white"))
+        m_player.SetBackground("#" + GetHTMLColour(Colour, "white"))
     End Sub
 
     Private Sub SetForeground(ByRef Colour As String)
@@ -12641,7 +12641,7 @@ ErrorHandler:
                     End If
                 Next j
 
-                RaiseEvent RequestRaised(Request.SetStatus, status)
+                m_player.SetStatusText(status)
 
             End If
         End If
@@ -12821,7 +12821,7 @@ ErrorHandler:
             Next i
         End If
 
-        RaiseEvent RequestRaised(Request.SetStatus, status)
+        m_player.SetStatusText(status)
 
     End Sub
 

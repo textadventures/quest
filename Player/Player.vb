@@ -489,8 +489,6 @@ Public Class Player
 
     Private Sub RequestRaised(ByVal request As Quest.Request, ByVal data As String)
         Select Case request
-            Case Quest.Request.Quit
-                RaiseEvent Quit()
             Case Quest.Request.Load
                 ' TO DO: Raise event
             Case Quest.Request.Save
@@ -501,16 +499,10 @@ Public Class Player
                 FontName = data
             Case Quest.Request.FontSize
                 FontSize = CInt(data)
-            Case Quest.Request.Background
-                SetBackground(data)
             Case Quest.Request.Foreground
                 Foreground = data
             Case Quest.Request.LinkForeground
                 LinkForeground = data
-            Case Quest.Request.RunScript
-                RunScript(data)
-            Case Quest.Request.SetStatus
-                lstInventory.Status = data
             Case Quest.Request.Speak
                 Speak(data)
             Case Else
@@ -722,26 +714,30 @@ Public Class Player
         wbOutput.Document.InvokeScript(functionName, args)
     End Sub
 
-    Private Sub SetBackground(ByVal colour As String)
-        InvokeScript("SetBackground", colour)
+    Private Sub SetBackground(ByVal colour As String) Implements IPlayer.SetBackground
+        BeginInvoke(Sub()
+                        InvokeScript("SetBackground", colour)
+                    End Sub)
     End Sub
 
-    Private Sub RunScript(ByVal data As String)
-        Dim functionName As String = ""
-        Dim dataList As List(Of String)
-        Dim args As New List(Of String)
+    Private Sub RunScript(ByVal data As String) Implements IPlayer.RunScript
+        BeginInvoke(Sub()
+                        Dim functionName As String = ""
+                        Dim dataList As List(Of String)
+                        Dim args As New List(Of String)
 
-        dataList = New List(Of String)(data.Split(CChar(";")))
+                        dataList = New List(Of String)(data.Split(CChar(";")))
 
-        For Each value As String In dataList
-            If functionName.Length = 0 Then
-                functionName = value
-            Else
-                args.Add(value.Trim())
-            End If
-        Next
+                        For Each value As String In dataList
+                            If functionName.Length = 0 Then
+                                functionName = value
+                            Else
+                                args.Add(value.Trim())
+                            End If
+                        Next
 
-        InvokeScript(functionName, args.ToArray())
+                        InvokeScript(functionName, args.ToArray())
+                    End Sub)
     End Sub
 
     Private Sub Undo()
@@ -998,4 +994,13 @@ Public Class Player
                     End Sub)
     End Sub
 
+    Public Sub SetStatusText(text As String) Implements IPlayer.SetStatusText
+        BeginInvoke(Sub()
+                        lstInventory.Status = text
+                    End Sub)
+    End Sub
+
+    Public Sub DoQuit() Implements IPlayer.Quit
+        RaiseEvent Quit()
+    End Sub
 End Class

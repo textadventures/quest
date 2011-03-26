@@ -85,5 +85,28 @@ namespace LegacyASLTests
             m_game.SetQuestionResponse(true);
             Assert.AreEqual("response yes", m_player.Buffer(2));
         }
+
+        [TestMethod]
+        public void TestStatusVariables()
+        {
+            Assert.AreEqual("Test variable: 0", m_player.StatusText);
+            m_game.SendCommand("setstatus");
+            Assert.AreEqual("Test variable: 1", m_player.StatusText);
+        }
+
+        [TestMethod]
+        public void TestLocation()
+        {
+            Assert.AreEqual("Room", m_player.Location);
+            m_game.SendCommand("south");
+            Assert.AreEqual("Room2", m_player.Location);
+        }
+
+        [TestMethod]
+        public void TestInitialGameProperties()
+        {
+            Assert.AreEqual("Unit Test 1", m_player.GameName);
+            Assert.AreEqual("#000000", m_player.Background);
+        }
     }
 }

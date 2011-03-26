@@ -52,6 +52,10 @@ namespace AxeSoftware.Quest
         void ClearScreen();
         void ShowPicture(string filename);
         void SetPanesVisible(string data);
+        void SetStatusText(string text);
+        void SetBackground(string colour);
+        void RunScript(string script);
+        void Quit();
     }
 
     public enum HyperlinkType

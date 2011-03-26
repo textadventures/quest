@@ -11,13 +11,6 @@ namespace AxeSoftware.Quest
     // the RequestRaised stuff and replace it with calls to IPlayer methods.
     public interface IPlayerHelperUI : IPlayer
     {
-        void SetStatusText(string text);
-        void SetBackground(string colour);
-        void RunScript(string script);
-        void Quit();
-
-        // TO DO: Only the methods below need to remain on IPlayerHelperUI as these are the only
-        // methods called directly by PlayerHelper.
         void OutputText(string text);
         void SetAlignment(string alignment);
         void BindMenu(string linkid, string verbs, string text);
@@ -234,20 +227,11 @@ namespace AxeSoftware.Quest
                 case Request.FontSize:
                     m_fontSize = data;
                     break;
-                case Request.SetStatus:
-                    m_playerUI.SetStatusText(data);
-                    break;
                 case Request.Speak:
                     // ignore
                     break;
                 case Request.Foreground:
                     m_foreground = data;
-                    break;
-                case Request.Background:
-                    m_playerUI.SetBackground(data);
-                    break;
-                case Request.RunScript:
-                    m_playerUI.RunScript(data);
                     break;
                 case Request.LinkForeground:
                     m_linkForeground = data;
@@ -258,9 +242,6 @@ namespace AxeSoftware.Quest
                     break;
                 case Request.Restart:
                     m_playerUI.OutputText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
-                    break;
-                case Request.Quit:
-                    m_playerUI.Quit();
                     break;
                 default:
                     throw new Exception("Unhandled request");

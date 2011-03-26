@@ -483,6 +483,15 @@ namespace AxeSoftware.Quest
                 case Request.PanesVisible:
                     m_playerUI.SetPanesVisible(data);
                     break;
+                case Request.Background:
+                    m_playerUI.SetBackground(data);
+                    break;
+                case Request.RunScript:
+                    m_playerUI.RunScript(data);
+                    break;
+                case Request.Quit:
+                    m_playerUI.Quit();
+                    break;
                 default:
                     if (RequestRaised != null) RequestRaised(request, data);
                     break;

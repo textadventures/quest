@@ -3,6 +3,16 @@
 define game <Unit Test 1>
 	asl-version <410>
 	start <room>
+
+	define variable <testvar>
+		type numeric
+		value <0>
+		display <Test variable: !>
+	end define
+
+	background <black>
+	foreground <white>
+
 end define
 
 define options
@@ -12,6 +22,8 @@ define options
 end define
 
 define room <room>
+
+	south <room2>
 
 	command <wait> {
 		wait <Start wait>
@@ -28,6 +40,8 @@ define room <room>
 		msg <Some text>
 		if ask <question text> then msg <response yes> else msg <response no>
 	}
+
+	command <setstatus> inc <testvar>
 
 	define object <object>
 		look <object look desc>
@@ -47,3 +61,8 @@ define room <room>
 
 end define
 
+define room <room2>
+
+	north <room>
+
+end define

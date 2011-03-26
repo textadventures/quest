@@ -9,6 +9,10 @@ namespace LegacyASLTests
     class TestPlayer : IPlayer
     {
         private List<string> m_output = new List<string>();
+        private string m_statusText = string.Empty;
+        private string m_location = string.Empty;
+        private string m_gameName = string.Empty;
+        private string m_background = string.Empty;
 
         public void ClearBuffer()
         {
@@ -63,22 +67,19 @@ namespace LegacyASLTests
 
         public void SetWindowMenu(MenuData menuData)
         {
-            throw new NotImplementedException();
         }
 
         public string GetNewGameFile(string originalFilename, string extensions)
         {
-            throw new NotImplementedException();
+            return string.Empty;
         }
 
         public void PlaySound(string filename, bool synchronous, bool looped)
         {
-            throw new NotImplementedException();
         }
 
         public void StopSound()
         {
-            throw new NotImplementedException();
         }
 
         public void WriteHTML(string html)
@@ -88,11 +89,17 @@ namespace LegacyASLTests
 
         public void LocationUpdated(string location)
         {
+            m_location = location;
         }
+
+        public string Location { get { return m_location; } }
 
         public void UpdateGameName(string name)
         {
+            m_gameName = name;
         }
+
+        public string GameName { get { return m_gameName; } }
 
         public void ClearScreen()
         {
@@ -103,6 +110,28 @@ namespace LegacyASLTests
         }
 
         public void SetPanesVisible(string data)
+        {
+        }
+
+        public void SetStatusText(string text)
+        {
+            m_statusText = text;
+        }
+
+        public string StatusText { get { return m_statusText; } }
+
+        public void SetBackground(string colour)
+        {
+            m_background = colour;
+        }
+
+        public string Background { get { return m_background; } }
+
+        public void RunScript(string script)
+        {
+        }
+
+        public void Quit()
         {
         }
     }

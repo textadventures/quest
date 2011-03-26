@@ -119,7 +119,7 @@ function commandKey(e) {
     switch (keyPressCode(e)) {
         case 13:
             runCommand();
-            break;
+            return false;
         case 38:
             thisCommand--;
             if (thisCommand == 0) thisCommand = numCommands;
@@ -143,10 +143,7 @@ function runCommand() {
         numCommands++;
         commandsList[numCommands] = command;
         thisCommand = numCommands + 1;
-
-        // hitting Enter automatically causes the form to be submitted
-        // TO DO: returning false from onkeydown function would prevent that issue
-        prepareCommand(command);
+        sendCommand(command);
         $("#txtCommand").val("");
     }
 }
