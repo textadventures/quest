@@ -236,6 +236,10 @@
       <Project>{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}</Project>
       <Name>Menus</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PlayerController\PlayerController.csproj">
+      <Project>{5E626E4F-BB7A-4262-9EB3-B37069A1C844}</Project>
+      <Name>PlayerController</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Player\Player.vbproj">
       <Project>{F383D1E8-2883-420D-9CAB-223A2B72B1DE}</Project>
       <Name>Player</Name>

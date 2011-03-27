@@ -23,7 +23,6 @@ namespace AxeSoftware.Quest
         private IASL m_game;
         private IASLTimer m_gameTimer;
         private IPlayerHelperUI m_playerUI;
-        private string m_filename;
 
         private string m_font = "";
         private string m_fontSize = "";
@@ -34,23 +33,10 @@ namespace AxeSoftware.Quest
         private string m_fontSizeOverride = "";
         private string m_textBuffer = "";
 
-        public PlayerHelper(string filename, string libraryFolder, IPlayerHelperUI playerUI)
+        public PlayerHelper(IASL game, IPlayerHelperUI playerUI)
         {
             m_playerUI = playerUI;
-            m_filename = filename;
-
-            switch (System.IO.Path.GetExtension(m_filename).ToLower())
-            {
-                case ".aslx":
-                    m_game = new WorldModel(m_filename, libraryFolder);
-                    break;
-                case ".asl":
-                case ".cas":
-                    m_game = new AxeSoftware.Quest.LegacyASL.LegacyGame(m_filename);
-                    break;
-                default:
-                    throw new Exception("Unrecognised file type");
-            }
+            m_game = game;
 
             m_game.PrintText += m_game_PrintText;
 

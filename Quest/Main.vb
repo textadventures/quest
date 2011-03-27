@@ -64,23 +64,15 @@ Public Class Main
 
     Private Sub Launch(ByRef filename As String)
         Dim game As AxeSoftware.Quest.IASL = Nothing
-        Dim ext As String
 
         Try
             m_currentFile = filename
             ctlPlayer.Reset()
 
-            ext = System.IO.Path.GetExtension(filename).ToLower()
-
-            Select ext
-                Case ".aslx"
-                    game = New AxeSoftware.Quest.WorldModel(filename)
-                Case ".asl", ".cas", ".qsg"
-                    game = New AxeSoftware.Quest.LegacyASL.LegacyGame(filename)
-            End Select
+            game = GameLauncher.GetGame(filename, String.Empty)
 
             If game Is Nothing Then
-                MsgBox(String.Format("Unrecognised file type '{0}'", ext))
+                MsgBox("Unrecognised file type. This game cannot be loaded in Quest.", MsgBoxStyle.Critical)
             Else
                 Me.SuspendLayout()
                 ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Player
