@@ -179,6 +179,12 @@
     <Compile Include="Player.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="PlayerHTML.Designer.vb">
+      <DependentUpon>PlayerHTML.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerHTML.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Compass.resx">
@@ -204,6 +210,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Player.resx">
       <DependentUpon>Player.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerHTML.resx">
+      <DependentUpon>PlayerHTML.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

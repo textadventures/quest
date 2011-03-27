@@ -1,38 +1,27 @@
 ﻿Imports System.Xml
+Imports System.Threading
 
 Public Class Player
 
     Implements IPlayer
 
+    Private m_htmlHelper As PlayerHelper
     Private m_panesVisible As Boolean
     Private WithEvents m_game As IASL
     Private WithEvents m_gameTimer As IASLTimer
     Private m_initialised As Boolean
     Private m_browserReady As Boolean
     Private m_gameReady As Boolean
-    Private m_links As New Dictionary(Of String, HyperlinkType)
     Private m_history As New List(Of String)
     Private m_historyPoint As Integer
     Private m_gameName As String
     Private WithEvents m_debugger As Debugger
-    Private m_fontName As String = "Arial"
-    Private m_fontSize As Integer = 9
-    Private m_fontSizeOverride As Integer = 0
-    Private m_style As String
-    Private m_linkStyle As String
-    Private m_foreground As String  ' base foreground colour
-    Private m_foregroundOverride As String  ' foreground colour overridden by a <color> tag
-    Private m_linkForeground As String
-    Private m_bold As Boolean
-    Private m_italic As Boolean
-    Private m_underline As Boolean
     Private m_stage As Integer
     Private m_loaded As Boolean = False
     Private m_splitHelpers As New List(Of AxeSoftware.Utility.SplitterHelper)
     Private m_menu As AxeSoftware.Quest.Controls.Menu = Nothing
     Private m_saveFile As String
     Private m_waiting As Boolean = False
-    Private m_currentElement As System.Windows.Forms.HtmlElement = Nothing
     Private m_speech As New System.Speech.Synthesis.SpeechSynthesizer
     Private m_loopSound As Boolean = False
     Private m_soundPlaying As Boolean = False
@@ -79,7 +68,7 @@ Public Class Player
             m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
             m_browserReady = False
             m_stage = 0
-            wbOutput.Navigate(My.Application.Info.DirectoryPath() & "\Blank.htm")
+            ctlPlayerHtml.Setup()
             m_game = game
             m_gameTimer = TryCast(m_game, IASLTimer)
             m_gameReady = True
@@ -200,46 +189,6 @@ Public Class Player
         RunCommand(command)
     End Sub
 
-    Private Function GetUniqueID() As String
-        Static id As Integer
-        id += 1
-        Return "k" + id.ToString()
-    End Function
-
-    Private Function CurrentElement() As HtmlElement
-        If m_currentElement = Nothing Then
-            Return wbOutput.Document.Body
-        End If
-        Return m_currentElement
-    End Function
-
-    Private Sub WriteText(ByVal text As String)
-        ' If text starts with a space then IE won't print it.
-        ' TO DO: This needs to be replaced with a regex of some kind
-        If Microsoft.VisualBasic.Left(text, 1) = " " Then text = "&nbsp;" + Mid(text, 2)
-
-        Dim newText As HtmlElement = wbOutput.Document.CreateElement("span")
-        newText.Style = GetCurrentStyle(False)
-        newText.InnerHtml = text
-        CurrentElement.AppendChild(newText)
-        newText.ScrollIntoView(True)
-    End Sub
-
-    Private Sub SetAlignment(ByVal align As String)
-        If align.Length = 0 Or align = "left" Then
-            m_currentElement = Nothing
-        Else
-            Dim newDiv As HtmlElement = wbOutput.Document.CreateElement("div")
-            newDiv.Style = "text-align:" + align
-            wbOutput.Document.Body.AppendChild(newDiv)
-            m_currentElement = newDiv
-        End If
-    End Sub
-
-    Private Sub WriteLine(ByVal text As String)
-        WriteText(text + "<br />")
-    End Sub
-
     Private Delegate Sub FinishedDelegate()
 
     Private Sub m_game_Finished() Handles m_game.Finished
@@ -261,121 +210,6 @@ Public Class Player
 
     Private Sub m_game_PrintText(ByVal text As String) Handles m_game.PrintText
         BeginInvoke(New PrintDelegate(AddressOf PrintText), text)
-    End Sub
-
-    Private Sub PrintText(text As String)
-        If Not m_initialised Then Exit Sub
-
-        Dim currentTag As String = ""
-        Dim currentTagValue As String = ""
-        Dim settings As XmlReaderSettings = New XmlReaderSettings()
-        settings.IgnoreWhitespace = False
-        Dim reader As XmlReader = XmlReader.Create(New System.IO.StringReader(text), settings)
-        Dim newLine As Boolean = True
-        Dim alignmentSet As Boolean = False
-        Dim textWritten As Boolean = False
-
-        While reader.Read()
-            Select Case reader.NodeType
-                Case XmlNodeType.Element
-                    Select Case reader.Name
-                        Case "output"
-                            If reader.GetAttribute("nobr") = "true" Then
-                                newLine = False
-                            End If
-                        Case "object"
-                            currentTag = "object"
-                        Case "exit"
-                            currentTag = "exit"
-                        Case "br"
-                            WriteText("<br />")
-                            textWritten = True
-                        Case "b"
-                            Bold = True
-                        Case "i"
-                            Italic = True
-                        Case "u"
-                            Underline = True
-                        Case "color"
-                            ForegroundOverride = reader.GetAttribute("color")
-                        Case "font"
-                            FontSizeOverride = CInt(reader.GetAttribute("size"))
-                        Case "align"
-                            SetAlignment(reader.GetAttribute("align"))
-                        Case Else
-                            Throw New Exception(String.Format("Unrecognised element '{0}'", reader.Name))
-                    End Select
-                Case XmlNodeType.Text
-                    If Len(currentTag) = 0 Then
-                        WriteText(reader.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"))
-                        textWritten = True
-                    Else
-                        currentTagValue = reader.Value
-                    End If
-                Case XmlNodeType.Whitespace
-                    WriteText(reader.Value.Replace(" ", "&nbsp;"))
-                    textWritten = True
-                Case XmlNodeType.EndElement
-                    Select Case reader.Name
-                        Case "output"
-                            ' do nothing
-                        Case "object"
-                            currentTag = ""
-                            AddLink(currentTagValue, HyperlinkType.ObjectLink)
-                        Case "exit"
-                            currentTag = ""
-                            AddLink(currentTagValue, HyperlinkType.ExitLink)
-                        Case "b"
-                            Bold = False
-                        Case "i"
-                            Italic = False
-                        Case "u"
-                            Underline = False
-                        Case "color"
-                            ForegroundOverride = ""
-                        Case "font"
-                            FontSizeOverride = 0
-                        Case "align"
-                            SetAlignment("")
-                            alignmentSet = True
-                            textWritten = False
-                        Case Else
-                            Throw New Exception(String.Format("Unrecognised element '{0}'", reader.Name))
-                    End Select
-            End Select
-
-        End While
-
-        If newLine Then
-            ' If we have just set the text alignment but then print no more text afterwards,
-            ' there's no need to submit an extra <br> tag as subsequent text will be in a
-            ' brand new <div> element.
-
-            If Not (alignmentSet And Not textWritten) Then
-                WriteText("<br />")
-            End If
-        End If
-    End Sub
-
-    Private Sub AddLink(ByVal linkText As String, ByVal linkType As HyperlinkType)
-        Dim id As String = GetUniqueID()
-        Dim newLink As HtmlElement = wbOutput.Document.CreateElement("a")
-        m_links.Add(id, linkType)
-        newLink.Id = id
-        newLink.InnerHtml = linkText
-        newLink.SetAttribute("href", "javascript:")
-        newLink.Style = GetCurrentStyle(True)
-        CurrentElement.AppendChild(newLink)
-        AddHandler newLink.Click, AddressOf InLineLinkClicked
-    End Sub
-
-    Private Sub wbOutput_DocumentCompleted(ByVal sender As Object, ByVal e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
-        m_browserReady = True
-        m_stage = m_stage + 1
-
-        ' The call to TryInitialise() happens in a timer. This is so the DocumentCompleted event
-        ' has finished before trying to output text to the webbrowser control.
-        tmrInitialise.Enabled = True
     End Sub
 
     Private Sub TryInitialise()
@@ -416,32 +250,12 @@ Public Class Player
     End Sub
 
     Private Sub TryInitialiseStage2()
-        AddASLEventElement()
+        ctlPlayerHtml.AddASLEventElement()
         m_menu.MenuEnabled("walkthrough") = Not m_game.Walkthrough Is Nothing
         m_initialised = True
         tmrTick.Enabled = True
         m_game.Begin()
         txtCommand.Focus()
-    End Sub
-
-    ' This is how we support JavaScript calling ASL functions (in WebFunctions.js - ASLEvent function).
-    ' We have a hidden _ASLEvent div, and simply handle the click event on it here. In WebFunctions.js
-    ' we set the InnerText of our div with the data we want to pass in, and trigger the click event using
-    ' jQuery. This may be slightly clunky but it works, and it's better than using window.external in our
-    ' JavaScript as that won't work under Mono.
-    Private Sub AddASLEventElement()
-        Dim newLink As HtmlElement = wbOutput.Document.CreateElement("div")
-        newLink.Id = "_ASLEvent"
-        newLink.Style = "display:none"
-        CurrentElement.AppendChild(newLink)
-        AddHandler newLink.Click, AddressOf HiddenCmdLinkClicked
-    End Sub
-
-    Private Sub HiddenCmdLinkClicked(ByVal sender As Object, ByVal e As EventArgs)
-        Dim element As HtmlElement = DirectCast(sender, HtmlElement)
-        Dim data As String = element.InnerText
-        Dim args As String() = data.Split({";"c}, 2)
-        m_game.SendEvent(args(0), args(1))
     End Sub
 
     Private Sub AddToRecentList()
@@ -453,32 +267,9 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub InLineLinkClicked(ByVal sender As Object, ByVal e As EventArgs)
-
-        Dim link As HtmlElement = wbOutput.Document.ActiveElement
-
-        ' TO DO: show menu instead
-        Select Case m_links(link.Id)
-            Case HyperlinkType.ObjectLink
-                tmrTimer.Tag = "look at " + link.InnerText
-            Case HyperlinkType.ExitLink
-                tmrTimer.Tag = "go " + link.InnerText
-        End Select
-
-        tmrTimer.Enabled = True
-
-        ' We use a timer to run the command as otherwise we're running a command in the middle
-        ' of a link click event, which means we don't scroll the window properly
-
-    End Sub
-
     Private Sub tmrTimer_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles tmrTimer.Tick
         tmrTimer.Enabled = False
-        If Not tmrTimer.Tag Is Nothing Then
-            RunCommand(DirectCast(tmrTimer.Tag, String))
-        Else
-            EnterText()
-        End If
+        EnterText()
     End Sub
 
     Private Delegate Sub RequestRaisedDelegate(ByVal request As Quest.Request, ByVal data As String)
@@ -552,139 +343,8 @@ Public Class Player
         Next
     End Sub
 
-    Private Function GetCurrentStyle(ByVal link As Boolean) As String
-        If Len(m_style) = 0 Then
-            Dim fontSize As Integer = m_fontSize
-            If m_fontSizeOverride > 0 Then fontSize = m_fontSizeOverride
-
-            m_style = "font-family:" + m_fontName _
-                + ";font-size:" + CStr(fontSize) + "pt"
-
-            If Bold Then
-                m_style += ";font-weight:bold"
-            End If
-
-            If Italic Then
-                m_style += ";font-style:italic"
-            End If
-
-            ' Omit text-decoration from link style by setting it here
-            m_linkStyle = m_style
-
-            If Underline Then
-                m_style += ";text-decoration:underline"
-            End If
-
-            If Len(m_foregroundOverride) > 0 Then
-                m_style += ";color:" + m_foregroundOverride
-            ElseIf Len(m_foreground) > 0 Then
-                m_style += ";color:" + m_foreground
-            End If
-            If Len(m_linkForeground) > 0 Then
-                m_linkStyle += ";color:" + m_linkForeground
-            End If
-            Return m_style
-        End If
-
-        If Not link Then
-            Return m_style
-        Else
-            Return m_linkStyle
-        End If
-    End Function
-
-    Public Property FontName() As String
-        Get
-            Return m_fontName
-        End Get
-        Set(ByVal value As String)
-            m_fontName = value
-            m_style = ""
-        End Set
-    End Property
-
-    Public Property FontSize() As Integer
-        Get
-            Return m_fontSize
-        End Get
-        Set(ByVal value As Integer)
-            m_fontSize = value
-            m_style = ""
-        End Set
-    End Property
-
-    Public Property FontSizeOverride() As Integer
-        Get
-            Return m_fontSizeOverride
-        End Get
-        Set(ByVal value As Integer)
-            m_fontSizeOverride = value
-            m_style = ""
-        End Set
-    End Property
-
-    Public Property Foreground() As String
-        Get
-            Return m_foreground
-        End Get
-        Set(ByVal value As String)
-            m_foreground = value
-            m_style = ""
-        End Set
-    End Property
-
-    Public Property LinkForeground() As String
-        Get
-            Return m_linkForeground
-        End Get
-        Set(ByVal value As String)
-            m_linkForeground = value
-            m_style = ""
-        End Set
-    End Property
-
-    Public Property ForegroundOverride() As String
-        Get
-            Return m_foregroundOverride
-        End Get
-        Set(ByVal value As String)
-            m_foregroundOverride = value
-            m_style = ""
-        End Set
-    End Property
-
-    Public Property Bold() As Boolean
-        Get
-            Return m_bold
-        End Get
-        Set(ByVal value As Boolean)
-            m_bold = value
-            m_style = ""
-        End Set
-    End Property
-
-    Public Property Italic() As Boolean
-        Get
-            Return m_italic
-        End Get
-        Set(ByVal value As Boolean)
-            m_italic = value
-            m_style = ""
-        End Set
-    End Property
-
-    Public Property Underline() As Boolean
-        Get
-            Return m_underline
-        End Get
-        Set(ByVal value As Boolean)
-            m_underline = value
-            m_style = ""
-        End Set
-    End Property
-
     Private Sub InvokeScript(ByVal functionName As String, ByVal ParamArray args() As String)
-        wbOutput.Document.InvokeScript(functionName, args)
+        ctlPlayerHtml.InvokeScript(functionName, args)
     End Sub
 
     Private Sub SetBackground(ByVal colour As String) Implements IPlayer.SetBackground
@@ -718,11 +378,11 @@ Public Class Player
     End Sub
 
     Private Sub Copy()
-        wbOutput.Document.ExecCommand("Copy", True, Nothing)
+        ctlPlayerHtml.Copy()
     End Sub
 
     Private Sub SelectAll()
-        wbOutput.Document.ExecCommand("SelectAll", True, Nothing)
+        ctlPlayerHtml.SelectAll()
     End Sub
 
     Private Sub SetEnabledState(ByVal enabled As Boolean)
@@ -820,18 +480,8 @@ Public Class Player
         Return False
     End Function
 
-    Private Sub tmrInitialise_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles tmrInitialise.Tick
-        tmrInitialise.Enabled = False
-        TryInitialise()
-    End Sub
-
-    Private Sub wbOutput_PreviewKeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.PreviewKeyDownEventArgs) Handles wbOutput.PreviewKeyDown
+    Private Sub wbOutput_PreviewKeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.PreviewKeyDownEventArgs)
         KeyPressed()
-    End Sub
-
-    Private Sub DoClear()
-        m_currentElement = Nothing
-        wbOutput.Document.Body.InnerHtml = ""
     End Sub
 
     Private Sub SetPanesVisible(ByVal data As String) Implements IPlayer.SetPanesVisible
@@ -851,17 +501,14 @@ Public Class Player
                         If cmdPanes.Visible Then
                             lblBanner.Width = cmdPanes.Left - 1
                         Else
-                            lblBanner.Width = wbOutput.Width
+                            lblBanner.Width = ctlPlayerHtml.Width
                         End If
                     End Sub)
     End Sub
 
     Private Sub ShowPicture(ByVal filename As String) Implements IPlayer.ShowPicture
         BeginInvoke(Sub()
-                        Dim newImage As HtmlElement = wbOutput.Document.CreateElement("img")
-                        newImage.SetAttribute("src", filename)
-                        CurrentElement.AppendChild(newImage)
-                        newImage.ScrollIntoView(True)
+                        ctlPlayerHtml.ShowPicture(filename)
                     End Sub)
     End Sub
 
@@ -965,7 +612,7 @@ Public Class Player
 
     Public Sub ClearScreen() Implements IPlayer.ClearScreen
         BeginInvoke(Sub()
-                        DoClear()
+                        ctlPlayerHtml.Clear()
                     End Sub)
     End Sub
 
@@ -976,19 +623,21 @@ Public Class Player
     End Sub
 
     Public Sub DoQuit() Implements IPlayer.Quit
-        RaiseEvent Quit()
+        BeginInvoke(Sub()
+                        RaiseEvent Quit()
+                    End Sub)
     End Sub
 
     Public Sub SetForeground(colour As String) Implements IPlayer.SetForeground
-        Foreground = colour
+        ctlPlayerHtml.Foreground = colour
     End Sub
 
     Public Sub SetFont(name As String) Implements IPlayer.SetFont
-        FontName = name
+        ctlPlayerHtml.FontName = name
     End Sub
 
     Public Sub SetFontSize(size As String) Implements IPlayer.SetFontSize
-        FontSize = CInt(size)
+        ctlPlayerHtml.FontSize = CInt(size)
     End Sub
 
     Public Sub RequestLoad() Implements IPlayer.RequestLoad
@@ -1006,6 +655,35 @@ Public Class Player
     End Sub
 
     Public Sub SetLinkForeground(colour As String) Implements IPlayer.SetLinkForeground
-        LinkForeground = colour
+        ctlPlayerHtml.LinkForeground = colour
+    End Sub
+
+    Private Sub WriteLine(text As String)
+        ctlPlayerHtml.WriteLine(text)
+    End Sub
+
+    Private Sub PrintText(text As String)
+        ctlPlayerHtml.PrintText(text)
+    End Sub
+
+    Private Sub ctlPlayerHtml_CommandLinkClicked(command As String) Handles ctlPlayerHtml.CommandLinkClicked
+        RunCommand(command)
+    End Sub
+
+    Private Sub ctlPlayerHtml_Ready() Handles ctlPlayerHtml.Ready
+        m_browserReady = True
+        m_stage = m_stage + 1
+
+        ' We need this DocumentCompleted event to have finished before trying to output text to the webbrowser control.
+        'Dim runnerThread As New Thread(New ThreadStart(AddressOf TryInitialise))
+        'runnerThread.Start()
+
+        BeginInvoke(Sub()
+                        TryInitialise()
+                    End Sub)
+    End Sub
+
+    Private Sub ctlPlayerHtml_SendEvent(eventName As String, param As String) Handles ctlPlayerHtml.SendEvent
+        m_game.SendEvent(eventName, param)
     End Sub
 End Class

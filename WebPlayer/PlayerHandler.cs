@@ -48,7 +48,7 @@ namespace WebPlayer
             m_controller.Game.LogError += LogError;
             m_controller.Game.UpdateList += UpdateList;
 
-            bool success = m_controller.Initialise(out errors, this);
+            bool success = m_controller.Initialise(this, out errors);
             if (success)
             {
                 Logging.Log.InfoFormat("{0} Initialised successfully", GameId);

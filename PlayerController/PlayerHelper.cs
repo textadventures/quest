@@ -47,7 +47,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        public bool Initialise(out List<string> errors, IPlayer player)
+        public bool Initialise(IPlayer player, out List<string> errors)
         {
             m_game.Initialise(player);
             if (m_game.Errors.Count > 0)

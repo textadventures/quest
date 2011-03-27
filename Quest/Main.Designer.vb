@@ -38,20 +38,12 @@ Partial Class Main
         '
         'ctlPlayer
         '
-        Me.ctlPlayer.Bold = False
         Me.ctlPlayer.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlPlayer.FontName = "Arial"
-        Me.ctlPlayer.FontSize = 9
-        Me.ctlPlayer.Foreground = Nothing
-        Me.ctlPlayer.ForegroundOverride = Nothing
-        Me.ctlPlayer.Italic = False
-        Me.ctlPlayer.LinkForeground = Nothing
         Me.ctlPlayer.Location = New System.Drawing.Point(0, 24)
         Me.ctlPlayer.Name = "ctlPlayer"
         Me.ctlPlayer.PanesVisible = True
         Me.ctlPlayer.Size = New System.Drawing.Size(734, 464)
         Me.ctlPlayer.TabIndex = 0
-        Me.ctlPlayer.Underline = False
         '
         'ctlEditor
         '
