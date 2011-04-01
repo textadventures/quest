@@ -15,7 +15,7 @@ Public Class Compass
 
     Private buttons As Dictionary(Of String, System.Windows.Forms.Button) = New Dictionary(Of String, System.Windows.Forms.Button)
 
-    Public Event RunCommand(ByVal command As String)
+    Public Event RunCommand(command As String)
 
     Public Sub New()
 
@@ -61,15 +61,15 @@ Public Class Compass
         pnlContainer.Height = (buttonSize * 3) + (buttonSpacing * 2)
     End Sub
 
-    Private Sub Compass_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
+    Private Sub Compass_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
         pnlContainer.Left = CInt((Me.Width - pnlContainer.Width) / 2)
     End Sub
 
-    Private Sub ButtonClicked(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub ButtonClicked(sender As Object, e As System.EventArgs)
         RaiseEvent RunCommand(buttonCommands(CInt(DirectCast(sender, Button).Tag)))
     End Sub
 
-    Public Sub SetAvailableExits(ByVal exits As List(Of ListData))
+    Public Sub SetAvailableExits(exits As List(Of ListData))
         Dim enabledList As New List(Of String)
 
         For Each direction As ListData In exits

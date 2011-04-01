@@ -26,7 +26,7 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("restart", AddressOf RestartMenuClick)
     End Sub
 
-    Private Sub ctlPlayer_AddToRecent(ByVal filename As String, ByVal name As String) Handles ctlPlayer.AddToRecent
+    Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
         ctlLauncher.AddToRecent(filename, name)
     End Sub
 
@@ -38,11 +38,11 @@ Public Class Main
         Browse()
     End Sub
 
-    Private Sub ctlLauncher_EditGame(ByVal filename As String) Handles ctlLauncher.EditGame
+    Private Sub ctlLauncher_EditGame(filename As String) Handles ctlLauncher.EditGame
         LaunchEdit(filename)
     End Sub
 
-    Private Sub ctlLauncher_LaunchGame(ByVal filename As String) Handles ctlLauncher.LaunchGame
+    Private Sub ctlLauncher_LaunchGame(filename As String) Handles ctlLauncher.LaunchGame
         Launch(filename)
     End Sub
 
@@ -62,7 +62,7 @@ Public Class Main
         End If
     End Sub
 
-    Private Sub Launch(ByRef filename As String)
+    Private Sub Launch(filename As String)
         Dim game As AxeSoftware.Quest.IASL = Nothing
 
         Try
@@ -93,7 +93,7 @@ Public Class Main
 
     End Sub
 
-    Private Sub LaunchEdit(ByRef filename As String)
+    Private Sub LaunchEdit(filename As String)
         Dim game As AxeSoftware.Quest.IASL = Nothing
         Dim ext As String
 
@@ -128,7 +128,7 @@ Public Class Main
         frmAbout.ShowDialog()
     End Sub
 
-    Private Sub ctlPlayer_GameNameSet(ByVal name As String) Handles ctlPlayer.GameNameSet
+    Private Sub ctlPlayer_GameNameSet(name As String) Handles ctlPlayer.GameNameSet
         Dim caption As String
         caption = "Quest"
         If Not String.IsNullOrEmpty(name) Then caption += " - " + name
@@ -164,15 +164,15 @@ Public Class Main
 
     End Sub
 
-    Private Sub ctlEditor_AddToRecent(ByVal filename As String, ByVal name As String) Handles ctlEditor.AddToRecent
+    Private Sub ctlEditor_AddToRecent(filename As String, name As String) Handles ctlEditor.AddToRecent
         ctlLauncher.AddToEditorRecent(filename, name)
     End Sub
 
-    Private Sub Main_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub Main_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         ctlPlayer.WindowClosing()
     End Sub
 
-    Private Sub Main_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles Me.KeyPress
+    Private Sub Main_KeyPress(sender As Object, e As System.Windows.Forms.KeyPressEventArgs) Handles Me.KeyPress
         e.Handled = ctlPlayer.KeyPressed()
     End Sub
 End Class

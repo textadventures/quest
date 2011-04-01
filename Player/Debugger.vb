@@ -39,7 +39,7 @@ Public Class Debugger
         Next
     End Sub
 
-    Private Sub Debugger_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub Debugger_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
             Me.Hide()
@@ -50,7 +50,7 @@ Public Class Debugger
         Get
             Return m_game
         End Get
-        Set(ByVal value As IASLDebug)
+        Set(value As IASLDebug)
             m_game = value
             InitialiseTabs()
             UpdateObjectList()
@@ -68,7 +68,7 @@ Public Class Debugger
         UpdateAllSplitters()
     End Sub
 
-    Private Sub SplitterMoved(ByVal sender As Object, ByVal e As System.Windows.Forms.SplitterEventArgs)
+    Private Sub SplitterMoved(sender As Object, e As System.Windows.Forms.SplitterEventArgs)
         UpdateAllSplitters()
     End Sub
 

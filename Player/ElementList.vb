@@ -2,7 +2,7 @@
 
 Public Class ElementList
 
-    Public Event SendCommand(ByVal command As String)
+    Public Event SendCommand(command As String)
     Private m_ignoreNames As New List(Of String)
     Private m_verbs() As List(Of String)
 
@@ -10,13 +10,13 @@ Public Class ElementList
         Get
             Return lblTitle.Text
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             lblTitle.Text = value
         End Set
     End Property
 
     Private WriteOnly Property ToolbarButtons() As String()
-        Set(ByVal value As String())
+        Set(value As String())
             tlbToolbar.Items.Clear()
 
             If value Is Nothing Then
@@ -40,7 +40,7 @@ Public Class ElementList
     End Property
 
     Public WriteOnly Property Items() As List(Of ListData)
-        Set(ByVal value As List(Of ListData))
+        Set(value As List(Of ListData))
 
             Dim oldSelection As String = ""
 
@@ -74,7 +74,7 @@ Public Class ElementList
         End Set
     End Property
 
-    Private Sub tlbToolbar_ItemClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles tlbToolbar.ItemClicked
+    Private Sub tlbToolbar_ItemClicked(sender As System.Object, e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles tlbToolbar.ItemClicked
         Dim command As String
 
         If lstList.SelectedItems.Count <> 1 Then Exit Sub
@@ -83,7 +83,7 @@ Public Class ElementList
         RaiseEvent SendCommand(command)
     End Sub
 
-    Private Sub lstList_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lstList.SelectedIndexChanged
+    Private Sub lstList_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lstList.SelectedIndexChanged
         RefreshToolbarButtons()
     End Sub
 
@@ -103,7 +103,7 @@ Public Class ElementList
     End Sub
 
     Friend WriteOnly Property IgnoreNames() As List(Of String)
-        Set(ByVal value As List(Of String))
+        Set(value As List(Of String))
             m_ignoreNames = value
         End Set
     End Property
@@ -114,7 +114,7 @@ Public Class ElementList
     End Sub
 
     Public WriteOnly Property Status As String
-        Set(ByVal value As String)
+        Set(value As String)
             ctlSplitContainer.Panel2Collapsed = (value.Length = 0)
             txtStatus.Text = value
         End Set

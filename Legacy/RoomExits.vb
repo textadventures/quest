@@ -13,7 +13,7 @@ Friend Class RoomExits
     Private m_bRegenerateAllExits As Boolean
     Private m_game As LegacyGame
 
-    Public Sub New(ByVal game As LegacyGame)
+    Public Sub New(game As LegacyGame)
         m_game = game
         m_bRegenerateAllExits = True
     End Sub
@@ -50,7 +50,7 @@ Friend Class RoomExits
 
     End Sub
 
-    Public Function AddExitFromTag(ByVal sTag As String) As Boolean
+    Public Function AddExitFromTag(sTag As String) As Boolean
 
         Dim dirThis As LegacyGame.eDirection
         Dim oExit As RoomExit = Nothing
@@ -159,7 +159,7 @@ Friend Class RoomExits
 
     End Function
 
-    Friend Function AddExitFromCreateScript(ByVal sScript As String, ByRef Thread As ThreadData) As Boolean
+    Friend Function AddExitFromCreateScript(sScript As String, ByRef Thread As ThreadData) As Boolean
         ' sScript is the "create exit ..." script, but without the "create exit" at the beginning.
         ' So it's very similar to creating an exit from a tag, except we have the source room
         ' name before the semicolon (which we don't even care about as we ARE the source room).
@@ -214,7 +214,7 @@ Friend Class RoomExits
         Get
             ObjID = m_lObjID
         End Get
-        Set(ByVal Value As Integer)
+        Set(Value As Integer)
             m_lObjID = Value
         End Set
     End Property
@@ -225,7 +225,7 @@ Friend Class RoomExits
         End Get
     End Property
 
-    Friend Sub ExecuteGo(ByVal sCommand As String, ByRef Thread As ThreadData)
+    Friend Sub ExecuteGo(sCommand As String, ByRef Thread As ThreadData)
         ' This will handle "n", "go east", "go [to] library" etc.
 
         Dim lExitID As Integer

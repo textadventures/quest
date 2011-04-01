@@ -12,7 +12,7 @@
     Private m_separators As New List(Of ToolStripSeparator)
     Private m_needToHideDuplicateSeparators As Boolean = False
     Public Delegate Sub MenuClickHandler()
-    Public Delegate Sub WindowMenuClickHandler(ByVal command As String)
+    Public Delegate Sub WindowMenuClickHandler(command As String)
     Private m_handlers As New Dictionary(Of String, MenuClickHandler)
 
     Public Sub New()
@@ -43,7 +43,7 @@
         AddMenuData("windowmenu", MenuMode.Player)
     End Sub
 
-    Private Sub AddMenuData(ByVal key As String, ByVal ParamArray modes() As MenuMode)
+    Private Sub AddMenuData(key As String, ParamArray modes() As MenuMode)
         m_menuData.Add(key, New MenuData(modes))
     End Sub
 
@@ -53,7 +53,7 @@
         Next
     End Sub
 
-    Private Sub AddHandlers(ByVal menu As ToolStripMenuItem)
+    Private Sub AddHandlers(menu As ToolStripMenuItem)
         AddHandler menu.Click, AddressOf Menu_Click
 
         If Not String.IsNullOrEmpty(DirectCast(menu.Tag, String)) Then
@@ -69,7 +69,7 @@
         Next
     End Sub
 
-    Private Sub Menu_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Private Sub Menu_Click(sender As Object, e As EventArgs)
         Dim menu As ToolStripMenuItem = DirectCast(sender, ToolStripMenuItem)
         If menu.Tag Is Nothing Then Exit Sub
 
@@ -78,20 +78,20 @@
         End If
     End Sub
 
-    Public Property MenuEnabled(ByVal key As String) As Boolean
+    Public Property MenuEnabled(key As String) As Boolean
         Get
             Return m_menus(key).Enabled
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             m_menus(key).Enabled = value
         End Set
     End Property
 
-    Public Property MenuChecked(ByVal key As String) As Boolean
+    Public Property MenuChecked(key As String) As Boolean
         Get
             Return m_menus(key).Checked
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             m_menus(key).Checked = value
         End Set
     End Property
@@ -100,7 +100,7 @@
         Get
             Return m_mode
         End Get
-        Set(ByVal value As MenuMode)
+        Set(value As MenuMode)
             If m_mode <> value Then
                 m_mode = value
                 ChangeMode()
@@ -133,7 +133,7 @@
         Next
     End Sub
 
-    Private Sub HideDuplicateSeparators(ByVal menu As ToolStripMenuItem)
+    Private Sub HideDuplicateSeparators(menu As ToolStripMenuItem)
         Dim lastWasSeparator As Boolean = True  ' so we don't get a separator at the top of the menu
 
         For Each item As ToolStripItem In menu.DropDownItems
@@ -158,7 +158,7 @@
         Next
     End Sub
 
-    Private Sub HideEmptyMenus(ByVal menu As ToolStripMenuItem)
+    Private Sub HideEmptyMenus(menu As ToolStripMenuItem)
         Dim hasVisibleItems = False
 
         For Each item As ToolStripItem In menu.DropDownItems
@@ -171,7 +171,7 @@
         If Not hasVisibleItems Then menu.Available = False
     End Sub
 
-    Public Sub AddMenuClickHandler(ByVal key As String, ByVal handler As MenuClickHandler)
+    Public Sub AddMenuClickHandler(key As String, handler As MenuClickHandler)
         If m_handlers.ContainsKey(key) Then
             m_handlers.Remove(key)
         End If
@@ -179,7 +179,7 @@
         m_handlers.Add(key, handler)
     End Sub
 
-    Public Sub CreateWindowMenu(ByVal title As String, ByVal options As IDictionary(Of String, String), ByVal handler As WindowMenuClickHandler)
+    Public Sub CreateWindowMenu(title As String, options As IDictionary(Of String, String), handler As WindowMenuClickHandler)
         WindowMenuToolStripMenuItem.Text = title
 
         For Each kvp As KeyValuePair(Of String, String) In options

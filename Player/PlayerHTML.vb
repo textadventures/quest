@@ -14,7 +14,7 @@ Public Class PlayerHTML
         InvokeScript("addText", text)
     End Sub
 
-    Public Sub SetAlignment(ByVal align As String)
+    Public Sub SetAlignment(align As String)
         If align.Length = 0 Then align = "left"
         InvokeScript("createNewDiv", align)
     End Sub
@@ -23,11 +23,11 @@ Public Class PlayerHTML
         InvokeScript("bindMenu", linkid, verbs, text)
     End Sub
 
-    Public Sub WriteLine(ByVal text As String)
+    Public Sub WriteLine(text As String)
         WriteText(text + "<br />")
     End Sub
 
-    Private Sub wbOutput_DocumentCompleted(ByVal sender As Object, ByVal e As WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
+    Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
         AddUIEventElement()
         RaiseEvent Ready()
     End Sub
@@ -45,7 +45,7 @@ Public Class PlayerHTML
         AddHandler newLink.Click, AddressOf HiddenCmdLinkClicked
     End Sub
 
-    Private Sub HiddenCmdLinkClicked(ByVal sender As Object, ByVal e As EventArgs)
+    Private Sub HiddenCmdLinkClicked(sender As Object, e As EventArgs)
         Dim element As HtmlElement = DirectCast(sender, HtmlElement)
         Dim data() As String = element.InnerText.Split({" "c}, 2)
         Dim cmd As String = data(0)
@@ -85,7 +85,7 @@ Public Class PlayerHTML
         wbOutput.Document.ExecCommand("SelectAll", True, Nothing)
     End Sub
 
-    Public Sub InvokeScript(ByVal functionName As String, ByVal ParamArray args() As String)
+    Public Sub InvokeScript(functionName As String, ParamArray args() As String)
         wbOutput.Document.InvokeScript(functionName, args)
     End Sub
 

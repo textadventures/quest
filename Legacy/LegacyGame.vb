@@ -461,7 +461,7 @@ Public Class LegacyGame
     Private m_gameFinished As Boolean
     Private m_gameIsRestoring As Boolean
 
-    Public Sub New(ByVal filename As String)
+    Public Sub New(filename As String)
         Randomize(Microsoft.VisualBasic.Timer())
         QuestVersion = My.Application.Info.Version.ToString()
         InitialiseQuest()
@@ -482,7 +482,7 @@ Public Class LegacyGame
         SkipCheckFile(3) = "musicvf1.cas"
     End Sub
 
-    Private Function StripCodes(ByVal InputString As String) As String
+    Private Function StripCodes(InputString As String) As String
         Dim FCodeDat As String
         Dim FCodePos, FCodeLen As Integer
 
@@ -1348,7 +1348,7 @@ Public Class LegacyGame
 
     End Function
 
-    Private Function DefineBlockParam(ByVal blockname As String, ByVal Param As String) As DefineBlock
+    Private Function DefineBlockParam(blockname As String, Param As String) As DefineBlock
 
         ' Returns the start and end points of a named block
 
@@ -1462,7 +1462,7 @@ Public Class LegacyGame
 
     End Sub
 
-    Private Function GetResourceLines(ByVal res As Byte()) As String()
+    Private Function GetResourceLines(res As Byte()) As String()
         Dim enc As New System.Text.UTF8Encoding()
         Dim resFile As String = enc.GetString(res)
         Return Split(resFile, Environment.NewLine)
@@ -1904,7 +1904,7 @@ ErrorHandler:
 
     End Function
 
-    Friend Sub LogASLError(ByVal TheError As String, Optional ByRef MessageType As Integer = LOGTYPE_MISC)
+    Friend Sub LogASLError(TheError As String, Optional ByRef MessageType As Integer = LOGTYPE_MISC)
 
         ' TO DO: This should raise an event so we can access logs from Player
 
@@ -2925,7 +2925,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function ExpressionHandler(ByVal Expression As String) As ExpressionResult
+    Private Function ExpressionHandler(Expression As String) As ExpressionResult
 
         Dim ObsExp As String
         Dim i As Integer
@@ -3698,7 +3698,7 @@ ErrorHandler:
         End With
     End Sub
 
-    Private Sub AddToObjectAltNames(ByVal AltNames As String, ByRef ObjID As Integer)
+    Private Sub AddToObjectAltNames(AltNames As String, ByRef ObjID As Integer)
         Dim EndPos As Integer
         Dim CurName As String
 
@@ -3721,7 +3721,7 @@ ErrorHandler:
         End With
     End Sub
 
-    Friend Sub AddToObjectProperties(ByVal PropertyInfo As String, ByRef ObjID As Integer, ByRef Thread As ThreadData)
+    Friend Sub AddToObjectProperties(PropertyInfo As String, ByRef ObjID As Integer, ByRef Thread As ThreadData)
         Dim CurInfo As String
         Dim SCP, EP As Integer
         Dim CurName, CurValue As String
@@ -3927,7 +3927,7 @@ ErrorHandler:
         ConvertVarsIn = RetrieveParameter("<" & InputString & ">", Thread)
     End Function
 
-    Private Function DisambObjHere(ByRef Thread As ThreadData, ByRef ObjID As Integer, ByVal FirstPlace As String, Optional ByVal TwoPlaces As Boolean = False, Optional ByVal SecondPlace As String = "", Optional ByVal bExit As Boolean = False) As Boolean
+    Private Function DisambObjHere(ByRef Thread As ThreadData, ByRef ObjID As Integer, FirstPlace As String, Optional TwoPlaces As Boolean = False, Optional SecondPlace As String = "", Optional bExit As Boolean = False) As Boolean
 
         Dim OnlySeen, ObjIsSeen As Boolean
         Dim RoomObjID As Integer
@@ -4228,7 +4228,7 @@ ErrorHandler:
 
     End Function
 
-    Friend Function Disambiguate(ByVal ObjectName As String, ByRef ContainedIn As String, ByRef Thread As ThreadData, Optional ByRef bExit As Boolean = False) As Integer
+    Friend Function Disambiguate(ObjectName As String, ByRef ContainedIn As String, ByRef Thread As ThreadData, Optional ByRef bExit As Boolean = False) As Integer
         ' Returns object ID being referred to by player.
         ' Returns -1 if object doesn't exist, calling function
         '   then expected to print relevant error.
@@ -4659,7 +4659,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function ExecuteCondition(ByVal Condition As String, ByRef Thread As ThreadData) As Boolean
+    Private Function ExecuteCondition(Condition As String, ByRef Thread As ThreadData) As Boolean
         Dim bThisResult, bThisNot As Boolean
 
         If BeginsWith(Condition, "not ") Then
@@ -5580,7 +5580,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetObjectID(ByVal ObjectName As String, ByRef Thread As ThreadData, Optional ByRef ObjectRoom As String = "") As Integer
+    Private Function GetObjectID(ObjectName As String, ByRef Thread As ThreadData, Optional ByRef ObjectRoom As String = "") As Integer
 
         Dim CurID, i As Integer
         Dim FoundItem As Boolean
@@ -5738,7 +5738,7 @@ ErrorHandler:
         GetPropertiesInType = PropertyList
     End Function
 
-    Friend Function GetRoomID(ByVal RoomName As String, ByRef Thread As ThreadData) As Integer
+    Friend Function GetRoomID(RoomName As String, ByRef Thread As ThreadData) As Integer
         Dim Found As Boolean
         Dim ArrayIndex, i As Integer
         Found = False
@@ -6770,7 +6770,7 @@ errhandle:
         ExecuteIfIs = Satisfied
     End Function
 
-    Private Function GetNumericContents(ByVal NumericName As String, ByRef Thread As ThreadData, Optional ByRef NOERROR As Boolean = False) As Double
+    Private Function GetNumericContents(NumericName As String, ByRef Thread As ThreadData, Optional ByRef NOERROR As Boolean = False) As Double
         Dim bNumExists As Boolean
         Dim iNumNumber As Integer
         Dim ArrayIndex, i As Integer
@@ -6845,11 +6845,11 @@ errhandle:
         GetErrorMessage = ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(iErrorNumber), "%", CONVERT_NUMERIC, Thread), "$", CONVERT_FUNCTIONS, Thread), "#", CONVERT_STRINGS, Thread)
     End Function
 
-    Private Sub PlayMedia(ByVal filename As String)
+    Private Sub PlayMedia(filename As String)
         PlayMedia(filename, False, False)
     End Sub
 
-    Private Sub PlayMedia(ByVal filename As String, ByVal sync As Boolean, ByVal looped As Boolean)
+    Private Sub PlayMedia(filename As String, sync As Boolean, looped As Boolean)
         If filename.Length = 0 Then
             m_player.StopSound()
         Else
@@ -8451,7 +8451,7 @@ errhandle:
         m_player.Speak(Text)
     End Sub
 
-    Private Sub AddToObjectList(ByVal objList As List(Of ListData), ByVal exitList As List(Of ListData), ByVal ObjName As String, ByRef ObjType As Integer, Optional ByRef DisplayType As String = "")
+    Private Sub AddToObjectList(objList As List(Of ListData), exitList As List(Of ListData), ObjName As String, ByRef ObjType As Integer, Optional ByRef DisplayType As String = "")
         ' Adds object, characters and places to the list on the
         ' main Quest window.
 
@@ -8668,7 +8668,7 @@ errhandle:
         ExecuteScript(SetUpChoiceForm(choicesection, Thread), Thread)
     End Sub
 
-    Private Function GetCommandParameters(ByVal TestLine As String, ByVal RequiredLine As String, ByRef Thread As ThreadData) As Boolean
+    Private Function GetCommandParameters(TestLine As String, RequiredLine As String, ByRef Thread As ThreadData) As Boolean
         'Gets parameters from line. For example, if RequiredLine
         'is "read #1#" and TestLine is "read sign", #1# returns
         '"sign".
@@ -8925,7 +8925,7 @@ errhandle:
 
     End Function
 
-    Private Function IsCompatible(ByVal TestLine As String, ByRef RequiredLine As String) As Boolean
+    Private Function IsCompatible(TestLine As String, ByRef RequiredLine As String) As Boolean
         'Tests to see if TestLine "works" with RequiredLine.
         'For example, if RequiredLine = "read #text#", then the
         'TestLines of "read book" and "read sign" are compatible.
@@ -8968,7 +8968,7 @@ errhandle:
         IsCompatible = True
     End Function
 
-    Private Function OpenGame(ByVal theGameFileName As String) As Boolean
+    Private Function OpenGame(theGameFileName As String) As Boolean
 
         Dim FileNum As Integer
         Dim cdatb, bResult As Boolean
@@ -10367,7 +10367,7 @@ errhandle:
         Return True
     End Function
 
-    Private Function CmdStartsWith(ByVal sCommand As String, ByVal sCheck As String) As Boolean
+    Private Function CmdStartsWith(sCommand As String, sCheck As String) As Boolean
         ' When we are checking user input in ExecCommand, we check things like whether
         ' the player entered something beginning with "put ". We need to trim what the player entered
         ' though, otherwise they might just type "put " and then we would try disambiguating an object
@@ -12443,7 +12443,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub AddCompassExit(ByVal exitList As List(Of ListData), ByVal name As String)
+    Private Sub AddCompassExit(exitList As List(Of ListData), name As String)
         exitList.Add(New ListData(name, m_listVerbs(ListType.ExitsList)))
     End Sub
 
@@ -12826,7 +12826,7 @@ ErrorHandler:
     End Sub
 
 
-    Private Sub UpdateVisibilityInContainers(ByRef Thread As ThreadData, Optional ByVal OnlyParent As String = "")
+    Private Sub UpdateVisibilityInContainers(ByRef Thread As ThreadData, Optional OnlyParent As String = "")
         ' Use OnlyParent to only update objects that are contained by a specific parent
 
         Dim i, ParentID As Integer
@@ -13019,7 +13019,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function FindExit(ByVal sTag As String) As RoomExit
+    Private Function FindExit(sTag As String) As RoomExit
         ' e.g. Takes a tag of the form "room; north" and return's the north exit of room.
 
         Dim sRoom As String
@@ -13059,7 +13059,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecuteLock(ByVal sTag As String, ByRef bLock As Boolean)
+    Private Sub ExecuteLock(sTag As String, ByRef bLock As Boolean)
         Dim oExit As RoomExit
 
         oExit = FindExit(sTag)
@@ -13197,9 +13197,9 @@ ErrorHandler:
 
     Public Event LogError(errorMessage As String) Implements IASL.LogError
 
-    Public Event PrintText(ByVal text As String) Implements IASL.PrintText
+    Public Event PrintText(text As String) Implements IASL.PrintText
 
-    Public Sub Save(ByVal filename As String) Implements IASL.Save
+    Public Sub Save(filename As String) Implements IASL.Save
         SaveGame(filename)
     End Sub
 
@@ -13209,7 +13209,7 @@ ErrorHandler:
         End Get
     End Property
 
-    Public Sub SendCommand(ByVal command As String) Implements IASL.SendCommand
+    Public Sub SendCommand(command As String) Implements IASL.SendCommand
         ' The processing of commands is done in a separate thread, so things like the "enter" command can
         ' lock the thread while waiting for further input. After starting to process the command, we wait
         ' for something to happen before returning from the SendCommand call - either the command will have
@@ -13247,11 +13247,11 @@ ErrorHandler:
         End Try
     End Sub
 
-    Public Sub SendEvent(ByVal eventName As String, ByVal param As String) Implements IASL.SendEvent
+    Public Sub SendEvent(eventName As String, param As String) Implements IASL.SendEvent
 
     End Sub
 
-    Public Event UpdateList(ByVal listType As ListType, ByVal items As System.Collections.Generic.List(Of ListData)) Implements IASL.UpdateList
+    Public Event UpdateList(listType As ListType, items As System.Collections.Generic.List(Of ListData)) Implements IASL.UpdateList
 
     Public ReadOnly Property Walkthrough As IWalkthrough Implements IASL.Walkthrough
         Get
@@ -13259,7 +13259,7 @@ ErrorHandler:
         End Get
     End Property
 
-    Public Function Initialise(ByVal player As IPlayer) As Boolean Implements IASL.Initialise
+    Public Function Initialise(player As IPlayer) As Boolean Implements IASL.Initialise
         m_player = player
         If LCase(Right(m_filename, 4)) = ".qsg" Then
             Return OpenGame(m_filename)
@@ -13289,7 +13289,7 @@ ErrorHandler:
         Cleanup()
     End Sub
 
-    Private Function GetResourcePath(ByVal filename As String) As String
+    Private Function GetResourcePath(filename As String) As String
         If Not ResourceFile Is Nothing AndAlso ResourceFile.Length > 0 Then
             Dim extractResult As String = ExtractFile(filename)
             Return extractResult
@@ -13301,7 +13301,7 @@ ErrorHandler:
         DeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest"))
     End Sub
 
-    Private Sub DeleteDirectory(ByVal dir As String)
+    Private Sub DeleteDirectory(dir As String)
         If Not System.IO.Directory.Exists(dir) Then Exit Sub
         Dim files As String() = System.IO.Directory.GetFiles(dir)
         Dim dirs As String() = System.IO.Directory.GetDirectories(dir)
@@ -13323,7 +13323,7 @@ ErrorHandler:
         MyBase.Finalize()
     End Sub
 
-    Private Function GetLibraryLines(ByVal libName As String) As String()
+    Private Function GetLibraryLines(libName As String) As String()
         Dim libCode As Byte() = Nothing
         libName = LCase(libName)
 

@@ -9,7 +9,7 @@ Public Class DebuggerPane
         Get
             Return m_game
         End Get
-        Set(ByVal value As IASLDebug)
+        Set(value As IASLDebug)
             m_game = value
             UpdateObjectList()
         End Set
@@ -22,7 +22,7 @@ Public Class DebuggerPane
         Next
     End Sub
 
-    Private Sub lstObjects_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lstObjects.SelectedIndexChanged
+    Private Sub lstObjects_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lstObjects.SelectedIndexChanged
         UpdateAttributes()
     End Sub
 
@@ -50,7 +50,7 @@ Public Class DebuggerPane
         Get
             Return m_filter
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             m_filter = value
         End Set
     End Property

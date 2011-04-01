@@ -3,7 +3,7 @@
     Private m_selected As Boolean
 
     Public WriteOnly Property Options() As IDictionary(Of String, String)
-        Set(ByVal value As IDictionary(Of String, String))
+        Set(value As IDictionary(Of String, String))
             For Each key As String In value.Keys
                 lstOptions.Items.Add(key, value(key), "")
             Next
@@ -12,13 +12,13 @@
     End Property
 
     Public WriteOnly Property Caption() As String
-        Set(ByVal value As String)
+        Set(value As String)
             lblCaption.Text = value
         End Set
     End Property
 
     Public WriteOnly Property AllowCancel() As Boolean
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             cmdCancel.Visible = value
             Me.ControlBox = value
         End Set
@@ -32,7 +32,7 @@
         End Get
     End Property
 
-    Private Sub cmdSelect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdSelect.Click
+    Private Sub cmdSelect_Click(sender As System.Object, e As System.EventArgs) Handles cmdSelect.Click
         ItemSelected()
     End Sub
 
@@ -41,20 +41,20 @@
         Me.Close()
     End Sub
 
-    Private Sub Menu_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub Menu_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         m_cancelled = Not m_selected
     End Sub
 
-    Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
+    Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
         m_cancelled = True
         Me.Close()
     End Sub
 
-    Private Sub lstOptions_DoubleClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles lstOptions.DoubleClick
+    Private Sub lstOptions_DoubleClick(sender As Object, e As System.EventArgs) Handles lstOptions.DoubleClick
         ItemSelected()
     End Sub
 
-    Private Sub lstOptions_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles lstOptions.Resize
+    Private Sub lstOptions_Resize(sender As Object, e As System.EventArgs) Handles lstOptions.Resize
         lstOptions.Columns(0).Width = lstOptions.Width
     End Sub
 End Class

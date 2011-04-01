@@ -1,6 +1,6 @@
 ﻿Public Class About
 
-    Private Sub About_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub About_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         ' Set the title of the form.
         Dim ApplicationTitle As String
         If My.Application.Info.Title <> "" Then
@@ -16,7 +16,7 @@
         lblBuild.Left = lblTitle.Left + lblTitle.Width
     End Sub
 
-    Private Sub btnClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClose.Click
+    Private Sub btnClose_Click(sender As System.Object, e As System.EventArgs) Handles btnClose.Click
         Me.Close()
     End Sub
 End Class

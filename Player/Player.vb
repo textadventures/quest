@@ -27,8 +27,8 @@ Public Class Player
     Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
 
     Public Event Quit()
-    Public Event AddToRecent(ByVal filename As String, ByVal name As String)
-    Public Event GameNameSet(ByVal name As String)
+    Public Event AddToRecent(filename As String, name As String)
+    Public Event GameNameSet(name As String)
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -45,7 +45,7 @@ Public Class Player
 
     End Sub
 
-    Public Sub SetMenu(ByVal menu As AxeSoftware.Quest.Controls.Menu)
+    Public Sub SetMenu(menu As AxeSoftware.Quest.Controls.Menu)
         m_menu = menu
 
         menu.AddMenuClickHandler("debugger", AddressOf DebuggerMenuClick)
@@ -116,7 +116,7 @@ Public Class Player
         Get
             Return m_panesVisible
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             m_panesVisible = value
             splitMain.Panel2Collapsed = Not m_panesVisible
             If m_panesVisible Then
@@ -127,7 +127,7 @@ Public Class Player
         End Set
     End Property
 
-    Private Sub txtCommand_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtCommand.KeyDown
+    Private Sub txtCommand_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles txtCommand.KeyDown
         Select Case e.KeyCode
             Case Keys.Up
                 SetHistoryPoint(-1)
@@ -150,7 +150,7 @@ Public Class Player
         End Select
     End Sub
 
-    Private Sub SetHistoryPoint(ByVal offset As Integer)
+    Private Sub SetHistoryPoint(offset As Integer)
         If offset = 0 Then
             m_historyPoint = m_history.Count
         Else
@@ -166,7 +166,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub cmdGo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdGo.Click
+    Private Sub cmdGo_Click(sender As System.Object, e As System.EventArgs) Handles cmdGo.Click
         If m_waiting Then
             m_waiting = False
             Exit Sub
@@ -174,7 +174,7 @@ Public Class Player
         EnterText()
     End Sub
 
-    Private Sub cmdPanes_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPanes.Click
+    Private Sub cmdPanes_Click(sender As System.Object, e As System.EventArgs) Handles cmdPanes.Click
         PanesVisible = Not PanesVisible
     End Sub
 
@@ -186,7 +186,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub RunCommand(ByVal command As String)
+    Private Sub RunCommand(command As String)
 
         If Not m_initialised Then Exit Sub
 
@@ -202,7 +202,7 @@ Public Class Player
 
     End Sub
 
-    Private Sub ctlCompass_RunCommand(ByVal command As String) Handles ctlCompass.RunCommand
+    Private Sub ctlCompass_RunCommand(command As String) Handles ctlCompass.RunCommand
         RunCommand(command)
     End Sub
 
@@ -230,7 +230,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub tmrTimer_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles tmrTimer.Tick
+    Private Sub tmrTimer_Tick(sender As Object, e As System.EventArgs) Handles tmrTimer.Tick
         tmrTimer.Enabled = False
         EnterText()
     End Sub
@@ -241,11 +241,11 @@ Public Class Player
         RaiseEvent GameNameSet(name)
     End Sub
 
-    Private Sub m_game_UpdateList(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData)) Handles m_game.UpdateList
+    Private Sub m_game_UpdateList(listType As AxeSoftware.Quest.ListType, items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData)) Handles m_game.UpdateList
         BeginInvoke(Sub() UpdateList(listType, items))
     End Sub
 
-    Private Sub UpdateList(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData))
+    Private Sub UpdateList(listType As AxeSoftware.Quest.ListType, items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData))
         ' Keep the IASL interface atomic, so we transmit lists of places separately to lists of objects.
         ' We can merge them when we receive them here, and then pass the merged list to the ElementList with some
         ' kind of flag so it knows what's a place and what's an object.
@@ -260,11 +260,11 @@ Public Class Player
         End Select
     End Sub
 
-    Private Sub lstPlacesObjects_SendCommand(ByVal command As String) Handles lstPlacesObjects.SendCommand
+    Private Sub lstPlacesObjects_SendCommand(command As String) Handles lstPlacesObjects.SendCommand
         RunCommand(command)
     End Sub
 
-    Private Sub lstInventory_SendCommand(ByVal command As String) Handles lstInventory.SendCommand
+    Private Sub lstInventory_SendCommand(command As String) Handles lstInventory.SendCommand
         RunCommand(command)
     End Sub
 
@@ -274,7 +274,7 @@ Public Class Player
         End Get
     End Property
 
-    Public Sub ShowDebugger(ByVal show As Boolean)
+    Public Sub ShowDebugger(show As Boolean)
         If show Then
             If m_debugger Is Nothing Then
                 m_debugger = New Debugger
@@ -289,7 +289,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub m_debugger_VisibleChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles m_debugger.VisibleChanged
+    Private Sub m_debugger_VisibleChanged(sender As Object, e As System.EventArgs) Handles m_debugger.VisibleChanged
         m_menu.MenuChecked("debugger") = m_debugger.Visible
     End Sub
 
@@ -302,11 +302,11 @@ Public Class Player
         Next
     End Sub
 
-    Private Sub SetBackground(ByVal colour As String) Implements IPlayer.SetBackground
+    Private Sub SetBackground(colour As String) Implements IPlayer.SetBackground
         BeginInvoke(Sub() ctlPlayerHtml.SetBackground(colour))
     End Sub
 
-    Private Sub RunScript(ByVal data As String) Implements IPlayer.RunScript
+    Private Sub RunScript(data As String) Implements IPlayer.RunScript
         BeginInvoke(Sub()
                         Dim functionName As String = ""
                         Dim dataList As List(Of String)
@@ -338,7 +338,7 @@ Public Class Player
         ctlPlayerHtml.SelectAll()
     End Sub
 
-    Private Sub SetEnabledState(ByVal enabled As Boolean)
+    Private Sub SetEnabledState(enabled As Boolean)
         txtCommand.Enabled = enabled
         ctlCompass.Enabled = enabled
         cmdGo.Enabled = enabled
@@ -370,7 +370,7 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub Save(ByVal filename As String)
+    Private Sub Save(filename As String)
         Try
             m_game.Save(filename)
             RaiseEvent AddToRecent(filename, m_gameName + " (Saved)")
@@ -381,7 +381,7 @@ Public Class Player
         End Try
     End Sub
 
-    Public Sub ShowMenu(ByVal menuData As MenuData) Implements IPlayer.ShowMenu
+    Public Sub ShowMenu(menuData As MenuData) Implements IPlayer.ShowMenu
         BeginInvoke(Sub()
                         Dim menuForm As Menu
                         menuForm = New Menu()
@@ -414,7 +414,7 @@ Public Class Player
         m_game.FinishWait()
     End Sub
 
-    Public Sub ShowQuestion(ByVal caption As String) Implements IPlayer.ShowQuestion
+    Public Sub ShowQuestion(caption As String) Implements IPlayer.ShowQuestion
         BeginInvoke(Sub()
                         Dim result As Boolean = (MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes)
                         m_game.SetQuestionResponse(result)
@@ -431,11 +431,11 @@ Public Class Player
         Return False
     End Function
 
-    Private Sub wbOutput_PreviewKeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.PreviewKeyDownEventArgs)
+    Private Sub wbOutput_PreviewKeyDown(sender As Object, e As System.Windows.Forms.PreviewKeyDownEventArgs)
         KeyPressed()
     End Sub
 
-    Private Sub SetPanesVisible(ByVal data As String) Implements IPlayer.SetPanesVisible
+    Private Sub SetPanesVisible(data As String) Implements IPlayer.SetPanesVisible
         BeginInvoke(Sub()
                         Select Case data
                             Case "on"
@@ -457,11 +457,11 @@ Public Class Player
                     End Sub)
     End Sub
 
-    Private Sub ShowPicture(ByVal filename As String) Implements IPlayer.ShowPicture
+    Private Sub ShowPicture(filename As String) Implements IPlayer.ShowPicture
         BeginInvoke(Sub() ctlPlayerHtml.ShowPicture(filename))
     End Sub
 
-    Private Sub PlaySound(ByVal filename As String, ByVal synchronous As Boolean, ByVal looped As Boolean) Implements IPlayer.PlaySound
+    Private Sub PlaySound(filename As String, synchronous As Boolean, looped As Boolean) Implements IPlayer.PlaySound
         BeginInvoke(Sub()
                         If synchronous And looped Then
                             Throw New Exception("Can't play sound that is both synchronous and looped")
@@ -500,22 +500,22 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub Speak(ByVal text As String) Implements IPlayer.Speak
+    Private Sub Speak(text As String) Implements IPlayer.Speak
         BeginInvoke(Sub() m_speech.Speak(text))
     End Sub
 
-    Public Sub SetWindowMenu(ByVal menuData As MenuData) Implements IPlayer.SetWindowMenu
+    Public Sub SetWindowMenu(menuData As MenuData) Implements IPlayer.SetWindowMenu
         BeginInvoke(Sub()
                         m_menu.CreateWindowMenu(menuData.Caption, menuData.Options, AddressOf WindowMenuClicked)
                     End Sub
         )
     End Sub
 
-    Private Sub WindowMenuClicked(ByVal command As String)
+    Private Sub WindowMenuClicked(command As String)
         RunCommand(command)
     End Sub
 
-    Public Function GetNewGameFile(ByVal originalFilename As String, ByVal extensions As String) As String Implements IPlayer.GetNewGameFile
+    Public Function GetNewGameFile(originalFilename As String, extensions As String) As String Implements IPlayer.GetNewGameFile
         If MsgBox(String.Format("The game file {0} does not exist.{1}Would you like to find the file yourself?", originalFilename, vbCrLf + vbCrLf), MsgBoxStyle.Question Or MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
             ctlOpenFile.Filter = "Game files|" + extensions
             ctlOpenFile.ShowDialog()

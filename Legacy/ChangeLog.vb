@@ -20,7 +20,7 @@ Friend Class ChangeLog
         Get
             AppliesToType = m_lAppliesToType
         End Get
-        Set(ByVal Value As eAppliesToType)
+        Set(Value As eAppliesToType)
             m_lAppliesToType = Value
         End Set
     End Property

@@ -15,7 +15,7 @@ Friend Class RoomExit
     Private m_sDisplayName As String ' this could be a place exit's alias
     Private m_game As LegacyGame
 
-    Public Sub New(ByVal game As LegacyGame)
+    Public Sub New(game As LegacyGame)
         m_game = game
         game.NumberObjs = game.NumberObjs + 1
         ReDim Preserve game.Objs(game.NumberObjs)
@@ -29,20 +29,20 @@ Friend Class RoomExit
 
     ' If this code was properly object oriented, we could set up properties properly
     ' on the "object" object.
-    Private Property ExitProperty(ByVal PropertyName As String) As String
+    Private Property ExitProperty(PropertyName As String) As String
         Get
             ExitProperty = m_game.GetObjectProperty(PropertyName, m_lObjID, False, False)
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             m_game.AddToObjectProperties(PropertyName & "=" & Value, m_lObjID, m_game.NullThread)
         End Set
     End Property
 
-    Private Property ExitPropertyBool(ByVal PropertyName As String) As Boolean
+    Private Property ExitPropertyBool(PropertyName As String) As Boolean
         Get
             ExitPropertyBool = (m_game.GetObjectProperty(PropertyName, m_lObjID, True, False) = "yes")
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             Dim sPropertyString As String
             sPropertyString = PropertyName
             If Not Value Then sPropertyString = "not " & sPropertyString
@@ -50,8 +50,8 @@ Friend Class RoomExit
         End Set
     End Property
 
-    Private WriteOnly Property Action(ByVal ActionName As String) As String
-        Set(ByVal Value As String)
+    Private WriteOnly Property Action(ActionName As String) As String
+        Set(Value As String)
             m_game.AddToObjectActions("<" & ActionName & "> " & Value, m_lObjID, m_game.NullThread)
         End Set
     End Property
@@ -61,7 +61,7 @@ Friend Class RoomExit
         Get
             ToRoom = ExitProperty("to")
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             ExitProperty("to") = Value
             UpdateObjectName()
         End Set
@@ -72,13 +72,13 @@ Friend Class RoomExit
         Get
             Prefix = ExitProperty("prefix")
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             ExitProperty("prefix") = Value
         End Set
     End Property
 
     Public WriteOnly Property Script() As String
-        Set(ByVal Value As String)
+        Set(Value As String)
             If Len(Value) > 0 Then
                 Action("script") = Value
             End If
@@ -96,7 +96,7 @@ Friend Class RoomExit
         Get
             Direction = m_lDirection
         End Get
-        Set(ByVal Value As LegacyGame.eDirection)
+        Set(Value As LegacyGame.eDirection)
             m_lDirection = Value
             If Value <> LegacyGame.eDirection.dirNone Then UpdateObjectName()
         End Set
@@ -106,7 +106,7 @@ Friend Class RoomExit
         Get
             Parent = m_oParent
         End Get
-        Set(ByVal Value As RoomExits)
+        Set(Value As RoomExits)
             m_oParent = Value
         End Set
     End Property
@@ -144,7 +144,7 @@ Friend Class RoomExit
         Get
             IsLocked = ExitPropertyBool("locked")
         End Get
-        Set(ByVal Value As Boolean)
+        Set(Value As Boolean)
             ExitPropertyBool("locked") = Value
         End Set
     End Property
@@ -153,7 +153,7 @@ Friend Class RoomExit
         Get
             LockMessage = ExitProperty("lockmessage")
         End Get
-        Set(ByVal Value As String)
+        Set(Value As String)
             ExitProperty("lockmessage") = Value
         End Set
     End Property
