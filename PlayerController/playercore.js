@@ -40,3 +40,13 @@ function clearScreen() {
     $("#divOutput").html("");
     createNewDiv("left");
 }
+
+function keyPressCode(e) {
+    var keynum
+    if (window.event) {
+        keynum = e.keyCode
+    } else if (e.which) {
+        keynum = e.which
+    }
+    return keynum;
+}

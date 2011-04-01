@@ -73,16 +73,6 @@ function endWait() {
     }, 100);
 }
 
-function keyPressCode(e) {
-    var keynum
-    if (window.event) {
-        keynum = e.keyCode
-    } else if (e.which) {
-        keynum = e.which
-    }
-    return keynum;
-}
-
 function globalKey(e) {
     if (_waitMode) {
         endWait();

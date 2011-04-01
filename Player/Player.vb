@@ -561,7 +561,7 @@ Public Class Player
     End Sub
 
     Public Sub WriteHTML(html As String) Implements IPlayer.WriteHTML
-        Throw New NotImplementedException()
+        ctlPlayerHtml.WriteText(html)
     End Sub
 
     Public Sub LocationUpdated(location As String) Implements IPlayer.LocationUpdated
