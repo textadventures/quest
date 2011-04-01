@@ -25,6 +25,7 @@ Public Class Player
     Private m_soundPlaying As Boolean = False
     Private m_destroyed As Boolean = False
     Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
+    Private m_htmlPlayerReadyFunction As Action = AddressOf FinishInitialise
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -78,12 +79,23 @@ Public Class Player
     Private Sub FinishInitialise()
 
         If m_game.Initialise(Me) Then
+
             AddToRecentList()
             m_menu.MenuEnabled("walkthrough") = Not m_game.Walkthrough Is Nothing
-            m_initialised = True
-            tmrTick.Enabled = True
-            m_game.Begin()
-            txtCommand.Focus()
+
+            ' If we have external JavaScript files, we need to rebuild the HTML page source and
+            ' reload it. Then, only when the page has finished loading, begin the game.
+
+            Dim scripts As IEnumerable(Of String) = m_game.GetExternalScripts
+            If scripts.Count > 0 Then
+                ' Generate the new HTML and wait for Ready event
+
+                m_htmlPlayerReadyFunction = AddressOf BeginGame
+                ctlPlayerHtml.InitialiseScripts(scripts)
+            Else
+                BeginGame()
+            End If
+
         Else
             WriteLine("<b>Failed to load game.</b>")
             If (m_game.Errors.Count > 0) Then
@@ -95,6 +107,13 @@ Public Class Player
             GameFinished()
         End If
 
+    End Sub
+
+    Private Sub BeginGame()
+        m_initialised = True
+        tmrTick.Enabled = True
+        m_game.Begin()
+        txtCommand.Focus()
     End Sub
 
     Public Sub Reset()
@@ -606,7 +625,7 @@ Public Class Player
         'Dim runnerThread As New Thread(New ThreadStart(AddressOf TryInitialise))
         'runnerThread.Start()
 
-        BeginInvoke(Sub() FinishInitialise())
+        BeginInvoke(Sub() m_htmlPlayerReadyFunction.Invoke())
     End Sub
 
     Private Sub ctlPlayerHtml_SendEvent(eventName As String, param As String) Handles ctlPlayerHtml.SendEvent

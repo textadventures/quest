@@ -6,8 +6,11 @@ Public Class PlayerHTML
     Public Event CommandRequested(command As String)
     Public Event SendEvent(eventName As String, param As String)
 
+    Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
+    Private m_deleteFile As String = Nothing
+
     Public Sub Setup()
-        wbOutput.Navigate(My.Application.Info.DirectoryPath() & "\Blank.htm")
+        wbOutput.Navigate(m_baseHtmlPath)
     End Sub
 
     Public Sub WriteText(text As String)
@@ -29,6 +32,7 @@ Public Class PlayerHTML
 
     Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
         AddUIEventElement()
+        DeleteTempFile()
         RaiseEvent Ready()
     End Sub
 
@@ -43,6 +47,12 @@ Public Class PlayerHTML
         newLink.Style = "display:none"
         wbOutput.Document.Body.AppendChild(newLink)
         AddHandler newLink.Click, AddressOf HiddenCmdLinkClicked
+    End Sub
+
+    Private Sub DeleteTempFile()
+        If m_deleteFile Is Nothing Then Exit Sub
+        System.IO.File.Delete(m_deleteFile)
+        m_deleteFile = Nothing
     End Sub
 
     Private Sub HiddenCmdLinkClicked(sender As Object, e As EventArgs)
@@ -91,6 +101,41 @@ Public Class PlayerHTML
 
     Public Sub SetBackground(colour As String)
         InvokeScript("SetBackground", colour)
+    End Sub
+
+    Private Const k_scriptsPlaceholder As String = "<!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->"
+
+    Public Sub InitialiseScripts(scripts As IEnumerable(Of String))
+        ' Construct an HTML page based on the default Blank.htm, but with additional <script> tags
+        ' for each external Javascript file this game wants to use.
+
+        Dim htmlPath As String = System.IO.Path.GetTempFileName
+
+        Dim scriptsHtml As String = String.Empty
+        For Each script As String In scripts
+            scriptsHtml += String.Format("<script type=""text/javascript"" src=""{0}""></script>", script)
+        Next
+
+        Dim htmlContent As String = System.IO.File.ReadAllText(m_baseHtmlPath)
+
+        ' The <script> src for the default scripts in Blank.htm need to be remapped so they are picked up
+        ' from the Quest app path, not the temp folder. The same applies for stylesheet hrefs.
+        InsertFolderName(htmlContent, "src")
+        InsertFolderName(htmlContent, "href")
+
+        ' Now we can insert the custom <script> elements
+        htmlContent = htmlContent.Replace(k_scriptsPlaceholder, scriptsHtml)
+
+        ' Write our customised html file to the temp folder
+        System.IO.File.WriteAllText(htmlPath, htmlContent)
+
+        wbOutput.Navigate(htmlPath)
+
+        m_deleteFile = htmlPath
+    End Sub
+
+    Private Sub InsertFolderName(ByRef content As String, attribute As String)
+        content = content.Replace(attribute + "=""", attribute + "=""" + My.Application.Info.DirectoryPath() + "\")
     End Sub
 
 End Class
