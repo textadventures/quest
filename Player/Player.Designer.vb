@@ -24,10 +24,6 @@ Partial Class Player
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.splitMain = New System.Windows.Forms.SplitContainer()
-        Me.cmdPanes = New System.Windows.Forms.Button()
-        Me.lblBanner = New System.Windows.Forms.Label()
-        Me.cmdGo = New System.Windows.Forms.Button()
-        Me.txtCommand = New System.Windows.Forms.TextBox()
         Me.lblCompass = New System.Windows.Forms.Label()
         Me.splitPane = New System.Windows.Forms.SplitContainer()
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
@@ -35,6 +31,12 @@ Partial Class Player
         Me.tmrInitialise = New System.Windows.Forms.Timer(Me.components)
         Me.ctlOpenFile = New System.Windows.Forms.OpenFileDialog()
         Me.tmrTick = New System.Windows.Forms.Timer(Me.components)
+        Me.pnlLocation = New System.Windows.Forms.Panel()
+        Me.cmdPanes = New System.Windows.Forms.Button()
+        Me.lblBanner = New System.Windows.Forms.Label()
+        Me.pnlCommand = New System.Windows.Forms.Panel()
+        Me.txtCommand = New System.Windows.Forms.TextBox()
+        Me.cmdGo = New System.Windows.Forms.Button()
         Me.ctlPlayerHtml = New AxeSoftware.Quest.PlayerHTML()
         Me.ctlCompass = New AxeSoftware.Quest.Compass()
         Me.lstInventory = New AxeSoftware.Quest.ElementList()
@@ -47,6 +49,8 @@ Partial Class Player
         Me.splitPane.Panel1.SuspendLayout()
         Me.splitPane.Panel2.SuspendLayout()
         Me.splitPane.SuspendLayout()
+        Me.pnlLocation.SuspendLayout()
+        Me.pnlCommand.SuspendLayout()
         Me.SuspendLayout()
         '
         'splitMain
@@ -57,11 +61,9 @@ Partial Class Player
         '
         'splitMain.Panel1
         '
-        Me.splitMain.Panel1.Controls.Add(Me.cmdPanes)
-        Me.splitMain.Panel1.Controls.Add(Me.lblBanner)
-        Me.splitMain.Panel1.Controls.Add(Me.cmdGo)
-        Me.splitMain.Panel1.Controls.Add(Me.txtCommand)
         Me.splitMain.Panel1.Controls.Add(Me.ctlPlayerHtml)
+        Me.splitMain.Panel1.Controls.Add(Me.pnlLocation)
+        Me.splitMain.Panel1.Controls.Add(Me.pnlCommand)
         '
         'splitMain.Panel2
         '
@@ -71,50 +73,6 @@ Partial Class Player
         Me.splitMain.Size = New System.Drawing.Size(695, 482)
         Me.splitMain.SplitterDistance = 510
         Me.splitMain.TabIndex = 1
-        '
-        'cmdPanes
-        '
-        Me.cmdPanes.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdPanes.Location = New System.Drawing.Point(481, 0)
-        Me.cmdPanes.Name = "cmdPanes"
-        Me.cmdPanes.Size = New System.Drawing.Size(28, 20)
-        Me.cmdPanes.TabIndex = 5
-        Me.cmdPanes.Text = ">"
-        Me.cmdPanes.UseVisualStyleBackColor = True
-        '
-        'lblBanner
-        '
-        Me.lblBanner.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblBanner.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblBanner.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblBanner.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.lblBanner.Location = New System.Drawing.Point(0, 0)
-        Me.lblBanner.Margin = New System.Windows.Forms.Padding(0)
-        Me.lblBanner.Name = "lblBanner"
-        Me.lblBanner.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
-        Me.lblBanner.Size = New System.Drawing.Size(480, 20)
-        Me.lblBanner.TabIndex = 4
-        '
-        'cmdGo
-        '
-        Me.cmdGo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdGo.Location = New System.Drawing.Point(481, 461)
-        Me.cmdGo.Margin = New System.Windows.Forms.Padding(0)
-        Me.cmdGo.Name = "cmdGo"
-        Me.cmdGo.Size = New System.Drawing.Size(29, 21)
-        Me.cmdGo.TabIndex = 1
-        Me.cmdGo.UseVisualStyleBackColor = True
-        '
-        'txtCommand
-        '
-        Me.txtCommand.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtCommand.Location = New System.Drawing.Point(0, 462)
-        Me.txtCommand.Margin = New System.Windows.Forms.Padding(1)
-        Me.txtCommand.Name = "txtCommand"
-        Me.txtCommand.Size = New System.Drawing.Size(480, 20)
-        Me.txtCommand.TabIndex = 0
         '
         'lblCompass
         '
@@ -163,15 +121,77 @@ Partial Class Player
         '
         Me.tmrTick.Interval = 1000
         '
+        'pnlLocation
+        '
+        Me.pnlLocation.Controls.Add(Me.cmdPanes)
+        Me.pnlLocation.Controls.Add(Me.lblBanner)
+        Me.pnlLocation.Dock = System.Windows.Forms.DockStyle.Top
+        Me.pnlLocation.Location = New System.Drawing.Point(0, 0)
+        Me.pnlLocation.Name = "pnlLocation"
+        Me.pnlLocation.Size = New System.Drawing.Size(510, 20)
+        Me.pnlLocation.TabIndex = 8
+        '
+        'cmdPanes
+        '
+        Me.cmdPanes.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdPanes.Location = New System.Drawing.Point(486, 0)
+        Me.cmdPanes.Name = "cmdPanes"
+        Me.cmdPanes.Size = New System.Drawing.Size(24, 20)
+        Me.cmdPanes.TabIndex = 7
+        Me.cmdPanes.Text = ">"
+        Me.cmdPanes.UseVisualStyleBackColor = True
+        '
+        'lblBanner
+        '
+        Me.lblBanner.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblBanner.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.lblBanner.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblBanner.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.lblBanner.Location = New System.Drawing.Point(0, 0)
+        Me.lblBanner.Margin = New System.Windows.Forms.Padding(0)
+        Me.lblBanner.Name = "lblBanner"
+        Me.lblBanner.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
+        Me.lblBanner.Size = New System.Drawing.Size(485, 20)
+        Me.lblBanner.TabIndex = 6
+        '
+        'pnlCommand
+        '
+        Me.pnlCommand.Controls.Add(Me.cmdGo)
+        Me.pnlCommand.Controls.Add(Me.txtCommand)
+        Me.pnlCommand.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.pnlCommand.Location = New System.Drawing.Point(0, 462)
+        Me.pnlCommand.Name = "pnlCommand"
+        Me.pnlCommand.Size = New System.Drawing.Size(510, 20)
+        Me.pnlCommand.TabIndex = 9
+        '
+        'txtCommand
+        '
+        Me.txtCommand.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtCommand.Location = New System.Drawing.Point(0, 0)
+        Me.txtCommand.Margin = New System.Windows.Forms.Padding(1)
+        Me.txtCommand.Name = "txtCommand"
+        Me.txtCommand.Size = New System.Drawing.Size(485, 20)
+        Me.txtCommand.TabIndex = 4
+        '
+        'cmdGo
+        '
+        Me.cmdGo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdGo.Location = New System.Drawing.Point(486, 0)
+        Me.cmdGo.Margin = New System.Windows.Forms.Padding(0)
+        Me.cmdGo.Name = "cmdGo"
+        Me.cmdGo.Size = New System.Drawing.Size(24, 21)
+        Me.cmdGo.TabIndex = 5
+        Me.cmdGo.UseVisualStyleBackColor = True
+        '
         'ctlPlayerHtml
         '
-        Me.ctlPlayerHtml.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ctlPlayerHtml.Location = New System.Drawing.Point(2, 20)
+        Me.ctlPlayerHtml.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlPlayerHtml.Location = New System.Drawing.Point(0, 20)
         Me.ctlPlayerHtml.Margin = New System.Windows.Forms.Padding(0)
         Me.ctlPlayerHtml.Name = "ctlPlayerHtml"
-        Me.ctlPlayerHtml.Size = New System.Drawing.Size(507, 441)
+        Me.ctlPlayerHtml.Size = New System.Drawing.Size(510, 442)
         Me.ctlPlayerHtml.TabIndex = 7
         '
         'ctlCompass
@@ -210,7 +230,6 @@ Partial Class Player
         Me.Name = "Player"
         Me.Size = New System.Drawing.Size(695, 482)
         Me.splitMain.Panel1.ResumeLayout(False)
-        Me.splitMain.Panel1.PerformLayout()
         Me.splitMain.Panel2.ResumeLayout(False)
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitMain.ResumeLayout(False)
@@ -218,14 +237,13 @@ Partial Class Player
         Me.splitPane.Panel2.ResumeLayout(False)
         CType(Me.splitPane, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitPane.ResumeLayout(False)
+        Me.pnlLocation.ResumeLayout(False)
+        Me.pnlCommand.ResumeLayout(False)
+        Me.pnlCommand.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents splitMain As System.Windows.Forms.SplitContainer
-    Friend WithEvents cmdPanes As System.Windows.Forms.Button
-    Friend WithEvents lblBanner As System.Windows.Forms.Label
-    Friend WithEvents cmdGo As System.Windows.Forms.Button
-    Friend WithEvents txtCommand As System.Windows.Forms.TextBox
     Friend WithEvents splitPane As System.Windows.Forms.SplitContainer
     Friend WithEvents lblCompass As System.Windows.Forms.Label
     Friend WithEvents ctlCompass As Quest.Compass
@@ -237,5 +255,11 @@ Partial Class Player
     Friend WithEvents ctlOpenFile As System.Windows.Forms.OpenFileDialog
     Friend WithEvents tmrTick As System.Windows.Forms.Timer
     Friend WithEvents ctlPlayerHtml As AxeSoftware.Quest.PlayerHTML
+    Friend WithEvents pnlCommand As System.Windows.Forms.Panel
+    Friend WithEvents cmdGo As System.Windows.Forms.Button
+    Friend WithEvents txtCommand As System.Windows.Forms.TextBox
+    Friend WithEvents pnlLocation As System.Windows.Forms.Panel
+    Friend WithEvents cmdPanes As System.Windows.Forms.Button
+    Friend WithEvents lblBanner As System.Windows.Forms.Label
 
 End Class

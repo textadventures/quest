@@ -176,5 +176,13 @@ namespace LegacyASLTests
         public void SetLinkForeground(string colour)
         {
         }
+
+        public void Show(string element)
+        {
+        }
+
+        public void Hide(string element)
+        {
+        }
     }
 }

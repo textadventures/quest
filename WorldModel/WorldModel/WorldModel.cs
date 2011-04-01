@@ -503,6 +503,12 @@ namespace AxeSoftware.Quest
                 case Request.LinkForeground:
                     m_playerUI.SetLinkForeground(data);
                     break;
+                case Request.Show:
+                    m_playerUI.Show(data);
+                    break;
+                case Request.Hide:
+                    m_playerUI.Hide(data);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");
             }

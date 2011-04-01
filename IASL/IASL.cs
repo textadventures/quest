@@ -62,6 +62,8 @@ namespace AxeSoftware.Quest
         void RequestSave();
         void RequestLoad();
         void RequestRestart();
+        void Show(string element);
+        void Hide(string element);
     }
 
     public enum Request
@@ -82,7 +84,9 @@ namespace AxeSoftware.Quest
         PanesVisible,
         ShowPicture,
         Speak,
-        Restart
+        Restart,
+        Show,
+        Hide
     }
 
     public enum ListType

@@ -331,5 +331,15 @@ namespace WebPlayer
         {
             m_controller.SetLinkForeground(colour);
         }
+
+        public void Show(string element)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Hide(string element)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -643,4 +643,38 @@ Public Class Player
     Public Sub SetAlignment(alignment As String) Implements IPlayerHelperUI.SetAlignment
         BeginInvoke(Sub() ctlPlayerHtml.SetAlignment(alignment))
     End Sub
+
+    Public Sub DoHide(element As String) Implements IPlayer.Hide
+        GetInterfaceVisibilitySetter(element).Invoke(False)
+    End Sub
+
+    Public Sub DoShow(element As String) Implements IPlayer.Show
+        GetInterfaceVisibilitySetter(element).Invoke(True)
+    End Sub
+
+    Private Function GetInterfaceVisibilitySetter(element As String) As Action(Of Boolean)
+        Select Case element
+            Case "Panes"
+                Return AddressOf SetPanesVisible
+            Case "Location"
+                Return AddressOf SetLocationVisible
+            Case "Command"
+                Return AddressOf SetCommandVisible
+            Case Else
+                Throw New ArgumentException("Invalid element")
+        End Select
+    End Function
+
+    Private Sub SetPanesVisible(visible As Boolean)
+        SetPanesVisible(If(visible, "on", "disabled"))
+    End Sub
+
+    Private Sub SetLocationVisible(visible As Boolean)
+        pnlLocation.Visible = visible
+    End Sub
+
+    Private Sub SetCommandVisible(visible As Boolean)
+        pnlCommand.Visible = visible
+    End Sub
+
 End Class
