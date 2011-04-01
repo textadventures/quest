@@ -89,4 +89,8 @@ Public Class PlayerHTML
         wbOutput.Document.InvokeScript(functionName, args)
     End Sub
 
+    Public Sub SetBackground(colour As String)
+        InvokeScript("SetBackground", colour)
+    End Sub
+
 End Class

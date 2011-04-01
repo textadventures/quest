@@ -302,12 +302,8 @@ Public Class Player
         Next
     End Sub
 
-    Private Sub InvokeScript(ByVal functionName As String, ByVal ParamArray args() As String)
-        ctlPlayerHtml.InvokeScript(functionName, args)
-    End Sub
-
     Private Sub SetBackground(ByVal colour As String) Implements IPlayer.SetBackground
-        BeginInvoke(Sub() InvokeScript("SetBackground", colour))
+        BeginInvoke(Sub() ctlPlayerHtml.SetBackground(colour))
     End Sub
 
     Private Sub RunScript(ByVal data As String) Implements IPlayer.RunScript
@@ -326,7 +322,7 @@ Public Class Player
                             End If
                         Next
 
-                        InvokeScript(functionName, args.ToArray())
+                        ctlPlayerHtml.InvokeScript(functionName, args.ToArray())
                     End Sub)
     End Sub
 

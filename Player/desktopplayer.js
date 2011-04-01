@@ -15,3 +15,7 @@ function UIEvent(cmd, parameter) {
     elem.html(cmd + " " + parameter);
     elem.click();
 }
+
+function SetBackground(color) {
+    document.body.style.background = color;
+}
