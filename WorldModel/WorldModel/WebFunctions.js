@@ -1,9 +1,5 @@
-﻿function SetBackground(color) {
-    document.body.style.background = color;
-}
+﻿// TO DO: this can be removed, everything should be in desktopplayer.js
 
-function ASLEvent(event, parameter) {
-    var elem = $("#_ASLEvent");
-    elem.html(event + ";" + parameter);
-    elem.click();
+function SetBackground(color) {
+    document.body.style.background = color;
 }

@@ -38,28 +38,6 @@ function showStatusVisible(visible) {
     }
 }
 
-var _currentDiv = null;
-
-function addText(text) {
-    if (_currentDiv == null) {
-        createNewDiv("left");
-    }
-
-    _currentDiv.append(text);
-    scrollToEnd();
-}
-
-var _divCount = 0;
-
-function createNewDiv(alignment) {
-    _divCount++;
-    jQuery("<div/>", {
-        id: "divOutputAlign" + _divCount,
-        style: "text-align: " + alignment
-    }).appendTo("#divOutput");
-    _currentDiv = $("#divOutputAlign" + _divCount);
-}
-
 function scrollToEnd() {
     if (fluid) {
         $('html, body').animate({ scrollTop: $(document).height() }, 10);
@@ -77,11 +55,6 @@ function setGameName(text) {
     $("#gameTitle").html(text);
 }
 
-function clearScreen() {
-    $("#divOutput").html("");
-    createNewDiv("left");
-}
-
 var _waitMode = false;
 
 function beginWait() {
@@ -94,8 +67,10 @@ function endWait() {
     _waitMode = false;
     $("#endWaitLink").hide();
     $("#txtCommand").show();
-    $("#fldUIMsg").val("endwait");
-    $("#cmdSubmit").click();
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("endwait");
+        $("#cmdSubmit").click();
+    }, 100);
 }
 
 function keyPressCode(e) {
@@ -178,8 +153,10 @@ function showQuestion(title) {
 
 function msgboxSubmit(text) {
     $("#msgbox").dialog("close");
-    $("#fldUIMsg").val("msgbox " + text);
-    $("#cmdSubmit").click();
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("msgbox " + text);
+        $("#cmdSubmit").click();
+    }, 100);
 }
 
 var _menuSelection = "";
@@ -225,8 +202,10 @@ function dialogSelect() {
     _menuSelection = $("#dialogOptions").val();
     if (_menuSelection.length > 0) {
         $("#dialog").dialog("close");
-        $("#fldUIMsg").val("choice " + _menuSelection);
-        $("#cmdSubmit").click();
+        window.setTimeout(function () {
+            $("#fldUIMsg").val("choice " + _menuSelection);
+            $("#cmdSubmit").click();
+        }, 100);
     }
 }
 
@@ -241,8 +220,10 @@ function dialogClose() {
 }
 
 function dialogSendCancel() {
-    $("#fldUIMsg").val("choicecancel");
-    $("#cmdSubmit").click();
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("choicecancel");
+        $("#cmdSubmit").click();
+    }, 100);
 }
 
 function sessionTimeout() {
@@ -321,8 +302,10 @@ function stopAudio() {
 }
 
 function finishSync() {
-    $("#fldUIMsg").val("endwait");
-    $("#cmdSubmit").click();
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("endwait");
+        $("#cmdSubmit").click();
+    }, 100);
 }
 
 function panesVisible(visible) {
@@ -399,8 +382,10 @@ function compassClick(direction) {
 }
 
 function sendCommand(text) {
-    prepareCommand(text);
-    $("#cmdSubmit").click();
+    window.setTimeout(function () {
+        prepareCommand(text);
+        $("#cmdSubmit").click();
+    }, 100);
 }
 
 function updateVerbs() {
@@ -439,20 +424,4 @@ function ASLEvent(event, parameter) {
         $("#fldUIMsg").val("event " + event + ";" + parameter);
         $("#cmdSubmit").click();
     }, 100);
-}
-
-function bindMenu(linkid, verbs, text) {
-    var verbsList = verbs.split("/");
-    var options = [];
-
-    $.each(verbsList, function (key, value) {
-        options = options.concat({ title: value, action: { type: "fn", callback: "doMenuClick('" + value.toLowerCase() + " " + text + "');"} });
-    });
-
-  	$("#" + linkid).jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
-}
-
-function doMenuClick(command) {
-    $("div[id^=jjmenu]").remove();
-    sendCommand(command);
 }

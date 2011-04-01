@@ -64,12 +64,6 @@ namespace AxeSoftware.Quest
         void RequestRestart();
     }
 
-    public enum HyperlinkType
-    {
-        ObjectLink,
-        ExitLink
-    }
-
     public enum Request
     {
         Quit,

@@ -168,20 +168,11 @@ Partial Class Player
         Me.ctlPlayerHtml.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ctlPlayerHtml.Bold = False
-        Me.ctlPlayerHtml.FontName = "Arial"
-        Me.ctlPlayerHtml.FontSize = 9
-        Me.ctlPlayerHtml.FontSizeOverride = 0
-        Me.ctlPlayerHtml.Foreground = Nothing
-        Me.ctlPlayerHtml.ForegroundOverride = Nothing
-        Me.ctlPlayerHtml.Italic = False
-        Me.ctlPlayerHtml.LinkForeground = Nothing
         Me.ctlPlayerHtml.Location = New System.Drawing.Point(2, 20)
         Me.ctlPlayerHtml.Margin = New System.Windows.Forms.Padding(0)
         Me.ctlPlayerHtml.Name = "ctlPlayerHtml"
         Me.ctlPlayerHtml.Size = New System.Drawing.Size(507, 441)
         Me.ctlPlayerHtml.TabIndex = 7
-        Me.ctlPlayerHtml.Underline = False
         '
         'ctlCompass
         '

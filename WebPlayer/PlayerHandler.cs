@@ -44,7 +44,7 @@ namespace WebPlayer
             Logging.Log.InfoFormat("{0} Initialising {1}", GameId, m_filename);
 
             IASL game = GameLauncher.GetGame(m_filename, LibraryFolder);
-            m_controller = new PlayerHelper(game, this);
+            m_controller = new PlayerHelper(game, this, true);
             m_controller.Game.LogError += LogError;
             m_controller.Game.UpdateList += UpdateList;
 

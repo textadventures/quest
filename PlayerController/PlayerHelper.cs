@@ -29,14 +29,15 @@ namespace AxeSoftware.Quest
         private string m_foreground = "";
         private string m_foregroundOverride = "";
         private string m_linkForeground = "";
-        private bool m_useForeground = true;
         private string m_fontSizeOverride = "";
         private string m_textBuffer = "";
+        private bool m_useBuffer;
 
-        public PlayerHelper(IASL game, IPlayerHelperUI playerUI)
+        public PlayerHelper(IASL game, IPlayerHelperUI playerUI, bool useBuffer)
         {
             m_playerUI = playerUI;
             m_game = game;
+            m_useBuffer = useBuffer;
 
             m_game.PrintText += m_game_PrintText;
 
@@ -118,7 +119,6 @@ namespace AxeSoftware.Quest
                                 m_playerUI.SetAlignment(reader.GetAttribute("align"));
                                 break;
                             case "a":
-                                m_useForeground = false;
                                 string target = reader.GetAttribute("target");
                                 WriteText(string.Format("<a href=\"{0}\"{1}>",
                                     reader.GetAttribute("href"),
@@ -176,7 +176,6 @@ namespace AxeSoftware.Quest
                                 break;
                             case "a":
                                 WriteText("</a>");
-                                m_useForeground = true;
                                 break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
@@ -200,20 +199,53 @@ namespace AxeSoftware.Quest
 
         private string FormatText(string text)
         {
+            if (text.Length == 0) return text;
+            if (!m_useBuffer)
+            {
+                // When not using the buffer, if you add an element whose content starts with a space, that
+                // space will be ignored. By replacing an initial space with &nbps; we prevent that.
+                if (text.Substring(0, 1) == " ")
+                {
+                    text = "&nbsp;" + ((text.Length > 1) ? text.Substring(1) : string.Empty);
+                }
+            }
+
+            string style = GetCurrentFormat();
+
+            if (style.Length > 0)
+            {
+                text = string.Format("<span style=\"{0}\">{1}</span>", style, text);
+            }
+
+            return text;
+        }
+
+        private string GetCurrentFormat()
+        {
+            return GetCurrentFormat(null);
+        }
+
+        private string GetCurrentFormat(string linkForeground)
+        {
             string style = "";
             if (m_font.Length > 0)
             {
                 style += string.Format("font-family:{0};", m_font);
             }
 
-            if (m_useForeground)
+            string colour;
+            if (!string.IsNullOrEmpty(linkForeground))
             {
-                string colour = m_foregroundOverride;
+                colour = linkForeground;
+            }
+            else
+            {
+                colour = m_foregroundOverride;
                 if (colour.Length == 0) colour = m_foreground;
-                if (colour.Length > 0)
-                {
-                    style += string.Format("color:{0};", colour);
-                }
+            }
+            if (colour.Length > 0)
+            {
+                style += string.Format("color:{0};", colour);
             }
 
             string fontSize = m_fontSizeOverride;
@@ -224,12 +256,7 @@ namespace AxeSoftware.Quest
                 style += string.Format("font-size:{0}pt;", fontSize);
             }
 
-            if (style.Length > 0)
-            {
-                text = string.Format("<span style=\"{0}\">{1}</span>", style, text);
-            }
-
-            return text;
+            return style;
         }
 
         private int m_linkCount = 0;
@@ -245,20 +272,12 @@ namespace AxeSoftware.Quest
                 onclick = string.Format(" onclick=\"sendCommand('{0}')\"", command);
             }
 
-            m_useForeground = false;
-
-            // TO DO: I think we should be calling FormatText on the "text" variable below,
-            // but currently if we do this we end up with <a...><span>text</span></a> which
-            // for some reason breaks jjmenu, meaning we don't see menus when we left-click.
-            // The whole area of formatting needs looking at again anyway as it's wasteful to
-            // have loads of repeated <span> elements, and this class needs refactoring anyway...
-
-            WriteText(string.Format("<a id=\"{3}\" class=\"cmdlink\"{0}{1}>{2}</a>",
-                ((m_linkForeground.Length > 0) ? (" style=color:" + m_linkForeground) + " " : ""),
+            WriteText(string.Format("<a id=\"{0}\" style=\"{1}\" class=\"cmdlink\"{2}>{3}</a>",
+                linkid,
+                GetCurrentFormat(m_linkForeground),
                 onclick,
-                text,
-                linkid));
-            m_useForeground = true;
+                text
+                ));
 
             // We need to call the JavaScript that binds the pop-up menu to the link *after* it has been
             // written. So, clear the text buffer, then add the binding.
@@ -271,7 +290,14 @@ namespace AxeSoftware.Quest
 
         private void WriteText(string text)
         {
-            m_textBuffer += text;
+            if (m_useBuffer)
+            {
+                m_textBuffer += text;
+            }
+            else
+            {
+                m_playerUI.OutputText(text);
+            }
         }
 
         public string ClearBuffer()
@@ -314,11 +340,13 @@ namespace AxeSoftware.Quest
             m_linkForeground = colour;
         }
 
-        public void SetFont(string fontName) {
+        public void SetFont(string fontName)
+        {
             m_font = fontName;
         }
 
-        public void SetFontSize(string fontSize) {
+        public void SetFontSize(string fontSize)
+        {
             m_fontSize = fontSize;
         }
 

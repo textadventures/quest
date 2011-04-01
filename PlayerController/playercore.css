@@ -1,0 +1,10 @@
+﻿body
+{
+    font-family: Arial, Helvetica, sans-serif;
+}
+a.cmdlink
+{
+    text-decoration: underline;
+    color: Blue;
+    cursor: pointer;
+}

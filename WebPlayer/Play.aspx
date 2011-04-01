@@ -11,6 +11,7 @@
     <link id="styleLink" runat="server" rel="Stylesheet" type="text/css" href="fixed.css" />
     <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/redmond/jquery-ui.css" />
     <link rel="Stylesheet" type="text/css" href="js/jjmenu.css" />
+    <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
     <title>Player</title>
 </head>

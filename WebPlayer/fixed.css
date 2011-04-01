@@ -1,4 +1,5 @@
-﻿@import url("player.css");
+﻿@import url("playercore.css");
+@import url("player.css");
 
 div#gameContent
 {

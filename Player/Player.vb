@@ -3,20 +3,18 @@ Imports System.Threading
 
 Public Class Player
 
-    Implements IPlayer
+    Implements IPlayerHelperUI
 
     Private m_htmlHelper As PlayerHelper
     Private m_panesVisible As Boolean
     Private WithEvents m_game As IASL
     Private WithEvents m_gameTimer As IASLTimer
     Private m_initialised As Boolean
-    Private m_browserReady As Boolean
     Private m_gameReady As Boolean
     Private m_history As New List(Of String)
     Private m_historyPoint As Integer
     Private m_gameName As String
     Private WithEvents m_debugger As Debugger
-    Private m_stage As Integer
     Private m_loaded As Boolean = False
     Private m_splitHelpers As New List(Of AxeSoftware.Utility.SplitterHelper)
     Private m_menu As AxeSoftware.Quest.Controls.Menu = Nothing
@@ -64,26 +62,39 @@ Public Class Player
     End Sub
 
     Public Sub Initialise(ByRef game As IASL)
-        Try
-            m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
-            m_browserReady = False
-            m_stage = 0
-            ctlPlayerHtml.Setup()
-            m_game = game
-            m_gameTimer = TryCast(m_game, IASLTimer)
-            m_gameReady = True
-            txtCommand.Text = ""
-            SetEnabledState(True)
-            ' we don't finish initialising the game until the webbrowser's DocumentCompleted fires
-            ' - it's not in a ready state before then.
-            TryInitialise()
-        Catch ex As Exception
-            WriteLine("Failed to launch the game: " & ex.Message)
-            m_game.Finish()
-            m_game = Nothing
-            m_gameReady = False
+        m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
+        m_game = game
+        m_gameTimer = TryCast(m_game, IASLTimer)
+        m_gameReady = True
+        txtCommand.Text = ""
+        SetEnabledState(True)
+        m_htmlHelper = New PlayerHelper(m_game, Me, False)
+
+        ' we don't finish initialising the game until the webbrowser's DocumentCompleted fires
+        ' - it's not in a ready state before then.
+        ctlPlayerHtml.Setup()
+    End Sub
+
+    Private Sub FinishInitialise()
+
+        If m_game.Initialise(Me) Then
+            AddToRecentList()
+            m_menu.MenuEnabled("walkthrough") = Not m_game.Walkthrough Is Nothing
+            m_initialised = True
+            tmrTick.Enabled = True
+            m_game.Begin()
+            txtCommand.Focus()
+        Else
+            WriteLine("<b>Failed to load game.</b>")
+            If (m_game.Errors.Count > 0) Then
+                WriteLine("The following errors occurred:")
+                For Each loadError As String In m_game.Errors
+                    WriteLine(loadError)
+                Next
+            End If
             GameFinished()
-        End Try
+        End If
+
     End Sub
 
     Public Sub Reset()
@@ -91,8 +102,14 @@ Public Class Player
         m_initialised = False
         m_gameReady = False
         m_gameName = ""
+        ShowDebugger(False)
+        m_debugger = Nothing
         lstInventory.Clear()
         lstPlacesObjects.Clear()
+        If Not m_menu Is Nothing Then
+            m_menu.MenuEnabled("walkthrough") = False
+            m_menu.MenuEnabled("debugger") = False
+        End If
     End Sub
 
     Public Property PanesVisible() As Boolean
@@ -189,10 +206,8 @@ Public Class Player
         RunCommand(command)
     End Sub
 
-    Private Delegate Sub FinishedDelegate()
-
     Private Sub m_game_Finished() Handles m_game.Finished
-        BeginInvoke(New FinishedDelegate(AddressOf GameFinished))
+        BeginInvoke(Sub() GameFinished())
     End Sub
 
     Private Sub GameFinished()
@@ -202,60 +217,8 @@ Public Class Player
         StopSound()
     End Sub
 
-    Private Delegate Sub PrintDelegate(text As String)
-
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
-        BeginInvoke(Sub() PrintText("<output>[Sorry, an error occurred]</output>"))
-    End Sub
-
-    Private Sub m_game_PrintText(ByVal text As String) Handles m_game.PrintText
-        BeginInvoke(New PrintDelegate(AddressOf PrintText), text)
-    End Sub
-
-    Private Sub TryInitialise()
-        Dim success As Boolean
-
-        If (Not m_initialised) And m_gameReady And m_browserReady Then
-
-            If m_stage = 1 Then
-
-                success = m_game.Initialise(Me)
-
-                If Not success Then
-                    WriteLine("<b>Failed to load game.</b>")
-                    If (m_game.Errors.Count > 0) Then
-                        WriteLine("The following errors occurred:")
-                        For Each loadError As String In m_game.Errors
-                            WriteLine(loadError)
-                        Next
-                    End If
-                    GameFinished()
-                Else
-                    AddToRecentList()
-                End If
-
-                ShowDebugger(False)
-                m_debugger = Nothing
-
-                If success Then
-                    TryInitialiseStage2()
-                End If
-
-            ElseIf m_stage = 2 Then
-                TryInitialiseStage2()
-            Else
-                Throw New Exception("Undefined startup stage")
-            End If
-        End If
-    End Sub
-
-    Private Sub TryInitialiseStage2()
-        ctlPlayerHtml.AddASLEventElement()
-        m_menu.MenuEnabled("walkthrough") = Not m_game.Walkthrough Is Nothing
-        m_initialised = True
-        tmrTick.Enabled = True
-        m_game.Begin()
-        txtCommand.Focus()
+        BeginInvoke(Sub() WriteLine("<output>[Sorry, an error occurred]</output>"))
     End Sub
 
     Private Sub AddToRecentList()
@@ -272,18 +235,14 @@ Public Class Player
         EnterText()
     End Sub
 
-    Private Delegate Sub RequestRaisedDelegate(ByVal request As Quest.Request, ByVal data As String)
-
     Private Sub SetGameName(name As String)
         m_gameName = name
         AddToRecentList()
         RaiseEvent GameNameSet(name)
     End Sub
 
-    Private Delegate Sub UpdateListDelegate(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData))
-
     Private Sub m_game_UpdateList(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData)) Handles m_game.UpdateList
-        BeginInvoke(New UpdateListDelegate(AddressOf UpdateList), listType, items)
+        BeginInvoke(Sub() UpdateList(listType, items))
     End Sub
 
     Private Sub UpdateList(ByVal listType As AxeSoftware.Quest.ListType, ByVal items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData))
@@ -348,9 +307,7 @@ Public Class Player
     End Sub
 
     Private Sub SetBackground(ByVal colour As String) Implements IPlayer.SetBackground
-        BeginInvoke(Sub()
-                        InvokeScript("SetBackground", colour)
-                    End Sub)
+        BeginInvoke(Sub() InvokeScript("SetBackground", colour))
     End Sub
 
     Private Sub RunScript(ByVal data As String) Implements IPlayer.RunScript
@@ -448,10 +405,8 @@ Public Class Player
         m_game.SetMenuResponse(DirectCast(response, String))
     End Sub
 
-    ' TO DO: everything implementing an IPlayer interface will need BeginInvoke
-
     Public Sub DoWait() Implements IPlayer.DoWait
-        BeginInvoke(New Action(AddressOf BeginWait))
+        BeginInvoke(Sub() BeginWait())
     End Sub
 
     Private Sub BeginWait()
@@ -507,9 +462,7 @@ Public Class Player
     End Sub
 
     Private Sub ShowPicture(ByVal filename As String) Implements IPlayer.ShowPicture
-        BeginInvoke(Sub()
-                        ctlPlayerHtml.ShowPicture(filename)
-                    End Sub)
+        BeginInvoke(Sub() ctlPlayerHtml.ShowPicture(filename))
     End Sub
 
     Private Sub PlaySound(ByVal filename As String, ByVal synchronous As Boolean, ByVal looped As Boolean) Implements IPlayer.PlaySound
@@ -552,9 +505,7 @@ Public Class Player
     End Sub
 
     Private Sub Speak(ByVal text As String) Implements IPlayer.Speak
-        BeginInvoke(Sub()
-                        m_speech.Speak(text)
-                    End Sub)
+        BeginInvoke(Sub() m_speech.Speak(text))
     End Sub
 
     Public Sub SetWindowMenu(ByVal menuData As MenuData) Implements IPlayer.SetWindowMenu
@@ -599,45 +550,35 @@ Public Class Player
     End Sub
 
     Public Sub LocationUpdated(location As String) Implements IPlayer.LocationUpdated
-        BeginInvoke(Sub()
-                        lblBanner.Text = location
-                    End Sub)
+        BeginInvoke(Sub() lblBanner.Text = location)
     End Sub
 
     Public Sub UpdateGameName(name As String) Implements IPlayer.UpdateGameName
-        BeginInvoke(Sub()
-                        SetGameName(name)
-                    End Sub)
+        BeginInvoke(Sub() SetGameName(name))
     End Sub
 
     Public Sub ClearScreen() Implements IPlayer.ClearScreen
-        BeginInvoke(Sub()
-                        ctlPlayerHtml.Clear()
-                    End Sub)
+        BeginInvoke(Sub() ctlPlayerHtml.Clear())
     End Sub
 
     Public Sub SetStatusText(text As String) Implements IPlayer.SetStatusText
-        BeginInvoke(Sub()
-                        lstInventory.Status = text
-                    End Sub)
+        BeginInvoke(Sub() lstInventory.Status = text)
     End Sub
 
     Public Sub DoQuit() Implements IPlayer.Quit
-        BeginInvoke(Sub()
-                        RaiseEvent Quit()
-                    End Sub)
+        BeginInvoke(Sub() RaiseEvent Quit())
     End Sub
 
     Public Sub SetForeground(colour As String) Implements IPlayer.SetForeground
-        ctlPlayerHtml.Foreground = colour
+        m_htmlHelper.SetForeground(colour)
     End Sub
 
     Public Sub SetFont(name As String) Implements IPlayer.SetFont
-        ctlPlayerHtml.FontName = name
+        m_htmlHelper.SetFont(name)
     End Sub
 
     Public Sub SetFontSize(size As String) Implements IPlayer.SetFontSize
-        ctlPlayerHtml.FontSize = CInt(size)
+        m_htmlHelper.SetFontSize(size)
     End Sub
 
     Public Sub RequestLoad() Implements IPlayer.RequestLoad
@@ -649,41 +590,42 @@ Public Class Player
     End Sub
 
     Public Sub RequestSave() Implements IPlayer.RequestSave
-        BeginInvoke(Sub()
-                        Save()
-                    End Sub)
+        BeginInvoke(Sub() Save())
     End Sub
 
     Public Sub SetLinkForeground(colour As String) Implements IPlayer.SetLinkForeground
-        ctlPlayerHtml.LinkForeground = colour
+        m_htmlHelper.SetLinkForeground(colour)
     End Sub
 
     Private Sub WriteLine(text As String)
         ctlPlayerHtml.WriteLine(text)
     End Sub
 
-    Private Sub PrintText(text As String)
-        ctlPlayerHtml.PrintText(text)
-    End Sub
-
-    Private Sub ctlPlayerHtml_CommandLinkClicked(command As String) Handles ctlPlayerHtml.CommandLinkClicked
+    Private Sub ctlPlayerHtml_CommandRequested(command As String) Handles ctlPlayerHtml.CommandRequested
         RunCommand(command)
     End Sub
 
     Private Sub ctlPlayerHtml_Ready() Handles ctlPlayerHtml.Ready
-        m_browserReady = True
-        m_stage = m_stage + 1
-
         ' We need this DocumentCompleted event to have finished before trying to output text to the webbrowser control.
         'Dim runnerThread As New Thread(New ThreadStart(AddressOf TryInitialise))
         'runnerThread.Start()
 
-        BeginInvoke(Sub()
-                        TryInitialise()
-                    End Sub)
+        BeginInvoke(Sub() FinishInitialise())
     End Sub
 
     Private Sub ctlPlayerHtml_SendEvent(eventName As String, param As String) Handles ctlPlayerHtml.SendEvent
         m_game.SendEvent(eventName, param)
+    End Sub
+
+    Public Sub BindMenu(linkid As String, verbs As String, text As String) Implements IPlayerHelperUI.BindMenu
+        BeginInvoke(Sub() ctlPlayerHtml.BindMenu(linkid, verbs, text))
+    End Sub
+
+    Public Sub OutputText(text As String) Implements IPlayerHelperUI.OutputText
+        BeginInvoke(Sub() ctlPlayerHtml.WriteText(text))
+    End Sub
+
+    Public Sub SetAlignment(alignment As String) Implements IPlayerHelperUI.SetAlignment
+        BeginInvoke(Sub() ctlPlayerHtml.SetAlignment(alignment))
     End Sub
 End Class
