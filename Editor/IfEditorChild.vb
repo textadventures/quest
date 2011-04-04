@@ -55,12 +55,12 @@
 
     Private Sub ctlThenScript_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlThenScript.Dirty
         args.Attribute = "1"
-        RaiseEvent Dirty(sender, args)
+        RaiseEvent Dirty(Me, args)
     End Sub
 
     Private Sub ctlExpression_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlExpression.Dirty
         args.Attribute = "0"
-        RaiseEvent Dirty(sender, args)
+        RaiseEvent Dirty(Me, args)
     End Sub
 
     Public Sub UpdateField(attribute As String, newValue As Object, setFocus As Boolean)

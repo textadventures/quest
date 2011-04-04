@@ -7,6 +7,7 @@
     Private m_children As New List(Of IfEditorChild)
     Private m_lastEditorChild As IfEditorChild
     Private m_hasElse As Boolean
+    Private m_elseEditor As IfEditorChild
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
@@ -32,7 +33,7 @@
         End If
 
         AddHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
-        AddHandler child.Dirty, AddressOf ctlChild_Dirty
+        AddHandler child.Dirty, AddressOf IfEditorChild_Dirty
         m_lastEditorChild = child
     End Sub
 
@@ -58,6 +59,7 @@
         ctlChild.Populate(data, data.ThenScript)
         If Not data.ElseScript Is Nothing Then
             Dim newChild As IfEditorChild = AddElseChildControl(False)
+            m_elseEditor = newChild
             newChild.Populate(Nothing, data.ElseScript)
         End If
     End Sub
@@ -66,9 +68,22 @@
         ctlChild.UpdateField(attribute, newValue, setFocus)
     End Sub
 
-    Private Sub ctlChild_Dirty(sender As Object, args As DataModifiedEventArgs)
-        RaiseEvent Dirty(sender, args)
+    Private Sub IfEditorChild_Dirty(sender As Object, args As DataModifiedEventArgs)
+        Dim newArgs As New DataModifiedEventArgs(String.Empty, m_data.DisplayString(GetChildEditorSectionName(sender), CInt(args.Attribute), DirectCast(args.NewValue, String)))
+        RaiseEvent Dirty(sender, newArgs)
     End Sub
+
+    Private Function GetChildEditorSectionName(child As Object) As String
+        If child Is ctlChild Then
+            Return "then"
+        End If
+
+        If child Is m_elseEditor Then
+            Return "else"
+        End If
+
+        Throw New NotImplementedException
+    End Function
 
     Private Function AddElseChildControl(addElseIf As Boolean) As IfEditorChild
         ctlChild.Dock = DockStyle.None

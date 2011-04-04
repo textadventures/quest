@@ -73,25 +73,51 @@ namespace AxeSoftware.Quest
 
         void m_elseScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
         {
-            throw new NotImplementedException();
+            // This doesn't look correct to me - the whole area of indexes doesn't really apply to "if" scripts. Yet this
+            // appears to work at the moment...
+            RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
         }
 
         public override string DisplayString(int index, string newValue)
         {
-            string expression = (index == 0) ? newValue : IfExpression;
-            string thenScript = (index == 1) ? newValue : ThenScript.DisplayString();
+            // if index is 0 then we're editing, and newValue is the entire new script, so just return it straight away.
+            if (index == 0) return newValue;
 
-            string result = string.Format("If ({0}) Then '{1}'", expression, thenScript);
+            // if index is not 0, then this is a request for the DisplayString based on the stored data, so generate it.
+            return DisplayString("", -1, string.Empty);
+        }
+
+        public string DisplayString(string section, int index, string newValue)
+        {
+            // If we've updated the "then" script, then we need to get an updated "then" script where attribute "index" has been updated to "newValue"
+            string result = (section == "then") ? DisplayStringFragment("then", index, newValue) : DisplayStringFragment("then", -1, string.Empty);
 
             // TO DO: Will then need to add elseif
 
             if (ElseScript != null)
             {
-                // TO DO: For live updating as we type, need to check index. But need to refine the interface I think...
-                result += string.Format(", Else '{0}'", ElseScript.DisplayString());
+                result += (section == "else") ? DisplayStringFragment("else", index, newValue) : DisplayStringFragment("else", -1, string.Empty);
+            }
+            return result;
+
+        }
+
+        public string DisplayStringFragment(string section, int index, string newValue)
+        {
+            if (section == "then")
+            {
+                string expression = (index == 0) ? newValue : IfExpression;
+                string thenScript = (index == 1) ? newValue : ThenScript.DisplayString();
+                return string.Format("If ({0}) Then '{1}'", expression, thenScript);
             }
 
-            return result;
+            if (section == "else")
+            {
+                return string.Format(", Else '{0}'", (index == 1) ? newValue : ElseScript.DisplayString());
+            }
+
+            // TO DO: elseif
+            throw new NotImplementedException();
         }
 
         public override string EditorName
