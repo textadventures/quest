@@ -10,8 +10,8 @@
     Private m_mode As IfEditorChildMode
     Private m_expanded As Boolean
 
-    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
-    Public Event ChangeHeight(ByVal sender As IfEditorChild, ByVal newHeight As Integer)
+    Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
+    Public Event ChangeHeight(sender As IfEditorChild, newHeight As Integer)
 
     Public Sub New()
 
@@ -24,7 +24,7 @@
         cmdExpand.Font = New Font("Marlett", cmdExpand.Font.Size * 1.1F)
     End Sub
 
-    Public Sub SaveData(ByVal data As IEditorData)
+    Public Sub SaveData(data As IEditorData)
         ctlExpression.Save(data)
         ctlThenScript.Save(data)
     End Sub
@@ -33,7 +33,7 @@
         Get
             Return m_controller
         End Get
-        Set(ByVal value As EditorController)
+        Set(value As EditorController)
             m_controller = value
             If Not value Is Nothing Then
                 ctlThenScript.Controller = value
@@ -53,17 +53,17 @@
         ctlThenScript.Populate(script)
     End Sub
 
-    Private Sub ctlThenScript_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlThenScript.Dirty
+    Private Sub ctlThenScript_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlThenScript.Dirty
         args.Attribute = "1"
         RaiseEvent Dirty(sender, args)
     End Sub
 
-    Private Sub ctlExpression_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlExpression.Dirty
+    Private Sub ctlExpression_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlExpression.Dirty
         args.Attribute = "0"
         RaiseEvent Dirty(sender, args)
     End Sub
 
-    Public Sub UpdateField(ByVal attribute As String, ByVal newValue As Object, ByVal setFocus As Boolean)
+    Public Sub UpdateField(attribute As String, newValue As Object, setFocus As Boolean)
         ' TO DO: The string "0" here is hacky, but it's a consequence of the mess of string vs int for the "attribute" name
         ' when we're editing scripts. The 0 comes from the index passed to NotifyUpdate in IfScript.SetExpressionSilent(). This
         ' should be tidied up so we can pass an Enum perhaps.
@@ -77,7 +77,7 @@
         Get
             Return m_mode
         End Get
-        Set(ByVal value As IfEditorChildMode)
+        Set(value As IfEditorChildMode)
             m_mode = value
 
             Select Case value
@@ -100,7 +100,7 @@
         Get
             Return m_expanded
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             Dim oldValue As Boolean = m_expanded
             m_expanded = value
             ctlThenScript.Visible = Expanded
@@ -115,11 +115,11 @@
         End Set
     End Property
 
-    Private Sub IfEditorChild_DoubleClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DoubleClick
+    Private Sub IfEditorChild_DoubleClick(sender As Object, e As System.EventArgs) Handles Me.DoubleClick
         ToggleExpand()
     End Sub
 
-    Private Sub cmdExpand_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdExpand.Click
+    Private Sub cmdExpand_Click(sender As System.Object, e As System.EventArgs) Handles cmdExpand.Click
         ToggleExpand()
     End Sub
 

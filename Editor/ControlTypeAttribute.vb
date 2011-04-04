@@ -4,7 +4,7 @@ Public Class ControlTypeAttribute
 
     Private m_controlType As String
 
-    Sub New(ByVal controlType As String)
+    Sub New(controlType As String)
         m_controlType = controlType
     End Sub
 

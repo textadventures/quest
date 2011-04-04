@@ -2,8 +2,8 @@
 
     Sub SaveData()
 
-    Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Property Controller() As EditorController
-    Sub UpdateField(ByVal attribute As String, ByVal newValue As Object, ByVal setFocus As Boolean)
+    Sub UpdateField(attribute As String, newValue As Object, setFocus As Boolean)
 
 End Interface

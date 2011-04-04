@@ -8,7 +8,7 @@
     Private m_currentScript As IEditableScript
     Private m_isPopOut As Boolean
 
-    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event CloseButtonClicked()
 
     Public Sub New()
@@ -22,7 +22,7 @@
         lstScripts.Items(0).Selected = True
     End Sub
 
-    Private Sub ctlScriptAdder_AddScript(ByVal keyword As String) Handles ctlScriptAdder.AddScript
+    Private Sub ctlScriptAdder_AddScript(keyword As String) Handles ctlScriptAdder.AddScript
         If m_scripts Is Nothing Then
             m_scripts = m_controller.CreateNewEditableScripts(m_elementName, m_attribute, keyword)
         Else
@@ -37,7 +37,7 @@
         Get
             Return m_controller
         End Get
-        Set(ByVal value As EditorController)
+        Set(value As EditorController)
             m_controller = value
             ctlScriptCommandEditor.Controller = value
             ctlScriptAdder.Controller = value
@@ -79,13 +79,13 @@
         RaiseEvent CloseButtonClicked()
     End Sub
 
-    Private Sub ctlScriptCommandEditor_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlScriptCommandEditor.Dirty
+    Private Sub ctlScriptCommandEditor_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlScriptCommandEditor.Dirty
         lstScripts.Items(m_editIndex).Text = FormatScript(DirectCast(args.NewValue, String))
         Dim newArgs As New DataModifiedEventArgs(String.Empty, m_scripts.DisplayString(m_editIndex, DirectCast(args.NewValue, String)))
         RaiseEvent Dirty(Me, newArgs)
     End Sub
 
-    Private Sub lstScripts_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles lstScripts.SelectedIndexChanged
+    Private Sub lstScripts_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles lstScripts.SelectedIndexChanged
         If lstScripts.SelectedIndices.Count = 0 Then
             SetEditButtonsEnabled(False)
             Exit Sub
@@ -95,11 +95,11 @@
         ShowEditor(m_editIndex)
     End Sub
 
-    Private Function FormatScript(ByVal script As String) As String
+    Private Function FormatScript(script As String) As String
         Return script.Replace(Environment.NewLine, " / ")
     End Function
 
-    Private Sub ShowEditor(ByVal index As Integer)
+    Private Sub ShowEditor(index As Integer)
         Dim showAdder As Boolean = (m_scripts Is Nothing OrElse index >= m_scripts.Scripts.Count)
         ctlScriptAdder.Visible = showAdder
         ctlScriptCommandEditor.Visible = Not showAdder
@@ -119,7 +119,7 @@
             ctlScriptCommandEditor.Save()
             Return m_scripts
         End Get
-        Set(ByVal value As IEditableScripts)
+        Set(value As IEditableScripts)
             m_scripts = value
             UpdateList()
         End Set
@@ -129,7 +129,7 @@
         Get
             Return m_elementName
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             m_elementName = value
         End Set
     End Property
@@ -138,12 +138,12 @@
         Get
             Return m_attribute
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             m_attribute = value
         End Set
     End Property
 
-    Private Sub m_scripts_Updated(ByVal sender As Object, ByVal e As EditableScriptsUpdatedEventArgs) Handles m_scripts.Updated
+    Private Sub m_scripts_Updated(sender As Object, e As EditableScriptsUpdatedEventArgs) Handles m_scripts.Updated
         If (e.UpdatedScript Is Nothing) Then
             ' Update to the whole script list
             UpdateList()
@@ -165,13 +165,13 @@
         ctlScriptAdder.Initialise()
     End Sub
 
-    Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click
+    Private Sub cmdDelete_Click(sender As System.Object, e As System.EventArgs) Handles cmdDelete.Click
         If m_editIndex < m_scripts.Count Then
             m_scripts.Remove(m_editIndex)
         End If
     End Sub
 
-    Private Sub cmdPopOut_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPopOut.Click
+    Private Sub cmdPopOut_Click(sender As System.Object, e As System.EventArgs) Handles cmdPopOut.Click
         Dim popOut As New ScriptEditorPopOut
 
         Save()
@@ -195,7 +195,7 @@
         Get
             Return m_isPopOut
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             m_isPopOut = value
             cmdPopOut.Visible = Not value
             ctlScriptAdder.ShowCloseButton = value
@@ -207,11 +207,11 @@
         RaiseEvent CloseButtonClicked()
     End Sub
 
-    Private Sub ScriptEditor_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
+    Private Sub ScriptEditor_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
         chScript.Width = lstScripts.Width - lstScripts.Margin.Left * 2 - SystemInformation.VerticalScrollBarWidth
     End Sub
 
-    Private Sub SetEditButtonsEnabled(ByVal enabled As Boolean)
+    Private Sub SetEditButtonsEnabled(enabled As Boolean)
         cmdDelete.Enabled = enabled
         cmdMoveUp.Enabled = enabled
         cmdMoveDown.Enabled = enabled

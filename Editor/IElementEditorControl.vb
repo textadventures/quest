@@ -3,7 +3,7 @@
     Private m_newValue As Object
     Private m_attribute As String
 
-    Public Sub New(ByVal oldValue As Object, ByVal newValue As Object)
+    Public Sub New(oldValue As Object, newValue As Object)
         m_oldValue = oldValue
         m_newValue = newValue
     End Sub
@@ -24,7 +24,7 @@
         Get
             Return m_attribute
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             m_attribute = value
         End Set
     End Property
@@ -32,14 +32,14 @@ End Class
 
 Public Interface IElementEditorControl
 
-    Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Event Dirty(sender As Object, args As DataModifiedEventArgs)
 
     ReadOnly Property Control() As Control
     Property Value() As Object
     Property Controller() As EditorController
-    Sub Initialise(ByVal controlData As IEditorControl)
+    Sub Initialise(controlData As IEditorControl)
     ReadOnly Property AttributeName() As String
-    Sub Populate(ByVal data As IEditorData)
-    Sub Save(ByVal data As IEditorData)
+    Sub Populate(data As IEditorData)
+    Sub Save(data As IEditorData)
 
 End Interface

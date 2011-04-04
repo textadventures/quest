@@ -4,7 +4,7 @@
     Private WithEvents m_currentEditor As ICommandEditor
     Private m_script As IEditableScript
 
-    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event CloseButtonClicked()
 
     Public Sub New()
@@ -20,12 +20,12 @@
         Get
             Return m_controller
         End Get
-        Set(ByVal value As EditorController)
+        Set(value As EditorController)
             m_controller = value
         End Set
     End Property
 
-    Public Sub ShowEditor(ByVal script As IEditableScript)
+    Public Sub ShowEditor(script As IEditableScript)
         Dim newEditor As Control
         Dim newEditorKey As String = script.EditorName
 
@@ -64,12 +64,12 @@
         End If
     End Sub
 
-    Private Sub m_editor_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles m_currentEditor.Dirty
+    Private Sub m_editor_Dirty(sender As Object, args As DataModifiedEventArgs) Handles m_currentEditor.Dirty
         Dim newArgs As New DataModifiedEventArgs(String.Empty, m_script.DisplayString(CInt(args.Attribute), DirectCast(args.NewValue, String)))
         RaiseEvent Dirty(Me, newArgs)
     End Sub
 
-    Public Sub UpdateField(ByVal index As Integer, ByVal newValue As String)
+    Public Sub UpdateField(index As Integer, newValue As String)
         m_currentEditor.UpdateField(index.ToString(), newValue, True)
     End Sub
 
@@ -77,12 +77,12 @@
         Get
             Return pnlButtons.Visible
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             pnlButtons.Visible = value
         End Set
     End Property
 
-    Private Sub cmdClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdClose.Click
+    Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
         RaiseEvent CloseButtonClicked()
     End Sub
 End Class

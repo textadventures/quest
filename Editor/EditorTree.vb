@@ -8,10 +8,10 @@
     Private m_updatingSelection As Boolean = False
 
     Public Event FiltersUpdated()
-    Public Event SelectionChanged(ByVal key As String)
+    Public Event SelectionChanged(key As String)
     Public Event CommitSelection()
 
-    Public Sub AddNode(ByVal key As String, ByVal text As String, ByVal parentKey As String, ByVal foreColor As System.Drawing.Color?, ByVal backColor As System.Drawing.Color?)
+    Public Sub AddNode(key As String, text As String, parentKey As String, foreColor As System.Drawing.Color?, backColor As System.Drawing.Color?)
 
         Dim newNode As TreeNode
         Dim parent As TreeNodeCollection
@@ -32,7 +32,7 @@
 
     End Sub
 
-    Public Sub SetAvailableFilters(ByVal filters As AvailableFilters)
+    Public Sub SetAvailableFilters(filters As AvailableFilters)
         mnuFilter.DropDownItems.Clear()
         m_filterSettings = New FilterOptions
 
@@ -45,7 +45,7 @@
         Next
     End Sub
 
-    Private Sub FilterClicked(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub FilterClicked(sender As Object, e As System.EventArgs)
         Dim menuItem As ToolStripMenuItem = DirectCast(sender, ToolStripMenuItem)
         Dim key As String = DirectCast(menuItem.Tag, String)
         m_filterSettings.Set(key, Not m_filterSettings.IsSet(key))
@@ -94,7 +94,7 @@
         Next
     End Sub
 
-    Private Sub ctlTreeView_AfterSelect(ByVal sender As System.Object, ByVal e As System.Windows.Forms.TreeViewEventArgs) Handles ctlTreeView.AfterSelect
+    Private Sub ctlTreeView_AfterSelect(sender As System.Object, e As System.Windows.Forms.TreeViewEventArgs) Handles ctlTreeView.AfterSelect
         Dim key As String
 
         If m_updatingSelection Then Exit Sub
@@ -111,7 +111,7 @@
         End If
     End Sub
 
-    Public Sub SetSelectedItem(ByVal key As String)
+    Public Sub SetSelectedItem(key As String)
         m_updatingSelection = True
         ctlTreeView.SelectedNode = m_nodes(key)
         m_updatingSelection = False
@@ -121,7 +121,7 @@
         Get
             Return ctlToolStrip.Visible
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             ctlToolStrip.Visible = value
         End Set
     End Property
@@ -134,7 +134,7 @@
         ctlTreeView.CollapseAll()
     End Sub
 
-    Private Sub ctlTreeView_DoubleClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles ctlTreeView.DoubleClick
+    Private Sub ctlTreeView_DoubleClick(sender As Object, e As System.EventArgs) Handles ctlTreeView.DoubleClick
         RaiseEvent CommitSelection()
     End Sub
 End Class

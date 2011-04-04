@@ -18,12 +18,12 @@ Public Class MainToolbar
     Private m_mnuRedo(k_numberHistory) As System.Windows.Forms.ToolStripMenuItem
     Private m_defaultColour As System.Drawing.Color
 
-    Public Event HistoryClicked(ByVal key As String)
+    Public Event HistoryClicked(key As String)
     Public Event SaveCurrentEditor()
-    Public Event UndoClicked(ByVal level As Integer)
-    Public Event RedoClicked(ByVal level As Integer)
-    Public Event UndoEnabled(ByVal enabled As Boolean)
-    Public Event RedoEnabled(ByVal enabled As Boolean)
+    Public Event UndoClicked(level As Integer)
+    Public Event RedoClicked(level As Integer)
+    Public Event UndoEnabled(enabled As Boolean)
+    Public Event RedoEnabled(enabled As Boolean)
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -35,26 +35,26 @@ Public Class MainToolbar
     End Sub
 
     Public WriteOnly Property CanCutCopy() As Boolean
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             butCopy.Enabled = value
             butCut.Enabled = value
         End Set
     End Property
 
     Public WriteOnly Property CanPaste() As Boolean
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             butPaste.Enabled = value
         End Set
     End Property
 
     Public WriteOnly Property CanDelete() As Boolean
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             butDelete.Enabled = value
         End Set
     End Property
 
     Public WriteOnly Property Initialising() As Boolean
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             m_Initialising = value
         End Set
     End Property
@@ -125,7 +125,7 @@ Public Class MainToolbar
         Next
     End Sub
 
-    Private Sub HandleClick(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub HandleClick(sender As Object, e As System.EventArgs)
         Dim menu As ToolStripItem = DirectCast(sender, ToolStripItem)
 
         If Not menu.Tag Is Nothing Then
@@ -133,13 +133,13 @@ Public Class MainToolbar
         End If
     End Sub
 
-    Private Sub HandleClick(ByVal tag As String)
+    Private Sub HandleClick(tag As String)
         If m_handlers.ContainsKey(tag) Then
             m_handlers(tag).Invoke()
         End If
     End Sub
 
-    Private Sub HandleHistoryClick(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub HandleHistoryClick(sender As Object, e As System.EventArgs)
         Dim menu As ToolStripItem = DirectCast(sender, ToolStripItem)
         Dim jump As Integer = CType(menu.Tag, Integer)
 
@@ -152,15 +152,15 @@ Public Class MainToolbar
 
     End Sub
 
-    Private Sub HandleUndoClick(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub HandleUndoClick(sender As Object, e As System.EventArgs)
         RaiseEvent UndoClicked(CType(DirectCast(sender, ToolStripMenuItem).Tag, Integer))
     End Sub
 
-    Private Sub HandleRedoClick(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub HandleRedoClick(sender As Object, e As System.EventArgs)
         RaiseEvent RedoClicked(CType(DirectCast(sender, ToolStripMenuItem).Tag, Integer))
     End Sub
 
-    Public Sub AddHistory(ByVal TreeKey As String, ByVal Text As String)
+    Public Sub AddHistory(TreeKey As String, Text As String)
         Dim historyItem As New HistoryItem
         historyItem.TreeKey = TreeKey
         historyItem.Text = Text
@@ -174,7 +174,7 @@ Public Class MainToolbar
         SetHistoryPosition(m_history.Count - 1, False)
     End Sub
 
-    Private Sub SetHistoryPosition(ByVal position As Integer, Optional ByVal doRaiseEvent As Boolean = True)
+    Private Sub SetHistoryPosition(position As Integer, Optional doRaiseEvent As Boolean = True)
         Dim i As Integer
         Dim index As Integer
 
@@ -210,16 +210,16 @@ Public Class MainToolbar
         End If
     End Sub
 
-    Private Sub SetHistoryMenu(ByVal mnuMenu As System.Windows.Forms.ToolStripMenuItem, ByRef historyItem As HistoryItem)
+    Private Sub SetHistoryMenu(mnuMenu As System.Windows.Forms.ToolStripMenuItem, ByRef historyItem As HistoryItem)
         mnuMenu.Visible = True
         mnuMenu.Text = historyItem.Text
     End Sub
 
-    Private Sub butBack_ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butBack.ButtonClick
+    Private Sub butBack_ButtonClick(sender As System.Object, e As System.EventArgs) Handles butBack.ButtonClick
         SetHistoryPosition(m_historyPosition - 1)
     End Sub
 
-    Private Sub butForward_ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butForward.ButtonClick
+    Private Sub butForward_ButtonClick(sender As System.Object, e As System.EventArgs) Handles butForward.ButtonClick
         SetHistoryPosition(m_historyPosition + 1)
     End Sub
 
@@ -230,7 +230,7 @@ Public Class MainToolbar
         SetHistoryPosition(0)
     End Sub
 
-    Public Sub AddButtonHandler(ByVal key As String, ByVal handler As ButtonClickHandler)
+    Public Sub AddButtonHandler(key As String, handler As ButtonClickHandler)
         m_handlers.Add(key, handler)
     End Sub
 
@@ -239,17 +239,17 @@ Public Class MainToolbar
         UpdateRedoMenu(Nothing)
     End Sub
 
-    Public Sub UpdateUndoMenu(ByVal list As IEnumerable(Of String))
+    Public Sub UpdateUndoMenu(list As IEnumerable(Of String))
         Dim enabled As Boolean = UpdateUndoMenu(m_mnuUndo, list)
         UndoButtonEnabled = enabled
     End Sub
 
-    Public Sub UpdateRedoMenu(ByVal list As IEnumerable(Of String))
+    Public Sub UpdateRedoMenu(list As IEnumerable(Of String))
         Dim enabled As Boolean = UpdateUndoMenu(m_mnuRedo, list)
         RedoButtonEnabled = enabled
     End Sub
 
-    Private Function UpdateUndoMenu(ByRef aMenuItem() As System.Windows.Forms.ToolStripMenuItem, ByVal list As IEnumerable(Of String)) As Boolean
+    Private Function UpdateUndoMenu(ByRef aMenuItem() As System.Windows.Forms.ToolStripMenuItem, list As IEnumerable(Of String)) As Boolean
 
         Dim count As Integer = 0
 
@@ -284,7 +284,7 @@ Public Class MainToolbar
         Get
             Return butUndo.Enabled
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             butUndo.Enabled = value
             RaiseEvent UndoEnabled(value)
         End Set
@@ -294,29 +294,29 @@ Public Class MainToolbar
         Get
             Return butRedo.Enabled
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             butRedo.Enabled = value
             RaiseEvent RedoEnabled(value)
         End Set
     End Property
 
-    Private Sub UndoMenu_MouseEnter(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub UndoMenu_MouseEnter(sender As Object, e As System.EventArgs)
         UndoRedoMenu_MouseEnter(m_mnuUndo, sender)
     End Sub
 
-    Private Sub UndoMenu_MouseLeave(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub UndoMenu_MouseLeave(sender As Object, e As System.EventArgs)
         UndoRedoMenu_MouseLeave()
     End Sub
 
-    Private Sub RedoMenu_MouseEnter(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub RedoMenu_MouseEnter(sender As Object, e As System.EventArgs)
         UndoRedoMenu_MouseEnter(m_mnuRedo, sender)
     End Sub
 
-    Private Sub RedoMenu_MouseLeave(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub RedoMenu_MouseLeave(sender As Object, e As System.EventArgs)
         UndoRedoMenu_MouseLeave()
     End Sub
 
-    Private Sub UndoRedoMenu_MouseEnter(ByRef menu() As ToolStripMenuItem, ByVal sender As Object)
+    Private Sub UndoRedoMenu_MouseEnter(ByRef menu() As ToolStripMenuItem, sender As Object)
         tmrUndoTimer.Enabled = False
         HighlightMenu(menu, CType(DirectCast(sender, ToolStripMenuItem).Tag, Integer))
     End Sub
@@ -325,7 +325,7 @@ Public Class MainToolbar
         tmrUndoTimer.Enabled = True
     End Sub
 
-    Private Sub HighlightMenu(ByRef aMenuItem() As System.Windows.Forms.ToolStripMenuItem, ByVal count As Integer)
+    Private Sub HighlightMenu(ByRef aMenuItem() As System.Windows.Forms.ToolStripMenuItem, count As Integer)
         For i As Integer = 1 To count - 1
             aMenuItem(i).BackColor = System.Drawing.SystemColors.MenuHighlight
             aMenuItem(i).Checked = True
@@ -336,7 +336,7 @@ Public Class MainToolbar
         Next
     End Sub
 
-    Private Sub tmrUndoTimer_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles tmrUndoTimer.Tick
+    Private Sub tmrUndoTimer_Tick(sender As Object, e As System.EventArgs) Handles tmrUndoTimer.Tick
         ' Unhighlight the Undo menu
         ResetHighlight()
         tmrUndoTimer.Enabled = False
@@ -349,26 +349,26 @@ Public Class MainToolbar
         m_mnuRedo(1).Checked = False
     End Sub
 
-    Private Sub butUndo_ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butUndo.ButtonClick
+    Private Sub butUndo_ButtonClick(sender As System.Object, e As System.EventArgs) Handles butUndo.ButtonClick
         HandleClick("undo")
     End Sub
 
-    Private Sub butRedo_ButtonClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles butRedo.ButtonClick
+    Private Sub butRedo_ButtonClick(sender As Object, e As System.EventArgs) Handles butRedo.ButtonClick
         HandleClick("redo")
     End Sub
 
-    Private Sub butUndo_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles butUndo.Click
+    Private Sub butUndo_Click(sender As Object, e As System.EventArgs) Handles butUndo.Click
         ' If user has made edits to a field, save it first before displaying the undo list or doing the undo
         RaiseEvent SaveCurrentEditor()
     End Sub
 
-    Private Sub butUndo_DropDownOpening(ByVal sender As Object, ByVal e As System.EventArgs) Handles butUndo.DropDownOpening
+    Private Sub butUndo_DropDownOpening(sender As Object, e As System.EventArgs) Handles butUndo.DropDownOpening
         ' If user has made edits to a field, save it first before displaying the undo list
         RaiseEvent SaveCurrentEditor()
         ResetHighlight()
     End Sub
 
-    Private Sub butRedo_DropDownOpening(ByVal sender As Object, ByVal e As System.EventArgs) Handles butRedo.DropDownOpening
+    Private Sub butRedo_DropDownOpening(sender As Object, e As System.EventArgs) Handles butRedo.DropDownOpening
         ResetHighlight()
     End Sub
 

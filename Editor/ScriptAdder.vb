@@ -3,7 +3,7 @@
     Private m_controller As EditorController
     Private m_selection As String
 
-    Public Event AddScript(ByVal keyword As String)
+    Public Event AddScript(keyword As String)
     Public Event CloseButtonClicked()
 
     Public Sub New()
@@ -19,7 +19,7 @@
         Get
             Return m_controller
         End Get
-        Set(ByVal value As EditorController)
+        Set(value As EditorController)
             m_controller = value
         End Set
     End Property
@@ -28,7 +28,7 @@
         Get
             Return cmdClose.Visible
         End Get
-        Set(ByVal value As Boolean)
+        Set(value As Boolean)
             cmdClose.Visible = value
         End Set
     End Property
@@ -45,7 +45,7 @@
         ctlEditorTree.ExpandAll()
     End Sub
 
-    Private Sub cmdAdd_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAdd.Click
+    Private Sub cmdAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdAdd.Click
         AddCurrent()
     End Sub
 
@@ -53,7 +53,7 @@
         AddCurrent()
     End Sub
 
-    Private Sub ctlEditorTree_SelectionChanged(ByVal key As String) Handles ctlEditorTree.SelectionChanged
+    Private Sub ctlEditorTree_SelectionChanged(key As String) Handles ctlEditorTree.SelectionChanged
         m_selection = key
     End Sub
 
@@ -64,7 +64,7 @@
         End If
     End Sub
 
-    Private Sub cmdClose_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdClose.Click
+    Private Sub cmdClose_Click(sender As Object, e As System.EventArgs) Handles cmdClose.Click
         RaiseEvent CloseButtonClicked()
     End Sub
 End Class

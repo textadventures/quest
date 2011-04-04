@@ -6,7 +6,7 @@ Public Class ScriptControl
     Private m_controller As EditorController
     Private m_elementName As String
 
-    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
+    Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
 
     Public ReadOnly Property Control() As System.Windows.Forms.Control Implements IElementEditorControl.Control
         Get
@@ -18,14 +18,14 @@ Public Class ScriptControl
         Get
             Return ctlScriptEditor.Value
         End Get
-        Set(ByVal value As Object)
+        Set(value As Object)
             ctlScriptEditor.Value = DirectCast(value, IEditableScripts)
             m_oldValue = DirectCast(value, IEditableScripts)
         End Set
     End Property
 
     ' TO DO: Reimplement text box for direct code editing
-    'Private Sub txtScript_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+    'Private Sub txtScript_TextChanged(sender As Object, e As System.EventArgs)
     '    If IsDirty Then
     '        RaiseEvent Dirty(Me, New DataModifiedEventArgs(m_oldValue, txtScript.Text))
     '    End If
@@ -35,7 +35,7 @@ Public Class ScriptControl
         Get
             Return m_controller
         End Get
-        Set(ByVal value As EditorController)
+        Set(value As EditorController)
             m_controller = value
             ctlScriptEditor.Controller = value
         End Set
@@ -45,7 +45,7 @@ Public Class ScriptControl
         Get
             Return m_elementName
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             m_elementName = value
             ctlScriptEditor.ElementName = value
         End Set
@@ -57,24 +57,24 @@ Public Class ScriptControl
         End Get
     End Property
 
-    Public Sub Save(ByVal data As IEditorData) Implements IElementEditorControl.Save
+    Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
         ctlScriptEditor.Save()
     End Sub
 
-    Private Sub ctlScriptEditor_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlScriptEditor.Dirty
+    Private Sub ctlScriptEditor_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlScriptEditor.Dirty
         RaiseEvent Dirty(sender, args)
     End Sub
 
-    Public Sub Populate(ByVal data As IEditorData) Implements IElementEditorControl.Populate
+    Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         ElementName = data.Name
         Value = data.GetAttribute(AttributeName)
     End Sub
 
-    Public Sub Populate(ByVal data As IEditableScripts)
+    Public Sub Populate(data As IEditableScripts)
         Value = data
     End Sub
 
-    Public Sub Initialise(ByVal controlData As IEditorControl) Implements IElementEditorControl.Initialise
+    Public Sub Initialise(controlData As IEditorControl) Implements IElementEditorControl.Initialise
         If Not controlData Is Nothing Then
             ctlScriptEditor.AttributeName = controlData.Attribute
         End If

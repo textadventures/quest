@@ -8,7 +8,7 @@
     Private m_lastEditorChild As IfEditorChild
     Private m_hasElse As Boolean
 
-    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
+    Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
     Public Sub New()
 
@@ -19,7 +19,7 @@
         AddChild(ctlChild)
     End Sub
 
-    Private Sub AddChild(ByVal child As IfEditorChild)
+    Private Sub AddChild(child As IfEditorChild)
         If Not m_hasElse Then
             m_children.Add(child)
         Else
@@ -44,7 +44,7 @@
         Get
             Return m_controller
         End Get
-        Set(ByVal value As EditorController)
+        Set(value As EditorController)
             m_controller = value
             For Each child As IfEditorChild In m_children
                 child.Controller = value
@@ -52,7 +52,7 @@
         End Set
     End Property
 
-    Public Sub Populate(ByVal data As EditableIfScript)
+    Public Sub Populate(data As EditableIfScript)
         m_data = data
         ' The expression is contained in the "expression" attribute of the data IEditorData
         ctlChild.Populate(data, data.ThenScript)
@@ -62,15 +62,15 @@
         End If
     End Sub
 
-    Public Sub UpdateField(ByVal attribute As String, ByVal newValue As Object, ByVal setFocus As Boolean) Implements ICommandEditor.UpdateField
+    Public Sub UpdateField(attribute As String, newValue As Object, setFocus As Boolean) Implements ICommandEditor.UpdateField
         ctlChild.UpdateField(attribute, newValue, setFocus)
     End Sub
 
-    Private Sub ctlChild_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Private Sub ctlChild_Dirty(sender As Object, args As DataModifiedEventArgs)
         RaiseEvent Dirty(sender, args)
     End Sub
 
-    Private Function AddElseChildControl(ByVal addElseIf As Boolean) As IfEditorChild
+    Private Function AddElseChildControl(addElseIf As Boolean) As IfEditorChild
         ctlChild.Dock = DockStyle.None
         Dim newIfEditorChild As New IfEditorChild
         newIfEditorChild.Parent = pnlContainer
@@ -84,7 +84,7 @@
         Return newIfEditorChild
     End Function
 
-    Private Sub IfEditorChild_HeightChanged(ByVal sender As IfEditorChild, ByVal newHeight As Integer)
+    Private Sub IfEditorChild_HeightChanged(sender As IfEditorChild, newHeight As Integer)
         sender.Height = newHeight
         Dim currentTop = 0
         For Each child As IfEditorChild In m_children
@@ -98,17 +98,17 @@
     ' as many "else if"s as we like
     ' "else" should appear at the bottom so have a separate parent splitter
 
-    Private Sub cmdAddElse_ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddElse.ButtonClick
+    Private Sub cmdAddElse_ButtonClick(sender As System.Object, e As System.EventArgs) Handles cmdAddElse.ButtonClick
         'AddElse(False)
         AddElse()
     End Sub
 
-    Private Sub mnuAddElse_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuAddElse.Click
+    Private Sub mnuAddElse_Click(sender As Object, e As System.EventArgs) Handles mnuAddElse.Click
         'AddElse(False)
         AddElse()
     End Sub
 
-    Private Sub mnuAddElseIf_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuAddElseIf.Click
+    Private Sub mnuAddElseIf_Click(sender As Object, e As System.EventArgs) Handles mnuAddElseIf.Click
         'AddElse(True)
     End Sub
 

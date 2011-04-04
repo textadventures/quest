@@ -2,7 +2,7 @@
     Private m_filename As String
     Private m_name As String
 
-    Public Sub New(ByVal filename As String, ByVal gameName As String)
+    Public Sub New(filename As String, gameName As String)
         m_filename = filename
         m_name = gameName
     End Sub

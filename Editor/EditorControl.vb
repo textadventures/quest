@@ -10,9 +10,9 @@
     Private m_attribute As String
     Private m_controller As EditorController
 
-    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
+    Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
 
-    Public Sub Initialise(ByVal controlData As IEditorControl) Implements IElementEditorControl.Initialise
+    Public Sub Initialise(controlData As IEditorControl) Implements IElementEditorControl.Initialise
         Dim createType As Type = Nothing
 
         For Each t As Type In AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(), GetType(IElementEditorControl))
@@ -44,7 +44,7 @@
         Get
             Return lblCaption.Text
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             lblCaption.Text = value + ":"
         End Set
     End Property
@@ -61,13 +61,13 @@
         End Get
     End Property
 
-    Public Sub SetCaptionWidth(ByVal width As Integer)
+    Public Sub SetCaptionWidth(width As Integer)
         m_editorControl.Control.Left = width
         m_editorControl.Control.Width = Me.Width - width
         m_editorControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
     End Sub
 
-    Public Sub SetControlHeight(ByVal height As Integer)
+    Public Sub SetControlHeight(height As Integer)
         m_editorControl.Control.Height = height
         Me.Height = m_editorControl.Control.Height
     End Sub
@@ -76,12 +76,12 @@
         Get
             Return m_editorControl.Value
         End Get
-        Set(ByVal value As Object)
+        Set(value As Object)
             m_editorControl.Value = value
         End Set
     End Property
 
-    Private Sub m_editorControl_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles m_editorControl.Dirty
+    Private Sub m_editorControl_Dirty(sender As Object, args As DataModifiedEventArgs) Handles m_editorControl.Dirty
         RaiseEvent Dirty(Me, args)
     End Sub
 
@@ -89,12 +89,12 @@
         Get
             Return m_controller
         End Get
-        Set(ByVal value As EditorController)
+        Set(value As EditorController)
             m_controller = value
         End Set
     End Property
 
-    Public Sub SaveData(ByVal data As IEditorData)
+    Public Sub SaveData(data As IEditorData)
         Save(data)
     End Sub
 
@@ -104,11 +104,11 @@
         End Get
     End Property
 
-    Public Sub Save(ByVal data As IEditorData) Implements IElementEditorControl.Save
+    Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
         m_editorControl.Save(data)
     End Sub
 
-    Public Sub Populate(ByVal data As IEditorData) Implements IElementEditorControl.Populate
+    Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_editorControl.Populate(data)
     End Sub
 

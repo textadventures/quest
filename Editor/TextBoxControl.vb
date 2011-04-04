@@ -9,7 +9,7 @@ Public Class TextBoxControl
     Private m_attributeName As String
     Private m_data As IEditorData
 
-    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
+    Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
 
     Public ReadOnly Property Control() As System.Windows.Forms.Control Implements IElementEditorControl.Control
         Get
@@ -21,17 +21,17 @@ Public Class TextBoxControl
         Get
             Return Text
         End Get
-        Set(ByVal value As Object)
+        Set(value As Object)
             Text = DirectCast(value, String)
             m_oldValue = DirectCast(value, String)
         End Set
     End Property
 
-    Private Sub TextBoxControl_Leave(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Leave
+    Private Sub TextBoxControl_Leave(sender As Object, e As System.EventArgs) Handles Me.Leave
         Save(m_data)
     End Sub
 
-    Private Sub TextBoxControl_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.TextChanged
+    Private Sub TextBoxControl_TextChanged(sender As Object, e As System.EventArgs) Handles Me.TextChanged
         If IsDirty Then
             RaiseEvent Dirty(Me, New DataModifiedEventArgs(m_oldValue, Text))
         End If
@@ -47,7 +47,7 @@ Public Class TextBoxControl
         Get
             Return m_controller
         End Get
-        Set(ByVal value As EditorController)
+        Set(value As EditorController)
             m_controller = value
         End Set
     End Property
@@ -58,7 +58,7 @@ Public Class TextBoxControl
         End Get
     End Property
 
-    Public Sub Save(ByVal data As IEditorData) Implements IElementEditorControl.Save
+    Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
         If IsDirty Then
             Dim description As String = String.Format("Set {0} to '{1}'", m_attributeName, Value)
             m_controller.StartTransaction(description)
@@ -70,17 +70,17 @@ Public Class TextBoxControl
         End If
     End Sub
 
-    Public Sub Populate(ByVal data As IEditorData) Implements IElementEditorControl.Populate
+    Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_data = data
         Value = data.GetAttribute(m_attribute)
     End Sub
 
-    Public Sub Initialise(ByVal controlData As IEditorControl) Implements IElementEditorControl.Initialise
+    Public Sub Initialise(controlData As IEditorControl) Implements IElementEditorControl.Initialise
         m_attribute = controlData.Attribute
         m_attributeName = controlData.Caption
     End Sub
 
-    Public Sub Initialise(ByVal attributeName As String)
+    Public Sub Initialise(attributeName As String)
         m_attribute = attributeName
         m_attributeName = attributeName
     End Sub

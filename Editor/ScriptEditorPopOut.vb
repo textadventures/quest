@@ -4,7 +4,7 @@
         Me.Close()
     End Sub
 
-    Private Sub ScriptEditorPopOut_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+    Private Sub ScriptEditorPopOut_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.Escape Then
             Me.Close()
         End If

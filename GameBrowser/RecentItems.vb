@@ -7,13 +7,13 @@ Friend Class RecentItems
 
     Private m_recent As GameListItems
 
-    Public Sub New(ByVal listName As String)
+    Public Sub New(listName As String)
         m_listName = listName
         m_regPath = k_regPathPrefix + "\" + listName
         LoadRecentList()
     End Sub
 
-    Public Sub AddToRecent(ByVal filename As String, ByVal name As String)
+    Public Sub AddToRecent(filename As String, name As String)
         If m_recent.Contains(filename) Then
             m_recent.Remove(filename)
         End If
@@ -66,7 +66,7 @@ Friend Class RecentItems
         End Get
     End Property
 
-    Public Sub PopulateGameList(ByVal gameListCtl As GameList)
+    Public Sub PopulateGameList(gameListCtl As GameList)
         Dim recentList As List(Of GameListItemData)
         recentList = New List(Of GameListItemData)(Items)
         recentList.Reverse()    ' newest first

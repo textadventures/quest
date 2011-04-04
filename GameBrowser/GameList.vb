@@ -3,7 +3,7 @@
 Friend Class GameList
     Private m_launchCaption As String
 
-    Public Event Launch(ByVal filename As String)
+    Public Event Launch(filename As String)
 
     Public Sub New()
 
@@ -21,12 +21,12 @@ Friend Class GameList
         Get
             Return m_launchCaption
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             m_launchCaption = value
         End Set
     End Property
 
-    Public Sub CreateListElements(ByVal list As List(Of GameListItemData))
+    Public Sub CreateListElements(list As List(Of GameListItemData))
         Dim newItem As GameListItem
 
         Dim count As Integer = 0
@@ -47,7 +47,7 @@ Friend Class GameList
         Next
     End Sub
 
-    Private Sub LaunchHandler(ByVal filename As String)
+    Private Sub LaunchHandler(filename As String)
         RaiseEvent Launch(filename)
     End Sub
 End Class

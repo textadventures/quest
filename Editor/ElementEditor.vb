@@ -9,16 +9,16 @@
     Private m_data As IEditorData
     Private m_controller As EditorController
 
-    Public Event Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
+    Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
-    Public Sub Initialise(ByVal controller As EditorController, ByVal definition As IEditorDefinition)
+    Public Sub Initialise(controller As EditorController, definition As IEditorDefinition)
         m_controller = controller
 
         InitialiseTabs(definition)
         InitialiseControls(definition.Controls)
     End Sub
 
-    Public Sub InitialiseTabs(ByVal definition As IEditorDefinition)
+    Public Sub InitialiseTabs(definition As IEditorDefinition)
         If (Not definition.Tabs Is Nothing) AndAlso definition.Tabs.Count > 0 Then
             Dim tabControl As New TabControl
 
@@ -42,11 +42,11 @@
         End If
     End Sub
 
-    Private Sub Tab_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Private Sub Tab_Dirty(sender As Object, args As DataModifiedEventArgs)
         RaiseEvent Dirty(sender, args)
     End Sub
 
-    Public Sub InitialiseControls(ByVal controller As EditorController, ByVal definition As IEditorTab)
+    Public Sub InitialiseControls(controller As EditorController, definition As IEditorTab)
         m_controller = controller
 
         If (Not definition.Controls Is Nothing) AndAlso definition.Controls.Count > 0 Then
@@ -54,7 +54,7 @@
         End If
     End Sub
 
-    Private Sub InitialiseControls(ByVal controls As IEnumerable(Of IEditorControl))
+    Private Sub InitialiseControls(controls As IEnumerable(Of IEditorControl))
         Dim top As Integer = k_padding
         Dim maxCaptionWidth As Integer = 0
 
@@ -97,7 +97,7 @@
         ' TO DO: Clear data from all contained controls
     End Sub
 
-    Public Sub Populate(ByVal data As IEditorData)
+    Public Sub Populate(data As IEditorData)
 
         m_populating = True
         m_data = data
@@ -118,7 +118,7 @@
 
     End Sub
 
-    Public Sub UpdateField(ByVal attribute As String, ByVal newValue As Object, ByVal setFocus As Boolean) Implements ICommandEditor.UpdateField
+    Public Sub UpdateField(attribute As String, newValue As Object, setFocus As Boolean) Implements ICommandEditor.UpdateField
         ' find the control that's currently showing the attribute, and set its value - it's just been updated...
 
         If Not m_tabs Is Nothing Then
@@ -151,11 +151,11 @@
 
     End Sub
 
-    Private Sub SaveData(ByVal ctl As EditorControl)
+    Private Sub SaveData(ctl As EditorControl)
         ctl.SaveData(m_data)
     End Sub
 
-    Private Sub Control_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs)
+    Private Sub Control_Dirty(sender As Object, args As DataModifiedEventArgs)
         If Not m_populating Then
             args.Attribute = DirectCast(sender, EditorControl).AttributeName
             RaiseEvent Dirty(sender, args)
@@ -166,7 +166,7 @@
         Get
             Return m_controller
         End Get
-        Set(ByVal value As EditorController)
+        Set(value As EditorController)
             m_controller = value
         End Set
     End Property
