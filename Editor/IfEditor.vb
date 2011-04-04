@@ -3,7 +3,7 @@
     Implements ICommandEditor
 
     Private m_controller As EditorController
-    Private m_data As EditableIfScript
+    Private WithEvents m_data As EditableIfScript
     Private m_children As New List(Of IfEditorChild)
     Private m_lastEditorChild As IfEditorChild
     Private m_hasElse As Boolean
@@ -46,13 +46,20 @@
         End Get
         Set(ByVal value As EditorController)
             m_controller = value
-            ctlChild.Controller = value
+            For Each child As IfEditorChild In m_children
+                child.Controller = value
+            Next
         End Set
     End Property
 
     Public Sub Populate(ByVal data As EditableIfScript)
         m_data = data
-        ctlChild.Populate(data)
+        ' The expression is contained in the "expression" attribute of the data IEditorData
+        ctlChild.Populate(data, data.ThenScript)
+        If Not data.ElseScript Is Nothing Then
+            Dim newChild As IfEditorChild = AddElseChildControl(False)
+            newChild.Populate(Nothing, data.ElseScript)
+        End If
     End Sub
 
     Public Sub UpdateField(ByVal attribute As String, ByVal newValue As Object, ByVal setFocus As Boolean) Implements ICommandEditor.UpdateField
@@ -63,7 +70,7 @@
         RaiseEvent Dirty(sender, args)
     End Sub
 
-    Private Sub AddElseChildControl(ByVal addElseIf As Boolean)
+    Private Function AddElseChildControl(ByVal addElseIf As Boolean) As IfEditorChild
         ctlChild.Dock = DockStyle.None
         Dim newIfEditorChild As New IfEditorChild
         newIfEditorChild.Parent = pnlContainer
@@ -74,9 +81,8 @@
         newIfEditorChild.ElseIfMode = If(addElseIf, IfEditorChild.IfEditorChildMode.ElseIfMode, IfEditorChild.IfEditorChildMode.ElseMode)
         newIfEditorChild.Visible = True
         AddChild(newIfEditorChild)
-
-        ' also need to populate newchild?
-    End Sub
+        Return newIfEditorChild
+    End Function
 
     Private Sub IfEditorChild_HeightChanged(ByVal sender As IfEditorChild, ByVal newHeight As Integer)
         sender.Height = newHeight
@@ -109,4 +115,9 @@
     Private Sub AddElse()
         m_data.AddElse()
     End Sub
+
+    Private Sub m_data_IfUpdated(sender As Object, e As EditableIfScriptUpdatedEventArgs) Handles m_data.IfUpdated
+        ' TO DO: This will be called when an "Else" or "Else If" is being added
+    End Sub
+
 End Class

@@ -60,6 +60,8 @@ namespace AxeSoftware.Quest.Scripts
         private bool m_hasElse = false;
         private WorldModel m_worldModel;
 
+        public event EventHandler<IfScriptUpdatedEventArgs> IfScriptUpdated;
+
         public IfScript(IFunction<bool> expression, IScript thenScript, WorldModel worldModel)
             : this(expression, thenScript, null, worldModel)
         {
@@ -87,7 +89,11 @@ namespace AxeSoftware.Quest.Scripts
         private void SetElseSilent(IScript elseScript)
         {
             m_elseScript = elseScript;
-            NotifyUpdate(elseScript, -1);   // hacky hack
+
+            if (IfScriptUpdated != null)
+            {
+                IfScriptUpdated(this, new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse));
+            }
         }
 
         public void AddElseIf(IScript elseIfScript)
@@ -197,6 +203,11 @@ namespace AxeSoftware.Quest.Scripts
             set { m_thenScript = value; }
         }
 
+        public IScript ElseScript
+        {
+            get { return m_elseScript; }
+        }
+
         private class UndoChangeExpression : UndoLogger.IUndoAction
         {
             private IfScript m_script;
@@ -247,6 +258,21 @@ namespace AxeSoftware.Quest.Scripts
                 m_script.m_hasElse = true;
                 m_script.SetElseSilent(m_newValue);
             }
+        }
+
+        public class IfScriptUpdatedEventArgs : EventArgs
+        {
+            public enum IfScriptUpdatedEventType
+            {
+                AddedElse
+            }
+
+            internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType)
+            {
+                EventType = eventType;
+            }
+
+            public IfScriptUpdatedEventType EventType { get; private set; }
         }
     }
 }

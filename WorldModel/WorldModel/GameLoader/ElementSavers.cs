@@ -300,5 +300,20 @@ namespace AxeSoftware.Quest
                 writer.WriteEndElement();
             }
         }
+
+        private class JavascriptSaver : ElementSaverBase
+        {
+            public override ElementType AppliesTo
+            {
+                get { return ElementType.Javascript; }
+            }
+
+            public override void Save(GameXmlWriter writer, Element e)
+            {
+                writer.WriteStartElement("javascript");
+                writer.WriteAttributeString("src", e.Fields[FieldDefinitions.Src]);
+                writer.WriteEndElement();
+            }
+        }
     }
 }

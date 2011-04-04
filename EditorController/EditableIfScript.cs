@@ -6,12 +6,30 @@ using AxeSoftware.Quest.Scripts;
 
 namespace AxeSoftware.Quest
 {
+    public class EditableIfScriptUpdatedEventArgs : EventArgs
+    {
+        public enum UpdateEventType
+        {
+            AddedElse
+        }
+
+        internal EditableIfScriptUpdatedEventArgs(UpdateEventType eventType)
+        {
+            EventType = eventType;
+        }
+
+        public UpdateEventType EventType { get; private set; }
+    }
+
     public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     {
         private IfScript m_ifScript;
         private Element m_parent;
         private EditorController m_controller;
         private EditableScripts m_thenScript;
+        private EditableScripts m_elseScript;
+
+        public event EventHandler<EditableIfScriptUpdatedEventArgs> IfUpdated;
 
         internal EditableIfScript(EditorController controller, IfScript script, Element parent, UndoLogger undoLogger)
             : base(script, undoLogger)
@@ -20,6 +38,8 @@ namespace AxeSoftware.Quest
             m_ifScript = script;
             m_parent = parent;
 
+            m_ifScript.IfScriptUpdated += m_ifScript_IfScriptUpdated;
+
             if (m_ifScript.ThenScript == null)
             {
                 m_ifScript.ThenScript = new MultiScript();
@@ -27,11 +47,33 @@ namespace AxeSoftware.Quest
 
             m_thenScript = new EditableScripts(m_controller, m_ifScript.ThenScript, m_parent, null);
             m_thenScript.Updated += m_thenScript_Updated;
+
+            if (m_ifScript.ElseScript != null)
+            {
+                m_elseScript = new EditableScripts(m_controller, m_ifScript.ElseScript, m_parent, null);
+                m_elseScript.Updated += m_elseScript_Updated;
+            }
+        }
+
+        void m_ifScript_IfScriptUpdated(object sender, IfScript.IfScriptUpdatedEventArgs e)
+        {
+            if (IfUpdated != null)
+            {
+                if (e.EventType == IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse)
+                {
+                    IfUpdated(this, new EditableIfScriptUpdatedEventArgs(EditableIfScriptUpdatedEventArgs.UpdateEventType.AddedElse));
+                }
+            }
         }
 
         void m_thenScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
         {
             RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
+        }
+
+        void m_elseScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public override string DisplayString(int index, string newValue)
@@ -41,7 +83,13 @@ namespace AxeSoftware.Quest
 
             string result = string.Format("If ({0}) Then '{1}'", expression, thenScript);
 
-            // TO DO: Will then need to add elseif, else etc.
+            // TO DO: Will then need to add elseif
+
+            if (ElseScript != null)
+            {
+                // TO DO: For live updating as we type, need to check index. But need to refine the interface I think...
+                result += string.Format(", Else '{0}'", ElseScript.DisplayString());
+            }
 
             return result;
         }
@@ -58,10 +106,12 @@ namespace AxeSoftware.Quest
 
         public IEditableScripts ThenScript
         {
-            get
-            {
-                return m_thenScript;
-            }
+            get { return m_thenScript; }
+        }
+
+        public IEditableScripts ElseScript
+        {
+            get { return m_elseScript; }
         }
 
         // these should probably not be on the interface...
@@ -108,7 +158,7 @@ namespace AxeSoftware.Quest
 
         public void AddElse()
         {
-            m_ifScript.SetElse(null);
+            m_ifScript.SetElse(new MultiScript());
         }
 
         public void AddElseIf()

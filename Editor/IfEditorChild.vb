@@ -43,10 +43,14 @@
         End Set
     End Property
 
-    Public Sub Populate(ByVal data As EditableIfScript)
-        ctlExpression.Initialise("expression")
-        ctlExpression.Populate(data)
-        ctlThenScript.Populate(data.ThenScript)
+    Public Sub Populate(expression As IEditorData, script As IEditableScripts)
+        ' Currently the IEditorData only passes in an "expression" attribute, and it will be null when populating
+        ' an "Else"
+        If Not expression Is Nothing Then
+            ctlExpression.Initialise("expression")
+            ctlExpression.Populate(expression)
+        End If
+        ctlThenScript.Populate(script)
     End Sub
 
     Private Sub ctlThenScript_Dirty(ByVal sender As Object, ByVal args As DataModifiedEventArgs) Handles ctlThenScript.Dirty
