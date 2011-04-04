@@ -195,6 +195,12 @@ namespace AxeSoftware.Quest
                     WriteText("<br />");
                 }
             }
+
+            if (!m_useBuffer)
+            {
+                // If not using the buffer, then immediately output the text
+                m_playerUI.OutputText(ClearBuffer());
+            }
         }
 
         private string FormatText(string text)
@@ -290,14 +296,7 @@ namespace AxeSoftware.Quest
 
         private void WriteText(string text)
         {
-            if (m_useBuffer)
-            {
-                m_textBuffer += text;
-            }
-            else
-            {
-                m_playerUI.OutputText(text);
-            }
+            m_textBuffer += text;
         }
 
         public string ClearBuffer()
