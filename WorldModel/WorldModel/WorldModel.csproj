@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -158,9 +158,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Examples-Public\forest.aslx" />
-    <None Include="Examples-Public\YouTube\YouTube.aslx" />
-    <None Include="Examples-Public\YouTube\YouTube.htm" />
-    <None Include="Examples-Public\YouTube\YouTube.js" />
     <None Include="Examples-Public\test.aslx" />
     <None Include="Examples-Public\containers.aslx" />
     <None Include="Properties\Settings.settings">
