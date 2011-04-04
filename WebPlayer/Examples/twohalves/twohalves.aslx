@@ -7,10 +7,13 @@
   
   <game name="Half and Half">
   	<start type="script">
-  		insert ("twohalves.htm")
+      request (Hide, "Panes")
+      request (Hide, "Location")
+      request (Hide, "Command")
+      insert ("twohalves.htm")
       Print (1, "I am awake.")
       Print (2, "Patient is awake.")
-  	</start>
+    </start>
     <enablehyperlinks type="boolean">false</enablehyperlinks>
     <showdescriptiononenter type="boolean">false</showdescriptiononenter>
     <autodescription type="boolean">false</autodescription>

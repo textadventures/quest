@@ -19,3 +19,7 @@ function UIEvent(cmd, parameter) {
 function SetBackground(color) {
     document.body.style.background = color;
 }
+
+function gameFinished() {
+    // we don't need to do anything - this function is just required for compatibility with WebPlayer
+}

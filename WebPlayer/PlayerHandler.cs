@@ -11,7 +11,7 @@ namespace WebPlayer
     {
         private PlayerHelper m_controller;
         private readonly string m_filename;
-        
+
         private InterfaceListHandler m_listHandler;
         private OutputBuffer m_buffer;
         private bool m_finished = false;
@@ -47,6 +47,7 @@ namespace WebPlayer
             m_controller = new PlayerHelper(game, this, true);
             m_controller.Game.LogError += LogError;
             m_controller.Game.UpdateList += UpdateList;
+            m_controller.Game.Finished += GameFinished;
 
             bool success = m_controller.Initialise(this, out errors);
             if (success)
@@ -59,6 +60,11 @@ namespace WebPlayer
             }
 
             return success;
+        }
+
+        void GameFinished()
+        {
+            Finished = true;
         }
 
         public void Quit()
@@ -221,7 +227,7 @@ namespace WebPlayer
             var result = new List<string>();
             var scripts = m_controller.Game.GetExternalScripts();
             if (scripts == null) return result;
-            
+
             foreach (string script in scripts)
             {
                 string url = AddResource(script);
@@ -245,7 +251,8 @@ namespace WebPlayer
         private bool Finished
         {
             get { return m_finished; }
-            set {
+            set
+            {
                 if (value != m_finished)
                 {
                     m_buffer.AddJavaScriptToBuffer("gameFinished");
@@ -334,12 +341,33 @@ namespace WebPlayer
 
         public void Show(string element)
         {
-            throw new NotImplementedException();
+            DoShowHide(element, true);
         }
 
         public void Hide(string element)
         {
-            throw new NotImplementedException();
+            DoShowHide(element, false);
+        }
+
+        private void DoShowHide(string element, bool show)
+        {
+            string jsElement = GetElementId(element);
+            if (string.IsNullOrEmpty(jsElement)) return;
+            m_buffer.AddJavaScriptToBuffer(show ? "uiShow" : "uiHide", new StringParameter(jsElement));
+        }
+
+        private static Dictionary<string, string> s_elementMap = new Dictionary<string, string>
+        {
+            { "Panes", "#gamePanes" },
+            { "Location", "#location" },
+            { "Command", "#txtCommand" }
+        };
+
+        private string GetElementId(string code)
+        {
+            string id;
+            s_elementMap.TryGetValue(code, out id);
+            return id;
         }
     }
 }

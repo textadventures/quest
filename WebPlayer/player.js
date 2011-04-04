@@ -307,6 +307,14 @@ function panesVisible(visible) {
     }
 }
 
+function uiShow(element) {
+    $(element).show();
+}
+
+function uiHide(element) {
+    $(element).hide();
+}
+
 var _places;
 
 var _compassDirs = ["northwest", "north", "northeast", "west", "out", "east", "southwest", "south", "southeast", "up", "down"];

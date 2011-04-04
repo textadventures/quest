@@ -234,6 +234,7 @@ Public Class Player
         tmrTick.Enabled = False
         SetEnabledState(False)
         StopSound()
+        BeginInvoke(Sub() ctlPlayerHtml.Finished())
     End Sub
 
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError

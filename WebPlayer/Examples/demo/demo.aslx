@@ -29,7 +29,6 @@
     
     <description type="script">
       <![CDATA[
-      picture ("4437368431_050b872459.jpg")
       msg ("Hello. Here you can see the standard WebPlayer interface, featuring &quot;panes&quot; to the right and a command entry box at the bottom.<br/>")
       msg ("This is the way pretty much all existing Quest games appear for the web (though the panes can be turned off).<br/>")
       msg ("For games written for Quest 5.0 and later, it gets more exciting. The first new feature is hyperlinks - you can go <exit>east</exit> to find out more.<br/>")

@@ -138,4 +138,8 @@ Public Class PlayerHTML
         content = content.Replace(attribute + "=""", attribute + "=""" + My.Application.Info.DirectoryPath() + "\")
     End Sub
 
+    Public Sub Finished()
+        InvokeScript("gameFinished")
+    End Sub
+
 End Class

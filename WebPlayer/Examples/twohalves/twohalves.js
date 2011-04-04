@@ -1,6 +1,3 @@
-$("#txtCommand").hide();
-$("#location").hide();
-
 function inputKeydown(id, event) {
     if (keyPressCode(event) == 13) {
         var text = (id == "mind1") ? $("#mind1").val() : $("#mind2").val();
