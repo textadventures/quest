@@ -33,19 +33,21 @@ namespace AxeSoftware.Quest
 
         public bool Load(string filename)
         {
+            XmlReader reader = null;
+
             try
             {
-                XmlReader reader = XmlReader.Create(filename);
+                reader = XmlReader.Create(filename);
 
                 do
                 {
                     reader.Read();
                 } while (reader.NodeType != XmlNodeType.Element);
-                
+
                 if (reader.Name == "asl")
                 {
                     string version = reader.GetAttribute("version");
-                    
+
                     if (string.IsNullOrEmpty(version))
                     {
                         AddError("No ASL version number found");
@@ -69,7 +71,6 @@ namespace AxeSoftware.Quest
                 }
 
                 LoadXML(reader);
-                reader.Close();
             }
             catch (XmlException e)
             {
@@ -78,6 +79,10 @@ namespace AxeSoftware.Quest
             catch (Exception e)
             {
                 AddError(string.Format("Error: {0}", e.Message));
+            }
+            finally
+            {
+                if (reader != null) reader.Close();
             }
 
             if (m_errors.Count == 0)
