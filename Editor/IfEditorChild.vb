@@ -9,6 +9,7 @@
     Private m_controller As EditorController
     Private m_mode As IfEditorChildMode
     Private m_expanded As Boolean
+    Private m_scriptEditorMinHeight As Integer
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event ChangeHeight(sender As IfEditorChild, newHeight As Integer)
@@ -19,6 +20,7 @@
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        m_scriptEditorMinHeight = ctlThenScript.Height
         ElseIfMode = IfEditorChildMode.IfMode
         Expanded = True
         cmdExpand.Font = New Font("Marlett", cmdExpand.Font.Size * 1.1F)
@@ -106,7 +108,7 @@
             ctlThenScript.Visible = Expanded
             Dim newHeight As Integer
             If Expanded Then
-                newHeight = 300
+                newHeight = m_scriptEditorMinHeight
             Else
                 newHeight = lblThen.Top + lblThen.Height
             End If
@@ -125,5 +127,10 @@
 
     Private Sub ToggleExpand()
         Expanded = Not Expanded
+    End Sub
+
+    Private Sub ctlThenScript_HeightChanged(sender As Object, height As Integer) Handles ctlThenScript.HeightChanged
+        m_scriptEditorMinHeight = height
+        RaiseEvent ChangeHeight(Me, ctlThenScript.Top + height)
     End Sub
 End Class

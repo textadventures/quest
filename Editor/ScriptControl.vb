@@ -7,6 +7,7 @@ Public Class ScriptControl
     Private m_elementName As String
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
+    Public Event HeightChanged(sender As Object, height As Integer)
 
     Public ReadOnly Property Control() As System.Windows.Forms.Control Implements IElementEditorControl.Control
         Get
@@ -79,5 +80,9 @@ Public Class ScriptControl
             ctlScriptEditor.AttributeName = controlData.Attribute
         End If
         ctlScriptEditor.Initialise()
+    End Sub
+
+    Private Sub ctlScriptEditor_HeightChanged(sender As Object, height As Integer) Handles ctlScriptEditor.HeightChanged
+        RaiseEvent HeightChanged(Me, height)
     End Sub
 End Class

@@ -10,6 +10,7 @@
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event CloseButtonClicked()
+    Public Event HeightChanged(sender As Object, height As Integer)
 
     Public Sub New()
 
@@ -107,10 +108,12 @@
         If showAdder Then
             SetEditButtonsEnabled(False)
             m_currentScript = Nothing
+            RaiseEvent HeightChanged(Me, ctlToolStrip.Height + ctlContainer.SplitterDistance + ctlScriptAdder.Top + 150)
         Else
             SetEditButtonsEnabled(True)
             m_currentScript = m_scripts(index)
             ctlScriptCommandEditor.ShowEditor(m_currentScript)
+            RaiseEvent HeightChanged(Me, ctlToolStrip.Height + ctlContainer.SplitterDistance + ctlScriptCommandEditor.Top + ctlScriptCommandEditor.MinHeight)
         End If
     End Sub
 

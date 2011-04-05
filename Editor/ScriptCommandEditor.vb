@@ -85,4 +85,10 @@
     Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
         RaiseEvent CloseButtonClicked()
     End Sub
+
+    Public ReadOnly Property MinHeight As Integer
+        Get
+            Return m_currentEditor.MinHeight
+        End Get
+    End Property
 End Class

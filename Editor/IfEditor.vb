@@ -8,6 +8,7 @@
     Private m_lastEditorChild As IfEditorChild
     Private m_hasElse As Boolean
     Private m_elseEditor As IfEditorChild
+    Private m_fullHeight As Integer
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
@@ -122,6 +123,7 @@
             Debug.Assert(Not (child Is ctlChild And currentTop > 0))
             currentTop += child.Height
         Next
+        m_fullHeight = currentTop
     End Sub
 
     ' need logic to only add an "else" once, and update button/menu accordingly
@@ -157,4 +159,9 @@
         RemoveElseChildControl()
     End Sub
 
+    Public ReadOnly Property MinHeight As Integer Implements ICommandEditor.MinHeight
+        Get
+            Return m_fullHeight
+        End Get
+    End Property
 End Class

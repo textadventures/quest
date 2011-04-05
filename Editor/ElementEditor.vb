@@ -8,6 +8,7 @@
     Private m_populating As Boolean
     Private m_data As IEditorData
     Private m_controller As EditorController
+    Private m_fullHeight As Integer
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
@@ -86,6 +87,7 @@
             End If
         Next
 
+        m_fullHeight = top - k_padding
         maxCaptionWidth += k_padding
 
         For Each ctl As EditorControl In m_controls
@@ -169,5 +171,11 @@
         Set(value As EditorController)
             m_controller = value
         End Set
+    End Property
+
+    Public ReadOnly Property MinHeight As Integer Implements ICommandEditor.MinHeight
+        Get
+            Return m_fullHeight
+        End Get
     End Property
 End Class

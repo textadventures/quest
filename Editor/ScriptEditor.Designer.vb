@@ -34,6 +34,7 @@ Partial Class ScriptEditor
         Me.cmdPopOut = New System.Windows.Forms.ToolStripButton()
         Me.ctlScriptAdder = New AxeSoftware.Quest.ScriptAdder()
         Me.ctlScriptCommandEditor = New AxeSoftware.Quest.ScriptCommandEditor()
+        CType(Me.ctlContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlContainer.Panel1.SuspendLayout()
         Me.ctlContainer.Panel2.SuspendLayout()
         Me.ctlContainer.SuspendLayout()
@@ -43,6 +44,7 @@ Partial Class ScriptEditor
         'ctlContainer
         '
         Me.ctlContainer.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
         Me.ctlContainer.Location = New System.Drawing.Point(0, 0)
         Me.ctlContainer.Name = "ctlContainer"
         Me.ctlContainer.Orientation = System.Windows.Forms.Orientation.Horizontal
@@ -160,6 +162,7 @@ Partial Class ScriptEditor
         Me.ctlContainer.Panel1.ResumeLayout(False)
         Me.ctlContainer.Panel1.PerformLayout()
         Me.ctlContainer.Panel2.ResumeLayout(False)
+        CType(Me.ctlContainer, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ctlContainer.ResumeLayout(False)
         Me.ctlToolStrip.ResumeLayout(False)
         Me.ctlToolStrip.PerformLayout()
