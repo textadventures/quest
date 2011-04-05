@@ -22,10 +22,11 @@ Partial Class Editor
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.splitMain = New System.Windows.Forms.SplitContainer
-        Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog
-        Me.ctlTree = New AxeSoftware.Quest.EditorTree
-        Me.ctlToolbar = New AxeSoftware.Quest.MainToolbar
+        Me.splitMain = New System.Windows.Forms.SplitContainer()
+        Me.ctlTree = New AxeSoftware.Quest.EditorTree()
+        Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
+        Me.ctlToolbar = New AxeSoftware.Quest.MainToolbar()
+        CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.SuspendLayout()
         Me.SuspendLayout()
@@ -33,6 +34,7 @@ Partial Class Editor
         'splitMain
         '
         Me.splitMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
         Me.splitMain.Location = New System.Drawing.Point(0, 25)
         Me.splitMain.Name = "splitMain"
         '
@@ -43,18 +45,19 @@ Partial Class Editor
         Me.splitMain.SplitterDistance = 206
         Me.splitMain.TabIndex = 0
         '
-        'ctlSaveFile
-        '
-        Me.ctlSaveFile.DefaultExt = "aslx"
-        Me.ctlSaveFile.Filter = "Quest Games|*.aslx|All files|*.*"
-        '
         'ctlTree
         '
         Me.ctlTree.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlTree.Location = New System.Drawing.Point(0, 0)
         Me.ctlTree.Name = "ctlTree"
+        Me.ctlTree.ShowFilterBar = True
         Me.ctlTree.Size = New System.Drawing.Size(206, 304)
         Me.ctlTree.TabIndex = 0
+        '
+        'ctlSaveFile
+        '
+        Me.ctlSaveFile.DefaultExt = "aslx"
+        Me.ctlSaveFile.Filter = "Quest Games|*.aslx|All files|*.*"
         '
         'ctlToolbar
         '
@@ -73,6 +76,7 @@ Partial Class Editor
         Me.Name = "Editor"
         Me.Size = New System.Drawing.Size(618, 329)
         Me.splitMain.Panel1.ResumeLayout(False)
+        CType(Me.splitMain, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitMain.ResumeLayout(False)
         Me.ResumeLayout(False)
 

@@ -7,13 +7,13 @@
     Private m_attribute As String
     Private m_currentScript As IEditableScript
     Private m_isPopOut As Boolean
+    Private m_showingAdder As Boolean
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event CloseButtonClicked()
     Public Event HeightChanged(sender As Object, height As Integer)
 
     Public Sub New()
-
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
 
@@ -104,15 +104,24 @@
         Dim showAdder As Boolean = (m_scripts Is Nothing OrElse index >= m_scripts.Scripts.Count)
         ctlScriptAdder.Visible = showAdder
         ctlScriptCommandEditor.Visible = Not showAdder
+        m_showingAdder = showAdder
 
         If showAdder Then
             SetEditButtonsEnabled(False)
             m_currentScript = Nothing
-            RaiseEvent HeightChanged(Me, ctlToolStrip.Height + ctlContainer.SplitterDistance + ctlScriptAdder.Top + 150)
         Else
             SetEditButtonsEnabled(True)
             m_currentScript = m_scripts(index)
             ctlScriptCommandEditor.ShowEditor(m_currentScript)
+        End If
+
+        UpdateHeight()
+    End Sub
+
+    Private Sub UpdateHeight()
+        If m_showingAdder Then
+            RaiseEvent HeightChanged(Me, ctlToolStrip.Height + ctlContainer.SplitterDistance + ctlScriptAdder.Top + 150)
+        Else
             RaiseEvent HeightChanged(Me, ctlToolStrip.Height + ctlContainer.SplitterDistance + ctlScriptCommandEditor.Top + ctlScriptCommandEditor.MinHeight)
         End If
     End Sub
@@ -220,4 +229,11 @@
         cmdMoveDown.Enabled = enabled
     End Sub
 
+    Private Sub ctlContainer_SplitterMoved(sender As Object, e As System.Windows.Forms.SplitterEventArgs) Handles ctlContainer.SplitterMoved
+        If Me.IsHandleCreated Then
+            ' Run UpdateHeight asynchronously as we want the resize to have finished before calling it. Otherwise
+            ' the contents of Panel2 are squashed by the splitter resize.
+            BeginInvoke(Sub() UpdateHeight())
+        End If
+    End Sub
 End Class
