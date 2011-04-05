@@ -41,7 +41,13 @@ namespace AxeSoftware.Quest.Scripts
         public void AddElseIf(IScript script, string elseIfScript, Element proc)
         {
             IScript add = GetElse(elseIfScript, proc);
-            ((IfScript)script).AddElseIf(add);
+
+            // GetElse uses the ScriptFactory to parse the "else if" block, so it will return
+            // a MultiScript containing an IfScript with one expression and one "then" script block.
+
+            IfScript elseIf = (IfScript)((MultiScript)add).Scripts.First();
+
+            ((IfScript)script).AddElseIf(elseIf.Expression, elseIf.ThenScript);
         }
 
         private IScript GetElse(string elseScript, Element proc)
@@ -53,10 +59,41 @@ namespace AxeSoftware.Quest.Scripts
 
     public class IfScript : ScriptBase
     {
+        public class ElseIfScript
+        {
+            private IfScript m_parent;
+
+            public ElseIfScript(IFunction<bool> expression, IScript script, IfScript parent)
+            {
+                Expression = expression;
+                Script = script;
+                m_parent = parent;
+            }
+
+            internal IFunction<bool> Expression { get; private set; }
+            public IScript Script { get; private set; }
+
+            public string ExpressionString
+            {
+                get { return Expression.Save(); }
+                set
+                {
+                    m_parent.UndoLog.AddUndoAction(new UndoChangeExpression(this, Expression.Save(), value));
+                    SetExpressionSilent(value);
+                }
+            }
+
+            internal void SetExpressionSilent(string newValue)
+            {
+                Expression = new Expression<bool>(newValue, m_parent.m_worldModel);
+                m_parent.NotifyUpdate(0, newValue);
+            }
+        }
+
         private IFunction<bool> m_expression;
         private IScript m_thenScript;
         private IScript m_elseScript;
-        private List<IScript> m_elseIfScript;
+        private List<ElseIfScript> m_elseIfScript = new List<ElseIfScript>();
         private bool m_hasElse = false;
         private WorldModel m_worldModel;
 
@@ -79,15 +116,15 @@ namespace AxeSoftware.Quest.Scripts
         {
             System.Diagnostics.Debug.Assert(!m_hasElse, "UndoSetElse assumes that we only ever set the Else script once");
             m_hasElse = true;
-            
+
             if (base.UndoLog != null)
             {
                 base.UndoLog.StartTransaction("Add Else script");
                 base.UndoLog.AddUndoAction(new UndoSetElse(this, elseScript));
             }
-            
+
             SetElseSilent(elseScript);
-            
+
             if (base.UndoLog != null)
             {
                 base.UndoLog.EndTransaction();
@@ -107,10 +144,63 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
-        public void AddElseIf(IScript elseIfScript)
+        public void AddElseIf(IFunction<bool> expression, IScript script)
         {
-            if (m_elseIfScript == null) m_elseIfScript = new List<IScript>();
+            ElseIfScript elseIfScript = new ElseIfScript(expression, script, this);
+
+            if (base.UndoLog != null)
+            {
+                base.UndoLog.StartTransaction("Add Else If script");
+                base.UndoLog.AddUndoAction(new UndoAddElseIf(this, elseIfScript));
+            }
+
+            AddElseIfSilent(elseIfScript);
+
+            if (base.UndoLog != null)
+            {
+                base.UndoLog.EndTransaction();
+            }
+        }
+
+        private void AddElseIfSilent(ElseIfScript elseIfScript)
+        {
             m_elseIfScript.Add(elseIfScript);
+
+            if (IfScriptUpdated != null)
+            {
+                IfScriptUpdated(this, new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf, elseIfScript.Script));
+            }
+        }
+
+        private void RemoveElseIf(ElseIfScript elseIfScript)
+        {
+            if (base.UndoLog != null)
+            {
+                base.UndoLog.StartTransaction("Remove Else If script");
+                base.UndoLog.AddUndoAction(new UndoRemoveElseIf(this, elseIfScript));
+            }
+
+            RemoveElseIfSilent(elseIfScript);
+
+            if (base.UndoLog != null)
+            {
+                base.UndoLog.EndTransaction();
+            }
+        }
+
+        private void RemoveElseIfSilent(ElseIfScript elseIfScript)
+        {
+            m_elseIfScript.Remove(elseIfScript);
+
+            if (IfScriptUpdated != null)
+            {
+                IfScriptUpdated(this, new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf, elseIfScript.Script));
+            }
+        }
+
+        public IList<ElseIfScript> ElseIfScripts
+        {
+            get { return m_elseIfScript.AsReadOnly(); }
         }
 
         #region IScript Members
@@ -120,22 +210,22 @@ namespace AxeSoftware.Quest.Scripts
             if (m_expression.Execute(c))
             {
                 m_thenScript.Execute(c);
+                return;
             }
-            else
+
+            if (m_elseIfScript != null)
             {
-                if (m_elseIfScript != null)
+                foreach (ElseIfScript elseIfScript in m_elseIfScript)
                 {
-                    foreach (IScript elseIfScript in m_elseIfScript)
+                    if (elseIfScript.Expression.Execute(c))
                     {
-                        // All IScripts in m_elseIfScript are just simple
-                        // IfScript objects with only one "if". If any of them run
-                        // successfully then we're finished with this if block.
-                        if (((IfScript)((MultiScript)elseIfScript).Scripts.First()).ExecuteWithResult(c)) return;
+                        elseIfScript.Script.Execute(c);
+                        return;
                     }
                 }
-
-                if (m_elseScript != null) m_elseScript.Execute(c);
             }
+
+            if (m_elseScript != null) m_elseScript.Execute(c);
         }
 
         public override string Save()
@@ -182,17 +272,7 @@ namespace AxeSoftware.Quest.Scripts
 
         #endregion
 
-        private bool ExecuteWithResult(Context c)
-        {
-            if (m_expression.Execute(c))
-            {
-                m_thenScript.Execute(c);
-                return true;
-            }
-            return false;
-        }
-
-        public string Expression
+        public string ExpressionString
         {
             get { return m_expression.Save(); }
             set
@@ -200,6 +280,11 @@ namespace AxeSoftware.Quest.Scripts
                 base.UndoLog.AddUndoAction(new UndoChangeExpression(this, m_expression.Save(), value));
                 SetExpressionSilent(value);
             }
+        }
+
+        internal IFunction<bool> Expression
+        {
+            get { return m_expression; }
         }
 
         private void SetExpressionSilent(string newValue)
@@ -222,24 +307,38 @@ namespace AxeSoftware.Quest.Scripts
         private class UndoChangeExpression : UndoLogger.IUndoAction
         {
             private IfScript m_script;
+            private ElseIfScript m_elseIfScript;
             private string m_oldValue;
             private string m_newValue;
 
-            public UndoChangeExpression(IfScript script, string oldValue, string newValue)
+            private UndoChangeExpression(string oldValue, string newValue)
             {
-                m_script = script;
                 m_oldValue = oldValue;
                 m_newValue = newValue;
             }
 
+            public UndoChangeExpression(IfScript script, string oldValue, string newValue)
+                : this(oldValue, newValue)
+            {
+                m_script = script;
+            }
+
+            public UndoChangeExpression(ElseIfScript elseIfscript, string oldValue, string newValue)
+                : this(oldValue, newValue)
+            {
+                m_elseIfScript = elseIfscript;
+            }
+
             public void DoUndo(WorldModel worldModel)
             {
-                m_script.SetExpressionSilent(m_oldValue);
+                if (m_script != null) m_script.SetExpressionSilent(m_oldValue);
+                if (m_elseIfScript != null) m_elseIfScript.SetExpressionSilent(m_oldValue);
             }
 
             public void DoRedo(WorldModel worldModel)
             {
-                m_script.SetExpressionSilent(m_newValue);
+                if (m_script != null) m_script.SetExpressionSilent(m_newValue);
+                if (m_elseIfScript != null) m_elseIfScript.SetExpressionSilent(m_newValue);
             }
         }
 
@@ -271,12 +370,58 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
+        private class UndoAddElseIf : UndoLogger.IUndoAction
+        {
+            private IfScript m_script;
+            private ElseIfScript m_elseIf;
+
+            public UndoAddElseIf(IfScript script, ElseIfScript elseIf)
+            {
+                m_script = script;
+                m_elseIf = elseIf;
+            }
+
+            public void DoUndo(WorldModel worldModel)
+            {
+                m_script.RemoveElseIfSilent(m_elseIf);
+            }
+
+            public void DoRedo(WorldModel worldModel)
+            {
+                m_script.AddElseIfSilent(m_elseIf);
+            }
+        }
+
+        private class UndoRemoveElseIf : UndoLogger.IUndoAction
+        {
+            private IfScript m_script;
+            private ElseIfScript m_elseIf;
+
+            public UndoRemoveElseIf(IfScript script, ElseIfScript elseIf)
+            {
+                m_script = script;
+                m_elseIf = elseIf;
+            }
+
+            public void DoUndo(WorldModel worldModel)
+            {
+                m_script.AddElseIfSilent(m_elseIf);
+            }
+
+            public void DoRedo(WorldModel worldModel)
+            {
+                m_script.RemoveElseIfSilent(m_elseIf);
+            }
+        }
+
         public class IfScriptUpdatedEventArgs : EventArgs
         {
             public enum IfScriptUpdatedEventType
             {
                 AddedElse,
-                RemovedElse
+                RemovedElse,
+                AddedElseIf,
+                RemovedElseIf
             }
 
             internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType)
@@ -284,7 +429,14 @@ namespace AxeSoftware.Quest.Scripts
                 EventType = eventType;
             }
 
+            internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType, IScript data)
+                : this(eventType)
+            {
+                Data = data;
+            }
+
             public IfScriptUpdatedEventType EventType { get; private set; }
+            public IScript Data { get; private set; }
         }
     }
 }

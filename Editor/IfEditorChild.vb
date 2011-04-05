@@ -10,6 +10,7 @@
     Private m_mode As IfEditorChildMode
     Private m_expanded As Boolean
     Private m_scriptEditorMinHeight As Integer
+    Private m_script As IEditableScripts
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event ChangeHeight(sender As IfEditorChild, newHeight As Integer)
@@ -53,6 +54,7 @@
             ctlExpression.Populate(expression)
         End If
         ctlThenScript.Populate(script)
+        m_script = script
     End Sub
 
     Private Sub ctlThenScript_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlThenScript.Dirty
@@ -133,4 +135,10 @@
         m_scriptEditorMinHeight = height
         RaiseEvent ChangeHeight(Me, ctlThenScript.Top + height)
     End Sub
+
+    Public ReadOnly Property Script As IEditableScripts
+        Get
+            Return m_script
+        End Get
+    End Property
 End Class

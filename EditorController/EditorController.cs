@@ -287,9 +287,6 @@ namespace AxeSoftware.Quest
             {
                 case ScriptType.Normal:
                     return new ScriptCommandEditorData(script);
-                // not sure we need ScriptIfCommandEditorData now
-                case ScriptType.If:
-                    return new ScriptIfCommandEditorData(script);
                 default:
                     throw new NotImplementedException();
             }
