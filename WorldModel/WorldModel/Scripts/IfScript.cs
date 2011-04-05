@@ -79,11 +79,19 @@ namespace AxeSoftware.Quest.Scripts
         {
             System.Diagnostics.Debug.Assert(!m_hasElse, "UndoSetElse assumes that we only ever set the Else script once");
             m_hasElse = true;
+            
             if (base.UndoLog != null)
             {
+                base.UndoLog.StartTransaction("Add Else script");
                 base.UndoLog.AddUndoAction(new UndoSetElse(this, elseScript));
             }
+            
             SetElseSilent(elseScript);
+            
+            if (base.UndoLog != null)
+            {
+                base.UndoLog.EndTransaction();
+            }
         }
 
         private void SetElseSilent(IScript elseScript)
@@ -92,7 +100,10 @@ namespace AxeSoftware.Quest.Scripts
 
             if (IfScriptUpdated != null)
             {
-                IfScriptUpdated(this, new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse));
+                IfScriptUpdatedEventArgs.IfScriptUpdatedEventType eventType =
+                    (elseScript == null) ? IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElse
+                    : IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse;
+                IfScriptUpdated(this, new IfScriptUpdatedEventArgs(eventType));
             }
         }
 
@@ -264,7 +275,8 @@ namespace AxeSoftware.Quest.Scripts
         {
             public enum IfScriptUpdatedEventType
             {
-                AddedElse
+                AddedElse,
+                RemovedElse
             }
 
             internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType)

@@ -38,7 +38,9 @@
     End Sub
 
     Public Sub SaveData() Implements ICommandEditor.SaveData
-        ctlChild.SaveData(m_data)
+        For Each child As IfEditorChild In m_children
+            child.SaveData(m_data)
+        Next
     End Sub
 
     Public Property Controller As EditorController Implements ICommandEditor.Controller
@@ -58,9 +60,7 @@
         ' The expression is contained in the "expression" attribute of the data IEditorData
         ctlChild.Populate(data, data.ThenScript)
         If Not data.ElseScript Is Nothing Then
-            Dim newChild As IfEditorChild = AddElseChildControl(False)
-            m_elseEditor = newChild
-            newChild.Populate(Nothing, data.ElseScript)
+            AddElseChildControl()
         End If
     End Sub
 
@@ -85,6 +85,12 @@
         Throw New NotImplementedException
     End Function
 
+    Private Sub AddElseChildControl()
+        Dim newChild As IfEditorChild = AddElseChildControl(False)
+        m_elseEditor = newChild
+        newChild.Populate(Nothing, m_data.ElseScript)
+    End Sub
+
     Private Function AddElseChildControl(addElseIf As Boolean) As IfEditorChild
         ctlChild.Dock = DockStyle.None
         Dim newIfEditorChild As New IfEditorChild
@@ -98,6 +104,15 @@
         AddChild(newIfEditorChild)
         Return newIfEditorChild
     End Function
+
+    Private Sub RemoveElseChildControl()
+        m_elseEditor.Parent = Nothing
+        m_elseEditor.Populate(Nothing, Nothing)
+        m_children.Remove(m_elseEditor)
+        m_elseEditor.Dispose()
+        m_elseEditor = Nothing
+        m_hasElse = False
+    End Sub
 
     Private Sub IfEditorChild_HeightChanged(sender As IfEditorChild, newHeight As Integer)
         sender.Height = newHeight
@@ -129,10 +144,17 @@
 
     Private Sub AddElse()
         m_data.AddElse()
+
+        Dim args As New DataModifiedEventArgs(String.Empty, m_data.DisplayString())
+        RaiseEvent Dirty(Me, args)
     End Sub
 
-    Private Sub m_data_IfUpdated(sender As Object, e As EditableIfScriptUpdatedEventArgs) Handles m_data.IfUpdated
-        ' TO DO: This will be called when an "Else" or "Else If" is being added
+    Private Sub m_data_AddedElse(sender As Object, e As System.EventArgs) Handles m_data.AddedElse
+        AddElseChildControl()
+    End Sub
+
+    Private Sub m_data_RemovedElse(sender As Object, e As System.EventArgs) Handles m_data.RemovedElse
+        RemoveElseChildControl()
     End Sub
 
 End Class

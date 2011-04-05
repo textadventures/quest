@@ -6,21 +6,6 @@ using AxeSoftware.Quest.Scripts;
 
 namespace AxeSoftware.Quest
 {
-    public class EditableIfScriptUpdatedEventArgs : EventArgs
-    {
-        public enum UpdateEventType
-        {
-            AddedElse
-        }
-
-        internal EditableIfScriptUpdatedEventArgs(UpdateEventType eventType)
-        {
-            EventType = eventType;
-        }
-
-        public UpdateEventType EventType { get; private set; }
-    }
-
     public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     {
         private IfScript m_ifScript;
@@ -29,7 +14,8 @@ namespace AxeSoftware.Quest
         private EditableScripts m_thenScript;
         private EditableScripts m_elseScript;
 
-        public event EventHandler<EditableIfScriptUpdatedEventArgs> IfUpdated;
+        public event EventHandler AddedElse;
+        public event EventHandler RemovedElse;
 
         internal EditableIfScript(EditorController controller, IfScript script, Element parent, UndoLogger undoLogger)
             : base(script, undoLogger)
@@ -57,12 +43,14 @@ namespace AxeSoftware.Quest
 
         void m_ifScript_IfScriptUpdated(object sender, IfScript.IfScriptUpdatedEventArgs e)
         {
-            if (IfUpdated != null)
+            switch (e.EventType)
             {
-                if (e.EventType == IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse)
-                {
-                    IfUpdated(this, new EditableIfScriptUpdatedEventArgs(EditableIfScriptUpdatedEventArgs.UpdateEventType.AddedElse));
-                }
+                case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
+                    if (AddedElse != null) AddedElse(this, new EventArgs());
+                    break;
+                case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElse:
+                    if (RemovedElse != null) RemovedElse(this, new EventArgs());
+                    break;
             }
         }
 
@@ -184,7 +172,13 @@ namespace AxeSoftware.Quest
 
         public void AddElse()
         {
-            m_ifScript.SetElse(new MultiScript());
+            IScript newScript = new MultiScript();
+            // we have to set m_elseScript here before setting it on m_ifScript, because setting it on
+            // m_ifScript will trigger the screen update, and we therefore need to have m_elseScript
+            // set here before that happens
+            m_elseScript = new EditableScripts(m_controller, newScript, m_parent, null);
+            m_elseScript.Updated += m_elseScript_Updated;
+            m_ifScript.SetElse(newScript);
         }
 
         public void AddElseIf()
