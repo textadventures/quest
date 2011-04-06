@@ -82,7 +82,7 @@ namespace AxeSoftware.Quest
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.UndoLogger.TransactionsUpdated += UndoLogger_TransactionsUpdated;
-            
+
             bool ok = m_worldModel.InitialiseEdit();
 
             // need to initialise the EditableScriptFactory after we've loaded the game XML above,
@@ -348,12 +348,40 @@ namespace AxeSoftware.Quest
             get { return m_editableScriptFactory; }
         }
 
+        private class WrappedValueData
+        {
+            public object Value { get; set; }
+            public Element Parent { get; set; }
+            public string Attribute { get; set; }
+        }
+
+        private Dictionary<object, WrappedValueData> m_wrappedValues = new Dictionary<object, WrappedValueData>();
+
         internal object WrapValue(object value, Element parent, string attribute)
         {
             // need to wrap IScript in an IEditableScript
             if (value is IScript)
             {
-                return new EditableScripts(this, (IScript)value, parent, attribute);
+                // cache the created IEditableScript for each IScript as we don't want to regenerate a new one each
+                // time the same script is edited.
+
+                WrappedValueData result;
+                if (m_wrappedValues.TryGetValue(value, out result))
+                {
+                    System.Diagnostics.Debug.Assert(result.Parent == parent && result.Attribute == attribute, "Wrapped value has been moved - cached IEditableScript will be invalid");
+                    return result.Value;
+                }
+
+                result = new WrappedValueData
+                {
+                    Value = new EditableScripts(this, (IScript)value, parent, attribute),
+                    Parent = parent,
+                    Attribute = attribute
+                };
+
+                m_wrappedValues.Add(value, result);
+
+                return result.Value;
             }
 
             return value;

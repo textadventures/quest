@@ -81,6 +81,10 @@
     End Sub
 
     Private Sub IfEditorChild_Dirty(sender As Object, args As DataModifiedEventArgs)
+        ' TO DO: As you click around the editor, these IfEditorChild controls don't get deleted
+        ' so we end up with lots of these firing.
+        Debug.Print("{0} IfEditorChild_Dirty", DateTime.Now)
+
         Dim newArgs As New DataModifiedEventArgs(String.Empty, m_data.DisplayString(GetChildEditorScript(sender), CInt(args.Attribute), DirectCast(args.NewValue, String)))
         RaiseEvent Dirty(sender, newArgs)
     End Sub
@@ -126,6 +130,8 @@
 
     Private Sub RemoveChild(child As IfEditorChild)
         LayoutSuspend()
+        RemoveHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
+        RemoveHandler child.Dirty, AddressOf IfEditorChild_Dirty
         child.Parent = Nothing
         child.Populate(Nothing, Nothing)
         m_children.Remove(child)
