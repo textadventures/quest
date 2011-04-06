@@ -124,7 +124,15 @@ namespace AxeSoftware.Quest
                     if (RemovedElse != null) RemovedElse(this, new EventArgs());
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
-                    if (AddedElseIf != null) AddedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
+                    if (AddedElseIf != null)
+                    {
+                        // our dictionary of existing elseIfScripts won't contain this one if we're in the middle of adding it
+                        // via the AddElseIf function below, so we just ignore it for now and will raise an update ourselves later.
+                        if (m_elseIfScripts.ContainsKey(e.Data.Script))
+                        {
+                            AddedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
+                        }
+                    }
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
                     if (RemovedElseIf != null) RemovedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
@@ -281,15 +289,23 @@ namespace AxeSoftware.Quest
 
         public EditableElseIf AddElseIf()
         {
+            // Create a blank "then" script for this new elseif, and wrap it in an EditableScripts
             IScript newScript = new MultiScript();
-
             EditableScripts editableNewScript = new EditableScripts(m_controller, newScript, m_parent, null);
             editableNewScript.Updated += ElseIfUpdated;
 
+            // Add it to the "if" with an empty expression
             IfScript.ElseIfScript newElseIf = m_ifScript.AddElseIf(string.Empty, newScript);
 
+            // Wrap the newly created elseif in an EditableElseIf and add it to our internal dictionary
             EditableElseIf newEditableElseIf = new EditableElseIf(newElseIf, this);
             m_elseIfScripts.Add(newElseIf.Script, newEditableElseIf);
+
+            // Raise the update to display in the UI
+            if (AddedElseIf != null)
+            {
+                AddedElseIf(this, new ElseIfEventArgs(newEditableElseIf));
+            }
 
             return newEditableElseIf;
         }

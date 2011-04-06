@@ -119,12 +119,19 @@
     End Function
 
     Private Sub RemoveElseChildControl()
-        m_elseEditor.Parent = Nothing
-        m_elseEditor.Populate(Nothing, Nothing)
-        m_children.Remove(m_elseEditor)
-        m_elseEditor.Dispose()
+        RemoveChild(m_elseEditor)
         m_elseEditor = Nothing
         m_hasElse = False
+    End Sub
+
+    Private Sub RemoveChild(child As IfEditorChild)
+        LayoutSuspend()
+        child.Parent = Nothing
+        child.Populate(Nothing, Nothing)
+        m_children.Remove(child)
+        child.Dispose()
+        SetChildControlPositions()
+        LayoutResume()
     End Sub
 
     Private Sub IfEditorChild_HeightChanged(sender As IfEditorChild, newHeight As Integer)
@@ -190,7 +197,9 @@
     End Sub
 
     Private Sub m_data_RemovedElseIf(sender As Object, e As EditableIfScript.ElseIfEventArgs) Handles m_data.RemovedElseIf
-        ' will also need to remove from m_elseIfEditor
+        Dim childControl As IfEditorChild = m_elseIfEditor(e.Script.Id)
+        RemoveChild(childControl)
+        m_elseIfEditor.Remove(e.Script.Id)
     End Sub
 
     Public ReadOnly Property MinHeight As Integer Implements ICommandEditor.MinHeight
