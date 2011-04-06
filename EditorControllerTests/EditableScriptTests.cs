@@ -88,10 +88,10 @@ namespace EditorControllerTests
         {
             TestUndoRedo(
                 "if (someExpression) { msg (\"Then script\") }",
-                "If (someExpression) Then 'Print \"Then script\"'",
+                "If (someExpression) Then (Print \"Then script\")",
                 "Change expression",
                 (script) => ((EditableIfScript)script).SetAttribute("expression", "newExpression"),
-                "If (newExpression) Then 'Print \"Then script\"'");
+                "If (newExpression) Then (Print \"Then script\")");
         }
 
         [TestMethod]
@@ -99,10 +99,60 @@ namespace EditorControllerTests
         {
             TestUndoRedo(
                 "if (someExpression) { msg (\"Then script\") }",
-                "If (someExpression) Then 'Print \"Then script\"'",
+                "If (someExpression) Then (Print \"Then script\")",
                 "Change then script",
                 (script) => ((EditableIfScript)script).ThenScript[0].SetParameter(0, "\"new value\""),
-                "If (someExpression) Then 'Print \"new value\"'");
+                "If (someExpression) Then (Print \"new value\")");
         }
+
+        [TestMethod]
+        public void TestIfThenElseIf()
+        {
+            // Create an "if (...) { } else if (...) { }" script
+            EditableScripts newScripts = Controller.CreateNewEditableScripts("game", "somescript", "if (someExpression) { msg (\"Then script\") }");
+            EditableIfScript.EditableElseIf newElseIf = ((EditableIfScript)newScripts[0]).AddElseIf();
+            newElseIf.Expression = "elseIfExpression";
+            newElseIf.EditableScripts.AddNew("msg (\"test\")", "game");
+
+            // Capture update events
+            EditableScriptsUpdatedEventArgs lastArgs = null;
+            newScripts.Updated += (object sender, EditableScriptsUpdatedEventArgs e) => { lastArgs = e; };
+
+            // Check the initial display string is correct
+            string initialExpectedDisplayString = "If (someExpression) Then (Print \"Then script\"), Else If (elseIfExpression) Then (Print \"test\")";
+            Assert.AreEqual(initialExpectedDisplayString, newScripts.DisplayString());
+
+            // Now change the expression
+            Controller.StartTransaction("Change elseif expression");
+            newElseIf.Expression = "newElseIfExpression";
+            Controller.EndTransaction();
+
+            // Check the new display string is correct, and that we received the update event
+            string newExpectedDisplayString = "If (someExpression) Then (Print \"Then script\"), Else If (newElseIfExpression) Then (Print \"test\")";
+            Assert.AreEqual(newExpectedDisplayString, newScripts.DisplayString());
+            Assert.AreEqual(lastArgs.UpdatedScriptEventArgs.NewValue, "newElseIfExpression");
+
+            // Now undo and redo, and check the display strings update correctly
+            Controller.Undo();
+            Assert.AreEqual(initialExpectedDisplayString, newScripts.DisplayString());
+            Controller.Redo();
+            Assert.AreEqual(newExpectedDisplayString, newScripts.DisplayString());
+
+            // Now change the script. This automatically creates a transaction.
+            newElseIf.EditableScripts.AddNew("msg (\"test2\")", "game");
+
+            // Check the new display string is correct
+            string newerExpectedDisplayString = "If (someExpression) Then (Print \"Then script\"), Else If (newElseIfExpression) Then (Print \"test\" / Print \"test2\")".Replace(" / ", Environment.NewLine);
+            Assert.AreEqual(newerExpectedDisplayString, newScripts.DisplayString());
+
+            // Now undo and redo, and check the display strings update correctly
+            Controller.Undo();
+            Assert.AreEqual(newExpectedDisplayString, newScripts.DisplayString());
+            Controller.Redo();
+            Assert.AreEqual(newerExpectedDisplayString, newScripts.DisplayString());
+
+            Assert.AreEqual("test2", lastArgs.UpdatedScriptEventArgs.NewValue);
+        }
+
     }
 }

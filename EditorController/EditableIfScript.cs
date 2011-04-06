@@ -101,7 +101,9 @@ namespace AxeSoftware.Quest
 
             foreach (var elseIfScript in m_ifScript.ElseIfScripts)
             {
-                m_elseIfScripts.Add(elseIfScript.Script, new EditableElseIf(elseIfScript, this));
+                EditableElseIf newEditableElseIf = new EditableElseIf(elseIfScript, this);
+                m_elseIfScripts.Add(elseIfScript.Script, newEditableElseIf);
+                newEditableElseIf.EditableScripts.Updated += ElseIfUpdated;
             }
 
             if (m_ifScript.ElseScript != null)
@@ -132,6 +134,11 @@ namespace AxeSoftware.Quest
             }
         }
 
+        // TO DO: FIX *************************************************************************************************************
+        // This is flawed. We shouldn't have to listen to the Updated event on the then/else/elseif script at all. This is only used for
+        // updating the scripts list after an undo/redo, and what should be happening instead is that there should be an event
+        // on IEditableScripts which will tell a listbox that is bound to it to update. The current approach is hacky and relies
+        // on the individual ScriptEditor not being destroyed when you click off to edit a different script.
         void m_thenScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
         {
             RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
@@ -139,12 +146,14 @@ namespace AxeSoftware.Quest
 
         void m_elseScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
         {
-            // This doesn't look correct to me - the whole area of indexes doesn't really apply to "if" scripts. Yet this
-            // appears to work at the moment...
-
-            // we should have something similar for when an elseif is updated
             RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
         }
+
+        void ElseIfUpdated(object sender, EditableScriptsUpdatedEventArgs e)
+        {
+            RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
+        }
+        // ************************************************************************************************************************
 
         public override string DisplayString(int index, string newValue)
         {
@@ -270,24 +279,19 @@ namespace AxeSoftware.Quest
             m_ifScript.SetElse(newScript);
         }
 
-        public void AddElseIf()
+        public EditableElseIf AddElseIf()
         {
-            //// expects an IfScript with an expression and just a "then" script
-            ////m_ifScript.AddElseIf(null);
+            IScript newScript = new MultiScript();
 
-            //IScript newScript = new MultiScript();
-            ////IScript newScript = m_controller.ScriptFactory.CreateIScript("if ()");
-            ////IEditableScript newScript = m_controller.ScriptFactory.CreateEditableScript("if ()", m_parent);
+            EditableScripts editableNewScript = new EditableScripts(m_controller, newScript, m_parent, null);
+            editableNewScript.Updated += ElseIfUpdated;
 
-            //EditableScripts editableNewScript = new EditableScripts(m_controller, newScript, m_parent, null);
-            //m_elseIfScripts.Add(newScript, editableNewScript);
-            //editableNewScript.Updated += ElseIfUpdated;
-            //m_ifScript.AddElseIf(newScript);
-        }
+            IfScript.ElseIfScript newElseIf = m_ifScript.AddElseIf(string.Empty, newScript);
 
-        void ElseIfUpdated(object sender, EditableScriptsUpdatedEventArgs e)
-        {
-            throw new NotImplementedException();
+            EditableElseIf newEditableElseIf = new EditableElseIf(newElseIf, this);
+            m_elseIfScripts.Add(newElseIf.Script, newEditableElseIf);
+
+            return newEditableElseIf;
         }
 
         public void RemoveElseIf()

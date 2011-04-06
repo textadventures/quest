@@ -154,7 +154,13 @@ namespace AxeSoftware.Quest.Scripts
             return "elseif" + m_lastElseIfId;
         }
 
-        public void AddElseIf(IFunction<bool> expression, IScript script)
+        public ElseIfScript AddElseIf(string expression, IScript script)
+        {
+            IFunction<bool> expr = new Expression<bool>(expression, m_worldModel);
+            return AddElseIf(expr, script);
+        }
+
+        public ElseIfScript AddElseIf(IFunction<bool> expression, IScript script)
         {
             ElseIfScript elseIfScript = new ElseIfScript(expression, script, this, GetNewElseIfID());
 
@@ -170,6 +176,8 @@ namespace AxeSoftware.Quest.Scripts
             {
                 base.UndoLog.EndTransaction();
             }
+
+            return elseIfScript;
         }
 
         private void AddElseIfSilent(ElseIfScript elseIfScript)
