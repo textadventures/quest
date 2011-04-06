@@ -11,6 +11,7 @@
     Private m_expanded As Boolean
     Private m_scriptEditorMinHeight As Integer
     Private m_script As IEditableScripts
+    Private m_data As IEditorData
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event ChangeHeight(sender As IfEditorChild, newHeight As Integer)
@@ -27,9 +28,9 @@
         cmdExpand.Font = New Font("Marlett", cmdExpand.Font.Size * 1.1F)
     End Sub
 
-    Public Sub SaveData(data As IEditorData)
-        ctlExpression.Save(data)
-        ctlThenScript.Save(data)
+    Public Sub SaveData()
+        ctlExpression.Save(m_data)
+        ctlThenScript.Save(m_data)
     End Sub
 
     Public Property Controller As EditorController
@@ -46,15 +47,16 @@
         End Set
     End Property
 
-    Public Sub Populate(expression As IEditorData, script As IEditableScripts)
+    Public Sub Populate(data As IEditorData, script As IEditableScripts)
         ' Currently the IEditorData only passes in an "expression" attribute, and it will be null when populating
         ' an "Else"
-        If Not expression Is Nothing Then
+        If Not data Is Nothing Then
             ctlExpression.Initialise("expression")
-            ctlExpression.Populate(expression)
+            ctlExpression.Populate(data)
         End If
         ctlThenScript.Populate(script)
         m_script = script
+        m_data = data
     End Sub
 
     Private Sub ctlThenScript_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlThenScript.Dirty

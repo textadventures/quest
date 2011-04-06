@@ -9,6 +9,7 @@ namespace AxeSoftware.Quest
     {
         internal EditableScriptUpdatedEventArgs()
         {
+            Index = -1;
         }
 
         internal EditableScriptUpdatedEventArgs(int index, string newValue)
@@ -18,9 +19,18 @@ namespace AxeSoftware.Quest
             IsParameterUpdate = true;
         }
 
+        internal EditableScriptUpdatedEventArgs(string id, string newValue)
+        {
+            Id = id;
+            NewValue = newValue;
+            IsNamedParameterUpdate = true;
+        }
+
         public int Index { get; private set; }
+        public string Id { get; private set; }
         public string NewValue { get; private set; }
         public bool IsParameterUpdate { get; private set; }
+        public bool IsNamedParameterUpdate { get; private set; }
     }
 
     public enum ScriptType

@@ -52,7 +52,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private void ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
+        protected void ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
         {
             // this hasn't been designed to cope with things like "adding else"...
 
@@ -61,6 +61,10 @@ namespace AxeSoftware.Quest
                 if (e != null && e.IsParameterUpdate)
                 {
                     Updated(this, new EditableScriptUpdatedEventArgs(e.Index, e.NewValue));
+                }
+                else if (e != null && e.IsNamedParameterUpdate)
+                {
+                    Updated(this, new EditableScriptUpdatedEventArgs(e.Id, e.NewValue));
                 }
                 else
                 {

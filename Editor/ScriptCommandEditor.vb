@@ -73,6 +73,10 @@
         m_currentEditor.UpdateField(index.ToString(), newValue, True)
     End Sub
 
+    Public Sub UpdateField(id As String, newValue As String)
+        m_currentEditor.UpdateField(id, newValue, True)
+    End Sub
+
     Public Property ShowCloseButton() As Boolean
         Get
             Return pnlButtons.Visible

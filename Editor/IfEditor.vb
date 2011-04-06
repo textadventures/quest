@@ -9,6 +9,7 @@
     Private m_hasElse As Boolean
     Private m_elseEditor As IfEditorChild
     Private m_fullHeight As Integer
+    Private m_elseIfEditor As New Dictionary(Of String, IfEditorChild)
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
@@ -40,7 +41,7 @@
 
     Public Sub SaveData() Implements ICommandEditor.SaveData
         For Each child As IfEditorChild In m_children
-            child.SaveData(m_data)
+            child.SaveData()
         Next
     End Sub
 
@@ -71,7 +72,12 @@
     End Sub
 
     Public Sub UpdateField(attribute As String, newValue As Object, setFocus As Boolean) Implements ICommandEditor.UpdateField
-        ctlChild.UpdateField(attribute, newValue, setFocus)
+        If m_elseIfEditor.ContainsKey(attribute) Then
+            ' this is an update to an "else if" expression
+            m_elseIfEditor(attribute).UpdateField("0", newValue, setFocus)
+        Else
+            ctlChild.UpdateField(attribute, newValue, setFocus)
+        End If
     End Sub
 
     Private Sub IfEditorChild_Dirty(sender As Object, args As DataModifiedEventArgs)
@@ -93,9 +99,11 @@
     Private Sub AddElseIfChildControl(elseIfData As EditableIfScript.EditableElseIf)
         Dim newChild As IfEditorChild = AddElseChildControl(True)
         newChild.Populate(elseIfData, elseIfData.EditableScripts)
+        m_elseIfEditor.Add(elseIfData.Id, newChild)
     End Sub
 
     Private Function AddElseChildControl(addElseIf As Boolean) As IfEditorChild
+        LayoutSuspend()
         ctlChild.Dock = DockStyle.None
         Dim newIfEditorChild As New IfEditorChild
         newIfEditorChild.Parent = pnlContainer
@@ -106,6 +114,7 @@
         newIfEditorChild.Visible = True
         AddChild(newIfEditorChild)
         SetChildControlPositions()
+        LayoutResume()
         Return newIfEditorChild
     End Function
 
@@ -125,11 +134,15 @@
 
     Private Sub SetChildControlPositions()
         Dim currentTop = 0
+
+        LayoutSuspend()
         For Each child As IfEditorChild In m_children
             child.Top = currentTop
             Debug.Assert(Not (child Is ctlChild And currentTop > 0))
             currentTop += child.Height
         Next
+        LayoutResume()
+
         m_fullHeight = currentTop
     End Sub
 
@@ -177,7 +190,7 @@
     End Sub
 
     Private Sub m_data_RemovedElseIf(sender As Object, e As EditableIfScript.ElseIfEventArgs) Handles m_data.RemovedElseIf
-
+        ' will also need to remove from m_elseIfEditor
     End Sub
 
     Public ReadOnly Property MinHeight As Integer Implements ICommandEditor.MinHeight
@@ -185,5 +198,17 @@
             Return m_fullHeight
         End Get
     End Property
+
+    Private m_layoutSuspendStack As Integer = 0
+
+    Private Sub LayoutSuspend()
+        If m_layoutSuspendStack = 0 Then Me.SuspendLayout()
+        m_layoutSuspendStack += 1
+    End Sub
+
+    Private Sub LayoutResume()
+        m_layoutSuspendStack -= 1
+        If m_layoutSuspendStack = 0 Then Me.ResumeLayout()
+    End Sub
 
 End Class

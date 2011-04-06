@@ -30,12 +30,21 @@ namespace AxeSoftware.Quest.Scripts
             IsParameterUpdate = true;
         }
 
+        internal ScriptUpdatedEventArgs(string id, string newValue)
+        {
+            Id = id;
+            NewValue = newValue;
+            IsNamedParameterUpdate = true;
+        }
+
         public IScript RemovedScript { get; private set; }
         public IScript AddedScript { get; private set; }
         public IScript InsertedScript { get; private set; }
         public int Index { get; private set; }
         public string NewValue { get; private set; }
         public bool IsParameterUpdate { get; private set; }
+        public bool IsNamedParameterUpdate { get; private set; }
+        public string Id { get; private set; }
     }
 
     public interface IScript
@@ -89,25 +98,29 @@ namespace AxeSoftware.Quest.Scripts
 
         protected void NotifyUpdate(int index, string newValue)
         {
-            if (ScriptUpdated != null)
-            {
-                ScriptUpdated(this, new ScriptUpdatedEventArgs(index, newValue));
-            }
+            NotifyUpdate(new ScriptUpdatedEventArgs(index, newValue));
         }
 
         protected void NotifyUpdate(IScript added, IScript removed)
         {
-            if (ScriptUpdated != null)
-            {
-                ScriptUpdated(this, new ScriptUpdatedEventArgs(added, removed));
-            }
+            NotifyUpdate(new ScriptUpdatedEventArgs(added, removed));
         }
 
         protected void NotifyUpdate(IScript inserted, int index)
         {
+            NotifyUpdate(new ScriptUpdatedEventArgs(inserted, index));
+        }
+
+        protected void NotifyUpdate(string id, string newValue)
+        {
+            NotifyUpdate(new ScriptUpdatedEventArgs(id, newValue));
+        }
+
+        protected void NotifyUpdate(ScriptUpdatedEventArgs args)
+        {
             if (ScriptUpdated != null)
             {
-                ScriptUpdated(this, new ScriptUpdatedEventArgs(inserted, index));
+                ScriptUpdated(this, args);
             }
         }
 

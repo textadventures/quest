@@ -63,15 +63,17 @@ namespace AxeSoftware.Quest.Scripts
         {
             private IfScript m_parent;
 
-            public ElseIfScript(IFunction<bool> expression, IScript script, IfScript parent)
+            public ElseIfScript(IFunction<bool> expression, IScript script, IfScript parent, string id)
             {
                 Expression = expression;
                 Script = script;
                 m_parent = parent;
+                Id = id;
             }
 
             internal IFunction<bool> Expression { get; private set; }
             public IScript Script { get; private set; }
+            public string Id { get; private set; }
 
             public string ExpressionString
             {
@@ -86,7 +88,7 @@ namespace AxeSoftware.Quest.Scripts
             internal void SetExpressionSilent(string newValue)
             {
                 Expression = new Expression<bool>(newValue, m_parent.m_worldModel);
-                m_parent.NotifyUpdate(0, newValue);
+                m_parent.NotifyUpdate(Id, newValue);
             }
         }
 
@@ -144,9 +146,17 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
+        private int m_lastElseIfId = 0;
+
+        private string GetNewElseIfID()
+        {
+            m_lastElseIfId++;
+            return "elseif" + m_lastElseIfId;
+        }
+
         public void AddElseIf(IFunction<bool> expression, IScript script)
         {
-            ElseIfScript elseIfScript = new ElseIfScript(expression, script, this);
+            ElseIfScript elseIfScript = new ElseIfScript(expression, script, this, GetNewElseIfID());
 
             if (base.UndoLog != null)
             {
@@ -168,7 +178,7 @@ namespace AxeSoftware.Quest.Scripts
 
             if (IfScriptUpdated != null)
             {
-                IfScriptUpdated(this, new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf, elseIfScript.Script));
+                IfScriptUpdated(this, new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf, elseIfScript));
             }
         }
 
@@ -194,7 +204,7 @@ namespace AxeSoftware.Quest.Scripts
 
             if (IfScriptUpdated != null)
             {
-                IfScriptUpdated(this, new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf, elseIfScript.Script));
+                IfScriptUpdated(this, new IfScriptUpdatedEventArgs(IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf, elseIfScript));
             }
         }
 
@@ -233,9 +243,9 @@ namespace AxeSoftware.Quest.Scripts
             string result = SaveScript("if", m_thenScript, m_expression.Save());
             if (m_elseIfScript != null)
             {
-                foreach (IScript elseIf in m_elseIfScript)
+                foreach (ElseIfScript elseIf in m_elseIfScript)
                 {
-                    result += Environment.NewLine + "else " + elseIf.Save();
+                    result += Environment.NewLine + SaveScript("else if", elseIf.Script, elseIf.Expression.Save());
                 }
             }
             if (m_elseScript != null) result += "else {" + Environment.NewLine + m_elseScript.Save() + Environment.NewLine + "}";
@@ -429,14 +439,14 @@ namespace AxeSoftware.Quest.Scripts
                 EventType = eventType;
             }
 
-            internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType, IScript data)
+            internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType, ElseIfScript data)
                 : this(eventType)
             {
                 Data = data;
             }
 
             public IfScriptUpdatedEventType EventType { get; private set; }
-            public IScript Data { get; private set; }
+            public ElseIfScript Data { get; private set; }
         }
     }
 }

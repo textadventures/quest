@@ -102,6 +102,8 @@
 
     Private Sub ShowEditor(index As Integer)
         Dim showAdder As Boolean = (m_scripts Is Nothing OrElse index >= m_scripts.Scripts.Count)
+
+        Me.SuspendLayout()
         ctlScriptAdder.Visible = showAdder
         ctlScriptCommandEditor.Visible = Not showAdder
         m_showingAdder = showAdder
@@ -116,6 +118,7 @@
         End If
 
         UpdateHeight()
+        Me.ResumeLayout()
     End Sub
 
     Private Sub UpdateHeight()
@@ -162,7 +165,11 @@
         Else
             ' Update to one script within the list
             If e.UpdatedScript Is m_currentScript Then
-                ctlScriptCommandEditor.UpdateField(e.UpdatedScriptEventArgs.Index, e.UpdatedScriptEventArgs.NewValue)
+                If e.UpdatedScriptEventArgs.IsParameterUpdate Then
+                    ctlScriptCommandEditor.UpdateField(e.UpdatedScriptEventArgs.Index, e.UpdatedScriptEventArgs.NewValue)
+                ElseIf e.UpdatedScriptEventArgs.IsNamedParameterUpdate Then
+                    ctlScriptCommandEditor.UpdateField(e.UpdatedScriptEventArgs.Id, e.UpdatedScriptEventArgs.NewValue)
+                End If
             Else
                 UpdateList()
             End If

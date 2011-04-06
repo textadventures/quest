@@ -32,6 +32,12 @@ namespace AxeSoftware.Quest
 
             public IEditableScripts EditableScripts { get; private set; }
 
+            public string Expression
+            {
+                get { return m_elseIfScript.ExpressionString; }
+                set { m_elseIfScript.ExpressionString = (string)value; }
+            }
+
             public string Name
             {
                 get { throw new NotImplementedException(); }
@@ -41,7 +47,7 @@ namespace AxeSoftware.Quest
             {
                 if (attribute == "expression")
                 {
-                    return m_elseIfScript.ExpressionString;
+                    return Expression;
                 }
                 throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'else if' attribute");
             }
@@ -50,12 +56,17 @@ namespace AxeSoftware.Quest
             {
                 if (attribute == "expression")
                 {
-                    m_elseIfScript.ExpressionString = (string)value;
+                    Expression = (string)value;
                 }
                 else
                 {
                     throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'else if' attribute");
                 }
+            }
+
+            public string Id
+            {
+                get { return m_elseIfScript.Id; }
             }
         }
 
@@ -111,10 +122,10 @@ namespace AxeSoftware.Quest
                     if (RemovedElse != null) RemovedElse(this, new EventArgs());
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
-                    if (AddedElseIf != null) AddedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data]));
+                    if (AddedElseIf != null) AddedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
-                    if (RemovedElseIf != null) RemovedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data]));
+                    if (RemovedElseIf != null) RemovedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
                     break;
                 default:
                     throw new Exception("Unhandled event");
@@ -130,6 +141,8 @@ namespace AxeSoftware.Quest
         {
             // This doesn't look correct to me - the whole area of indexes doesn't really apply to "if" scripts. Yet this
             // appears to work at the moment...
+
+            // we should have something similar for when an elseif is updated
             RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
         }
 
@@ -147,10 +160,9 @@ namespace AxeSoftware.Quest
             // If we've updated the "then" script, then we need to get an updated "then" script where attribute "index" has been updated to "newValue"
             string result = (modifiedSection == ThenScript) ? ThenDisplayStringFragment(index, newValue) : ThenDisplayStringFragment(-1, string.Empty);
 
-            foreach (var elseIf in m_elseIfScripts)
+            foreach (EditableElseIf elseIf in m_elseIfScripts.Values)
             {
-                // TO DO: Populate string
-                result += ", (elseif...)";
+                result += (modifiedSection == elseIf.EditableScripts) ? ElseIfDisplayStringFragment(elseIf, index, newValue) : ElseIfDisplayStringFragment(elseIf, - 1, string.Empty);
             }
 
             if (ElseScript != null)
@@ -161,16 +173,23 @@ namespace AxeSoftware.Quest
 
         }
 
-        public string ThenDisplayStringFragment(int index, string newValue)
+        private string ThenDisplayStringFragment(int index, string newValue)
         {
             string expression = (index == 0) ? newValue : IfExpression;
             string thenScript = (index == 1) ? newValue : ThenScript.DisplayString();
-            return string.Format("If ({0}) Then '{1}'", expression, thenScript);
+            return string.Format("If ({0}) Then ({1})", expression, thenScript);
         }
 
-        public string ElseDisplayStringFragment(int index, string newValue)
+        private string ElseIfDisplayStringFragment(EditableElseIf elseIf, int index, string newValue)
         {
-            return string.Format(", Else '{0}'", (index == 1) ? newValue : ElseScript.DisplayString());
+            string expression = (index == 0) ? newValue : elseIf.Expression;
+            string thenScript = (index == 1) ? newValue : elseIf.EditableScripts.DisplayString();
+            return string.Format(", Else If ({0}) Then ({1})", expression, thenScript);
+        }
+
+        private string ElseDisplayStringFragment(int index, string newValue)
+        {
+            return string.Format(", Else ({0})", (index == 1) ? newValue : ElseScript.DisplayString());
         }
 
         public override string EditorName

@@ -61,6 +61,7 @@
 
         m_controls = New List(Of EditorControl)
 
+        Me.SuspendLayout()
         For Each editorControl As IEditorControl In controls
             Dim newControl As New EditorControl
             m_controls.Add(newControl)
@@ -86,6 +87,7 @@
                 maxCaptionWidth = newControl.CaptionTextWidth
             End If
         Next
+        Me.ResumeLayout()
 
         m_fullHeight = top - k_padding
         maxCaptionWidth += k_padding
