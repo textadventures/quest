@@ -23,6 +23,7 @@
         If (Not definition.Tabs Is Nothing) AndAlso definition.Tabs.Count > 0 Then
             Dim tabControl As New TabControl
 
+            RemoveExistingTabs()
             m_tabs = New List(Of ElementEditor)
 
             For Each tabDefinition As KeyValuePair(Of String, IEditorTab) In definition.Tabs
@@ -43,6 +44,19 @@
         End If
     End Sub
 
+    Private Sub RemoveExistingTabs()
+        If m_tabs Is Nothing Then Return
+
+        For Each tabControl In m_tabs
+            tabControl.Parent = Nothing
+            tabControl.Visible = False
+            RemoveHandler tabControl.Dirty, AddressOf Tab_Dirty
+            tabControl.Dispose()
+        Next
+
+        m_tabs = Nothing
+    End Sub
+
     Private Sub Tab_Dirty(sender As Object, args As DataModifiedEventArgs)
         RaiseEvent Dirty(sender, args)
     End Sub
@@ -59,6 +73,7 @@
         Dim top As Integer = k_padding
         Dim maxCaptionWidth As Integer = 0
 
+        RemoveExistingControls()
         m_controls = New List(Of EditorControl)
 
         Me.SuspendLayout()
@@ -97,12 +112,26 @@
         Next
     End Sub
 
+    Private Sub RemoveExistingControls()
+        If m_controls Is Nothing Then Return
+
+        For Each ctl In m_controls
+            ctl.Parent = Nothing
+            ctl.Visible = False
+            RemoveHandler ctl.Dirty, AddressOf Control_Dirty
+            ctl.Dispose()
+        Next
+
+        m_controls = Nothing
+    End Sub
+
     Public Sub Clear()
         ' TO DO: Clear data from all contained controls
     End Sub
 
     Public Sub Populate(data As IEditorData)
 
+        Me.SuspendLayout()
         m_populating = True
         m_data = data
 
@@ -119,6 +148,7 @@
         End If
 
         m_populating = False
+        Me.ResumeLayout()
 
     End Sub
 

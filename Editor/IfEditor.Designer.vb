@@ -63,13 +63,13 @@ Partial Class IfEditor
         'mnuAddElse
         '
         Me.mnuAddElse.Name = "mnuAddElse"
-        Me.mnuAddElse.Size = New System.Drawing.Size(152, 22)
+        Me.mnuAddElse.Size = New System.Drawing.Size(129, 22)
         Me.mnuAddElse.Text = "Add Else"
         '
         'mnuAddElseIf
         '
         Me.mnuAddElseIf.Name = "mnuAddElseIf"
-        Me.mnuAddElseIf.Size = New System.Drawing.Size(152, 22)
+        Me.mnuAddElseIf.Size = New System.Drawing.Size(129, 22)
         Me.mnuAddElseIf.Text = "Add Else If"
         '
         'pnlContainer
@@ -85,7 +85,7 @@ Partial Class IfEditor
         'ctlChild
         '
         Me.ctlChild.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ctlChild.Controller = Nothing
         Me.ctlChild.ElseIfMode = AxeSoftware.Quest.IfEditorChild.IfEditorChildMode.IfMode
         Me.ctlChild.Expanded = True

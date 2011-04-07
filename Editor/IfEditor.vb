@@ -4,7 +4,8 @@
 
     Private m_controller As EditorController
     Private WithEvents m_data As EditableIfScript
-    Private m_children As New List(Of IfEditorChild)
+    Private m_activeChildren As New List(Of IfEditorChild)
+    Private m_inactiveChildren As New List(Of IfEditorChild)
     Private m_lastEditorChild As IfEditorChild
     Private m_hasElse As Boolean
     Private m_elseEditor As IfEditorChild
@@ -24,10 +25,10 @@
 
     Private Sub AddChild(child As IfEditorChild)
         If Not m_hasElse Then
-            m_children.Add(child)
+            m_activeChildren.Add(child)
         Else
             ' if we have an "else" then we want to insert a new "else if" before the "else"
-            m_children.Insert(m_children.Count - 1, child)
+            m_activeChildren.Insert(m_activeChildren.Count - 1, child)
         End If
 
         If child.ElseIfMode = IfEditorChild.IfEditorChildMode.ElseMode Then
@@ -40,7 +41,7 @@
     End Sub
 
     Public Sub SaveData() Implements ICommandEditor.SaveData
-        For Each child As IfEditorChild In m_children
+        For Each child As IfEditorChild In m_activeChildren
             child.SaveData()
         Next
     End Sub
@@ -51,24 +52,31 @@
         End Get
         Set(value As EditorController)
             m_controller = value
-            For Each child As IfEditorChild In m_children
+            For Each child As IfEditorChild In m_activeChildren
                 child.Controller = value
             Next
         End Set
     End Property
 
     Public Sub Populate(data As EditableIfScript)
+        LayoutSuspend()
+        m_elseIfEditor.Clear()
+        m_elseEditor = Nothing
+        m_hasElse = False
+        RemoveAllChildren()
+
         m_data = data
         ' The expression is contained in the "expression" attribute of the data IEditorData
         ctlChild.Populate(data, data.ThenScript)
 
-        For Each elseIfScript As EditableIfScript.EditableElseIf In data.ElseIfScripts
+        For Each elseIfScript In data.ElseIfScripts
             AddElseIfChildControl(elseIfScript)
         Next
 
         If Not data.ElseScript Is Nothing Then
             AddElseChildControl()
         End If
+        LayoutResume()
     End Sub
 
     Public Sub UpdateField(attribute As String, newValue As Object, setFocus As Boolean) Implements ICommandEditor.UpdateField
@@ -109,13 +117,22 @@
     Private Function AddElseChildControl(addElseIf As Boolean) As IfEditorChild
         LayoutSuspend()
         ctlChild.Dock = DockStyle.None
-        Dim newIfEditorChild As New IfEditorChild
-        newIfEditorChild.Parent = pnlContainer
-        newIfEditorChild.Controller = m_controller
-        newIfEditorChild.Width = pnlContainer.Width
-        newIfEditorChild.Anchor = newIfEditorChild.Anchor Or AnchorStyles.Right
+        Dim newIfEditorChild As IfEditorChild
+
+        ' Reuse an unused existing IfEditorChild if possible, otherwise create a new one
+        If (m_inactiveChildren.Count > 0) Then
+            newIfEditorChild = m_inactiveChildren(0)
+            m_inactiveChildren.Remove(newIfEditorChild)
+            newIfEditorChild.Visible = True
+        Else
+            newIfEditorChild = New IfEditorChild
+            newIfEditorChild.Controller = m_controller
+            newIfEditorChild.Parent = pnlContainer
+            newIfEditorChild.Width = pnlContainer.Width
+            newIfEditorChild.Anchor = newIfEditorChild.Anchor Or AnchorStyles.Right
+        End If
+
         newIfEditorChild.ElseIfMode = If(addElseIf, IfEditorChild.IfEditorChildMode.ElseIfMode, IfEditorChild.IfEditorChildMode.ElseMode)
-        newIfEditorChild.Visible = True
         AddChild(newIfEditorChild)
         SetChildControlPositions()
         LayoutResume()
@@ -128,14 +145,24 @@
         m_hasElse = False
     End Sub
 
+    Private Sub RemoveAllChildren()
+        ' Remove all "else if" and "else" controls i.e. everything apart from "then", as that's always present
+        Dim children As New List(Of IfEditorChild)(m_activeChildren)
+        For Each child In children
+            If child IsNot ctlChild Then
+                RemoveChild(child)
+            End If
+        Next
+    End Sub
+
     Private Sub RemoveChild(child As IfEditorChild)
         LayoutSuspend()
         RemoveHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
         RemoveHandler child.Dirty, AddressOf IfEditorChild_Dirty
-        child.Parent = Nothing
         child.Populate(Nothing, Nothing)
-        m_children.Remove(child)
-        child.Dispose()
+        child.Visible = False
+        m_activeChildren.Remove(child)
+        m_inactiveChildren.Add(child)
         SetChildControlPositions()
         LayoutResume()
     End Sub
@@ -149,7 +176,7 @@
         Dim currentTop = 0
 
         LayoutSuspend()
-        For Each child As IfEditorChild In m_children
+        For Each child As IfEditorChild In m_activeChildren
             child.Top = currentTop
             Debug.Assert(Not (child Is ctlChild And currentTop > 0))
             currentTop += child.Height
@@ -217,13 +244,18 @@
     Private m_layoutSuspendStack As Integer = 0
 
     Private Sub LayoutSuspend()
-        If m_layoutSuspendStack = 0 Then Me.SuspendLayout()
+        If m_layoutSuspendStack = 0 Then
+            Me.SuspendLayout()
+        End If
+
         m_layoutSuspendStack += 1
     End Sub
 
     Private Sub LayoutResume()
         m_layoutSuspendStack -= 1
-        If m_layoutSuspendStack = 0 Then Me.ResumeLayout()
+        If m_layoutSuspendStack = 0 Then
+            Me.ResumeLayout()
+        End If
     End Sub
 
 End Class

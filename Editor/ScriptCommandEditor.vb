@@ -4,6 +4,9 @@
     Private WithEvents m_currentEditor As ICommandEditor
     Private m_script As IEditableScript
 
+    Private m_ifEditor As IfEditor
+    Private m_elemEditor As ElementEditor
+
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event CloseButtonClicked()
 
@@ -30,18 +33,25 @@
         Dim newEditorKey As String = script.EditorName
 
         If script.Type = ScriptType.If Then
-            Dim newIfEditor = New IfEditor
-            newEditor = newIfEditor
-            newIfEditor.Populate(DirectCast(script, EditableIfScript))
+            If m_ifEditor Is Nothing Then
+                m_ifEditor = New IfEditor
+                m_ifEditor.Controller = m_controller
+            End If
+
+            newEditor = m_ifEditor
+            m_ifEditor.Populate(DirectCast(script, EditableIfScript))
         Else
-            Dim newElemEditor = New ElementEditor
-            newEditor = newElemEditor
-            newElemEditor.Initialise(m_controller, m_controller.GetEditorDefinition(script.EditorName))
-            newElemEditor.Populate(m_controller.GetScriptEditorData(script))
+            If m_elemEditor Is Nothing Then
+                m_elemEditor = New ElementEditor
+                m_elemEditor.Controller = m_controller
+            End If
+
+            newEditor = m_elemEditor
+            m_elemEditor.Initialise(m_controller, m_controller.GetEditorDefinition(script.EditorName))
+            m_elemEditor.Populate(m_controller.GetScriptEditorData(script))
         End If
 
         Dim newCommandEditor As ICommandEditor = DirectCast(newEditor, ICommandEditor)
-        newCommandEditor.Controller = m_controller
 
         newEditor.Parent = Me
         newEditor.Dock = DockStyle.Fill
@@ -49,9 +59,11 @@
         ' and pnlButtons doesn't obsure the bottom of newEditor.
         If pnlButtons.Visible Then pnlButtons.SendToBack()
 
-        If Not m_currentEditor Is Nothing Then
+        If newEditor IsNot m_currentEditor Then
             newEditor.Visible = True
-            DirectCast(m_currentEditor, Control).Visible = False
+            If m_currentEditor IsNot Nothing Then
+                DirectCast(m_currentEditor, Control).Visible = False
+            End If
         End If
 
         m_currentEditor = newCommandEditor
