@@ -164,7 +164,10 @@
         If Not m_controls Is Nothing Then
             For Each ctl As EditorControl In m_controls.Where(Function(c) c.AttributeName = attribute)
                 ctl.Value = newValue
-                If setFocus Then ctl.Focus()
+                ' TO DO: Disabled the setFocus capability at the moment as it can cause some mad things to happen - I think if you
+                ' SetFocus during a Leave event then two controls might end up with focus at the same time, and they won't paint
+                ' properly.
+                'If setFocus Then ctl.Focus()
             Next
         End If
     End Sub

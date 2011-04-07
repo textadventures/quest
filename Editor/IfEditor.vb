@@ -108,8 +108,8 @@
 
     Private Sub AddElseIfChildControl(elseIfData As EditableIfScript.EditableElseIf)
         Dim newChild As IfEditorChild = AddElseChildControl(True)
-        newChild.Populate(elseIfData, elseIfData.EditableScripts)
         m_elseIfEditor.Add(elseIfData.Id, newChild)
+        newChild.Populate(elseIfData, elseIfData.EditableScripts)
     End Sub
 
     Private Function AddElseChildControl(addElseIf As Boolean) As IfEditorChild

@@ -75,7 +75,11 @@
         ' should be tidied up so we can pass an Enum perhaps.
         If attribute = "0" Then
             ctlExpression.Value = newValue
-            If setFocus Then ctlExpression.Focus()
+
+            ' TO DO: Disabled the setFocus capability at the moment as it can cause some mad things to happen - I think if you
+            ' SetFocus during a Leave event then two controls might end up with focus at the same time, and they won't paint
+            ' properly.
+            'If setFocus Then ctlExpression.Focus()
         End If
     End Sub
 
