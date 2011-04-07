@@ -113,8 +113,10 @@
             m_currentScript = Nothing
         Else
             SetEditButtonsEnabled(True)
-            m_currentScript = m_scripts(index)
-            ctlScriptCommandEditor.ShowEditor(m_currentScript)
+            If m_currentScript IsNot m_scripts(index) Then
+                m_currentScript = m_scripts(index)
+                ctlScriptCommandEditor.ShowEditor(m_currentScript)
+            End If
         End If
 
         UpdateHeight()

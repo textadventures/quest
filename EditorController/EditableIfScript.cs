@@ -27,7 +27,7 @@ namespace AxeSoftware.Quest
             {
                 m_elseIfScript = elseIfScript;
                 m_parent = parent;
-                EditableScripts = new EditableScripts(parent.m_controller, elseIfScript.Script, parent.m_parent, null);
+                EditableScripts = AxeSoftware.Quest.EditableScripts.GetInstance(parent.m_controller, elseIfScript.Script, parent.m_parent, null);
             }
 
             public IEditableScripts EditableScripts { get; private set; }
@@ -96,7 +96,7 @@ namespace AxeSoftware.Quest
                 m_ifScript.ThenScript = new MultiScript();
             }
 
-            m_thenScript = new EditableScripts(m_controller, m_ifScript.ThenScript, m_parent, null);
+            m_thenScript = EditableScripts.GetInstance(m_controller, m_ifScript.ThenScript, m_parent, null);
             m_thenScript.Updated += m_thenScript_Updated;
 
             foreach (var elseIfScript in m_ifScript.ElseIfScripts)
@@ -108,7 +108,7 @@ namespace AxeSoftware.Quest
 
             if (m_ifScript.ElseScript != null)
             {
-                m_elseScript = new EditableScripts(m_controller, m_ifScript.ElseScript, m_parent, null);
+                m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript, m_parent, null);
                 m_elseScript.Updated += m_elseScript_Updated;
             }
         }
@@ -282,7 +282,7 @@ namespace AxeSoftware.Quest
             // we have to set m_elseScript here before setting it on m_ifScript, because setting it on
             // m_ifScript will trigger the screen update, and we therefore need to have m_elseScript
             // set here before that happens
-            m_elseScript = new EditableScripts(m_controller, newScript, m_parent, null);
+            m_elseScript = EditableScripts.GetInstance(m_controller, newScript, m_parent, null);
             m_elseScript.Updated += m_elseScript_Updated;
             m_ifScript.SetElse(newScript);
         }
@@ -291,7 +291,7 @@ namespace AxeSoftware.Quest
         {
             // Create a blank "then" script for this new elseif, and wrap it in an EditableScripts
             IScript newScript = new MultiScript();
-            EditableScripts editableNewScript = new EditableScripts(m_controller, newScript, m_parent, null);
+            EditableScripts editableNewScript = EditableScripts.GetInstance(m_controller, newScript, m_parent, null);
             editableNewScript.Updated += ElseIfUpdated;
 
             // Add it to the "if" with an empty expression

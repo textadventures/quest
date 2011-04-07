@@ -14,7 +14,23 @@ namespace AxeSoftware.Quest
         private Element m_parent;
         private string m_attribute;
 
-        internal EditableScripts(EditorController controller, Element parent, string attribute)
+        private static Dictionary<IScript, EditableScripts> s_instances = new Dictionary<IScript, EditableScripts>();
+
+        public static EditableScripts GetInstance(EditorController controller, IScript script, Element parent, string attribute)
+        {
+            EditableScripts instance;
+            if (s_instances.TryGetValue(script, out instance))
+            {
+                System.Diagnostics.Debug.Assert(instance.m_parent == parent && instance.m_attribute == attribute, "Wrapped value has been moved - cached IEditableScript will be invalid");
+                return instance;
+            }
+
+            instance = new EditableScripts(controller, script, parent, attribute);
+            s_instances.Add(script, instance);
+            return instance;
+        }
+
+        private EditableScripts(EditorController controller, Element parent, string attribute)
         {
             m_controller = controller;
             m_parent = parent;
@@ -22,7 +38,7 @@ namespace AxeSoftware.Quest
             m_attribute = attribute;
         }
 
-        internal EditableScripts(EditorController controller, IScript script, Element parent, string attribute)
+        private EditableScripts(EditorController controller, IScript script, Element parent, string attribute)
             : this(controller, parent, attribute)
         {
             InitialiseMultiScript((MultiScript)script);
@@ -35,10 +51,13 @@ namespace AxeSoftware.Quest
             {
                 editableScript.Updated += script_Updated;
             }
+
+            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
         }
 
         private void InitialiseMultiScript(MultiScript script)
         {
+            System.Diagnostics.Debug.Assert(m_underlyingScript == null);
             m_underlyingScript = script;
             m_underlyingScript.ScriptUpdated += multiScript_ScriptUpdated;
             m_underlyingScript.UndoLog = m_controller.WorldModel.UndoLogger;
@@ -80,9 +99,18 @@ namespace AxeSoftware.Quest
                 // to a multiscript update in the first place so no point adding the same
                 // script again!
 
+                m_adding = true;
                 m_underlyingScript.Add(script.Script);
+                m_adding = false;
             }
+
+            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
         }
+
+        // TO DO: This is a temporary hacky flag to prevent re-entrant updates. What we should be doing instead is
+        // never adding to our own wrapped m_scripts collection unless we receive an update from the underlying
+        // MultiScript.
+        private bool m_adding = false;
 
         public void AddNew(string keyword, string elementName)
         {
@@ -109,6 +137,8 @@ namespace AxeSoftware.Quest
             m_scripts.Remove(m_scripts[index]);
             m_underlyingScript.Remove(index);
             m_controller.WorldModel.UndoLogger.EndTransaction();
+
+            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
         }
 
         public int Count
@@ -122,6 +152,7 @@ namespace AxeSoftware.Quest
 
         public object GetUnderlyingValue()
         {
+            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
             return m_underlyingScript;
         }
 
@@ -129,6 +160,9 @@ namespace AxeSoftware.Quest
 
         private void multiScript_ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
         {
+            if (m_adding) return;
+            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
+
             // Has the update to the MultiScript removed one of the scripts? If so we need
             // to remove it from this wrapper too.
             if (e.RemovedScript != null)
@@ -148,6 +182,8 @@ namespace AxeSoftware.Quest
                 Add(m_controller.ScriptFactory.CreateEditableScript(e.InsertedScript, m_parent), e.Index, true);
             }
             if (Updated != null) Updated(this, new EditableScriptsUpdatedEventArgs());
+
+            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
         }
 
         private void script_Updated(object sender, EditableScriptUpdatedEventArgs e)
@@ -156,6 +192,8 @@ namespace AxeSoftware.Quest
             {
                 Updated(this, new EditableScriptsUpdatedEventArgs((IEditableScript)sender, e));
             }
+
+            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
         }
 
         public string DisplayString()
@@ -165,6 +203,8 @@ namespace AxeSoftware.Quest
 
         public string DisplayString(int index, string newValue)
         {
+            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
+
             int count = 0;
             StringBuilder result = new StringBuilder();
             foreach (IEditableScript script in m_scripts)

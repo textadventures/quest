@@ -348,40 +348,12 @@ namespace AxeSoftware.Quest
             get { return m_editableScriptFactory; }
         }
 
-        private class WrappedValueData
-        {
-            public object Value { get; set; }
-            public Element Parent { get; set; }
-            public string Attribute { get; set; }
-        }
-
-        private Dictionary<object, WrappedValueData> m_wrappedValues = new Dictionary<object, WrappedValueData>();
-
         internal object WrapValue(object value, Element parent, string attribute)
         {
             // need to wrap IScript in an IEditableScript
             if (value is IScript)
             {
-                // cache the created IEditableScript for each IScript as we don't want to regenerate a new one each
-                // time the same script is edited.
-
-                WrappedValueData result;
-                if (m_wrappedValues.TryGetValue(value, out result))
-                {
-                    System.Diagnostics.Debug.Assert(result.Parent == parent && result.Attribute == attribute, "Wrapped value has been moved - cached IEditableScript will be invalid");
-                    return result.Value;
-                }
-
-                result = new WrappedValueData
-                {
-                    Value = new EditableScripts(this, (IScript)value, parent, attribute),
-                    Parent = parent,
-                    Attribute = attribute
-                };
-
-                m_wrappedValues.Add(value, result);
-
-                return result.Value;
+                return EditableScripts.GetInstance(this, (IScript)value, parent, attribute);
             }
 
             return value;
@@ -396,7 +368,7 @@ namespace AxeSoftware.Quest
         {
             WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} script to '{2}'", parent, attribute, keyword));
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
-            EditableScripts newValue = new EditableScripts(this, element, attribute);
+            EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript(), element, attribute);
             newValue.AddNewInternal(keyword, parent);
             if (element != null) element.Fields.Set(attribute, newValue.GetUnderlyingValue());
             WorldModel.UndoLogger.EndTransaction();

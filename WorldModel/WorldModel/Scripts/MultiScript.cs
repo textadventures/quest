@@ -24,6 +24,11 @@ namespace AxeSoftware.Quest.Scripts
                     base.UndoLog.AddUndoAction(new UndoMultiScriptAddRemove(this, script, true, null));
                 }
             }
+
+            foreach (IScript script in scripts)
+            {
+                NotifyUpdate(script, null);
+            }
         }
 
         public void Remove(int index)
