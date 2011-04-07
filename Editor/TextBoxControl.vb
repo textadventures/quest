@@ -1,6 +1,6 @@
 ﻿<ControlType("textbox")> _
 Public Class TextBoxControl
-    Inherits TextBox
+
     Implements IElementEditorControl
 
     Private m_oldValue As String
@@ -19,27 +19,27 @@ Public Class TextBoxControl
 
     Public Property Value() As Object Implements IElementEditorControl.Value
         Get
-            Return Text
+            Return txtTextBox.Text
         End Get
         Set(value As Object)
-            Text = DirectCast(value, String)
+            txtTextBox.Text = DirectCast(value, String)
             m_oldValue = DirectCast(value, String)
         End Set
     End Property
 
-    Private Sub TextBoxControl_Leave(sender As Object, e As System.EventArgs) Handles Me.Leave
+    Private Sub TextBoxControl_Leave(sender As Object, e As System.EventArgs) Handles txtTextBox.Leave
         Save(m_data)
     End Sub
 
-    Private Sub TextBoxControl_TextChanged(sender As Object, e As System.EventArgs) Handles Me.TextChanged
+    Private Sub TextBoxControl_TextChanged(sender As Object, e As System.EventArgs) Handles txtTextBox.TextChanged
         If IsDirty Then
-            RaiseEvent Dirty(Me, New DataModifiedEventArgs(m_oldValue, Text))
+            RaiseEvent Dirty(Me, New DataModifiedEventArgs(m_oldValue, txtTextBox.Text))
         End If
     End Sub
 
     Public ReadOnly Property IsDirty() As Boolean
         Get
-            Return Text <> m_oldValue
+            Return txtTextBox.Text <> m_oldValue
         End Get
     End Property
 
@@ -84,4 +84,6 @@ Public Class TextBoxControl
         m_attribute = attributeName
         m_attributeName = attributeName
     End Sub
+
+
 End Class

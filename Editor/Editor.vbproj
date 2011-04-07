@@ -187,8 +187,11 @@
     <Compile Include="ScriptEditorPopOut.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="TextBoxControl.Designer.vb">
+      <DependentUpon>TextBoxControl.vb</DependentUpon>
+    </Compile>
     <Compile Include="TextBoxControl.vb">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ScriptEditorPopOut.resx">
       <DependentUpon>ScriptEditorPopOut.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextBoxControl.resx">
+      <DependentUpon>TextBoxControl.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
