@@ -26,11 +26,18 @@ namespace AxeSoftware.Quest
             IsNamedParameterUpdate = true;
         }
 
+        internal EditableScriptUpdatedEventArgs(string newValue)
+        {
+            NewValue = newValue;
+            IsWholeScriptUpdate = true;
+        }
+
         public int Index { get; private set; }
         public string Id { get; private set; }
         public string NewValue { get; private set; }
         public bool IsParameterUpdate { get; private set; }
         public bool IsNamedParameterUpdate { get; private set; }
+        public bool IsWholeScriptUpdate { get; private set; }
     }
 
     public enum ScriptType

@@ -171,6 +171,8 @@
                     ctlScriptCommandEditor.UpdateField(e.UpdatedScriptEventArgs.Index, e.UpdatedScriptEventArgs.NewValue)
                 ElseIf e.UpdatedScriptEventArgs.IsNamedParameterUpdate Then
                     ctlScriptCommandEditor.UpdateField(e.UpdatedScriptEventArgs.Id, e.UpdatedScriptEventArgs.NewValue)
+                ElseIf e.UpdatedScriptEventArgs.IsWholeScriptUpdate Then
+                    UpdateList()
                 End If
             Else
                 UpdateList()

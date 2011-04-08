@@ -161,7 +161,6 @@ namespace AxeSoftware.Quest
         private void multiScript_ScriptUpdated(object sender, ScriptUpdatedEventArgs e)
         {
             if (m_adding) return;
-            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
 
             // Has the update to the MultiScript removed one of the scripts? If so we need
             // to remove it from this wrapper too.

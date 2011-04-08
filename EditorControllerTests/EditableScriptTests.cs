@@ -110,7 +110,8 @@ namespace EditorControllerTests
         {
             // Create an "if (...) { } else if (...) { }" script
             EditableScripts newScripts = Controller.CreateNewEditableScripts("game", "somescript", "if (someExpression) { msg (\"Then script\") }");
-            EditableIfScript.EditableElseIf newElseIf = ((EditableIfScript)newScripts[0]).AddElseIf();
+            ((EditableIfScript)newScripts[0]).AddElseIf();
+            EditableIfScript.EditableElseIf newElseIf = ((EditableIfScript)newScripts[0]).ElseIfScripts.First();
             newElseIf.Expression = "elseIfExpression";
             newElseIf.EditableScripts.AddNew("msg (\"test\")", "game");
 
@@ -150,8 +151,6 @@ namespace EditorControllerTests
             Assert.AreEqual(newExpectedDisplayString, newScripts.DisplayString());
             Controller.Redo();
             Assert.AreEqual(newerExpectedDisplayString, newScripts.DisplayString());
-
-            Assert.AreEqual("test2", lastArgs.UpdatedScriptEventArgs.NewValue);
         }
 
     }

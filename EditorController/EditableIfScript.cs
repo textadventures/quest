@@ -118,35 +118,47 @@ namespace AxeSoftware.Quest
             switch (e.EventType)
             {
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
+                    m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript, m_parent, null);
+                    m_elseScript.Updated += m_elseScript_Updated;
                     if (AddedElse != null) AddedElse(this, new EventArgs());
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElse:
+                    m_elseScript.Updated -= m_elseScript_Updated;
+                    m_elseScript = null;
                     if (RemovedElse != null) RemovedElse(this, new EventArgs());
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
+                    EditableScripts editableNewScript = EditableScripts.GetInstance(m_controller, e.Data.Script, m_parent, null);
+                    editableNewScript.Updated += ElseIfUpdated;
+
+                    // Wrap the newly created elseif in an EditableElseIf and add it to our internal dictionary
+                    EditableElseIf newEditableElseIf = new EditableElseIf(e.Data, this);
+                    m_elseIfScripts.Add(e.Data.Script, newEditableElseIf);
+
+                    // Raise the update to display in the UI
                     if (AddedElseIf != null)
                     {
-                        // our dictionary of existing elseIfScripts won't contain this one if we're in the middle of adding it
-                        // via the AddElseIf function below, so we just ignore it for now and will raise an update ourselves later.
-                        if (m_elseIfScripts.ContainsKey(e.Data.Script))
-                        {
-                            AddedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
-                        }
+                        AddedElseIf(this, new ElseIfEventArgs(newEditableElseIf));
                     }
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
+                    EditableScripts.GetInstance(m_controller, e.Data.Script, m_parent, null).Updated -= ElseIfUpdated;
                     if (RemovedElseIf != null) RemovedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
+                    m_elseIfScripts.Remove(e.Data.Script);
                     break;
                 default:
                     throw new Exception("Unhandled event");
             }
+
+            RaiseUpdated(new EditableScriptUpdatedEventArgs(DisplayString()));
         }
 
         // TO DO: FIX *************************************************************************************************************
-        // This is flawed. We shouldn't have to listen to the Updated event on the then/else/elseif script at all. This is only used for
-        // updating the scripts list after an undo/redo, and what should be happening instead is that there should be an event
-        // on IEditableScripts which will tell a listbox that is bound to it to update. The current approach is hacky and relies
-        // on the individual ScriptEditor not being destroyed when you click off to edit a different script.
+
+        // This looks a bit odd - why is the index always 1? Because actually it doesn't matter
+        // if the changed script is not the currently selected script, the Script Editor will always update the entire
+        // list with fresh calls to DisplayString, so it doesn't actually matter what updated event args we populate here.
+
         void m_thenScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
         {
             RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
@@ -279,40 +291,18 @@ namespace AxeSoftware.Quest
         public void AddElse()
         {
             IScript newScript = new MultiScript();
-            // we have to set m_elseScript here before setting it on m_ifScript, because setting it on
-            // m_ifScript will trigger the screen update, and we therefore need to have m_elseScript
-            // set here before that happens
-            m_elseScript = EditableScripts.GetInstance(m_controller, newScript, m_parent, null);
-            m_elseScript.Updated += m_elseScript_Updated;
             m_ifScript.SetElse(newScript);
         }
 
-        public EditableElseIf AddElseIf()
+        public void AddElseIf()
         {
-            // Create a blank "then" script for this new elseif, and wrap it in an EditableScripts
             IScript newScript = new MultiScript();
-            EditableScripts editableNewScript = EditableScripts.GetInstance(m_controller, newScript, m_parent, null);
-            editableNewScript.Updated += ElseIfUpdated;
-
-            // Add it to the "if" with an empty expression
             IfScript.ElseIfScript newElseIf = m_ifScript.AddElseIf(string.Empty, newScript);
-
-            // Wrap the newly created elseif in an EditableElseIf and add it to our internal dictionary
-            EditableElseIf newEditableElseIf = new EditableElseIf(newElseIf, this);
-            m_elseIfScripts.Add(newElseIf.Script, newEditableElseIf);
-
-            // Raise the update to display in the UI
-            if (AddedElseIf != null)
-            {
-                AddedElseIf(this, new ElseIfEventArgs(newEditableElseIf));
-            }
-
-            return newEditableElseIf;
         }
 
         public void RemoveElseIf()
         {
-
+            // TO DO: Add functionality to the script editor to remove an existing "else if" script
         }
 
         public void RemoveElse()
