@@ -11,38 +11,35 @@ namespace AxeSoftware.Quest
         private List<IEditableScript> m_scripts;
         private EditorController m_controller;
         private MultiScript m_underlyingScript;
-        private Element m_parent;
 
         private static Dictionary<IScript, EditableScripts> s_instances = new Dictionary<IScript, EditableScripts>();
 
-        public static EditableScripts GetInstance(EditorController controller, IScript script, Element parent)
+        public static EditableScripts GetInstance(EditorController controller, IScript script)
         {
             EditableScripts instance;
             if (s_instances.TryGetValue(script, out instance))
             {
-                System.Diagnostics.Debug.Assert(instance.m_parent == parent, "Wrapped value has been moved - cached IEditableScript will be invalid");
                 return instance;
             }
 
-            instance = new EditableScripts(controller, script, parent);
+            instance = new EditableScripts(controller, script);
             s_instances.Add(script, instance);
             return instance;
         }
 
-        private EditableScripts(EditorController controller, Element parent)
+        private EditableScripts(EditorController controller)
         {
             m_controller = controller;
-            m_parent = parent;
             m_scripts = new List<IEditableScript>();
         }
 
-        private EditableScripts(EditorController controller, IScript script, Element parent)
-            : this(controller, parent)
+        private EditableScripts(EditorController controller, IScript script)
+            : this(controller)
         {
             InitialiseMultiScript((MultiScript)script);
             foreach (IScript scriptItem in m_underlyingScript.Scripts)
             {
-                m_scripts.Add(m_controller.ScriptFactory.CreateEditableScript(scriptItem, parent));
+                m_scripts.Add(m_controller.ScriptFactory.CreateEditableScript(scriptItem));
             }
 
             foreach (IEditableScript editableScript in m_scripts)
@@ -113,13 +110,13 @@ namespace AxeSoftware.Quest
         public void AddNew(string keyword, string elementName)
         {
             m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Add '{0}' script to '{1}'", keyword, elementName));
-            AddNewInternal(keyword, elementName);
+            AddNewInternal(keyword);
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
-        internal void AddNewInternal(string keyword, string elementName)
+        internal void AddNewInternal(string keyword)
         {
-            Add(m_controller.ScriptFactory.CreateEditableScript(keyword, elementName), false);
+            Add(m_controller.ScriptFactory.CreateEditableScript(keyword), false);
         }
 
         public IEditableScript this[int index]
@@ -172,11 +169,11 @@ namespace AxeSoftware.Quest
             }
             if (e.AddedScript != null)
             {
-                Add(m_controller.ScriptFactory.CreateEditableScript(e.AddedScript, m_parent), true);
+                Add(m_controller.ScriptFactory.CreateEditableScript(e.AddedScript), true);
             }
             if (e.InsertedScript != null)
             {
-                Add(m_controller.ScriptFactory.CreateEditableScript(e.InsertedScript, m_parent), e.Index, true);
+                Add(m_controller.ScriptFactory.CreateEditableScript(e.InsertedScript), e.Index, true);
             }
             if (Updated != null) Updated(this, new EditableScriptsUpdatedEventArgs());
 

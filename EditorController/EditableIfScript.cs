@@ -27,7 +27,7 @@ namespace AxeSoftware.Quest
             {
                 m_elseIfScript = elseIfScript;
                 m_parent = parent;
-                EditableScripts = AxeSoftware.Quest.EditableScripts.GetInstance(parent.m_controller, elseIfScript.Script, parent.m_parent);
+                EditableScripts = AxeSoftware.Quest.EditableScripts.GetInstance(parent.m_controller, elseIfScript.Script);
             }
 
             public IEditableScripts EditableScripts { get; private set; }
@@ -76,7 +76,6 @@ namespace AxeSoftware.Quest
         }
 
         private IfScript m_ifScript;
-        private Element m_parent;
         private EditorController m_controller;
         private EditableScripts m_thenScript;
         private EditableScripts m_elseScript;
@@ -87,12 +86,11 @@ namespace AxeSoftware.Quest
         public event EventHandler<ElseIfEventArgs> AddedElseIf;
         public event EventHandler<ElseIfEventArgs> RemovedElseIf;
 
-        internal EditableIfScript(EditorController controller, IfScript script, Element parent, UndoLogger undoLogger)
+        internal EditableIfScript(EditorController controller, IfScript script, UndoLogger undoLogger)
             : base(script, undoLogger)
         {
             m_controller = controller;
             m_ifScript = script;
-            m_parent = parent;
 
             m_ifScript.IfScriptUpdated += m_ifScript_IfScriptUpdated;
 
@@ -101,7 +99,7 @@ namespace AxeSoftware.Quest
                 m_ifScript.ThenScript = new MultiScript();
             }
 
-            m_thenScript = EditableScripts.GetInstance(m_controller, m_ifScript.ThenScript, m_parent);
+            m_thenScript = EditableScripts.GetInstance(m_controller, m_ifScript.ThenScript);
             m_thenScript.Updated += m_thenScript_Updated;
 
             foreach (var elseIfScript in m_ifScript.ElseIfScripts)
@@ -113,7 +111,7 @@ namespace AxeSoftware.Quest
 
             if (m_ifScript.ElseScript != null)
             {
-                m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript, m_parent);
+                m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript);
                 m_elseScript.Updated += m_elseScript_Updated;
             }
         }
@@ -123,7 +121,7 @@ namespace AxeSoftware.Quest
             switch (e.EventType)
             {
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
-                    m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript, m_parent);
+                    m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript);
                     m_elseScript.Updated += m_elseScript_Updated;
                     if (AddedElse != null) AddedElse(this, new EventArgs());
                     break;
@@ -133,7 +131,7 @@ namespace AxeSoftware.Quest
                     if (RemovedElse != null) RemovedElse(this, new EventArgs());
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
-                    EditableScripts editableNewScript = EditableScripts.GetInstance(m_controller, e.Data.Script, m_parent);
+                    EditableScripts editableNewScript = EditableScripts.GetInstance(m_controller, e.Data.Script);
                     editableNewScript.Updated += ElseIfUpdated;
 
                     // Wrap the newly created elseif in an EditableElseIf and add it to our internal dictionary
@@ -147,7 +145,7 @@ namespace AxeSoftware.Quest
                     }
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
-                    EditableScripts.GetInstance(m_controller, e.Data.Script, m_parent).Updated -= ElseIfUpdated;
+                    EditableScripts.GetInstance(m_controller, e.Data.Script).Updated -= ElseIfUpdated;
                     if (RemovedElseIf != null) RemovedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
                     m_elseIfScripts.Remove(e.Data.Script);
                     break;

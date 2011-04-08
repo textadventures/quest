@@ -14,10 +14,12 @@ namespace AxeSoftware.Quest
 
         private string m_displayTemplate = null;
         private static Regex s_regex = new Regex("#(?<attribute>\\d+)");
+        private EditorController m_controller;
 
-        internal EditableScript(IScript script, UndoLogger undoLogger)
+        internal EditableScript(EditorController controller, IScript script, UndoLogger undoLogger)
             : base(script, undoLogger)
         {
+            m_controller = controller;
         }
 
         internal string DisplayTemplate
@@ -46,15 +48,24 @@ namespace AxeSoftware.Quest
                 }
                 else
                 {
-                    //attributeValue = (string)Script.GetParameter(attributeNum);
-                    attributeValue = Script.GetParameter(attributeNum) as string;
+                    object value = Script.GetParameter(attributeNum);
 
-                    // TO DO: This shouldn't be necessary
-                    if (attributeValue == null) attributeValue = "{NOTSTRING}";
+                    IScript scriptValue = value as IScript;
+                    string stringValue = value as string;
+
+                    if (stringValue != null)
+                    {
+                        attributeValue = stringValue;
+                    }
+                    else if (scriptValue != null)
+                    {
+                        EditableScripts editableScripts = EditableScripts.GetInstance(m_controller, scriptValue);
+                        attributeValue = editableScripts.DisplayString();
+                    }
+                    else {
+                        attributeValue = "<unknown>";
+                    }
                 }
-                
-                // TO DO: This shouldn't be necessary
-                if (attributeValue == null) attributeValue = "{NULL}";
                 
                 result = s_regex.Replace(result, attributeValue, 1);
             }

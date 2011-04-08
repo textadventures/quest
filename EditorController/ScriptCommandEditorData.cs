@@ -26,9 +26,7 @@ namespace AxeSoftware.Quest
 
         public object GetAttribute(string attribute)
         {
-            // TO DO: wrap values here if necessary
-            //return m_controller.WrapValue(m_script.GetParameter(int.Parse(attribute)));
-            return m_script.GetParameter(int.Parse(attribute));
+            return m_controller.WrapValue(m_script.GetParameter(int.Parse(attribute)));
         }
 
         public void SetAttribute(string attribute, object value)

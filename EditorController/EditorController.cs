@@ -122,7 +122,7 @@ namespace AxeSoftware.Quest
         {
             if (m_initialised)
             {
-                if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue, e.Element), e.IsUndo));
+                if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue), e.IsUndo));
             }
         }
 
@@ -348,12 +348,12 @@ namespace AxeSoftware.Quest
             get { return m_editableScriptFactory; }
         }
 
-        internal object WrapValue(object value, Element parent)
+        internal object WrapValue(object value)
         {
             // need to wrap IScript in an IEditableScript
             if (value is IScript)
             {
-                return EditableScripts.GetInstance(this, (IScript)value, parent);
+                return EditableScripts.GetInstance(this, (IScript)value);
             }
 
             return value;
@@ -368,8 +368,8 @@ namespace AxeSoftware.Quest
         {
             WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} script to '{2}'", parent, attribute, keyword));
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
-            EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript(), element);
-            newValue.AddNewInternal(keyword, parent);
+            EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript());
+            newValue.AddNewInternal(keyword);
             if (element != null) element.Fields.Set(attribute, newValue.GetUnderlyingValue());
             WorldModel.UndoLogger.EndTransaction();
 

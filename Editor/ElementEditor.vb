@@ -118,6 +118,7 @@
         For Each ctl In m_controls
             ctl.Parent = Nothing
             ctl.Visible = False
+            ctl.Value = Nothing
             RemoveHandler ctl.Dirty, AddressOf Control_Dirty
             ctl.Dispose()
         Next
