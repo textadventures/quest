@@ -35,6 +35,8 @@
             m_hasElse = True
         End If
 
+        UpdateElseButton()
+
         AddHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
         AddHandler child.Dirty, AddressOf IfEditorChild_Dirty
         m_lastEditorChild = child
@@ -141,6 +143,7 @@
         RemoveChild(m_elseEditor)
         m_elseEditor = Nothing
         m_hasElse = False
+        UpdateElseButton()
     End Sub
 
     Private Sub RemoveAllChildren()
@@ -184,12 +187,17 @@
         m_fullHeight = currentTop
     End Sub
 
-    ' need logic to only add an "else" once, and update button/menu accordingly
-    ' as many "else if"s as we like
-    ' "else" should appear at the bottom so have a separate parent splitter
+    Private Sub UpdateElseButton()
+        cmdAddElse.Text = If(Not m_hasElse, "Add Else", "Add Else If")
+        mnuAddElse.Enabled = Not m_hasElse
+    End Sub
 
     Private Sub cmdAddElse_ButtonClick(sender As System.Object, e As System.EventArgs) Handles cmdAddElse.ButtonClick
-        AddElse()
+        If Not m_hasElse Then
+            AddElse()
+        Else
+            AddElseIf()
+        End If
     End Sub
 
     Private Sub mnuAddElse_Click(sender As Object, e As System.EventArgs) Handles mnuAddElse.Click
