@@ -53,14 +53,14 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("msg", m_function.Save());
         }
 
-        public override string GetParameter(int index)
+        public override object GetParameter(int index)
         {
             return m_function.Save();
         }
 
-        public override void SetParameterInternal(int index, string value)
+        public override void SetParameterInternal(int index, object value)
         {
-            m_function = new ExpressionGeneric(value, m_worldModel);
+            m_function = new ExpressionGeneric((string)value, m_worldModel);
         }
 
         public override string Keyword

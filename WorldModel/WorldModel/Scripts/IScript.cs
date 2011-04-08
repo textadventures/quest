@@ -23,14 +23,14 @@ namespace AxeSoftware.Quest.Scripts
             Index = index;
         }
 
-        internal ScriptUpdatedEventArgs(int index, string newValue)
+        internal ScriptUpdatedEventArgs(int index, object newValue)
         {
             Index = index;
             NewValue = newValue;
             IsParameterUpdate = true;
         }
 
-        internal ScriptUpdatedEventArgs(string id, string newValue)
+        internal ScriptUpdatedEventArgs(string id, object newValue)
         {
             Id = id;
             NewValue = newValue;
@@ -41,7 +41,7 @@ namespace AxeSoftware.Quest.Scripts
         public IScript AddedScript { get; private set; }
         public IScript InsertedScript { get; private set; }
         public int Index { get; private set; }
-        public string NewValue { get; private set; }
+        public object NewValue { get; private set; }
         public bool IsParameterUpdate { get; private set; }
         public bool IsNamedParameterUpdate { get; private set; }
         public string Id { get; private set; }
@@ -52,9 +52,9 @@ namespace AxeSoftware.Quest.Scripts
         void Execute(Context c);
         string Line { get; set; }
         string Save();
-        void SetParameter(int index, string value);
-        void SetParameterSilent(int index, string value);
-        string GetParameter(int index);
+        void SetParameter(int index, object value);
+        void SetParameterSilent(int index, object value);
+        object GetParameter(int index);
         string Keyword { get; }
         event EventHandler<ScriptUpdatedEventArgs> ScriptUpdated;
     }
@@ -96,7 +96,7 @@ namespace AxeSoftware.Quest.Scripts
             return result + " {" + Environment.NewLine + scriptString + Environment.NewLine + "}";
         }
 
-        protected void NotifyUpdate(int index, string newValue)
+        protected void NotifyUpdate(int index, object newValue)
         {
             NotifyUpdate(new ScriptUpdatedEventArgs(index, newValue));
         }
@@ -111,7 +111,7 @@ namespace AxeSoftware.Quest.Scripts
             NotifyUpdate(new ScriptUpdatedEventArgs(inserted, index));
         }
 
-        protected void NotifyUpdate(string id, string newValue)
+        protected void NotifyUpdate(string id, object newValue)
         {
             NotifyUpdate(new ScriptUpdatedEventArgs(id, newValue));
         }
@@ -136,9 +136,9 @@ namespace AxeSoftware.Quest.Scripts
             set { m_line = value; }
         }
 
-        public void SetParameter(int index, string value)
+        public void SetParameter(int index, object value)
         {
-            string oldValue = GetParameter(index);
+            object oldValue = GetParameter(index);
             SetParameterSilent(index, value);
             if (UndoLog != null)
             {
@@ -146,18 +146,18 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
-        public void SetParameterSilent(int index, string value)
+        public void SetParameterSilent(int index, object value)
         {
             SetParameterInternal(index, value);
             NotifyUpdate(index, value);
         }
 
-        public virtual void SetParameterInternal(int index, string value)
+        public virtual void SetParameterInternal(int index, object value)
         {
             throw new NotImplementedException();
         }
 
-        public virtual string GetParameter(int index)
+        public virtual object GetParameter(int index)
         {
             throw new NotImplementedException();
         }
@@ -199,10 +199,10 @@ namespace AxeSoftware.Quest.Scripts
         {
             private IScript m_appliesTo;
             private int m_index;
-            private string m_oldValue;
-            private string m_newValue;
+            private object m_oldValue;
+            private object m_newValue;
 
-            public UndoScriptChange(IScript appliesTo, int index, string oldValue, string newValue)
+            public UndoScriptChange(IScript appliesTo, int index, object oldValue, object newValue)
             {
                 m_appliesTo = appliesTo;
                 m_index = index;

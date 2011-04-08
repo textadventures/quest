@@ -268,7 +268,7 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
-        public override string GetParameter(int index)
+        public override object GetParameter(int index)
         {
             switch (index)
             {
@@ -283,7 +283,7 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
-        public override void SetParameterInternal(int index, string value)
+        public override void SetParameterInternal(int index, object value)
         {
             base.SetParameterInternal(index, value);
         }

@@ -50,14 +50,14 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("picture", m_filename.Save());
         }
 
-        public override string GetParameter(int index)
+        public override object GetParameter(int index)
         {
             return m_filename.Save();
         }
 
-        public override void SetParameterInternal(int index, string value)
+        public override void SetParameterInternal(int index, object value)
         {
-            m_filename = new Expression<string>(value, m_worldModel);
+            m_filename = new Expression<string>((string)value, m_worldModel);
         }
 
         public override string Keyword

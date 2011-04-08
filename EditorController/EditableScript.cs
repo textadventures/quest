@@ -46,9 +46,17 @@ namespace AxeSoftware.Quest
                 }
                 else
                 {
-                    attributeValue = Script.GetParameter(attributeNum);
+                    //attributeValue = (string)Script.GetParameter(attributeNum);
+                    attributeValue = Script.GetParameter(attributeNum) as string;
+
+                    // TO DO: This shouldn't be necessary
+                    if (attributeValue == null) attributeValue = "{NOTSTRING}";
                 }
-                result = s_regex.Replace(result, attributeValue);
+                
+                // TO DO: This shouldn't be necessary
+                if (attributeValue == null) attributeValue = "{NULL}";
+                
+                result = s_regex.Replace(result, attributeValue, 1);
             }
 
             return result;
@@ -59,12 +67,12 @@ namespace AxeSoftware.Quest
             get { return Script.Keyword; }
         }
 
-        public override string GetParameter(int index)
+        public override object GetParameter(int index)
         {
             return Script.GetParameter(index);
         }
 
-        public override void SetParameter(int index, string value)
+        public override void SetParameter(int index, object value)
         {
             Script.SetParameter(index, value);
         }

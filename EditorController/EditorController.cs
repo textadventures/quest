@@ -122,7 +122,7 @@ namespace AxeSoftware.Quest
         {
             if (m_initialised)
             {
-                if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue, e.Element, e.Attribute), e.IsUndo));
+                if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue, e.Element), e.IsUndo));
             }
         }
 
@@ -286,7 +286,7 @@ namespace AxeSoftware.Quest
             switch (script.Type)
             {
                 case ScriptType.Normal:
-                    return new ScriptCommandEditorData(script);
+                    return new ScriptCommandEditorData(this, script);
                 default:
                     throw new NotImplementedException();
             }
@@ -348,12 +348,12 @@ namespace AxeSoftware.Quest
             get { return m_editableScriptFactory; }
         }
 
-        internal object WrapValue(object value, Element parent, string attribute)
+        internal object WrapValue(object value, Element parent)
         {
             // need to wrap IScript in an IEditableScript
             if (value is IScript)
             {
-                return EditableScripts.GetInstance(this, (IScript)value, parent, attribute);
+                return EditableScripts.GetInstance(this, (IScript)value, parent);
             }
 
             return value;
@@ -368,7 +368,7 @@ namespace AxeSoftware.Quest
         {
             WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} script to '{2}'", parent, attribute, keyword));
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
-            EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript(), element, attribute);
+            EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript(), element);
             newValue.AddNewInternal(keyword, parent);
             if (element != null) element.Fields.Set(attribute, newValue.GetUnderlyingValue());
             WorldModel.UndoLogger.EndTransaction();

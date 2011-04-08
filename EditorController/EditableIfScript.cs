@@ -27,7 +27,7 @@ namespace AxeSoftware.Quest
             {
                 m_elseIfScript = elseIfScript;
                 m_parent = parent;
-                EditableScripts = AxeSoftware.Quest.EditableScripts.GetInstance(parent.m_controller, elseIfScript.Script, parent.m_parent, null);
+                EditableScripts = AxeSoftware.Quest.EditableScripts.GetInstance(parent.m_controller, elseIfScript.Script, parent.m_parent);
             }
 
             public IEditableScripts EditableScripts { get; private set; }
@@ -101,7 +101,7 @@ namespace AxeSoftware.Quest
                 m_ifScript.ThenScript = new MultiScript();
             }
 
-            m_thenScript = EditableScripts.GetInstance(m_controller, m_ifScript.ThenScript, m_parent, null);
+            m_thenScript = EditableScripts.GetInstance(m_controller, m_ifScript.ThenScript, m_parent);
             m_thenScript.Updated += m_thenScript_Updated;
 
             foreach (var elseIfScript in m_ifScript.ElseIfScripts)
@@ -113,7 +113,7 @@ namespace AxeSoftware.Quest
 
             if (m_ifScript.ElseScript != null)
             {
-                m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript, m_parent, null);
+                m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript, m_parent);
                 m_elseScript.Updated += m_elseScript_Updated;
             }
         }
@@ -123,7 +123,7 @@ namespace AxeSoftware.Quest
             switch (e.EventType)
             {
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
-                    m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript, m_parent, null);
+                    m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript, m_parent);
                     m_elseScript.Updated += m_elseScript_Updated;
                     if (AddedElse != null) AddedElse(this, new EventArgs());
                     break;
@@ -133,7 +133,7 @@ namespace AxeSoftware.Quest
                     if (RemovedElse != null) RemovedElse(this, new EventArgs());
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
-                    EditableScripts editableNewScript = EditableScripts.GetInstance(m_controller, e.Data.Script, m_parent, null);
+                    EditableScripts editableNewScript = EditableScripts.GetInstance(m_controller, e.Data.Script, m_parent);
                     editableNewScript.Updated += ElseIfUpdated;
 
                     // Wrap the newly created elseif in an EditableElseIf and add it to our internal dictionary
@@ -147,7 +147,7 @@ namespace AxeSoftware.Quest
                     }
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
-                    EditableScripts.GetInstance(m_controller, e.Data.Script, m_parent, null).Updated -= ElseIfUpdated;
+                    EditableScripts.GetInstance(m_controller, e.Data.Script, m_parent).Updated -= ElseIfUpdated;
                     if (RemovedElseIf != null) RemovedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
                     m_elseIfScripts.Remove(e.Data.Script);
                     break;
@@ -252,12 +252,12 @@ namespace AxeSoftware.Quest
         }
 
         // these should probably not be on the interface...
-        public override string GetParameter(int index)
+        public override object GetParameter(int index)
         {
             throw new NotImplementedException();
         }
 
-        public override void SetParameter(int index, string value)
+        public override void SetParameter(int index, object value)
         {
             throw new NotImplementedException();
         }

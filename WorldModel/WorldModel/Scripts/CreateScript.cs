@@ -58,14 +58,14 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
-        public override string GetParameter(int index)
+        public override object GetParameter(int index)
         {
             return m_expr.Save();
         }
 
-        public override void SetParameterInternal(int index, string value)
+        public override void SetParameterInternal(int index, object value)
         {
-            m_expr = new Expression<string>(value, m_worldModel);
+            m_expr = new Expression<string>((string)value, m_worldModel);
         }
 
         #endregion

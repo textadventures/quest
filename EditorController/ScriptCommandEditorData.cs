@@ -9,9 +9,11 @@ namespace AxeSoftware.Quest
     internal class ScriptCommandEditorData : IEditorData
     {
         private IEditableScript m_script;
+        private EditorController m_controller;
 
-        public ScriptCommandEditorData(IEditableScript script)
+        public ScriptCommandEditorData(EditorController controller, IEditableScript script)
         {
+            m_controller = controller;
             m_script = script;
         }
 
@@ -24,6 +26,8 @@ namespace AxeSoftware.Quest
 
         public object GetAttribute(string attribute)
         {
+            // TO DO: wrap values here if necessary
+            //return m_controller.WrapValue(m_script.GetParameter(int.Parse(attribute)));
             return m_script.GetParameter(int.Parse(attribute));
         }
 

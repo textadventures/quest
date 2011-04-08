@@ -51,8 +51,8 @@ namespace AxeSoftware.Quest
         string DisplayString();
         string DisplayString(int index, string newValue);
         string EditorName { get; }
-        string GetParameter(int index);
-        void SetParameter(int index, string value);
+        object GetParameter(int index);
+        void SetParameter(int index, object value);
         event EventHandler<EditableScriptUpdatedEventArgs> Updated;
         ScriptType Type { get; }
     }

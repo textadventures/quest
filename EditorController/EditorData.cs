@@ -27,7 +27,7 @@ namespace AxeSoftware.Quest
 
         public object GetAttribute(string attribute)
         {
-            return m_controller.WrapValue(m_element.Fields.Get(attribute), m_element, attribute);
+            return m_controller.WrapValue(m_element.Fields.Get(attribute), m_element);
         }
 
         public void SetAttribute(string attribute, object value)

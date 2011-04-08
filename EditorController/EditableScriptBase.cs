@@ -17,8 +17,8 @@ namespace AxeSoftware.Quest
 
         public abstract string DisplayString(int index, string newValue);
         public abstract string EditorName { get; }
-        public abstract string GetParameter(int index);
-        public abstract void SetParameter(int index, string value);
+        public abstract object GetParameter(int index);
+        public abstract void SetParameter(int index, object value);
         public abstract ScriptType Type { get; }
 
         private IScript m_script;
@@ -58,11 +58,13 @@ namespace AxeSoftware.Quest
             {
                 if (e != null && e.IsParameterUpdate)
                 {
-                    Updated(this, new EditableScriptUpdatedEventArgs(e.Index, e.NewValue));
+                    // not sure if casting object NewValue to string will work, but we don't want the raw values bubbling up as EditableScriptUpdatedEventArgs.
+                    // Maybe we should be wrapping them instead.
+                    Updated(this, new EditableScriptUpdatedEventArgs(e.Index, (string)e.NewValue));
                 }
                 else if (e != null && e.IsNamedParameterUpdate)
                 {
-                    Updated(this, new EditableScriptUpdatedEventArgs(e.Id, e.NewValue));
+                    Updated(this, new EditableScriptUpdatedEventArgs(e.Id, (string)e.NewValue));
                 }
                 else
                 {

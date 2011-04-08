@@ -12,34 +12,32 @@ namespace AxeSoftware.Quest
         private EditorController m_controller;
         private MultiScript m_underlyingScript;
         private Element m_parent;
-        private string m_attribute;
 
         private static Dictionary<IScript, EditableScripts> s_instances = new Dictionary<IScript, EditableScripts>();
 
-        public static EditableScripts GetInstance(EditorController controller, IScript script, Element parent, string attribute)
+        public static EditableScripts GetInstance(EditorController controller, IScript script, Element parent)
         {
             EditableScripts instance;
             if (s_instances.TryGetValue(script, out instance))
             {
-                System.Diagnostics.Debug.Assert(instance.m_parent == parent && instance.m_attribute == attribute, "Wrapped value has been moved - cached IEditableScript will be invalid");
+                System.Diagnostics.Debug.Assert(instance.m_parent == parent, "Wrapped value has been moved - cached IEditableScript will be invalid");
                 return instance;
             }
 
-            instance = new EditableScripts(controller, script, parent, attribute);
+            instance = new EditableScripts(controller, script, parent);
             s_instances.Add(script, instance);
             return instance;
         }
 
-        private EditableScripts(EditorController controller, Element parent, string attribute)
+        private EditableScripts(EditorController controller, Element parent)
         {
             m_controller = controller;
             m_parent = parent;
             m_scripts = new List<IEditableScript>();
-            m_attribute = attribute;
         }
 
-        private EditableScripts(EditorController controller, IScript script, Element parent, string attribute)
-            : this(controller, parent, attribute)
+        private EditableScripts(EditorController controller, IScript script, Element parent)
+            : this(controller, parent)
         {
             InitialiseMultiScript((MultiScript)script);
             foreach (IScript scriptItem in m_underlyingScript.Scripts)
