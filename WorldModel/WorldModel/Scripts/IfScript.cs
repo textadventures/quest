@@ -116,15 +116,15 @@ namespace AxeSoftware.Quest.Scripts
 
         public void SetElse(IScript elseScript)
         {
-            System.Diagnostics.Debug.Assert(!m_hasElse, "UndoSetElse assumes that we only ever set the Else script once");
-            m_hasElse = true;
+            System.Diagnostics.Debug.Assert(elseScript == null || !m_hasElse, "UndoSetElse assumes that we only ever set the Else script once");
 
             if (base.UndoLog != null)
             {
                 base.UndoLog.StartTransaction("Add Else script");
-                base.UndoLog.AddUndoAction(new UndoSetElse(this, elseScript));
+                base.UndoLog.AddUndoAction(new UndoSetElse(this, m_elseScript, elseScript, m_hasElse, true));
             }
 
+            m_hasElse = true;
             SetElseSilent(elseScript);
 
             if (base.UndoLog != null)
@@ -190,7 +190,7 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
-        private void RemoveElseIf(ElseIfScript elseIfScript)
+        public void RemoveElseIf(ElseIfScript elseIfScript)
         {
             if (base.UndoLog != null)
             {
@@ -367,23 +367,29 @@ namespace AxeSoftware.Quest.Scripts
         private class UndoSetElse : UndoLogger.IUndoAction
         {
             private IfScript m_script;
+            private IScript m_oldValue;
             private IScript m_newValue;
+            private bool m_oldHasElse;
+            private bool m_newHasElse;
 
-            public UndoSetElse(IfScript script, IScript newValue)
+            public UndoSetElse(IfScript script, IScript oldValue, IScript newValue, bool oldHasElse, bool newHasElse)
             {
                 m_script = script;
+                m_oldValue = oldValue;
                 m_newValue = newValue;
+                m_oldHasElse = oldHasElse;
+                m_newHasElse = newHasElse;
             }
 
             public void DoUndo(WorldModel worldModel)
             {
-                m_script.m_hasElse = false;
-                m_script.SetElseSilent(null);
+                m_script.m_hasElse = m_oldHasElse;
+                m_script.SetElseSilent(m_oldValue);
             }
 
             public void DoRedo(WorldModel worldModel)
             {
-                m_script.m_hasElse = true;
+                m_script.m_hasElse = m_newHasElse;
                 m_script.SetElseSilent(m_newValue);
             }
         }

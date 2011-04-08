@@ -39,6 +39,7 @@
 
         AddHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
         AddHandler child.Dirty, AddressOf IfEditorChild_Dirty
+        AddHandler child.Delete, AddressOf IfEditorChild_Delete
         m_lastEditorChild = child
     End Sub
 
@@ -91,10 +92,21 @@
     End Sub
 
     Private Sub IfEditorChild_Dirty(sender As Object, args As DataModifiedEventArgs)
-        Debug.Print("{0} IfEditorChild_Dirty: {1} = '{2}'", DateTime.Now, args.Attribute, args.NewValue)
-
         Dim newArgs As New DataModifiedEventArgs(String.Empty, m_data.DisplayString(GetChildEditorScript(sender), CInt(args.Attribute), DirectCast(args.NewValue, String)))
         RaiseEvent Dirty(sender, newArgs)
+    End Sub
+
+    Private Sub IfEditorChild_HeightChanged(sender As IfEditorChild, newHeight As Integer)
+        sender.Height = newHeight
+        SetChildControlPositions()
+    End Sub
+
+    Private Sub IfEditorChild_Delete(sender As IfEditorChild)
+        If sender Is m_elseEditor Then
+            m_data.RemoveElse()
+        Else
+            m_data.RemoveElseIf(sender.ElseIfData)
+        End If
     End Sub
 
     Private Function GetChildEditorScript(child As Object) As IEditableScripts
@@ -112,6 +124,7 @@
         Dim newChild As IfEditorChild = AddElseChildControl(True)
         m_elseIfEditor.Add(elseIfData.Id, newChild)
         newChild.Populate(elseIfData, elseIfData.EditableScripts)
+        newChild.ElseIfData = elseIfData
     End Sub
 
     Private Function AddElseChildControl(addElseIf As Boolean) As IfEditorChild
@@ -160,17 +173,13 @@
         LayoutSuspend()
         RemoveHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
         RemoveHandler child.Dirty, AddressOf IfEditorChild_Dirty
+        RemoveHandler child.Delete, AddressOf IfEditorChild_Delete
         child.Populate(Nothing, Nothing)
         child.Visible = False
         m_activeChildren.Remove(child)
         m_inactiveChildren.Add(child)
         SetChildControlPositions()
         LayoutResume()
-    End Sub
-
-    Private Sub IfEditorChild_HeightChanged(sender As IfEditorChild, newHeight As Integer)
-        sender.Height = newHeight
-        SetChildControlPositions()
     End Sub
 
     Private Sub SetChildControlPositions()

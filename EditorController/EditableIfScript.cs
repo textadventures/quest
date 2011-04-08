@@ -68,6 +68,11 @@ namespace AxeSoftware.Quest
             {
                 get { return m_elseIfScript.Id; }
             }
+
+            internal IfScript.ElseIfScript ElseIfScript
+            {
+                get { return m_elseIfScript; }
+            }
         }
 
         private IfScript m_ifScript;
@@ -300,9 +305,9 @@ namespace AxeSoftware.Quest
             IfScript.ElseIfScript newElseIf = m_ifScript.AddElseIf(string.Empty, newScript);
         }
 
-        public void RemoveElseIf()
+        public void RemoveElseIf(EditableElseIf removeElseIf)
         {
-            // TO DO: Add functionality to the script editor to remove an existing "else if" script
+            m_ifScript.RemoveElseIf(removeElseIf.ElseIfScript);
         }
 
         public void RemoveElse()

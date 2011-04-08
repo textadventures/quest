@@ -25,6 +25,7 @@ Partial Class IfEditorChild
         Me.lblThen = New System.Windows.Forms.Label()
         Me.lblIf = New System.Windows.Forms.Label()
         Me.cmdExpand = New System.Windows.Forms.Button()
+        Me.cmdDelete = New System.Windows.Forms.Button()
         Me.ctlThenScript = New AxeSoftware.Quest.ScriptControl()
         Me.ctlExpression = New AxeSoftware.Quest.TextBoxControl()
         Me.SuspendLayout()
@@ -57,26 +58,36 @@ Partial Class IfEditorChild
         Me.cmdExpand.Text = "v"
         Me.cmdExpand.UseVisualStyleBackColor = True
         '
+        'cmdDelete
+        '
+        Me.cmdDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdDelete.Location = New System.Drawing.Point(305, 0)
+        Me.cmdDelete.Name = "cmdDelete"
+        Me.cmdDelete.Size = New System.Drawing.Size(23, 23)
+        Me.cmdDelete.TabIndex = 9
+        Me.cmdDelete.Text = "r"
+        Me.cmdDelete.UseVisualStyleBackColor = True
+        '
         'ctlThenScript
         '
         Me.ctlThenScript.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ctlThenScript.Controller = Nothing
         Me.ctlThenScript.Location = New System.Drawing.Point(46, 28)
         Me.ctlThenScript.Name = "ctlThenScript"
-        Me.ctlThenScript.Size = New System.Drawing.Size(280, 306)
+        Me.ctlThenScript.Size = New System.Drawing.Size(309, 306)
         Me.ctlThenScript.TabIndex = 7
         Me.ctlThenScript.Value = Nothing
         '
         'ctlExpression
         '
         Me.ctlExpression.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ctlExpression.Controller = Nothing
         Me.ctlExpression.Location = New System.Drawing.Point(46, 0)
         Me.ctlExpression.Name = "ctlExpression"
-        Me.ctlExpression.Size = New System.Drawing.Size(280, 20)
+        Me.ctlExpression.Size = New System.Drawing.Size(253, 20)
         Me.ctlExpression.TabIndex = 5
         Me.ctlExpression.Value = ""
         '
@@ -84,6 +95,7 @@ Partial Class IfEditorChild
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.cmdDelete)
         Me.Controls.Add(Me.cmdExpand)
         Me.Controls.Add(Me.ctlThenScript)
         Me.Controls.Add(Me.lblThen)
@@ -100,5 +112,6 @@ Partial Class IfEditorChild
     Friend WithEvents ctlExpression As AxeSoftware.Quest.TextBoxControl
     Friend WithEvents lblIf As System.Windows.Forms.Label
     Friend WithEvents cmdExpand As System.Windows.Forms.Button
+    Friend WithEvents cmdDelete As System.Windows.Forms.Button
 
 End Class

@@ -12,9 +12,11 @@
     Private m_scriptEditorMinHeight As Integer
     Private m_script As IEditableScripts
     Private m_data As IEditorData
+    Private m_elseIf As EditableIfScript.EditableElseIf
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event ChangeHeight(sender As IfEditorChild, newHeight As Integer)
+    Public Event Delete(sender As IfEditorChild)
 
     Public Sub New()
 
@@ -26,6 +28,7 @@
         ElseIfMode = IfEditorChildMode.IfMode
         Expanded = True
         cmdExpand.Font = New Font("Marlett", cmdExpand.Font.Size * 1.1F)
+        cmdDelete.Font = New Font("Marlett", cmdExpand.Font.Size * 1.1F)
     End Sub
 
     Public Sub SaveData()
@@ -93,14 +96,20 @@
             Select Case value
                 Case IfEditorChildMode.IfMode
                     lblIf.Text = "If:"
+                    cmdDelete.Visible = False
+                    ctlExpression.Width = cmdExpand.Left - ctlExpression.Left - 4
                 Case IfEditorChildMode.ElseIfMode
                     lblIf.Text = "Else If:"
+                    cmdDelete.Visible = True
+                    ctlExpression.Width = cmdDelete.Left - ctlExpression.Left - 4
                 Case IfEditorChildMode.ElseMode
                     lblIf.Text = "Else:"
+                    cmdDelete.Visible = True
                     ctlThenScript.Height += ctlThenScript.Top - ctlExpression.Top
                     ctlThenScript.Top = ctlExpression.Top
                     lblThen.Visible = False
                     ctlExpression.Visible = False
+                    ctlExpression.Width = cmdDelete.Left - ctlExpression.Left - 4
             End Select
 
         End Set
@@ -114,6 +123,7 @@
             Dim oldValue As Boolean = m_expanded
             m_expanded = value
             ctlThenScript.Visible = Expanded
+            lblThen.Visible = Expanded
             Dim newHeight As Integer
             If Expanded Then
                 newHeight = m_scriptEditorMinHeight
@@ -147,4 +157,18 @@
             Return m_script
         End Get
     End Property
+
+    Private Sub cmdDelete_Click(sender As System.Object, e As System.EventArgs) Handles cmdDelete.Click
+        RaiseEvent Delete(Me)
+    End Sub
+
+    Public Property ElseIfData As EditableIfScript.EditableElseIf
+        Get
+            Return m_elseIf
+        End Get
+        Set(value As EditableIfScript.EditableElseIf)
+            m_elseIf = value
+        End Set
+    End Property
+
 End Class
