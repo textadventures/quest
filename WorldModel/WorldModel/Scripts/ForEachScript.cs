@@ -31,7 +31,7 @@ namespace AxeSoftware.Quest.Scripts
 
             string type = parameters[0];
 
-            return new ForEachScript(parameters[0], new ExpressionGeneric(parameters[1], WorldModel), loopScript);
+            return new ForEachScript(WorldModel, parameters[0], new ExpressionGeneric(parameters[1], WorldModel), loopScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -46,15 +46,15 @@ namespace AxeSoftware.Quest.Scripts
         private IFunctionGeneric m_list;
         private IScript m_loopScript;
         private string m_variable;
+        private WorldModel m_worldModel;
 
-        public ForEachScript(string variable, IFunctionGeneric list, IScript loopScript)
+        public ForEachScript(WorldModel worldModel, string variable, IFunctionGeneric list, IScript loopScript)
         {
+            m_worldModel = worldModel;
             m_variable = variable;
             m_list = list;
             m_loopScript = loopScript;
         }
-
-        #region IScript Members
 
         public override void Execute(Context c)
         {
@@ -84,6 +84,46 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("foreach", m_loopScript, m_variable, m_list.Save());
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "foreach";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return m_variable;
+                case 1:
+                    return m_list.Save();
+                case 2:
+                    return m_loopScript;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+
+            switch (index)
+            {
+                case 0:
+                    m_variable = (string)value;
+                    break;
+                case 1:
+                    m_list = new ExpressionGeneric((string)value, m_worldModel);
+                    break;
+                case 2:
+                    throw new InvalidOperationException("Attempt to use SetParameter to change the script of a 'foreach' loop");
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
     }
 }

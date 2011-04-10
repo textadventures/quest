@@ -115,9 +115,8 @@ namespace AxeSoftware.Quest.Scripts
                     m_to = new Expression<int>((string)value, m_worldModel);
                     break;
                 case 3:
-                    // we probably don't want to do this, value should be an IScript already
-                    m_loopScript = m_scriptFactory.CreateScript((string)value);
-                    break;
+                    // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
+                    throw new InvalidOperationException("Attempt to use SetParameter to change the script of a 'for' loop");
                 default:
                     throw new ArgumentOutOfRangeException();
             }

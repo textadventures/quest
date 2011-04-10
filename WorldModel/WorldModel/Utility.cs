@@ -140,7 +140,7 @@ namespace AxeSoftware.Quest
 
                 curParam += curChar;
             }
-            if (curParam.Length > 0) result.Add(curParam.Trim());
+            result.Add(curParam.Trim());
 
             return result;
         }

@@ -1,0 +1,87 @@
+﻿<library>
+  <editor>
+    <appliesto>msg</appliesto>
+    <display>Print #0</display>
+    <category>Output</category>
+    <create>msg ("")</create>
+    <add>Print a message</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Message</caption>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>create</appliesto>
+    <display>Create #0</display>
+    <category>Objects</category>
+    <create>create ("")</create>
+    <add>Create an object</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Name</caption>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>if</appliesto>
+    <category>Scripts</category>
+    <add>If...</add>
+    <create>if ()</create>
+    <!-- note: "if" has its own special editor, so it doesn't have any editor definition in this file -->
+  </editor>
+
+  <editor>
+    <appliesto>for</appliesto>
+    <display>For #0 values #1 to #2, run: #3</display>
+    <category>Scripts</category>
+    <add>For...</add>
+    <create>for (i,0,10)</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Iterator variable</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>From</caption>
+      <attribute>1</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>To</caption>
+      <attribute>2</attribute>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Script</caption>
+      <attribute>3</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>foreach</appliesto>
+    <display>For each #0 in #1, run: #2</display>
+    <category>Scripts</category>
+    <add>For each...</add>
+    <create>foreach (,)</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Iterator variable</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Source</caption>
+      <attribute>1</attribute>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Script</caption>
+      <attribute>2</attribute>
+    </control>
+  </editor>
+
+</library>
