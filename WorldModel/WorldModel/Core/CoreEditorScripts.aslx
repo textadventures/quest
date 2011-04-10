@@ -38,7 +38,7 @@
     <display>For #0 values #1 to #2, run: #3</display>
     <category>Scripts</category>
     <add>For...</add>
-    <create>for (i,0,10)</create>
+    <create>for (,,)</create>
     <control>
       <controltype>textbox</controltype>
       <caption>Iterator variable</caption>

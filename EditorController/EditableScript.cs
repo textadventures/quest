@@ -55,16 +55,16 @@ namespace AxeSoftware.Quest
 
                     if (stringValue != null)
                     {
-                        attributeValue = stringValue;
+                        attributeValue = (stringValue.Length == 0) ? "?" : stringValue;
                     }
                     else if (scriptValue != null)
                     {
                         EditableScripts editableScripts = EditableScripts.GetInstance(m_controller, scriptValue);
-                        attributeValue = editableScripts.DisplayString();
+                        attributeValue = (editableScripts.Count == 0) ? "(nothing)" : editableScripts.DisplayString();
                     }
                     else if (value == null)
                     {
-                        attributeValue = string.Empty;
+                        attributeValue = "(nothing)";
                     }
                     else
                     {
