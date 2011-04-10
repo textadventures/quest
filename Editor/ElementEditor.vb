@@ -116,10 +116,10 @@
         If m_controls Is Nothing Then Return
 
         For Each ctl In m_controls
+            RemoveHandler ctl.Dirty, AddressOf Control_Dirty
             ctl.Parent = Nothing
             ctl.Visible = False
             ctl.Value = Nothing
-            RemoveHandler ctl.Dirty, AddressOf Control_Dirty
             ctl.Dispose()
         Next
 
