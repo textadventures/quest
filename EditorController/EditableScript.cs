@@ -62,7 +62,13 @@ namespace AxeSoftware.Quest
                         EditableScripts editableScripts = EditableScripts.GetInstance(m_controller, scriptValue);
                         attributeValue = editableScripts.DisplayString();
                     }
-                    else {
+                    else if (value == null)
+                    {
+                        attributeValue = string.Empty;
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.Assert(false, "Unknown attribute type for DisplayString");
                         attributeValue = "<unknown>";
                     }
                 }

@@ -73,7 +73,7 @@ namespace AxeSoftware.Quest
         {
             string remainingScript;
             IScript newScript;
-            MultiScript result = null;
+            MultiScript result = new MultiScript();
             bool finished = false;
             IScript lastIf = null;
             bool dontAdd;
@@ -136,7 +136,7 @@ namespace AxeSoftware.Quest
                                 addedError = true;
                             }
                         }
-                        
+
                         if (newScript == null)
                         {
                             // See if the script is like "myvar = 2". newScript will be null otherwise.
@@ -159,15 +159,7 @@ namespace AxeSoftware.Quest
                         else
                         {
                             newScript.Line = line;
-
-                            if (result == null)
-                            {
-                                result = new MultiScript(newScript);
-                            }
-                            else
-                            {
-                                result.Add(newScript);
-                            }
+                            result.Add(newScript);
                         }
                     }
                 }
