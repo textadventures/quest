@@ -83,5 +83,25 @@
       <attribute>2</attribute>
     </control>
   </editor>
+  
+  <!-- TO DO: There is also the => form for setting a script property, which also needs documenting -->
+
+  <editor>
+    <appliesto>=</appliesto>
+    <display>Set #0 = #1</display>
+    <category>Variables</category>
+    <add>Set a variable or property</add>
+    <create>=</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Variable</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Value</caption>
+      <attribute>1</attribute>
+    </control>
+  </editor>
 
 </library>
