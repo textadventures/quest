@@ -130,7 +130,7 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    return m_appliesTo == null ? m_property : m_appliesTo.Save();
+                    return m_appliesTo == null ? m_property : m_appliesTo.Save() + "." + m_property;
                 case 1:
                     return GetSaveString();
                 default:
