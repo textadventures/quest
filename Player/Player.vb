@@ -87,7 +87,7 @@ Public Class Player
             ' reload it. Then, only when the page has finished loading, begin the game.
 
             Dim scripts As IEnumerable(Of String) = m_game.GetExternalScripts
-            If scripts.Count > 0 Then
+            If scripts IsNot Nothing AndAlso scripts.Count > 0 Then
                 ' Generate the new HTML and wait for Ready event
 
                 m_htmlPlayerReadyFunction = AddressOf BeginGame

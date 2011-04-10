@@ -1504,19 +1504,17 @@ Public Class LegacyGame
 
         If LCase(Right(Filename, 4)) = ".asl" Or LCase(Right(Filename, 4)) = ".txt" Then
             'Read file into Lines array
-            On Error GoTo ErrorHandler
-            FileOpen(FileNum, Filename, OpenMode.Input)
-            On Error GoTo 0
-            l = 0
-            Do
-                l = l + 1
-                ReDim Preserve Lines(l)
-                Lines(l) = LineInput(FileNum)
-                RemoveTabs(Lines(l))
-                Lines(l) = Trim(Lines(l))
-            Loop Until EOF(FileNum)
-            FileClose(FileNum)
+            Dim fileData As String = System.IO.File.ReadAllText(Filename)
+            Dim aslLines As String() = fileData.Split(Chr(13))
+            ReDim Lines(aslLines.Length - 1)
 
+            For l = 0 To aslLines.Length - 1
+                Lines(l) = aslLines(l)
+                RemoveTabs(Lines(l))
+                Lines(l) = Lines(l).Trim(" "c, Chr(10), Chr(13))
+            Next
+
+            l = aslLines.Length - 1
 
         ElseIf LCase(Right(Filename, 4)) = ".cas" Then
             LogASLError("Loading CAS")
