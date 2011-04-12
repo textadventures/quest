@@ -5,9 +5,20 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
+    public class EditableListUpdatedEventArgs<T> : EventArgs
+    {
+        public IEditableListItem<T> UpdatedItem;
+        public EditorUpdateSource Source;
+    }
+
     public interface IEditableList<T>
     {
+        event EventHandler<EditableListUpdatedEventArgs<T>> Added;
+        event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
+        event EventHandler<EditableListUpdatedEventArgs<T>> Updated;
+
         IDictionary<string, IEditableListItem<T>> Items { get; }
+        void Add(T item);
     }
 
     public interface IEditableListItem<T>

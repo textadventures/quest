@@ -7,6 +7,11 @@ namespace AxeSoftware.Quest
 {
     public class EditableList<T> : IEditableList<T>
     {
+        public event EventHandler<EditableListUpdatedEventArgs<T>> Added;
+        public event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
+        public event EventHandler<EditableListUpdatedEventArgs<T>> Updated;
+
+        #region Static DataWrapper
         private static EditableDataWrapper<QuestList<T>, EditableList<T>> s_wrapper;
 
         static EditableList()
@@ -21,16 +26,22 @@ namespace AxeSoftware.Quest
 
         private static EditableList<T> GetNewInstance(EditorController controller, QuestList<T> list)
         {
-            return new EditableList<T>(list);
+            return new EditableList<T>(controller, list);
         }
+        #endregion
 
         private QuestList<T> m_source;
         private Dictionary<string, IEditableListItem<T>> m_wrappedItems = new Dictionary<string, IEditableListItem<T>>();
+        private Dictionary<T, IEditableListItem<T>> m_wrappedItemLookup = new Dictionary<T, IEditableListItem<T>>();
         private int m_nextId = 0;
+        private EditorController m_controller;
 
-        public EditableList(QuestList<T> source)
+        public EditableList(EditorController controller, QuestList<T> source)
         {
+            m_controller = controller;
             m_source = source;
+            m_source.Added += m_source_Added;
+            m_source.Removed += m_source_Removed;
             PopulateWrappedItems();
         }
 
@@ -45,16 +56,64 @@ namespace AxeSoftware.Quest
 
             foreach (var item in m_source)
             {
-                string key = GetUniqueId();
-                IEditableListItem<T> wrappedValue = new EditableListItem<T>(key, item);
-                m_wrappedItems.Add(key, wrappedValue);
+                AddWrappedItem(item, EditorUpdateSource.System);
             }
+        }
+
+        public void Add(T item)
+        {
+            string undoEntry = null;
+            if (typeof(T) == typeof(string))
+            {
+                undoEntry = string.Format("Add '{0}'", item as string);
+            }
+
+            if (undoEntry == null)
+            {
+                throw new InvalidOperationException("Unknown list type");
+            }
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+            m_source.Add(item, UpdateSource.User);
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
+        private void AddWrappedItem(T item, EditorUpdateSource source)
+        {
+            string key = GetUniqueId();
+            IEditableListItem<T> wrappedValue = new EditableListItem<T>(key, item);
+            m_wrappedItems.Add(key, wrappedValue);
+            m_wrappedItemLookup.Add(item, wrappedValue);
+
+            if (Added != null) Added(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = wrappedValue, Source = source });
         }
 
         private string GetUniqueId()
         {
             m_nextId++;
             return "k" + m_nextId.ToString();
+        }
+
+        public void Remove(IEditableListItem<T> item)
+        {
+            m_source.Remove(item.Value, UpdateSource.User);
+        }
+
+        private void RemoveWrappedItem(IEditableListItem<T> item, EditorUpdateSource source)
+        {
+            m_wrappedItems.Remove(item.Key);
+            m_wrappedItemLookup.Remove(item.Value);
+            if (Removed != null) Removed(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = item, Source = source });
+        }
+
+        void m_source_Added(object sender, QuestListUpdatedEventArgs<T> e)
+        {
+            AddWrappedItem(e.UpdatedItem, (EditorUpdateSource)e.Source);
+        }
+
+        void m_source_Removed(object sender, QuestListUpdatedEventArgs<T> e)
+        {
+            RemoveWrappedItem(m_wrappedItemLookup[e.UpdatedItem], (EditorUpdateSource)e.Source);
         }
     }
 }

@@ -20,6 +20,12 @@ namespace AxeSoftware.Quest
         Waiting
     }
 
+    public enum UpdateSource
+    {
+        System,
+        User
+    }
+
     public class WorldModel : IASL, IASLDebug
     {
         private Element m_game;

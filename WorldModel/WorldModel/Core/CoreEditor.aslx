@@ -59,6 +59,7 @@
         <caption>Other names</caption>
         <controltype>list</controltype>
         <attribute>alt</attribute>
+        <editprompt>Please enter an additional name for this object</editprompt>
       </control>
 
       <control>

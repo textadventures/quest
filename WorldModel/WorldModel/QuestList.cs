@@ -9,13 +9,24 @@ namespace AxeSoftware.Quest
     public interface IQuestList
     {
         void Add(object item);
+        void Add(object item, UpdateSource source);
         bool Remove(object item);
+        bool Remove(object item, UpdateSource source);
         bool Contains(object item);
         object this[int index] { get; }
     }
 
+    public class QuestListUpdatedEventArgs<T> : EventArgs
+    {
+        public T UpdatedItem { get; set; }
+        public UpdateSource Source { get; set; }
+    }
+
     public class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollection
     {
+        public event EventHandler<QuestListUpdatedEventArgs<T>> Added;
+        public event EventHandler<QuestListUpdatedEventArgs<T>> Removed;
+
         private List<T> m_list;
 
         public QuestList()
@@ -57,16 +68,25 @@ namespace AxeSoftware.Quest
 
         public void Add(object item)
         {
-            CheckNotLocked();
-            m_list.Add((T)item);
-            UndoLogAdd(item);
+            Add((T)item);
+        }
+
+        public void Add(object item, UpdateSource source)
+        {
+            Add((T)item, source);
         }
 
         public void Add(T item)
         {
+            Add(item, UpdateSource.System);
+        }
+
+        public void Add(T item, UpdateSource source)
+        {
             CheckNotLocked();
             m_list.Add(item);
             UndoLogAdd(item);
+            NotifyAdd(item, source);
         }
 
         public void AddRange(IEnumerable<T> collection)
@@ -76,21 +96,32 @@ namespace AxeSoftware.Quest
             foreach (T item in collection)
             {
                 UndoLogAdd(item);
+                NotifyAdd(item, UpdateSource.System);
             }
         }
 
         public bool Remove(T item)
         {
+            return Remove(item, UpdateSource.System);
+        }
+
+        public bool Remove(T item, UpdateSource source)
+        {
             CheckNotLocked();
             UndoLogRemove(item);
-            return m_list.Remove(item);
+            bool ret = m_list.Remove(item);
+            NotifyRemove(item, source);
+            return ret;
         }
 
         public bool Remove(object item)
         {
-            CheckNotLocked();
-            UndoLogRemove(item);
-            return m_list.Remove((T)item);
+            return Remove((T)item);
+        }
+
+        public bool Remove(object item, UpdateSource source)
+        {
+            return Remove((T)item, source);
         }
 
         public bool Contains(object item)
@@ -116,6 +147,22 @@ namespace AxeSoftware.Quest
             if (UndoLog != null)
             {
                 UndoLog.AddUndoAction(new UndoListRemove(this, item));
+            }
+        }
+
+        private void NotifyAdd(T item, UpdateSource source)
+        {
+            if (Added != null)
+            {
+                Added(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Source = source });
+            }
+        }
+
+        private void NotifyRemove(T item, UpdateSource source)
+        {
+            if (Removed != null)
+            {
+                Removed(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Source = source });
             }
         }
 
@@ -312,12 +359,12 @@ namespace AxeSoftware.Quest
 
             public void DoUndo(WorldModel worldModel)
             {
-                m_appliesTo.Remove(m_addedItem);
+                m_appliesTo.Remove(m_addedItem, UpdateSource.System);
             }
 
             public void DoRedo(WorldModel worldModel)
             {
-                m_appliesTo.Add(m_addedItem);
+                m_appliesTo.Add(m_addedItem, UpdateSource.System);
             }
 
             #endregion
@@ -338,12 +385,12 @@ namespace AxeSoftware.Quest
 
             public void DoUndo(WorldModel worldModel)
             {
-                m_appliesTo.Add(m_removedItem);
+                m_appliesTo.Add(m_removedItem, UpdateSource.System);
             }
 
             public void DoRedo(WorldModel worldModel)
             {
-                m_appliesTo.Remove(m_removedItem);
+                m_appliesTo.Remove(m_removedItem, UpdateSource.System);
             }
 
             #endregion

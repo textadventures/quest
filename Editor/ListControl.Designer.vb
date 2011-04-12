@@ -26,12 +26,14 @@ Partial Class ListControl
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
         Me.cmdAdd = New System.Windows.Forms.ToolStripButton()
         Me.lstList = New System.Windows.Forms.ListView()
+        Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
+        Me.cmdEdit = New System.Windows.Forms.ToolStripButton()
         Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlToolStrip
         '
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.cmdEdit, Me.cmdDelete})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
         Me.ctlToolStrip.Size = New System.Drawing.Size(474, 25)
@@ -50,12 +52,31 @@ Partial Class ListControl
         'lstList
         '
         Me.lstList.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lstList.HideSelection = False
         Me.lstList.Location = New System.Drawing.Point(0, 25)
         Me.lstList.Name = "lstList"
         Me.lstList.Size = New System.Drawing.Size(474, 80)
         Me.lstList.TabIndex = 1
         Me.lstList.UseCompatibleStateImageBehavior = False
         Me.lstList.View = System.Windows.Forms.View.Details
+        '
+        'cmdDelete
+        '
+        Me.cmdDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.cmdDelete.Image = CType(resources.GetObject("cmdDelete.Image"), System.Drawing.Image)
+        Me.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdDelete.Name = "cmdDelete"
+        Me.cmdDelete.Size = New System.Drawing.Size(44, 22)
+        Me.cmdDelete.Text = "Delete"
+        '
+        'cmdEdit
+        '
+        Me.cmdEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.cmdEdit.Image = CType(resources.GetObject("cmdEdit.Image"), System.Drawing.Image)
+        Me.cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdEdit.Name = "cmdEdit"
+        Me.cmdEdit.Size = New System.Drawing.Size(31, 22)
+        Me.cmdEdit.Text = "Edit"
         '
         'ListControl
         '
@@ -74,5 +95,7 @@ Partial Class ListControl
     Friend WithEvents ctlToolStrip As System.Windows.Forms.ToolStrip
     Friend WithEvents cmdAdd As System.Windows.Forms.ToolStripButton
     Friend WithEvents lstList As System.Windows.Forms.ListView
+    Friend WithEvents cmdDelete As System.Windows.Forms.ToolStripButton
+    Friend WithEvents cmdEdit As System.Windows.Forms.ToolStripButton
 
 End Class

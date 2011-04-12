@@ -6,6 +6,14 @@ using AxeSoftware.Quest.Scripts;
 
 namespace AxeSoftware.Quest
 {
+    public enum EditorUpdateSource
+    {
+        // These enum values should match those in WorldModel's UpdateSource enum. We don't want
+        // to use the same enum here as the Editor component shouldn't access WorldModel directly.
+        System,
+        User
+    }
+
     public class EditorController : IDisposable
     {
         private const string k_commands = "_gameCommands";

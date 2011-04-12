@@ -261,6 +261,7 @@ namespace AxeSoftware.Quest
                 {
                     if (mutableNewValue.RequiresCloning) value = mutableNewValue.Clone();
                     ((IMutableField)value).Locked = m_mutableFieldsLocked;
+                    ((IMutableField)value).UndoLog = m_worldModel.UndoLogger;
                 }
             }
 

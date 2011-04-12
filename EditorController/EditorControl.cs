@@ -12,17 +12,17 @@ namespace AxeSoftware.Quest
         private int? m_height = null;
         private string m_attribute;
         private bool m_expand = false;
+        private Element m_source;
 
         public EditorControl(Element source)
         {
+            m_source = source;
             m_controlType = source.Fields.GetString("controltype");
             m_caption = source.Fields.GetString("caption");
             m_attribute = source.Fields.GetString("attribute");
             if (source.Fields.HasType<int>("height")) m_height = source.Fields.GetAsType<int>("height");
             if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");
         }
-
-        #region IEditorControl Members
 
         public string ControlType
         {
@@ -49,6 +49,9 @@ namespace AxeSoftware.Quest
             get { return m_expand; }
         }
 
-        #endregion
+        public string GetString(string tag)
+        {
+            return m_source.Fields.GetString(tag);
+        }
     }
 }
