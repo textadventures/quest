@@ -29,40 +29,45 @@
     End Property
 
     Public Sub ShowEditor(script As IEditableScript)
-        Dim newEditor As Control
-        Dim newEditorKey As String = script.EditorName
+        Dim newEditor As Control = Nothing
+        Dim newEditorKey As String = If(script Is Nothing, String.Empty, script.EditorName)
 
-        If script.Type = ScriptType.If Then
-            If m_ifEditor Is Nothing Then
-                m_ifEditor = New IfEditor
-                m_ifEditor.Controller = m_controller
+        If script IsNot Nothing Then
+            If script.Type = ScriptType.If Then
+                If m_ifEditor Is Nothing Then
+                    m_ifEditor = New IfEditor
+                    m_ifEditor.Controller = m_controller
+                End If
+
+                newEditor = m_ifEditor
+                m_ifEditor.Populate(DirectCast(script, EditableIfScript))
+            Else
+                If m_elemEditor Is Nothing Then
+                    m_elemEditor = New ElementEditor
+                    m_elemEditor.Controller = m_controller
+                End If
+
+                newEditor = m_elemEditor
+                m_elemEditor.Initialise(m_controller, m_controller.GetEditorDefinition(script.EditorName))
+                m_elemEditor.Populate(m_controller.GetScriptEditorData(script))
             End If
-
-            newEditor = m_ifEditor
-            m_ifEditor.Populate(DirectCast(script, EditableIfScript))
-        Else
-            If m_elemEditor Is Nothing Then
-                m_elemEditor = New ElementEditor
-                m_elemEditor.Controller = m_controller
-            End If
-
-            newEditor = m_elemEditor
-            m_elemEditor.Initialise(m_controller, m_controller.GetEditorDefinition(script.EditorName))
-            m_elemEditor.Populate(m_controller.GetScriptEditorData(script))
         End If
 
         Dim newCommandEditor As ICommandEditor = DirectCast(newEditor, ICommandEditor)
 
-        newEditor.Parent = Me
-        newEditor.Dock = DockStyle.Fill
-        ' Send pnlButtons to the back when in pop-out mode so that the docking works correctly,
-        ' and pnlButtons doesn't obsure the bottom of newEditor.
-        If pnlButtons.Visible Then pnlButtons.SendToBack()
+        If newEditor IsNot Nothing Then
+            newEditor.Parent = Me
+            newEditor.Dock = DockStyle.Fill
 
-        If newEditor IsNot m_currentEditor Then
-            newEditor.Visible = True
-            If m_currentEditor IsNot Nothing Then
-                DirectCast(m_currentEditor, Control).Visible = False
+            ' Send pnlButtons to the back when in pop-out mode so that the docking works correctly,
+            ' and pnlButtons doesn't obsure the bottom of newEditor.
+            If pnlButtons.Visible Then pnlButtons.SendToBack()
+
+            If newEditor IsNot m_currentEditor Then
+                newEditor.Visible = True
+                If m_currentEditor IsNot Nothing Then
+                    DirectCast(m_currentEditor, Control).Visible = False
+                End If
             End If
         End If
 

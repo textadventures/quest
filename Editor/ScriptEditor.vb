@@ -111,6 +111,7 @@
         If showAdder Then
             SetEditButtonsEnabled(False)
             m_currentScript = Nothing
+            ctlScriptCommandEditor.ShowEditor(Nothing)
         Else
             SetEditButtonsEnabled(True)
             If m_currentScript IsNot m_scripts(index) Then
