@@ -80,5 +80,10 @@ namespace AxeSoftware.Quest
                 Updated(this, e);
             }
         }
+
+        protected void RaiseUpdateForNestedScriptChange(EditableScriptsUpdatedEventArgs e)
+        {
+            RaiseUpdated(new EditableScriptUpdatedEventArgs(-1, string.Empty));
+        }
     }
 }

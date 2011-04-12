@@ -100,19 +100,19 @@ namespace AxeSoftware.Quest
             }
 
             m_thenScript = EditableScripts.GetInstance(m_controller, m_ifScript.ThenScript);
-            m_thenScript.Updated += m_thenScript_Updated;
+            m_thenScript.Updated += nestedScript_Updated;
 
             foreach (var elseIfScript in m_ifScript.ElseIfScripts)
             {
                 EditableElseIf newEditableElseIf = new EditableElseIf(elseIfScript, this);
                 m_elseIfScripts.Add(elseIfScript.Script, newEditableElseIf);
-                newEditableElseIf.EditableScripts.Updated += ElseIfUpdated;
+                newEditableElseIf.EditableScripts.Updated += nestedScript_Updated;
             }
 
             if (m_ifScript.ElseScript != null)
             {
                 m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript);
-                m_elseScript.Updated += m_elseScript_Updated;
+                m_elseScript.Updated += nestedScript_Updated;
             }
         }
 
@@ -122,17 +122,17 @@ namespace AxeSoftware.Quest
             {
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
                     m_elseScript = EditableScripts.GetInstance(m_controller, m_ifScript.ElseScript);
-                    m_elseScript.Updated += m_elseScript_Updated;
+                    m_elseScript.Updated += nestedScript_Updated;
                     if (AddedElse != null) AddedElse(this, new EventArgs());
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElse:
-                    m_elseScript.Updated -= m_elseScript_Updated;
+                    m_elseScript.Updated -= nestedScript_Updated;
                     m_elseScript = null;
                     if (RemovedElse != null) RemovedElse(this, new EventArgs());
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
                     EditableScripts editableNewScript = EditableScripts.GetInstance(m_controller, e.Data.Script);
-                    editableNewScript.Updated += ElseIfUpdated;
+                    editableNewScript.Updated += nestedScript_Updated;
 
                     // Wrap the newly created elseif in an EditableElseIf and add it to our internal dictionary
                     EditableElseIf newEditableElseIf = new EditableElseIf(e.Data, this);
@@ -145,7 +145,7 @@ namespace AxeSoftware.Quest
                     }
                     break;
                 case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
-                    EditableScripts.GetInstance(m_controller, e.Data.Script).Updated -= ElseIfUpdated;
+                    EditableScripts.GetInstance(m_controller, e.Data.Script).Updated -= nestedScript_Updated;
                     if (RemovedElseIf != null) RemovedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
                     m_elseIfScripts.Remove(e.Data.Script);
                     break;
@@ -156,27 +156,10 @@ namespace AxeSoftware.Quest
             RaiseUpdated(new EditableScriptUpdatedEventArgs(DisplayString()));
         }
 
-        // TO DO: FIX *************************************************************************************************************
-
-        // This looks a bit odd - why is the index always 1? Because actually it doesn't matter
-        // if the changed script is not the currently selected script, the Script Editor will always update the entire
-        // list with fresh calls to DisplayString, so it doesn't actually matter what updated event args we populate here.
-
-        void m_thenScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
+        void nestedScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
         {
-            RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
+            RaiseUpdateForNestedScriptChange(e);
         }
-
-        void m_elseScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
-        {
-            RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
-        }
-
-        void ElseIfUpdated(object sender, EditableScriptsUpdatedEventArgs e)
-        {
-            RaiseUpdated(new EditableScriptUpdatedEventArgs(1, e.UpdatedScript == null ? "" : e.UpdatedScript.DisplayString()));
-        }
-        // ************************************************************************************************************************
 
         public override string DisplayString(int index, string newValue)
         {

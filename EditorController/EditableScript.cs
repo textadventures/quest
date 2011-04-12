@@ -12,6 +12,7 @@ namespace AxeSoftware.Quest
         private string m_displayTemplate = null;
         private static Regex s_regex = new Regex("#(?<attribute>\\d+)");
         private EditorController m_controller;
+        private List<EditableScripts> m_watchedNestedScripts = new List<EditableScripts>();
 
         internal EditableScript(EditorController controller, IScript script, UndoLogger undoLogger)
             : base(script, undoLogger)
@@ -57,6 +58,7 @@ namespace AxeSoftware.Quest
                     else if (scriptValue != null)
                     {
                         EditableScripts editableScripts = EditableScripts.GetInstance(m_controller, scriptValue);
+                        RegisterNestedScriptForUpdates(editableScripts);
                         attributeValue = (editableScripts.Count == 0) ? "(nothing)" : editableScripts.DisplayString();
                     }
                     else if (value == null)
@@ -74,6 +76,20 @@ namespace AxeSoftware.Quest
             }
 
             return result;
+        }
+
+        private void RegisterNestedScriptForUpdates(EditableScripts script)
+        {
+            if (!m_watchedNestedScripts.Contains(script))
+            {
+                script.Updated += nestedScript_Updated;
+                m_watchedNestedScripts.Add(script);
+            }
+        }
+
+        void nestedScript_Updated(object sender, EditableScriptsUpdatedEventArgs e)
+        {
+            RaiseUpdateForNestedScriptChange(e);
         }
 
         public override string EditorName
