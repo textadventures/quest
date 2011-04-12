@@ -11,20 +11,21 @@ namespace AxeSoftware.Quest
         private List<IEditableScript> m_scripts;
         private EditorController m_controller;
         private MultiScript m_underlyingScript;
-
-        private static Dictionary<IScript, EditableScripts> s_instances = new Dictionary<IScript, EditableScripts>();
+        private static EditableDataWrapper<IScript, EditableScripts> s_wrapper;
+        
+        static EditableScripts()
+        {
+            s_wrapper = new EditableDataWrapper<IScript, EditableScripts>(GetNewInstance);
+        }
 
         public static EditableScripts GetInstance(EditorController controller, IScript script)
         {
-            EditableScripts instance;
-            if (s_instances.TryGetValue(script, out instance))
-            {
-                return instance;
-            }
+            return s_wrapper.GetInstance(controller, script);
+        }
 
-            instance = new EditableScripts(controller, script);
-            s_instances.Add(script, instance);
-            return instance;
+        private static EditableScripts GetNewInstance(EditorController controller, IScript script)
+        {
+            return new EditableScripts(controller, script);
         }
 
         private EditableScripts(EditorController controller)

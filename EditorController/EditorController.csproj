@@ -70,7 +70,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditableDataWrapper.cs" />
     <Compile Include="EditableIfScript.cs" />
+    <Compile Include="EditableList.cs" />
+    <Compile Include="EditableListItem.cs" />
     <Compile Include="EditableScript.cs" />
     <Compile Include="EditableScriptBase.cs" />
     <Compile Include="EditableScriptFactory.cs" />
@@ -82,6 +85,7 @@
     <Compile Include="EditorTab.cs" />
     <Compile Include="FilterOptions.cs" />
     <Compile Include="IDataWrapper.cs" />
+    <Compile Include="IEditableList.cs" />
     <Compile Include="IEditableScript.cs" />
     <Compile Include="IEditableScripts.cs" />
     <Compile Include="IEditorControl.cs" />

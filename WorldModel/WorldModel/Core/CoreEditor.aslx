@@ -56,6 +56,12 @@
       </control>
 
       <control>
+        <caption>Other names</caption>
+        <controltype>list</controltype>
+        <attribute>alt</attribute>
+      </control>
+
+      <control>
         <caption>Prefix</caption>
         <controltype>textbox</controltype>
         <attribute>prefix</attribute>

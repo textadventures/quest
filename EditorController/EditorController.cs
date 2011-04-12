@@ -356,6 +356,11 @@ namespace AxeSoftware.Quest
                 return EditableScripts.GetInstance(this, (IScript)value);
             }
 
+            if (value is QuestList<string>)
+            {
+                return EditableList<string>.GetInstance(this, (QuestList<string>)value);
+            }
+
             return value;
         }
 
