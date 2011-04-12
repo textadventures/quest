@@ -9,9 +9,6 @@ namespace AxeSoftware.Quest
 {
     public class EditableScript : EditableScriptBase, IEditableScript
     {
-        // TO DO: Adding and removing multiscripts needs to come through here, this
-        // should wrap everything to do with editing scripts.
-
         private string m_displayTemplate = null;
         private static Regex s_regex = new Regex("#(?<attribute>\\d+)");
         private EditorController m_controller;

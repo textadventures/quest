@@ -117,14 +117,6 @@ namespace AxeSoftware.Quest.Scripts
             return result;
         }
 
-        public override string Keyword
-        {
-            get
-            {
-                return "=";
-            }
-        }
-
         public override object GetParameter(int index)
         {
             switch (index)
@@ -132,7 +124,7 @@ namespace AxeSoftware.Quest.Scripts
                 case 0:
                     return m_appliesTo == null ? m_property : m_appliesTo.Save() + "." + m_property;
                 case 1:
-                    return GetSaveString();
+                    return GetValue();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -158,6 +150,7 @@ namespace AxeSoftware.Quest.Scripts
         protected abstract object GetResult(Context c);
         protected abstract string GetEqualsString { get; }
         protected abstract string GetSaveString();
+        protected abstract object GetValue();
         protected abstract void SetValue(string newValue);
         protected WorldModel WorldModel { get { return m_worldModel; } }
     }
@@ -191,6 +184,13 @@ namespace AxeSoftware.Quest.Scripts
         {
             m_expr = new Expression<object>(newValue, WorldModel);
         }
+
+        public override string Keyword { get { return "="; } }
+
+        protected override object GetValue()
+        {
+            return m_expr.Save();
+        }
     }
 
     public class SetScriptScript : SetScriptBase
@@ -223,6 +223,13 @@ namespace AxeSoftware.Quest.Scripts
         protected override void SetValue(string newValue)
         {
             m_script = m_scriptFactory.CreateScript(newValue);
+        }
+
+        public override string Keyword { get { return "=>"; } }
+
+        protected override object GetValue()
+        {
+            return m_script;
         }
     }
 }
