@@ -31,6 +31,8 @@
     Public Sub ShowEditor(script As IEditableScript)
         Dim newEditor As Control = Nothing
         Dim newEditorKey As String = If(script Is Nothing, String.Empty, script.EditorName)
+        Dim resetIfEditor As Boolean = True
+        Dim resetElemEditor As Boolean = True
 
         If script IsNot Nothing Then
             If script.Type = ScriptType.If Then
@@ -41,6 +43,7 @@
 
                 newEditor = m_ifEditor
                 m_ifEditor.Populate(DirectCast(script, EditableIfScript))
+                resetIfEditor = False
             Else
                 If m_elemEditor Is Nothing Then
                     m_elemEditor = New ElementEditor
@@ -50,7 +53,18 @@
                 newEditor = m_elemEditor
                 m_elemEditor.Initialise(m_controller, m_controller.GetEditorDefinition(script.EditorName))
                 m_elemEditor.Populate(m_controller.GetScriptEditorData(script))
+                resetElemEditor = False
             End If
+        End If
+
+        ' It is important to "depopulate" any unused editors as we don't want them responding to updates
+        ' to scripts that we're not editing if the user presses the undo button.
+        If resetIfEditor And m_ifEditor IsNot Nothing Then
+            m_ifEditor.Populate(Nothing)
+        End If
+
+        If resetElemEditor And m_elemEditor IsNot Nothing Then
+            m_elemEditor.Populate(Nothing)
         End If
 
         Dim newCommandEditor As ICommandEditor = DirectCast(newEditor, ICommandEditor)

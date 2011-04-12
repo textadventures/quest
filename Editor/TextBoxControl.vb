@@ -72,7 +72,12 @@ Public Class TextBoxControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_data = data
-        Value = data.GetAttribute(m_attribute)
+
+        If m_data Is Nothing Then
+            Value = String.Empty
+        Else
+            Value = data.GetAttribute(m_attribute)
+        End If
     End Sub
 
     Public Sub Initialise(controlData As IEditorControl) Implements IElementEditorControl.Initialise

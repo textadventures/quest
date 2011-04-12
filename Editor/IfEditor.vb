@@ -70,14 +70,16 @@
 
         m_data = data
         ' The expression is contained in the "expression" attribute of the data IEditorData
-        ctlChild.Populate(data, data.ThenScript)
+        ctlChild.Populate(data, If(data Is Nothing, Nothing, data.ThenScript))
 
-        For Each elseIfScript In data.ElseIfScripts
-            AddElseIfChildControl(elseIfScript)
-        Next
+        If Not data Is Nothing Then
+            For Each elseIfScript In data.ElseIfScripts
+                AddElseIfChildControl(elseIfScript)
+            Next
 
-        If Not data.ElseScript Is Nothing Then
-            AddElseChildControl()
+            If Not data.ElseScript Is Nothing Then
+                AddElseChildControl()
+            End If
         End If
         LayoutResume()
     End Sub

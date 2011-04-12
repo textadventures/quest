@@ -67,8 +67,13 @@ Public Class ScriptControl
     End Sub
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
-        ElementName = data.Name
-        Value = data.GetAttribute(AttributeName)
+        If data Is Nothing Then
+            ElementName = Nothing
+            Value = Nothing
+        Else
+            ElementName = data.Name
+            Value = data.GetAttribute(AttributeName)
+        End If
     End Sub
 
     Public Sub Populate(data As IEditableScripts)
