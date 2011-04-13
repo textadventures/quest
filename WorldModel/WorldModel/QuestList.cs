@@ -10,8 +10,9 @@ namespace AxeSoftware.Quest
     {
         void Add(object item);
         void Add(object item, UpdateSource source);
+        void Add(object item, UpdateSource source, int index);
         bool Remove(object item);
-        bool Remove(object item, UpdateSource source);
+        bool Remove(object item, UpdateSource source, int index);
         bool Contains(object item);
         object this[int index] { get; }
     }
@@ -19,6 +20,7 @@ namespace AxeSoftware.Quest
     public class QuestListUpdatedEventArgs<T> : EventArgs
     {
         public T UpdatedItem { get; set; }
+        public int Index { get; set; }
         public UpdateSource Source { get; set; }
     }
 
@@ -68,60 +70,84 @@ namespace AxeSoftware.Quest
 
         public void Add(object item)
         {
-            Add((T)item);
+            AddInternal((T)item, UpdateSource.System);
         }
 
         public void Add(object item, UpdateSource source)
         {
-            Add((T)item, source);
+            AddInternal((T)item, source);
+        }
+
+        public void Add(object item, UpdateSource source, int index)
+        {
+            AddInternal((T)item, source, index);
         }
 
         public void Add(T item)
         {
-            Add(item, UpdateSource.System);
+            AddInternal(item, UpdateSource.System);
         }
 
-        public void Add(T item, UpdateSource source)
+        private void AddInternal(T item, UpdateSource source, int? index = null)
         {
             CheckNotLocked();
-            m_list.Add(item);
-            UndoLogAdd(item);
-            NotifyAdd(item, source);
+            if (index == null)
+            {
+                m_list.Add(item);
+                index = m_list.Count - 1;
+            }
+            else
+            {
+                m_list.Insert(index.Value, item);
+            }
+            UndoLogAdd(item, index.Value);
+            NotifyAdd(item, source, index.Value);
         }
 
         public void AddRange(IEnumerable<T> collection)
         {
             CheckNotLocked();
+
+            // initial index of the added items, to be passed to the UndoLogger
+            int index = m_list.Count;
+
             m_list.AddRange(collection);
             foreach (T item in collection)
             {
-                UndoLogAdd(item);
-                NotifyAdd(item, UpdateSource.System);
+                UndoLogAdd(item, index);
+                NotifyAdd(item, UpdateSource.System, index);
+                index++;
             }
         }
 
         public bool Remove(T item)
         {
-            return Remove(item, UpdateSource.System);
+            return RemoveInternal(item);
         }
 
-        public bool Remove(T item, UpdateSource source)
+        private bool RemoveInternal(T item)
+        {
+            int index = m_list.IndexOf(item);
+            return RemoveInternal(item, UpdateSource.System, index);
+        }
+
+        private bool RemoveInternal(T item, UpdateSource source, int index)
         {
             CheckNotLocked();
-            UndoLogRemove(item);
+            UndoLogRemove(item, index);
             bool ret = m_list.Remove(item);
-            NotifyRemove(item, source);
+            NotifyRemove(item, source, index);
             return ret;
         }
 
         public bool Remove(object item)
         {
-            return Remove((T)item);
+            return RemoveInternal((T)item);
         }
 
-        public bool Remove(object item, UpdateSource source)
+        public bool Remove(object item, UpdateSource source, int index)
         {
-            return Remove((T)item, source);
+            return RemoveInternal((T)item, source, index);
         }
 
         public bool Contains(object item)
@@ -134,35 +160,35 @@ namespace AxeSoftware.Quest
             get { return m_list[index]; }
         }
 
-        private void UndoLogAdd(object item)
+        private void UndoLogAdd(object item, int index)
         {
             if (UndoLog != null)
             {
-                UndoLog.AddUndoAction(new UndoListAdd(this, item));
+                UndoLog.AddUndoAction(new UndoListAdd(this, item, index));
             }
         }
 
-        private void UndoLogRemove(object item)
+        private void UndoLogRemove(object item, int index)
         {
             if (UndoLog != null)
             {
-                UndoLog.AddUndoAction(new UndoListRemove(this, item));
+                UndoLog.AddUndoAction(new UndoListRemove(this, item, index));
             }
         }
 
-        private void NotifyAdd(T item, UpdateSource source)
+        private void NotifyAdd(T item, UpdateSource source, int index)
         {
             if (Added != null)
             {
-                Added(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Source = source });
+                Added(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
             }
         }
 
-        private void NotifyRemove(T item, UpdateSource source)
+        private void NotifyRemove(T item, UpdateSource source, int index)
         {
             if (Removed != null)
             {
-                Removed(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Source = source });
+                Removed(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
             }
         }
 
@@ -348,23 +374,25 @@ namespace AxeSoftware.Quest
         {
             private IQuestList m_appliesTo;
             private object m_addedItem;
+            private int m_index;
 
-            public UndoListAdd(IQuestList appliesTo, object addedItem)
+            public UndoListAdd(IQuestList appliesTo, object addedItem, int index)
             {
                 m_appliesTo = appliesTo;
                 m_addedItem = addedItem;
+                m_index = index;
             }
 
             #region IUndoAction Members
 
             public void DoUndo(WorldModel worldModel)
             {
-                m_appliesTo.Remove(m_addedItem, UpdateSource.System);
+                m_appliesTo.Remove(m_addedItem, UpdateSource.System, m_index);
             }
 
             public void DoRedo(WorldModel worldModel)
             {
-                m_appliesTo.Add(m_addedItem, UpdateSource.System);
+                m_appliesTo.Add(m_addedItem, UpdateSource.System, m_index);
             }
 
             #endregion
@@ -374,23 +402,25 @@ namespace AxeSoftware.Quest
         {
             private IQuestList m_appliesTo;
             private object m_removedItem;
+            private int m_index;
 
-            public UndoListRemove(IQuestList appliesTo, object removedItem)
+            public UndoListRemove(IQuestList appliesTo, object removedItem, int index)
             {
                 m_appliesTo = appliesTo;
                 m_removedItem = removedItem;
+                m_index = index;
             }
 
             #region IUndoAction Members
 
             public void DoUndo(WorldModel worldModel)
             {
-                m_appliesTo.Add(m_removedItem, UpdateSource.System);
+                m_appliesTo.Add(m_removedItem, UpdateSource.System, m_index);
             }
 
             public void DoRedo(WorldModel worldModel)
             {
-                m_appliesTo.Remove(m_removedItem, UpdateSource.System);
+                m_appliesTo.Remove(m_removedItem, UpdateSource.System, m_index);
             }
 
             #endregion

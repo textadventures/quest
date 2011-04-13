@@ -53,10 +53,12 @@ namespace AxeSoftware.Quest
         private void PopulateWrappedItems()
         {
             m_wrappedItems.Clear();
+            int index = 0;
 
             foreach (var item in m_source)
             {
-                AddWrappedItem(item, EditorUpdateSource.System);
+                AddWrappedItem(item, EditorUpdateSource.System, index);
+                index++;
             }
         }
 
@@ -78,14 +80,14 @@ namespace AxeSoftware.Quest
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
-        private void AddWrappedItem(T item, EditorUpdateSource source)
+        private void AddWrappedItem(T item, EditorUpdateSource source, int index)
         {
             string key = GetUniqueId();
             IEditableListItem<T> wrappedValue = new EditableListItem<T>(key, item);
             m_wrappedItems.Add(key, wrappedValue);
             m_wrappedItemLookup.Add(item, wrappedValue);
 
-            if (Added != null) Added(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = wrappedValue, Source = source });
+            if (Added != null) Added(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = wrappedValue, Index = index, Source = source });
         }
 
         private string GetUniqueId()
@@ -110,26 +112,26 @@ namespace AxeSoftware.Quest
             m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
             foreach (T item in items)
             {
-                m_source.Remove(item, UpdateSource.User);
+                m_source.Remove(item, UpdateSource.User, m_source.IndexOf(item));
             }
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
-        private void RemoveWrappedItem(IEditableListItem<T> item, EditorUpdateSource source)
+        private void RemoveWrappedItem(IEditableListItem<T> item, EditorUpdateSource source, int index)
         {
             m_wrappedItems.Remove(item.Key);
             m_wrappedItemLookup.Remove(item.Value);
-            if (Removed != null) Removed(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = item, Source = source });
+            if (Removed != null) Removed(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
         }
 
         void m_source_Added(object sender, QuestListUpdatedEventArgs<T> e)
         {
-            AddWrappedItem(e.UpdatedItem, (EditorUpdateSource)e.Source);
+            AddWrappedItem(e.UpdatedItem, (EditorUpdateSource)e.Source, e.Index);
         }
 
         void m_source_Removed(object sender, QuestListUpdatedEventArgs<T> e)
         {
-            RemoveWrappedItem(m_wrappedItemLookup[e.UpdatedItem], (EditorUpdateSource)e.Source);
+            RemoveWrappedItem(m_wrappedItemLookup[e.UpdatedItem], (EditorUpdateSource)e.Source, e.Index);
         }
     }
 }

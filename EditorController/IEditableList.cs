@@ -7,8 +7,9 @@ namespace AxeSoftware.Quest
 {
     public class EditableListUpdatedEventArgs<T> : EventArgs
     {
-        public IEditableListItem<T> UpdatedItem;
-        public EditorUpdateSource Source;
+        public IEditableListItem<T> UpdatedItem { get; set; }
+        public int Index { get; set; }
+        public EditorUpdateSource Source { get; set; }
     }
 
     public interface IEditableList<T>

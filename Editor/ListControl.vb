@@ -68,20 +68,22 @@ Public Class ListControl
         lstList.Columns.Add(mainColumn)
         mainColumn.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize)
         lstList.HeaderStyle = ColumnHeaderStyle.None
+        Dim index As Integer = 0
 
         If m_list IsNot Nothing Then
             For Each item In m_list.Items
-                AddListItem(item.Value)
+                AddListItem(item.Value, index)
+                index += 1
             Next
         End If
     End Sub
 
-    Private Sub AddListItem(item As IEditableListItem(Of String))
-        Dim newListViewItem As ListViewItem = lstList.Items.Add(item.Value)
+    Private Sub AddListItem(item As IEditableListItem(Of String), index As Integer)
+        Dim newListViewItem As ListViewItem = lstList.Items.Insert(index, item.Value)
         m_listItems.Add(item.Key, newListViewItem)
     End Sub
 
-    Private Sub RemoveListItem(item As IEditableListItem(Of String))
+    Private Sub RemoveListItem(item As IEditableListItem(Of String), index As Integer)
         lstList.Items.Remove(m_listItems(item.Key))
         m_listItems.Remove(item.Key)
     End Sub
@@ -127,7 +129,7 @@ Public Class ListControl
     End Function
 
     Private Sub m_list_Added(sender As Object, e As EditableListUpdatedEventArgs(Of String)) Handles m_list.Added
-        AddListItem(e.UpdatedItem)
+        AddListItem(e.UpdatedItem, e.Index)
 
         If (e.Source = EditorUpdateSource.User) Then
             lstList.SelectedItems.Clear()
@@ -139,7 +141,7 @@ Public Class ListControl
     End Sub
 
     Private Sub m_list_Removed(sender As Object, e As EditableListUpdatedEventArgs(Of String)) Handles m_list.Removed
-        RemoveListItem(e.UpdatedItem)
+        RemoveListItem(e.UpdatedItem, e.Index)
     End Sub
 
     Private Sub m_list_Updated(sender As Object, e As EditableListUpdatedEventArgs(Of String)) Handles m_list.Updated
