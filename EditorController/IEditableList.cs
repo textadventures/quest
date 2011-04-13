@@ -19,6 +19,7 @@ namespace AxeSoftware.Quest
 
         IDictionary<string, IEditableListItem<T>> Items { get; }
         void Add(T item);
+        void Remove(params T[] items);
     }
 
     public interface IEditableListItem<T>

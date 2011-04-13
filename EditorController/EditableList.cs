@@ -94,9 +94,25 @@ namespace AxeSoftware.Quest
             return "k" + m_nextId.ToString();
         }
 
-        public void Remove(IEditableListItem<T> item)
+        public void Remove(params T[] items)
         {
-            m_source.Remove(item.Value, UpdateSource.User);
+            string undoEntry = null;
+            if (typeof(T) == typeof(string))
+            {
+                undoEntry = string.Format("Remove '{0}'", string.Join(",", items));
+            }
+
+            if (undoEntry == null)
+            {
+                throw new InvalidOperationException("Unknown list type");
+            }
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+            foreach (T item in items)
+            {
+                m_source.Remove(item, UpdateSource.User);
+            }
+            m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
         private void RemoveWrappedItem(IEditableListItem<T> item, EditorUpdateSource source)

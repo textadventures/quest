@@ -101,6 +101,18 @@ Public Class ListControl
         m_list.Add(result.Result)
     End Sub
 
+    Private Sub cmdDelete_Click(sender As Object, e As System.EventArgs) Handles cmdDelete.Click
+        m_list.Remove(GetSelectedItems().ToArray)
+    End Sub
+
+    Private Function GetSelectedItems() As List(Of String)
+        Dim result As New List(Of String)
+        For Each item As ListViewItem In lstList.SelectedItems
+            result.Add(item.Text)
+        Next
+        Return result
+    End Function
+
     Private Structure EditItemResult
         Public Cancelled As Boolean
         Public Result As String
