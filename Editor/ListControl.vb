@@ -34,7 +34,7 @@ Public Class ListControl
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
 
-    Public Sub Initialise(controlData As IEditorControl) Implements IElementEditorControl.Initialise
+    Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         m_controlData = controlData
         m_attributeName = controlData.Attribute
     End Sub
@@ -64,6 +64,7 @@ Public Class ListControl
 
     Private Sub UpdateList()
         lstList.Clear()
+        m_listItems.Clear()
         Dim mainColumn As New ColumnHeader
         lstList.Columns.Add(mainColumn)
         mainColumn.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize)

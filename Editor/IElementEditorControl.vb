@@ -37,7 +37,7 @@ Public Interface IElementEditorControl
     ReadOnly Property Control() As Control
     Property Value() As Object
     Property Controller() As EditorController
-    Sub Initialise(controlData As IEditorControl)
+    Sub Initialise(controller As EditorController, controlData As IEditorControl)
     ReadOnly Property AttributeName() As String
     Sub Populate(data As IEditorData)
     Sub Save(data As IEditorData)

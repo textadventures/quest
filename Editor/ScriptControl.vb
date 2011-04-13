@@ -80,7 +80,7 @@ Public Class ScriptControl
         Value = data
     End Sub
 
-    Public Sub Initialise(controlData As IEditorControl) Implements IElementEditorControl.Initialise
+    Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         If Not controlData Is Nothing Then
             ctlScriptEditor.AttributeName = controlData.Attribute
         End If

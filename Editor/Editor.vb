@@ -12,11 +12,21 @@
     Public Sub Initialise(ByRef filename As String)
         m_filename = filename
         m_controller = New EditorController()
+        InitialiseEditorControlsList()
         m_controller.Initialise(filename)
         ctlTree.SetAvailableFilters(m_controller.AvailableFilters)
         SetUpToolbar()
         SetUpEditors()
         RaiseEvent AddToRecent(filename, m_controller.GameName)
+    End Sub
+
+    Private Sub InitialiseEditorControlsList()
+        For Each t As Type In AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(), GetType(IElementEditorControl))
+            Dim controlType As ControlTypeAttribute = DirectCast(Attribute.GetCustomAttribute(t, GetType(ControlTypeAttribute)), ControlTypeAttribute)
+            If Not controlType Is Nothing Then
+                m_controller.AddControlType(controlType.ControlType, t)
+            End If
+        Next
     End Sub
 
     Public Sub SetMenu(menu As AxeSoftware.Quest.Controls.Menu)

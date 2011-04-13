@@ -45,7 +45,7 @@
             If Not value Is Nothing Then
                 ctlThenScript.Controller = value
                 ctlExpression.Controller = value
-                ctlThenScript.Initialise(Nothing)
+                ctlThenScript.Initialise(value, Nothing)
             End If
         End Set
     End Property

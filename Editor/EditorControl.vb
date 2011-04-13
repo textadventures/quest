@@ -12,17 +12,8 @@
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
 
-    Public Sub Initialise(controlData As IEditorControl) Implements IElementEditorControl.Initialise
-        Dim createType As Type = Nothing
-
-        For Each t As Type In AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(), GetType(IElementEditorControl))
-            Dim controlType As ControlTypeAttribute = DirectCast(Attribute.GetCustomAttribute(t, GetType(ControlTypeAttribute)), ControlTypeAttribute)
-            If Not controlType Is Nothing Then
-                If controlType.ControlType = controlData.ControlType Then
-                    createType = t
-                End If
-            End If
-        Next
+    Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
+        Dim createType As Type = controller.GetControlType(controlData.ControlType)
 
         If createType Is Nothing Then
             Throw New Exception(String.Format("Unable to create control of type '{0}'", controlData.ControlType))
@@ -36,7 +27,7 @@
         Me.Height = m_editorControl.Control.Height
 
         m_attribute = controlData.Attribute
-        m_editorControl.Initialise(controlData)
+        m_editorControl.Initialise(controller, controlData)
 
     End Sub
 

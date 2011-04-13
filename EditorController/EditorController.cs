@@ -27,6 +27,7 @@ namespace AxeSoftware.Quest
         private Dictionary<string, IEditorDefinition> m_editorDefinitions = new Dictionary<string, IEditorDefinition>();
         private Dictionary<ElementType, TreeHeader> m_elementTreeStructure;
         private bool m_initialised = false;
+        private Dictionary<string, Type> m_controlTypes = new Dictionary<string, Type>();
 
         public delegate void VoidHandler();
         public event VoidHandler ClearTree;
@@ -392,6 +393,18 @@ namespace AxeSoftware.Quest
         public void Dispose()
         {
             m_worldModel.FinishGame();
+        }
+
+        public void AddControlType(string name, Type type)
+        {
+            m_controlTypes.Add(name, type);
+        }
+
+        public Type GetControlType(string name)
+        {
+            Type controlType;
+            m_controlTypes.TryGetValue(name, out controlType);
+            return controlType;
         }
     }
 }

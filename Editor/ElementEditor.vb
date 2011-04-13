@@ -82,7 +82,7 @@
             m_controls.Add(newControl)
             newControl.Parent = Me
             newControl.Controller = m_controller
-            newControl.Initialise(editorControl)
+            newControl.Initialise(m_controller, editorControl)
             newControl.Caption = editorControl.Caption
             newControl.Control.Top = top
             newControl.Control.Width = Me.Width - k_padding

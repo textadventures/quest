@@ -80,7 +80,7 @@ Public Class TextBoxControl
         End If
     End Sub
 
-    Public Sub Initialise(controlData As IEditorControl) Implements IElementEditorControl.Initialise
+    Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         m_attribute = controlData.Attribute
         m_attributeName = controlData.Caption
     End Sub
