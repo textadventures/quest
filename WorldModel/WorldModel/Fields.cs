@@ -226,15 +226,15 @@ namespace AxeSoftware.Quest
 
         public void Set(string name, object value)
         {
-            Set(name, value, true);
+            Set(name, value, true, true);
         }
 
-        internal void SetSilent(string name, object value)
+        internal void SetFromUndo(string name, object value)
         {
-            Set(name, value, false);
+            Set(name, value, false, false);
         }
 
-        private void Set(string name, object value, bool raiseEvent)
+        private void Set(string name, object value, bool raiseEvent, bool cloneClonableValues)
         {
             bool changed = false;
             object oldValue = null;
@@ -249,7 +249,7 @@ namespace AxeSoftware.Quest
                 changed = !value.Equals(oldValue);
             }
 
-            if (changed)
+            if (changed && cloneClonableValues)
             {
                 IMutableField mutableOldValue = oldValue as IMutableField;
                 IMutableField mutableNewValue = value as IMutableField;
@@ -518,12 +518,12 @@ namespace AxeSoftware.Quest
 
         public void DoUndo(WorldModel worldModel)
         {
-            worldModel.Object(m_appliesTo).Fields.SetSilent(Property, OldValue);
+            worldModel.Object(m_appliesTo).Fields.SetFromUndo(Property, OldValue);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            worldModel.Object(m_appliesTo).Fields.SetSilent(Property, NewValue);
+            worldModel.Object(m_appliesTo).Fields.SetFromUndo(Property, NewValue);
         }
     }
 }

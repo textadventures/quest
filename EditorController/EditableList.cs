@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
-    public class EditableList<T> : IEditableList<T>
+    public class EditableList<T> : IEditableList<T>, IDataWrapper
     {
         public event EventHandler<EditableListUpdatedEventArgs<T>> Added;
         public event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
@@ -75,8 +75,13 @@ namespace AxeSoftware.Quest
             }
 
             m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
-            m_source.Add(item, UpdateSource.User);
+            AddInternal(item);
             m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
+        internal void AddInternal(T item)
+        {
+            m_source.Add(item, UpdateSource.User);
         }
 
         private void AddWrappedItem(T item, EditorUpdateSource source, int index)
@@ -150,6 +155,11 @@ namespace AxeSoftware.Quest
         void m_source_Removed(object sender, QuestListUpdatedEventArgs<T> e)
         {
             RemoveWrappedItem(m_wrappedItemLookup[e.UpdatedItem], (EditorUpdateSource)e.Source, e.Index);
+        }
+
+        public object GetUnderlyingValue()
+        {
+            return m_source;
         }
     }
 }

@@ -3,6 +3,7 @@ Public Class ListControl
     Implements IElementEditorControl
 
     Private m_attributeName As String
+    Private m_elementName As String
     Private m_controller As EditorController
     Private m_data As IEditorData
     Private m_controlData As IEditorControl
@@ -43,8 +44,10 @@ Public Class ListControl
         m_data = data
         If data IsNot Nothing Then
             Value = data.GetAttribute(m_attributeName)
+            m_elementName = data.Name
         Else
             Value = Nothing
+            m_elementName = Nothing
         End If
     End Sub
 
@@ -99,7 +102,11 @@ Public Class ListControl
         Dim result = EditItem(String.Empty)
         If result.Cancelled Then Return
 
-        m_list.Add(result.Result)
+        If m_list Is Nothing Then
+            Value = m_controller.CreateNewEditableList(m_elementName, m_attributeName, result.Result)
+        Else
+            m_list.Add(result.Result)
+        End If
     End Sub
 
     Private Sub cmdDelete_Click(sender As Object, e As System.EventArgs) Handles cmdDelete.Click
