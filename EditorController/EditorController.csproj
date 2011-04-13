@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EditableDataWrapper.cs" />
+    <Compile Include="EditableDictionary.cs" />
     <Compile Include="EditableIfScript.cs" />
     <Compile Include="EditableList.cs" />
     <Compile Include="EditableListItem.cs" />

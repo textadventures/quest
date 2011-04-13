@@ -28,4 +28,12 @@ namespace AxeSoftware.Quest
         string Key { get; }
         T Value { get; set; }
     }
+
+    public interface IEditableDictionary<T>
+    {
+        event EventHandler<EditableListUpdatedEventArgs<T>> Added;
+        event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
+
+        IDictionary<string, IEditableListItem<T>> Items { get; }
+    }
 }

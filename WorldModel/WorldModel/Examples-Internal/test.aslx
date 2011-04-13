@@ -180,7 +180,7 @@
         msg ("Alas, I do not know the answer to your question.")
       }
       else {
-        msg ("All I can say is '" + DictionaryString(man.knowledge, text) + "'")
+        msg ("All I can say is '" + StringDictionaryItem(man.knowledge, text) + "'")
       }
     </script>
   </command>
