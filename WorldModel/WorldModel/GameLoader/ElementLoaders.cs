@@ -32,6 +32,11 @@ namespace AxeSoftware.Quest
             get { return m_attributeLoaders; }
         }
 
+        private Dictionary<string, IExtendedAttributeLoader> ExtendedAttributeLoaders
+        {
+            get { return m_extendedAttributeLoaders; }
+        }
+
         private WorldModel WorldModel
         {
             get { return m_worldModel; }
@@ -223,7 +228,7 @@ namespace AxeSoftware.Quest
             private string GetUniqueCommandID(string pattern)
             {
                 string name = pattern == null ? null : m_regex.Match(pattern.Replace(" ", "")).Value;
-                
+
                 if (string.IsNullOrEmpty(name) || WorldModel.ObjectExists(name)) name = WorldModel.GetUniqueID(name);
                 return name;
             }
@@ -241,7 +246,7 @@ namespace AxeSoftware.Quest
                 string property = reader.GetAttribute("property");
 
                 Element newCommand = (Element)base.Load(reader, ref current, property);
-                
+
                 newCommand.Fields[FieldDefinitions.Property] = property;
 
                 string response = reader.GetAttribute("response");
@@ -296,7 +301,7 @@ namespace AxeSoftware.Quest
         private class IncludeLoader : IncludeLoaderBase
         {
             protected override object LoadInternal(string file)
-            {   
+            {
                 return null;
             }
 
@@ -363,7 +368,7 @@ namespace AxeSoftware.Quest
             {
                 string attribute = reader.Name;
                 string type = reader.GetAttribute("type");
-                string value = GameLoader.GetTemplateContents(reader);
+
                 if (type == null)
                 {
                     string currentElementType = current.Fields.GetString("type");
@@ -373,6 +378,25 @@ namespace AxeSoftware.Quest
                         currentElementType = current.Fields.GetString("elementtype");
                     }
                     type = GameLoader.m_implicitTypes.Get(currentElementType, attribute);
+                }
+
+                if (type != null && GameLoader.ExtendedAttributeLoaders.ContainsKey(type))
+                {
+                    GameLoader.ExtendedAttributeLoaders[type].Load(reader, current);
+                }
+                else
+                {
+                    string value;
+
+                    try
+                    {
+                        value = GameLoader.GetTemplateContents(reader);
+                    }
+                    catch (XmlException)
+                    {
+                        RaiseError(string.Format("Error loading XML data for '{0}.{1}' - ensure that it contains no nested XML", current.Name, attribute));
+                        return null;
+                    }
 
                     if (type == null)
                     {
@@ -385,26 +409,26 @@ namespace AxeSoftware.Quest
                             type = "boolean";
                         }
                     }
-                }
 
-                if (GameLoader.AttributeLoaders.ContainsKey(type))
-                {
-                    GameLoader.AttributeLoaders[type].Load(current, attribute, value);
-                }
-                else
-                {
-                    Element del;
-                    if (WorldModel.Elements.TryGetValue(ElementType.Delegate, type, out del))
+                    if (GameLoader.AttributeLoaders.ContainsKey(type))
                     {
-                        Element proc = WorldModel.GetElementFactory(ElementType.Delegate).Create();
-                        // TO DO: These should be lazy loaded, so we can refer to other procedures that are defined later in the XML
-                        proc.MetaFields[MetaFieldDefinitions.DelegateImplementation] = true;
-                        proc.Fields[FieldDefinitions.Script] = GameLoader.ScriptFactory.CreateScript(value, proc);
-                        current.Fields.Set(attribute, new DelegateImplementation(type, del, proc));
+                        GameLoader.AttributeLoaders[type].Load(current, attribute, value);
                     }
                     else
                     {
-                        RaiseError(string.Format("Unrecognised attribute type '{0}' in '{1}.{2}'", type, current.Name, attribute));
+                        Element del;
+                        if (WorldModel.Elements.TryGetValue(ElementType.Delegate, type, out del))
+                        {
+                            Element proc = WorldModel.GetElementFactory(ElementType.Delegate).Create();
+                            // TO DO: These should be lazy loaded, so we can refer to other procedures that are defined later in the XML
+                            proc.MetaFields[MetaFieldDefinitions.DelegateImplementation] = true;
+                            proc.Fields[FieldDefinitions.Script] = GameLoader.ScriptFactory.CreateScript(value, proc);
+                            current.Fields.Set(attribute, new DelegateImplementation(type, del, proc));
+                        }
+                        else
+                        {
+                            RaiseError(string.Format("Unrecognised attribute type '{0}' in '{1}.{2}'", type, current.Name, attribute));
+                        }
                     }
                 }
                 return null;
@@ -440,7 +464,7 @@ namespace AxeSoftware.Quest
             public override object Load(XmlReader reader, ref Element current)
             {
                 Element newElement;
-                
+
                 if (current != null)
                 {
                     newElement = WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name"), (Element)current);

@@ -415,6 +415,7 @@ namespace AxeSoftware.Quest
         private List<string> m_defaultTypes = new List<string>();
         private Dictionary<string, string> m_objectFields = new Dictionary<string, string>();
         private Dictionary<string, string> m_scripts = new Dictionary<string, string>();
+        private Dictionary<string, IDictionary<string, string>> m_scriptDictionaries = new Dictionary<string, IDictionary<string, string>>();
         private WorldModel m_worldModel;
         private bool m_resolved = false;
 
@@ -447,7 +448,22 @@ namespace AxeSoftware.Quest
             {
                 m_fields.Set(property, scriptFactory.CreateScript(m_scripts[property]));
             }
+            foreach (string property in m_scriptDictionaries.Keys)
+            {
+                m_fields.Set(property, ConvertToScriptDictionary(m_scriptDictionaries[property], scriptFactory));
+            }
             m_resolved = true;
+        }
+
+        private QuestDictionary<IScript> ConvertToScriptDictionary(IDictionary<string, string> dictionary, ScriptFactory scriptFactory)
+        {
+            QuestDictionary<IScript> newDictionary = new QuestDictionary<IScript>();
+            foreach (var item in dictionary)
+            {
+                IScript newScript = scriptFactory.CreateScript(item.Value);
+                newDictionary.Add(item.Key, newScript);
+            }
+            return newDictionary;
         }
 
         public void AddType(string typename)
@@ -472,6 +488,12 @@ namespace AxeSoftware.Quest
         {
             CheckNotResolved();
             m_scripts.Add(property, value);
+        }
+
+        public void AddScriptDictionary(string property, IDictionary<string, string> value)
+        {
+            CheckNotResolved();
+            m_scriptDictionaries.Add(property, value);
         }
 
         private void CheckNotResolved()

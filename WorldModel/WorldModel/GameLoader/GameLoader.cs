@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest
             m_scriptFactory = new ScriptFactory(worldModel);
             m_scriptFactory.ErrorHandler += AddError;
             AddLoaders(mode);
+            AddExtendedAttributeLoaders(mode);
             AddXMLLoaders(mode);
         }
 

@@ -89,6 +89,7 @@ namespace AxeSoftware.Quest
             s_typeNamesToTypes.Add("objectlist", typeof(QuestList<Element>));
             s_typeNamesToTypes.Add("stringdictionary", typeof(QuestDictionary<string>));
             s_typeNamesToTypes.Add("objectdictionary", typeof(QuestDictionary<Element>));
+            s_typeNamesToTypes.Add("scriptdictionary", typeof(QuestDictionary<IScript>));
 
             foreach (KeyValuePair<string, Type> kvp in s_typeNamesToTypes)
             {

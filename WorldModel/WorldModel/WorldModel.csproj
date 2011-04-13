@@ -104,6 +104,7 @@
     <Compile Include="GameLoader\AttributeLoaders.cs" />
     <Compile Include="GameLoader\ElementLoaders.cs" />
     <Compile Include="GameLoader\ElementSavers.cs" />
+    <Compile Include="GameLoader\ExtendedAttributeLoaders.cs" />
     <Compile Include="GameLoader\FieldSaver.cs" />
     <Compile Include="GameLoader\GameLoader.cs" />
     <Compile Include="GameLoader\GameSaver.cs" />
