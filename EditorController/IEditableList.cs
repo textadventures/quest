@@ -21,6 +21,7 @@ namespace AxeSoftware.Quest
         void Add(T item);
         void Remove(params T[] items);
         void Update(int index, T item);
+        IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }
     }
 
     public interface IEditableListItem<T>

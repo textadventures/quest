@@ -97,6 +97,18 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DictionaryScriptControl.Designer.vb">
+      <DependentUpon>DictionaryScriptControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DictionaryScriptControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DictionaryStringControl.Designer.vb">
+      <DependentUpon>DictionaryStringControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DictionaryStringControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="EditorControl.Designer.vb">
       <DependentUpon>EditorControl.vb</DependentUpon>
     </Compile>
@@ -130,10 +142,17 @@
     <Compile Include="IfEditorChild.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ListControl.Designer.vb">
-      <DependentUpon>ListControl.vb</DependentUpon>
+    <Compile Include="IListEditorDelegate.vb" />
+    <Compile Include="ListEditor.Designer.vb">
+      <DependentUpon>ListEditor.vb</DependentUpon>
     </Compile>
-    <Compile Include="ListControl.vb">
+    <Compile Include="ListEditor.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ListStringControl.Designer.vb">
+      <DependentUpon>ListStringControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ListStringControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MainToolbar.Designer.vb">
@@ -201,6 +220,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DictionaryScriptControl.resx">
+      <DependentUpon>DictionaryScriptControl.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditorControl.resx">
       <DependentUpon>EditorControl.vb</DependentUpon>
     </EmbeddedResource>
@@ -219,8 +241,11 @@
     <EmbeddedResource Include="IfEditorChild.resx">
       <DependentUpon>IfEditorChild.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ListControl.resx">
-      <DependentUpon>ListControl.vb</DependentUpon>
+    <EmbeddedResource Include="ListEditor.resx">
+      <DependentUpon>ListEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListStringControl.resx">
+      <DependentUpon>ListStringControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainToolbar.resx">
       <DependentUpon>MainToolbar.vb</DependentUpon>

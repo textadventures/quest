@@ -161,5 +161,21 @@ namespace AxeSoftware.Quest
         {
             return m_source;
         }
+
+        public IEnumerable<KeyValuePair<string, string>> DisplayItems
+        {
+            get
+            {
+                Dictionary<string, string> result = new Dictionary<string, string>();
+
+                foreach (var item in m_wrappedItems)
+                {
+                    // TO DO: We will need some kind of projection function for non-string T's
+                    result.Add(item.Key, item.Value.Value as string);
+                }
+
+                return result;
+            }
+        }
     }
 }

@@ -79,6 +79,14 @@
         <caption>Description</caption>
         <attribute>description</attribute>
       </control>
+
+      <!-- temporary -->
+      <control>
+        <controltype>stringdictionary</controltype>
+        <caption>Knowledge</caption>
+        <attribute>knowledge</attribute>
+      </control>
+      <!-- temporary -->
     </tab>
 
     <tab>
@@ -87,6 +95,15 @@
 
     <tab>
       <caption>Container</caption>
+      
+      <!-- temporary -->
+      <control>
+        <controltype>scriptdictionary</controltype>
+        <caption>Put-able objects</caption>
+        <attribute>putobjects</attribute>
+      </control>
+      <!-- temporary -->
+      
     </tab>
 
   </editor>
