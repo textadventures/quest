@@ -9,7 +9,6 @@ namespace AxeSoftware.Quest
     {
         public event EventHandler<EditableListUpdatedEventArgs<T>> Added;
         public event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
-        public event EventHandler<EditableListUpdatedEventArgs<T>> Updated;
 
         #region Static DataWrapper
         private static EditableDataWrapper<QuestList<T>, EditableList<T>> s_wrapper;
@@ -114,6 +113,25 @@ namespace AxeSoftware.Quest
             {
                 m_source.Remove(item, UpdateSource.User, m_source.IndexOf(item));
             }
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
+        public void Update(int index, T item)
+        {
+            string undoEntry = null;
+            if (typeof(T) == typeof(string))
+            {
+                undoEntry = string.Format("Update '{0}'", item as string);
+            }
+
+            if (undoEntry == null)
+            {
+                throw new InvalidOperationException("Unknown list type");
+            }
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+            m_source.Remove(m_source[index], UpdateSource.User, index);
+            m_source.Add(item, UpdateSource.User, index);
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 

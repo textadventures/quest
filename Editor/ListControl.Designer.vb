@@ -25,9 +25,9 @@ Partial Class ListControl
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ListControl))
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
         Me.cmdAdd = New System.Windows.Forms.ToolStripButton()
-        Me.lstList = New System.Windows.Forms.ListView()
-        Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
         Me.cmdEdit = New System.Windows.Forms.ToolStripButton()
+        Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
+        Me.lstList = New System.Windows.Forms.ListView()
         Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -49,16 +49,14 @@ Partial Class ListControl
         Me.cmdAdd.Size = New System.Drawing.Size(33, 22)
         Me.cmdAdd.Text = "Add"
         '
-        'lstList
+        'cmdEdit
         '
-        Me.lstList.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lstList.HideSelection = False
-        Me.lstList.Location = New System.Drawing.Point(0, 25)
-        Me.lstList.Name = "lstList"
-        Me.lstList.Size = New System.Drawing.Size(474, 80)
-        Me.lstList.TabIndex = 1
-        Me.lstList.UseCompatibleStateImageBehavior = False
-        Me.lstList.View = System.Windows.Forms.View.Details
+        Me.cmdEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.cmdEdit.Image = CType(resources.GetObject("cmdEdit.Image"), System.Drawing.Image)
+        Me.cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdEdit.Name = "cmdEdit"
+        Me.cmdEdit.Size = New System.Drawing.Size(31, 22)
+        Me.cmdEdit.Text = "Edit"
         '
         'cmdDelete
         '
@@ -69,14 +67,16 @@ Partial Class ListControl
         Me.cmdDelete.Size = New System.Drawing.Size(44, 22)
         Me.cmdDelete.Text = "Delete"
         '
-        'cmdEdit
+        'lstList
         '
-        Me.cmdEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.cmdEdit.Image = CType(resources.GetObject("cmdEdit.Image"), System.Drawing.Image)
-        Me.cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.cmdEdit.Name = "cmdEdit"
-        Me.cmdEdit.Size = New System.Drawing.Size(31, 22)
-        Me.cmdEdit.Text = "Edit"
+        Me.lstList.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lstList.HideSelection = False
+        Me.lstList.Location = New System.Drawing.Point(0, 25)
+        Me.lstList.Name = "lstList"
+        Me.lstList.Size = New System.Drawing.Size(474, 80)
+        Me.lstList.TabIndex = 1
+        Me.lstList.UseCompatibleStateImageBehavior = False
+        Me.lstList.View = System.Windows.Forms.View.Details
         '
         'ListControl
         '

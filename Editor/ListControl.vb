@@ -77,6 +77,8 @@ Public Class ListControl
                 index += 1
             Next
         End If
+
+        SetButtonsEnabledStatus()
     End Sub
 
     Private Sub AddListItem(item As IEditableListItem(Of String), index As Integer)
@@ -87,10 +89,6 @@ Public Class ListControl
     Private Sub RemoveListItem(item As IEditableListItem(Of String), index As Integer)
         lstList.Items.Remove(m_listItems(item.Key))
         m_listItems.Remove(item.Key)
-    End Sub
-
-    Private Sub UpdateListItem(item As IEditableListItem(Of String))
-        m_listItems(item.Key).Text = item.Value
     End Sub
 
     Private Sub ListControl_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
@@ -106,6 +104,18 @@ Public Class ListControl
 
     Private Sub cmdDelete_Click(sender As Object, e As System.EventArgs) Handles cmdDelete.Click
         m_list.Remove(GetSelectedItems().ToArray)
+    End Sub
+
+    Private Sub cmdEdit_Click(sender As System.Object, e As System.EventArgs) Handles cmdEdit.Click
+        EditSelectedItem()
+    End Sub
+
+    Private Sub EditSelectedItem()
+        Dim selItem As ListViewItem = lstList.SelectedItems(0)
+        Dim result = EditItem(selItem.Text)
+        If result.Cancelled Then Return
+
+        m_list.Update(lstList.SelectedItems(0).Index, result.Result)
     End Sub
 
     Private Function GetSelectedItems() As List(Of String)
@@ -145,7 +155,28 @@ Public Class ListControl
         RemoveListItem(e.UpdatedItem, e.Index)
     End Sub
 
-    Private Sub m_list_Updated(sender As Object, e As EditableListUpdatedEventArgs(Of String)) Handles m_list.Updated
-        UpdateListItem(e.UpdatedItem)
+    Private Sub lstList_DoubleClick(sender As Object, e As System.EventArgs) Handles lstList.DoubleClick
+        If IsEditAllowed() Then EditSelectedItem()
     End Sub
+
+    Private Sub lstList_ItemSelectionChanged(sender As Object, e As System.Windows.Forms.ListViewItemSelectionChangedEventArgs) Handles lstList.ItemSelectionChanged
+        SetButtonsEnabledStatus()
+    End Sub
+
+    Private Sub lstList_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles lstList.SelectedIndexChanged
+        SetButtonsEnabledStatus()
+    End Sub
+
+    Private Sub SetButtonsEnabledStatus()
+        cmdEdit.Enabled = IsEditAllowed()
+        cmdDelete.Enabled = IsDeleteAllowed()
+    End Sub
+
+    Private Function IsEditAllowed() As Boolean
+        Return lstList.SelectedItems.Count = 1
+    End Function
+
+    Private Function IsDeleteAllowed() As Boolean
+        Return lstList.SelectedItems.Count > 0
+    End Function
 End Class

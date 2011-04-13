@@ -16,11 +16,11 @@ namespace AxeSoftware.Quest
     {
         event EventHandler<EditableListUpdatedEventArgs<T>> Added;
         event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
-        event EventHandler<EditableListUpdatedEventArgs<T>> Updated;
 
         IDictionary<string, IEditableListItem<T>> Items { get; }
         void Add(T item);
         void Remove(params T[] items);
+        void Update(int index, T item);
     }
 
     public interface IEditableListItem<T>
