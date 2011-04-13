@@ -238,5 +238,36 @@ namespace AxeSoftware.Quest
                 base.WriteAttribute(writer, element, attribute, "simplepattern", pattern.Pattern);
             }
         }
+
+        private class ScriptDictionarySaver : IFieldSaver
+        {
+            public Type AppliesTo
+            {
+                get { return typeof(QuestDictionary<IScript>); }
+            }
+
+            public void Save(GameXmlWriter writer, Element element, string attribute, object value)
+            {
+                writer.WriteStartElement(attribute);
+                if (!GameSaver.IsImpliedType(element, attribute, "scriptdictionary"))
+                {
+                    writer.WriteAttributeString("type", "scriptdictionary");
+                }
+
+                QuestDictionary<IScript> dictionary = (QuestDictionary<IScript>)value;
+                
+                foreach (var item in dictionary)
+                {
+                    writer.WriteStartElement("item");
+                    writer.WriteAttributeString("key", item.Key);
+                    writer.WriteString(GameSaver.SaveScript(writer, item.Value, 0));
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+            }
+
+            public GameSaver GameSaver { get; set; }
+        }
+
     }
 }
