@@ -42,29 +42,26 @@ Partial Class ListControl
         '
         'cmdAdd
         '
-        Me.cmdAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.cmdAdd.Image = CType(resources.GetObject("cmdAdd.Image"), System.Drawing.Image)
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(33, 22)
+        Me.cmdAdd.Size = New System.Drawing.Size(49, 22)
         Me.cmdAdd.Text = "Add"
         '
         'cmdEdit
         '
-        Me.cmdEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.cmdEdit.Image = CType(resources.GetObject("cmdEdit.Image"), System.Drawing.Image)
         Me.cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdEdit.Name = "cmdEdit"
-        Me.cmdEdit.Size = New System.Drawing.Size(31, 22)
+        Me.cmdEdit.Size = New System.Drawing.Size(47, 22)
         Me.cmdEdit.Text = "Edit"
         '
         'cmdDelete
         '
-        Me.cmdDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.cmdDelete.Image = CType(resources.GetObject("cmdDelete.Image"), System.Drawing.Image)
         Me.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDelete.Name = "cmdDelete"
-        Me.cmdDelete.Size = New System.Drawing.Size(44, 22)
+        Me.cmdDelete.Size = New System.Drawing.Size(60, 22)
         Me.cmdDelete.Text = "Delete"
         '
         'lstList
