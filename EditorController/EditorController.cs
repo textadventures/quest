@@ -392,8 +392,11 @@ namespace AxeSoftware.Quest
             WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} script to '{2}'", parent, attribute, keyword));
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
             EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript());
-            newValue.AddNewInternal(keyword);
-            if (element != null) element.Fields.Set(attribute, newValue.GetUnderlyingValue());
+            if (keyword != null)
+            {
+                newValue.AddNewInternal(keyword);
+            }
+            if (element != null && attribute != null) element.Fields.Set(attribute, newValue.GetUnderlyingValue());
             WorldModel.UndoLogger.EndTransaction();
 
             return newValue;
@@ -438,6 +441,28 @@ namespace AxeSoftware.Quest
             }
 
             EditableDictionary<string> newValue = new EditableDictionary<string>(this, newDictionary);
+            WorldModel.UndoLogger.EndTransaction();
+
+            return newValue;
+        }
+
+        public IEditableDictionary<IEditableScripts> CreateNewEditableScriptDictionary(string parent, string attribute, string key, IEditableScripts script)
+        {
+            WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} to '{2}'", parent, attribute, script.DisplayString()));
+            Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
+
+            QuestDictionary<IScript> newDictionary = new QuestDictionary<IScript>();
+            newDictionary.Add(key, (IScript)script.GetUnderlyingValue());
+
+            if (element != null)
+            {
+                element.Fields.Set(attribute, newDictionary);
+
+                // setting an element field will clone the value, so we want to return the new dictionary
+                newDictionary = element.Fields.GetAsType<QuestDictionary<IScript>>(attribute);
+            }
+
+            IEditableDictionary<IEditableScripts> newValue = (IEditableDictionary<IEditableScripts>)WrapValue(newDictionary);
             WorldModel.UndoLogger.EndTransaction();
 
             return newValue;

@@ -78,6 +78,7 @@ namespace AxeSoftware.Quest
 
                 int nestCount = 1;
                 string key = null;
+                string value = string.Empty;
 
                 while (reader.Read())
                 {
@@ -88,13 +89,19 @@ namespace AxeSoftware.Quest
                             if (reader.Name == "item")
                             {
                                 key = reader.GetAttribute("key");
+                                value = string.Empty;
                             }
                             else
                             {
                                 throw new InvalidOperationException(string.Format("Invalid element '{0}' in scriptdictionary block for '{1}.{2}' - expected only 'item' elements", reader.Name, current.Name, xmlElementName));
                             }
                             break;
-                        case XmlNodeType.EndElement:
+                        case XmlNodeType.EndElement:                            
+                            if (reader.Name == "item")
+                            {
+                                newDictionary.Add(key, value);
+                            }
+
                             nestCount--;
 
                             if (nestCount == 0)
@@ -110,8 +117,7 @@ namespace AxeSoftware.Quest
                             }
                             break;
                         case XmlNodeType.Text:
-                            string value = reader.Value;
-                            newDictionary.Add(key, value);
+                            value = reader.Value;
                             break;
                     }
                 }

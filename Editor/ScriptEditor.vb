@@ -55,7 +55,7 @@
         lstScripts.Items.Clear()
         If Not m_scripts Is Nothing Then
             For Each script As IEditableScript In m_scripts.Scripts
-                lstScripts.Items.Add(FormatScript(script.DisplayString))
+                lstScripts.Items.Add(Utility.FormatAsOneLine(script.DisplayString))
             Next
         End If
         lstScripts.Items.Add("Add a new command...")
@@ -81,7 +81,7 @@
     End Sub
 
     Private Sub ctlScriptCommandEditor_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlScriptCommandEditor.Dirty
-        lstScripts.Items(m_editIndex).Text = FormatScript(DirectCast(args.NewValue, String))
+        lstScripts.Items(m_editIndex).Text = Utility.FormatAsOneLine(DirectCast(args.NewValue, String))
         Dim newArgs As New DataModifiedEventArgs(String.Empty, m_scripts.DisplayString(m_editIndex, DirectCast(args.NewValue, String)))
         RaiseEvent Dirty(Me, newArgs)
     End Sub
@@ -95,10 +95,6 @@
         m_editIndex = lstScripts.SelectedIndices.Item(0)
         ShowEditor(m_editIndex)
     End Sub
-
-    Private Function FormatScript(script As String) As String
-        Return script.Replace(Environment.NewLine, " / ")
-    End Function
 
     Private Sub ShowEditor(index As Integer)
         Dim showAdder As Boolean = (m_scripts Is Nothing OrElse index >= m_scripts.Scripts.Count)

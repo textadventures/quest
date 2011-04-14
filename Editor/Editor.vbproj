@@ -219,6 +219,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PopupEditors.vb" />
+    <Compile Include="Utility.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DictionaryScriptControl.resx">

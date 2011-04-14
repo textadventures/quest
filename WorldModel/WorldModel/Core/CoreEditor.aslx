@@ -103,6 +103,7 @@
         <controltype>scriptdictionary</controltype>
         <caption>Put-able objects</caption>
         <attribute>putobjects</attribute>
+        <keyprompt>Please enter the object this applies to</keyprompt>
       </control>
       <!-- temporary -->
       

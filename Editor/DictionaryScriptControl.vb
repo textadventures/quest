@@ -74,35 +74,20 @@ Public Class DictionaryScriptControl
         If addKey.Cancelled Then Return
         If Not ValidateInput(addKey.Result) Then Return
 
+        Dim script As IEditableScripts = m_controller.CreateNewEditableScripts(Nothing, Nothing, Nothing)
 
-        ' create new editablescripts from the controller
-        ' listen to updates on it - update list value with new displaystring
+        If m_list Is Nothing Then
+            Value = m_controller.CreateNewEditableScriptDictionary(m_elementName, m_attributeName, addKey.Result, script)
+        Else
+            m_list.Add(addKey.Result, script)
+        End If
 
-
-        'Dim addValue = Utility.EditString(m_controlData.GetString("valueprompt"), String.Empty)
-        'If addValue.Cancelled Then Return
-
-        'If m_list Is Nothing Then
-        '    Value = m_controller.CreateNewEditableStringDictionary(m_elementName, m_attributeName, addKey.Result, addValue.Result)
-        'Else
-        '    m_list.Add(addKey.Result, addValue.Result)
-        'End If
+        PopupEditors.EditScript(m_controller, script, Nothing, Nothing)
     End Sub
 
     Public Sub DoEdit(key As String, index As Integer) Implements IListEditorDelegate.DoEdit
-
         Dim script As IEditableScripts = m_list(key)
-        PopupEditors.EditScript(m_controller, script, m_attributeName, m_elementName)
-
-        If (m_list(key) IsNot script) Then
-            ' script has been created so need to set the field value
-        End If
-
-        'Dim result = Utility.EditString(m_controlData.GetString("valueprompt"), m_list(key))
-        'If result.Cancelled Then Return
-        'If result.Result = m_list(key) Then Return
-
-        'm_list.Update(key, result.Result)
+        PopupEditors.EditScript(m_controller, script, Nothing, Nothing)
     End Sub
 
     Public Sub DoRemove(keys() As String) Implements IListEditorDelegate.DoRemove
@@ -119,16 +104,16 @@ Public Class DictionaryScriptControl
     End Function
 
     Private Sub m_list_Added(sender As Object, e As EditableListUpdatedEventArgs(Of IEditableScripts)) Handles m_list.Added
-        'ctlListEditor.AddListItem(New KeyValuePair(Of String, String)(e.UpdatedItem.Key, e.UpdatedItem.Value), e.Index)
+        ctlListEditor.AddListItem(New KeyValuePair(Of String, String)(e.UpdatedItem.Key, e.UpdatedItem.Value.DisplayString), e.Index)
 
-        'If (e.Source = EditorUpdateSource.User) Then
-        '    ctlListEditor.SetSelectedItem(e.UpdatedItem.Key)
-        '    ctlListEditor.Focus()
-        'End If
+        If (e.Source = EditorUpdateSource.User) Then
+            ctlListEditor.SetSelectedItem(e.UpdatedItem.Key)
+            ctlListEditor.Focus()
+        End If
     End Sub
 
     Private Sub m_list_Removed(sender As Object, e As EditableListUpdatedEventArgs(Of IEditableScripts)) Handles m_list.Removed
-        'ctlListEditor.RemoveListItem(e.UpdatedItem, e.Index)
+        ctlListEditor.RemoveListItem(e.UpdatedItem.Key)
     End Sub
 
     Private Sub m_list_Updated(sender As Object, e As EditableListUpdatedEventArgs(Of IEditableScripts)) Handles m_list.Updated

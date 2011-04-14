@@ -75,7 +75,7 @@ Public Class ListStringControl
     End Sub
 
     Private Sub m_list_Removed(sender As Object, e As EditableListUpdatedEventArgs(Of String)) Handles m_list.Removed
-        ctlListEditor.RemoveListItem(e.UpdatedItem, e.Index)
+        ctlListEditor.RemoveListItem(e.UpdatedItem.Key)
     End Sub
 
     Public Sub DoAdd() Implements IListEditorDelegate.DoAdd

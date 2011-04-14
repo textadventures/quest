@@ -59,9 +59,9 @@
 
         Select Case Style
             Case ColumnStyle.OneColumn
-                newListViewItem = lstList.Items.Insert(index, item.Value)
+                newListViewItem = lstList.Items.Insert(index, Utility.FormatAsOneLine(item.Value))
             Case ColumnStyle.TwoColumns
-                newListViewItem = lstList.Items.Insert(index, item.Key)
+                newListViewItem = lstList.Items.Insert(index, Utility.FormatAsOneLine(item.Key))
                 newListViewItem.SubItems.Add(item.Value)
             Case Else
                 Throw New InvalidOperationException("Invalid column style")
@@ -70,9 +70,9 @@
         m_listItems.Add(item.Key, newListViewItem)
     End Sub
 
-    Public Sub RemoveListItem(item As IEditableListItem(Of String), index As Integer)
-        lstList.Items.Remove(m_listItems(item.Key))
-        m_listItems.Remove(item.Key)
+    Public Sub RemoveListItem(key As String)
+        lstList.Items.Remove(m_listItems(key))
+        m_listItems.Remove(key)
     End Sub
 
     Private Sub ListControl_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
@@ -177,6 +177,6 @@
     End Sub
 
     Public Sub UpdateValue(index As Integer, text As String)
-        lstList.Items(index).SubItems(1).Text = text
+        lstList.Items(index).SubItems(1).Text = Utility.FormatAsOneLine(text)
     End Sub
 End Class

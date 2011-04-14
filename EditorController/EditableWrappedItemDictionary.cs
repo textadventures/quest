@@ -9,7 +9,9 @@ namespace AxeSoftware.Quest
     // themselves wrapped.
     //      For example: TSource=IScript, TWrapped=IEditableScripts
     //      Then we can expose an IEditableDictionary<IEditableScripts> which wraps a QuestDictionary<IScript>
-    public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDictionary<TWrapped>, IDataWrapper where TWrapped : IDataWrapper
+    public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDictionary<TWrapped>, IDataWrapper
+        where TWrapped : IDataWrapper
+        where TSource : class
     {
         public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Added;
         public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Removed;
@@ -75,6 +77,7 @@ namespace AxeSoftware.Quest
 
         private TSource UnwrapValue(TWrapped wrapped)
         {
+            if (wrapped == null) return null;
             return (TSource)wrapped.GetUnderlyingValue();
         }
 
@@ -113,7 +116,8 @@ namespace AxeSoftware.Quest
                 // sender will be the underlying wrapped value that has been updated. e.g. an IEditableScripts item
                 TWrapped updatedItem = (TWrapped)sender;
 
-                Updated(this, new EditableListUpdatedEventArgs<TWrapped> {
+                Updated(this, new EditableListUpdatedEventArgs<TWrapped>
+                {
                     UpdatedItem = m_wrappedItemsLookup[updatedItem],
                     Index = m_source.IndexOfKey(m_wrappedItemsLookup[updatedItem].Key)
                 });
@@ -148,15 +152,7 @@ namespace AxeSoftware.Quest
         public void Add(string key, TWrapped value)
         {
             string undoEntry = null;
-            if (typeof(TWrapped) == typeof(string))
-            {
-                undoEntry = string.Format("Add '{0}={1}'", key, value as string);
-            }
-
-            if (undoEntry == null)
-            {
-                throw new InvalidOperationException("Unknown dictionary type");
-            }
+            undoEntry = string.Format("Add '{0}={1}'", key, value == null ? string.Empty : value.DisplayString());
 
             m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
             m_source.Add(key, UnwrapValue(value), UpdateSource.User);
@@ -166,15 +162,7 @@ namespace AxeSoftware.Quest
         public void Remove(params string[] keys)
         {
             string undoEntry = null;
-            if (typeof(TWrapped) == typeof(string))
-            {
-                undoEntry = string.Format("Remove '{0}'", string.Join(",", keys));
-            }
-
-            if (undoEntry == null)
-            {
-                throw new InvalidOperationException("Unknown list type");
-            }
+            undoEntry = string.Format("Remove '{0}'", string.Join(",", keys));
 
             m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
             foreach (string key in keys)
