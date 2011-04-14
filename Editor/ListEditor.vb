@@ -86,7 +86,7 @@
             Case ColumnStyle.OneColumn
                 lstList.Columns(0).Width = lstList.Width - SystemInformation.VerticalScrollBarWidth - lstList.Margin.Horizontal
             Case ColumnStyle.TwoColumns
-
+                lstList.Columns(1).Width = lstList.Width - SystemInformation.VerticalScrollBarWidth - lstList.Margin.Horizontal - lstList.Columns(0).Width
             Case Else
                 Throw New InvalidOperationException("Invalid column style")
         End Select
