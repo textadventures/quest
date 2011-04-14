@@ -15,17 +15,19 @@ namespace AxeSoftware.Quest
             return DisplayString(-1, string.Empty);
         }
 
-        public abstract string DisplayString(int index, string newValue);
+        public abstract string DisplayString(int index, object newValue);
         public abstract string EditorName { get; }
         public abstract object GetParameter(int index);
         public abstract void SetParameter(int index, object value);
         public abstract ScriptType Type { get; }
 
         private IScript m_script;
+        private EditorController m_controller;
 
-        public EditableScriptBase(IScript script, UndoLogger undoLogger)
+        public EditableScriptBase(EditorController controller, IScript script, UndoLogger undoLogger)
         {
             Script = script;
+            m_controller = controller;
             if (script != null)
             {
                 ((IMutableField)script).UndoLog = undoLogger;
@@ -58,9 +60,7 @@ namespace AxeSoftware.Quest
             {
                 if (e != null && e.IsParameterUpdate)
                 {
-                    // not sure if casting object NewValue to string will work, but we don't want the raw values bubbling up as EditableScriptUpdatedEventArgs.
-                    // Maybe we should be wrapping them instead.
-                    Updated(this, new EditableScriptUpdatedEventArgs(e.Index, (string)e.NewValue));
+                    Updated(this, new EditableScriptUpdatedEventArgs(e.Index, m_controller.WrapValue(e.NewValue)));
                 }
                 else if (e != null && e.IsNamedParameterUpdate)
                 {
@@ -84,6 +84,11 @@ namespace AxeSoftware.Quest
         protected void RaiseUpdateForNestedScriptChange(EditableScriptsUpdatedEventArgs e)
         {
             RaiseUpdated(new EditableScriptUpdatedEventArgs(-1, string.Empty));
+        }
+
+        protected EditorController Controller
+        {
+            get { return m_controller; }
         }
     }
 }

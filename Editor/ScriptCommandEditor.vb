@@ -96,15 +96,15 @@
     End Sub
 
     Private Sub m_editor_Dirty(sender As Object, args As DataModifiedEventArgs) Handles m_currentEditor.Dirty
-        Dim newArgs As New DataModifiedEventArgs(String.Empty, m_script.DisplayString(CInt(args.Attribute), DirectCast(args.NewValue, String)))
+        Dim newArgs As New DataModifiedEventArgs(String.Empty, m_script.DisplayString(CInt(args.Attribute), args.NewValue))
         RaiseEvent Dirty(Me, newArgs)
     End Sub
 
-    Public Sub UpdateField(index As Integer, newValue As String)
+    Public Sub UpdateField(index As Integer, newValue As Object)
         m_currentEditor.UpdateField(index.ToString(), newValue, True)
     End Sub
 
-    Public Sub UpdateField(id As String, newValue As String)
+    Public Sub UpdateField(id As String, newValue As Object)
         m_currentEditor.UpdateField(id, newValue, True)
     End Sub
 

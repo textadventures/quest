@@ -12,13 +12,11 @@ namespace AxeSoftware.Quest
     {
         private string m_displayTemplate = null;
         private static Regex s_regex = new Regex("#(?<attribute>\\d+)");
-        private EditorController m_controller;
         private List<EditableScripts> m_watchedNestedScripts = new List<EditableScripts>();
 
         internal EditableScript(EditorController controller, IScript script, UndoLogger undoLogger)
-            : base(script, undoLogger)
+            : base(controller, script, undoLogger)
         {
-            m_controller = controller;
         }
 
         internal string DisplayTemplate
@@ -27,7 +25,7 @@ namespace AxeSoftware.Quest
             set { m_displayTemplate = value; }
         }
 
-        public override string DisplayString(int index, string newValue)
+        public override string DisplayString(int index, object newValue)
         {
             // This version of DisplayString is used while we are editing an attribute value
             // as we don't want to save updates for every keypress
@@ -41,43 +39,47 @@ namespace AxeSoftware.Quest
                 Match m = s_regex.Match(result);
                 int attributeNum = int.Parse(m.Groups["attribute"].Value);
                 string attributeValue;
+
+                object value;
                 if (attributeNum == index)
                 {
-                    attributeValue = newValue;
+                    value = newValue;
                 }
                 else
                 {
-                    object value = Script.GetParameter(attributeNum);
-
-                    IScript scriptValue = value as IScript;
-                    string stringValue = value as string;
-                    ICollection collectionValue = value as ICollection;
-
-                    if (stringValue != null)
-                    {
-                        attributeValue = (stringValue.Length == 0) ? "?" : stringValue;
-                    }
-                    else if (scriptValue != null)
-                    {
-                        EditableScripts editableScripts = EditableScripts.GetInstance(m_controller, scriptValue);
-                        RegisterNestedScriptForUpdates(editableScripts);
-                        attributeValue = (editableScripts.Count == 0) ? "(nothing)" : editableScripts.DisplayString();
-                    }
-                    else if (collectionValue != null)
-                    {
-                        attributeValue = collectionValue.Count.ToString();
-                    }
-                    else if (value == null)
-                    {
-                        attributeValue = "(nothing)";
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.Assert(false, "Unknown attribute type for DisplayString");
-                        attributeValue = "<unknown>";
-                    }
+                    value = Script.GetParameter(attributeNum);
                 }
-                
+
+                if (value is IDataWrapper) value = ((IDataWrapper)value).GetUnderlyingValue();
+
+                IScript scriptValue = value as IScript;
+                string stringValue = value as string;
+                ICollection collectionValue = value as ICollection;
+
+                if (stringValue != null)
+                {
+                    attributeValue = (stringValue.Length == 0) ? "?" : stringValue;
+                }
+                else if (scriptValue != null)
+                {
+                    EditableScripts editableScripts = EditableScripts.GetInstance(Controller, scriptValue);
+                    RegisterNestedScriptForUpdates(editableScripts);
+                    attributeValue = (editableScripts.Count == 0) ? "(nothing)" : editableScripts.DisplayString();
+                }
+                else if (collectionValue != null)
+                {
+                    attributeValue = collectionValue.Count.ToString();
+                }
+                else if (value == null)
+                {
+                    attributeValue = "(nothing)";
+                }
+                else
+                {
+                    System.Diagnostics.Debug.Assert(false, "Unknown attribute type for DisplayString");
+                    attributeValue = "<unknown>";
+                }
+
                 result = s_regex.Replace(result, attributeValue, 1);
             }
 

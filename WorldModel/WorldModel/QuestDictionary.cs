@@ -120,10 +120,12 @@ namespace AxeSoftware.Quest
         {
             CheckNotLocked();
             UndoLogRemove(key);
-            NotifyRemove(key, m_dictionary[key], source, m_dictionary.IndexOfKey(key));
-            return m_dictionary.Remove(key);
+            T removedValue = m_dictionary[key];
+            int removedIndex = m_dictionary.IndexOfKey(key);
+            bool result = m_dictionary.Remove(key);
+            NotifyRemove(key, removedValue, source, removedIndex);
+            return result;
         }
-
 
         public bool TryGetValue(string key, out T value)
         {

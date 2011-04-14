@@ -12,21 +12,21 @@ namespace AxeSoftware.Quest
             Index = -1;
         }
 
-        internal EditableScriptUpdatedEventArgs(int index, string newValue)
+        internal EditableScriptUpdatedEventArgs(int index, object newValue)
         {
             Index = index;
             NewValue = newValue;
             IsParameterUpdate = true;
         }
 
-        internal EditableScriptUpdatedEventArgs(string id, string newValue)
+        internal EditableScriptUpdatedEventArgs(string id, object newValue)
         {
             Id = id;
             NewValue = newValue;
             IsNamedParameterUpdate = true;
         }
 
-        internal EditableScriptUpdatedEventArgs(string newValue)
+        internal EditableScriptUpdatedEventArgs(object newValue)
         {
             NewValue = newValue;
             IsWholeScriptUpdate = true;
@@ -34,7 +34,7 @@ namespace AxeSoftware.Quest
 
         public int Index { get; private set; }
         public string Id { get; private set; }
-        public string NewValue { get; private set; }
+        public object NewValue { get; private set; }
         public bool IsParameterUpdate { get; private set; }
         public bool IsNamedParameterUpdate { get; private set; }
         public bool IsWholeScriptUpdate { get; private set; }
@@ -49,7 +49,7 @@ namespace AxeSoftware.Quest
     public interface IEditableScript
     {
         string DisplayString();
-        string DisplayString(int index, string newValue);
+        string DisplayString(int index, object newValue);
         string EditorName { get; }
         object GetParameter(int index);
         void SetParameter(int index, object value);
