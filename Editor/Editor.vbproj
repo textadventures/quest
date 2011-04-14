@@ -218,7 +218,7 @@
     <Compile Include="TextBoxControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Utility.vb" />
+    <Compile Include="PopupEditors.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DictionaryScriptControl.resx">

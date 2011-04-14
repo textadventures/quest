@@ -79,7 +79,7 @@ Public Class ListStringControl
     End Sub
 
     Public Sub DoAdd() Implements IListEditorDelegate.DoAdd
-        Dim result = Utility.EditString(m_controlData.GetString("editprompt"), String.Empty)
+        Dim result = PopupEditors.EditString(m_controlData.GetString("editprompt"), String.Empty)
         If result.Cancelled Then Return
         If Not ValidateInput(result.Result) Then Return
 
@@ -91,7 +91,7 @@ Public Class ListStringControl
     End Sub
 
     Public Sub DoEdit(key As String, index As Integer) Implements IListEditorDelegate.DoEdit
-        Dim result = Utility.EditString(m_controlData.GetString("editprompt"), key)
+        Dim result = PopupEditors.EditString(m_controlData.GetString("editprompt"), key)
         If result.Cancelled Then Return
         If result.Result = key Then Return
         If Not ValidateInput(result.Result) Then Return
@@ -108,7 +108,7 @@ Public Class ListStringControl
         Dim result = m_list.CanAdd(input)
         If result.Valid Then Return True
 
-        MsgBox(Utility.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add item")
+        MsgBox(PopupEditors.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add item")
         Return False
     End Function
 End Class

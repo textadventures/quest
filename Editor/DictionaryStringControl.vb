@@ -70,11 +70,11 @@ Public Class DictionaryStringControl
     End Property
 
     Public Sub DoAdd() Implements IListEditorDelegate.DoAdd
-        Dim addKey = Utility.EditString(m_controlData.GetString("keyprompt"), String.Empty)
+        Dim addKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), String.Empty)
         If addKey.Cancelled Then Return
         If Not ValidateInput(addKey.Result) Then Return
 
-        Dim addValue = Utility.EditString(m_controlData.GetString("valueprompt"), String.Empty)
+        Dim addValue = PopupEditors.EditString(m_controlData.GetString("valueprompt"), String.Empty)
         If addValue.Cancelled Then Return
 
         If m_list Is Nothing Then
@@ -85,7 +85,7 @@ Public Class DictionaryStringControl
     End Sub
 
     Public Sub DoEdit(key As String, index As Integer) Implements IListEditorDelegate.DoEdit
-        Dim result = Utility.EditString(m_controlData.GetString("valueprompt"), m_list(key))
+        Dim result = PopupEditors.EditString(m_controlData.GetString("valueprompt"), m_list(key))
         If result.Cancelled Then Return
         If result.Result = m_list(key) Then Return
 
@@ -101,7 +101,7 @@ Public Class DictionaryStringControl
         Dim result = m_list.CanAdd(input)
         If result.Valid Then Return True
 
-        MsgBox(Utility.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add item")
+        MsgBox(PopupEditors.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add item")
         Return False
     End Function
 

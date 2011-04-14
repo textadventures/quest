@@ -45,7 +45,7 @@
         End Set
     End Property
 
-    Private Sub UpdateList()
+    Public Sub UpdateList()
         Dim oldSelection As Integer? = Nothing
 
         If lstScripts.SelectedIndices.Count > 0 Then
@@ -196,26 +196,12 @@
     End Sub
 
     Private Sub cmdPopOut_Click(sender As System.Object, e As System.EventArgs) Handles cmdPopOut.Click
-        Dim popOut As New ScriptEditorPopOut
-
         Save()
-
-        With popOut.ctlScriptEditor
-            .PopOut = True
-            .m_scripts = m_scripts
-            .Controller = m_controller
-            .Initialise()
-            .UpdateList()
-        End With
-        popOut.ShowDialog()
-        m_scripts = popOut.ctlScriptEditor.m_scripts
-        popOut.ctlScriptEditor.Save()
-
+        PopupEditors.EditScript(m_controller, m_scripts, m_attribute, m_elementName)
         UpdateList()
-
     End Sub
 
-    Private Property PopOut() As Boolean
+    Public Property PopOut() As Boolean
         Get
             Return m_isPopOut
         End Get
@@ -224,6 +210,15 @@
             cmdPopOut.Visible = Not value
             ctlScriptAdder.ShowCloseButton = value
             ctlScriptCommandEditor.ShowCloseButton = value
+        End Set
+    End Property
+
+    Public Property Scripts As IEditableScripts
+        Get
+            Return m_scripts
+        End Get
+        Set(value As IEditableScripts)
+            m_scripts = value
         End Set
     End Property
 

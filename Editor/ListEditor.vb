@@ -175,4 +175,8 @@
     Public Sub SetHeader(column As Integer, text As String)
         m_headers(column) = text
     End Sub
+
+    Public Sub UpdateValue(index As Integer, text As String)
+        lstList.Items(index).SubItems(1).Text = text
+    End Sub
 End Class

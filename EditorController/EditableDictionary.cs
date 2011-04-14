@@ -10,6 +10,21 @@ namespace AxeSoftware.Quest
         public event EventHandler<EditableListUpdatedEventArgs<T>> Added;
         public event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
 
+        // currently unused
+        public event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated
+        {
+            add { }
+            remove { }
+        }
+
+        // currently unused - we currently only use EditableDictionary<string>, and we don't
+        // use the Updated event as the same behaviour is implemented with a combination of Added and Removed.
+        public event EventHandler<EditableListUpdatedEventArgs<T>> Updated
+        {
+            add { }
+            remove { }
+        }
+
         #region Static DataWrapper
         private static EditableDataWrapper<QuestDictionary<T>, EditableDictionary<T>> s_wrapper;
 
@@ -178,6 +193,11 @@ namespace AxeSoftware.Quest
             m_source.Remove(key, UpdateSource.User);
             m_source.Add(key, value, UpdateSource.User, index);
             m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
+        public string DisplayString()
+        {
+            throw new NotImplementedException();
         }
     }
 }

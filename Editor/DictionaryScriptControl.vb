@@ -70,9 +70,14 @@ Public Class DictionaryScriptControl
     End Property
 
     Public Sub DoAdd() Implements IListEditorDelegate.DoAdd
-        Dim addKey = Utility.EditString(m_controlData.GetString("keyprompt"), String.Empty)
+        Dim addKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), String.Empty)
         If addKey.Cancelled Then Return
         If Not ValidateInput(addKey.Result) Then Return
+
+
+        ' create new editablescripts from the controller
+        ' listen to updates on it - update list value with new displaystring
+
 
         'Dim addValue = Utility.EditString(m_controlData.GetString("valueprompt"), String.Empty)
         'If addValue.Cancelled Then Return
@@ -85,6 +90,14 @@ Public Class DictionaryScriptControl
     End Sub
 
     Public Sub DoEdit(key As String, index As Integer) Implements IListEditorDelegate.DoEdit
+
+        Dim script As IEditableScripts = m_list(key)
+        PopupEditors.EditScript(m_controller, script, m_attributeName, m_elementName)
+
+        If (m_list(key) IsNot script) Then
+            ' script has been created so need to set the field value
+        End If
+
         'Dim result = Utility.EditString(m_controlData.GetString("valueprompt"), m_list(key))
         'If result.Cancelled Then Return
         'If result.Result = m_list(key) Then Return
@@ -101,7 +114,7 @@ Public Class DictionaryScriptControl
         Dim result = m_list.CanAdd(input)
         If result.Valid Then Return True
 
-        MsgBox(Utility.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add item")
+        MsgBox(PopupEditors.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add item")
         Return False
     End Function
 
@@ -116,5 +129,11 @@ Public Class DictionaryScriptControl
 
     Private Sub m_list_Removed(sender As Object, e As EditableListUpdatedEventArgs(Of IEditableScripts)) Handles m_list.Removed
         'ctlListEditor.RemoveListItem(e.UpdatedItem, e.Index)
+    End Sub
+
+    Private Sub m_list_Updated(sender As Object, e As EditableListUpdatedEventArgs(Of IEditableScripts)) Handles m_list.Updated
+        Dim updatedIndex = e.Index
+        Dim newDisplayString = e.UpdatedItem.Value.DisplayString
+        ctlListEditor.UpdateValue(updatedIndex, newDisplayString)
     End Sub
 End Class

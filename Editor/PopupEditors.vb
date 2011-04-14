@@ -1,4 +1,7 @@
-﻿Public Class Utility
+﻿Public Class PopupEditors
+
+    ' TO DO: Rename this to SharedEditors or something?? PopupEditors?
+
     Public Structure EditStringResult
         Public Cancelled As Boolean
         Public Result As String
@@ -20,4 +23,21 @@
     Public Shared Function GetError(validationMessage As ValidationMessage, item As String) As String
         Return String.Format(s_validationMessages(validationMessage), item)
     End Function
+
+    Public Shared Sub EditScript(controller As EditorController, ByRef scripts As IEditableScripts, attribute As String, element As String)
+        Dim popOut As New ScriptEditorPopOut
+
+        With popOut.ctlScriptEditor
+            .PopOut = True
+            .Scripts = scripts
+            .Controller = controller
+            .AttributeName = attribute
+            .ElementName = element
+            .Initialise()
+            .UpdateList()
+        End With
+        popOut.ShowDialog()
+        scripts = popOut.ctlScriptEditor.Scripts
+        popOut.ctlScriptEditor.Save()
+    End Sub
 End Class

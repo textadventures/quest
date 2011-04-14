@@ -14,6 +14,15 @@ namespace AxeSoftware.Quest
         public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Added;
         public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Removed;
 
+        // currently unused
+        public event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated
+        {
+            add { }
+            remove { }
+        }
+
+        public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Updated;
+
         #region Static DataWrapper
         private static EditableDataWrapper<QuestDictionary<TSource>, EditableWrappedItemDictionary<TSource, TWrapped>> s_wrapper;
 
@@ -35,6 +44,7 @@ namespace AxeSoftware.Quest
 
         private QuestDictionary<TSource> m_source;
         private Dictionary<string, IEditableListItem<TWrapped>> m_wrappedItems = new Dictionary<string, IEditableListItem<TWrapped>>();
+        private Dictionary<TWrapped, IEditableListItem<TWrapped>> m_wrappedItemsLookup = new Dictionary<TWrapped, IEditableListItem<TWrapped>>();
         private EditorController m_controller;
 
         public EditableWrappedItemDictionary(EditorController controller, QuestDictionary<TSource> source)
@@ -82,14 +92,32 @@ namespace AxeSoftware.Quest
         {
             IEditableListItem<TWrapped> wrappedValue = new EditableListItem<TWrapped>(key, value);
             m_wrappedItems.Add(key, wrappedValue);
+            m_wrappedItemsLookup.Add(value, wrappedValue);
+            value.UnderlyingValueUpdated += WrappedUnderlyingValueUpdated;
 
             if (Added != null) Added(this, new EditableListUpdatedEventArgs<TWrapped> { UpdatedItem = wrappedValue, Index = index, Source = source });
         }
 
         private void RemoveWrappedItem(IEditableListItem<TWrapped> item, EditorUpdateSource source, int index)
         {
+            m_wrappedItems[item.Key].Value.UnderlyingValueUpdated -= WrappedUnderlyingValueUpdated;
+            m_wrappedItemsLookup.Remove(m_wrappedItems[item.Key].Value);
             m_wrappedItems.Remove(item.Key);
             if (Removed != null) Removed(this, new EditableListUpdatedEventArgs<TWrapped> { UpdatedItem = item, Index = index, Source = source });
+        }
+
+        void WrappedUnderlyingValueUpdated(object sender, DataWrapperUpdatedEventArgs e)
+        {
+            if (Updated != null)
+            {
+                // sender will be the underlying wrapped value that has been updated. e.g. an IEditableScripts item
+                TWrapped updatedItem = (TWrapped)sender;
+
+                Updated(this, new EditableListUpdatedEventArgs<TWrapped> {
+                    UpdatedItem = m_wrappedItemsLookup[updatedItem],
+                    Index = m_source.IndexOfKey(m_wrappedItemsLookup[updatedItem].Key)
+                });
+            }
         }
 
         void m_source_Added(object sender, QuestDictionaryUpdatedEventArgs<TSource> e)
@@ -110,7 +138,7 @@ namespace AxeSoftware.Quest
 
                 foreach (var item in m_wrappedItems)
                 {
-                    result.Add(item.Key, m_controller.GetDisplayString(item.Value.Value));
+                    result.Add(item.Key, item.Value.Value.DisplayString());
                 }
 
                 return result;
@@ -191,6 +219,11 @@ namespace AxeSoftware.Quest
             m_source.Remove(key, UpdateSource.User);
             m_source.Add(key, UnwrapValue(value), UpdateSource.User, index);
             m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
+        public string DisplayString()
+        {
+            throw new NotImplementedException();
         }
     }
 }

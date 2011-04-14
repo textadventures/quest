@@ -382,15 +382,6 @@ namespace AxeSoftware.Quest
             return value;
         }
 
-        internal string GetDisplayString(object value)
-        {
-            if (value is IEditableScripts)
-            {
-                return ((IEditableScripts)value).DisplayString();
-            }
-            throw new NotImplementedException();
-        }
-
         internal WorldModel WorldModel
         {
             get { return m_worldModel; }

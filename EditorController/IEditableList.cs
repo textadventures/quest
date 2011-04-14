@@ -47,6 +47,7 @@ namespace AxeSoftware.Quest
     {
         event EventHandler<EditableListUpdatedEventArgs<T>> Added;
         event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
+        event EventHandler<EditableListUpdatedEventArgs<T>> Updated;
 
         IDictionary<string, IEditableListItem<T>> Items { get; }
         IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }

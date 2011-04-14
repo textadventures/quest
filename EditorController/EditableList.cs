@@ -10,6 +10,13 @@ namespace AxeSoftware.Quest
         public event EventHandler<EditableListUpdatedEventArgs<T>> Added;
         public event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
 
+        // currently unused
+        public event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated
+        {
+            add { }
+            remove { }
+        }
+
         #region Static DataWrapper
         private static EditableDataWrapper<QuestList<T>, EditableList<T>> s_wrapper;
 
@@ -185,6 +192,11 @@ namespace AxeSoftware.Quest
                 return new ValidationResult { Valid = false, Message = ValidationMessage.ItemAlreadyExists };
             }
             return new ValidationResult { Valid = true };
+        }
+
+        public string DisplayString()
+        {
+            throw new NotImplementedException();
         }
     }
 }

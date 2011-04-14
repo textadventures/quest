@@ -8,6 +8,9 @@ namespace AxeSoftware.Quest
 {
     public class EditableScripts : IEditableScripts, IDataWrapper
     {
+        public event EventHandler<EditableScriptsUpdatedEventArgs> Updated;
+        public event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated;
+
         private List<IEditableScript> m_scripts;
         private EditorController m_controller;
         private MultiScript m_underlyingScript;
@@ -125,8 +128,6 @@ namespace AxeSoftware.Quest
             get { return m_scripts[index]; }
         }
 
-        public event EventHandler<EditableScriptsUpdatedEventArgs> Updated;
-
         public void Remove(int index)
         {
             m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Remove '{0}' script", m_scripts[index].DisplayString()));
@@ -177,6 +178,7 @@ namespace AxeSoftware.Quest
                 Add(m_controller.ScriptFactory.CreateEditableScript(e.InsertedScript), e.Index, true);
             }
             if (Updated != null) Updated(this, new EditableScriptsUpdatedEventArgs());
+            if (UnderlyingValueUpdated != null) UnderlyingValueUpdated(this, new DataWrapperUpdatedEventArgs());
 
             System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
         }
@@ -186,6 +188,10 @@ namespace AxeSoftware.Quest
             if (Updated != null)
             {
                 Updated(this, new EditableScriptsUpdatedEventArgs((IEditableScript)sender, e));
+            }
+            if (UnderlyingValueUpdated != null)
+            {
+                UnderlyingValueUpdated(this, new DataWrapperUpdatedEventArgs());
             }
 
             System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);

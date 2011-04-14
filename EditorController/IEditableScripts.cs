@@ -28,7 +28,6 @@ namespace AxeSoftware.Quest
         IEditableScript this[int index] { get; }
         event EventHandler<EditableScriptsUpdatedEventArgs> Updated;
         void Remove(int index);
-        string DisplayString();
         string DisplayString(int index, string newValue);
         int Count { get; }
     }
