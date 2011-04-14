@@ -1,0 +1,196 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace AxeSoftware.Quest
+{
+    // This class is used to create an IEditableDictionary wrapper where the values in the dictionary are
+    // themselves wrapped.
+    //      For example: TSource=IScript, TWrapped=IEditableScripts
+    //      Then we can expose an IEditableDictionary<IEditableScripts> which wraps a QuestDictionary<IScript>
+    public class EditableWrappedItemDictionary<TSource, TWrapped> : IEditableDictionary<TWrapped>, IDataWrapper where TWrapped : IDataWrapper
+    {
+        public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Added;
+        public event EventHandler<EditableListUpdatedEventArgs<TWrapped>> Removed;
+
+        #region Static DataWrapper
+        private static EditableDataWrapper<QuestDictionary<TSource>, EditableWrappedItemDictionary<TSource, TWrapped>> s_wrapper;
+
+        static EditableWrappedItemDictionary()
+        {
+            s_wrapper = new EditableDataWrapper<QuestDictionary<TSource>, EditableWrappedItemDictionary<TSource, TWrapped>>(GetNewInstance);
+        }
+
+        public static EditableWrappedItemDictionary<TSource, TWrapped> GetInstance(EditorController controller, QuestDictionary<TSource> list)
+        {
+            return s_wrapper.GetInstance(controller, list);
+        }
+
+        private static EditableWrappedItemDictionary<TSource, TWrapped> GetNewInstance(EditorController controller, QuestDictionary<TSource> list)
+        {
+            return new EditableWrappedItemDictionary<TSource, TWrapped>(controller, list);
+        }
+        #endregion
+
+        private QuestDictionary<TSource> m_source;
+        private Dictionary<string, IEditableListItem<TWrapped>> m_wrappedItems = new Dictionary<string, IEditableListItem<TWrapped>>();
+        private EditorController m_controller;
+
+        public EditableWrappedItemDictionary(EditorController controller, QuestDictionary<TSource> source)
+        {
+            m_controller = controller;
+            m_source = source;
+            m_source.Added += m_source_Added;
+            m_source.Removed += m_source_Removed;
+            PopulateWrappedItems();
+        }
+
+        private void PopulateWrappedItems()
+        {
+            m_wrappedItems.Clear();
+            int index = 0;
+
+            foreach (var item in m_source)
+            {
+                AddWrappedItem(item.Key, WrapValue(item.Value), EditorUpdateSource.System, index);
+                index++;
+            }
+        }
+
+        private TWrapped WrapValue(TSource source)
+        {
+            return (TWrapped)m_controller.WrapValue((TSource)source);
+        }
+
+        private TSource UnwrapValue(TWrapped wrapped)
+        {
+            return (TSource)wrapped.GetUnderlyingValue();
+        }
+
+        public object GetUnderlyingValue()
+        {
+            return m_source;
+        }
+
+        public IDictionary<string, IEditableListItem<TWrapped>> Items
+        {
+            get { return m_wrappedItems; }
+        }
+
+        private void AddWrappedItem(string key, TWrapped value, EditorUpdateSource source, int index)
+        {
+            IEditableListItem<TWrapped> wrappedValue = new EditableListItem<TWrapped>(key, value);
+            m_wrappedItems.Add(key, wrappedValue);
+
+            if (Added != null) Added(this, new EditableListUpdatedEventArgs<TWrapped> { UpdatedItem = wrappedValue, Index = index, Source = source });
+        }
+
+        private void RemoveWrappedItem(IEditableListItem<TWrapped> item, EditorUpdateSource source, int index)
+        {
+            m_wrappedItems.Remove(item.Key);
+            if (Removed != null) Removed(this, new EditableListUpdatedEventArgs<TWrapped> { UpdatedItem = item, Index = index, Source = source });
+        }
+
+        void m_source_Added(object sender, QuestDictionaryUpdatedEventArgs<TSource> e)
+        {
+            AddWrappedItem(e.Key, WrapValue(e.Item), (EditorUpdateSource)e.Source, e.Index);
+        }
+
+        void m_source_Removed(object sender, QuestDictionaryUpdatedEventArgs<TSource> e)
+        {
+            RemoveWrappedItem(m_wrappedItems[e.Key], (EditorUpdateSource)e.Source, e.Index);
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> DisplayItems
+        {
+            get
+            {
+                Dictionary<string, string> result = new Dictionary<string, string>();
+
+                foreach (var item in m_wrappedItems)
+                {
+                    result.Add(item.Key, m_controller.GetDisplayString(item.Value.Value));
+                }
+
+                return result;
+            }
+        }
+
+        public void Add(string key, TWrapped value)
+        {
+            string undoEntry = null;
+            if (typeof(TWrapped) == typeof(string))
+            {
+                undoEntry = string.Format("Add '{0}={1}'", key, value as string);
+            }
+
+            if (undoEntry == null)
+            {
+                throw new InvalidOperationException("Unknown dictionary type");
+            }
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+            m_source.Add(key, UnwrapValue(value), UpdateSource.User);
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
+        public void Remove(params string[] keys)
+        {
+            string undoEntry = null;
+            if (typeof(TWrapped) == typeof(string))
+            {
+                undoEntry = string.Format("Remove '{0}'", string.Join(",", keys));
+            }
+
+            if (undoEntry == null)
+            {
+                throw new InvalidOperationException("Unknown list type");
+            }
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+            foreach (string key in keys)
+            {
+                m_source.Remove(key, UpdateSource.User);
+            }
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
+        public ValidationResult CanAdd(string key)
+        {
+            if (m_source.ContainsKey(key))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.ItemAlreadyExists };
+            }
+            return new ValidationResult { Valid = true };
+        }
+
+        public TWrapped this[string key]
+        {
+            get
+            {
+                return WrapValue(m_source[key]);
+            }
+        }
+
+        public void Update(string key, TWrapped value)
+        {
+            string undoEntry = null;
+            if (typeof(TWrapped) == typeof(string))
+            {
+                undoEntry = string.Format("Update '{0}='{1}'", key, value as string);
+            }
+
+            if (undoEntry == null)
+            {
+                throw new InvalidOperationException("Unknown list type");
+            }
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+            int index = m_source.IndexOfKey(key);
+            m_source.Remove(key, UpdateSource.User);
+            m_source.Add(key, UnwrapValue(value), UpdateSource.User, index);
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+    }
+}

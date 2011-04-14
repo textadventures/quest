@@ -79,6 +79,7 @@
     <Compile Include="EditableScriptBase.cs" />
     <Compile Include="EditableScriptFactory.cs" />
     <Compile Include="EditableScripts.cs" />
+    <Compile Include="EditableWrappedItemDictionary.cs" />
     <Compile Include="EditorControl.cs" />
     <Compile Include="EditorController.cs" />
     <Compile Include="EditorData.cs" />

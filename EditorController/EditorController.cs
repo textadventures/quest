@@ -374,7 +374,21 @@ namespace AxeSoftware.Quest
                 return EditableDictionary<string>.GetInstance(this, (QuestDictionary<string>)value);
             }
 
+            if (value is QuestDictionary<IScript>)
+            {
+                return EditableWrappedItemDictionary<IScript, IEditableScripts>.GetInstance(this, (QuestDictionary<IScript>)value);
+            }
+
             return value;
+        }
+
+        internal string GetDisplayString(object value)
+        {
+            if (value is IEditableScripts)
+            {
+                return ((IEditableScripts)value).DisplayString();
+            }
+            throw new NotImplementedException();
         }
 
         internal WorldModel WorldModel

@@ -21,7 +21,7 @@ namespace AxeSoftware.Quest
         public EditableScriptUpdatedEventArgs UpdatedScriptEventArgs { get; private set; }
     }
 
-    public interface IEditableScripts
+    public interface IEditableScripts : IDataWrapper
     {
         IEnumerable<IEditableScript> Scripts { get; }
         void AddNew(string keyword, string elementName);

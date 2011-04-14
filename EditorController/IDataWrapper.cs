@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
-    internal interface IDataWrapper
+    public interface IDataWrapper
     {
         object GetUnderlyingValue();
     }
