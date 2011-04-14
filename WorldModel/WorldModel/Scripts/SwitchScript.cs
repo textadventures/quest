@@ -86,7 +86,7 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel = worldModel;
             m_expr = expression;
             m_cases = new SwitchCases(this, cases);
-            m_default = defaultScript;
+            m_default = defaultScript ?? new MultiScript();
         }
 
         public override void Execute(Context c)
@@ -107,7 +107,7 @@ namespace AxeSoftware.Quest.Scripts
         {
             string result = SaveScript("switch", m_expr.Save()) + " {" + Environment.NewLine;
             result += m_cases.Save();
-            if (m_default != null) result += SaveScript("default", m_default);
+            if (m_default != null && ((MultiScript)m_default).Scripts.Count() > 0) result += SaveScript("default", m_default);
             result += Environment.NewLine + "}";
             return result;
         }
