@@ -32,6 +32,7 @@ Public Class DictionaryScriptControl
     End Property
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
+    Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
 
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         ctlListEditor.EditorDelegate = Me
@@ -120,5 +121,9 @@ Public Class DictionaryScriptControl
         Dim updatedIndex = e.Index
         Dim newDisplayString = e.UpdatedItem.Value.DisplayString
         ctlListEditor.UpdateValue(updatedIndex, newDisplayString)
+    End Sub
+
+    Private Sub ctlListEditor_ToolbarClicked() Handles ctlListEditor.ToolbarClicked
+        RaiseEvent RequestParentElementEditorSave()
     End Sub
 End Class

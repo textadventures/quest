@@ -10,6 +10,7 @@ Public Class TextBoxControl
     Private m_data As IEditorData
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
+    Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
 
     Public ReadOnly Property Control() As System.Windows.Forms.Control Implements IElementEditorControl.Control
         Get

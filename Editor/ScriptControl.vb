@@ -7,6 +7,7 @@ Public Class ScriptControl
     Private m_elementName As String
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
+    Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
     Public Event HeightChanged(sender As Object, height As Integer)
 
     Public ReadOnly Property Control() As System.Windows.Forms.Control Implements IElementEditorControl.Control

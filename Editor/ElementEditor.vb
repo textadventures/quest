@@ -88,6 +88,7 @@
             newControl.Control.Width = Me.Width - k_padding
             newControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
             AddHandler newControl.Dirty, AddressOf Control_Dirty
+            AddHandler newControl.RequestParentElementEditorSave, AddressOf ControlRequestsSave
             If editorControl.Height.HasValue Then
                 newControl.SetControlHeight(editorControl.Height.Value)
             End If
@@ -117,6 +118,7 @@
 
         For Each ctl In m_controls
             RemoveHandler ctl.Dirty, AddressOf Control_Dirty
+            RemoveHandler ctl.RequestParentElementEditorSave, AddressOf ControlRequestsSave
             ctl.Parent = Nothing
             ctl.Visible = False
             ctl.Value = Nothing
@@ -198,6 +200,10 @@
             args.Attribute = DirectCast(sender, EditorControl).AttributeName
             RaiseEvent Dirty(sender, args)
         End If
+    End Sub
+
+    Private Sub ControlRequestsSave()
+        SaveData()
     End Sub
 
     Public Property Controller As EditorController Implements ICommandEditor.Controller

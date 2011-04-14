@@ -9,6 +9,12 @@
     Private m_style As ColumnStyle
     Private m_headers(2) As String
 
+    ' This event is triggered as soon as any toolbar button is clicked, so that the parent
+    ' can save any existing updates. This is necessary because the TextBoxControl will only
+    ' cause an update when it detects that it has lost focus, but this won't happen when a
+    ' toolbar button is clicked, so we need to force it.
+    Public Event ToolbarClicked()
+
     Public Sub New()
         ' This call is required by the designer.
         InitializeComponent()
@@ -93,14 +99,17 @@
     End Sub
 
     Private Sub cmdAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdAdd.Click
+        RaiseEvent ToolbarClicked()
         m_delegate.DoAdd()
     End Sub
 
     Private Sub cmdDelete_Click(sender As Object, e As System.EventArgs) Handles cmdDelete.Click
+        RaiseEvent ToolbarClicked()
         m_delegate.DoRemove(GetSelectedItems().ToArray)
     End Sub
 
     Private Sub cmdEdit_Click(sender As System.Object, e As System.EventArgs) Handles cmdEdit.Click
+        RaiseEvent ToolbarClicked()
         EditSelectedItem()
     End Sub
 

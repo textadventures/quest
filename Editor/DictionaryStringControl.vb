@@ -32,6 +32,7 @@ Public Class DictionaryStringControl
     End Property
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
+    Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
 
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         ctlListEditor.EditorDelegate = Me
@@ -116,5 +117,9 @@ Public Class DictionaryStringControl
 
     Private Sub m_list_Removed(sender As Object, e As EditableListUpdatedEventArgs(Of String)) Handles m_list.Removed
         ctlListEditor.RemoveListItem(e.UpdatedItem.Key)
+    End Sub
+
+    Private Sub ctlListEditor_ToolbarClicked() Handles ctlListEditor.ToolbarClicked
+        RaiseEvent RequestParentElementEditorSave()
     End Sub
 End Class

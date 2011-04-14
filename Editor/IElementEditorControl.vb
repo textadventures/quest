@@ -33,6 +33,7 @@ End Class
 Public Interface IElementEditorControl
 
     Event Dirty(sender As Object, args As DataModifiedEventArgs)
+    Event RequestParentElementEditorSave()
 
     ReadOnly Property Control() As Control
     Property Value() As Object

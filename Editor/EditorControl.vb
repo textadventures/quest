@@ -11,6 +11,7 @@
     Private m_controller As EditorController
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
+    Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
 
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         Dim createType As Type = controller.GetControlType(controlData.ControlType)
@@ -103,4 +104,7 @@
         m_editorControl.Populate(data)
     End Sub
 
+    Private Sub m_editorControl_RequestParentElementEditorSave() Handles m_editorControl.RequestParentElementEditorSave
+        RaiseEvent RequestParentElementEditorSave()
+    End Sub
 End Class
