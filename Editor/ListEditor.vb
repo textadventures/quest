@@ -31,6 +31,7 @@
             Next
         End If
 
+        ResizeListEditor()
         SetButtonsEnabledStatus()
     End Sub
 
@@ -75,9 +76,20 @@
     End Sub
 
     Private Sub ListControl_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
-        ' TO DO: This is wrong for a TwoColumn layout, and also doesn't work well for OneColumn as
-        ' we get a vertical scrollbar for no reason, ugh
-        lstList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
+        ResizeListEditor()
+    End Sub
+
+    Private Sub ResizeListEditor()
+        If lstList.Columns.Count = 0 Then Return
+
+        Select Case Style
+            Case ColumnStyle.OneColumn
+                lstList.Columns(0).Width = lstList.Width - SystemInformation.VerticalScrollBarWidth - lstList.Margin.Horizontal
+            Case ColumnStyle.TwoColumns
+
+            Case Else
+                Throw New InvalidOperationException("Invalid column style")
+        End Select
     End Sub
 
     Private Sub cmdAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdAdd.Click
