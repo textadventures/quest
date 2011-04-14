@@ -62,7 +62,7 @@
                 newListViewItem = lstList.Items.Insert(index, Utility.FormatAsOneLine(item.Value))
             Case ColumnStyle.TwoColumns
                 newListViewItem = lstList.Items.Insert(index, Utility.FormatAsOneLine(item.Key))
-                newListViewItem.SubItems.Add(item.Value)
+                newListViewItem.SubItems.Add(Utility.FormatAsOneLine(item.Value))
             Case Else
                 Throw New InvalidOperationException("Invalid column style")
         End Select

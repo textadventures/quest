@@ -83,6 +83,30 @@
       <attribute>2</attribute>
     </control>
   </editor>
+
+  <editor>
+    <appliesto>switch</appliesto>
+    <display>Switch #0: (#1 cases), Default: #2</display>
+    <category>Scripts</category>
+    <add>Switch...</add>
+    <create>switch ()</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Expression</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>scriptdictionary</controltype>
+      <caption>Cases</caption>
+      <attribute>1</attribute>
+      <keyprompt>Please enter the case expression</keyprompt>
+    </control>
+    <control>
+      <controltype>script</controltype>
+      <caption>Default</caption>
+      <attribute>2</attribute>
+    </control>
+  </editor>
   
   <editor>
     <appliesto>=</appliesto>

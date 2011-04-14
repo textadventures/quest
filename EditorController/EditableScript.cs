@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using AxeSoftware.Quest.Scripts;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace AxeSoftware.Quest
 {
@@ -50,6 +51,7 @@ namespace AxeSoftware.Quest
 
                     IScript scriptValue = value as IScript;
                     string stringValue = value as string;
+                    ICollection collectionValue = value as ICollection;
 
                     if (stringValue != null)
                     {
@@ -60,6 +62,10 @@ namespace AxeSoftware.Quest
                         EditableScripts editableScripts = EditableScripts.GetInstance(m_controller, scriptValue);
                         RegisterNestedScriptForUpdates(editableScripts);
                         attributeValue = (editableScripts.Count == 0) ? "(nothing)" : editableScripts.DisplayString();
+                    }
+                    else if (collectionValue != null)
+                    {
+                        attributeValue = collectionValue.Count.ToString();
                     }
                     else if (value == null)
                     {
