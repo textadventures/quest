@@ -12,6 +12,18 @@ namespace AxeSoftware.Quest
         public EditorUpdateSource Source { get; set; }
     }
 
+    public enum ValidationMessage
+    {
+        OK,
+        ItemAlreadyExists,
+    }
+
+    public struct ValidationResult
+    {
+        public bool Valid;
+        public ValidationMessage Message;
+    }
+
     public interface IEditableList<T>
     {
         event EventHandler<EditableListUpdatedEventArgs<T>> Added;
@@ -22,6 +34,7 @@ namespace AxeSoftware.Quest
         void Remove(params T[] items);
         void Update(int index, T item);
         IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }
+        ValidationResult CanAdd(T item);
     }
 
     public interface IEditableListItem<T>
@@ -36,5 +49,11 @@ namespace AxeSoftware.Quest
         event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
 
         IDictionary<string, IEditableListItem<T>> Items { get; }
+        IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }
+        void Add(string key, T value);
+        void Remove(params string[] keys);
+        void Update(string key, T value);
+        ValidationResult CanAdd(string key);
+        T this[string key] { get; }
     }
 }

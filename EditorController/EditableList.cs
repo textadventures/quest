@@ -177,5 +177,14 @@ namespace AxeSoftware.Quest
                 return result;
             }
         }
+
+        public ValidationResult CanAdd(T item)
+        {
+            if (m_source.Contains(item))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.ItemAlreadyExists };
+            }
+            return new ValidationResult { Valid = true };
+        }
     }
 }

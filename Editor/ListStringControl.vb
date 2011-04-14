@@ -65,19 +65,6 @@ Public Class ListStringControl
         End Set
     End Property
 
-    Private Structure EditItemResult
-        Public Cancelled As Boolean
-        Public Result As String
-    End Structure
-
-    Private Function EditItem(input As String) As EditItemResult
-        Dim result As New EditItemResult
-        Dim inputResult = InputBox(m_controlData.GetString("editprompt"), DefaultResponse:=input)
-        result.Cancelled = (inputResult.Length = 0)
-        result.Result = inputResult
-        Return result
-    End Function
-
     Private Sub m_list_Added(sender As Object, e As EditableListUpdatedEventArgs(Of String)) Handles m_list.Added
         ctlListEditor.AddListItem(New KeyValuePair(Of String, String)(e.UpdatedItem.Key, e.UpdatedItem.Value), e.Index)
 
@@ -92,8 +79,9 @@ Public Class ListStringControl
     End Sub
 
     Public Sub DoAdd() Implements IListEditorDelegate.DoAdd
-        Dim result = EditItem(String.Empty)
+        Dim result = Utility.EditString(m_controlData.GetString("editprompt"), String.Empty)
         If result.Cancelled Then Return
+        If Not ValidateInput(result.Result) Then Return
 
         If m_list Is Nothing Then
             Value = m_controller.CreateNewEditableList(m_elementName, m_attributeName, result.Result)
@@ -103,8 +91,10 @@ Public Class ListStringControl
     End Sub
 
     Public Sub DoEdit(key As String, index As Integer) Implements IListEditorDelegate.DoEdit
-        Dim result = EditItem(key)
+        Dim result = Utility.EditString(m_controlData.GetString("editprompt"), key)
         If result.Cancelled Then Return
+        If result.Result = key Then Return
+        If Not ValidateInput(result.Result) Then Return
 
         m_list.Update(index, result.Result)
     End Sub
@@ -112,4 +102,13 @@ Public Class ListStringControl
     Public Sub DoRemove(keys() As String) Implements IListEditorDelegate.DoRemove
         m_list.Remove(keys)
     End Sub
+
+    Private Function ValidateInput(input As String) As Boolean
+        If m_list Is Nothing Then Return True
+        Dim result = m_list.CanAdd(input)
+        If result.Valid Then Return True
+
+        MsgBox(Utility.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add item")
+        Return False
+    End Function
 End Class

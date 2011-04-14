@@ -85,6 +85,8 @@
         <controltype>stringdictionary</controltype>
         <caption>Knowledge</caption>
         <attribute>knowledge</attribute>
+        <keyprompt>Please enter a knowledge subject</keyprompt>
+        <valueprompt>Please enter some text to display</valueprompt>
       </control>
       <!-- temporary -->
     </tab>

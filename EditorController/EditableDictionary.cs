@@ -87,5 +87,97 @@ namespace AxeSoftware.Quest
         {
             RemoveWrappedItem(m_wrappedItems[e.Key], (EditorUpdateSource)e.Source, e.Index);
         }
+
+        public IEnumerable<KeyValuePair<string, string>> DisplayItems
+        {
+            get
+            {
+                Dictionary<string, string> result = new Dictionary<string, string>();
+
+                foreach (var item in m_wrappedItems)
+                {
+                    // TO DO: We will need some kind of projection function for non-string T's
+                    result.Add(item.Key, item.Value.Value as string);
+                }
+
+                return result;
+            }
+        }
+
+        public void Add(string key, T value)
+        {
+            string undoEntry = null;
+            if (typeof(T) == typeof(string))
+            {
+                undoEntry = string.Format("Add '{0}={1}'", key, value as string);
+            }
+
+            if (undoEntry == null)
+            {
+                throw new InvalidOperationException("Unknown dictionary type");
+            }
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+            m_source.Add(key, value, UpdateSource.User);
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
+        public void Remove(params string[] keys)
+        {
+            string undoEntry = null;
+            if (typeof(T) == typeof(string))
+            {
+                undoEntry = string.Format("Remove '{0}'", string.Join(",", keys));
+            }
+
+            if (undoEntry == null)
+            {
+                throw new InvalidOperationException("Unknown list type");
+            }
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+            foreach (string key in keys)
+            {
+                m_source.Remove(key, UpdateSource.User);
+            }
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
+        public ValidationResult CanAdd(string key)
+        {
+            if (m_source.ContainsKey(key))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.ItemAlreadyExists };
+            }
+            return new ValidationResult { Valid = true };
+        }
+
+        public T this[string key]
+        {
+            get
+            {
+                return m_source[key];
+            }
+        }
+
+        public void Update(string key, T value)
+        {
+            string undoEntry = null;
+            if (typeof(T) == typeof(string))
+            {
+                undoEntry = string.Format("Update '{0}='{1}'", key, value as string);
+            }
+
+            if (undoEntry == null)
+            {
+                throw new InvalidOperationException("Unknown list type");
+            }
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
+            int index = m_source.IndexOfKey(key);
+            m_source.Remove(key, UpdateSource.User);
+            m_source.Add(key, value, UpdateSource.User, index);
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
     }
 }

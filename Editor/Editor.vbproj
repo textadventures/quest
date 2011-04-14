@@ -218,10 +218,14 @@
     <Compile Include="TextBoxControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Utility.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DictionaryScriptControl.resx">
       <DependentUpon>DictionaryScriptControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DictionaryStringControl.resx">
+      <DependentUpon>DictionaryStringControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditorControl.resx">
       <DependentUpon>EditorControl.vb</DependentUpon>

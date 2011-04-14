@@ -1,15 +1,27 @@
 ﻿Public Class ListEditor
-    Private m_listItems As New Dictionary(Of String, ListViewItem)
+    Public Enum ColumnStyle
+        OneColumn
+        TwoColumns
+    End Enum
 
+    Private m_listItems As New Dictionary(Of String, ListViewItem)
     Private m_delegate As IListEditorDelegate
+    Private m_style As ColumnStyle
+    Private m_headers(2) As String
+
+    Public Sub New()
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        Style = ColumnStyle.OneColumn
+        UpdateList(Nothing)
+    End Sub
 
     Public Sub UpdateList(list As IEnumerable(Of KeyValuePair(Of String, String)))
         lstList.Clear()
         m_listItems.Clear()
-        Dim mainColumn As New ColumnHeader
-        lstList.Columns.Add(mainColumn)
-        mainColumn.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize)
-        lstList.HeaderStyle = ColumnHeaderStyle.None
+        InitialiseColumnHeaders()
         Dim index As Integer = 0
 
         If list IsNot Nothing Then
@@ -22,8 +34,38 @@
         SetButtonsEnabledStatus()
     End Sub
 
+    Private Sub InitialiseColumnHeaders()
+        If Style = ColumnStyle.OneColumn Then
+            Dim mainColumn As New ColumnHeader
+            lstList.Columns.Add(mainColumn)
+            mainColumn.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize)
+            lstList.HeaderStyle = ColumnHeaderStyle.None
+            lstList.FullRowSelect = False
+        Else
+            Dim column1 As New ColumnHeader
+            column1.Text = m_headers(1)
+            Dim column2 As New ColumnHeader
+            column2.Text = m_headers(2)
+            lstList.Columns.Add(column1)
+            lstList.Columns.Add(column2)
+            lstList.HeaderStyle = ColumnHeaderStyle.Nonclickable
+            lstList.FullRowSelect = True
+        End If
+    End Sub
+
     Public Sub AddListItem(item As KeyValuePair(Of String, String), index As Integer)
-        Dim newListViewItem As ListViewItem = lstList.Items.Insert(index, item.Value)
+        Dim newListViewItem As ListViewItem
+
+        Select Case Style
+            Case ColumnStyle.OneColumn
+                newListViewItem = lstList.Items.Insert(index, item.Value)
+            Case ColumnStyle.TwoColumns
+                newListViewItem = lstList.Items.Insert(index, item.Key)
+                newListViewItem.SubItems.Add(item.Value)
+            Case Else
+                Throw New InvalidOperationException("Invalid column style")
+        End Select
+
         m_listItems.Add(item.Key, newListViewItem)
     End Sub
 
@@ -33,6 +75,8 @@
     End Sub
 
     Private Sub ListControl_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
+        ' TO DO: This is wrong for a TwoColumn layout, and also doesn't work well for OneColumn as
+        ' we get a vertical scrollbar for no reason, ugh
         lstList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
     End Sub
 
@@ -107,4 +151,16 @@
         lstList.Focus()
     End Sub
 
+    Public Property Style As ColumnStyle
+        Get
+            Return m_style
+        End Get
+        Set(value As ColumnStyle)
+            m_style = value
+        End Set
+    End Property
+
+    Public Sub SetHeader(column As Integer, text As String)
+        m_headers(column) = text
+    End Sub
 End Class

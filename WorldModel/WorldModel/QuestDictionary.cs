@@ -44,6 +44,11 @@ namespace AxeSoftware.Quest
             }
         }
 
+        public int IndexOfKey(string key)
+        {
+            return m_dictionary.IndexOfKey(key);
+        }
+
         #region IMutableField Members
 
         public UndoLogger UndoLog
@@ -77,10 +82,23 @@ namespace AxeSoftware.Quest
 
         public void Add(string key, T value)
         {
+            Add(key, value, UpdateSource.System);
+        }
+
+        public void Add(string key, T value, UpdateSource source)
+        {
             CheckNotLocked();
             m_dictionary.Add(key, value);
             UndoLogAdd(key);
-            NotifyAdd(key, value, UpdateSource.System, m_dictionary.IndexOfKey(key));
+            NotifyAdd(key, value, source, m_dictionary.IndexOfKey(key));
+        }
+
+        public void Add(string key, T value, UpdateSource source, int index)
+        {
+            CheckNotLocked();
+            m_dictionary.Insert(index, key, value);
+            UndoLogAdd(key);
+            NotifyAdd(key, value, source, index);
         }
 
         public bool ContainsKey(string key)
@@ -95,11 +113,17 @@ namespace AxeSoftware.Quest
 
         public bool Remove(string key)
         {
+            return Remove(key, UpdateSource.System);
+        }
+
+        public bool Remove(string key, UpdateSource source)
+        {
             CheckNotLocked();
             UndoLogRemove(key);
-            NotifyRemove(key, m_dictionary[key], UpdateSource.System, m_dictionary.IndexOfKey(key));
+            NotifyRemove(key, m_dictionary[key], source, m_dictionary.IndexOfKey(key));
             return m_dictionary.Remove(key);
         }
+
 
         public bool TryGetValue(string key, out T value)
         {

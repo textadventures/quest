@@ -217,6 +217,7 @@
     </None>
     <None Include="Core\CoreEditor.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorScripts.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

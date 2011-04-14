@@ -359,7 +359,6 @@ namespace AxeSoftware.Quest
 
         internal object WrapValue(object value)
         {
-            // need to wrap IScript in an IEditableScript
             if (value is IScript)
             {
                 return EditableScripts.GetInstance(this, (IScript)value);
@@ -368,6 +367,11 @@ namespace AxeSoftware.Quest
             if (value is QuestList<string>)
             {
                 return EditableList<string>.GetInstance(this, (QuestList<string>)value);
+            }
+
+            if (value is QuestDictionary<string>)
+            {
+                return EditableDictionary<string>.GetInstance(this, (QuestDictionary<string>)value);
             }
 
             return value;
@@ -407,6 +411,28 @@ namespace AxeSoftware.Quest
             }
 
             EditableList<string> newValue = new EditableList<string>(this, newList);
+            WorldModel.UndoLogger.EndTransaction();
+
+            return newValue;
+        }
+
+        public IEditableDictionary<string> CreateNewEditableStringDictionary(string parent, string attribute, string key, string item)
+        {
+            WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} to '{2}'", parent, attribute, item));
+            Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
+
+            QuestDictionary<string> newDictionary = new QuestDictionary<string>();
+            newDictionary.Add(key, item);
+
+            if (element != null)
+            {
+                element.Fields.Set(attribute, newDictionary);
+
+                // setting an element field will clone the value, so we want to return the new dictionary
+                newDictionary = element.Fields.GetAsType<QuestDictionary<string>>(attribute);
+            }
+
+            EditableDictionary<string> newValue = new EditableDictionary<string>(this, newDictionary);
             WorldModel.UndoLogger.EndTransaction();
 
             return newValue;
