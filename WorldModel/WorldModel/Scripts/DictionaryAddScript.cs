@@ -9,12 +9,6 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class DictionaryAddScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
-        public DictionaryAddScriptConstructor()
-        {
-        }
-
         public override string Keyword
         {
             get { return "dictionary add"; }
@@ -22,14 +16,16 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new DictionaryAddScript(new ExpressionGeneric(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel), new Expression<object>(parameters[2], WorldModel));
+            return new DictionaryAddScript(WorldModel,
+                new ExpressionGeneric(parameters[0], WorldModel),
+                new Expression<string>(parameters[1], WorldModel),
+                new Expression<object>(parameters[2], WorldModel));
         }
 
         protected override int[] ExpectedParameters
         {
             get { return new int[] { 3 }; }
         }
-        #endregion
     }
 
     public class DictionaryAddScript : ScriptBase
@@ -37,15 +33,15 @@ namespace AxeSoftware.Quest.Scripts
         private IFunctionGeneric m_dictionary;
         private IFunction<string> m_key;
         private IFunction<object> m_value;
+        private WorldModel m_worldModel;
 
-        public DictionaryAddScript(IFunctionGeneric dictionary, IFunction<string> key, IFunction<object> value)
+        public DictionaryAddScript(WorldModel worldModel, IFunctionGeneric dictionary, IFunction<string> key, IFunction<object> value)
         {
             m_dictionary = dictionary;
             m_key = key;
             m_value = value;
+            m_worldModel = worldModel;
         }
-
-        #region IScript Members
 
         public override void Execute(Context c)
         {
@@ -66,17 +62,50 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("dictionary add", m_dictionary.Save(), m_key.Save(), m_value.Save());
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "dictionary add";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return m_dictionary.Save();
+                case 1:
+                    return m_key.Save();
+                case 2:
+                    return m_value.Save();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            switch (index)
+            {
+                case 0:
+                    m_dictionary = new ExpressionGeneric((string)value, m_worldModel);
+                    break;
+                case 1:
+                    m_key = new Expression<string>((string)value, m_worldModel);
+                    break;
+                case 2:
+                    m_value = new Expression<object>((string)value, m_worldModel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 
     public class DictionaryRemoveScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
-        public DictionaryRemoveScriptConstructor()
-        {
-        }
-
         public override string Keyword
         {
             get { return "dictionary remove"; }
@@ -84,28 +113,29 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new DictionaryRemoveScript(new ExpressionGeneric(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel));
+            return new DictionaryRemoveScript(WorldModel,
+                new ExpressionGeneric(parameters[0], WorldModel),
+                new Expression<string>(parameters[1], WorldModel));
         }
 
         protected override int[] ExpectedParameters
         {
             get { return new int[] { 2 }; }
         }
-        #endregion
     }
 
     public class DictionaryRemoveScript : ScriptBase
     {
         private IFunctionGeneric m_dictionary;
         private IFunction<string> m_key;
+        private WorldModel m_worldModel;
 
-        public DictionaryRemoveScript(IFunctionGeneric dictionary, IFunction<string> key)
+        public DictionaryRemoveScript(WorldModel worldModel, IFunctionGeneric dictionary, IFunction<string> key)
         {
             m_dictionary = dictionary;
             m_key = key;
+            m_worldModel = worldModel;
         }
-
-        #region IScript Members
 
         public override void Execute(Context c)
         {
@@ -126,6 +156,40 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("dictionary remove", m_dictionary.Save(), m_key.Save());
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "dictionary remove";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return m_dictionary.Save();
+                case 1:
+                    return m_key.Save();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            switch (index)
+            {
+                case 0:
+                    m_dictionary = new ExpressionGeneric((string)value, m_worldModel);
+                    break;
+                case 1:
+                    m_key = new Expression<string>((string)value, m_worldModel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 }

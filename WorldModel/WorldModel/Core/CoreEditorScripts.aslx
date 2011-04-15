@@ -263,4 +263,80 @@
     </control>
   </editor>
 
+  <editor>
+    <appliesto>list add</appliesto>
+    <display>Add to list #0 value #1</display>
+    <category>Variables</category>
+    <add>Add a value to a list</add>
+    <create>list add (,)</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>List</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Value</caption>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>list remove</appliesto>
+    <display>Remove from list #0 value #1</display>
+    <category>Variables</category>
+    <add>Remove a value from a list</add>
+    <create>list remove (,)</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>List</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Value</caption>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>dictionary add</appliesto>
+    <display>Add to dictionary #0: #1 = #2</display>
+    <category>Variables</category>
+    <add>Add a value to a dictionary</add>
+    <create>dictionary add (,"",)</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Dictionary</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Key</caption>
+      <attribute>1</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Value</caption>
+      <attribute>2</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>dictionary remove</appliesto>
+    <display>Remove from dictionary #0: #1</display>
+    <category>Variables</category>
+    <add>Remove a value from a dictionary</add>
+    <create>dictionary remove (,"")</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Dictionary</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Key</caption>
+      <attribute>1</attribute>
+    </control>
+  </editor>
 </library>
