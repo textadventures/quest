@@ -16,6 +16,32 @@
   </editor>
 
   <editor>
+    <appliesto>picture</appliesto>
+    <display>Show picture #0</display>
+    <category>Output</category>
+    <create>picture ("")</create>
+    <add>Show a picture</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Filename</caption>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>insert</appliesto>
+    <display>Insert HTML from file #0</display>
+    <category>Output</category>
+    <create>insert ("")</create>
+    <add>Insert HTML from a file</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Filename</caption>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>request</appliesto>
     <display>Raise UI request "#0" (parameter #1)</display>
     <category>Output</category>

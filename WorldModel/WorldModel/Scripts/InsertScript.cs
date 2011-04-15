@@ -8,8 +8,6 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class InsertScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "insert"; }
@@ -24,7 +22,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             get { return new int[] { 1 }; }
         }
-        #endregion
     }
 
     public class InsertScript : ScriptBase
@@ -38,8 +35,6 @@ namespace AxeSoftware.Quest.Scripts
             m_filename = filename;
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             string filename = m_filename.Execute(c);
@@ -47,11 +42,9 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel.PlayerUI.WriteHTML(System.IO.File.ReadAllText(path));
         }
 
-        #endregion
-
         public override string Save()
         {
-            return SaveScript("msg", m_filename.Save());
+            return SaveScript("insert", m_filename.Save());
         }
 
         public override object GetParameter(int index)

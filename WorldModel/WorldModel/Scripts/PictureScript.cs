@@ -8,8 +8,6 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class PictureScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "picture"; }
@@ -24,7 +22,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             get { return new int[] { 1 }; }
         }
-        #endregion
     }
 
     public class PictureScript : ScriptBase
