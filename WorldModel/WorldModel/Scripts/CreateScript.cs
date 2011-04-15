@@ -107,8 +107,6 @@ namespace AxeSoftware.Quest.Scripts
             m_to = to;
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             m_worldModel.ObjectFactory.CreateExit(m_name.Execute(c), m_from.Execute(c), m_to.Execute(c));
@@ -119,6 +117,45 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("create exit", m_name.Save(), m_from.Save(), m_to.Save());
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "create exit";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return m_name.Save();
+                case 1:
+                    return m_from.Save();
+                case 2:
+                    return m_to.Save();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            switch (index)
+            {
+                case 0:
+                    m_name = new Expression<string>((string)value, m_worldModel);
+                    break;
+                case 1:
+                    m_from = new Expression<Element>((string)value, m_worldModel);
+                    break;
+                case 2:
+                    m_to = new Expression<Element>((string)value, m_worldModel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 }

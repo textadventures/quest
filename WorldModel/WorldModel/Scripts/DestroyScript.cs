@@ -38,8 +38,6 @@ namespace AxeSoftware.Quest.Scripts
             m_expr = expr;
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             m_worldModel.ObjectFactory.DestroyObject(m_expr.Execute(c));
@@ -50,6 +48,22 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("destroy", m_expr.Save());
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "destroy";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            return m_expr.Save();
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            m_expr = new Expression<string>((string)value, m_worldModel);
+        }
     }
 }

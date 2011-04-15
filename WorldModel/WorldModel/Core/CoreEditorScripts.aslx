@@ -1,4 +1,7 @@
 ﻿<library>
+  
+  <!-- Output -->
+  
   <editor>
     <appliesto>msg</appliesto>
     <display>Print #0</display>
@@ -11,6 +14,8 @@
       <attribute>0</attribute>
     </control>
   </editor>
+  
+  <!-- Objects -->
 
   <editor>
     <appliesto>create</appliesto>
@@ -24,6 +29,44 @@
       <attribute>0</attribute>
     </control>
   </editor>
+
+  <editor>
+    <appliesto>create exit</appliesto>
+    <display>Create exit #0 from #1 to #2</display>
+    <category>Objects</category>
+    <create>create exit ("",,)</create>
+    <add>Create an exit</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Name</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>From</caption>
+      <attribute>1</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>To</caption>
+      <attribute>2</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>destroy</appliesto>
+    <display>Destroy #0</display>
+    <category>Objects</category>
+    <create>destroy ("")</create>
+    <add>Destroy an object</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Name</caption>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+  
+  <!-- Scripts -->
 
   <editor>
     <appliesto>if</appliesto>
@@ -107,6 +150,8 @@
       <attribute>2</attribute>
     </control>
   </editor>
+  
+  <!-- Variables -->
   
   <editor>
     <appliesto>=</appliesto>
