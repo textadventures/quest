@@ -10,6 +10,7 @@ namespace AxeSoftware.Quest
         private string m_controlType;
         private string m_caption;
         private int? m_height = null;
+        private int? m_width = null;
         private string m_attribute;
         private bool m_expand = false;
         private Element m_source;
@@ -21,6 +22,7 @@ namespace AxeSoftware.Quest
             m_caption = source.Fields.GetString("caption");
             m_attribute = source.Fields.GetString("attribute");
             if (source.Fields.HasType<int>("height")) m_height = source.Fields.GetAsType<int>("height");
+            if (source.Fields.HasType<int>("width")) m_width = source.Fields.GetAsType<int>("width");
             if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");
         }
 
@@ -39,6 +41,11 @@ namespace AxeSoftware.Quest
             get { return m_height; }
         }
 
+        public int? Width
+        {
+            get { return m_width; }
+        }
+
         public string Attribute
         {
             get { return m_attribute; }
@@ -52,6 +59,11 @@ namespace AxeSoftware.Quest
         public string GetString(string tag)
         {
             return m_source.Fields.GetString(tag);
+        }
+
+        public IEnumerable<string> GetListString(string tag)
+        {
+            return m_source.Fields.GetAsType<QuestList<string>>(tag);
         }
     }
 }

@@ -109,6 +109,12 @@
     <Compile Include="DictionaryStringControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="DropDownControl.Designer.vb">
+      <DependentUpon>DropDownControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DropDownControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="EditorControl.Designer.vb">
       <DependentUpon>EditorControl.vb</DependentUpon>
     </Compile>
@@ -227,6 +233,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DictionaryStringControl.resx">
       <DependentUpon>DictionaryStringControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DropDownControl.resx">
+      <DependentUpon>DropDownControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditorControl.resx">
       <DependentUpon>EditorControl.vb</DependentUpon>

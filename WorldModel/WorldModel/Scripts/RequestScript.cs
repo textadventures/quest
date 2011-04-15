@@ -8,8 +8,6 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class RequestScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "request"; }
@@ -24,7 +22,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             get { return new int[] { 2 }; }
         }
-        #endregion
     }
 
     public class RequestScript : ScriptBase
@@ -40,8 +37,6 @@ namespace AxeSoftware.Quest.Scripts
             m_request = (Request)(Enum.Parse(typeof(Request), request));
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             m_worldModel.RaiseRequest(m_request, m_data.Execute(c));
@@ -52,6 +47,40 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("request", m_request.ToString(), m_data.Save());
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "request";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return m_request.ToString();
+                case 1:
+                    return m_data.Save();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            switch (index)
+            {
+                case 0:
+                    m_request = (Request)(Enum.Parse(typeof(Request), (string)value));
+                    break;
+                case 1:
+                    m_data = new Expression<string>((string)value, m_worldModel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 }

@@ -10,8 +10,10 @@ namespace AxeSoftware.Quest
         string ControlType { get; }
         string Caption { get; }
         int? Height { get; }
+        int? Width { get; }
         string Attribute { get; }
         bool Expand { get; }
         string GetString(string tag);
+        IEnumerable<string> GetListString(string tag);
     }
 }

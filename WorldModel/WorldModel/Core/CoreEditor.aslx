@@ -1,6 +1,7 @@
 ﻿<library>
 
   <implied element="control" property="height" type="int"/>
+  <implied element="control" property="width" type="int"/>
 
   <include ref="CoreEditorScripts.aslx"/>
 

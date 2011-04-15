@@ -96,6 +96,9 @@
                 newControl.SetControlHeight(Me.Height - top - k_padding)
                 newControl.Anchor = newControl.Anchor Or AnchorStyles.Bottom
             End If
+            If editorControl.Width.HasValue Then
+                newControl.SetFixedControlWidth(editorControl.Width.Value)
+            End If
 
             top = top + newControl.Control.Height + k_padding
 

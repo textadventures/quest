@@ -9,6 +9,7 @@
     Private WithEvents m_editorControl As IElementEditorControl
     Private m_attribute As String
     Private m_controller As EditorController
+    Private m_hasFixedWidth As Boolean = False
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -55,13 +56,22 @@
 
     Public Sub SetCaptionWidth(width As Integer)
         m_editorControl.Control.Left = width
-        m_editorControl.Control.Width = Me.Width - width
-        m_editorControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
+        If Not m_hasFixedWidth Then
+            m_editorControl.Control.Width = Me.Width - width
+            m_editorControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
+        Else
+            m_editorControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Bottom
+        End If
     End Sub
 
     Public Sub SetControlHeight(height As Integer)
         m_editorControl.Control.Height = height
         Me.Height = m_editorControl.Control.Height
+    End Sub
+
+    Public Sub SetFixedControlWidth(width As Integer)
+        m_editorControl.Control.Width = width
+        m_hasFixedWidth = True
     End Sub
 
     Public Property Value() As Object Implements IElementEditorControl.Value
