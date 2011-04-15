@@ -51,8 +51,6 @@ namespace AxeSoftware.Quest.Scripts
             m_returnValue = returnValue;
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             c.ReturnValue = m_returnValue.Execute(c);
@@ -63,6 +61,22 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("return", m_returnValue.Save());
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "return";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            return m_returnValue.Save();
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            m_returnValue = new ExpressionGeneric((string)value, m_worldModel);
+        }
     }
 }

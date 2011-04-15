@@ -150,7 +150,81 @@
       <attribute>2</attribute>
     </control>
   </editor>
-  
+
+  <editor>
+    <appliesto>do</appliesto>
+    <!-- TO DO: Don't display parameter #2 if it's null or empty -->
+    <display>Run #0's '#1' script with parameters from dictionary #2</display>
+    <category>Scripts</category>
+    <add>Run an object's script property</add>
+    <create>do (,"")</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Object</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Property</caption>
+      <attribute>1</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Parameter dictionary</caption>
+      <attribute>2</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>error</appliesto>
+    <display>Raise error #0</display>
+    <category>Scripts</category>
+    <create>error ("")</create>
+    <add>Raise an error</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Message</caption>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>return</appliesto>
+    <display>Return #0</display>
+    <category>Scripts</category>
+    <create>return ()</create>
+    <add>Set this function's return value</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Value</caption>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>rundelegate</appliesto>
+    <display>Run #0's #1 delegate implementation (#2 parameters)</display>
+    <category>Scripts</category>
+    <create>rundelegate (,"","")</create>
+    <add>Run an object's delegate implementation</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Object</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Property</caption>
+      <attribute>1</attribute>
+    </control>
+    <control>
+      <controltype>list</controltype>
+      <caption>Parameters</caption>
+      <attribute>2</attribute>
+      <editprompt>Please enter the parameter</editprompt>
+    </control>
+  </editor>
+
   <!-- Variables -->
   
   <editor>

@@ -35,54 +35,6 @@ namespace AxeSoftware.Quest.Scripts
         #endregion
     }
 
-    public class RunDelegateScriptConstructor : ScriptConstructorBase
-    {
-        #region ScriptConstructorBase Members
-
-        public override string Keyword
-        {
-            get { return "rundelegate"; }
-        }
-
-        protected override IScript CreateInt(List<string> parameters)
-        {
-            if (parameters.Count < 3)
-            {
-                throw new Exception("Expected at least 3 parameters in rundelegate call");
-            }
-
-            List<IFunction<object>> paramExpressions = new List<IFunction<object>>();
-            IFunction<Element> obj = null;
-            int cnt = 0;
-            IFunction<string> delegateName = null;
-
-            foreach (string param in parameters)
-            {
-                cnt++;
-                switch (cnt)
-                {
-                    case 1:
-                        obj = new Expression<Element>(param, WorldModel);
-                        break;
-                    case 2:
-                        delegateName = new Expression<string>(param, WorldModel);
-                        break;
-                    default:
-                        paramExpressions.Add(new Expression<object>(param, WorldModel));
-                        break;
-                }
-            }
-
-            return new RunDelegateScript(WorldModel, obj, delegateName, paramExpressions);
-        }
-
-        protected override int[] ExpectedParameters
-        {
-            get { return new int[]{}; }
-        }
-        #endregion
-    }
-
     public class CallProcedureScriptConstructor : IScriptConstructor
     {
         public IScript Create(string script, Element proc)
@@ -146,8 +98,6 @@ namespace AxeSoftware.Quest.Scripts
             m_parameters = parameters;
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             Element obj = m_obj.Execute(c);
@@ -164,7 +114,8 @@ namespace AxeSoftware.Quest.Scripts
 
         public override string Save()
         {
-            if (m_parameters != null)
+            string parameters = (m_parameters == null) ? null : m_parameters.Save();
+            if (!string.IsNullOrEmpty(parameters))
             {
                 return SaveScript("do", m_obj.Save(), m_action.Save(), m_parameters.Save());
             }
@@ -174,70 +125,46 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
-        #endregion
-    }
-
-    public class RunDelegateScript : ScriptBase
-    {
-        private WorldModel m_worldModel;
-        private IFunction<string> m_delegate;
-        private List<IFunction<object>> m_parameters = null;
-        private IFunction<Element> m_appliesTo = null;
-
-        public RunDelegateScript(WorldModel worldModel, IFunction<Element> obj, IFunction<string> del, List<IFunction<object>> parameters)
+        public override string Keyword
         {
-            m_worldModel = worldModel;
-            m_delegate = del;
-            m_parameters = parameters;
-            m_appliesTo = obj;
-        }
-
-        #region IScript Members
-
-        public override void Execute(Context c)
-        {
-            if (m_parameters == null)
+            get
             {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                Element obj = m_appliesTo.Execute(c);
-                string delName = m_delegate.Execute(c);
-                DelegateImplementation impl = obj.Fields.Get(delName) as DelegateImplementation;
-
-                if (impl == null)
-                {
-                    throw new Exception(string.Format("Object '{0}' has no delegate implementation '{1}'", obj.Name, m_delegate));
-                }
-
-                Parameters paramValues = new Parameters();
-
-                int cnt = 0;
-                foreach (IFunction<object> f in m_parameters)
-                {
-                    paramValues.Add((string)impl.Definition.Fields[FieldDefinitions.ParamNames][cnt], f.Execute(c));
-                    cnt++;
-                }
-
-                m_worldModel.RunScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
+                return "do";
             }
         }
 
-        public override string Save()
+        public override object GetParameter(int index)
         {
-            List<string> saveParameters = new List<string>();
-            saveParameters.Add(m_appliesTo.Save());
-            saveParameters.Add(m_delegate.Save());
-            foreach (IFunction<object> p in m_parameters)
+            switch (index)
             {
-                saveParameters.Add(p.Save());
+                case 0:
+                    return m_obj.Save();
+                case 1:
+                    return m_action.Save();
+                case 2:
+                    return m_parameters == null ? null : m_parameters.Save();
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-
-            return SaveScript("rundelegate", saveParameters.ToArray());
         }
 
-        #endregion
+        public override void SetParameterInternal(int index, object value)
+        {
+            switch (index)
+            {
+                case 0:
+                    m_obj = new Expression<Element>((string)value, m_worldModel);
+                    break;
+                case 1:
+                    m_action = new Expression<string>((string)value, m_worldModel);
+                    break;
+                case 2:
+                    m_parameters = new Expression<IDictionary>((string)value, m_worldModel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 
     public class CallProcedureScript : ScriptBase

@@ -73,10 +73,13 @@ Public Class ListStringControl
             ctlListEditor.SetSelectedItem(e.UpdatedItem.Key)
             ctlListEditor.Focus()
         End If
+
+        RaiseEvent Dirty(Me, New DataModifiedEventArgs(Nothing, m_list))
     End Sub
 
     Private Sub m_list_Removed(sender As Object, e As EditableListUpdatedEventArgs(Of String)) Handles m_list.Removed
         ctlListEditor.RemoveListItem(e.UpdatedItem.Key)
+        RaiseEvent Dirty(Me, New DataModifiedEventArgs(Nothing, m_list))
     End Sub
 
     Public Sub DoAdd() Implements IListEditorDelegate.DoAdd

@@ -124,7 +124,6 @@
     <Compile Include="Scripts\InsertScript.cs" />
     <Compile Include="Scripts\ListAddScript.cs" />
     <Compile Include="Scripts\PictureScript.cs" />
-    <Compile Include="Scripts\PopulateScript.cs" />
     <Compile Include="ScriptFactory.cs" />
     <Compile Include="Scripts\Context.cs" />
     <Compile Include="Scripts\DoScript.cs" />
@@ -174,6 +173,7 @@
     <Compile Include="Scripts\MultiScript.cs" />
     <Compile Include="Scripts\RequestScript.cs" />
     <Compile Include="Scripts\ReturnScript.cs" />
+    <Compile Include="Scripts\RunDelegateScript.cs" />
     <Compile Include="Scripts\ScriptConstructorBase.cs" />
     <Compile Include="Scripts\SetFieldScript.cs" />
     <Compile Include="Scripts\SetScript.cs" />
