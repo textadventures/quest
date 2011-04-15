@@ -285,7 +285,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-            base.SetParameterInternal(index, value);
+            throw new NotImplementedException();
         }
 
         #endregion

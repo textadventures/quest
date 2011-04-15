@@ -35,49 +35,6 @@ namespace AxeSoftware.Quest.Scripts
         #endregion
     }
 
-    public class CallProcedureScriptConstructor : IScriptConstructor
-    {
-        public IScript Create(string script, Element proc)
-        {
-            List<IFunction<object>> paramExpressions = null;
-            string procName;
-
-            string param = Utility.GetParameter(script);
-            if (param == null)
-            {
-                procName = script;
-            }
-            else
-            {
-                List<string> parameters = Utility.SplitParameter(param);
-                procName = script.Substring(0, script.IndexOf('(')).Trim();
-                paramExpressions = new List<IFunction<object>>();
-                foreach (string s in parameters)
-                {
-                    paramExpressions.Add(new Expression<object>(s, WorldModel));
-                }
-            }
-
-            if (WorldModel.Procedure(procName) == null)
-            {
-                throw new Exception(string.Format("Function not found: '{0}'", procName));
-            }
-            else
-            {
-                return new CallProcedureScript(WorldModel, procName, paramExpressions);
-            }
-        }
-
-        public IScriptFactory ScriptFactory { get; set; }
-
-        public WorldModel WorldModel { get; set; }
-
-        public string Keyword
-        {
-            get { return null; }
-        }
-    }
-
     public class DoActionScript : ScriptBase
     {
         private WorldModel m_worldModel;
@@ -167,65 +124,5 @@ namespace AxeSoftware.Quest.Scripts
         }
     }
 
-    public class CallProcedureScript : ScriptBase
-    {
-        private WorldModel m_worldModel;
-        private string m_procedure;
-        private List<IFunction<object>> m_parameters = null;
-
-        public CallProcedureScript(WorldModel worldModel, string procedure)
-        {
-            m_worldModel = worldModel;
-            m_procedure = procedure;
-        }
-
-        public CallProcedureScript(WorldModel worldModel, string procedure, List<IFunction<object>> parameters)
-            : this(worldModel, procedure)
-        {
-            m_parameters = parameters;
-        }
-
-        #region IScript Members
-
-        public override void Execute(Context c)
-        {
-            if (m_parameters == null)
-            {
-                m_worldModel.RunProcedure(m_procedure);
-            }
-            else
-            {
-                Parameters paramValues = new Parameters();
-                Element proc = m_worldModel.Procedure(m_procedure);
-
-                // TO DO: Check number of parameters matches, and that the function exists
-
-                int cnt = 0;
-                foreach (IFunction<object> f in m_parameters)
-                {
-                    paramValues.Add((string)proc.Fields[FieldDefinitions.ParamNames][cnt], f.Execute(c));
-                    cnt++;
-                }
-
-                m_worldModel.RunProcedure(m_procedure, paramValues, false);
-            }
-        }
-
-        public override string Save()
-        {
-            if (m_parameters == null)
-            {
-                return m_procedure;
-            }
-
-            List<string> saveParameters = new List<string>();
-            foreach (IFunction<object> p in m_parameters)
-            {
-                saveParameters.Add(p.Save());
-            }
-            return SaveScript(m_procedure, saveParameters.ToArray());
-        }
-
-        #endregion
-    }
+   
 }

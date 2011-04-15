@@ -21,7 +21,7 @@ namespace AxeSoftware.Quest
         public event AddErrorHandler ErrorHandler;
         private WorldModel m_worldModel;
         private SetScriptConstructor m_setConstructor;
-        private CallProcedureScriptConstructor m_procConstructor;
+        private FunctionCallScriptConstructor m_procConstructor;
 
         public ScriptFactory(WorldModel worldModel)
         {
@@ -35,7 +35,7 @@ namespace AxeSoftware.Quest
             }
 
             m_setConstructor = (SetScriptConstructor)InitScriptConstructor(new SetScriptConstructor());
-            m_procConstructor = (CallProcedureScriptConstructor)InitScriptConstructor(new CallProcedureScriptConstructor());
+            m_procConstructor = (FunctionCallScriptConstructor)InitScriptConstructor(new FunctionCallScriptConstructor());
         }
 
         private void AddConstructor(IScriptConstructor constructor)
@@ -62,6 +62,15 @@ namespace AxeSoftware.Quest
         {
             IScriptConstructor constructor = GetScriptConstructor(line);
             return constructor.Create(line, null);
+        }
+
+        /// <summary>
+        /// For creating a new function call script, used by the editor
+        /// </summary>
+        /// <returns></returns>
+        public IScript CreateBlankFunctionCallScript()
+        {
+            return new FunctionCallScript(m_worldModel, "");
         }
 
         public IScript CreateScript(string line)

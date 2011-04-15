@@ -152,15 +152,8 @@ namespace AxeSoftware.Quest.Scripts
             NotifyUpdate(index, value);
         }
 
-        public virtual void SetParameterInternal(int index, object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual object GetParameter(int index)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void SetParameterInternal(int index, object value);
+        public abstract object GetParameter(int index);
 
         public virtual string Keyword
         {

@@ -70,6 +70,12 @@ namespace AxeSoftware.Quest
             return newScript;
         }
 
+        internal EditableScriptBase CreateEditableFunctionCallScript()
+        {
+            IScript script = m_scriptFactory.CreateBlankFunctionCallScript();
+            return CreateEditableScript(script);
+        }
+
         internal IEnumerable<string> GetCategories()
         {
             List<string> result = new List<string>();

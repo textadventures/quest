@@ -198,6 +198,25 @@
   </editor>
 
   <editor>
+    <appliesto>()</appliesto>
+    <display>Call function #0 (#1 parameters)</display>
+    <category>Scripts</category>
+    <add>Call function</add>
+    <create></create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Function</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>list</controltype>
+      <caption>Parameters</caption>
+      <attribute>1</attribute>
+      <editprompt>Please enter the parameter</editprompt>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>do</appliesto>
     <!-- TO DO: Don't display parameter #2 if it's null or empty -->
     <display>Run #0's '#1' script with parameters from dictionary #2</display>

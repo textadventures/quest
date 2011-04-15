@@ -108,6 +108,16 @@ namespace AxeSoftware.Quest.Scripts
             return result;
         }
 
+        public override void SetParameterInternal(int index, object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object GetParameter(int index)
+        {
+            throw new NotImplementedException();
+        }
+
         private class UndoMultiScriptAddRemove : AxeSoftware.Quest.UndoLogger.IUndoAction
         {
             private MultiScript m_appliesTo;

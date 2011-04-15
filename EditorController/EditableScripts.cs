@@ -120,7 +120,16 @@ namespace AxeSoftware.Quest
 
         internal void AddNewInternal(string keyword)
         {
-            Add(m_controller.ScriptFactory.CreateEditableScript(keyword), false);
+            EditableScriptBase script;
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                script = m_controller.ScriptFactory.CreateEditableScript(keyword);
+            }
+            else
+            {
+                script = m_controller.ScriptFactory.CreateEditableFunctionCallScript();
+            }
+            Add(script, false);
         }
 
         public IEditableScript this[int index]
