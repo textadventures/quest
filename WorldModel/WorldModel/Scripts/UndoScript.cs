@@ -8,8 +8,6 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class UndoScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "undo"; }
@@ -24,7 +22,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             get { return new int[] { 0 }; }
         }
-        #endregion
     }
 
     public class UndoScript : ScriptBase
@@ -36,8 +33,6 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel = worldModel;
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             m_worldModel.UndoLogger.Undo();
@@ -48,13 +43,27 @@ namespace AxeSoftware.Quest.Scripts
             return "undo";
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "undo";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
     }
 
     public class StartTransactionConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "start transaction"; }
@@ -69,7 +78,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             get { return new int[] { 1 }; }
         }
-        #endregion
     }
 
     public class StartTransactionScript : ScriptBase
@@ -83,8 +91,6 @@ namespace AxeSoftware.Quest.Scripts
             m_command = command;
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             m_worldModel.UndoLogger.StartTransaction(m_command.Execute(c));
@@ -95,13 +101,27 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("start transaction", m_command.Save());
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "start transaction";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            return m_command.Save();
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            m_command = new Expression<string>((string)value, m_worldModel);
+        }
     }
 
     public class EndTransactionConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "end transaction"; }
@@ -116,7 +136,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             get { return new int[] { 0 }; }
         }
-        #endregion
     }
 
     public class EndTransactionScript : ScriptBase
@@ -128,8 +147,6 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel = worldModel;
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             m_worldModel.UndoLogger.EndTransaction();
@@ -140,6 +157,22 @@ namespace AxeSoftware.Quest.Scripts
             return "end transaction";
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "end transaction";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
     }
 }

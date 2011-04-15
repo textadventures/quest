@@ -339,4 +339,35 @@
       <attribute>1</attribute>
     </control>
   </editor>
+  
+  <!-- Game State -->
+
+  <editor>
+    <appliesto>undo</appliesto>
+    <display>Undo one transaction</display>
+    <category>Game State</category>
+    <add>Undo</add>
+    <create>undo</create>
+  </editor>
+
+  <editor>
+    <appliesto>start transaction</appliesto>
+    <display>Start transaction for command #0</display>
+    <category>Game State</category>
+    <add>Start transaction</add>
+    <create>start transaction ("")</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Command</caption>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>end transaction</appliesto>
+    <display>End transaction</display>
+    <category>Game State</category>
+    <add>End transaction</add>
+    <create>end transaction</create>
+  </editor>
 </library>
