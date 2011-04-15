@@ -8,8 +8,6 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class SetFieldScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "set"; }
@@ -24,7 +22,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             get { return new int[] { 3 }; }
         }
-        #endregion
     }
 
     public class SetFieldScript : ScriptBase
@@ -42,8 +39,6 @@ namespace AxeSoftware.Quest.Scripts
             m_value = value;
         }
 
-        #region IScript Members
-
         public override void Execute(Context c)
         {
             Element obj = m_obj.Execute(c);
@@ -55,6 +50,45 @@ namespace AxeSoftware.Quest.Scripts
             return SaveScript("set", m_obj.Save(), m_field.Save(), m_value.Save());
         }
 
-        #endregion
+        public override string Keyword
+        {
+            get
+            {
+                return "set";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return m_obj.Save();
+                case 1:
+                    return m_field.Save();
+                case 2:
+                    return m_value.Save();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            switch (index)
+            {
+                case 0:
+                    m_obj = new Expression<Element>((string)value, m_worldModel);
+                    break;
+                case 1:
+                    m_field = new Expression<string>((string)value, m_worldModel);
+                    break;
+                case 2:
+                    m_value = new Expression<object>((string)value, m_worldModel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 }

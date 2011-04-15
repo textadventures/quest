@@ -310,6 +310,29 @@
   </editor>
 
   <editor>
+    <appliesto>set</appliesto>
+    <display>Set #0's #1 property to #2</display>
+    <category>Variables</category>
+    <add>Set a variable or property (named by an expression)</add>
+    <create>set (,"",)</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Object</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Property</caption>
+      <attribute>1</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Value</caption>
+      <attribute>2</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>list add</appliesto>
     <display>Add to list #0 value #1</display>
     <category>Variables</category>
