@@ -37,6 +37,56 @@
 
     </tab>
 
+    <tab>
+      <caption>Options</caption>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Automatically generate room descriptions</caption>
+        <attribute>autodescription</attribute>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show room description when entering a room</caption>
+        <attribute>showdescriptiononenter</attribute>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Enable hyperlinks</caption>
+        <attribute>enablehyperlinks</attribute>
+      </control>
+    </tab>
+
+    <tab>
+      <caption>Display</caption>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Font</caption>
+        <attribute>defaultfont</attribute>
+      </control>
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Font size</caption>
+        <attribute>defaultfontsize</attribute>
+      </control>
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Background</caption>
+        <attribute>defaultbackground</attribute>
+      </control>
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Foreground</caption>
+        <attribute>defaultforeground</attribute>
+      </control>
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Link foreground</caption>
+        <attribute>defaultlinkforeground</attribute>
+      </control>
+    </tab>
+
   </editor>
 
   <editor>

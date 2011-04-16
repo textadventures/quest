@@ -7,6 +7,8 @@
     ' We probably need some events to set a requested size for this CaptionControl when the contained control changes size.
 
     Private WithEvents m_editorControl As IElementEditorControl
+    Private m_editorControlIsCheckbox As Boolean
+    Private m_checkBoxControl As CheckBoxControl
     Private m_attribute As String
     Private m_controller As EditorController
     Private m_hasFixedWidth As Boolean = False
@@ -22,9 +24,18 @@
         End If
 
         m_editorControl = DirectCast(Activator.CreateInstance(createType), IElementEditorControl)
+        m_editorControlIsCheckbox = TypeOf m_editorControl Is CheckBoxControl
         m_editorControl.Control.Parent = Control
         m_editorControl.Control.Top = lblCaption.Top
-        m_editorControl.Control.Left = 50
+        If m_editorControlIsCheckbox Then
+            lblCaption.Visible = False
+            m_editorControl.Control.Left = 0
+            m_checkBoxControl = DirectCast(m_editorControl, CheckBoxControl)
+        Else
+            lblCaption.Visible = True
+            m_editorControl.Control.Left = 50
+            m_checkBoxControl = Nothing
+        End If
         m_editorControl.Controller = m_controller
         Me.Height = m_editorControl.Control.Height
 
@@ -38,7 +49,11 @@
             Return lblCaption.Text
         End Get
         Set(value As String)
-            lblCaption.Text = value + ":"
+            If Not m_editorControlIsCheckbox Then
+                lblCaption.Text = value + ":"
+            Else
+                m_checkBoxControl.SetCaption(value)
+            End If
         End Set
     End Property
 
@@ -55,6 +70,8 @@
     End Property
 
     Public Sub SetCaptionWidth(width As Integer)
+        If m_editorControlIsCheckbox Then Return
+
         m_editorControl.Control.Left = width
         If Not m_hasFixedWidth Then
             m_editorControl.Control.Width = Me.Width - width

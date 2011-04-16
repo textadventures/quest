@@ -97,6 +97,12 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckBoxControl.Designer.vb">
+      <DependentUpon>CheckBoxControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="CheckBoxControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="DictionaryScriptControl.Designer.vb">
       <DependentUpon>DictionaryScriptControl.vb</DependentUpon>
     </Compile>
@@ -228,6 +234,9 @@
     <Compile Include="Utility.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CheckBoxControl.resx">
+      <DependentUpon>CheckBoxControl.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DictionaryScriptControl.resx">
       <DependentUpon>DictionaryScriptControl.vb</DependentUpon>
     </EmbeddedResource>

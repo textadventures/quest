@@ -85,6 +85,7 @@
             newControl.Initialise(m_controller, editorControl)
             newControl.Caption = editorControl.Caption
             newControl.Control.Top = top
+            newControl.Control.Left = 5
             newControl.Control.Width = Me.Width - k_padding
             newControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
             AddHandler newControl.Dirty, AddressOf Control_Dirty
