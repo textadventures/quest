@@ -28,6 +28,7 @@ Partial Class ElementEditor
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoScroll = True
         Me.Name = "ElementEditor"
         Me.Size = New System.Drawing.Size(79, 77)
         Me.ResumeLayout(False)

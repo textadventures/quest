@@ -20,6 +20,7 @@
     <open type="boolean">false</open>
     <close type="boolean">false</close>
     <container type="boolean">false</container>
+    <descprefix>[YouAreIn]</descprefix>
     <contentsprefix>[ContainerContentsPrefix]</contentsprefix>
   </type>
 

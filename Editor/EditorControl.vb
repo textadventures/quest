@@ -6,12 +6,15 @@
 
     ' We probably need some events to set a requested size for this CaptionControl when the contained control changes size.
 
+    Private Const k_maxCaptionWidth As Integer = 100
+
     Private WithEvents m_editorControl As IElementEditorControl
     Private m_editorControlIsCheckbox As Boolean
     Private m_checkBoxControl As CheckBoxControl
     Private m_attribute As String
     Private m_controller As EditorController
     Private m_hasFixedWidth As Boolean = False
+    Private m_controlUnderCaption As Boolean = False
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -51,11 +54,23 @@
         Set(value As String)
             If Not m_editorControlIsCheckbox Then
                 lblCaption.Text = value + ":"
+                If lblCaption.Width > k_maxCaptionWidth Then PlaceControlUnderCaption()
             Else
                 m_checkBoxControl.SetCaption(value)
             End If
         End Set
     End Property
+
+    Private Sub PlaceControlUnderCaption()
+        Const leftPadding As Integer = 30
+        m_editorControl.Control.Left = leftPadding
+        m_editorControl.Control.Top = lblCaption.Top + lblCaption.Height
+        m_editorControl.Control.Width = Me.Width - leftPadding
+        m_editorControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
+        m_editorControl.Control.Height -= lblCaption.Height
+        Me.Height = lblCaption.Top + lblCaption.Height + m_editorControl.Control.Height
+        m_controlUnderCaption = True
+    End Sub
 
     Public ReadOnly Property Control() As System.Windows.Forms.Control Implements IElementEditorControl.Control
         Get
@@ -65,12 +80,14 @@
 
     Public ReadOnly Property CaptionTextWidth() As Integer
         Get
+            If m_controlUnderCaption Then Return 0
             Return lblCaption.Width
         End Get
     End Property
 
     Public Sub SetCaptionWidth(width As Integer)
         If m_editorControlIsCheckbox Then Return
+        If m_controlUnderCaption Then Return
 
         m_editorControl.Control.Left = width
         If Not m_hasFixedWidth Then
@@ -82,8 +99,13 @@
     End Sub
 
     Public Sub SetControlHeight(height As Integer)
-        m_editorControl.Control.Height = height
-        Me.Height = m_editorControl.Control.Height
+        If Not m_controlUnderCaption Then
+            m_editorControl.Control.Height = height
+            Me.Height = m_editorControl.Control.Height
+        Else
+            m_editorControl.Control.Height = height - lblCaption.Height
+            Me.Height = lblCaption.Height + m_editorControl.Control.Height
+        End If
     End Sub
 
     Public Sub SetFixedControlWidth(width As Integer)

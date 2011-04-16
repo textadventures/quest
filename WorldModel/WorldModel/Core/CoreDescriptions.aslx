@@ -5,11 +5,7 @@
     }
     else {
       if (game.autodescription) {
-        if (HasString(player.parent, "descprefix")) {
-          youarein = player.parent.descprefix
-        } else {
-          youarein = Template("YouAreIn")
-        }
+        youarein = player.parent.descprefix
         msg (youarein + " " + GetDisplayName(player.parent, "") + ".")
 
         desc = FormatObjectList(Template("SeeListHeader"), GetNonTransparentParent(player.parent), Template("And"), ".")

@@ -9,7 +9,7 @@
     <appliesto>game</appliesto>
     <tab>
       <caption>Setup</caption>
-      
+
       <control>
         <controltype>textbox</controltype>
         <caption>Game name</caption>
@@ -93,7 +93,7 @@
     <appliesto>object</appliesto>
     <tab>
       <caption>Setup</caption>
-      
+
       <control>
         <caption>Name</caption>
         <controltype>textbox</controltype>
@@ -118,7 +118,7 @@
         <controltype>textbox</controltype>
         <attribute>prefix</attribute>
       </control>
-      
+
       <control>
         <caption>Suffix</caption>
         <controltype>textbox</controltype>
@@ -131,15 +131,34 @@
         <attribute>description</attribute>
       </control>
 
-      <!-- temporary -->
+    </tab>
+
+    <tab>
+      <caption>Room</caption>
+
       <control>
-        <controltype>stringdictionary</controltype>
-        <caption>Knowledge</caption>
-        <attribute>knowledge</attribute>
-        <keyprompt>Please enter a knowledge subject</keyprompt>
-        <valueprompt>Please enter some text to display</valueprompt>
+        <controltype>textbox</controltype>
+        <caption>Description prefix</caption>
+        <attribute>descprefix</attribute>
       </control>
-      <!-- temporary -->
+
+      <control>
+        <controltype>script</controltype>
+        <caption>After entering the room</caption>
+        <attribute>enter</attribute>
+      </control>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>Before entering the room for the first time</caption>
+        <attribute>beforefirstenter</attribute>
+      </control>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>After entering the room for the first time</caption>
+        <attribute>firstenter</attribute>
+      </control>
     </tab>
 
     <tab>
@@ -148,16 +167,6 @@
 
     <tab>
       <caption>Container</caption>
-      
-      <!-- temporary -->
-      <control>
-        <controltype>scriptdictionary</controltype>
-        <caption>Put-able objects</caption>
-        <attribute>putobjects</attribute>
-        <keyprompt>Please enter the object this applies to</keyprompt>
-      </control>
-      <!-- temporary -->
-      
     </tab>
 
   </editor>
@@ -168,5 +177,5 @@
       <caption>Default</caption>
     </tab>
   </editor>
- 
+
 </library>
