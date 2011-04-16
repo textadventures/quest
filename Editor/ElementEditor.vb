@@ -104,7 +104,7 @@
                 newControl.SetFixedControlWidth(editorControl.Width.Value)
             End If
 
-            top = top + newControl.Control.Height + k_paddingBetweenControls
+            top = top + newControl.Height + k_paddingBetweenControls
 
             If newControl.CaptionTextWidth > maxCaptionWidth Then
                 maxCaptionWidth = newControl.CaptionTextWidth
@@ -113,6 +113,7 @@
         Me.ResumeLayout()
 
         m_fullHeight = top - k_paddingBetweenControls
+
         maxCaptionWidth += k_paddingBetweenControls
 
         For Each ctl As EditorControl In m_controls

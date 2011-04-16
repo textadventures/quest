@@ -88,7 +88,7 @@ Partial Class EditorTree
         '
         Me.cmdClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdClose.Image = CType(resources.GetObject("cmdClose.Image"), System.Drawing.Image)
-        Me.cmdClose.Location = New System.Drawing.Point(166, 0)
+        Me.cmdClose.Location = New System.Drawing.Point(164, 0)
         Me.cmdClose.Name = "cmdClose"
         Me.cmdClose.Size = New System.Drawing.Size(20, 20)
         Me.cmdClose.TabIndex = 2
