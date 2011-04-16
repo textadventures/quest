@@ -22,13 +22,13 @@ Partial Class EditorControl
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.lblCaption = New System.Windows.Forms.Label
+        Me.lblCaption = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'lblCaption
         '
         Me.lblCaption.AutoSize = True
-        Me.lblCaption.Location = New System.Drawing.Point(0, 0)
+        Me.lblCaption.Location = New System.Drawing.Point(0, 3)
         Me.lblCaption.Name = "lblCaption"
         Me.lblCaption.Size = New System.Drawing.Size(43, 13)
         Me.lblCaption.TabIndex = 0

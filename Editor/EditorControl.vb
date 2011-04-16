@@ -29,7 +29,7 @@
         m_editorControl = DirectCast(Activator.CreateInstance(createType), IElementEditorControl)
         m_editorControlIsCheckbox = TypeOf m_editorControl Is CheckBoxControl
         m_editorControl.Control.Parent = Control
-        m_editorControl.Control.Top = lblCaption.Top
+        m_editorControl.Control.Top = 0
         If m_editorControlIsCheckbox Then
             lblCaption.Visible = False
             m_editorControl.Control.Left = 0
@@ -63,12 +63,14 @@
 
     Private Sub PlaceControlUnderCaption()
         Const leftPadding As Integer = 30
+        Const paddingUnderCaption As Integer = 5
+        lblCaption.Top = 0
         m_editorControl.Control.Left = leftPadding
-        m_editorControl.Control.Top = lblCaption.Top + lblCaption.Height
+        m_editorControl.Control.Top = lblCaption.Top + lblCaption.Height + paddingUnderCaption
         m_editorControl.Control.Width = Me.Width - leftPadding
         m_editorControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
-        m_editorControl.Control.Height -= lblCaption.Height
-        Me.Height = lblCaption.Top + lblCaption.Height + m_editorControl.Control.Height
+        m_editorControl.Control.Height -= (lblCaption.Height + paddingUnderCaption)
+        Me.Height = lblCaption.Top + lblCaption.Height + paddingUnderCaption + m_editorControl.Control.Height
         m_controlUnderCaption = True
     End Sub
 
