@@ -81,7 +81,7 @@ namespace AxeSoftware.Quest
             }
         }
         
-        public Element(WorldModel worldModel)
+        internal Element(WorldModel worldModel)
         {
             m_fields = new Fields(worldModel, this);
             m_metaFields = new Fields(null, this);

@@ -214,9 +214,9 @@ namespace AxeSoftware.Quest
             return output.Substring(0, output.Length - 2);
         }
 
-        private void UndoLog(string property, object oldValue, object newValue)
+        private void UndoLog(string property, object oldValue, object newValue, bool added)
         {
-            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(new UndoFieldSet(m_element.Name, property, oldValue, newValue));
+            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(new UndoFieldSet(m_element.Name, property, oldValue, newValue, added));
         }
 
         internal void UndoLog(AxeSoftware.Quest.UndoLogger.IUndoAction action)
@@ -234,11 +234,27 @@ namespace AxeSoftware.Quest
             Set(name, value, false, false);
         }
 
+        internal void UndoAddField(string name)
+        {
+            m_attributes.Remove(name);
+
+            if (AttributeChangedSilent != null)
+            {
+                AttributeChangedSilent(this, new AttributeChangedEventArgs(name, Get(name)));
+            }
+        }
+
         private void Set(string name, object value, bool raiseEvent, bool cloneClonableValues)
         {
             bool changed = false;
+            bool added = true;
             object oldValue = null;
-            if (m_attributes.ContainsKey(name)) oldValue = Get(name);
+
+            if (m_attributes.ContainsKey(name))
+            {
+                added = false;
+                oldValue = Get(name);
+            }
 
             if (value == null)
             {
@@ -269,7 +285,7 @@ namespace AxeSoftware.Quest
 
             if (raiseEvent)
             {
-                if (changed) UndoLog(name, oldValue, value);
+                if (changed) UndoLog(name, oldValue, value, added);
                 if (changed && AttributeChanged != null) AttributeChanged(this, new AttributeChangedEventArgs(name, value));
             }
             else
@@ -314,7 +330,7 @@ namespace AxeSoftware.Quest
             return false;
         }
 
-        internal void AddType(Element addType)
+        public void AddType(Element addType)
         {
             m_types.Push(addType);
         }
@@ -508,14 +524,16 @@ namespace AxeSoftware.Quest
         private string m_property;
         private object m_oldValue;
         private object m_newValue;
+        private bool m_added;
 
-        public UndoFieldSet(string appliesTo, string property, object oldValue, object newValue)
+        public UndoFieldSet(string appliesTo, string property, object oldValue, object newValue, bool added)
         {
             System.Diagnostics.Debug.Assert(appliesTo != null);
             m_appliesTo = appliesTo;
             m_property = property;
             m_oldValue = oldValue;
             m_newValue = newValue;
+            m_added = added;
         }
 
         public string AppliesTo
@@ -540,7 +558,15 @@ namespace AxeSoftware.Quest
 
         public void DoUndo(WorldModel worldModel)
         {
-            worldModel.Object(m_appliesTo).Fields.SetFromUndo(Property, OldValue);
+            Fields fields = worldModel.Object(m_appliesTo).Fields;
+            if (m_added)
+            {
+                fields.UndoAddField(Property);
+            }
+            else
+            {
+                fields.SetFromUndo(Property, OldValue);
+            }
         }
 
         public void DoRedo(WorldModel worldModel)

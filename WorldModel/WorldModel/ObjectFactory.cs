@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
-    internal interface IElementFactory
+    public interface IElementFactory
     {
         ElementType CreateElementType { get; }
         Element Create(string name);
@@ -184,7 +184,7 @@ namespace AxeSoftware.Quest
 
             foreach (string attr in allAttributes.Keys)
             {
-                WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(appliesTo.Name, attr, allAttributes[attr], null));
+                WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(appliesTo.Name, attr, allAttributes[attr], null, false));
             }
 
             WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, false, type));

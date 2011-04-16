@@ -45,10 +45,15 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FieldsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UtilityTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IASL\IASL.csproj">
+      <Project>{BE34CB28-317F-4732-AA32-9D715B4F2C7E}</Project>
+      <Name>IASL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WorldModel\WorldModel\WorldModel.csproj">
       <Project>{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}</Project>
       <Name>WorldModel</Name>

@@ -24,11 +24,6 @@ namespace AxeSoftware.Quest
                 m_command = command;
             }
 
-            public void Add(Element appliesTo, string property, object oldValue, object newValue)
-            {
-                m_attributes.Add(new UndoFieldSet(appliesTo.Name, property, oldValue, newValue));
-            }
-
             public void AddUndoAction(IUndoAction action)
             {
                 m_attributes.Add(action);
@@ -44,8 +39,15 @@ namespace AxeSoftware.Quest
 
             public void DoUndo(WorldModel worldModel)
             {
+                const string undoTurnTemplate = "UndoTurn";
                 m_attributes.Reverse();
-                if (!worldModel.EditMode) worldModel.Print(worldModel.Template.GetDynamicText("UndoTurn", m_command));
+                if (!worldModel.EditMode)
+                {
+                    if (worldModel.Template.DynamicTemplateExists(undoTurnTemplate))
+                    {
+                        worldModel.Print(worldModel.Template.GetDynamicText(undoTurnTemplate, m_command));
+                    }
+                }
                 foreach (IUndoAction l in m_attributes)
                 {
                     l.DoUndo(worldModel);

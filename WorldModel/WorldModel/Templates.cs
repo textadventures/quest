@@ -91,5 +91,15 @@ namespace AxeSoftware.Quest
             template.Fields[FieldDefinitions.Function] = new Expression<string>(expression, m_worldModel);
             return template;
         }
+
+        public bool TemplateExists(string name)
+        {
+            return m_worldModel.Elements.ContainsKey(ElementType.Template, name);
+        }
+
+        public bool DynamicTemplateExists(string name)
+        {
+            return m_worldModel.Elements.ContainsKey(ElementType.DynamicTemplate, name);
+        }
     }
 }

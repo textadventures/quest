@@ -97,6 +97,11 @@ namespace AxeSoftware.Quest
             }
         }
 
+        public WorldModel()
+            : this(null)
+        {
+        }
+
         public WorldModel(string filename)
         {
             m_expressionOwner = new Functions.ExpressionOwner(this);
@@ -195,7 +200,7 @@ namespace AxeSoftware.Quest
             get { return m_objectFactory; }
         }
 
-        internal IElementFactory GetElementFactory(ElementType t)
+        public IElementFactory GetElementFactory(ElementType t)
         {
             return m_elementFactories[t];
         }
@@ -337,7 +342,7 @@ namespace AxeSoftware.Quest
         {
             loader.FilenameUpdated += new GameLoader.FilenameUpdatedHandler(loader_FilenameUpdated);
             m_state = GameState.Loading;
-            bool success = loader.Load(m_filename);
+            bool success = m_filename == null ? true : loader.Load(m_filename);
             m_state = success ? GameState.Running : GameState.Finished;
             m_errors = loader.Errors;
             return success;
