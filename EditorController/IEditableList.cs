@@ -36,7 +36,7 @@ namespace AxeSoftware.Quest
         IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }
         ValidationResult CanAdd(T item);
         bool Locked { get; }
-        IEditableList<T> Clone(Element parent, string attribute);
+        IEditableList<T> Clone(string parent, string attribute);
     }
 
     public interface IEditableListItem<T>

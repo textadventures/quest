@@ -130,7 +130,7 @@ Public Class ListStringControl
         If m_list Is Nothing Then Return
 
         If m_list.Locked Then
-            Value = m_controller.CloneEditableList(m_list, m_elementName, m_attributeName)
+            Value = m_list.Clone(m_elementName, m_attributeName)
         End If
     End Sub
 End Class

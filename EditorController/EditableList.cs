@@ -207,7 +207,16 @@ namespace AxeSoftware.Quest
             }
         }
 
-        public IEditableList<T> Clone(Element parent, string attribute)
+        public IEditableList<T> Clone(string parent, string attribute)
+        {
+            IEditableList<T> result;
+            m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
+            result = CloneInternal(m_controller.WorldModel.Elements.Get(parent), attribute);
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+            return result;
+        }
+
+        private IEditableList<T> CloneInternal(Element parent, string attribute)
         {
             QuestList<T> newSource = (QuestList<T>)m_source.Clone();
             newSource.Locked = false;
