@@ -1,4 +1,6 @@
-﻿Public Class EditorTree
+﻿Imports System.Runtime.InteropServices
+
+Public Class EditorTree
 
     Private m_nodes As New Dictionary(Of String, TreeNode)
     Private m_filterSettings As FilterOptions
@@ -10,6 +12,24 @@
     Public Event FiltersUpdated()
     Public Event SelectionChanged(key As String)
     Public Event CommitSelection()
+
+    ' Code for setting "Search" hint on textbox
+    Private Const ECM_FIRST As UInteger = &H1500
+    Private Const EM_SETCUEBANNER As UInteger = ECM_FIRST + 1
+
+    <DllImport("user32", CharSet:=CharSet.Auto, SetLastError:=False)> _
+    Private Shared Function SendMessage(hWnd As HandleRef, Msg As UInteger, wParam As IntPtr, lParam As String) As IntPtr
+    End Function
+
+    Protected Overrides Sub OnHandleCreated(e As System.EventArgs)
+        SetTextboxHint()
+        MyBase.OnHandleCreated(e)
+    End Sub
+
+    Private Sub SetTextboxHint()
+        Dim hintText As String = "Search"
+        SendMessage(New HandleRef(Me, txtSearch.Handle), EM_SETCUEBANNER, IntPtr.Zero, hintText)
+    End Sub
 
     Public Sub AddNode(key As String, text As String, parentKey As String, foreColor As System.Drawing.Color?, backColor As System.Drawing.Color?)
 
@@ -137,4 +157,5 @@
     Private Sub ctlTreeView_DoubleClick(sender As Object, e As System.EventArgs) Handles ctlTreeView.DoubleClick
         RaiseEvent CommitSelection()
     End Sub
+
 End Class

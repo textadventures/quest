@@ -23,20 +23,15 @@ Partial Class EditorTree
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(EditorTree))
-        Me.txtSearch = New System.Windows.Forms.TextBox
-        Me.ctlTreeView = New System.Windows.Forms.TreeView
-        Me.ctlToolStrip = New System.Windows.Forms.ToolStrip
-        Me.mnuFilter = New System.Windows.Forms.ToolStripDropDownButton
+        Me.ctlTreeView = New System.Windows.Forms.TreeView()
+        Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
+        Me.mnuFilter = New System.Windows.Forms.ToolStripDropDownButton()
+        Me.pnlSearchContainer = New System.Windows.Forms.Panel()
+        Me.txtSearch = New System.Windows.Forms.TextBox()
+        Me.cmdSearch = New System.Windows.Forms.Button()
         Me.ctlToolStrip.SuspendLayout()
+        Me.pnlSearchContainer.SuspendLayout()
         Me.SuspendLayout()
-        '
-        'txtSearch
-        '
-        Me.txtSearch.Dock = System.Windows.Forms.DockStyle.Top
-        Me.txtSearch.Location = New System.Drawing.Point(0, 0)
-        Me.txtSearch.Name = "txtSearch"
-        Me.txtSearch.Size = New System.Drawing.Size(204, 20)
-        Me.txtSearch.TabIndex = 0
         '
         'ctlTreeView
         '
@@ -66,24 +61,57 @@ Partial Class EditorTree
         Me.mnuFilter.Size = New System.Drawing.Size(46, 22)
         Me.mnuFilter.Text = "Filter"
         '
+        'pnlSearchContainer
+        '
+        Me.pnlSearchContainer.Controls.Add(Me.cmdSearch)
+        Me.pnlSearchContainer.Controls.Add(Me.txtSearch)
+        Me.pnlSearchContainer.Dock = System.Windows.Forms.DockStyle.Top
+        Me.pnlSearchContainer.Location = New System.Drawing.Point(0, 0)
+        Me.pnlSearchContainer.Name = "pnlSearchContainer"
+        Me.pnlSearchContainer.Size = New System.Drawing.Size(204, 20)
+        Me.pnlSearchContainer.TabIndex = 3
+        '
+        'txtSearch
+        '
+        Me.txtSearch.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtSearch.Location = New System.Drawing.Point(0, 0)
+        Me.txtSearch.Name = "txtSearch"
+        Me.txtSearch.Size = New System.Drawing.Size(184, 20)
+        Me.txtSearch.TabIndex = 1
+        '
+        'cmdSearch
+        '
+        Me.cmdSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdSearch.Image = CType(resources.GetObject("cmdSearch.Image"), System.Drawing.Image)
+        Me.cmdSearch.Location = New System.Drawing.Point(184, 0)
+        Me.cmdSearch.Name = "cmdSearch"
+        Me.cmdSearch.Size = New System.Drawing.Size(20, 20)
+        Me.cmdSearch.TabIndex = 2
+        Me.cmdSearch.UseVisualStyleBackColor = True
+        '
         'EditorTree
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.Controls.Add(Me.ctlTreeView)
         Me.Controls.Add(Me.ctlToolStrip)
-        Me.Controls.Add(Me.txtSearch)
+        Me.Controls.Add(Me.pnlSearchContainer)
         Me.Name = "EditorTree"
         Me.Size = New System.Drawing.Size(204, 327)
         Me.ctlToolStrip.ResumeLayout(False)
         Me.ctlToolStrip.PerformLayout()
+        Me.pnlSearchContainer.ResumeLayout(False)
+        Me.pnlSearchContainer.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents txtSearch As System.Windows.Forms.TextBox
     Friend WithEvents ctlTreeView As System.Windows.Forms.TreeView
     Friend WithEvents ctlToolStrip As System.Windows.Forms.ToolStrip
     Friend WithEvents mnuFilter As System.Windows.Forms.ToolStripDropDownButton
+    Friend WithEvents pnlSearchContainer As System.Windows.Forms.Panel
+    Friend WithEvents txtSearch As System.Windows.Forms.TextBox
+    Friend WithEvents cmdSearch As System.Windows.Forms.Button
 
 End Class
