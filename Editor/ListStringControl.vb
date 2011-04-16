@@ -90,6 +90,7 @@ Public Class ListStringControl
         If m_list Is Nothing Then
             Value = m_controller.CreateNewEditableList(m_elementName, m_attributeName, result.Result)
         Else
+            PrepareForEditing()
             m_list.Add(result.Result)
         End If
     End Sub
@@ -100,10 +101,12 @@ Public Class ListStringControl
         If result.Result = key Then Return
         If Not ValidateInput(result.Result) Then Return
 
+        PrepareForEditing()
         m_list.Update(index, result.Result)
     End Sub
 
     Public Sub DoRemove(keys() As String) Implements IListEditorDelegate.DoRemove
+        PrepareForEditing()
         m_list.Remove(keys)
     End Sub
 
@@ -118,5 +121,16 @@ Public Class ListStringControl
 
     Private Sub ctlListEditor_ToolbarClicked() Handles ctlListEditor.ToolbarClicked
         RaiseEvent RequestParentElementEditorSave()
+    End Sub
+
+    Private Sub PrepareForEditing()
+        ' If we're currently displaying a list which belongs to a type we inherit from,
+        ' we must clone the list before we can edit it.
+
+        If m_list Is Nothing Then Return
+
+        If m_list.Locked Then
+            Value = m_controller.CloneEditableList(m_list, m_elementName, m_attributeName)
+        End If
     End Sub
 End Class

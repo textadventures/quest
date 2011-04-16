@@ -198,5 +198,22 @@ namespace AxeSoftware.Quest
         {
             throw new NotImplementedException();
         }
+
+        public bool Locked
+        {
+            get
+            {
+                return m_source.Locked;
+            }
+        }
+
+        public IEditableList<T> Clone(Element parent, string attribute)
+        {
+            QuestList<T> newSource = (QuestList<T>)m_source.Clone();
+            newSource.Locked = false;
+            parent.Fields.Set(attribute, newSource);
+            newSource = (QuestList<T>)parent.Fields.Get(attribute);
+            return EditableList<T>.GetNewInstance(m_controller, newSource);
+        }
     }
 }

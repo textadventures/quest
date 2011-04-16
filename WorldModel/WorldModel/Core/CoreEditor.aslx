@@ -107,13 +107,6 @@
       </control>
 
       <control>
-        <caption>Other names</caption>
-        <controltype>list</controltype>
-        <attribute>alt</attribute>
-        <editprompt>Please enter an additional name for this object</editprompt>
-      </control>
-
-      <control>
         <caption>Prefix</caption>
         <controltype>textbox</controltype>
         <attribute>prefix</attribute>
@@ -125,16 +118,42 @@
         <attribute>suffix</attribute>
       </control>
 
+    </tab>
+
+    <tab>
+      <caption>Object</caption>
+
       <control>
-        <controltype>textbox</controltype>
-        <caption>Description</caption>
-        <attribute>description</attribute>
+        <caption>Other names</caption>
+        <controltype>list</controltype>
+        <attribute>alt</attribute>
+        <editprompt>Please enter an additional name for this object</editprompt>
+      </control>
+
+      <control>
+        <caption>Display verbs</caption>
+        <controltype>list</controltype>
+        <attribute>displayverbs</attribute>
+        <editprompt>Please enter a verb</editprompt>
+      </control>
+
+      <control>
+        <caption>Inventory verbs</caption>
+        <controltype>list</controltype>
+        <attribute>inventoryverbs</attribute>
+        <editprompt>Please enter a verb</editprompt>
       </control>
 
     </tab>
 
     <tab>
       <caption>Room</caption>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Description</caption>
+        <attribute>description</attribute>
+      </control>
 
       <control>
         <controltype>textbox</controltype>

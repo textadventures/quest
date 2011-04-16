@@ -468,6 +468,15 @@ namespace AxeSoftware.Quest
             return newValue;
         }
 
+        public IEditableList<string> CloneEditableList(IEditableList<string> list, string parent, string attribute)
+        {
+            IEditableList<string> result;
+            WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
+            result = list.Clone(m_worldModel.Elements.Get(parent), attribute);
+            WorldModel.UndoLogger.EndTransaction();
+            return result;
+        }
+
         public void Dispose()
         {
             m_worldModel.FinishGame();
