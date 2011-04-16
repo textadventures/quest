@@ -2,7 +2,10 @@
 
     Implements ICommandEditor
 
-    Private k_padding As Integer = 8
+    Private Const k_paddingBetweenControls As Integer = 6
+    Private Const k_paddingLeft As Integer = 5
+    Private Const k_paddingRight As Integer = 8
+    Private Const k_paddingTop As Integer = 10
     Private m_tabs As List(Of ElementEditor)
     Private m_controls As List(Of EditorControl)
     Private m_populating As Boolean
@@ -70,7 +73,7 @@
     End Sub
 
     Private Sub InitialiseControls(controls As IEnumerable(Of IEditorControl))
-        Dim top As Integer = k_padding
+        Dim top As Integer = k_paddingTop
         Dim maxCaptionWidth As Integer = 0
 
         RemoveExistingControls()
@@ -85,8 +88,8 @@
             newControl.Initialise(m_controller, editorControl)
             newControl.Caption = editorControl.Caption
             newControl.Control.Top = top
-            newControl.Control.Left = 5
-            newControl.Control.Width = Me.Width - k_padding
+            newControl.Control.Left = k_paddingLeft
+            newControl.Control.Width = Me.Width - k_paddingLeft - k_paddingRight
             newControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
             AddHandler newControl.Dirty, AddressOf Control_Dirty
             AddHandler newControl.RequestParentElementEditorSave, AddressOf ControlRequestsSave
@@ -94,14 +97,14 @@
                 newControl.SetControlHeight(editorControl.Height.Value)
             End If
             If editorControl.Expand Then
-                newControl.SetControlHeight(Me.Height - top - k_padding)
+                newControl.SetControlHeight(Me.Height - top - k_paddingBetweenControls)
                 newControl.Anchor = newControl.Anchor Or AnchorStyles.Bottom
             End If
             If editorControl.Width.HasValue Then
                 newControl.SetFixedControlWidth(editorControl.Width.Value)
             End If
 
-            top = top + newControl.Control.Height + k_padding
+            top = top + newControl.Control.Height + k_paddingBetweenControls
 
             If newControl.CaptionTextWidth > maxCaptionWidth Then
                 maxCaptionWidth = newControl.CaptionTextWidth
@@ -109,8 +112,8 @@
         Next
         Me.ResumeLayout()
 
-        m_fullHeight = top - k_padding
-        maxCaptionWidth += k_padding
+        m_fullHeight = top - k_paddingBetweenControls
+        maxCaptionWidth += k_paddingBetweenControls
 
         For Each ctl As EditorControl In m_controls
             ctl.SetCaptionWidth(maxCaptionWidth)
