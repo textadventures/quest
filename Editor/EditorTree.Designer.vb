@@ -28,7 +28,10 @@ Partial Class EditorTree
         Me.mnuFilter = New System.Windows.Forms.ToolStripDropDownButton()
         Me.pnlSearchContainer = New System.Windows.Forms.Panel()
         Me.txtSearch = New System.Windows.Forms.TextBox()
+        Me.cmdClose = New System.Windows.Forms.Button()
         Me.cmdSearch = New System.Windows.Forms.Button()
+        Me.lstSearchResults = New System.Windows.Forms.ListView()
+        Me.colSearchResults = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlToolStrip.SuspendLayout()
         Me.pnlSearchContainer.SuspendLayout()
         Me.SuspendLayout()
@@ -40,7 +43,7 @@ Partial Class EditorTree
         Me.ctlTreeView.Location = New System.Drawing.Point(0, 20)
         Me.ctlTreeView.Name = "ctlTreeView"
         Me.ctlTreeView.Size = New System.Drawing.Size(204, 282)
-        Me.ctlTreeView.TabIndex = 1
+        Me.ctlTreeView.TabIndex = 4
         '
         'ctlToolStrip
         '
@@ -63,8 +66,9 @@ Partial Class EditorTree
         '
         'pnlSearchContainer
         '
-        Me.pnlSearchContainer.Controls.Add(Me.cmdSearch)
         Me.pnlSearchContainer.Controls.Add(Me.txtSearch)
+        Me.pnlSearchContainer.Controls.Add(Me.cmdClose)
+        Me.pnlSearchContainer.Controls.Add(Me.cmdSearch)
         Me.pnlSearchContainer.Dock = System.Windows.Forms.DockStyle.Top
         Me.pnlSearchContainer.Location = New System.Drawing.Point(0, 0)
         Me.pnlSearchContainer.Name = "pnlSearchContainer"
@@ -80,6 +84,17 @@ Partial Class EditorTree
         Me.txtSearch.Size = New System.Drawing.Size(184, 20)
         Me.txtSearch.TabIndex = 1
         '
+        'cmdClose
+        '
+        Me.cmdClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdClose.Image = CType(resources.GetObject("cmdClose.Image"), System.Drawing.Image)
+        Me.cmdClose.Location = New System.Drawing.Point(166, 0)
+        Me.cmdClose.Name = "cmdClose"
+        Me.cmdClose.Size = New System.Drawing.Size(20, 20)
+        Me.cmdClose.TabIndex = 2
+        Me.cmdClose.UseVisualStyleBackColor = True
+        Me.cmdClose.Visible = False
+        '
         'cmdSearch
         '
         Me.cmdSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -87,13 +102,33 @@ Partial Class EditorTree
         Me.cmdSearch.Location = New System.Drawing.Point(184, 0)
         Me.cmdSearch.Name = "cmdSearch"
         Me.cmdSearch.Size = New System.Drawing.Size(20, 20)
-        Me.cmdSearch.TabIndex = 2
+        Me.cmdSearch.TabIndex = 3
         Me.cmdSearch.UseVisualStyleBackColor = True
+        '
+        'lstSearchResults
+        '
+        Me.lstSearchResults.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSearchResults})
+        Me.lstSearchResults.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lstSearchResults.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
+        Me.lstSearchResults.HideSelection = False
+        Me.lstSearchResults.Location = New System.Drawing.Point(0, 20)
+        Me.lstSearchResults.MultiSelect = False
+        Me.lstSearchResults.Name = "lstSearchResults"
+        Me.lstSearchResults.Size = New System.Drawing.Size(204, 282)
+        Me.lstSearchResults.TabIndex = 4
+        Me.lstSearchResults.UseCompatibleStateImageBehavior = False
+        Me.lstSearchResults.View = System.Windows.Forms.View.Details
+        Me.lstSearchResults.Visible = False
+        '
+        'colSearchResults
+        '
+        Me.colSearchResults.Text = "Search Results"
         '
         'EditorTree
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.lstSearchResults)
         Me.Controls.Add(Me.ctlTreeView)
         Me.Controls.Add(Me.ctlToolStrip)
         Me.Controls.Add(Me.pnlSearchContainer)
@@ -113,5 +148,8 @@ Partial Class EditorTree
     Friend WithEvents pnlSearchContainer As System.Windows.Forms.Panel
     Friend WithEvents txtSearch As System.Windows.Forms.TextBox
     Friend WithEvents cmdSearch As System.Windows.Forms.Button
+    Friend WithEvents cmdClose As System.Windows.Forms.Button
+    Friend WithEvents lstSearchResults As System.Windows.Forms.ListView
+    Friend WithEvents colSearchResults As System.Windows.Forms.ColumnHeader
 
 End Class

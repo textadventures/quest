@@ -8,6 +8,7 @@ Public Class EditorTree
     Private m_openNodes As List(Of String)
     Private m_selection As String
     Private m_updatingSelection As Boolean = False
+    Private m_showSearchResults As Boolean = False
 
     Public Event FiltersUpdated()
     Public Event SelectionChanged(key As String)
@@ -29,6 +30,16 @@ Public Class EditorTree
     Private Sub SetTextboxHint()
         Dim hintText As String = "Search"
         SendMessage(New HandleRef(Me, txtSearch.Handle), EM_SETCUEBANNER, IntPtr.Zero, hintText)
+    End Sub
+
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        ShowSearchResults = False
+        ResizeColumn()
     End Sub
 
     Public Sub AddNode(key As String, text As String, parentKey As String, foreColor As System.Drawing.Color?, backColor As System.Drawing.Color?)
@@ -115,15 +126,24 @@ Public Class EditorTree
     End Sub
 
     Private Sub ctlTreeView_AfterSelect(sender As System.Object, e As System.Windows.Forms.TreeViewEventArgs) Handles ctlTreeView.AfterSelect
-        Dim key As String
-
         If m_updatingSelection Then Exit Sub
+        SelectCurrentTreeViewItem()
+    End Sub
+
+    Private Sub SelectCurrentTreeViewItem()
+        Dim key As String
 
         If ctlTreeView.SelectedNode Is Nothing Then
             key = Nothing
         Else
             key = DirectCast(ctlTreeView.SelectedNode.Tag, String)
         End If
+
+        ChangeSelection(key)
+    End Sub
+
+    Private Sub ChangeSelection(key As String)
+        If key Is Nothing Then Return
 
         If key <> m_selection Then
             m_selection = key
@@ -157,5 +177,134 @@ Public Class EditorTree
     Private Sub ctlTreeView_DoubleClick(sender As Object, e As System.EventArgs) Handles ctlTreeView.DoubleClick
         RaiseEvent CommitSelection()
     End Sub
+
+    Private Sub cmdSearch_Click(sender As System.Object, e As System.EventArgs) Handles cmdSearch.Click
+        SearchButtonClicked()
+    End Sub
+
+    Private Sub SearchButtonClicked()
+        If txtSearch.Text.Length = 0 Then Return
+        ShowSearchResults = True
+        PopulateSearchResults(txtSearch.Text)
+        lstSearchResults.Focus()
+    End Sub
+
+    Private Sub cmdClose_Click(sender As Object, e As System.EventArgs) Handles cmdClose.Click
+        CloseButtonClicked()
+    End Sub
+
+    Private Sub CloseButtonClicked()
+        ShowSearchResults = False
+        txtSearch.Text = ""
+    End Sub
+
+    Private Property ShowSearchResults As Boolean
+        Get
+            Return m_showSearchResults
+        End Get
+        Set(value As Boolean)
+            If value = m_showSearchResults Then Return
+            m_showSearchResults = value
+
+            SuspendLayout()
+            lstSearchResults.Visible = value
+            cmdClose.Visible = value
+            ctlTreeView.Visible = Not value
+            If value Then
+                txtSearch.Width = cmdClose.Left
+            Else
+                txtSearch.Width = cmdSearch.Left
+            End If
+            ResumeLayout()
+
+            If Not value Then SelectCurrentTreeViewItem()
+        End Set
+    End Property
+
+    Private Sub PopulateSearchResults(search As String)
+        ResizeColumn()
+        lstSearchResults.Items.Clear()
+        For Each item As TreeNode In ctlTreeView.Nodes
+            AddSearchResultsForNode(item, search, 0)
+        Next
+    End Sub
+
+    Private Sub AddSearchResultsForNode(node As TreeNode, search As String, level As Integer)
+        If level > 0 OrElse IncludeRootLevelInSearchResults Then
+            If node.Text.IndexOf(search, StringComparison.CurrentCultureIgnoreCase) > -1 Then
+                Dim key As String = DirectCast(node.Tag, String)
+                lstSearchResults.Items.Add(New ListViewItem With {.Name = key, .Text = node.Text})
+            End If
+        End If
+
+        For Each item As TreeNode In node.Nodes
+            AddSearchResultsForNode(item, search, level + 1)
+        Next
+    End Sub
+
+    Private Sub lstSearchResults_DoubleClick(sender As Object, e As System.EventArgs) Handles lstSearchResults.DoubleClick
+        CommitSearchSelection()
+    End Sub
+
+    Private Sub lstSearchResults_ItemSelectionChanged(sender As Object, e As System.Windows.Forms.ListViewItemSelectionChangedEventArgs) Handles lstSearchResults.ItemSelectionChanged
+        If ShowSearchResults Then
+            If lstSearchResults.SelectedItems.Count = 0 Then Return
+            ChangeSelection(lstSearchResults.SelectedItems(0).Name)
+        End If
+    End Sub
+
+    Private Sub txtSearch_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles txtSearch.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            SearchButtonClicked()
+            If lstSearchResults.Items.Count > 0 Then
+                lstSearchResults.SelectedItems.Clear()
+                lstSearchResults.Items(0).Selected = True
+            End If
+            e.Handled = True
+            e.SuppressKeyPress = True
+        End If
+        If e.KeyCode = Keys.Escape Then
+            CloseButtonClicked()
+            e.Handled = True
+            e.SuppressKeyPress = True
+        End If
+    End Sub
+
+    Private Sub lstSearchResults_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles lstSearchResults.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.Handled = True
+            e.SuppressKeyPress = True
+            CommitSearchSelection()
+            CloseButtonClicked()
+        End If
+        If e.KeyCode = Keys.Escape Then
+            txtSearch.Focus()
+            e.Handled = True
+            e.SuppressKeyPress = True
+        End If
+    End Sub
+
+    Private Sub CommitSearchSelection()
+        RaiseEvent CommitSelection()
+    End Sub
+
+    Private Sub EditorTree_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
+        ResizeColumn()
+    End Sub
+
+    Private Sub ResizeColumn()
+        lstSearchResults.Columns(0).Width = lstSearchResults.Width - SystemInformation.VerticalScrollBarWidth
+    End Sub
+
+    Private m_includeRootLevelInSearchResults As Boolean = True
+
+    Public Property IncludeRootLevelInSearchResults As Boolean
+        Get
+            Return m_includeRootLevelInSearchResults
+        End Get
+        Set(value As Boolean)
+            m_includeRootLevelInSearchResults = value
+        End Set
+    End Property
 
 End Class
