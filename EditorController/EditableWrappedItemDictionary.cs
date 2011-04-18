@@ -213,5 +213,31 @@ namespace AxeSoftware.Quest
         {
             throw new NotImplementedException();
         }
+
+        public bool Locked
+        {
+            get { return m_source.Locked; }
+        }
+
+        public IEditableDictionary<TWrapped> Clone(string parent, string attribute)
+        {
+            // TO DO: If this is required, then for example where TWrapped=IScript we will need to clone the scripts too
+            throw new NotImplementedException();
+
+            //IEditableDictionary<TWrapped> result;
+            //m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
+            //result = CloneInternal(m_controller.WorldModel.Elements.Get(parent), attribute);
+            //m_controller.WorldModel.UndoLogger.EndTransaction();
+            //return result;
+        }
+
+        //private IEditableDictionary<TWrapped> CloneInternal(Element parent, string attribute)
+        //{
+        //    QuestDictionary<TSource> newSource = (QuestDictionary<TSource>)m_source.Clone();
+        //    newSource.Locked = false;
+        //    parent.Fields.Set(attribute, newSource);
+        //    newSource = (QuestDictionary<TSource>)parent.Fields.Get(attribute);
+        //    return EditableWrappedItemDictionary<TSource, TWrapped>.GetNewInstance(m_controller, newSource);
+        //}
     }
 }

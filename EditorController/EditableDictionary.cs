@@ -199,5 +199,27 @@ namespace AxeSoftware.Quest
         {
             throw new NotImplementedException();
         }
+
+        public bool Locked {
+            get { return m_source.Locked; }
+        }
+
+        public IEditableDictionary<T> Clone(string parent, string attribute)
+        {
+            IEditableDictionary<T> result;
+            m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Copy '{0}' {1}", parent, attribute));
+            result = CloneInternal(m_controller.WorldModel.Elements.Get(parent), attribute);
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+            return result;
+        }
+
+        private IEditableDictionary<T> CloneInternal(Element parent, string attribute)
+        {
+            QuestDictionary<T> newSource = (QuestDictionary<T>)m_source.Clone();
+            newSource.Locked = false;
+            parent.Fields.Set(attribute, newSource);
+            newSource = (QuestDictionary<T>)parent.Fields.Get(attribute);
+            return EditableDictionary<T>.GetNewInstance(m_controller, newSource);
+        }
     }
 }

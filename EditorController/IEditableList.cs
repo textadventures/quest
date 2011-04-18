@@ -58,5 +58,7 @@ namespace AxeSoftware.Quest
         void Update(string key, T value);
         ValidationResult CanAdd(string key);
         T this[string key] { get; }
+        bool Locked { get; }
+        IEditableDictionary<T> Clone(string parent, string attribute);
     }
 }

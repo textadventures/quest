@@ -223,6 +223,7 @@
     </None>
     <None Include="Core\CoreEditorScripts.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <Content Include="Examples-Internal\Media.js" />
   </ItemGroup>

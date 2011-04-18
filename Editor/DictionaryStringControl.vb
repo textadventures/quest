@@ -78,6 +78,8 @@ Public Class DictionaryStringControl
         Dim addValue = PopupEditors.EditString(m_controlData.GetString("valueprompt"), String.Empty)
         If addValue.Cancelled Then Return
 
+        PrepareForEditing()
+
         If m_list Is Nothing Then
             Value = m_controller.CreateNewEditableStringDictionary(m_elementName, m_attributeName, addKey.Result, addValue.Result)
         Else
@@ -90,10 +92,12 @@ Public Class DictionaryStringControl
         If result.Cancelled Then Return
         If result.Result = m_list(key) Then Return
 
+        PrepareForEditing()
         m_list.Update(key, result.Result)
     End Sub
 
     Public Sub DoRemove(keys() As String) Implements IListEditorDelegate.DoRemove
+        PrepareForEditing()
         m_list.Remove(keys)
     End Sub
 
@@ -124,5 +128,16 @@ Public Class DictionaryStringControl
 
     Private Sub ctlListEditor_ToolbarClicked() Handles ctlListEditor.ToolbarClicked
         RaiseEvent RequestParentElementEditorSave()
+    End Sub
+
+    Private Sub PrepareForEditing()
+        ' If we're currently displaying a dictionary which belongs to a type we inherit from,
+        ' we must clone the dictionary before we can edit it.
+
+        If m_list Is Nothing Then Return
+
+        If m_list.Locked Then
+            Value = m_list.Clone(m_elementName, m_attributeName)
+        End If
     End Sub
 End Class
