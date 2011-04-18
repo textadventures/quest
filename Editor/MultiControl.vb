@@ -25,9 +25,10 @@ Public Class MultiControl
     Private m_controller As EditorController
     Private m_elementName As String
     Private m_attributeName As String
-    Private m_currentEditor As IElementEditorControl
+    Private WithEvents m_currentEditor As IElementEditorControl
     Private m_data As IEditorData
     Private m_height As Integer
+    Private m_controlData As IEditorControl
 
     Private m_loadedEditors As New Dictionary(Of String, IElementEditorControl)
 
@@ -93,11 +94,16 @@ Public Class MultiControl
             End If
 
             m_currentEditor.Control.Visible = True
+            m_currentEditor.Controller = m_controller
+            m_currentEditor.Initialise(m_controller, m_controlData)
+            m_currentEditor.Populate(m_data)
         End If
 
         For Each ctl As IElementEditorControl In m_loadedEditors.Values
             If Not ctl Is m_currentEditor Then
                 ctl.Control.Visible = False
+                ctl.Controller = Nothing
+                ctl.Initialise(Nothing, Nothing)
             End If
         Next
 
@@ -165,10 +171,8 @@ Public Class MultiControl
     End Property
 
     Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
-
+        m_currentEditor.Save(data)
     End Sub
-
-    ' TO DO: Need to bubble up subcontrol Dirty events
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_data = data
@@ -184,6 +188,8 @@ Public Class MultiControl
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         lstTypes.Items.Clear()
         m_types.Clear()
+
+        m_controlData = controlData
 
         If controlData IsNot Nothing Then
             m_attributeName = controlData.Attribute
@@ -203,5 +209,13 @@ Public Class MultiControl
     Private Sub lstTypes_SelectionChangeCommitted(sender As Object, e As System.EventArgs) Handles lstTypes.SelectionChangeCommitted
         Dim selectedType = m_types.First(Function(s) s.TypeIndex = lstTypes.SelectedIndex)
         UserSelectedNewType(selectedType)
+    End Sub
+
+    Private Sub m_currentEditor_Dirty(sender As Object, args As DataModifiedEventArgs) Handles m_currentEditor.Dirty
+        RaiseEvent Dirty(Me, args)
+    End Sub
+
+    Private Sub m_currentEditor_RequestParentElementEditorSave() Handles m_currentEditor.RequestParentElementEditorSave
+        RaiseEvent RequestParentElementEditorSave()
     End Sub
 End Class

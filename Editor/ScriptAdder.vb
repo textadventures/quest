@@ -2,6 +2,7 @@
 
     Private m_controller As EditorController
     Private m_selection As String
+    Private m_initialised As Boolean
 
     Public Event AddScript(keyword As String)
     Public Event CloseButtonClicked()
@@ -34,15 +35,19 @@
     End Property
 
     Public Sub Initialise()
-        For Each cat As String In m_controller.GetAllScriptEditorCategories
-            ctlEditorTree.AddNode(cat, cat, Nothing, Nothing, Nothing)
-        Next
+        If Not m_initialised Then
+            For Each cat As String In m_controller.GetAllScriptEditorCategories
+                ctlEditorTree.AddNode(cat, cat, Nothing, Nothing, Nothing)
+            Next
 
-        For Each data As KeyValuePair(Of String, EditableScriptData) In m_controller.GetScriptEditorData
-            ctlEditorTree.AddNode(data.Key, data.Value.AdderDisplayString, data.Value.Category, Nothing, Nothing)
-        Next
+            For Each data As KeyValuePair(Of String, EditableScriptData) In m_controller.GetScriptEditorData
+                ctlEditorTree.AddNode(data.Key, data.Value.AdderDisplayString, data.Value.Category, Nothing, Nothing)
+            Next
+        End If
 
         ctlEditorTree.ExpandAll()
+
+        m_initialised = True
     End Sub
 
     Private Sub cmdAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdAdd.Click

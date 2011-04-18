@@ -85,8 +85,13 @@ Public Class CheckBoxControl
     End Sub
 
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
-        m_attribute = controlData.Attribute
-        m_attributeName = controlData.Caption
+        If controlData IsNot Nothing Then
+            m_attribute = controlData.Attribute
+            m_attributeName = controlData.Caption
+        Else
+            m_attribute = Nothing
+            m_attributeName = Nothing
+        End If
     End Sub
 
     Public Sub Initialise(attributeName As String)
