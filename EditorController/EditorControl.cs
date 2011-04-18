@@ -65,5 +65,10 @@ namespace AxeSoftware.Quest
         {
             return m_source.Fields.GetAsType<QuestList<string>>(tag);
         }
+
+        public IDictionary<string, string> GetDictionary(string tag)
+        {
+            return m_source.Fields.GetAsType<QuestDictionary<string>>(tag);
+        }
     }
 }

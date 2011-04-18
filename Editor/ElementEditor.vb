@@ -91,6 +91,8 @@
             newControl.Control.Left = k_paddingLeft
             newControl.Control.Width = Me.Width - k_paddingLeft - k_paddingRight
             newControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+
+            AddHandler newControl.HeightChanged, AddressOf Control_HeightChanged
             AddHandler newControl.Dirty, AddressOf Control_Dirty
             AddHandler newControl.RequestParentElementEditorSave, AddressOf ControlRequestsSave
             If editorControl.Height.HasValue Then
@@ -121,12 +123,22 @@
         Next
     End Sub
 
+    Private Sub RelayoutControls()
+        Dim top As Integer = k_paddingTop
+        For Each ctl In m_controls
+            ctl.Control.Top = top
+            top = top + ctl.Control.Height + k_paddingBetweenControls
+        Next
+        m_fullHeight = top - k_paddingBetweenControls
+    End Sub
+
     Private Sub RemoveExistingControls()
         If m_controls Is Nothing Then Return
 
         For Each ctl In m_controls
             RemoveHandler ctl.Dirty, AddressOf Control_Dirty
             RemoveHandler ctl.RequestParentElementEditorSave, AddressOf ControlRequestsSave
+            RemoveHandler ctl.HeightChanged, AddressOf Control_HeightChanged
             ctl.Parent = Nothing
             ctl.Visible = False
             ctl.Value = Nothing
@@ -208,6 +220,10 @@
             args.Attribute = DirectCast(sender, EditorControl).AttributeName
             RaiseEvent Dirty(sender, args)
         End If
+    End Sub
+
+    Private Sub Control_HeightChanged(newHeight As Integer)
+        RelayoutControls()
     End Sub
 
     Private Sub ControlRequestsSave()

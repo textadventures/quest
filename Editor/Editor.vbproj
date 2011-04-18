@@ -173,6 +173,12 @@
     <Compile Include="MainToolbar.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="MultiControl.Designer.vb">
+      <DependentUpon>MultiControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MultiControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
@@ -273,6 +279,9 @@
     <EmbeddedResource Include="MainToolbar.resx">
       <DependentUpon>MainToolbar.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MultiControl.resx">
+      <DependentUpon>MultiControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

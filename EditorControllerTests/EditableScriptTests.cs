@@ -19,7 +19,7 @@ namespace EditorControllerTests
             Assert.AreEqual(0, RedoList.Count);
 
             // Create a new script and apply it to game.somescript
-            EditableScripts newScripts = Controller.CreateNewEditableScripts("game", "somescript", initialScript);
+            EditableScripts newScripts = Controller.CreateNewEditableScripts("game", "somescript", initialScript, true);
             
             // When the Updated event fires, store the event arguments locally
             newScripts.Updated += delegate(object sender, EditableScriptsUpdatedEventArgs e)
@@ -109,7 +109,7 @@ namespace EditorControllerTests
         public void TestIfThenElseIf()
         {
             // Create an "if (...) { } else if (...) { }" script
-            EditableScripts newScripts = Controller.CreateNewEditableScripts("game", "somescript", "if (someExpression) { msg (\"Then script\") }");
+            EditableScripts newScripts = Controller.CreateNewEditableScripts("game", "somescript", "if (someExpression) { msg (\"Then script\") }", true);
             ((EditableIfScript)newScripts[0]).AddElseIf();
             EditableIfScript.EditableElseIf newElseIf = ((EditableIfScript)newScripts[0]).ElseIfScripts.First();
             newElseIf.Expression = "elseIfExpression";

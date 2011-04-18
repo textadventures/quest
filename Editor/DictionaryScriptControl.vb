@@ -75,7 +75,7 @@ Public Class DictionaryScriptControl
         If addKey.Cancelled Then Return
         If Not ValidateInput(addKey.Result) Then Return
 
-        Dim script As IEditableScripts = m_controller.CreateNewEditableScripts(Nothing, Nothing, Nothing)
+        Dim script As IEditableScripts = m_controller.CreateNewEditableScripts(Nothing, Nothing, Nothing, True)
 
         If m_list Is Nothing Then
             Value = m_controller.CreateNewEditableScriptDictionary(m_elementName, m_attributeName, addKey.Result, script)

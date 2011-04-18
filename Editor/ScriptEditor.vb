@@ -25,7 +25,7 @@
 
     Private Sub ctlScriptAdder_AddScript(keyword As String) Handles ctlScriptAdder.AddScript
         If m_scripts Is Nothing Then
-            m_scripts = m_controller.CreateNewEditableScripts(m_elementName, m_attribute, keyword)
+            m_scripts = m_controller.CreateNewEditableScripts(m_elementName, m_attribute, keyword, True)
         Else
             m_scripts.AddNew(keyword, m_elementName)
         End If

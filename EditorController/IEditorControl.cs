@@ -15,5 +15,6 @@ namespace AxeSoftware.Quest
         bool Expand { get; }
         string GetString(string tag);
         IEnumerable<string> GetListString(string tag);
+        IDictionary<string, string> GetDictionary(string tag);
     }
 }

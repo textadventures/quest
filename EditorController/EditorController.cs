@@ -387,9 +387,12 @@ namespace AxeSoftware.Quest
             get { return m_worldModel; }
         }
 
-        public EditableScripts CreateNewEditableScripts(string parent, string attribute, string keyword)
+        public EditableScripts CreateNewEditableScripts(string parent, string attribute, string keyword, bool useTransaction)
         {
-            WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} script to '{2}'", parent, attribute, keyword));
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} script to '{2}'", parent, attribute, keyword));
+            }
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
             EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript());
             if (keyword != null)
@@ -397,7 +400,10 @@ namespace AxeSoftware.Quest
                 newValue.AddNewInternal(keyword);
             }
             if (element != null && attribute != null) element.Fields.Set(attribute, newValue.GetUnderlyingValue());
-            WorldModel.UndoLogger.EndTransaction();
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.EndTransaction();
+            }
 
             return newValue;
         }

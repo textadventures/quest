@@ -1,5 +1,6 @@
 ﻿Public Class EditorControl
     Implements IElementEditorControl
+    Implements IAdjustableHeightControl
 
     ' This class needs to give the option to have the contained control underneath the caption,
     ' or to the right at some position.
@@ -9,6 +10,7 @@
     Private Const k_maxCaptionWidth As Integer = 100
 
     Private WithEvents m_editorControl As IElementEditorControl
+    Private WithEvents m_adjustableHeightEditorControl As IAdjustableHeightControl
     Private m_editorControlIsCheckbox As Boolean
     Private m_checkBoxControl As CheckBoxControl
     Private m_attribute As String
@@ -28,6 +30,9 @@
 
         m_editorControl = DirectCast(Activator.CreateInstance(createType), IElementEditorControl)
         m_editorControlIsCheckbox = TypeOf m_editorControl Is CheckBoxControl
+        If TypeOf m_editorControl Is IAdjustableHeightControl Then
+            m_adjustableHeightEditorControl = DirectCast(m_editorControl, IAdjustableHeightControl)
+        End If
         m_editorControl.Control.Parent = Control
         m_editorControl.Control.Top = 0
         If m_editorControlIsCheckbox Then
@@ -156,5 +161,12 @@
 
     Private Sub m_editorControl_RequestParentElementEditorSave() Handles m_editorControl.RequestParentElementEditorSave
         RaiseEvent RequestParentElementEditorSave()
+    End Sub
+
+    Public Event HeightChanged(newHeight As Integer) Implements IAdjustableHeightControl.HeightChanged
+
+    Private Sub m_adjustableHeightEditorControl_HeightChanged(newHeight As Integer) Handles m_adjustableHeightEditorControl.HeightChanged
+        Me.Height = m_editorControl.Control.Top + newHeight
+        RaiseEvent HeightChanged(newHeight)
     End Sub
 End Class

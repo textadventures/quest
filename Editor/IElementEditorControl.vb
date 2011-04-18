@@ -44,3 +44,7 @@ Public Interface IElementEditorControl
     Sub Save(data As IEditorData)
 
 End Interface
+
+Public Interface IAdjustableHeightControl
+    Event HeightChanged(newHeight As Integer)
+End Interface
