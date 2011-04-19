@@ -205,6 +205,27 @@
         <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
       </control>
 
+      <control>
+        <controltype>multi</controltype>
+        <caption>Drop</caption>
+        <attribute>drop</attribute>
+        <types>
+          boolean=Default behaviour; script=Run script
+        </types>
+        <checkbox>Object can be dropped</checkbox>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Drop message (leave blank for default)</caption>
+        <attribute>dropmsg</attribute>
+        <nullable/>
+
+        <!-- show only if drop type is boolean -->
+        <relatedattribute>drop</relatedattribute>
+        <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
+      </control>
+
     </tab>
 
     <tab>

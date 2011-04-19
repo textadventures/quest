@@ -14,6 +14,7 @@
       switch (TypeOf(object, "take")) {
         case ("script") {
           do (object, "take")
+          takemsg = ""
         }
         case ("boolean") {
           if (object.take = true) {
@@ -51,15 +52,19 @@
     }
     else {
       found = true
+      dropmsg = object.dropmsg
       
       switch (TypeOf(object, "drop")) {
         case ("script") {
           do (object, "drop")
+          dropmsg = ""
         }
         case ("boolean") {
           if (object.drop = true) {
             object.parent = player.parent
-            msg (DynamicTemplate("DropSuccessful", object))
+            if (dropmsg = null) {
+              dropmsg = DynamicTemplate("DropSuccessful", object)
+            }
           }
           else {
             found = false
@@ -67,14 +72,18 @@
         }
         case ("string") {
           object.parent = player.parent
-          msg (object.drop)
+          dropmsg = object.drop
         }
         default {
           found = false
         }
       }
       
-      if (not found) msg (DynamicTemplate("DropUnsuccessful", object))
+      if (not found and dropmsg = null) dropmsg = DynamicTemplate("DropUnsuccessful", object)
+      
+      if (LengthOf(dropmsg) > 0) {
+        msg (dropmsg)
+      }
     }
   </command>
   
