@@ -2,6 +2,7 @@
 
   <implied element="control" property="height" type="int"/>
   <implied element="control" property="width" type="int"/>
+  <implied element="control" property="types" type="stringdictionary"/>
 
   <include ref="CoreEditorScripts.aslx"/>
 
@@ -182,6 +183,27 @@
 
     <tab>
       <caption>Inventory</caption>
+
+      <control>
+        <controltype>multi</controltype>
+        <caption>Take</caption>
+        <attribute>take</attribute>
+        <types>
+          boolean=Default behaviour; script=Run script
+        </types>
+        <checkbox>Object can be taken</checkbox>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Print message when user takes object (leave blank for default)</caption>
+        <attribute>takemsg</attribute>
+        
+        <!-- show only if take type is boolean -->
+        <relatedattribute>take</relatedattribute>
+        <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
+      </control>
+
     </tab>
 
     <tab>

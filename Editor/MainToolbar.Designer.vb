@@ -23,38 +23,39 @@ Partial Class MainToolbar
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainToolbar))
-        Me.ctlToolStrip = New System.Windows.Forms.ToolStrip
-        Me.butNew = New System.Windows.Forms.ToolStripButton
-        Me.butOpen = New System.Windows.Forms.ToolStripButton
-        Me.butSave = New System.Windows.Forms.ToolStripButton
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator
-        Me.butCut = New System.Windows.Forms.ToolStripButton
-        Me.butCopy = New System.Windows.Forms.ToolStripButton
-        Me.butPaste = New System.Windows.Forms.ToolStripButton
-        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator
-        Me.butUndo = New System.Windows.Forms.ToolStripSplitButton
-        Me.butRedo = New System.Windows.Forms.ToolStripSplitButton
-        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator
-        Me.butAddRoom = New System.Windows.Forms.ToolStripButton
-        Me.butAddObject = New System.Windows.Forms.ToolStripButton
-        Me.butDelete = New System.Windows.Forms.ToolStripButton
-        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator
-        Me.butBack = New System.Windows.Forms.ToolStripSplitButton
-        Me.butForward = New System.Windows.Forms.ToolStripSplitButton
-        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator
-        Me.butHelp = New System.Windows.Forms.ToolStripButton
+        Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
+        Me.butNew = New System.Windows.Forms.ToolStripButton()
+        Me.butOpen = New System.Windows.Forms.ToolStripButton()
+        Me.butSave = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.butCut = New System.Windows.Forms.ToolStripButton()
+        Me.butCopy = New System.Windows.Forms.ToolStripButton()
+        Me.butPaste = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
+        Me.butUndo = New System.Windows.Forms.ToolStripSplitButton()
+        Me.butRedo = New System.Windows.Forms.ToolStripSplitButton()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.butAddRoom = New System.Windows.Forms.ToolStripButton()
+        Me.butAddObject = New System.Windows.Forms.ToolStripButton()
+        Me.butDelete = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.butBack = New System.Windows.Forms.ToolStripSplitButton()
+        Me.butForward = New System.Windows.Forms.ToolStripSplitButton()
+        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
+        Me.butHelp = New System.Windows.Forms.ToolStripButton()
         Me.tmrUndoTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlToolStrip
         '
+        Me.ctlToolStrip.Dock = System.Windows.Forms.DockStyle.None
         Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butNew, Me.butOpen, Me.butSave, Me.ToolStripSeparator1, Me.butCut, Me.butCopy, Me.butPaste, Me.ToolStripSeparator4, Me.butUndo, Me.butRedo, Me.ToolStripSeparator3, Me.butAddRoom, Me.butAddObject, Me.butDelete, Me.ToolStripSeparator2, Me.butBack, Me.butForward, Me.ToolStripSeparator8, Me.butHelp})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
-        Me.ctlToolStrip.Size = New System.Drawing.Size(570, 25)
+        Me.ctlToolStrip.Size = New System.Drawing.Size(463, 25)
         Me.ctlToolStrip.TabIndex = 0
         Me.ctlToolStrip.Text = "ToolStrip1"
         '

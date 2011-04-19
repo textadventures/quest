@@ -13,6 +13,7 @@
   <type name="defaultobject">
     <displayverbs type="list">[LookAt];[Take];[SpeakTo]</displayverbs>
     <inventoryverbs type="list">[LookAt];[Use];[Drop]</inventoryverbs>
+    <take type="boolean">false</take>
     <drop/>
     <gender>[NeutralGender]</gender>
     <article>[NeutralArticle]</article>

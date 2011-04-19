@@ -20,6 +20,8 @@ Public Class MultiControl
         {GetType(IEditableScripts), "script"}
     }
 
+    Private m_storedValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
+
     Private m_value As Object
     Private m_oldValue As Object
     Private m_controller As EditorController
@@ -61,6 +63,7 @@ Public Class MultiControl
             Dim editorName As String = GetEditorNameForType(typeName)
             SetSelectedType(typeName)
             GetOrCreateEditorControl(editorName)
+            m_storedValues(typeName) = value
         End Set
     End Property
 
@@ -99,6 +102,12 @@ Public Class MultiControl
             m_currentEditor.Populate(m_data)
         End If
 
+        HideOtherEditors()
+        SetEditorHeight(editorName)
+        SetEditorAttributes()
+    End Sub
+
+    Private Sub HideOtherEditors()
         For Each ctl As IElementEditorControl In m_loadedEditors.Values
             If Not ctl Is m_currentEditor Then
                 ctl.Control.Visible = False
@@ -106,7 +115,9 @@ Public Class MultiControl
                 ctl.Initialise(Nothing, Nothing)
             End If
         Next
+    End Sub
 
+    Private Sub SetEditorHeight(editorName As String)
         Dim newHeight As Integer
 
         If editorName = "script" Then
@@ -121,6 +132,14 @@ Public Class MultiControl
         End If
     End Sub
 
+    Private Sub SetEditorAttributes()
+        Dim checkBoxControl As CheckBoxControl = TryCast(m_currentEditor, CheckBoxControl)
+
+        If checkBoxControl IsNot Nothing Then
+            checkBoxControl.SetCaption(m_controlData.GetString("checkbox"))
+        End If
+    End Sub
+
     Private Sub SetSelectedType(typeName As String)
         Dim selectedType = m_types.First(Function(t) t.TypeName = typeName)
         lstTypes.SelectedItem = lstTypes.Items(selectedType.TypeIndex)
@@ -130,16 +149,25 @@ Public Class MultiControl
         Controller.StartTransaction(String.Format("Change type of '{0}' {1} to '{2}'", m_elementName, m_attributeName, type.TypeDescription))
 
         Dim newValue As Object
-        Select Case type.TypeName
-            Case "boolean"
-                newValue = False
-            Case "string"
-                newValue = ""
-            Case "script"
-                newValue = Controller.CreateNewEditableScripts(m_elementName, m_attributeName, Nothing, False)
-            Case Else
-                Throw New InvalidOperationException
-        End Select
+
+        ' If the user has previously selected this type, use the previous value, otherwise create a new
+        ' default value for that type. This allows the user to switch back and forth between different
+        ' types without the value being cleared out if they change their mind.
+
+        If m_storedValues.ContainsKey(type.TypeName) Then
+            newValue = m_storedValues(type.TypeName)
+        Else
+            Select Case type.TypeName
+                Case "boolean"
+                    newValue = False
+                Case "string"
+                    newValue = ""
+                Case "script"
+                    newValue = Controller.CreateNewEditableScripts(m_elementName, m_attributeName, Nothing, False)
+                Case Else
+                    Throw New InvalidOperationException
+            End Select
+        End If
 
         m_data.SetAttribute(m_attributeName, newValue)
 
@@ -176,6 +204,7 @@ Public Class MultiControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_data = data
+        m_storedValues.Clear()
         If data Is Nothing Then
             ElementName = Nothing
             Value = Nothing
