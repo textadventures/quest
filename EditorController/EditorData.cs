@@ -18,8 +18,6 @@ namespace AxeSoftware.Quest
             m_controller = controller;
         }
 
-        #region IEditorData Members
-
         public string Name
         {
             get { return m_element.Name; }
@@ -39,7 +37,5 @@ namespace AxeSoftware.Quest
             }
             m_element.Fields.Set(attribute, value);
         }
-
-        #endregion
     }
 }

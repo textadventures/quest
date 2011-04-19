@@ -70,5 +70,10 @@ namespace AxeSoftware.Quest
         {
             return m_source.Fields.GetAsType<QuestDictionary<string>>(tag);
         }
+
+        public bool IsControlVisible(IEditorData data)
+        {
+            return true;
+        }
     }
 }

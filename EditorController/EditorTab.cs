@@ -24,8 +24,6 @@ namespace AxeSoftware.Quest
             }
         }
 
-        #region IEditorTab Members
-
         public string Caption
         {
             get
@@ -38,7 +36,5 @@ namespace AxeSoftware.Quest
         {
             get { return m_controls.Values; }
         }
-
-        #endregion
     }
 }

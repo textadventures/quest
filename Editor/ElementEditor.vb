@@ -83,6 +83,7 @@
         For Each editorControl As IEditorControl In controls
             Dim newControl As New EditorControl
             m_controls.Add(newControl)
+            newControl.Definition = editorControl
             newControl.Parent = Me
             newControl.Controller = m_controller
             newControl.Initialise(m_controller, editorControl)
@@ -126,8 +127,13 @@
     Private Sub RelayoutControls()
         Dim top As Integer = k_paddingTop
         For Each ctl In m_controls
-            ctl.Control.Top = top
-            top = top + ctl.Control.Height + k_paddingBetweenControls
+            If ctl.Definition.IsControlVisible(m_data) Then
+                ctl.Visible = True
+                ctl.Control.Top = top
+                top = top + ctl.Control.Height + k_paddingBetweenControls
+            Else
+                ctl.Visible = False
+            End If
         Next
         m_fullHeight = top - k_paddingBetweenControls
     End Sub
@@ -168,6 +174,8 @@
             For Each ctl As EditorControl In m_controls
                 ctl.Populate(data)
             Next
+
+            RelayoutControls()
         End If
 
         m_populating = False

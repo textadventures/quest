@@ -39,8 +39,6 @@ namespace AxeSoftware.Quest
             get { return m_appliesTo; }
         }
 
-        #region IEditorDefinition Members
-
         public IDictionary<string, IEditorTab> Tabs
         {
             get { return m_tabs; }
@@ -50,7 +48,5 @@ namespace AxeSoftware.Quest
         {
             get { return m_controls.Values; }
         }
-
-        #endregion
     }
 }

@@ -17,6 +17,7 @@
     Private m_controller As EditorController
     Private m_hasFixedWidth As Boolean = False
     Private m_controlUnderCaption As Boolean = False
+    Private m_definition As IEditorControl
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -169,4 +170,13 @@
         Me.Height = m_editorControl.Control.Top + newHeight
         RaiseEvent HeightChanged(newHeight)
     End Sub
+
+    Public Property Definition As IEditorControl
+        Get
+            Return m_definition
+        End Get
+        Set(value As IEditorControl)
+            m_definition = value
+        End Set
+    End Property
 End Class

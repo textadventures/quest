@@ -16,5 +16,6 @@ namespace AxeSoftware.Quest
         string GetString(string tag);
         IEnumerable<string> GetListString(string tag);
         IDictionary<string, string> GetDictionary(string tag);
+        bool IsControlVisible(IEditorData data);
     }
 }
