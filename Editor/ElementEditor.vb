@@ -100,6 +100,7 @@
                 newControl.SetControlHeight(editorControl.Height.Value)
             End If
             If editorControl.Expand Then
+                newControl.Expand = True
                 newControl.SetControlHeight(Me.Height - top - k_paddingBetweenControls)
                 newControl.Anchor = newControl.Anchor Or AnchorStyles.Bottom
             End If
@@ -230,7 +231,7 @@
         End If
     End Sub
 
-    Private Sub Control_HeightChanged(newHeight As Integer)
+    Private Sub Control_HeightChanged(sender As Object, newHeight As Integer)
         RelayoutControls()
     End Sub
 

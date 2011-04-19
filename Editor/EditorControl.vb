@@ -18,6 +18,7 @@
     Private m_hasFixedWidth As Boolean = False
     Private m_controlUnderCaption As Boolean = False
     Private m_definition As IEditorControl
+    Private m_expand As Boolean
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -164,11 +165,12 @@
         RaiseEvent RequestParentElementEditorSave()
     End Sub
 
-    Public Event HeightChanged(newHeight As Integer) Implements IAdjustableHeightControl.HeightChanged
+    Public Event HeightChanged(sender As Object, newHeight As Integer) Implements IAdjustableHeightControl.HeightChanged
 
-    Private Sub m_adjustableHeightEditorControl_HeightChanged(newHeight As Integer) Handles m_adjustableHeightEditorControl.HeightChanged
+    Private Sub m_adjustableHeightEditorControl_HeightChanged(sender As Object, newHeight As Integer) Handles m_adjustableHeightEditorControl.HeightChanged
+        If m_expand Then Return
         Me.Height = m_editorControl.Control.Top + newHeight
-        RaiseEvent HeightChanged(newHeight)
+        RaiseEvent HeightChanged(Me, newHeight)
     End Sub
 
     Public Property Definition As IEditorControl
@@ -177,6 +179,17 @@
         End Get
         Set(value As IEditorControl)
             m_definition = value
+        End Set
+    End Property
+
+    ' If Expand is set, this control automatically takes up all the remaining space in the parent ElementEditor,
+    ' so we don't want it to try to resize itself in response to changes in its contents.
+    Public Property Expand As Boolean
+        Get
+            Return m_expand
+        End Get
+        Set(value As Boolean)
+            m_expand = value
         End Set
     End Property
 End Class

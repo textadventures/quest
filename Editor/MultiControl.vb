@@ -28,6 +28,7 @@ Public Class MultiControl
     Private m_elementName As String
     Private m_attributeName As String
     Private WithEvents m_currentEditor As IElementEditorControl
+    Private WithEvents m_currentEditorAdjustableHeight As IAdjustableHeightControl
     Private m_data As IEditorData
     Private m_height As Integer
     Private m_controlData As IEditorControl
@@ -36,7 +37,7 @@ Public Class MultiControl
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
-    Public Event HeightChanged(newHeight As Integer) Implements IAdjustableHeightControl.HeightChanged
+    Public Event HeightChanged(sender As Object, newHeight As Integer) Implements IAdjustableHeightControl.HeightChanged
 
     Private Structure TypesListItem
         Public TypeIndex As Integer
@@ -100,6 +101,8 @@ Public Class MultiControl
             m_currentEditor.Controller = m_controller
             m_currentEditor.Initialise(m_controller, m_controlData)
             m_currentEditor.Populate(m_data)
+
+            m_currentEditorAdjustableHeight = TryCast(m_currentEditor, IAdjustableHeightControl)
         End If
 
         HideOtherEditors()
@@ -128,7 +131,7 @@ Public Class MultiControl
 
         If newHeight <> m_height Then
             m_height = newHeight
-            RaiseEvent HeightChanged(newHeight)
+            RaiseEvent HeightChanged(Me, newHeight)
         End If
     End Sub
 
@@ -246,5 +249,9 @@ Public Class MultiControl
 
     Private Sub m_currentEditor_RequestParentElementEditorSave() Handles m_currentEditor.RequestParentElementEditorSave
         RaiseEvent RequestParentElementEditorSave()
+    End Sub
+
+    Private Sub m_currentEditorAdjustableHeight_HeightChanged(sender As Object, newHeight As Integer) Handles m_currentEditorAdjustableHeight.HeightChanged
+        RaiseEvent HeightChanged(Me, m_currentEditorAdjustableHeight.Control.Top + newHeight)
     End Sub
 End Class

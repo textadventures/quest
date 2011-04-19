@@ -1,6 +1,7 @@
 ﻿<ControlType("script")> _
 Public Class ScriptControl
     Implements IElementEditorControl
+    Implements IAdjustableHeightControl
 
     Private m_oldValue As IEditableScripts
     Private m_controller As EditorController
@@ -8,7 +9,7 @@ Public Class ScriptControl
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
-    Public Event HeightChanged(sender As Object, height As Integer)
+    Public Event HeightChanged(sender As Object, height As Integer) Implements IAdjustableHeightControl.HeightChanged
 
     Public ReadOnly Property Control() As System.Windows.Forms.Control Implements IElementEditorControl.Control
         Get
@@ -91,4 +92,5 @@ Public Class ScriptControl
     Private Sub ctlScriptEditor_HeightChanged(sender As Object, height As Integer) Handles ctlScriptEditor.HeightChanged
         RaiseEvent HeightChanged(Me, height)
     End Sub
+
 End Class

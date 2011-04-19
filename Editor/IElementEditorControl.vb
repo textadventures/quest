@@ -46,5 +46,6 @@ Public Interface IElementEditorControl
 End Interface
 
 Public Interface IAdjustableHeightControl
-    Event HeightChanged(newHeight As Integer)
+    Inherits IElementEditorControl
+    Event HeightChanged(sender As Object, newHeight As Integer)
 End Interface
