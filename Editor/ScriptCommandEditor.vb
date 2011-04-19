@@ -79,10 +79,11 @@
 
             If newEditor IsNot m_currentEditor Then
                 newEditor.Visible = True
-                If m_currentEditor IsNot Nothing Then
-                    DirectCast(m_currentEditor, Control).Visible = False
-                End If
             End If
+        End If
+
+        If m_currentEditor IsNot Nothing Then
+            DirectCast(m_currentEditor, Control).Visible = False
         End If
 
         m_currentEditor = newCommandEditor
