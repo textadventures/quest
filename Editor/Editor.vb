@@ -59,7 +59,7 @@
         editor = New ElementEditor
         editor.Initialise(m_controller, m_controller.GetEditorDefinition(name))
         editor.Visible = False
-        editor.Parent = splitMain.Panel2
+        editor.Parent = pnlContent
         editor.Dock = DockStyle.Fill
         AddHandler editor.Dirty, AddressOf Editor_Dirty
         m_elementEditors.Add(name, editor)
@@ -131,6 +131,7 @@
 
         m_currentElement = key
         m_currentEditor.Populate(m_controller.GetEditorData(key))
+        lblHeader.Text = key
     End Sub
 
     Private Sub Save()

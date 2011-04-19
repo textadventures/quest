@@ -23,12 +23,17 @@ Partial Class Editor
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.splitMain = New System.Windows.Forms.SplitContainer()
-        Me.ctlTree = New AxeSoftware.Quest.EditorTree()
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
+        Me.pnlHeader = New System.Windows.Forms.Panel()
+        Me.pnlContent = New System.Windows.Forms.Panel()
+        Me.lblHeader = New System.Windows.Forms.Label()
+        Me.ctlTree = New AxeSoftware.Quest.EditorTree()
         Me.ctlToolbar = New AxeSoftware.Quest.MainToolbar()
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
+        Me.splitMain.Panel2.SuspendLayout()
         Me.splitMain.SuspendLayout()
+        Me.pnlHeader.SuspendLayout()
         Me.SuspendLayout()
         '
         'splitMain
@@ -41,23 +46,55 @@ Partial Class Editor
         'splitMain.Panel1
         '
         Me.splitMain.Panel1.Controls.Add(Me.ctlTree)
+        '
+        'splitMain.Panel2
+        '
+        Me.splitMain.Panel2.Controls.Add(Me.pnlContent)
+        Me.splitMain.Panel2.Controls.Add(Me.pnlHeader)
         Me.splitMain.Size = New System.Drawing.Size(618, 304)
         Me.splitMain.SplitterDistance = 206
         Me.splitMain.TabIndex = 0
-        '
-        'ctlTree
-        '
-        Me.ctlTree.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlTree.Location = New System.Drawing.Point(0, 0)
-        Me.ctlTree.Name = "ctlTree"
-        Me.ctlTree.ShowFilterBar = True
-        Me.ctlTree.Size = New System.Drawing.Size(206, 304)
-        Me.ctlTree.TabIndex = 0
         '
         'ctlSaveFile
         '
         Me.ctlSaveFile.DefaultExt = "aslx"
         Me.ctlSaveFile.Filter = "Quest Games|*.aslx|All files|*.*"
+        '
+        'pnlHeader
+        '
+        Me.pnlHeader.Controls.Add(Me.lblHeader)
+        Me.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top
+        Me.pnlHeader.Location = New System.Drawing.Point(0, 0)
+        Me.pnlHeader.Name = "pnlHeader"
+        Me.pnlHeader.Size = New System.Drawing.Size(408, 18)
+        Me.pnlHeader.TabIndex = 0
+        '
+        'pnlContent
+        '
+        Me.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlContent.Location = New System.Drawing.Point(0, 18)
+        Me.pnlContent.Name = "pnlContent"
+        Me.pnlContent.Size = New System.Drawing.Size(408, 286)
+        Me.pnlContent.TabIndex = 1
+        '
+        'lblHeader
+        '
+        Me.lblHeader.AutoSize = True
+        Me.lblHeader.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblHeader.Location = New System.Drawing.Point(0, 0)
+        Me.lblHeader.Name = "lblHeader"
+        Me.lblHeader.Size = New System.Drawing.Size(0, 16)
+        Me.lblHeader.TabIndex = 0
+        '
+        'ctlTree
+        '
+        Me.ctlTree.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlTree.IncludeRootLevelInSearchResults = True
+        Me.ctlTree.Location = New System.Drawing.Point(0, 0)
+        Me.ctlTree.Name = "ctlTree"
+        Me.ctlTree.ShowFilterBar = True
+        Me.ctlTree.Size = New System.Drawing.Size(206, 304)
+        Me.ctlTree.TabIndex = 0
         '
         'ctlToolbar
         '
@@ -76,8 +113,11 @@ Partial Class Editor
         Me.Name = "Editor"
         Me.Size = New System.Drawing.Size(618, 329)
         Me.splitMain.Panel1.ResumeLayout(False)
+        Me.splitMain.Panel2.ResumeLayout(False)
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitMain.ResumeLayout(False)
+        Me.pnlHeader.ResumeLayout(False)
+        Me.pnlHeader.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -85,5 +125,8 @@ Partial Class Editor
     Friend WithEvents ctlTree As EditorTree
     Friend WithEvents ctlToolbar As AxeSoftware.Quest.MainToolbar
     Private WithEvents ctlSaveFile As System.Windows.Forms.SaveFileDialog
+    Friend WithEvents pnlHeader As System.Windows.Forms.Panel
+    Friend WithEvents pnlContent As System.Windows.Forms.Panel
+    Friend WithEvents lblHeader As System.Windows.Forms.Label
 
 End Class
