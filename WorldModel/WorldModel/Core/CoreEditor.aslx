@@ -88,6 +88,15 @@
       </control>
     </tab>
 
+    <tab>
+      <caption>Attributes</caption>
+
+      <control>
+        <controltype>attributes</controltype>
+        <expand/>
+      </control>
+    </tab>
+
   </editor>
 
   <editor>

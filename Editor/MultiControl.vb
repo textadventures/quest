@@ -45,7 +45,7 @@ Public Class MultiControl
         Public TypeDescription As String
     End Structure
 
-    Private m_types As New List(Of TypesListItem)
+    Private m_types As List(Of TypesListItem)
 
     Public ReadOnly Property Control() As System.Windows.Forms.Control Implements IElementEditorControl.Control
         Get
@@ -145,6 +145,8 @@ Public Class MultiControl
     End Sub
 
     Private Sub SetSelectedType(typeName As String)
+        If m_types Is Nothing Then Return
+
         Dim selectedType = m_types.First(Function(t) t.TypeName = typeName)
         lstTypes.SelectedItem = lstTypes.Items(selectedType.TypeIndex)
     End Sub
@@ -220,7 +222,7 @@ Public Class MultiControl
 
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         lstTypes.Items.Clear()
-        m_types.Clear()
+        m_types = New List(Of TypesListItem)
 
         m_controlData = controlData
 
@@ -228,15 +230,30 @@ Public Class MultiControl
             m_attributeName = controlData.Attribute
 
             Dim types As IDictionary(Of String, String) = controlData.GetDictionary("types")
-            Dim index As Integer = 0
-
-            For Each item In types
-                lstTypes.Items.Add(item.Value)
-                m_types.Add(New TypesListItem With {.TypeIndex = index, .TypeName = item.Key, .TypeDescription = item.Value})
-                index += 1
-            Next
-
+            InitialiseTypesList(types)
         End If
+    End Sub
+
+    Public Sub InitialiseForAttributesEditor()
+        m_types = New List(Of TypesListItem)
+
+        Dim allTypes As New Dictionary(Of String, String) From {
+            {"string", "String"},
+            {"boolean", "Boolean"},
+            {"script", "Script"}
+        }
+
+        InitialiseTypesList(allTypes)
+    End Sub
+
+    Private Sub InitialiseTypesList(types As IDictionary(Of String, String))
+        Dim index As Integer = 0
+
+        For Each item In types
+            lstTypes.Items.Add(item.Value)
+            m_types.Add(New TypesListItem With {.TypeIndex = index, .TypeName = item.Key, .TypeDescription = item.Value})
+            index += 1
+        Next
     End Sub
 
     Private Sub lstTypes_SelectionChangeCommitted(sender As Object, e As System.EventArgs) Handles lstTypes.SelectionChangeCommitted
