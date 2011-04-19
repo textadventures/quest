@@ -43,20 +43,66 @@ Public Class AttributesControl
     End Sub
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
+        lstAttributes.Items.Clear()
+
         If data Is Nothing Then
 
         Else
-
+            For Each attr In data.GetAttributeData
+                Dim newItem As ListViewItem = lstAttributes.Items.Add(attr.AttributeName)
+                If attr.IsInherited Then newItem.ForeColor = Color.Gray
+                Dim value As Object = data.GetAttribute(attr.AttributeName)
+                Dim displayValue As String = GetDisplayString(value)
+                newItem.SubItems.Add(Utility.FormatAsOneLine(displayValue))
+            Next
         End If
     End Sub
 
+    Private Function GetDisplayString(value As Object) As String
+        Dim scriptValue As IEditableScripts = TryCast(value, IEditableScripts)
+        Dim listStringValue As IEditableList(Of String) = TryCast(value, IEditableList(Of String))
+        Dim dictionaryStringValue As IEditableDictionary(Of String) = TryCast(value, IEditableDictionary(Of String))
+
+        If scriptValue IsNot Nothing Then
+            Return scriptValue.DisplayString()
+        ElseIf listStringValue IsNot Nothing Then
+            Return GetListDisplayString(listStringValue.DisplayItems)
+        ElseIf dictionaryStringValue IsNot Nothing Then
+            Return GetDictionaryDisplayString(dictionaryStringValue.DisplayItems)
+        Else
+            Return value.ToString()
+        End If
+    End Function
+
+    Private Function GetListDisplayString(items As IEnumerable(Of KeyValuePair(Of String, String))) As String
+        Dim result As String = String.Empty
+
+        For Each item In items
+            If result.Length > 0 Then result += ", "
+            result += item.Value
+        Next
+
+        Return result
+    End Function
+
+
+    Private Function GetDictionaryDisplayString(items As IEnumerable(Of KeyValuePair(Of String, String))) As String
+        Dim result As String = String.Empty
+
+        For Each item In items
+            If result.Length > 0 Then result += ", "
+            result += item.Key + "=" + item.Value
+        Next
+
+        Return result
+    End Function
+
+
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         If controlData IsNot Nothing Then
-            'ctlMultiControl.Initialise(controller, 
-        Else
-        End If
+            ctlMultiControl.InitialiseForAttributesEditor()
 
-        ctlMultiControl.InitialiseForAttributesEditor()
+        End If
     End Sub
 
 End Class

@@ -23,7 +23,7 @@ Partial Class AttributesControl
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.ctlSplitContainer = New System.Windows.Forms.SplitContainer()
-        Me.ctlListView = New System.Windows.Forms.ListView()
+        Me.lstAttributes = New System.Windows.Forms.ListView()
         Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colValue = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlMultiControl = New AxeSoftware.Quest.MultiControl()
@@ -42,7 +42,7 @@ Partial Class AttributesControl
         '
         'ctlSplitContainer.Panel1
         '
-        Me.ctlSplitContainer.Panel1.Controls.Add(Me.ctlListView)
+        Me.ctlSplitContainer.Panel1.Controls.Add(Me.lstAttributes)
         '
         'ctlSplitContainer.Panel2
         '
@@ -51,16 +51,18 @@ Partial Class AttributesControl
         Me.ctlSplitContainer.SplitterDistance = 219
         Me.ctlSplitContainer.TabIndex = 0
         '
-        'ctlListView
+        'lstAttributes
         '
-        Me.ctlListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName, Me.colValue})
-        Me.ctlListView.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlListView.Location = New System.Drawing.Point(0, 0)
-        Me.ctlListView.Name = "ctlListView"
-        Me.ctlListView.Size = New System.Drawing.Size(657, 219)
-        Me.ctlListView.TabIndex = 0
-        Me.ctlListView.UseCompatibleStateImageBehavior = False
-        Me.ctlListView.View = System.Windows.Forms.View.Details
+        Me.lstAttributes.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName, Me.colValue})
+        Me.lstAttributes.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lstAttributes.FullRowSelect = True
+        Me.lstAttributes.HideSelection = False
+        Me.lstAttributes.Location = New System.Drawing.Point(0, 0)
+        Me.lstAttributes.Name = "lstAttributes"
+        Me.lstAttributes.Size = New System.Drawing.Size(657, 219)
+        Me.lstAttributes.TabIndex = 0
+        Me.lstAttributes.UseCompatibleStateImageBehavior = False
+        Me.lstAttributes.View = System.Windows.Forms.View.Details
         '
         'colName
         '
@@ -99,7 +101,7 @@ Partial Class AttributesControl
 
     End Sub
     Friend WithEvents ctlSplitContainer As System.Windows.Forms.SplitContainer
-    Friend WithEvents ctlListView As System.Windows.Forms.ListView
+    Friend WithEvents lstAttributes As System.Windows.Forms.ListView
     Friend WithEvents colName As System.Windows.Forms.ColumnHeader
     Friend WithEvents colValue As System.Windows.Forms.ColumnHeader
     Friend WithEvents ctlMultiControl As AxeSoftware.Quest.MultiControl

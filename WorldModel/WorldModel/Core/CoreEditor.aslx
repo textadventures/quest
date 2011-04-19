@@ -241,12 +241,26 @@
       <caption>Container</caption>
     </tab>
 
+    <tab>
+      <caption>Attributes</caption>
+
+      <control>
+        <controltype>attributes</controltype>
+        <expand/>
+      </control>
+    </tab>
+
   </editor>
 
   <editor>
     <appliesto>default</appliesto>
     <tab>
       <caption>Default</caption>
+
+      <control>
+        <controltype>attributes</controltype>
+        <expand/>
+      </control>
     </tab>
   </editor>
 

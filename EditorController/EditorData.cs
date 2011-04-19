@@ -7,6 +7,27 @@ using AxeSoftware.Quest.Scripts;
 
 namespace AxeSoftware.Quest
 {
+    internal class EditorAttributeData : IEditorAttributeData
+    {
+        public EditorAttributeData(string attributeName, bool isInherited)
+        {
+            AttributeName = attributeName;
+            IsInherited = isInherited;
+        }
+
+        public string AttributeName
+        {
+            get;
+            private set;
+        }
+
+        public bool IsInherited
+        {
+            get;
+            private set;
+        }
+    }
+
     internal class EditorData : IEditorData
     {
         private Element m_element;
@@ -45,6 +66,17 @@ namespace AxeSoftware.Quest
                 value = wrapper.GetUnderlyingValue();
             }
             m_element.Fields.Set(attribute, value);
+        }
+
+        public IEnumerable<IEditorAttributeData> GetAttributeData()
+        {
+            DebugData data = m_controller.WorldModel.GetDebugData(m_element.Name);
+            List<EditorAttributeData> result = new List<EditorAttributeData>();
+            foreach (var item in data.Data)
+            {
+                result.Add(new EditorAttributeData(item.Key, item.Value.IsInherited));
+            }
+            return result;
         }
     }
 }

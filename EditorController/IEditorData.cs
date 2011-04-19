@@ -5,6 +5,12 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
+    public interface IEditorAttributeData
+    {
+        string AttributeName { get; }
+        bool IsInherited { get; }
+    }
+
     public interface IEditorData
     {
         // this will be used to populate the data on an editor, so it's e.g. all the object fields
@@ -12,6 +18,7 @@ namespace AxeSoftware.Quest
         string Name { get; }
         object GetAttribute(string attribute);
         void SetAttribute(string attribute, object value);
+        IEnumerable<IEditorAttributeData> GetAttributeData();
 
         event EventHandler Changed;
     }
