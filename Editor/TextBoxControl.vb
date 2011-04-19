@@ -8,6 +8,7 @@ Public Class TextBoxControl
     Private m_attribute As String
     Private m_attributeName As String
     Private m_data As IEditorData
+    Private m_nullable As Boolean
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -20,6 +21,7 @@ Public Class TextBoxControl
 
     Public Property Value() As Object Implements IElementEditorControl.Value
         Get
+            If (m_nullable AndAlso txtTextBox.Text.Length = 0) Then Return Nothing
             Return txtTextBox.Text
         End Get
         Set(value As Object)
@@ -85,6 +87,7 @@ Public Class TextBoxControl
         If controlData IsNot Nothing Then
             m_attribute = controlData.Attribute
             m_attributeName = controlData.Caption
+            m_nullable = controlData.GetBool("nullable")
         Else
             m_attribute = Nothing
             m_attributeName = Nothing

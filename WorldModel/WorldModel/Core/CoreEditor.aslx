@@ -198,6 +198,7 @@
         <controltype>textbox</controltype>
         <caption>Take message (leave blank for default)</caption>
         <attribute>takemsg</attribute>
+        <nullable/>
         
         <!-- show only if take type is boolean -->
         <relatedattribute>take</relatedattribute>
