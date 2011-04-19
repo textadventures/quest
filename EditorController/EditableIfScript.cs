@@ -20,6 +20,8 @@ namespace AxeSoftware.Quest
 
         public class EditableElseIf : IEditorData
         {
+            public event EventHandler Changed { add { } remove { } }
+
             private IfScript.ElseIfScript m_elseIfScript;
             private EditableIfScript m_parent;
 
@@ -84,6 +86,7 @@ namespace AxeSoftware.Quest
         public event EventHandler RemovedElse;
         public event EventHandler<ElseIfEventArgs> AddedElseIf;
         public event EventHandler<ElseIfEventArgs> RemovedElseIf;
+        public event EventHandler Changed { add { } remove { } }
 
         internal EditableIfScript(EditorController controller, IfScript script, UndoLogger undoLogger)
             : base(controller, script, undoLogger)

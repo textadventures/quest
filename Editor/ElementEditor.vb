@@ -9,7 +9,7 @@
     Private m_tabs As List(Of ElementEditor)
     Private m_controls As List(Of EditorControl)
     Private m_populating As Boolean
-    Private m_data As IEditorData
+    Private WithEvents m_data As IEditorData
     Private m_controller As EditorController
     Private m_fullHeight As Integer
 
@@ -252,4 +252,9 @@
             Return m_fullHeight
         End Get
     End Property
+
+    Private Sub m_data_Changed(sender As Object, e As System.EventArgs) Handles m_data.Changed
+        If m_controls Is Nothing Then Return
+        RelayoutControls()
+    End Sub
 End Class

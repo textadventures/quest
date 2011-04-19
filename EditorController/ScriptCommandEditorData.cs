@@ -11,13 +11,20 @@ namespace AxeSoftware.Quest
         private IEditableScript m_script;
         private EditorController m_controller;
 
+        public event EventHandler Changed;
+
         public ScriptCommandEditorData(EditorController controller, IEditableScript script)
         {
             m_controller = controller;
             m_script = script;
+
+            m_script.Updated += m_script_Updated;
         }
 
-        #region IEditorData Members
+        void m_script_Updated(object sender, EditableScriptUpdatedEventArgs e)
+        {
+            if (Changed != null) Changed(this, new EventArgs());
+        }
 
         public string Name
         {
@@ -33,7 +40,5 @@ namespace AxeSoftware.Quest
         {
             m_script.SetParameter(int.Parse(attribute), (string)value);
         }
-
-        #endregion
     }
 }

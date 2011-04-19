@@ -12,5 +12,7 @@ namespace AxeSoftware.Quest
         string Name { get; }
         object GetAttribute(string attribute);
         void SetAttribute(string attribute, object value);
+
+        event EventHandler Changed;
     }
 }

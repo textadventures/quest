@@ -11,11 +11,20 @@ namespace AxeSoftware.Quest
     {
         private Element m_element;
         private EditorController m_controller;
+        public event EventHandler Changed;
 
         public EditorData(Element element, EditorController controller)
         {
             m_element = element;
             m_controller = controller;
+
+            element.Fields.AttributeChanged += Fields_AttributeChanged;
+            element.Fields.AttributeChangedSilent += Fields_AttributeChanged;
+        }
+
+        void Fields_AttributeChanged(object sender, AttributeChangedEventArgs e)
+        {
+            if (Changed != null) Changed(this, new EventArgs());
         }
 
         public string Name
