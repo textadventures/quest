@@ -196,7 +196,7 @@
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Print message when user takes object (leave blank for default)</caption>
+        <caption>Take message (leave blank for default)</caption>
         <attribute>takemsg</attribute>
         
         <!-- show only if take type is boolean -->

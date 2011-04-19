@@ -9,6 +9,7 @@
     }
     else {
       found = true
+      takemsg = object.takemsg
       
       switch (TypeOf(object, "take")) {
         case ("script") {
@@ -17,7 +18,9 @@
         case ("boolean") {
           if (object.take = true) {
             object.parent = player
-            msg (DynamicTemplate("TakeSuccessful", object))
+            if (takemsg = null) {
+              takemsg = DynamicTemplate("TakeSuccessful", object)
+            }
           }
           else {
             found = false
@@ -25,14 +28,18 @@
         }
         case ("string") {
           object.parent = player
-          msg (object.take)
+          takemsg = object.take
         }
         default {
           found = false
         }
       }
       
-      if (not found) msg (DynamicTemplate("TakeUnsuccessful", object))
+      if (not found and takemsg = null) takemsg = DynamicTemplate("TakeUnsuccessful", object)
+      
+      if (LengthOf(takemsg) > 0) {
+        msg (takemsg)
+      }
     }
   </command>
   <command name="drop" pattern="[drop]">
