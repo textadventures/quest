@@ -108,6 +108,7 @@
             SetEditButtonsEnabled(False)
             m_currentScript = Nothing
             ctlScriptCommandEditor.ShowEditor(Nothing)
+            ctlScriptAdder.ScrollToTop()
         Else
             SetEditButtonsEnabled(True)
             If m_currentScript IsNot m_scripts(index) Then

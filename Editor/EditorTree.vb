@@ -307,4 +307,9 @@ Public Class EditorTree
         End Set
     End Property
 
+    Public Sub ScrollToTop()
+        If ctlTreeView.Nodes.Count = 0 Then Return
+        ctlTreeView.Nodes(0).EnsureVisible()
+    End Sub
+
 End Class

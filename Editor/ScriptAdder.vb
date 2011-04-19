@@ -72,4 +72,8 @@
     Private Sub cmdClose_Click(sender As Object, e As System.EventArgs) Handles cmdClose.Click
         RaiseEvent CloseButtonClicked()
     End Sub
+
+    Public Sub ScrollToTop()
+        ctlEditorTree.ScrollToTop()
+    End Sub
 End Class
