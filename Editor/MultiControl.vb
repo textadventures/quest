@@ -6,7 +6,7 @@ Public Class MultiControl
     Private Const k_paddingTop As Integer = 5
     Private Const k_paddingLeft As Integer = 10
     Private Const k_defaultHeight As Integer = 60
-    Private Const k_heightWithScriptEditor As Integer = 400
+    Private m_heightWithScriptEditor As Integer = 400
 
     Private Shared s_controlTypesMap As Dictionary(Of String, String) = New Dictionary(Of String, String) From {
         {"boolean", "checkbox"},
@@ -124,7 +124,8 @@ Public Class MultiControl
         Dim newHeight As Integer
 
         If editorName = "script" Then
-            newHeight = k_heightWithScriptEditor
+
+            newHeight = m_heightWithScriptEditor
         Else
             newHeight = k_defaultHeight
         End If
@@ -252,6 +253,7 @@ Public Class MultiControl
     End Sub
 
     Private Sub m_currentEditorAdjustableHeight_HeightChanged(sender As Object, newHeight As Integer) Handles m_currentEditorAdjustableHeight.HeightChanged
-        RaiseEvent HeightChanged(Me, m_currentEditorAdjustableHeight.Control.Top + newHeight)
+        m_heightWithScriptEditor = m_currentEditorAdjustableHeight.Control.Top + newHeight
+        RaiseEvent HeightChanged(Me, m_heightWithScriptEditor)
     End Sub
 End Class

@@ -123,7 +123,7 @@
 
     Private Sub UpdateHeight()
         If m_showingAdder Then
-            RaiseEvent HeightChanged(Me, ctlToolStrip.Height + ctlContainer.SplitterDistance + ctlScriptAdder.Top + 150)
+            RaiseEvent HeightChanged(Me, ctlToolStrip.Height + ctlContainer.SplitterDistance + ctlScriptAdder.Top + 300)
         Else
             RaiseEvent HeightChanged(Me, ctlToolStrip.Height + ctlContainer.SplitterDistance + ctlScriptCommandEditor.Top + ctlScriptCommandEditor.MinHeight)
         End If
