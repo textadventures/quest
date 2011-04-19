@@ -14,6 +14,9 @@ namespace AxeSoftware.Quest
         private string m_attribute;
         private bool m_expand = false;
         private Element m_source;
+        private bool m_alwaysVisible = true;
+        private string m_relatedAttribute;
+        private string m_visibleIfRelatedAttributeIsType;
 
         public EditorControl(Element source)
         {
@@ -24,6 +27,9 @@ namespace AxeSoftware.Quest
             if (source.Fields.HasType<int>("height")) m_height = source.Fields.GetAsType<int>("height");
             if (source.Fields.HasType<int>("width")) m_width = source.Fields.GetAsType<int>("width");
             if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");
+            m_relatedAttribute = source.Fields.GetString("relatedattribute");
+            if (m_relatedAttribute != null) m_alwaysVisible = false;
+            m_visibleIfRelatedAttributeIsType = source.Fields.GetString("relatedattributedisplaytype");
         }
 
         public string ControlType
@@ -73,7 +79,13 @@ namespace AxeSoftware.Quest
 
         public bool IsControlVisible(IEditorData data)
         {
-            return true;
+            if (m_alwaysVisible) return true;
+
+            object relatedAttributeValue = data.GetAttribute(m_relatedAttribute);
+            if (relatedAttributeValue is IDataWrapper) relatedAttributeValue = ((IDataWrapper)relatedAttributeValue).GetUnderlyingValue();
+
+            string relatedAttributeType = WorldModel.ConvertTypeToTypeName(relatedAttributeValue.GetType());
+            return relatedAttributeType == m_visibleIfRelatedAttributeIsType;
         }
     }
 }
