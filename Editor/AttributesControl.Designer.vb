@@ -22,15 +22,20 @@ Partial Class AttributesControl
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AttributesControl))
         Me.ctlSplitContainer = New System.Windows.Forms.SplitContainer()
         Me.lstAttributes = New System.Windows.Forms.ListView()
         Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colValue = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
+        Me.cmdAdd = New System.Windows.Forms.ToolStripButton()
+        Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
         Me.ctlMultiControl = New AxeSoftware.Quest.MultiControl()
         CType(Me.ctlSplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlSplitContainer.Panel1.SuspendLayout()
         Me.ctlSplitContainer.Panel2.SuspendLayout()
         Me.ctlSplitContainer.SuspendLayout()
+        Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlSplitContainer
@@ -43,6 +48,7 @@ Partial Class AttributesControl
         'ctlSplitContainer.Panel1
         '
         Me.ctlSplitContainer.Panel1.Controls.Add(Me.lstAttributes)
+        Me.ctlSplitContainer.Panel1.Controls.Add(Me.ctlToolStrip)
         '
         'ctlSplitContainer.Panel2
         '
@@ -57,9 +63,10 @@ Partial Class AttributesControl
         Me.lstAttributes.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lstAttributes.FullRowSelect = True
         Me.lstAttributes.HideSelection = False
-        Me.lstAttributes.Location = New System.Drawing.Point(0, 0)
+        Me.lstAttributes.Location = New System.Drawing.Point(0, 25)
+        Me.lstAttributes.MultiSelect = False
         Me.lstAttributes.Name = "lstAttributes"
-        Me.lstAttributes.Size = New System.Drawing.Size(657, 219)
+        Me.lstAttributes.Size = New System.Drawing.Size(657, 194)
         Me.lstAttributes.TabIndex = 0
         Me.lstAttributes.UseCompatibleStateImageBehavior = False
         Me.lstAttributes.View = System.Windows.Forms.View.Details
@@ -73,6 +80,31 @@ Partial Class AttributesControl
         '
         Me.colValue.Text = "Value"
         Me.colValue.Width = 354
+        '
+        'ctlToolStrip
+        '
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.cmdDelete})
+        Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
+        Me.ctlToolStrip.Name = "ctlToolStrip"
+        Me.ctlToolStrip.Size = New System.Drawing.Size(657, 25)
+        Me.ctlToolStrip.TabIndex = 3
+        Me.ctlToolStrip.Text = "ToolStrip1"
+        '
+        'cmdAdd
+        '
+        Me.cmdAdd.Image = CType(resources.GetObject("cmdAdd.Image"), System.Drawing.Image)
+        Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdAdd.Name = "cmdAdd"
+        Me.cmdAdd.Size = New System.Drawing.Size(49, 22)
+        Me.cmdAdd.Text = "Add"
+        '
+        'cmdDelete
+        '
+        Me.cmdDelete.Image = CType(resources.GetObject("cmdDelete.Image"), System.Drawing.Image)
+        Me.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdDelete.Name = "cmdDelete"
+        Me.cmdDelete.Size = New System.Drawing.Size(60, 22)
+        Me.cmdDelete.Text = "Delete"
         '
         'ctlMultiControl
         '
@@ -94,9 +126,12 @@ Partial Class AttributesControl
         Me.Name = "AttributesControl"
         Me.Size = New System.Drawing.Size(657, 456)
         Me.ctlSplitContainer.Panel1.ResumeLayout(False)
+        Me.ctlSplitContainer.Panel1.PerformLayout()
         Me.ctlSplitContainer.Panel2.ResumeLayout(False)
         CType(Me.ctlSplitContainer, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ctlSplitContainer.ResumeLayout(False)
+        Me.ctlToolStrip.ResumeLayout(False)
+        Me.ctlToolStrip.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -105,5 +140,8 @@ Partial Class AttributesControl
     Friend WithEvents colName As System.Windows.Forms.ColumnHeader
     Friend WithEvents colValue As System.Windows.Forms.ColumnHeader
     Friend WithEvents ctlMultiControl As AxeSoftware.Quest.MultiControl
+    Friend WithEvents ctlToolStrip As System.Windows.Forms.ToolStrip
+    Friend WithEvents cmdAdd As System.Windows.Forms.ToolStripButton
+    Friend WithEvents cmdDelete As System.Windows.Forms.ToolStripButton
 
 End Class

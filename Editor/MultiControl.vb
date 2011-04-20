@@ -64,18 +64,20 @@ Public Class MultiControl
             Dim editorName As String = GetEditorNameForType(typeName)
             SetSelectedType(typeName)
             GetOrCreateEditorControl(editorName)
-            m_storedValues(typeName) = value
+            If Not String.IsNullOrEmpty(typeName) Then
+                m_storedValues(typeName) = value
+            End If
         End Set
     End Property
 
     Private Function GetTypeName(value As Object) As String
         If value Is Nothing Then Return String.Empty
         Dim type As Type = value.GetType
-        Return s_typeNamesMap.First(Function(t) t.Key.IsAssignableFrom(type)).Value
+        Return s_typeNamesMap.FirstOrDefault(Function(t) t.Key.IsAssignableFrom(type)).Value
     End Function
 
     Private Function GetEditorNameForType(typeName As String) As String
-        If typeName.Length = 0 Then Return String.Empty
+        If String.IsNullOrEmpty(typeName) Then Return String.Empty
         Return s_controlTypesMap(typeName)
     End Function
 
@@ -89,9 +91,12 @@ Public Class MultiControl
                 m_currentEditor.Control.Parent = Control
                 m_currentEditor.Control.Top = lstTypes.Top + lstTypes.Height + k_paddingTop
                 m_currentEditor.Control.Left = k_paddingLeft
-                m_currentEditor.Control.Width = Me.Width - m_currentEditor.Control.Left
-                m_currentEditor.Control.Height = Me.Height - m_currentEditor.Control.Top
-                m_currentEditor.Control.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
+                m_currentEditor.Control.Width = Me.Width - m_currentEditor.Control.Left * 2
+                m_currentEditor.Control.Anchor = AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
+                If TypeOf m_currentEditor Is ScriptControl Then
+                    m_currentEditor.Control.Height = Me.Height - m_currentEditor.Control.Top
+                    m_currentEditor.Control.Anchor = m_currentEditor.Control.Anchor Or AnchorStyles.Bottom
+                End If
                 m_loadedEditors.Add(editorName, m_currentEditor)
             Else
                 m_currentEditor = m_loadedEditors(editorName)
@@ -146,6 +151,7 @@ Public Class MultiControl
 
     Private Sub SetSelectedType(typeName As String)
         If m_types Is Nothing Then Return
+        If String.IsNullOrEmpty(typeName) Then Return
 
         Dim selectedType = m_types.First(Function(t) t.TypeName = typeName)
         lstTypes.SelectedItem = lstTypes.Items(selectedType.TypeIndex)
@@ -232,18 +238,6 @@ Public Class MultiControl
             Dim types As IDictionary(Of String, String) = controlData.GetDictionary("types")
             InitialiseTypesList(types)
         End If
-    End Sub
-
-    Public Sub InitialiseForAttributesEditor()
-        m_types = New List(Of TypesListItem)
-
-        Dim allTypes As New Dictionary(Of String, String) From {
-            {"string", "String"},
-            {"boolean", "Boolean"},
-            {"script", "Script"}
-        }
-
-        InitialiseTypesList(allTypes)
     End Sub
 
     Private Sub InitialiseTypesList(types As IDictionary(Of String, String))
