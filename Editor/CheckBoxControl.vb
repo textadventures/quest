@@ -22,8 +22,12 @@ Public Class CheckBoxControl
             Return chkCheckBox.Checked
         End Get
         Set(value As Object)
-            chkCheckBox.Checked = DirectCast(value, Boolean)
-            m_oldValue = DirectCast(value, Boolean)
+            If TypeOf value Is Boolean Then
+                chkCheckBox.Checked = DirectCast(value, Boolean)
+                m_oldValue = DirectCast(value, Boolean)
+            Else
+                chkCheckBox.Checked = False
+            End If
         End Set
     End Property
 
@@ -102,4 +106,10 @@ Public Class CheckBoxControl
     Public Sub SetCaption(caption As String)
         chkCheckBox.Text = caption
     End Sub
+
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Return GetType(Boolean)
+        End Get
+    End Property
 End Class

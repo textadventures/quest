@@ -570,7 +570,7 @@ namespace AxeSoftware.Quest
 
         public UndoFieldSet(string appliesTo, string property, object oldValue, object newValue, bool added)
         {
-            System.Diagnostics.Debug.Assert(appliesTo != null);
+            System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(appliesTo));
             m_appliesTo = appliesTo;
             m_property = property;
             m_oldValue = oldValue;

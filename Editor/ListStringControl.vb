@@ -66,8 +66,12 @@ Public Class ListStringControl
             Return m_list
         End Get
         Set(value As Object)
-            m_list = DirectCast(value, IEditableList(Of String))
-            ctlListEditor.UpdateList(If(m_list Is Nothing, Nothing, m_list.DisplayItems))
+            m_list = TryCast(value, IEditableList(Of String))
+            If m_list Is Nothing Then
+                ctlListEditor.UpdateList(Nothing)
+            Else
+                ctlListEditor.UpdateList(If(m_list Is Nothing, Nothing, m_list.DisplayItems))
+            End If
         End Set
     End Property
 
@@ -93,7 +97,7 @@ Public Class ListStringControl
         If Not ValidateInput(result.Result) Then Return
 
         If m_list Is Nothing Then
-            Value = m_controller.CreateNewEditableList(m_elementName, m_attributeName, result.Result)
+            Value = m_controller.CreateNewEditableList(m_elementName, m_attributeName, result.Result, True)
         Else
             PrepareForEditing()
             m_list.Add(result.Result)
@@ -138,4 +142,11 @@ Public Class ListStringControl
             Value = m_list.Clone(m_elementName, m_attributeName)
         End If
     End Sub
+
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Return GetType(IEditableList(Of String))
+        End Get
+    End Property
+
 End Class

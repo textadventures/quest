@@ -66,8 +66,12 @@ Public Class DictionaryScriptControl
             Return m_list
         End Get
         Set(value As Object)
-            m_list = DirectCast(value, IEditableDictionary(Of IEditableScripts))
-            ctlListEditor.UpdateList(If(m_list Is Nothing, Nothing, m_list.DisplayItems))
+            m_list = TryCast(value, IEditableDictionary(Of IEditableScripts))
+            If m_list Is Nothing Then
+                ctlListEditor.UpdateList(Nothing)
+            Else
+                ctlListEditor.UpdateList(If(m_list Is Nothing, Nothing, m_list.DisplayItems))
+            End If
         End Set
     End Property
 
@@ -131,4 +135,10 @@ Public Class DictionaryScriptControl
     Private Sub ctlListEditor_ToolbarClicked() Handles ctlListEditor.ToolbarClicked
         RaiseEvent RequestParentElementEditorSave()
     End Sub
+
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Return GetType(IEditableDictionary(Of IEditableScripts))
+        End Get
+    End Property
 End Class

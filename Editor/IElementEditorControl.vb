@@ -42,6 +42,7 @@ Public Interface IElementEditorControl
     ReadOnly Property AttributeName() As String
     Sub Populate(data As IEditorData)
     Sub Save(data As IEditorData)
+    ReadOnly Property ExpectedType As Type
 
 End Interface
 

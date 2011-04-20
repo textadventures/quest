@@ -25,8 +25,13 @@ Public Class TextBoxControl
             Return txtTextBox.Text
         End Get
         Set(value As Object)
-            txtTextBox.Text = DirectCast(value, String)
-            m_oldValue = DirectCast(value, String)
+            Dim stringValue As String = TryCast(value, String)
+            If stringValue IsNot Nothing Then
+                txtTextBox.Text = stringValue
+            Else
+                txtTextBox.Text = String.Empty
+            End If
+            m_oldValue = stringValue
         End Set
     End Property
 
@@ -99,5 +104,9 @@ Public Class TextBoxControl
         m_attributeName = attributeName
     End Sub
 
-
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Return GetType(String)
+        End Get
+    End Property
 End Class

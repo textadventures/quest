@@ -275,4 +275,10 @@ Public Class AttributesControl
         m_data.RemoveAttribute(selectedAttribute)
         m_controller.EndTransaction()
     End Sub
+
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Return Nothing
+        End Get
+    End Property
 End Class

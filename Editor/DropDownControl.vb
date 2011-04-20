@@ -22,8 +22,13 @@ Public Class DropDownControl
             Return lstDropdown.Text
         End Get
         Set(value As Object)
-            lstDropdown.Text = DirectCast(value, String)
-            m_oldValue = DirectCast(value, String)
+            Dim stringValue As String = TryCast(value, String)
+            If stringValue Is Nothing Then
+                lstDropdown.Text = stringValue
+            Else
+                lstDropdown.Text = String.Empty
+            End If
+            m_oldValue = stringValue
         End Set
     End Property
 
@@ -96,4 +101,10 @@ Public Class DropDownControl
             RaiseEvent Dirty(Me, New DataModifiedEventArgs(m_oldValue, lstDropdown.Text))
         End If
     End Sub
+
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Return GetType(String)
+        End Get
+    End Property
 End Class

@@ -178,6 +178,8 @@ Public Class MultiControl
                     newValue = ""
                 Case "script"
                     newValue = Controller.CreateNewEditableScripts(m_elementName, m_attributeName, Nothing, False)
+                Case "stringlist"
+                    newValue = Controller.CreateNewEditableList(m_elementName, m_attributeName, Nothing, False)
                 Case Else
                     Throw New InvalidOperationException
             End Select
@@ -270,4 +272,11 @@ Public Class MultiControl
         m_heightWithScriptEditor = m_currentEditorAdjustableHeight.Control.Top + newHeight
         RaiseEvent HeightChanged(Me, m_heightWithScriptEditor)
     End Sub
+
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Return Nothing
+        End Get
+    End Property
+
 End Class

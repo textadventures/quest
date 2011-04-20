@@ -23,8 +23,13 @@ Public Class ScriptControl
             Return ctlScriptEditor.Value
         End Get
         Set(value As Object)
-            ctlScriptEditor.Value = DirectCast(value, IEditableScripts)
-            m_oldValue = DirectCast(value, IEditableScripts)
+            Dim scriptValue As IEditableScripts = TryCast(value, IEditableScripts)
+            If scriptValue IsNot Nothing Then
+                ctlScriptEditor.Value = scriptValue
+            Else
+                ctlScriptEditor.Value = Nothing
+            End If
+            m_oldValue = scriptValue
         End Set
     End Property
 
@@ -93,5 +98,11 @@ Public Class ScriptControl
     Private Sub ctlScriptEditor_HeightChanged(sender As Object, height As Integer) Handles ctlScriptEditor.HeightChanged
         RaiseEvent HeightChanged(Me, height)
     End Sub
+
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Return GetType(IEditableScripts)
+        End Get
+    End Property
 
 End Class

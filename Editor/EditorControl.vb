@@ -140,7 +140,16 @@
             Return m_editorControl.Value
         End Get
         Set(value As Object)
-            m_editorControl.Value = value
+            Dim expectedType As Type = m_editorControl.ExpectedType
+            If value Is Nothing OrElse expectedType.IsAssignableFrom(value.GetType) Then
+                m_editorControl.Value = value
+                m_editorControl.Control.Enabled = True
+                lblCaption.Enabled = True
+            Else
+                m_editorControl.Value = Nothing
+                m_editorControl.Control.Enabled = False
+                lblCaption.Enabled = False
+            End If
         End Set
     End Property
 
@@ -173,6 +182,28 @@
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_editorControl.Populate(data)
+
+        ' The game author can change any attribute to any type of value from the Attributes editor, and
+        ' the other panes need to be resistant to that. If the value is of the "wrong" type, we disable
+        ' the editor for that value.
+
+        If data Is Nothing Then Return
+
+        Dim expectedType As Type = m_editorControl.ExpectedType
+
+        If expectedType Is Nothing Then Return
+
+        Dim value = data.GetAttribute(m_attribute)
+        Dim valueIsOfExpectedType As Boolean
+
+        If value Is Nothing Then
+            valueIsOfExpectedType = True
+        Else
+            valueIsOfExpectedType = expectedType.IsAssignableFrom(value.GetType)
+        End If
+
+        m_editorControl.Control.Enabled = valueIsOfExpectedType
+        lblCaption.Enabled = valueIsOfExpectedType
     End Sub
 
     Private Sub m_editorControl_RequestParentElementEditorSave() Handles m_editorControl.RequestParentElementEditorSave
@@ -216,4 +247,11 @@
     Public Sub AttributeChanged(attribute As String, value As Object)
         m_multiAttributeEditorControl.AttributeChanged(attribute, value)
     End Sub
+
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Throw New NotImplementedException
+        End Get
+    End Property
+
 End Class

@@ -66,8 +66,12 @@ Public Class DictionaryStringControl
             Return m_list
         End Get
         Set(value As Object)
-            m_list = DirectCast(value, IEditableDictionary(Of String))
-            ctlListEditor.UpdateList(If(m_list Is Nothing, Nothing, m_list.DisplayItems))
+            m_list = TryCast(value, IEditableDictionary(Of String))
+            If m_list Is Nothing Then
+                ctlListEditor.UpdateList(Nothing)
+            Else
+                ctlListEditor.UpdateList(If(m_list Is Nothing, Nothing, m_list.DisplayItems))
+            End If
         End Set
     End Property
 
@@ -141,4 +145,10 @@ Public Class DictionaryStringControl
             Value = m_list.Clone(m_elementName, m_attributeName)
         End If
     End Sub
+
+    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+        Get
+            Return GetType(IEditableDictionary(Of String))
+        End Get
+    End Property
 End Class

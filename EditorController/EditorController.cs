@@ -408,13 +408,17 @@ namespace AxeSoftware.Quest
             return newValue;
         }
 
-        public IEditableList<string> CreateNewEditableList(string parent, string attribute, string item)
+        public IEditableList<string> CreateNewEditableList(string parent, string attribute, string item, bool useTransaction)
         {
-            WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} to '{2}'", parent, attribute, item));
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} to '{2}'", parent, attribute, item));
+            }
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
 
             QuestList<string> newList = new QuestList<string>();
-            newList.Add(item);
+
+            if (item != null) newList.Add(item);
 
             if (element != null)
             {
@@ -425,7 +429,11 @@ namespace AxeSoftware.Quest
             }
 
             EditableList<string> newValue = new EditableList<string>(this, newList);
-            WorldModel.UndoLogger.EndTransaction();
+
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.EndTransaction();
+            }
 
             return newValue;
         }
