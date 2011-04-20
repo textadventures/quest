@@ -2,6 +2,7 @@
 Public Class ScriptControl
     Implements IElementEditorControl
     Implements IAdjustableHeightControl
+    Implements IResizableElementEditorControl
 
     Private m_oldValue As IEditableScripts
     Private m_controller As EditorController

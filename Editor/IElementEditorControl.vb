@@ -45,7 +45,18 @@ Public Interface IElementEditorControl
 
 End Interface
 
+' an IElementEditorControl whose height may vary depending on the value being edited
 Public Interface IAdjustableHeightControl
     Inherits IElementEditorControl
     Event HeightChanged(sender As Object, newHeight As Integer)
+End Interface
+
+' an IElementEditorControl which can resize with its parent window
+Public Interface IResizableElementEditorControl
+    Inherits IElementEditorControl
+End Interface
+
+' an IElementEditorControl which wants updates about multiple attributes
+Public Interface IMultiAttributeElementEditorControl
+    Sub AttributeChanged(attribute As String, value As Object)
 End Interface

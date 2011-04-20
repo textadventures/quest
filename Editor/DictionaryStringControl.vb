@@ -1,6 +1,7 @@
 ﻿<ControlType("stringdictionary")> _
 Public Class DictionaryStringControl
     Implements IElementEditorControl
+    Implements IResizableElementEditorControl
     Implements IListEditorDelegate
 
     Private m_attributeName As String

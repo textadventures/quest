@@ -1,6 +1,7 @@
 ﻿<ControlType("list")> _
 Public Class ListStringControl
     Implements IElementEditorControl
+    Implements IResizableElementEditorControl
     Implements IListEditorDelegate
 
     Private m_attributeName As String
@@ -38,7 +39,11 @@ Public Class ListStringControl
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         ctlListEditor.EditorDelegate = Me
         m_controlData = controlData
-        m_attributeName = controlData.Attribute
+        If controlData IsNot Nothing Then
+            m_attributeName = controlData.Attribute
+        Else
+            m_attributeName = Nothing
+        End If
     End Sub
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate

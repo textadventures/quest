@@ -1,6 +1,7 @@
 ﻿<ControlType("scriptdictionary")> _
 Public Class DictionaryScriptControl
     Implements IElementEditorControl
+    Implements IResizableElementEditorControl
     Implements IListEditorDelegate
 
     Private m_attributeName As String

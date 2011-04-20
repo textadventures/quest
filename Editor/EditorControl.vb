@@ -19,6 +19,8 @@
     Private m_controlUnderCaption As Boolean = False
     Private m_definition As IEditorControl
     Private m_expand As Boolean
+    Private m_multiAttribute As Boolean
+    Private m_multiAttributeEditorControl As IMultiAttributeElementEditorControl
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -32,9 +34,9 @@
 
         m_editorControl = DirectCast(Activator.CreateInstance(createType), IElementEditorControl)
         m_editorControlIsCheckbox = TypeOf m_editorControl Is CheckBoxControl
-        If TypeOf m_editorControl Is IAdjustableHeightControl Then
-            m_adjustableHeightEditorControl = DirectCast(m_editorControl, IAdjustableHeightControl)
-        End If
+        m_multiAttribute = TypeOf m_editorControl Is IMultiAttributeElementEditorControl
+        m_adjustableHeightEditorControl = TryCast(m_editorControl, IAdjustableHeightControl)
+        m_multiAttributeEditorControl = TryCast(m_editorControl, IMultiAttributeElementEditorControl)
         m_editorControl.Control.Parent = Control
         m_editorControl.Control.Top = 0
         If m_editorControlIsCheckbox Then
@@ -204,4 +206,14 @@
             m_expand = value
         End Set
     End Property
+
+    Public ReadOnly Property IsMultiAttributeEditor As Boolean
+        Get
+            Return m_multiAttribute
+        End Get
+    End Property
+
+    Public Sub AttributeChanged(attribute As String, value As Object)
+        m_multiAttributeEditorControl.AttributeChanged(attribute, value)
+    End Sub
 End Class

@@ -11,13 +11,15 @@ Public Class MultiControl
     Private Shared s_controlTypesMap As Dictionary(Of String, String) = New Dictionary(Of String, String) From {
         {"boolean", "checkbox"},
         {"string", "textbox"},
-        {"script", "script"}
+        {"script", "script"},
+        {"stringlist", "list"}
     }
 
     Private Shared s_typeNamesMap As Dictionary(Of Type, String) = New Dictionary(Of Type, String) From {
         {GetType(Boolean), "boolean"},
         {GetType(String), "string"},
-        {GetType(IEditableScripts), "script"}
+        {GetType(IEditableScripts), "script"},
+        {GetType(IEditableList(Of String)), "stringlist"}
     }
 
     Private m_storedValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
@@ -91,10 +93,10 @@ Public Class MultiControl
                 m_currentEditor.Control.Parent = Control
                 m_currentEditor.Control.Top = lstTypes.Top + lstTypes.Height + k_paddingTop
                 m_currentEditor.Control.Left = k_paddingLeft
-                m_currentEditor.Control.Width = Me.Width - m_currentEditor.Control.Left * 2
+                m_currentEditor.Control.Width = Me.Width - m_currentEditor.Control.Left - Me.Padding.Right
                 m_currentEditor.Control.Anchor = AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
-                If TypeOf m_currentEditor Is ScriptControl Then
-                    m_currentEditor.Control.Height = Me.Height - m_currentEditor.Control.Top
+                If TypeOf m_currentEditor Is IResizableElementEditorControl Then
+                    m_currentEditor.Control.Height = Me.Height - m_currentEditor.Control.Top - Me.Padding.Bottom
                     m_currentEditor.Control.Anchor = m_currentEditor.Control.Anchor Or AnchorStyles.Bottom
                 End If
                 m_loadedEditors.Add(editorName, m_currentEditor)

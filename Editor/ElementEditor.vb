@@ -201,6 +201,10 @@
                 ' properly.
                 'If setFocus Then ctl.Focus()
             Next
+
+            For Each ctl As EditorControl In m_controls.Where(Function(c) c.IsMultiAttributeEditor)
+                ctl.AttributeChanged(attribute, newValue)
+            Next
         End If
     End Sub
 

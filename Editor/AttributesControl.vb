@@ -1,6 +1,7 @@
 ﻿<ControlType("attributes")> _
 Public Class AttributesControl
     Implements IElementEditorControl
+    Implements IMultiAttributeElementEditorControl
 
     Private m_oldValue As String
     Private m_controller As EditorController
@@ -35,8 +36,6 @@ Public Class AttributesControl
 
     Public ReadOnly Property AttributeName() As String Implements IElementEditorControl.AttributeName
         Get
-            ' Hmm, we're going to be editing ALL attributes in here. I think this is only really read by ElementEditor
-            ' in UpdateField.
             Return Nothing
         End Get
     End Property
@@ -52,7 +51,7 @@ Public Class AttributesControl
 
         Else
             For Each attr In data.GetAttributeData
-                Dim newItem As ListViewItem = lstAttributes.Items.Add(attr.AttributeName)
+                Dim newItem As ListViewItem = lstAttributes.Items.Add(attr.AttributeName, attr.AttributeName, 0)
                 If attr.IsInherited Then newItem.ForeColor = Color.Gray
                 Dim value As Object = data.GetAttribute(attr.AttributeName)
                 Dim displayValue As String = GetDisplayString(value)
@@ -134,7 +133,8 @@ Public Class AttributesControl
         Private Shared s_allTypes As New Dictionary(Of String, String) From {
             {"string", "String"},
             {"boolean", "Boolean"},
-            {"script", "Script"}
+            {"script", "Script"},
+            {"stringlist", "String List"}
         }
 
         Public Sub New(attribute As String)
@@ -182,11 +182,14 @@ Public Class AttributesControl
         End Function
 
         Public Function GetString(tag As String) As String Implements IEditorControl.GetString
-            If tag = "checkbox" Then
-                Return "True"
-            Else
-                Throw New NotImplementedException
-            End If
+            Select Case tag
+                Case "checkbox"
+                    Return "True"
+                Case "editprompt"
+                    Return "Please enter a value"
+                Case Else
+                    Throw New NotImplementedException
+            End Select
         End Function
 
         Public ReadOnly Property Height As Integer? Implements IEditorControl.Height
@@ -205,4 +208,9 @@ Public Class AttributesControl
             End Get
         End Property
     End Class
+
+    Public Sub AttributeChanged(attribute As String, value As Object) Implements IMultiAttributeElementEditorControl.AttributeChanged
+        Dim listViewItem As ListViewItem = lstAttributes.Items(attribute)
+        listViewItem.SubItems(1).Text = GetDisplayString(value)
+    End Sub
 End Class
