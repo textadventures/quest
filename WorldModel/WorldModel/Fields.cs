@@ -15,8 +15,14 @@ namespace AxeSoftware.Quest
             Value = value;
         }
 
+        internal AttributeChangedEventArgs(bool inheritedTypesSet)
+        {
+            InheritedTypesSet = inheritedTypesSet;
+        }
+
         public string Property { get; private set; }
         public object Value { get; private set; }
+        public bool InheritedTypesSet { get; private set; }
     }
 
     public interface IMutableField
@@ -370,6 +376,15 @@ namespace AxeSoftware.Quest
             m_types.Push(addType);
         }
 
+        public void AddTypeUndoable(Element addType)
+        {
+            Stack<Element> oldValue = CloneStack(m_types);
+            AddType(addType);
+            Stack<Element> newValue = CloneStack(m_types);
+            m_worldModel.UndoLogger.AddUndoAction(new UndoAddRemoveType(m_element.Name, oldValue, newValue));
+            if (AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
+        }
+
         private string FormatDebugData(object value)
         {
             return GetFormatter(value == null ? null : value.GetType()).Invoke(value);
@@ -495,6 +510,22 @@ namespace AxeSoftware.Quest
         internal IEnumerable<Element> Types
         {
             get { return m_types; }
+        }
+
+        internal void DoUndoAddRemoveType(Stack<Element> newValue)
+        {
+            m_types = newValue;
+            if (AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
+        }
+
+        private Stack<Element> CloneStack(Stack<Element> input)
+        {
+            Stack<Element> result = new Stack<Element>();
+            foreach (var item in input.Reverse())
+            {
+                result.Push(item);
+            }
+            return result;
         }
     }
 
@@ -670,6 +701,30 @@ namespace AxeSoftware.Quest
         public void DoRedo(WorldModel worldModel)
         {
             worldModel.Object(m_appliesTo).Fields.RemoveFieldInternal(m_property);
+        }
+    }
+
+    public class UndoAddRemoveType : AxeSoftware.Quest.UndoLogger.IUndoAction
+    {
+        private string m_appliesTo;
+        private Stack<Element> m_oldValue;
+        private Stack<Element> m_newValue;
+
+        public UndoAddRemoveType(string appliesTo, Stack<Element> oldValue, Stack<Element> newValue)
+        {
+            m_appliesTo = appliesTo;
+            m_oldValue = oldValue;
+            m_newValue = newValue;
+        }
+
+        public void DoUndo(WorldModel worldModel)
+        {
+            worldModel.Object(m_appliesTo).Fields.DoUndoAddRemoveType(m_oldValue);
+        }
+
+        public void DoRedo(WorldModel worldModel)
+        {
+            worldModel.Object(m_appliesTo).Fields.DoUndoAddRemoveType(m_newValue);
         }
     }
 }

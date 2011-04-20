@@ -318,6 +318,6 @@ Public Class AttributesControl
 
     Private Sub cmdAddTypeDropDownItem_Click(sender As System.Object, e As System.EventArgs)
         Dim typeToAdd As String = DirectCast(sender, ToolStripItem).Text
-        MsgBox("Add " + typeToAdd)
+        m_controller.AddInheritedTypeToElement(m_data.Name, typeToAdd)
     End Sub
 End Class

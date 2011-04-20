@@ -105,7 +105,14 @@ namespace AxeSoftware.Quest
         void Fields_AttributeChangedSilent(object sender, AttributeChangedEventArgs e)
         {
             // used by the Editor to receive notifications of updates when undoing
-            m_worldModel.NotifyElementFieldUpdate(this, e.Property, e.Value, true);
+            if (e.InheritedTypesSet)
+            {
+                m_worldModel.NotifyElementRefreshed(this);
+            }
+            else
+            {
+                m_worldModel.NotifyElementFieldUpdate(this, e.Property, e.Value, true);
+            }
         }
 
         void Fields_AttributeChanged(object sender, AttributeChangedEventArgs e)

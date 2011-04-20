@@ -41,6 +41,7 @@ namespace AxeSoftware.Quest
         public event ShowMessageHandler ShowMessage;
 
         public event EventHandler<ElementUpdatedEventArgs> ElementUpdated;
+        public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
         public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
         public event EventHandler<UpdateUndoListEventArgs> RedoListUpdated;
 
@@ -58,6 +59,16 @@ namespace AxeSoftware.Quest
             public string Attribute { get; private set; }
             public object NewValue { get; private set; }
             public bool IsUndo { get; private set; }
+        }
+
+        public class ElementRefreshedEventArgs : EventArgs
+        {
+            internal ElementRefreshedEventArgs(string element)
+            {
+                Element = element;
+            }
+
+            public string Element { get; private set; }
         }
 
         public class UpdateUndoListEventArgs : EventArgs
@@ -90,6 +101,7 @@ namespace AxeSoftware.Quest
             m_worldModel = new WorldModel(filename);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
+            m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
             m_worldModel.UndoLogger.TransactionsUpdated += UndoLogger_TransactionsUpdated;
 
             bool ok = m_worldModel.InitialiseEdit();
@@ -132,6 +144,14 @@ namespace AxeSoftware.Quest
             if (m_initialised)
             {
                 if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue), e.IsUndo));
+            }
+        }
+
+        void m_worldModel_ElementRefreshed(object sender, WorldModel.ElementRefreshEventArgs e)
+        {
+            if (m_initialised)
+            {
+                if (ElementRefreshed != null) ElementRefreshed(this, new ElementRefreshedEventArgs(e.Element.Name));
             }
         }
 
@@ -508,6 +528,15 @@ namespace AxeSoftware.Quest
         public bool IsDefaultTypeName(string elementType)
         {
             return elementType == "defaultverb" || WorldModel.IsDefaultTypeName(elementType);
+        }
+
+        public void AddInheritedTypeToElement(string elementName, string typeName)
+        {
+            WorldModel.UndoLogger.StartTransaction(string.Format("Add type '{0}' to '{1}'", typeName, elementName));
+            Element element = m_worldModel.Elements.Get(elementName);
+            Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
+            element.Fields.AddTypeUndoable(type);
+            WorldModel.UndoLogger.EndTransaction();
         }
     }
 }

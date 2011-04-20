@@ -88,6 +88,12 @@
         End If
     End Sub
 
+    Private Sub m_controller_ElementRefreshed(sender As Object, e As EditorController.ElementRefreshedEventArgs) Handles m_controller.ElementRefreshed
+        If e.Element = m_currentElement Then
+            m_currentEditor.Populate(m_controller.GetEditorData(e.Element))
+        End If
+    End Sub
+
     Private Sub m_controller_EndTreeUpdate() Handles m_controller.EndTreeUpdate
         ctlTree.EndUpdate()
     End Sub
@@ -203,4 +209,5 @@
     Private Sub ctlToolbar_RedoEnabled(enabled As Boolean) Handles ctlToolbar.RedoEnabled
         m_menu.MenuEnabled("redo") = enabled
     End Sub
+
 End Class

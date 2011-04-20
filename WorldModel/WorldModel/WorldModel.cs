@@ -55,6 +55,7 @@ namespace AxeSoftware.Quest
         private static Dictionary<Type, string> s_typesToTypeNames = new Dictionary<Type, string>();
 
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementFieldUpdated;
+        public event EventHandler<ElementRefreshEventArgs> ElementRefreshed;
 
         public class ElementFieldUpdatedEventArgs : EventArgs
         {
@@ -70,6 +71,17 @@ namespace AxeSoftware.Quest
             public string Attribute { get; private set; }
             public object NewValue { get; private set; }
             public bool IsUndo { get; private set; }
+            public bool Refresh { get; private set; }
+        }
+
+        public class ElementRefreshEventArgs : EventArgs
+        {
+            internal ElementRefreshEventArgs(Element element)
+            {
+                Element = element;
+            }
+
+            public Element Element { get; private set; }
         }
         
         static WorldModel()
@@ -824,6 +836,11 @@ namespace AxeSoftware.Quest
         internal void NotifyElementFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
         {
             if (ElementFieldUpdated != null) ElementFieldUpdated(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
+        }
+
+        internal void NotifyElementRefreshed(Element element)
+        {
+            if (ElementRefreshed != null) ElementRefreshed(this, new ElementRefreshEventArgs(element));
         }
 
         public bool EditMode
