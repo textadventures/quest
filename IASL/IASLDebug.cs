@@ -15,28 +15,39 @@ namespace AxeSoftware.Quest
 
     public class DebugDataItem
     {
-        private string m_value;
-        private bool m_isInherited = false;
-
         public string Value
         {
-            get { return m_value; }
+            get;
+            private set;
         }
 
         public bool IsInherited
         {
-            get { return m_isInherited; }
-            set { m_isInherited = value; }
+            get;
+            set;
+        }
+
+        public string Source
+        {
+            get;
+            set;
         }
 
         public DebugDataItem(string value)
+            : this(value, false)
         {
-            m_value = value;
         }
+
         public DebugDataItem(string value, bool isInherited)
-            : this(value)
+            :this(value, isInherited, null)
         {
-            m_isInherited = isInherited;
+        }
+
+        public DebugDataItem(string value, bool isInherited, string source)
+        {
+            Value = value;
+            IsInherited = isInherited;
+            Source = source;
         }
     }
 

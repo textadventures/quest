@@ -26,6 +26,6 @@ namespace AxeSoftware.Quest
     public interface IEditorDataExtendedAttributeInfo : IEditorData
     {
         IEnumerable<IEditorAttributeData> GetAttributeData();
-        string GetAttributeSource(string attribute);
+        IEditorAttributeData GetAttributeData(string attribute);
     }
 }

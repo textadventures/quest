@@ -81,14 +81,15 @@ namespace AxeSoftware.Quest
             List<EditorAttributeData> result = new List<EditorAttributeData>();
             foreach (var item in data.Data)
             {
-                result.Add(new EditorAttributeData(item.Key, item.Value.IsInherited, m_controller.WorldModel.GetAttributeSource(m_element.Name, item.Key)));
+                result.Add(new EditorAttributeData(item.Key, item.Value.IsInherited, item.Value.Source));
             }
             return result;
         }
 
-        public string GetAttributeSource(string attribute)
+        public IEditorAttributeData GetAttributeData(string attribute)
         {
-            return m_controller.WorldModel.GetAttributeSource(m_element.Name, attribute);
+            DebugDataItem data = m_controller.WorldModel.GetDebugDataItem(m_element.Name, attribute);
+            return new EditorAttributeData(attribute, data.IsInherited, data.Source);
         }
     }
 }

@@ -604,9 +604,9 @@ namespace AxeSoftware.Quest
             return m_elements.Get(ElementType.Object, obj).GetDebugData();
         }
 
-        public string GetAttributeSource(string obj, string attribute)
+        public DebugDataItem GetDebugDataItem(string obj, string attribute)
         {
-            return m_elements.Get(ElementType.Object, obj).Fields.GetAttributeSource(attribute);
+            return m_elements.Get(ElementType.Object, obj).Fields.GetDebugDataItem(attribute);
         }
 
         public void FinishWait()

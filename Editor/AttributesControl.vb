@@ -5,7 +5,7 @@ Public Class AttributesControl
 
     Private m_oldValue As String
     Private m_controller As EditorController
-    Private m_data As IEditorData
+    Private m_data As IEditorDataExtendedAttributeInfo
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -46,15 +46,14 @@ Public Class AttributesControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         lstAttributes.Items.Clear()
-        m_data = data
+        m_data = DirectCast(data, IEditorDataExtendedAttributeInfo)
 
         If data Is Nothing Then
 
         Else
-            Dim attributeData As IEditorDataExtendedAttributeInfo = DirectCast(data, IEditorDataExtendedAttributeInfo)
-            For Each attr In attributeData.GetAttributeData
+            For Each attr In m_data.GetAttributeData
                 Dim newItem As ListViewItem = lstAttributes.Items.Add(attr.AttributeName, attr.AttributeName, 0)
-                If attr.IsInherited Then newItem.ForeColor = Color.Gray
+                newItem.ForeColor = GetAttributeColour(attr)
                 Dim value As Object = data.GetAttribute(attr.AttributeName)
                 Dim displayValue As String = GetDisplayString(value)
                 newItem.SubItems.Add(displayValue)
@@ -221,6 +220,9 @@ Public Class AttributesControl
     Private Sub AttributeChangedInternal(attribute As String, value As Object, updateMultiControl As Boolean)
         Dim listViewItem As ListViewItem = lstAttributes.Items(attribute)
         listViewItem.SubItems(1).Text = GetDisplayString(value)
+        Dim data As IEditorAttributeData = m_data.GetAttributeData(attribute)
+        listViewItem.SubItems(2).Text = data.Source
+        listViewItem.ForeColor = GetAttributeColour(data)
         If updateMultiControl Then
             If attribute = GetSelectedAttribute() Then ctlMultiControl.Value = value
         End If
@@ -231,4 +233,8 @@ Public Class AttributesControl
         AttributeChangedInternal(args.Attribute, args.NewValue, False)
         RaiseEvent Dirty(Me, args)
     End Sub
+
+    Private Function GetAttributeColour(data As IEditorAttributeData) As Color
+        Return If(data.IsInherited, Color.Gray, SystemColors.WindowText)
+    End Function
 End Class

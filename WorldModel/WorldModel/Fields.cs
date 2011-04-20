@@ -206,7 +206,7 @@ namespace AxeSoftware.Quest
             List<string> list = (List<string>)input;
             string output = string.Empty;
             if (list.Count == 0) return output;
-            
+
             foreach (string item in list)
             {
                 output += item + ", ";
@@ -319,21 +319,33 @@ namespace AxeSoftware.Quest
             return null;
         }
 
-        internal string GetAttributeSource(string attribute)
+        internal DebugDataItem GetDebugDataItem(string attribute)
         {
+            DebugDataItem result = new DebugDataItem(FormatDebugData(Get(attribute)));
+
+            string source = null;
+            bool isInherited = false;
+
             if (m_attributes.ContainsKey(attribute))
             {
-                return m_element.Name;
+                source = m_element.Name;
             }
             else
             {
                 foreach (Element type in m_types)
                 {
-                    if (type.Fields.Exists(attribute)) return type.Name;
+                    if (type.Fields.Exists(attribute))
+                    {
+                        source = type.Name;
+                        isInherited = true;
+                        break;
+                    }
                 }
             }
 
-            return null;
+            result.IsInherited = isInherited;
+            result.Source = source;
+            return result;
         }
 
         internal bool Exists(string attribute)
@@ -352,13 +364,20 @@ namespace AxeSoftware.Quest
             m_types.Push(addType);
         }
 
+        private string FormatDebugData(object value)
+        {
+            return GetFormatter(value == null ? null : value.GetType()).Invoke(value);
+        }
+
         internal DebugData GetDebugData()
         {
             DebugData result = new DebugData();
 
             foreach (string attribute in m_attributes.Keys)
             {
-                result.Data.Add(attribute, new DebugDataItem(GetFormatter(m_attributes[attribute] == null ? null : m_attributes[attribute].GetType()).Invoke(m_attributes[attribute])));
+                DebugDataItem newItem = new DebugDataItem(FormatDebugData(m_attributes[attribute]));
+                newItem.Source = m_element.Name;
+                result.Data.Add(attribute, newItem);
             }
 
             foreach (Element type in m_types)
