@@ -65,6 +65,7 @@ namespace AxeSoftware.Quest
         private ElementType m_elemType;
         private static Dictionary<ObjectType, string> s_typeStrings;
         private static Dictionary<ElementType, string> s_elemTypeStrings;
+        private static Dictionary<string, ElementType> s_mapTypeStringsToElementType;
 
         static Element()
         {
@@ -79,6 +80,17 @@ namespace AxeSoftware.Quest
             {
                 s_elemTypeStrings.Add(t, ((ElementTypeInfo)(typeof(ElementType).GetField(t.ToString()).GetCustomAttributes(typeof(ElementTypeInfo), false)[0])).Name);
             }
+
+            s_mapTypeStringsToElementType = new Dictionary<string, ElementType>();
+            foreach (var item in s_elemTypeStrings)
+            {
+                s_mapTypeStringsToElementType.Add(item.Value, item.Key);
+            }
+        }
+
+        internal static ElementType GetElementTypeForTypeString(string typeString)
+        {
+            return s_mapTypeStringsToElementType[typeString];
         }
         
         internal Element(WorldModel worldModel)

@@ -498,5 +498,16 @@ namespace AxeSoftware.Quest
             m_controlTypes.TryGetValue(name, out controlType);
             return controlType;
         }
+
+        public IEnumerable<string> GetElementNames(string elementType)
+        {
+            ElementType t = WorldModel.GetElementTypeForTypeString(elementType);
+            return WorldModel.Elements.GetElements(t).Select(e => e.Name);
+        }
+
+        public bool IsDefaultTypeName(string elementType)
+        {
+            return elementType == "defaultverb" || WorldModel.IsDefaultTypeName(elementType);
+        }
     }
 }

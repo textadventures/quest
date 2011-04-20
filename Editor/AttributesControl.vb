@@ -300,4 +300,24 @@ Public Class AttributesControl
             Return Nothing
         End Get
     End Property
+
+    Private Sub cmdAddType_DropDownOpening(sender As Object, e As System.EventArgs) Handles cmdAddType.DropDownOpening
+        For Each item As ToolStripItem In cmdAddType.DropDownItems
+            RemoveHandler item.Click, AddressOf cmdAddTypeDropDownItem_Click
+        Next
+
+        cmdAddType.DropDownItems.Clear()
+        Dim availableTypes As IEnumerable(Of String) = m_controller.GetElementNames("type")
+
+        For Each item As String In availableTypes.Where(Function(t) Not m_controller.IsDefaultTypeName(t))
+            Dim menuItem As ToolStripItem = cmdAddType.DropDownItems.Add(item)
+            AddHandler menuItem.Click, AddressOf cmdAddTypeDropDownItem_Click
+            menuItem.Enabled = Not lstTypes.Items.ContainsKey(item)
+        Next
+    End Sub
+
+    Private Sub cmdAddTypeDropDownItem_Click(sender As System.Object, e As System.EventArgs)
+        Dim typeToAdd As String = DirectCast(sender, ToolStripItem).Text
+        MsgBox("Add " + typeToAdd)
+    End Sub
 End Class

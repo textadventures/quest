@@ -24,34 +24,34 @@ Partial Class AttributesControl
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AttributesControl))
         Me.ctlSplitContainerMain = New System.Windows.Forms.SplitContainer()
+        Me.lstTypes = New System.Windows.Forms.ListView()
+        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ctlTypesToolStrip = New System.Windows.Forms.ToolStrip()
+        Me.ToolStripLabel2 = New System.Windows.Forms.ToolStripLabel()
+        Me.cmdDeleteType = New System.Windows.Forms.ToolStripButton()
         Me.ctlSplitContainer = New System.Windows.Forms.SplitContainer()
         Me.lstAttributes = New System.Windows.Forms.ListView()
         Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colValue = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colSource = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
+        Me.ToolStripLabel1 = New System.Windows.Forms.ToolStripLabel()
         Me.cmdAdd = New System.Windows.Forms.ToolStripButton()
         Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripLabel1 = New System.Windows.Forms.ToolStripLabel()
-        Me.ctlTypesToolStrip = New System.Windows.Forms.ToolStrip()
-        Me.ToolStripLabel2 = New System.Windows.Forms.ToolStripLabel()
-        Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripButton2 = New System.Windows.Forms.ToolStripButton()
         Me.ctlMultiControl = New AxeSoftware.Quest.MultiControl()
-        Me.lstTypes = New System.Windows.Forms.ListView()
-        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.cmdAddType = New System.Windows.Forms.ToolStripDropDownButton()
         CType(Me.ctlSplitContainerMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlSplitContainerMain.Panel1.SuspendLayout()
         Me.ctlSplitContainerMain.Panel2.SuspendLayout()
         Me.ctlSplitContainerMain.SuspendLayout()
+        Me.ctlTypesToolStrip.SuspendLayout()
         CType(Me.ctlSplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlSplitContainer.Panel1.SuspendLayout()
         Me.ctlSplitContainer.Panel2.SuspendLayout()
         Me.ctlSplitContainer.SuspendLayout()
         Me.ctlToolStrip.SuspendLayout()
-        Me.ctlTypesToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlSplitContainerMain
@@ -72,6 +72,61 @@ Partial Class AttributesControl
         Me.ctlSplitContainerMain.Size = New System.Drawing.Size(657, 456)
         Me.ctlSplitContainerMain.SplitterDistance = 106
         Me.ctlSplitContainerMain.TabIndex = 1
+        '
+        'lstTypes
+        '
+        Me.lstTypes.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3})
+        Me.lstTypes.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lstTypes.FullRowSelect = True
+        Me.lstTypes.HideSelection = False
+        Me.lstTypes.Location = New System.Drawing.Point(0, 25)
+        Me.lstTypes.MultiSelect = False
+        Me.lstTypes.Name = "lstTypes"
+        Me.lstTypes.Size = New System.Drawing.Size(657, 81)
+        Me.lstTypes.TabIndex = 5
+        Me.lstTypes.UseCompatibleStateImageBehavior = False
+        Me.lstTypes.View = System.Windows.Forms.View.Details
+        '
+        'ColumnHeader1
+        '
+        Me.ColumnHeader1.Text = "Name"
+        Me.ColumnHeader1.Width = 138
+        '
+        'ColumnHeader2
+        '
+        Me.ColumnHeader2.Text = "Value"
+        Me.ColumnHeader2.Width = 354
+        '
+        'ColumnHeader3
+        '
+        Me.ColumnHeader3.Text = "Source"
+        Me.ColumnHeader3.Width = 115
+        '
+        'ctlTypesToolStrip
+        '
+        Me.ctlTypesToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripLabel2, Me.cmdAddType, Me.cmdDeleteType})
+        Me.ctlTypesToolStrip.Location = New System.Drawing.Point(0, 0)
+        Me.ctlTypesToolStrip.Name = "ctlTypesToolStrip"
+        Me.ctlTypesToolStrip.Size = New System.Drawing.Size(657, 25)
+        Me.ctlTypesToolStrip.TabIndex = 4
+        Me.ctlTypesToolStrip.Text = "ToolStrip1"
+        '
+        'ToolStripLabel2
+        '
+        Me.ToolStripLabel2.AutoSize = False
+        Me.ToolStripLabel2.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripLabel2.Name = "ToolStripLabel2"
+        Me.ToolStripLabel2.Size = New System.Drawing.Size(100, 22)
+        Me.ToolStripLabel2.Text = "Inherited Types"
+        Me.ToolStripLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'cmdDeleteType
+        '
+        Me.cmdDeleteType.Image = CType(resources.GetObject("cmdDeleteType.Image"), System.Drawing.Image)
+        Me.cmdDeleteType.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdDeleteType.Name = "cmdDeleteType"
+        Me.cmdDeleteType.Size = New System.Drawing.Size(60, 22)
+        Me.cmdDeleteType.Text = "Delete"
         '
         'ctlSplitContainer
         '
@@ -130,6 +185,15 @@ Partial Class AttributesControl
         Me.ctlToolStrip.TabIndex = 3
         Me.ctlToolStrip.Text = "ToolStrip1"
         '
+        'ToolStripLabel1
+        '
+        Me.ToolStripLabel1.AutoSize = False
+        Me.ToolStripLabel1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripLabel1.Name = "ToolStripLabel1"
+        Me.ToolStripLabel1.Size = New System.Drawing.Size(100, 22)
+        Me.ToolStripLabel1.Text = "Attributes"
+        Me.ToolStripLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
         'cmdAdd
         '
         Me.cmdAdd.Image = CType(resources.GetObject("cmdAdd.Image"), System.Drawing.Image)
@@ -146,49 +210,6 @@ Partial Class AttributesControl
         Me.cmdDelete.Size = New System.Drawing.Size(60, 22)
         Me.cmdDelete.Text = "Delete"
         '
-        'ToolStripLabel1
-        '
-        Me.ToolStripLabel1.AutoSize = False
-        Me.ToolStripLabel1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ToolStripLabel1.Name = "ToolStripLabel1"
-        Me.ToolStripLabel1.Size = New System.Drawing.Size(100, 22)
-        Me.ToolStripLabel1.Text = "Attributes"
-        Me.ToolStripLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'ctlTypesToolStrip
-        '
-        Me.ctlTypesToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripLabel2, Me.ToolStripButton1, Me.ToolStripButton2})
-        Me.ctlTypesToolStrip.Location = New System.Drawing.Point(0, 0)
-        Me.ctlTypesToolStrip.Name = "ctlTypesToolStrip"
-        Me.ctlTypesToolStrip.Size = New System.Drawing.Size(657, 25)
-        Me.ctlTypesToolStrip.TabIndex = 4
-        Me.ctlTypesToolStrip.Text = "ToolStrip1"
-        '
-        'ToolStripLabel2
-        '
-        Me.ToolStripLabel2.AutoSize = False
-        Me.ToolStripLabel2.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ToolStripLabel2.Name = "ToolStripLabel2"
-        Me.ToolStripLabel2.Size = New System.Drawing.Size(100, 22)
-        Me.ToolStripLabel2.Text = "Inherited Types"
-        Me.ToolStripLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'ToolStripButton1
-        '
-        Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
-        Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton1.Name = "ToolStripButton1"
-        Me.ToolStripButton1.Size = New System.Drawing.Size(49, 22)
-        Me.ToolStripButton1.Text = "Add"
-        '
-        'ToolStripButton2
-        '
-        Me.ToolStripButton2.Image = CType(resources.GetObject("ToolStripButton2.Image"), System.Drawing.Image)
-        Me.ToolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton2.Name = "ToolStripButton2"
-        Me.ToolStripButton2.Size = New System.Drawing.Size(60, 22)
-        Me.ToolStripButton2.Text = "Delete"
-        '
         'ctlMultiControl
         '
         Me.ctlMultiControl.BackColor = System.Drawing.Color.Transparent
@@ -202,34 +223,13 @@ Partial Class AttributesControl
         Me.ctlMultiControl.Value = Nothing
         Me.ctlMultiControl.Visible = False
         '
-        'lstTypes
+        'cmdAddType
         '
-        Me.lstTypes.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3})
-        Me.lstTypes.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lstTypes.FullRowSelect = True
-        Me.lstTypes.HideSelection = False
-        Me.lstTypes.Location = New System.Drawing.Point(0, 25)
-        Me.lstTypes.MultiSelect = False
-        Me.lstTypes.Name = "lstTypes"
-        Me.lstTypes.Size = New System.Drawing.Size(657, 81)
-        Me.lstTypes.TabIndex = 5
-        Me.lstTypes.UseCompatibleStateImageBehavior = False
-        Me.lstTypes.View = System.Windows.Forms.View.Details
-        '
-        'ColumnHeader1
-        '
-        Me.ColumnHeader1.Text = "Name"
-        Me.ColumnHeader1.Width = 138
-        '
-        'ColumnHeader2
-        '
-        Me.ColumnHeader2.Text = "Value"
-        Me.ColumnHeader2.Width = 354
-        '
-        'ColumnHeader3
-        '
-        Me.ColumnHeader3.Text = "Source"
-        Me.ColumnHeader3.Width = 115
+        Me.cmdAddType.Image = CType(resources.GetObject("cmdAddType.Image"), System.Drawing.Image)
+        Me.cmdAddType.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdAddType.Name = "cmdAddType"
+        Me.cmdAddType.Size = New System.Drawing.Size(58, 22)
+        Me.cmdAddType.Text = "Add"
         '
         'AttributesControl
         '
@@ -244,6 +244,8 @@ Partial Class AttributesControl
         Me.ctlSplitContainerMain.Panel2.ResumeLayout(False)
         CType(Me.ctlSplitContainerMain, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ctlSplitContainerMain.ResumeLayout(False)
+        Me.ctlTypesToolStrip.ResumeLayout(False)
+        Me.ctlTypesToolStrip.PerformLayout()
         Me.ctlSplitContainer.Panel1.ResumeLayout(False)
         Me.ctlSplitContainer.Panel1.PerformLayout()
         Me.ctlSplitContainer.Panel2.ResumeLayout(False)
@@ -251,8 +253,6 @@ Partial Class AttributesControl
         Me.ctlSplitContainer.ResumeLayout(False)
         Me.ctlToolStrip.ResumeLayout(False)
         Me.ctlToolStrip.PerformLayout()
-        Me.ctlTypesToolStrip.ResumeLayout(False)
-        Me.ctlTypesToolStrip.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -269,11 +269,11 @@ Partial Class AttributesControl
     Friend WithEvents ToolStripLabel1 As System.Windows.Forms.ToolStripLabel
     Friend WithEvents ctlTypesToolStrip As System.Windows.Forms.ToolStrip
     Friend WithEvents ToolStripLabel2 As System.Windows.Forms.ToolStripLabel
-    Friend WithEvents ToolStripButton1 As System.Windows.Forms.ToolStripButton
-    Friend WithEvents ToolStripButton2 As System.Windows.Forms.ToolStripButton
+    Friend WithEvents cmdDeleteType As System.Windows.Forms.ToolStripButton
     Friend WithEvents lstTypes As System.Windows.Forms.ListView
     Friend WithEvents ColumnHeader1 As System.Windows.Forms.ColumnHeader
     Friend WithEvents ColumnHeader2 As System.Windows.Forms.ColumnHeader
     Friend WithEvents ColumnHeader3 As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cmdAddType As System.Windows.Forms.ToolStripDropDownButton
 
 End Class

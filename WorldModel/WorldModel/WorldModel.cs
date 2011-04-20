@@ -599,19 +599,19 @@ namespace AxeSoftware.Quest
             return result;
         }
 
-        public DebugData GetDebugData(string obj)
+        public DebugData GetDebugData(string el)
         {
-            return m_elements.Get(ElementType.Object, obj).GetDebugData();
+            return m_elements.Get(el).GetDebugData();
         }
 
-        public DebugData GetInheritedTypesDebugData(string obj)
+        public DebugData GetInheritedTypesDebugData(string el)
         {
-            return m_elements.Get(ElementType.Object, obj).Fields.GetInheritedTypesDebugData();
+            return m_elements.Get(el).Fields.GetInheritedTypesDebugData();
         }
 
-        public DebugDataItem GetDebugDataItem(string obj, string attribute)
+        public DebugDataItem GetDebugDataItem(string el, string attribute)
         {
-            return m_elements.Get(ElementType.Object, obj).Fields.GetDebugDataItem(attribute);
+            return m_elements.Get(el).Fields.GetDebugDataItem(attribute);
         }
 
         public void FinishWait()
@@ -872,6 +872,16 @@ namespace AxeSoftware.Quest
         internal IPlayer PlayerUI
         {
             get { return m_playerUI; }
+        }
+
+        public ElementType GetElementTypeForTypeString(string typeString)
+        {
+            return Element.GetElementTypeForTypeString(typeString);
+        }
+
+        public bool IsDefaultTypeName(string typeName)
+        {
+            return DefaultTypeNames.ContainsValue(typeName);
         }
     }
 }
