@@ -51,12 +51,14 @@ Public Class AttributesControl
         If data Is Nothing Then
 
         Else
-            For Each attr In data.GetAttributeData
+            Dim attributeData As IEditorDataExtendedAttributeInfo = DirectCast(data, IEditorDataExtendedAttributeInfo)
+            For Each attr In attributeData.GetAttributeData
                 Dim newItem As ListViewItem = lstAttributes.Items.Add(attr.AttributeName, attr.AttributeName, 0)
                 If attr.IsInherited Then newItem.ForeColor = Color.Gray
                 Dim value As Object = data.GetAttribute(attr.AttributeName)
                 Dim displayValue As String = GetDisplayString(value)
                 newItem.SubItems.Add(displayValue)
+                newItem.SubItems.Add(attr.Source)
             Next
         End If
     End Sub

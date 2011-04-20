@@ -9,6 +9,7 @@ namespace AxeSoftware.Quest
     {
         string AttributeName { get; }
         bool IsInherited { get; }
+        string Source { get; }
     }
 
     public interface IEditorData
@@ -18,8 +19,13 @@ namespace AxeSoftware.Quest
         string Name { get; }
         object GetAttribute(string attribute);
         void SetAttribute(string attribute, object value);
-        IEnumerable<IEditorAttributeData> GetAttributeData();
 
         event EventHandler Changed;
+    }
+
+    public interface IEditorDataExtendedAttributeInfo : IEditorData
+    {
+        IEnumerable<IEditorAttributeData> GetAttributeData();
+        string GetAttributeSource(string attribute);
     }
 }

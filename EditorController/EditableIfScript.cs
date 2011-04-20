@@ -75,11 +75,6 @@ namespace AxeSoftware.Quest
             {
                 get { return m_elseIfScript; }
             }
-
-            public IEnumerable<IEditorAttributeData> GetAttributeData()
-            {
-                throw new NotImplementedException();
-            }
         }
 
         private IfScript m_ifScript;
@@ -300,11 +295,6 @@ namespace AxeSoftware.Quest
         public void RemoveElse()
         {
             m_ifScript.SetElse(null);
-        }
-
-        public IEnumerable<IEditorAttributeData> GetAttributeData()
-        {
-            throw new NotImplementedException();
         }
     }
 }

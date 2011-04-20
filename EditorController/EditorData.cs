@@ -9,10 +9,11 @@ namespace AxeSoftware.Quest
 {
     internal class EditorAttributeData : IEditorAttributeData
     {
-        public EditorAttributeData(string attributeName, bool isInherited)
+        public EditorAttributeData(string attributeName, bool isInherited, string source)
         {
             AttributeName = attributeName;
             IsInherited = isInherited;
+            Source = source;
         }
 
         public string AttributeName
@@ -26,9 +27,15 @@ namespace AxeSoftware.Quest
             get;
             private set;
         }
+
+        public string Source
+        {
+            get;
+            set;
+        }
     }
 
-    internal class EditorData : IEditorData
+    internal class EditorData : IEditorDataExtendedAttributeInfo
     {
         private Element m_element;
         private EditorController m_controller;
@@ -74,9 +81,14 @@ namespace AxeSoftware.Quest
             List<EditorAttributeData> result = new List<EditorAttributeData>();
             foreach (var item in data.Data)
             {
-                result.Add(new EditorAttributeData(item.Key, item.Value.IsInherited));
+                result.Add(new EditorAttributeData(item.Key, item.Value.IsInherited, m_controller.WorldModel.GetAttributeSource(m_element.Name, item.Key)));
             }
             return result;
+        }
+
+        public string GetAttributeSource(string attribute)
+        {
+            return m_controller.WorldModel.GetAttributeSource(m_element.Name, attribute);
         }
     }
 }

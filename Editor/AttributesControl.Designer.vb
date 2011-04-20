@@ -30,6 +30,7 @@ Partial Class AttributesControl
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
         Me.cmdAdd = New System.Windows.Forms.ToolStripButton()
         Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
+        Me.colSource = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlMultiControl = New AxeSoftware.Quest.MultiControl()
         CType(Me.ctlSplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlSplitContainer.Panel1.SuspendLayout()
@@ -59,7 +60,7 @@ Partial Class AttributesControl
         '
         'lstAttributes
         '
-        Me.lstAttributes.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName, Me.colValue})
+        Me.lstAttributes.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName, Me.colValue, Me.colSource})
         Me.lstAttributes.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lstAttributes.FullRowSelect = True
         Me.lstAttributes.HideSelection = False
@@ -106,6 +107,11 @@ Partial Class AttributesControl
         Me.cmdDelete.Size = New System.Drawing.Size(60, 22)
         Me.cmdDelete.Text = "Delete"
         '
+        'colSource
+        '
+        Me.colSource.Text = "Source"
+        Me.colSource.Width = 115
+        '
         'ctlMultiControl
         '
         Me.ctlMultiControl.Controller = Nothing
@@ -143,5 +149,6 @@ Partial Class AttributesControl
     Friend WithEvents ctlToolStrip As System.Windows.Forms.ToolStrip
     Friend WithEvents cmdAdd As System.Windows.Forms.ToolStripButton
     Friend WithEvents cmdDelete As System.Windows.Forms.ToolStripButton
+    Friend WithEvents colSource As System.Windows.Forms.ColumnHeader
 
 End Class

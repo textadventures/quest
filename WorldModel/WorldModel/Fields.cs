@@ -319,6 +319,23 @@ namespace AxeSoftware.Quest
             return null;
         }
 
+        internal string GetAttributeSource(string attribute)
+        {
+            if (m_attributes.ContainsKey(attribute))
+            {
+                return m_element.Name;
+            }
+            else
+            {
+                foreach (Element type in m_types)
+                {
+                    if (type.Fields.Exists(attribute)) return type.Name;
+                }
+            }
+
+            return null;
+        }
+
         internal bool Exists(string attribute)
         {
             if (m_attributes.ContainsKey(attribute)) return true;
