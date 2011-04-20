@@ -10,6 +10,7 @@ namespace AxeSoftware.Quest
         string AttributeName { get; }
         bool IsInherited { get; }
         string Source { get; }
+        bool IsDefaultType { get; }
     }
 
     public interface IEditorData
@@ -28,5 +29,6 @@ namespace AxeSoftware.Quest
         IEnumerable<IEditorAttributeData> GetAttributeData();
         IEditorAttributeData GetAttributeData(string attribute);
         void RemoveAttribute(string attribute);
+        IEnumerable<IEditorAttributeData> GetInheritedTypes();
     }
 }

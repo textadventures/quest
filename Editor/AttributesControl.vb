@@ -46,21 +46,29 @@ Public Class AttributesControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         lstAttributes.Items.Clear()
+        lstTypes.Items.Clear()
         ctlMultiControl.Visible = False
         m_data = DirectCast(data, IEditorDataExtendedAttributeInfo)
 
         If Not data Is Nothing Then
+            For Each type In m_data.GetInheritedTypes
+                AddListItem(lstTypes, type, AddressOf GetTypeDisplayString)
+            Next
+
             For Each attr In m_data.GetAttributeData
-                AddListItem(attr)
+                AddListItem(lstAttributes, attr, AddressOf GetAttributeDisplayString)
             Next
         End If
     End Sub
 
     Private Sub AddListItem(attr As IEditorAttributeData)
-        Dim newItem As ListViewItem = lstAttributes.Items.Add(attr.AttributeName, attr.AttributeName, 0)
+        AddListItem(lstAttributes, attr, AddressOf GetAttributeDisplayString)
+    End Sub
+
+    Private Sub AddListItem(listView As ListView, attr As IEditorAttributeData, displayStringFunction As Func(Of IEditorAttributeData, String))
+        Dim newItem As ListViewItem = listView.Items.Add(attr.AttributeName, attr.AttributeName, 0)
         newItem.ForeColor = GetAttributeColour(attr)
-        Dim value As Object = m_data.GetAttribute(attr.AttributeName)
-        Dim displayValue As String = GetDisplayString(value)
+        Dim displayValue As String = displayStringFunction(attr)
         newItem.SubItems.Add(displayValue)
         newItem.SubItems.Add(attr.Source)
     End Sub
@@ -82,6 +90,14 @@ Public Class AttributesControl
         End If
 
         Return Utility.FormatAsOneLine(result)
+    End Function
+
+    Private Function GetAttributeDisplayString(attr As IEditorAttributeData) As String
+        Return GetDisplayString(m_data.GetAttribute(attr.AttributeName))
+    End Function
+
+    Private Function GetTypeDisplayString(attr As IEditorAttributeData) As String
+        Return attr.AttributeName
     End Function
 
     Private Function GetListDisplayString(items As IEnumerable(Of KeyValuePair(Of String, String))) As String
@@ -255,7 +271,7 @@ Public Class AttributesControl
     End Sub
 
     Private Function GetAttributeColour(data As IEditorAttributeData) As Color
-        Return If(data.IsInherited, Color.Gray, SystemColors.WindowText)
+        Return If(data.IsInherited OrElse data.IsDefaultType, Color.Gray, SystemColors.WindowText)
     End Function
 
     Private Sub cmdAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdAdd.Click

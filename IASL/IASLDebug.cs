@@ -33,6 +33,12 @@ namespace AxeSoftware.Quest
             set;
         }
 
+        public bool IsDefaultType
+        {
+            get;
+            set;
+        }
+
         public DebugDataItem(string value)
             : this(value, false)
         {

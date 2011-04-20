@@ -9,11 +9,12 @@ namespace AxeSoftware.Quest
 {
     internal class EditorAttributeData : IEditorAttributeData
     {
-        public EditorAttributeData(string attributeName, bool isInherited, string source)
+        public EditorAttributeData(string attributeName, bool isInherited, string source, bool isDefaultType)
         {
             AttributeName = attributeName;
             IsInherited = isInherited;
             Source = source;
+            IsDefaultType = isDefaultType;
         }
 
         public string AttributeName
@@ -29,6 +30,12 @@ namespace AxeSoftware.Quest
         }
 
         public string Source
+        {
+            get;
+            set;
+        }
+
+        public bool IsDefaultType
         {
             get;
             set;
@@ -78,23 +85,34 @@ namespace AxeSoftware.Quest
         public IEnumerable<IEditorAttributeData> GetAttributeData()
         {
             DebugData data = m_controller.WorldModel.GetDebugData(m_element.Name);
-            List<EditorAttributeData> result = new List<EditorAttributeData>();
-            foreach (var item in data.Data)
-            {
-                result.Add(new EditorAttributeData(item.Key, item.Value.IsInherited, item.Value.Source));
-            }
-            return result;
+            return ConvertDebugDataToEditorAttributeData(data);
         }
 
         public IEditorAttributeData GetAttributeData(string attribute)
         {
             DebugDataItem data = m_controller.WorldModel.GetDebugDataItem(m_element.Name, attribute);
-            return new EditorAttributeData(attribute, data.IsInherited, data.Source);
+            return new EditorAttributeData(attribute, data.IsInherited, data.Source, data.IsDefaultType);
         }
 
         public void RemoveAttribute(string attribute)
         {
             m_element.Fields.RemoveField(attribute);
+        }
+
+        public IEnumerable<IEditorAttributeData> GetInheritedTypes()
+        {
+            DebugData data = m_controller.WorldModel.GetInheritedTypesDebugData(m_element.Name);
+            return ConvertDebugDataToEditorAttributeData(data);
+        }
+
+        private IEnumerable<IEditorAttributeData> ConvertDebugDataToEditorAttributeData(DebugData data)
+        {
+            List<EditorAttributeData> result = new List<EditorAttributeData>();
+            foreach (var item in data.Data)
+            {
+                result.Add(new EditorAttributeData(item.Key, item.Value.IsInherited, item.Value.Source, item.Value.IsDefaultType));
+            }
+            return result;
         }
     }
 }

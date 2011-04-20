@@ -604,6 +604,11 @@ namespace AxeSoftware.Quest
             return m_elements.Get(ElementType.Object, obj).GetDebugData();
         }
 
+        public DebugData GetInheritedTypesDebugData(string obj)
+        {
+            return m_elements.Get(ElementType.Object, obj).Fields.GetInheritedTypesDebugData();
+        }
+
         public DebugDataItem GetDebugDataItem(string obj, string attribute)
         {
             return m_elements.Get(ElementType.Object, obj).Fields.GetDebugDataItem(attribute);

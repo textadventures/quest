@@ -404,6 +404,38 @@ namespace AxeSoftware.Quest
             return result;
         }
 
+        internal DebugData GetInheritedTypesDebugData()
+        {
+            DebugData result = new DebugData();
+
+            // First we want all the types we include directly
+            foreach (Element type in m_types)
+            {
+                DebugDataItem newItem = new DebugDataItem(type.Name);
+                newItem.Source = m_element.Name;
+                newItem.IsDefaultType = WorldModel.DefaultTypeNames.ContainsValue(type.Name);
+                result.Data.Add(type.Name, newItem);
+            }
+
+            // Next we want all the types that are inherited from those
+            foreach (Element type in m_types)
+            {
+                DebugData inheritedData = type.Fields.GetInheritedTypesDebugData();
+
+                foreach (string typeName in inheritedData.Data.Keys)
+                {
+                    if (!result.Data.ContainsKey(typeName))
+                    {
+                        DebugDataItem item = inheritedData.Data[typeName];
+                        item.IsInherited = true;
+                        result.Data.Add(typeName, item);
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public T GetAsType<T>(string attribute)
         {
             object value = Get(attribute);
