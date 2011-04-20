@@ -213,6 +213,7 @@ Public Class MultiControl
     End Property
 
     Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
+        If m_currentEditor Is Nothing Then Return
         m_currentEditor.Save(data)
     End Sub
 

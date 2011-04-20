@@ -41,6 +41,7 @@ Public Class AttributesControl
     End Property
 
     Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
+        ctlMultiControl.Save(data)
     End Sub
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
@@ -55,7 +56,7 @@ Public Class AttributesControl
                 If attr.IsInherited Then newItem.ForeColor = Color.Gray
                 Dim value As Object = data.GetAttribute(attr.AttributeName)
                 Dim displayValue As String = GetDisplayString(value)
-                newItem.SubItems.Add(Utility.FormatAsOneLine(displayValue))
+                newItem.SubItems.Add(displayValue)
             Next
         End If
     End Sub
@@ -64,16 +65,19 @@ Public Class AttributesControl
         Dim scriptValue As IEditableScripts = TryCast(value, IEditableScripts)
         Dim listStringValue As IEditableList(Of String) = TryCast(value, IEditableList(Of String))
         Dim dictionaryStringValue As IEditableDictionary(Of String) = TryCast(value, IEditableDictionary(Of String))
+        Dim result As String
 
         If scriptValue IsNot Nothing Then
-            Return scriptValue.DisplayString()
+            result = scriptValue.DisplayString()
         ElseIf listStringValue IsNot Nothing Then
-            Return GetListDisplayString(listStringValue.DisplayItems)
+            result = GetListDisplayString(listStringValue.DisplayItems)
         ElseIf dictionaryStringValue IsNot Nothing Then
-            Return GetDictionaryDisplayString(dictionaryStringValue.DisplayItems)
+            result = GetDictionaryDisplayString(dictionaryStringValue.DisplayItems)
         Else
-            Return value.ToString()
+            result = value.ToString()
         End If
+
+        Return Utility.FormatAsOneLine(result)
     End Function
 
     Private Function GetListDisplayString(items As IEnumerable(Of KeyValuePair(Of String, String))) As String
@@ -97,7 +101,6 @@ Public Class AttributesControl
 
         Return result
     End Function
-
 
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         If controlData IsNot Nothing Then
@@ -210,7 +213,20 @@ Public Class AttributesControl
     End Class
 
     Public Sub AttributeChanged(attribute As String, value As Object) Implements IMultiAttributeElementEditorControl.AttributeChanged
+        AttributeChangedInternal(attribute, value, True)
+    End Sub
+
+    Private Sub AttributeChangedInternal(attribute As String, value As Object, updateMultiControl As Boolean)
         Dim listViewItem As ListViewItem = lstAttributes.Items(attribute)
         listViewItem.SubItems(1).Text = GetDisplayString(value)
+        If updateMultiControl Then
+            If attribute = GetSelectedAttribute() Then ctlMultiControl.Value = value
+        End If
+    End Sub
+
+    Private Sub ctlMultiControl_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlMultiControl.Dirty
+        args.Attribute = GetSelectedAttribute()
+        AttributeChangedInternal(args.Attribute, args.NewValue, False)
+        RaiseEvent Dirty(Me, args)
     End Sub
 End Class

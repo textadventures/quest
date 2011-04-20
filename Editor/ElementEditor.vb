@@ -230,7 +230,9 @@
 
     Private Sub Control_Dirty(sender As Object, args As DataModifiedEventArgs)
         If Not m_populating Then
-            args.Attribute = DirectCast(sender, EditorControl).AttributeName
+            If String.IsNullOrEmpty(args.Attribute) Then
+                args.Attribute = DirectCast(sender, EditorControl).AttributeName
+            End If
             RaiseEvent Dirty(sender, args)
         End If
     End Sub
