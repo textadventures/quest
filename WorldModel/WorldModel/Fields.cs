@@ -234,7 +234,7 @@ namespace AxeSoftware.Quest
             Set(name, value, false, false);
         }
 
-        internal void UndoAddField(string name)
+        internal void RemoveFieldInternal(string name)
         {
             m_attributes.Remove(name);
 
@@ -242,6 +242,12 @@ namespace AxeSoftware.Quest
             {
                 AttributeChangedSilent(this, new AttributeChangedEventArgs(name, Get(name)));
             }
+        }
+
+        public void RemoveField(string name)
+        {
+            UndoLog(new UndoFieldRemove(m_element.Name, name, m_attributes[name]));
+            RemoveFieldInternal(name);
         }
 
         private void Set(string name, object value, bool raiseEvent, bool cloneClonableValues)
@@ -597,7 +603,7 @@ namespace AxeSoftware.Quest
             Fields fields = worldModel.Object(m_appliesTo).Fields;
             if (m_added)
             {
-                fields.UndoAddField(Property);
+                fields.RemoveFieldInternal(Property);
             }
             else
             {
@@ -608,6 +614,30 @@ namespace AxeSoftware.Quest
         public void DoRedo(WorldModel worldModel)
         {
             worldModel.Object(m_appliesTo).Fields.SetFromUndo(Property, NewValue);
+        }
+    }
+
+    public class UndoFieldRemove : AxeSoftware.Quest.UndoLogger.IUndoAction
+    {
+        private string m_appliesTo;
+        private string m_property;
+        private object m_oldValue;
+
+        public UndoFieldRemove(string appliesTo, string property, object oldValue)
+        {
+            m_appliesTo = appliesTo;
+            m_property = property;
+            m_oldValue = oldValue;
+        }
+
+        public void DoUndo(WorldModel worldModel)
+        {
+            worldModel.Object(m_appliesTo).Fields.SetFromUndo(m_property, m_oldValue);
+        }
+
+        public void DoRedo(WorldModel worldModel)
+        {
+            worldModel.Object(m_appliesTo).Fields.RemoveFieldInternal(m_property);
         }
     }
 }

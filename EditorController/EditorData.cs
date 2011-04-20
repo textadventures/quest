@@ -91,5 +91,10 @@ namespace AxeSoftware.Quest
             DebugDataItem data = m_controller.WorldModel.GetDebugDataItem(m_element.Name, attribute);
             return new EditorAttributeData(attribute, data.IsInherited, data.Source);
         }
+
+        public void RemoveAttribute(string attribute)
+        {
+            m_element.Fields.RemoveField(attribute);
+        }
     }
 }

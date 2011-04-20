@@ -27,5 +27,6 @@ namespace AxeSoftware.Quest
     {
         IEnumerable<IEditorAttributeData> GetAttributeData();
         IEditorAttributeData GetAttributeData(string attribute);
+        void RemoveAttribute(string attribute);
     }
 }

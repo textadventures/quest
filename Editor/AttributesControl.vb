@@ -48,18 +48,20 @@ Public Class AttributesControl
         lstAttributes.Items.Clear()
         m_data = DirectCast(data, IEditorDataExtendedAttributeInfo)
 
-        If data Is Nothing Then
-
-        Else
+        If Not data Is Nothing Then
             For Each attr In m_data.GetAttributeData
-                Dim newItem As ListViewItem = lstAttributes.Items.Add(attr.AttributeName, attr.AttributeName, 0)
-                newItem.ForeColor = GetAttributeColour(attr)
-                Dim value As Object = data.GetAttribute(attr.AttributeName)
-                Dim displayValue As String = GetDisplayString(value)
-                newItem.SubItems.Add(displayValue)
-                newItem.SubItems.Add(attr.Source)
+                AddListItem(attr)
             Next
         End If
+    End Sub
+
+    Private Sub AddListItem(attr As IEditorAttributeData)
+        Dim newItem As ListViewItem = lstAttributes.Items.Add(attr.AttributeName, attr.AttributeName, 0)
+        newItem.ForeColor = GetAttributeColour(attr)
+        Dim value As Object = m_data.GetAttribute(attr.AttributeName)
+        Dim displayValue As String = GetDisplayString(value)
+        newItem.SubItems.Add(displayValue)
+        newItem.SubItems.Add(attr.Source)
     End Sub
 
     Private Function GetDisplayString(value As Object) As String
@@ -104,19 +106,22 @@ Public Class AttributesControl
     End Function
 
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
-        If controlData IsNot Nothing Then
-
-        End If
     End Sub
 
     Private Sub lstAttributes_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lstAttributes.SelectedIndexChanged
-        Dim selectedItem As String = GetSelectedAttribute()
-        EditItem(selectedItem)
+        Dim selectedAttribute As String = GetSelectedAttribute()
+        cmdDelete.Enabled = DeleteAllowed(selectedAttribute)
+        EditItem(selectedAttribute)
     End Sub
 
     Private Function GetSelectedAttribute() As String
         If lstAttributes.SelectedItems.Count = 0 Then Return Nothing
         Return lstAttributes.SelectedItems(0).Text
+    End Function
+
+    Private Function DeleteAllowed(attribute As String) As Boolean
+        If String.IsNullOrEmpty(attribute) Then Return False
+        Return Not m_data.GetAttributeData(attribute).IsInherited
     End Function
 
     Private Sub EditItem(attribute As String)
@@ -219,13 +224,25 @@ Public Class AttributesControl
 
     Private Sub AttributeChangedInternal(attribute As String, value As Object, updateMultiControl As Boolean)
         Dim listViewItem As ListViewItem = lstAttributes.Items(attribute)
-        listViewItem.SubItems(1).Text = GetDisplayString(value)
-        Dim data As IEditorAttributeData = m_data.GetAttributeData(attribute)
-        listViewItem.SubItems(2).Text = data.Source
-        listViewItem.ForeColor = GetAttributeColour(data)
-        If updateMultiControl Then
-            If attribute = GetSelectedAttribute() Then ctlMultiControl.Value = value
+
+        If value Is Nothing Then
+            ' Remove attribute
+            lstAttributes.Items.Remove(listViewItem)
+        Else
+            ' Add or update attribute
+            If listViewItem Is Nothing Then
+                AddListItem(m_data.GetAttributeData(attribute))
+            Else
+                listViewItem.SubItems(1).Text = GetDisplayString(value)
+                Dim data As IEditorAttributeData = m_data.GetAttributeData(attribute)
+                listViewItem.SubItems(2).Text = data.Source
+                listViewItem.ForeColor = GetAttributeColour(data)
+                If updateMultiControl Then
+                    If attribute = GetSelectedAttribute() Then ctlMultiControl.Value = value
+                End If
+            End If
         End If
+
     End Sub
 
     Private Sub ctlMultiControl_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlMultiControl.Dirty
@@ -237,4 +254,25 @@ Public Class AttributesControl
     Private Function GetAttributeColour(data As IEditorAttributeData) As Color
         Return If(data.IsInherited, Color.Gray, SystemColors.WindowText)
     End Function
+
+    Private Sub cmdAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdAdd.Click
+        Dim result As PopupEditors.EditStringResult = PopupEditors.EditString("Please enter a name for the new attribute", String.Empty)
+        If result.Cancelled Then Return
+
+        If Not lstAttributes.Items.ContainsKey(result.Result) Then
+            m_controller.StartTransaction(String.Format("Add '{0}' attribute", result.Result))
+            m_data.SetAttribute(result.Result, String.Empty)
+            m_controller.EndTransaction()
+        End If
+
+        lstAttributes.Items(result.Result).Selected = True
+        lstAttributes.SelectedItems(0).EnsureVisible()
+    End Sub
+
+    Private Sub cmdDelete_Click(sender As System.Object, e As System.EventArgs) Handles cmdDelete.Click
+        Dim selectedAttribute As String = GetSelectedAttribute()
+        m_controller.StartTransaction(String.Format("Remove '{0}' attribute", selectedAttribute))
+        m_data.RemoveAttribute(selectedAttribute)
+        m_controller.EndTransaction()
+    End Sub
 End Class

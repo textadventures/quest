@@ -27,10 +27,10 @@ Partial Class AttributesControl
         Me.lstAttributes = New System.Windows.Forms.ListView()
         Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colValue = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colSource = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
         Me.cmdAdd = New System.Windows.Forms.ToolStripButton()
         Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
-        Me.colSource = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlMultiControl = New AxeSoftware.Quest.MultiControl()
         CType(Me.ctlSplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlSplitContainer.Panel1.SuspendLayout()
@@ -82,6 +82,11 @@ Partial Class AttributesControl
         Me.colValue.Text = "Value"
         Me.colValue.Width = 354
         '
+        'colSource
+        '
+        Me.colSource.Text = "Source"
+        Me.colSource.Width = 115
+        '
         'ctlToolStrip
         '
         Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.cmdDelete})
@@ -106,11 +111,6 @@ Partial Class AttributesControl
         Me.cmdDelete.Name = "cmdDelete"
         Me.cmdDelete.Size = New System.Drawing.Size(60, 22)
         Me.cmdDelete.Text = "Delete"
-        '
-        'colSource
-        '
-        Me.colSource.Text = "Source"
-        Me.colSource.Width = 115
         '
         'ctlMultiControl
         '
