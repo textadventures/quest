@@ -114,6 +114,7 @@ Partial Class AttributesControl
         '
         'ctlMultiControl
         '
+        Me.ctlMultiControl.BackColor = System.Drawing.Color.Transparent
         Me.ctlMultiControl.Controller = Nothing
         Me.ctlMultiControl.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlMultiControl.Location = New System.Drawing.Point(0, 0)
@@ -122,12 +123,13 @@ Partial Class AttributesControl
         Me.ctlMultiControl.Size = New System.Drawing.Size(657, 233)
         Me.ctlMultiControl.TabIndex = 0
         Me.ctlMultiControl.Value = Nothing
+        Me.ctlMultiControl.Visible = False
         '
         'AttributesControl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.SystemColors.Control
+        Me.BackColor = System.Drawing.Color.Transparent
         Me.Controls.Add(Me.ctlSplitContainer)
         Me.Name = "AttributesControl"
         Me.Size = New System.Drawing.Size(657, 456)

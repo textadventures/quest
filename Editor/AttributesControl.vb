@@ -46,6 +46,7 @@ Public Class AttributesControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         lstAttributes.Items.Clear()
+        ctlMultiControl.Visible = False
         m_data = DirectCast(data, IEditorDataExtendedAttributeInfo)
 
         If Not data Is Nothing Then
@@ -126,8 +127,10 @@ Public Class AttributesControl
 
     Private Sub EditItem(attribute As String)
         If (String.IsNullOrEmpty(attribute)) Then
+            ctlMultiControl.Visible = False
             ctlMultiControl.Populate(Nothing)
         Else
+            ctlMultiControl.Visible = True
             Dim controlData As New SubEditorControlData(attribute)
             ctlMultiControl.Initialise(m_controller, controlData)
             ctlMultiControl.Populate(m_data)
