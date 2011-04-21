@@ -24,10 +24,10 @@ Public Class CheckBoxControl
         Set(value As Object)
             If TypeOf value Is Boolean Then
                 chkCheckBox.Checked = DirectCast(value, Boolean)
-                m_oldValue = DirectCast(value, Boolean)
             Else
                 chkCheckBox.Checked = False
             End If
+            m_oldValue = chkCheckBox.Checked
         End Set
     End Property
 
