@@ -430,11 +430,10 @@ namespace AxeSoftware.Quest
                 newItem.Source = m_element.Name;
                 newItem.IsDefaultType = WorldModel.DefaultTypeNames.ContainsValue(type.Name);
                 result.Data.Add(type.Name, newItem);
-            }
 
-            // Next we want all the types that are inherited from those
-            foreach (Element type in m_types)
-            {
+                // Next we want all the types that are inherited from those, as attributes
+                // from these will take priority over any other inherited types
+
                 DebugData inheritedData = type.Fields.GetInheritedTypesDebugData();
 
                 foreach (string typeName in inheritedData.Data.Keys)
