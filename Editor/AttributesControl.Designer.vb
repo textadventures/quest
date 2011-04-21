@@ -30,6 +30,7 @@ Partial Class AttributesControl
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlTypesToolStrip = New System.Windows.Forms.ToolStrip()
         Me.ToolStripLabel2 = New System.Windows.Forms.ToolStripLabel()
+        Me.cmdAddType = New System.Windows.Forms.ToolStripDropDownButton()
         Me.cmdDeleteType = New System.Windows.Forms.ToolStripButton()
         Me.ctlSplitContainer = New System.Windows.Forms.SplitContainer()
         Me.lstAttributes = New System.Windows.Forms.ListView()
@@ -41,7 +42,6 @@ Partial Class AttributesControl
         Me.cmdAdd = New System.Windows.Forms.ToolStripButton()
         Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
         Me.ctlMultiControl = New AxeSoftware.Quest.MultiControl()
-        Me.cmdAddType = New System.Windows.Forms.ToolStripDropDownButton()
         CType(Me.ctlSplitContainerMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlSplitContainerMain.Panel1.SuspendLayout()
         Me.ctlSplitContainerMain.Panel2.SuspendLayout()
@@ -119,6 +119,14 @@ Partial Class AttributesControl
         Me.ToolStripLabel2.Size = New System.Drawing.Size(100, 22)
         Me.ToolStripLabel2.Text = "Inherited Types"
         Me.ToolStripLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'cmdAddType
+        '
+        Me.cmdAddType.Image = CType(resources.GetObject("cmdAddType.Image"), System.Drawing.Image)
+        Me.cmdAddType.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdAddType.Name = "cmdAddType"
+        Me.cmdAddType.Size = New System.Drawing.Size(58, 22)
+        Me.cmdAddType.Text = "Add"
         '
         'cmdDeleteType
         '
@@ -222,14 +230,6 @@ Partial Class AttributesControl
         Me.ctlMultiControl.TabIndex = 0
         Me.ctlMultiControl.Value = Nothing
         Me.ctlMultiControl.Visible = False
-        '
-        'cmdAddType
-        '
-        Me.cmdAddType.Image = CType(resources.GetObject("cmdAddType.Image"), System.Drawing.Image)
-        Me.cmdAddType.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.cmdAddType.Name = "cmdAddType"
-        Me.cmdAddType.Size = New System.Drawing.Size(58, 22)
-        Me.cmdAddType.Text = "Add"
         '
         'AttributesControl
         '

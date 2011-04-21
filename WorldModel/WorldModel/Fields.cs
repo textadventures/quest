@@ -385,6 +385,15 @@ namespace AxeSoftware.Quest
             if (AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
         }
 
+        public void RemoveTypeUndoable(Element removeType)
+        {
+            Stack<Element> oldValue = CloneStack(m_types);
+            m_types = CloneStackAndDelete(m_types, removeType);
+            Stack<Element> newValue = CloneStack(m_types);
+            m_worldModel.UndoLogger.AddUndoAction(new UndoAddRemoveType(m_element.Name, oldValue, newValue));
+            if (AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
+        }
+
         private string FormatDebugData(object value)
         {
             return GetFormatter(value == null ? null : value.GetType()).Invoke(value);
@@ -426,10 +435,20 @@ namespace AxeSoftware.Quest
             // First we want all the types we include directly
             foreach (Element type in m_types)
             {
-                DebugDataItem newItem = new DebugDataItem(type.Name);
-                newItem.Source = m_element.Name;
-                newItem.IsDefaultType = WorldModel.DefaultTypeNames.ContainsValue(type.Name);
-                result.Data.Add(type.Name, newItem);
+                if (!result.Data.ContainsKey(type.Name))
+                {
+                    DebugDataItem newItem = new DebugDataItem(type.Name);
+                    newItem.Source = m_element.Name;
+                    newItem.IsDefaultType = WorldModel.DefaultTypeNames.ContainsValue(type.Name);
+                    result.Data.Add(type.Name, newItem);
+                }
+                else
+                {
+                    // This element directly inherits a type which has also been included
+                    // via inheriting another type
+
+                    result.Data[type.Name].Source += "," + m_element.Name;
+                }
 
                 // Next we want all the types that are inherited from those, as attributes
                 // from these will take priority over any other inherited types
@@ -519,13 +538,22 @@ namespace AxeSoftware.Quest
 
         private Stack<Element> CloneStack(Stack<Element> input)
         {
+            return CloneStackAndDelete(input, null);
+        }
+
+        private Stack<Element> CloneStackAndDelete(Stack<Element> input, Element elementToDelete)
+        {
             Stack<Element> result = new Stack<Element>();
             foreach (var item in input.Reverse())
             {
-                result.Push(item);
+                if (item != elementToDelete)
+                {
+                    result.Push(item);
+                }
             }
             return result;
         }
+
 
         public void Resolve(ScriptFactory factory)
         {

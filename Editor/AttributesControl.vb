@@ -3,9 +3,94 @@ Public Class AttributesControl
     Implements IElementEditorControl
     Implements IMultiAttributeElementEditorControl
 
+    Private Class SubEditorControlData
+        Implements IEditorControl
+
+        Private m_attribute As String
+
+        Private Shared s_allTypes As New Dictionary(Of String, String) From {
+            {"string", "String"},
+            {"boolean", "Boolean"},
+            {"script", "Script"},
+            {"stringlist", "String List"}
+        }
+
+        Public Sub New(attribute As String)
+            m_attribute = attribute
+        End Sub
+
+        Public ReadOnly Property Attribute As String Implements IEditorControl.Attribute
+            Get
+                Return m_attribute
+            End Get
+        End Property
+
+        Public ReadOnly Property Caption As String Implements IEditorControl.Caption
+            Get
+                Return Nothing
+            End Get
+        End Property
+
+        Public ReadOnly Property ControlType As String Implements IEditorControl.ControlType
+            Get
+                Return Nothing
+            End Get
+        End Property
+
+        Public ReadOnly Property Expand As Boolean Implements IEditorControl.Expand
+            Get
+                Return False
+            End Get
+        End Property
+
+        Public Function GetBool(tag As String) As Boolean Implements IEditorControl.GetBool
+            Return False
+        End Function
+
+        Public Function GetDictionary(tag As String) As System.Collections.Generic.IDictionary(Of String, String) Implements IEditorControl.GetDictionary
+            If tag = "types" Then
+                Return s_allTypes
+            Else
+                Throw New NotImplementedException
+            End If
+        End Function
+
+        Public Function GetListString(tag As String) As System.Collections.Generic.IEnumerable(Of String) Implements IEditorControl.GetListString
+            Throw New NotImplementedException
+        End Function
+
+        Public Function GetString(tag As String) As String Implements IEditorControl.GetString
+            Select Case tag
+                Case "checkbox"
+                    Return "True"
+                Case "editprompt"
+                    Return "Please enter a value"
+                Case Else
+                    Throw New NotImplementedException
+            End Select
+        End Function
+
+        Public ReadOnly Property Height As Integer? Implements IEditorControl.Height
+            Get
+                Return Nothing
+            End Get
+        End Property
+
+        Public Function IsControlVisible(data As IEditorData) As Boolean Implements IEditorControl.IsControlVisible
+            Return True
+        End Function
+
+        Public ReadOnly Property Width As Integer? Implements IEditorControl.Width
+            Get
+                Return Nothing
+            End Get
+        End Property
+    End Class
+
     Private m_oldValue As String
     Private m_controller As EditorController
     Private m_data As IEditorDataExtendedAttributeInfo
+    Private m_inheritedTypeData As New Dictionary(Of String, IEditorAttributeData)
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -47,11 +132,15 @@ Public Class AttributesControl
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         lstAttributes.Items.Clear()
         lstTypes.Items.Clear()
+        m_inheritedTypeData.Clear()
+        cmdDelete.Enabled = False
+        cmdDeleteType.Enabled = False
         ctlMultiControl.Visible = False
         m_data = DirectCast(data, IEditorDataExtendedAttributeInfo)
 
         If Not data Is Nothing Then
             For Each type In m_data.GetInheritedTypes
+                m_inheritedTypeData.Add(type.AttributeName, type)
                 AddListItem(lstTypes, type, AddressOf GetTypeDisplayString)
             Next
 
@@ -153,90 +242,6 @@ Public Class AttributesControl
         End If
     End Sub
 
-    Private Class SubEditorControlData
-        Implements IEditorControl
-
-        Private m_attribute As String
-
-        Private Shared s_allTypes As New Dictionary(Of String, String) From {
-            {"string", "String"},
-            {"boolean", "Boolean"},
-            {"script", "Script"},
-            {"stringlist", "String List"}
-        }
-
-        Public Sub New(attribute As String)
-            m_attribute = attribute
-        End Sub
-
-        Public ReadOnly Property Attribute As String Implements IEditorControl.Attribute
-            Get
-                Return m_attribute
-            End Get
-        End Property
-
-        Public ReadOnly Property Caption As String Implements IEditorControl.Caption
-            Get
-                Return Nothing
-            End Get
-        End Property
-
-        Public ReadOnly Property ControlType As String Implements IEditorControl.ControlType
-            Get
-                Return Nothing
-            End Get
-        End Property
-
-        Public ReadOnly Property Expand As Boolean Implements IEditorControl.Expand
-            Get
-                Return False
-            End Get
-        End Property
-
-        Public Function GetBool(tag As String) As Boolean Implements IEditorControl.GetBool
-            Return False
-        End Function
-
-        Public Function GetDictionary(tag As String) As System.Collections.Generic.IDictionary(Of String, String) Implements IEditorControl.GetDictionary
-            If tag = "types" Then
-                Return s_allTypes
-            Else
-                Throw New NotImplementedException
-            End If
-        End Function
-
-        Public Function GetListString(tag As String) As System.Collections.Generic.IEnumerable(Of String) Implements IEditorControl.GetListString
-            Throw New NotImplementedException
-        End Function
-
-        Public Function GetString(tag As String) As String Implements IEditorControl.GetString
-            Select Case tag
-                Case "checkbox"
-                    Return "True"
-                Case "editprompt"
-                    Return "Please enter a value"
-                Case Else
-                    Throw New NotImplementedException
-            End Select
-        End Function
-
-        Public ReadOnly Property Height As Integer? Implements IEditorControl.Height
-            Get
-                Return Nothing
-            End Get
-        End Property
-
-        Public Function IsControlVisible(data As IEditorData) As Boolean Implements IEditorControl.IsControlVisible
-            Return True
-        End Function
-
-        Public ReadOnly Property Width As Integer? Implements IEditorControl.Width
-            Get
-                Return Nothing
-            End Get
-        End Property
-    End Class
-
     Public Sub AttributeChanged(attribute As String, value As Object) Implements IMultiAttributeElementEditorControl.AttributeChanged
         AttributeChangedInternal(attribute, value, True)
     End Sub
@@ -319,5 +324,26 @@ Public Class AttributesControl
     Private Sub cmdAddTypeDropDownItem_Click(sender As System.Object, e As System.EventArgs)
         Dim typeToAdd As String = DirectCast(sender, ToolStripItem).Text
         m_controller.AddInheritedTypeToElement(m_data.Name, typeToAdd)
+    End Sub
+
+    Private Sub lstTypes_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lstTypes.SelectedIndexChanged
+        Dim selectedAttribute As String = GetSelectedType()
+        cmdDeleteType.Enabled = DeleteTypeAllowed(selectedAttribute)
+    End Sub
+
+    Private Function GetSelectedType() As String
+        If lstTypes.SelectedItems.Count = 0 Then Return Nothing
+        Return lstTypes.SelectedItems(0).Text
+    End Function
+
+    Private Function DeleteTypeAllowed(type As String) As Boolean
+        If String.IsNullOrEmpty(type) Then Return False
+        Dim typeData As IEditorAttributeData = m_inheritedTypeData(type)
+        Return Not (typeData.IsInherited OrElse typeData.IsDefaultType)
+    End Function
+
+    Private Sub cmdDeleteType_Click(sender As System.Object, e As System.EventArgs) Handles cmdDeleteType.Click
+        Dim selectedType As String = GetSelectedType()
+        m_controller.RemoveInheritedTypeFromElement(m_data.Name, selectedType)
     End Sub
 End Class

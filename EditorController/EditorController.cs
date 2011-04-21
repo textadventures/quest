@@ -538,5 +538,14 @@ namespace AxeSoftware.Quest
             element.Fields.AddTypeUndoable(type);
             WorldModel.UndoLogger.EndTransaction();
         }
+
+        public void RemoveInheritedTypeFromElement(string elementName, string typeName)
+        {
+            WorldModel.UndoLogger.StartTransaction(string.Format("Remove type '{0}' from '{1}'", typeName, elementName));
+            Element element = m_worldModel.Elements.Get(elementName);
+            Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
+            element.Fields.RemoveTypeUndoable(type);
+            WorldModel.UndoLogger.EndTransaction();
+        }
     }
 }
