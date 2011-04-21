@@ -209,6 +209,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="NumberControl.Designer.vb">
+      <DependentUpon>NumberControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="NumberControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ScriptAdder.Designer.vb">
       <DependentUpon>ScriptAdder.vb</DependentUpon>
     </Compile>
@@ -300,6 +306,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NumberControl.resx">
+      <DependentUpon>NumberControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ScriptAdder.resx">
       <DependentUpon>ScriptAdder.vb</DependentUpon>

@@ -244,6 +244,7 @@
         <controltype>dropdowntypes</controltype>
         <caption>Container type</caption>
         <types>*=Not a container; container_open=Container; container_closed=Closed container; surface=Surface; container_limited=Limited container</types>
+        <width>150</width>
       </control>
 
       <control>
@@ -280,6 +281,13 @@
         <controltype>checkbox</controltype>
         <caption>Transparent</caption>
         <attribute>transparent</attribute>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <caption>Maximum objects</caption>
+        <attribute>maxobjects</attribute>
+        <width>100</width>
       </control>
 
     </tab>

@@ -12,14 +12,16 @@ Public Class MultiControl
         {"boolean", "checkbox"},
         {"string", "textbox"},
         {"script", "script"},
-        {"stringlist", "list"}
+        {"stringlist", "list"},
+        {"int", "number"}
     }
 
     Private Shared s_typeNamesMap As Dictionary(Of Type, String) = New Dictionary(Of Type, String) From {
         {GetType(Boolean), "boolean"},
         {GetType(String), "string"},
         {GetType(IEditableScripts), "script"},
-        {GetType(IEditableList(Of String)), "stringlist"}
+        {GetType(IEditableList(Of String)), "stringlist"},
+        {GetType(Integer), "int"}
     }
 
     Private m_storedValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)

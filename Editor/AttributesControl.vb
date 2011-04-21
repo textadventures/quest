@@ -11,6 +11,7 @@ Public Class AttributesControl
         Private Shared s_allTypes As New Dictionary(Of String, String) From {
             {"string", "String"},
             {"boolean", "Boolean"},
+            {"int", "Integer"},
             {"script", "Script"},
             {"stringlist", "String List"}
         }
