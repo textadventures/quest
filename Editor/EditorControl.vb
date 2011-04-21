@@ -188,6 +188,7 @@
         ' the editor for that value.
 
         If data Is Nothing Then Return
+        If m_attribute Is Nothing Then Return
 
         Dim expectedType As Type = m_editorControl.ExpectedType
 

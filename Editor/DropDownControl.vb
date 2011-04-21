@@ -19,18 +19,26 @@ Public Class DropDownControl
 
     Public Property Value() As Object Implements IElementEditorControl.Value
         Get
-            Return lstDropdown.Text
+            Return GetValue()
         End Get
         Set(value As Object)
-            Dim stringValue As String = TryCast(value, String)
-            If stringValue Is Nothing Then
-                lstDropdown.Text = stringValue
-            Else
-                lstDropdown.Text = String.Empty
-            End If
-            m_oldValue = stringValue
+            SetValue(value)
         End Set
     End Property
+
+    Protected Overridable Function GetValue() As Object
+        Return lstDropdown.Text
+    End Function
+
+    Protected Overridable Sub SetValue(value As Object)
+        Dim stringValue As String = TryCast(value, String)
+        If stringValue Is Nothing Then
+            lstDropdown.Text = stringValue
+        Else
+            lstDropdown.Text = String.Empty
+        End If
+        m_oldValue = stringValue
+    End Sub
 
     Public ReadOnly Property IsDirty() As Boolean
         Get
@@ -54,6 +62,10 @@ Public Class DropDownControl
     End Property
 
     Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
+        SaveData(data)
+    End Sub
+
+    Protected Overridable Sub SaveData(data As IEditorData)
         If IsDirty Then
             Dim description As String = String.Format("Set {0} to '{1}'", m_attributeName, Value)
             m_controller.StartTransaction(description)
@@ -66,6 +78,10 @@ Public Class DropDownControl
     End Sub
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
+        PopulateData(data)
+    End Sub
+
+    Protected Overridable Sub PopulateData(data As IEditorData)
         m_data = data
 
         If m_data Is Nothing Then
@@ -78,7 +94,10 @@ Public Class DropDownControl
     Public Sub Initialise(controller As EditorController, controlData As IEditorControl) Implements IElementEditorControl.Initialise
         m_attribute = controlData.Attribute
         m_attributeName = controlData.Caption
+        InitialiseControl(controlData)
+    End Sub
 
+    Protected Overridable Sub InitialiseControl(controlData As IEditorControl)
         If controlData IsNot Nothing Then
             Dim validValues As String() = New List(Of String)(controlData.GetListString("validvalues")).ToArray()
             lstDropdown.Items.AddRange(validValues)
@@ -92,7 +111,7 @@ Public Class DropDownControl
         m_attributeName = attributeName
     End Sub
 
-    Private Sub lstDropdown_Leave(sender As Object, e As System.EventArgs) Handles lstDropdown.Leave
+    Private Sub lstDropdown_SelectionChangeCommitted(sender As Object, e As System.EventArgs) Handles lstDropdown.SelectionChangeCommitted
         Save(m_data)
     End Sub
 

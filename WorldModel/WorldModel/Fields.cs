@@ -554,10 +554,14 @@ namespace AxeSoftware.Quest
             return result;
         }
 
-
         public void Resolve(ScriptFactory factory)
         {
             LazyFields.Resolve(factory);
+        }
+
+        public bool InheritsType(Element type)
+        {
+            return m_types.Contains(type);
         }
     }
 

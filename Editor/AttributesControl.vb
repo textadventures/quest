@@ -323,7 +323,7 @@ Public Class AttributesControl
 
     Private Sub cmdAddTypeDropDownItem_Click(sender As System.Object, e As System.EventArgs)
         Dim typeToAdd As String = DirectCast(sender, ToolStripItem).Text
-        m_controller.AddInheritedTypeToElement(m_data.Name, typeToAdd)
+        m_controller.AddInheritedTypeToElement(m_data.Name, typeToAdd, True)
     End Sub
 
     Private Sub lstTypes_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lstTypes.SelectedIndexChanged
@@ -344,6 +344,6 @@ Public Class AttributesControl
 
     Private Sub cmdDeleteType_Click(sender As System.Object, e As System.EventArgs) Handles cmdDeleteType.Click
         Dim selectedType As String = GetSelectedType()
-        m_controller.RemoveInheritedTypeFromElement(m_data.Name, selectedType)
+        m_controller.RemoveInheritedTypeFromElement(m_data.Name, selectedType, True)
     End Sub
 End Class

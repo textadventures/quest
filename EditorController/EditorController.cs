@@ -530,22 +530,45 @@ namespace AxeSoftware.Quest
             return elementType == "defaultverb" || WorldModel.IsDefaultTypeName(elementType);
         }
 
-        public void AddInheritedTypeToElement(string elementName, string typeName)
+        public void AddInheritedTypeToElement(string elementName, string typeName, bool useTransaction)
         {
-            WorldModel.UndoLogger.StartTransaction(string.Format("Add type '{0}' to '{1}'", typeName, elementName));
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.StartTransaction(string.Format("Add type '{0}' to '{1}'", typeName, elementName));
+            }
+            
             Element element = m_worldModel.Elements.Get(elementName);
             Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
             element.Fields.AddTypeUndoable(type);
-            WorldModel.UndoLogger.EndTransaction();
+            
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.EndTransaction();
+            }
         }
 
-        public void RemoveInheritedTypeFromElement(string elementName, string typeName)
+        public void RemoveInheritedTypeFromElement(string elementName, string typeName, bool useTransaction)
         {
-            WorldModel.UndoLogger.StartTransaction(string.Format("Remove type '{0}' from '{1}'", typeName, elementName));
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.StartTransaction(string.Format("Remove type '{0}' from '{1}'", typeName, elementName));
+            }
+            
             Element element = m_worldModel.Elements.Get(elementName);
             Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
             element.Fields.RemoveTypeUndoable(type);
-            WorldModel.UndoLogger.EndTransaction();
+
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.EndTransaction();
+            }
+        }
+
+        public bool DoesElementInheritType(string elementName, string typeName)
+        {
+            Element element = m_worldModel.Elements.Get(elementName);
+            Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
+            return element.Fields.InheritsType(type);
         }
     }
 }
