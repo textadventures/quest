@@ -128,6 +128,25 @@
         <attribute>suffix</attribute>
       </control>
 
+      <control>
+        <controltype>dropdowntypes</controltype>
+        <caption>Type</caption>
+        <types>*=Inanimate object; male=Male character; female=Female character</types>
+        <width>150</width>
+      </control>
+
+      <control>
+        <caption>Gender</caption>
+        <controltype>textbox</controltype>
+        <attribute>gender</attribute>
+      </control>
+
+      <control>
+        <caption>Article</caption>
+        <controltype>textbox</controltype>
+        <attribute>article</attribute>
+      </control>
+
     </tab>
 
     <tab>
