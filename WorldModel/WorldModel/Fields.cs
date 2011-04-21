@@ -527,6 +527,11 @@ namespace AxeSoftware.Quest
             }
             return result;
         }
+
+        public void Resolve(ScriptFactory factory)
+        {
+            LazyFields.Resolve(factory);
+        }
     }
 
     public class LazyFields
