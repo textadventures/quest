@@ -7,6 +7,7 @@ namespace AxeSoftware.Quest
 {
     internal class EditorControl : IEditorControl
     {
+        private WorldModel m_worldModel;
         private string m_controlType;
         private string m_caption;
         private int? m_height = null;
@@ -15,11 +16,14 @@ namespace AxeSoftware.Quest
         private bool m_expand = false;
         private Element m_source;
         private bool m_alwaysVisible = true;
-        private string m_relatedAttribute;
-        private string m_visibleIfRelatedAttributeIsType;
+        private string m_relatedAttribute = null;
+        private string m_visibleIfRelatedAttributeIsType = null;
+        private string m_visibleIfElementInheritsType = null;
+        private Element m_visibleIfElementInheritsTypeElement = null;
 
-        public EditorControl(Element source)
+        public EditorControl(WorldModel worldModel, Element source)
         {
+            m_worldModel = worldModel;
             m_source = source;
             m_controlType = source.Fields.GetString("controltype");
             m_caption = source.Fields.GetString("caption");
@@ -30,6 +34,8 @@ namespace AxeSoftware.Quest
             m_relatedAttribute = source.Fields.GetString("relatedattribute");
             if (m_relatedAttribute != null) m_alwaysVisible = false;
             m_visibleIfRelatedAttributeIsType = source.Fields.GetString("relatedattributedisplaytype");
+            m_visibleIfElementInheritsType = source.Fields.GetString("mustinherit");
+            if (m_visibleIfElementInheritsType != null) m_alwaysVisible = false;
         }
 
         public string ControlType
@@ -86,11 +92,25 @@ namespace AxeSoftware.Quest
         {
             if (m_alwaysVisible) return true;
 
-            object relatedAttributeValue = data.GetAttribute(m_relatedAttribute);
-            if (relatedAttributeValue is IDataWrapper) relatedAttributeValue = ((IDataWrapper)relatedAttributeValue).GetUnderlyingValue();
+            if (m_relatedAttribute != null)
+            {
+                object relatedAttributeValue = data.GetAttribute(m_relatedAttribute);
+                if (relatedAttributeValue is IDataWrapper) relatedAttributeValue = ((IDataWrapper)relatedAttributeValue).GetUnderlyingValue();
 
-            string relatedAttributeType = WorldModel.ConvertTypeToTypeName(relatedAttributeValue.GetType());
-            return relatedAttributeType == m_visibleIfRelatedAttributeIsType;
+                string relatedAttributeType = relatedAttributeValue == null ? "null" : WorldModel.ConvertTypeToTypeName(relatedAttributeValue.GetType());
+                return relatedAttributeType == m_visibleIfRelatedAttributeIsType;
+            }
+
+            if (m_visibleIfElementInheritsType != null)
+            {
+                if (m_visibleIfElementInheritsTypeElement == null)
+                {
+                    m_visibleIfElementInheritsTypeElement = m_worldModel.Elements.Get(ElementType.ObjectType, m_visibleIfElementInheritsType);
+                }
+                return m_worldModel.Elements.Get(data.Name).Fields.InheritsType(m_visibleIfElementInheritsTypeElement);
+            }
+
+            return false;
         }
     }
 }

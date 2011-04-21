@@ -288,6 +288,7 @@
         <caption>Maximum objects</caption>
         <attribute>maxobjects</attribute>
         <width>100</width>
+        <mustinherit>container_limited</mustinherit>
       </control>
 
     </tab>

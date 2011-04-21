@@ -19,7 +19,7 @@ namespace AxeSoftware.Quest
             {
                 if (e.Parent == source)
                 {
-                    m_controls.Add(e.Name, new EditorControl(e));
+                    m_controls.Add(e.Name, new EditorControl(worldModel, e));
                 }
             }
         }
