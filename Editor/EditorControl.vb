@@ -140,6 +140,10 @@
             Return m_editorControl.Value
         End Get
         Set(value As Object)
+            ' The game author can change any attribute to any type of value from the Attributes editor, and
+            ' the other panes need to be resistant to that. If the value is of the "wrong" type, we disable
+            ' the editor for that value.
+
             Dim controlCanEditValue As Boolean
 
             If value Is Nothing Then
@@ -195,28 +199,10 @@
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_editorControl.Populate(data)
 
-        ' The game author can change any attribute to any type of value from the Attributes editor, and
-        ' the other panes need to be resistant to that. If the value is of the "wrong" type, we disable
-        ' the editor for that value.
-
         If data Is Nothing Then Return
         If m_attribute Is Nothing Then Return
 
-        Dim expectedType As Type = m_editorControl.ExpectedType
-
-        If expectedType Is Nothing Then Return
-
-        Dim value = data.GetAttribute(m_attribute)
-        Dim valueIsOfExpectedType As Boolean
-
-        If value Is Nothing Then
-            valueIsOfExpectedType = True
-        Else
-            valueIsOfExpectedType = expectedType.IsAssignableFrom(value.GetType)
-        End If
-
-        m_editorControl.Control.Enabled = valueIsOfExpectedType
-        lblCaption.Enabled = valueIsOfExpectedType
+        Value = data.GetAttribute(m_attribute)
     End Sub
 
     Private Sub m_editorControl_RequestParentElementEditorSave() Handles m_editorControl.RequestParentElementEditorSave
