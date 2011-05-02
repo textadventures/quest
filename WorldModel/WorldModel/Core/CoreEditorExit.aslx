@@ -1,0 +1,9 @@
+﻿<library>
+  <editor>
+    <appliesto>exit</appliesto>
+
+    <tab>
+      <caption>Exit</caption>
+    </tab>
+  </editor>
+</library>

@@ -268,7 +268,6 @@ namespace AxeSoftware.Quest
             // we return the editor type name, e.g. "game", "command", "object", "exit".
             // Should have a method that returns a list of all available editor names, then the Editor
             // control can construct them when it loads.
-            if (elementKey == "game") return "game";
 
             if (m_worldModel.Elements.ContainsKey(elementKey))
             {

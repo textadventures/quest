@@ -1,0 +1,9 @@
+﻿<library>
+  <editor>
+    <appliesto>command</appliesto>
+
+    <tab>
+      <caption>Command</caption>
+    </tab>
+  </editor>
+</library>
