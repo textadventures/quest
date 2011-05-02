@@ -56,6 +56,10 @@ Public Class AttributesControl
             End If
         End Function
 
+        Public Function GetInt(tag As String) As Integer Implements IEditorControl.GetInt
+            Return 0
+        End Function
+
         Public Function GetListString(tag As String) As System.Collections.Generic.IEnumerable(Of String) Implements IEditorControl.GetListString
             Throw New NotImplementedException
         End Function

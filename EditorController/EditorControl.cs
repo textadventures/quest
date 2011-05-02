@@ -88,6 +88,11 @@ namespace AxeSoftware.Quest
             return m_source.Fields.GetAsType<bool>(tag);
         }
 
+        public int GetInt(string tag)
+        {
+            return m_source.Fields.GetAsType<int>(tag);
+        }
+
         public bool IsControlVisible(IEditorData data)
         {
             if (m_alwaysVisible) return true;

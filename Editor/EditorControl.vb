@@ -140,8 +140,20 @@
             Return m_editorControl.Value
         End Get
         Set(value As Object)
-            Dim expectedType As Type = m_editorControl.ExpectedType
-            If value Is Nothing OrElse expectedType.IsAssignableFrom(value.GetType) Then
+            Dim controlCanEditValue As Boolean
+
+            If value Is Nothing Then
+                controlCanEditValue = True
+            Else
+                If TypeOf m_editorControl Is MultiControl Then
+                    controlCanEditValue = DirectCast(m_editorControl, MultiControl).CanEditType(value)
+                Else
+                    Dim expectedType As Type = m_editorControl.ExpectedType
+                    controlCanEditValue = expectedType.IsAssignableFrom(value.GetType)
+                End If
+            End If
+
+            If controlCanEditValue Then
                 m_editorControl.Value = value
                 m_editorControl.Control.Enabled = True
                 lblCaption.Enabled = True

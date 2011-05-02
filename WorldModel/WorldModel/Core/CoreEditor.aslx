@@ -2,6 +2,7 @@
 
   <implied element="control" property="height" type="int"/>
   <implied element="control" property="width" type="int"/>
+  <implied element="control" property="listwidth" type="int"/>
   <implied element="control" property="types" type="stringdictionary"/>
 
   <include ref="CoreEditorScripts.aslx"/>
@@ -219,6 +220,7 @@
         <types>
           boolean=Default behaviour; script=Run script
         </types>
+        <listwidth>150</listwidth>
         <checkbox>Object can be taken</checkbox>
       </control>
 
@@ -240,6 +242,7 @@
         <types>
           boolean=Default behaviour; script=Run script
         </types>
+        <listwidth>150</listwidth>
         <checkbox>Object can be dropped</checkbox>
       </control>
 

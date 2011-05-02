@@ -178,6 +178,8 @@ Public Class MultiControl
                     newValue = False
                 Case "string"
                     newValue = ""
+                Case "int"
+                    newValue = 0
                 Case "script"
                     newValue = Controller.CreateNewEditableScripts(m_elementName, m_attributeName, Nothing, False)
                 Case "stringlist"
@@ -244,6 +246,12 @@ Public Class MultiControl
 
             Dim types As IDictionary(Of String, String) = controlData.GetDictionary("types")
             InitialiseTypesList(types)
+
+            Dim width As Integer = controlData.GetInt("listwidth")
+            If width > 0 Then
+                lstTypes.Width = width
+                lstTypes.Anchor = AnchorStyles.Left Or AnchorStyles.Top
+            End If
         End If
     End Sub
 
@@ -280,5 +288,10 @@ Public Class MultiControl
             Return Nothing
         End Get
     End Property
+
+    Public Function CanEditType(value As Object) As Boolean
+        Dim typeName As String = GetTypeName(value)
+        Return m_types.Any(Function(t) t.TypeName = typeName)
+    End Function
 
 End Class
