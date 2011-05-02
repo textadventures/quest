@@ -38,6 +38,7 @@ Partial Class EditorTree
         '
         'ctlTreeView
         '
+        Me.ctlTreeView.AllowDrop = True
         Me.ctlTreeView.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlTreeView.HideSelection = False
         Me.ctlTreeView.Location = New System.Drawing.Point(0, 20)

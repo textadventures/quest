@@ -317,4 +317,49 @@ Public Class EditorTree
         ctlTreeView.Nodes(0).EnsureVisible()
     End Sub
 
+    Private Sub ctlTreeView_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles ctlTreeView.DragDrop
+        HighlightNode(Nothing)
+    End Sub
+
+    Private Sub ctlTreeView_DragOver(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles ctlTreeView.DragOver
+        Dim nodeOver As TreeNode = ctlTreeView.GetNodeAt(ctlTreeView.PointToClient(Cursor.Position))
+        If CanDrag(DirectCast(e.Data.GetData(DataFormats.Text), String), nodeOver.Name) Then
+            e.Effect = DragDropEffects.Move
+            HighlightNode(nodeOver)
+        Else
+            e.Effect = DragDropEffects.None
+            HighlightNode(Nothing)
+        End If
+    End Sub
+
+    Private m_currentHighlight As TreeNode
+    Private m_currentHighlightOldForeColor As Color
+    Private m_currentHighlightOldBackColor As Color
+
+    Private Sub HighlightNode(node As TreeNode)
+        If node Is m_currentHighlight Then Return
+
+        If m_currentHighlight IsNot Nothing Then
+            m_currentHighlight.ForeColor = m_currentHighlightOldForeColor
+            m_currentHighlight.BackColor = m_currentHighlightOldBackColor
+        End If
+
+        m_currentHighlight = node
+
+        If m_currentHighlight Is Nothing Then Return
+
+        m_currentHighlightOldForeColor = m_currentHighlight.ForeColor
+        m_currentHighlightOldBackColor = m_currentHighlight.BackColor
+        m_currentHighlight.ForeColor = SystemColors.HighlightText
+        m_currentHighlight.BackColor = SystemColors.Highlight
+    End Sub
+
+    Private Sub ctlTreeView_ItemDrag(sender As Object, e As System.Windows.Forms.ItemDragEventArgs) Handles ctlTreeView.ItemDrag
+        ctlTreeView.DoDragDrop(DirectCast(e.Item, TreeNode).Name, DragDropEffects.Move)
+    End Sub
+
+    Private Function CanDrag(dragItem As String, dragTo As String) As Boolean
+        Debug.Print("CanDrag {0}, {1}", dragItem, dragTo)
+        Return True
+    End Function
 End Class
