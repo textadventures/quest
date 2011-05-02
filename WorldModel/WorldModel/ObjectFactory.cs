@@ -54,7 +54,7 @@ namespace AxeSoftware.Quest
 
     internal class ObjectFactory : ElementFactoryBase
     {
-        public event ObjectsUpdatedHandler ObjectsUpdated;
+        public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
 
         public override ElementType CreateElementType { get { return ElementType.Object; } }
 
@@ -89,7 +89,7 @@ namespace AxeSoftware.Quest
                 newObject.Fields.LazyFields.AddDefaultType(defaultType);
             }
 
-            if (ObjectsUpdated != null) ObjectsUpdated();
+            if (ObjectsUpdated != null) ObjectsUpdated(this, new ObjectsUpdatedEventArgs { Added = objectName });
 
             return newObject;
         }

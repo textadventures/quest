@@ -42,6 +42,7 @@
         ctlToolbar.AddButtonHandler("save", AddressOf Save)
         ctlToolbar.AddButtonHandler("undo", AddressOf Undo)
         ctlToolbar.AddButtonHandler("redo", AddressOf Redo)
+        ctlToolbar.AddButtonHandler("addobject", AddressOf AddNewObject)
     End Sub
 
     Private Sub SetUpEditors()
@@ -208,6 +209,13 @@
 
     Private Sub ctlToolbar_RedoEnabled(enabled As Boolean) Handles ctlToolbar.RedoEnabled
         m_menu.MenuEnabled("redo") = enabled
+    End Sub
+
+    Private Sub AddNewObject()
+        Dim result = PopupEditors.EditString("Please enter a name for the new object", "")
+        If result.Cancelled Then Exit Sub
+
+        m_controller.CreateNewObject(result.Result)
     End Sub
 
 End Class

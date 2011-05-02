@@ -8,7 +8,6 @@ namespace AxeSoftware.Quest
     public delegate void PrintTextHandler(string text);
     public delegate void UpdateListHandler(ListType listType, List<ListData> items);
     public delegate void FinishedHandler();
-    public delegate void ObjectsUpdatedHandler();
     public delegate void ErrorHandler(string errorMessage);
 
     public interface IASL

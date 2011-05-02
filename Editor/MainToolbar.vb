@@ -372,4 +372,8 @@ Public Class MainToolbar
         ResetHighlight()
     End Sub
 
+    Private Sub butAddObject_Click(sender As System.Object, e As System.EventArgs) Handles butAddObject.Click
+        RaiseEvent SaveCurrentEditor()
+        HandleClick("addobject")
+    End Sub
 End Class

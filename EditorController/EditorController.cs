@@ -112,6 +112,8 @@ namespace AxeSoftware.Quest
 
             m_initialised = true;
 
+            m_worldModel.ObjectsUpdated += m_worldModel_ObjectsUpdated;
+
             foreach (Element e in m_worldModel.Elements.GetElements(ElementType.Editor))
             {
                 EditorDefinition def = new EditorDefinition(m_worldModel, e);
@@ -155,6 +157,15 @@ namespace AxeSoftware.Quest
             }
         }
 
+        void m_worldModel_ObjectsUpdated(object sender, ObjectsUpdatedEventArgs args)
+        {
+            if (args.Added != null)
+            {
+                Element addedElement = m_worldModel.Elements.Get(args.Added);
+                AddElementToTree(addedElement);
+            }
+        }
+
         private void InitialiseTreeStructure()
         {
             m_elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
@@ -193,62 +204,67 @@ namespace AxeSoftware.Quest
             {
                 foreach (Element o in m_worldModel.Elements.GetElements(type))
                 {
-                    string parent = null;
-                    System.Drawing.Color? foreColor = null;
-                    if (o.Parent != null) parent = o.Parent.Name;
-
-                    if (parent == null && o.ElemType == ElementType.Object)
-                    {
-                        switch (o.Type)
-                        {
-                            case ObjectType.Command:
-                                if (o.Fields.GetAsType<bool>("isverb"))
-                                {
-                                    parent = k_verbs;
-                                }
-                                else
-                                {
-                                    parent = k_commands;
-                                }
-                                break;
-                        }
-                    }
-
-                    if (parent == null)
-                    {
-                        parent = m_elementTreeStructure[o.ElemType].Key;
-                    }
-
-                    // TO DO: Colours should be an option, so we probably shouldn't
-                    // even have a reference to System.Drawing in EditorController.
-
-                    string text = o.Name;
-                    bool display = true;
-                    bool isLibrary = (o.MetaFields.GetAsType<bool>("library"));
-
-                    if (isLibrary && !m_filterOptions.IsSet("libraries"))
-                    {
-                        display = false;
-                    }
-
-                    if (isLibrary)
-                    {
-                        foreColor = System.Drawing.Color.Gray;
-                    }
-
-                    if (display)
-                    {
-                        AddedNode(o.Name, text, parent, foreColor, null);
-
-                        if (o.Name == "game")
-                        {
-                            AddedNode(k_verbs, "Verbs", "game", null, null);
-                            AddedNode(k_commands, "Commands", "game", null, null);
-                        }
-                    }
+                    AddElementToTree(o);
                 }
             }
             EndTreeUpdate();
+        }
+
+        private void AddElementToTree(Element o)
+        {
+            string parent = null;
+            System.Drawing.Color? foreColor = null;
+            if (o.Parent != null) parent = o.Parent.Name;
+
+            if (parent == null && o.ElemType == ElementType.Object)
+            {
+                switch (o.Type)
+                {
+                    case ObjectType.Command:
+                        if (o.Fields.GetAsType<bool>("isverb"))
+                        {
+                            parent = k_verbs;
+                        }
+                        else
+                        {
+                            parent = k_commands;
+                        }
+                        break;
+                }
+            }
+
+            if (parent == null)
+            {
+                parent = m_elementTreeStructure[o.ElemType].Key;
+            }
+
+            // TO DO: Colours should be an option, so we probably shouldn't
+            // even have a reference to System.Drawing in EditorController.
+
+            string text = o.Name;
+            bool display = true;
+            bool isLibrary = (o.MetaFields.GetAsType<bool>("library"));
+
+            if (isLibrary && !m_filterOptions.IsSet("libraries"))
+            {
+                display = false;
+            }
+
+            if (isLibrary)
+            {
+                foreColor = System.Drawing.Color.Gray;
+            }
+
+            if (display)
+            {
+                AddedNode(o.Name, text, parent, foreColor, null);
+
+                if (o.Name == "game")
+                {
+                    AddedNode(k_verbs, "Verbs", "game", null, null);
+                    AddedNode(k_commands, "Commands", "game", null, null);
+                }
+            }
         }
 
         public AvailableFilters AvailableFilters
@@ -535,11 +551,11 @@ namespace AxeSoftware.Quest
             {
                 WorldModel.UndoLogger.StartTransaction(string.Format("Add type '{0}' to '{1}'", typeName, elementName));
             }
-            
+
             Element element = m_worldModel.Elements.Get(elementName);
             Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
             element.Fields.AddTypeUndoable(type);
-            
+
             if (useTransaction)
             {
                 WorldModel.UndoLogger.EndTransaction();
@@ -552,7 +568,7 @@ namespace AxeSoftware.Quest
             {
                 WorldModel.UndoLogger.StartTransaction(string.Format("Remove type '{0}' from '{1}'", typeName, elementName));
             }
-            
+
             Element element = m_worldModel.Elements.Get(elementName);
             Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
             element.Fields.RemoveTypeUndoable(type);
@@ -568,6 +584,11 @@ namespace AxeSoftware.Quest
             Element element = m_worldModel.Elements.Get(elementName);
             Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
             return element.Fields.InheritsType(type);
+        }
+
+        public void CreateNewObject(string name)
+        {
+            m_worldModel.GetElementFactory(ElementType.Object).Create(name);
         }
     }
 }

@@ -120,7 +120,7 @@ namespace AxeSoftware.Quest
             m_template = new Template(this);
             InitialiseElementFactories();
             m_objectFactory = (ObjectFactory)m_elementFactories[ElementType.Object];
-            m_objectFactory.ObjectsUpdated += new ObjectsUpdatedHandler(m_objectFactory_ObjectsUpdated);
+            m_objectFactory.ObjectsUpdated += m_objectFactory_ObjectsUpdated;
 
             InitialiseDebuggerObjectTypes();
             m_filename = filename;
@@ -156,9 +156,9 @@ namespace AxeSoftware.Quest
             get { return s_defaultTypeNames; }
         }
 
-        void m_objectFactory_ObjectsUpdated()
+        void m_objectFactory_ObjectsUpdated(object sender, ObjectsUpdatedEventArgs args)
         {
-            if (ObjectsUpdated != null) ObjectsUpdated();
+            if (ObjectsUpdated != null) ObjectsUpdated(this, args);
         }
 
         private void InitialiseDebuggerObjectTypes()
@@ -472,7 +472,7 @@ namespace AxeSoftware.Quest
         public event PrintTextHandler PrintText;
         public event UpdateListHandler UpdateList;
         public event FinishedHandler Finished;
-        public event ObjectsUpdatedHandler ObjectsUpdated;
+        public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
         public event ErrorHandler LogError;
 
         internal Template Template

@@ -5,9 +5,15 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
+    public class ObjectsUpdatedEventArgs : EventArgs
+    {
+        public string Added { get; set; }
+        public string Removed { get; set; }
+    }
+
     public interface IASLDebug
     {
-        event ObjectsUpdatedHandler ObjectsUpdated;
+        event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
         List<string> GetObjects(string type);
         DebugData GetDebugData(string obj);
         List<string> DebuggerObjectTypes { get; }

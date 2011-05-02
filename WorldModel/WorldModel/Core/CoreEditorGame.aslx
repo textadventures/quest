@@ -7,7 +7,7 @@
       <control>
         <controltype>textbox</controltype>
         <caption>Game name</caption>
-        <attribute>name</attribute>
+        <attribute>gamename</attribute>
       </control>
 
       <control>
