@@ -117,6 +117,7 @@ namespace AxeSoftware.Quest
             {
                 Element destroy = WorldModel.Object(objectName);
                 if (!silent) AddDestroyToUndoLog(destroy, destroy.Type);
+                if (ObjectsUpdated != null) ObjectsUpdated(this, new ObjectsUpdatedEventArgs { Removed = objectName });
                 WorldModel.RemoveObject(objectName);
             }
             catch (Exception e)

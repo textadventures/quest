@@ -63,6 +63,11 @@ Public Class EditorTree
 
     End Sub
 
+    Public Sub RemoveNode(key As String)
+        ctlTreeView.Nodes.Remove(m_nodes(key))
+        m_nodes.Remove(key)
+    End Sub
+
     Public Sub SetAvailableFilters(filters As AvailableFilters)
         mnuFilter.DropDownItems.Clear()
         m_filterSettings = New FilterOptions

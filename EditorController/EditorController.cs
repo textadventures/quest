@@ -37,6 +37,9 @@ namespace AxeSoftware.Quest
         public delegate void AddedNodeHandler(string key, string text, string parent, System.Drawing.Color? foreColor, System.Drawing.Color? backColor);
         public event AddedNodeHandler AddedNode;
 
+        public delegate void RemovedNodeHandler(string key);
+        public event RemovedNodeHandler RemovedNode;
+
         public delegate void ShowMessageHandler(string message);
         public event ShowMessageHandler ShowMessage;
 
@@ -163,6 +166,11 @@ namespace AxeSoftware.Quest
             {
                 Element addedElement = m_worldModel.Elements.Get(args.Added);
                 AddElementToTree(addedElement);
+            }
+
+            if (args.Removed != null)
+            {
+                RemovedNode(args.Removed);
             }
         }
 

@@ -75,6 +75,10 @@
         ctlTree.AddNode(key, text, parent, foreColor, backColor)
     End Sub
 
+    Private Sub m_controller_RemovedNode(key As String) Handles m_controller.RemovedNode
+        ctlTree.RemoveNode(key)
+    End Sub
+
     Private Sub m_controller_BeginTreeUpdate() Handles m_controller.BeginTreeUpdate
         ctlTree.BeginUpdate()
     End Sub
