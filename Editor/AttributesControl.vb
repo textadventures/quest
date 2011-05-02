@@ -90,6 +90,12 @@ Public Class AttributesControl
                 Return Nothing
             End Get
         End Property
+
+        Public ReadOnly Property PaddingTop As Integer? Implements IEditorControl.PaddingTop
+            Get
+                Return Nothing
+            End Get
+        End Property
     End Class
 
     Private m_oldValue As String

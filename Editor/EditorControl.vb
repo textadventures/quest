@@ -11,8 +11,8 @@
 
     Private WithEvents m_editorControl As IElementEditorControl
     Private WithEvents m_adjustableHeightEditorControl As IAdjustableHeightControl
-    Private m_editorControlIsCheckbox As Boolean
-    Private m_checkBoxControl As CheckBoxControl
+    Private m_editorControlHasOwnCaption As Boolean
+    Private m_selfCaptionedControl As ISelfCaptionedElementEditorControl
     Private m_attribute As String
     Private m_controller As EditorController
     Private m_hasFixedWidth As Boolean = False
@@ -33,16 +33,16 @@
         End If
 
         m_editorControl = DirectCast(Activator.CreateInstance(createType), IElementEditorControl)
-        m_editorControlIsCheckbox = TypeOf m_editorControl Is CheckBoxControl
+        m_editorControlHasOwnCaption = TypeOf m_editorControl Is ISelfCaptionedElementEditorControl
         m_multiAttribute = TypeOf m_editorControl Is IMultiAttributeElementEditorControl
         m_adjustableHeightEditorControl = TryCast(m_editorControl, IAdjustableHeightControl)
         m_multiAttributeEditorControl = TryCast(m_editorControl, IMultiAttributeElementEditorControl)
         m_editorControl.Control.Parent = Control
         m_editorControl.Control.Top = 0
-        If m_editorControlIsCheckbox Then
+        If m_editorControlHasOwnCaption Then
             lblCaption.Visible = False
             m_editorControl.Control.Left = 0
-            m_checkBoxControl = DirectCast(m_editorControl, CheckBoxControl)
+            m_selfCaptionedControl = DirectCast(m_editorControl, ISelfCaptionedElementEditorControl)
         Else
             If Not String.IsNullOrEmpty(controlData.Caption) Then
                 lblCaption.Visible = True
@@ -51,7 +51,7 @@
                 lblCaption.Visible = False
                 m_editorControl.Control.Left = 0
             End If
-            m_checkBoxControl = Nothing
+            m_selfCaptionedControl = Nothing
         End If
         m_editorControl.Controller = m_controller
         Me.Height = m_editorControl.Control.Height
@@ -71,11 +71,11 @@
                 Return
             End If
 
-            If Not m_editorControlIsCheckbox Then
+            If Not m_editorControlHasOwnCaption Then
                 lblCaption.Text = value + ":"
                 If lblCaption.Width > k_maxCaptionWidth Then PlaceControlUnderCaption()
             Else
-                m_checkBoxControl.SetCaption(value)
+                m_selfCaptionedControl.SetCaption(value)
             End If
         End Set
     End Property
@@ -106,7 +106,7 @@
     End Property
 
     Public Sub SetCaptionWidth(width As Integer)
-        If m_editorControlIsCheckbox Then Return
+        If m_editorControlHasOwnCaption Then Return
         If m_controlUnderCaption Then Return
 
         If lblCaption.Text.Length = 0 Then width = 0

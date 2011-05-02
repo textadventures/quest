@@ -252,6 +252,12 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PopupEditors.vb" />
+    <Compile Include="TitleControl.Designer.vb">
+      <DependentUpon>TitleControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TitleControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Utility.vb" />
   </ItemGroup>
   <ItemGroup>
@@ -327,6 +333,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TextBoxControl.resx">
       <DependentUpon>TextBoxControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TitleControl.resx">
+      <DependentUpon>TitleControl.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿<ControlType("checkbox")> _
 Public Class CheckBoxControl
-    Implements IElementEditorControl
+    Implements ISelfCaptionedElementEditorControl
 
     Private m_oldValue As Boolean
     Private m_controller As EditorController
@@ -103,7 +103,7 @@ Public Class CheckBoxControl
         m_attributeName = attributeName
     End Sub
 
-    Public Sub SetCaption(caption As String)
+    Public Sub SetCaption(caption As String) Implements ISelfCaptionedElementEditorControl.SetCaption
         chkCheckBox.Text = caption
     End Sub
 
@@ -112,4 +112,5 @@ Public Class CheckBoxControl
             Return GetType(Boolean)
         End Get
     End Property
+
 End Class

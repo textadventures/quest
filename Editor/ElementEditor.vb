@@ -130,6 +130,9 @@
         For Each ctl In m_controls
             If ctl.Definition.IsControlVisible(m_data) Then
                 ctl.Visible = True
+                If ctl.Definition.PaddingTop.HasValue Then
+                    top += ctl.Definition.PaddingTop.Value
+                End If
                 ctl.Control.Top = top
                 top = top + ctl.Control.Height + k_paddingBetweenControls
             Else

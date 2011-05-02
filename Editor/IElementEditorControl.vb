@@ -61,3 +61,9 @@ End Interface
 Public Interface IMultiAttributeElementEditorControl
     Sub AttributeChanged(attribute As String, value As Object)
 End Interface
+
+' an IElementEditorControl which will display its own caption
+Public Interface ISelfCaptionedElementEditorControl
+    Inherits IElementEditorControl
+    Sub SetCaption(caption As String)
+End Interface

@@ -5,7 +5,7 @@ Public Class MultiControl
 
     Private Const k_paddingTop As Integer = 5
     Private Const k_paddingLeft As Integer = 10
-    Private Const k_defaultHeight As Integer = 60
+    Private Const k_defaultHeight As Integer = 50
     Private m_heightWithScriptEditor As Integer = 400
 
     Private Shared s_controlTypesMap As Dictionary(Of String, String) = New Dictionary(Of String, String) From {
@@ -133,7 +133,6 @@ Public Class MultiControl
         Dim newHeight As Integer
 
         If editorName = "script" Then
-
             newHeight = m_heightWithScriptEditor
         Else
             newHeight = k_defaultHeight
