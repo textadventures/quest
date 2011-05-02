@@ -70,8 +70,8 @@ namespace AxeSoftware.Quest
 
         internal Element CreateObject(string objectName, ObjectType type)
         {
-            Element newObject = base.Create(objectName);
             WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName));
+            Element newObject = base.Create(objectName);
 
             newObject.Type = type;
 

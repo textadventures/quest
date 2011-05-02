@@ -101,5 +101,21 @@ namespace WorldModelTests
             // Test a defaultobject value overridden by a subtype
             Assert.AreEqual(attributeDefinedByDefault2OverriddenValue, m_object.Fields.Get(attributeDefinedByDefault2Name));
         }
+
+        [TestMethod]
+        public void TestObjectCreationUndo()
+        {
+            m_worldModel.UndoLogger.StartTransaction("Create new object");
+            m_worldModel.GetElementFactory(ElementType.Object).Create("newobj");
+            m_worldModel.UndoLogger.EndTransaction();
+
+            // There should be 3 elements now - game, object, newobj
+            Assert.AreEqual(3, m_worldModel.Elements.GetElements(ElementType.Object).Count());
+
+            m_worldModel.UndoLogger.Undo();
+
+            // Now we should have 2 elements again
+            Assert.AreEqual(2, m_worldModel.Elements.GetElements(ElementType.Object).Count());
+        }
     }
 }
