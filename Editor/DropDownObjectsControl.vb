@@ -20,4 +20,18 @@ Public Class DropDownObjectsControl
             Return GetType(IEditableObjectReference)
         End Get
     End Property
+
+    Protected Overrides Sub SaveData(data As IEditorData)
+        ' Do nothing when a Save is requested. The IEditableObjectReference is updated directly
+        ' when the dropdown selection changes.
+    End Sub
+
+    Protected Overrides Sub PopulateData(data As IEditorData)
+        SetValue(data.GetAttribute(AttributeName))
+    End Sub
+
+    Protected Overrides Sub SetValue(value As Object)
+        Dim obj = DirectCast(value, IEditableObjectReference)
+        lstDropdown.Text = obj.Reference
+    End Sub
 End Class

@@ -470,7 +470,7 @@ namespace AxeSoftware.Quest
 
             if (value is Element)
             {
-                return new EditableObjectReference((Element)value);
+                return new EditableObjectReference(this, (Element)value);
             }
 
             return value;

@@ -7,5 +7,6 @@ namespace AxeSoftware.Quest
 {
     public interface IEditableObjectReference : IDataWrapper
     {
+        string Reference { get; set; }
     }
 }
