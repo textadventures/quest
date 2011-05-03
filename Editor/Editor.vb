@@ -14,10 +14,7 @@
         m_controller = New EditorController()
         InitialiseEditorControlsList()
         m_controller.Initialise(filename)
-        ctlTree.SetAvailableFilters(m_controller.AvailableFilters)
-        ctlTree.SetCanDragDelegate(AddressOf m_controller.CanMoveElement)
-        ctlTree.SetDoDragDelegate(AddressOf m_controller.MoveElement)
-        ctlTree.CollapseAdvancedNode()
+        SetUpTree()
         SetUpToolbar()
         SetUpEditors()
         RaiseEvent AddToRecent(filename, m_controller.GameName)
@@ -38,6 +35,8 @@
         menu.AddMenuClickHandler("saveas", AddressOf SaveAs)
         menu.AddMenuClickHandler("undo", AddressOf Undo)
         menu.AddMenuClickHandler("redo", AddressOf Redo)
+        menu.AddMenuClickHandler("addobject", AddressOf AddNewObject)
+        menu.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -47,6 +46,16 @@
         ctlToolbar.AddButtonHandler("redo", AddressOf Redo)
         ctlToolbar.AddButtonHandler("addobject", AddressOf AddNewObject)
         ctlToolbar.AddButtonHandler("addroom", AddressOf AddNewRoom)
+    End Sub
+
+    Private Sub SetUpTree()
+        ctlTree.SetAvailableFilters(m_controller.AvailableFilters)
+        ctlTree.SetCanDragDelegate(AddressOf m_controller.CanMoveElement)
+        ctlTree.SetDoDragDelegate(AddressOf m_controller.MoveElement)
+        ctlTree.CollapseAdvancedNode()
+
+        ctlTree.AddMenuClickHandler("addobject", AddressOf AddNewObject)
+        ctlTree.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
     End Sub
 
     Private Sub SetUpEditors()

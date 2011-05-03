@@ -36,6 +36,8 @@
 
     Public Sub Initialise()
         If Not m_initialised Then
+            ctlEditorTree.RemoveContextMenu()
+
             For Each cat As String In m_controller.GetAllScriptEditorCategories
                 ctlEditorTree.AddNode(cat, cat, Nothing, Nothing, Nothing)
             Next

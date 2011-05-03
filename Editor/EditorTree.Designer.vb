@@ -22,23 +22,29 @@ Partial Class EditorTree
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(EditorTree))
         Me.ctlTreeView = New System.Windows.Forms.TreeView()
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
-        Me.mnuFilter = New System.Windows.Forms.ToolStripDropDownButton()
         Me.pnlSearchContainer = New System.Windows.Forms.Panel()
         Me.txtSearch = New System.Windows.Forms.TextBox()
-        Me.cmdClose = New System.Windows.Forms.Button()
-        Me.cmdSearch = New System.Windows.Forms.Button()
         Me.lstSearchResults = New System.Windows.Forms.ListView()
         Me.colSearchResults = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ctlContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.AddObjectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddRoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuFilter = New System.Windows.Forms.ToolStripDropDownButton()
+        Me.cmdClose = New System.Windows.Forms.Button()
+        Me.cmdSearch = New System.Windows.Forms.Button()
         Me.ctlToolStrip.SuspendLayout()
         Me.pnlSearchContainer.SuspendLayout()
+        Me.ctlContextMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlTreeView
         '
         Me.ctlTreeView.AllowDrop = True
+        Me.ctlTreeView.ContextMenuStrip = Me.ctlContextMenu
         Me.ctlTreeView.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlTreeView.HideSelection = False
         Me.ctlTreeView.Location = New System.Drawing.Point(0, 20)
@@ -55,15 +61,6 @@ Partial Class EditorTree
         Me.ctlToolStrip.Size = New System.Drawing.Size(204, 25)
         Me.ctlToolStrip.TabIndex = 2
         Me.ctlToolStrip.Text = "ToolStrip1"
-        '
-        'mnuFilter
-        '
-        Me.mnuFilter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.mnuFilter.Image = CType(resources.GetObject("mnuFilter.Image"), System.Drawing.Image)
-        Me.mnuFilter.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.mnuFilter.Name = "mnuFilter"
-        Me.mnuFilter.Size = New System.Drawing.Size(46, 22)
-        Me.mnuFilter.Text = "Filter"
         '
         'pnlSearchContainer
         '
@@ -84,6 +81,60 @@ Partial Class EditorTree
         Me.txtSearch.Name = "txtSearch"
         Me.txtSearch.Size = New System.Drawing.Size(184, 20)
         Me.txtSearch.TabIndex = 1
+        '
+        'lstSearchResults
+        '
+        Me.lstSearchResults.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSearchResults})
+        Me.lstSearchResults.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lstSearchResults.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
+        Me.lstSearchResults.HideSelection = False
+        Me.lstSearchResults.Location = New System.Drawing.Point(0, 20)
+        Me.lstSearchResults.MultiSelect = False
+        Me.lstSearchResults.Name = "lstSearchResults"
+        Me.lstSearchResults.Size = New System.Drawing.Size(204, 282)
+        Me.lstSearchResults.TabIndex = 4
+        Me.lstSearchResults.UseCompatibleStateImageBehavior = False
+        Me.lstSearchResults.View = System.Windows.Forms.View.Details
+        Me.lstSearchResults.Visible = False
+        '
+        'colSearchResults
+        '
+        Me.colSearchResults.Text = "Search Results"
+        '
+        'ctlContextMenu
+        '
+        Me.ctlContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddObjectToolStripMenuItem, Me.AddRoomToolStripMenuItem})
+        Me.ctlContextMenu.Name = "ctlContextMenu"
+        Me.ctlContextMenu.Size = New System.Drawing.Size(153, 70)
+        '
+        'AddObjectToolStripMenuItem
+        '
+        Me.AddObjectToolStripMenuItem.Image = Global.AxeSoftware.Quest.My.Resources.Resources.addobject
+        Me.AddObjectToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.AddObjectToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver
+        Me.AddObjectToolStripMenuItem.Name = "AddObjectToolStripMenuItem"
+        Me.AddObjectToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AddObjectToolStripMenuItem.Tag = "addobject"
+        Me.AddObjectToolStripMenuItem.Text = "Add Object"
+        '
+        'AddRoomToolStripMenuItem
+        '
+        Me.AddRoomToolStripMenuItem.Image = Global.AxeSoftware.Quest.My.Resources.Resources.addroom
+        Me.AddRoomToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.AddRoomToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver
+        Me.AddRoomToolStripMenuItem.Name = "AddRoomToolStripMenuItem"
+        Me.AddRoomToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AddRoomToolStripMenuItem.Tag = "addroom"
+        Me.AddRoomToolStripMenuItem.Text = "Add Room"
+        '
+        'mnuFilter
+        '
+        Me.mnuFilter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.mnuFilter.Image = CType(resources.GetObject("mnuFilter.Image"), System.Drawing.Image)
+        Me.mnuFilter.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.mnuFilter.Name = "mnuFilter"
+        Me.mnuFilter.Size = New System.Drawing.Size(46, 22)
+        Me.mnuFilter.Text = "Filter"
         '
         'cmdClose
         '
@@ -106,25 +157,6 @@ Partial Class EditorTree
         Me.cmdSearch.TabIndex = 3
         Me.cmdSearch.UseVisualStyleBackColor = True
         '
-        'lstSearchResults
-        '
-        Me.lstSearchResults.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colSearchResults})
-        Me.lstSearchResults.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lstSearchResults.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
-        Me.lstSearchResults.HideSelection = False
-        Me.lstSearchResults.Location = New System.Drawing.Point(0, 20)
-        Me.lstSearchResults.MultiSelect = False
-        Me.lstSearchResults.Name = "lstSearchResults"
-        Me.lstSearchResults.Size = New System.Drawing.Size(204, 282)
-        Me.lstSearchResults.TabIndex = 4
-        Me.lstSearchResults.UseCompatibleStateImageBehavior = False
-        Me.lstSearchResults.View = System.Windows.Forms.View.Details
-        Me.lstSearchResults.Visible = False
-        '
-        'colSearchResults
-        '
-        Me.colSearchResults.Text = "Search Results"
-        '
         'EditorTree
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -139,6 +171,7 @@ Partial Class EditorTree
         Me.ctlToolStrip.PerformLayout()
         Me.pnlSearchContainer.ResumeLayout(False)
         Me.pnlSearchContainer.PerformLayout()
+        Me.ctlContextMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -152,5 +185,8 @@ Partial Class EditorTree
     Friend WithEvents cmdClose As System.Windows.Forms.Button
     Friend WithEvents lstSearchResults As System.Windows.Forms.ListView
     Friend WithEvents colSearchResults As System.Windows.Forms.ColumnHeader
+    Friend WithEvents ctlContextMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents AddObjectToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddRoomToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

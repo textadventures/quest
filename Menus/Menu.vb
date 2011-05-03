@@ -41,6 +41,7 @@
         AddMenuData("walkthrough", MenuMode.Player)
         AddMenuData("debugger", MenuMode.Player)
         AddMenuData("windowmenu", MenuMode.Player)
+        AddMenuData("add", MenuMode.Editor)
     End Sub
 
     Private Sub AddMenuData(key As String, ParamArray modes() As MenuMode)

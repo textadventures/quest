@@ -12,6 +12,8 @@ Public Class EditorTree
     Private m_showSearchResults As Boolean = False
     Private m_canDragDelegate As Func(Of String, String, Boolean)
     Private m_doDragDelegate As Action(Of String, String)
+    Public Delegate Sub MenuClickHandler()
+    Private m_handlers As New Dictionary(Of String, MenuClickHandler)
 
     Public Event FiltersUpdated()
     Public Event SelectionChanged(key As String)
@@ -43,6 +45,7 @@ Public Class EditorTree
         ' Add any initialization after the InitializeComponent() call.
         ShowSearchResults = False
         ResizeColumn()
+        AddHandlers()
     End Sub
 
     Public Sub AddNode(key As String, text As String, parentKey As String, foreColor As System.Drawing.Color?, backColor As System.Drawing.Color?)
@@ -149,6 +152,16 @@ Public Class EditorTree
     Private Sub ctlTreeView_AfterSelect(sender As System.Object, e As System.Windows.Forms.TreeViewEventArgs) Handles ctlTreeView.AfterSelect
         If m_updatingSelection Then Exit Sub
         SelectCurrentTreeViewItem()
+    End Sub
+
+    Private Sub ctlTreeView_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ctlTreeView.MouseUp
+        ' When right-clicking, select the item first before displaying the context menu
+        If e.Button = Windows.Forms.MouseButtons.Right Then
+            ctlTreeView.SelectedNode = ctlTreeView.GetNodeAt(e.X, e.Y)
+            If ctlTreeView.SelectedNode IsNot Nothing Then
+                ctlContextMenu.Show(ctlTreeView, e.Location)
+            End If
+        End If
     End Sub
 
     Private Sub SelectCurrentTreeViewItem()
@@ -401,5 +414,36 @@ Public Class EditorTree
             Return m_selection
         End Get
     End Property
+
+    Public Sub RemoveContextMenu()
+        ctlTreeView.ContextMenuStrip = Nothing
+    End Sub
+
+    Private Sub AddHandlers()
+        For Each item In ctlContextMenu.Items
+            AddHandlers(DirectCast(item, ToolStripMenuItem))
+        Next
+    End Sub
+
+    Private Sub AddHandlers(menu As ToolStripMenuItem)
+        AddHandler menu.Click, AddressOf Menu_Click
+    End Sub
+
+    Private Sub Menu_Click(sender As Object, e As EventArgs)
+        Dim menu As ToolStripMenuItem = DirectCast(sender, ToolStripMenuItem)
+        If menu.Tag Is Nothing Then Exit Sub
+
+        If m_handlers.ContainsKey(DirectCast(menu.Tag, String)) Then
+            m_handlers(DirectCast(menu.Tag, String)).Invoke()
+        End If
+    End Sub
+
+    Public Sub AddMenuClickHandler(key As String, handler As MenuClickHandler)
+        If m_handlers.ContainsKey(key) Then
+            m_handlers.Remove(key)
+        End If
+
+        m_handlers.Add(key, handler)
+    End Sub
 
 End Class
