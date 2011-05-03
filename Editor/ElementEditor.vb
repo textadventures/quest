@@ -148,6 +148,8 @@
     End Sub
 
     Private Sub UpdateTabVisibility()
+        If m_tabs Is Nothing Then Return
+
         Dim tabIndex As Integer = 0
         For Each tabControl In m_tabs.Values
             If tabControl.Definition.IsTabVisible(m_data) Then

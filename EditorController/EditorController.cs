@@ -650,7 +650,7 @@ namespace AxeSoftware.Quest
             }
             if (m_worldModel.Elements.ContainsKey(ElementType.ObjectType, editorType))
             {
-                newObject.Fields.AddType(m_worldModel.Elements.Get(ElementType.ObjectType, editorType));
+                newObject.Fields.AddTypeUndoable(m_worldModel.Elements.Get(ElementType.ObjectType, editorType));
             }            
         }
 
