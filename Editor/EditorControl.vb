@@ -106,10 +106,9 @@
     End Property
 
     Public Sub SetCaptionWidth(width As Integer)
-        If m_editorControlHasOwnCaption Then Return
         If m_controlUnderCaption Then Return
 
-        If lblCaption.Text.Length = 0 Then width = 0
+        If m_editorControlHasOwnCaption OrElse lblCaption.Text.Length = 0 Then width = 0
         m_editorControl.Control.Left = width
 
         If Not m_hasFixedWidth Then
