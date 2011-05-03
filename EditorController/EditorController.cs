@@ -636,6 +636,7 @@ namespace AxeSoftware.Quest
 
         public bool CanMoveElement(string elementKey, string newParentKey)
         {
+            if (elementKey == newParentKey) return false;
             if (!m_worldModel.Elements.ContainsKey(elementKey)) return false;
             if (newParentKey != "_objects" && !m_worldModel.Elements.ContainsKey(newParentKey)) return false;
 
