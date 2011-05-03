@@ -6,6 +6,7 @@ Public Class EditorTree
     Private m_filterSettings As FilterOptions
     Private m_previousSelection As String
     Private m_openNodes As List(Of String)
+    Private m_nodesWithChildren As List(Of String)
     Private m_selection As String
     Private m_updatingSelection As Boolean = False
     Private m_showSearchResults As Boolean = False
@@ -56,7 +57,6 @@ Public Class EditorTree
         End If
 
         newNode = parent.Add(key, text)
-        newNode.Tag = key
         If foreColor.HasValue Then
             newNode.ForeColor = foreColor.Value
         End If
@@ -106,14 +106,19 @@ Public Class EditorTree
         If (ctlTreeView.SelectedNode Is Nothing) Then
             m_previousSelection = ""
         Else
-            m_previousSelection = DirectCast(ctlTreeView.SelectedNode.Tag, String)
+            m_previousSelection = ctlTreeView.SelectedNode.Name
         End If
 
         m_openNodes = New List(Of String)
+        m_nodesWithChildren = New List(Of String)
 
         For Each node As TreeNode In m_nodes.Values
             If node.IsExpanded Then
-                m_openNodes.Add(DirectCast(node.Tag, String))
+                m_openNodes.Add(node.Name)
+            End If
+
+            If node.GetNodeCount(False) > 0 Then
+                m_nodesWithChildren.Add(node.Name)
             End If
         Next
     End Sub
@@ -126,10 +131,19 @@ Public Class EditorTree
         End If
 
         For Each node As TreeNode In m_nodes.Values
-            If (m_openNodes.Contains(DirectCast(node.Tag, String))) Then
+            If (m_openNodes.Contains(node.Name)) Then
+                node.Expand()
+            End If
+
+            If Not m_nodesWithChildren.Contains(node.Name) AndAlso node.GetNodeCount(False) > 0 Then
+                ' Expand any nodes that have new children
                 node.Expand()
             End If
         Next
+    End Sub
+
+    Public Sub CollapseAdvancedNode()
+        m_nodes("_advanced").Collapse()
     End Sub
 
     Private Sub ctlTreeView_AfterSelect(sender As System.Object, e As System.Windows.Forms.TreeViewEventArgs) Handles ctlTreeView.AfterSelect
@@ -143,7 +157,7 @@ Public Class EditorTree
         If ctlTreeView.SelectedNode Is Nothing Then
             key = Nothing
         Else
-            key = DirectCast(ctlTreeView.SelectedNode.Tag, String)
+            key = ctlTreeView.SelectedNode.Name
         End If
 
         ChangeSelection(key)
@@ -239,8 +253,7 @@ Public Class EditorTree
     Private Sub AddSearchResultsForNode(node As TreeNode, search As String, level As Integer)
         If level > 0 OrElse IncludeRootLevelInSearchResults Then
             If node.Text.IndexOf(search, StringComparison.CurrentCultureIgnoreCase) > -1 Then
-                Dim key As String = DirectCast(node.Tag, String)
-                lstSearchResults.Items.Add(New ListViewItem With {.Name = key, .Text = node.Text})
+                lstSearchResults.Items.Add(New ListViewItem With {.Name = node.Name, .Text = node.Text})
             End If
         End If
 

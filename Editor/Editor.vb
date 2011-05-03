@@ -17,6 +17,7 @@
         ctlTree.SetAvailableFilters(m_controller.AvailableFilters)
         ctlTree.SetCanDragDelegate(AddressOf m_controller.CanMoveElement)
         ctlTree.SetDoDragDelegate(AddressOf m_controller.MoveElement)
+        ctlTree.CollapseAdvancedNode()
         SetUpToolbar()
         SetUpEditors()
         RaiseEvent AddToRecent(filename, m_controller.GameName)

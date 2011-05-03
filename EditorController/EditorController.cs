@@ -152,8 +152,10 @@ namespace AxeSoftware.Quest
 
                 if (e.Attribute == "parent")
                 {
+                    BeginTreeUpdate();
                     RemoveElementAndSubElementsFromTree(e.Element);
                     AddElementAndSubElementsToTree(e.Element);
+                    EndTreeUpdate();
                 }
             }
         }
