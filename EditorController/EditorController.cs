@@ -635,17 +635,27 @@ namespace AxeSoftware.Quest
         public bool CanMoveElement(string elementKey, string newParentKey)
         {
             if (!m_worldModel.Elements.ContainsKey(elementKey)) return false;
-            if (!m_worldModel.Elements.ContainsKey(newParentKey)) return false;
+            if (newParentKey != "_objects" && !m_worldModel.Elements.ContainsKey(newParentKey)) return false;
 
             Element element = m_worldModel.Elements.Get(elementKey);
             if (element.ElemType == ElementType.Object && element.Type != ObjectType.Game)
             {
-                Element newParent = m_worldModel.Elements.Get(newParentKey);
-                if (newParent.ElemType == ElementType.Object)
+                if (newParentKey == "_objects")
                 {
-                    // Can't drag a parent object onto one of its own children
-                    return !m_worldModel.ObjectContains(element, newParent);
+                    // Can always drag an object to the "Objects" header to unset its parent property
+                    return true;
                 }
+                else
+                {
+                    Element newParent = m_worldModel.Elements.Get(newParentKey);
+
+                    if (newParent.ElemType == ElementType.Object)
+                    {
+                        // Can't drag a parent object onto one of its own children
+                        return !m_worldModel.ObjectContains(element, newParent);
+                    }
+                }
+
             }
 
             return false;
@@ -655,7 +665,7 @@ namespace AxeSoftware.Quest
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Move object '{0}' to '{1}'", elementKey, newParentKey));
             Element element = m_worldModel.Elements.Get(elementKey);
-            Element newParent = m_worldModel.Elements.Get(newParentKey);
+            Element newParent = newParentKey == "_objects" ? null : m_worldModel.Elements.Get(newParentKey);
             element.Parent = newParent;
             m_worldModel.UndoLogger.EndTransaction();
         }

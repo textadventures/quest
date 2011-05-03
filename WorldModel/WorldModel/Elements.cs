@@ -90,9 +90,11 @@ namespace AxeSoftware.Quest
             {
                 if (e.Parent == parent)
                 {
+                    if (e == parent) throw new InvalidOperationException("Object's parent is set to self");
                     yield return e;
                     foreach (Element child in GetChildElements(e))
                     {
+                        if (child == parent) throw new InvalidOperationException("Circular parent");
                         yield return child;
                     }
                 }

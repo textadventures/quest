@@ -185,6 +185,8 @@ Public Class AttributesControl
             result = GetListDisplayString(listStringValue.DisplayItems)
         ElseIf dictionaryStringValue IsNot Nothing Then
             result = GetDictionaryDisplayString(dictionaryStringValue.DisplayItems)
+        ElseIf value Is Nothing Then
+            result = "(null)"
         Else
             result = value.ToString()
         End If
