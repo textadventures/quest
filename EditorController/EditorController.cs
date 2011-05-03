@@ -468,6 +468,11 @@ namespace AxeSoftware.Quest
                 return EditableWrappedItemDictionary<IScript, IEditableScripts>.GetInstance(this, (QuestDictionary<IScript>)value);
             }
 
+            if (value is Element)
+            {
+                return new EditableObjectReference((Element)value);
+            }
+
             return value;
         }
 
@@ -592,6 +597,12 @@ namespace AxeSoftware.Quest
         {
             ElementType t = WorldModel.GetElementTypeForTypeString(elementType);
             return WorldModel.Elements.GetElements(t).Select(e => e.Name);
+        }
+
+        public IEnumerable<string> GetObjectNames(string objectType)
+        {
+            ObjectType t = WorldModel.GetObjectTypeForTypeString(objectType);
+            return WorldModel.Elements.GetElements(ElementType.Object).Where(e => e.Type == t).Select(e => e.Name);
         }
 
         public bool IsDefaultTypeName(string elementType)

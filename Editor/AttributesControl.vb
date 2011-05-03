@@ -177,6 +177,7 @@ Public Class AttributesControl
         Dim scriptValue As IEditableScripts = TryCast(value, IEditableScripts)
         Dim listStringValue As IEditableList(Of String) = TryCast(value, IEditableList(Of String))
         Dim dictionaryStringValue As IEditableDictionary(Of String) = TryCast(value, IEditableDictionary(Of String))
+        Dim wrappedValue As IDataWrapper = TryCast(value, IDataWrapper)
         Dim result As String
 
         If scriptValue IsNot Nothing Then
@@ -185,6 +186,8 @@ Public Class AttributesControl
             result = GetListDisplayString(listStringValue.DisplayItems)
         ElseIf dictionaryStringValue IsNot Nothing Then
             result = GetDictionaryDisplayString(dictionaryStringValue.DisplayItems)
+        ElseIf wrappedValue IsNot Nothing Then
+            result = wrappedValue.DisplayString
         ElseIf value Is Nothing Then
             result = "(null)"
         Else

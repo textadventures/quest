@@ -64,8 +64,9 @@ namespace AxeSoftware.Quest
         private ObjectType m_type;
         private ElementType m_elemType;
         private static Dictionary<ObjectType, string> s_typeStrings;
+        private static Dictionary<string, ObjectType> s_mapObjectTypeStringsToElementType;
         private static Dictionary<ElementType, string> s_elemTypeStrings;
-        private static Dictionary<string, ElementType> s_mapTypeStringsToElementType;
+        private static Dictionary<string, ElementType> s_mapElemTypeStringsToElementType;
 
         static Element()
         {
@@ -75,22 +76,33 @@ namespace AxeSoftware.Quest
             s_typeStrings.Add(ObjectType.Command, "command");
             s_typeStrings.Add(ObjectType.Game, "game");
 
+            s_mapObjectTypeStringsToElementType = new Dictionary<string, ObjectType>();
+            foreach (var item in s_typeStrings)
+            {
+                s_mapObjectTypeStringsToElementType.Add(item.Value, item.Key);
+            }
+
             s_elemTypeStrings = new Dictionary<ElementType, string>();
             foreach (ElementType t in Enum.GetValues(typeof(ElementType)))
             {
                 s_elemTypeStrings.Add(t, ((ElementTypeInfo)(typeof(ElementType).GetField(t.ToString()).GetCustomAttributes(typeof(ElementTypeInfo), false)[0])).Name);
             }
 
-            s_mapTypeStringsToElementType = new Dictionary<string, ElementType>();
+            s_mapElemTypeStringsToElementType = new Dictionary<string, ElementType>();
             foreach (var item in s_elemTypeStrings)
             {
-                s_mapTypeStringsToElementType.Add(item.Value, item.Key);
+                s_mapElemTypeStringsToElementType.Add(item.Value, item.Key);
             }
         }
 
         internal static ElementType GetElementTypeForTypeString(string typeString)
         {
-            return s_mapTypeStringsToElementType[typeString];
+            return s_mapElemTypeStringsToElementType[typeString];
+        }
+
+        internal static ObjectType GetObjectTypeForTypeString(string typeString)
+        {
+            return s_mapObjectTypeStringsToElementType[typeString];
         }
         
         internal Element(WorldModel worldModel)

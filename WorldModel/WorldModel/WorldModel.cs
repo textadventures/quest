@@ -896,6 +896,11 @@ namespace AxeSoftware.Quest
             return Element.GetElementTypeForTypeString(typeString);
         }
 
+        public ObjectType GetObjectTypeForTypeString(string typeString)
+        {
+            return Element.GetObjectTypeForTypeString(typeString);
+        }
+
         public bool IsDefaultTypeName(string typeName)
         {
             return DefaultTypeNames.ContainsValue(typeName);

@@ -4,6 +4,41 @@
 
     <tab>
       <caption>Exit</caption>
+
+      <control>
+        <caption>Name</caption>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
+      </control>
+
+      <control>
+        <caption>Alias</caption>
+        <controltype>textbox</controltype>
+        <attribute>alias</attribute>
+      </control>
+
+      <control>
+        <caption>Prefix</caption>
+        <controltype>textbox</controltype>
+        <attribute>prefix</attribute>
+      </control>
+
+      <control>
+        <caption>To</caption>
+        <controltype>objects</controltype>
+        <attribute>to</attribute>
+        <width>200</width>
+      </control>
     </tab>
+
+    <tab>
+      <caption>Attributes</caption>
+
+      <control>
+        <controltype>attributes</controltype>
+        <expand/>
+      </control>
+    </tab>
+
   </editor>
 </library>

@@ -121,7 +121,7 @@ Public Class DropDownControl
         End If
     End Sub
 
-    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+    Public Overridable ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
         Get
             Return GetType(String)
         End Get

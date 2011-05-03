@@ -5,5 +5,15 @@
     <tab>
       <caption>Command</caption>
     </tab>
+
+    <tab>
+      <caption>Attributes</caption>
+
+      <control>
+        <controltype>attributes</controltype>
+        <expand/>
+      </control>
+    </tab>
+
   </editor>
 </library>
