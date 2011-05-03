@@ -14,6 +14,19 @@ namespace AxeSoftware.Quest
         User
     }
 
+    public enum ValidationMessage
+    {
+        OK,
+        ItemAlreadyExists,
+        ElementAlreadyExists,
+    }
+
+    public struct ValidationResult
+    {
+        public bool Valid;
+        public ValidationMessage Message;
+    }
+
     public class EditorController : IDisposable
     {
         private const string k_commands = "_gameCommands";
@@ -723,6 +736,15 @@ namespace AxeSoftware.Quest
             {
                 return null;
             }
+        }
+
+        public ValidationResult CanAdd(string name)
+        {
+            if (m_worldModel.Elements.ContainsKey(name))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.ElementAlreadyExists };
+            }
+            return new ValidationResult { Valid = true };
         }
     }
 }

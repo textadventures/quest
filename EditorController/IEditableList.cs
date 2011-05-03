@@ -12,18 +12,6 @@ namespace AxeSoftware.Quest
         public EditorUpdateSource Source { get; set; }
     }
 
-    public enum ValidationMessage
-    {
-        OK,
-        ItemAlreadyExists,
-    }
-
-    public struct ValidationResult
-    {
-        public bool Valid;
-        public ValidationMessage Message;
-    }
-
     public interface IEditableList<T>
     {
         event EventHandler<EditableListUpdatedEventArgs<T>> Added;

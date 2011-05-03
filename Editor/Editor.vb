@@ -236,7 +236,8 @@
 
         If possibleParents Is Nothing Then
             Dim result = PopupEditors.EditString(prompt, "")
-            If result.Cancelled Then Exit Sub
+            If result.Cancelled Then Return
+            If Not ValidateInput(result.Result) Then Return
 
             m_controller.CreateNewObject(result.Result, Nothing)
             ctlTree.SetSelectedItem(result.Result)
@@ -246,7 +247,8 @@
             parentOptions.AddRange(possibleParents)
 
             Dim result = PopupEditors.EditStringWithDropdown(prompt, "", "Parent", parentOptions, ctlTree.SelectedItem)
-            If result.Cancelled Then Exit Sub
+            If result.Cancelled Then Return
+            If Not ValidateInput(result.Result) Then Return
 
             Dim parent = result.ListResult
             If parent = noParent Then parent = Nothing
@@ -259,10 +261,19 @@
 
     Private Sub AddNewRoom()
         Dim result = PopupEditors.EditString("Please enter a name for the new room", "")
-        If result.Cancelled Then Exit Sub
+        If result.Cancelled Then Return
+        If Not ValidateInput(result.Result) Then Return
 
         m_controller.CreateNewRoom(result.Result, Nothing)
         ctlTree.SetSelectedItem(result.Result)
     End Sub
+
+    Private Function ValidateInput(input As String) As Boolean
+        Dim result = m_controller.CanAdd(input)
+        If result.Valid Then Return True
+
+        MsgBox(PopupEditors.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add element")
+        Return False
+    End Function
 
 End Class

@@ -10,7 +10,8 @@
 
     Private Shared s_validationMessages As New Dictionary(Of ValidationMessage, String) From {
         {ValidationMessage.OK, "No error"},
-        {ValidationMessage.ItemAlreadyExists, "Item '{0}' already exists in the list"}
+        {ValidationMessage.ItemAlreadyExists, "Item '{0}' already exists in the list"},
+        {ValidationMessage.ElementAlreadyExists, "An element called '{0}' already exists in this game"}
     }
 
     Public Shared Function EditString(prompt As String, defaultResult As String) As EditStringResult
