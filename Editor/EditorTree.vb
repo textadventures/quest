@@ -172,10 +172,14 @@ Public Class EditorTree
         End If
     End Sub
 
-    Public Sub SetSelectedItem(key As String)
+    Public Sub SetSelectedItemNoEvent(key As String)
         m_updatingSelection = True
         ctlTreeView.SelectedNode = m_nodes(key)
         m_updatingSelection = False
+    End Sub
+
+    Public Sub SetSelectedItem(key As String)
+        ctlTreeView.SelectedNode = m_nodes(key)
     End Sub
 
     Public Property ShowFilterBar() As Boolean
@@ -391,5 +395,11 @@ Public Class EditorTree
     Public Sub SetDoDragDelegate(del As Action(Of String, String))
         m_doDragDelegate = del
     End Sub
+
+    Public ReadOnly Property SelectedItem As String
+        Get
+            Return m_selection
+        End Get
+    End Property
 
 End Class

@@ -6,6 +6,7 @@
     Private m_menu As AxeSoftware.Quest.Controls.Menu
     Private m_filename As String
     Private m_currentElement As String
+    Private m_autoSelectNewNode As String
 
     Public Event AddToRecent(filename As String, name As String)
 
@@ -76,6 +77,9 @@
 
     Private Sub m_controller_AddedNode(key As String, text As String, parent As String, foreColor As System.Drawing.Color?, backColor As System.Drawing.Color?) Handles m_controller.AddedNode
         ctlTree.AddNode(key, text, parent, foreColor, backColor)
+        If (m_autoSelectNewNode = key) Then
+            ctlTree.SetSelectedItem(key)
+        End If
     End Sub
 
     Private Sub m_controller_RemovedNode(key As String) Handles m_controller.RemovedNode
@@ -178,7 +182,7 @@
     End Sub
 
     Private Sub ctlToolbar_HistoryClicked(Key As String) Handles ctlToolbar.HistoryClicked
-        ctlTree.SetSelectedItem(Key)
+        ctlTree.SetSelectedItemNoEvent(Key)
         ShowEditor(Key)
     End Sub
 
@@ -219,10 +223,34 @@
     End Sub
 
     Private Sub AddNewObject()
-        Dim result = PopupEditors.EditString("Please enter a name for the new object", "")
-        If result.Cancelled Then Exit Sub
 
-        m_controller.CreateNewObject(result.Result)
+        Dim possibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(ctlTree.SelectedItem)
+        Const prompt As String = "Please enter a name for the new object"
+        Const noParent As String = "(none)"
+
+        If possibleParents Is Nothing Then
+            Dim result = PopupEditors.EditString(prompt, "")
+            If result.Cancelled Then Exit Sub
+
+            m_autoSelectNewNode = result.Result
+            m_controller.CreateNewObject(result.Result, Nothing)
+        Else
+            Dim parentOptions As New List(Of String)
+            parentOptions.Add(noParent)
+            parentOptions.AddRange(possibleParents)
+
+            Dim result = PopupEditors.EditStringWithDropdown(prompt, "", "Parent", parentOptions, ctlTree.SelectedItem)
+            If result.Cancelled Then Exit Sub
+
+            Dim parent = result.ListResult
+            If parent = noParent Then parent = Nothing
+
+            m_autoSelectNewNode = result.Result
+            m_controller.CreateNewObject(result.Result, parent)
+        End If
+
+        m_autoSelectNewNode = Nothing
+
     End Sub
 
 End Class

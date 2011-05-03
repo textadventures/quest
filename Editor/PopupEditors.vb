@@ -5,6 +5,7 @@
     Public Structure EditStringResult
         Public Cancelled As Boolean
         Public Result As String
+        Public ListResult As String
     End Structure
 
     Private Shared s_validationMessages As New Dictionary(Of ValidationMessage, String) From {
@@ -13,10 +14,32 @@
     }
 
     Public Shared Function EditString(prompt As String, defaultResult As String) As EditStringResult
+        Return EditStringWithDropdown(prompt, defaultResult, Nothing, Nothing, Nothing)
+    End Function
+
+    Public Shared Function EditStringWithDropdown(prompt As String, defaultResult As String, listCaption As String, listItems As IEnumerable(Of String), defaultListSelection As String) As EditStringResult
         Dim result As New EditStringResult
-        Dim inputResult = InputBox(prompt + ":", DefaultResponse:=defaultResult)
+
+        Dim inputWindow As New InputWindow
+        inputWindow.lblPrompt.Text = prompt + ":"
+        inputWindow.txtInput.Text = defaultResult
+        inputWindow.txtInput.Focus()
+        inputWindow.txtInput.SelectAll()
+
+        If listItems IsNot Nothing Then
+            inputWindow.SetDropdown(listCaption, listItems, defaultListSelection)
+        End If
+
+        inputWindow.ShowDialog()
+
+        Dim inputResult As String = inputWindow.txtInput.Text
         result.Cancelled = (inputResult.Length = 0)
         result.Result = inputResult
+
+        If listItems IsNot Nothing Then
+            result.ListResult = inputWindow.lstDropdown.Text
+        End If
+
         Return result
     End Function
 

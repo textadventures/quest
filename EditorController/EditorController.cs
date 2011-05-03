@@ -627,10 +627,14 @@ namespace AxeSoftware.Quest
             return element.Fields.InheritsType(type);
         }
 
-        public void CreateNewObject(string name)
+        public void CreateNewObject(string name, string parent)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create object '{0}'", name));
-            m_worldModel.GetElementFactory(ElementType.Object).Create(name);
+            Element newObject = m_worldModel.GetElementFactory(ElementType.Object).Create(name);
+            if (parent != null)
+            {
+                newObject.Parent = m_worldModel.Elements.Get(ElementType.Object, parent);
+            }
             m_worldModel.UndoLogger.EndTransaction();
         }
 
@@ -671,6 +675,38 @@ namespace AxeSoftware.Quest
             Element newParent = newParentKey == "_objects" ? null : m_worldModel.Elements.Get(newParentKey);
             element.Parent = newParent;
             m_worldModel.UndoLogger.EndTransaction();
+        }
+
+        public IEnumerable<string> GetPossibleNewObjectParentsForCurrentSelection(string elementKey)
+        {
+            // When an object is selected and the user clicks "Add object", we can either create the
+            // object as a sub-object of the current selection, or as a sibling of the current object.
+            // It could also be created with no parent at all (it's up to the GUI to provide that option).
+
+            if (elementKey == null) return null;
+            if (!m_worldModel.Elements.ContainsKey(ElementType.Object, elementKey)) return null;
+            Element currentSelection = m_worldModel.Elements.Get(elementKey);
+
+            if (currentSelection.Type == ObjectType.Object || currentSelection.Type == ObjectType.Game)
+            {
+                List<string> result = new List<string>();
+                result.Add(elementKey);
+
+                Element thisElement = currentSelection;
+                while (thisElement.Parent != null)
+                {
+                    result.Add(thisElement.Parent.Name);
+                    thisElement = thisElement.Parent;
+                }
+
+                // return the list with highest ancestor at the top
+                result.Reverse();
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
