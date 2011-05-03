@@ -149,7 +149,38 @@ namespace AxeSoftware.Quest
             if (m_initialised)
             {
                 if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue), e.IsUndo));
+
+                if (e.Attribute == "parent")
+                {
+                    RemoveElementAndSubElementsFromTree(e.Element);
+                    AddElementAndSubElementsToTree(e.Element);
+                }
             }
+        }
+
+        private void AddElementAndSubElementsToTree(Element e)
+        {
+            AddElementToTree(e);
+            foreach (Element child in m_worldModel.Elements.GetChildElements(e))
+            {
+                AddElementToTree(child);
+            }
+        }
+
+        private void RemoveElementAndSubElementsFromTree(Element e)
+        {
+            List<string> nodesToRemove = new List<string>(m_worldModel.Elements.GetChildElements(e).Select(child => child.Name));
+
+            // reverse the list so we remove children before parents
+            nodesToRemove.Reverse();
+
+            foreach (string key in nodesToRemove)
+            {
+                RemovedNode(key);
+            }
+
+            // finally remove the parent
+            RemovedNode(e.Name);
         }
 
         void m_worldModel_ElementRefreshed(object sender, WorldModel.ElementRefreshEventArgs e)
@@ -598,6 +629,34 @@ namespace AxeSoftware.Quest
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create object '{0}'", name));
             m_worldModel.GetElementFactory(ElementType.Object).Create(name);
+            m_worldModel.UndoLogger.EndTransaction();
+        }
+
+        public bool CanMoveElement(string elementKey, string newParentKey)
+        {
+            if (!m_worldModel.Elements.ContainsKey(elementKey)) return false;
+            if (!m_worldModel.Elements.ContainsKey(newParentKey)) return false;
+
+            Element element = m_worldModel.Elements.Get(elementKey);
+            if (element.ElemType == ElementType.Object && element.Type != ObjectType.Game)
+            {
+                Element newParent = m_worldModel.Elements.Get(newParentKey);
+                if (newParent.ElemType == ElementType.Object)
+                {
+                    // Can't drag a parent object onto one of its own children
+                    return !m_worldModel.ObjectContains(element, newParent);
+                }
+            }
+
+            return false;
+        }
+
+        public void MoveElement(string elementKey, string newParentKey)
+        {
+            m_worldModel.UndoLogger.StartTransaction(string.Format("Move object '{0}' to '{1}'", elementKey, newParentKey));
+            Element element = m_worldModel.Elements.Get(elementKey);
+            Element newParent = m_worldModel.Elements.Get(newParentKey);
+            element.Parent = newParent;
             m_worldModel.UndoLogger.EndTransaction();
         }
     }

@@ -9,6 +9,8 @@ Public Class EditorTree
     Private m_selection As String
     Private m_updatingSelection As Boolean = False
     Private m_showSearchResults As Boolean = False
+    Private m_canDragDelegate As Func(Of String, String, Boolean)
+    Private m_doDragDelegate As Action(Of String, String)
 
     Public Event FiltersUpdated()
     Public Event SelectionChanged(key As String)
@@ -319,11 +321,17 @@ Public Class EditorTree
 
     Private Sub ctlTreeView_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles ctlTreeView.DragDrop
         HighlightNode(Nothing)
+        Dim nodeOver As TreeNode = ctlTreeView.GetNodeAt(ctlTreeView.PointToClient(Cursor.Position))
+        Dim element As String = DirectCast(e.Data.GetData(DataFormats.Text), String)
+        Dim newParent As String = nodeOver.Name
+        If nodeOver IsNot Nothing AndAlso CanDrag(element, newParent) Then
+            m_doDragDelegate.Invoke(element, newParent)
+        End If
     End Sub
 
     Private Sub ctlTreeView_DragOver(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles ctlTreeView.DragOver
         Dim nodeOver As TreeNode = ctlTreeView.GetNodeAt(ctlTreeView.PointToClient(Cursor.Position))
-        If CanDrag(DirectCast(e.Data.GetData(DataFormats.Text), String), nodeOver.Name) Then
+        If nodeOver IsNot Nothing AndAlso CanDrag(DirectCast(e.Data.GetData(DataFormats.Text), String), nodeOver.Name) Then
             e.Effect = DragDropEffects.Move
             HighlightNode(nodeOver)
         Else
@@ -359,7 +367,16 @@ Public Class EditorTree
     End Sub
 
     Private Function CanDrag(dragItem As String, dragTo As String) As Boolean
-        Debug.Print("CanDrag {0}, {1}", dragItem, dragTo)
-        Return True
+        If m_canDragDelegate Is Nothing Then Return False
+        Return m_canDragDelegate.Invoke(dragItem, dragTo)
     End Function
+
+    Public Sub SetCanDragDelegate(del As Func(Of String, String, Boolean))
+        m_canDragDelegate = del
+    End Sub
+
+    Public Sub SetDoDragDelegate(del As Action(Of String, String))
+        m_doDragDelegate = del
+    End Sub
+
 End Class

@@ -83,5 +83,20 @@ namespace AxeSoftware.Quest
             }
             return null;
         }
+
+        public IEnumerable<Element> GetChildElements(Element parent)
+        {
+            foreach (Element e in m_allElements.Values)
+            {
+                if (e.Parent == parent)
+                {
+                    yield return e;
+                    foreach (Element child in GetChildElements(e))
+                    {
+                        yield return child;
+                    }
+                }
+            }
+        }
     }
 }
