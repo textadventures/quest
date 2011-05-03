@@ -9,6 +9,7 @@ namespace AxeSoftware.Quest
     {
         private Dictionary<string, IEditorControl> m_controls = null;
         private string m_caption;
+        private EditorVisibilityHelper m_visibilityHelper;
 
         public EditorTab(WorldModel worldModel, Element source)
         {
@@ -22,6 +23,7 @@ namespace AxeSoftware.Quest
                     m_controls.Add(e.Name, new EditorControl(worldModel, e));
                 }
             }
+            m_visibilityHelper = new EditorVisibilityHelper(worldModel, source);
         }
 
         public string Caption
@@ -35,6 +37,11 @@ namespace AxeSoftware.Quest
         public IEnumerable<IEditorControl> Controls
         {
             get { return m_controls.Values; }
+        }
+
+        public bool IsTabVisible(IEditorData data)
+        {
+            return m_visibilityHelper.IsVisible(data);
         }
     }
 }

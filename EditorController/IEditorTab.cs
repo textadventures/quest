@@ -9,5 +9,6 @@ namespace AxeSoftware.Quest
     {
         string Caption { get; }
         IEnumerable<IEditorControl> Controls { get; }
+        bool IsTabVisible(IEditorData data);
     }
 }

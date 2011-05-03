@@ -6,6 +6,9 @@
   <implied element="control" property="paddingtop" type="int"/>
   <implied element="control" property="types" type="stringdictionary"/>
 
+  <type name="editor_room"/>
+  <type name="editor_object"/>
+
   <include ref="CoreEditorGame.aslx"/>
   <include ref="CoreEditorObject.aslx"/>
   <include ref="CoreEditorExit.aslx"/>

@@ -106,10 +106,10 @@ Public Class MultiControl
                 m_currentEditor = m_loadedEditors(editorName)
             End If
 
-            m_currentEditor.Control.Visible = True
             m_currentEditor.Controller = m_controller
             m_currentEditor.Initialise(m_controller, m_controlData)
             m_currentEditor.Populate(m_data)
+            m_currentEditor.Control.Visible = True
 
             m_currentEditorAdjustableHeight = TryCast(m_currentEditor, IAdjustableHeightControl)
         End If

@@ -85,6 +85,7 @@
     <Compile Include="EditorData.cs" />
     <Compile Include="EditorDefinition.cs" />
     <Compile Include="EditorTab.cs" />
+    <Compile Include="EditorVisibilityHelper.cs" />
     <Compile Include="FilterOptions.cs" />
     <Compile Include="IDataWrapper.cs" />
     <Compile Include="IEditableList.cs" />

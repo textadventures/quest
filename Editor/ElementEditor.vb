@@ -6,12 +6,15 @@
     Private Const k_paddingLeft As Integer = 5
     Private Const k_paddingRight As Integer = 8
     Private Const k_paddingTop As Integer = 10
-    Private m_tabs As List(Of ElementEditor)
+    Private m_tabs As Dictionary(Of String, ElementEditor)
     Private m_controls As List(Of EditorControl)
     Private m_populating As Boolean
     Private WithEvents m_data As IEditorData
     Private m_controller As EditorController
     Private m_fullHeight As Integer
+    Private m_definition As IEditorTab
+    Private m_tabControl As TabControl
+    Private m_tabPage As TabPage
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
@@ -24,33 +27,35 @@
 
     Public Sub InitialiseTabs(definition As IEditorDefinition)
         If (Not definition.Tabs Is Nothing) AndAlso definition.Tabs.Count > 0 Then
-            Dim tabControl As New TabControl
+            m_tabControl = New TabControl
 
             RemoveExistingTabs()
-            m_tabs = New List(Of ElementEditor)
+            m_tabs = New Dictionary(Of String, ElementEditor)
 
             For Each tabDefinition As KeyValuePair(Of String, IEditorTab) In definition.Tabs
                 Dim tabPage As TabPage = New TabPage(tabDefinition.Value.Caption)
                 Dim tabEditor As New ElementEditor
 
+                tabEditor.Definition = tabDefinition.Value
+                tabEditor.TabPage = tabPage
                 tabPage.UseVisualStyleBackColor = True
-                tabControl.TabPages.Add(tabPage)
+                m_tabControl.TabPages.Add(tabPage)
                 tabEditor.InitialiseControls(m_controller, tabDefinition.Value)
                 tabEditor.Parent = tabPage
                 tabEditor.Dock = DockStyle.Fill
                 AddHandler tabEditor.Dirty, AddressOf Tab_Dirty
-                m_tabs.Add(tabEditor)
+                m_tabs.Add(tabDefinition.Value.Caption, tabEditor)
             Next
 
-            tabControl.Parent = Me
-            tabControl.Dock = DockStyle.Fill
+            m_tabControl.Parent = Me
+            m_tabControl.Dock = DockStyle.Fill
         End If
     End Sub
 
     Private Sub RemoveExistingTabs()
         If m_tabs Is Nothing Then Return
 
-        For Each tabControl In m_tabs
+        For Each tabControl In m_tabs.Values
             tabControl.Parent = Nothing
             tabControl.Visible = False
             RemoveHandler tabControl.Dirty, AddressOf Tab_Dirty
@@ -142,6 +147,21 @@
         m_fullHeight = top - k_paddingBetweenControls
     End Sub
 
+    Private Sub UpdateTabVisibility()
+        Dim tabIndex As Integer = 0
+        For Each tabControl In m_tabs.Values
+            If tabControl.Definition.IsTabVisible(m_data) Then
+                If Not m_tabControl.TabPages.Contains(tabControl.TabPage) Then
+                    m_tabControl.TabPages.Insert(tabIndex, tabControl.TabPage)
+                End If
+
+                tabIndex += 1
+            Else
+                m_tabControl.TabPages.Remove(tabControl.TabPage)
+            End If
+        Next
+    End Sub
+
     Private Sub RemoveExistingControls()
         If m_controls Is Nothing Then Return
 
@@ -169,9 +189,11 @@
         m_data = data
 
         If Not m_tabs Is Nothing Then
-            For Each tab As ElementEditor In m_tabs
+            For Each tab As ElementEditor In m_tabs.Values
                 tab.Populate(data)
             Next
+
+            UpdateTabVisibility()
         End If
 
         If Not m_controls Is Nothing Then
@@ -191,7 +213,7 @@
         ' find the control that's currently showing the attribute, and set its value - it's just been updated...
 
         If Not m_tabs Is Nothing Then
-            For Each tab As ElementEditor In m_tabs
+            For Each tab As ElementEditor In m_tabs.Values
                 tab.UpdateField(attribute, newValue, setFocus)
             Next
         End If
@@ -214,7 +236,7 @@
     Public Sub SaveData() Implements ICommandEditor.SaveData
 
         If Not m_tabs Is Nothing Then
-            For Each tab As ElementEditor In m_tabs
+            For Each tab As ElementEditor In m_tabs.Values
                 tab.SaveData()
             Next
         End If
@@ -266,5 +288,24 @@
     Private Sub m_data_Changed(sender As Object, e As System.EventArgs) Handles m_data.Changed
         If m_controls Is Nothing Then Return
         RelayoutControls()
+        UpdateTabVisibility()
     End Sub
+
+    Public Property Definition As IEditorTab
+        Get
+            Return m_definition
+        End Get
+        Set(value As IEditorTab)
+            m_definition = value
+        End Set
+    End Property
+
+    Public Property TabPage As TabPage
+        Get
+            Return m_tabPage
+        End Get
+        Set(value As TabPage)
+            m_tabPage = value
+        End Set
+    End Property
 End Class

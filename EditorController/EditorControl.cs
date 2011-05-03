@@ -16,11 +16,7 @@ namespace AxeSoftware.Quest
         private string m_attribute;
         private bool m_expand = false;
         private Element m_source;
-        private bool m_alwaysVisible = true;
-        private string m_relatedAttribute = null;
-        private string m_visibleIfRelatedAttributeIsType = null;
-        private string m_visibleIfElementInheritsType = null;
-        private Element m_visibleIfElementInheritsTypeElement = null;
+        private EditorVisibilityHelper m_visibilityHelper;
 
         public EditorControl(WorldModel worldModel, Element source)
         {
@@ -33,11 +29,7 @@ namespace AxeSoftware.Quest
             if (source.Fields.HasType<int>("width")) m_width = source.Fields.GetAsType<int>("width");
             if (source.Fields.HasType<int>("paddingtop")) m_paddingTop = source.Fields.GetAsType<int>("paddingtop");
             if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");
-            m_relatedAttribute = source.Fields.GetString("relatedattribute");
-            if (m_relatedAttribute != null) m_alwaysVisible = false;
-            m_visibleIfRelatedAttributeIsType = source.Fields.GetString("relatedattributedisplaytype");
-            m_visibleIfElementInheritsType = source.Fields.GetString("mustinherit");
-            if (m_visibleIfElementInheritsType != null) m_alwaysVisible = false;
+            m_visibilityHelper = new EditorVisibilityHelper(worldModel, source);
         }
 
         public string ControlType
@@ -102,27 +94,7 @@ namespace AxeSoftware.Quest
 
         public bool IsControlVisible(IEditorData data)
         {
-            if (m_alwaysVisible) return true;
-
-            if (m_relatedAttribute != null)
-            {
-                object relatedAttributeValue = data.GetAttribute(m_relatedAttribute);
-                if (relatedAttributeValue is IDataWrapper) relatedAttributeValue = ((IDataWrapper)relatedAttributeValue).GetUnderlyingValue();
-
-                string relatedAttributeType = relatedAttributeValue == null ? "null" : WorldModel.ConvertTypeToTypeName(relatedAttributeValue.GetType());
-                return relatedAttributeType == m_visibleIfRelatedAttributeIsType;
-            }
-
-            if (m_visibleIfElementInheritsType != null)
-            {
-                if (m_visibleIfElementInheritsTypeElement == null)
-                {
-                    m_visibleIfElementInheritsTypeElement = m_worldModel.Elements.Get(ElementType.ObjectType, m_visibleIfElementInheritsType);
-                }
-                return m_worldModel.Elements.Get(data.Name).Fields.InheritsType(m_visibleIfElementInheritsTypeElement);
-            }
-
-            return false;
+            return m_visibilityHelper.IsVisible(data);
         }
     }
 }
