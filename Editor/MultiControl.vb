@@ -230,8 +230,8 @@ Public Class MultiControl
             Value = Nothing
         Else
             ElementName = data.Name
-            Dim value As Object = data.GetAttribute(AttributeName)
-            If CanEditType(value) Then value = value
+            Dim currentValue As Object = data.GetAttribute(AttributeName)
+            If CanEditType(currentValue) Then Value = currentValue
         End If
     End Sub
 
