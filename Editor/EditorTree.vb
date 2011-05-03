@@ -158,8 +158,8 @@ Public Class EditorTree
         ' When right-clicking, select the item first before displaying the context menu
         If e.Button = Windows.Forms.MouseButtons.Right Then
             ctlTreeView.SelectedNode = ctlTreeView.GetNodeAt(e.X, e.Y)
-            If ctlTreeView.SelectedNode IsNot Nothing Then
-                ctlContextMenu.Show(ctlTreeView, e.Location)
+            If ctlTreeView.SelectedNode IsNot Nothing AndAlso ctlTreeView.ContextMenuStrip IsNot Nothing Then
+                ctlTreeView.ContextMenuStrip.Show(ctlTreeView, e.Location)
             End If
         End If
     End Sub
