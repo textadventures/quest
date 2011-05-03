@@ -70,6 +70,11 @@ namespace AxeSoftware.Quest
 
         internal Element CreateObject(string objectName, ObjectType type)
         {
+            return CreateObject(objectName, type, true);
+        }
+
+        internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog)
+        {
             WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName));
             Element newObject = base.Create(objectName);
 
@@ -185,7 +190,7 @@ namespace AxeSoftware.Quest
 
             foreach (string attr in allAttributes.Keys)
             {
-                WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(appliesTo.Name, attr, allAttributes[attr], null, false));
+                WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false));
             }
 
             WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, false, type));
@@ -217,7 +222,7 @@ namespace AxeSoftware.Quest
                 }
                 else
                 {
-                    worldModel.ObjectFactory.CreateObject(m_name, m_type);
+                    worldModel.ObjectFactory.CreateObject(m_name, m_type, false);
                 }
             }
 
@@ -225,7 +230,7 @@ namespace AxeSoftware.Quest
             {
                 if (m_create)
                 {
-                    worldModel.ObjectFactory.CreateObject(m_name, m_type);
+                    worldModel.ObjectFactory.CreateObject(m_name, m_type, false);
                 }
                 else
                 {

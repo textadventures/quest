@@ -222,7 +222,7 @@ namespace AxeSoftware.Quest
 
         private void UndoLog(string property, object oldValue, object newValue, bool added)
         {
-            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(new UndoFieldSet(m_element.Name, property, oldValue, newValue, added));
+            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(new UndoFieldSet(m_worldModel, m_element.Name, property, oldValue, newValue, added));
         }
 
         internal void UndoLog(AxeSoftware.Quest.UndoLogger.IUndoAction action)
@@ -666,14 +666,35 @@ namespace AxeSoftware.Quest
         private object m_oldValue;
         private object m_newValue;
         private bool m_added;
+        private string m_oldValueElementName;
+        private string m_newValueElementName;
+        private WorldModel m_worldModel;
 
-        public UndoFieldSet(string appliesTo, string property, object oldValue, object newValue, bool added)
+        public UndoFieldSet(WorldModel worldModel, string appliesTo, string property, object oldValue, object newValue, bool added)
         {
             System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(appliesTo));
+            m_worldModel = worldModel;
             m_appliesTo = appliesTo;
             m_property = property;
-            m_oldValue = oldValue;
-            m_newValue = newValue;
+            
+            if (oldValue is Element)
+            {
+                m_oldValueElementName = ((Element)oldValue).Name;
+            }
+            else
+            {
+                m_oldValue = oldValue;
+            }
+
+            if (newValue is Element)
+            {
+                m_newValueElementName = ((Element)newValue).Name;
+            }
+            else
+            {
+                m_newValue = newValue;
+            }
+            
             m_added = added;
         }
 
@@ -689,12 +710,20 @@ namespace AxeSoftware.Quest
 
         public object OldValue
         {
-            get { return m_oldValue; }
+            get
+            {
+                if (m_oldValueElementName != null) return m_worldModel.Elements.Get(m_oldValueElementName);
+                return m_oldValue;
+            }
         }
 
         public object NewValue
         {
-            get { return m_newValue; }
+            get
+            {
+                if (m_newValueElementName != null) return m_worldModel.Elements.Get(m_newValueElementName);
+                return m_newValue;
+            }
         }
 
         public void DoUndo(WorldModel worldModel)
