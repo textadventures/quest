@@ -174,7 +174,7 @@ Partial Class MainToolbar
         Me.butAddObject.ImageTransparentColor = System.Drawing.Color.Silver
         Me.butAddObject.Name = "butAddObject"
         Me.butAddObject.Size = New System.Drawing.Size(23, 22)
-        Me.butAddObject.Tag = "addobj"
+        Me.butAddObject.Tag = "addobject"
         Me.butAddObject.Text = "ToolStripButton4"
         Me.butAddObject.ToolTipText = "Add Object"
         '

@@ -126,6 +126,8 @@ Public Class MainToolbar
     End Sub
 
     Private Sub HandleClick(sender As Object, e As System.EventArgs)
+        RaiseEvent SaveCurrentEditor()
+
         Dim menu As ToolStripItem = DirectCast(sender, ToolStripItem)
 
         If Not menu.Tag Is Nothing Then
@@ -370,10 +372,5 @@ Public Class MainToolbar
 
     Private Sub butRedo_DropDownOpening(sender As Object, e As System.EventArgs) Handles butRedo.DropDownOpening
         ResetHighlight()
-    End Sub
-
-    Private Sub butAddObject_Click(sender As System.Object, e As System.EventArgs) Handles butAddObject.Click
-        RaiseEvent SaveCurrentEditor()
-        HandleClick("addobject")
     End Sub
 End Class

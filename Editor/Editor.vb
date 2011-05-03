@@ -6,7 +6,6 @@
     Private m_menu As AxeSoftware.Quest.Controls.Menu
     Private m_filename As String
     Private m_currentElement As String
-    Private m_autoSelectNewNode As String
 
     Public Event AddToRecent(filename As String, name As String)
 
@@ -47,6 +46,7 @@
         ctlToolbar.AddButtonHandler("undo", AddressOf Undo)
         ctlToolbar.AddButtonHandler("redo", AddressOf Redo)
         ctlToolbar.AddButtonHandler("addobject", AddressOf AddNewObject)
+        ctlToolbar.AddButtonHandler("addroom", AddressOf AddNewRoom)
     End Sub
 
     Private Sub SetUpEditors()
@@ -77,9 +77,6 @@
 
     Private Sub m_controller_AddedNode(key As String, text As String, parent As String, foreColor As System.Drawing.Color?, backColor As System.Drawing.Color?) Handles m_controller.AddedNode
         ctlTree.AddNode(key, text, parent, foreColor, backColor)
-        If (m_autoSelectNewNode = key) Then
-            ctlTree.SetSelectedItem(key)
-        End If
     End Sub
 
     Private Sub m_controller_RemovedNode(key As String) Handles m_controller.RemovedNode
@@ -232,8 +229,8 @@
             Dim result = PopupEditors.EditString(prompt, "")
             If result.Cancelled Then Exit Sub
 
-            m_autoSelectNewNode = result.Result
             m_controller.CreateNewObject(result.Result, Nothing)
+            ctlTree.SetSelectedItem(result.Result)
         Else
             Dim parentOptions As New List(Of String)
             parentOptions.Add(noParent)
@@ -245,12 +242,18 @@
             Dim parent = result.ListResult
             If parent = noParent Then parent = Nothing
 
-            m_autoSelectNewNode = result.Result
             m_controller.CreateNewObject(result.Result, parent)
+            ctlTree.SetSelectedItem(result.Result)
         End If
 
-        m_autoSelectNewNode = Nothing
+    End Sub
 
+    Private Sub AddNewRoom()
+        Dim result = PopupEditors.EditString("Please enter a name for the new room", "")
+        If result.Cancelled Then Exit Sub
+
+        m_controller.CreateNewRoom(result.Result, Nothing)
+        ctlTree.SetSelectedItem(result.Result)
     End Sub
 
 End Class

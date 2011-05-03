@@ -630,12 +630,28 @@ namespace AxeSoftware.Quest
         public void CreateNewObject(string name, string parent)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create object '{0}'", name));
+            CreateNewObject(name, parent, "editor_object");
+            m_worldModel.UndoLogger.EndTransaction();
+        }
+
+        public void CreateNewRoom(string name, string parent)
+        {
+            m_worldModel.UndoLogger.StartTransaction(string.Format("Create room '{0}'", name));
+            CreateNewObject(name, parent, "editor_room");
+            m_worldModel.UndoLogger.EndTransaction();
+        }
+
+        private void CreateNewObject(string name, string parent, string editorType)
+        {
             Element newObject = m_worldModel.GetElementFactory(ElementType.Object).Create(name);
             if (parent != null)
             {
                 newObject.Parent = m_worldModel.Elements.Get(ElementType.Object, parent);
             }
-            m_worldModel.UndoLogger.EndTransaction();
+            if (m_worldModel.Elements.ContainsKey(ElementType.ObjectType, editorType))
+            {
+                newObject.Fields.AddType(m_worldModel.Elements.Get(ElementType.ObjectType, editorType));
+            }            
         }
 
         public bool CanMoveElement(string elementKey, string newParentKey)
