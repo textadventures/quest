@@ -104,6 +104,16 @@ namespace AxeSoftware.Quest
         {
             return s_mapObjectTypeStringsToElementType[typeString];
         }
+
+        internal static string GetTypeStringForElementType(ElementType type)
+        {
+            return s_elemTypeStrings[type];
+        }
+
+        internal static string GetTypeStringForObjectType(ObjectType type)
+        {
+            return s_typeStrings[type];
+        }
         
         internal Element(WorldModel worldModel)
         {

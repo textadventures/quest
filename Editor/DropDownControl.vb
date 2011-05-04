@@ -78,12 +78,11 @@ Public Class DropDownControl
     End Sub
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
+        m_data = data
         PopulateData(data)
     End Sub
 
     Protected Overridable Sub PopulateData(data As IEditorData)
-        m_data = data
-
         If m_data Is Nothing Then
             Value = String.Empty
         Else
@@ -131,4 +130,5 @@ Public Class DropDownControl
             Return GetType(String)
         End Get
     End Property
+
 End Class

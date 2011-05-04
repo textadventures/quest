@@ -22,8 +22,9 @@ Public Class DropDownObjectsControl
     End Property
 
     Protected Overrides Sub SaveData(data As IEditorData)
-        If lstDropdown.Text <> m_value.Reference Then
+        If (lstDropdown.Text.Length > 0 And m_value Is Nothing) OrElse (lstDropdown.Text <> m_value.Reference) Then
             Controller.StartTransaction(String.Format("Change '{0}' to '{1}'", AttributeName, lstDropdown.Text))
+            m_value = Controller.CreateNewEditableObjectReference(data.Name, AttributeName, False)
             m_value.Reference = lstDropdown.Text
             Controller.EndTransaction()
         End If
@@ -37,7 +38,7 @@ Public Class DropDownObjectsControl
 
     Protected Overrides Sub SetValue(value As Object)
         m_value = DirectCast(value, IEditableObjectReference)
-        lstDropdown.Text = m_value.Reference
+        lstDropdown.Text = If(m_value Is Nothing, "", m_value.Reference)
     End Sub
 
     Protected Overrides Function GetValue() As Object

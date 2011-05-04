@@ -764,7 +764,7 @@ namespace AxeSoftware.Quest
 
         public void DoRedo(WorldModel worldModel)
         {
-            if (Property != "name")
+            if (Property != "name" || OldValue == null)
             {
                 worldModel.Object(m_appliesTo).Fields.SetFromUndo(Property, NewValue);
             }
@@ -772,6 +772,8 @@ namespace AxeSoftware.Quest
             {
                 // When redoing a name change, m_appliesTo will be incorrect as it will be the new object name.
                 // So in this specific case we get the appliesTo name from the old property value.
+                // (If OldValue is null then this is just setting the name property for a brand new object,
+                // so the above comment doesn't apply, and this case is handled in the above "if")
                 worldModel.Object((string)OldValue).Fields.SetFromUndo(Property, NewValue);
             }
         }

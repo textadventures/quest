@@ -13,7 +13,7 @@ namespace AxeSoftware.Quest
         WorldModel WorldModel { set; }
     }
 
-    internal abstract class ElementFactoryBase : IElementFactory
+    public abstract class ElementFactoryBase : IElementFactory
     {
         public abstract ElementType CreateElementType { get; }
 
@@ -52,7 +52,7 @@ namespace AxeSoftware.Quest
         public WorldModel WorldModel { get; set; }
     }
 
-    internal class ObjectFactory : ElementFactoryBase
+    public class ObjectFactory : ElementFactoryBase
     {
         public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
 
@@ -68,14 +68,19 @@ namespace AxeSoftware.Quest
             return CreateObject(objectName, ObjectType.Object);
         }
 
-        internal Element CreateObject(string objectName, ObjectType type)
+        public Element CreateObject(string objectName, ObjectType type)
         {
             return CreateObject(objectName, type, true);
         }
 
+        public Element CreateObject(ObjectType type)
+        {
+            return CreateObject(WorldModel.GetUniqueID(), type);
+        }
+
         internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog)
         {
-            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName));
+            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName, true, type));
             Element newObject = base.Create(objectName);
 
             newObject.Type = type;

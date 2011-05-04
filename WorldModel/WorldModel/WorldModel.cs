@@ -207,7 +207,7 @@ namespace AxeSoftware.Quest
             return m_elements.Get(ElementType.Object, name);
         }
 
-        internal ObjectFactory ObjectFactory
+        public ObjectFactory ObjectFactory
         {
             get { return m_objectFactory; }
         }
@@ -899,6 +899,16 @@ namespace AxeSoftware.Quest
         public ObjectType GetObjectTypeForTypeString(string typeString)
         {
             return Element.GetObjectTypeForTypeString(typeString);
+        }
+
+        public string GetTypeStringForElementType(ElementType type)
+        {
+            return Element.GetTypeStringForElementType(type);
+        }
+
+        public string GetTypeStringForObjectType(ObjectType type)
+        {
+            return Element.GetTypeStringForObjectType(type);
         }
 
         public bool IsDefaultTypeName(string typeName)

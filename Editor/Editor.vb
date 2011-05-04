@@ -37,6 +37,7 @@
         menu.AddMenuClickHandler("redo", AddressOf Redo)
         menu.AddMenuClickHandler("addobject", AddressOf AddNewObject)
         menu.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
+        menu.AddMenuClickHandler("addexit", AddressOf AddNewExit)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -56,6 +57,7 @@
 
         ctlTree.AddMenuClickHandler("addobject", AddressOf AddNewObject)
         ctlTree.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
+        ctlTree.AddMenuClickHandler("addexit", AddressOf AddNewExit)
     End Sub
 
     Private Sub SetUpEditors()
@@ -277,6 +279,17 @@
 
         m_controller.CreateNewRoom(result.Result, Nothing)
         ctlTree.SetSelectedItem(result.Result)
+    End Sub
+
+    Private Sub AddNewExit()
+        Dim parent As String
+        If m_controller.GetElementType(ctlTree.SelectedItem) = "object" AndAlso m_controller.GetObjectType(ctlTree.SelectedItem) = "object" Then
+            parent = ctlTree.SelectedItem
+        Else
+            parent = Nothing
+        End If
+
+        m_controller.CreateNewExit(parent)
     End Sub
 
     Private Function ValidateInput(input As String) As Boolean

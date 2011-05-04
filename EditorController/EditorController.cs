@@ -660,6 +660,18 @@ namespace AxeSoftware.Quest
             return WorldModel.Elements.GetElements(t).Select(e => e.Name);
         }
 
+        public string GetElementType(string element)
+        {
+            if (!WorldModel.Elements.ContainsKey(element)) return null;
+            return WorldModel.GetTypeStringForElementType(WorldModel.Elements.Get(element).ElemType);
+        }
+
+        public string GetObjectType(string element)
+        {
+            if (!WorldModel.Elements.ContainsKey(element)) return null;
+            return WorldModel.GetTypeStringForObjectType(WorldModel.Elements.Get(element).Type);
+        }
+
         public IEnumerable<string> GetObjectNames(string objectType)
         {
             ObjectType t = WorldModel.GetObjectTypeForTypeString(objectType);
@@ -724,6 +736,30 @@ namespace AxeSoftware.Quest
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create room '{0}'", name));
             CreateNewObject(name, parent, "editor_room");
             m_worldModel.UndoLogger.EndTransaction();
+        }
+
+        public string CreateNewExit(string parent)
+        {
+            string desc;
+            Element parentEl;
+            if (parent != null)
+            {
+                desc = string.Format("Create new exit in '{0}'", parent);
+                parentEl = m_worldModel.Elements.Get(ElementType.Object, parent);
+            }
+            else
+            {
+                desc = "Create new exit";
+                parentEl = null;
+            }
+
+            m_worldModel.UndoLogger.StartTransaction(desc);
+            Element newObject = m_worldModel.ObjectFactory.CreateObject(ObjectType.Exit);
+            newObject.Parent = parentEl;
+            newObject.Fields[FieldDefinitions.Anonymous] = true;
+            m_worldModel.UndoLogger.EndTransaction();
+
+            return newObject.Name;
         }
 
         private void CreateNewObject(string name, string parent, string editorType)
