@@ -301,15 +301,25 @@
     End Function
 
     Public Function CreateNewGame() As String
+        Dim templates As Dictionary(Of String, String) = GetAvailableTemplates()
         Dim newGameWindow As New NewGameWindow
-        newGameWindow.SetAvailableTemplates(GetAvailableTemplates())
+        newGameWindow.SetAvailableTemplates(templates)
         newGameWindow.ShowDialog()
 
         If newGameWindow.Cancelled Then Return Nothing
 
-        ' return path to new game file
+        Dim filename = newGameWindow.txtFilename.Text
+        Dim folder = System.IO.Path.GetDirectoryName(filename)
+        If Not System.IO.Directory.Exists(folder) Then
+            System.IO.Directory.CreateDirectory(folder)
+        End If
 
-        Return Nothing
+        Dim templateText = System.IO.File.ReadAllText(templates(newGameWindow.lstTemplate.Text))
+        Dim initialFileText = templateText.Replace("$NAME$", newGameWindow.txtGameName.Text)
+
+        System.IO.File.WriteAllText(filename, initialFileText)
+
+        Return filename
     End Function
 
     Public Function GetAvailableTemplates() As Dictionary(Of String, String)

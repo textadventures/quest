@@ -2,6 +2,7 @@
 
     Public Cancelled As Boolean
     Private m_templates As Dictionary(Of String, String)
+    Private m_manualFilename As Boolean = False
 
     Public Sub New()
 
@@ -13,6 +14,7 @@
     End Sub
 
     Private Sub SetFilename()
+        If m_manualFilename Then Return
         Dim myDocsFolder As String = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         Dim gamesFolder As String = System.IO.Path.Combine(myDocsFolder, "Quest Games")
         Dim filename As String = System.IO.Path.Combine(gamesFolder, GenerateFilename(txtGameName.Text))
@@ -54,5 +56,14 @@
 
     Private Sub txtGameName_TextChanged(sender As Object, e As System.EventArgs) Handles txtGameName.TextChanged
         SetFilename()
+        cmdOK.Enabled = txtGameName.Text.Length > 0
+    End Sub
+
+    Private Sub cmdBrowse_Click(sender As System.Object, e As System.EventArgs) Handles cmdBrowse.Click
+        ctlSaveDialog.FileName = txtFilename.Text
+        If ctlSaveDialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            txtFilename.Text = ctlSaveDialog.FileName
+            m_manualFilename = True
+        End If
     End Sub
 End Class

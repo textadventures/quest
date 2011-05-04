@@ -31,6 +31,7 @@ Partial Class NewGameWindow
         Me.cmdOK = New System.Windows.Forms.Button()
         Me.cmdCancel = New System.Windows.Forms.Button()
         Me.cmdBrowse = New System.Windows.Forms.Button()
+        Me.ctlSaveDialog = New System.Windows.Forms.SaveFileDialog()
         Me.SuspendLayout()
         '
         'Label1
@@ -84,12 +85,14 @@ Partial Class NewGameWindow
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtFilename.Location = New System.Drawing.Point(77, 72)
         Me.txtFilename.Name = "txtFilename"
+        Me.txtFilename.ReadOnly = True
         Me.txtFilename.Size = New System.Drawing.Size(322, 20)
         Me.txtFilename.TabIndex = 1
         '
         'cmdOK
         '
         Me.cmdOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdOK.Enabled = False
         Me.cmdOK.Location = New System.Drawing.Point(324, 117)
         Me.cmdOK.Name = "cmdOK"
         Me.cmdOK.Size = New System.Drawing.Size(75, 23)
@@ -117,6 +120,11 @@ Partial Class NewGameWindow
         Me.cmdBrowse.TabIndex = 2
         Me.cmdBrowse.Text = "Browse..."
         Me.cmdBrowse.UseVisualStyleBackColor = True
+        '
+        'ctlSaveDialog
+        '
+        Me.ctlSaveDialog.DefaultExt = "aslx"
+        Me.ctlSaveDialog.Filter = "Quest Games|*.aslx"
         '
         'NewGameWindow
         '
@@ -155,4 +163,5 @@ Partial Class NewGameWindow
     Friend WithEvents cmdOK As System.Windows.Forms.Button
     Friend WithEvents cmdCancel As System.Windows.Forms.Button
     Friend WithEvents cmdBrowse As System.Windows.Forms.Button
+    Friend WithEvents ctlSaveDialog As System.Windows.Forms.SaveFileDialog
 End Class
