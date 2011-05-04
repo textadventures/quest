@@ -42,6 +42,10 @@
         AddMenuData("debugger", MenuMode.Player)
         AddMenuData("windowmenu", MenuMode.Player)
         AddMenuData("add", MenuMode.Editor)
+        AddMenuData("open", MenuMode.GameBrowser, MenuMode.Player)
+        AddMenuData("openedit", MenuMode.GameBrowser, MenuMode.Editor)
+        AddMenuData("close", MenuMode.Editor, MenuMode.Player)
+        AddMenuData("createnew", MenuMode.GameBrowser, MenuMode.Editor)
     End Sub
 
     Private Sub AddMenuData(key As String, ParamArray modes() As MenuMode)
