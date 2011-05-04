@@ -23,7 +23,7 @@ Public Class DropDownObjectsControl
 
     Protected Overrides Sub SaveData(data As IEditorData)
         If lstDropdown.Text <> m_value.Reference Then
-            Controller.StartTransaction(String.Format("Change exit to '{0}'", lstDropdown.Text))
+            Controller.StartTransaction(String.Format("Change '{0}' to '{1}'", AttributeName, lstDropdown.Text))
             m_value.Reference = lstDropdown.Text
             Controller.EndTransaction()
         End If

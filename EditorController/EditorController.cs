@@ -597,6 +597,26 @@ namespace AxeSoftware.Quest
             return newValue;
         }
 
+        public IEditableObjectReference CreateNewEditableObjectReference(string parent, string attribute, bool useTransaction)
+        {
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} to object", parent, attribute));
+            }
+
+            Element element = m_worldModel.Elements.Get(parent);
+
+            // Point to itself as a sensible default
+            element.Fields.Set(attribute, element);
+
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.EndTransaction();
+            }
+
+            return new EditableObjectReference(this, element, element, attribute);
+        }
+
         public void Dispose()
         {
             m_worldModel.FinishGame();

@@ -13,7 +13,8 @@ Public Class MultiControl
         {"string", "textbox"},
         {"script", "script"},
         {"stringlist", "list"},
-        {"int", "number"}
+        {"int", "number"},
+        {"object", "objects"}
     }
 
     Private Shared s_typeNamesMap As Dictionary(Of Type, String) = New Dictionary(Of Type, String) From {
@@ -21,7 +22,8 @@ Public Class MultiControl
         {GetType(String), "string"},
         {GetType(IEditableScripts), "script"},
         {GetType(IEditableList(Of String)), "stringlist"},
-        {GetType(Integer), "int"}
+        {GetType(Integer), "int"},
+        {GetType(IEditableObjectReference), "object"}
     }
 
     Private m_storedValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
@@ -183,6 +185,8 @@ Public Class MultiControl
                     newValue = Controller.CreateNewEditableScripts(m_elementName, m_attributeName, Nothing, False)
                 Case "stringlist"
                     newValue = Controller.CreateNewEditableList(m_elementName, m_attributeName, Nothing, False)
+                Case "object"
+                    newValue = Controller.CreateNewEditableObjectReference(m_elementName, m_attributeName, False)
                 Case Else
                     Throw New InvalidOperationException
             End Select

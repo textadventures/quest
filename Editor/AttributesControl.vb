@@ -13,7 +13,8 @@ Public Class AttributesControl
             {"boolean", "Boolean"},
             {"int", "Integer"},
             {"script", "Script"},
-            {"stringlist", "String List"}
+            {"stringlist", "String List"},
+            {"object", "Object"}
         }
 
         Public Sub New(attribute As String)
@@ -287,6 +288,7 @@ Public Class AttributesControl
 
     Private Sub ctlMultiControl_Dirty(sender As Object, args As DataModifiedEventArgs) Handles ctlMultiControl.Dirty
         args.Attribute = GetSelectedAttribute()
+        If args.Attribute Is Nothing Then Return
         AttributeChangedInternal(args.Attribute, args.NewValue, False)
         RaiseEvent Dirty(Me, args)
     End Sub
