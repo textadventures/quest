@@ -10,6 +10,8 @@ namespace AxeSoftware.Quest
         private Dictionary<string, Element> m_allElements = new Dictionary<string, Element>();
         private Dictionary<ElementType, Dictionary<string, Element>> m_elements = new Dictionary<ElementType, Dictionary<string, Element>>();
 
+        public event EventHandler<NameChangedEventArgs> ElementRenamed;
+
         internal Elements()
         {
             foreach (ElementType t in Enum.GetValues(typeof(ElementType)))
@@ -22,6 +24,19 @@ namespace AxeSoftware.Quest
         {
             m_allElements.Add(key, e);
             m_elements[t].Add(key, e);
+
+            e.Fields.NameChanged += ElementNameChanged;
+        }
+
+        void ElementNameChanged(object sender, NameChangedEventArgs e)
+        {
+            m_allElements.Remove(e.OldName);
+            m_elements[e.Element.ElemType].Remove(e.OldName);
+
+            m_allElements.Add(e.Element.Name, e.Element);
+            m_elements[e.Element.ElemType].Add(e.Element.Name, e.Element);
+
+            if (ElementRenamed != null) ElementRenamed(this, e);
         }
 
         public void Remove(ElementType t, string key)

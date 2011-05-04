@@ -92,6 +92,10 @@
         ctlTree.RemoveNode(key)
     End Sub
 
+    Private Sub m_controller_RenamedNode(oldName As String, newName As String) Handles m_controller.RenamedNode
+        ctlTree.RenameNode(oldName, newName)
+    End Sub
+
     Private Sub m_controller_BeginTreeUpdate() Handles m_controller.BeginTreeUpdate
         ctlTree.BeginUpdate()
     End Sub

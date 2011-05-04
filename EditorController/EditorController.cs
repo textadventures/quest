@@ -53,6 +53,9 @@ namespace AxeSoftware.Quest
         public delegate void RemovedNodeHandler(string key);
         public event RemovedNodeHandler RemovedNode;
 
+        public delegate void RenamedNodeHandler(string oldName, string newName);
+        public event RenamedNodeHandler RenamedNode;
+
         public delegate void ShowMessageHandler(string message);
         public event ShowMessageHandler ShowMessage;
 
@@ -119,6 +122,7 @@ namespace AxeSoftware.Quest
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
             m_worldModel.UndoLogger.TransactionsUpdated += UndoLogger_TransactionsUpdated;
+            m_worldModel.Elements.ElementRenamed += Elements_ElementRenamed;
 
             bool ok = m_worldModel.InitialiseEdit();
 
@@ -149,6 +153,14 @@ namespace AxeSoftware.Quest
                 }
                 ShowMessage(message);
             }
+        }
+
+        void Elements_ElementRenamed(object sender, NameChangedEventArgs e)
+        {
+            string oldName = e.OldName;
+            string newName = e.Element.Name;
+
+            RenamedNode(oldName, newName);
         }
 
         void UndoLogger_TransactionsUpdated(object sender, EventArgs e)

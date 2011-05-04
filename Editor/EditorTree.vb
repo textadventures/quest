@@ -73,6 +73,14 @@ Public Class EditorTree
         m_nodes.Remove(key)
     End Sub
 
+    Public Sub RenameNode(oldKey As String, newKey As String)
+        Dim node As TreeNode = m_nodes(oldKey)
+        m_nodes.Remove(oldKey)
+        m_nodes.Add(newKey, node)
+        node.Name = newKey
+        node.Text = newKey
+    End Sub
+
     Public Sub SetAvailableFilters(filters As AvailableFilters)
         mnuFilter.DropDownItems.Clear()
         m_filterSettings = New FilterOptions

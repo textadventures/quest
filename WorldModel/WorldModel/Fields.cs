@@ -25,6 +25,12 @@ namespace AxeSoftware.Quest
         public bool InheritedTypesSet { get; private set; }
     }
 
+    public class NameChangedEventArgs : EventArgs
+    {
+        public string OldName { get; set; }
+        public Element Element { get; set; }
+    }
+
     public interface IMutableField
     {
         UndoLogger UndoLog { get; set; }
@@ -104,6 +110,7 @@ namespace AxeSoftware.Quest
         private LazyFields m_lazyFields;
         public event EventHandler<AttributeChangedEventArgs> AttributeChanged;
         public event EventHandler<AttributeChangedEventArgs> AttributeChangedSilent;
+        internal event EventHandler<NameChangedEventArgs> NameChanged;
         private bool m_mutableFieldsLocked = false;
 
         public Fields(WorldModel worldModel, Element element)
@@ -294,6 +301,20 @@ namespace AxeSoftware.Quest
             }
 
             m_attributes[name] = value;
+
+            if (name == "name" && !added && NameChanged != null)
+            {
+                if (!m_worldModel.EditMode)
+                {
+                    // Actually we could allow this I suppose but I don't think it's sensible.
+                    throw new InvalidOperationException("Cannot change name of element when not in Edit mode");
+                }
+                NameChanged(this, new NameChangedEventArgs
+                {
+                    OldName = (string)oldValue,
+                    Element = m_element
+                });
+            }
 
             if (raiseEvent)
             {
@@ -696,6 +717,8 @@ namespace AxeSoftware.Quest
             }
             
             m_added = added;
+
+            //System.Diagnostics.Debug.Print("UndoFieldSet: {0}.{1} from '{2}' to '{3}'", appliesTo, property, oldValue, newValue);
         }
 
         public string AppliesTo
@@ -741,7 +764,16 @@ namespace AxeSoftware.Quest
 
         public void DoRedo(WorldModel worldModel)
         {
-            worldModel.Object(m_appliesTo).Fields.SetFromUndo(Property, NewValue);
+            if (Property != "name")
+            {
+                worldModel.Object(m_appliesTo).Fields.SetFromUndo(Property, NewValue);
+            }
+            else
+            {
+                // When redoing a name change, m_appliesTo will be incorrect as it will be the new object name.
+                // So in this specific case we get the appliesTo name from the old property value.
+                worldModel.Object((string)OldValue).Fields.SetFromUndo(Property, NewValue);
+            }
         }
     }
 
