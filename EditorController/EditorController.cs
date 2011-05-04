@@ -56,6 +56,9 @@ namespace AxeSoftware.Quest
         public delegate void RenamedNodeHandler(string oldName, string newName);
         public event RenamedNodeHandler RenamedNode;
 
+        public delegate void RetitledNodeHandler(string key, string newTitle);
+        public event RetitledNodeHandler RetitledNode;
+
         public delegate void ShowMessageHandler(string message);
         public event ShowMessageHandler ShowMessage;
 
@@ -182,6 +185,14 @@ namespace AxeSoftware.Quest
                     AddElementAndSubElementsToTree(e.Element);
                     EndTreeUpdate();
                 }
+
+                if (e.Element.Type == ObjectType.Exit)
+                {
+                    if (e.Attribute == "anonymous" || e.Attribute=="alias")
+                    {
+                        RetitledNode(e.Element.Name, GetDisplayName(e.Element));
+                    }
+                }
             }
         }
 
@@ -307,7 +318,7 @@ namespace AxeSoftware.Quest
             // TO DO: Colours should be an option, so we probably shouldn't
             // even have a reference to System.Drawing in EditorController.
 
-            string text = o.Name;
+            string text = GetDisplayName(o);
             bool display = true;
             bool isLibrary = (o.MetaFields.GetAsType<bool>("library"));
 
@@ -331,6 +342,15 @@ namespace AxeSoftware.Quest
                     AddedNode(k_commands, "Commands", "game", null, null);
                 }
             }
+        }
+
+        private string GetDisplayName(Element e)
+        {
+            if (e.Type == ObjectType.Exit && e.Fields[FieldDefinitions.Anonymous])
+            {
+                return "Exit: " + e.Fields[FieldDefinitions.Alias];
+            }
+            return e.Name;
         }
 
         public AvailableFilters AvailableFilters

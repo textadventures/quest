@@ -99,6 +99,10 @@
         ctlTree.RenameNode(oldName, newName)
     End Sub
 
+    Private Sub m_controller_RetitledNode(key As String, newTitle As String) Handles m_controller.RetitledNode
+        ctlTree.RetitleNode(key, newTitle)
+    End Sub
+
     Private Sub m_controller_BeginTreeUpdate() Handles m_controller.BeginTreeUpdate
         ctlTree.BeginUpdate()
     End Sub

@@ -81,6 +81,11 @@ Public Class EditorTree
         node.Text = newKey
     End Sub
 
+    Public Sub RetitleNode(key As String, title As String)
+        Dim node As TreeNode = m_nodes(key)
+        node.Text = title
+    End Sub
+
     Public Sub SetAvailableFilters(filters As AvailableFilters)
         mnuFilter.DropDownItems.Clear()
         m_filterSettings = New FilterOptions
