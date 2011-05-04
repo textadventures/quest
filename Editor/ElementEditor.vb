@@ -232,6 +232,17 @@
             For Each ctl As EditorControl In m_controls.Where(Function(c) c.IsMultiAttributeEditor)
                 ctl.AttributeChanged(attribute, newValue)
             Next
+
+            ' notify any controls that are listening for related attribute updates. For example if the "anonymous" attribute
+            ' is updated, the displayed value for "name" is affected.
+
+            Dim affectedAttributes As IEnumerable(Of String) = m_data.GetAffectedRelatedAttributes(attribute)
+            If affectedAttributes IsNot Nothing Then
+                For Each affectedAttribute In affectedAttributes
+                    UpdateField(affectedAttribute, m_data.GetAttribute(affectedAttribute), False)
+                Next
+            End If
+
         End If
     End Sub
 

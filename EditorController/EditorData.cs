@@ -69,7 +69,7 @@ namespace AxeSoftware.Quest
 
         public object GetAttribute(string attribute)
         {
-            if (attribute == "name" && m_element.MetaFields[MetaFieldDefinitions.Anonymous])
+            if (attribute == "name" && m_element.Fields[FieldDefinitions.Anonymous])
             {
                 return string.Empty;
             }
@@ -78,9 +78,9 @@ namespace AxeSoftware.Quest
 
         public void SetAttribute(string attribute, object value)
         {
-            if (attribute == "name" && m_element.MetaFields[MetaFieldDefinitions.Anonymous])
+            if (attribute == "name" && m_element.Fields[FieldDefinitions.Anonymous])
             {
-                m_element.MetaFields[MetaFieldDefinitions.Anonymous] = false;
+                m_element.Fields[FieldDefinitions.Anonymous] = false;
             }
             IDataWrapper wrapper = value as IDataWrapper;
             if (wrapper != null)
@@ -88,6 +88,20 @@ namespace AxeSoftware.Quest
                 value = wrapper.GetUnderlyingValue();
             }
             m_element.Fields.Set(attribute, value);
+        }
+
+        // When the "anonymous" field is updated, that affects how the "name" attribute is displayed.
+
+        public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+        {
+            if (attribute == "anonymous")
+            {
+                return new List<string> { "name" };
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public IEnumerable<IEditorAttributeData> GetAttributeData()

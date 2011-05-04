@@ -66,6 +66,11 @@ namespace AxeSoftware.Quest
                 }
             }
 
+            public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+            {
+                return null;
+            }
+
             public string Id
             {
                 get { return m_elseIfScript.Id; }
@@ -273,6 +278,11 @@ namespace AxeSoftware.Quest
             {
                 throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
             }
+        }
+
+        public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+        {
+            return null;
         }
 
         public void AddElse()

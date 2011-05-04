@@ -194,7 +194,7 @@ namespace AxeSoftware.Quest
 
                 if (anonymous)
                 {
-                    newCommand.MetaFields[MetaFieldDefinitions.Anonymous] = true;
+                    newCommand.Fields[FieldDefinitions.Anonymous] = true;
                 }
 
                 if (current != null)

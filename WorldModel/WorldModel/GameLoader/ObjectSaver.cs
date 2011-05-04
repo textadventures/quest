@@ -233,6 +233,7 @@ namespace AxeSoftware.Quest
                 public CommandSaver()
                 {
                     AddIgnoreField("isverb");
+                    AddIgnoreField("anonymous");
                 }
 
                 #region IObjectSaver Members
@@ -252,7 +253,7 @@ namespace AxeSoftware.Quest
                     {
                         writer.WriteStartElement("command");
                     }
-                    if (!e.MetaFields[MetaFieldDefinitions.Anonymous])
+                    if (!e.Fields[FieldDefinitions.Anonymous])
                     {
                         writer.WriteAttributeString("name", e.Name);
                     }
@@ -273,6 +274,7 @@ namespace AxeSoftware.Quest
                 {
                     AddIgnoreField("to");
                     AddIgnoreField("alias");
+                    AddIgnoreField("anonymous");
                 }
 
                 public override ObjectType AppliesTo
@@ -283,7 +285,7 @@ namespace AxeSoftware.Quest
                 public override void StartSave(GameXmlWriter writer, Element e)
                 {
                     writer.WriteStartElement("exit");
-                    if (!e.MetaFields[MetaFieldDefinitions.Anonymous])
+                    if (!e.Fields[FieldDefinitions.Anonymous])
                     {
                         writer.WriteAttributeString("name", e.Name);
                     }

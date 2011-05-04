@@ -12,7 +12,7 @@ namespace AxeSoftware.Quest
         private Element m_object;
         private EditorController m_controller;
 
-        public event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated;
+        public event EventHandler<DataWrapperUpdatedEventArgs> UnderlyingValueUpdated { add { } remove { } }
 
         public EditableObjectReference(EditorController controller, Element obj, Element parent, string attribute)
         {

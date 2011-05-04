@@ -89,11 +89,11 @@ namespace AxeSoftware.Quest
         public static IField<string> Element = new FieldDef<string>("element");
         public static IField<string> Type = new FieldDef<string>("type");
         public static IField<string> Src = new FieldDef<string>("src");
+        public static IField<bool> Anonymous = new FieldDef<bool>("anonymous");
     }
 
     public static class MetaFieldDefinitions
     {
-        public static IField<bool> Anonymous = new FieldDef<bool>("anonymous");
         public static IField<string> Filename = new FieldDef<string>("filename");
         public static IField<bool> Library = new FieldDef<bool>("library");
         public static IField<bool> DelegateImplementation = new FieldDef<bool>("delegateimplementation");

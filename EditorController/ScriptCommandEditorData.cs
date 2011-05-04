@@ -40,5 +40,10 @@ namespace AxeSoftware.Quest
         {
             m_script.SetParameter(int.Parse(attribute), (string)value);
         }
+
+        public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+        {
+            return null;
+        }
     }
 }

@@ -149,7 +149,7 @@ namespace AxeSoftware.Quest
             string exitID = fromRoom.Name + "." + exitName;
             if (WorldModel.ObjectExists(exitID)) exitID = WorldModel.GetUniqueID(exitID);
             Element newExit = CreateExit(exitID, exitName, fromRoom, toRoom);
-            newExit.MetaFields[MetaFieldDefinitions.Anonymous] = true;
+            newExit.Fields[FieldDefinitions.Anonymous] = true;
             return newExit;
         }
 
