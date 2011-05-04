@@ -69,11 +69,19 @@ namespace AxeSoftware.Quest
 
         public object GetAttribute(string attribute)
         {
+            if (attribute == "name" && m_element.MetaFields[MetaFieldDefinitions.Anonymous])
+            {
+                return string.Empty;
+            }
             return m_controller.WrapValue(m_element.Fields.Get(attribute), m_element, attribute);
         }
 
         public void SetAttribute(string attribute, object value)
         {
+            if (attribute == "name" && m_element.MetaFields[MetaFieldDefinitions.Anonymous])
+            {
+                m_element.MetaFields[MetaFieldDefinitions.Anonymous] = false;
+            }
             IDataWrapper wrapper = value as IDataWrapper;
             if (wrapper != null)
             {

@@ -43,7 +43,7 @@ namespace AxeSoftware.Quest
         IMutableField Clone();
     }
 
-    internal interface IField<T>
+    public interface IField<T>
     {
         string Property { get; }
     }
@@ -60,7 +60,7 @@ namespace AxeSoftware.Quest
         public string Property { get { return m_property; } }
     }
 
-    internal static class FieldDefinitions
+    public static class FieldDefinitions
     {
         public static IField<string> Alias = new FieldDef<string>("alias");
         public static IField<QuestList<string>> DisplayVerbs = new FieldDef<QuestList<string>>("displayverbs");
@@ -85,7 +85,7 @@ namespace AxeSoftware.Quest
         public static IField<string> Src = new FieldDef<string>("src");
     }
 
-    internal static class MetaFieldDefinitions
+    public static class MetaFieldDefinitions
     {
         public static IField<bool> Anonymous = new FieldDef<bool>("anonymous");
         public static IField<string> Filename = new FieldDef<string>("filename");
@@ -115,7 +115,7 @@ namespace AxeSoftware.Quest
         }
 
         #region Indexed Properties
-        internal string this[IField<string> field]
+        public string this[IField<string> field]
         {
             get
             {
@@ -127,7 +127,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        internal QuestList<string> this[IField<QuestList<string>> field]
+        public QuestList<string> this[IField<QuestList<string>> field]
         {
             get
             {
@@ -139,7 +139,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        internal IScript this[IField<IScript> field]
+        public IScript this[IField<IScript> field]
         {
             get
             {
@@ -151,7 +151,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        internal Element this[IField<Element> field]
+        public Element this[IField<Element> field]
         {
             get
             {
@@ -163,7 +163,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        internal bool this[IField<bool> field]
+        public bool this[IField<bool> field]
         {
             get
             {
@@ -175,7 +175,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        internal IFunction<string> this[IField<IFunction<string>> field]
+        public IFunction<string> this[IField<IFunction<string>> field]
         {
             get
             {
