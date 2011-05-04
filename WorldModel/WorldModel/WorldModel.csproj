@@ -163,6 +163,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Core\English.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Examples-Internal\forest.aslx" />
     <None Include="Examples-Internal\media.aslx" />
     <None Include="Examples-Public\template.aslx" />

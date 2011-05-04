@@ -24,6 +24,7 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("exit", AddressOf ExitMenuClick)
         ctlMenu.AddMenuClickHandler("openedit", AddressOf OpenEditMenuClick)
         ctlMenu.AddMenuClickHandler("restart", AddressOf RestartMenuClick)
+        ctlMenu.AddMenuClickHandler("createnew", AddressOf CreateNewMenuClick)
     End Sub
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
@@ -145,6 +146,14 @@ Public Class Main
 
     Private Sub OpenEditMenuClick()
         BrowseEdit()
+    End Sub
+
+    Private Sub CreateNewMenuClick()
+        Dim newFile = ctlEditor.CreateNewGame()
+
+        If String.IsNullOrEmpty(newFile) Then Return
+
+        LaunchEdit(newFile)
     End Sub
 
     Private Sub BrowseEdit()

@@ -300,4 +300,29 @@
         Return False
     End Function
 
+    Public Function CreateNewGame() As String
+        Dim newGameWindow As New NewGameWindow
+        newGameWindow.SetAvailableTemplates(GetAvailableTemplates())
+        newGameWindow.ShowDialog()
+
+        If newGameWindow.Cancelled Then Return Nothing
+
+        ' return path to new game file
+
+        Return Nothing
+    End Function
+
+    Public Function GetAvailableTemplates() As Dictionary(Of String, String)
+        Dim templates As New Dictionary(Of String, String)
+
+        Dim folder As String = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase)
+        folder = folder.Substring(6) ' remove initial "file://"
+
+        For Each file In System.IO.Directory.GetFiles(folder, "*.template")
+            templates.Add(System.IO.Path.GetFileNameWithoutExtension(file), file)
+        Next
+
+        Return templates
+    End Function
+
 End Class
