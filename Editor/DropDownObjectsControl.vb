@@ -22,16 +22,25 @@ Public Class DropDownObjectsControl
     End Property
 
     Protected Overrides Sub SaveData(data As IEditorData)
-        ' Do nothing when a Save is requested. The IEditableObjectReference is updated directly
-        ' when the dropdown selection changes.
+        If lstDropdown.Text <> m_value.Reference Then
+            Controller.StartTransaction(String.Format("Change exit to '{0}'", lstDropdown.Text))
+            m_value.Reference = lstDropdown.Text
+            Controller.EndTransaction()
+        End If
     End Sub
 
     Protected Overrides Sub PopulateData(data As IEditorData)
         SetValue(data.GetAttribute(AttributeName))
     End Sub
 
+    Private m_value As IEditableObjectReference
+
     Protected Overrides Sub SetValue(value As Object)
-        Dim obj = DirectCast(value, IEditableObjectReference)
-        lstDropdown.Text = obj.Reference
+        m_value = DirectCast(value, IEditableObjectReference)
+        lstDropdown.Text = m_value.Reference
     End Sub
+
+    Protected Overrides Function GetValue() As Object
+        Return m_value
+    End Function
 End Class

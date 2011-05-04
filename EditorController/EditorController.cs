@@ -161,7 +161,7 @@ namespace AxeSoftware.Quest
         {
             if (m_initialised)
             {
-                if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue), e.IsUndo));
+                if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue, e.Element, e.Attribute), e.IsUndo));
 
                 if (e.Attribute == "parent")
                 {
@@ -448,6 +448,11 @@ namespace AxeSoftware.Quest
 
         internal object WrapValue(object value)
         {
+            return WrapValue(value, null, null);
+        }
+
+        internal object WrapValue(object value, Element element, string attribute)
+        {
             if (value is IScript)
             {
                 return EditableScripts.GetInstance(this, (IScript)value);
@@ -470,7 +475,11 @@ namespace AxeSoftware.Quest
 
             if (value is Element)
             {
-                return new EditableObjectReference(this, (Element)value);
+                if (element == null || attribute == null)
+                {
+                    throw new InvalidOperationException("Parent element and attribute must be specified to wrap object reference");
+                }
+                return new EditableObjectReference(this, (Element)value, element, attribute);
             }
 
             return value;

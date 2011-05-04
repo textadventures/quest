@@ -69,7 +69,7 @@ namespace AxeSoftware.Quest
 
         public object GetAttribute(string attribute)
         {
-            return m_controller.WrapValue(m_element.Fields.Get(attribute));
+            return m_controller.WrapValue(m_element.Fields.Get(attribute), m_element, attribute);
         }
 
         public void SetAttribute(string attribute, object value)
