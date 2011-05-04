@@ -93,6 +93,9 @@
     End Sub
 
     Private Sub m_controller_RenamedNode(oldName As String, newName As String) Handles m_controller.RenamedNode
+        If m_currentElement = oldName Then
+            m_currentElement = newName
+        End If
         ctlTree.RenameNode(oldName, newName)
     End Sub
 
