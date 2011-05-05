@@ -493,6 +493,10 @@ namespace AxeSoftware.Quest
                 string to = reader.GetAttribute("to");
                 string id = reader.GetAttribute("name");
                 Element newElement;
+                if (string.IsNullOrEmpty(alias) && !WorldModel.EditMode)
+                {
+                    alias = to;
+                }
                 if (string.IsNullOrEmpty(id))
                 {
                     newElement = WorldModel.ObjectFactory.CreateExitLazy(alias, (Element)current, to);

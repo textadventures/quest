@@ -6,15 +6,17 @@
       <caption>Exit</caption>
 
       <control>
-        <caption>Name</caption>
-        <controltype>textbox</controltype>
-        <attribute>name</attribute>
+        <caption>To</caption>
+        <controltype>objects</controltype>
+        <attribute>to</attribute>
+        <width>200</width>
       </control>
 
       <control>
         <caption>Alias</caption>
         <controltype>textbox</controltype>
         <attribute>alias</attribute>
+        <nullable/>
       </control>
 
       <control>
@@ -24,11 +26,11 @@
       </control>
 
       <control>
-        <caption>To</caption>
-        <controltype>objects</controltype>
-        <attribute>to</attribute>
-        <width>200</width>
+        <caption>Name</caption>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
       </control>
+
     </tab>
 
     <tab>

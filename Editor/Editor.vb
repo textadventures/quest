@@ -289,7 +289,8 @@
             parent = Nothing
         End If
 
-        m_controller.CreateNewExit(parent)
+        Dim newExit = m_controller.CreateNewExit(parent)
+        ctlTree.SetSelectedItem(newExit)
     End Sub
 
     Private Function ValidateInput(input As String) As Boolean
