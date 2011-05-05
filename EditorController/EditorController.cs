@@ -188,7 +188,7 @@ namespace AxeSoftware.Quest
 
                 if (e.Element.Type == ObjectType.Exit)
                 {
-                    if (e.Attribute == "anonymous" || e.Attribute=="alias")
+                    if (e.Attribute == "anonymous" || e.Attribute == "to" || e.Attribute == "name")
                     {
                         RetitledNode(e.Element.Name, GetDisplayName(e.Element));
                     }
@@ -348,9 +348,15 @@ namespace AxeSoftware.Quest
         {
             if (e.Type == ObjectType.Exit && e.Fields[FieldDefinitions.Anonymous])
             {
-                return "Exit: " + e.Fields[FieldDefinitions.Alias];
+                Element to = e.Fields[FieldDefinitions.To];
+                return "Exit: " + (to == null ? "(nowhere)" : to.Name);
             }
             return e.Name;
+        }
+
+        public string GetDisplayName(string element)
+        {
+            return GetDisplayName(m_worldModel.Elements.Get(element));
         }
 
         public AvailableFilters AvailableFilters

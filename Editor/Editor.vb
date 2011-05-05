@@ -102,6 +102,9 @@
     End Sub
 
     Private Sub m_controller_RetitledNode(key As String, newTitle As String) Handles m_controller.RetitledNode
+        If (m_currentElement = key) Then
+            lblHeader.Text = newTitle
+        End If
         ctlTree.RetitleNode(key, newTitle)
     End Sub
 
@@ -168,7 +171,7 @@
 
         m_currentElement = key
         m_currentEditor.Populate(m_controller.GetEditorData(key))
-        lblHeader.Text = key
+        lblHeader.Text = m_controller.GetDisplayName(key)
     End Sub
 
     Private Sub Save()

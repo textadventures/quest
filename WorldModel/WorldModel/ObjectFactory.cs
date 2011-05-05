@@ -75,7 +75,14 @@ namespace AxeSoftware.Quest
 
         public Element CreateObject(ObjectType type)
         {
-            return CreateObject(WorldModel.GetUniqueID(), type);
+            if (type == ObjectType.Exit)
+            {
+                return CreateObject(WorldModel.GetUniqueID("exit"), type);
+            }
+            else
+            {
+                return CreateObject(WorldModel.GetUniqueID(), type);
+            }
         }
 
         internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog)
@@ -151,7 +158,7 @@ namespace AxeSoftware.Quest
 
         public Element CreateExit(string exitName, Element fromRoom, Element toRoom)
         {
-            string exitID = fromRoom.Name + "." + exitName;
+            string exitID = WorldModel.GetUniqueID("exit");
             if (WorldModel.ObjectExists(exitID)) exitID = WorldModel.GetUniqueID(exitID);
             Element newExit = CreateExit(exitID, exitName, fromRoom, toRoom);
             newExit.Fields[FieldDefinitions.Anonymous] = true;
