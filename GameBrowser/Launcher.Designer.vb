@@ -22,11 +22,12 @@ Partial Class Launcher
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.ctlTabs = New System.Windows.Forms.TabControl
-        Me.tabPlay = New System.Windows.Forms.TabPage
-        Me.ctlPlayBrowser = New GameBrowser.PlayBrowser
-        Me.tabEdit = New System.Windows.Forms.TabPage
-        Me.ctlEditBrowser = New GameBrowser.EditBrowser
+        Me.ctlTabs = New System.Windows.Forms.TabControl()
+        Me.tabPlay = New System.Windows.Forms.TabPage()
+        Me.ctlPlayBrowser = New GameBrowser.PlayBrowser()
+        Me.tabEdit = New System.Windows.Forms.TabPage()
+        Me.ctlEditBrowser = New GameBrowser.EditBrowser()
+        Me.BetaInfo1 = New GameBrowser.BetaInfo()
         Me.ctlTabs.SuspendLayout()
         Me.tabPlay.SuspendLayout()
         Me.tabEdit.SuspendLayout()
@@ -42,7 +43,7 @@ Partial Class Launcher
         Me.ctlTabs.Name = "ctlTabs"
         Me.ctlTabs.Padding = New System.Drawing.Point(0, 0)
         Me.ctlTabs.SelectedIndex = 0
-        Me.ctlTabs.Size = New System.Drawing.Size(872, 482)
+        Me.ctlTabs.Size = New System.Drawing.Size(663, 383)
         Me.ctlTabs.TabIndex = 0
         '
         'tabPlay
@@ -50,7 +51,7 @@ Partial Class Launcher
         Me.tabPlay.Controls.Add(Me.ctlPlayBrowser)
         Me.tabPlay.Location = New System.Drawing.Point(4, 22)
         Me.tabPlay.Name = "tabPlay"
-        Me.tabPlay.Size = New System.Drawing.Size(864, 456)
+        Me.tabPlay.Size = New System.Drawing.Size(655, 357)
         Me.tabPlay.TabIndex = 0
         Me.tabPlay.Tag = ""
         Me.tabPlay.Text = "Play"
@@ -62,7 +63,7 @@ Partial Class Launcher
         Me.ctlPlayBrowser.Location = New System.Drawing.Point(0, 0)
         Me.ctlPlayBrowser.Margin = New System.Windows.Forms.Padding(0)
         Me.ctlPlayBrowser.Name = "ctlPlayBrowser"
-        Me.ctlPlayBrowser.Size = New System.Drawing.Size(864, 456)
+        Me.ctlPlayBrowser.Size = New System.Drawing.Size(655, 357)
         Me.ctlPlayBrowser.TabIndex = 0
         '
         'tabEdit
@@ -70,7 +71,7 @@ Partial Class Launcher
         Me.tabEdit.Controls.Add(Me.ctlEditBrowser)
         Me.tabEdit.Location = New System.Drawing.Point(4, 22)
         Me.tabEdit.Name = "tabEdit"
-        Me.tabEdit.Size = New System.Drawing.Size(864, 456)
+        Me.tabEdit.Size = New System.Drawing.Size(592, 456)
         Me.tabEdit.TabIndex = 1
         Me.tabEdit.Tag = ""
         Me.tabEdit.Text = "Edit"
@@ -82,16 +83,26 @@ Partial Class Launcher
         Me.ctlEditBrowser.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlEditBrowser.Location = New System.Drawing.Point(0, 0)
         Me.ctlEditBrowser.Name = "ctlEditBrowser"
-        Me.ctlEditBrowser.Size = New System.Drawing.Size(864, 456)
+        Me.ctlEditBrowser.Size = New System.Drawing.Size(592, 456)
         Me.ctlEditBrowser.TabIndex = 2
+        '
+        'BetaInfo1
+        '
+        Me.BetaInfo1.BackColor = System.Drawing.Color.White
+        Me.BetaInfo1.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.BetaInfo1.Location = New System.Drawing.Point(0, 383)
+        Me.BetaInfo1.Name = "BetaInfo1"
+        Me.BetaInfo1.Size = New System.Drawing.Size(663, 74)
+        Me.BetaInfo1.TabIndex = 2
         '
         'Launcher
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.Controls.Add(Me.ctlTabs)
+        Me.Controls.Add(Me.BetaInfo1)
         Me.Name = "Launcher"
-        Me.Size = New System.Drawing.Size(872, 482)
+        Me.Size = New System.Drawing.Size(663, 457)
         Me.ctlTabs.ResumeLayout(False)
         Me.tabPlay.ResumeLayout(False)
         Me.tabEdit.ResumeLayout(False)
@@ -103,5 +114,6 @@ Partial Class Launcher
     Friend WithEvents tabEdit As System.Windows.Forms.TabPage
     Friend WithEvents ctlPlayBrowser As GameBrowser.PlayBrowser
     Friend WithEvents ctlEditBrowser As GameBrowser.EditBrowser
+    Friend WithEvents BetaInfo1 As GameBrowser.BetaInfo
 
 End Class

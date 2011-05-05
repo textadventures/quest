@@ -130,6 +130,12 @@
     <Compile Include="BetaInfo.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="BrowseFilter.Designer.vb">
+      <DependentUpon>BrowseFilter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BrowseFilter.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="EditBrowser.Designer.vb">
       <DependentUpon>EditBrowser.vb</DependentUpon>
     </Compile>
@@ -171,6 +177,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="OnlineGames.vb" />
     <Compile Include="PlayBrowser.Designer.vb">
       <DependentUpon>PlayBrowser.vb</DependentUpon>
     </Compile>
@@ -182,6 +189,9 @@
   <ItemGroup>
     <EmbeddedResource Include="BetaInfo.resx">
       <DependentUpon>BetaInfo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BrowseFilter.resx">
+      <DependentUpon>BrowseFilter.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditBrowser.resx">
       <DependentUpon>EditBrowser.vb</DependentUpon>

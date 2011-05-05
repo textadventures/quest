@@ -205,4 +205,8 @@ Public Class Main
         m_playingEditorGame = True
         Launch(filename)
     End Sub
+
+    Private Sub Main_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
+        ctlLauncher.MainWindowShown()
+    End Sub
 End Class

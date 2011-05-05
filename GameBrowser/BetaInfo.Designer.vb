@@ -22,11 +22,11 @@ Partial Class BetaInfo
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.Label1 = New System.Windows.Forms.Label
-        Me.Label2 = New System.Windows.Forms.Label
-        Me.LinkLabel1 = New System.Windows.Forms.LinkLabel
-        Me.Label3 = New System.Windows.Forms.Label
-        Me.LinkLabel2 = New System.Windows.Forms.LinkLabel
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.LinkLabel1 = New System.Windows.Forms.LinkLabel()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.LinkLabel2 = New System.Windows.Forms.LinkLabel()
         Me.SuspendLayout()
         '
         'Label1
@@ -52,7 +52,7 @@ Partial Class BetaInfo
         'LinkLabel1
         '
         Me.LinkLabel1.AutoSize = True
-        Me.LinkLabel1.Location = New System.Drawing.Point(72, 48)
+        Me.LinkLabel1.Location = New System.Drawing.Point(228, 31)
         Me.LinkLabel1.Name = "LinkLabel1"
         Me.LinkLabel1.Size = New System.Drawing.Size(89, 13)
         Me.LinkLabel1.TabIndex = 2
@@ -62,7 +62,7 @@ Partial Class BetaInfo
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(7, 79)
+        Me.Label3.Location = New System.Drawing.Point(4, 54)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(109, 13)
         Me.Label3.TabIndex = 3
@@ -71,7 +71,7 @@ Partial Class BetaInfo
         'LinkLabel2
         '
         Me.LinkLabel2.AutoSize = True
-        Me.LinkLabel2.Location = New System.Drawing.Point(75, 96)
+        Me.LinkLabel2.Location = New System.Drawing.Point(119, 54)
         Me.LinkLabel2.Name = "LinkLabel2"
         Me.LinkLabel2.Size = New System.Drawing.Size(84, 13)
         Me.LinkLabel2.TabIndex = 4
@@ -88,7 +88,7 @@ Partial Class BetaInfo
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
         Me.Name = "BetaInfo"
-        Me.Size = New System.Drawing.Size(474, 284)
+        Me.Size = New System.Drawing.Size(474, 82)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

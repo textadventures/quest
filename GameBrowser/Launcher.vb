@@ -35,4 +35,8 @@
         ctlPlayBrowser.Populate()
         ctlEditBrowser.Populate()
     End Sub
+
+    Public Sub MainWindowShown()
+        ctlPlayBrowser.MainWindowShown()
+    End Sub
 End Class
