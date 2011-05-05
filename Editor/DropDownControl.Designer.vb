@@ -27,6 +27,8 @@ Partial Class DropDownControl
         '
         'lstDropdown
         '
+        Me.lstDropdown.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest
+        Me.lstDropdown.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
         Me.lstDropdown.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lstDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.lstDropdown.FormattingEnabled = True

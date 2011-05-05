@@ -14,9 +14,12 @@
 
       <control>
         <caption>Alias</caption>
-        <controltype>textbox</controltype>
+        <controltype>dropdown</controltype>
         <attribute>alias</attribute>
+        <validvalues type="list">north;south;east;west;northeast;northwest;southeast;southwest;up;down</validvalues>
+        <freetext/>
         <nullable/>
+        <width>200</width>
       </control>
 
       <control>

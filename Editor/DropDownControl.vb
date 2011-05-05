@@ -32,7 +32,7 @@ Public Class DropDownControl
 
     Protected Overridable Sub SetValue(value As Object)
         Dim stringValue As String = TryCast(value, String)
-        If stringValue Is Nothing Then
+        If stringValue IsNot Nothing Then
             lstDropdown.Text = stringValue
         Else
             lstDropdown.Text = String.Empty
@@ -103,6 +103,9 @@ Public Class DropDownControl
 
     Protected Overridable Sub InitialiseControl(controlData As IEditorControl)
         If controlData IsNot Nothing Then
+            If controlData.GetBool("freetext") Then
+                lstDropdown.DropDownStyle = ComboBoxStyle.DropDown
+            End If
             Dim validValues As String() = New List(Of String)(controlData.GetListString("validvalues")).ToArray()
             lstDropdown.Items.AddRange(validValues)
         Else
@@ -113,6 +116,10 @@ Public Class DropDownControl
     Public Sub Initialise(attributeName As String)
         m_attribute = attributeName
         m_attributeName = attributeName
+    End Sub
+
+    Private Sub lstDropdown_Leave(sender As Object, e As System.EventArgs) Handles lstDropdown.Leave
+        Save(m_data)
     End Sub
 
     Private Sub lstDropdown_SelectionChangeCommitted(sender As Object, e As System.EventArgs) Handles lstDropdown.SelectionChangeCommitted
