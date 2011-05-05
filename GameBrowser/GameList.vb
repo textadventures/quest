@@ -33,16 +33,42 @@ Friend Class GameList
 
         ClearListElements()
 
-        For Each recent As GameListItemData In list
+        For Each data As GameListItemData In list
             count += 1
 
             newItem = New GameListItem
             newItem.Dock = DockStyle.Fill
             newItem.Width = Me.Width
-            newItem.GameName = recent.GameName
-            newItem.GameInfo = System.IO.Path.GetFileName(recent.Filename)
-            newItem.Filename = recent.Filename
-            newItem.LaunchCaption = m_launchCaption
+            newItem.GameName = data.GameName
+            If String.IsNullOrEmpty(data.Filename) Then
+                newItem.URL = data.URL
+
+                Dim downloadFolder As String = System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "Quest Games",
+                    "Downloaded Games")
+
+                System.IO.Directory.CreateDirectory(downloadFolder)
+
+                Dim downloadFilename As String = System.IO.Path.Combine(
+                    downloadFolder, data.DownloadFilename)
+
+                newItem.DownloadFilename = downloadFilename
+
+                If System.IO.File.Exists(downloadFilename) Then
+                    ' The file has already been downloaded
+                    data.Filename = downloadFilename
+                End If
+            End If
+
+            If Not String.IsNullOrEmpty(data.Filename) Then
+                newItem.GameInfo = System.IO.Path.GetFileName(data.Filename)
+                newItem.Filename = data.Filename
+                newItem.LaunchCaption = m_launchCaption
+            Else
+                newItem.CurrentState = GameListItem.State.NotDownloaded
+            End If
+
             AddHandler newItem.Launch, AddressOf LaunchHandler
             m_gameListItems.Add(newItem)
 

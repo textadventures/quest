@@ -11,6 +11,7 @@
         ' Add any initialization after the InitializeComponent() call.
         m_recentItems = New RecentItems("Recent")
         ctlGameList.LaunchCaption = "Play"
+        ctlOnlineGameList.LaunchCaption = "Play"
         Populate()
     End Sub
 
@@ -19,6 +20,10 @@
     End Sub
 
     Private Sub ctlGameList_Launch(filename As String) Handles ctlGameList.Launch
+        RaiseEvent LaunchGame(filename)
+    End Sub
+
+    Private Sub ctlOnlineGameList_Launch(filename As String) Handles ctlOnlineGameList.Launch
         RaiseEvent LaunchGame(filename)
     End Sub
 
@@ -37,4 +42,13 @@
     Private Sub PopulateCategories()
         ctlBrowseFilter.Populate((From cat In m_onlineGames.Categories Select cat.Title).ToArray())
     End Sub
+
+    Private Sub ctlBrowseFilter_CategoryChanged(category As String) Handles ctlBrowseFilter.CategoryChanged
+        PopulateGames(category)
+    End Sub
+
+    Private Sub PopulateGames(category As String)
+        m_onlineGames.PopulateGameList(category, ctlOnlineGameList)
+    End Sub
+
 End Class

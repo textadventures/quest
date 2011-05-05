@@ -82,7 +82,7 @@ Partial Class PlayBrowser
         Me.lblBrowseTitle.Name = "lblBrowseTitle"
         Me.lblBrowseTitle.Size = New System.Drawing.Size(300, 23)
         Me.lblBrowseTitle.TabIndex = 4
-        Me.lblBrowseTitle.Text = "Title"
+        Me.lblBrowseTitle.Text = "Get Games"
         '
         'ctlGameList
         '

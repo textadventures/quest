@@ -7,6 +7,7 @@
     Public Class GameData
         Public Name As String
         Public Ref As String
+        Public Filename As String
     End Class
 
     Public Class GameCategory
@@ -40,7 +41,8 @@
                                 .Games = (From game In cat.Descendants("game")
                                           Select New GameData With {
                                                  .Name = game.@name,
-                                                 .Ref = game.@ref
+                                                 .Ref = game.@ref,
+                                                 .Filename = game.@filename
                                           }).ToList()
                          }).ToList()
 
@@ -52,5 +54,20 @@
             Return m_categories.AsReadOnly()
         End Get
     End Property
+
+    Private Function GetGames(category As String) As IEnumerable(Of GameData)
+        Return m_categories.First(Function(c) c.Title = category).Games
+    End Function
+
+    Friend Sub PopulateGameList(category As String, gameListCtl As GameList)
+        Dim gamesList As New List(Of GameListItemData)
+
+        For Each game In GetGames(category)
+            gamesList.Add(New GameListItemData(game.Name, game.Ref, game.Filename))
+        Next
+
+        gameListCtl.CreateListElements(gamesList)
+    End Sub
+
 
 End Class
