@@ -8,6 +8,8 @@
     Private m_currentElement As String
 
     Public Event AddToRecent(filename As String, name As String)
+    Public Event Close()
+    Public Event Play(filename As String)
 
     Public Sub Initialise(ByRef filename As String)
         m_filename = filename
@@ -39,6 +41,7 @@
         menu.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
         menu.AddMenuClickHandler("addexit", AddressOf AddNewExit)
         menu.AddMenuClickHandler("play", AddressOf PlayGame)
+        menu.AddMenuClickHandler("close", AddressOf CloseEditor)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -344,7 +347,12 @@
     End Function
 
     Private Sub PlayGame()
+        ' TO DO: Current game must be saved and up to date i.e. non-dirty
+        RaiseEvent Play(m_filename)
+    End Sub
 
+    Private Sub CloseEditor()
+        RaiseEvent Close()
     End Sub
 
 End Class

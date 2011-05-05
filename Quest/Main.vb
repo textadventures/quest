@@ -4,6 +4,7 @@ Public Class Main
 
     Private m_currentFile As String
     Private m_loaded As Boolean = False
+    Private m_playingEditorGame As Boolean = False
     Private Const k_regPath As String = "Software\Quest"
     Private Delegate Sub MenuHandler()
 
@@ -32,9 +33,16 @@ Public Class Main
     End Sub
 
     Private Sub ctlPlayer_Quit() Handles ctlPlayer.Quit
-        ctlLauncher.RefreshLists()
-        ctlPlayer.Visible = False
-        ctlLauncher.Visible = True
+        If m_playingEditorGame Then
+            ctlPlayer.Visible = False
+            ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Editor
+            ctlEditor.Visible = True
+            m_playingEditorGame = False
+        Else
+            ctlLauncher.RefreshLists()
+            ctlPlayer.Visible = False
+            ctlLauncher.Visible = True
+        End If
     End Sub
 
     Private Sub ctlLauncher_BrowseForGame() Handles ctlLauncher.BrowseForGame
@@ -185,5 +193,16 @@ Public Class Main
 
     Private Sub Main_KeyPress(sender As Object, e As System.Windows.Forms.KeyPressEventArgs) Handles Me.KeyPress
         e.Handled = ctlPlayer.KeyPressed()
+    End Sub
+
+    Private Sub ctlEditor_Close() Handles ctlEditor.Close
+        ctlLauncher.RefreshLists()
+        ctlEditor.Visible = False
+        ctlLauncher.Visible = True
+    End Sub
+
+    Private Sub ctlEditor_Play(filename As String) Handles ctlEditor.Play
+        m_playingEditorGame = True
+        Launch(filename)
     End Sub
 End Class

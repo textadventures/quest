@@ -77,6 +77,7 @@ Public Class MainToolbar
     Public Sub ResetToolbar()
         ResetHistory()
         ResetUndoMenu()
+        m_handlers.Clear()
     End Sub
 
     Private Sub InitialiseHistoryMenus(ByRef aMenuItem() As ToolStripMenuItem, ByRef butParent As System.Windows.Forms.ToolStripSplitButton, ByRef name As String)
