@@ -44,8 +44,10 @@
         AddMenuData("add", MenuMode.Editor)
         AddMenuData("open", MenuMode.GameBrowser, MenuMode.Player)
         AddMenuData("openedit", MenuMode.GameBrowser, MenuMode.Editor)
-        AddMenuData("close", MenuMode.Editor, MenuMode.Player)
+        AddMenuData("close", MenuMode.Editor)
         AddMenuData("createnew", MenuMode.GameBrowser, MenuMode.Editor)
+        AddMenuData("play", MenuMode.Editor)
+        AddMenuData("stop", MenuMode.Player)
     End Sub
 
     Private Sub AddMenuData(key As String, ParamArray modes() As MenuMode)

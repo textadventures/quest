@@ -38,6 +38,7 @@
         menu.AddMenuClickHandler("addobject", AddressOf AddNewObject)
         menu.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
         menu.AddMenuClickHandler("addexit", AddressOf AddNewExit)
+        menu.AddMenuClickHandler("play", AddressOf PlayGame)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -47,6 +48,7 @@
         ctlToolbar.AddButtonHandler("redo", AddressOf Redo)
         ctlToolbar.AddButtonHandler("addobject", AddressOf AddNewObject)
         ctlToolbar.AddButtonHandler("addroom", AddressOf AddNewRoom)
+        ctlToolbar.AddButtonHandler("play", AddressOf PlayGame)
     End Sub
 
     Private Sub SetUpTree()
@@ -340,5 +342,9 @@
 
         Return templates
     End Function
+
+    Private Sub PlayGame()
+
+    End Sub
 
 End Class
