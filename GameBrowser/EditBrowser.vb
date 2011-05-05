@@ -10,7 +10,7 @@
         ' Add any initialization after the InitializeComponent() call.
         m_recentItems = New RecentItems("EditorRecent")
         ctlGameList.LaunchCaption = "Edit"
-        m_recentItems.PopulateGameList(ctlGameList)
+        Populate()
     End Sub
 
     Public Sub AddToRecent(filename As String, name As String)
@@ -19,5 +19,9 @@
 
     Private Sub ctlGameList_Launch(filename As String) Handles ctlGameList.Launch
         RaiseEvent EditGame(filename)
+    End Sub
+
+    Public Sub Populate()
+        m_recentItems.PopulateGameList(ctlGameList)
     End Sub
 End Class

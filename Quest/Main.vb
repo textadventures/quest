@@ -32,7 +32,9 @@ Public Class Main
     End Sub
 
     Private Sub ctlPlayer_Quit() Handles ctlPlayer.Quit
-        Me.Close()
+        ctlLauncher.RefreshLists()
+        ctlPlayer.Visible = False
+        ctlLauncher.Visible = True
     End Sub
 
     Private Sub ctlLauncher_BrowseForGame() Handles ctlLauncher.BrowseForGame

@@ -30,4 +30,9 @@
     Private Sub ctlTabs_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles ctlTabs.SelectedIndexChanged
         AxeSoftware.Utility.Registry.SaveSetting("Quest", "Settings", "SelectedTab", ctlTabs.SelectedIndex)
     End Sub
+
+    Public Sub RefreshLists()
+        ctlPlayBrowser.Populate()
+        ctlEditBrowser.Populate()
+    End Sub
 End Class

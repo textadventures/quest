@@ -56,6 +56,7 @@ Public Class Player
         menu.AddMenuClickHandler("copy", AddressOf Copy)
         menu.AddMenuClickHandler("save", AddressOf Save)
         menu.AddMenuClickHandler("saveas", AddressOf SaveAs)
+        menu.AddMenuClickHandler("stop", AddressOf StopGame)
     End Sub
 
     Private Sub DebuggerMenuClick()
@@ -582,7 +583,10 @@ Public Class Player
     End Sub
 
     Public Sub DoQuit() Implements IPlayer.Quit
-        BeginInvoke(Sub() RaiseEvent Quit())
+        BeginInvoke(Sub()
+                        GameFinished()
+                        RaiseEvent Quit()
+                    End Sub)
     End Sub
 
     Public Sub SetForeground(colour As String) Implements IPlayer.SetForeground
@@ -676,6 +680,10 @@ Public Class Player
 
     Private Sub SetCommandVisible(visible As Boolean)
         pnlCommand.Visible = visible
+    End Sub
+
+    Private Sub StopGame()
+        DoQuit()
     End Sub
 
 End Class

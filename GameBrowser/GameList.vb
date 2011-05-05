@@ -2,6 +2,7 @@
 
 Friend Class GameList
     Private m_launchCaption As String
+    Private m_gameListItems As New List(Of GameListItem)
 
     Public Event Launch(filename As String)
 
@@ -28,8 +29,9 @@ Friend Class GameList
 
     Public Sub CreateListElements(list As List(Of GameListItemData))
         Dim newItem As GameListItem
-
         Dim count As Integer = 0
+
+        ClearListElements()
 
         For Each recent As GameListItemData In list
             count += 1
@@ -42,9 +44,18 @@ Friend Class GameList
             newItem.Filename = recent.Filename
             newItem.LaunchCaption = m_launchCaption
             AddHandler newItem.Launch, AddressOf LaunchHandler
+            m_gameListItems.Add(newItem)
 
             ctlTableLayout.Controls.Add(newItem)
         Next
+    End Sub
+
+    Private Sub ClearListElements()
+        For Each item In m_gameListItems
+            RemoveHandler item.Launch, AddressOf LaunchHandler
+            ctlTableLayout.Controls.Remove(item)
+        Next
+        m_gameListItems.Clear()
     End Sub
 
     Private Sub LaunchHandler(filename As String)
