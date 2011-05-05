@@ -373,4 +373,21 @@ Public Class MainToolbar
     Private Sub butRedo_DropDownOpening(sender As Object, e As System.EventArgs) Handles butRedo.DropDownOpening
         ResetHighlight()
     End Sub
+
+    Public Sub RenameHistory(oldKey As String, newKey As String)
+        For Each item In m_history.Where(Function(h) h.TreeKey = oldKey)
+            item.TreeKey = newKey
+        Next
+    End Sub
+
+    Public Sub RetitleHistory(key As String, title As String)
+        For Each item In m_history.Where(Function(h) h.TreeKey = key)
+            item.Text = title
+        Next
+
+        For Each mnuItem In (m_mnuBack.Union(m_mnuForward)).Where(Function(m) m IsNot Nothing AndAlso DirectCast(m.Tag, String) = key)
+            mnuItem.Text = title
+        Next
+    End Sub
+
 End Class

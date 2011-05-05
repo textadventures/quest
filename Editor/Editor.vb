@@ -99,6 +99,7 @@
             m_currentElement = newName
         End If
         ctlTree.RenameNode(oldName, newName)
+        ctlToolbar.RenameHistory(oldName, newName)
     End Sub
 
     Private Sub m_controller_RetitledNode(key As String, newTitle As String) Handles m_controller.RetitledNode
@@ -106,6 +107,7 @@
             lblHeader.Text = newTitle
         End If
         ctlTree.RetitleNode(key, newTitle)
+        ctlToolbar.RetitleHistory(key, newTitle)
     End Sub
 
     Private Sub m_controller_BeginTreeUpdate() Handles m_controller.BeginTreeUpdate
@@ -150,7 +152,7 @@
 
     Private Sub ctlTree_SelectionChanged(key As String) Handles ctlTree.SelectionChanged
         ' TO DO: Need to add the tree text as the second parameter so we get friendly name for "Verbs" etc. instead of the key
-        ctlToolbar.AddHistory(key, key)
+        ctlToolbar.AddHistory(key, m_controller.GetDisplayName(key))
         ShowEditor(key)
     End Sub
 

@@ -19,11 +19,6 @@
     <appliesto>default</appliesto>
     <tab>
       <caption>Default</caption>
-
-      <control>
-        <controltype>attributes</controltype>
-        <expand/>
-      </control>
     </tab>
   </editor>
 

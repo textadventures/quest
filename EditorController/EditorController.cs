@@ -39,6 +39,7 @@ namespace AxeSoftware.Quest
         private EditableScriptFactory m_editableScriptFactory;
         private Dictionary<string, IEditorDefinition> m_editorDefinitions = new Dictionary<string, IEditorDefinition>();
         private Dictionary<ElementType, TreeHeader> m_elementTreeStructure;
+        private Dictionary<string, string> m_treeTitles = new Dictionary<string, string> { { k_commands, "Commands" }, { k_verbs, "Verbs" } };
         private bool m_initialised = false;
         private Dictionary<string, Type> m_controlTypes = new Dictionary<string, Type>();
 
@@ -261,6 +262,7 @@ namespace AxeSoftware.Quest
 
         private void AddTreeHeader(ElementType? type, string key, string title, string parent)
         {
+            m_treeTitles.Add(key, title);
             TreeHeader header = new TreeHeader();
             header.Key = key;
             header.Title = title;
@@ -356,6 +358,10 @@ namespace AxeSoftware.Quest
 
         public string GetDisplayName(string element)
         {
+            if (m_treeTitles.ContainsKey(element))
+            {
+                return m_treeTitles[element];
+            }
             return GetDisplayName(m_worldModel.Elements.Get(element));
         }
 
