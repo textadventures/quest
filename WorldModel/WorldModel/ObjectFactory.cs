@@ -184,7 +184,10 @@ namespace AxeSoftware.Quest
 
         private void InitLazyExit(Element exit, string toRoom)
         {
-            exit.Fields.LazyFields.AddObjectField("to", toRoom);
+            if (toRoom != null)
+            {
+                exit.Fields.LazyFields.AddObjectField("to", toRoom);
+            }
         }
 
         private void AddDestroyToUndoLog(Element appliesTo, ObjectType type)

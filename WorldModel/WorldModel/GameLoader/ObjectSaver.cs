@@ -290,7 +290,10 @@ namespace AxeSoftware.Quest
                         writer.WriteAttributeString("name", e.Name);
                     }
                     writer.WriteAttributeString("alias", e.Fields[FieldDefinitions.Alias]);
-                    writer.WriteAttributeString("to", e.Fields[FieldDefinitions.To].Name);
+                    if (e.Fields[FieldDefinitions.To] != null)
+                    {
+                        writer.WriteAttributeString("to", e.Fields[FieldDefinitions.To].Name);
+                    }
                     ObjectSaver.SaveFields(writer, e);
                 }
 
