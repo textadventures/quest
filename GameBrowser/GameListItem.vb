@@ -6,6 +6,8 @@
     Private m_downloading As Boolean = False
     Private WithEvents m_client As System.Net.WebClient
     Private m_downloadFilename As String
+    Private m_progressBar As ProgressBar
+    Private m_setDownloadTooltip As Boolean
 
     Public Enum State
         ReadyToPlay
@@ -50,8 +52,23 @@
                     cmdLaunch.Text = "Cancel"
                     cmdLaunch.Width = 70
                     cmdLaunch.Left = Me.Width - m_playButtonRight - cmdLaunch.Width
-                    lblInfo.Text = "Downloading..."
+
+                    If m_progressBar Is Nothing Then
+                        m_progressBar = New ProgressBar
+                        m_progressBar.Parent = Me
+                        m_progressBar.Top = lblInfo.Top
+                        m_progressBar.Left = lblInfo.Left
+                        m_progressBar.Height = lblInfo.Height
+                        m_progressBar.Width = Me.Width - cmdLaunch.Width - 20
+                        m_progressBar.Anchor = AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
+                    End If
             End Select
+
+            lblInfo.Visible = Not m_state = State.Downloading
+
+            If m_progressBar IsNot Nothing Then
+                m_progressBar.Visible = (m_state = State.Downloading)
+            End If
         End Set
     End Property
 
@@ -91,12 +108,16 @@
         End Get
         Set(value As String)
             m_filename = value
-            Dim tooltipCtls As New List(Of Control)(New Control() {lblInfo, lblName})
-            For Each ctl As Control In tooltipCtls
-                ctlToolTip.SetToolTip(ctl, m_filename)
-            Next
+            SetToolTipText(m_filename)
         End Set
     End Property
+
+    Private Sub SetToolTipText(text As String)
+        Dim tooltipCtls As New List(Of Control)(New Control() {lblInfo, lblName})
+        For Each ctl As Control In tooltipCtls
+            ctlToolTip.SetToolTip(ctl, text)
+        Next
+    End Sub
 
     Private Sub cmdLaunch_Click(sender As System.Object, e As System.EventArgs) Handles cmdLaunch.Click
         Select Case CurrentState
@@ -142,7 +163,11 @@
 
     Private Sub m_client_DownloadProgressChanged(sender As Object, e As System.Net.DownloadProgressChangedEventArgs) Handles m_client.DownloadProgressChanged
         BeginInvoke(Sub()
-                        lblInfo.Text = String.Format("Downloading {0}% ({1} bytes of {2})", e.ProgressPercentage, e.BytesReceived, e.TotalBytesToReceive)
+                        m_progressBar.Value = e.ProgressPercentage
+                        If Not m_setDownloadTooltip Then
+                            SetToolTipText(String.Format("Downloading ({0} bytes)", e.TotalBytesToReceive))
+                            m_setDownloadTooltip = True
+                        End If
                     End Sub)
     End Sub
 
