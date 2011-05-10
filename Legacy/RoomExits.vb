@@ -42,7 +42,8 @@ Friend Class RoomExits
     Public Sub AddPlaceExit(ByRef oExit As RoomExit)
 
         If m_oPlaces.ContainsKey(oExit.ToRoom) Then
-            RemoveExit(m_oPlaces.Item(oExit.ToRoom))
+            Dim removeItem As RoomExit = m_oPlaces.Item(oExit.ToRoom)
+            RemoveExit(removeItem)
         End If
 
         m_oPlaces.Add(oExit.ToRoom, oExit)

@@ -374,6 +374,7 @@ Public Class LegacyGame
     Private m_state As State = State.Ready
     Private m_waitLock As Object = New Object
     Private m_readyForCommand As Boolean = True
+    Private m_gameLoading As Boolean
 
     Private Const NUMBER_PLAYER_ERROR_MESSAGES As Integer = 38
     Private PlayerErrorMessageString(NUMBER_PLAYER_ERROR_MESSAGES) As String
@@ -4825,7 +4826,7 @@ ErrorHandler:
                 Next j
             End If
 
-            UpdateObjectList(Thread)
+            If Not m_gameLoading Then UpdateObjectList(Thread)
 
         ElseIf BeginsWith(CreateData, "exit ") Then
             ExecuteCreateExit(CreateData, Thread)
@@ -4959,21 +4960,23 @@ ErrorHandler:
             End If
         End With
 
-        ' Update quest.doorways variables
-        ShowRoomInfo(CurrentRoom, Thread, True)
+        If Not m_gameLoading Then
+            ' Update quest.doorways variables
+            ShowRoomInfo(CurrentRoom, Thread, True)
 
-        UpdateObjectList(Thread)
+            UpdateObjectList(Thread)
 
-        If GameASLVersion < 410 Then
-            If CurrentRoom = Rooms(SrcID).RoomName Then
-                UpdateDoorways(SrcID, Thread)
-            ElseIf CurrentRoom = Rooms(DestID).RoomName Then
-                UpdateDoorways(DestID, Thread)
+            If GameASLVersion < 410 Then
+                If CurrentRoom = Rooms(SrcID).RoomName Then
+                    UpdateDoorways(SrcID, Thread)
+                ElseIf CurrentRoom = Rooms(DestID).RoomName Then
+                    UpdateDoorways(DestID, Thread)
+                End If
+            Else
+                ' Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
+                ' for current room anyway.
+                UpdateDoorways(GetRoomID(CurrentRoom, Thread), Thread)
             End If
-        Else
-            ' Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
-            ' for current room anyway.
-            UpdateDoorways(GetRoomID(CurrentRoom, Thread), Thread)
         End If
     End Sub
 
@@ -5548,15 +5551,28 @@ ErrorHandler:
         DoWait()
     End Sub
 
-    Private Function GetNextChunk(ByRef FileData As String) As String
+    Private m_sFileData As String
+    Private m_lIndex As Integer
+
+    Private Sub InitFileData(FileData As String)
+        m_sFileData = FileData
+        m_lIndex = 1
+    End Sub
+
+    Private Function GetNextChunk() As String
         Dim NullPos As Integer
-        NullPos = InStr(FileData, Chr(0))
+        NullPos = InStr(m_lIndex, m_sFileData, Chr(0))
 
-        GetNextChunk = Left(FileData, NullPos - 1)
+        GetNextChunk = Mid(m_sFileData, m_lIndex, NullPos - m_lIndex)
 
-        If NullPos < Len(FileData) Then
-            FileData = Mid(FileData, NullPos + 1)
+        If NullPos < Len(m_sFileData) Then
+            m_lIndex = NullPos + 1
         End If
+    End Function
+
+    Function GetFileDataChars(count As Integer) As String
+        GetFileDataChars = Mid(m_sFileData, m_lIndex, count)
+        m_lIndex = m_lIndex + count
     End Function
 
     Private Function GetObjectActions(ByRef ActionInfo As String) As ActionType
@@ -6907,7 +6923,6 @@ errhandle:
         Dim Found As Boolean
         Dim NumStoredData As Integer
         Dim StoredData(0) As ChangeType
-        Dim FileData As String
         Dim DecryptedFile As New System.Text.StringBuilder
 
         ' Decrypt file
@@ -6915,17 +6930,19 @@ errhandle:
             DecryptedFile.Append(Chr(255 - Asc(Mid(InputFileData, i, 1))))
         Next i
 
-        FileData = DecryptedFile.ToString()
+        m_sFileData = DecryptedFile.ToString()
 
-        CurrentRoom = GetNextChunk(FileData)
+        CurrentRoom = GetNextChunk()
 
         ' OBJECTS
 
-        NumData = CInt(GetNextChunk(FileData))
+        NumData = CInt(GetNextChunk())
+
+        Dim createdObjects As New List(Of String)
 
         For i = 1 To NumData
-            AppliesTo = GetNextChunk(FileData)
-            data = GetNextChunk(FileData)
+            AppliesTo = GetNextChunk()
+            data = GetNextChunk()
 
             ' As of Quest 4.0, properties and actions are put into StoredData while we load the file,
             ' and then processed later. This is so any created rooms pick up their properties - otherwise
@@ -6937,16 +6954,21 @@ errhandle:
                 StoredData(NumStoredData).AppliesTo = AppliesTo
                 StoredData(NumStoredData).Change = data
             ElseIf BeginsWith(data, "create ") Then
-                ExecuteCreate("object <" & AppliesTo & ";" & GetEverythingAfter(data, "create ") & ">", NullThread)
+                Dim createData As String = AppliesTo & ";" & GetEverythingAfter(data, "create ")
+                ' workaround bug where duplicate "create" entries appear in the restore data
+                If Not createdObjects.Contains(createData) Then
+                    ExecuteCreate("object <" & createData & ">", NullThread)
+                    createdObjects.Add(createData)
+                End If
             Else
                 LogASLError("QSG Error: Unrecognised item '" & AppliesTo & "; " & data & "'", LOGTYPE_INTERNALERROR)
             End If
         Next i
 
-        NumData = CInt(GetNextChunk(FileData))
+        NumData = CInt(GetNextChunk())
         For i = 1 To NumData
-            AppliesTo = GetNextChunk(FileData)
-            data = Left(FileData, 2)
+            AppliesTo = GetNextChunk()
+            data = GetFileDataChars(2)
 
             ObjID = GetObjectIDNoAlias(AppliesTo)
 
@@ -6962,18 +6984,16 @@ errhandle:
                 Objs(ObjID).Visible = False
             End If
 
-            FileData = Mid(FileData, 3)
-
-            Objs(ObjID).ContainerRoom = GetNextChunk(FileData)
+            Objs(ObjID).ContainerRoom = GetNextChunk()
         Next i
 
         ' ROOMS
 
-        NumData = CInt(GetNextChunk(FileData))
+        NumData = CInt(GetNextChunk())
 
         For i = 1 To NumData
-            AppliesTo = GetNextChunk(FileData)
-            data = GetNextChunk(FileData)
+            AppliesTo = GetNextChunk()
+            data = GetNextChunk()
 
             If BeginsWith(data, "exit ") Then
                 ExecuteCreate(data, NullThread)
@@ -6998,10 +7018,10 @@ errhandle:
 
         ' TIMERS
 
-        NumData = CInt(GetNextChunk(FileData))
+        NumData = CInt(GetNextChunk())
         For i = 1 To NumData
             Found = False
-            AppliesTo = GetNextChunk(FileData)
+            AppliesTo = GetNextChunk()
             For j = 1 To NumberTimers
                 If Timers(j).TimerName = AppliesTo Then
                     TimerNum = j
@@ -7013,16 +7033,16 @@ errhandle:
             If Found Then
                 With Timers(TimerNum)
 
-                    If Left(FileData, 1) = Chr(1) Then
+                    Dim thisChar As String = GetFileDataChars(1)
+
+                    If thisChar = Chr(1) Then
                         .TimerActive = True
                     Else
                         .TimerActive = False
                     End If
 
-                    FileData = Mid(FileData, 2)
-
-                    .TimerInterval = CInt(GetNextChunk(FileData))
-                    .TimerTicks = CInt(GetNextChunk(FileData))
+                    .TimerInterval = CInt(GetNextChunk())
+                    .TimerTicks = CInt(GetNextChunk())
                 End With
             End If
         Next i
@@ -7032,17 +7052,17 @@ errhandle:
         ' Set this flag so we don't run any status variable onchange scripts while restoring
         m_gameIsRestoring = True
 
-        NumData = CInt(GetNextChunk(FileData))
+        NumData = CInt(GetNextChunk())
         For i = 1 To NumData
-            AppliesTo = GetNextChunk(FileData)
-            VarUBound = CInt(GetNextChunk(FileData))
+            AppliesTo = GetNextChunk()
+            VarUBound = CInt(GetNextChunk())
 
             If VarUBound = 0 Then
-                data = GetNextChunk(FileData)
+                data = GetNextChunk()
                 SetStringContents(AppliesTo, data, NullThread)
             Else
                 For j = 0 To VarUBound
-                    data = GetNextChunk(FileData)
+                    data = GetNextChunk()
                     SetStringContents(AppliesTo, data, NullThread, j)
                 Next j
             End If
@@ -7050,17 +7070,17 @@ errhandle:
 
         ' NUMERIC VARIABLES
 
-        NumData = CInt(GetNextChunk(FileData))
+        NumData = CInt(GetNextChunk())
         For i = 1 To NumData
-            AppliesTo = GetNextChunk(FileData)
-            VarUBound = CInt(GetNextChunk(FileData))
+            AppliesTo = GetNextChunk()
+            VarUBound = CInt(GetNextChunk())
 
             If VarUBound = 0 Then
-                data = GetNextChunk(FileData)
+                data = GetNextChunk()
                 SetNumericVariableContents(AppliesTo, Val(data), NullThread)
             Else
                 For j = 0 To VarUBound
-                    data = GetNextChunk(FileData)
+                    data = GetNextChunk()
                     SetNumericVariableContents(AppliesTo, Val(data), NullThread, j)
                 Next j
             End If
@@ -9004,10 +9024,9 @@ errhandle:
             Input(FileNum, NullData)
             Input(FileNum, GameFileName)
         Else
-            NullData = GetNextChunk(FileData)
-
-            GameFileName = GetNextChunk(FileData)
-
+            InitFileData(FileData)
+            NullData = GetNextChunk()
+            GameFileName = GetNextChunk()
         End If
 
         If Not System.IO.File.Exists(GameFileName) Then
@@ -9023,118 +9042,119 @@ errhandle:
 
         If Not PrevQSGVersion Then
             ' Open Quest 3.0 saved game file
-            If Not RestoreGameData(FileData) Then
-                Return False
-            End If
+            m_gameLoading = True
+            Dim result As Boolean = RestoreGameData(FileData)
+            m_gameLoading = False
+            If Not result Then Return False
         Else
-            ' Open Quest 2.x saved game file
+        ' Open Quest 2.x saved game file
 
-            Input(FileNum, NullData)
-            Input(FileNum, CurrentRoom)
-            Input(FileNum, NullData) 'will be "!c"
+        Input(FileNum, NullData)
+        Input(FileNum, CurrentRoom)
+        Input(FileNum, NullData) 'will be "!c"
 
-            Do
-                Input(FileNum, CData)
-                If CData <> "!i" Then
-                    SemiColonPos = InStr(CData, ";")
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    CDat = CInt(Right(CData, Len(CData) - SemiColonPos))
+        Do
+            Input(FileNum, CData)
+            If CData <> "!i" Then
+                SemiColonPos = InStr(CData, ";")
+                CName = Trim(Left(CData, SemiColonPos - 1))
+                CDat = CInt(Right(CData, Len(CData) - SemiColonPos))
 
-                    For i = 1 To NumCollectables
-                        If Collectables(i).collectablename = CName Then
-                            Collectables(i).collectablenumber = CDat
-                            i = NumCollectables
-                        End If
-                    Next i
-                End If
-            Loop Until CData = "!i"
+                For i = 1 To NumCollectables
+                    If Collectables(i).collectablename = CName Then
+                        Collectables(i).collectablenumber = CDat
+                        i = NumCollectables
+                    End If
+                Next i
+            End If
+        Loop Until CData = "!i"
 
-            Do
-                Input(FileNum, CData)
-                If CData <> "!o" Then
-                    SemiColonPos = InStr(CData, ";")
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    cdatb = IsYes(Right(CData, Len(CData) - SemiColonPos))
+        Do
+            Input(FileNum, CData)
+            If CData <> "!o" Then
+                SemiColonPos = InStr(CData, ";")
+                CName = Trim(Left(CData, SemiColonPos - 1))
+                cdatb = IsYes(Right(CData, Len(CData) - SemiColonPos))
 
-                    For i = 1 To NumberItems
-                        If Items(i).itemname = CName Then
-                            Items(i).gotitem = cdatb
-                            i = NumberItems
-                        End If
-                    Next i
-                End If
-            Loop Until CData = "!o"
+                For i = 1 To NumberItems
+                    If Items(i).itemname = CName Then
+                        Items(i).gotitem = cdatb
+                        i = NumberItems
+                    End If
+                Next i
+            End If
+        Loop Until CData = "!o"
 
-            Do
-                Input(FileNum, CData)
-                If CData <> "!p" Then
-                    SemiColonPos = InStr(CData, ";")
-                    SC2Pos = InStr(SemiColonPos + 1, CData, ";")
-                    SC3Pos = InStr(SC2Pos + 1, CData, ";")
+        Do
+            Input(FileNum, CData)
+            If CData <> "!p" Then
+                SemiColonPos = InStr(CData, ";")
+                SC2Pos = InStr(SemiColonPos + 1, CData, ";")
+                SC3Pos = InStr(SC2Pos + 1, CData, ";")
 
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
-                    CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
-                    CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
+                CName = Trim(Left(CData, SemiColonPos - 1))
+                cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
+                CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
+                CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
 
-                    For i = 1 To NumberObjs
-                        If Objs(i).ObjectName = CName And Not Objs(i).Loaded Then
-                            Objs(i).Exists = cdatb
-                            Objs(i).Visible = CurObjVisible
-                            Objs(i).ContainerRoom = CurObjRoom
-                            Objs(i).Loaded = True
-                            i = NumberObjs
-                        End If
-                    Next i
-                End If
-            Loop Until CData = "!p"
+                For i = 1 To NumberObjs
+                    If Objs(i).ObjectName = CName And Not Objs(i).Loaded Then
+                        Objs(i).Exists = cdatb
+                        Objs(i).Visible = CurObjVisible
+                        Objs(i).ContainerRoom = CurObjRoom
+                        Objs(i).Loaded = True
+                        i = NumberObjs
+                    End If
+                Next i
+            End If
+        Loop Until CData = "!p"
 
-            Do
-                Input(FileNum, CData)
-                If CData <> "!s" Then
-                    SemiColonPos = InStr(CData, ";")
-                    SC2Pos = InStr(SemiColonPos + 1, CData, ";")
-                    SC3Pos = InStr(SC2Pos + 1, CData, ";")
+        Do
+            Input(FileNum, CData)
+            If CData <> "!s" Then
+                SemiColonPos = InStr(CData, ";")
+                SC2Pos = InStr(SemiColonPos + 1, CData, ";")
+                SC3Pos = InStr(SC2Pos + 1, CData, ";")
 
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
-                    CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
-                    CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
+                CName = Trim(Left(CData, SemiColonPos - 1))
+                cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
+                CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
+                CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
 
-                    For i = 1 To NumberChars
-                        If Chars(i).ObjectName = CName Then
-                            Chars(i).Exists = cdatb
-                            Chars(i).Visible = CurObjVisible
-                            Chars(i).ContainerRoom = CurObjRoom
-                            i = NumberChars
-                        End If
-                    Next i
-                End If
-            Loop Until CData = "!s"
+                For i = 1 To NumberChars
+                    If Chars(i).ObjectName = CName Then
+                        Chars(i).Exists = cdatb
+                        Chars(i).Visible = CurObjVisible
+                        Chars(i).ContainerRoom = CurObjRoom
+                        i = NumberChars
+                    End If
+                Next i
+            End If
+        Loop Until CData = "!s"
 
-            Do
-                CData = LineInput(FileNum)
-                If CData <> "!n" Then
-                    SemiColonPos = InStr(CData, ";")
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    CData = Right(CData, Len(CData) - SemiColonPos)
+        Do
+            CData = LineInput(FileNum)
+            If CData <> "!n" Then
+                SemiColonPos = InStr(CData, ";")
+                CName = Trim(Left(CData, SemiColonPos - 1))
+                CData = Right(CData, Len(CData) - SemiColonPos)
 
-                    SetStringContents(CName, CData, NullThread)
-                End If
-            Loop Until CData = "!n"
+                SetStringContents(CName, CData, NullThread)
+            End If
+        Loop Until CData = "!n"
 
-            Do
-                CData = LineInput(FileNum)
-                If CData <> "!e" Then
-                    SemiColonPos = InStr(CData, ";")
-                    CName = Trim(Left(CData, SemiColonPos - 1))
-                    CData = Right(CData, Len(CData) - SemiColonPos)
+        Do
+            CData = LineInput(FileNum)
+            If CData <> "!e" Then
+                SemiColonPos = InStr(CData, ";")
+                CName = Trim(Left(CData, SemiColonPos - 1))
+                CData = Right(CData, Len(CData) - SemiColonPos)
 
-                    SetNumericVariableContents(CName, Val(CData), NullThread)
-                End If
-            Loop Until CData = "!e"
+                SetNumericVariableContents(CName, Val(CData), NullThread)
+            End If
+        Loop Until CData = "!e"
 
-            FileClose(FileNum)
+        FileClose(FileNum)
         End If
 
         SaveGameFile = theGameFileName
@@ -13039,7 +13059,7 @@ ErrorHandler:
 
         If lRoomID = 0 Then
             LogASLError("Can't find room '" & sRoom & "'", LOGTYPE_WARNINGERROR)
-            Return New RoomExit(Me)
+            Return Nothing
         End If
 
         With Rooms(lRoomID).Exits

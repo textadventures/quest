@@ -16,6 +16,7 @@ namespace AxeSoftware.Quest
                     return new WorldModel(filename, libraryFolder);
                 case ".asl":
                 case ".cas":
+                case ".qsg":
                     return new AxeSoftware.Quest.LegacyASL.LegacyGame(filename);
                 default:
                     return null;
