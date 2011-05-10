@@ -1,5 +1,5 @@
 ﻿Public Class OnlineGames
-    Private Const GamesListURL As String = "http://www.textadventures.co.uk/gameslist.xml"
+    Private Const GamesListURL As String = "http://www.textadventures.co.uk/gamesxml.php"
     Private WithEvents m_client As New System.Net.WebClient
 
     Public Event DataReady()

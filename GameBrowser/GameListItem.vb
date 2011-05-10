@@ -40,6 +40,7 @@
                     cmdLaunch.Text = "Play"
                     cmdLaunch.Width = m_playButtonWidth
                     cmdLaunch.Left = Me.Width - m_playButtonRight - cmdLaunch.Width
+                    lblInfo.Text = "Download complete"
                 Case State.NotDownloaded
                     cmdLaunch.Text = "Download"
                     cmdLaunch.Width = 70
@@ -122,8 +123,20 @@
 
     Private Sub m_client_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles m_client.DownloadFileCompleted
         BeginInvoke(Sub()
-                        Filename = m_downloadFilename
-                        CurrentState = State.ReadyToPlay
+                        If e.Error Is Nothing Then
+                            Filename = m_downloadFilename
+                            CurrentState = State.ReadyToPlay
+                        Else
+                            If Not e.Cancelled Then
+                                MsgBox(String.Format(
+                                       "Failed to download file. The following error occurred:{0}{1}{2}",
+                                       Environment.NewLine,
+                                       Environment.NewLine,
+                                       e.Error.Message), MsgBoxStyle.Critical, "Download Failed")
+                            End If
+                            CurrentState = State.NotDownloaded
+                            DeleteDownloadedFile()
+                        End If
                     End Sub)
     End Sub
 
@@ -131,5 +144,11 @@
         BeginInvoke(Sub()
                         lblInfo.Text = String.Format("Downloading {0}% ({1} bytes of {2})", e.ProgressPercentage, e.BytesReceived, e.TotalBytesToReceive)
                     End Sub)
+    End Sub
+
+    Private Sub DeleteDownloadedFile()
+        If System.IO.File.Exists(m_downloadFilename) Then
+            System.IO.File.Delete(m_downloadFilename)
+        End If
     End Sub
 End Class
