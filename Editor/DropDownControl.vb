@@ -7,6 +7,8 @@ Public Class DropDownControl
     Private m_attribute As String
     Private m_attributeName As String
     Private m_data As IEditorData
+    Private m_dictionary As IDictionary(Of String, String)
+    Private m_dictionaryValuesToKeys As Dictionary(Of String, String)
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -27,22 +29,33 @@ Public Class DropDownControl
     End Property
 
     Protected Overridable Function GetValue() As Object
-        Return lstDropdown.Text
+        If m_dictionary Is Nothing Then
+            Return lstDropdown.Text
+        Else
+            If lstDropdown.Text.Length = 0 Then Return Nothing
+            Return m_dictionaryValuesToKeys(lstDropdown.Text)
+        End If
     End Function
 
     Protected Overridable Sub SetValue(value As Object)
         Dim stringValue As String = TryCast(value, String)
-        If stringValue IsNot Nothing Then
+
+        If stringValue Is Nothing Then
+            stringValue = String.Empty
+        End If
+
+        If m_dictionary Is Nothing Then
             lstDropdown.Text = stringValue
         Else
-            lstDropdown.Text = String.Empty
+            lstDropdown.Text = m_dictionary(stringValue)
         End If
+
         m_oldValue = stringValue
     End Sub
 
     Public ReadOnly Property IsDirty() As Boolean
         Get
-            Return lstDropdown.Text <> m_oldValue
+            Return DirectCast(GetValue(), String) <> m_oldValue
         End Get
     End Property
 
@@ -106,11 +119,30 @@ Public Class DropDownControl
             If controlData.GetBool("freetext") Then
                 lstDropdown.DropDownStyle = ComboBoxStyle.DropDown
             End If
-            Dim validValues As String() = New List(Of String)(controlData.GetListString("validvalues")).ToArray()
-            lstDropdown.Items.AddRange(validValues)
+
+            ' validvalues may be a simple string list, or a dictionary
+            Dim valuesList As IEnumerable(Of String) = controlData.GetListString("validvalues")
+            Dim valuesDictionary As IDictionary(Of String, String) = controlData.GetDictionary("validvalues")
+
+            If valuesList IsNot Nothing Then
+                lstDropdown.Items.AddRange(valuesList.ToArray())
+            ElseIf valuesDictionary IsNot Nothing Then
+                lstDropdown.Items.AddRange(valuesDictionary.Values.ToArray())
+                InitialiseDictionary(valuesDictionary)
+            Else
+                Throw New Exception("Invalid type for validvalues")
+            End If
         Else
             lstDropdown.Items.Clear()
         End If
+    End Sub
+
+    Private Sub InitialiseDictionary(dictionary As IDictionary(Of String, String))
+        m_dictionary = dictionary
+        m_dictionaryValuesToKeys = New Dictionary(Of String, String)
+        For Each item In dictionary
+            m_dictionaryValuesToKeys.Add(item.Value, item.Key)
+        Next
     End Sub
 
     Public Sub Initialise(attributeName As String)

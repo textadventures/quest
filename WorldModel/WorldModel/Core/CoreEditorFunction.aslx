@@ -11,15 +11,16 @@
       </control>
 
       <control>
-        <caption>Parameters</caption>
-        <controltype>list</controltype>
-        <attribute>paramnames</attribute>
+        <caption>Return type</caption>
+        <controltype>dropdown</controltype>
+        <attribute>returntype</attribute>
+        <validvalues type="stringdictionary">=None; string=String; boolean=Boolean; int=Integer; double=Double; object=Object; stringlist=String List; objectlist=Object List; stringdictionary=String Dictionary; objectdictionary=Object Dictionary; scriptdictionary=Script Dictionary</validvalues>
       </control>
 
       <control>
-        <caption>Return type</caption>
-        <controltype>textbox</controltype>
-        <attribute>returntype</attribute>
+        <caption>Parameters</caption>
+        <controltype>list</controltype>
+        <attribute>paramnames</attribute>
       </control>
 
       <control>

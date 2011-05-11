@@ -617,7 +617,7 @@ namespace AxeSoftware.Quest
                     paramNames = parameters.Split(m_delimiters, StringSplitOptions.None);
                 }
 
-                Type returns = typeof(string);
+                Type returns = null;
                 if (!string.IsNullOrEmpty(returnType))
                 {
                     try
@@ -631,7 +631,10 @@ namespace AxeSoftware.Quest
                 }
 
                 proc.Fields[FieldDefinitions.ParamNames] = new QuestList<string>(paramNames);
-                proc.Fields[FieldDefinitions.ReturnType] = WorldModel.ConvertTypeToTypeName(returns);
+                if (returns != null)
+                {
+                    proc.Fields[FieldDefinitions.ReturnType] = WorldModel.ConvertTypeToTypeName(returns);
+                }
 
                 // TO DO: These should be lazy loaded, so we can refer to other procedures that are defined later in the XML
                 proc.Fields[FieldDefinitions.Script] = GameLoader.ScriptFactory.CreateScript(script, proc);

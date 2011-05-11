@@ -21,9 +21,18 @@ namespace AxeSoftware.Quest
             {
                 writer.WriteStartElement("function");
                 writer.WriteAttributeString("name", e.Name);
-                writer.WriteAttributeString("parameters", string.Join(", ", e.Fields[FieldDefinitions.ParamNames].ToArray()));
-                writer.WriteAttributeString("type", e.Fields[FieldDefinitions.ReturnType]);
-                writer.WriteString(GameSaver.SaveScript(writer, e.Fields[FieldDefinitions.Script], 0));
+                if (e.Fields[FieldDefinitions.ParamNames] != null)
+                {
+                    writer.WriteAttributeString("parameters", string.Join(", ", e.Fields[FieldDefinitions.ParamNames].ToArray()));
+                }
+                if (!string.IsNullOrEmpty(e.Fields[FieldDefinitions.ReturnType]))
+                {
+                    writer.WriteAttributeString("type", e.Fields[FieldDefinitions.ReturnType]);
+                }
+                if (e.Fields[FieldDefinitions.Script] != null)
+                {
+                    writer.WriteString(GameSaver.SaveScript(writer, e.Fields[FieldDefinitions.Script], 0));
+                }
                 writer.WriteEndElement();
             }
 
