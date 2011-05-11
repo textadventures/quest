@@ -8,6 +8,7 @@
         Public Name As String
         Public Ref As String
         Public Filename As String
+        Public Author As String
     End Class
 
     Public Class GameCategory
@@ -42,7 +43,8 @@
                                           Select New GameData With {
                                                  .Name = game.@name,
                                                  .Ref = game.@ref,
-                                                 .Filename = game.@filename
+                                                 .Filename = game.@filename,
+                                                 .Author = game.@author
                                           }).ToList()
                          }).ToList()
 
@@ -63,7 +65,7 @@
         Dim gamesList As New List(Of GameListItemData)
 
         For Each game In GetGames(category)
-            gamesList.Add(New GameListItemData(game.Name, game.Ref, game.Filename))
+            gamesList.Add(New GameListItemData(game.Name, game.Ref, game.Filename, game.Author))
         Next
 
         gameListCtl.CreateListElements(gamesList)

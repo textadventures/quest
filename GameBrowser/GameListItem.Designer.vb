@@ -27,6 +27,7 @@ Partial Class GameListItem
         Me.lblInfo = New System.Windows.Forms.Label()
         Me.cmdLaunch = New System.Windows.Forms.Button()
         Me.ctlToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.lblAuthor = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'lblName
@@ -58,8 +59,15 @@ Partial Class GameListItem
         Me.cmdLaunch.Text = "Play"
         Me.cmdLaunch.UseVisualStyleBackColor = True
         '
-        'ctlToolTip
+        'lblAuthor
         '
+        Me.lblAuthor.AutoSize = True
+        Me.lblAuthor.Location = New System.Drawing.Point(83, 0)
+        Me.lblAuthor.Name = "lblAuthor"
+        Me.lblAuthor.Size = New System.Drawing.Size(30, 13)
+        Me.lblAuthor.TabIndex = 3
+        Me.lblAuthor.Text = "by ..."
+        Me.lblAuthor.Visible = False
         '
         'GameListItem
         '
@@ -67,6 +75,7 @@ Partial Class GameListItem
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
         Me.Controls.Add(Me.cmdLaunch)
+        Me.Controls.Add(Me.lblAuthor)
         Me.Controls.Add(Me.lblInfo)
         Me.Controls.Add(Me.lblName)
         Me.Name = "GameListItem"
@@ -79,5 +88,6 @@ Partial Class GameListItem
     Private WithEvents lblName As System.Windows.Forms.Label
     Private WithEvents lblInfo As System.Windows.Forms.Label
     Friend WithEvents ctlToolTip As System.Windows.Forms.ToolTip
+    Friend WithEvents lblAuthor As System.Windows.Forms.Label
 
 End Class

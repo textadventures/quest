@@ -61,6 +61,7 @@
                         downloadFolder, data.DownloadFilename)
 
                     newItem.DownloadFilename = downloadFilename
+                    newItem.Author = data.Author
 
                     If System.IO.File.Exists(downloadFilename) Then
                         ' The file has already been downloaded

@@ -75,6 +75,7 @@
     Public WriteOnly Property GameName() As String
         Set(value As String)
             lblName.Text = value
+            lblAuthor.Left = lblName.Left + lblName.Width
         End Set
     End Property
 
@@ -99,6 +100,13 @@
     Public WriteOnly Property DownloadFilename As String
         Set(value As String)
             m_downloadFilename = value
+        End Set
+    End Property
+
+    Public WriteOnly Property Author As String
+        Set(value As String)
+            lblAuthor.Visible = value.Length > 0
+            lblAuthor.Text = "by " + value
         End Set
     End Property
 
