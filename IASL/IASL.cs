@@ -22,6 +22,7 @@ namespace AxeSoftware.Quest
         event ErrorHandler LogError;
         List<string> Errors { get; }
         string Filename { get; }
+        string OriginalFilename { get; }
         string SaveFilename { get; }
         void Finish();
         IWalkthrough Walkthrough { get; }

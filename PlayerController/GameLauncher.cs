@@ -12,14 +12,19 @@ namespace AxeSoftware.Quest
     {
         public static IASL GetGame(string filename, string libraryFolder)
         {
+            return GetGame(filename, libraryFolder, null);
+        }
+
+        private static IASL GetGame(string filename, string libraryFolder, string originalFilename)
+        {
             switch (System.IO.Path.GetExtension(filename).ToLower())
             {
                 case ".aslx":
-                    return new WorldModel(filename, libraryFolder);
+                    return new WorldModel(filename, libraryFolder, originalFilename);
                 case ".asl":
                 case ".cas":
                 case ".qsg":
-                    return new AxeSoftware.Quest.LegacyASL.LegacyGame(filename);
+                    return new AxeSoftware.Quest.LegacyASL.LegacyGame(filename, originalFilename);
                 case ".zip":
                     return GetGameFromZip(filename, libraryFolder);
                 default:
@@ -38,7 +43,7 @@ namespace AxeSoftware.Quest
 
             if (gameFile == null) return null;
 
-            return GetGame(gameFile, libraryFolder);
+            return GetGame(gameFile, libraryFolder, filename);
         }
 
         private static string SearchForGameFile(string dir, params string[] exts)

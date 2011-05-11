@@ -246,6 +246,8 @@ Public Class Player
         If Not String.IsNullOrEmpty(m_game.SaveFilename) Then
             RaiseEvent AddToRecent(m_game.SaveFilename, m_gameName + " (Saved)")
             m_saveFile = m_game.SaveFilename
+        ElseIf Not m_game.OriginalFilename Is Nothing Then
+            RaiseEvent AddToRecent(m_game.OriginalFilename, m_gameName)
         ElseIf Not m_game.Filename Is Nothing Then
             RaiseEvent AddToRecent(m_game.Filename, m_gameName)
         End If

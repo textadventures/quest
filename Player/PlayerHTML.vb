@@ -11,6 +11,7 @@ Public Class PlayerHTML
     Private m_navigationAllowed As Boolean = True
 
     Public Sub Setup()
+        m_navigationAllowed = True
         wbOutput.Navigate(m_baseHtmlPath)
     End Sub
 

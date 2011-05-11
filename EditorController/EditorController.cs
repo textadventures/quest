@@ -121,7 +121,7 @@ namespace AxeSoftware.Quest
 
         public void Initialise(string filename)
         {
-            m_worldModel = new WorldModel(filename);
+            m_worldModel = new WorldModel(filename, null);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;

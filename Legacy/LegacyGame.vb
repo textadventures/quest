@@ -459,16 +459,18 @@ Public Class LegacyGame
 
     Private m_listVerbs As New Dictionary(Of ListType, List(Of String))
     Private m_filename As String
+    Private m_originalFilename As String
     Private m_player As IPlayer
     Private m_gameFinished As Boolean
     Private m_gameIsRestoring As Boolean
 
-    Public Sub New(filename As String)
+    Public Sub New(filename As String, originalFilename As String)
         QuestVersion = My.Application.Info.Version.ToString()
         InitialiseQuest()
         GetQuestSettings()
         GameLoadMethod = "normal"
         m_filename = filename
+        m_originalFilename = originalFilename
 
         m_listVerbs.Add(ListType.ExitsList, New List(Of String)(New String() {"Go to"}))
         m_listVerbs.Add(ListType.ObjectsList, New List(Of String)(New String() {"Look at", "Take", "Speak to"}))
@@ -13471,4 +13473,10 @@ ErrorHandler:
     ' TO DO: Use this event to tell the UI when to send the next Tick. Currently we're always ticking every
     ' second which is unnecessary for most games.
     Public Event UpdateTimer(nextTick As Integer) Implements IASLTimer.UpdateTimer
+
+    Public ReadOnly Property OriginalFilename As String Implements IASL.OriginalFilename
+        Get
+            Return m_originalFilename
+        End Get
+    End Property
 End Class

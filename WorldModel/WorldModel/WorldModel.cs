@@ -35,6 +35,7 @@ namespace AxeSoftware.Quest
         private Template m_template;
         private UndoLogger m_undoLogger;
         private string m_filename;
+        private string m_originalFilename;
         private string m_libFolder = null;
         private List<string> m_errors;
         private Dictionary<string, ObjectType> m_debuggerObjectTypes = new Dictionary<string, ObjectType>();
@@ -110,11 +111,11 @@ namespace AxeSoftware.Quest
         }
 
         public WorldModel()
-            : this(null)
+            : this(null, null)
         {
         }
 
-        public WorldModel(string filename)
+        public WorldModel(string filename, string originalFilename)
         {
             m_expressionOwner = new Functions.ExpressionOwner(this);
             m_template = new Template(this);
@@ -124,14 +125,15 @@ namespace AxeSoftware.Quest
 
             InitialiseDebuggerObjectTypes();
             m_filename = filename;
+            m_originalFilename = originalFilename;
             m_elements = new Elements();
             m_undoLogger = new UndoLogger(this);
             m_saver = new GameSaver(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
         }
 
-        public WorldModel(string filename, string libFolder)
-            : this(filename)
+        public WorldModel(string filename, string libFolder, string originalFilename)
+            : this(filename, originalFilename)
         {
             m_libFolder = libFolder;
         }
@@ -918,6 +920,11 @@ namespace AxeSoftware.Quest
         public bool IsDefaultTypeName(string typeName)
         {
             return DefaultTypeNames.ContainsValue(typeName);
+        }
+
+        public string OriginalFilename
+        {
+            get { return m_originalFilename; }
         }
     }
 }
