@@ -352,6 +352,10 @@ namespace AxeSoftware.Quest
 
         private bool InitialiseInternal(GameLoader loader)
         {
+            if (m_state != GameState.NotStarted)
+            {
+                throw new Exception("Game already initialised");
+            }
             loader.FilenameUpdated += new GameLoader.FilenameUpdatedHandler(loader_FilenameUpdated);
             m_state = GameState.Loading;
             bool success = m_filename == null ? true : loader.Load(m_filename);

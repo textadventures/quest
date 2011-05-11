@@ -630,7 +630,10 @@ Public Class Player
         'Dim runnerThread As New Thread(New ThreadStart(AddressOf TryInitialise))
         'runnerThread.Start()
 
-        BeginInvoke(Sub() m_htmlPlayerReadyFunction.Invoke())
+        BeginInvoke(Sub()
+                        m_htmlPlayerReadyFunction.Invoke()
+                        ctlPlayerHtml.DisableNavigation()
+                    End Sub)
     End Sub
 
     Private Sub ctlPlayerHtml_SendEvent(eventName As String, param As String) Handles ctlPlayerHtml.SendEvent

@@ -8,6 +8,7 @@ Public Class PlayerHTML
 
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
     Private m_deleteFile As String = Nothing
+    Private m_navigationAllowed As Boolean = True
 
     Public Sub Setup()
         wbOutput.Navigate(m_baseHtmlPath)
@@ -142,4 +143,13 @@ Public Class PlayerHTML
         InvokeScript("gameFinished")
     End Sub
 
+    Private Sub wbOutput_Navigating(sender As Object, e As System.Windows.Forms.WebBrowserNavigatingEventArgs) Handles wbOutput.Navigating
+        If Not m_navigationAllowed Then
+            e.Cancel = True
+        End If
+    End Sub
+
+    Public Sub DisableNavigation()
+        m_navigationAllowed = False
+    End Sub
 End Class
