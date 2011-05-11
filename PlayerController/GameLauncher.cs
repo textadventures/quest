@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AxeSoftware.Quest;
+using Ionic.Zip;
+using System.IO;
 
 namespace AxeSoftware.Quest
 {
@@ -18,9 +20,38 @@ namespace AxeSoftware.Quest
                 case ".cas":
                 case ".qsg":
                     return new AxeSoftware.Quest.LegacyASL.LegacyGame(filename);
+                case ".zip":
+                    return GetGameFromZip(filename, libraryFolder);
                 default:
                     return null;
             }
+        }
+
+        private static IASL GetGameFromZip(string filename, string libraryFolder)
+        {
+            string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString(), Path.GetFileNameWithoutExtension(filename));
+            Directory.CreateDirectory(tempDir);
+            ZipFile zip = ZipFile.Read(filename);
+            zip.ExtractAll(tempDir);
+
+            string gameFile = SearchForGameFile(tempDir, "aslx", "asl", "cas");
+
+            if (gameFile == null) return null;
+
+            return GetGame(gameFile, libraryFolder);
+        }
+
+        private static string SearchForGameFile(string dir, params string[] exts)
+        {
+            foreach (string ext in exts)
+            {
+                string[] result = Directory.GetFiles(dir, "*." + ext, SearchOption.AllDirectories);
+                if (result.Any())
+                {
+                    return result[0];
+                }
+            }
+            return null;
         }
     }
 }
