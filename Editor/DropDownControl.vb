@@ -55,7 +55,9 @@ Public Class DropDownControl
 
     Public ReadOnly Property IsDirty() As Boolean
         Get
-            Return DirectCast(GetValue(), String) <> m_oldValue
+            Dim stringValue As String = TryCast(Value, String)
+            If stringValue Is Nothing Then Return False
+            Return stringValue <> m_oldValue
         End Get
     End Property
 

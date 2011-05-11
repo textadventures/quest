@@ -386,10 +386,22 @@ namespace AxeSoftware.Quest
 
             if (m_worldModel.Elements.ContainsKey(elementKey))
             {
-                string type = m_worldModel.Elements.Get(elementKey).Fields.GetString("type");
+                Element e = m_worldModel.Elements.Get(elementKey);
+
+                string type = e.Fields.GetString("type");
                 if (string.IsNullOrEmpty(type))
                 {
-                    type = m_worldModel.Elements.Get(elementKey).Fields.GetString("elementtype");
+                    type = e.Fields.GetString("elementtype");
+                }
+                else
+                {
+                    if (type == "command")
+                    {
+                        if (e.Fields.GetAsType<bool>("isverb"))
+                        {
+                            type = "verb";
+                        }
+                    }
                 }
                 if (m_editorDefinitions.ContainsKey(type)) return type;
             }

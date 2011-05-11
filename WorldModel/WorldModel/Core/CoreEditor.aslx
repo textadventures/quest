@@ -13,6 +13,7 @@
   <include ref="CoreEditorObject.aslx"/>
   <include ref="CoreEditorExit.aslx"/>
   <include ref="CoreEditorCommand.aslx"/>
+  <include ref="CoreEditorVerb.aslx"/>
   <include ref="CoreEditorScripts.aslx"/>
   <include ref="CoreEditorFunction.aslx"/>
   <include ref="CoreEditorType.aslx"/>

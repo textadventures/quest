@@ -1,9 +1,9 @@
 ﻿<library>
   <editor>
-    <appliesto>command</appliesto>
+    <appliesto>verb</appliesto>
 
     <tab>
-      <caption>Command</caption>
+      <caption>Verb</caption>
 
       <control>
         <caption>Name</caption>
@@ -18,17 +18,22 @@
       </control>
 
       <control>
-        <caption>Unresolved object text</caption>
+        <caption>Property</caption>
         <controltype>textbox</controltype>
-        <attribute>unresolved</attribute>
+        <attribute>property</attribute>
       </control>
 
       <control>
-        <caption>Script</caption>
-        <controltype>script</controltype>
-        <attribute>script</attribute>
+        <caption>Response text</caption>
+        <controltype>textbox</controltype>
+        <attribute>defaulttext</attribute>
       </control>
 
+      <control>
+        <caption>Response template</caption>
+        <controltype>textbox</controltype>
+        <attribute>defaulttemplate</attribute>
+      </control>
     </tab>
 
     <tab>
