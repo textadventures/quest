@@ -1505,6 +1505,11 @@ Public Class LegacyGame
         ' Parses file and returns the positions of each main
         ' 'define' block. Supports nested defines.
 
+        If LCase(Right(Filename, 4)) = ".zip" Then
+            m_originalFilename = Filename
+            Filename = GetUnzippedFile(Filename)
+        End If
+
         If LCase(Right(Filename, 4)) = ".asl" Or LCase(Right(Filename, 4)) = ".txt" Then
             'Read file into Lines array
             Dim fileData As String = System.IO.File.ReadAllText(Filename)
@@ -5868,10 +5873,16 @@ ErrorHandler:
         Dim ObjVisible As String
         Dim sAppliesTo As String
         Dim sChangeData As String
+        Dim StartPoint As Integer
 
         ' <<< FILE HEADER DATA >>>
 
-        FileData.Append(QSGVersion & Chr(0) & GameFileName & Chr(0) & CurrentRoom & Chr(0))
+        FileData.Append(QSGVersion & Chr(0) & GetOriginalFilenameForQSG() & Chr(0))
+
+        ' The start point for encrypted data is after the filename
+        StartPoint = FileData.Length + 1
+
+        FileData.Append(CurrentRoom & Chr(0))
 
         ' Organise Change Log
 
@@ -5981,12 +5992,10 @@ ErrorHandler:
         Next i
 
         ' Now encrypt data
-        Dim StartPoint As Integer
         Dim sFileData As String
         Dim NewFileData As New System.Text.StringBuilder
 
         sFileData = FileData.ToString()
-        StartPoint = Len(QSGVersion) + 1 + Len(GameFileName) + 2
 
         NewFileData.Append(Left(sFileData, StartPoint - 1))
 
@@ -9193,7 +9202,7 @@ errhandle:
         Else
             FileOpen(FileNum, theGameFileName, OpenMode.Output)
             PrintLine(FileNum, "QUEST200.1")
-            PrintLine(FileNum, GameFileName)
+            PrintLine(FileNum, GetOriginalFilenameForQSG)
             PrintLine(FileNum, GameName)
             PrintLine(FileNum, CurrentRoom)
 
@@ -13181,7 +13190,7 @@ ErrorHandler:
         Else
             UpdateItems(NullThread)
 
-            Print("Loaded game " & GameFileName & " - " & GameName, NullThread)
+            Print("Loaded game " & GetOriginalFilenameForQSG() & " - " & GameName, NullThread)
             Print("", NullThread)
             PlayGame(CurrentRoom, NullThread)
             Print("", NullThread)
@@ -13479,4 +13488,19 @@ ErrorHandler:
             Return m_originalFilename
         End Get
     End Property
+
+    Private Function GetOriginalFilenameForQSG() As String
+        If m_originalFilename IsNot Nothing Then Return m_originalFilename
+        Return m_filename
+    End Function
+
+    Private m_unzipFunction As Func(Of String, String)
+
+    Public Sub SetUnzipFunction(unzipFunction As Func(Of String, String))
+        m_unzipFunction = unzipFunction
+    End Sub
+
+    Private Function GetUnzippedFile(filename As String) As String
+        Return m_unzipFunction.Invoke(filename)
+    End Function
 End Class

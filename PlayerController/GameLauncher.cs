@@ -24,7 +24,9 @@ namespace AxeSoftware.Quest
                 case ".asl":
                 case ".cas":
                 case ".qsg":
-                    return new AxeSoftware.Quest.LegacyASL.LegacyGame(filename, originalFilename);
+                    LegacyASL.LegacyGame game = new AxeSoftware.Quest.LegacyASL.LegacyGame(filename, originalFilename);
+                    game.SetUnzipFunction(UnzipAndGetGameFile);
+                    return game;
                 case ".zip":
                     return GetGameFromZip(filename, libraryFolder);
                 default:
@@ -34,16 +36,21 @@ namespace AxeSoftware.Quest
 
         private static IASL GetGameFromZip(string filename, string libraryFolder)
         {
-            string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString(), Path.GetFileNameWithoutExtension(filename));
+            string gameFile = UnzipAndGetGameFile(filename);
+            if (gameFile == null) return null;
+            return GetGame(gameFile, libraryFolder, filename);
+        }
+
+        private static string UnzipAndGetGameFile(string zipFile)
+        {
+            // Unzips a file to a temp directory and returns the path of the ASL/CAS/ASLX file contained within it.
+
+            string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString(), Path.GetFileNameWithoutExtension(zipFile));
             Directory.CreateDirectory(tempDir);
-            ZipFile zip = ZipFile.Read(filename);
+            ZipFile zip = ZipFile.Read(zipFile);
             zip.ExtractAll(tempDir);
 
-            string gameFile = SearchForGameFile(tempDir, "aslx", "asl", "cas");
-
-            if (gameFile == null) return null;
-
-            return GetGame(gameFile, libraryFolder, filename);
+            return SearchForGameFile(tempDir, "aslx", "asl", "cas");
         }
 
         private static string SearchForGameFile(string dir, params string[] exts)
