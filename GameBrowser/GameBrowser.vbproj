@@ -185,6 +185,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="RecentItems.vb" />
+    <Compile Include="WebClientFactory.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="BetaInfo.resx">

@@ -1,6 +1,6 @@
 ﻿Public Class OnlineGames
     Private Const GamesListURL As String = "http://www.textadventures.co.uk/gamesxml.php"
-    Private WithEvents m_client As New System.Net.WebClient
+    Private WithEvents m_client As System.Net.WebClient
 
     Public Event DataReady()
 
@@ -19,8 +19,7 @@
     Private m_categories As New List(Of GameCategory)
 
     Public Sub StartDownloadGameData()
-        ' Setting Proxy to Nothing massively speeds up how quickly the data is fetched
-        m_client.Proxy = Nothing
+        m_client = WebClientFactory.GetNewWebClient
         Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadStringAsync(New System.Uri(GamesListURL)))
         newThread.Start()
     End Sub
