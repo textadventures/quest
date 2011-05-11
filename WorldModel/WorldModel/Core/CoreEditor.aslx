@@ -15,6 +15,7 @@
   <include ref="CoreEditorCommand.aslx"/>
   <include ref="CoreEditorScripts.aslx"/>
   <include ref="CoreEditorFunction.aslx"/>
+  <include ref="CoreEditorType.aslx"/>
 
   <editor>
     <appliesto>default</appliesto>

@@ -271,6 +271,15 @@
         m_menu.MenuEnabled("redo") = enabled
     End Sub
 
+    Private Sub AddNewElement(typeName As String, action As Action(Of String))
+        Dim result = PopupEditors.EditString(String.Format("Please enter a name for the new {0}", typeName), "")
+        If result.Cancelled Then Return
+        If Not ValidateInput(result.Result) Then Return
+
+        action(result.Result)
+        ctlTree.SetSelectedItem(result.Result)
+    End Sub
+
     Private Sub AddNewObject()
 
         Dim possibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(ctlTree.SelectedItem)
@@ -335,15 +344,6 @@
         AddNewElement("function", AddressOf m_controller.CreateNewFunction)
     End Sub
 
-    Private Sub AddNewElement(typeName As String, action As Action(Of String))
-        Dim result = PopupEditors.EditString(String.Format("Please enter a name for the new {0}", typeName), "")
-        If result.Cancelled Then Return
-        If Not ValidateInput(result.Result) Then Return
-
-        action(result.Result)
-        ctlTree.SetSelectedItem(result.Result)
-    End Sub
-
     Private Sub AddNewLibrary()
         MsgBox("Not yet implemented")
     End Sub
@@ -365,7 +365,7 @@
     End Sub
 
     Private Sub AddNewObjectType()
-        MsgBox("Not yet implemented")
+        AddNewElement("object type", AddressOf m_controller.CreateNewType)
     End Sub
 
     Private Sub AddNewEditor()
