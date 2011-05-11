@@ -141,6 +141,7 @@
     Private Sub StartDownload()
         CurrentState = State.Downloading
         m_client = New System.Net.WebClient
+        m_client.Headers.Add(Net.HttpRequestHeader.UserAgent, "Quest " + My.Application.Info.Version.ToString)
         Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadFileAsync(New System.Uri(m_url), m_downloadFilename))
         newThread.Start()
     End Sub
