@@ -40,7 +40,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void Execute(Context c)
         {
-            m_worldModel.ObjectFactory.DestroyObject(m_expr.Execute(c));
+            m_worldModel.ObjectFactory.DestroyElement(m_expr.Execute(c));
         }
 
         public override string Save()

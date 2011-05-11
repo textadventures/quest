@@ -315,14 +315,9 @@ namespace AxeSoftware.Quest
             return m_elements.ContainsKey(ElementType.Object, name);
         }
 
-        internal void AddObject(string name, Element o)
+        internal void RemoveElement(ElementType type, string name)
         {
-            m_elements.Add(ElementType.Object, name, o);
-        }
-
-        internal void RemoveObject(string name)
-        {
-            m_elements.Remove(ElementType.Object, name);
+            m_elements.Remove(type, name);
         }
 
         internal IEnumerable<Element> ElementTypes

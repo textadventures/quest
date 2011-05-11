@@ -9,8 +9,10 @@ namespace AxeSoftware.Quest
     {
         event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
         ElementType CreateElementType { get; }
+        Element Create(string name, bool addToUndoLog);
         Element Create(string name);
         Element Create();
+        void DestroyElementSilent(string elementName);
         WorldModel WorldModel { set; }
     }
 
@@ -22,6 +24,16 @@ namespace AxeSoftware.Quest
 
         public virtual Element Create(string name)
         {
+            return Create(name, true);
+        }
+
+        public virtual Element Create(string name, bool addToUndoLog)
+        {
+            if (addToUndoLog)
+            {
+                WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(name, true, null, CreateElementType));
+            }
+
             Element newElement = new Element(WorldModel);
             
             try
@@ -66,6 +78,102 @@ namespace AxeSoftware.Quest
         {
             if (ObjectsUpdated != null) ObjectsUpdated(this, new ObjectsUpdatedEventArgs { Removed = elementName });
         }
+
+        public void DestroyElement(string elementName)
+        {
+            DestroyElement(elementName, false);
+        }
+
+        public void DestroyElementSilent(string elementName)
+        {
+            DestroyElement(elementName, true);
+        }
+
+        private void DestroyElement(string elementName, bool silent)
+        {
+            try
+            {
+                Element destroy = WorldModel.Elements.Get(elementName);
+                if (!silent) AddDestroyToUndoLog(destroy, destroy.Type);
+                NotifyRemovedElement(elementName);
+                WorldModel.RemoveElement(CreateElementType, elementName);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(string.Format("Cannot destroy element '{0}': {1}", elementName, e.Message), e);
+            }
+        }
+
+        private void AddDestroyToUndoLog(Element appliesTo, ObjectType type)
+        {
+            Fields fields = appliesTo.Fields;
+
+            Dictionary<string, object> allAttributes = fields.GetAllAttributes();
+
+            foreach (string attr in allAttributes.Keys)
+            {
+                WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false));
+            }
+
+            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, false, type, CreateElementType));
+        }
+
+        protected class CreateDestroyLogEntry : AxeSoftware.Quest.UndoLogger.IUndoAction
+        {
+            private bool m_create;
+            private ObjectType? m_type;
+            private string m_name;
+            private ElementType m_elemType;
+
+            public CreateDestroyLogEntry(string name, bool create, ObjectType? type, ElementType elemType)
+            {
+                m_create = create;
+                m_name = name;
+                m_type = type;
+                m_elemType = elemType;
+            }
+
+            private void CreateElement(WorldModel worldModel)
+            {
+                if (m_elemType == ElementType.Object)
+                {
+                    worldModel.ObjectFactory.CreateObject(m_name, m_type.Value, false);
+                }
+                else
+                {
+                    worldModel.GetElementFactory(m_elemType).Create(m_name, false);
+                }
+            }
+
+            private void DestroyElement(WorldModel worldModel)
+            {
+                worldModel.GetElementFactory(m_elemType).DestroyElementSilent(m_name);
+            }
+
+            public void DoUndo(WorldModel worldModel)
+            {
+                if (m_create)
+                {
+                    DestroyElement(worldModel);
+                }
+                else
+                {
+                    CreateElement(worldModel);
+                }
+            }
+
+            public void DoRedo(WorldModel worldModel)
+            {
+                if (m_create)
+                {
+                    CreateElement(worldModel);
+                }
+                else
+                {
+                    DestroyElement(worldModel);
+                }
+            }
+        }
     }
 
     public class ObjectFactory : ElementFactoryBase
@@ -101,8 +209,8 @@ namespace AxeSoftware.Quest
 
         internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog)
         {
-            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName, true, type));
-            Element newObject = base.Create(objectName);
+            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName, true, type, ElementType.Object));
+            Element newObject = base.Create(objectName, false);
 
             newObject.Type = type;
 
@@ -120,8 +228,6 @@ namespace AxeSoftware.Quest
                 newObject.Fields.LazyFields.AddDefaultType(defaultType);
             }
 
-            NotifyAddedElement(objectName);
-
             return newObject;
         }
 
@@ -130,31 +236,6 @@ namespace AxeSoftware.Quest
             Element newObject = CreateObject(objectName);
             newObject.Parent = parent;
             return newObject;
-        }
-
-        public void DestroyObject(string objectName)
-        {
-            DestroyObject(objectName, false);
-        }
-
-        internal void DestroyObjectSilent(string objectName)
-        {
-            DestroyObject(objectName, true);
-        }
-
-        private void DestroyObject(string objectName, bool silent)
-        {
-            try
-            {
-                Element destroy = WorldModel.Object(objectName);
-                if (!silent) AddDestroyToUndoLog(destroy, destroy.Type);
-                NotifyRemovedElement(objectName);
-                WorldModel.RemoveObject(objectName);
-            }
-            catch (Exception e)
-            {
-                throw new Exception(string.Format("Cannot destroy object '{0}': {1}", objectName, e.Message), e);
-            }
         }
 
         public Element CreateCommand()
@@ -208,63 +289,6 @@ namespace AxeSoftware.Quest
             if (toRoom != null)
             {
                 exit.Fields.LazyFields.AddObjectField("to", toRoom);
-            }
-        }
-
-        private void AddDestroyToUndoLog(Element appliesTo, ObjectType type)
-        {
-            Fields fields = appliesTo.Fields;
-
-            Dictionary<string, object> allAttributes = fields.GetAllAttributes();
-
-            foreach (string attr in allAttributes.Keys)
-            {
-                WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false));
-            }
-
-            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, false, type));
-        }
-
-        private class CreateDestroyLogEntry : AxeSoftware.Quest.UndoLogger.IUndoAction
-        {
-            private bool m_create;
-            private ObjectType m_type;
-            private string m_name;
-
-            public CreateDestroyLogEntry(string name)
-                : this(name, true, ObjectType.Object)
-            {
-            }
-
-            public CreateDestroyLogEntry(string name, bool create, ObjectType type)
-            {
-                m_create = create;
-                m_name = name;
-                m_type = type;
-            }
-
-            public void DoUndo(WorldModel worldModel)
-            {
-                if (m_create)
-                {
-                    worldModel.ObjectFactory.DestroyObjectSilent(m_name);
-                }
-                else
-                {
-                    worldModel.ObjectFactory.CreateObject(m_name, m_type, false);
-                }
-            }
-
-            public void DoRedo(WorldModel worldModel)
-            {
-                if (m_create)
-                {
-                    worldModel.ObjectFactory.CreateObject(m_name, m_type, false);
-                }
-                else
-                {
-                    worldModel.ObjectFactory.DestroyObjectSilent(m_name);
-                }
             }
         }
     }
