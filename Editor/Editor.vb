@@ -40,6 +40,16 @@
         menu.AddMenuClickHandler("addobject", AddressOf AddNewObject)
         menu.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
         menu.AddMenuClickHandler("addexit", AddressOf AddNewExit)
+        menu.AddMenuClickHandler("addverb", AddressOf AddNewVerb)
+        menu.AddMenuClickHandler("addcommand", AddressOf AddNewCommand)
+        menu.AddMenuClickHandler("addfunction", AddressOf AddNewFunction)
+        menu.AddMenuClickHandler("addlibrary", AddressOf AddNewLibrary)
+        menu.AddMenuClickHandler("addimpliedtype", AddressOf AddNewImpliedType)
+        menu.AddMenuClickHandler("addtemplate", AddressOf AddNewTemplate)
+        menu.AddMenuClickHandler("adddynamictemplate", AddressOf AddNewDynamicTemplate)
+        menu.AddMenuClickHandler("adddelegate", AddressOf AddNewDelegate)
+        menu.AddMenuClickHandler("addobjecttype", AddressOf AddNewObjectType)
+        menu.AddMenuClickHandler("addeditor", AddressOf AddNewEditor)
         menu.AddMenuClickHandler("play", AddressOf PlayGame)
         menu.AddMenuClickHandler("close", AddressOf CloseEditor)
     End Sub
@@ -63,6 +73,17 @@
         ctlTree.AddMenuClickHandler("addobject", AddressOf AddNewObject)
         ctlTree.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
         ctlTree.AddMenuClickHandler("addexit", AddressOf AddNewExit)
+        ctlTree.AddMenuClickHandler("addverb", AddressOf AddNewVerb)
+        ctlTree.AddMenuClickHandler("addcommand", AddressOf AddNewCommand)
+        ctlTree.AddMenuClickHandler("addfunction", AddressOf AddNewFunction)
+        ctlTree.AddMenuClickHandler("addlibrary", AddressOf AddNewLibrary)
+        ctlTree.AddMenuClickHandler("addimpliedtype", AddressOf AddNewImpliedType)
+        ctlTree.AddMenuClickHandler("addtemplate", AddressOf AddNewTemplate)
+        ctlTree.AddMenuClickHandler("adddynamictemplate", AddressOf AddNewDynamicTemplate)
+        ctlTree.AddMenuClickHandler("adddelegate", AddressOf AddNewDelegate)
+        ctlTree.AddMenuClickHandler("addobjecttype", AddressOf AddNewObjectType)
+        ctlTree.AddMenuClickHandler("addeditor", AddressOf AddNewEditor)
+
     End Sub
 
     Private Sub SetUpEditors()
@@ -301,6 +322,46 @@
 
         Dim newExit = m_controller.CreateNewExit(parent)
         ctlTree.SetSelectedItem(newExit)
+    End Sub
+
+    Private Sub AddNewVerb()
+        MsgBox("Not yet implemented")
+    End Sub
+
+    Private Sub AddNewCommand()
+        MsgBox("Not yet implemented")
+    End Sub
+
+    Private Sub AddNewFunction()
+        MsgBox("Not yet implemented")
+    End Sub
+
+    Private Sub AddNewLibrary()
+        MsgBox("Not yet implemented")
+    End Sub
+
+    Private Sub AddNewImpliedType()
+        MsgBox("Not yet implemented")
+    End Sub
+
+    Private Sub AddNewTemplate()
+        MsgBox("Not yet implemented")
+    End Sub
+
+    Private Sub AddNewDynamicTemplate()
+        MsgBox("Not yet implemented")
+    End Sub
+
+    Private Sub AddNewDelegate()
+        MsgBox("Not yet implemented")
+    End Sub
+
+    Private Sub AddNewObjectType()
+        MsgBox("Not yet implemented")
+    End Sub
+
+    Private Sub AddNewEditor()
+        MsgBox("Not yet implemented")
     End Sub
 
     Private Function ValidateInput(input As String) As Boolean
