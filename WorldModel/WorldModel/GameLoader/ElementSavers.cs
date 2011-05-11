@@ -21,7 +21,7 @@ namespace AxeSoftware.Quest
             {
                 writer.WriteStartElement("function");
                 writer.WriteAttributeString("name", e.Name);
-                if (e.Fields[FieldDefinitions.ParamNames] != null)
+                if (e.Fields[FieldDefinitions.ParamNames] != null && e.Fields[FieldDefinitions.ParamNames].Count > 0)
                 {
                     writer.WriteAttributeString("parameters", string.Join(", ", e.Fields[FieldDefinitions.ParamNames].ToArray()));
                 }

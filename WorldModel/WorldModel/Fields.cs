@@ -751,7 +751,7 @@ namespace AxeSoftware.Quest
 
         public void DoUndo(WorldModel worldModel)
         {
-            Fields fields = worldModel.Object(m_appliesTo).Fields;
+            Fields fields = worldModel.Elements.Get(m_appliesTo).Fields;
             if (m_added)
             {
                 fields.RemoveFieldInternal(Property);
@@ -766,7 +766,7 @@ namespace AxeSoftware.Quest
         {
             if (Property != "name" || OldValue == null)
             {
-                worldModel.Object(m_appliesTo).Fields.SetFromUndo(Property, NewValue);
+                worldModel.Elements.Get(m_appliesTo).Fields.SetFromUndo(Property, NewValue);
             }
             else
             {
@@ -774,7 +774,7 @@ namespace AxeSoftware.Quest
                 // So in this specific case we get the appliesTo name from the old property value.
                 // (If OldValue is null then this is just setting the name property for a brand new object,
                 // so the above comment doesn't apply, and this case is handled in the above "if")
-                worldModel.Object((string)OldValue).Fields.SetFromUndo(Property, NewValue);
+                worldModel.Elements.Get((string)OldValue).Fields.SetFromUndo(Property, NewValue);
             }
         }
     }
