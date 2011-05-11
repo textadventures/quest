@@ -9041,7 +9041,7 @@ errhandle:
         End If
 
         If Not System.IO.File.Exists(GameFileName) Then
-            GameFileName = m_player.GetNewGameFile(GameFileName, "*.asl;*.cas")
+            GameFileName = m_player.GetNewGameFile(GameFileName, "*.asl;*.cas;*.zip")
             If GameFileName = "" Then Exit Function
         End If
 
