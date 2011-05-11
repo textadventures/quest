@@ -121,7 +121,6 @@ namespace AxeSoftware.Quest
             m_template = new Template(this);
             InitialiseElementFactories();
             m_objectFactory = (ObjectFactory)m_elementFactories[ElementType.Object];
-            m_objectFactory.ObjectsUpdated += m_objectFactory_ObjectsUpdated;
 
             InitialiseDebuggerObjectTypes();
             m_filename = filename;
@@ -151,6 +150,7 @@ namespace AxeSoftware.Quest
         {
             m_elementFactories.Add(factory.CreateElementType, factory);
             factory.WorldModel = this;
+            factory.ObjectsUpdated += ElementsUpdated;
         }
 
         internal static Dictionary<ObjectType, string> DefaultTypeNames
@@ -158,7 +158,7 @@ namespace AxeSoftware.Quest
             get { return s_defaultTypeNames; }
         }
 
-        void m_objectFactory_ObjectsUpdated(object sender, ObjectsUpdatedEventArgs args)
+        void ElementsUpdated(object sender, ObjectsUpdatedEventArgs args)
         {
             if (ObjectsUpdated != null) ObjectsUpdated(this, args);
         }

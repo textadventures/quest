@@ -788,6 +788,18 @@ namespace AxeSoftware.Quest
             }            
         }
 
+        public void CreateNewFunction(string name)
+        {
+            CreateNewElement(ElementType.Function, "function", name);
+        }
+
+        private void CreateNewElement(ElementType type, string typeName, string elementName)
+        {
+            m_worldModel.UndoLogger.StartTransaction(string.Format("Create {0} '{1}'", typeName, elementName));
+            Element newFunction = m_worldModel.GetElementFactory(type).Create(elementName);
+            m_worldModel.UndoLogger.EndTransaction();
+        }
+
         public bool CanMoveElement(string elementKey, string newParentKey)
         {
             if (elementKey == newParentKey) return false;

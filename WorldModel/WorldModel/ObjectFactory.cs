@@ -7,6 +7,7 @@ namespace AxeSoftware.Quest
 {
     public interface IElementFactory
     {
+        event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
         ElementType CreateElementType { get; }
         Element Create(string name);
         Element Create();
@@ -15,6 +16,8 @@ namespace AxeSoftware.Quest
 
     public abstract class ElementFactoryBase : IElementFactory
     {
+        public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
+
         public abstract ElementType CreateElementType { get; }
 
         public virtual Element Create(string name)
@@ -32,6 +35,9 @@ namespace AxeSoftware.Quest
 
             newElement.Name = name;
             newElement.ElemType = CreateElementType;
+
+            NotifyAddedElement(name);
+
             return newElement;
         }
 
@@ -50,12 +56,20 @@ namespace AxeSoftware.Quest
         }
 
         public WorldModel WorldModel { get; set; }
+
+        protected void NotifyAddedElement(string elementName)
+        {
+            if (ObjectsUpdated != null) ObjectsUpdated(this, new ObjectsUpdatedEventArgs { Added = elementName });
+        }
+
+        protected void NotifyRemovedElement(string elementName)
+        {
+            if (ObjectsUpdated != null) ObjectsUpdated(this, new ObjectsUpdatedEventArgs { Removed = elementName });
+        }
     }
 
     public class ObjectFactory : ElementFactoryBase
     {
-        public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
-
         public override ElementType CreateElementType { get { return ElementType.Object; } }
 
         public override Element Create(string name)
@@ -106,7 +120,7 @@ namespace AxeSoftware.Quest
                 newObject.Fields.LazyFields.AddDefaultType(defaultType);
             }
 
-            if (ObjectsUpdated != null) ObjectsUpdated(this, new ObjectsUpdatedEventArgs { Added = objectName });
+            NotifyAddedElement(objectName);
 
             return newObject;
         }
@@ -134,7 +148,7 @@ namespace AxeSoftware.Quest
             {
                 Element destroy = WorldModel.Object(objectName);
                 if (!silent) AddDestroyToUndoLog(destroy, destroy.Type);
-                if (ObjectsUpdated != null) ObjectsUpdated(this, new ObjectsUpdatedEventArgs { Removed = objectName });
+                NotifyRemovedElement(objectName);
                 WorldModel.RemoveObject(objectName);
             }
             catch (Exception e)
