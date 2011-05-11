@@ -375,6 +375,7 @@ Public Class LegacyGame
     Private m_waitLock As Object = New Object
     Private m_readyForCommand As Boolean = True
     Private m_gameLoading As Boolean
+    Private m_random As New Random()
 
     Private Const NUMBER_PLAYER_ERROR_MESSAGES As Integer = 38
     Private PlayerErrorMessageString(NUMBER_PLAYER_ERROR_MESSAGES) As String
@@ -463,7 +464,6 @@ Public Class LegacyGame
     Private m_gameIsRestoring As Boolean
 
     Public Sub New(filename As String)
-        Randomize(Microsoft.VisualBasic.Timer())
         QuestVersion = My.Application.Info.Version.ToString()
         InitialiseQuest()
         GetQuestSettings()
@@ -6298,7 +6298,7 @@ ErrorHandler:
             LogASLError("Invalid function call to '$Mid$(...)$'", LOGTYPE_WARNINGERROR)
             Return ""
         ElseIf FunctionName = "rand" Then
-            Return Str(Int(Rnd() * (CDbl(Parameter(2)) - CDbl(Parameter(1)) + 1)) + CDbl(Parameter(1)))
+            Return Str(Int(m_random.NextDouble() * (CDbl(Parameter(2)) - CDbl(Parameter(1)) + 1)) + CDbl(Parameter(1)))
         ElseIf FunctionName = "instr" Then
             If iNumParameters = 3 Then
                 Param3 = ""
