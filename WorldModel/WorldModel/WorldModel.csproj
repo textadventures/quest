@@ -152,6 +152,9 @@
     <None Include="Core\CoreEditorExit.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Core\CoreEditorFunction.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\CoreEditorGame.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

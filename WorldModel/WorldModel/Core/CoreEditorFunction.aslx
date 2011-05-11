@@ -1,0 +1,34 @@
+﻿<library>
+  <editor>
+    <appliesto>function</appliesto>
+    <tab>
+      <caption>Function</caption>
+
+      <control>
+        <caption>Name</caption>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
+      </control>
+
+      <control>
+        <caption>Parameters</caption>
+        <controltype>list</controltype>
+        <attribute>paramnames</attribute>
+      </control>
+
+      <control>
+        <caption>Return type</caption>
+        <controltype>textbox</controltype>
+        <attribute>returntype</attribute>
+      </control>
+
+      <control>
+        <caption>Script</caption>
+        <controltype>script</controltype>
+        <attribute>script</attribute>
+      </control>
+
+    </tab>
+
+  </editor>
+</library>

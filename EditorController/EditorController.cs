@@ -246,6 +246,7 @@ namespace AxeSoftware.Quest
 
         private void InitialiseTreeStructure()
         {
+            m_treeTitles.Clear();
             m_elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
             AddTreeHeader(ElementType.Object, "_objects", "Objects", null);
             AddTreeHeader(ElementType.Function, "_functions", "Functions", null);
