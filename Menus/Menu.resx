@@ -140,7 +140,7 @@
   <data name="RestartToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
-        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsSAAALEgHS3X78AAABf0lE
+        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsRAAALEQF/ZF+RAAABf0lE
         QVQ4T2P4//8/AyWYIs0gi6lrQO/mv/9huG3tt/+NKz7/r138/n/FvFf/S2Y//18w/fH/0lmPgRYjvI3i
         gq4Nv/5vOvnt/8pDX/4v2PPp/+UHP//3rn33v3npG7AhedNf/NcNXYXbAJCtKw5++T9v16f/t578Ain8
         37Dkzf/SuS//50x9/j+p99l/Vb9FuA0AOXnOjk//H778AdYMAiWzX/7PmvL8f0Lv0/9hrY//y7nNwm0A
@@ -153,7 +153,7 @@
   <data name="CreateNewGameToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
-        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsRAAALEQF/ZF+RAAABHElE
+        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsQAAALEAGtI711AAABHElE
         QVQ4T6XT3UoCQRQHcF+q3qFeo97G7iIvIrowQ0RQUEg01LCCtEBEF7QMWTRF169Vt9V13X+NMMOWM+ui
         A4fdi3N+O3POrAeAZ59gxbFcFf8jkqkglCwiEM+T8PI+9Af4TeCuq/ADDo9PuQgDollJVI+LQBKp5wpF
         zuw7YUD4viQEzv2JdTENLhC8exMCS3MFglCIC9zEXriAZVnQdAPdgbYGDo5OSB7bOXu5jjxygYVhYqjq
@@ -197,7 +197,7 @@
   <data name="PlayGameToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
-        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsSAAALEgHS3X78AAAAsElE
+        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsRAAALEQF/ZF+RAAAAsElE
         QVQ4T2P4//8/AyUYq+ay/dluxBqK1YCEGRH/iTUEpwGWZfpEGYLVgKgpQf833Fr8nxhDsBoQPMEbZDtR
         hmA1wKfLGWwACEctCsDrEqwGODZb/M/YEAvWbNus/1+nWOG/RBo3iFZDjx2sBpjX6KFo5k9gwaoZZBhW
         A/RKleE249OM0wCVfCmwswlpxmmAdIYgUZpxGiCSzInTz0QFIrbQxpU3KMqJOL1AbE4EqQMAJP3E6eLV
@@ -207,7 +207,7 @@
   <data name="StopGameToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
-        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsSAAALEgHS3X78AAABa0lE
+        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsRAAALEQF/ZF+RAAABa0lE
         QVQ4T82TP0gCYRjGXQoaoq0xWloiISiKlgiCcHIJIaFJCII0GoIyKrCyvxyUKEViZhJKKR5YRtkfarAS
         EqHCEBeNDAoRvDTPK57uc7uGC3Ko4Rt/v+d7n5dXAkBSyisJJsH/TEB5P7FIFzDrzkHnZDBhT2N04wXD
         5mcMrT5i0JTIfO9LMAKB7+MfuEtwCDwUcHjDwhtk4QqwsPizkCp2eF5YukBAkqNPHIJRrgg6L/JY8+Ww

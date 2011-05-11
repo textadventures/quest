@@ -28,6 +28,7 @@ Partial Class EditorTree
         Me.ctlContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.AddObjectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddRoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
         Me.mnuFilter = New System.Windows.Forms.ToolStripDropDownButton()
         Me.pnlSearchContainer = New System.Windows.Forms.Panel()
@@ -36,7 +37,16 @@ Partial Class EditorTree
         Me.cmdSearch = New System.Windows.Forms.Button()
         Me.lstSearchResults = New System.Windows.Forms.ListView()
         Me.colSearchResults = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.AddExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddVerbToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddCommandToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddFunctionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddLibraryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddImpliedTypeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddTemplateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddDynamicTemplateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddDelegateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddObjectTypeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddEditorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlContextMenu.SuspendLayout()
         Me.ctlToolStrip.SuspendLayout()
         Me.pnlSearchContainer.SuspendLayout()
@@ -55,9 +65,9 @@ Partial Class EditorTree
         '
         'ctlContextMenu
         '
-        Me.ctlContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddObjectToolStripMenuItem, Me.AddRoomToolStripMenuItem, Me.AddExitToolStripMenuItem})
+        Me.ctlContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddObjectToolStripMenuItem, Me.AddRoomToolStripMenuItem, Me.AddExitToolStripMenuItem, Me.AddVerbToolStripMenuItem, Me.AddCommandToolStripMenuItem, Me.AddFunctionToolStripMenuItem, Me.AddLibraryToolStripMenuItem, Me.AddImpliedTypeToolStripMenuItem, Me.AddTemplateToolStripMenuItem, Me.AddDynamicTemplateToolStripMenuItem, Me.AddDelegateToolStripMenuItem, Me.AddObjectTypeToolStripMenuItem, Me.AddEditorToolStripMenuItem})
         Me.ctlContextMenu.Name = "ctlContextMenu"
-        Me.ctlContextMenu.Size = New System.Drawing.Size(153, 92)
+        Me.ctlContextMenu.Size = New System.Drawing.Size(200, 312)
         '
         'AddObjectToolStripMenuItem
         '
@@ -65,7 +75,7 @@ Partial Class EditorTree
         Me.AddObjectToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.AddObjectToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver
         Me.AddObjectToolStripMenuItem.Name = "AddObjectToolStripMenuItem"
-        Me.AddObjectToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AddObjectToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
         Me.AddObjectToolStripMenuItem.Tag = "addobject"
         Me.AddObjectToolStripMenuItem.Text = "Add Object"
         '
@@ -75,9 +85,16 @@ Partial Class EditorTree
         Me.AddRoomToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.AddRoomToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver
         Me.AddRoomToolStripMenuItem.Name = "AddRoomToolStripMenuItem"
-        Me.AddRoomToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.AddRoomToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
         Me.AddRoomToolStripMenuItem.Tag = "addroom"
         Me.AddRoomToolStripMenuItem.Text = "Add Room"
+        '
+        'AddExitToolStripMenuItem
+        '
+        Me.AddExitToolStripMenuItem.Name = "AddExitToolStripMenuItem"
+        Me.AddExitToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddExitToolStripMenuItem.Tag = "addexit"
+        Me.AddExitToolStripMenuItem.Text = "Add Exit"
         '
         'ctlToolStrip
         '
@@ -158,12 +175,75 @@ Partial Class EditorTree
         '
         Me.colSearchResults.Text = "Search Results"
         '
-        'AddExitToolStripMenuItem
+        'AddVerbToolStripMenuItem
         '
-        Me.AddExitToolStripMenuItem.Name = "AddExitToolStripMenuItem"
-        Me.AddExitToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.AddExitToolStripMenuItem.Tag = "addexit"
-        Me.AddExitToolStripMenuItem.Text = "Add Exit"
+        Me.AddVerbToolStripMenuItem.Name = "AddVerbToolStripMenuItem"
+        Me.AddVerbToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddVerbToolStripMenuItem.Tag = "addverb"
+        Me.AddVerbToolStripMenuItem.Text = "Add Verb"
+        '
+        'AddCommandToolStripMenuItem
+        '
+        Me.AddCommandToolStripMenuItem.Name = "AddCommandToolStripMenuItem"
+        Me.AddCommandToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddCommandToolStripMenuItem.Tag = "addcommand"
+        Me.AddCommandToolStripMenuItem.Text = "Add Command"
+        '
+        'AddFunctionToolStripMenuItem
+        '
+        Me.AddFunctionToolStripMenuItem.Name = "AddFunctionToolStripMenuItem"
+        Me.AddFunctionToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddFunctionToolStripMenuItem.Tag = "addfunction"
+        Me.AddFunctionToolStripMenuItem.Text = "Add Function"
+        '
+        'AddLibraryToolStripMenuItem
+        '
+        Me.AddLibraryToolStripMenuItem.Name = "AddLibraryToolStripMenuItem"
+        Me.AddLibraryToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddLibraryToolStripMenuItem.Tag = "addlibrary"
+        Me.AddLibraryToolStripMenuItem.Text = "Add Library"
+        '
+        'AddImpliedTypeToolStripMenuItem
+        '
+        Me.AddImpliedTypeToolStripMenuItem.Name = "AddImpliedTypeToolStripMenuItem"
+        Me.AddImpliedTypeToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddImpliedTypeToolStripMenuItem.Tag = "addimpliedtype"
+        Me.AddImpliedTypeToolStripMenuItem.Text = "Add Implied Type"
+        '
+        'AddTemplateToolStripMenuItem
+        '
+        Me.AddTemplateToolStripMenuItem.Name = "AddTemplateToolStripMenuItem"
+        Me.AddTemplateToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddTemplateToolStripMenuItem.Tag = "addtemplate"
+        Me.AddTemplateToolStripMenuItem.Text = "Add Template"
+        '
+        'AddDynamicTemplateToolStripMenuItem
+        '
+        Me.AddDynamicTemplateToolStripMenuItem.Name = "AddDynamicTemplateToolStripMenuItem"
+        Me.AddDynamicTemplateToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddDynamicTemplateToolStripMenuItem.Tag = "adddynamictemplate"
+        Me.AddDynamicTemplateToolStripMenuItem.Text = "Add Dynamic Template"
+        '
+        'AddDelegateToolStripMenuItem
+        '
+        Me.AddDelegateToolStripMenuItem.Name = "AddDelegateToolStripMenuItem"
+        Me.AddDelegateToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddDelegateToolStripMenuItem.Tag = "adddelegate"
+        Me.AddDelegateToolStripMenuItem.Text = "Add Delegate"
+        '
+        'AddObjectTypeToolStripMenuItem
+        '
+        Me.AddObjectTypeToolStripMenuItem.Name = "AddObjectTypeToolStripMenuItem"
+        Me.AddObjectTypeToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddObjectTypeToolStripMenuItem.Tag = "addobjecttype"
+        Me.AddObjectTypeToolStripMenuItem.Text = "Add Object Type"
+        '
+        'AddEditorToolStripMenuItem
+        '
+        Me.AddEditorToolStripMenuItem.Name = "AddEditorToolStripMenuItem"
+        Me.AddEditorToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddEditorToolStripMenuItem.Tag = "addeditor"
+        Me.AddEditorToolStripMenuItem.Text = "Add Editor"
         '
         'EditorTree
         '
@@ -197,5 +277,15 @@ Partial Class EditorTree
     Friend WithEvents AddObjectToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AddRoomToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AddExitToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddVerbToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddCommandToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddFunctionToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddLibraryToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddImpliedTypeToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddTemplateToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddDynamicTemplateToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddDelegateToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddObjectTypeToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddEditorToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
