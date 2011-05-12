@@ -37,7 +37,10 @@
         AddMenuData("undo", MenuMode.Player, MenuMode.Editor)
         AddMenuData("redo", MenuMode.Editor)
         AddMenuData("selectall", MenuMode.Player)
+        AddMenuData("cut", MenuMode.Editor)
         AddMenuData("copy", MenuMode.Player, MenuMode.Editor)
+        AddMenuData("paste", MenuMode.Editor)
+        AddMenuData("delete", MenuMode.Editor)
         AddMenuData("walkthrough", MenuMode.Player)
         AddMenuData("debugger", MenuMode.Player)
         AddMenuData("windowmenu", MenuMode.Player)
@@ -202,6 +205,10 @@
         Next
 
         WindowMenuToolStripMenuItem.Visible = True
+    End Sub
+
+    Public Sub SetShortcut(menu As String, keys As System.Windows.Forms.Keys)
+        m_menus(menu).ShortcutKeys = keys
     End Sub
 
 End Class

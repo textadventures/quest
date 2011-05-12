@@ -52,6 +52,10 @@
         menu.AddMenuClickHandler("addeditor", AddressOf AddNewEditor)
         menu.AddMenuClickHandler("play", AddressOf PlayGame)
         menu.AddMenuClickHandler("close", AddressOf CloseEditor)
+        menu.AddMenuClickHandler("cut", AddressOf Cut)
+        menu.AddMenuClickHandler("copy", AddressOf Copy)
+        menu.AddMenuClickHandler("paste", AddressOf Paste)
+        menu.AddMenuClickHandler("delete", AddressOf Delete)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -62,6 +66,10 @@
         ctlToolbar.AddButtonHandler("addobject", AddressOf AddNewObject)
         ctlToolbar.AddButtonHandler("addroom", AddressOf AddNewRoom)
         ctlToolbar.AddButtonHandler("play", AddressOf PlayGame)
+        ctlToolbar.AddButtonHandler("cut", AddressOf Cut)
+        ctlToolbar.AddButtonHandler("copy", AddressOf Copy)
+        ctlToolbar.AddButtonHandler("paste", AddressOf Paste)
+        ctlToolbar.AddButtonHandler("delete", AddressOf Delete)
     End Sub
 
     Private Sub SetUpTree()
@@ -180,10 +188,32 @@
         m_controller.UpdateFilterOptions(ctlTree.FilterSettings)
     End Sub
 
+    Private Sub ctlTree_TreeGotFocus() Handles ctlTree.TreeGotFocus
+        SetMenuShortcutKeys()
+    End Sub
+
+    Private Sub ctlTree_TreeLostFocus() Handles ctlTree.TreeLostFocus
+        UnsetMenuShortcutKeys()
+    End Sub
+
     Private Sub ctlTree_SelectionChanged(key As String) Handles ctlTree.SelectionChanged
         ' TO DO: Need to add the tree text as the second parameter so we get friendly name for "Verbs" etc. instead of the key
         ctlToolbar.AddHistory(key, m_controller.GetDisplayName(key))
         ShowEditor(key)
+    End Sub
+
+    Private Sub SetMenuShortcutKeys()
+        m_menu.SetShortcut("cut", Keys.Control Or Keys.X)
+        m_menu.SetShortcut("copy", Keys.Control Or Keys.C)
+        m_menu.SetShortcut("paste", Keys.Control Or Keys.V)
+        m_menu.SetShortcut("delete", Keys.Delete)
+    End Sub
+
+    Private Sub UnsetMenuShortcutKeys()
+        m_menu.SetShortcut("cut", Keys.None)
+        m_menu.SetShortcut("copy", Keys.None)
+        m_menu.SetShortcut("paste", Keys.None)
+        m_menu.SetShortcut("delete", Keys.None)
     End Sub
 
     Private Sub ShowEditor(key As String)
@@ -429,6 +459,22 @@
 
     Private Sub CloseEditor()
         RaiseEvent Close()
+    End Sub
+
+    Private Sub Cut()
+        MsgBox("Cut not yet implemented")
+    End Sub
+
+    Private Sub Copy()
+        MsgBox("Copy not yet implemented")
+    End Sub
+
+    Private Sub Paste()
+        MsgBox("Paste not yet implemented")
+    End Sub
+
+    Private Sub Delete()
+        MsgBox("Delete not yet implemented")
     End Sub
 
 End Class

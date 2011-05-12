@@ -18,6 +18,8 @@ Public Class EditorTree
     Public Event FiltersUpdated()
     Public Event SelectionChanged(key As String)
     Public Event CommitSelection()
+    Public Event TreeGotFocus()
+    Public Event TreeLostFocus()
 
     ' Code for setting "Search" hint on textbox
     Private Const ECM_FIRST As UInteger = &H1500
@@ -459,4 +461,11 @@ Public Class EditorTree
         m_handlers.Add(key, handler)
     End Sub
 
+    Private Sub ctlTreeView_GotFocus(sender As Object, e As System.EventArgs) Handles ctlTreeView.GotFocus
+        RaiseEvent TreeGotFocus()
+    End Sub
+
+    Private Sub ctlTreeView_LostFocus(sender As Object, e As System.EventArgs) Handles ctlTreeView.LostFocus
+        RaiseEvent TreeLostFocus()
+    End Sub
 End Class
