@@ -302,7 +302,7 @@ namespace AxeSoftware.Quest
 
             m_attributes[name] = value;
 
-            if (name == "name" && !added && NameChanged != null)
+            if (name == "name" && changed && value != null && !added && NameChanged != null)
             {
                 if (!m_worldModel.EditMode)
                 {
