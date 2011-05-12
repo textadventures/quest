@@ -39,7 +39,7 @@ namespace AxeSoftware.Quest
         private EditableScriptFactory m_editableScriptFactory;
         private Dictionary<string, IEditorDefinition> m_editorDefinitions = new Dictionary<string, IEditorDefinition>();
         private Dictionary<ElementType, TreeHeader> m_elementTreeStructure;
-        private Dictionary<string, string> m_treeTitles = new Dictionary<string, string> { { k_commands, "Commands" }, { k_verbs, "Verbs" } };
+        private Dictionary<string, string> m_treeTitles;
         private bool m_initialised = false;
         private Dictionary<string, Type> m_controlTypes = new Dictionary<string, Type>();
 
@@ -190,7 +190,11 @@ namespace AxeSoftware.Quest
                 if (e.Element.Type == ObjectType.Exit && (e.Attribute == "anonymous" || e.Attribute == "to" || e.Attribute == "name")
                     || e.Element.Type == ObjectType.Command && (e.Attribute == "anonymous" || e.Attribute == "name" || e.Attribute == "pattern"))
                 {
-                    RetitledNode(e.Element.Name, GetDisplayName(e.Element));
+                    if (e.Element.Name != null)
+                    {
+                        // element name might be null if we're undoing an element add
+                        RetitledNode(e.Element.Name, GetDisplayName(e.Element));
+                    }
                 }
             }
         }
@@ -244,7 +248,7 @@ namespace AxeSoftware.Quest
 
         private void InitialiseTreeStructure()
         {
-            m_treeTitles.Clear();
+            m_treeTitles = new Dictionary<string, string> { { k_commands, "Commands" }, { k_verbs, "Verbs" } };
             m_elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
             AddTreeHeader(ElementType.Object, "_objects", "Objects", null);
             AddTreeHeader(ElementType.Function, "_functions", "Functions", null);

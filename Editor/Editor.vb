@@ -122,6 +122,7 @@
     Private Sub m_controller_RenamedNode(oldName As String, newName As String) Handles m_controller.RenamedNode
         If m_currentElement = oldName Then
             m_currentElement = newName
+            RefreshCurrentElement()
         End If
         ctlTree.RenameNode(oldName, newName)
         ctlToolbar.RenameHistory(oldName, newName)
@@ -151,8 +152,12 @@
 
     Private Sub m_controller_ElementRefreshed(sender As Object, e As EditorController.ElementRefreshedEventArgs) Handles m_controller.ElementRefreshed
         If e.Element = m_currentElement Then
-            m_currentEditor.Populate(m_controller.GetEditorData(e.Element))
+            RefreshCurrentElement()
         End If
+    End Sub
+
+    Private Sub RefreshCurrentElement()
+        m_currentEditor.Populate(m_controller.GetEditorData(m_currentElement))
     End Sub
 
     Private Sub m_controller_EndTreeUpdate() Handles m_controller.EndTreeUpdate
