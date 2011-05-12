@@ -105,6 +105,17 @@ namespace AxeSoftware.Quest
             try
             {
                 Element destroy = WorldModel.Elements.Get(elementName);
+
+                // get all child elements and delete them too, so they'll be correctly recreated
+                // by an undo. We call .ToList() so we get the full list before iterating through it,
+                // as the list will change as we destroy child elements.
+                IEnumerable<Element> childElements = WorldModel.Elements.GetChildElements(destroy).ToList();
+
+                foreach (Element child in childElements)
+                {
+                    DestroyElement(child.Name, silent);
+                }
+
                 if (!silent) AddDestroyToUndoLog(destroy, destroy.Type);
                 NotifyRemovedElement(elementName);
                 WorldModel.RemoveElement(CreateElementType, elementName);
@@ -121,7 +132,7 @@ namespace AxeSoftware.Quest
 
             Dictionary<string, object> allAttributes = fields.GetAllAttributes();
 
-            foreach (string attr in allAttributes.Keys)
+            foreach (string attr in allAttributes.Keys.Where(key => key != "name"))
             {
                 WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false));
             }
