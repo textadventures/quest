@@ -12,6 +12,7 @@ namespace AxeSoftware.Quest
         Element Create(string name, bool addToUndoLog);
         Element Create(string name);
         Element Create();
+        void DestroyElement(string elementName);
         void DestroyElementSilent(string elementName);
         WorldModel WorldModel { set; }
     }

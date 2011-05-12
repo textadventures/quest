@@ -39,7 +39,7 @@ namespace AxeSoftware.Quest
             if (ElementRenamed != null) ElementRenamed(this, e);
         }
 
-        public void Remove(ElementType t, string key)
+        internal void Remove(ElementType t, string key)
         {
             m_allElements.Remove(key);
             m_elements[t].Remove(key);

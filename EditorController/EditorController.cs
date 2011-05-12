@@ -945,5 +945,13 @@ namespace AxeSoftware.Quest
             }
             return new ValidationResult { Valid = true };
         }
+
+        public void DeleteElement(string elementKey)
+        {
+            m_worldModel.UndoLogger.StartTransaction(string.Format("Delete '{0}'", elementKey));
+            Element element = m_worldModel.Elements.Get(elementKey);
+            m_worldModel.GetElementFactory(element.ElemType).DestroyElement(element.Name);
+            m_worldModel.UndoLogger.EndTransaction();
+        }
     }
 }

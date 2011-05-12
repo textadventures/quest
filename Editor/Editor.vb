@@ -474,7 +474,7 @@
     End Sub
 
     Private Sub Delete()
-        MsgBox("Delete not yet implemented")
+        m_controller.DeleteElement(ctlTree.SelectedItem)
     End Sub
 
 End Class
