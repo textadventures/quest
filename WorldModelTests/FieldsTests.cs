@@ -44,15 +44,15 @@ namespace WorldModelTests
 
             m_subType = m_worldModel.GetElementFactory(ElementType.ObjectType).Create(subInheritedTypeName);
             m_subType.Fields.Set(inheritedAttribute2Name, inheritedAttribute2Value);
-            m_defaultType.Fields.Set(attributeDefinedByDefault2Name, attributeDefinedByDefault2OverriddenValue);
+            m_subType.Fields.Set(attributeDefinedByDefault2Name, attributeDefinedByDefault2OverriddenValue);
 
             m_objectType = m_worldModel.GetElementFactory(ElementType.ObjectType).Create(inheritedTypeName);
             m_objectType.Fields.Set(inheritedAttributeName, inheritedAttributeValue);
             m_objectType.Fields.AddType(m_subType);
 
             m_object = m_worldModel.GetElementFactory(ElementType.Object).Create("object");
-            m_object.Fields.AddType(m_objectType);
             m_object.Fields.Resolve(null);
+            m_object.Fields.AddType(m_objectType);
         }
 
         [TestMethod]
@@ -116,6 +116,54 @@ namespace WorldModelTests
 
             // Now we should have 2 elements again
             Assert.AreEqual(2, m_worldModel.Elements.GetElements(ElementType.Object).Count());
+        }
+
+        [TestMethod]
+        public void TestObjectDeletionUndo()
+        {
+            Element obj = m_worldModel.GetElementFactory(ElementType.Object).Create("newobj");
+            Element type = m_worldModel.GetElementFactory(ElementType.ObjectType).Create("objtype");
+            type.Fields.Set("attrfromtype", "attrvalue");
+            type.Fields.Set("overridenattr", "valuefromtype1");
+            Element type2 = m_worldModel.GetElementFactory(ElementType.ObjectType).Create("objtype2");
+            type2.Fields.Set("overridenattr", "valuefromtype2");
+            obj.Fields.AddType(type);
+            obj.Fields.AddType(type2);
+            obj.Fields.Set("attrfromobj", "fromobjvalue");
+            obj.Fields.Resolve(null);
+
+            // Test initial values are correct first
+            Assert.AreEqual("fromobjvalue", obj.Fields.GetString("attrfromobj"));
+            Assert.AreEqual("attrvalue", obj.Fields.GetString("attrfromtype"));
+            Assert.AreEqual("valuefromtype2", obj.Fields.GetString("overridenattr"));
+            Assert.AreEqual(attributeDefinedByDefaultValue, obj.Fields.GetString(attributeDefinedByDefaultName));
+            Assert.AreEqual(attributeDefinedByDefault2Value, obj.Fields.GetString(attributeDefinedByDefault2Name));
+            
+            // There should be 3 elements now - game, object, newobj
+            Assert.AreEqual(3, m_worldModel.Elements.GetElements(ElementType.Object).Count());
+
+            // Delete the object
+            m_worldModel.UndoLogger.StartTransaction("Destroy object");
+            m_worldModel.GetElementFactory(ElementType.Object).DestroyElement("newobj");
+            m_worldModel.UndoLogger.EndTransaction();
+
+            // Now we should have 2 elements again
+            Assert.AreEqual(2, m_worldModel.Elements.GetElements(ElementType.Object).Count());
+
+            // Undo the deletion
+            m_worldModel.UndoLogger.Undo();
+
+            // There should be 3 elements now - game, object, newobj
+            Assert.AreEqual(3, m_worldModel.Elements.GetElements(ElementType.Object).Count());
+
+            // Ensure our object reference is pointing to the one in the worldmodel
+            obj = m_worldModel.Elements.Get(ElementType.Object, "newobj");
+
+            // Test the initial values again
+            Assert.AreEqual("fromobjvalue", obj.Fields.GetString("attrfromobj"));
+            Assert.AreEqual("attrvalue", obj.Fields.GetString("attrfromtype"));
+            Assert.AreEqual("valuefromtype2", obj.Fields.GetString("overridenattr"));
+            Assert.AreEqual(attributeDefinedByDefaultValue, obj.Fields.GetString(attributeDefinedByDefaultName));
         }
     }
 }

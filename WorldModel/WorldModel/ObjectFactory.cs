@@ -126,7 +126,10 @@ namespace AxeSoftware.Quest
                 WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false));
             }
 
-            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, false, type, CreateElementType));
+            // Get all inherited type names. We reverse this it's a stack and we want to re-add them in the same order.
+            IEnumerable<string> typeNames = appliesTo.Fields.Types.Select(t => t.Name).Reverse();
+
+            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, false, type, CreateElementType, typeNames));
         }
 
         protected class CreateDestroyLogEntry : AxeSoftware.Quest.UndoLogger.IUndoAction
@@ -135,24 +138,41 @@ namespace AxeSoftware.Quest
             private ObjectType? m_type;
             private string m_name;
             private ElementType m_elemType;
+            private IEnumerable<string> m_typeNames;
 
             public CreateDestroyLogEntry(string name, bool create, ObjectType? type, ElementType elemType)
+                : this(name, create, type, elemType, null)
+            {
+            }
+
+            public CreateDestroyLogEntry(string name, bool create, ObjectType? type, ElementType elemType, IEnumerable<string> typeNames)
             {
                 m_create = create;
                 m_name = name;
                 m_type = type;
                 m_elemType = elemType;
+                m_typeNames = typeNames;
             }
 
             private void CreateElement(WorldModel worldModel)
             {
+                Element newElement;
+
                 if (m_elemType == ElementType.Object)
                 {
-                    worldModel.ObjectFactory.CreateObject(m_name, m_type.Value, false);
+                    newElement = worldModel.ObjectFactory.CreateObject(m_name, m_type.Value, false);
                 }
                 else
                 {
-                    worldModel.GetElementFactory(m_elemType).Create(m_name, false);
+                    newElement = worldModel.GetElementFactory(m_elemType).Create(m_name, false);
+                }
+
+                if (m_typeNames != null)
+                {
+                    foreach (string typeName in m_typeNames)
+                    {
+                        newElement.AddType(worldModel.Elements.Get(ElementType.ObjectType, typeName));
+                    }
                 }
             }
 
