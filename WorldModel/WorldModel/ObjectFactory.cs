@@ -109,7 +109,7 @@ namespace AxeSoftware.Quest
                 // get all child elements and delete them too, so they'll be correctly recreated
                 // by an undo. We call .ToList() so we get the full list before iterating through it,
                 // as the list will change as we destroy child elements.
-                IEnumerable<Element> childElements = WorldModel.Elements.GetChildElements(destroy).ToList();
+                IEnumerable<Element> childElements = WorldModel.Elements.GetElements().Where(e => e.Parent == destroy).ToList();
 
                 foreach (Element child in childElements)
                 {

@@ -65,6 +65,11 @@ namespace AxeSoftware.Quest
             foreach (Element e in m_elements[t].Values) yield return e;
         }
 
+        public IEnumerable<Element> GetElements()
+        {
+            foreach (Element e in m_allElements.Values) yield return e;
+        }
+
         public bool ContainsKey(ElementType t, string key)
         {
             return m_elements[t].ContainsKey(key);
