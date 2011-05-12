@@ -271,6 +271,14 @@
         m_menu.MenuEnabled("redo") = enabled
     End Sub
 
+    Private Function GetParentForCurrentSelection() As String
+        If m_controller.GetElementType(ctlTree.SelectedItem) = "object" AndAlso m_controller.GetObjectType(ctlTree.SelectedItem) = "object" Then
+            Return ctlTree.SelectedItem
+        Else
+            Return Nothing
+        End If
+    End Function
+
     Private Sub AddNewElement(typeName As String, action As Action(Of String))
         Dim result = PopupEditors.EditString(String.Format("Please enter a name for the new {0}", typeName), "")
         If result.Cancelled Then Return
@@ -321,14 +329,7 @@
     End Sub
 
     Private Sub AddNewExit()
-        Dim parent As String
-        If m_controller.GetElementType(ctlTree.SelectedItem) = "object" AndAlso m_controller.GetObjectType(ctlTree.SelectedItem) = "object" Then
-            parent = ctlTree.SelectedItem
-        Else
-            parent = Nothing
-        End If
-
-        Dim newExit = m_controller.CreateNewExit(parent)
+        Dim newExit = m_controller.CreateNewExit(GetParentForCurrentSelection())
         ctlTree.SetSelectedItem(newExit)
     End Sub
 
@@ -337,7 +338,8 @@
     End Sub
 
     Private Sub AddNewCommand()
-        MsgBox("Not yet implemented")
+        Dim newCommand = m_controller.CreateNewCommand(GetParentForCurrentSelection())
+        ctlTree.SetSelectedItem(newCommand)
     End Sub
 
     Private Sub AddNewFunction()

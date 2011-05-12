@@ -187,12 +187,10 @@ namespace AxeSoftware.Quest
                     EndTreeUpdate();
                 }
 
-                if (e.Element.Type == ObjectType.Exit)
+                if (e.Element.Type == ObjectType.Exit && (e.Attribute == "anonymous" || e.Attribute == "to" || e.Attribute == "name")
+                    || e.Element.Type == ObjectType.Command && (e.Attribute == "anonymous" || e.Attribute == "name" || e.Attribute == "pattern"))
                 {
-                    if (e.Attribute == "anonymous" || e.Attribute == "to" || e.Attribute == "name")
-                    {
-                        RetitledNode(e.Element.Name, GetDisplayName(e.Element));
-                    }
+                    RetitledNode(e.Element.Name, GetDisplayName(e.Element));
                 }
             }
         }
@@ -349,10 +347,18 @@ namespace AxeSoftware.Quest
 
         private string GetDisplayName(Element e)
         {
-            if (e.Type == ObjectType.Exit && e.Fields[FieldDefinitions.Anonymous])
+            if (e.Fields[FieldDefinitions.Anonymous])
             {
-                Element to = e.Fields[FieldDefinitions.To];
-                return "Exit: " + (to == null ? "(nowhere)" : to.Name);
+                if (e.Type == ObjectType.Exit)
+                {
+                    Element to = e.Fields[FieldDefinitions.To];
+                    return "Exit: " + (to == null ? "(nowhere)" : to.Name);
+                }
+                else if (e.Type == ObjectType.Command)
+                {
+                    EditorCommandPattern pattern = e.Fields.GetAsType<EditorCommandPattern>("pattern");
+                    return "Command: " + (pattern == null ? "(blank)" : pattern.Pattern);
+                }
             }
             return e.Name;
         }
@@ -794,21 +800,31 @@ namespace AxeSoftware.Quest
 
         public string CreateNewExit(string parent)
         {
+            return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit);
+        }
+
+        public string CreateNewCommand(string parent)
+        {
+            return CreateNewAnonymousObject(parent, "command", ObjectType.Command);
+        }
+
+        private string CreateNewAnonymousObject(string parent, string typeName, ObjectType type)
+        {
             string desc;
             Element parentEl;
             if (parent != null)
             {
-                desc = string.Format("Create new exit in '{0}'", parent);
+                desc = string.Format("Create new {0} in '{1}'", typeName, parent);
                 parentEl = m_worldModel.Elements.Get(ElementType.Object, parent);
             }
             else
             {
-                desc = "Create new exit";
+                desc = string.Format("Create new {0}", typeName);
                 parentEl = null;
             }
 
             m_worldModel.UndoLogger.StartTransaction(desc);
-            Element newObject = m_worldModel.ObjectFactory.CreateObject(ObjectType.Exit);
+            Element newObject = m_worldModel.ObjectFactory.CreateObject(type);
             newObject.Parent = parentEl;
             newObject.Fields[FieldDefinitions.Anonymous] = true;
             m_worldModel.UndoLogger.EndTransaction();

@@ -29,13 +29,18 @@ namespace AxeSoftware.Quest
 
         public virtual Element Create(string name, bool addToUndoLog)
         {
+            return CreateInternal(name, addToUndoLog, null);
+        }
+
+        protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation)
+        {
             if (addToUndoLog)
             {
                 WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(name, true, null, CreateElementType));
             }
 
             Element newElement = new Element(WorldModel);
-            
+
             try
             {
                 WorldModel.Elements.Add(CreateElementType, name, newElement);
@@ -47,6 +52,11 @@ namespace AxeSoftware.Quest
 
             newElement.Name = name;
             newElement.ElemType = CreateElementType;
+
+            if (extraInitialisation != null)
+            {
+                extraInitialisation.Invoke(newElement);
+            }
 
             NotifyAddedElement(name);
 
@@ -210,9 +220,7 @@ namespace AxeSoftware.Quest
         internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog)
         {
             WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName, true, type, ElementType.Object));
-            Element newObject = base.Create(objectName, false);
-
-            newObject.Type = type;
+            Element newObject = base.CreateInternal(objectName, false, newElement => newElement.Type = type);
 
             string defaultType = WorldModel.DefaultTypeNames[type];
 
