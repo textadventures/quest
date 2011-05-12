@@ -230,6 +230,9 @@
     <Compile Include="NumberControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="PatternControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ScriptAdder.Designer.vb">
       <DependentUpon>ScriptAdder.vb</DependentUpon>
     </Compile>

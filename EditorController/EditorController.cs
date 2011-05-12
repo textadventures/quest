@@ -539,6 +539,15 @@ namespace AxeSoftware.Quest
                 return new EditableObjectReference(this, (Element)value, element, attribute);
             }
 
+            if (value is EditorCommandPattern)
+            {
+                if (element == null || attribute == null)
+                {
+                    throw new InvalidOperationException("Parent element and attribute must be specified to wrap command pattern");
+                }
+                return new EditableCommandPattern(this, (EditorCommandPattern)value, element, attribute);
+            }
+
             return value;
         }
 
@@ -660,6 +669,26 @@ namespace AxeSoftware.Quest
             }
 
             return new EditableObjectReference(this, element, element, attribute);
+        }
+
+        public IEditableCommandPattern CreateNewEditableCommandPattern(string parent, string attribute, string value, bool useTransaction)
+        {
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} to {2}", parent, attribute, value));
+            }
+
+            Element element = m_worldModel.Elements.Get(parent);
+            EditorCommandPattern newPattern = new EditorCommandPattern(value);
+            EditableCommandPattern newRef = new EditableCommandPattern(this, newPattern, element, attribute);
+            element.Fields.Set(attribute, newPattern);
+
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.EndTransaction();
+            }
+
+            return newRef;
         }
 
         public void Dispose()

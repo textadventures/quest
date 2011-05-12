@@ -148,6 +148,7 @@
     </None>
     <None Include="Core\CoreEditorCommand.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorExit.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -167,6 +168,7 @@
     </None>
     <None Include="Core\CoreEditorVerb.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\English.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -185,7 +187,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Examples-Public\forest.aslx" />
-    <None Include="Examples-Public\test.aslx" />
+    <None Include="Examples-Public\test.aslx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Examples-Public\containers.aslx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

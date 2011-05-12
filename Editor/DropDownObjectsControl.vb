@@ -12,8 +12,6 @@ Public Class DropDownObjectsControl
         Else
             lstDropdown.Items.Clear()
         End If
-
-        ' will also need to be kept updated as objects are added and removed
     End Sub
 
     Public Overrides ReadOnly Property ExpectedType As System.Type

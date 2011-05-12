@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditableCommandPattern.cs" />
     <Compile Include="EditableDataWrapper.cs" />
     <Compile Include="EditableDictionary.cs" />
     <Compile Include="EditableIfScript.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="EditorVisibilityHelper.cs" />
     <Compile Include="FilterOptions.cs" />
     <Compile Include="IDataWrapper.cs" />
+    <Compile Include="IEditableCommandPattern.cs" />
     <Compile Include="IEditableList.cs" />
     <Compile Include="IEditableObjectReference.cs" />
     <Compile Include="IEditableScript.cs" />

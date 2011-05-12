@@ -21,19 +21,27 @@ Public Class TextBoxControl
 
     Public Property Value() As Object Implements IElementEditorControl.Value
         Get
-            If (m_nullable AndAlso txtTextBox.Text.Length = 0) Then Return Nothing
-            Return txtTextBox.Text
+            Return GetValue()
         End Get
         Set(value As Object)
-            Dim stringValue As String = TryCast(value, String)
-            If stringValue IsNot Nothing Then
-                txtTextBox.Text = stringValue
-            Else
-                txtTextBox.Text = String.Empty
-            End If
-            m_oldValue = stringValue
+            SetValue(value)
         End Set
     End Property
+
+    Protected Overridable Function GetValue() As Object
+        If (m_nullable AndAlso txtTextBox.Text.Length = 0) Then Return Nothing
+        Return txtTextBox.Text
+    End Function
+
+    Protected Overridable Sub SetValue(value As Object)
+        Dim stringValue As String = TryCast(value, String)
+        If stringValue IsNot Nothing Then
+            txtTextBox.Text = stringValue
+        Else
+            txtTextBox.Text = String.Empty
+        End If
+        m_oldValue = stringValue
+    End Sub
 
     Private Sub TextBoxControl_Leave(sender As Object, e As System.EventArgs) Handles txtTextBox.Leave
         Save(m_data)
@@ -67,6 +75,10 @@ Public Class TextBoxControl
     End Property
 
     Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
+        SaveData(data)
+    End Sub
+
+    Protected Overridable Sub SaveData(data As IEditorData)
         If IsDirty Then
             Dim description As String = String.Format("Set {0} to '{1}'", m_attributeName, Value)
             m_controller.StartTransaction(description)
@@ -80,7 +92,10 @@ Public Class TextBoxControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_data = data
+        PopulateData(data)
+    End Sub
 
+    Protected Overridable Sub PopulateData(data As IEditorData)
         If m_data Is Nothing Then
             Value = String.Empty
         Else
@@ -104,9 +119,18 @@ Public Class TextBoxControl
         m_attributeName = attributeName
     End Sub
 
-    Public ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
+    Public Overridable ReadOnly Property ExpectedType As System.Type Implements IElementEditorControl.ExpectedType
         Get
             Return GetType(String)
         End Get
+    End Property
+
+    Protected Property OldValue As String
+        Get
+            Return m_oldValue
+        End Get
+        Set(value As String)
+            m_oldValue = value
+        End Set
     End Property
 End Class

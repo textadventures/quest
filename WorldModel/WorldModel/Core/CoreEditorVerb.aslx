@@ -13,7 +13,7 @@
 
       <control>
         <caption>Pattern</caption>
-        <controltype>textbox</controltype>
+        <controltype>pattern</controltype>
         <attribute>pattern</attribute>
       </control>
 
