@@ -1,5 +1,7 @@
 ﻿Public Class InputWindow
 
+    Private m_activeControl As Control
+
     Public Sub New()
 
         ' This call is required by the designer.
@@ -7,6 +9,7 @@
 
         ' Add any initialization after the InitializeComponent() call.
         ShowDropdown(False)
+        m_activeControl = txtInput
     End Sub
 
     Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
@@ -14,7 +17,7 @@
     End Sub
 
     Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
-        txtInput.Text = ""
+        m_activeControl.Text = ""
         Me.Hide()
     End Sub
 
@@ -37,5 +40,20 @@
         lstDropdown.Text = defaultSelection
         ShowDropdown(True)
     End Sub
+
+    Public Sub SetAutoComplete(items As IEnumerable(Of String))
+        txtInput.Visible = False
+        lstInputAutoComplete.Visible = True
+        m_activeControl = lstInputAutoComplete
+        For Each item In items
+            lstInputAutoComplete.Items.Add(item)
+        Next
+    End Sub
+
+    Public ReadOnly Property ActiveInputControl As Control
+        Get
+            Return m_activeControl
+        End Get
+    End Property
 
 End Class

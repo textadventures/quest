@@ -743,6 +743,12 @@ namespace AxeSoftware.Quest
             return WorldModel.Elements.GetElements(ElementType.Object).Where(e => e.Type == t).Select(e => e.Name);
         }
 
+        public IEnumerable<string> GetVerbProperties()
+        {
+            return WorldModel.Elements.GetElements(ElementType.Object)
+                .Where(e => e.Type == ObjectType.Command && e.Fields.GetAsType<bool>("isverb")).Select(e => e.Fields.GetString("property"));
+        }
+
         public bool IsDefaultTypeName(string elementType)
         {
             return elementType == "defaultverb" || WorldModel.IsDefaultTypeName(elementType);

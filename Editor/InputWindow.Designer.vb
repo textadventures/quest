@@ -28,6 +28,7 @@ Partial Class InputWindow
         Me.txtInput = New System.Windows.Forms.TextBox()
         Me.lblDropdownCaption = New System.Windows.Forms.Label()
         Me.lstDropdown = New System.Windows.Forms.ComboBox()
+        Me.lstInputAutoComplete = New System.Windows.Forms.ComboBox()
         Me.SuspendLayout()
         '
         'lblPrompt
@@ -88,6 +89,19 @@ Partial Class InputWindow
         Me.lstDropdown.Size = New System.Drawing.Size(264, 21)
         Me.lstDropdown.TabIndex = 1
         '
+        'lstInputAutoComplete
+        '
+        Me.lstInputAutoComplete.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lstInputAutoComplete.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest
+        Me.lstInputAutoComplete.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.lstInputAutoComplete.FormattingEnabled = True
+        Me.lstInputAutoComplete.Location = New System.Drawing.Point(16, 35)
+        Me.lstInputAutoComplete.Name = "lstInputAutoComplete"
+        Me.lstInputAutoComplete.Size = New System.Drawing.Size(324, 21)
+        Me.lstInputAutoComplete.TabIndex = 0
+        Me.lstInputAutoComplete.Visible = False
+        '
         'InputWindow
         '
         Me.AcceptButton = Me.cmdOK
@@ -95,6 +109,7 @@ Partial Class InputWindow
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.cmdCancel
         Me.ClientSize = New System.Drawing.Size(352, 99)
+        Me.Controls.Add(Me.lstInputAutoComplete)
         Me.Controls.Add(Me.lblDropdownCaption)
         Me.Controls.Add(Me.txtInput)
         Me.Controls.Add(Me.cmdCancel)
@@ -118,4 +133,5 @@ Partial Class InputWindow
     Friend WithEvents txtInput As System.Windows.Forms.TextBox
     Friend WithEvents lblDropdownCaption As System.Windows.Forms.Label
     Friend WithEvents lstDropdown As System.Windows.Forms.ComboBox
+    Friend WithEvents lstInputAutoComplete As System.Windows.Forms.ComboBox
 End Class

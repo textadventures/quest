@@ -25,7 +25,14 @@ Public Class VerbsControl
     End Property
 
     Protected Overrides Sub Add()
-        Dim result As PopupEditors.EditStringResult = PopupEditors.EditString("Please enter a name for the new verb", String.Empty)
+        ' TO DO: This fetches all verbs in the game, but verbs can be defined in rooms, so we should
+        ' filter out any out-of-scope verbs.
+
+        Dim result As PopupEditors.EditStringResult = PopupEditors.EditString(
+            "Please enter a name for the new verb",
+            String.Empty,
+            Controller.GetVerbProperties())
+
         If result.Cancelled Then Return
 
         If Not lstAttributes.Items.ContainsKey(result.Result) Then
