@@ -14,7 +14,8 @@ Public Class AttributesControl
             {"int", "Integer"},
             {"script", "Script"},
             {"stringlist", "String List"},
-            {"object", "Object"}
+            {"object", "Object"},
+            {"simplepattern", "Command pattern"}
         }
 
         Public Sub New(attribute As String)
