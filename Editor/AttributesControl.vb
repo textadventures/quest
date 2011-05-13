@@ -3,23 +3,25 @@ Public Class AttributesControl
     Implements IElementEditorControl
     Implements IMultiAttributeElementEditorControl
 
+    Private Shared s_allTypes As New Dictionary(Of String, String) From {
+        {"string", "String"},
+        {"boolean", "Boolean"},
+        {"int", "Integer"},
+        {"script", "Script"},
+        {"stringlist", "String List"},
+        {"object", "Object"},
+        {"simplepattern", "Command pattern"}
+    }
+
     Private Class SubEditorControlData
         Implements IEditorControl
 
         Private m_attribute As String
+        Private m_allowedTypes As Dictionary(Of String, String)
 
-        Private Shared s_allTypes As New Dictionary(Of String, String) From {
-            {"string", "String"},
-            {"boolean", "Boolean"},
-            {"int", "Integer"},
-            {"script", "Script"},
-            {"stringlist", "String List"},
-            {"object", "Object"},
-            {"simplepattern", "Command pattern"}
-        }
-
-        Public Sub New(attribute As String)
+        Public Sub New(attribute As String, allowedTypes As Dictionary(Of String, String))
             m_attribute = attribute
+            m_allowedTypes = allowedTypes
         End Sub
 
         Public ReadOnly Property Attribute As String Implements IEditorControl.Attribute
@@ -52,7 +54,7 @@ Public Class AttributesControl
 
         Public Function GetDictionary(tag As String) As System.Collections.Generic.IDictionary(Of String, String) Implements IEditorControl.GetDictionary
             If tag = "types" Then
-                Return s_allTypes
+                Return m_allowedTypes
             Else
                 Throw New NotImplementedException
             End If
@@ -164,14 +166,14 @@ Public Class AttributesControl
             Next
 
             For Each attr In m_data.GetAttributeData
-                If CanDisplayAttribute(attr.AttributeName) Then
+                If CanDisplayAttribute(attr.AttributeName, m_data.GetAttribute(attr.AttributeName)) Then
                     AddListItem(lstAttributes, attr, AddressOf GetAttributeDisplayString)
                 End If
             Next
         End If
     End Sub
 
-    Protected Overridable Function CanDisplayAttribute(attribute As String) As Boolean
+    Protected Overridable Function CanDisplayAttribute(attribute As String, value As Object) As Boolean
         Return True
     End Function
 
@@ -266,7 +268,7 @@ Public Class AttributesControl
             ctlMultiControl.Populate(Nothing)
         Else
             ctlMultiControl.Visible = True
-            Dim controlData As New SubEditorControlData(attribute)
+            Dim controlData As New SubEditorControlData(attribute, AllowedTypes)
             ctlMultiControl.Initialise(m_controller, controlData)
             ctlMultiControl.Populate(m_data)
         End If
@@ -279,7 +281,7 @@ Public Class AttributesControl
     Private Sub AttributeChangedInternal(attribute As String, value As Object, updateMultiControl As Boolean)
         Dim listViewItem As ListViewItem = lstAttributes.Items(attribute)
 
-        If value Is Nothing Then
+        If value Is Nothing OrElse Not CanDisplayAttribute(attribute, value) Then
             ' Remove attribute
             lstAttributes.Items.Remove(listViewItem)
         Else
@@ -377,4 +379,10 @@ Public Class AttributesControl
         Dim selectedType As String = GetSelectedType()
         m_controller.RemoveInheritedTypeFromElement(m_data.Name, selectedType, True)
     End Sub
+
+    Protected Overridable ReadOnly Property AllowedTypes As Dictionary(Of String, String)
+        Get
+            Return s_allTypes
+        End Get
+    End Property
 End Class
