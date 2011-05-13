@@ -962,5 +962,11 @@ namespace AxeSoftware.Quest
             m_worldModel.GetElementFactory(element.ElemType).DestroyElement(element.Name);
             m_worldModel.UndoLogger.EndTransaction();
         }
+
+        public bool IsVerbAttribute(string attributeName)
+        {
+            return m_worldModel.Elements.GetElements(ElementType.Object).Any(
+                e => e.Fields.GetAsType<bool>("isverb") && e.Fields.GetString("property") == attributeName);
+        }
     }
 }

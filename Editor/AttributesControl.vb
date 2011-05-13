@@ -164,10 +164,16 @@ Public Class AttributesControl
             Next
 
             For Each attr In m_data.GetAttributeData
-                AddListItem(lstAttributes, attr, AddressOf GetAttributeDisplayString)
+                If CanDisplayAttribute(attr.AttributeName) Then
+                    AddListItem(lstAttributes, attr, AddressOf GetAttributeDisplayString)
+                End If
             Next
         End If
     End Sub
+
+    Protected Overridable Function CanDisplayAttribute(attribute As String) As Boolean
+        Return True
+    End Function
 
     Private Sub AddListItem(attr As IEditorAttributeData)
         AddListItem(lstAttributes, attr, AddressOf GetAttributeDisplayString)

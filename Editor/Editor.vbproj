@@ -280,6 +280,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Utility.vb" />
+    <Compile Include="VerbsControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AttributesControl.resx">

@@ -38,7 +38,7 @@ Partial Class AttributesControl
         Me.colValue = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colSource = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
-        Me.ToolStripLabel1 = New System.Windows.Forms.ToolStripLabel()
+        Me.lblAttributesTitle = New System.Windows.Forms.ToolStripLabel()
         Me.cmdAdd = New System.Windows.Forms.ToolStripButton()
         Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
         Me.ctlMultiControl = New AxeSoftware.Quest.MultiControl()
@@ -186,21 +186,21 @@ Partial Class AttributesControl
         '
         'ctlToolStrip
         '
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripLabel1, Me.cmdAdd, Me.cmdDelete})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblAttributesTitle, Me.cmdAdd, Me.cmdDelete})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
         Me.ctlToolStrip.Size = New System.Drawing.Size(657, 25)
         Me.ctlToolStrip.TabIndex = 3
         Me.ctlToolStrip.Text = "ToolStrip1"
         '
-        'ToolStripLabel1
+        'lblAttributesTitle
         '
-        Me.ToolStripLabel1.AutoSize = False
-        Me.ToolStripLabel1.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ToolStripLabel1.Name = "ToolStripLabel1"
-        Me.ToolStripLabel1.Size = New System.Drawing.Size(100, 22)
-        Me.ToolStripLabel1.Text = "Attributes"
-        Me.ToolStripLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.lblAttributesTitle.AutoSize = False
+        Me.lblAttributesTitle.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblAttributesTitle.Name = "lblAttributesTitle"
+        Me.lblAttributesTitle.Size = New System.Drawing.Size(100, 22)
+        Me.lblAttributesTitle.Text = "Attributes"
+        Me.lblAttributesTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'cmdAdd
         '
@@ -266,7 +266,7 @@ Partial Class AttributesControl
     Friend WithEvents cmdAdd As System.Windows.Forms.ToolStripButton
     Friend WithEvents cmdDelete As System.Windows.Forms.ToolStripButton
     Friend WithEvents ctlMultiControl As AxeSoftware.Quest.MultiControl
-    Friend WithEvents ToolStripLabel1 As System.Windows.Forms.ToolStripLabel
+    Friend WithEvents lblAttributesTitle As System.Windows.Forms.ToolStripLabel
     Friend WithEvents ctlTypesToolStrip As System.Windows.Forms.ToolStrip
     Friend WithEvents ToolStripLabel2 As System.Windows.Forms.ToolStripLabel
     Friend WithEvents cmdDeleteType As System.Windows.Forms.ToolStripButton

@@ -57,6 +57,12 @@
         <attribute>article</attribute>
       </control>
 
+      <control>
+        <mustnotinherit>editor_room</mustnotinherit>
+        <controltype>verbs</controltype>
+        <expand/>
+      </control>
+
     </tab>
 
     <tab>
