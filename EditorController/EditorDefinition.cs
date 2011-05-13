@@ -7,9 +7,38 @@ namespace AxeSoftware.Quest
 {
     internal class EditorDefinition : IEditorDefinition
     {
+        private class Filter
+        {
+            private List<string> m_attributes = new List<string>();
+            private string m_filterName;
+
+            public List<string> Attributes { get { return m_attributes; } }
+            public string Name { get { return m_filterName; } }
+
+            public Filter(string name)
+            {
+                m_filterName = name;
+            }
+        }
+
+        private class FilterGroup
+        {
+            private Dictionary<string, Filter> m_filters = new Dictionary<string, Filter>();
+            private string m_filterGroupName;
+
+            public Dictionary<string, Filter> Filters { get { return m_filters; } }
+            public string Name { get { return m_filterGroupName; } }
+
+            public FilterGroup(string name)
+            {
+                m_filterGroupName = name;
+            }
+        }
+
         private Dictionary<string, IEditorTab> m_tabs = null;
         private Dictionary<string, IEditorControl> m_controls = null;
         private string m_appliesTo = null;
+        private Dictionary<string, FilterGroup> m_filterGroups = new Dictionary<string, FilterGroup>();
 
         public EditorDefinition(WorldModel worldModel, Element source)
         {
@@ -21,7 +50,7 @@ namespace AxeSoftware.Quest
             {
                 if (e.Parent == source)
                 {
-                    m_tabs.Add(e.Name, new EditorTab(worldModel, e));
+                    m_tabs.Add(e.Name, new EditorTab(this, worldModel, e));
                 }
             }
 
@@ -29,7 +58,7 @@ namespace AxeSoftware.Quest
             {
                 if (e.Parent == source)
                 {
-                    m_controls.Add(e.Name, new EditorControl(worldModel, e));
+                    m_controls.Add(e.Name, new EditorControl(this, worldModel, e));
                 }
             }
         }
@@ -47,6 +76,51 @@ namespace AxeSoftware.Quest
         public IEnumerable<IEditorControl> Controls
         {
             get { return m_controls.Values; }
+        }
+
+        internal void RegisterFilter(string filterGroupName, string filterName, string attribute)
+        {
+            if (!m_filterGroups.ContainsKey(filterGroupName))
+            {
+                m_filterGroups.Add(filterGroupName, new FilterGroup(filterGroupName));
+            }
+
+            FilterGroup filterGroup = m_filterGroups[filterGroupName];
+
+            if (!filterGroup.Filters.ContainsKey(filterName))
+            {
+                filterGroup.Filters.Add(filterName, new Filter(filterName));
+            }
+
+            Filter filter = filterGroup.Filters[filterName];
+            filter.Attributes.Add(attribute);
+        }
+
+        internal string GetDefaultFilterName(string filterGroupName, IEditorData data)
+        {
+            FilterGroup filterGroup = m_filterGroups[filterGroupName];
+            List<Filter> candidates = new List<Filter>();
+
+            foreach (Filter filter in filterGroup.Filters.Values)
+            {
+                foreach (string attribute in filter.Attributes)
+                {
+                    if (data.GetAttribute(attribute) != null)
+                    {
+                        candidates.Add(filter);
+                        break;
+                    }
+                }
+            }
+
+            // If there is only one candidate then we have our result
+            if (candidates.Count == 1)
+            {
+                return candidates[0].Name;
+            }
+
+            // Otherwise just default to the first filter
+            return filterGroup.Filters.First().Value.Name;
         }
     }
 }

@@ -15,9 +15,13 @@ namespace AxeSoftware.Quest
         private string m_notVisibleIfElementInheritsType = null;
         private Element m_visibleIfElementInheritsTypeElement = null;
         private Element m_notVisibleIfElementInheritsTypeElement = null;
+        private string m_filterGroup;
+        private string m_filter;
+        private EditorDefinition m_parent;
 
-        public EditorVisibilityHelper(WorldModel worldModel, Element source)
+        public EditorVisibilityHelper(EditorDefinition parent, WorldModel worldModel, Element source)
         {
+            m_parent = parent;
             m_worldModel = worldModel;
             m_relatedAttribute = source.Fields.GetString("relatedattribute");
             if (m_relatedAttribute != null) m_alwaysVisible = false;
@@ -25,6 +29,9 @@ namespace AxeSoftware.Quest
             m_visibleIfElementInheritsType = source.Fields.GetString("mustinherit");
             m_notVisibleIfElementInheritsType = source.Fields.GetString("mustnotinherit");
             if (m_visibleIfElementInheritsType != null || m_notVisibleIfElementInheritsType != null) m_alwaysVisible = false;
+            m_filterGroup = source.Fields.GetString("filtergroup");
+            m_filter = source.Fields.GetString("filter");
+            if (m_filter != null) m_alwaysVisible = false;
         }
 
         public bool IsVisible(IEditorData data)
@@ -56,6 +63,18 @@ namespace AxeSoftware.Quest
                     m_notVisibleIfElementInheritsTypeElement = m_worldModel.Elements.Get(ElementType.ObjectType, m_notVisibleIfElementInheritsType);
                 }
                 return !m_worldModel.Elements.Get(data.Name).Fields.InheritsType(m_notVisibleIfElementInheritsTypeElement);
+            }
+
+            if (m_filterGroup != null)
+            {
+                // This control is visible if the named filtergroup's current filter selection is this control's filter.
+                string selectedFilter = data.GetSelectedFilter(m_filterGroup);
+
+                // Or, if the named filtergroup's current filter selection is not set, infer the current filter value
+                // based on which attribute is populated for this data.
+                if (selectedFilter == null) selectedFilter = m_parent.GetDefaultFilterName(m_filterGroup, data);
+
+                return (selectedFilter == m_filter);
             }
 
             return false;

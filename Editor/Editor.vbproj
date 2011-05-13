@@ -127,6 +127,9 @@
     <Compile Include="DropDownControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="DropDownFilterControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="DropDownObjectsControl.vb">
       <SubType>UserControl</SubType>
     </Compile>

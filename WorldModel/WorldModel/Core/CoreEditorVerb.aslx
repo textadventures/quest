@@ -6,12 +6,6 @@
       <caption>Verb</caption>
 
       <control>
-        <caption>Name</caption>
-        <controltype>textbox</controltype>
-        <attribute>name</attribute>
-      </control>
-
-      <control>
         <controltype>multi</controltype>
         <caption>Pattern</caption>
         <attribute>pattern</attribute>
@@ -28,15 +22,36 @@
       </control>
 
       <control>
-        <caption>Response text</caption>
-        <controltype>textbox</controltype>
-        <attribute>defaulttext</attribute>
+        <caption>Default</caption>
+        <controltype>filter</controltype>
+        <filters>text=Text; template=Template</filters>
+        <width>150</width>
+        <filtergroupname>responsetype</filtergroupname>
       </control>
 
       <control>
-        <caption>Response template</caption>
+        <caption>Text</caption>
+        <controltype>textbox</controltype>
+        <attribute>defaulttext</attribute>
+        <filtergroup>responsetype</filtergroup>
+        <filter>text</filter>
+        <nullable/>
+      </control>
+
+      <control>
+        <caption>Template</caption>
         <controltype>textbox</controltype>
         <attribute>defaulttemplate</attribute>
+        <filtergroup>responsetype</filtergroup>
+        <filter>template</filter>
+        <nullable/>
+      </control>
+
+      <control>
+        <caption>Name</caption>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
+        <nullable/>
       </control>
     </tab>
 

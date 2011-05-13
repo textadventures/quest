@@ -47,6 +47,7 @@ namespace AxeSoftware.Quest
         private Element m_element;
         private EditorController m_controller;
         public event EventHandler Changed;
+        private Dictionary<string, string> m_filters = new Dictionary<string, string>();
 
         public EditorData(Element element, EditorController controller)
         {
@@ -102,6 +103,19 @@ namespace AxeSoftware.Quest
             {
                 return null;
             }
+        }
+
+        public string GetSelectedFilter(string filterGroup)
+        {
+            string result;
+            m_filters.TryGetValue(filterGroup, out result);
+            return result;
+        }
+
+        public void SetSelectedFilter(string filterGroup, string filter)
+        {
+            m_filters[filterGroup] = filter;
+            if (Changed != null) Changed(this, new EventArgs());
         }
 
         public IEnumerable<IEditorAttributeData> GetAttributeData()

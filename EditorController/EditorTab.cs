@@ -11,7 +11,7 @@ namespace AxeSoftware.Quest
         private string m_caption;
         private EditorVisibilityHelper m_visibilityHelper;
 
-        public EditorTab(WorldModel worldModel, Element source)
+        public EditorTab(EditorDefinition parent, WorldModel worldModel, Element source)
         {
             m_controls = new Dictionary<string, IEditorControl>();
             m_caption = source.Fields.GetString("caption");
@@ -20,10 +20,10 @@ namespace AxeSoftware.Quest
             {
                 if (e.Parent == source)
                 {
-                    m_controls.Add(e.Name, new EditorControl(worldModel, e));
+                    m_controls.Add(e.Name, new EditorControl(parent, worldModel, e));
                 }
             }
-            m_visibilityHelper = new EditorVisibilityHelper(worldModel, source);
+            m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
         }
 
         public string Caption

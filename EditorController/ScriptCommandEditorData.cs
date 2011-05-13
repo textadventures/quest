@@ -45,5 +45,14 @@ namespace AxeSoftware.Quest
         {
             return null;
         }
+
+        public string GetSelectedFilter(string filterGroup)
+        {
+            return null;
+        }
+
+        public void SetSelectedFilter(string filterGroup, string filter)
+        {
+        }
     }
 }

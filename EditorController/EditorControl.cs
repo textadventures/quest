@@ -18,7 +18,7 @@ namespace AxeSoftware.Quest
         private Element m_source;
         private EditorVisibilityHelper m_visibilityHelper;
 
-        public EditorControl(WorldModel worldModel, Element source)
+        public EditorControl(EditorDefinition parent, WorldModel worldModel, Element source)
         {
             m_worldModel = worldModel;
             m_source = source;
@@ -29,7 +29,12 @@ namespace AxeSoftware.Quest
             if (source.Fields.HasType<int>("width")) m_width = source.Fields.GetAsType<int>("width");
             if (source.Fields.HasType<int>("paddingtop")) m_paddingTop = source.Fields.GetAsType<int>("paddingtop");
             if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");
-            m_visibilityHelper = new EditorVisibilityHelper(worldModel, source);
+            m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
+
+            if (source.Fields.HasString("filtergroup"))
+            {
+                parent.RegisterFilter(source.Fields.GetString("filtergroup"), source.Fields.GetString("filter"), m_attribute);
+            }
         }
 
         public string ControlType

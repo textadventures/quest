@@ -71,6 +71,15 @@ namespace AxeSoftware.Quest
                 return null;
             }
 
+            public string GetSelectedFilter(string filterGroup)
+            {
+                return null;
+            }
+
+            public void SetSelectedFilter(string filterGroup, string filter)
+            {
+            }
+
             public string Id
             {
                 get { return m_elseIfScript.Id; }
@@ -283,6 +292,15 @@ namespace AxeSoftware.Quest
         public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
         {
             return null;
+        }
+
+        public string GetSelectedFilter(string filterGroup)
+        {
+            return null;
+        }
+
+        public void SetSelectedFilter(string filterGroup, string filter)
+        {
         }
 
         public void AddElse()
