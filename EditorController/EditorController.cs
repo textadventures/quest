@@ -815,10 +815,12 @@ namespace AxeSoftware.Quest
 
         public string CreateNewVerb(string parent)
         {
-            return CreateNewAnonymousObject(parent, "command", ObjectType.Command, new Dictionary<string, object> { { "isverb", true } });
+            return CreateNewAnonymousObject(parent, "command", ObjectType.Command,
+                new List<string> { "defaultverb" },
+                new Dictionary<string, object> { { "isverb", true } });
         }
 
-        private string CreateNewAnonymousObject(string parent, string typeName, ObjectType type, IDictionary<string, object> initialFields = null)
+        private string CreateNewAnonymousObject(string parent, string typeName, ObjectType type, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null)
         {
             string desc;
             Element parentEl;
@@ -834,7 +836,7 @@ namespace AxeSoftware.Quest
             }
 
             m_worldModel.UndoLogger.StartTransaction(desc);
-            Element newObject = m_worldModel.ObjectFactory.CreateObject(type, initialFields);
+            Element newObject = m_worldModel.ObjectFactory.CreateObject(type, initialTypes, initialFields);
             newObject.Parent = parentEl;
             newObject.Fields[FieldDefinitions.Anonymous] = true;
 

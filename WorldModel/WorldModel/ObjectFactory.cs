@@ -33,7 +33,7 @@ namespace AxeSoftware.Quest
             return CreateInternal(name, addToUndoLog, null);
         }
 
-        protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation, IDictionary<string, object> initialFields = null)
+        protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null)
         {
             if (addToUndoLog)
             {
@@ -57,6 +57,14 @@ namespace AxeSoftware.Quest
             if (extraInitialisation != null)
             {
                 extraInitialisation.Invoke(newElement);
+            }
+
+            if (initialTypes != null)
+            {
+                foreach (string type in initialTypes)
+                {
+                    newElement.AddType(WorldModel.Elements.Get(ElementType.ObjectType, type));
+                }
             }
 
             if (initialFields != null)
@@ -245,22 +253,16 @@ namespace AxeSoftware.Quest
             return CreateObject(objectName, type, true);
         }
 
-        public Element CreateObject(ObjectType type, IDictionary<string, object> initialFields)
+        public Element CreateObject(ObjectType type, IList<string> initialTypes, IDictionary<string, object> initialFields)
         {
-            if (type == ObjectType.Exit)
-            {
-                return CreateObject(WorldModel.GetUniqueID("exit"), type, true, initialFields);
-            }
-            else
-            {
-                return CreateObject(WorldModel.GetUniqueID(), type, true, initialFields);
-            }
+            string id = (type == ObjectType.Exit) ? WorldModel.GetUniqueID("exit") : WorldModel.GetUniqueID();
+            return CreateObject(id, type, true, initialTypes, initialFields);
         }
 
-        internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog, IDictionary<string, object> initialFields = null)
+        internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null)
         {
             WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName, true, type, ElementType.Object));
-            Element newObject = base.CreateInternal(objectName, false, newElement => newElement.Type = type, initialFields);
+            Element newObject = base.CreateInternal(objectName, false, newElement => newElement.Type = type, initialTypes, initialFields);
 
             string defaultType = WorldModel.DefaultTypeNames[type];
 

@@ -29,6 +29,10 @@
     <displayverbs type="list">[GoTo]</displayverbs>
   </type>
 
+  <type name="defaultcommand">
+    <pattern type="simplepattern"></pattern>
+  </type>
+
   <type name="male">
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
