@@ -23,4 +23,27 @@ Public Class VerbsControl
             Return s_allowedTypes
         End Get
     End Property
+
+    Protected Overrides Sub Add()
+        Dim result As PopupEditors.EditStringResult = PopupEditors.EditString("Please enter a name for the new verb", String.Empty)
+        If result.Cancelled Then Return
+
+        If Not lstAttributes.Items.ContainsKey(result.Result) Then
+            Controller.StartTransaction(String.Format("Add '{0}' verb", result.Result))
+
+            If Not Controller.IsVerbAttribute(result.Result) Then
+                Dim newVerbId As String = Controller.CreateNewVerb(Nothing, False)
+                Dim verbData As IEditorData = Controller.GetEditorData(newVerbId)
+                verbData.SetAttribute("property", result.Result)
+                verbData.SetAttribute("pattern", result.Result)
+                verbData.SetAttribute("defaulttext", "You can't " + result.Result + " that.")
+            End If
+
+            Data.SetAttribute(result.Result, String.Empty)
+            Controller.EndTransaction()
+        End If
+
+        lstAttributes.Items(result.Result).Selected = True
+        lstAttributes.SelectedItems(0).EnsureVisible()
+    End Sub
 End Class

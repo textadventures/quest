@@ -369,7 +369,7 @@
     End Sub
 
     Private Sub AddNewVerb()
-        Dim newVerb = m_controller.CreateNewVerb(GetParentForCurrentSelection())
+        Dim newVerb = m_controller.CreateNewVerb(GetParentForCurrentSelection(), True)
         ctlTree.SetSelectedItem(newVerb)
     End Sub
 

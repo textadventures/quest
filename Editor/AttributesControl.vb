@@ -313,6 +313,10 @@ Public Class AttributesControl
     End Function
 
     Private Sub cmdAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdAdd.Click
+        Add()
+    End Sub
+
+    Protected Overridable Sub Add()
         Dim result As PopupEditors.EditStringResult = PopupEditors.EditString("Please enter a name for the new attribute", String.Empty)
         If result.Cancelled Then Return
 
@@ -383,6 +387,12 @@ Public Class AttributesControl
     Protected Overridable ReadOnly Property AllowedTypes As Dictionary(Of String, String)
         Get
             Return s_allTypes
+        End Get
+    End Property
+
+    Protected ReadOnly Property Data As IEditorData
+        Get
+            Return m_data
         End Get
     End Property
 End Class
