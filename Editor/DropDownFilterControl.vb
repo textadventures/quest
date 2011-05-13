@@ -4,8 +4,11 @@ Public Class DropDownFilterControl
 
     Private m_dropDownValues As IDictionary(Of String, String)
     Private m_filterGroup As String
+    Private m_controlData As IEditorControl
 
     Protected Overrides Sub InitialiseControl(controlData As IEditorControl)
+        m_controlData = controlData
+
         If controlData IsNot Nothing Then
             m_dropDownValues = controlData.GetDictionary("filters")
             lstDropdown.Items.AddRange(m_dropDownValues.Values.ToArray())
@@ -16,6 +19,9 @@ Public Class DropDownFilterControl
     End Sub
 
     Protected Overrides Sub PopulateData(data As IEditorData)
+        Dim selectedItem As String = data.GetSelectedFilter(m_filterGroup)
+        If selectedItem Is Nothing Then selectedItem = m_controlData.Parent.GetDefaultFilterName(m_filterGroup, data)
+        lstDropdown.Text = m_dropDownValues(selectedItem)
     End Sub
 
     Protected Overrides Sub SaveData(data As IEditorData)

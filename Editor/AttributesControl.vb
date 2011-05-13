@@ -98,6 +98,12 @@ Public Class AttributesControl
                 Return Nothing
             End Get
         End Property
+
+        Public ReadOnly Property Parent As IEditorDefinition Implements IEditorControl.Parent
+            Get
+                Return Nothing
+            End Get
+        End Property
     End Class
 
     Private m_oldValue As String

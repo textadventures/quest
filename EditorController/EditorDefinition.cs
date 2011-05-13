@@ -96,7 +96,7 @@ namespace AxeSoftware.Quest
             filter.Attributes.Add(attribute);
         }
 
-        internal string GetDefaultFilterName(string filterGroupName, IEditorData data)
+        public string GetDefaultFilterName(string filterGroupName, IEditorData data)
         {
             FilterGroup filterGroup = m_filterGroups[filterGroupName];
             List<Filter> candidates = new List<Filter>();

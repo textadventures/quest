@@ -17,9 +17,11 @@ namespace AxeSoftware.Quest
         private bool m_expand = false;
         private Element m_source;
         private EditorVisibilityHelper m_visibilityHelper;
+        private EditorDefinition m_parent;
 
         public EditorControl(EditorDefinition parent, WorldModel worldModel, Element source)
         {
+            m_parent = parent;
             m_worldModel = worldModel;
             m_source = source;
             m_controlType = source.Fields.GetString("controltype");
@@ -100,6 +102,11 @@ namespace AxeSoftware.Quest
         public bool IsControlVisible(IEditorData data)
         {
             return m_visibilityHelper.IsVisible(data);
+        }
+
+        public IEditorDefinition Parent
+        {
+            get { return m_parent; }
         }
     }
 }
