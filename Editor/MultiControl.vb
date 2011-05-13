@@ -4,7 +4,7 @@ Public Class MultiControl
     Implements IAdjustableHeightControl
 
     Private Const k_paddingTop As Integer = 5
-    Private Const k_paddingLeft As Integer = 10
+    Private Const k_paddingLeft As Integer = 0
     Private Const k_defaultHeight As Integer = 50
     Private m_heightWithScriptEditor As Integer = 400
 
