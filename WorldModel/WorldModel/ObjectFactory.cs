@@ -63,7 +63,7 @@ namespace AxeSoftware.Quest
             {
                 foreach (string type in initialTypes)
                 {
-                    newElement.AddType(WorldModel.Elements.Get(ElementType.ObjectType, type));
+                    newElement.Fields.AddTypeUndoable(WorldModel.Elements.Get(ElementType.ObjectType, type));
                 }
             }
 
@@ -262,7 +262,6 @@ namespace AxeSoftware.Quest
         internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null)
         {
             WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName, true, type, ElementType.Object));
-            Element newObject = base.CreateInternal(objectName, false, newElement => newElement.Type = type, initialTypes, initialFields);
 
             string defaultType = WorldModel.DefaultTypeNames[type];
 
@@ -270,10 +269,14 @@ namespace AxeSoftware.Quest
             {
                 if (WorldModel.Elements.ContainsKey(ElementType.ObjectType, defaultType))
                 {
-                    newObject.AddType(WorldModel.GetObjectType(defaultType));
+                    if (initialTypes == null) initialTypes = new List<string>();
+                    initialTypes.Add(defaultType);
                 }
             }
-            else
+
+            Element newObject = base.CreateInternal(objectName, false, newElement => newElement.Type = type, initialTypes, initialFields);
+
+            if (WorldModel.State != GameState.Running)
             {
                 newObject.Fields.LazyFields.AddDefaultType(defaultType);
             }
