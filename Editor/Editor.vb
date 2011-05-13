@@ -369,7 +369,8 @@
     End Sub
 
     Private Sub AddNewVerb()
-        MsgBox("Not yet implemented")
+        Dim newVerb = m_controller.CreateNewVerb(GetParentForCurrentSelection())
+        ctlTree.SetSelectedItem(newVerb)
     End Sub
 
     Private Sub AddNewCommand()

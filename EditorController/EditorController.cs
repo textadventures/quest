@@ -361,7 +361,8 @@ namespace AxeSoftware.Quest
                 else if (e.Type == ObjectType.Command)
                 {
                     EditorCommandPattern pattern = e.Fields.GetAsType<EditorCommandPattern>("pattern");
-                    return "Command: " + (pattern == null ? "(blank)" : pattern.Pattern);
+                    bool isVerb = e.Fields.GetAsType<bool>("isverb");
+                    return (isVerb ? "Verb" : "Command") + ": " + (pattern == null ? "(blank)" : pattern.Pattern);
                 }
             }
             return e.Name;
@@ -812,7 +813,12 @@ namespace AxeSoftware.Quest
             return CreateNewAnonymousObject(parent, "command", ObjectType.Command);
         }
 
-        private string CreateNewAnonymousObject(string parent, string typeName, ObjectType type)
+        public string CreateNewVerb(string parent)
+        {
+            return CreateNewAnonymousObject(parent, "command", ObjectType.Command, new Dictionary<string, object> { { "isverb", true } });
+        }
+
+        private string CreateNewAnonymousObject(string parent, string typeName, ObjectType type, IDictionary<string, object> initialFields = null)
         {
             string desc;
             Element parentEl;
@@ -828,9 +834,10 @@ namespace AxeSoftware.Quest
             }
 
             m_worldModel.UndoLogger.StartTransaction(desc);
-            Element newObject = m_worldModel.ObjectFactory.CreateObject(type);
+            Element newObject = m_worldModel.ObjectFactory.CreateObject(type, initialFields);
             newObject.Parent = parentEl;
             newObject.Fields[FieldDefinitions.Anonymous] = true;
+
             m_worldModel.UndoLogger.EndTransaction();
 
             return newObject.Name;

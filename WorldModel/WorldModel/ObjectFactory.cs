@@ -33,7 +33,7 @@ namespace AxeSoftware.Quest
             return CreateInternal(name, addToUndoLog, null);
         }
 
-        protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation)
+        protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation, IDictionary<string, object> initialFields = null)
         {
             if (addToUndoLog)
             {
@@ -57,6 +57,14 @@ namespace AxeSoftware.Quest
             if (extraInitialisation != null)
             {
                 extraInitialisation.Invoke(newElement);
+            }
+
+            if (initialFields != null)
+            {
+                foreach (var field in initialFields)
+                {
+                    newElement.Fields.Set(field.Key, field.Value);
+                }
             }
 
             NotifyAddedElement(name);
@@ -237,22 +245,22 @@ namespace AxeSoftware.Quest
             return CreateObject(objectName, type, true);
         }
 
-        public Element CreateObject(ObjectType type)
+        public Element CreateObject(ObjectType type, IDictionary<string, object> initialFields)
         {
             if (type == ObjectType.Exit)
             {
-                return CreateObject(WorldModel.GetUniqueID("exit"), type);
+                return CreateObject(WorldModel.GetUniqueID("exit"), type, true, initialFields);
             }
             else
             {
-                return CreateObject(WorldModel.GetUniqueID(), type);
+                return CreateObject(WorldModel.GetUniqueID(), type, true, initialFields);
             }
         }
 
-        internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog)
+        internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog, IDictionary<string, object> initialFields = null)
         {
             WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName, true, type, ElementType.Object));
-            Element newObject = base.CreateInternal(objectName, false, newElement => newElement.Type = type);
+            Element newObject = base.CreateInternal(objectName, false, newElement => newElement.Type = type, initialFields);
 
             string defaultType = WorldModel.DefaultTypeNames[type];
 
