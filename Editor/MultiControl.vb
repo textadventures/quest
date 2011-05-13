@@ -98,7 +98,7 @@ Public Class MultiControl
                 m_currentEditor = DirectCast(Activator.CreateInstance(createType), IElementEditorControl)
                 m_currentEditor.Control.Parent = Control
                 m_currentEditor.Control.Top = lstTypes.Top + lstTypes.Height + k_paddingTop
-                m_currentEditor.Control.Left = k_paddingLeft
+                m_currentEditor.Control.Left = k_paddingLeft + Me.Padding.Left
                 m_currentEditor.Control.Width = Me.Width - m_currentEditor.Control.Left - Me.Padding.Right
                 m_currentEditor.Control.Anchor = AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
                 If TypeOf m_currentEditor Is IResizableElementEditorControl Then

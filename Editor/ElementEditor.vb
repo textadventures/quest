@@ -16,6 +16,8 @@
     Private m_tabControl As TabControl
     Private m_tabPage As TabPage
 
+    Private Shared m_random As New Random
+
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
     Public Sub Initialise(controller As EditorController, definition As IEditorDefinition)
@@ -84,9 +86,17 @@
         RemoveExistingControls()
         m_controls = New List(Of EditorControl)
 
+        ' Uncomment for random back colours - useful for debugging layout issues
+        'Me.BackColor = Color.FromArgb(m_random.Next(0, 256), m_random.Next(0, 256), m_random.Next(0, 256))
+
         Me.SuspendLayout()
+
         For Each editorControl As IEditorControl In controls
             Dim newControl As New EditorControl
+
+            ' Uncomment for random back colours - useful for debugging layout issues
+            'newControl.BackColor = Color.FromArgb(m_random.Next(0, 256), m_random.Next(0, 256), m_random.Next(0, 256))
+
             m_controls.Add(newControl)
             newControl.Definition = editorControl
             newControl.Parent = Me

@@ -29,6 +29,7 @@
         <caption>Script</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>
+        <expand/>
       </control>
 
     </tab>

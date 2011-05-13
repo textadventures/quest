@@ -55,6 +55,7 @@
         End If
         m_editorControl.Controller = m_controller
         Me.Height = m_editorControl.Control.Height
+        m_editorControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
 
         m_attribute = controlData.Attribute
         m_editorControl.Initialise(controller, controlData)
@@ -121,8 +122,10 @@
 
     Public Sub SetControlHeight(height As Integer)
         If Not m_controlUnderCaption Then
-            m_editorControl.Control.Height = height
-            Me.Height = m_editorControl.Control.Height
+            ' no longer setting editor control height directly as it's already
+            ' anchored to the bottom of the parent control
+            'm_editorControl.Control.Height = height
+            Me.Height = height 'm_editorControl.Control.Height
         Else
             m_editorControl.Control.Height = height - lblCaption.Height
             Me.Height = lblCaption.Height + m_editorControl.Control.Height
