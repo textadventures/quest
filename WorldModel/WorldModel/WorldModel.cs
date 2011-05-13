@@ -836,6 +836,7 @@ namespace AxeSoftware.Quest
 
         internal void NotifyElementFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
         {
+            if (!element.Initialised) return;
             if (ElementFieldUpdated != null) ElementFieldUpdated(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
         }
 

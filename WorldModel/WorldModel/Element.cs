@@ -63,6 +63,8 @@ namespace AxeSoftware.Quest
 
         private ObjectType m_type;
         private ElementType m_elemType;
+        private bool m_initialised = false;
+
         private static Dictionary<ObjectType, string> s_typeStrings;
         private static Dictionary<string, ObjectType> s_mapObjectTypeStringsToElementType;
         private static Dictionary<ElementType, string> s_elemTypeStrings;
@@ -229,6 +231,16 @@ namespace AxeSoftware.Quest
             {
                 return s_elemTypeStrings[m_elemType];
             }
+        }
+
+        internal bool Initialised
+        {
+            get { return m_initialised; }
+        }
+
+        internal void FinishedInitialisation()
+        {
+            m_initialised = true;
         }
     }
 }

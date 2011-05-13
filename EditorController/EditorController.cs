@@ -188,7 +188,7 @@ namespace AxeSoftware.Quest
                 }
 
                 if (e.Element.Type == ObjectType.Exit && (e.Attribute == "anonymous" || e.Attribute == "to" || e.Attribute == "name")
-                    || e.Element.Type == ObjectType.Command && (e.Attribute == "anonymous" || e.Attribute == "name" || e.Attribute == "pattern"))
+                    || e.Element.Type == ObjectType.Command && (e.Attribute == "anonymous" || e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb"))
                 {
                     if (e.Element.Name != null)
                     {
@@ -196,7 +196,18 @@ namespace AxeSoftware.Quest
                         RetitledNode(e.Element.Name, GetDisplayName(e.Element));
                     }
                 }
+
+                if (e.Element.Type == ObjectType.Command && e.Attribute == "isverb")
+                {
+                    MoveNove(e.Element.Name, GetDisplayName(e.Element), GetElementTreeParent(e.Element));
+                }
             }
+        }
+
+        private void MoveNove(string key, string text, string newParent)
+        {
+            RemovedNode(key);
+            AddedNode(key, text, newParent, null, null);
         }
 
         private void AddElementAndSubElementsToTree(Element e)
@@ -294,31 +305,8 @@ namespace AxeSoftware.Quest
 
         private void AddElementToTree(Element o)
         {
-            string parent = null;
+            string parent = GetElementTreeParent(o);
             System.Drawing.Color? foreColor = null;
-            if (o.Parent != null) parent = o.Parent.Name;
-
-            if (parent == null && o.ElemType == ElementType.Object)
-            {
-                switch (o.Type)
-                {
-                    case ObjectType.Command:
-                        if (o.Fields.GetAsType<bool>("isverb"))
-                        {
-                            parent = k_verbs;
-                        }
-                        else
-                        {
-                            parent = k_commands;
-                        }
-                        break;
-                }
-            }
-
-            if (parent == null)
-            {
-                parent = m_elementTreeStructure[o.ElemType].Key;
-            }
 
             // TO DO: Colours should be an option, so we probably shouldn't
             // even have a reference to System.Drawing in EditorController.
@@ -347,6 +335,18 @@ namespace AxeSoftware.Quest
                     AddedNode(k_commands, "Commands", "game", null, null);
                 }
             }
+        }
+
+        private string GetElementTreeParent(Element o)
+        {
+            if (o.Parent != null) return o.Parent.Name;
+
+            if (o.ElemType == ElementType.Object && o.Type == ObjectType.Command)
+            {
+                return o.Fields.GetAsType<bool>("isverb") ? k_verbs : k_commands;
+            }
+
+            return m_elementTreeStructure[o.ElemType].Key;
         }
 
         private string GetDisplayName(Element e)
@@ -855,7 +855,7 @@ namespace AxeSoftware.Quest
             if (m_worldModel.Elements.ContainsKey(ElementType.ObjectType, editorType))
             {
                 newObject.Fields.AddTypeUndoable(m_worldModel.Elements.Get(ElementType.ObjectType, editorType));
-            }            
+            }
         }
 
         private void CreateNewElement(ElementType type, string typeName, string elementName)

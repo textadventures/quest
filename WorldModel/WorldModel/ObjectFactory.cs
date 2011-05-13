@@ -75,6 +75,8 @@ namespace AxeSoftware.Quest
                 }
             }
 
+            newElement.FinishedInitialisation();
+
             NotifyAddedElement(name);
 
             return newElement;
