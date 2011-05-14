@@ -486,6 +486,11 @@
 
         ctlTextEditor.Visible = m_codeView
         splitMain.Visible = Not m_codeView
+
+        If m_codeView Then
+            ctlTextEditor.EditText = System.IO.File.ReadAllText(m_filename)
+            ctlTextEditor.Focus()
+        End If
     End Sub
 
 End Class
