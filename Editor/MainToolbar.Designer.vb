@@ -44,20 +44,21 @@ Partial Class MainToolbar
         Me.butBack = New System.Windows.Forms.ToolStripSplitButton()
         Me.butForward = New System.Windows.Forms.ToolStripSplitButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
-        Me.butHelp = New System.Windows.Forms.ToolStripButton()
-        Me.tmrUndoTimer = New System.Windows.Forms.Timer(Me.components)
         Me.butPlay = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.butHelp = New System.Windows.Forms.ToolStripButton()
+        Me.tmrUndoTimer = New System.Windows.Forms.Timer(Me.components)
+        Me.butCode = New System.Windows.Forms.ToolStripButton()
         Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlToolStrip
         '
         Me.ctlToolStrip.Dock = System.Windows.Forms.DockStyle.None
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butNew, Me.butOpen, Me.butSave, Me.ToolStripSeparator1, Me.butCut, Me.butCopy, Me.butPaste, Me.ToolStripSeparator4, Me.butUndo, Me.butRedo, Me.ToolStripSeparator3, Me.butAddRoom, Me.butAddObject, Me.butDelete, Me.ToolStripSeparator2, Me.butBack, Me.butForward, Me.ToolStripSeparator8, Me.butPlay, Me.ToolStripSeparator5, Me.butHelp})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butNew, Me.butOpen, Me.butSave, Me.butCode, Me.ToolStripSeparator1, Me.butCut, Me.butCopy, Me.butPaste, Me.ToolStripSeparator4, Me.butUndo, Me.butRedo, Me.ToolStripSeparator3, Me.butAddRoom, Me.butAddObject, Me.butDelete, Me.ToolStripSeparator2, Me.butBack, Me.butForward, Me.ToolStripSeparator8, Me.butPlay, Me.ToolStripSeparator5, Me.butHelp})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
-        Me.ctlToolStrip.Size = New System.Drawing.Size(461, 25)
+        Me.ctlToolStrip.Size = New System.Drawing.Size(515, 25)
         Me.ctlToolStrip.TabIndex = 0
         Me.ctlToolStrip.Text = "ToolStrip1"
         '
@@ -218,20 +219,6 @@ Partial Class MainToolbar
         Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
         Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 25)
         '
-        'butHelp
-        '
-        Me.butHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.butHelp.Image = CType(resources.GetObject("butHelp.Image"), System.Drawing.Image)
-        Me.butHelp.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.butHelp.Name = "butHelp"
-        Me.butHelp.Size = New System.Drawing.Size(23, 22)
-        Me.butHelp.Tag = "help"
-        Me.butHelp.Text = "He&lp"
-        '
-        'tmrUndoTimer
-        '
-        Me.tmrUndoTimer.Interval = 20
-        '
         'butPlay
         '
         Me.butPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -246,6 +233,30 @@ Partial Class MainToolbar
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
         Me.ToolStripSeparator5.Size = New System.Drawing.Size(6, 25)
+        '
+        'butHelp
+        '
+        Me.butHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butHelp.Image = CType(resources.GetObject("butHelp.Image"), System.Drawing.Image)
+        Me.butHelp.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.butHelp.Name = "butHelp"
+        Me.butHelp.Size = New System.Drawing.Size(23, 22)
+        Me.butHelp.Tag = "help"
+        Me.butHelp.Text = "He&lp"
+        '
+        'tmrUndoTimer
+        '
+        Me.tmrUndoTimer.Interval = 20
+        '
+        'butCode
+        '
+        Me.butCode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butCode.Image = CType(resources.GetObject("butCode.Image"), System.Drawing.Image)
+        Me.butCode.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.butCode.Name = "butCode"
+        Me.butCode.Size = New System.Drawing.Size(23, 22)
+        Me.butCode.Tag = "code"
+        Me.butCode.Text = "ToolStripButton1"
         '
         'MainToolbar
         '
@@ -283,5 +294,6 @@ Partial Class MainToolbar
     Friend WithEvents tmrUndoTimer As System.Windows.Forms.Timer
     Friend WithEvents butPlay As System.Windows.Forms.ToolStripButton
     Friend WithEvents ToolStripSeparator5 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents butCode As System.Windows.Forms.ToolStripButton
 
 End Class

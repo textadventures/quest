@@ -6,6 +6,7 @@
     Private m_menu As AxeSoftware.Quest.Controls.Menu
     Private m_filename As String
     Private m_currentElement As String
+    Private m_codeView As Boolean
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -70,6 +71,7 @@
         ctlToolbar.AddButtonHandler("copy", AddressOf Copy)
         ctlToolbar.AddButtonHandler("paste", AddressOf Paste)
         ctlToolbar.AddButtonHandler("delete", AddressOf Delete)
+        ctlToolbar.AddButtonHandler("code", AddressOf ToggleCodeView)
     End Sub
 
     Private Sub SetUpTree()
@@ -476,6 +478,14 @@
 
     Private Sub Delete()
         m_controller.DeleteElement(ctlTree.SelectedItem)
+    End Sub
+
+    Private Sub ToggleCodeView()
+        m_codeView = Not m_codeView
+        ctlToolbar.SetToggle("code", m_codeView)
+
+        ctlTextEditor.Visible = m_codeView
+        splitMain.Visible = Not m_codeView
     End Sub
 
 End Class

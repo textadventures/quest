@@ -8,15 +8,16 @@ Public Class MainToolbar
     Public Delegate Sub ButtonClickHandler()
 
     Private Const k_numberHistory As Integer = 20
-    Private m_mnuBack(k_numberHistory) As System.Windows.Forms.ToolStripMenuItem
-    Private m_mnuForward(k_numberHistory) As System.Windows.Forms.ToolStripMenuItem
+    Private m_mnuBack(k_numberHistory) As ToolStripMenuItem
+    Private m_mnuForward(k_numberHistory) As ToolStripMenuItem
     Private m_history As New List(Of HistoryItem)
     Private m_historyPosition As Integer
     Private m_Initialising As Boolean
     Private m_handlers As New Dictionary(Of String, ButtonClickHandler)
-    Private m_mnuUndo(k_numberHistory) As System.Windows.Forms.ToolStripMenuItem
-    Private m_mnuRedo(k_numberHistory) As System.Windows.Forms.ToolStripMenuItem
-    Private m_defaultColour As System.Drawing.Color
+    Private m_mnuUndo(k_numberHistory) As ToolStripMenuItem
+    Private m_mnuRedo(k_numberHistory) As ToolStripMenuItem
+    Private m_defaultColour As Color
+    Private m_buttons As New Dictionary(Of String, ToolStripButton)
 
     Public Event HistoryClicked(key As String)
     Public Event SaveCurrentEditor()
@@ -119,10 +120,12 @@ Public Class MainToolbar
     End Sub
 
     Private Sub AddClickHandlers()
-        Dim subMenu As System.Windows.Forms.ToolStripItem
-
-        For Each subMenu In ctlToolStrip.Items
-            AddHandler subMenu.Click, AddressOf HandleClick
+        For Each item As ToolStripItem In ctlToolStrip.Items
+            Dim button As ToolStripButton = TryCast(item, ToolStripButton)
+            If button IsNot Nothing Then
+                m_buttons.Add(DirectCast(button.Tag, String), button)
+                AddHandler button.Click, AddressOf HandleClick
+            End If
         Next
     End Sub
 
@@ -389,6 +392,10 @@ Public Class MainToolbar
         For Each mnuItem In (m_mnuBack.Union(m_mnuForward)).Where(Function(m) m IsNot Nothing AndAlso DirectCast(m.Tag, String) = key)
             mnuItem.Text = title
         Next
+    End Sub
+
+    Public Sub SetToggle(key As String, checked As Boolean)
+        m_buttons(key).Checked = checked
     End Sub
 
 End Class
