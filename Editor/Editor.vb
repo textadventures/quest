@@ -224,20 +224,29 @@
     Private Sub ShowEditor(key As String)
 
         Dim editorName As String = m_controller.GetElementEditorName(key)
-        Dim nextEditor As ElementEditor = m_elementEditors(editorName)
-
-        If Not m_currentEditor Is Nothing Then
-            If Not m_currentEditor.Equals(nextEditor) Then
+        If editorName Is Nothing Then
+            If m_currentEditor IsNot Nothing Then
                 m_currentEditor.Visible = False
             End If
+
+            m_currentEditor = Nothing
+        Else
+            Dim nextEditor As ElementEditor = m_elementEditors(editorName)
+
+            If Not m_currentEditor Is Nothing Then
+                If Not m_currentEditor.Equals(nextEditor) Then
+                    m_currentEditor.Visible = False
+                End If
+            End If
+
+            m_currentEditor = nextEditor
+
+            m_currentElement = key
+            m_currentEditor.Populate(m_controller.GetEditorData(key))
+            nextEditor.Visible = True
         End If
 
-        m_currentEditor = nextEditor
-
-        m_currentElement = key
-        m_currentEditor.Populate(m_controller.GetEditorData(key))
         lblHeader.Text = m_controller.GetDisplayName(key)
-        nextEditor.Visible = True
     End Sub
 
     Private Function Save() As Boolean

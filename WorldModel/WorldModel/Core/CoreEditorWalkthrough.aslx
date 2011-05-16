@@ -1,0 +1,8 @@
+﻿<library>
+  <editor>
+    <appliesto>walkthrough</appliesto>
+    <tab>
+      <caption>Walkthrough</caption>
+    </tab>
+  </editor>
+</library>

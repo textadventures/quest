@@ -1,0 +1,8 @@
+﻿<library>
+  <editor>
+    <appliesto>include</appliesto>
+    <tab>
+      <caption>Library</caption>
+    </tab>
+  </editor>
+</library>

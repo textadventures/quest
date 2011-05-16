@@ -19,12 +19,13 @@
   <include ref="CoreEditorFunction.aslx"/>
   <include ref="CoreEditorType.aslx"/>
   <include ref="CoreEditorElements.aslx"/>
-
-  <editor>
-    <appliesto>default</appliesto>
-    <tab>
-      <caption>Default</caption>
-    </tab>
-  </editor>
+  <include ref="CoreEditorWalkthrough.aslx"/>
+  <include ref="CoreEditorIncludedLibrary.aslx"/>
+  <include ref="CoreEditorImpliedType.aslx"/>
+  <include ref="CoreEditorTemplate.aslx"/>
+  <include ref="CoreEditorDynamicTemplate.aslx"/>
+  <include ref="CoreEditorDelegate.aslx"/>
+  <include ref="CoreEditorEditor.aslx"/>
+  <include ref="CoreEditorJavascript.aslx"/>
 
 </library>

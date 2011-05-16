@@ -435,8 +435,7 @@ namespace AxeSoftware.Quest
                 return elementKey;
             }
 
-            // TO DO: When all editors are implemented, raise an error here.
-            return "default";
+            return null;
         }
 
         public IEnumerable<string> GetAllEditorNames()

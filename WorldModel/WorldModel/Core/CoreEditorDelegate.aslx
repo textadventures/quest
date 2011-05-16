@@ -1,0 +1,8 @@
+﻿<library>
+  <editor>
+    <appliesto>delegate</appliesto>
+    <tab>
+      <caption>Delegate</caption>
+    </tab>
+  </editor>
+</library>
