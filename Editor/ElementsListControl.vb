@@ -10,6 +10,7 @@ Public Class ElementsListControl
     Private m_elementType As String
     Private m_objectType As String
     Private m_typeDesc As String
+    Private m_filter As String
 
     Public ReadOnly Property AttributeName As String Implements IElementEditorControl.AttributeName
         Get
@@ -44,8 +45,11 @@ Public Class ElementsListControl
 
         m_elementType = controlData.GetString("elementtype")
         m_objectType = controlData.GetString("objecttype")
+        m_filter = controlData.GetString("listfilter")
 
-        If m_objectType IsNot Nothing Then
+        If m_filter IsNot Nothing Then
+            m_typeDesc = m_filter
+        ElseIf m_objectType IsNot Nothing Then
             m_typeDesc = m_objectType
         Else
             m_typeDesc = m_elementType
@@ -71,13 +75,18 @@ Public Class ElementsListControl
 
         Dim listItems As New Dictionary(Of String, String)
 
-        For Each element In elements
-            listItems.Add(element, element)
+        For Each element In elements.Where(Function(e) Filter(e))
+            listItems.Add(element, Controller.GetDisplayName(element))
         Next
 
         ctlListEditor.UpdateList(listItems)
 
     End Sub
+
+    Private Function Filter(element As String) As Boolean
+        If m_filter Is Nothing Then Return True
+        Return Controller.ElementIsVerb(element) = (m_filter = "verb")
+    End Function
 
     Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
 

@@ -16,4 +16,38 @@
     </tab>
   </editor>
 
+  <editor>
+    <appliesto>_gameCommands</appliesto>
+    <tab>
+      <caption>Commands</caption>
+
+      <control>
+        <caption>Commands</caption>
+        <controltype>elementslist</controltype>
+        <elementtype>object</elementtype>
+        <objecttype>command</objecttype>
+        <listfilter>command</listfilter>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_gameVerbs</appliesto>
+    <tab>
+      <caption>Verbs</caption>
+
+      <control>
+        <caption>Verbs</caption>
+        <controltype>elementslist</controltype>
+        <elementtype>object</elementtype>
+        <objecttype>command</objecttype>
+        <listfilter>verb</listfilter>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
 </library>

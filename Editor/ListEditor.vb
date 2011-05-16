@@ -65,9 +65,13 @@
 
         Select Case Style
             Case ColumnStyle.OneColumn
-                newListViewItem = lstList.Items.Insert(index, Utility.FormatAsOneLine(item.Value))
+                Dim lvItem As New ListViewItem(Utility.FormatAsOneLine(item.Value))
+                lvItem.Name = item.Key
+                newListViewItem = lstList.Items.Insert(index, lvItem)
             Case ColumnStyle.TwoColumns
-                newListViewItem = lstList.Items.Insert(index, Utility.FormatAsOneLine(item.Key))
+                Dim lvItem As New ListViewItem(Utility.FormatAsOneLine(item.Key))
+                lvItem.Name = item.Key
+                newListViewItem = lstList.Items.Insert(index, lvItem)
                 newListViewItem.SubItems.Add(Utility.FormatAsOneLine(item.Value))
             Case Else
                 Throw New InvalidOperationException("Invalid column style")
@@ -114,7 +118,7 @@
     End Sub
 
     Private Sub EditSelectedItem()
-        m_delegate.DoEdit(lstList.SelectedItems(0).Text, lstList.SelectedItems(0).Index)
+        m_delegate.DoEdit(lstList.SelectedItems(0).Name, lstList.SelectedItems(0).Index)
     End Sub
 
     Private Function GetSelectedItems() As List(Of String)

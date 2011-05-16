@@ -1031,5 +1031,10 @@ namespace AxeSoftware.Quest
         {
             return m_worldModel.Elements.ContainsKey(elementKey);
         }
+
+        public bool ElementIsVerb(string elementKey)
+        {
+            return m_worldModel.Elements.Get(ElementType.Object, elementKey).Fields.GetAsType<bool>("isverb");
+        }
     }
 }
