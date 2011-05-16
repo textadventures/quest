@@ -9,6 +9,8 @@ Public Class TextEditor
     Private m_completionWindow As CompletionWindow
     Private m_undoEnabled As Boolean
     Private m_redoEnabled As Boolean
+    Private m_textWasSaved As Boolean
+
     Public Event UndoRedoEnabledUpdated(undoEnabled As Boolean, redoEnabled As Boolean)
 
     Public Sub New()
@@ -25,14 +27,16 @@ Public Class TextEditor
 
         AddHandler textEditor.TextArea.TextEntering, AddressOf TextEntering
         AddHandler textEditor.TextArea.TextEntered, AddressOf TextEntered
+        AddHandler textEditor.TextArea.KeyUp, AddressOf KeyPressed
 
-        UpdateUndoRedoEnabled()
+        UpdateUndoRedoEnabled(True)
 
     End Sub
 
     Private Sub Initialise()
         m_foldingStrategy.UpdateFoldings(m_foldingManager, textEditor.Document)
         UpdateUndoRedoEnabled()
+        m_textWasSaved = False
     End Sub
 
     Public Property EditText As String
@@ -65,6 +69,10 @@ Public Class TextEditor
                 m_completionWindow.CompletionList.RequestInsertion(e)
             End If
         End If
+    End Sub
+
+    Private Sub KeyPressed(sender As Object, e As Windows.Input.KeyEventArgs)
+        UpdateUndoRedoEnabled()
     End Sub
 
     Private Class CompletionData
@@ -118,7 +126,9 @@ Public Class TextEditor
     End Sub
 
     Public Sub Save(filename As String)
+        If Not textEditor.IsModified Then Return
         textEditor.Save(filename)
+        m_textWasSaved = True
     End Sub
 
     Public ReadOnly Property IsModified As Boolean
@@ -161,14 +171,21 @@ Public Class TextEditor
         textEditor.Paste()
     End Sub
 
-    Private Sub UpdateUndoRedoEnabled()
+    Private Sub UpdateUndoRedoEnabled(Optional force As Boolean = False)
         Dim oldUndoEnabled As Boolean = m_undoEnabled
         Dim oldRedoEnabled As Boolean = m_redoEnabled
         m_undoEnabled = textEditor.CanUndo
         m_redoEnabled = textEditor.CanRedo
 
-        If oldUndoEnabled <> m_undoEnabled OrElse oldRedoEnabled <> m_redoEnabled Then
+        If force OrElse oldUndoEnabled <> m_undoEnabled OrElse oldRedoEnabled <> m_redoEnabled Then
             RaiseEvent UndoRedoEnabledUpdated(m_undoEnabled, m_redoEnabled)
         End If
     End Sub
+
+    Public ReadOnly Property TextWasSaved As Boolean
+        Get
+            Return m_textWasSaved
+        End Get
+    End Property
+
 End Class

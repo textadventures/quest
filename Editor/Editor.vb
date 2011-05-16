@@ -523,7 +523,10 @@
             ctlTextEditor.LoadFile(m_filename)
             ctlTextEditor.Focus()
         Else
-            Initialise(m_filename)
+            If ctlTextEditor.TextWasSaved Then
+                ' file was changed in the text editor, so reload it
+                Initialise(m_filename)
+            End If
         End If
     End Sub
 

@@ -71,4 +71,10 @@
         RaiseEvent UndoRedoEnabledUpdated(undoEnabled, redoEnabled)
     End Sub
 
+    Public ReadOnly Property TextWasSaved As Boolean
+        Get
+            Return wpfTextEditor.TextWasSaved
+        End Get
+    End Property
+
 End Class
