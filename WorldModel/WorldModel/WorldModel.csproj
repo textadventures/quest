@@ -177,6 +177,12 @@
     <None Include="Core\English.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Core\Languages\Nederlands.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\Templates\Nederlands.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Examples-Internal\forest.aslx" />
     <None Include="Examples-Internal\media.aslx" />
     <None Include="Examples-Public\template.aslx" />
@@ -257,6 +263,7 @@
     </None>
     <Content Include="Examples-Internal\Media.js" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

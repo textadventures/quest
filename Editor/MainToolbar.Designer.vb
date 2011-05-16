@@ -256,7 +256,7 @@ Partial Class MainToolbar
         Me.butCode.Name = "butCode"
         Me.butCode.Size = New System.Drawing.Size(23, 22)
         Me.butCode.Tag = "code"
-        Me.butCode.Text = "ToolStripButton1"
+        Me.butCode.ToolTipText = "Code View"
         '
         'MainToolbar
         '

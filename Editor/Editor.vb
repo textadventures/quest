@@ -448,8 +448,11 @@
         Dim folder As String = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase)
         folder = folder.Substring(6) ' remove initial "file://"
 
-        For Each file In System.IO.Directory.GetFiles(folder, "*.template")
-            templates.Add(System.IO.Path.GetFileNameWithoutExtension(file), file)
+        For Each file In System.IO.Directory.GetFiles(folder, "*.template", System.IO.SearchOption.AllDirectories)
+            Dim key As String = System.IO.Path.GetFileNameWithoutExtension(file)
+            If Not templates.ContainsKey(key) Then
+                templates.Add(key, file)
+            End If
         Next
 
         Return templates

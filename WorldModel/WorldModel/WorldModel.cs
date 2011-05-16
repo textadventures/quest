@@ -817,21 +817,37 @@ namespace AxeSoftware.Quest
         {
             string path;
 
-            if (TryPath(current, file, out path)) return path;
-            if (TryPath(Environment.CurrentDirectory, file, out path)) return path;
-            if (m_libFolder != null && TryPath(m_libFolder, file, out path)) return path;
+            if (TryPath(current, file, out path, false)) return path;
+            if (TryPath(Environment.CurrentDirectory, file, out path, false)) return path;
+            if (m_libFolder != null && TryPath(m_libFolder, file, out path, false)) return path;
             if (System.Reflection.Assembly.GetEntryAssembly() != null)
             {
-                if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path)) return path;
+                if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path, true)) return path;
             }
             throw new Exception(string.Format("Cannot find a file called '{0}' in current path or application path", file));
         }
 
-        private bool TryPath(string path, string file, out string fullPath)
+        private bool TryPath(string path, string file, out string fullPath, bool recurse)
         {
             if (path.StartsWith("file:\\")) path = path.Substring(6);
             fullPath = System.IO.Path.Combine(path, file);
-            return System.IO.File.Exists(fullPath);
+            if (System.IO.File.Exists(fullPath))
+            {
+                return true;
+            }
+            else
+            {
+                if (recurse)
+                {
+                    var results = System.IO.Directory.GetFiles(path, file, System.IO.SearchOption.AllDirectories);
+                    if (results.Length > 0)
+                    {
+                        fullPath = results[0];
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
 
         internal void NotifyElementFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
