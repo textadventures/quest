@@ -87,8 +87,8 @@
         lblCaption.Top = 0
         m_editorControl.Control.Left = leftPadding
         m_editorControl.Control.Top = lblCaption.Top + lblCaption.Height + paddingUnderCaption
-        m_editorControl.Control.Height = Me.Height - m_editorControl.Control.Top
         m_editorControl.Control.Width = Me.Width - leftPadding
+        m_editorControl.Control.Anchor = AnchorStyles.Top
         Me.Height = m_editorControl.Control.Top + m_editorControl.Control.Height
         m_editorControl.Control.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
         m_controlUnderCaption = True
