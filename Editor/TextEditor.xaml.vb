@@ -7,6 +7,9 @@ Public Class TextEditor
     Private m_foldingManager As FoldingManager
     Private m_foldingStrategy As New XmlFoldingStrategy
     Private m_completionWindow As CompletionWindow
+    Private m_undoEnabled As Boolean
+    Private m_redoEnabled As Boolean
+    Public Event UndoRedoEnabledUpdated(undoEnabled As Boolean, redoEnabled As Boolean)
 
     Public Sub New()
 
@@ -23,6 +26,13 @@ Public Class TextEditor
         AddHandler textEditor.TextArea.TextEntering, AddressOf TextEntering
         AddHandler textEditor.TextArea.TextEntered, AddressOf TextEntered
 
+        UpdateUndoRedoEnabled()
+
+    End Sub
+
+    Private Sub Initialise()
+        m_foldingStrategy.UpdateFoldings(m_foldingManager, textEditor.Document)
+        UpdateUndoRedoEnabled()
     End Sub
 
     Public Property EditText As String
@@ -31,11 +41,12 @@ Public Class TextEditor
         End Get
         Set(value As String)
             textEditor.Text = value
-            m_foldingStrategy.UpdateFoldings(m_foldingManager, textEditor.Document)
+            Initialise()
         End Set
     End Property
 
     Private Sub TextEntered(sender As Object, e As Windows.Input.TextCompositionEventArgs)
+        UpdateUndoRedoEnabled()
         If e.Text = "<" Then
             m_completionWindow = New CompletionWindow(textEditor.TextArea)
             Dim data = m_completionWindow.CompletionList.CompletionData
@@ -101,4 +112,63 @@ Public Class TextEditor
 
     End Class
 
+    Public Sub Load(filename As String)
+        textEditor.Load(filename)
+        Initialise()
+    End Sub
+
+    Public Sub Save(filename As String)
+        textEditor.Save(filename)
+    End Sub
+
+    Public ReadOnly Property IsModified As Boolean
+        Get
+            Return textEditor.IsModified
+        End Get
+    End Property
+
+    Public Sub Undo()
+        textEditor.Undo()
+        UpdateUndoRedoEnabled()
+    End Sub
+
+    Public Sub Redo()
+        textEditor.Redo()
+        UpdateUndoRedoEnabled()
+    End Sub
+
+    Public ReadOnly Property CanUndo As Boolean
+        Get
+            Return textEditor.CanUndo
+        End Get
+    End Property
+
+    Public ReadOnly Property CanRedo As Boolean
+        Get
+            Return textEditor.CanRedo
+        End Get
+    End Property
+
+    Public Sub Cut()
+        textEditor.Cut()
+    End Sub
+
+    Public Sub Copy()
+        textEditor.Copy()
+    End Sub
+
+    Public Sub Paste()
+        textEditor.Paste()
+    End Sub
+
+    Private Sub UpdateUndoRedoEnabled()
+        Dim oldUndoEnabled As Boolean = m_undoEnabled
+        Dim oldRedoEnabled As Boolean = m_redoEnabled
+        m_undoEnabled = textEditor.CanUndo
+        m_redoEnabled = textEditor.CanRedo
+
+        If oldUndoEnabled <> m_undoEnabled OrElse oldRedoEnabled <> m_redoEnabled Then
+            RaiseEvent UndoRedoEnabledUpdated(m_undoEnabled, m_redoEnabled)
+        End If
+    End Sub
 End Class

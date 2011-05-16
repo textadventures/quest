@@ -238,34 +238,39 @@
         lblHeader.Text = m_controller.GetDisplayName(key)
     End Sub
 
-    Private Sub Save()
-        ' TO DO: Save the currently selected control first
-
+    Private Function Save() As Boolean
         If (m_filename.Length = 0) Then
-            SaveAs()
+            Return SaveAs()
         Else
-            Save(m_filename)
+            Return Save(m_filename)
         End If
-    End Sub
+    End Function
 
-    Private Sub SaveAs()
+    Private Function SaveAs() As Boolean
         ctlSaveFile.FileName = m_filename
         If ctlSaveFile.ShowDialog() = DialogResult.OK Then
             m_filename = ctlSaveFile.FileName
-            Save(m_filename)
+            Return Save(m_filename)
         End If
-    End Sub
+        Return False
+    End Function
 
-    Private Sub Save(filename As String)
+    Private Function Save(filename As String) As Boolean
         Try
-            If Not m_currentEditor Is Nothing Then
-                m_currentEditor.SaveData()
+            If m_codeView Then
+                ctlTextEditor.SaveFile(filename)
+            Else
+                If Not m_currentEditor Is Nothing Then
+                    m_currentEditor.SaveData()
+                End If
+                System.IO.File.WriteAllText(filename, m_controller.Save())
             End If
-            System.IO.File.WriteAllText(filename, m_controller.Save())
+            Return True
         Catch ex As Exception
             MsgBox("Unable to save the file due to the following error:" + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
+            Return False
         End Try
-    End Sub
+    End Function
 
     Private Sub ctlToolbar_HistoryClicked(Key As String) Handles ctlToolbar.HistoryClicked
         ctlTree.SetSelectedItemNoEvent(Key)
@@ -273,16 +278,24 @@
     End Sub
 
     Private Sub Undo()
-        If Not m_currentEditor Is Nothing Then
-            m_currentEditor.SaveData()
-            m_controller.Undo()
+        If m_codeView Then
+            ctlTextEditor.Undo()
+        Else
+            If Not m_currentEditor Is Nothing Then
+                m_currentEditor.SaveData()
+                m_controller.Undo()
+            End If
         End If
     End Sub
 
     Private Sub Redo()
-        If Not m_currentEditor Is Nothing Then
-            m_currentEditor.SaveData()
-            m_controller.Redo()
+        If m_codeView Then
+            ctlTextEditor.Redo()
+        Else
+            If Not m_currentEditor Is Nothing Then
+                m_currentEditor.SaveData()
+                m_controller.Redo()
+            End If
         End If
     End Sub
 
@@ -468,15 +481,27 @@
     End Sub
 
     Private Sub Cut()
-        MsgBox("Cut not yet implemented")
+        If m_codeView Then
+            ctlTextEditor.Cut()
+        Else
+            MsgBox("Cut not yet implemented")
+        End If
     End Sub
 
     Private Sub Copy()
-        MsgBox("Copy not yet implemented")
+        If m_codeView Then
+            ctlTextEditor.Copy()
+        Else
+            MsgBox("Copy not yet implemented")
+        End If
     End Sub
 
     Private Sub Paste()
-        MsgBox("Paste not yet implemented")
+        If m_codeView Then
+            ctlTextEditor.Paste()
+        Else
+            MsgBox("Paste not yet implemented")
+        End If
     End Sub
 
     Private Sub Delete()
@@ -484,16 +509,26 @@
     End Sub
 
     Private Sub ToggleCodeView()
+        Dim saveOk As Boolean = Save()
+        If Not saveOk Then Return
+
         m_codeView = Not m_codeView
         ctlToolbar.SetToggle("code", m_codeView)
 
         ctlTextEditor.Visible = m_codeView
         splitMain.Visible = Not m_codeView
+        ctlToolbar.CodeView = m_codeView
 
         If m_codeView Then
-            ctlTextEditor.EditText = System.IO.File.ReadAllText(m_filename)
+            ctlTextEditor.LoadFile(m_filename)
             ctlTextEditor.Focus()
+        Else
+            Initialise(m_filename)
         End If
     End Sub
 
+    Private Sub ctlTextEditor_UndoRedoEnabledUpdated(undoEnabled As Boolean, redoEnabled As Boolean) Handles ctlTextEditor.UndoRedoEnabledUpdated
+        ctlToolbar.UndoButtonEnabled = undoEnabled
+        ctlToolbar.RedoButtonEnabled = redoEnabled
+    End Sub
 End Class

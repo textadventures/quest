@@ -18,6 +18,7 @@ Public Class MainToolbar
     Private m_mnuRedo(k_numberHistory) As ToolStripMenuItem
     Private m_defaultColour As Color
     Private m_buttons As New Dictionary(Of String, ToolStripButton)
+    Private m_codeView As Boolean
 
     Public Event HistoryClicked(key As String)
     Public Event SaveCurrentEditor()
@@ -32,6 +33,7 @@ Public Class MainToolbar
         InitialiseToolbar()
 
         ' Add any initialization after the InitializeComponent() call.
+        CodeView = False
         Me.Height = ctlToolStrip.Height
     End Sub
 
@@ -286,22 +288,24 @@ Public Class MainToolbar
         RedoButtonEnabled = False
     End Sub
 
-    Private Property UndoButtonEnabled() As Boolean
+    Public Property UndoButtonEnabled() As Boolean
         Get
             Return butUndo.Enabled
         End Get
         Set(value As Boolean)
             butUndo.Enabled = value
+            butUndoSimple.Enabled = value
             RaiseEvent UndoEnabled(value)
         End Set
     End Property
 
-    Private Property RedoButtonEnabled() As Boolean
+    Public Property RedoButtonEnabled() As Boolean
         Get
             Return butRedo.Enabled
         End Get
         Set(value As Boolean)
             butRedo.Enabled = value
+            butRedoSimple.Enabled = value
             RaiseEvent RedoEnabled(value)
         End Set
     End Property
@@ -398,4 +402,24 @@ Public Class MainToolbar
         m_buttons(key).Checked = checked
     End Sub
 
+    Public Property CodeView As Boolean
+        Get
+            Return m_codeView
+        End Get
+        Set(value As Boolean)
+            m_codeView = value
+
+            butUndo.Visible = Not m_codeView
+            butRedo.Visible = Not m_codeView
+            butUndoSimple.Visible = m_codeView
+            butRedoSimple.Visible = m_codeView
+            butBack.Visible = Not m_codeView
+            butForward.Visible = Not m_codeView
+            butDelete.Visible = Not m_codeView
+            butAddObject.Visible = Not m_codeView
+            butAddRoom.Visible = Not m_codeView
+            ToolStripSeparator8.Visible = Not m_codeView
+            ToolStripSeparator2.Visible = Not m_codeView
+        End Set
+    End Property
 End Class
