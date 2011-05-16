@@ -47,4 +47,144 @@
     </tab>
   </editor>
 
+  <editor>
+    <appliesto>_functions</appliesto>
+    <tab>
+      <caption>Functions</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>function</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_walkthrough</appliesto>
+    <tab>
+      <caption>Walkthrough</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>walkthrough</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_include</appliesto>
+    <tab>
+      <caption>Included Libraries</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>include</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_implied</appliesto>
+    <tab>
+      <caption>Implied Types</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>implied</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_template</appliesto>
+    <tab>
+      <caption>Templates</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>template</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_dynamictemplate</appliesto>
+    <tab>
+      <caption>Dynamic Templates</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>dynamictemplate</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_delegate</appliesto>
+    <tab>
+      <caption>Delegates</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>delegate</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_objecttype</appliesto>
+    <tab>
+      <caption>Object Types</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>type</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_editor</appliesto>
+    <tab>
+      <caption>Editors</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>editor</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+
+  <editor>
+    <appliesto>_javascript</appliesto>
+    <tab>
+      <caption>Javascript</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>javascript</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
+  
 </library>

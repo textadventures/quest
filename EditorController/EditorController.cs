@@ -287,6 +287,7 @@ namespace AxeSoftware.Quest
             AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
             AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced");
             AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
+            AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced");
         }
 
         private void AddTreeHeader(ElementType? type, string key, string title, string parent)
