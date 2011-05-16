@@ -9,7 +9,6 @@ Public Class RichTextControl
     Private m_attribute As String
     Private m_attributeName As String
     Private m_data As IEditorData
-    Private m_nullable As Boolean
     Private m_document As IHTMLDocument2
 
     Private Shared s_htmlToXml As New Dictionary(Of String, String) From {
@@ -108,7 +107,6 @@ Public Class RichTextControl
         If controlData IsNot Nothing Then
             m_attribute = controlData.Attribute
             m_attributeName = controlData.Caption
-            m_nullable = controlData.GetBool("nullable")
         Else
             m_attribute = Nothing
             m_attributeName = Nothing
@@ -230,7 +228,29 @@ Public Class RichTextControl
         If IsDirty Then
             RaiseEvent Dirty(Me, New DataModifiedEventArgs(m_oldValue, GetValue()))
         End If
-
     End Sub
 
+    Private Sub Bold()
+        ctlWebBrowser.Document.ExecCommand("Bold", False, Nothing)
+    End Sub
+
+    Private Sub Italic()
+        ctlWebBrowser.Document.ExecCommand("Italic", False, Nothing)
+    End Sub
+
+    Private Sub Underline()
+        ctlWebBrowser.Document.ExecCommand("Underline", False, Nothing)
+    End Sub
+
+    Private Sub butBold_Click(sender As System.Object, e As System.EventArgs) Handles butBold.Click
+        Bold()
+    End Sub
+
+    Private Sub butItalic_Click(sender As System.Object, e As System.EventArgs) Handles butItalic.Click
+        Italic()
+    End Sub
+
+    Private Sub butUnderline_Click(sender As System.Object, e As System.EventArgs) Handles butUnderline.Click
+        Underline()
+    End Sub
 End Class

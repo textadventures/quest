@@ -24,28 +24,48 @@ Partial Class RichTextControl
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(RichTextControl))
         Me.ctlToolbar = New System.Windows.Forms.ToolStrip()
-        Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
+        Me.butBold = New System.Windows.Forms.ToolStripButton()
+        Me.butItalic = New System.Windows.Forms.ToolStripButton()
+        Me.butUnderline = New System.Windows.Forms.ToolStripButton()
         Me.ctlWebBrowser = New System.Windows.Forms.WebBrowser()
         Me.ctlToolbar.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlToolbar
         '
-        Me.ctlToolbar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton1})
+        Me.ctlToolbar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butBold, Me.butItalic, Me.butUnderline})
         Me.ctlToolbar.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolbar.Name = "ctlToolbar"
         Me.ctlToolbar.Size = New System.Drawing.Size(469, 25)
         Me.ctlToolbar.TabIndex = 0
         Me.ctlToolbar.Text = "ToolStrip1"
         '
-        'ToolStripButton1
+        'butBold
         '
-        Me.ToolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
-        Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton1.Name = "ToolStripButton1"
-        Me.ToolStripButton1.Size = New System.Drawing.Size(23, 22)
-        Me.ToolStripButton1.Text = "ToolStripButton1"
+        Me.butBold.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butBold.Image = CType(resources.GetObject("butBold.Image"), System.Drawing.Image)
+        Me.butBold.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.butBold.Name = "butBold"
+        Me.butBold.Size = New System.Drawing.Size(23, 22)
+        Me.butBold.Text = "Bold"
+        '
+        'butItalic
+        '
+        Me.butItalic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butItalic.Image = CType(resources.GetObject("butItalic.Image"), System.Drawing.Image)
+        Me.butItalic.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.butItalic.Name = "butItalic"
+        Me.butItalic.Size = New System.Drawing.Size(23, 22)
+        Me.butItalic.Text = "Italic"
+        '
+        'butUnderline
+        '
+        Me.butUnderline.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.butUnderline.Image = CType(resources.GetObject("butUnderline.Image"), System.Drawing.Image)
+        Me.butUnderline.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.butUnderline.Name = "butUnderline"
+        Me.butUnderline.Size = New System.Drawing.Size(23, 22)
+        Me.butUnderline.Text = "Underline"
         '
         'ctlWebBrowser
         '
@@ -73,7 +93,9 @@ Partial Class RichTextControl
 
     End Sub
     Friend WithEvents ctlToolbar As System.Windows.Forms.ToolStrip
-    Friend WithEvents ToolStripButton1 As System.Windows.Forms.ToolStripButton
+    Friend WithEvents butBold As System.Windows.Forms.ToolStripButton
     Friend WithEvents ctlWebBrowser As System.Windows.Forms.WebBrowser
+    Friend WithEvents butItalic As System.Windows.Forms.ToolStripButton
+    Friend WithEvents butUnderline As System.Windows.Forms.ToolStripButton
 
 End Class
