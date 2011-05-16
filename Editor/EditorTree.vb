@@ -210,6 +210,12 @@ Public Class EditorTree
         ctlTreeView.SelectedNode = m_nodes(key)
     End Sub
 
+    Public Sub TrySetSelectedItem(key As String)
+        If m_nodes.ContainsKey(key) Then
+            SetSelectedItem(key)
+        End If
+    End Sub
+
     Public Property ShowFilterBar() As Boolean
         Get
             Return ctlToolStrip.Visible

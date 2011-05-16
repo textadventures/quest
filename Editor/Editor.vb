@@ -7,6 +7,7 @@
     Private m_filename As String
     Private m_currentElement As String
     Private m_codeView As Boolean
+    Private m_lastSelection As String
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -526,6 +527,10 @@
         Dim saveOk As Boolean = Save()
         If Not saveOk Then Return
 
+        If Not m_codeView Then
+            m_lastSelection = ctlTree.SelectedItem
+        End If
+
         DisplayCodeView(Not m_codeView)
 
         If m_codeView Then
@@ -538,6 +543,8 @@
                 If Not ok Then
                     ' Couldn't reload the file due to an error, so show code view again
                     DisplayCodeView(True)
+                Else
+                    ctlTree.TrySetSelectedItem(m_lastSelection)
                 End If
             End If
         End If
