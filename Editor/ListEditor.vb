@@ -124,7 +124,7 @@
     Private Function GetSelectedItems() As List(Of String)
         Dim result As New List(Of String)
         For Each item As ListViewItem In lstList.SelectedItems
-            result.Add(item.Text)
+            result.Add(item.Name)
         Next
         Return result
     End Function
