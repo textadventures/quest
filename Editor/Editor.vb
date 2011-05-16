@@ -22,6 +22,8 @@
             SetUpToolbar()
             SetUpEditors()
             RaiseEvent AddToRecent(filename, m_controller.GameName)
+            ctlTree.SetSelectedItem("game")
+            ctlTree.FocusOnTree()
         End If
 
         Return ok
@@ -83,6 +85,7 @@
         ctlTree.SetCanDragDelegate(AddressOf m_controller.CanMoveElement)
         ctlTree.SetDoDragDelegate(AddressOf m_controller.MoveElement)
         ctlTree.CollapseAdvancedNode()
+        ctlTree.ScrollToTop()
 
         ctlTree.AddMenuClickHandler("addobject", AddressOf AddNewObject)
         ctlTree.AddMenuClickHandler("addroom", AddressOf AddNewRoom)

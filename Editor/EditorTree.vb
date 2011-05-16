@@ -468,4 +468,8 @@ Public Class EditorTree
     Private Sub ctlTreeView_LostFocus(sender As Object, e As System.EventArgs) Handles ctlTreeView.LostFocus
         RaiseEvent TreeLostFocus()
     End Sub
+
+    Public Sub FocusOnTree()
+        ctlTreeView.Focus()
+    End Sub
 End Class
