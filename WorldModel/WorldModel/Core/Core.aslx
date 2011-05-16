@@ -23,12 +23,29 @@
   </function>
   
   <function name="StartGame">
+    <![CDATA[
     if (HasScript(game, "start")) do (game, "start")
+    startset = false
+    firstroom = null
     foreach (room, AllObjects()) {
       if (GetBoolean(room, "start")) {
         player.parent = room
       }
+      if (firstroom = null and room.name <> "player") {
+        firstroom = room
+      }
     }
+    if (not startset) {
+      if (firstroom = null) {
+        create ("nowhere")
+        nowhere.prefix = ""
+        nowhere.descprefix = "You are"
+        firstroom = nowhere
+        msg ("This game is empty.")
+      }
+      player.parent = firstroom
+    }
+    ]]>
   </function>
 
   <object name="player">

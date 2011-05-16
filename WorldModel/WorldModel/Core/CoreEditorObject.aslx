@@ -36,6 +36,13 @@
       </control>
 
       <control>
+        <mustnotinherit>editor_object</mustnotinherit>
+        <controltype>checkbox</controltype>
+        <caption>Player starts game in this room</caption>
+        <attribute>start</attribute>
+      </control>
+
+      <control>
         <mustnotinherit>editor_room</mustnotinherit>
         <controltype>dropdowntypes</controltype>
         <caption>Type</caption>

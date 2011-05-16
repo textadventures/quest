@@ -31,6 +31,7 @@ Partial Class CheckBoxControl
         Me.chkCheckBox.Dock = System.Windows.Forms.DockStyle.Fill
         Me.chkCheckBox.Location = New System.Drawing.Point(0, 0)
         Me.chkCheckBox.Name = "chkCheckBox"
+        Me.chkCheckBox.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
         Me.chkCheckBox.Size = New System.Drawing.Size(368, 20)
         Me.chkCheckBox.TabIndex = 0
         Me.chkCheckBox.UseVisualStyleBackColor = True
