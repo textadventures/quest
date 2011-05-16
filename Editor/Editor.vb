@@ -12,16 +12,20 @@
     Public Event Close()
     Public Event Play(filename As String)
 
-    Public Sub Initialise(ByRef filename As String)
+    Public Function Initialise(ByRef filename As String) As Boolean
         m_filename = filename
         m_controller = New EditorController()
         InitialiseEditorControlsList()
-        m_controller.Initialise(filename)
-        SetUpTree()
-        SetUpToolbar()
-        SetUpEditors()
-        RaiseEvent AddToRecent(filename, m_controller.GameName)
-    End Sub
+        Dim ok As Boolean = m_controller.Initialise(filename)
+        If ok Then
+            SetUpTree()
+            SetUpToolbar()
+            SetUpEditors()
+            RaiseEvent AddToRecent(filename, m_controller.GameName)
+        End If
+
+        Return ok
+    End Function
 
     Private Sub InitialiseEditorControlsList()
         For Each t As Type In AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(), GetType(IElementEditorControl))
@@ -512,12 +516,7 @@
         Dim saveOk As Boolean = Save()
         If Not saveOk Then Return
 
-        m_codeView = Not m_codeView
-        ctlToolbar.SetToggle("code", m_codeView)
-
-        ctlTextEditor.Visible = m_codeView
-        splitMain.Visible = Not m_codeView
-        ctlToolbar.CodeView = m_codeView
+        DisplayCodeView(Not m_codeView)
 
         If m_codeView Then
             ctlTextEditor.LoadFile(m_filename)
@@ -525,9 +524,21 @@
         Else
             If ctlTextEditor.TextWasSaved Then
                 ' file was changed in the text editor, so reload it
-                Initialise(m_filename)
+                Dim ok As Boolean = Initialise(m_filename)
+                If Not ok Then
+                    ' Couldn't reload the file due to an error, so show code view again
+                    DisplayCodeView(True)
+                End If
             End If
         End If
+    End Sub
+
+    Private Sub DisplayCodeView(codeView As Boolean)
+        m_codeView = codeView
+        ctlToolbar.SetToggle("code", codeView)
+        ctlTextEditor.Visible = codeView
+        splitMain.Visible = Not codeView
+        ctlToolbar.CodeView = codeView
     End Sub
 
     Private Sub ctlTextEditor_UndoRedoEnabledUpdated(undoEnabled As Boolean, redoEnabled As Boolean) Handles ctlTextEditor.UndoRedoEnabledUpdated

@@ -119,7 +119,7 @@ namespace AxeSoftware.Quest
             // set default filters here
         }
 
-        public void Initialise(string filename)
+        public bool Initialise(string filename)
         {
             m_worldModel = new WorldModel(filename, null);
             m_scriptFactory = new ScriptFactory(m_worldModel);
@@ -157,6 +157,8 @@ namespace AxeSoftware.Quest
                 }
                 ShowMessage(message);
             }
+
+            return ok;
         }
 
         void Elements_ElementRenamed(object sender, NameChangedEventArgs e)
