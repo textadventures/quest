@@ -245,6 +245,12 @@
     <Compile Include="PatternControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="RichTextControl.Designer.vb">
+      <DependentUpon>RichTextControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="RichTextControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ScriptAdder.Designer.vb">
       <DependentUpon>ScriptAdder.vb</DependentUpon>
     </Compile>
@@ -364,6 +370,9 @@
     <EmbeddedResource Include="NumberControl.resx">
       <DependentUpon>NumberControl.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="RichTextControl.resx">
+      <DependentUpon>RichTextControl.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ScriptAdder.resx">
       <DependentUpon>ScriptAdder.vb</DependentUpon>
     </EmbeddedResource>
@@ -428,6 +437,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="MSHTML">
+      <Guid>{3050F1C5-98B5-11CF-BB82-00AA00BDCE0B}</Guid>
+      <VersionMajor>4</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

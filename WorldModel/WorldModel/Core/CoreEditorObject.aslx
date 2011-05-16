@@ -98,15 +98,22 @@
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Description</caption>
-        <attribute>description</attribute>
-      </control>
-
-      <control>
-        <controltype>textbox</controltype>
         <caption>Description prefix</caption>
         <attribute>descprefix</attribute>
       </control>
+
+      <control>
+        <controltype>richtext</controltype>
+        <caption>Description</caption>
+        <attribute>description</attribute>
+        <expand/>
+      </control>
+
+    </tab>
+
+      <tab>
+      <caption>Scripts</caption>
+      <mustnotinherit>editor_object</mustnotinherit>
 
       <control>
         <controltype>script</controltype>
