@@ -12,6 +12,14 @@ Public Class RichTextControl
     Private m_nullable As Boolean
     Private m_document As IHTMLDocument2
 
+    Private Shared s_htmlToXml As New Dictionary(Of String, String) From {
+        {"strong", "b"},
+        {"em", "i"},
+        {"b", "b"},
+        {"i", "i"},
+        {"u", "u"}
+    }
+
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
 
@@ -32,32 +40,18 @@ Public Class RichTextControl
 
     Public Property Value() As Object Implements IElementEditorControl.Value
         Get
-            Return GetValue()
+            Return ConvertHTMLtoXML(HTML)
         End Get
         Set(value As Object)
-            SetValue(value)
+            Dim stringValue As String = TryCast(value, String)
+            If stringValue IsNot Nothing Then
+                HTML = ConvertXMLtoHTML(stringValue)
+            Else
+                HTML = String.Empty
+            End If
+            m_oldValue = stringValue
         End Set
     End Property
-
-    Protected Overridable Function GetValue() As Object
-        'If (m_nullable AndAlso txtTextBox.Text.Length = 0) Then Return Nothing
-        'Return txtTextBox.Text
-        Return String.Empty
-    End Function
-
-    Protected Overridable Sub SetValue(value As Object)
-        Dim stringValue As String = TryCast(value, String)
-        If stringValue IsNot Nothing Then
-            '    txtTextBox.Text = stringValue
-        Else
-            '    txtTextBox.Text = String.Empty
-        End If
-        m_oldValue = stringValue
-    End Sub
-
-    'Private Sub TextBoxControl_Leave(sender As Object, e As System.EventArgs) Handles txtTextBox.Leave
-    '    Save(m_data)
-    'End Sub
 
     'Private Sub TextBoxControl_TextChanged(sender As Object, e As System.EventArgs) Handles txtTextBox.TextChanged
     '    If IsDirty Then
@@ -67,8 +61,7 @@ Public Class RichTextControl
 
     Public ReadOnly Property IsDirty() As Boolean
         Get
-            'Return txtTextBox.Text <> m_oldValue
-            Return False
+            Return ConvertHTMLtoXML(HTML) <> m_oldValue
         End Get
     End Property
 
@@ -88,10 +81,6 @@ Public Class RichTextControl
     End Property
 
     Public Sub Save(data As IEditorData) Implements IElementEditorControl.Save
-        SaveData(data)
-    End Sub
-
-    Protected Overridable Sub SaveData(data As IEditorData)
         If IsDirty Then
             Dim description As String = String.Format("Set {0} to '{1}'", m_attributeName, Value)
             m_controller.StartTransaction(description)
@@ -158,10 +147,76 @@ Public Class RichTextControl
         End If
     End Sub
 
+    Private Sub ctlWebBrowser_LostFocus(sender As Object, e As System.EventArgs) Handles ctlWebBrowser.LostFocus
+        Save(m_data)
+    End Sub
+
     Private Sub SetUpBrowser()
         ctlWebBrowser.DocumentText = "<html><body></body></html>"
         m_document = DirectCast(ctlWebBrowser.Document.DomDocument, IHTMLDocument2)
         m_document.designMode = "On"
     End Sub
+
+    Private Property HTML As String
+        Get
+            If ctlWebBrowser.Document IsNot Nothing AndAlso ctlWebBrowser.Document.Body IsNot Nothing Then
+                Return ctlWebBrowser.Document.Body.InnerHtml
+            Else
+                Return String.Empty
+            End If
+        End Get
+        Set(value As String)
+            If ctlWebBrowser.Document IsNot Nothing Then
+                ctlWebBrowser.Document.Body.InnerHtml = value
+            End If
+        End Set
+    End Property
+
+    Private Function ConvertXMLtoHTML(input As String) As String
+        Return input
+    End Function
+
+    Private Function ConvertHTMLtoXML(input As String) As String
+        Dim pos As Integer = 0
+        Dim finished As Boolean = False
+        Dim result As String = ""
+
+        Do
+            Dim nextTagStart As Integer = input.IndexOf("<"c, pos)
+            If nextTagStart = -1 Then
+                finished = True
+                result += input.Substring(pos)
+            Else
+                result += input.Substring(pos, nextTagStart - pos)
+                Dim nextTagEnd As Integer = input.IndexOf(">"c, nextTagStart)
+                Dim thisTag As String = input.Substring(nextTagStart + 1, nextTagEnd - nextTagStart - 1).ToLower()
+                Dim endTag As Boolean = False
+
+                If thisTag.Substring(0, 1) = "/" Then
+                    endTag = True
+                    thisTag = thisTag.Substring(1)
+                End If
+
+                If Not s_htmlToXml.ContainsKey(thisTag) Then
+                    ' TO DO: We will want to just ignore unrecognised tags as you could paste any HTML into the box
+                    Throw New Exception(String.Format("Unrecognised HTML tag: ", thisTag))
+                End If
+
+                result += "<"
+
+                If endTag Then
+                    result += "/"
+                End If
+
+                result += s_htmlToXml(thisTag)
+
+                result += ">"
+
+                pos = nextTagEnd + 1
+            End If
+        Loop Until finished
+
+        Return result
+    End Function
 
 End Class
