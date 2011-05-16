@@ -17,7 +17,8 @@ Public Class RichTextControl
         {"em", "i"},
         {"b", "b"},
         {"i", "i"},
-        {"u", "u"}
+        {"u", "u"},
+        {"br", "br"}
     }
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
@@ -40,7 +41,7 @@ Public Class RichTextControl
 
     Public Property Value() As Object Implements IElementEditorControl.Value
         Get
-            Return ConvertHTMLtoXML(HTML)
+            Return GetValue()
         End Get
         Set(value As Object)
             Dim stringValue As String = TryCast(value, String)
@@ -53,15 +54,13 @@ Public Class RichTextControl
         End Set
     End Property
 
-    'Private Sub TextBoxControl_TextChanged(sender As Object, e As System.EventArgs) Handles txtTextBox.TextChanged
-    '    If IsDirty Then
-    '        RaiseEvent Dirty(Me, New DataModifiedEventArgs(m_oldValue, txtTextBox.Text))
-    '    End If
-    'End Sub
+    Private Function GetValue() As String
+        Return ConvertHTMLtoXML(HTML)
+    End Function
 
     Public ReadOnly Property IsDirty() As Boolean
         Get
-            Return ConvertHTMLtoXML(HTML) <> m_oldValue
+            Return GetValue() <> m_oldValue
         End Get
     End Property
 
@@ -136,9 +135,8 @@ Public Class RichTextControl
         End Set
     End Property
 
-    Private Sub ctlWebBrowser_DocumentCompleted(sender As Object, e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles ctlWebBrowser.DocumentCompleted
-        ctlWebBrowser.Document.Write(ctlWebBrowser.DocumentText)
-        m_document.designMode = "On"
+    Private Sub ctlWebBrowser_Navigated(sender As Object, e As System.Windows.Forms.WebBrowserNavigatedEventArgs) Handles ctlWebBrowser.Navigated
+        AddHandler ctlWebBrowser.Document.Body.KeyDown, AddressOf Document_KeyDown
     End Sub
 
     Private Sub ctlWebBrowser_GotFocus(sender As Object, e As System.EventArgs) Handles ctlWebBrowser.GotFocus
@@ -177,9 +175,12 @@ Public Class RichTextControl
     End Function
 
     Private Function ConvertHTMLtoXML(input As String) As String
+
+        If String.IsNullOrEmpty(input) Then Return String.Empty
+
         Dim pos As Integer = 0
         Dim finished As Boolean = False
-        Dim result As String = ""
+        Dim result As String = String.Empty
 
         Do
             Dim nextTagStart As Integer = input.IndexOf("<"c, pos)
@@ -197,20 +198,26 @@ Public Class RichTextControl
                     thisTag = thisTag.Substring(1)
                 End If
 
-                If Not s_htmlToXml.ContainsKey(thisTag) Then
-                    ' TO DO: We will want to just ignore unrecognised tags as you could paste any HTML into the box
-                    Throw New Exception(String.Format("Unrecognised HTML tag: ", thisTag))
+                If thisTag = "p" Then
+                    If result.Length > 0 Then
+                        result += "<br/><br/>"
+                    End If
+                Else
+                    If Not s_htmlToXml.ContainsKey(thisTag) Then
+                        ' TO DO: We will want to just ignore unrecognised tags as you could paste any HTML into the box
+                        Throw New Exception(String.Format("Unrecognised HTML tag: ", thisTag))
+                    End If
+
+                    result += "<"
+
+                    If endTag Then
+                        result += "/"
+                    End If
+
+                    result += s_htmlToXml(thisTag)
+
+                    result += ">"
                 End If
-
-                result += "<"
-
-                If endTag Then
-                    result += "/"
-                End If
-
-                result += s_htmlToXml(thisTag)
-
-                result += ">"
 
                 pos = nextTagEnd + 1
             End If
@@ -218,5 +225,12 @@ Public Class RichTextControl
 
         Return result
     End Function
+
+    Private Sub Document_KeyDown(sender As Object, e As System.Windows.Forms.HtmlElementEventArgs)
+        If IsDirty Then
+            RaiseEvent Dirty(Me, New DataModifiedEventArgs(m_oldValue, GetValue()))
+        End If
+
+    End Sub
 
 End Class
