@@ -63,7 +63,7 @@ namespace AxeSoftware.Quest
         public delegate void ShowMessageHandler(string message);
         public event ShowMessageHandler ShowMessage;
 
-        public delegate void RequestAddElementHandler(string elementType, string objectType);
+        public delegate void RequestAddElementHandler(string elementType, string objectType, string filter);
         public event RequestAddElementHandler RequestAddElement;
 
         public delegate void RequestEditHandler(string key);
@@ -1019,9 +1019,9 @@ namespace AxeSoftware.Quest
                 e => e.Fields.GetAsType<bool>("isverb") && e.Fields.GetString("property") == attributeName);
         }
 
-        public void UIRequestAddElement(string elementType, string objectType)
+        public void UIRequestAddElement(string elementType, string objectType, string filter)
         {
-            RequestAddElement(elementType, objectType);
+            RequestAddElement(elementType, objectType, filter);
         }
 
         public void UIRequestEditElement(string key)

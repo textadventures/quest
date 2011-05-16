@@ -563,7 +563,7 @@
         ctlToolbar.RedoButtonEnabled = redoEnabled
     End Sub
 
-    Private Sub m_controller_RequestAddElement(elementType As String, objectType As String) Handles m_controller.RequestAddElement
+    Private Sub m_controller_RequestAddElement(elementType As String, objectType As String, filter As String) Handles m_controller.RequestAddElement
         Select Case elementType
             Case "object"
                 Select Case objectType
@@ -572,7 +572,11 @@
                     Case "exit"
                         AddNewExit()
                     Case "command"
-                        AddNewCommand()
+                        If filter = "verb" Then
+                            AddNewVerb()
+                        Else
+                            AddNewCommand()
+                        End If
                     Case Else
                         Throw New ArgumentOutOfRangeException
                 End Select

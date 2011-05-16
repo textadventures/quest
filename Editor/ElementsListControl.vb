@@ -101,7 +101,7 @@ Public Class ElementsListControl
     End Property
 
     Public Sub DoAdd() Implements IListEditorDelegate.DoAdd
-        Controller.UIRequestAddElement(m_elementType, m_objectType)
+        Controller.UIRequestAddElement(m_elementType, m_objectType, m_filter)
     End Sub
 
     Public Sub DoEdit(key As String, index As Integer) Implements IListEditorDelegate.DoEdit
