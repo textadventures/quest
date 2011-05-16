@@ -28,9 +28,12 @@ Partial Class ListStringControl
         'ctlListEditor
         '
         Me.ctlListEditor.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlListEditor.EditorDelegate = Nothing
+        Me.ctlListEditor.KeyedList = False
         Me.ctlListEditor.Location = New System.Drawing.Point(0, 0)
         Me.ctlListEditor.Name = "ctlListEditor"
         Me.ctlListEditor.Size = New System.Drawing.Size(474, 105)
+        Me.ctlListEditor.Style = AxeSoftware.Quest.ListEditor.ColumnStyle.OneColumn
         Me.ctlListEditor.TabIndex = 0
         '
         'ListStringControl
