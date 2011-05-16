@@ -135,8 +135,8 @@ namespace AxeSoftware.Quest
                 }
 
                 if (!silent) AddDestroyToUndoLog(destroy, destroy.Type);
-                NotifyRemovedElement(elementName);
                 WorldModel.RemoveElement(CreateElementType, elementName);
+                NotifyRemovedElement(elementName);
             }
             catch (Exception e)
             {

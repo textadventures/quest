@@ -69,6 +69,9 @@ namespace AxeSoftware.Quest
         public delegate void RequestEditHandler(string key);
         public event RequestEditHandler RequestEdit;
 
+        public delegate void ElementsUpdatedHandler();
+        public event ElementsUpdatedHandler ElementsUpdated;
+
         public event EventHandler<ElementUpdatedEventArgs> ElementUpdated;
         public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
         public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
@@ -263,6 +266,8 @@ namespace AxeSoftware.Quest
             {
                 RemovedNode(args.Removed);
             }
+
+            ElementsUpdated();
         }
 
         private void InitialiseTreeStructure()
@@ -732,7 +737,7 @@ namespace AxeSoftware.Quest
         private IEnumerable<Element> GetElements(string elementType)
         {
             ElementType t = WorldModel.GetElementTypeForTypeString(elementType);
-            return WorldModel.Elements.GetElements(t);
+            return WorldModel.Elements.GetElements(t).Where(e => e.Name != null);
         }
 
         public IEnumerable<string> GetElementNames(string elementType)
@@ -761,7 +766,7 @@ namespace AxeSoftware.Quest
         private IEnumerable<Element> GetObjects(string objectType)
         {
             ObjectType t = WorldModel.GetObjectTypeForTypeString(objectType);
-            return WorldModel.Elements.GetElements(ElementType.Object).Where(e => e.Type == t);
+            return WorldModel.Elements.GetElements(ElementType.Object).Where(e => e.Type == t && e.Name != null);
         }
 
         public IEnumerable<string> GetObjectNames(string objectType)
@@ -998,12 +1003,12 @@ namespace AxeSoftware.Quest
             return new ValidationResult { Valid = true };
         }
 
-        public void DeleteElement(string elementKey)
+        public void DeleteElement(string elementKey, bool useTransaction)
         {
-            m_worldModel.UndoLogger.StartTransaction(string.Format("Delete '{0}'", elementKey));
+            if (useTransaction) m_worldModel.UndoLogger.StartTransaction(string.Format("Delete '{0}'", elementKey));
             Element element = m_worldModel.Elements.Get(elementKey);
             m_worldModel.GetElementFactory(element.ElemType).DestroyElement(element.Name);
-            m_worldModel.UndoLogger.EndTransaction();
+            if (useTransaction) m_worldModel.UndoLogger.EndTransaction();
         }
 
         public bool IsVerbAttribute(string attributeName)

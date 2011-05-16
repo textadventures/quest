@@ -4,11 +4,12 @@ Public Class ElementsListControl
     Implements IResizableElementEditorControl
     Implements IListEditorDelegate
 
-    Private m_controller As EditorController
+    Private WithEvents m_controller As EditorController
     Private m_data As IEditorData
     Private m_controlData As IEditorControl
     Private m_elementType As String
     Private m_objectType As String
+    Private m_typeDesc As String
 
     Public ReadOnly Property AttributeName As String Implements IElementEditorControl.AttributeName
         Get
@@ -43,6 +44,12 @@ Public Class ElementsListControl
 
         m_elementType = controlData.GetString("elementtype")
         m_objectType = controlData.GetString("objecttype")
+
+        If m_objectType IsNot Nothing Then
+            m_typeDesc = m_objectType
+        Else
+            m_typeDesc = m_elementType
+        End If
     End Sub
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
@@ -93,15 +100,17 @@ Public Class ElementsListControl
     End Sub
 
     Public Sub DoRemove(keys() As String) Implements IListEditorDelegate.DoRemove
-        ' TO DO: Entire deletion should be ONE transaction
+        Controller.StartTransaction(String.Format("Delete {0} {1}s", keys.Length, m_typeDesc))
 
         For Each key In keys
             ' Deleting an element will delete any children, so we need to check that we've not already
             ' deleted the element if the user selected multiple elements to delete
             If Controller.ElementExists(key) Then
-                Controller.DeleteElement(key)
+                Controller.DeleteElement(key, False)
             End If
         Next
+
+        Controller.EndTransaction()
     End Sub
 
     Private Sub ctlListEditor_ToolbarClicked() Handles ctlListEditor.ToolbarClicked
@@ -113,4 +122,8 @@ Public Class ElementsListControl
             Return Nothing
         End Get
     End Property
+
+    Private Sub m_controller_ElementsUpdated() Handles m_controller.ElementsUpdated
+        Populate(m_data)
+    End Sub
 End Class

@@ -507,7 +507,7 @@
     End Sub
 
     Private Sub Delete()
-        m_controller.DeleteElement(ctlTree.SelectedItem)
+        m_controller.DeleteElement(ctlTree.SelectedItem, True)
     End Sub
 
     Private Sub ToggleCodeView()
