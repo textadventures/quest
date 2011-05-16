@@ -141,6 +141,8 @@
     End Sub
 
     Private Sub RelayoutControls()
+        If m_data Is Nothing OrElse m_data.Name Is Nothing Then Return
+
         Dim top As Integer = k_paddingTop
         For Each ctl In m_controls
             If ctl.Definition.IsControlVisible(m_data) Then
@@ -159,6 +161,7 @@
 
     Private Sub UpdateTabVisibility()
         If m_tabs Is Nothing Then Return
+        If m_data Is Nothing OrElse m_data.Name Is Nothing Then Return
 
         Dim tabIndex As Integer = 0
         For Each tabControl In m_tabs.Values

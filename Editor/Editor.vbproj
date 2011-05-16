@@ -164,6 +164,12 @@
     <Compile Include="ElementEditor.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ElementsListControl.Designer.vb">
+      <DependentUpon>ElementsListControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ElementsListControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ICommandEditor.vb" />
     <Compile Include="IElementEditorControl.vb" />
     <Compile Include="IfEditor.Designer.vb">
@@ -335,6 +341,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ElementEditor.resx">
       <DependentUpon>ElementEditor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ElementsListControl.resx">
+      <DependentUpon>ElementsListControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="IfEditor.resx">
       <DependentUpon>IfEditor.vb</DependentUpon>

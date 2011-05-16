@@ -203,7 +203,6 @@
     End Sub
 
     Private Sub ctlTree_SelectionChanged(key As String) Handles ctlTree.SelectionChanged
-        ' TO DO: Need to add the tree text as the second parameter so we get friendly name for "Verbs" etc. instead of the key
         ctlToolbar.AddHistory(key, m_controller.GetDisplayName(key))
         ShowEditor(key)
     End Sub
@@ -227,8 +226,6 @@
         Dim editorName As String = m_controller.GetElementEditorName(key)
         Dim nextEditor As ElementEditor = m_elementEditors(editorName)
 
-        nextEditor.Visible = True
-
         If Not m_currentEditor Is Nothing Then
             If Not m_currentEditor.Equals(nextEditor) Then
                 m_currentEditor.Visible = False
@@ -240,6 +237,7 @@
         m_currentElement = key
         m_currentEditor.Populate(m_controller.GetEditorData(key))
         lblHeader.Text = m_controller.GetDisplayName(key)
+        nextEditor.Visible = True
     End Sub
 
     Private Function Save() As Boolean
@@ -544,5 +542,28 @@
     Private Sub ctlTextEditor_UndoRedoEnabledUpdated(undoEnabled As Boolean, redoEnabled As Boolean) Handles ctlTextEditor.UndoRedoEnabledUpdated
         ctlToolbar.UndoButtonEnabled = undoEnabled
         ctlToolbar.RedoButtonEnabled = redoEnabled
+    End Sub
+
+    Private Sub m_controller_RequestAddElement(elementType As String, objectType As String) Handles m_controller.RequestAddElement
+        Select Case elementType
+            Case "object"
+                Select Case objectType
+                    Case "object"
+                        AddNewObject()
+                    Case "exit"
+                        AddNewExit()
+                    Case "command"
+                        AddNewCommand()
+                    Case Else
+                        Throw New ArgumentOutOfRangeException
+                End Select
+            Case Else
+                Throw New ArgumentOutOfRangeException
+        End Select
+    End Sub
+
+    Private Sub m_controller_RequestEdit(key As String) Handles m_controller.RequestEdit
+        ctlTree.SetSelectedItemNoEvent(key)
+        ShowEditor(key)
     End Sub
 End Class

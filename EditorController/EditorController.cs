@@ -63,6 +63,12 @@ namespace AxeSoftware.Quest
         public delegate void ShowMessageHandler(string message);
         public event ShowMessageHandler ShowMessage;
 
+        public delegate void RequestAddElementHandler(string elementType, string objectType);
+        public event RequestAddElementHandler RequestAddElement;
+
+        public delegate void RequestEditHandler(string key);
+        public event RequestEditHandler RequestEdit;
+
         public event EventHandler<ElementUpdatedEventArgs> ElementUpdated;
         public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
         public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
@@ -394,8 +400,6 @@ namespace AxeSoftware.Quest
         {
             // elementKey is "game", "k1" (a command), "someobject", "myexit" etc.
             // we return the editor type name, e.g. "game", "command", "object", "exit".
-            // Should have a method that returns a list of all available editor names, then the Editor
-            // control can construct them when it loads.
 
             if (m_worldModel.Elements.ContainsKey(elementKey))
             {
@@ -417,6 +421,10 @@ namespace AxeSoftware.Quest
                     }
                 }
                 if (m_editorDefinitions.ContainsKey(type)) return type;
+            }
+            else if (m_editorDefinitions.ContainsKey(elementKey))
+            {
+                return elementKey;
             }
 
             // TO DO: When all editors are implemented, raise an error here.
@@ -721,10 +729,21 @@ namespace AxeSoftware.Quest
             return controlType;
         }
 
-        public IEnumerable<string> GetElementNames(string elementType)
+        private IEnumerable<Element> GetElements(string elementType)
         {
             ElementType t = WorldModel.GetElementTypeForTypeString(elementType);
-            return WorldModel.Elements.GetElements(t).Select(e => e.Name);
+            return WorldModel.Elements.GetElements(t);
+        }
+
+        public IEnumerable<string> GetElementNames(string elementType)
+        {
+            return GetElements(elementType).Select(e => e.Name);
+        }
+
+        public IEnumerable<string> GetElementNames(string elementType, bool includeLibraryObjects)
+        {
+            if (includeLibraryObjects) return GetElementNames(elementType);
+            return GetElements(elementType).Where(e => !e.MetaFields[MetaFieldDefinitions.Library]).Select(e => e.Name);
         }
 
         public string GetElementType(string element)
@@ -739,10 +758,21 @@ namespace AxeSoftware.Quest
             return WorldModel.GetTypeStringForObjectType(WorldModel.Elements.Get(element).Type);
         }
 
-        public IEnumerable<string> GetObjectNames(string objectType)
+        private IEnumerable<Element> GetObjects(string objectType)
         {
             ObjectType t = WorldModel.GetObjectTypeForTypeString(objectType);
-            return WorldModel.Elements.GetElements(ElementType.Object).Where(e => e.Type == t).Select(e => e.Name);
+            return WorldModel.Elements.GetElements(ElementType.Object).Where(e => e.Type == t);
+        }
+
+        public IEnumerable<string> GetObjectNames(string objectType)
+        {
+            return GetObjects(objectType).Select(e => e.Name);
+        }
+
+        public IEnumerable<string> GetObjectNames(string objectType, bool includeLibraryObjects)
+        {
+            if (includeLibraryObjects) return GetObjectNames(objectType);
+            return GetObjects(objectType).Where(o => !o.MetaFields[MetaFieldDefinitions.Library]).Select(o => o.Name);
         }
 
         public IEnumerable<string> GetVerbProperties()
@@ -980,6 +1010,21 @@ namespace AxeSoftware.Quest
         {
             return m_worldModel.Elements.GetElements(ElementType.Object).Any(
                 e => e.Fields.GetAsType<bool>("isverb") && e.Fields.GetString("property") == attributeName);
+        }
+
+        public void UIRequestAddElement(string elementType, string objectType)
+        {
+            RequestAddElement(elementType, objectType);
+        }
+
+        public void UIRequestEditElement(string key)
+        {
+            RequestEdit(key);
+        }
+
+        public bool ElementExists(string elementKey)
+        {
+            return m_worldModel.Elements.ContainsKey(elementKey);
         }
     }
 }

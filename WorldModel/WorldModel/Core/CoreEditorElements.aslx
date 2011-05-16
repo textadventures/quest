@@ -1,0 +1,19 @@
+﻿<library>
+
+  <editor>
+    <appliesto>_objects</appliesto>
+    <tab>
+      <caption>Objects</caption>
+
+      <control>
+        <caption>Objects</caption>
+        <controltype>elementslist</controltype>
+        <elementtype>object</elementtype>
+        <objecttype>object</objecttype>
+        <expand/>
+      </control>
+      
+    </tab>
+  </editor>
+
+</library>
