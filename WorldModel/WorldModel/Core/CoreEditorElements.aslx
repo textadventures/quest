@@ -6,7 +6,6 @@
       <caption>Objects</caption>
 
       <control>
-        <caption>Objects</caption>
         <controltype>elementslist</controltype>
         <elementtype>object</elementtype>
         <objecttype>object</objecttype>
@@ -22,7 +21,6 @@
       <caption>Commands</caption>
 
       <control>
-        <caption>Commands</caption>
         <controltype>elementslist</controltype>
         <elementtype>object</elementtype>
         <objecttype>command</objecttype>
@@ -39,7 +37,6 @@
       <caption>Verbs</caption>
 
       <control>
-        <caption>Verbs</caption>
         <controltype>elementslist</controltype>
         <elementtype>object</elementtype>
         <objecttype>command</objecttype>

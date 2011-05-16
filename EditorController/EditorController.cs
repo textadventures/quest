@@ -176,6 +176,7 @@ namespace AxeSoftware.Quest
             string newName = e.Element.Name;
 
             RenamedNode(oldName, newName);
+            ElementsUpdated();
         }
 
         void UndoLogger_TransactionsUpdated(object sender, EventArgs e)
@@ -205,6 +206,7 @@ namespace AxeSoftware.Quest
                     {
                         // element name might be null if we're undoing an element add
                         RetitledNode(e.Element.Name, GetDisplayName(e.Element));
+                        ElementsUpdated();
                     }
                 }
 
