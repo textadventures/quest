@@ -320,9 +320,16 @@ Public Class Player
         ' Eventually we want to pop up a debugging panel on the right of the screen where we can select
         ' walkthroughs, step through etc.
 
-        For Each cmd As String In m_game.Walkthrough.Steps
-            RunCommand(cmd)
-        Next
+        Dim runnerThread As New Thread(Sub()
+                                           Try
+                                               For Each cmd As String In m_game.Walkthrough.Steps
+                                                   m_game.SendCommand(cmd)
+                                               Next
+                                           Catch ex As Exception
+                                               WriteLine(String.Format("Error running command '{0}' - walkthrough halted:<br>{1}", Command, ex.Message))
+                                           End Try
+                                       End Sub)
+        runnerThread.Start()
     End Sub
 
     Private Sub SetBackground(colour As String) Implements IPlayer.SetBackground

@@ -1,5 +1,5 @@
 ﻿function scrollToEnd() {
-    $('html, body').animate({ scrollTop: $(document).height() }, 10);
+    $('html, body').animate({ scrollTop: $(document).height() }, 0);
 }
 
 function sendCommand(text) {
