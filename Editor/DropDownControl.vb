@@ -47,7 +47,11 @@ Public Class DropDownControl
         If m_dictionary Is Nothing Then
             lstDropdown.Text = stringValue
         Else
-            lstDropdown.Text = m_dictionary(stringValue)
+            If stringValue = String.Empty Then
+                lstDropdown.Text = String.Empty
+            Else
+                lstDropdown.Text = m_dictionary(stringValue)
+            End If
         End If
 
         m_oldValue = stringValue

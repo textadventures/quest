@@ -426,7 +426,12 @@ namespace AxeSoftware.Quest
             {
                 Element e = m_worldModel.Elements.Get(elementKey);
 
-                string type = e.Fields.GetString("type");
+                string type = null;
+
+                if (e.ElemType == ElementType.Object)
+                {
+                    type = e.Fields.GetString("type");
+                }
                 if (string.IsNullOrEmpty(type))
                 {
                     type = e.Fields.GetString("elementtype");
