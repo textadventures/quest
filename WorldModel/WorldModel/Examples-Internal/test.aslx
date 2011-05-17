@@ -395,51 +395,53 @@
     </enter>
   </object>
 
-  <walkthrough>
-    x sofa
-    x sett
-    look at chair
-    take test
-    take test
-    drop test
-    drop test
-    take test
-    eat food
-    x table
-    speak to news
-    take news
-    use news
-    eat news
-    x table
-    take lamp
-    x lamp
-    go to cup
-    x sofa
-    out
-    e
-    w
-    e
-    u
-    d
-    e
-    x sink
-    x cup
-    x cup
-    x cup
-    x cup
-    test
-    fn
-    for
-    fe
-    sc
-    sc2
-    create
-    w
-    w
-    x sofa
-    action
-    x sofa
-    destroy
+  <walkthrough name="walkthrough">
+    <steps>
+      x sofa
+      x sett
+      look at chair
+      take test
+      take test
+      drop test
+      drop test
+      take test
+      eat food
+      x table
+      speak to news
+      take news
+      use news
+      eat news
+      x table
+      take lamp
+      x lamp
+      go to cup
+      x sofa
+      out
+      e
+      w
+      e
+      u
+      d
+      e
+      x sink
+      x cup
+      x cup
+      x cup
+      x cup
+      test
+      fn
+      for
+      fe
+      sc
+      sc2
+      create
+      w
+      w
+      x sofa
+      action
+      x sofa
+      destroy
+    </steps>
   </walkthrough>
     
     <!--            // Lounge

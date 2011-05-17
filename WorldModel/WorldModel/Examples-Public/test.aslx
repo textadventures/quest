@@ -167,30 +167,32 @@
     
   </object>
 
-  <walkthrough>
-    x sofa
-    eat food
-    x table
-    speak to news
-    take news
-    use news
-    eat food
-    x table
-    go to cup
-    x sofa
-    out
-    e
-    w
-    e
-    u
-    d
-    e
-    x sink
-    x cup
-    x cup
-    x cup
-    x cup
-    drink bleach
+  <walkthrough name="walkthrough">
+    <steps>
+      x sofa
+      eat food
+      x table
+      speak to news
+      take news
+      use news
+      eat food
+      x table
+      go to cup
+      x sofa
+      out
+      e
+      w
+      e
+      u
+      d
+      e
+      x sink
+      x cup
+      x cup
+      x cup
+      x cup
+      drink bleach
+    </steps>
   </walkthrough>
     
 </asl>
