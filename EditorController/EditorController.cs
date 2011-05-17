@@ -32,6 +32,13 @@ namespace AxeSoftware.Quest
         private const string k_commands = "_gameCommands";
         private const string k_verbs = "_gameVerbs";
 
+        private List<ElementType> m_ignoredTypes = new List<ElementType> {
+            ElementType.ImpliedType,
+            ElementType.Editor,
+            ElementType.EditorTab,
+            ElementType.EditorControl
+        };
+
         private WorldModel m_worldModel;
         private ScriptFactory m_scriptFactory;
         private AvailableFilters m_availableFilters;
@@ -284,12 +291,14 @@ namespace AxeSoftware.Quest
             AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null);
             AddTreeHeader(null, "_advanced", "Advanced", null);
             AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced");
-            AddTreeHeader(ElementType.ImpliedType, "_implied", "Implied Types", "_advanced");
+            // Ignore Implied Types - there's no reason for game authors to edit them
+            //AddTreeHeader(ElementType.ImpliedType, "_implied", "Implied Types", "_advanced");
             AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced");
             AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced");
             AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
             AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced");
-            AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
+            // Ignore Editor elements - there's no reason for game authors to edit them
+            //AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
             AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced");
         }
 
@@ -324,6 +333,8 @@ namespace AxeSoftware.Quest
 
         private void AddElementToTree(Element o)
         {
+            if (m_ignoredTypes.Contains(o.ElemType)) return;
+
             string parent = GetElementTreeParent(o);
             System.Drawing.Color? foreColor = null;
 

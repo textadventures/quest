@@ -32,6 +32,7 @@ Partial Class EditorTree
         Me.AddVerbToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddCommandToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddFunctionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddWalkthroughToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddLibraryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddImpliedTypeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddTemplateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -47,7 +48,6 @@ Partial Class EditorTree
         Me.cmdSearch = New System.Windows.Forms.Button()
         Me.lstSearchResults = New System.Windows.Forms.ListView()
         Me.colSearchResults = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.AddWalkthroughToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlContextMenu.SuspendLayout()
         Me.ctlToolStrip.SuspendLayout()
         Me.pnlSearchContainer.SuspendLayout()
@@ -118,6 +118,13 @@ Partial Class EditorTree
         Me.AddFunctionToolStripMenuItem.Tag = "addfunction"
         Me.AddFunctionToolStripMenuItem.Text = "Add Function"
         '
+        'AddWalkthroughToolStripMenuItem
+        '
+        Me.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem"
+        Me.AddWalkthroughToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddWalkthroughToolStripMenuItem.Tag = "addwalkthrough"
+        Me.AddWalkthroughToolStripMenuItem.Text = "Add Walkthrough"
+        '
         'AddLibraryToolStripMenuItem
         '
         Me.AddLibraryToolStripMenuItem.Name = "AddLibraryToolStripMenuItem"
@@ -131,6 +138,7 @@ Partial Class EditorTree
         Me.AddImpliedTypeToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
         Me.AddImpliedTypeToolStripMenuItem.Tag = "addimpliedtype"
         Me.AddImpliedTypeToolStripMenuItem.Text = "Add Implied Type"
+        Me.AddImpliedTypeToolStripMenuItem.Visible = False
         '
         'AddTemplateToolStripMenuItem
         '
@@ -166,6 +174,7 @@ Partial Class EditorTree
         Me.AddEditorToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
         Me.AddEditorToolStripMenuItem.Tag = "addeditor"
         Me.AddEditorToolStripMenuItem.Text = "Add Editor"
+        Me.AddEditorToolStripMenuItem.Visible = False
         '
         'ctlToolStrip
         '
@@ -245,13 +254,6 @@ Partial Class EditorTree
         'colSearchResults
         '
         Me.colSearchResults.Text = "Search Results"
-        '
-        'AddWalkthroughToolStripMenuItem
-        '
-        Me.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem"
-        Me.AddWalkthroughToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
-        Me.AddWalkthroughToolStripMenuItem.Tag = "addwalkthrough"
-        Me.AddWalkthroughToolStripMenuItem.Text = "Add Walkthrough"
         '
         'EditorTree
         '

@@ -55,6 +55,7 @@ Partial Class Menu
         Me.VerbToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CommandToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FunctionToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.WalkthroughToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.AdvancedToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LibraryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImpliedTypeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -72,7 +73,6 @@ Partial Class Menu
         Me.toolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WindowMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.WalkthroughToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlMenuStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -323,6 +323,13 @@ Partial Class Menu
         Me.FunctionToolStripMenuItem.Tag = "addfunction"
         Me.FunctionToolStripMenuItem.Text = "&Function"
         '
+        'WalkthroughToolStripMenuItem1
+        '
+        Me.WalkthroughToolStripMenuItem1.Name = "WalkthroughToolStripMenuItem1"
+        Me.WalkthroughToolStripMenuItem1.Size = New System.Drawing.Size(152, 22)
+        Me.WalkthroughToolStripMenuItem1.Tag = "addwalkthrough"
+        Me.WalkthroughToolStripMenuItem1.Text = "&Walkthrough"
+        '
         'AdvancedToolStripMenuItem
         '
         Me.AdvancedToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LibraryToolStripMenuItem, Me.ImpliedTypeToolStripMenuItem, Me.TemplateToolStripMenuItem1, Me.DynamicTemplateToolStripMenuItem1, Me.DelegateToolStripMenuItem, Me.ObjectTypeToolStripMenuItem, Me.EditorToolStripMenuItem})
@@ -343,6 +350,7 @@ Partial Class Menu
         Me.ImpliedTypeToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
         Me.ImpliedTypeToolStripMenuItem.Tag = "addimpliedtype"
         Me.ImpliedTypeToolStripMenuItem.Text = "&Implied Type"
+        Me.ImpliedTypeToolStripMenuItem.Visible = False
         '
         'TemplateToolStripMenuItem1
         '
@@ -378,6 +386,7 @@ Partial Class Menu
         Me.EditorToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
         Me.EditorToolStripMenuItem.Tag = "addeditor"
         Me.EditorToolStripMenuItem.Text = "&Editor"
+        Me.EditorToolStripMenuItem.Visible = False
         '
         'ToolsToolStripMenuItem
         '
@@ -441,13 +450,6 @@ Partial Class Menu
         Me.WindowMenuToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.WindowMenuToolStripMenuItem.Tag = "windowmenu"
         Me.WindowMenuToolStripMenuItem.Text = "WindowMenu"
-        '
-        'WalkthroughToolStripMenuItem1
-        '
-        Me.WalkthroughToolStripMenuItem1.Name = "WalkthroughToolStripMenuItem1"
-        Me.WalkthroughToolStripMenuItem1.Size = New System.Drawing.Size(152, 22)
-        Me.WalkthroughToolStripMenuItem1.Tag = "addwalkthrough"
-        Me.WalkthroughToolStripMenuItem1.Text = "&Walkthrough"
         '
         'Menu
         '
