@@ -13282,12 +13282,6 @@ ErrorHandler:
 
     Public Event UpdateList(listType As ListType, items As System.Collections.Generic.List(Of ListData)) Implements IASL.UpdateList
 
-    Public ReadOnly Property Walkthrough As IWalkthrough Implements IASL.Walkthrough
-        Get
-            Return Nothing
-        End Get
-    End Property
-
     Public Function Initialise(player As IPlayer) As Boolean Implements IASL.Initialise
         m_player = player
         If LCase(Right(m_filename, 4)) = ".qsg" Then

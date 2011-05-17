@@ -5,22 +5,55 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
+    public class Walkthroughs : IWalkthroughs
+    {
+        private Dictionary<string, IWalkthrough> m_walkthroughs = new Dictionary<string, IWalkthrough>();
+
+        public Walkthroughs(WorldModel worldModel)
+        {
+            foreach (Element walkthroughElement in worldModel.Elements.GetElements(ElementType.Walkthrough))
+            {
+                m_walkthroughs.Add(walkthroughElement.Name, new Walkthrough(walkthroughElement, this));
+            }
+        }
+
+        IDictionary<string, IWalkthrough> IWalkthroughs.Walkthroughs
+        {
+            get { return m_walkthroughs; }
+        }
+    }
+
     public class Walkthrough : IWalkthrough
     {
         private Element m_element;
+        private IWalkthroughs m_walkthroughs;
 
-        public Walkthrough(Element element)
+        public Walkthrough(Element element, Walkthroughs walkthroughs)
         {
             m_element = element;
+            m_walkthroughs = walkthroughs;
         }
-
-        #region IWalkthrough Members
 
         public List<string> Steps
         {
-            get { return new List<string>(m_element.Fields[FieldDefinitions.Steps]); }
+            get {
+                if (m_element.Parent == null)
+                {
+                    return ThisSteps();
+                }
+                else
+                {
+                    List<string> result = new List<string>();
+                    result.AddRange(m_walkthroughs.Walkthroughs[m_element.Parent.Name].Steps);
+                    result.AddRange(ThisSteps());
+                    return result;
+                }
+            }
         }
 
-        #endregion
+        private List<string> ThisSteps()
+        {
+            return new List<string>(m_element.Fields[FieldDefinitions.Steps]);
+        }
     }
 }

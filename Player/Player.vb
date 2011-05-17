@@ -9,6 +9,7 @@ Public Class Player
     Private m_panesVisible As Boolean
     Private WithEvents m_game As IASL
     Private WithEvents m_gameTimer As IASLTimer
+    Private m_gameDebug As IASLDebug
     Private m_initialised As Boolean
     Private m_gameReady As Boolean
     Private m_history As New List(Of String)
@@ -66,6 +67,7 @@ Public Class Player
     Public Sub Initialise(ByRef game As IASL)
         m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
         m_game = game
+        m_gameDebug = TryCast(game, IASLDebug)
         m_gameTimer = TryCast(m_game, IASLTimer)
         m_gameReady = True
         txtCommand.Text = ""
@@ -82,7 +84,7 @@ Public Class Player
         If m_game.Initialise(Me) Then
 
             AddToRecentList()
-            m_menu.MenuEnabled("walkthrough") = Not m_game.Walkthrough Is Nothing
+            m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing
 
             ' If we have external JavaScript files, we need to rebuild the HTML page source and
             ' reload it. Then, only when the page has finished loading, begin the game.
@@ -320,9 +322,12 @@ Public Class Player
         ' Eventually we want to pop up a debugging panel on the right of the screen where we can select
         ' walkthroughs, step through etc.
 
+        Dim walkThrough As String = ChooseWalkthrough()
+        If walkThrough Is Nothing Then Return
+
         Dim runnerThread As New Thread(Sub()
                                            Try
-                                               For Each cmd As String In m_game.Walkthrough.Steps
+                                               For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(walkThrough).Steps
                                                    m_game.SendCommand(cmd)
                                                Next
                                            Catch ex As Exception
@@ -331,6 +336,26 @@ Public Class Player
                                        End Sub)
         runnerThread.Start()
     End Sub
+
+    Private Function ChooseWalkthrough() As String
+        If m_gameDebug.Walkthroughs.Walkthroughs.Count = 1 Then
+            Return m_gameDebug.Walkthroughs.Walkthroughs.First.Key
+        End If
+
+        Dim menuForm As New Menu()
+        Dim menuOptions As New Dictionary(Of String, String)
+
+        For Each item In m_gameDebug.Walkthroughs.Walkthroughs
+            menuOptions.Add(item.Key, item.Key)
+        Next
+
+        menuForm.Caption = "Please choose a walkthrough to run:"
+        menuForm.Options = menuOptions
+        menuForm.AllowCancel = True
+        menuForm.ShowDialog()
+
+        Return menuForm.SelectedItem
+    End Function
 
     Private Sub SetBackground(colour As String) Implements IPlayer.SetBackground
         BeginInvoke(Sub() ctlPlayerHtml.SetBackground(colour))

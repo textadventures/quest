@@ -25,7 +25,6 @@ namespace AxeSoftware.Quest
         string OriginalFilename { get; }
         string SaveFilename { get; }
         void Finish();
-        IWalkthrough Walkthrough { get; }
         void Save(string filename);
         string SaveExtension { get; }
         void FinishWait();
@@ -145,10 +144,5 @@ namespace AxeSoftware.Quest
         {
             get { return m_verbs; }
         }
-    }
-
-    public interface IWalkthrough
-    {
-        List<string> Steps { get; }
     }
 }

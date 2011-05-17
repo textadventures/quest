@@ -50,6 +50,7 @@ namespace AxeSoftware.Quest
         private IPlayer m_playerUI = null;
         private ThreadState m_threadState = ThreadState.Ready;
         private object m_threadLock = new object();
+        private Walkthroughs m_walkthroughs;
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -337,7 +338,12 @@ namespace AxeSoftware.Quest
             m_editMode = false;
             m_playerUI = player;
             GameLoader loader = new GameLoader(this, GameLoader.LoadMode.Play);
-            return InitialiseInternal(loader);
+            bool result = InitialiseInternal(loader);
+            if (result)
+            {
+                m_walkthroughs = new Walkthroughs(this);
+            }
+            return result;
         }
 
         public bool InitialiseEdit()
@@ -392,12 +398,11 @@ namespace AxeSoftware.Quest
             get { return m_errors; }
         }
 
-        public IWalkthrough Walkthrough
+        public IWalkthroughs Walkthroughs
         {
-            get {
-                Element walkthroughElement = m_elements.GetSingle(ElementType.Walkthrough);
-                if (walkthroughElement == null) return null;
-                return new Walkthrough(walkthroughElement); 
+            get
+            {
+                return m_walkthroughs;
             }
         }
 

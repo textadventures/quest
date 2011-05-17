@@ -17,6 +17,7 @@ namespace AxeSoftware.Quest
         List<string> GetObjects(string type);
         DebugData GetDebugData(string obj);
         List<string> DebuggerObjectTypes { get; }
+        IWalkthroughs Walkthroughs { get; }
     }
 
     public class DebugDataItem
@@ -71,5 +72,15 @@ namespace AxeSoftware.Quest
             get { return m_data; }
             set { m_data = value; }
         }
+    }
+
+    public interface IWalkthroughs
+    {
+        IDictionary<string, IWalkthrough> Walkthroughs { get; }
+    }
+
+    public interface IWalkthrough
+    {
+        List<string> Steps { get; }
     }
 }
