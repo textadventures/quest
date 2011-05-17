@@ -1064,5 +1064,10 @@ namespace AxeSoftware.Quest
         {
             return m_worldModel.Elements.Get(ElementType.Object, elementKey).Fields.GetAsType<bool>("isverb");
         }
+
+        public IEnumerable<string> GetAvailableLibraries()
+        {
+            return m_worldModel.GetAvailableLibraries();
+        }
     }
 }

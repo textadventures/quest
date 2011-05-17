@@ -832,6 +832,31 @@ namespace AxeSoftware.Quest
             throw new Exception(string.Format("Cannot find a file called '{0}' in current path or application path", file));
         }
 
+        public IEnumerable<string> GetAvailableLibraries()
+        {
+            List<string> result = new List<string>();
+            AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(Filename), false);
+            AddFilesInPathToList(result, Environment.CurrentDirectory, false);
+            if (m_libFolder != null) AddFilesInPathToList(result, m_libFolder, false);
+            if (System.Reflection.Assembly.GetEntryAssembly() != null)
+            {
+                AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), true);
+            }
+            return result;
+        }
+
+        private void AddFilesInPathToList(List<string> list, string path, bool recurse)
+        {
+            if (path.StartsWith("file:\\")) path = path.Substring(6);
+            System.IO.SearchOption option = recurse ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
+            foreach (var result in System.IO.Directory.GetFiles(path, "*.aslx", option))
+            {
+                if (result == Filename) continue;
+                string filename = System.IO.Path.GetFileName(result);
+                if (!list.Contains(filename)) list.Add(filename);
+            }
+        }
+
         private bool TryPath(string path, string file, out string fullPath, bool recurse)
         {
             if (path.StartsWith("file:\\")) path = path.Substring(6);

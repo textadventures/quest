@@ -5,9 +5,10 @@
       <caption>Library</caption>
 
       <control>
-        <controltype>textbox</controltype>
+        <controltype>file</controltype>
         <attribute>filename</attribute>
         <caption>Filename</caption>
+        <source>libraries</source>
       </control>
     </tab>
   </editor>

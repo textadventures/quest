@@ -136,6 +136,9 @@
     <Compile Include="DropDownControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="DropDownFileControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="DropDownFilterControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -168,6 +171,12 @@
       <DependentUpon>ElementsListControl.vb</DependentUpon>
     </Compile>
     <Compile Include="ElementsListControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FileControl.Designer.vb">
+      <DependentUpon>FileControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FileControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ICommandEditor.vb" />
@@ -344,6 +353,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ElementsListControl.resx">
       <DependentUpon>ElementsListControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileControl.resx">
+      <DependentUpon>FileControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="IfEditor.resx">
       <DependentUpon>IfEditor.vb</DependentUpon>
