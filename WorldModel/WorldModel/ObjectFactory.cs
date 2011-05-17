@@ -423,7 +423,7 @@ namespace AxeSoftware.Quest
     {
         public override Element Create(string name)
         {
-            if (WorldModel.Elements.Count(CreateElementType) > 1)
+            if (WorldModel.Elements.Count(CreateElementType) >= 1)
             {
                 throw new InvalidOperationException(string.Format("There can only be one '{0}' element", FriendlyElementTypeName));
             }
@@ -431,7 +431,7 @@ namespace AxeSoftware.Quest
         }
     }
 
-    internal class WalkthroughFactory : SingleElementFactory
+    internal class WalkthroughFactory : ElementFactoryBase
     {
         public override ElementType CreateElementType
         {

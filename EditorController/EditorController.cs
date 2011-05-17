@@ -914,16 +914,25 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private void CreateNewElement(ElementType type, string typeName, string elementName)
+        private void CreateNewElement(ElementType type, string typeName, string elementName, string parent = null)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create {0} '{1}'", typeName, elementName));
-            Element newFunction = m_worldModel.GetElementFactory(type).Create(elementName);
+            Element newElement = m_worldModel.GetElementFactory(type).Create(elementName);
+            if (parent != null)
+            {
+                newElement.Parent = m_worldModel.Elements.Get(parent);
+            }
             m_worldModel.UndoLogger.EndTransaction();
         }
 
         public void CreateNewFunction(string name)
         {
             CreateNewElement(ElementType.Function, "function", name);
+        }
+
+        public void CreateNewWalkthrough(string name, string parent)
+        {
+            CreateNewElement(ElementType.Walkthrough, "walkthrough", name, parent);
         }
 
         public void CreateNewType(string name)
@@ -972,15 +981,23 @@ namespace AxeSoftware.Quest
 
         public IEnumerable<string> GetPossibleNewObjectParentsForCurrentSelection(string elementKey)
         {
+            return GetPossibleNewParentsForCurrentSelection(elementKey, "object");
+        }
+
+        public IEnumerable<string> GetPossibleNewParentsForCurrentSelection(string elementKey, string elementTypeString)
+        {
             // When an object is selected and the user clicks "Add object", we can either create the
             // object as a sub-object of the current selection, or as a sibling of the current object.
             // It could also be created with no parent at all (it's up to the GUI to provide that option).
 
+            ElementType elementType = m_worldModel.GetElementTypeForTypeString(elementTypeString);
+            
             if (elementKey == null) return null;
-            if (!m_worldModel.Elements.ContainsKey(ElementType.Object, elementKey)) return null;
+            if (!m_worldModel.Elements.ContainsKey(elementType, elementKey)) return null;
             Element currentSelection = m_worldModel.Elements.Get(elementKey);
 
-            if (currentSelection.Type == ObjectType.Object || currentSelection.Type == ObjectType.Game)
+            // For the object element type, we can only have parents with object types of object or game
+            if (elementType != ElementType.Object || currentSelection.Type == ObjectType.Object || currentSelection.Type == ObjectType.Game)
             {
                 List<string> result = new List<string>();
                 result.Add(elementKey);

@@ -51,6 +51,7 @@
         menu.AddMenuClickHandler("addverb", AddressOf AddNewVerb)
         menu.AddMenuClickHandler("addcommand", AddressOf AddNewCommand)
         menu.AddMenuClickHandler("addfunction", AddressOf AddNewFunction)
+        menu.AddMenuClickHandler("addwalkthrough", AddressOf AddNewWalkthrough)
         menu.AddMenuClickHandler("addlibrary", AddressOf AddNewLibrary)
         menu.AddMenuClickHandler("addimpliedtype", AddressOf AddNewImpliedType)
         menu.AddMenuClickHandler("addtemplate", AddressOf AddNewTemplate)
@@ -94,6 +95,7 @@
         ctlTree.AddMenuClickHandler("addverb", AddressOf AddNewVerb)
         ctlTree.AddMenuClickHandler("addcommand", AddressOf AddNewCommand)
         ctlTree.AddMenuClickHandler("addfunction", AddressOf AddNewFunction)
+        ctlTree.AddMenuClickHandler("addwalkthrough", AddressOf AddNewWalkthrough)
         ctlTree.AddMenuClickHandler("addlibrary", AddressOf AddNewLibrary)
         ctlTree.AddMenuClickHandler("addimpliedtype", AddressOf AddNewImpliedType)
         ctlTree.AddMenuClickHandler("addtemplate", AddressOf AddNewTemplate)
@@ -354,34 +356,13 @@
     End Sub
 
     Private Sub AddNewObject()
-
         Dim possibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(ctlTree.SelectedItem)
-        Const prompt As String = "Please enter a name for the new object"
-        Const noParent As String = "(none)"
+        Dim result = GetNameAndParent("Please enter a name for the new object", possibleParents)
 
-        If possibleParents Is Nothing Then
-            Dim result = PopupEditors.EditString(prompt, "")
-            If result.Cancelled Then Return
-            If Not ValidateInput(result.Result) Then Return
+        If result Is Nothing Then Return
 
-            m_controller.CreateNewObject(result.Result, Nothing)
-            ctlTree.SetSelectedItem(result.Result)
-        Else
-            Dim parentOptions As New List(Of String)
-            parentOptions.Add(noParent)
-            parentOptions.AddRange(possibleParents)
-
-            Dim result = PopupEditors.EditStringWithDropdown(prompt, "", "Parent", parentOptions, ctlTree.SelectedItem)
-            If result.Cancelled Then Return
-            If Not ValidateInput(result.Result) Then Return
-
-            Dim parent = result.ListResult
-            If parent = noParent Then parent = Nothing
-
-            m_controller.CreateNewObject(result.Result, parent)
-            ctlTree.SetSelectedItem(result.Result)
-        End If
-
+        m_controller.CreateNewObject(result.Value.Result, result.Value.ListResult)
+        ctlTree.SetSelectedItem(result.Value.Result)
     End Sub
 
     Private Sub AddNewRoom()
@@ -412,6 +393,16 @@
         AddNewElement("function", AddressOf m_controller.CreateNewFunction)
     End Sub
 
+    Private Sub AddNewWalkthrough()
+        Dim possibleParents = m_controller.GetPossibleNewParentsForCurrentSelection(ctlTree.SelectedItem, "walkthrough")
+        Dim result = GetNameAndParent("Please enter a name for the new walkthrough", possibleParents)
+
+        If result Is Nothing Then Return
+
+        m_controller.CreateNewWalkthrough(result.Value.Result, result.Value.ListResult)
+        ctlTree.SetSelectedItem(result.Value.Result)
+    End Sub
+
     Private Sub AddNewLibrary()
         MsgBox("Not yet implemented")
     End Sub
@@ -439,6 +430,31 @@
     Private Sub AddNewEditor()
         MsgBox("Not yet implemented")
     End Sub
+
+    Private Function GetNameAndParent(prompt As String, possibleParents As IEnumerable(Of String)) As PopupEditors.EditStringResult?
+        Const noParent As String = "(none)"
+
+        Dim result As PopupEditors.EditStringResult
+
+        If possibleParents Is Nothing Then
+            result = PopupEditors.EditString(prompt, "")
+        Else
+            Dim parentOptions As New List(Of String)
+            parentOptions.Add(noParent)
+            parentOptions.AddRange(possibleParents)
+
+            result = PopupEditors.EditStringWithDropdown(prompt, "", "Parent", parentOptions, ctlTree.SelectedItem)
+        End If
+
+        If result.Cancelled Then Return Nothing
+        If Not ValidateInput(result.Result) Then Return Nothing
+
+        If possibleParents IsNot Nothing And result.ListResult = noParent Then
+            result.ListResult = Nothing
+        End If
+
+        Return result
+    End Function
 
     Private Function ValidateInput(input As String) As Boolean
         Dim result = m_controller.CanAdd(input)

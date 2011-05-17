@@ -47,6 +47,7 @@ Partial Class EditorTree
         Me.cmdSearch = New System.Windows.Forms.Button()
         Me.lstSearchResults = New System.Windows.Forms.ListView()
         Me.colSearchResults = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.AddWalkthroughToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlContextMenu.SuspendLayout()
         Me.ctlToolStrip.SuspendLayout()
         Me.pnlSearchContainer.SuspendLayout()
@@ -65,9 +66,9 @@ Partial Class EditorTree
         '
         'ctlContextMenu
         '
-        Me.ctlContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddObjectToolStripMenuItem, Me.AddRoomToolStripMenuItem, Me.AddExitToolStripMenuItem, Me.AddVerbToolStripMenuItem, Me.AddCommandToolStripMenuItem, Me.AddFunctionToolStripMenuItem, Me.AddLibraryToolStripMenuItem, Me.AddImpliedTypeToolStripMenuItem, Me.AddTemplateToolStripMenuItem, Me.AddDynamicTemplateToolStripMenuItem, Me.AddDelegateToolStripMenuItem, Me.AddObjectTypeToolStripMenuItem, Me.AddEditorToolStripMenuItem})
+        Me.ctlContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddObjectToolStripMenuItem, Me.AddRoomToolStripMenuItem, Me.AddExitToolStripMenuItem, Me.AddVerbToolStripMenuItem, Me.AddCommandToolStripMenuItem, Me.AddFunctionToolStripMenuItem, Me.AddWalkthroughToolStripMenuItem, Me.AddLibraryToolStripMenuItem, Me.AddImpliedTypeToolStripMenuItem, Me.AddTemplateToolStripMenuItem, Me.AddDynamicTemplateToolStripMenuItem, Me.AddDelegateToolStripMenuItem, Me.AddObjectTypeToolStripMenuItem, Me.AddEditorToolStripMenuItem})
         Me.ctlContextMenu.Name = "ctlContextMenu"
-        Me.ctlContextMenu.Size = New System.Drawing.Size(200, 312)
+        Me.ctlContextMenu.Size = New System.Drawing.Size(200, 334)
         '
         'AddObjectToolStripMenuItem
         '
@@ -245,6 +246,13 @@ Partial Class EditorTree
         '
         Me.colSearchResults.Text = "Search Results"
         '
+        'AddWalkthroughToolStripMenuItem
+        '
+        Me.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem"
+        Me.AddWalkthroughToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddWalkthroughToolStripMenuItem.Tag = "addwalkthrough"
+        Me.AddWalkthroughToolStripMenuItem.Text = "Add Walkthrough"
+        '
         'EditorTree
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -287,5 +295,6 @@ Partial Class EditorTree
     Friend WithEvents AddDelegateToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AddObjectTypeToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AddEditorToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddWalkthroughToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
