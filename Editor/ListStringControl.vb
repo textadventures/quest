@@ -105,7 +105,7 @@ Public Class ListStringControl
     End Sub
 
     Public Sub DoEdit(key As String, index As Integer) Implements IListEditorDelegate.DoEdit
-        Dim result = PopupEditors.EditString(m_controlData.GetString("editprompt"), key)
+        Dim result = PopupEditors.EditString(m_controlData.GetString("editprompt"), m_list.Items(key).Value)
         If result.Cancelled Then Return
         If result.Result = key Then Return
         If Not ValidateInput(result.Result) Then Return

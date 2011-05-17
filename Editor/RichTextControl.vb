@@ -10,6 +10,7 @@ Public Class RichTextControl
     Private m_attributeName As String
     Private m_data As IEditorData
     Private m_document As IHTMLDocument2
+    Private m_valueToSet As String
 
     Private Shared s_htmlToXml As New Dictionary(Of String, String) From {
         {"strong", "b"},
@@ -135,6 +136,9 @@ Public Class RichTextControl
 
     Private Sub ctlWebBrowser_Navigated(sender As Object, e As System.Windows.Forms.WebBrowserNavigatedEventArgs) Handles ctlWebBrowser.Navigated
         AddHandler ctlWebBrowser.Document.Body.KeyDown, AddressOf Document_KeyDown
+        If Not m_valueToSet Is Nothing Then
+            HTML = m_valueToSet
+        End If
     End Sub
 
     Private Sub ctlWebBrowser_GotFocus(sender As Object, e As System.EventArgs) Handles ctlWebBrowser.GotFocus
@@ -162,8 +166,11 @@ Public Class RichTextControl
             End If
         End Get
         Set(value As String)
-            If ctlWebBrowser.Document IsNot Nothing Then
+            If ctlWebBrowser.Document IsNot Nothing AndAlso ctlWebBrowser.Document.Body IsNot Nothing Then
                 ctlWebBrowser.Document.Body.InnerHtml = value
+                m_valueToSet = Nothing
+            Else
+                m_valueToSet = value
             End If
         End Set
     End Property

@@ -8,7 +8,6 @@
     Private m_delegate As IListEditorDelegate
     Private m_style As ColumnStyle
     Private m_headers(2) As String
-    Private m_keyedList As Boolean = True
 
     ' This event is triggered as soon as any toolbar button is clicked, so that the parent
     ' can save any existing updates. This is necessary because the TextBoxControl will only
@@ -119,13 +118,13 @@
     End Sub
 
     Private Sub EditSelectedItem()
-        m_delegate.DoEdit(GetKeyOrName(lstList.SelectedItems(0)), lstList.SelectedItems(0).Index)
+        m_delegate.DoEdit(lstList.SelectedItems(0).Name, lstList.SelectedItems(0).Index)
     End Sub
 
     Private Function GetSelectedItems() As List(Of String)
         Dim result As New List(Of String)
         For Each item As ListViewItem In lstList.SelectedItems
-            result.Add(GetKeyOrName(item))
+            result.Add(item.Name)
         Next
         Return result
     End Function
@@ -193,18 +192,5 @@
     Public Sub UpdateValue(index As Integer, text As String)
         lstList.Items(index).SubItems(1).Text = Utility.FormatAsOneLine(text)
     End Sub
-
-    Public Property KeyedList As Boolean
-        Get
-            Return m_keyedList
-        End Get
-        Set(value As Boolean)
-            m_keyedList = value
-        End Set
-    End Property
-
-    Private Function GetKeyOrName(item As ListViewItem) As String
-        Return If(KeyedList, item.Name, item.Text)
-    End Function
 
 End Class
