@@ -436,6 +436,10 @@
         MsgBox("Not yet implemented")
     End Sub
 
+    Private Sub AddNewJavascript()
+        MsgBox("Not yet implemented")
+    End Sub
+
     Private Function GetNameAndParent(prompt As String, possibleParents As IEnumerable(Of String)) As PopupEditors.EditStringResult?
         Const noParent As String = "(none)"
 
@@ -601,6 +605,26 @@
                     Case Else
                         Throw New ArgumentOutOfRangeException
                 End Select
+            Case "function"
+                AddNewFunction()
+            Case "walkthrough"
+                AddNewWalkthrough()
+            Case "include"
+                AddNewLibrary()
+            Case "implied"
+                AddNewImpliedType()
+            Case "template"
+                AddNewTemplate()
+            Case "dynamictemplate"
+                AddNewDynamicTemplate()
+            Case "delegate"
+                AddNewDelegate()
+            Case "type"
+                AddNewObjectType()
+            Case "editor"
+                AddNewEditor()
+            Case "javascript"
+                AddNewJavascript()
             Case Else
                 Throw New ArgumentOutOfRangeException
         End Select
