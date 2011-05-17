@@ -140,6 +140,11 @@ namespace AxeSoftware.Quest
             return ret;
         }
 
+        public bool RemoveByIndex(int index, UpdateSource source)
+        {
+            return RemoveInternal(m_list[index], source, index);
+        }
+
         public bool Remove(object item)
         {
             return RemoveInternal((T)item);

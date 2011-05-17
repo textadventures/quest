@@ -38,7 +38,8 @@ namespace AxeSoftware.Quest
 
         private QuestList<T> m_source;
         private Dictionary<string, IEditableListItem<T>> m_wrappedItems = new Dictionary<string, IEditableListItem<T>>();
-        private Dictionary<T, IEditableListItem<T>> m_wrappedItemLookup = new Dictionary<T, IEditableListItem<T>>();
+        private List<IEditableListItem<T>> m_wrappedItemsList = new List<IEditableListItem<T>>();
+        private List<string> m_wrappedItemKeys = new List<string>();
         private int m_nextId = 0;
         private EditorController m_controller;
 
@@ -59,6 +60,8 @@ namespace AxeSoftware.Quest
         private void PopulateWrappedItems()
         {
             m_wrappedItems.Clear();
+            m_wrappedItemsList.Clear();
+            m_wrappedItemKeys.Clear();
             int index = 0;
 
             foreach (var item in m_source)
@@ -96,7 +99,8 @@ namespace AxeSoftware.Quest
             string key = GetUniqueId();
             IEditableListItem<T> wrappedValue = new EditableListItem<T>(key, item);
             m_wrappedItems.Add(key, wrappedValue);
-            m_wrappedItemLookup.Add(item, wrappedValue);
+            m_wrappedItemsList.Insert(index, wrappedValue);
+            m_wrappedItemKeys.Insert(index, key);
 
             if (Added != null) Added(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = wrappedValue, Index = index, Source = source });
         }
@@ -107,12 +111,12 @@ namespace AxeSoftware.Quest
             return "k" + m_nextId.ToString();
         }
 
-        public void Remove(params T[] items)
+        public void Remove(params string[] keys)
         {
             string undoEntry = null;
             if (typeof(T) == typeof(string))
             {
-                undoEntry = string.Format("Remove '{0}'", string.Join(",", items));
+                undoEntry = string.Format("Remove items from list");
             }
 
             if (undoEntry == null)
@@ -121,10 +125,12 @@ namespace AxeSoftware.Quest
             }
 
             m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
-            foreach (T item in items)
+
+            foreach (string key in keys)
             {
-                m_source.Remove(item, UpdateSource.User, m_source.IndexOf(item));
+                m_source.RemoveByIndex(m_wrappedItemKeys.IndexOf(key), UpdateSource.User);
             }
+
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
@@ -150,7 +156,8 @@ namespace AxeSoftware.Quest
         private void RemoveWrappedItem(IEditableListItem<T> item, EditorUpdateSource source, int index)
         {
             m_wrappedItems.Remove(item.Key);
-            m_wrappedItemLookup.Remove(item.Value);
+            m_wrappedItemsList.Remove(item);
+            m_wrappedItemKeys.Remove(item.Key);
             if (Removed != null) Removed(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
         }
 
@@ -161,7 +168,7 @@ namespace AxeSoftware.Quest
 
         void m_source_Removed(object sender, QuestListUpdatedEventArgs<T> e)
         {
-            RemoveWrappedItem(m_wrappedItemLookup[e.UpdatedItem], (EditorUpdateSource)e.Source, e.Index);
+            RemoveWrappedItem(m_wrappedItems[m_wrappedItemKeys[e.Index]], (EditorUpdateSource)e.Source, e.Index);
         }
 
         public object GetUnderlyingValue()

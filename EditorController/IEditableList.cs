@@ -19,7 +19,7 @@ namespace AxeSoftware.Quest
 
         IDictionary<string, IEditableListItem<T>> Items { get; }
         void Add(T item);
-        void Remove(params T[] items);
+        void Remove(params string[] keys);
         void Update(int index, T item);
         IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }
         ValidationResult CanAdd(T item);

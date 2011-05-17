@@ -29,7 +29,7 @@ Partial Class ListStringControl
         '
         Me.ctlListEditor.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlListEditor.EditorDelegate = Nothing
-        Me.ctlListEditor.KeyedList = False
+        Me.ctlListEditor.KeyedList = True
         Me.ctlListEditor.Location = New System.Drawing.Point(0, 0)
         Me.ctlListEditor.Name = "ctlListEditor"
         Me.ctlListEditor.Size = New System.Drawing.Size(474, 105)

@@ -49,8 +49,16 @@ namespace EditorControllerTests
         [TestMethod]
         public void TestListRemove()
         {
-            m_list.Remove("three");
+            // Remove individual item
+            m_list.Remove(GetItemListKeys(m_list)[2]);
             Assert.AreEqual("one;two;four;five", GetItemListString(m_list));
+
+            Controller.Undo();
+            Assert.AreEqual("one;two;three;four;five", GetItemListString(m_list));
+
+            // Remove multiple items
+            m_list.Remove(GetItemListKeys(m_list)[0], GetItemListKeys(m_list)[3]);
+            Assert.AreEqual("two;three;five", GetItemListString(m_list));
 
             Controller.Undo();
             Assert.AreEqual("one;two;three;four;five", GetItemListString(m_list));
