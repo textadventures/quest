@@ -41,6 +41,11 @@ namespace EditorControllerTests
             m_controller.UndoListUpdated += new EventHandler<EditorController.UpdateUndoListEventArgs>(m_controller_UndoListUpdated);
             m_controller.RedoListUpdated += new EventHandler<EditorController.UpdateUndoListEventArgs>(m_controller_RedoListUpdated);
             m_controller.Initialise(@"..\..\..\EditorControllerTests\test.aslx");
+            DoExtraInitialisation();
+        }
+
+        public virtual void DoExtraInitialisation()
+        {
         }
 
         [TestCleanup]

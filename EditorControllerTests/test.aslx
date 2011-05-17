@@ -17,5 +17,9 @@
       <attribute>0</attribute>
     </control>
   </editor>
+
+  <object name="testobj">
+    <listattr type="list">one; two; three; four; five</listattr>
+  </object>
     
 </asl>
