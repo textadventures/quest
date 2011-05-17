@@ -194,10 +194,13 @@ namespace AxeSoftware.Quest
 
         public ValidationResult CanAdd(T item)
         {
-            if (m_source.Contains(item))
-            {
-                return new ValidationResult { Valid = false, Message = ValidationMessage.ItemAlreadyExists };
-            }
+            // Commented this section out as it is valid to have the same item multiple times in a list,
+            // for example for walkthroughs.
+            //if (m_source.Contains(item))
+            //{
+            //    return new ValidationResult { Valid = false, Message = ValidationMessage.ItemAlreadyExists };
+            //}
+
             return new ValidationResult { Valid = true };
         }
 

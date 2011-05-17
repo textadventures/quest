@@ -369,16 +369,22 @@ namespace AxeSoftware.Quest
         {
             if (e.Fields[FieldDefinitions.Anonymous])
             {
-                if (e.Type == ObjectType.Exit)
+                switch (e.ElemType)
                 {
-                    Element to = e.Fields[FieldDefinitions.To];
-                    return "Exit: " + (to == null ? "(nowhere)" : to.Name);
-                }
-                else if (e.Type == ObjectType.Command)
-                {
-                    EditorCommandPattern pattern = e.Fields.GetAsType<EditorCommandPattern>("pattern");
-                    bool isVerb = e.Fields.GetAsType<bool>("isverb");
-                    return (isVerb ? "Verb" : "Command") + ": " + (pattern == null ? "(blank)" : pattern.Pattern);
+                    case ElementType.Object:
+                        switch (e.Type)
+                        {
+                            case ObjectType.Exit:
+                                Element to = e.Fields[FieldDefinitions.To];
+                                return "Exit: " + (to == null ? "(nowhere)" : to.Name);
+                            case ObjectType.Command:
+                                EditorCommandPattern pattern = e.Fields.GetAsType<EditorCommandPattern>("pattern");
+                                bool isVerb = e.Fields.GetAsType<bool>("isverb");
+                                return (isVerb ? "Verb" : "Command") + ": " + (pattern == null ? "(blank)" : pattern.Pattern);
+                        }
+                        break;
+                    case ElementType.Walkthrough:
+                        return "Walkthrough";
                 }
             }
             return e.Name;

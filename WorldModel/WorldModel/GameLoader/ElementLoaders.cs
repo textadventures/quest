@@ -688,6 +688,7 @@ namespace AxeSoftware.Quest
                 string walkthrough = reader.ReadElementContentAsString();
                 Element e = WorldModel.GetElementFactory(ElementType.Walkthrough).Create();
                 e.Fields[FieldDefinitions.Steps] = new QuestList<string>(Utility.SplitIntoLines(walkthrough));
+                e.Fields[FieldDefinitions.Anonymous] = true;
                 return e;
             }
         }

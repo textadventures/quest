@@ -3,6 +3,14 @@
     <appliesto>walkthrough</appliesto>
     <tab>
       <caption>Walkthrough</caption>
+
+      <control>
+        <controltype>list</controltype>
+        <attribute>steps</attribute>
+        <caption>Steps</caption>
+        <editprompt>Please enter the command for this walkthrough step</editprompt>
+        <expand/>
+      </control>
     </tab>
   </editor>
 </library>
