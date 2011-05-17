@@ -63,7 +63,15 @@ namespace AxeSoftware.Quest
 
             public override void Load(Element element, string attribute, string value)
             {
-                string[] values = Utility.ListSplit(value);
+                string[] values;
+                if (value.IndexOf("\n") >= 0)
+                {
+                    values = Utility.SplitIntoLines(value).ToArray();
+                }
+                else
+                {
+                    values = Utility.ListSplit(value);
+                }
                 element.Fields.Set(attribute, new QuestList<string>(values));
             }
         }

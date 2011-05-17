@@ -676,20 +676,21 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private class WalkthroughLoader : XMLLoaderBase
+        private class WalkthroughLoader : ElementLoaderBase
         {
             public override string AppliesTo
             {
                 get { return "walkthrough"; }
             }
 
-            public override object Load(XmlReader reader, ref Element current)
+            public override ElementType CreateElementType
             {
-                string walkthrough = reader.ReadElementContentAsString();
-                Element e = WorldModel.GetElementFactory(ElementType.Walkthrough).Create();
-                e.Fields[FieldDefinitions.Steps] = new QuestList<string>(Utility.SplitIntoLines(walkthrough));
-                e.Fields[FieldDefinitions.Anonymous] = true;
-                return e;
+                get { return ElementType.Walkthrough; }
+            }
+
+            protected override string IDPrefix
+            {
+                get { return "walkthrough"; }
             }
         }
 
@@ -774,7 +775,7 @@ namespace AxeSoftware.Quest
             public override object Load(XmlReader reader, ref Element current)
             {
                 string name = reader.GetAttribute("name");
-                if (string.IsNullOrEmpty(name)) name = WorldModel.GetUniqueID("editor");
+                if (string.IsNullOrEmpty(name)) name = WorldModel.GetUniqueID(IDPrefix);
                 Element newElement = WorldModel.GetElementFactory(CreateElementType).Create(name);
                 newElement.Parent = current;
                 return newElement;
@@ -783,6 +784,8 @@ namespace AxeSoftware.Quest
             protected override bool CanContainNestedAttributes { get { return true; } }
 
             public abstract ElementType CreateElementType { get; }
+
+            protected abstract string IDPrefix { get; }
         }
 
         private class EditorLoader : ElementLoaderBase
@@ -795,6 +798,11 @@ namespace AxeSoftware.Quest
             public override ElementType CreateElementType
             {
                 get { return ElementType.Editor; }
+            }
+
+            protected override string IDPrefix
+            {
+                get { return "editor"; }
             }
         }
 
@@ -809,6 +817,11 @@ namespace AxeSoftware.Quest
             {
                 get { return ElementType.EditorTab; }
             }
+
+            protected override string IDPrefix
+            {
+                get { return "editor"; }
+            }
         }
 
         private class EditorControlLoader : ElementLoaderBase
@@ -821,6 +834,11 @@ namespace AxeSoftware.Quest
             public override ElementType CreateElementType
             {
                 get { return ElementType.EditorControl; }
+            }
+
+            protected override string IDPrefix
+            {
+                get { return "editor"; }
             }
         }
 

@@ -251,6 +251,42 @@ namespace AxeSoftware.Quest
             }
         }
 
+        private class WalkthroughsSaver : IElementsSaver
+        {
+            private WalkthroughSaver m_walkthroughSaver = new WalkthroughSaver();
+
+            public ElementType AppliesTo
+            {
+                get { return ElementType.Walkthrough; }
+            }
+
+            public void Save(GameXmlWriter writer, WorldModel worldModel)
+            {
+                foreach (Element walkThrough in worldModel.Elements.GetElements(ElementType.Walkthrough).Where(e => e.Parent == null))
+                {
+                    SaveElementAndChildren(writer, worldModel, walkThrough);
+                }
+            }
+
+            private void SaveElementAndChildren(GameXmlWriter writer, WorldModel worldModel, Element walkThrough)
+            {
+                m_walkthroughSaver.StartSave(writer, walkThrough);
+                foreach (Element child in worldModel.Elements.GetElements(ElementType.Walkthrough).Where(e => e.Parent == walkThrough))
+                {
+                    SaveElementAndChildren(writer, worldModel, child);
+                }
+                m_walkthroughSaver.EndSave(writer, walkThrough);
+            }
+
+            public GameSaver GameSaver
+            {
+                set
+                {
+                    m_walkthroughSaver.GameSaver = value;
+                }
+            }
+        }
+
         private class WalkthroughSaver : ElementSaverBase
         {
             public override ElementType AppliesTo
@@ -260,20 +296,35 @@ namespace AxeSoftware.Quest
 
             public override void Save(GameXmlWriter writer, Element e)
             {
-                QuestList<string> steps = e.Fields[FieldDefinitions.Steps];
-                if (steps == null || steps.Count == 0) return;
+                StartSave(writer, e);
+                EndSave(writer, e);
+            }
 
-                string result = string.Empty;
-                string indent = GameSaver.GetIndentChars(writer.IndentLevel + 1, writer.IndentChars);
-
-                foreach (string step in steps)
-                {
-                    result += Environment.NewLine + indent + step;
-                }
-                result += Environment.NewLine;
-
+            public void StartSave(GameXmlWriter writer, Element e)
+            {
                 writer.WriteStartElement("walkthrough");
-                writer.WriteString(result);
+                writer.WriteAttributeString("name", e.Name);
+
+                QuestList<string> steps = e.Fields[FieldDefinitions.Steps];
+                if (steps != null && steps.Count > 0)
+                {
+                    string result = string.Empty;
+                    string indent = GameSaver.GetIndentChars(writer.IndentLevel + 1, writer.IndentChars);
+
+                    foreach (string step in steps)
+                    {
+                        result += Environment.NewLine + indent + step;
+                    }
+                    result += Environment.NewLine;
+
+                    writer.WriteStartElement("steps");
+                    writer.WriteString(result);
+                    writer.WriteEndElement();
+                }
+            }
+
+            public void EndSave(GameXmlWriter writer, Element e)
+            {
                 writer.WriteEndElement();
             }
         }

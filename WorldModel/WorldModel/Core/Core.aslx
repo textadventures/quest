@@ -6,6 +6,7 @@
   <implied element="command" property="script" type="script"/>
   <implied element="object" property="displayverbs" type="list"/>
   <implied element="object" property="inventoryverbs" type="list"/>
+  <implied element="walkthrough" property="steps" type="list"/>
 
   <include ref="CoreCommands.aslx"/>
   <include ref="CoreParser.aslx"/>
