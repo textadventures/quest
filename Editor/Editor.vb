@@ -264,6 +264,9 @@
     End Function
 
     Private Function SaveAs() As Boolean
+        ' TO DO: If file is saved to a different folder, we should probably reinitialise as the
+        ' available included libraries may have changed.
+
         ctlSaveFile.FileName = m_filename
         If ctlSaveFile.ShowDialog() = DialogResult.OK Then
             m_filename = ctlSaveFile.FileName
@@ -282,6 +285,7 @@
                 End If
                 System.IO.File.WriteAllText(filename, m_controller.Save())
             End If
+            m_controller.Filename = filename
             Return True
         Catch ex As Exception
             MsgBox("Unable to save the file due to the following error:" + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)

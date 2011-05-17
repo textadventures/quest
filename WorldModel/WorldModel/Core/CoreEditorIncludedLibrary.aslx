@@ -9,6 +9,7 @@
         <attribute>filename</attribute>
         <caption>Filename</caption>
         <source>libraries</source>
+        <width>300</width>
       </control>
     </tab>
   </editor>

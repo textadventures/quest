@@ -22,9 +22,20 @@ Partial Class FileControl
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.ctlDropDown = New AxeSoftware.Quest.DropDownFileControl()
         Me.cmdBrowse = New System.Windows.Forms.Button()
+        Me.ctlDropDown = New AxeSoftware.Quest.DropDownFileControl()
+        Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
         Me.SuspendLayout()
+        '
+        'cmdBrowse
+        '
+        Me.cmdBrowse.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdBrowse.Location = New System.Drawing.Point(249, 0)
+        Me.cmdBrowse.Name = "cmdBrowse"
+        Me.cmdBrowse.Size = New System.Drawing.Size(75, 23)
+        Me.cmdBrowse.TabIndex = 1
+        Me.cmdBrowse.Text = "Browse..."
+        Me.cmdBrowse.UseVisualStyleBackColor = True
         '
         'ctlDropDown
         '
@@ -36,16 +47,6 @@ Partial Class FileControl
         Me.ctlDropDown.Size = New System.Drawing.Size(243, 23)
         Me.ctlDropDown.TabIndex = 0
         Me.ctlDropDown.Value = ""
-        '
-        'cmdBrowse
-        '
-        Me.cmdBrowse.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdBrowse.Location = New System.Drawing.Point(249, 0)
-        Me.cmdBrowse.Name = "cmdBrowse"
-        Me.cmdBrowse.Size = New System.Drawing.Size(75, 23)
-        Me.cmdBrowse.TabIndex = 1
-        Me.cmdBrowse.Text = "Browse..."
-        Me.cmdBrowse.UseVisualStyleBackColor = True
         '
         'FileControl
         '
@@ -60,5 +61,6 @@ Partial Class FileControl
     End Sub
     Friend WithEvents ctlDropDown As AxeSoftware.Quest.DropDownFileControl
     Friend WithEvents cmdBrowse As System.Windows.Forms.Button
+    Friend WithEvents dlgOpenFile As System.Windows.Forms.OpenFileDialog
 
 End Class

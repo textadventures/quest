@@ -42,6 +42,7 @@ namespace AxeSoftware.Quest
         private Dictionary<string, string> m_treeTitles;
         private bool m_initialised = false;
         private Dictionary<string, Type> m_controlTypes = new Dictionary<string, Type>();
+        private string m_filename;
 
         public delegate void VoidHandler();
         public event VoidHandler ClearTree;
@@ -130,6 +131,7 @@ namespace AxeSoftware.Quest
 
         public bool Initialise(string filename)
         {
+            m_filename = filename;
             m_worldModel = new WorldModel(filename, null);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
@@ -1088,6 +1090,12 @@ namespace AxeSoftware.Quest
         public IEnumerable<string> GetAvailableLibraries()
         {
             return m_worldModel.GetAvailableLibraries();
+        }
+
+        public string Filename
+        {
+            get { return m_filename; }
+            set { m_filename = value; }
         }
     }
 }

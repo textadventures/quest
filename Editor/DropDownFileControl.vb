@@ -10,8 +10,6 @@ Public Class DropDownFileControl
         ' TO DO: we may want to allow a "freetext" attribute (as for base DropDownControl)
         'lstDropdown.DropDownStyle = ComboBoxStyle.DropDown
 
-        lstDropdown.Items.Clear()
-
         If controlData IsNot Nothing Then
             Dim source As String = controlData.GetString("source")
             If source = "libraries" Then
@@ -21,11 +19,19 @@ Public Class DropDownFileControl
                 m_fileLister = AddressOf GetFilesInGamePath
             End If
 
-            lstDropdown.Items.AddRange(m_fileLister.Invoke().ToArray())
+            RefreshFileList()
         End If
 
-        ' TO DO: For files which are in the game path, we want to invoke m_fileLister each time Populate is called
+    End Sub
 
+    Private Sub RefreshFileList()
+        lstDropdown.Items.Clear()
+        lstDropdown.Items.AddRange(m_fileLister.Invoke().ToArray())
+    End Sub
+
+    Protected Overrides Sub PopulateData(data As IEditorData)
+        RefreshFileList()
+        MyBase.PopulateData(data)
     End Sub
 
     Private Function GetAvailableLibraries() As IEnumerable(Of String)
