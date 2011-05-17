@@ -200,7 +200,8 @@ namespace AxeSoftware.Quest
                 }
 
                 if (e.Element.Type == ObjectType.Exit && (e.Attribute == "anonymous" || e.Attribute == "to" || e.Attribute == "name")
-                    || e.Element.Type == ObjectType.Command && (e.Attribute == "anonymous" || e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb"))
+                    || e.Element.Type == ObjectType.Command && (e.Attribute == "anonymous" || e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
+                    || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "filename"))
                 {
                     if (e.Element.Name != null)
                     {
@@ -385,6 +386,8 @@ namespace AxeSoftware.Quest
                         break;
                     case ElementType.Walkthrough:
                         return "Walkthrough";
+                    case ElementType.IncludedLibrary:
+                        return e.Fields[FieldDefinitions.Filename];
                 }
             }
             return e.Name;

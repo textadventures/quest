@@ -3,6 +3,12 @@
     <appliesto>include</appliesto>
     <tab>
       <caption>Library</caption>
+
+      <control>
+        <controltype>textbox</controltype>
+        <attribute>filename</attribute>
+        <caption>Filename</caption>
+      </control>
     </tab>
   </editor>
 </library>

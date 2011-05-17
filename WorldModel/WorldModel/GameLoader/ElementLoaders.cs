@@ -317,6 +317,7 @@ namespace AxeSoftware.Quest
             {
                 Element include = WorldModel.GetElementFactory(ElementType.IncludedLibrary).Create();
                 include.Fields[FieldDefinitions.Filename] = file;
+                include.Fields[FieldDefinitions.Anonymous] = true;
                 return include;
             }
 
