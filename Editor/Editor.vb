@@ -404,7 +404,8 @@
     End Sub
 
     Private Sub AddNewLibrary()
-        MsgBox("Not yet implemented")
+        Dim newLibrary = m_controller.CreateNewIncludedLibrary()
+        ctlTree.SetSelectedItem(newLibrary)
     End Sub
 
     Private Sub AddNewImpliedType()

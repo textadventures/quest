@@ -201,7 +201,7 @@ namespace AxeSoftware.Quest
 
                 if (e.Element.Type == ObjectType.Exit && (e.Attribute == "anonymous" || e.Attribute == "to" || e.Attribute == "name")
                     || e.Element.Type == ObjectType.Command && (e.Attribute == "anonymous" || e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
-                    || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "filename"))
+                    || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "anonymous" || e.Attribute == "filename"))
                 {
                     if (e.Element.Name != null)
                     {
@@ -387,7 +387,9 @@ namespace AxeSoftware.Quest
                     case ElementType.Walkthrough:
                         return "Walkthrough";
                     case ElementType.IncludedLibrary:
-                        return e.Fields[FieldDefinitions.Filename];
+                        string filename = e.Fields[FieldDefinitions.Filename];
+                        if (!string.IsNullOrEmpty(filename)) return filename;
+                        return "(filename not set)";
                 }
             }
             return e.Name;
@@ -917,15 +919,28 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private void CreateNewElement(ElementType type, string typeName, string elementName, string parent = null)
+        private string CreateNewElement(ElementType type, string typeName, string elementName, string parent = null)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create {0} '{1}'", typeName, elementName));
-            Element newElement = m_worldModel.GetElementFactory(type).Create(elementName);
+            Element newElement;
+            
+            if (elementName != null)
+            {
+                newElement = m_worldModel.GetElementFactory(type).Create(elementName);
+            }
+            else
+            {
+                newElement = m_worldModel.GetElementFactory(type).Create();
+                newElement.Fields[FieldDefinitions.Anonymous] = true;
+            }
+
             if (parent != null)
             {
                 newElement.Parent = m_worldModel.Elements.Get(parent);
             }
             m_worldModel.UndoLogger.EndTransaction();
+
+            return newElement.Name;
         }
 
         public void CreateNewFunction(string name)
@@ -936,6 +951,11 @@ namespace AxeSoftware.Quest
         public void CreateNewWalkthrough(string name, string parent)
         {
             CreateNewElement(ElementType.Walkthrough, "walkthrough", name, parent);
+        }
+
+        public string CreateNewIncludedLibrary()
+        {
+            return CreateNewElement(ElementType.IncludedLibrary, "included library", null);
         }
 
         public void CreateNewType(string name)
