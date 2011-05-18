@@ -334,7 +334,7 @@ namespace AxeSoftware.Quest
 
         private void AddElementToTree(Element o)
         {
-            if (m_ignoredTypes.Contains(o.ElemType)) return;
+            if (!IsElementVisible(o)) return;
 
             string parent = GetElementTreeParent(o);
             System.Drawing.Color? foreColor = null;
@@ -366,6 +366,19 @@ namespace AxeSoftware.Quest
                     AddedNode(k_commands, "Commands", "game", null, null);
                 }
             }
+        }
+
+        private bool IsElementVisible(Element e)
+        {
+            // Don't display implied types, editor elements etc.
+            if (m_ignoredTypes.Contains(e.ElemType)) return false;
+            if (e.ElemType == ElementType.Template)
+            {
+                // Don't display verb templates (if the user wants to edit a verb's regex,
+                // they can do so directly on the verb itself).
+                return !e.Fields[FieldDefinitions.IsVerb];
+            }
+            return true;
         }
 
         private string GetElementTreeParent(Element o)

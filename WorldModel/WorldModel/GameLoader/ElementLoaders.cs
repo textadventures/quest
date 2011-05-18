@@ -538,17 +538,18 @@ namespace AxeSoftware.Quest
 
             public override object Load(XmlReader reader, ref Element current)
             {
-                return AddTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString());
+                bool isCommandTemplate = (reader.GetAttribute("templatetype") == "command");
+                return AddTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString(), isCommandTemplate);
             }
 
-            private Element AddTemplate(string t, string text)
+            private Element AddTemplate(string t, string text, bool isCommandTemplate)
             {
                 if (string.IsNullOrEmpty(t))
                 {
                     RaiseError("Expected 'name' attribute in template");
                     return null;
                 }
-                return WorldModel.Template.AddTemplate(t, text);
+                return WorldModel.Template.AddTemplate(t, text, isCommandTemplate);
             }
         }
 

@@ -15,7 +15,7 @@ namespace AxeSoftware.Quest
             m_worldModel = worldModel;
         }
 
-        internal Element AddTemplate(string templateName, string text)
+        internal Element AddTemplate(string templateName, string text, bool isCommandTemplate)
         {
             string elementName = m_worldModel.GetUniqueID("template");
 
@@ -23,6 +23,11 @@ namespace AxeSoftware.Quest
             template.Fields[FieldDefinitions.TemplateName] = templateName;
             template.Fields[FieldDefinitions.Text] = text;
             template.Fields[FieldDefinitions.Anonymous] = true;
+
+            if (isCommandTemplate)
+            {
+                template.Fields[FieldDefinitions.IsVerb] = true;
+            }
 
             m_templateLookup[templateName] = template;
 
@@ -61,7 +66,7 @@ namespace AxeSoftware.Quest
 
             if (!m_templateLookup.ContainsKey(c))
             {
-                template = AddTemplate(c, "");
+                template = AddTemplate(c, "", true);
             }
             else
             {

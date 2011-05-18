@@ -47,16 +47,16 @@
   <dynamictemplate name="DisambiguateMenu">"Please choose which '" + text + "' you mean:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   
-  <template name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
-  <template name="look">^look$</template>
+  <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template templatetype="command" name="look">^look$</template>
   <verbtemplate name="lookat">look at</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
   <verbtemplate name="take">take</verbtemplate>
   <verbtemplate name="take">get</verbtemplate>
   <verbtemplate name="take">pick up</verbtemplate>
-  <template name="undo">^undo$</template>
-  <template name="inventory">^i$|^inv$|^inventory$</template>
-  <template name="quit">^quit$</template>
+  <template templatetype="command" name="undo">^undo$</template>
+  <template templatetype="command" name="inventory">^i$|^inv$|^inventory$</template>
+  <template templatetype="command" name="quit">^quit$</template>
   <verbtemplate name="drop">drop</verbtemplate>
   <verbtemplate name="use">use</verbtemplate>
   <verbtemplate name="speakto">speak to</verbtemplate>
@@ -65,7 +65,7 @@
   <verbtemplate name="speakto">talk</verbtemplate>
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">close</verbtemplate>
-  <template name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>  <!-- don't need those brackets (on|in) maybe square ones? -->
+  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>  <!-- don't need those brackets (on|in) maybe square ones? -->
 
   <verbtemplate name="buy">buy</verbtemplate>
   <dynamictemplate name="DefaultBuy">"You can't buy " + object.article + "."</dynamictemplate>
@@ -122,12 +122,12 @@
   <dynamictemplate name="DefaultTie">"You can't tie " + object.article + "."</dynamictemplate>
   <verbtemplate name="touch">touch</verbtemplate>
   <dynamictemplate name="DefaultTouch">"You can't touch " + object.article + "."</dynamictemplate>
-  <template name="turnon"><![CDATA[^turn on (?<object>.*)$|^turn (?<object>.*) on$|^switch on (?<object>.*)$|^switch (?<object>.*) on$]]></template>
+  <template templatetype="command" name="turnon"><![CDATA[^turn on (?<object>.*)$|^turn (?<object>.*) on$|^switch on (?<object>.*)$|^switch (?<object>.*) on$]]></template>
   <dynamictemplate name="DefaultTurnOn">"You can't turn " + object.article + " on."</dynamictemplate>
   <verbtemplate name="turnoff">turn off</verbtemplate>
   <verbtemplate name="turnoff">switch off</verbtemplate>
   <!-- TO DO: Fix -->
-  <!-- <template name="turnoff"><![CDATA[^turn off (?<object>.*)$|^turn (?<object>.*) off$|^switch off (?<object>.*)$|^switch (?<object>.*) off$]]></template> -->
+  <!-- <template templatetype="command" name="turnoff"><![CDATA[^turn off (?<object>.*)$|^turn (?<object>.*) off$|^switch off (?<object>.*)$|^switch (?<object>.*) off$]]></template> -->
   <dynamictemplate name="DefaultTurnOff">"You can't turn " + object.article + " off."</dynamictemplate>
   <verbtemplate name="turn">turn</verbtemplate>
   <dynamictemplate name="DefaultTurn">"You can't turn " + object.article + "."</dynamictemplate>
@@ -137,19 +137,19 @@
   <dynamictemplate name="DefaultUntie">"You can't untie " + object.article + "."</dynamictemplate>
   <verbtemplate name="wear">wear</verbtemplate>
   <dynamictemplate name="DefaultWear">"You can't wear " + object.article + "."</dynamictemplate>
-  <template name="listen">^listen$</template>
+  <template templatetype="command" name="listen">^listen$</template>
   <template name="DefaultListen">You can't hear much.</template>
-  <template name="jump">^jump$</template>
+  <template templatetype="command" name="jump">^jump$</template>
   <template name="DefaultJump">You jump, but nothing happens.</template>
-  <template name="sitdown">^sit$|^sit down$</template>
+  <template templatetype="command" name="sitdown">^sit$|^sit down$</template>
   <template name="DefaultSitDown">No time for lounging about now.</template>
-  <template name="liedown">^lie$|^lie down$</template>
+  <template templatetype="command" name="liedown">^lie$|^lie down$</template>
   <template name="DefaultLieDown">No time for lounging about now.</template>
-  <template name="sleep">^sleep$|^rest$</template>
+  <template templatetype="command" name="sleep">^sleep$|^rest$</template>
   <template name="DefaultSleep">No time for lounging about now.</template>
-  <template name="wait">^wait$</template>
+  <template templatetype="command" name="wait">^wait$</template>
   <template name="DefaultWait">Time passes.</template>
-  <template name="xyzzy">^xyzzy$</template>
+  <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">Surprisingly, absolutely nothing happens.</template>
 
   <function name="GetDefaultPrefix" type="string" parameters="obj">
