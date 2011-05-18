@@ -80,8 +80,8 @@ Public Class ScriptControl
             Value = Nothing
         Else
             ElementName = data.Name
-            Value = data.GetAttribute(AttributeName)
             IsReadOnly = data.ReadOnly
+            Value = data.GetAttribute(AttributeName)
         End If
     End Sub
 
