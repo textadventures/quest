@@ -3,6 +3,18 @@
     <appliesto>dynamictemplate</appliesto>
     <tab>
       <caption>Dynamic Template</caption>
+
+      <control>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
+        <caption>Name</caption>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <attribute>text</attribute>
+        <caption>Text</caption>
+      </control>
     </tab>
   </editor>
 </library>

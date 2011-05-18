@@ -89,7 +89,16 @@ namespace AxeSoftware.Quest
             {
                 template = m_worldModel.GetElementFactory(ElementType.DynamicTemplate).Create(t);
             }
-            template.Fields[FieldDefinitions.Function] = new Expression<string>(expression, m_worldModel);
+
+            if (!m_worldModel.EditMode)
+            {
+                template.Fields[FieldDefinitions.Function] = new Expression<string>(expression, m_worldModel);
+            }
+            else
+            {
+                template.Fields[FieldDefinitions.Text] = expression;
+            }
+
             return template;
         }
 

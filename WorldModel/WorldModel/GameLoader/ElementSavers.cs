@@ -103,7 +103,15 @@ namespace AxeSoftware.Quest
             {
                 writer.WriteStartElement("dynamictemplate");
                 writer.WriteAttributeString("name", e.Name);
-                writer.WriteString(e.Fields[FieldDefinitions.Function].Save());
+
+                if (!GameSaver.m_worldModel.EditMode)
+                {
+                    writer.WriteString(e.Fields[FieldDefinitions.Function].Save());
+                }
+                else
+                {
+                    writer.WriteString(e.Fields[FieldDefinitions.Text]);
+                }
                 writer.WriteEndElement();
             }
         }
