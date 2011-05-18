@@ -459,7 +459,7 @@
     End Sub
 
     Private Sub AddNewDynamicTemplate()
-        MsgBox("Not yet implemented")
+        AddNewElement("dynamictemplate", AddressOf m_controller.CreateNewDynamicTemplate)
     End Sub
 
     Private Sub AddNewDelegate()

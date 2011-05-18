@@ -1023,6 +1023,11 @@ namespace AxeSoftware.Quest
             return newTemplate.Name;
         }
 
+        public void CreateNewDynamicTemplate(string name)
+        {
+            CreateNewElement(ElementType.DynamicTemplate, "dynamic template", name);
+        }
+
         public void CreateNewType(string name)
         {
             CreateNewElement(ElementType.ObjectType, "object type", name);
