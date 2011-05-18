@@ -968,5 +968,16 @@ namespace AxeSoftware.Quest
         {
             get { return m_originalFilename; }
         }
+
+        public Element AddNewTemplate(string templateName)
+        {
+            return m_template.AddTemplate(templateName, string.Empty, false);
+        }
+
+        public Element TryGetTemplateElement(string templateName)
+        {
+            if (!m_template.TemplateExists(templateName)) return null;
+            return m_template.GetTemplateElement(templateName);
+        }
     }
 }

@@ -412,12 +412,14 @@
         ctlTree.SetSelectedItem(newLibrary)
     End Sub
 
-    Private Sub AddNewImpliedType()
-        MsgBox("Not yet implemented")
-    End Sub
-
     Private Sub AddNewTemplate()
-        MsgBox("Not yet implemented")
+        Dim result = PopupEditors.EditString("Please enter a name for the new template", "")
+        If result.Cancelled Then Return
+
+        If Not ValidateInputTemplateName(result.Result) Then Return
+
+        Dim newTemplate = m_controller.CreateNewTemplate(result.Result)
+        ctlTree.SetSelectedItem(newTemplate)
     End Sub
 
     Private Sub AddNewDynamicTemplate()
@@ -432,12 +434,18 @@
         AddNewElement("object type", AddressOf m_controller.CreateNewType)
     End Sub
 
-    Private Sub AddNewEditor()
+    Private Sub AddNewJavascript()
         MsgBox("Not yet implemented")
     End Sub
 
-    Private Sub AddNewJavascript()
-        MsgBox("Not yet implemented")
+    ' Intentionally unimplemented, as implied types are not editable in the Editor
+    Private Sub AddNewImpliedType()
+        Throw New NotImplementedException
+    End Sub
+
+    ' Intentionally unimplemented, as editor elements are not editable in the Editor
+    Private Sub AddNewEditor()
+        Throw New NotImplementedException
     End Sub
 
     Private Function GetNameAndParent(prompt As String, possibleParents As IEnumerable(Of String)) As PopupEditors.EditStringResult?
@@ -470,6 +478,14 @@
         If result.Valid Then Return True
 
         MsgBox(PopupEditors.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add element")
+        Return False
+    End Function
+
+    Private Function ValidateInputTemplateName(input As String) As Boolean
+        Dim result = m_controller.CanAddTemplate(input)
+        If result.Valid Then Return True
+
+        MsgBox(PopupEditors.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add template")
         Return False
     End Function
 

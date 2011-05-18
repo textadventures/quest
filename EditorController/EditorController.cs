@@ -208,9 +208,10 @@ namespace AxeSoftware.Quest
                     EndTreeUpdate();
                 }
 
-                if (e.Element.Type == ObjectType.Exit && (e.Attribute == "anonymous" || e.Attribute == "to" || e.Attribute == "name")
-                    || e.Element.Type == ObjectType.Command && (e.Attribute == "anonymous" || e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
-                    || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "anonymous" || e.Attribute == "filename")
+                if (e.Attribute == "anonymous"
+                    || e.Element.Type == ObjectType.Exit && (e.Attribute == "to" || e.Attribute == "name")
+                    || e.Element.Type == ObjectType.Command && (e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
+                    || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "filename")
                     || e.Element.ElemType == ElementType.Template && (e.Attribute == "templatename"))
                 {
                     if (e.Element.Name != null)
@@ -992,6 +993,15 @@ namespace AxeSoftware.Quest
             return CreateNewElement(ElementType.IncludedLibrary, "included library", null);
         }
 
+        public string CreateNewTemplate(string name)
+        {
+            m_worldModel.UndoLogger.StartTransaction(string.Format("Add new template '{0}'", name));
+            Element newTemplate = m_worldModel.AddNewTemplate(name);
+            newTemplate.Fields[FieldDefinitions.Anonymous] = true;
+            m_worldModel.UndoLogger.EndTransaction();
+            return newTemplate.Name;
+        }
+
         public void CreateNewType(string name)
         {
             CreateNewElement(ElementType.ObjectType, "object type", name);
@@ -1079,6 +1089,29 @@ namespace AxeSoftware.Quest
         public ValidationResult CanAdd(string name)
         {
             if (m_worldModel.Elements.ContainsKey(name))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.ElementAlreadyExists };
+            }
+            return new ValidationResult { Valid = true };
+        }
+
+        public ValidationResult CanAddTemplate(string name)
+        {
+            Element existingTemplate = m_worldModel.TryGetTemplateElement(name);
+            bool canAdd;
+
+            // Can always add a template if one doesn't exist with that name already. But if one does exist with that
+            // name, we can only add it if it's overriding an existing template specified in a library.
+            if (existingTemplate == null)
+            {
+                canAdd = true;
+            }
+            else
+            {
+                canAdd = existingTemplate.MetaFields[MetaFieldDefinitions.Library];
+            }
+
+            if (!canAdd)
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.ElementAlreadyExists };
             }
