@@ -846,16 +846,23 @@ namespace AxeSoftware.Quest
             return result;
         }
 
-        private void AddFilesInPathToList(List<string> list, string path, bool recurse)
+        private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
         {
             if (path.StartsWith("file:\\")) path = path.Substring(6);
             System.IO.SearchOption option = recurse ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
-            foreach (var result in System.IO.Directory.GetFiles(path, "*.aslx", option))
+            foreach (var result in System.IO.Directory.GetFiles(path, searchPattern, option))
             {
                 if (result == Filename) continue;
                 string filename = System.IO.Path.GetFileName(result);
                 if (!list.Contains(filename)) list.Add(filename);
             }
+        }
+
+        public IEnumerable<string> GetAvailableExternalFiles(string searchPattern)
+        {
+            List<string> result = new List<string>();
+            AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(Filename), false, searchPattern);
+            return result;
         }
 
         private bool TryPath(string path, string file, out string fullPath, bool recurse)

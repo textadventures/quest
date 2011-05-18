@@ -39,7 +39,6 @@ Public Class DropDownFileControl
     End Function
 
     Private Function GetFilesInGamePath() As IEnumerable(Of String)
-        ' TO DO: Implement - extensions specified as a list in <source> attribute
-        Return New List(Of String)
+        Return Controller.GetAvailableExternalFiles(m_source)
     End Function
 End Class

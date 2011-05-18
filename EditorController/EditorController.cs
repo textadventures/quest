@@ -214,7 +214,8 @@ namespace AxeSoftware.Quest
                 || e.Element.Type == ObjectType.Exit && (e.Attribute == "to" || e.Attribute == "name")
                 || e.Element.Type == ObjectType.Command && (e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
                 || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "filename")
-                || e.Element.ElemType == ElementType.Template && (e.Attribute == "templatename"))
+                || e.Element.ElemType == ElementType.Template && (e.Attribute == "templatename")
+                || e.Element.ElemType == ElementType.Javascript && (e.Attribute == "src"))
             {
                 if (e.Element.Name != null)
                 {
@@ -443,6 +444,10 @@ namespace AxeSoftware.Quest
                         return "(filename not set)";
                     case ElementType.Template:
                         return e.Fields[FieldDefinitions.TemplateName];
+                    case ElementType.Javascript:
+                        string src = e.Fields[FieldDefinitions.Src];
+                        if (!string.IsNullOrEmpty(src)) return src;
+                        return "(filename not set)";
                 }
             }
             return e.Name;
@@ -1035,6 +1040,11 @@ namespace AxeSoftware.Quest
             CreateNewElement(ElementType.ObjectType, "object type", name);
         }
 
+        public string CreateNewJavascript()
+        {
+            return CreateNewElement(ElementType.Javascript, "javascript", null);
+        }
+
         public bool CanMoveElement(string elementKey, string newParentKey)
         {
             if (elementKey == newParentKey) return false;
@@ -1183,6 +1193,11 @@ namespace AxeSoftware.Quest
         public IEnumerable<string> GetAvailableLibraries()
         {
             return m_worldModel.GetAvailableLibraries();
+        }
+
+        public IEnumerable<string> GetAvailableExternalFiles(string searchPattern)
+        {
+            return m_worldModel.GetAvailableExternalFiles(searchPattern);
         }
 
         public string Filename

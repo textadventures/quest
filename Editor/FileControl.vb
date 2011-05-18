@@ -8,6 +8,7 @@ Public Class FileControl
     Private m_attribute As String
     Private m_attributeName As String
     Private m_data As IEditorData
+    Private m_fileFilter As String
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -45,6 +46,10 @@ Public Class FileControl
         If controlData IsNot Nothing Then
             m_attribute = controlData.Attribute
             m_attributeName = controlData.Caption
+
+            Dim source As String = controlData.GetString("source")
+            If source = "libraries" Then source = "*.aslx"
+            m_fileFilter = String.Format("{0} ({1})|{1}", controlData.GetString("filefiltername"), source)
         Else
             m_attribute = Nothing
             m_attributeName = Nothing
@@ -78,7 +83,7 @@ Public Class FileControl
 
         dlgOpenFile.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         dlgOpenFile.Multiselect = False
-        dlgOpenFile.Filter = "Libraries (*.aslx)|*.aslx"
+        dlgOpenFile.Filter = m_fileFilter
         dlgOpenFile.FileName = ""
         dlgOpenFile.ShowDialog()
         If dlgOpenFile.FileName.Length > 0 Then

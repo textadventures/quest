@@ -844,8 +844,6 @@ namespace AxeSoftware.Quest
             }
         }
 
-        // TO DO: Will need different loader for the Editor as we don't want to resolve the file path
-
         private class JavascriptReferenceLoader : XMLLoaderBase
         {
             public override string AppliesTo
@@ -856,9 +854,17 @@ namespace AxeSoftware.Quest
             public override object Load(XmlReader reader, ref Element current)
             {
                 Element jsRef = WorldModel.GetElementFactory(ElementType.Javascript).Create();
+                jsRef.Fields[FieldDefinitions.Anonymous] = true;
                 string file = GameLoader.GetTemplateAttribute(reader, "src");
-                string path = WorldModel.GetExternalPath(file);
-                jsRef.Fields[FieldDefinitions.Src] = path;
+                if (!WorldModel.EditMode)
+                {
+                    string path = WorldModel.GetExternalPath(file);
+                    jsRef.Fields[FieldDefinitions.Src] = path;
+                }
+                else
+                {
+                    jsRef.Fields[FieldDefinitions.Src] = file;
+                }
 
                 return jsRef;
             }

@@ -73,6 +73,7 @@ Partial Class Menu
         Me.toolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WindowMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.JavascriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlMenuStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -332,7 +333,7 @@ Partial Class Menu
         '
         'AdvancedToolStripMenuItem
         '
-        Me.AdvancedToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LibraryToolStripMenuItem, Me.ImpliedTypeToolStripMenuItem, Me.TemplateToolStripMenuItem1, Me.DynamicTemplateToolStripMenuItem1, Me.DelegateToolStripMenuItem, Me.ObjectTypeToolStripMenuItem, Me.EditorToolStripMenuItem})
+        Me.AdvancedToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LibraryToolStripMenuItem, Me.ImpliedTypeToolStripMenuItem, Me.TemplateToolStripMenuItem1, Me.DynamicTemplateToolStripMenuItem1, Me.DelegateToolStripMenuItem, Me.ObjectTypeToolStripMenuItem, Me.EditorToolStripMenuItem, Me.JavascriptToolStripMenuItem})
         Me.AdvancedToolStripMenuItem.Name = "AdvancedToolStripMenuItem"
         Me.AdvancedToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.AdvancedToolStripMenuItem.Text = "&Advanced"
@@ -452,6 +453,13 @@ Partial Class Menu
         Me.WindowMenuToolStripMenuItem.Tag = "windowmenu"
         Me.WindowMenuToolStripMenuItem.Text = "WindowMenu"
         '
+        'JavascriptToolStripMenuItem
+        '
+        Me.JavascriptToolStripMenuItem.Name = "JavascriptToolStripMenuItem"
+        Me.JavascriptToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
+        Me.JavascriptToolStripMenuItem.Tag = "addjavascript"
+        Me.JavascriptToolStripMenuItem.Text = "&Javascript"
+        '
         'Menu
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -515,5 +523,6 @@ Partial Class Menu
     Friend WithEvents PasteToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents DeleteToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents WalkthroughToolStripMenuItem1 As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents JavascriptToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

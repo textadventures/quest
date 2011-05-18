@@ -68,6 +68,7 @@
         menu.AddMenuClickHandler("adddelegate", AddressOf AddNewDelegate)
         menu.AddMenuClickHandler("addobjecttype", AddressOf AddNewObjectType)
         menu.AddMenuClickHandler("addeditor", AddressOf AddNewEditor)
+        menu.AddMenuClickHandler("addjavascript", AddressOf AddNewJavascript)
         menu.AddMenuClickHandler("play", AddressOf PlayGame)
         menu.AddMenuClickHandler("close", AddressOf CloseEditor)
         menu.AddMenuClickHandler("cut", AddressOf Cut)
@@ -112,6 +113,7 @@
         ctlTree.AddMenuClickHandler("adddelegate", AddressOf AddNewDelegate)
         ctlTree.AddMenuClickHandler("addobjecttype", AddressOf AddNewObjectType)
         ctlTree.AddMenuClickHandler("addeditor", AddressOf AddNewEditor)
+        ctlTree.AddMenuClickHandler("addjavascript", AddressOf AddNewJavascript)
     End Sub
 
     Private Sub SetUpEditors()
@@ -459,7 +461,7 @@
     End Sub
 
     Private Sub AddNewDynamicTemplate()
-        AddNewElement("dynamictemplate", AddressOf m_controller.CreateNewDynamicTemplate)
+        AddNewElement("dynamic template", AddressOf m_controller.CreateNewDynamicTemplate)
     End Sub
 
     Private Sub AddNewObjectType()
@@ -467,7 +469,8 @@
     End Sub
 
     Private Sub AddNewJavascript()
-        MsgBox("Not yet implemented")
+        Dim newJavascript = m_controller.CreateNewJavascript()
+        ctlTree.SetSelectedItem(newJavascript)
     End Sub
 
     ' Intentionally unimplemented, as implied types are not editable in the Editor
@@ -482,7 +485,7 @@
 
     ' Intentionally unimplemented, as delegate elements are not editable in the Editor
     Private Sub AddNewDelegate()
-        MsgBox("Not yet implemented")
+        Throw New NotImplementedException
     End Sub
 
     Private Function GetNameAndParent(prompt As String, possibleParents As IEnumerable(Of String)) As PopupEditors.EditStringResult?

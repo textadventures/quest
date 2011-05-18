@@ -10,6 +10,7 @@
         <caption>Filename</caption>
         <source>libraries</source>
         <width>300</width>
+        <filefiltername>Libraries</filefiltername>
       </control>
     </tab>
   </editor>

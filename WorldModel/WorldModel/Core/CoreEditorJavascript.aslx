@@ -3,6 +3,15 @@
     <appliesto>javascript</appliesto>
     <tab>
       <caption>Javascript</caption>
+
+      <control>
+        <controltype>file</controltype>
+        <attribute>src</attribute>
+        <caption>Filename</caption>
+        <source>*.js</source>
+        <width>300</width>
+        <filefiltername>Javascript Files</filefiltername>
+      </control>
     </tab>
   </editor>
 </library>

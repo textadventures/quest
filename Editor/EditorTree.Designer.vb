@@ -48,6 +48,7 @@ Partial Class EditorTree
         Me.cmdSearch = New System.Windows.Forms.Button()
         Me.lstSearchResults = New System.Windows.Forms.ListView()
         Me.colSearchResults = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.AddJavascriptToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlContextMenu.SuspendLayout()
         Me.ctlToolStrip.SuspendLayout()
         Me.pnlSearchContainer.SuspendLayout()
@@ -66,9 +67,9 @@ Partial Class EditorTree
         '
         'ctlContextMenu
         '
-        Me.ctlContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddObjectToolStripMenuItem, Me.AddRoomToolStripMenuItem, Me.AddExitToolStripMenuItem, Me.AddVerbToolStripMenuItem, Me.AddCommandToolStripMenuItem, Me.AddFunctionToolStripMenuItem, Me.AddWalkthroughToolStripMenuItem, Me.AddLibraryToolStripMenuItem, Me.AddImpliedTypeToolStripMenuItem, Me.AddTemplateToolStripMenuItem, Me.AddDynamicTemplateToolStripMenuItem, Me.AddDelegateToolStripMenuItem, Me.AddObjectTypeToolStripMenuItem, Me.AddEditorToolStripMenuItem})
+        Me.ctlContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddObjectToolStripMenuItem, Me.AddRoomToolStripMenuItem, Me.AddExitToolStripMenuItem, Me.AddVerbToolStripMenuItem, Me.AddCommandToolStripMenuItem, Me.AddFunctionToolStripMenuItem, Me.AddWalkthroughToolStripMenuItem, Me.AddLibraryToolStripMenuItem, Me.AddImpliedTypeToolStripMenuItem, Me.AddTemplateToolStripMenuItem, Me.AddDynamicTemplateToolStripMenuItem, Me.AddDelegateToolStripMenuItem, Me.AddObjectTypeToolStripMenuItem, Me.AddEditorToolStripMenuItem, Me.AddJavascriptToolStripMenuItem})
         Me.ctlContextMenu.Name = "ctlContextMenu"
-        Me.ctlContextMenu.Size = New System.Drawing.Size(200, 334)
+        Me.ctlContextMenu.Size = New System.Drawing.Size(200, 356)
         '
         'AddObjectToolStripMenuItem
         '
@@ -256,6 +257,13 @@ Partial Class EditorTree
         '
         Me.colSearchResults.Text = "Search Results"
         '
+        'AddJavascriptToolStripMenuItem
+        '
+        Me.AddJavascriptToolStripMenuItem.Name = "AddJavascriptToolStripMenuItem"
+        Me.AddJavascriptToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
+        Me.AddJavascriptToolStripMenuItem.Tag = "addjavascript"
+        Me.AddJavascriptToolStripMenuItem.Text = "Add Javascript"
+        '
         'EditorTree
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -299,5 +307,6 @@ Partial Class EditorTree
     Friend WithEvents AddObjectTypeToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AddEditorToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AddWalkthroughToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddJavascriptToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
