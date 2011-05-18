@@ -119,8 +119,8 @@ namespace AxeSoftware.Quest
         
         internal Element(WorldModel worldModel)
         {
-            m_fields = new Fields(worldModel, this);
-            m_metaFields = new Fields(null, this);
+            m_fields = new Fields(worldModel, this, false);
+            m_metaFields = new Fields(worldModel, this, true);
             Fields.AttributeChanged += Fields_AttributeChanged;
             Fields.AttributeChangedSilent += Fields_AttributeChangedSilent;
             m_worldModel = worldModel;

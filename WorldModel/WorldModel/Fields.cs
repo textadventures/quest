@@ -113,13 +113,15 @@ namespace AxeSoftware.Quest
         public event EventHandler<AttributeChangedEventArgs> AttributeChangedSilent;
         internal event EventHandler<NameChangedEventArgs> NameChanged;
         private bool m_mutableFieldsLocked = false;
+        private bool m_isMeta;
 
-        public Fields(WorldModel worldModel, Element element)
+        public Fields(WorldModel worldModel, Element element, bool isMeta)
         {
             m_worldModel = worldModel;
             m_element = element;
             m_formatters.Add(typeof(List<string>), ListFormatter);
             m_lazyFields = new LazyFields(worldModel, this);
+            m_isMeta = isMeta;
         }
 
         #region Indexed Properties
@@ -230,7 +232,7 @@ namespace AxeSoftware.Quest
 
         private void UndoLog(string property, object oldValue, object newValue, bool added)
         {
-            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(new UndoFieldSet(m_worldModel, m_element.Name, property, oldValue, newValue, added));
+            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(new UndoFieldSet(m_worldModel, m_element.Name, property, oldValue, newValue, added, m_isMeta));
         }
 
         internal void UndoLog(AxeSoftware.Quest.UndoLogger.IUndoAction action)
@@ -691,13 +693,15 @@ namespace AxeSoftware.Quest
         private string m_oldValueElementName;
         private string m_newValueElementName;
         private WorldModel m_worldModel;
+        private bool m_useMetaFields;
 
-        public UndoFieldSet(WorldModel worldModel, string appliesTo, string property, object oldValue, object newValue, bool added)
+        public UndoFieldSet(WorldModel worldModel, string appliesTo, string property, object oldValue, object newValue, bool added, bool useMetaFields)
         {
             System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(appliesTo));
             m_worldModel = worldModel;
             m_appliesTo = appliesTo;
             m_property = property;
+            m_useMetaFields = useMetaFields;
             
             if (oldValue is Element)
             {
@@ -752,7 +756,7 @@ namespace AxeSoftware.Quest
 
         public void DoUndo(WorldModel worldModel)
         {
-            Fields fields = worldModel.Elements.Get(m_appliesTo).Fields;
+            Fields fields = GetFields(m_appliesTo);
             if (m_added)
             {
                 fields.RemoveFieldInternal(Property);
@@ -767,7 +771,7 @@ namespace AxeSoftware.Quest
         {
             if (Property != "name" || OldValue == null)
             {
-                worldModel.Elements.Get(m_appliesTo).Fields.SetFromUndo(Property, NewValue);
+                GetFields(m_appliesTo).SetFromUndo(Property, NewValue);
             }
             else
             {
@@ -775,8 +779,14 @@ namespace AxeSoftware.Quest
                 // So in this specific case we get the appliesTo name from the old property value.
                 // (If OldValue is null then this is just setting the name property for a brand new object,
                 // so the above comment doesn't apply, and this case is handled in the above "if")
-                worldModel.Elements.Get((string)OldValue).Fields.SetFromUndo(Property, NewValue);
+                GetFields((string)OldValue).SetFromUndo(Property, NewValue);
             }
+        }
+
+        private Fields GetFields(string elementName)
+        {
+            Element element = m_worldModel.Elements.Get(elementName);
+            return m_useMetaFields ? element.MetaFields : element.Fields;
         }
     }
 

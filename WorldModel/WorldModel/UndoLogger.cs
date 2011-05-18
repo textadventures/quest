@@ -111,9 +111,18 @@ namespace AxeSoftware.Quest
 
         public void Undo()
         {
+            const string NothingToUndoTemplate = "NothingToUndo";
+
             if (m_undoTransactions.Count == 0)
             {
-                m_worldModel.PrintTemplate("NothingToUndo");
+                if (m_worldModel.Template.TemplateExists(NothingToUndoTemplate))
+                {
+                    m_worldModel.PrintTemplate("NothingToUndo");
+                }
+                else
+                {
+                    throw new Exception("Nothing to undo");
+                }
                 return;
             }
 

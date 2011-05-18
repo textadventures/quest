@@ -150,9 +150,11 @@ namespace AxeSoftware.Quest
 
             Dictionary<string, object> allAttributes = fields.GetAllAttributes();
 
+            // TO DO: We should also add all MetaFields to the UndoLog
+
             foreach (string attr in allAttributes.Keys.Where(key => key != "name"))
             {
-                WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false));
+                WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false, false));
             }
 
             // Get all inherited type names. We reverse this it's a stack and we want to re-add them in the same order.

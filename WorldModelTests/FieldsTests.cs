@@ -165,5 +165,26 @@ namespace WorldModelTests
             Assert.AreEqual("valuefromtype2", obj.Fields.GetString("overridenattr"));
             Assert.AreEqual(attributeDefinedByDefaultValue, obj.Fields.GetString(attributeDefinedByDefaultName));
         }
+
+        [TestMethod]
+        public void TestMetaFieldUndoRedo()
+        {
+            Element obj = m_worldModel.GetElementFactory(ElementType.Object).Create("newobj");
+            const string initialValue = "initialValue";
+            const string alteredValue = "alteredValue";
+
+            obj.MetaFields[MetaFieldDefinitions.Filename] = initialValue;
+            Assert.AreEqual(initialValue, obj.MetaFields[MetaFieldDefinitions.Filename]);
+
+            m_worldModel.UndoLogger.StartTransaction("Set metafield");
+            obj.MetaFields[MetaFieldDefinitions.Filename] = alteredValue;
+            m_worldModel.UndoLogger.EndTransaction();
+
+            Assert.AreEqual(alteredValue, obj.MetaFields[MetaFieldDefinitions.Filename]);
+
+            m_worldModel.UndoLogger.Undo();
+
+            Assert.AreEqual(initialValue, obj.MetaFields[MetaFieldDefinitions.Filename]);
+        }
     }
 }
