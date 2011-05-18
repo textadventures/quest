@@ -177,5 +177,11 @@ namespace AxeSoftware.Quest
             m_element.MetaFields[MetaFieldDefinitions.Library] = false;
             m_element.MetaFields[MetaFieldDefinitions.Filename] = null;
         }
+
+        public bool ReadOnly
+        {
+            get { return IsLibraryElement; }
+            set { }
+        }
     }
 }

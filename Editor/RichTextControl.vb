@@ -93,6 +93,12 @@ Public Class RichTextControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_data = data
+        If data IsNot Nothing Then
+            ctlWebBrowser.Visible = Not data.ReadOnly
+            butBold.Enabled = Not data.ReadOnly
+            butItalic.Enabled = Not data.ReadOnly
+            butUnderline.Enabled = Not data.ReadOnly
+        End If
         PopulateData(data)
     End Sub
 

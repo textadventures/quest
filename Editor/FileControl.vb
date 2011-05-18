@@ -54,6 +54,9 @@ Public Class FileControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_data = data
+        If data IsNot Nothing Then
+            cmdBrowse.Enabled = Not data.ReadOnly
+        End If
         ctlDropDown.Populate(data)
     End Sub
 

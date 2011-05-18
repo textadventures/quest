@@ -84,6 +84,7 @@ Public Class CheckBoxControl
         If m_data Is Nothing Then
             Value = String.Empty
         Else
+            chkCheckBox.Enabled = Not data.ReadOnly
             Value = data.GetAttribute(m_attribute)
         End If
     End Sub

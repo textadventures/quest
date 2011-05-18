@@ -51,6 +51,7 @@ Public Class DictionaryScriptControl
         If data IsNot Nothing Then
             Value = data.GetAttribute(m_attributeName)
             m_elementName = data.Name
+            ctlListEditor.IsReadOnly = data.ReadOnly
         Else
             Value = Nothing
             m_elementName = Nothing

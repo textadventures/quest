@@ -240,6 +240,7 @@ Public Class MultiControl
             ElementName = data.Name
             Dim currentValue As Object = data.GetAttribute(AttributeName)
             If CanEditType(currentValue) Then Value = currentValue
+            lstTypes.Enabled = Not data.ReadOnly
         End If
     End Sub
 

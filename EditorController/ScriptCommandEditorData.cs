@@ -54,5 +54,11 @@ namespace AxeSoftware.Quest
         public void SetSelectedFilter(string filterGroup, string filter)
         {
         }
+
+        public bool ReadOnly
+        {
+            get;
+            set;
+        }
     }
 }

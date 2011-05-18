@@ -13,6 +13,7 @@
     Private m_script As IEditableScripts
     Private m_data As IEditorData
     Private m_elseIf As EditableIfScript.EditableElseIf
+    Private m_readOnly As Boolean
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event ChangeHeight(sender As IfEditorChild, newHeight As Integer)
@@ -56,6 +57,7 @@
         If Not data Is Nothing Then
             ctlExpression.Initialise("expression")
             ctlExpression.Populate(data)
+            ctlThenScript.IsReadOnly = data.ReadOnly
         End If
         ctlThenScript.Populate(script)
         m_script = script
@@ -168,6 +170,19 @@
         End Get
         Set(value As EditableIfScript.EditableElseIf)
             m_elseIf = value
+        End Set
+    End Property
+
+    Public Property IsReadOnly As Boolean
+        Get
+            Return m_readOnly
+        End Get
+        Set(value As Boolean)
+            m_readOnly = value
+
+            ctlExpression.IsReadOnly = value
+            ctlThenScript.IsReadOnly = value
+            cmdDelete.Enabled = Not value
         End Set
     End Property
 

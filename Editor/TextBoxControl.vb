@@ -92,6 +92,9 @@ Public Class TextBoxControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_data = data
+        If data IsNot Nothing Then
+            IsReadOnly = data.ReadOnly
+        End If
         PopulateData(data)
     End Sub
 
@@ -131,6 +134,15 @@ Public Class TextBoxControl
         End Get
         Set(value As String)
             m_oldValue = value
+        End Set
+    End Property
+
+    Public Property IsReadOnly As Boolean
+        Get
+            Return txtTextBox.ReadOnly
+        End Get
+        Set(value As Boolean)
+            txtTextBox.ReadOnly = value
         End Set
     End Property
 End Class

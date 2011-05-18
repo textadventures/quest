@@ -51,7 +51,7 @@
         Return String.Format(s_validationMessages(validationMessage), item)
     End Function
 
-    Public Shared Sub EditScript(controller As EditorController, ByRef scripts As IEditableScripts, attribute As String, element As String)
+    Public Shared Sub EditScript(controller As EditorController, ByRef scripts As IEditableScripts, attribute As String, element As String, Optional isReadOnly As Boolean = False)
         Dim popOut As New ScriptEditorPopOut
 
         With popOut.ctlScriptEditor
@@ -60,6 +60,7 @@
             .Controller = controller
             .AttributeName = attribute
             .ElementName = element
+            .IsReadOnly = isReadOnly
             .Initialise()
             .UpdateList()
         End With

@@ -98,6 +98,9 @@ Public Class DropDownControl
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
         m_data = data
+        If data IsNot Nothing Then
+            lstDropdown.Enabled = Not data.ReadOnly
+        End If
         PopulateData(data)
     End Sub
 

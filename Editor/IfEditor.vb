@@ -11,6 +11,7 @@
     Private m_elseEditor As IfEditorChild
     Private m_fullHeight As Integer
     Private m_elseIfEditor As New Dictionary(Of String, IfEditorChild)
+    Private m_readOnly As Boolean
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements ICommandEditor.Dirty
 
@@ -36,6 +37,7 @@
         End If
 
         UpdateElseButton()
+        child.IsReadOnly = IsReadOnly
 
         AddHandler child.ChangeHeight, AddressOf IfEditorChild_HeightChanged
         AddHandler child.Dirty, AddressOf IfEditorChild_Dirty
@@ -274,5 +276,21 @@
             Me.ResumeLayout()
         End If
     End Sub
+
+    Public Property IsReadOnly As Boolean
+        Get
+            Return m_readOnly
+        End Get
+        Set(value As Boolean)
+            m_readOnly = value
+
+            cmdAddElse.Enabled = Not m_readOnly
+            ctlChild.IsReadOnly = m_readOnly
+
+            For Each child In m_activeChildren
+                child.IsReadOnly = m_readOnly
+            Next
+        End Set
+    End Property
 
 End Class

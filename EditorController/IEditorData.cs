@@ -21,6 +21,7 @@ namespace AxeSoftware.Quest
         IEnumerable<string> GetAffectedRelatedAttributes(string attribute);
         string GetSelectedFilter(string filterGroup);
         void SetSelectedFilter(string filterGroup, string filter);
+        bool ReadOnly { get; set; }
 
         event EventHandler Changed;
     }

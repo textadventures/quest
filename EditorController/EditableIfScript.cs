@@ -89,6 +89,12 @@ namespace AxeSoftware.Quest
             {
                 get { return m_elseIfScript; }
             }
+
+            public bool ReadOnly
+            {
+                get;
+                set;
+            }
         }
 
         private IfScript m_ifScript;
@@ -323,6 +329,11 @@ namespace AxeSoftware.Quest
         public void RemoveElse()
         {
             m_ifScript.SetElse(null);
+        }
+
+        public bool ReadOnly
+        {
+            get; set;
         }
     }
 }

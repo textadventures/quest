@@ -8,6 +8,7 @@
     Private m_currentScript As IEditableScript
     Private m_isPopOut As Boolean
     Private m_showingAdder As Boolean
+    Private m_readOnly As Boolean
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event CloseButtonClicked()
@@ -194,7 +195,7 @@
 
     Private Sub cmdPopOut_Click(sender As System.Object, e As System.EventArgs) Handles cmdPopOut.Click
         Save()
-        PopupEditors.EditScript(m_controller, m_scripts, m_attribute, m_elementName)
+        PopupEditors.EditScript(m_controller, m_scripts, m_attribute, m_elementName, IsReadOnly)
         UpdateList()
     End Sub
 
@@ -228,6 +229,7 @@
     End Sub
 
     Private Sub SetEditButtonsEnabled(enabled As Boolean)
+        If m_readOnly Then enabled = False
         cmdDelete.Enabled = enabled
         cmdMoveUp.Enabled = enabled
         cmdMoveDown.Enabled = enabled
@@ -240,4 +242,18 @@
             BeginInvoke(Sub() UpdateHeight())
         End If
     End Sub
+
+    Public Property IsReadOnly As Boolean
+        Get
+            Return m_readOnly
+        End Get
+        Set(value As Boolean)
+            m_readOnly = value
+
+            cmdAdd.Enabled = Not m_readOnly
+            SetEditButtonsEnabled(False)
+            ctlScriptAdder.IsReadOnly = m_readOnly
+            ctlScriptCommandEditor.IsReadOnly = m_readOnly
+        End Set
+    End Property
 End Class

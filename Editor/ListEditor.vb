@@ -8,6 +8,7 @@
     Private m_delegate As IListEditorDelegate
     Private m_style As ColumnStyle
     Private m_headers(2) As String
+    Private m_readOnly As Boolean
 
     ' This event is triggered as soon as any toolbar button is clicked, so that the parent
     ' can save any existing updates. This is necessary because the TextBoxControl will only
@@ -103,16 +104,19 @@
     End Sub
 
     Private Sub cmdAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdAdd.Click
+        If m_readOnly Then Return
         RaiseEvent ToolbarClicked()
         m_delegate.DoAdd()
     End Sub
 
     Private Sub cmdDelete_Click(sender As Object, e As System.EventArgs) Handles cmdDelete.Click
+        If m_readOnly Then Return
         RaiseEvent ToolbarClicked()
         m_delegate.DoRemove(GetSelectedItems().ToArray)
     End Sub
 
     Private Sub cmdEdit_Click(sender As System.Object, e As System.EventArgs) Handles cmdEdit.Click
+        If m_readOnly Then Return
         RaiseEvent ToolbarClicked()
         EditSelectedItem()
     End Sub
@@ -152,10 +156,12 @@
     End Sub
 
     Private Function IsEditAllowed() As Boolean
+        If m_readOnly Then Return False
         Return lstList.SelectedItems.Count = 1
     End Function
 
     Private Function IsDeleteAllowed() As Boolean
+        If m_readOnly Then Return False
         Return lstList.SelectedItems.Count > 0
     End Function
 
@@ -192,5 +198,15 @@
     Public Sub UpdateValue(index As Integer, text As String)
         lstList.Items(index).SubItems(1).Text = Utility.FormatAsOneLine(text)
     End Sub
+
+    Public Property IsReadOnly As Boolean
+        Get
+            Return m_readOnly
+        End Get
+        Set(value As Boolean)
+            m_readOnly = value
+            cmdAdd.Enabled = Not m_readOnly
+        End Set
+    End Property
 
 End Class

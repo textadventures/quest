@@ -7,6 +7,8 @@
     Private m_ifEditor As IfEditor
     Private m_elemEditor As ElementEditor
 
+    Private m_readOnly As Boolean
+
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
     Public Event CloseButtonClicked()
 
@@ -43,6 +45,8 @@
 
                 newEditor = m_ifEditor
                 m_ifEditor.Populate(DirectCast(script, EditableIfScript))
+                m_ifEditor.IsReadOnly = IsReadOnly
+
                 resetIfEditor = False
             Else
                 If m_elemEditor Is Nothing Then
@@ -52,7 +56,10 @@
 
                 newEditor = m_elemEditor
                 m_elemEditor.Initialise(m_controller, m_controller.GetEditorDefinition(script.EditorName))
-                m_elemEditor.Populate(m_controller.GetScriptEditorData(script))
+                Dim data As IEditorData = m_controller.GetScriptEditorData(script)
+                data.ReadOnly = IsReadOnly
+                m_elemEditor.Populate(data)
+
                 resetElemEditor = False
             End If
         End If
@@ -126,5 +133,14 @@
         Get
             Return m_currentEditor.MinHeight
         End Get
+    End Property
+
+    Public Property IsReadOnly As Boolean
+        Get
+            Return m_readOnly
+        End Get
+        Set(value As Boolean)
+            m_readOnly = value
+        End Set
     End Property
 End Class

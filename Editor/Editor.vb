@@ -238,6 +238,10 @@
 
     Private Sub ShowEditor(key As String)
 
+        If m_currentEditor IsNot Nothing Then
+            m_currentEditor.SaveData()
+        End If
+
         Dim editorName As String = m_controller.GetElementEditorName(key)
         If editorName Is Nothing Then
             If m_currentEditor IsNot Nothing Then

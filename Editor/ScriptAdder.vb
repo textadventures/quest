@@ -3,6 +3,7 @@
     Private m_controller As EditorController
     Private m_selection As String
     Private m_initialised As Boolean
+    Private m_readOnly As Boolean
 
     Public Event AddScript(keyword As String)
     Public Event CloseButtonClicked()
@@ -65,6 +66,7 @@
     End Sub
 
     Public Sub AddCurrent()
+        If m_readOnly Then Return
         Dim data As EditableScriptData = Nothing
         If (Not m_selection Is Nothing) AndAlso m_controller.GetScriptEditorData().TryGetValue(m_selection, data) Then
             RaiseEvent AddScript(data.CreateString)
@@ -78,4 +80,15 @@
     Public Sub ScrollToTop()
         ctlEditorTree.ScrollToTop()
     End Sub
+
+    Public Property IsReadOnly As Boolean
+        Get
+            Return m_readOnly
+        End Get
+        Set(value As Boolean)
+            m_readOnly = value
+
+            cmdAdd.Enabled = Not m_readOnly
+        End Set
+    End Property
 End Class

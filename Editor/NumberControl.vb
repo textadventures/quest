@@ -81,6 +81,7 @@ Public Class NumberControl
             Value = String.Empty
         Else
             Value = data.GetAttribute(m_attribute)
+            ctlUpDown.Enabled = Not data.ReadOnly
         End If
     End Sub
 

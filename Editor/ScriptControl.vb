@@ -81,6 +81,7 @@ Public Class ScriptControl
         Else
             ElementName = data.Name
             Value = data.GetAttribute(AttributeName)
+            IsReadOnly = data.ReadOnly
         End If
     End Sub
 
@@ -103,6 +104,15 @@ Public Class ScriptControl
         Get
             Return GetType(IEditableScripts)
         End Get
+    End Property
+
+    Public Property IsReadOnly As Boolean
+        Get
+            Return ctlScriptEditor.IsReadOnly
+        End Get
+        Set(value As Boolean)
+            ctlScriptEditor.IsReadOnly = value
+        End Set
     End Property
 
 End Class

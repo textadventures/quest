@@ -112,6 +112,7 @@ Public Class AttributesControl
     Private m_controller As EditorController
     Private m_data As IEditorDataExtendedAttributeInfo
     Private m_inheritedTypeData As New Dictionary(Of String, IEditorAttributeData)
+    Private m_readOnly As Boolean
 
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs) Implements IElementEditorControl.Dirty
     Public Event RequestParentElementEditorSave() Implements IElementEditorControl.RequestParentElementEditorSave
@@ -151,6 +152,10 @@ Public Class AttributesControl
     End Sub
 
     Public Sub Populate(data As IEditorData) Implements IElementEditorControl.Populate
+        m_readOnly = data.ReadOnly
+        cmdAdd.Enabled = Not m_readOnly
+        cmdAddType.Enabled = Not m_readOnly
+
         lstAttributes.Items.Clear()
         lstTypes.Items.Clear()
         m_inheritedTypeData.Clear()
@@ -258,6 +263,7 @@ Public Class AttributesControl
     End Function
 
     Private Function DeleteAllowed(attribute As String) As Boolean
+        If m_readOnly Then Return False
         If String.IsNullOrEmpty(attribute) Then Return False
         Return Not m_data.GetAttributeData(attribute).IsInherited
     End Function
@@ -313,6 +319,7 @@ Public Class AttributesControl
     End Function
 
     Private Sub cmdAdd_Click(sender As System.Object, e As System.EventArgs) Handles cmdAdd.Click
+        If m_readOnly Then Return
         Add()
     End Sub
 
@@ -331,6 +338,7 @@ Public Class AttributesControl
     End Sub
 
     Private Sub cmdDelete_Click(sender As System.Object, e As System.EventArgs) Handles cmdDelete.Click
+        If m_readOnly Then Return
         Dim selectedAttribute As String = GetSelectedAttribute()
         m_controller.StartTransaction(String.Format("Remove '{0}' attribute", selectedAttribute))
         m_data.RemoveAttribute(selectedAttribute)
@@ -359,6 +367,7 @@ Public Class AttributesControl
     End Sub
 
     Private Sub cmdAddTypeDropDownItem_Click(sender As System.Object, e As System.EventArgs)
+        If m_readOnly Then Return
         Dim typeToAdd As String = DirectCast(sender, ToolStripItem).Text
         m_controller.AddInheritedTypeToElement(m_data.Name, typeToAdd, True)
     End Sub
@@ -374,12 +383,14 @@ Public Class AttributesControl
     End Function
 
     Private Function DeleteTypeAllowed(type As String) As Boolean
+        If m_readOnly Then Return False
         If String.IsNullOrEmpty(type) Then Return False
         Dim typeData As IEditorAttributeData = m_inheritedTypeData(type)
         Return Not (typeData.IsInherited OrElse typeData.IsDefaultType)
     End Function
 
     Private Sub cmdDeleteType_Click(sender As System.Object, e As System.EventArgs) Handles cmdDeleteType.Click
+        If m_readOnly Then Return
         Dim selectedType As String = GetSelectedType()
         m_controller.RemoveInheritedTypeFromElement(m_data.Name, selectedType, True)
     End Sub
