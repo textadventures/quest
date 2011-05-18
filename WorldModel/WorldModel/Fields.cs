@@ -90,6 +90,7 @@ namespace AxeSoftware.Quest
         public static IField<string> Type = new FieldDef<string>("type");
         public static IField<string> Src = new FieldDef<string>("src");
         public static IField<bool> Anonymous = new FieldDef<bool>("anonymous");
+        public static IField<string> TemplateName = new FieldDef<string>("templatename");
     }
 
     public static class MetaFieldDefinitions

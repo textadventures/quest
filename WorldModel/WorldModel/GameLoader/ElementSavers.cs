@@ -86,8 +86,7 @@ namespace AxeSoftware.Quest
             public override void Save(GameXmlWriter writer, Element e)
             {
                 writer.WriteStartElement("template");
-                // TO DO: This is a bit of a kludge. Here we get rid of "template!" prefix
-                writer.WriteAttributeString("name", e.Name.Substring(9));
+                writer.WriteAttributeString("name", e.Fields[FieldDefinitions.TemplateName]);
                 writer.WriteString(e.Fields[FieldDefinitions.Text]);
                 writer.WriteEndElement();
             }

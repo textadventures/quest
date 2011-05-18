@@ -8,36 +8,30 @@ namespace AxeSoftware.Quest
     public class Template
     {
         private WorldModel m_worldModel;
-        // TO DO: This is nasty
-        private const string k_namePrefix = "template!";
+        private Dictionary<string, Element> m_templateLookup = new Dictionary<string, Element>();
 
         public Template(WorldModel worldModel)
         {
             m_worldModel = worldModel;
         }
 
-        internal Element AddTemplate(string t, string text)
+        internal Element AddTemplate(string templateName, string text)
         {
-            Element template;
-            t = k_namePrefix + t;
-            if (m_worldModel.Elements.ContainsKey(ElementType.Template, t))
-            {
-                template = m_worldModel.Elements.Get(ElementType.Template, t);
-            }
-            else
-            {
-                template = m_worldModel.GetElementFactory(ElementType.Template).Create(t);
-            }
+            string elementName = m_worldModel.GetUniqueID("template");
+
+            Element template = m_worldModel.GetElementFactory(ElementType.Template).Create(elementName);
+            template.Fields[FieldDefinitions.TemplateName] = templateName;
             template.Fields[FieldDefinitions.Text] = text;
+
+            m_templateLookup[templateName] = template;
 
             return template;
         }
 
         public string GetText(string t)
         {
-            t = k_namePrefix + t;
-            if (!m_worldModel.Elements.ContainsKey(ElementType.Template, t)) throw new Exception(string.Format("No template named '{0}'", t));
-            return m_worldModel.Elements.Get(ElementType.Template, t).Fields[FieldDefinitions.Text];
+            if (!m_templateLookup.ContainsKey(t)) throw new Exception(string.Format("No template named '{0}'", t));
+            return m_templateLookup[t].Fields[FieldDefinitions.Text];
         }
 
         public string GetDynamicText(string t, Element obj)
@@ -64,15 +58,16 @@ namespace AxeSoftware.Quest
         {
             Element template;
 
-            if (!m_worldModel.Elements.ContainsKey(ElementType.Template, k_namePrefix + c))
+            if (!m_templateLookup.ContainsKey(c))
             {
                 template = AddTemplate(c, "");
             }
             else
             {
-                template = m_worldModel.Elements.Get(ElementType.Template, k_namePrefix + c);
+                template = m_templateLookup[c];
                 template.Fields[FieldDefinitions.Text] += "|";
             }
+
             template.Fields[FieldDefinitions.Text] += "^" + text + " (?<object>.*)$";
             return template;
         }
