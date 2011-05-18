@@ -58,6 +58,7 @@ namespace AxeSoftware.Quest
 
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementFieldUpdated;
         public event EventHandler<ElementRefreshEventArgs> ElementRefreshed;
+        public event EventHandler<ElementFieldUpdatedEventArgs> ElementMetaFieldUpdated;
 
         public class ElementFieldUpdatedEventArgs : EventArgs
         {
@@ -884,6 +885,12 @@ namespace AxeSoftware.Quest
         {
             if (!element.Initialised) return;
             if (ElementFieldUpdated != null) ElementFieldUpdated(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
+        }
+
+        internal void NotifyElementMetaFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
+        {
+            if (!element.Initialised) return;
+            if (ElementMetaFieldUpdated != null) ElementMetaFieldUpdated(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
         }
 
         internal void NotifyElementRefreshed(Element element)

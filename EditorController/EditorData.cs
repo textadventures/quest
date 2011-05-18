@@ -166,5 +166,16 @@ namespace AxeSoftware.Quest
                 return m_element.MetaFields[MetaFieldDefinitions.Filename];
             }
         }
+
+        public void MakeElementLocal()
+        {
+            if (!IsLibraryElement)
+            {
+                throw new InvalidOperationException("Element is not defined in a library");
+            }
+
+            m_element.MetaFields[MetaFieldDefinitions.Library] = false;
+            m_element.MetaFields[MetaFieldDefinitions.Filename] = null;
+        }
     }
 }

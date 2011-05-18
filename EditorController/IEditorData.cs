@@ -33,5 +33,6 @@ namespace AxeSoftware.Quest
         IEnumerable<IEditorAttributeData> GetInheritedTypes();
         bool IsLibraryElement { get; }
         string Filename { get; }
+        void MakeElementLocal();
     }
 }

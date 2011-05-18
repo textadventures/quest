@@ -8,6 +8,7 @@
     Private m_currentElement As String
     Private m_codeView As Boolean
     Private m_lastSelection As String
+    Private m_currentEditorData As IEditorDataExtendedAttributeInfo
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -263,6 +264,7 @@
 
             Dim extendedData As IEditorDataExtendedAttributeInfo = TryCast(data, IEditorDataExtendedAttributeInfo)
             If extendedData IsNot Nothing Then
+                m_currentEditorData = extendedData
                 BannerVisible = extendedData.IsLibraryElement
                 Dim filename As String = System.IO.Path.GetFileName(extendedData.Filename)
                 ctlBanner.AlertText = String.Format("From library {0}", filename)
@@ -323,8 +325,12 @@
             ctlTextEditor.Undo()
         Else
             If Not m_currentEditor Is Nothing Then
+                Dim thisElement As String = m_currentElement
                 m_currentEditor.SaveData()
                 m_controller.Undo()
+                If thisElement IsNot Nothing Then
+                    ctlTree.TrySetSelectedItem(thisElement)
+                End If
             End If
         End If
     End Sub
@@ -334,8 +340,12 @@
             ctlTextEditor.Redo()
         Else
             If Not m_currentEditor Is Nothing Then
+                Dim thisElement As String = m_currentElement
                 m_currentEditor.SaveData()
                 m_controller.Redo()
+                If thisElement IsNot Nothing Then
+                    ctlTree.TrySetSelectedItem(thisElement)
+                End If
             End If
         End If
     End Sub
@@ -683,4 +693,14 @@
         End Set
     End Property
 
+    Private Sub ctlBanner_ButtonClicked() Handles ctlBanner.ButtonClicked
+        Dim thisElement As String = m_currentElement
+        m_controller.StartTransaction(String.Format("Create local copy of '{0}'", m_currentElement))
+        m_currentEditorData.MakeElementLocal()
+        m_controller.EndTransaction()
+
+        ' Changing from library to non-library element (or vice-versa) will move the element in the tree,
+        ' so re-select it
+        ctlTree.SetSelectedItem(thisElement)
+    End Sub
 End Class

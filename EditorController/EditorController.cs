@@ -143,6 +143,7 @@ namespace AxeSoftware.Quest
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
+            m_worldModel.ElementMetaFieldUpdated += m_worldModel_ElementMetaFieldUpdated;
             m_worldModel.UndoLogger.TransactionsUpdated += UndoLogger_TransactionsUpdated;
             m_worldModel.Elements.ElementRenamed += Elements_ElementRenamed;
 
@@ -196,36 +197,47 @@ namespace AxeSoftware.Quest
 
         void m_worldModel_ElementFieldUpdated(object sender, WorldModel.ElementFieldUpdatedEventArgs e)
         {
-            if (m_initialised)
+            if (!m_initialised) return;
+
+            if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue, e.Element, e.Attribute), e.IsUndo));
+
+            if (e.Attribute == "parent")
             {
-                if (ElementUpdated != null) ElementUpdated(this, new ElementUpdatedEventArgs(e.Element.Name, e.Attribute, WrapValue(e.NewValue, e.Element, e.Attribute), e.IsUndo));
+                BeginTreeUpdate();
+                RemoveElementAndSubElementsFromTree(e.Element);
+                AddElementAndSubElementsToTree(e.Element);
+                EndTreeUpdate();
+            }
 
-                if (e.Attribute == "parent")
+            if (e.Attribute == "anonymous"
+                || e.Element.Type == ObjectType.Exit && (e.Attribute == "to" || e.Attribute == "name")
+                || e.Element.Type == ObjectType.Command && (e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
+                || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "filename")
+                || e.Element.ElemType == ElementType.Template && (e.Attribute == "templatename"))
+            {
+                if (e.Element.Name != null)
                 {
-                    BeginTreeUpdate();
-                    RemoveElementAndSubElementsFromTree(e.Element);
-                    AddElementAndSubElementsToTree(e.Element);
-                    EndTreeUpdate();
+                    // element name might be null if we're undoing an element add
+                    RetitledNode(e.Element.Name, GetDisplayName(e.Element));
+                    ElementsUpdated();
                 }
+            }
 
-                if (e.Attribute == "anonymous"
-                    || e.Element.Type == ObjectType.Exit && (e.Attribute == "to" || e.Attribute == "name")
-                    || e.Element.Type == ObjectType.Command && (e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
-                    || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "filename")
-                    || e.Element.ElemType == ElementType.Template && (e.Attribute == "templatename"))
-                {
-                    if (e.Element.Name != null)
-                    {
-                        // element name might be null if we're undoing an element add
-                        RetitledNode(e.Element.Name, GetDisplayName(e.Element));
-                        ElementsUpdated();
-                    }
-                }
+            if (e.Element.Type == ObjectType.Command && e.Attribute == "isverb")
+            {
+                MoveNove(e.Element.Name, GetDisplayName(e.Element), GetElementTreeParent(e.Element));
+            }
+        }
 
-                if (e.Element.Type == ObjectType.Command && e.Attribute == "isverb")
-                {
-                    MoveNove(e.Element.Name, GetDisplayName(e.Element), GetElementTreeParent(e.Element));
-                }
+        void m_worldModel_ElementMetaFieldUpdated(object sender, WorldModel.ElementFieldUpdatedEventArgs e)
+        {
+            if (!m_initialised) return;
+
+            if (e.Attribute == "library")
+            {
+                // Refresh the element in the tree by deleting and readding it
+                RemovedNode(e.Element.Name);
+                AddElementAndSubElementsToTree(e.Element);
             }
         }
 

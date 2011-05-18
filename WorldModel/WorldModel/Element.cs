@@ -123,6 +123,8 @@ namespace AxeSoftware.Quest
             m_metaFields = new Fields(worldModel, this, true);
             Fields.AttributeChanged += Fields_AttributeChanged;
             Fields.AttributeChangedSilent += Fields_AttributeChangedSilent;
+            m_metaFields.AttributeChanged += MetaFields_AttributeChanged;
+            m_metaFields.AttributeChangedSilent += MetaFields_AttributeChangedSilent;
             m_worldModel = worldModel;
         }
 
@@ -147,6 +149,16 @@ namespace AxeSoftware.Quest
             {
                 m_worldModel.RunScript(Fields.GetAsType<IScript>(changedScript));
             }
+        }
+
+        void MetaFields_AttributeChanged(object sender, AttributeChangedEventArgs e)
+        {
+            m_worldModel.NotifyElementMetaFieldUpdate(this, e.Property, e.Value, false);
+        }
+
+        void MetaFields_AttributeChangedSilent(object sender, AttributeChangedEventArgs e)
+        {
+            m_worldModel.NotifyElementMetaFieldUpdate(this, e.Property, e.Value, true);
         }
 
         public IScript GetAction(string action)
