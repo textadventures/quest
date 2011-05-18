@@ -22,8 +22,26 @@ namespace AxeSoftware.Quest
 
         public void Add(ElementType t, string key, Element e)
         {
-            m_allElements.Add(key, e);
-            m_elements[t].Add(key, e);
+            if (m_allElements.ContainsKey(key))
+            {
+                // An element with this name already exists. This is OK if the new element
+                // is of the same type - then it will just override the previous element.
+
+                if (!m_elements[t].ContainsKey(key))
+                {
+                    throw new Exception(string.Format(
+                        "Element '{0}' of type '{1}' cannot override the existing element of type '{2}'",
+                        key,
+                        t,
+                        m_allElements[key].ElemType));
+                }
+
+                // element is being overridden, so detach the event handler
+                m_allElements[key].Fields.NameChanged -= ElementNameChanged;
+            }
+
+            m_allElements[key] = e;
+            m_elements[t][key] = e;
 
             e.Fields.NameChanged += ElementNameChanged;
         }
