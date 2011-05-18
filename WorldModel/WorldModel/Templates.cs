@@ -22,6 +22,7 @@ namespace AxeSoftware.Quest
             Element template = m_worldModel.GetElementFactory(ElementType.Template).Create(elementName);
             template.Fields[FieldDefinitions.TemplateName] = templateName;
             template.Fields[FieldDefinitions.Text] = text;
+            template.Fields[FieldDefinitions.Anonymous] = true;
 
             m_templateLookup[templateName] = template;
 

@@ -210,7 +210,8 @@ namespace AxeSoftware.Quest
 
                 if (e.Element.Type == ObjectType.Exit && (e.Attribute == "anonymous" || e.Attribute == "to" || e.Attribute == "name")
                     || e.Element.Type == ObjectType.Command && (e.Attribute == "anonymous" || e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
-                    || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "anonymous" || e.Attribute == "filename"))
+                    || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "anonymous" || e.Attribute == "filename")
+                    || e.Element.ElemType == ElementType.Template && (e.Attribute == "templatename"))
                 {
                     if (e.Element.Name != null)
                     {
@@ -403,6 +404,8 @@ namespace AxeSoftware.Quest
                         string filename = e.Fields[FieldDefinitions.Filename];
                         if (!string.IsNullOrEmpty(filename)) return filename;
                         return "(filename not set)";
+                    case ElementType.Template:
+                        return e.Fields[FieldDefinitions.TemplateName];
                 }
             }
             return e.Name;
