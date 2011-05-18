@@ -31,5 +31,7 @@ namespace AxeSoftware.Quest
         IEditorAttributeData GetAttributeData(string attribute);
         void RemoveAttribute(string attribute);
         IEnumerable<IEditorAttributeData> GetInheritedTypes();
+        bool IsLibraryElement { get; }
+        string Filename { get; }
     }
 }

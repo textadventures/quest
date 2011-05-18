@@ -13,6 +13,14 @@
     Public Event Close()
     Public Event Play(filename As String)
 
+    Public Sub New()
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        BannerVisible = False
+    End Sub
+
     Public Function Initialise(ByRef filename As String) As Boolean
         m_filename = filename
         m_controller = New EditorController()
@@ -236,6 +244,7 @@
             End If
 
             m_currentEditor = Nothing
+            BannerVisible = False
         Else
             Dim nextEditor As ElementEditor = m_elementEditors(editorName)
 
@@ -248,8 +257,19 @@
             m_currentEditor = nextEditor
 
             m_currentElement = key
-            m_currentEditor.Populate(m_controller.GetEditorData(key))
+            Dim data As IEditorData = m_controller.GetEditorData(key)
+            m_currentEditor.Populate(data)
             nextEditor.Visible = True
+
+            Dim extendedData As IEditorDataExtendedAttributeInfo = TryCast(data, IEditorDataExtendedAttributeInfo)
+            If extendedData IsNot Nothing Then
+                BannerVisible = extendedData.IsLibraryElement
+                Dim filename As String = System.IO.Path.GetFileName(extendedData.Filename)
+                ctlBanner.AlertText = String.Format("From library {0}", filename)
+                ctlBanner.ButtonText = "Copy"
+            Else
+                BannerVisible = False
+            End If
         End If
 
         lblHeader.Text = m_controller.GetDisplayName(key)
@@ -335,10 +355,12 @@
     End Sub
 
     Private Sub ctlToolbar_UndoEnabled(enabled As Boolean) Handles ctlToolbar.UndoEnabled
+        If m_menu Is Nothing Then Return
         m_menu.MenuEnabled("undo") = enabled
     End Sub
 
     Private Sub ctlToolbar_RedoEnabled(enabled As Boolean) Handles ctlToolbar.RedoEnabled
+        If m_menu Is Nothing Then Return
         m_menu.MenuEnabled("redo") = enabled
     End Sub
 
@@ -650,4 +672,15 @@
         ctlTree.SetSelectedItemNoEvent(key)
         ShowEditor(key)
     End Sub
+
+    Private Property BannerVisible As Boolean
+        Get
+            Return ctlBanner.Visible
+        End Get
+        Set(value As Boolean)
+            ctlBanner.Visible = value
+            pnlHeader.Height = If(value, 41, 18)
+        End Set
+    End Property
+
 End Class

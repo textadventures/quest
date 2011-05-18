@@ -150,5 +150,21 @@ namespace AxeSoftware.Quest
             }
             return result;
         }
+
+        public bool IsLibraryElement
+        {
+            get
+            {
+                return m_element.MetaFields[MetaFieldDefinitions.Library];
+            }
+        }
+
+        public string Filename
+        {
+            get
+            {
+                return m_element.MetaFields[MetaFieldDefinitions.Filename];
+            }
+        }
     }
 }

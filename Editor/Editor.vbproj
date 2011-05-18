@@ -106,6 +106,12 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlertBanner.Designer.vb">
+      <DependentUpon>AlertBanner.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AlertBanner.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="AttributesControl.Designer.vb">
       <DependentUpon>AttributesControl.vb</DependentUpon>
     </Compile>
@@ -324,6 +330,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AlertBanner.resx">
+      <DependentUpon>AlertBanner.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AttributesControl.resx">
       <DependentUpon>AttributesControl.vb</DependentUpon>
     </EmbeddedResource>
