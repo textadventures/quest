@@ -106,7 +106,7 @@ namespace AxeSoftware.Quest.Scripts
                 throw new Exception(string.Format("Unable to save call to function '{0}' - function does not exist", m_procedure));
             }
 
-            if (m_parameters == null)
+            if (m_parameters == null || m_parameters.ParametersAsQuestList.Count == 0)
             {
                 return m_procedure;
             }
