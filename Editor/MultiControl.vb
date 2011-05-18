@@ -29,6 +29,7 @@ Public Class MultiControl
     }
 
     Private m_storedValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
+    Private m_overrideControlTypesMap As IDictionary(Of String, String)
 
     Private m_value As Object
     Private m_oldValue As Object
@@ -86,6 +87,11 @@ Public Class MultiControl
 
     Private Function GetEditorNameForType(typeName As String) As String
         If String.IsNullOrEmpty(typeName) Then Return String.Empty
+        If m_overrideControlTypesMap IsNot Nothing Then
+            If m_overrideControlTypesMap.ContainsKey(typeName) Then
+                Return m_overrideControlTypesMap(typeName)
+            End If
+        End If
         Return s_controlTypesMap(typeName)
     End Function
 
@@ -256,6 +262,8 @@ Public Class MultiControl
             Dim types As IDictionary(Of String, String) = controlData.GetDictionary("types")
             InitialiseTypesList(types)
 
+            m_overrideControlTypesMap = controlData.GetDictionary("editors")
+
             Dim width As Integer = controlData.GetInt("listwidth")
             If width > 0 Then
                 lstTypes.Width = width
@@ -303,4 +311,7 @@ Public Class MultiControl
         Return m_types.Any(Function(t) t.TypeName = typeName)
     End Function
 
+    Private Sub MultiControl_Leave(sender As Object, e As System.EventArgs) Handles Me.Leave
+        RaiseEvent RequestParentElementEditorSave()
+    End Sub
 End Class

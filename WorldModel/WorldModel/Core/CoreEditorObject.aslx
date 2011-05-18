@@ -110,9 +110,16 @@
       </control>
 
       <control>
-        <controltype>richtext</controltype>
+        <controltype>multi</controltype>
         <caption>Description</caption>
         <attribute>description</attribute>
+        <types>
+          string=Text; script=Run script
+        </types>
+        <editors>
+          string=richtext
+        </editors>
+        <listwidth>150</listwidth>
         <expand/>
       </control>
 

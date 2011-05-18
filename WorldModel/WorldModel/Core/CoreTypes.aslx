@@ -23,6 +23,7 @@
     <container type="boolean">false</container>
     <descprefix>[YouAreIn]</descprefix>
     <contentsprefix>[ContainerContentsPrefix]</contentsprefix>
+    <description type="string"></description>
   </type>
 
   <type name="defaultexit">

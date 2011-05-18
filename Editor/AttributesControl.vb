@@ -55,6 +55,8 @@ Public Class AttributesControl
         Public Function GetDictionary(tag As String) As System.Collections.Generic.IDictionary(Of String, String) Implements IEditorControl.GetDictionary
             If tag = "types" Then
                 Return m_allowedTypes
+            ElseIf tag = "editors" Then
+                Return Nothing
             Else
                 Throw New NotImplementedException
             End If

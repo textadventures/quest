@@ -3,6 +3,7 @@
 <ControlType("richtext")> _
 Public Class RichTextControl
     Implements IElementEditorControl
+    Implements IResizableElementEditorControl
 
     Private m_oldValue As String
     Private m_controller As EditorController
