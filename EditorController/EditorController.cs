@@ -389,7 +389,16 @@ namespace AxeSoftware.Quest
             {
                 // Don't display verb templates (if the user wants to edit a verb's regex,
                 // they can do so directly on the verb itself).
-                return !e.Fields[FieldDefinitions.IsVerb];
+                if (e.Fields[FieldDefinitions.IsVerb])
+                {
+                    return false;
+                }
+
+                // Don't display templates which have been overridden
+                if (m_worldModel.TryGetTemplateElement(e.Fields[FieldDefinitions.TemplateName]) != e)
+                {
+                    return false;
+                }
             }
             return true;
         }
