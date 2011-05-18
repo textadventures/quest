@@ -372,6 +372,7 @@ Partial Class Menu
         Me.DelegateToolStripMenuItem.Size = New System.Drawing.Size(174, 22)
         Me.DelegateToolStripMenuItem.Tag = "adddelegate"
         Me.DelegateToolStripMenuItem.Text = "D&elegate"
+        Me.DelegateToolStripMenuItem.Visible = False
         '
         'ObjectTypeToolStripMenuItem
         '

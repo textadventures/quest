@@ -150,9 +150,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Core\CoreEditorDelegate.aslx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Core\CoreEditorExit.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

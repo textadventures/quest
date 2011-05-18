@@ -462,10 +462,6 @@
         AddNewElement("dynamictemplate", AddressOf m_controller.CreateNewDynamicTemplate)
     End Sub
 
-    Private Sub AddNewDelegate()
-        MsgBox("Not yet implemented")
-    End Sub
-
     Private Sub AddNewObjectType()
         AddNewElement("object type", AddressOf m_controller.CreateNewType)
     End Sub
@@ -482,6 +478,11 @@
     ' Intentionally unimplemented, as editor elements are not editable in the Editor
     Private Sub AddNewEditor()
         Throw New NotImplementedException
+    End Sub
+
+    ' Intentionally unimplemented, as delegate elements are not editable in the Editor
+    Private Sub AddNewDelegate()
+        MsgBox("Not yet implemented")
     End Sub
 
     Private Function GetNameAndParent(prompt As String, possibleParents As IEnumerable(Of String)) As PopupEditors.EditStringResult?

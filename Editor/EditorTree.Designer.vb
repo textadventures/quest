@@ -160,6 +160,7 @@ Partial Class EditorTree
         Me.AddDelegateToolStripMenuItem.Size = New System.Drawing.Size(199, 22)
         Me.AddDelegateToolStripMenuItem.Tag = "adddelegate"
         Me.AddDelegateToolStripMenuItem.Text = "Add Delegate"
+        Me.AddDelegateToolStripMenuItem.Visible = False
         '
         'AddObjectTypeToolStripMenuItem
         '

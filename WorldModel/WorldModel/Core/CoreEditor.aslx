@@ -23,7 +23,6 @@
   <include ref="CoreEditorIncludedLibrary.aslx"/>
   <include ref="CoreEditorTemplate.aslx"/>
   <include ref="CoreEditorDynamicTemplate.aslx"/>
-  <include ref="CoreEditorDelegate.aslx"/>
   <include ref="CoreEditorJavascript.aslx"/>
 
 </library>

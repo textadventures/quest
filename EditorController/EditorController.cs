@@ -34,6 +34,7 @@ namespace AxeSoftware.Quest
 
         private List<ElementType> m_ignoredTypes = new List<ElementType> {
             ElementType.ImpliedType,
+            ElementType.Delegate,
             ElementType.Editor,
             ElementType.EditorTab,
             ElementType.EditorControl
@@ -309,7 +310,8 @@ namespace AxeSoftware.Quest
             //AddTreeHeader(ElementType.ImpliedType, "_implied", "Implied Types", "_advanced");
             AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced");
             AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced");
-            AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
+            // Ignore Delegate elements - there's no reason for game authors to edit them (I think)
+            //AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
             AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced");
             // Ignore Editor elements - there's no reason for game authors to edit them
             //AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
