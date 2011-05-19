@@ -281,6 +281,7 @@
         End If
 
         lblHeader.Text = m_controller.GetDisplayName(key)
+        UpdateClipboardButtons()
     End Sub
 
     Private Function Save() As Boolean
@@ -581,6 +582,7 @@
             ctlTextEditor.Cut()
         Else
             m_controller.CutElements({ctlTree.SelectedItem})
+            UpdateClipboardButtons()
         End If
     End Sub
 
@@ -589,6 +591,7 @@
             ctlTextEditor.Copy()
         Else
             m_controller.CopyElements({ctlTree.SelectedItem})
+            UpdateClipboardButtons()
         End If
     End Sub
 
@@ -710,5 +713,16 @@
         ' Changing from library to non-library element (or vice-versa) will move the element in the tree,
         ' so re-select it
         ctlTree.SetSelectedItem(thisElement)
+    End Sub
+
+    Private Sub UpdateClipboardButtons()
+        Dim canPaste As Boolean = m_controller.CanPaste(ctlTree.SelectedItem)
+        m_menu.MenuEnabled("paste") = canPaste
+        ctlToolbar.CanPaste = canPaste
+
+        Dim canCutCopy As Boolean = m_controller.CanCopy(ctlTree.SelectedItem)
+        m_menu.MenuEnabled("cut") = canCutCopy
+        m_menu.MenuEnabled("copy") = canCutCopy
+        ctlToolbar.CanCutCopy = canCutCopy
     End Sub
 End Class

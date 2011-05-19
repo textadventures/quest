@@ -51,7 +51,8 @@ namespace AxeSoftware.Quest
         private bool m_initialised = false;
         private Dictionary<string, Type> m_controlTypes = new Dictionary<string, Type>();
         private string m_filename;
-        private IEnumerable<Element> m_clipboardElements;
+        private List<Element> m_clipboardElements;
+        private ElementType m_clipboardElementType;
 
         public delegate void VoidHandler();
         public event VoidHandler ClearTree;
@@ -1210,11 +1211,33 @@ namespace AxeSoftware.Quest
         public void CopyElements(IEnumerable<string> elementNames)
         {
             m_clipboardElements = (from name in elementNames select m_worldModel.Elements.Get(name)).ToList();
+
+            bool first = true;
+
+            foreach (Element e in m_clipboardElements)
+            {
+                if (first)
+                {
+                    m_clipboardElementType = e.ElemType;
+                    first = false;
+                }
+                else
+                {
+                    if (m_clipboardElementType != e.ElemType)
+                    {
+                        throw new InvalidOperationException("Cannot mix element types in the clipboard");
+                    }
+                }
+            }
         }
 
-        public void PasteElements(string parentName)
+        public string PasteElements(string parentName)
         {
-            Element parent = m_worldModel.Elements.Get(parentName);
+            if (!CanPaste(parentName)) return null;
+
+            string lastPastedElement = null;
+
+            Element parent = GetPasteParent(parentName);
 
             m_worldModel.UndoLogger.StartTransaction("Paste");
 
@@ -1222,9 +1245,12 @@ namespace AxeSoftware.Quest
             {
                 Element newElement = e.Clone();
                 newElement.Parent = parent;
+                lastPastedElement = newElement.Name;
             }
 
             m_worldModel.UndoLogger.EndTransaction();
+
+            return lastPastedElement;
         }
 
         public void CutElements(IEnumerable<string> elementNames)
@@ -1236,6 +1262,30 @@ namespace AxeSoftware.Quest
                 DeleteElement(name, false);
             }
             m_worldModel.UndoLogger.EndTransaction();
+        }
+
+        public bool CanPaste(string parentName)
+        {
+            if (m_clipboardElements == null || m_clipboardElements.Count == 0) return false;
+            Element parent = GetPasteParent(parentName);
+            if (parent == null) return true;
+            return (parent.ElemType == m_clipboardElementType);
+        }
+
+        private Element GetPasteParent(string parentName)
+        {
+            if (m_worldModel.Elements.ContainsKey(parentName))
+            {
+                return m_worldModel.Elements.Get(parentName);
+            }
+            return null;
+        }
+
+        public bool CanCopy(string elementName)
+        {
+            if (!ElementExists(elementName)) return false;
+            if (elementName == "game") return false;
+            return true;
         }
     }
 }
