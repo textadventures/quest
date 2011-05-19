@@ -10,6 +10,7 @@ Public Class TextEditor
     Private m_undoEnabled As Boolean
     Private m_redoEnabled As Boolean
     Private m_textWasSaved As Boolean
+    Private m_useFolding As Boolean = True
 
     Public Event UndoRedoEnabledUpdated(undoEnabled As Boolean, redoEnabled As Boolean)
 
@@ -19,7 +20,7 @@ Public Class TextEditor
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML")
+        SetSyntaxHighlighting("XML")
         textEditor.HorizontalScrollBarVisibility = Windows.Controls.ScrollBarVisibility.Auto
         textEditor.Padding = New System.Windows.Thickness(5)
 
@@ -34,10 +35,28 @@ Public Class TextEditor
     End Sub
 
     Private Sub Initialise()
-        m_foldingStrategy.UpdateFoldings(m_foldingManager, textEditor.Document)
+        If m_useFolding Then
+            m_foldingStrategy.UpdateFoldings(m_foldingManager, textEditor.Document)
+        End If
         UpdateUndoRedoEnabled()
         m_textWasSaved = False
     End Sub
+
+    Public Sub SetSyntaxHighlighting(name As String)
+        textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition(name)
+    End Sub
+
+    Public Property UseFolding As Boolean
+        Get
+            Return m_useFolding
+        End Get
+        Set(value As Boolean)
+            m_useFolding = value
+            If Not value Then
+                textEditor.Padding = New System.Windows.Thickness(0)
+            End If
+        End Set
+    End Property
 
     Public Property EditText As String
         Get

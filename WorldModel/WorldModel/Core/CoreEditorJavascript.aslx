@@ -12,6 +12,12 @@
         <width>300</width>
         <filefiltername>Javascript Files</filefiltername>
       </control>
+
+      <control>
+        <controltype>texteditor</controltype>
+        <attribute>src</attribute>
+        <expand/>
+      </control>
     </tab>
   </editor>
 </library>
