@@ -28,12 +28,16 @@
     if (HasScript(game, "start")) do (game, "start")
     startset = false
     firstroom = null
-    foreach (room, AllObjects()) {
-      if (GetBoolean(room, "start")) {
-        player.parent = room
+    foreach (obj, AllObjects()) {
+      if (GetBoolean(obj, "startinventory")) {
+        obj.parent = player
       }
-      if (firstroom = null and room.name <> "player") {
-        firstroom = room
+      if (GetBoolean(obj, "start")) {
+        player.parent = obj
+        startset = true
+      }
+      if (firstroom = null and obj.name <> "player") {
+        firstroom = obj
       }
     }
     if (not startset) {

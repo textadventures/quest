@@ -153,8 +153,15 @@
       <mustnotinherit>editor_room</mustnotinherit>
 
       <control>
+        <controltype>checkbox</controltype>
+        <attribute>startinventory</attribute>
+        <caption>Player is carrying this object when the game begins</caption>
+      </control>
+
+      <control>
         <controltype>title</controltype>
         <caption>Take</caption>
+        <paddingtop>12</paddingtop>
       </control>
 
       <control>
