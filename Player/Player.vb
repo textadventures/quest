@@ -26,7 +26,7 @@ Public Class Player
     Private m_soundPlaying As Boolean = False
     Private m_destroyed As Boolean = False
     Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
-    Private m_htmlPlayerReadyFunction As Action = AddressOf FinishInitialise
+    Private m_htmlPlayerReadyFunction As Action
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -65,6 +65,9 @@ Public Class Player
     End Sub
 
     Public Sub Initialise(ByRef game As IASL)
+        SetPanesVisible(True)
+        SetCommandVisible(True)
+        SetLocationVisible(True)
         m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
         m_game = game
         m_gameDebug = TryCast(game, IASLDebug)
@@ -73,6 +76,7 @@ Public Class Player
         txtCommand.Text = ""
         SetEnabledState(True)
         m_htmlHelper = New PlayerHelper(m_game, Me, False)
+        m_htmlPlayerReadyFunction = AddressOf FinishInitialise
 
         ' we don't finish initialising the game until the webbrowser's DocumentCompleted fires
         ' - it's not in a ready state before then.
@@ -117,6 +121,7 @@ Public Class Player
         tmrTick.Enabled = True
         m_game.Begin()
         txtCommand.Focus()
+        ctlPlayerHtml.DisableNavigation()
     End Sub
 
     Public Sub Reset()
@@ -666,7 +671,6 @@ Public Class Player
 
         BeginInvoke(Sub()
                         m_htmlPlayerReadyFunction.Invoke()
-                        ctlPlayerHtml.DisableNavigation()
                     End Sub)
     End Sub
 
