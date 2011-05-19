@@ -136,5 +136,45 @@ namespace WorldModelTests
             Assert.AreEqual(m_original.Name + "5", clone5.Name);
             Assert.AreEqual(m_original.Name + "6", clone6.Name);
         }
+
+        [TestMethod]
+        public void TestCloneElementWithChildren()
+        {
+            // Create a child object of the original
+            const string childAttrName = "childattribute";
+            const string childAttrValue = "childvalue";
+            Element child = m_worldModel.GetElementFactory(ElementType.Object).Create("child");
+            child.Fields.Set(childAttrName, childAttrValue);
+            child.Parent = m_original;
+
+            int originalElementCount = m_worldModel.Elements.Count(ElementType.Object);
+
+            // Clone the original object. The cloned object should have a cloned child too.
+            m_worldModel.UndoLogger.StartTransaction("Create clone");
+            Element clone = m_original.Clone();
+            m_worldModel.UndoLogger.EndTransaction();
+
+            // We should now have 2 more objects
+            Assert.AreEqual(originalElementCount + 2, m_worldModel.Elements.Count(ElementType.Object));
+
+            List<Element> cloneChildren = new List<Element>(m_worldModel.Elements.GetChildElements(clone));
+            List<Element> originalChildren = new List<Element>(m_worldModel.Elements.GetChildElements(m_original));
+
+            // Check the original and the clone now each have one child
+            Assert.AreEqual(1, cloneChildren.Count);
+            Assert.AreEqual(1, originalChildren.Count);
+
+            // Check the children are not the same, but that the cloned child has the correct attributes
+            Assert.AreNotSame(originalChildren[0], cloneChildren[0]);
+            Assert.AreNotEqual(originalChildren[0].Name, cloneChildren[0].Name);
+            Assert.AreSame(child, originalChildren[0]);
+            Assert.AreEqual("child", originalChildren[0].Name);
+            Assert.AreEqual("child1", cloneChildren[0].Name);
+            Assert.AreEqual(childAttrValue, cloneChildren[0].Fields.GetString(childAttrName));
+
+            // Now undo, and verify we have the original number of objects again
+            m_worldModel.UndoLogger.Undo();
+            Assert.AreEqual(originalElementCount, m_worldModel.Elements.Count(ElementType.Object));
+        }
     }
 }

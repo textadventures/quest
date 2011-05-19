@@ -138,5 +138,10 @@ namespace AxeSoftware.Quest
                 }
             }
         }
+
+        public IEnumerable<Element> GetDirectChildren(Element parent)
+        {
+            return from element in m_allElements.Values where element.Parent == parent select element;
+        }
     }
 }
