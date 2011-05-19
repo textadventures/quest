@@ -52,6 +52,6 @@ Public Class TitleControl
     End Property
 
     Public Sub SetCaption(caption As String) Implements ISelfCaptionedElementEditorControl.SetCaption
-        lblTitle.Text = caption
+        lblTitle.Text = caption + " "
     End Sub
 End Class

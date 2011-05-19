@@ -182,7 +182,7 @@
       <control>
         <controltype>title</controltype>
         <caption>Drop</caption>
-        <paddingtop>5</paddingtop>
+        <paddingtop>12</paddingtop>
       </control>
 
       <control>

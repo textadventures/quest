@@ -43,7 +43,7 @@ Partial Class TitleControl
         Me.ctlLine.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ctlLine.BackColor = System.Drawing.SystemColors.ControlDark
-        Me.ctlLine.Location = New System.Drawing.Point(0, 24)
+        Me.ctlLine.Location = New System.Drawing.Point(5, 10)
         Me.ctlLine.Name = "ctlLine"
         Me.ctlLine.Size = New System.Drawing.Size(576, 1)
         Me.ctlLine.TabIndex = 1
@@ -53,10 +53,10 @@ Partial Class TitleControl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.Controls.Add(Me.ctlLine)
         Me.Controls.Add(Me.lblTitle)
+        Me.Controls.Add(Me.ctlLine)
         Me.Name = "TitleControl"
-        Me.Size = New System.Drawing.Size(576, 35)
+        Me.Size = New System.Drawing.Size(576, 23)
         CType(Me.ctlLine, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
