@@ -185,6 +185,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="RecentItems.vb" />
+    <Compile Include="UpdatesData.vb" />
     <Compile Include="WebClientFactory.vb" />
   </ItemGroup>
   <ItemGroup>

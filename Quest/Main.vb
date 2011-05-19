@@ -13,6 +13,7 @@ Public Class Main
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        ctlLauncher.QuestVersion = My.Application.Info.Version
         ctlPlayer.Visible = False
         InitialiseMenuHandlers()
 

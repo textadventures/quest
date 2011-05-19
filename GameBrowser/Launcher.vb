@@ -39,4 +39,20 @@
     Public Sub MainWindowShown()
         ctlPlayBrowser.MainWindowShown()
     End Sub
+
+    Private m_questVersion As Version
+
+    Public Property QuestVersion As Version
+        Get
+            Return m_questVersion
+        End Get
+        Set(value As Version)
+            ctlVersionInfo.CurrentVersion = value
+            WebClientFactory.QuestVersion = value.ToString
+        End Set
+    End Property
+
+    Private Sub ctlPlayBrowser_GotUpdateData(data As UpdatesData) Handles ctlPlayBrowser.GotUpdateData
+        ctlVersionInfo.UpdateInfo = data
+    End Sub
 End Class

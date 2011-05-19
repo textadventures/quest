@@ -3,6 +3,7 @@
     Private WithEvents m_client As System.Net.WebClient
 
     Public Event DataReady()
+    Public Event GotUpdateData(data As UpdatesData)
 
     Public Class GameData
         Public Name As String
@@ -34,6 +35,18 @@
 
     Private Sub ProcessXML(xml As String)
         Dim doc As XDocument = XDocument.Parse(xml)
+
+        Dim versionData = From data In doc.Descendants("questversion")
+                          Select New UpdatesData With {
+                              .Major = data.@major,
+                              .Minor = data.@minor,
+                              .Build = data.@build,
+                              .Revision = data.@rev,
+                              .Description = data.@desc,
+                              .URL = data.@url
+                          }
+
+        RaiseEvent GotUpdateData(versionData.FirstOrDefault)
 
         m_categories = (From cat In doc.Descendants("category")
                         Select New GameCategory With {

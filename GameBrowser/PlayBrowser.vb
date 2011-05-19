@@ -3,6 +3,7 @@
     Private WithEvents m_onlineGames As New OnlineGames
 
     Public Event LaunchGame(filename As String)
+    Public Event GotUpdateData(data As UpdatesData)
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -51,4 +52,7 @@
         m_onlineGames.PopulateGameList(category, ctlOnlineGameList)
     End Sub
 
+    Private Sub m_onlineGames_GotUpdateData(data As UpdatesData) Handles m_onlineGames.GotUpdateData
+        RaiseEvent GotUpdateData(data)
+    End Sub
 End Class
