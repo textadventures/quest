@@ -38,7 +38,11 @@ namespace AxeSoftware.Quest
         {
             if (addToUndoLog)
             {
-                WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(name, true, null, CreateElementType));
+                WorldModel.UndoLogger.AddUndoAction(
+                    new CreateDestroyLogEntry(name, CreateElementType, () =>
+                        {
+                            CreateInternal(name, false, extraInitialisation, initialTypes, initialFields, elementToClone);
+                        }));
             }
 
             Element newElement;
@@ -185,6 +189,7 @@ namespace AxeSoftware.Quest
             private string m_name;
             private ElementType m_elemType;
             private IEnumerable<string> m_typeNames;
+            private Action m_doCreate;
 
             public CreateDestroyLogEntry(string name, bool create, ObjectType? type, ElementType elemType)
                 : this(name, create, type, elemType, null)
@@ -200,24 +205,39 @@ namespace AxeSoftware.Quest
                 m_typeNames = typeNames;
             }
 
+            public CreateDestroyLogEntry(string name, ElementType elemType, Action doCreate)
+            {
+                m_name = name;
+                m_create = true;
+                m_elemType = elemType;
+                m_doCreate = doCreate;
+            }
+
             private void CreateElement(WorldModel worldModel)
             {
-                Element newElement;
-
-                if (m_elemType == ElementType.Object)
+                if (m_doCreate != null)
                 {
-                    newElement = worldModel.ObjectFactory.CreateObject(m_name, m_type.Value, false);
+                    m_doCreate.Invoke();
                 }
                 else
                 {
-                    newElement = worldModel.GetElementFactory(m_elemType).Create(m_name, false);
-                }
+                    Element newElement;
 
-                if (m_typeNames != null)
-                {
-                    foreach (string typeName in m_typeNames)
+                    if (m_elemType == ElementType.Object)
                     {
-                        newElement.AddType(worldModel.Elements.Get(ElementType.ObjectType, typeName));
+                        newElement = worldModel.ObjectFactory.CreateObject(m_name, m_type.Value, false);
+                    }
+                    else
+                    {
+                        newElement = worldModel.GetElementFactory(m_elemType).Create(m_name, false);
+                    }
+
+                    if (m_typeNames != null)
+                    {
+                        foreach (string typeName in m_typeNames)
+                        {
+                            newElement.AddType(worldModel.Elements.Get(ElementType.ObjectType, typeName));
+                        }
                     }
                 }
             }

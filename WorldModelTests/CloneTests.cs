@@ -63,8 +63,16 @@ namespace WorldModelTests
             Assert.AreEqual(originalObjectCount + 1, m_worldModel.Elements.Count(ElementType.Object));
 
             m_worldModel.UndoLogger.Undo();
-
             Assert.AreEqual(originalObjectCount, m_worldModel.Elements.Count(ElementType.Object));
+
+            m_worldModel.UndoLogger.Redo();
+            Assert.AreEqual(originalObjectCount + 1, m_worldModel.Elements.Count(ElementType.Object));
+
+            m_worldModel.UndoLogger.Undo();
+            Assert.AreEqual(originalObjectCount, m_worldModel.Elements.Count(ElementType.Object));
+
+            m_worldModel.UndoLogger.Redo();
+            Assert.AreEqual(originalObjectCount + 1, m_worldModel.Elements.Count(ElementType.Object));
         }
 
         [TestMethod]
