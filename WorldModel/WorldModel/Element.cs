@@ -280,8 +280,7 @@ namespace AxeSoftware.Quest
 
         public Element Clone()
         {
-            Element newElement = m_worldModel.GetElementFactory(m_elemType).CloneElement(this, Name + "2");
-            
+            Element newElement = m_worldModel.GetElementFactory(m_elemType).CloneElement(this, m_worldModel.GetUniqueElementName(Name));
             return newElement;
         }
     }

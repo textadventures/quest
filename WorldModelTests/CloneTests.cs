@@ -118,5 +118,23 @@ namespace WorldModelTests
             // Cloned's field value is back to original value
             Assert.AreEqual(3, clone.Fields.GetAsType<QuestList<string>>(listAttributeName).Count);
         }
+
+        [TestMethod]
+        public void TestMultipleClones()
+        {
+            Element clone = m_original.Clone();
+            Element clone2 = m_original.Clone();
+            Element clone3 = m_original.Clone();
+            Element clone4 = clone.Clone();
+            Element clone5 = clone.Clone();
+            Element clone6 = clone4.Clone();
+
+            Assert.AreEqual(m_original.Name + "1", clone.Name);
+            Assert.AreEqual(m_original.Name + "2", clone2.Name);
+            Assert.AreEqual(m_original.Name + "3", clone3.Name);
+            Assert.AreEqual(m_original.Name + "4", clone4.Name);
+            Assert.AreEqual(m_original.Name + "5", clone5.Name);
+            Assert.AreEqual(m_original.Name + "6", clone6.Name);
+        }
     }
 }

@@ -993,5 +993,24 @@ namespace AxeSoftware.Quest
             if (!m_template.TemplateExists(templateName)) return null;
             return m_template.GetTemplateElement(templateName);
         }
+
+        private static System.Text.RegularExpressions.Regex s_removeTrailingDigits = new System.Text.RegularExpressions.Regex(@"\d*$");
+
+        internal string GetUniqueElementName(string elementName)
+        {
+            string root = s_removeTrailingDigits.Replace(elementName, "");
+            bool elementAlreadyExists = true;
+            int number = 0;
+            string result = null;
+            
+            while (elementAlreadyExists)
+            {
+                number++;
+                result = root + number.ToString();
+                elementAlreadyExists = Elements.ContainsKey(result);
+            }
+
+            return result;
+        }
     }
 }
