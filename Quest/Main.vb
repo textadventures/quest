@@ -39,6 +39,7 @@ Public Class Main
             ctlEditor.Visible = True
             m_playingEditorGame = False
         Else
+            ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
             ctlLauncher.RefreshLists()
             ctlPlayer.Visible = False
             ctlLauncher.Visible = True
@@ -196,6 +197,7 @@ Public Class Main
     End Sub
 
     Private Sub ctlEditor_Close() Handles ctlEditor.Close
+        ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
         ctlLauncher.RefreshLists()
         ctlEditor.Visible = False
         ctlLauncher.Visible = True
