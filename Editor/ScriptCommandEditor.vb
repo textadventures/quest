@@ -89,7 +89,7 @@
             End If
         End If
 
-        If m_currentEditor IsNot Nothing Then
+        If m_currentEditor IsNot newEditor And m_currentEditor IsNot Nothing Then
             DirectCast(m_currentEditor, Control).Visible = False
         End If
 
