@@ -588,7 +588,7 @@
         If m_codeView Then
             ctlTextEditor.Copy()
         Else
-            MsgBox("Copy not yet implemented")
+            m_controller.CopyElements({ctlTree.SelectedItem})
         End If
     End Sub
 
@@ -596,7 +596,7 @@
         If m_codeView Then
             ctlTextEditor.Paste()
         Else
-            MsgBox("Paste not yet implemented")
+            m_controller.PasteElements(ctlTree.SelectedItem)
         End If
     End Sub
 

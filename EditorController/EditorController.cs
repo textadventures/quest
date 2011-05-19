@@ -51,6 +51,7 @@ namespace AxeSoftware.Quest
         private bool m_initialised = false;
         private Dictionary<string, Type> m_controlTypes = new Dictionary<string, Type>();
         private string m_filename;
+        private IEnumerable<Element> m_clipboardElements;
 
         public delegate void VoidHandler();
         public event VoidHandler ClearTree;
@@ -986,7 +987,7 @@ namespace AxeSoftware.Quest
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create {0} '{1}'", typeName, elementName));
             Element newElement;
-            
+
             if (elementName != null)
             {
                 newElement = m_worldModel.GetElementFactory(type).Create(elementName);
@@ -1096,7 +1097,7 @@ namespace AxeSoftware.Quest
             // It could also be created with no parent at all (it's up to the GUI to provide that option).
 
             ElementType elementType = m_worldModel.GetElementTypeForTypeString(elementTypeString);
-            
+
             if (elementKey == null) return null;
             if (!m_worldModel.Elements.ContainsKey(elementType, elementKey)) return null;
             Element currentSelection = m_worldModel.Elements.Get(elementKey);
@@ -1204,6 +1205,26 @@ namespace AxeSoftware.Quest
         {
             get { return m_filename; }
             set { m_filename = value; }
+        }
+
+        public void CopyElements(IEnumerable<string> elementNames)
+        {
+            m_clipboardElements = from name in elementNames select m_worldModel.Elements.Get(name);
+        }
+
+        public void PasteElements(string parentName)
+        {
+            Element parent = m_worldModel.Elements.Get(parentName);
+
+            m_worldModel.UndoLogger.StartTransaction("Paste");
+
+            foreach (Element e in m_clipboardElements)
+            {
+                Element newElement = e.Clone();
+                newElement.Parent = parent;
+            }
+
+            m_worldModel.UndoLogger.EndTransaction();
         }
     }
 }
