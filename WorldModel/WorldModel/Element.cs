@@ -167,10 +167,13 @@ namespace AxeSoftware.Quest
         void Fields_AttributeChanged(object sender, AttributeChangedEventArgs e)
         {
             m_worldModel.NotifyElementFieldUpdate(this, e.Property, e.Value, false);
-            string changedScript = "changed" + e.Property;
-            if (Fields.HasType<IScript>(changedScript))
+            if (!m_worldModel.EditMode)
             {
-                m_worldModel.RunScript(Fields.GetAsType<IScript>(changedScript));
+                string changedScript = "changed" + e.Property;
+                if (Fields.HasType<IScript>(changedScript))
+                {
+                    m_worldModel.RunScript(Fields.GetAsType<IScript>(changedScript));
+                }
             }
         }
 
@@ -281,6 +284,12 @@ namespace AxeSoftware.Quest
         public Element Clone()
         {
             Element newElement = m_worldModel.GetElementFactory(m_elemType).CloneElement(this, m_worldModel.GetUniqueElementName(Name));
+
+            if (this.MetaFields[MetaFieldDefinitions.Library])
+            {
+                newElement.MetaFields[MetaFieldDefinitions.Library] = false;
+                newElement.MetaFields[MetaFieldDefinitions.Filename] = null;
+            }
 
             // Pre-fetch all children of this element
             var children = m_worldModel.Elements.GetDirectChildren(this).ToList();

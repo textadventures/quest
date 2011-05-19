@@ -1269,6 +1269,7 @@ namespace AxeSoftware.Quest
             if (m_clipboardElements == null || m_clipboardElements.Count == 0) return false;
             Element parent = GetPasteParent(parentName);
             if (parent == null) return true;
+            if (parent.MetaFields[MetaFieldDefinitions.Library]) return false;
             return (parent.ElemType == m_clipboardElementType);
         }
 
@@ -1276,7 +1277,16 @@ namespace AxeSoftware.Quest
         {
             if (m_worldModel.Elements.ContainsKey(parentName))
             {
-                return m_worldModel.Elements.Get(parentName);
+                Element e = m_worldModel.Elements.Get(parentName);
+
+                // If the selected item is an object or walkthrough, it is valid to paste something
+                // as a child of this element
+
+                if (e.ElemType == ElementType.Walkthrough || (e.ElemType == ElementType.Object && e.Type == ObjectType.Object))
+                {
+                    return e;
+                }
+                return null;
             }
             return null;
         }
@@ -1285,6 +1295,10 @@ namespace AxeSoftware.Quest
         {
             if (!ElementExists(elementName)) return false;
             if (elementName == "game") return false;
+            Element e = m_worldModel.Elements.Get(elementName);
+            if (e.ElemType == ElementType.IncludedLibrary) return false;
+            if (e.ElemType == ElementType.Javascript) return false;
+            if (e.ElemType == ElementType.Template) return false;
             return true;
         }
     }
