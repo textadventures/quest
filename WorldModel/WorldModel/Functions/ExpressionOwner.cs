@@ -217,13 +217,13 @@ namespace AxeSoftware.Quest.Functions
 
         public bool IsRegexMatch(string regexPattern, string input)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
+            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             return regex.IsMatch(input);
         }
 
         public int GetMatchStrength(string regexPattern, string input)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
+            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regexPattern));
 
             // The idea is that you have a regex like
@@ -251,7 +251,7 @@ namespace AxeSoftware.Quest.Functions
 
         public QuestDictionary<string> Populate(string regexPattern, string input)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
+            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regexPattern));
 
             QuestDictionary<string> result = new QuestDictionary<string>();
