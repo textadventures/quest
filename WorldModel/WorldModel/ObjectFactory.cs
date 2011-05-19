@@ -14,6 +14,7 @@ namespace AxeSoftware.Quest
         Element Create();
         void DestroyElement(string elementName);
         void DestroyElementSilent(string elementName);
+        Element CloneElement(Element elementToClone, string newElementName);
         WorldModel WorldModel { set; }
     }
 
@@ -33,14 +34,23 @@ namespace AxeSoftware.Quest
             return CreateInternal(name, addToUndoLog, null);
         }
 
-        protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null)
+        protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null, Element elementToClone = null)
         {
             if (addToUndoLog)
             {
                 WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(name, true, null, CreateElementType));
             }
 
-            Element newElement = new Element(WorldModel);
+            Element newElement;
+
+            if (elementToClone == null)
+            {
+                newElement = new Element(WorldModel);
+            }
+            else
+            {
+                newElement = new Element(WorldModel, elementToClone);
+            }
 
             try
             {
@@ -86,6 +96,11 @@ namespace AxeSoftware.Quest
         {
             string id = WorldModel.GetUniqueID();
             return Create(id);
+        }
+
+        public Element CloneElement(Element elementToClone, string newElementName)
+        {
+            return CreateInternal(newElementName, true, null, elementToClone: elementToClone);
         }
 
         protected string FriendlyElementTypeName

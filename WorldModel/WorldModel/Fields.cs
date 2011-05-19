@@ -124,6 +124,26 @@ namespace AxeSoftware.Quest
             m_isMeta = isMeta;
         }
 
+        internal Fields Clone(Element newElement)
+        {
+            Fields clone = new Fields(m_worldModel, newElement, m_isMeta);
+
+            foreach (Element type in m_types.Reverse())
+            {
+                clone.m_types.Push(type);
+            }
+
+            foreach (var attribute in m_attributes)
+            {
+                if (attribute.Key != "name")
+                {
+                    clone.Set(attribute.Key, attribute.Value, false, true);
+                }
+            }
+
+            return clone;
+        }
+
         #region Indexed Properties
         public string this[IField<string> field]
         {

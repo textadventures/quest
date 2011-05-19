@@ -116,16 +116,39 @@ namespace AxeSoftware.Quest
         {
             return s_typeStrings[type];
         }
-        
+
         internal Element(WorldModel worldModel)
+            : this(worldModel, null)
         {
-            m_fields = new Fields(worldModel, this, false);
-            m_metaFields = new Fields(worldModel, this, true);
+        }
+
+        internal Element(WorldModel worldModel, Element element)
+        {
+            m_worldModel = worldModel;
+
+            if (element == null)
+            {
+                // New element
+                m_fields = new Fields(worldModel, this, false);
+                m_metaFields = new Fields(worldModel, this, true);
+            }
+            else
+            {
+                // Clone element
+                m_fields = element.Fields.Clone(this);
+                m_metaFields = element.MetaFields.Clone(this);
+            }
+
             Fields.AttributeChanged += Fields_AttributeChanged;
             Fields.AttributeChangedSilent += Fields_AttributeChangedSilent;
             m_metaFields.AttributeChanged += MetaFields_AttributeChanged;
             m_metaFields.AttributeChangedSilent += MetaFields_AttributeChangedSilent;
-            m_worldModel = worldModel;
+
+        }
+
+        internal Element CreateClone()
+        {
+            return new Element(m_worldModel, this);
         }
 
         void Fields_AttributeChangedSilent(object sender, AttributeChangedEventArgs e)
@@ -253,6 +276,13 @@ namespace AxeSoftware.Quest
         internal void FinishedInitialisation()
         {
             m_initialised = true;
+        }
+
+        public Element Clone()
+        {
+            Element newElement = m_worldModel.GetElementFactory(m_elemType).CloneElement(this, Name + "2");
+            
+            return newElement;
         }
     }
 }
