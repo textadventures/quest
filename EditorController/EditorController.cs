@@ -1209,7 +1209,7 @@ namespace AxeSoftware.Quest
 
         public void CopyElements(IEnumerable<string> elementNames)
         {
-            m_clipboardElements = from name in elementNames select m_worldModel.Elements.Get(name);
+            m_clipboardElements = (from name in elementNames select m_worldModel.Elements.Get(name)).ToList();
         }
 
         public void PasteElements(string parentName)
@@ -1224,6 +1224,17 @@ namespace AxeSoftware.Quest
                 newElement.Parent = parent;
             }
 
+            m_worldModel.UndoLogger.EndTransaction();
+        }
+
+        public void CutElements(IEnumerable<string> elementNames)
+        {
+            m_worldModel.UndoLogger.StartTransaction("Cut");
+            CopyElements(elementNames);
+            foreach (string name in elementNames)
+            {
+                DeleteElement(name, false);
+            }
             m_worldModel.UndoLogger.EndTransaction();
         }
     }

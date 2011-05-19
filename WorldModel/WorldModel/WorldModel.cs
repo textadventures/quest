@@ -998,6 +998,14 @@ namespace AxeSoftware.Quest
 
         internal string GetUniqueElementName(string elementName)
         {
+            // If element name doesn't exist (element might have been Cut in the editor),
+            // then just return the original name
+            if (!Elements.ContainsKey(elementName))
+            {
+                return elementName;
+            }
+
+            // Otherwise get a uniquely numbered element
             string root = s_removeTrailingDigits.Replace(elementName, "");
             bool elementAlreadyExists = true;
             int number = 0;

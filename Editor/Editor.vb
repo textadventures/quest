@@ -580,7 +580,7 @@
         If m_codeView Then
             ctlTextEditor.Cut()
         Else
-            MsgBox("Cut not yet implemented")
+            m_controller.CutElements({ctlTree.SelectedItem})
         End If
     End Sub
 
