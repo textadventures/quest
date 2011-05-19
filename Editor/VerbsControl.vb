@@ -3,8 +3,8 @@ Public Class VerbsControl
     Inherits AttributesControl
 
     Private Shared s_allowedTypes As New Dictionary(Of String, String) From {
-        {"string", "String"},
-        {"script", "Script"}
+        {"string", "Print a message"},
+        {"script", "Run a script"}
     }
 
     Public Sub New()
