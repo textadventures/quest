@@ -48,7 +48,11 @@ Public Class DropDownControl
             lstDropdown.Text = stringValue
         Else
             If stringValue = String.Empty Then
-                lstDropdown.Text = String.Empty
+                If m_dictionary.ContainsKey(String.Empty) Then
+                    lstDropdown.Text = m_dictionary(stringValue)
+                Else
+                    lstDropdown.Text = String.Empty
+                End If
             Else
                 lstDropdown.Text = m_dictionary(stringValue)
             End If
