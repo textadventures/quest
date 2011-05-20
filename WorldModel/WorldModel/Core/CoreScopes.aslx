@@ -20,7 +20,7 @@
   </function>
   
   <function name="ScopeVisibleNotHeld" type="objectlist">
-    return (ScopeReachableNotHeld() + ScopeVisibleNotReachable())
+    return (ScopeReachableNotHeld() + ScopeVisibleNotReachable() + player)
   </function>
 
   <function name="ScopeVisibleNotHeldNotScenery" type="objectlist">

@@ -2,6 +2,7 @@
   <template name="UnresolvedObject">I can't see that.</template>
   <template name="UnresolvedLocation">You can't go there.</template>
   <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
+  <template name="DefaultSelfDescription">Looking good.</template>
   <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"You can't take " + object.article + "."</dynamictemplate>
   <template name="SeeListHeader">You can see</template>
@@ -29,9 +30,11 @@
   <template name="NeutralGender">it</template>
   <template name="MaleGender">he</template>
   <template name="FemaleGender">she</template>
+  <template name="SelfGender">you</template>
   <template name="NeutralArticle">it</template>
   <template name="MaleArticle">him</template>
   <template name="FemaleArticle">her</template>
+  <template name="SelfArticle">yourself</template>
   <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " is already open."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " is already closed."</dynamictemplate>
   <dynamictemplate name="CantOpen">"You can't open " + object.article + "."</dynamictemplate>

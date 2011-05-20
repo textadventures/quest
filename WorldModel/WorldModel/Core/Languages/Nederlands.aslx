@@ -1,4 +1,7 @@
 ﻿<library>
+  <!-- Get any undefined templates from the English library -->
+  <include ref="English.aslx"/>
+  
   <!-- Contributed by Lina Anna -->
   <template name="UnresolvedObject">Ik zie dat hier niet.</template>
   <template name="UnresolvedLocation">Je kan hier niet heengaan.</template>
