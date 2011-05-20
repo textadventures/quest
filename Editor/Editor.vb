@@ -690,8 +690,7 @@
     End Sub
 
     Private Sub m_controller_RequestEdit(key As String) Handles m_controller.RequestEdit
-        ctlTree.SetSelectedItemNoEvent(key)
-        ShowEditor(key)
+        ctlTree.SetSelectedItem(key)
     End Sub
 
     Private Property BannerVisible As Boolean
