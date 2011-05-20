@@ -52,10 +52,46 @@ namespace AxeSoftware.Quest.Scripts
             NotifyUpdate(script, null);
         }
 
+        public void Insert(int index, IScript script)
+        {
+            if (base.UndoLog != null)
+            {
+                base.UndoLog.AddUndoAction(new UndoMultiScriptAddRemove(this, script, true, index));
+            }
+            InsertSilent(index, script);
+        }
+
         private void InsertSilent(int index, IScript script)
         {
             m_scripts.Insert(index, script);
             NotifyUpdate(script, index);
+        }
+
+        public void Swap(int index1, int index2)
+        {
+            if (index1 == index2) return;
+            if (index1 > index2)
+            {
+                int temp = index1;
+                index1 = index2;
+                index2 = temp;
+            }
+
+            IScript script;
+
+            // This swap assumes index1 < index2
+            script = m_scripts[index1];
+            Remove(index1);
+            Insert(index2, script);
+
+            // If the elements are consecutive then there's no need to
+            // move the second script, as it's already in the correct place
+            if (index1 != index2 - 1)
+            {
+                script = m_scripts[index2 - 1];
+                Remove(index2 - 1);
+                Insert(index1, script);
+            }
         }
 
         public IEnumerable<IScript> Scripts
@@ -65,8 +101,6 @@ namespace AxeSoftware.Quest.Scripts
                 return m_scripts.AsReadOnly();
             }
         }
-
-        #region IScript Members
 
         public override void Execute(Context c)
         {
@@ -92,8 +126,6 @@ namespace AxeSoftware.Quest.Scripts
                 throw new Exception("Cannot set Line in MultiScript");
             }
         }
-
-        #endregion
 
         public override string Save()
         {
