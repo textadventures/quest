@@ -14,6 +14,7 @@
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
     Public Event Play(filename As String)
+    Public Event Loaded(name As String)
 
     Public Sub New()
         ' This call is required by the designer.
@@ -36,6 +37,7 @@
             RaiseEvent AddToRecent(filename, m_controller.GameName)
             ctlTree.SetSelectedItem("game")
             ctlTree.FocusOnTree()
+            SetWindowTitle()
         End If
 
         Return ok
@@ -301,6 +303,7 @@
         ctlSaveFile.FileName = m_filename
         If ctlSaveFile.ShowDialog() = DialogResult.OK Then
             m_filename = ctlSaveFile.FileName
+            SetWindowTitle()
             Return Save(m_filename)
         End If
         Return False
@@ -663,6 +666,7 @@
         If m_codeView Then
             ctlTextEditor.LoadFile(m_filename)
             ctlTextEditor.Focus()
+            SetWindowTitle()
         Else
             If ctlTextEditor.TextWasSaved Then
                 ' file was changed in the text editor, so reload it
@@ -673,6 +677,8 @@
                 Else
                     ctlTree.TrySetSelectedItem(m_lastSelection)
                 End If
+            Else
+                SetWindowTitle()
             End If
         End If
 
@@ -768,5 +774,13 @@
         m_menu.MenuEnabled("cut") = canCutCopy
         m_menu.MenuEnabled("copy") = canCutCopy
         ctlToolbar.CanCutCopy = canCutCopy
+    End Sub
+
+    Public Sub SetWindowTitle()
+        Dim title As String = System.IO.Path.GetFileName(m_filename)
+        If m_codeView Then
+            title += " [Code]"
+        End If
+        RaiseEvent Loaded(title)
     End Sub
 End Class

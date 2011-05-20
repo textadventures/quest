@@ -39,11 +39,13 @@ Public Class Main
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Editor
             ctlEditor.Visible = True
             m_playingEditorGame = False
+            ctlEditor.SetWindowTitle()
         Else
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
             ctlLauncher.RefreshLists()
             ctlPlayer.Visible = False
             ctlLauncher.Visible = True
+            SetWindowTitle()
         End If
     End Sub
 
@@ -142,9 +144,13 @@ Public Class Main
     End Sub
 
     Private Sub ctlPlayer_GameNameSet(name As String) Handles ctlPlayer.GameNameSet
+        SetWindowTitle(name)
+    End Sub
+
+    Private Sub SetWindowTitle(Optional gameName As String = "")
         Dim caption As String
         caption = "Quest"
-        If Not String.IsNullOrEmpty(name) Then caption += " - " + name
+        If Not String.IsNullOrEmpty(gameName) Then caption += " - " + gameName
         Me.Text = caption
     End Sub
 
@@ -205,6 +211,11 @@ Public Class Main
         ctlLauncher.RefreshLists()
         ctlEditor.Visible = False
         ctlLauncher.Visible = True
+        SetWindowTitle()
+    End Sub
+
+    Private Sub ctlEditor_Loaded(name As String) Handles ctlEditor.Loaded
+        SetWindowTitle(name)
     End Sub
 
     Private Sub ctlEditor_Play(filename As String) Handles ctlEditor.Play
