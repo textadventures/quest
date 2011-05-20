@@ -66,6 +66,13 @@
 
       <control>
         <mustnotinherit>editor_room</mustnotinherit>
+        <caption>Scenery (do not display automatically in room descriptions)</caption>
+        <controltype>checkbox</controltype>
+        <attribute>scenery</attribute>
+      </control>
+
+      <control>
+        <mustnotinherit>editor_room</mustnotinherit>
         <controltype>verbs</controltype>
         <expand/>
       </control>

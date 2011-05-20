@@ -23,6 +23,10 @@
     return (ScopeReachableNotHeld() + ScopeVisibleNotReachable())
   </function>
 
+  <function name="ScopeVisibleNotHeldNotScenery" type="objectlist">
+    return (RemoveSceneryObjects(ScopeVisibleNotHeld()))
+  </function>
+
   <function name="ScopeReachable" type="objectlist">
     result = ScopeReachableNotHeld() + ScopeReachableInventory()
     list add(result, player)

@@ -53,7 +53,7 @@
     <![CDATA[
     result = ""
     count = 0
-    list = GetDirectChildren(parent)
+    list = RemoveSceneryObjects(GetDirectChildren(parent))
     listLength = ListCount(list)
     foreach (item, list) {
       if (LengthOf(result) = 0) result = preList + " "
@@ -86,6 +86,16 @@
     }
     return (result)
     ]]>
+  </function>
+
+  <function name="RemoveSceneryObjects" type="objectlist" parameters="list">
+    result = NewObjectList()
+    foreach (obj, list) {
+      if (not obj.scenery) {
+        list add (result, obj)
+      }
+    }
+    return (result)
   </function>
   
   <function name="FormatExitList" type="string" parameters="preList, list, preFinal, postList">

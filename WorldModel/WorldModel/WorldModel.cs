@@ -553,7 +553,7 @@ namespace AxeSoftware.Quest
 
         internal void UpdateObjectsList()
         {
-            UpdateObjectsList("VisibleNotHeld", ListType.ObjectsList);
+            UpdateObjectsList("VisibleNotHeldNotScenery", ListType.ObjectsList);
             UpdateObjectsList("Inventory", ListType.InventoryList);
         }
 

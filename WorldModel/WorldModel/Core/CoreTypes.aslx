@@ -24,6 +24,7 @@
     <descprefix>[YouAreIn]</descprefix>
     <contentsprefix>[ContainerContentsPrefix]</contentsprefix>
     <description type="string"></description>
+    <scenery type="boolean">false</scenery>
   </type>
 
   <type name="defaultexit">
