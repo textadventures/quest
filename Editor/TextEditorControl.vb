@@ -137,7 +137,8 @@ Public Class TextEditorControl
         End Get
         Set(value As Object)
             Dim stringValue As String = TryCast(value, String)
-            If stringValue IsNot Nothing Then
+            If stringValue IsNot Nothing AndAlso stringValue.Length > 0 Then
+                wpfTextEditor.IsEnabled = True
                 m_filename = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Controller.Filename), stringValue)
                 wpfTextEditor.SetSyntaxHighlighting("JavaScript")
                 wpfTextEditor.UseFolding = False
@@ -145,6 +146,7 @@ Public Class TextEditorControl
             Else
                 wpfTextEditor.EditText = ""
                 m_filename = Nothing
+                wpfTextEditor.IsEnabled = False
             End If
         End Set
     End Property
