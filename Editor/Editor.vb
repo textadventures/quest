@@ -632,6 +632,8 @@
                 End If
             End If
         End If
+
+        UpdateClipboardButtons()
     End Sub
 
     Private Sub DisplayCodeView(codeView As Boolean)
@@ -715,11 +717,11 @@
     End Sub
 
     Private Sub UpdateClipboardButtons()
-        Dim canPaste As Boolean = m_controller.CanPaste(ctlTree.SelectedItem)
+        Dim canPaste As Boolean = m_codeView OrElse m_controller.CanPaste(ctlTree.SelectedItem)
         m_menu.MenuEnabled("paste") = canPaste
         ctlToolbar.CanPaste = canPaste
 
-        Dim canCutCopy As Boolean = m_controller.CanCopy(ctlTree.SelectedItem)
+        Dim canCutCopy As Boolean = m_codeView OrElse m_controller.CanCopy(ctlTree.SelectedItem)
         m_menu.MenuEnabled("cut") = canCutCopy
         m_menu.MenuEnabled("copy") = canCutCopy
         ctlToolbar.CanCutCopy = canCutCopy
