@@ -20,10 +20,14 @@
         if (LengthOf(exits) > 0) {
           fulldesc = fulldesc + exits
         }
-        msg (fulldesc)
+        if (LengthOf(fulldesc) > 0) {
+          msg (fulldesc)
+        }
       }
       if (HasString(player.parent, "description")) {
-        msg (player.parent.description)
+        if (LengthOf(player.parent.description) > 0) {
+          msg (player.parent.description)
+        }
       }
     }
   </function>
