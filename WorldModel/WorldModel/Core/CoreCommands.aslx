@@ -103,7 +103,7 @@
   </command>
   
   <command name="inventory" pattern="[inventory]">
-    list = FormatObjectList(Template("CarryingListHeader"), player, Template("And"), ".")
+    list = FormatObjectList(Template("CarryingListHeader"), player, Template("And"), ".", true)
     if (list = "") {
       msg (Template("NotCarryingAnything"))
     }
