@@ -191,6 +191,9 @@ Public Class Main
 
     Private Sub Main_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         ctlPlayer.WindowClosing()
+        If Not ctlEditor.CloseEditor(False) Then
+            e.Cancel = True
+        End If
     End Sub
 
     Private Sub Main_KeyPress(sender As Object, e As System.Windows.Forms.KeyPressEventArgs) Handles Me.KeyPress

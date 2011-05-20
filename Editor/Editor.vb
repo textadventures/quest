@@ -9,6 +9,7 @@
     Private m_codeView As Boolean
     Private m_lastSelection As String
     Private m_currentEditorData As IEditorDataExtendedAttributeInfo
+    Private m_unsavedChanges As Boolean
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -25,6 +26,7 @@
     Public Function Initialise(ByRef filename As String) As Boolean
         m_filename = filename
         m_controller = New EditorController()
+        m_unsavedChanges = False
         InitialiseEditorControlsList()
         Dim ok As Boolean = m_controller.Initialise(filename)
         If ok Then
@@ -70,7 +72,7 @@
         menu.AddMenuClickHandler("addeditor", AddressOf AddNewEditor)
         menu.AddMenuClickHandler("addjavascript", AddressOf AddNewJavascript)
         menu.AddMenuClickHandler("play", AddressOf PlayGame)
-        menu.AddMenuClickHandler("close", AddressOf CloseEditor)
+        menu.AddMenuClickHandler("close", AddressOf DoClose)
         menu.AddMenuClickHandler("cut", AddressOf Cut)
         menu.AddMenuClickHandler("copy", AddressOf Copy)
         menu.AddMenuClickHandler("paste", AddressOf Paste)
@@ -139,7 +141,7 @@
 
     Private Sub Editor_Dirty(sender As Object, args As DataModifiedEventArgs)
         ctlToolbar.EnableUndo()
-        ' TO DO: Set status saying game not saved
+        m_unsavedChanges = True
     End Sub
 
     Private Sub m_controller_AddedNode(key As String, text As String, parent As String, foreColor As System.Drawing.Color?, backColor As System.Drawing.Color?) Handles m_controller.AddedNode
@@ -315,6 +317,7 @@
                 System.IO.File.WriteAllText(filename, m_controller.Save())
             End If
             m_controller.Filename = filename
+            m_unsavedChanges = False
             Return True
         Catch ex As Exception
             MsgBox("Unable to save the file due to the following error:" + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
@@ -569,13 +572,38 @@
     End Function
 
     Private Sub PlayGame()
-        ' TO DO: Current game must be saved and up to date i.e. non-dirty
+        If m_unsavedChanges Then
+            Dim result = MsgBox("You have unsaved changes." + Environment.NewLine + Environment.NewLine + "Do you wish to save your changes before playing this game?", MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Exclamation, "Unsaved Changes")
+            If result = MsgBoxResult.Yes Then
+                Dim saveOk As Boolean = Save()
+                If Not saveOk Then Return
+            ElseIf result = MsgBoxResult.Cancel Then
+                Return
+            End If
+        End If
+
         RaiseEvent Play(m_filename)
     End Sub
 
-    Private Sub CloseEditor()
-        RaiseEvent Close()
+    Private Sub DoClose()
+        CloseEditor(True)
     End Sub
+
+    Public Function CloseEditor(raiseCloseEvent As Boolean) As Boolean
+        If m_unsavedChanges Then
+            Dim result = MsgBox("You have unsaved changes." + Environment.NewLine + Environment.NewLine + "Do you wish to save your changes before closing?", MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Exclamation, "Unsaved Changes")
+            If result = MsgBoxResult.Yes Then
+                Dim saveOk As Boolean = Save()
+                If Not saveOk Then Return False
+            ElseIf result = MsgBoxResult.Cancel Then
+                Return False
+            End If
+        End If
+
+        If raiseCloseEvent Then RaiseEvent Close()
+
+        Return True
+    End Function
 
     Private Sub Cut()
         If m_codeView Then
@@ -608,8 +636,23 @@
     End Sub
 
     Private Sub ToggleCodeView()
-        Dim saveOk As Boolean = Save()
-        If Not saveOk Then Return
+        Dim unsavedPrompt As String = Nothing
+
+        If Not m_codeView And m_unsavedChanges Then
+            unsavedPrompt = "Do you wish to save your changes before editing this game in the code view?"
+        ElseIf m_codeView And ctlTextEditor.IsModified Then
+            unsavedPrompt = "Do you wish to save your changes before leaving the code view?"
+        End If
+
+        If unsavedPrompt IsNot Nothing Then
+            Dim result = MsgBox("You have unsaved changes." + Environment.NewLine + Environment.NewLine + unsavedPrompt, MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Exclamation, "Unsaved Changes")
+            If result = MsgBoxResult.Yes Then
+                Dim saveOk As Boolean = Save()
+                If Not saveOk Then Return
+            ElseIf result = MsgBoxResult.Cancel Then
+                Return
+            End If
+        End If
 
         If Not m_codeView Then
             m_lastSelection = ctlTree.SelectedItem
