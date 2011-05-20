@@ -188,6 +188,7 @@
     End Sub
 
     Private Sub cmdDelete_Click(sender As System.Object, e As System.EventArgs) Handles cmdDelete.Click
+        Save()
         If m_editIndex < m_scripts.Count Then
             m_scripts.Remove(m_editIndex)
         End If
@@ -250,10 +251,10 @@
         Set(value As Boolean)
             m_readOnly = value
 
-            cmdAdd.Enabled = Not m_readOnly
             SetEditButtonsEnabled(False)
             ctlScriptAdder.IsReadOnly = m_readOnly
             ctlScriptCommandEditor.IsReadOnly = m_readOnly
         End Set
     End Property
+
 End Class

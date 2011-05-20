@@ -27,7 +27,6 @@ Partial Class ScriptEditor
         Me.lstScripts = New System.Windows.Forms.ListView()
         Me.chScript = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
-        Me.cmdAdd = New System.Windows.Forms.ToolStripSplitButton()
         Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
         Me.cmdMoveUp = New System.Windows.Forms.ToolStripButton()
         Me.cmdMoveDown = New System.Windows.Forms.ToolStripButton()
@@ -81,20 +80,12 @@ Partial Class ScriptEditor
         '
         'ctlToolStrip
         '
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.cmdDelete, Me.cmdMoveUp, Me.cmdMoveDown, Me.cmdPopOut})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdDelete, Me.cmdMoveUp, Me.cmdMoveDown, Me.cmdPopOut})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
         Me.ctlToolStrip.Size = New System.Drawing.Size(604, 25)
         Me.ctlToolStrip.TabIndex = 1
         Me.ctlToolStrip.Text = "ToolStrip1"
-        '
-        'cmdAdd
-        '
-        Me.cmdAdd.Image = CType(resources.GetObject("cmdAdd.Image"), System.Drawing.Image)
-        Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(61, 22)
-        Me.cmdAdd.Text = "Add"
         '
         'cmdDelete
         '
@@ -136,6 +127,7 @@ Partial Class ScriptEditor
         '
         Me.ctlScriptAdder.Controller = Nothing
         Me.ctlScriptAdder.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlScriptAdder.IsReadOnly = False
         Me.ctlScriptAdder.Location = New System.Drawing.Point(0, 0)
         Me.ctlScriptAdder.Name = "ctlScriptAdder"
         Me.ctlScriptAdder.ShowCloseButton = False
@@ -146,6 +138,7 @@ Partial Class ScriptEditor
         '
         Me.ctlScriptCommandEditor.Controller = Nothing
         Me.ctlScriptCommandEditor.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlScriptCommandEditor.IsReadOnly = False
         Me.ctlScriptCommandEditor.Location = New System.Drawing.Point(0, 0)
         Me.ctlScriptCommandEditor.Name = "ctlScriptCommandEditor"
         Me.ctlScriptCommandEditor.ShowCloseButton = False
@@ -174,7 +167,6 @@ Partial Class ScriptEditor
     Friend WithEvents ctlScriptCommandEditor As AxeSoftware.Quest.ScriptCommandEditor
     Friend WithEvents lstScripts As System.Windows.Forms.ListView
     Friend WithEvents ctlToolStrip As System.Windows.Forms.ToolStrip
-    Friend WithEvents cmdAdd As System.Windows.Forms.ToolStripSplitButton
     Friend WithEvents cmdDelete As System.Windows.Forms.ToolStripButton
     Friend WithEvents cmdMoveUp As System.Windows.Forms.ToolStripButton
     Friend WithEvents cmdMoveDown As System.Windows.Forms.ToolStripButton
