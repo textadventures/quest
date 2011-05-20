@@ -179,7 +179,11 @@ namespace AxeSoftware.Quest
             public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
             {
                 IScript script = (IScript)value;
-                base.WriteAttribute(writer, element, attribute, "script", GameSaver.SaveScript(writer, script, 1));
+                string savedScript = GameSaver.SaveScript(writer, script, 1);
+                if (savedScript.Trim().Length > 0)
+                {
+                    base.WriteAttribute(writer, element, attribute, "script", savedScript);
+                }
             }
         }
 

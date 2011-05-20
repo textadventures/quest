@@ -34,6 +34,24 @@
         <attribute>name</attribute>
       </control>
 
+      <control>
+        <caption>Locked</caption>
+        <controltype>checkbox</controltype>
+        <attribute>locked</attribute>
+      </control>
+
+      <control>
+        <caption>Print message when locked</caption>
+        <controltype>textbox</controltype>
+        <attribute>lockmessage</attribute>
+      </control>
+      
+      <control>
+        <caption>Script to run (leave blank to automatically go to the specified location)</caption>
+        <controltype>script</controltype>
+        <attribute>script</attribute>
+      </control>
+
     </tab>
 
     <tab>

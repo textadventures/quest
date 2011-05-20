@@ -29,6 +29,8 @@
 
   <type name="defaultexit">
     <displayverbs type="list">[GoTo]</displayverbs>
+    <locked type="boolean">false</locked>
+    <lockmessage>[LockedExit]</lockmessage>
   </type>
 
   <type name="defaultcommand">
