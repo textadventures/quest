@@ -189,8 +189,14 @@
         m_handlers.Add(key, handler)
     End Sub
 
+    Public Sub ClearWindowMenu()
+        WindowMenuToolStripMenuItem.Visible = False
+    End Sub
+
     Public Sub CreateWindowMenu(title As String, options As IDictionary(Of String, String), handler As WindowMenuClickHandler)
         WindowMenuToolStripMenuItem.Text = title
+
+        WindowMenuToolStripMenuItem.DropDownItems.Clear()
 
         For Each kvp As KeyValuePair(Of String, String) In options
             Dim text As String = kvp.Value

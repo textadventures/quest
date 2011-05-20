@@ -69,6 +69,7 @@ Public Class Player
         SetCommandVisible(True)
         SetLocationVisible(True)
         m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
+        m_menu.ClearWindowMenu()
         m_game = game
         m_gameDebug = TryCast(game, IASLDebug)
         m_gameTimer = TryCast(m_game, IASLTimer)
