@@ -231,7 +231,11 @@ namespace AxeSoftware.Quest
                 count++;
             }
             return result.ToString();
+        }
 
+        public void Swap(int index1, int index2)
+        {
+            m_underlyingScript.Swap(index1, index2);
         }
     }
 }

@@ -232,8 +232,8 @@
     Private Sub SetEditButtonsEnabled(enabled As Boolean)
         If m_readOnly Then enabled = False
         cmdDelete.Enabled = enabled
-        cmdMoveUp.Enabled = enabled
-        cmdMoveDown.Enabled = enabled
+        cmdMoveUp.Enabled = enabled AndAlso m_editIndex > 0
+        cmdMoveDown.Enabled = enabled AndAlso m_editIndex < m_scripts.Count - 1
     End Sub
 
     Private Sub ctlContainer_SplitterMoved(sender As Object, e As System.Windows.Forms.SplitterEventArgs) Handles ctlContainer.SplitterMoved
@@ -257,4 +257,26 @@
         End Set
     End Property
 
+    Private Sub cmdMoveUp_Click(sender As System.Object, e As System.EventArgs) Handles cmdMoveUp.Click
+        Save()
+        If m_editIndex <= 0 Then Return
+        m_controller.StartTransaction("Move script up")
+        m_scripts.Swap(m_editIndex - 1, m_editIndex)
+        m_controller.EndTransaction()
+        SetSelectedIndex(m_editIndex - 1)
+    End Sub
+
+    Private Sub cmdMoveDown_Click(sender As System.Object, e As System.EventArgs) Handles cmdMoveDown.Click
+        Save()
+        If m_editIndex >= m_scripts.Count - 1 Then Return
+        m_controller.StartTransaction("Move script down")
+        m_scripts.Swap(m_editIndex, m_editIndex + 1)
+        m_controller.EndTransaction()
+        SetSelectedIndex(m_editIndex + 1)
+    End Sub
+
+    Private Sub SetSelectedIndex(index As Integer)
+        lstScripts.SelectedIndices.Clear()
+        lstScripts.SelectedIndices.Add(index)
+    End Sub
 End Class
