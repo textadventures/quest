@@ -730,6 +730,9 @@ Public Class Player
     End Sub
 
     Private Sub ctlPlayerHtml_ShortcutKeyPressed(keys As System.Windows.Forms.Keys) Handles ctlPlayerHtml.ShortcutKeyPressed
+        m_waiting = False
+        txtCommand.Focus()
         RaiseEvent ShortcutKeyPressed(keys)
     End Sub
+
 End Class
