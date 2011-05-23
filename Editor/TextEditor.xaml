@@ -9,7 +9,7 @@
         <avalonEdit:TextEditor
             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
             Name="textEditor"
-            FontFamily="Consolas"
+            FontFamily="Consolas, Courier New"
             FontSize="10pt" Text=""
             TextOptions.TextFormattingMode="Display" />
     </Grid>
