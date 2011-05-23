@@ -174,13 +174,9 @@ namespace AxeSoftware.Quest
         // and allows scripts to refer to procedures that aren't defined until later in the XML
         private void ResolveGame()
         {
-            foreach (Element t in m_worldModel.ElementTypes)
+            foreach (Element e in m_worldModel.Elements.GetElements())
             {
-                t.Fields.LazyFields.Resolve(m_scriptFactory);
-            }
-            foreach (Element o in m_worldModel.Objects)
-            {
-                o.Fields.LazyFields.Resolve(m_scriptFactory);
+                e.Fields.LazyFields.Resolve(m_scriptFactory);
             }
         }
 

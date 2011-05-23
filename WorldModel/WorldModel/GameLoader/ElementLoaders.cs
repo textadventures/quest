@@ -638,8 +638,7 @@ namespace AxeSoftware.Quest
                     proc.Fields[FieldDefinitions.ReturnType] = WorldModel.ConvertTypeToTypeName(returns);
                 }
 
-                // TO DO: These should be lazy loaded, so we can refer to other procedures that are defined later in the XML
-                proc.Fields[FieldDefinitions.Script] = GameLoader.ScriptFactory.CreateScript(script, proc);
+                proc.Fields.LazyFields.AddScript(FieldDefinitions.Script.Property, script);
             }
         }
 
