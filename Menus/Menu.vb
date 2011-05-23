@@ -66,8 +66,13 @@
     Private Sub AddHandlers(menu As ToolStripMenuItem)
         AddHandler menu.Click, AddressOf Menu_Click
 
-        If Not String.IsNullOrEmpty(DirectCast(menu.Tag, String)) Then
-            m_menus.Add(DirectCast(menu.Tag, String), menu)
+        Dim tag As String = TryCast(menu.Tag, String)
+
+        If Not String.IsNullOrEmpty(tag) Then
+            m_menus.Add(tag, menu)
+            If m_menuData.ContainsKey(tag) Then
+                m_menuData(tag).ShortcutKeys = menu.ShortcutKeys
+            End If
         End If
 
         For Each item As ToolStripItem In menu.DropDownItems
@@ -82,6 +87,7 @@
     Private Sub Menu_Click(sender As Object, e As EventArgs)
         Dim menu As ToolStripMenuItem = DirectCast(sender, ToolStripMenuItem)
         If menu.Tag Is Nothing Then Exit Sub
+        If Not menu.Available Then Exit Sub
 
         If m_handlers.ContainsKey(DirectCast(menu.Tag, String)) Then
             m_handlers(DirectCast(menu.Tag, String)).Invoke()
@@ -125,7 +131,10 @@
         Next
 
         For Each data As KeyValuePair(Of String, MenuData) In m_menuData
-            m_menus(data.Key).Available = data.Value.IsApplicable(m_mode)
+            Dim available As Boolean = data.Value.IsApplicable(m_mode)
+            Dim menu = m_menus(data.Key)
+            menu.Available = available
+            menu.ShortcutKeys = If(available, data.Value.ShortcutKeys, Nothing)
         Next
 
         HideDuplicateSeparators()
