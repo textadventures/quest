@@ -16,7 +16,7 @@
         <caption>Alias</caption>
         <controltype>dropdown</controltype>
         <attribute>alias</attribute>
-        <validvalues type="list">north;south;east;west;northeast;northwest;southeast;southwest;up;down</validvalues>
+        <validvalues type="list">[CompassN];[CompassS];[CompassE];[CompassW];[CompassNE];[CompassNW];[CompassSE];[CompassSW];[CompassOut];[CompassUp];[CompassDown]</validvalues>
         <freetext/>
         <nullable/>
         <width>200</width>
