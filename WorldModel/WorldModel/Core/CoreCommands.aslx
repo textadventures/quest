@@ -276,5 +276,6 @@
   <command name="sleep" pattern="[sleep]">msg (Template("DefaultSleep"))</command>
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
+  <command name="help" pattern="[help]">msg (Template("DefaultHelp"))</command>
 
 </library>
