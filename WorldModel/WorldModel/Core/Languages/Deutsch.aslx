@@ -53,7 +53,7 @@
   <dynamictemplate name="DisambiguateMenu">"Bitte wähle, was du mit '" + text + "' meinst:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   
-  <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>norden|north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template templatetype="command" name="go"><![CDATA[^gehe nach (?<exit>.*)$|^gehe (?<exit>.*)$|^nach (?<exit>.*)$|^(?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
   <template templatetype="command" name="look">^schau$</template>
   <template name="look">^schaue$</template>
   <verbtemplate name="lookat">untersuche</verbtemplate>
