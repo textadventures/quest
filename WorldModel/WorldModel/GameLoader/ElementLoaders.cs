@@ -421,9 +421,8 @@ namespace AxeSoftware.Quest
                         if (WorldModel.Elements.TryGetValue(ElementType.Delegate, type, out del))
                         {
                             Element proc = WorldModel.GetElementFactory(ElementType.Delegate).Create();
-                            // TO DO: These should be lazy loaded, so we can refer to other procedures that are defined later in the XML
                             proc.MetaFields[MetaFieldDefinitions.DelegateImplementation] = true;
-                            proc.Fields[FieldDefinitions.Script] = GameLoader.ScriptFactory.CreateScript(value, proc);
+                            proc.Fields.LazyFields.AddScript(FieldDefinitions.Script.Property, value);
                             current.Fields.Set(attribute, new DelegateImplementation(type, del, proc));
                         }
                         else
