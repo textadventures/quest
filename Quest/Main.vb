@@ -5,6 +5,7 @@ Public Class Main
     Private m_currentFile As String
     Private m_loaded As Boolean = False
     Private m_playingEditorGame As Boolean = False
+    Private m_cmdLineLaunch As String = Nothing
     Private Const k_regPath As String = "Software\Quest"
     Private Delegate Sub MenuHandler()
 
@@ -18,6 +19,11 @@ Public Class Main
         InitialiseMenuHandlers()
 
         Dim helper As New AxeSoftware.Utility.WindowHelper(Me, "Quest", "Main")
+
+        Dim args As New List(Of String)(Environment.GetCommandLineArgs())
+        If args.Count > 1 Then
+            CmdLineLaunch(args(1))
+        End If
     End Sub
 
     Private Sub InitialiseMenuHandlers()
@@ -235,9 +241,18 @@ Public Class Main
 
     Private Sub Main_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
         ctlLauncher.MainWindowShown()
+
+        If m_cmdLineLaunch IsNot Nothing Then
+            Launch(m_cmdLineLaunch)
+        End If
     End Sub
 
     Private Sub ctlPlayer_ShortcutKeyPressed(keys As System.Windows.Forms.Keys) Handles ctlPlayer.ShortcutKeyPressed
         ctlMenu.ShortcutKeyPressed(keys)
+    End Sub
+
+    Private Sub CmdLineLaunch(filename As String)
+        ctlLauncher.Visible = False
+        m_cmdLineLaunch = filename
     End Sub
 End Class

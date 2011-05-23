@@ -1845,6 +1845,10 @@
 		<col def="S255">ProgId_</col>
 		<col def="S64">MIME_</col>
 		<col def="s38">Feature_</col>
+		<row><td>ASL</td><td>Quest.Primary_output</td><td>asl.File</td><td/><td>AlwaysInstall</td></row>
+		<row><td>ASLX</td><td>Quest.Primary_output</td><td>aslx.File</td><td/><td>AlwaysInstall</td></row>
+		<row><td>CAS</td><td>Quest.Primary_output</td><td>cas.File</td><td/><td>AlwaysInstall</td></row>
+		<row><td>QSG</td><td>Quest.Primary_output</td><td>qsg.File</td><td/><td>AlwaysInstall</td></row>
 	</table>
 
 	<table name="Feature">
@@ -3910,6 +3914,10 @@
 		<row><td>ID_STRING3</td><td>1033</td><td>Axe Software</td><td>0</td><td/><td>-1163980368</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>Quest</td><td>0</td><td/><td>-1163970158</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>-1163925360</td></row>
+		<row><td>NEW_STRING1</td><td>1033</td><td>ASL</td><td>0</td><td/><td>-1163936110</td></row>
+		<row><td>NEW_STRING2</td><td>1033</td><td>CAS</td><td>0</td><td/><td>-1163966638</td></row>
+		<row><td>NEW_STRING3</td><td>1033</td><td>QSG</td><td>0</td><td/><td>-1163937966</td></row>
+		<row><td>NEW_STRING4</td><td>1033</td><td>ASLX</td><td>0</td><td/><td>-1163933870</td></row>
 	</table>
 
 	<table name="ISTargetImage">
@@ -4012,6 +4020,11 @@
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
 		<row><td>NewShortcut1_551763055A9D49AE8E08E9D6221C46CC.exe</td><td/><td>C:\VBProjects\Quest (CodePlex)\trunk\Quest\q2_48x48c.ico</td><td>0</td></row>
+		<row><td>_0A1AAAA3_0CA3_404F_910C_9154E597BD09</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_5A81DCDB_21FE_4146_B440_D321A2335D22</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_652A03BB_EA6F_4B17_A009_80EEBA4ADDC8</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_6CA88A13_4152_4B67_AE17_FB9BA99E02E3</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_80B27429_02EA_4B6B_ADAB_F2209DEBD1E3</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4444,6 +4457,10 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S72">Icon_</col>
 		<col def="I2">IconIndex</col>
 		<col def="I4">ISAttributes</col>
+		<row><td>asl.File</td><td/><td/><td>Quest Game</td><td>_80B27429_02EA_4B6B_ADAB_F2209DEBD1E3</td><td>0</td><td/></row>
+		<row><td>aslx.File</td><td/><td/><td>Quest Game</td><td>_5A81DCDB_21FE_4146_B440_D321A2335D22</td><td>0</td><td/></row>
+		<row><td>cas.File</td><td/><td/><td>Quest Game</td><td>_652A03BB_EA6F_4B17_A009_80EEBA4ADDC8</td><td>0</td><td/></row>
+		<row><td>qsg.File</td><td/><td/><td>Quest Saved Game</td><td>_6CA88A13_4152_4B67_AE17_FB9BA99E02E3</td><td>0</td><td/></row>
 	</table>
 
 	<table name="Property">
@@ -4521,7 +4538,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{2D13F0F4-0DF7-4E9F-AA71-9C870B2A7394}</td><td/></row>
+		<row><td>ProductCode</td><td>{06E540E6-6B2F-4FFD-85B1-C82C4934D30B}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
 		<row><td>ProductVersion</td><td>5.00.0001</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
@@ -4817,6 +4834,10 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="I2">Sequence</col>
 		<col def="L255">Command</col>
 		<col def="L255">Argument</col>
+		<row><td>ASL</td><td>open</td><td/><td/><td>"%1"</td></row>
+		<row><td>ASLX</td><td>open</td><td/><td/><td>"%1"</td></row>
+		<row><td>CAS</td><td>open</td><td/><td/><td>"%1"</td></row>
+		<row><td>QSG</td><td>open</td><td/><td/><td>"%1"</td></row>
 	</table>
 
 	<table name="_Validation">
