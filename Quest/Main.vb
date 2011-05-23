@@ -226,4 +226,8 @@ Public Class Main
     Private Sub Main_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
         ctlLauncher.MainWindowShown()
     End Sub
+
+    Private Sub ctlPlayer_ShortcutKeyPressed(keys As System.Windows.Forms.Keys) Handles ctlPlayer.ShortcutKeyPressed
+        ctlMenu.ShortcutKeyPressed(keys)
+    End Sub
 End Class

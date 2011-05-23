@@ -5,6 +5,7 @@ Public Class PlayerHTML
     Public Event Ready()
     Public Event CommandRequested(command As String)
     Public Event SendEvent(eventName As String, param As String)
+    Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
 
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
     Private m_deleteFile As String = Nothing
@@ -152,5 +153,11 @@ Public Class PlayerHTML
 
     Public Sub DisableNavigation()
         m_navigationAllowed = False
+    End Sub
+
+    Private Sub wbOutput_PreviewKeyDown(sender As Object, e As System.Windows.Forms.PreviewKeyDownEventArgs) Handles wbOutput.PreviewKeyDown
+        ' With WebBrowserShortcutsEnabled = False, *all* shortcut keys are suppressed, not just webbrowser ones.
+        ' So to enable Quest menu shortcut keys to work, we handle them here.
+        RaiseEvent ShortcutKeyPressed(e.KeyData)
     End Sub
 End Class

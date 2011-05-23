@@ -233,4 +233,10 @@
         m_menus(menu).ShortcutKeys = keys
     End Sub
 
+    Public Sub ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
+        Dim applicableMenu = (From menu In m_menus.Values Where menu.ShortcutKeys = keys).FirstOrDefault()
+        If applicableMenu Is Nothing Then Return
+        applicableMenu.PerformClick()
+    End Sub
+
 End Class

@@ -31,6 +31,7 @@ Public Class Player
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
     Public Event GameNameSet(name As String)
+    Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -728,4 +729,7 @@ Public Class Player
         DoQuit()
     End Sub
 
+    Private Sub ctlPlayerHtml_ShortcutKeyPressed(keys As System.Windows.Forms.Keys) Handles ctlPlayerHtml.ShortcutKeyPressed
+        RaiseEvent ShortcutKeyPressed(keys)
+    End Sub
 End Class
