@@ -53,6 +53,7 @@ namespace AxeSoftware.Quest
         private string m_filename;
         private List<Element> m_clipboardElements;
         private ElementType m_clipboardElementType;
+        private List<IScript> m_clipboardScripts;
 
         public delegate void VoidHandler();
         public event VoidHandler ClearTree;
@@ -1300,6 +1301,21 @@ namespace AxeSoftware.Quest
             if (e.ElemType == ElementType.Javascript) return false;
             if (e.ElemType == ElementType.Template) return false;
             return true;
+        }
+
+        public bool CanPasteScript()
+        {
+            return m_clipboardScripts != null && m_clipboardScripts.Count > 0;
+        }
+
+        internal void SetClipboardScript(IEnumerable<IScript> script)
+        {
+            m_clipboardScripts = new List<IScript>(script);
+        }
+
+        internal IEnumerable<IScript> GetClipboardScript()
+        {
+            return m_clipboardScripts.AsReadOnly();
         }
     }
 }

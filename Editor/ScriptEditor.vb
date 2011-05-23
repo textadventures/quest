@@ -207,6 +207,7 @@
         Set(value As Boolean)
             m_isPopOut = value
             cmdPopOut.Visible = Not value
+            tsPopOutSeparator.Visible = Not value
             ctlScriptAdder.ShowCloseButton = value
             ctlScriptCommandEditor.ShowCloseButton = value
         End Set
@@ -230,10 +231,15 @@
     End Sub
 
     Private Sub SetEditButtonsEnabled(enabled As Boolean)
+        ' Copy is enabled even in read-only mode
+        cmdCopy.Enabled = enabled
+
         If m_readOnly Then enabled = False
         cmdDelete.Enabled = enabled
         cmdMoveUp.Enabled = enabled AndAlso m_editIndex > 0
         cmdMoveDown.Enabled = enabled AndAlso m_editIndex < m_scripts.Count - 1
+        cmdCut.Enabled = enabled
+        cmdPaste.Enabled = enabled AndAlso m_controller.CanPasteScript()
     End Sub
 
     Private Sub ctlContainer_SplitterMoved(sender As Object, e As System.Windows.Forms.SplitterEventArgs) Handles ctlContainer.SplitterMoved
@@ -252,6 +258,7 @@
             m_readOnly = value
 
             SetEditButtonsEnabled(False)
+            cmdPaste.Enabled = Not m_readOnly
             ctlScriptAdder.IsReadOnly = m_readOnly
             ctlScriptCommandEditor.IsReadOnly = m_readOnly
         End Set
@@ -278,5 +285,17 @@
     Private Sub SetSelectedIndex(index As Integer)
         lstScripts.SelectedIndices.Clear()
         lstScripts.SelectedIndices.Add(index)
+    End Sub
+
+    Private Sub cmdCut_Click(sender As System.Object, e As System.EventArgs) Handles cmdCut.Click
+        m_scripts.Cut(m_editIndex)
+    End Sub
+
+    Private Sub cmdCopy_Click(sender As System.Object, e As System.EventArgs) Handles cmdCopy.Click
+        m_scripts.Copy(m_editIndex)
+    End Sub
+
+    Private Sub cmdPaste_Click(sender As System.Object, e As System.EventArgs) Handles cmdPaste.Click
+        m_scripts.Paste(m_editIndex)
     End Sub
 End Class

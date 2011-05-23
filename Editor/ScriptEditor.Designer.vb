@@ -28,8 +28,14 @@ Partial Class ScriptEditor
         Me.chScript = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
         Me.cmdDelete = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.cmdMoveUp = New System.Windows.Forms.ToolStripButton()
         Me.cmdMoveDown = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.cmdCut = New System.Windows.Forms.ToolStripButton()
+        Me.cmdCopy = New System.Windows.Forms.ToolStripButton()
+        Me.cmdPaste = New System.Windows.Forms.ToolStripButton()
+        Me.tsPopOutSeparator = New System.Windows.Forms.ToolStripSeparator()
         Me.cmdPopOut = New System.Windows.Forms.ToolStripButton()
         Me.ctlScriptAdder = New AxeSoftware.Quest.ScriptAdder()
         Me.ctlScriptCommandEditor = New AxeSoftware.Quest.ScriptCommandEditor()
@@ -80,7 +86,7 @@ Partial Class ScriptEditor
         '
         'ctlToolStrip
         '
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdDelete, Me.cmdMoveUp, Me.cmdMoveDown, Me.cmdPopOut})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdDelete, Me.ToolStripSeparator2, Me.cmdMoveUp, Me.cmdMoveDown, Me.ToolStripSeparator1, Me.cmdCut, Me.cmdCopy, Me.cmdPaste, Me.tsPopOutSeparator, Me.cmdPopOut})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
         Me.ctlToolStrip.Size = New System.Drawing.Size(604, 25)
@@ -95,6 +101,11 @@ Partial Class ScriptEditor
         Me.cmdDelete.Name = "cmdDelete"
         Me.cmdDelete.Size = New System.Drawing.Size(23, 22)
         Me.cmdDelete.Text = "Delete"
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
         '
         'cmdMoveUp
         '
@@ -113,6 +124,43 @@ Partial Class ScriptEditor
         Me.cmdMoveDown.Name = "cmdMoveDown"
         Me.cmdMoveDown.Size = New System.Drawing.Size(23, 22)
         Me.cmdMoveDown.Text = "Move down"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 25)
+        '
+        'cmdCut
+        '
+        Me.cmdCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.cmdCut.Image = CType(resources.GetObject("cmdCut.Image"), System.Drawing.Image)
+        Me.cmdCut.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdCut.Name = "cmdCut"
+        Me.cmdCut.Size = New System.Drawing.Size(23, 22)
+        Me.cmdCut.Text = "Cut"
+        '
+        'cmdCopy
+        '
+        Me.cmdCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.cmdCopy.Image = CType(resources.GetObject("cmdCopy.Image"), System.Drawing.Image)
+        Me.cmdCopy.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdCopy.Name = "cmdCopy"
+        Me.cmdCopy.Size = New System.Drawing.Size(23, 22)
+        Me.cmdCopy.Text = "Copy"
+        '
+        'cmdPaste
+        '
+        Me.cmdPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.cmdPaste.Image = CType(resources.GetObject("cmdPaste.Image"), System.Drawing.Image)
+        Me.cmdPaste.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.cmdPaste.Name = "cmdPaste"
+        Me.cmdPaste.Size = New System.Drawing.Size(23, 22)
+        Me.cmdPaste.Text = "Paste"
+        '
+        'tsPopOutSeparator
+        '
+        Me.tsPopOutSeparator.Name = "tsPopOutSeparator"
+        Me.tsPopOutSeparator.Size = New System.Drawing.Size(6, 25)
         '
         'cmdPopOut
         '
@@ -172,5 +220,11 @@ Partial Class ScriptEditor
     Friend WithEvents cmdMoveDown As System.Windows.Forms.ToolStripButton
     Friend WithEvents cmdPopOut As System.Windows.Forms.ToolStripButton
     Friend WithEvents chScript As System.Windows.Forms.ColumnHeader
+    Friend WithEvents cmdCut As System.Windows.Forms.ToolStripButton
+    Friend WithEvents cmdCopy As System.Windows.Forms.ToolStripButton
+    Friend WithEvents cmdPaste As System.Windows.Forms.ToolStripButton
+    Friend WithEvents ToolStripSeparator2 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents ToolStripSeparator1 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents tsPopOutSeparator As System.Windows.Forms.ToolStripSeparator
 
 End Class

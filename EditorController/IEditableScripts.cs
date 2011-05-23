@@ -31,5 +31,8 @@ namespace AxeSoftware.Quest
         string DisplayString(int index, string newValue);
         int Count { get; }
         void Swap(int index1, int index2);
+        void Cut(int index);
+        void Copy(int index);
+        void Paste(int index);
     }
 }

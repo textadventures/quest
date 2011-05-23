@@ -58,10 +58,21 @@ namespace AxeSoftware.Quest
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public IScript CreateSimpleScript(string line)
+        public IScript CreateSimpleScriptFromKeyword(string line)
         {
             IScriptConstructor constructor = GetScriptConstructor(line);
             return constructor.Create(line, null);
+        }
+
+        /// <summary>
+        /// For single-line scripts only - used by the editor to create new script lines
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public IScript CreateSimpleScript(string line)
+        {
+            MultiScript result = (MultiScript)CreateScript(line);
+            return result.Scripts.First();
         }
 
         /// <summary>

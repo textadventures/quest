@@ -237,5 +237,25 @@ namespace AxeSoftware.Quest
         {
             m_underlyingScript.Swap(index1, index2);
         }
+
+        public void Cut(int index)
+        {
+            Copy(index);
+            Remove(index);
+        }
+        
+        public void Copy(int index)
+        {
+            m_controller.SetClipboardScript(new List<IScript> { m_underlyingScript.Scripts.ElementAt(index) });
+        }
+
+        public void Paste(int index)
+        {
+            foreach (IScript script in m_controller.GetClipboardScript())
+            {
+                m_underlyingScript.Insert(index, m_controller.ScriptFactory.Clone(script));
+                index++;
+            }
+        }
     }
 }
