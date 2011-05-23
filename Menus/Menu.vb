@@ -134,6 +134,13 @@
             Dim available As Boolean = data.Value.IsApplicable(m_mode)
             Dim menu = m_menus(data.Key)
             menu.Available = available
+            If available Then
+                Dim theseShortcutKeys = data.Value.ShortcutKeys
+                Dim otherMenusWithSameShortcut = From other In m_menus.Values Where other.ShortcutKeys = theseShortcutKeys
+                For Each otherMenu In otherMenusWithSameShortcut
+                    otherMenu.ShortcutKeys = Nothing
+                Next
+            End If
             menu.ShortcutKeys = If(available, data.Value.ShortcutKeys, Nothing)
         Next
 
