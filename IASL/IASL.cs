@@ -63,6 +63,7 @@ namespace AxeSoftware.Quest
         void RequestRestart();
         void Show(string element);
         void Hide(string element);
+        void SetCompassDirections(IEnumerable<string> dirs);
     }
 
     public enum Request
@@ -85,7 +86,8 @@ namespace AxeSoftware.Quest
         Speak,
         Restart,
         Show,
-        Hide
+        Hide,
+        SetCompassDirections
     }
 
     public enum ListType

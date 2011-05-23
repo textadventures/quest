@@ -50,6 +50,18 @@
   <dynamictemplate name="DisambiguateMenu">"Please choose which '" + text + "' you mean:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   <template name="LockedExit">That way is locked.</template>
+
+  <template name="CompassNW">northwest</template>
+  <template name="CompassN">north</template>
+  <template name="CompassNE">northeast</template>
+  <template name="CompassW">west</template>
+  <template name="CompassOut">out</template>
+  <template name="CompassE">east</template>
+  <template name="CompassSW">southwest</template>
+  <template name="CompassS">south</template>
+  <template name="CompassSE">southeast</template>
+  <template name="CompassUp">up</template>
+  <template name="CompassDown">down</template>
   
   <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
   <template templatetype="command" name="look">^look$</template>

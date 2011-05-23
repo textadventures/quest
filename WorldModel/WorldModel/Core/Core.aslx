@@ -21,6 +21,7 @@
     request (Background, game.defaultbackground)
     request (Foreground, game.defaultforeground)
     request (LinkForeground, game.defaultlinkforeground)
+    request (SetCompassDirections, Join(game.compassdirections, ";"))
   </function>
   
   <function name="StartGame">

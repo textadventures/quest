@@ -52,7 +52,19 @@
   <dynamictemplate name="ContainerFull">CapFirst(object.gender) + " ist voll."</dynamictemplate>
   <dynamictemplate name="DisambiguateMenu">"Bitte wähle, was du mit '" + text + "' meinst:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
-  
+
+  <template name="CompassNW">nordwesten</template>
+  <template name="CompassN">norden</template>
+  <template name="CompassNE">nordosten</template>
+  <template name="CompassW">westen</template>
+  <template name="CompassOut">raus</template>
+  <template name="CompassE">osten</template>
+  <template name="CompassSW">südwesten</template>
+  <template name="CompassS">süden</template>
+  <template name="CompassSE">südosten</template>
+  <template name="CompassUp">hoch</template>
+  <template name="CompassDown">runter</template>
+
   <template templatetype="command" name="go"><![CDATA[^gehe nach (?<exit>.*)$|^gehe (?<exit>.*)$|^nach (?<exit>.*)$|^(?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
   <template templatetype="command" name="look">^schau$</template>
   <template name="look">^schaue$</template>

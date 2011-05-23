@@ -8,12 +8,12 @@ Public Class Compass
 
     ' Wingdings arrows
     Private Const buttonCaptions As String = "ãáäß àåâætu"
-    Private buttonCommands() As String = {"northwest", "north", "northeast", _
+    Private buttonCommands As New List(Of String)({"northwest", "north", "northeast", _
                                           "west", "out", "east", _
                                           "southwest", "south", "southeast", _
-                                          "up", "down"}
+                                          "up", "down"})
 
-    Private buttons As Dictionary(Of String, System.Windows.Forms.Button) = New Dictionary(Of String, System.Windows.Forms.Button)
+    Private buttons As Dictionary(Of Integer, System.Windows.Forms.Button) = New Dictionary(Of Integer, System.Windows.Forms.Button)
 
     Public Event RunCommand(command As String)
 
@@ -54,7 +54,7 @@ Public Class Compass
             End With
             AddHandler button.Click, AddressOf ButtonClicked
             pnlContainer.Controls.Add(button)
-            buttons.Add(buttonCommands(i), button)
+            buttons.Add(i, button)
         Next
 
         pnlContainer.Width = (buttonSize * 4) + (buttonSpacing * 3)
@@ -70,23 +70,26 @@ Public Class Compass
     End Sub
 
     Public Sub SetAvailableExits(exits As List(Of ListData))
-        Dim enabledList As New List(Of String)
+        Dim enabledList As New List(Of Integer)
 
         For Each direction As ListData In exits
-            If buttons.ContainsKey(direction.Text) Then
-                buttons(direction.Text).Enabled = True
-                enabledList.Add(direction.Text)
+            If buttonCommands.Contains(direction.Text) Then
+                buttons(buttonCommands.IndexOf(direction.Text)).Enabled = True
+                enabledList.Add(buttonCommands.IndexOf(direction.Text))
             End If
         Next
 
-        For Each key As String In buttons.Keys
+        For Each key As Integer In buttons.Keys
             If Not enabledList.Contains(key) Then buttons(key).Enabled = False
         Next
     End Sub
 
-    Friend ReadOnly Property CompassDirections() As String()
+    Friend Property CompassDirections() As List(Of String)
         Get
             Return buttonCommands
         End Get
+        Set(value As List(Of String))
+            buttonCommands = value
+        End Set
     End Property
 End Class

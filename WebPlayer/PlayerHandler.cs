@@ -369,5 +369,10 @@ namespace WebPlayer
             s_elementMap.TryGetValue(code, out id);
             return id;
         }
+
+        public void SetCompassDirections(IEnumerable<string> dirs)
+        {
+            // TO DO: Implement
+        }
     }
 }

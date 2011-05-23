@@ -540,6 +540,9 @@ namespace AxeSoftware.Quest
                 case Request.Hide:
                     m_playerUI.Hide(data);
                     break;
+                case Request.SetCompassDirections:
+                    m_playerUI.SetCompassDirections(data.Split(';'));
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");
             }

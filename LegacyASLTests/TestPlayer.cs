@@ -184,5 +184,9 @@ namespace LegacyASLTests
         public void Hide(string element)
         {
         }
+
+        public void SetCompassDirections(IEnumerable<string> dirs)
+        {
+        }
     }
 }

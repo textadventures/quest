@@ -41,7 +41,7 @@ Public Class Player
         PanesVisible = True
         Reset()
 
-        lstPlacesObjects.IgnoreNames = New List(Of String)(ctlCompass.CompassDirections)
+        lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
 
         m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitMain, "Quest", "MainSplitter"))
         m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitPane, "Quest", "PaneSplitter"))
@@ -733,6 +733,11 @@ Public Class Player
         m_waiting = False
         txtCommand.Focus()
         RaiseEvent ShortcutKeyPressed(keys)
+    End Sub
+
+    Public Sub SetCompassDirections(dirs As IEnumerable(Of String)) Implements IPlayer.SetCompassDirections
+        ctlCompass.CompassDirections = New List(Of String)(dirs)
+        lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
     End Sub
 
 End Class

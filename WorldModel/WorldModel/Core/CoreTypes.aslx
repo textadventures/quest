@@ -8,6 +8,7 @@
     <defaultbackground>white</defaultbackground>
     <defaultforeground>black</defaultforeground>
     <defaultlinkforeground>blue</defaultlinkforeground>
+    <compassdirections type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassOut];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown]</compassdirections>
   </type>
   
   <type name="defaultobject">
