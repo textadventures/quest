@@ -65,9 +65,9 @@ namespace AxeSoftware.Quest
 
         void m_game_PrintText(string text)
         {
-            string currentCommand = "";
             string currentTagValue = "";
             string currentVerbs = "";
+            bool generatingLink = false;
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
             XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
@@ -91,11 +91,8 @@ namespace AxeSoftware.Quest
                                 }
                                 break;
                             case "object":
-                                currentCommand = "look at";
+                                generatingLink = true;
                                 currentVerbs = reader.GetAttribute("verbs");
-                                break;
-                            case "exit":
-                                currentCommand = "go";
                                 break;
                             case "br":
                                 WriteText(FormatText("<br />"));
@@ -129,7 +126,7 @@ namespace AxeSoftware.Quest
                         }
                         break;
                     case XmlNodeType.Text:
-                        if (currentCommand.Length == 0)
+                        if (!generatingLink)
                         {
                             WriteText(FormatText(reader.Value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")));
                         }
@@ -148,12 +145,8 @@ namespace AxeSoftware.Quest
                                 // do nothing
                                 break;
                             case "object":
-                                AddLink(currentTagValue, currentCommand + " " + currentTagValue, currentVerbs);
-                                currentCommand = "";
-                                break;
-                            case "exit":
-                                AddLink(currentTagValue, currentCommand + " " + currentTagValue, null);
-                                currentCommand = "";
+                                AddLink(currentTagValue, null, currentVerbs);
+                                generatingLink = false;
                                 break;
                             case "b":
                                 WriteText("</b>");

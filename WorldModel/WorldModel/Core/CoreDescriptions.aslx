@@ -143,13 +143,13 @@
     return (GetDisplayNameLink(obj, "", null))
   </function>
 
-  <function name="GetDisplayNameLink" type="string" parameters="obj, tag, verbs">
+  <function name="GetDisplayNameLink" type="string" parameters="obj, type, verbs">
   <![CDATA[
-    result = GetTaggedName(obj, tag, verbs)
+    result = GetTaggedName(obj, type, verbs)
     if (obj.prefix <> null) {
       prefix = obj.prefix
     }
-    else if (tag = "exit") {
+    else if (type = "exit") {
       prefix = ""
     }
     else {
@@ -164,18 +164,18 @@
   ]]>
   </function>
 
-  <function name="GetTaggedName" type="string" parameters="obj, tag, verbs">
+  <function name="GetTaggedName" type="string" parameters="obj, type, verbs">
     <![CDATA[
     alias = GetDisplayAlias(obj)
     if (not game.enablehyperlinks) {
       tag = ""
     }
-    if (not tag = "") {
-      result = "<" + tag
+    if (not type = "") {
+      result = "<object"
       if (verbs <> null) {
         result = result + " verbs='" + Join(verbs, "/") + "'"
       }
-      result = result + ">" + alias + "</" + tag + ">"
+      result = result + ">" + alias + "</object>"
     }
     else {
       result = alias
