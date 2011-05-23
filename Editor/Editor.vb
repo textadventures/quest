@@ -208,10 +208,12 @@
 
     Private Sub m_controller_UndoListUpdated(sender As Object, e As EditorController.UpdateUndoListEventArgs) Handles m_controller.UndoListUpdated
         ctlToolbar.UpdateUndoMenu(e.UndoList)
+        If e.UndoList.Count > 0 Then m_unsavedChanges = True
     End Sub
 
     Private Sub m_controller_RedoListUpdated(sender As Object, e As EditorController.UpdateUndoListEventArgs) Handles m_controller.RedoListUpdated
         ctlToolbar.UpdateRedoMenu(e.UndoList)
+        If e.UndoList.Count > 0 Then m_unsavedChanges = True
     End Sub
 
     Private Sub m_controller_ShowMessage(message As String) Handles m_controller.ShowMessage
@@ -674,6 +676,7 @@
     Private Sub ctlTextEditor_UndoRedoEnabledUpdated(undoEnabled As Boolean, redoEnabled As Boolean) Handles ctlTextEditor.UndoRedoEnabledUpdated
         ctlToolbar.UndoButtonEnabled = undoEnabled
         ctlToolbar.RedoButtonEnabled = redoEnabled
+        If undoEnabled Or redoEnabled Then m_unsavedChanges = True
     End Sub
 
     Private Sub m_controller_RequestAddElement(elementType As String, objectType As String, filter As String) Handles m_controller.RequestAddElement
