@@ -6,7 +6,6 @@ Public Class Main
     Private m_loaded As Boolean = False
     Private m_playingEditorGame As Boolean = False
     Private m_cmdLineLaunch As String = Nothing
-    Private Const k_regPath As String = "Software\Quest"
     Private Delegate Sub MenuHandler()
 
     Public Sub New()
