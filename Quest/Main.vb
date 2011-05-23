@@ -163,12 +163,14 @@ Public Class Main
     End Sub
 
     Private Sub OpenEditMenuClick()
+        If Not ctlEditor.CheckGameIsSaved("Do you wish to save your changes before opening a new game?") Then Return
         BrowseEdit()
     End Sub
 
     Private Sub CreateNewMenuClick()
-        Dim newFile = ctlEditor.CreateNewGame()
+        If Not ctlEditor.CheckGameIsSaved("Do you wish to save your changes before creating a new game?") Then Return
 
+        Dim newFile = ctlEditor.CreateNewGame()
         If String.IsNullOrEmpty(newFile) Then Return
 
         LaunchEdit(newFile)
@@ -216,6 +218,14 @@ Public Class Main
 
     Private Sub ctlEditor_Loaded(name As String) Handles ctlEditor.Loaded
         SetWindowTitle(name)
+    End Sub
+
+    Private Sub ctlEditor_NewGame() Handles ctlEditor.NewGame
+        CreateNewMenuClick()
+    End Sub
+
+    Private Sub ctlEditor_OpenGame() Handles ctlEditor.OpenGame
+        OpenEditMenuClick()
     End Sub
 
     Private Sub ctlEditor_Play(filename As String) Handles ctlEditor.Play
