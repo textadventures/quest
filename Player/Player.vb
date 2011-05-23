@@ -90,7 +90,7 @@ Public Class Player
         If m_game.Initialise(Me) Then
 
             AddToRecentList()
-            m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing
+            m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing AndAlso m_gameDebug.Walkthroughs.Walkthroughs.Count > 0
 
             ' If we have external JavaScript files, we need to rebuild the HTML page source and
             ' reload it. Then, only when the page has finished loading, begin the game.
@@ -345,6 +345,10 @@ Public Class Player
     End Sub
 
     Private Function ChooseWalkthrough() As String
+        If m_gameDebug.Walkthroughs.Walkthroughs.Count = 0 Then
+            Return Nothing
+        End If
+
         If m_gameDebug.Walkthroughs.Walkthroughs.Count = 1 Then
             Return m_gameDebug.Walkthroughs.Walkthroughs.First.Key
         End If
