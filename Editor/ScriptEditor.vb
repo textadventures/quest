@@ -189,9 +189,7 @@
 
     Private Sub cmdDelete_Click(sender As System.Object, e As System.EventArgs) Handles cmdDelete.Click
         Save()
-        If m_editIndex < m_scripts.Count Then
-            m_scripts.Remove(m_editIndex)
-        End If
+        m_scripts.Remove(GetSelectedIndicesArray)
     End Sub
 
     Private Sub cmdPopOut_Click(sender As System.Object, e As System.EventArgs) Handles cmdPopOut.Click
@@ -234,12 +232,14 @@
         ' Copy is enabled even in read-only mode
         cmdCopy.Enabled = enabled
 
+        ' Paste is enabled even if the other buttons aren't, but only if not in read-only mode, and if we have something to paste
+        cmdPaste.Enabled = (Not m_readOnly) AndAlso m_controller IsNot Nothing AndAlso m_controller.CanPasteScript()
+
         If m_readOnly Then enabled = False
         cmdDelete.Enabled = enabled
         cmdMoveUp.Enabled = enabled AndAlso m_editIndex > 0
         cmdMoveDown.Enabled = enabled AndAlso m_editIndex < m_scripts.Count - 1
         cmdCut.Enabled = enabled
-        cmdPaste.Enabled = enabled AndAlso m_controller.CanPasteScript()
     End Sub
 
     Private Sub ctlContainer_SplitterMoved(sender As Object, e As System.Windows.Forms.SplitterEventArgs) Handles ctlContainer.SplitterMoved
@@ -288,14 +288,26 @@
     End Sub
 
     Private Sub cmdCut_Click(sender As System.Object, e As System.EventArgs) Handles cmdCut.Click
-        m_scripts.Cut(m_editIndex)
+        Save()
+        m_scripts.Cut(GetSelectedIndicesArray)
     End Sub
 
     Private Sub cmdCopy_Click(sender As System.Object, e As System.EventArgs) Handles cmdCopy.Click
-        m_scripts.Copy(m_editIndex)
+        Save()
+        m_scripts.Copy(GetSelectedIndicesArray)
+        cmdPaste.Enabled = m_controller.CanPasteScript()
     End Sub
 
     Private Sub cmdPaste_Click(sender As System.Object, e As System.EventArgs) Handles cmdPaste.Click
+        Save()
         m_scripts.Paste(m_editIndex)
     End Sub
+
+    Private Function GetSelectedIndicesArray() As Integer()
+        Dim list As New List(Of Integer)
+        For Each index In lstScripts.SelectedIndices.Cast(Of Integer)()
+            list.Add(index)
+        Next
+        Return list.ToArray()
+    End Function
 End Class

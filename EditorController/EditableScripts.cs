@@ -137,11 +137,24 @@ namespace AxeSoftware.Quest
             get { return m_scripts[index]; }
         }
 
-        public void Remove(int index)
+        public void Remove(int[] indexes)
         {
-            m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Remove '{0}' script", m_scripts[index].DisplayString()));
-            m_scripts.Remove(m_scripts[index]);
-            m_underlyingScript.Remove(index);
+            string desc = (indexes.Length == 0) ?
+                string.Format("Remove '{0}' script", m_scripts[indexes[0]].DisplayString()) :
+                string.Format("Remove {0} scripts", indexes.Length);
+
+            m_controller.WorldModel.UndoLogger.StartTransaction(desc);
+
+            var indexesDescending = from index in indexes
+                                    orderby index descending
+                                    select index;
+
+            foreach (int index in indexesDescending)
+            {
+                m_scripts.Remove(m_scripts[index]);
+                m_underlyingScript.Remove(index);
+            }
+
             m_controller.WorldModel.UndoLogger.EndTransaction();
 
             System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
@@ -238,15 +251,20 @@ namespace AxeSoftware.Quest
             m_underlyingScript.Swap(index1, index2);
         }
 
-        public void Cut(int index)
+        public void Cut(int[] indexes)
         {
-            Copy(index);
-            Remove(index);
+            Copy(indexes);
+            Remove(indexes);
         }
-        
-        public void Copy(int index)
+
+        public void Copy(int[] indexes)
         {
-            m_controller.SetClipboardScript(new List<IScript> { m_underlyingScript.Scripts.ElementAt(index) });
+            List<IScript> scripts = new List<IScript>();
+            foreach (int index in indexes)
+            {
+                scripts.Add(m_underlyingScript.Scripts.ElementAt(index));
+            }
+            m_controller.SetClipboardScript(scripts);
         }
 
         public void Paste(int index)

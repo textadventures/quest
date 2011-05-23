@@ -27,12 +27,12 @@ namespace AxeSoftware.Quest
         void AddNew(string keyword, string elementName);
         IEditableScript this[int index] { get; }
         event EventHandler<EditableScriptsUpdatedEventArgs> Updated;
-        void Remove(int index);
+        void Remove(int[] indexes);
         string DisplayString(int index, string newValue);
         int Count { get; }
         void Swap(int index1, int index2);
-        void Cut(int index);
-        void Copy(int index);
+        void Cut(int[] indexes);
+        void Copy(int[] indexes);
         void Paste(int index);
     }
 }
