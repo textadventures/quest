@@ -3906,8 +3906,9 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>-1163984720</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>http://www.AxeSoftware.com</td><td>0</td><td/><td>-1163980368</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.axeuk.com/</td><td>0</td><td/><td>-1163965550</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>Axe Software</td><td>0</td><td/><td>-1163980368</td></row>
+		<row><td>ID_STRING4</td><td>1033</td><td>Quest</td><td>0</td><td/><td>-1163970158</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>-1163925360</td></row>
 	</table>
 
@@ -4010,6 +4011,7 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
+		<row><td>NewShortcut1_551763055A9D49AE8E08E9D6221C46CC.exe</td><td/><td>C:\VBProjects\Quest (CodePlex)\trunk\Quest\q2_48x48c.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4125,8 +4127,8 @@
 		<col def="S0">Value</col>
 		<row><td>ActiveLanguage</td><td>1033</td></row>
 		<row><td>Comments</td><td/></row>
-		<row><td>CurrentMedia</td><td dt:dt="bin.base64" md5="a4f66fafb30885f14d732b73e196bba0">
-RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
+		<row><td>CurrentMedia</td><td dt:dt="bin.base64" md5="de9f554a3bc05c12be9c31b998217995">
+UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 			</td></row>
 		<row><td>DefaultProductConfiguration</td><td>Express</td></row>
 		<row><td>ISCompilerOption_CompileBeforeBuild</td><td>1</td></row>
@@ -4142,7 +4144,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{ACE03C00-8D93-4355-B167-20EA68C19DC7}</td></row>
 		<row><td>ISUSSignature</td><td>{820E20BB-ABE6-4586-AFE0-831D33370850}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewUpgradePaths,viewUI,viewRelease,viewISToday,viewSystemSearch,viewAppFiles,viewFeatureFiles,viewObjects,viewRealSetupDesign</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewUpgradePaths,viewUI,viewRelease,viewISToday,viewSystemSearch,viewAppFiles,viewFeatureFiles,viewObjects,viewRealSetupDesign,viewUpdateService,viewShortcuts,viewFileExtensions</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
@@ -4519,9 +4521,9 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{FC2D4AB9-5742-4E85-AC6A-3894305D831E}</td><td/></row>
+		<row><td>ProductCode</td><td>{2D13F0F4-0DF7-4E9F-AA71-9C870B2A7394}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
-		<row><td>ProductVersion</td><td>5.00.0000</td><td/></row>
+		<row><td>ProductVersion</td><td>5.00.0001</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
@@ -4534,7 +4536,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>SERIALNUMBER</td><td/><td/></row>
 		<row><td>SERIALNUMVALSUCCESSRETVAL</td><td>1</td><td/></row>
 		<row><td>SHOWLAUNCHPROGRAM</td><td>-1</td><td/></row>
-		<row><td>SecureCustomProperties</td><td>ISFOUNDNEWERPRODUCTVERSION;USERNAME;COMPANYNAME;ISX_SERIALNUM;SUPPORTDIR;DOTNETVERSION40CLIENT</td><td/></row>
+		<row><td>SecureCustomProperties</td><td>ISFOUNDNEWERPRODUCTVERSION;USERNAME;COMPANYNAME;ISX_SERIALNUM;SUPPORTDIR;DOTNETVERSION40CLIENT;ISACTIONPROP1</td><td/></row>
 		<row><td>SelectedSetupType</td><td>##IDS__DisplayName_Typical##</td><td/></row>
 		<row><td>SetupType</td><td>Typical</td><td/></row>
 		<row><td>UpgradeCode</td><td>{B53DD8C6-7B30-4A8D-B27C-0F8E52EBCE1D}</td><td/></row>
@@ -4683,6 +4685,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">ISComments</col>
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
+		<row><td>NewShortcut1</td><td>ProgramMenuFolder</td><td>##ID_STRING4##</td><td>Quest.Primary_output</td><td>AlwaysInstall</td><td/><td/><td/><td>NewShortcut1_551763055A9D49AE8E08E9D6221C46CC.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="Signature">
@@ -4805,6 +4808,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<col def="s72">ActionProperty</col>
 		<col def="S72">ISDisplayName</col>
 		<row><td>{00000000-0000-0000-0000-000000000000}</td><td>***ALL_VERSIONS***</td><td></td><td></td><td>2</td><td/><td>ISFOUNDNEWERPRODUCTVERSION</td><td>ISPreventDowngrade</td></row>
+		<row><td>{B53DD8C6-7B30-4A8D-B27C-0F8E52EBCE1D}</td><td>5.00.0000</td><td>5.00.0001</td><td></td><td>768</td><td/><td>ISACTIONPROP1</td><td>UpgradeEntry</td></row>
 	</table>
 
 	<table name="Verb">
