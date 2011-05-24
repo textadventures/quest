@@ -40,9 +40,24 @@ namespace AxeSoftware.Quest
             return m_templateLookup[t].Fields[FieldDefinitions.Text];
         }
 
-        public string GetDynamicText(string t, Element obj)
+        public string GetDynamicText(string t, params Element[] obj)
         {
-            return GetDynamicTextInternal(t, new Parameters("object", obj));
+            Parameters parameters;
+
+            if (obj.Length == 1)
+            {
+                parameters = new Parameters("object", obj[0]);
+            }
+            else
+            {
+                parameters = new Parameters();
+                for (int i = 0; i < obj.Length; i++)
+                {
+                    parameters.Add("object" + (i + 1).ToString(), obj[i]);
+                }
+            }
+
+            return GetDynamicTextInternal(t, parameters);
         }
 
         public string GetDynamicText(string t, string text)

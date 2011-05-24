@@ -241,6 +241,25 @@
   </editor>
 
   <editor>
+    <appliesto>invoke</appliesto>
+    <!-- TO DO: Don't display parameter #1 if it's null or empty -->
+    <display>Run '#0' script with parameters from dictionary #1</display>
+    <category>Scripts</category>
+    <add>Run an script returned by an expression</add>
+    <create>invoke ()</create>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Script expression</caption>
+      <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Parameter dictionary</caption>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>error</appliesto>
     <display>Raise error #0</display>
     <category>Scripts</category>

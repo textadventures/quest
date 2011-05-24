@@ -21,7 +21,7 @@ namespace AxeSoftware.Quest.Functions
             return m_worldModel.Template.GetText(template);
         }
 
-        public string DynamicTemplate(string template, Element obj)
+        public string DynamicTemplate(string template, params Element[] obj)
         {
             return m_worldModel.Template.GetDynamicText(template, obj);
         }
@@ -281,6 +281,11 @@ namespace AxeSoftware.Quest.Functions
         public Element ObjectDictionaryItem(IDictionary dictionary, string key)
         {
             return dictionary[key] as Element;
+        }
+
+        public IScript ScriptDictionaryItem(IDictionary dictionary, string key)
+        {
+            return dictionary[key] as IScript;
         }
 
         public string ShowMenu(string caption, QuestDictionary<string> options, bool allowCancel)

@@ -124,6 +124,7 @@
     <Compile Include="Scripts\FunctionCallParameters.cs" />
     <Compile Include="Scripts\FunctionCallScript.cs" />
     <Compile Include="Scripts\InsertScript.cs" />
+    <Compile Include="Scripts\InvokeScript.cs" />
     <Compile Include="Scripts\ListAddScript.cs" />
     <Compile Include="Scripts\PictureScript.cs" />
     <Compile Include="ScriptFactory.cs" />

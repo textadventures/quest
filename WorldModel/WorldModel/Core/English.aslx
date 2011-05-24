@@ -91,6 +91,8 @@
   <dynamictemplate name="DefaultDrink">"You can't drink " + object.article + "."</dynamictemplate>
   <verbtemplate name="eat">eat</verbtemplate>
   <dynamictemplate name="DefaultEat">"You can't eat " + object.article + "."</dynamictemplate>
+  <template templatetype="command" name="give"><![CDATA[^give (?<object1>.*) to (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " doesn't want " + object2.article + "."</dynamictemplate>
   <verbtemplate name="hit">hit</verbtemplate>
   <dynamictemplate name="DefaultHit">"You can't hit " + object.article + "."</dynamictemplate>
   <verbtemplate name="kill">kill</verbtemplate>

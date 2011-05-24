@@ -285,10 +285,12 @@
 
     <object name="food">
       <inherit name="edible"/>
+      <take/>
     </object>
 
     <object name="apple">
       <inherit name="edible"/>
+      <take/>
     </object>
 
     <object name="newspaper">
@@ -336,15 +338,26 @@
     </object>
 
     <object name="character1">
+      <inherit name="male"/>
       <alias>John the Blacksmith</alias>
       <look>It's the village blacksmith.</look>
       <prefix type="string"></prefix>
+      <give type="scriptdictionary">
+        <item key="apple">
+          msg ("Nice apple there")
+        </item>
+        <item key="food">
+          msg ("I'm a bit full")
+        </item>
+      </give>
     </object>
 
     <object name="character2">
+      <inherit name="male"/>
       <alias>Dave the Blacksmith</alias>
       <look>It's the other village blacksmith.</look>
       <prefix type="string"></prefix>
+      <give>Dave isn't interested</give>
     </object>
     
     <exit name="myexit" alias="east" to="hall"/>

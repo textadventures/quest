@@ -235,6 +235,24 @@
     
   </command>
 
+  <command name="give" pattern="[give]">
+    handled = false
+    if (HasString(object2, "give")) {
+      msg (object2.give)
+      handled = true
+    }
+    else if (typeof(object2, "give") = "scriptdictionary") {
+      if (DictionaryContains(object2.give, object1.name)) {
+        invoke (ScriptDictionaryItem(object2.give, object1.name))
+        handled = true
+      }
+    }
+    
+    if (not handled) {
+      msg (DynamicTemplate("DefaultGive", object2, object1))
+    }
+  </command>
+
   <!-- The object name for a verb defaults to the same thing as its property, unless we explictly specify a name,
        as we do here e.g. to prevent a clash with the "look" command -->
   <verb name="lookat" pattern="[lookat]" property="look" response="DefaultObjectDescription"/>
