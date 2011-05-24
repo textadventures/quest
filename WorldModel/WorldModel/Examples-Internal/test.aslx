@@ -286,6 +286,7 @@
     <object name="food">
       <inherit name="edible"/>
       <take/>
+      <useon>You can't really use anything on the food.</useon>
     </object>
 
     <object name="apple">
@@ -328,6 +329,11 @@
           msg ("This is an action...")
           msg ("...running when you look at the lamp.")
         </look>
+        <useon type="scriptdictionary">
+          <item key="newspaper">
+            msg ("You hit the lamp with the newspaper. Nothing much happens.")
+          </item>
+        </useon>
       </object>
     </object>
 

@@ -237,6 +237,23 @@
         <keyprompt>Please enter the object name</keyprompt>
         <listwidth>250</listwidth>
       </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Use</caption>
+        <paddingtop>12</paddingtop>
+      </control>
+
+      <control>
+        <controltype>multi</controltype>
+        <caption>Use</caption>
+        <attribute>useon</attribute>
+        <types>
+          null=Objects cannot be used;scriptdictionary=Handle objects individually;string=Print a message
+        </types>
+        <keyprompt>Please enter the object name</keyprompt>
+        <listwidth>250</listwidth>
+      </control>
     </tab>
 
     <tab>

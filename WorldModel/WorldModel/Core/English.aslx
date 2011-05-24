@@ -153,6 +153,8 @@
   <dynamictemplate name="DefaultUnlock">"You can't unlock " + object.article + "."</dynamictemplate>
   <verbtemplate name="untie">untie</verbtemplate>
   <dynamictemplate name="DefaultUntie">"You can't untie " + object.article + "."</dynamictemplate>
+  <template templatetype="command" name="useon"><![CDATA[^use (?<object1>.*) on (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultUseOn">"You can't use " + object2.article + " that way."</dynamictemplate>
   <verbtemplate name="wear">wear</verbtemplate>
   <dynamictemplate name="DefaultWear">"You can't wear " + object.article + "."</dynamictemplate>
   <template templatetype="command" name="listen">^listen$</template>

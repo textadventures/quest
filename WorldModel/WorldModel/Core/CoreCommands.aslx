@@ -252,6 +252,24 @@
       msg (DynamicTemplate("DefaultGive", object2, object1))
     }
   </command>
+  
+  <command name="useon" pattern="[useon]">
+    handled = false
+    if (HasString(object2, "useon")) {
+      msg (object2.useon)
+      handled = true
+    }
+    else if (typeof(object2, "useon") = "scriptdictionary") {
+      if (DictionaryContains(object2.useon, object1.name)) {
+        invoke (ScriptDictionaryItem(object2.useon, object1.name))
+        handled = true
+      }
+    }
+    
+    if (not handled) {
+      msg (DynamicTemplate("DefaultUseOn", object2, object1))
+    }
+  </command>
 
   <!-- The object name for a verb defaults to the same thing as its property, unless we explictly specify a name,
        as we do here e.g. to prevent a clash with the "look" command -->
