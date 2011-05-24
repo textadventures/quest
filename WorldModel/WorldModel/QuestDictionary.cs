@@ -62,7 +62,13 @@ namespace AxeSoftware.Quest
             QuestDictionary<T> result = new QuestDictionary<T>();
             foreach (KeyValuePair<string, T> kvp in m_dictionary)
             {
-                result.Add(kvp);
+                T newValue = kvp.Value;
+                IMutableField clonableValue = newValue as IMutableField;
+                if (clonableValue != null)
+                {
+                    newValue = (T)clonableValue.Clone();
+                }
+                result.Add(kvp.Key, newValue);
             }
             return result;
         }
