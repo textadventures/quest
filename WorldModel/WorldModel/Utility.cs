@@ -8,6 +8,8 @@ namespace AxeSoftware.Quest
 {
     public static class Utility
     {
+        private const string k_dotReplacementString = "___DOT___";
+
         public static string CapFirst(string text)
         {
             return text.Substring(0, 1).ToUpper() + text.Substring(1);
@@ -147,7 +149,7 @@ namespace AxeSoftware.Quest
 
         public static void ResolveVariableName(string name, out string obj, out string variable)
         {
-            int eqPos = name.IndexOf('_');
+            int eqPos = name.IndexOf(k_dotReplacementString);
             if (eqPos == -1)
             {
                 obj = null;
@@ -156,7 +158,7 @@ namespace AxeSoftware.Quest
             }
 
             obj = name.Substring(0, eqPos);
-            variable = name.Substring(eqPos + 1);
+            variable = name.Substring(eqPos + k_dotReplacementString.Length);
         }
 
         private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.(\w)");
@@ -170,7 +172,7 @@ namespace AxeSoftware.Quest
         /// <returns></returns>
         public static string ConvertDottedPropertiesToVariable(string expression)
         {
-            return ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables, "$1_$2", false);
+            return ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables, "$1" + k_dotReplacementString + "$2", false);
         }
 
         private static string ReplaceRegexMatchesRespectingQuotes(string input, Regex regex, string replaceWith, bool replaceInsideQuote)
@@ -273,6 +275,11 @@ namespace AxeSoftware.Quest
                 insideQuote = !insideQuote;
             }
             return result;
+        }
+
+        public static bool ContainsUnresolvedDotNotation(string input)
+        {
+            return input.Contains(k_dotReplacementString);
         }
     }
 }

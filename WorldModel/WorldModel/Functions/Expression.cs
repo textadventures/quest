@@ -113,14 +113,14 @@ namespace AxeSoftware.Quest.Functions
 
                     do
                     {
-                        if (variable.Contains('_'))
+                        if (Utility.ContainsUnresolvedDotNotation(variable))
                         {
                             // We may have been passed in something like someobj.parent.someproperty
                             string nestedObj;
                             Utility.ResolveVariableName(variable, out nestedObj, out variable);
                             fields = fields.GetObject(nestedObj).Fields;
                         }
-                    } while (variable.Contains('_'));
+                    } while (Utility.ContainsUnresolvedDotNotation(variable));
 
                     if (!fields.Exists(variable))
                     {

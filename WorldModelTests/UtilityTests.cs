@@ -13,11 +13,11 @@ namespace WorldModelTests
         [TestMethod]
         public void TestConvertDottedProperties()
         {
-            Assert.AreEqual("obj_prop", Utility.ConvertDottedPropertiesToVariable("obj.prop"));
-            Assert.AreEqual("obj1_prop obj2_prop", Utility.ConvertDottedPropertiesToVariable("obj1.prop obj2.prop"));
+            Assert.AreEqual("obj___DOT___prop", Utility.ConvertDottedPropertiesToVariable("obj.prop"));
+            Assert.AreEqual("obj1___DOT___prop obj2___DOT___prop", Utility.ConvertDottedPropertiesToVariable("obj1.prop obj2.prop"));
             Assert.AreEqual("(\"myfile.html\")", Utility.ConvertDottedPropertiesToVariable("(\"myfile.html\")"));
             Assert.AreEqual("\"myfile.html\"", Utility.ConvertDottedPropertiesToVariable("\"myfile.html\""));
-            Assert.AreEqual("obj1_prop \"test.html\" obj2_prop", Utility.ConvertDottedPropertiesToVariable("obj1.prop \"test.html\" obj2.prop"));
+            Assert.AreEqual("obj1___DOT___prop \"test.html\" obj2___DOT___prop", Utility.ConvertDottedPropertiesToVariable("obj1.prop \"test.html\" obj2.prop"));
         }
 
         [TestMethod]
