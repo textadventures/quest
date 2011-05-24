@@ -221,6 +221,22 @@
         <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
       </control>
 
+      <control>
+        <controltype>title</controltype>
+        <caption>Give</caption>
+        <paddingtop>12</paddingtop>
+      </control>
+
+      <control>
+        <controltype>multi</controltype>
+        <caption>Give</caption>
+        <attribute>give</attribute>
+        <types>
+          null=Cannot be given objects;scriptdictionary=Handle objects individually;string=Print a message
+        </types>
+        <keyprompt>Please enter the object name</keyprompt>
+        <listwidth>250</listwidth>
+      </control>
     </tab>
 
     <tab>

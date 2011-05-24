@@ -10,7 +10,9 @@ Public Class AttributesControl
         {"script", "Script"},
         {"stringlist", "String List"},
         {"object", "Object"},
-        {"simplepattern", "Command pattern"}
+        {"simplepattern", "Command pattern"},
+        {"scriptdictionary", "Script dictionary"},
+        {"null", "Null"}
     }
 
     Private Class SubEditorControlData
@@ -76,6 +78,8 @@ Public Class AttributesControl
                     Return "True"
                 Case "editprompt"
                     Return "Please enter a value"
+                Case "keyprompt"
+                    Return "Please enter a key"
                 Case Else
                     Throw New NotImplementedException
             End Select

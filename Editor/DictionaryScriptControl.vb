@@ -42,7 +42,11 @@ Public Class DictionaryScriptControl
         ctlListEditor.SetHeader(2, "Script")
         ctlListEditor.UpdateList(Nothing)
         m_controller = controller
-        m_attributeName = controlData.Attribute
+        If controlData IsNot Nothing Then
+            m_attributeName = controlData.Attribute
+        Else
+            m_attributeName = Nothing
+        End If
         m_controlData = controlData
     End Sub
 
@@ -84,7 +88,7 @@ Public Class DictionaryScriptControl
         Dim script As IEditableScripts = m_controller.CreateNewEditableScripts(Nothing, Nothing, Nothing, True)
 
         If m_list Is Nothing Then
-            Value = m_controller.CreateNewEditableScriptDictionary(m_elementName, m_attributeName, addKey.Result, script)
+            Value = m_controller.CreateNewEditableScriptDictionary(m_elementName, m_attributeName, addKey.Result, script, True)
         Else
             m_list.Add(addKey.Result, script)
         End If

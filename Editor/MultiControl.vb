@@ -7,6 +7,7 @@ Public Class MultiControl
     Private Const k_paddingLeft As Integer = 0
     Private Const k_defaultHeight As Integer = 50
     Private m_heightWithScriptEditor As Integer = 400
+    Private Const k_heightWithDictionary As Integer = 150
 
     Private Shared s_controlTypesMap As Dictionary(Of String, String) = New Dictionary(Of String, String) From {
         {"boolean", "checkbox"},
@@ -15,7 +16,9 @@ Public Class MultiControl
         {"stringlist", "list"},
         {"int", "number"},
         {"object", "objects"},
-        {"simplepattern", "pattern"}
+        {"simplepattern", "pattern"},
+        {"scriptdictionary", "scriptdictionary"},
+        {"null", Nothing}
     }
 
     Private Shared s_typeNamesMap As Dictionary(Of Type, String) = New Dictionary(Of Type, String) From {
@@ -25,7 +28,8 @@ Public Class MultiControl
         {GetType(IEditableList(Of String)), "stringlist"},
         {GetType(Integer), "int"},
         {GetType(IEditableObjectReference), "object"},
-        {GetType(IEditableCommandPattern), "simplepattern"}
+        {GetType(IEditableCommandPattern), "simplepattern"},
+        {GetType(IEditableDictionary(Of IEditableScripts)), "scriptdictionary"}
     }
 
     Private m_storedValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
@@ -80,7 +84,7 @@ Public Class MultiControl
     End Property
 
     Private Function GetTypeName(value As Object) As String
-        If value Is Nothing Then Return String.Empty
+        If value Is Nothing Then Return "null"
         Dim type As Type = value.GetType
         Return s_typeNamesMap.FirstOrDefault(Function(t) t.Key.IsAssignableFrom(type)).Value
     End Function
@@ -144,6 +148,8 @@ Public Class MultiControl
 
         If editorName = "script" Then
             newHeight = m_heightWithScriptEditor
+        ElseIf editorName = "scriptdictionary" Then
+            newHeight = k_heightWithDictionary
         Else
             newHeight = k_defaultHeight
         End If
@@ -197,6 +203,10 @@ Public Class MultiControl
                     newValue = Controller.CreateNewEditableObjectReference(m_elementName, m_attributeName, False)
                 Case "simplepattern"
                     newValue = Controller.CreateNewEditableCommandPattern(m_elementName, m_attributeName, "", False)
+                Case "scriptdictionary"
+                    newValue = Controller.CreateNewEditableScriptDictionary(m_elementName, m_attributeName, Nothing, Nothing, False)
+                Case "null"
+                    newValue = Nothing
                 Case Else
                     Throw New InvalidOperationException
             End Select

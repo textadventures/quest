@@ -211,7 +211,7 @@ namespace AxeSoftware.Quest
 
         public string DisplayString()
         {
-            throw new NotImplementedException();
+            return string.Format("(Script Dictionary: {0} items)", m_source.Count);
         }
 
         public bool Locked
