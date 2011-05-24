@@ -313,11 +313,11 @@ namespace AxeSoftware.Quest
                 IMutableField mutableNewValue = value as IMutableField;
                 if (mutableOldValue != null)
                 {
-                    if (mutableOldValue.RequiresCloning) oldValue = mutableOldValue.Clone();
+                    if (m_worldModel.EditMode || mutableOldValue.RequiresCloning) oldValue = mutableOldValue.Clone();
                 }
                 if (mutableNewValue != null)
                 {
-                    if (mutableNewValue.RequiresCloning) value = mutableNewValue.Clone();
+                    if (m_worldModel.EditMode || mutableNewValue.RequiresCloning) value = mutableNewValue.Clone();
                     ((IMutableField)value).Locked = m_mutableFieldsLocked;
                     ((IMutableField)value).UndoLog = m_worldModel.UndoLogger;
                 }

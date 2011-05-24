@@ -71,6 +71,11 @@ namespace AxeSoftware.Quest.Scripts
                 Id = id;
             }
 
+            internal ElseIfScript Clone(IfScript newParent)
+            {
+                return new ElseIfScript(Expression.Clone(), (IScript)Script.Clone(), newParent, Id);
+            }
+
             internal IFunction<bool> Expression { get; private set; }
             public IScript Script { get; private set; }
             public string Id { get; private set; }
@@ -112,6 +117,17 @@ namespace AxeSoftware.Quest.Scripts
             m_thenScript = thenScript;
             m_elseScript = elseScript;
             m_worldModel = worldModel;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            IfScript clone = new IfScript(m_expression.Clone(), (IScript)m_thenScript.Clone(), m_elseScript == null ? null : (IScript)m_elseScript.Clone(), m_worldModel);
+            clone.m_hasElse = m_hasElse;
+            foreach (ElseIfScript elseif in m_elseIfScript)
+            {
+                clone.m_elseIfScript.Add(elseif.Clone(clone));
+            }
+            return clone;
         }
 
         public void SetElse(IScript elseScript)

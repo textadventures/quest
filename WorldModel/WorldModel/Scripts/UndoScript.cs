@@ -33,6 +33,11 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel = worldModel;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new UndoScript(m_worldModel);
+        }
+
         public override void Execute(Context c)
         {
             m_worldModel.UndoLogger.Undo();
@@ -91,6 +96,11 @@ namespace AxeSoftware.Quest.Scripts
             m_command = command;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new StartTransactionScript(m_worldModel, m_command.Clone());
+        }
+
         public override void Execute(Context c)
         {
             m_worldModel.UndoLogger.StartTransaction(m_command.Execute(c));
@@ -145,6 +155,11 @@ namespace AxeSoftware.Quest.Scripts
         public EndTransactionScript(WorldModel worldModel)
         {
             m_worldModel = worldModel;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new EndTransactionScript(m_worldModel);
         }
 
         public override void Execute(Context c)

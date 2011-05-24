@@ -43,6 +43,11 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel = worldModel;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new DictionaryAddScript(m_worldModel, m_dictionary.Clone(), m_key.Clone(), m_value.Clone());
+        }
+
         public override void Execute(Context c)
         {
             IDictionary result = m_dictionary.Execute(c) as IDictionary;
@@ -135,6 +140,11 @@ namespace AxeSoftware.Quest.Scripts
             m_dictionary = dictionary;
             m_key = key;
             m_worldModel = worldModel;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new DictionaryRemoveScript(m_worldModel, m_dictionary.Clone(), m_key.Clone());
         }
 
         public override void Execute(Context c)

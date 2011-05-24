@@ -50,6 +50,11 @@ namespace AxeSoftware.Quest.Scripts
             m_parameters = parameters;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new InvokeScript(m_worldModel, m_script.Clone(), m_parameters == null ? null : m_parameters.Clone());
+        }
+
         public override void Execute(Context c)
         {
             IScript script = m_script.Execute(c);

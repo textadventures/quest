@@ -39,6 +39,11 @@ namespace AxeSoftware.Quest.Scripts
             m_value = value;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new SetFieldScript(m_worldModel, m_obj.Clone(), m_field.Clone(), m_value.Clone());
+        }
+
         public override void Execute(Context c)
         {
             Element obj = m_obj.Execute(c);

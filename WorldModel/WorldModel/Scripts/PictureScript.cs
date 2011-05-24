@@ -35,6 +35,11 @@ namespace AxeSoftware.Quest.Scripts
             m_filename = function;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new PictureScript(m_worldModel, m_filename.Clone());
+        }
+
         public override void Execute(Context c)
         {
             string filename = m_filename.Execute(c);

@@ -153,6 +153,9 @@ namespace AxeSoftware.Quest.Scripts
         protected abstract object GetValue();
         protected abstract void SetValue(string newValue);
         protected WorldModel WorldModel { get { return m_worldModel; } }
+        protected SetScriptConstructor Constructor { get { return m_constructor; } }
+        protected IFunction<Element> AppliesTo { get { return m_appliesTo; } }
+        protected string Property { get { return m_property; } }
     }
 
     public class SetExpressionScript : SetScriptBase
@@ -163,6 +166,11 @@ namespace AxeSoftware.Quest.Scripts
             : base(constructor, appliesTo, property)
         {
             m_expr = expr;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new SetExpressionScript(Constructor, AppliesTo == null ? null : AppliesTo.Clone(), Property, (Expression<object>)m_expr.Clone());
         }
 
         protected override object GetResult(Context c)
@@ -203,6 +211,11 @@ namespace AxeSoftware.Quest.Scripts
         {
             m_script = script;
             m_scriptFactory = constructor.ScriptFactory;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new SetScriptScript(Constructor, AppliesTo.Clone(), Property, (IScript)m_script.Clone());
         }
 
         protected override object GetResult(Context c)

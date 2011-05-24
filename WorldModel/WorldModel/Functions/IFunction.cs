@@ -10,11 +10,13 @@ namespace AxeSoftware.Quest.Functions
     {
         T Execute(Context c);
         string Save();
+        IFunction<T> Clone();
     }
 
     public interface IFunctionGeneric
     {
         object Execute(Context c);
         string Save();
+        IFunctionGeneric Clone();
     }
 }

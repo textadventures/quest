@@ -55,6 +55,11 @@ namespace AxeSoftware.Quest.Scripts
             m_parameters = parameters;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new DoActionScript(m_worldModel, m_obj.Clone(), m_action.Clone(), m_parameters == null ? null : m_parameters.Clone());
+        }
+
         public override void Execute(Context c)
         {
             Element obj = m_obj.Execute(c);

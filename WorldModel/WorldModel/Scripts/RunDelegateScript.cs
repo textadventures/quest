@@ -58,12 +58,17 @@ namespace AxeSoftware.Quest.Scripts
         private FunctionCallParameters m_parameters;
         private IFunction<Element> m_appliesTo = null;
 
-        public RunDelegateScript(WorldModel worldModel, IFunction<Element> obj, IFunction<string> del, List<IFunction<object>> parameters)
+        public RunDelegateScript(WorldModel worldModel, IFunction<Element> obj, IFunction<string> del, IList<IFunction<object>> parameters)
         {
             m_worldModel = worldModel;
             m_delegate = del;
             m_parameters = new FunctionCallParameters(worldModel, parameters);
             m_appliesTo = obj;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new RunDelegateScript(m_worldModel, m_appliesTo.Clone(), m_delegate.Clone(), m_parameters.Parameters);
         }
 
         public override void Execute(Context c)

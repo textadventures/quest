@@ -38,6 +38,11 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel = worldModel;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new ErrorScript(m_worldModel, m_function.Clone());
+        }
+
         public override void Execute(Context c)
         {
             object result = m_function.Execute(c);

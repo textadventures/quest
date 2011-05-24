@@ -38,6 +38,11 @@ namespace AxeSoftware.Quest.Scripts
             m_function = function;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new MsgScript(m_worldModel, m_function.Clone());
+        }
+
         #region IScript Members
 
         public override void Execute(Context c)

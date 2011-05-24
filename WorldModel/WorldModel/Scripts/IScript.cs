@@ -47,7 +47,7 @@ namespace AxeSoftware.Quest.Scripts
         public string Id { get; private set; }
     }
 
-    public interface IScript
+    public interface IScript : IMutableField
     {
         void Execute(Context c);
         string Line { get; set; }
@@ -124,6 +124,8 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
+        protected abstract ScriptBase CloneScript();
+
         #region IScript Members
 
         public abstract void Execute(Context c);
@@ -176,13 +178,14 @@ namespace AxeSoftware.Quest.Scripts
             set { }
         }
 
-        // Scripts don't have to support cloning as we only support Undo behaviour in the editor,
-        // so we can't have a situation where two objects have the same script anyway
-
         public virtual IMutableField Clone()
         {
-            throw new NotImplementedException();
+            ScriptBase clone = CloneScript();
+            clone.m_line = m_line;
+            return clone;
         }
+
+        // Scripts only require cloning in the editor, as they cannot be modified when the game is running
 
         public bool RequiresCloning { get { return false; } }
 

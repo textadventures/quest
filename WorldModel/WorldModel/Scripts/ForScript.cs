@@ -57,6 +57,11 @@ namespace AxeSoftware.Quest.Scripts
             m_loopScript = loopScript;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new ForScript(m_worldModel, m_scriptFactory, m_variable, m_from.Clone(), m_to.Clone(), (IScript)m_loopScript.Clone());
+        }
+
         public override void Execute(Context c)
         {
             int from = m_from.Execute(c);

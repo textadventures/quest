@@ -37,6 +37,11 @@ namespace AxeSoftware.Quest.Scripts
             m_request = (Request)(Enum.Parse(typeof(Request), request));
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new RequestScript(m_worldModel, m_request.ToString(), m_data.Clone());
+        }
+
         public override void Execute(Context c)
         {
             m_worldModel.RaiseRequest(m_request, m_data.Execute(c));

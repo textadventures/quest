@@ -14,6 +14,19 @@ namespace AxeSoftware.Quest.Scripts
             m_scripts = new List<IScript>(scripts);
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            MultiScript clone = new MultiScript();
+            clone.m_scripts = new List<IScript>();
+            foreach (IScript script in m_scripts)
+            {
+                clone.m_scripts.Add((IScript)script.Clone());
+            }
+            return clone;
+        }
+
+        private MultiScript() { }
+
         public void Add(params IScript[] scripts)
         {
             m_scripts.AddRange(scripts);
@@ -210,6 +223,5 @@ namespace AxeSoftware.Quest.Scripts
                 m_appliesTo.RemoveSilent(m_script);
             }
         }
-
     }
 }

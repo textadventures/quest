@@ -33,6 +33,11 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel = worldModel;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new FinishScript(m_worldModel);
+        }
+
         public override void Execute(Context c)
         {
             m_worldModel.FinishGame();

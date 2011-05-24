@@ -40,6 +40,11 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel = worldModel;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new ListAddScript(m_worldModel, m_list.Clone(), m_value.Clone());
+        }
+
         public override void Execute(Context c)
         {
             IQuestList result = m_list.Execute(c) as IQuestList;
@@ -127,6 +132,11 @@ namespace AxeSoftware.Quest.Scripts
             m_list = list;
             m_value = value;
             m_worldModel = worldModel;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new ListRemoveScript(m_worldModel, m_list.Clone(), m_value.Clone());
         }
 
         public override void Execute(Context c)

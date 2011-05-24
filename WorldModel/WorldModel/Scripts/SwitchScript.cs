@@ -82,11 +82,23 @@ namespace AxeSoftware.Quest.Scripts
         private WorldModel m_worldModel;
 
         public SwitchScript(WorldModel worldModel, IFunctionGeneric expression, Dictionary<IFunctionGeneric, IScript> cases, IScript defaultScript)
+            : this(worldModel, expression, defaultScript)
+        {
+            m_cases = new SwitchCases(this, cases);
+        }
+
+        private SwitchScript(WorldModel worldModel, IFunctionGeneric expression, IScript defaultScript)
         {
             m_worldModel = worldModel;
             m_expr = expression;
-            m_cases = new SwitchCases(this, cases);
             m_default = defaultScript ?? new MultiScript();
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            SwitchScript clone = new SwitchScript(m_worldModel, m_expr.Clone(), (IScript)m_default.Clone());
+            clone.m_cases = m_cases.Clone(clone);
+            return clone;
         }
 
         public override void Execute(Context c)
@@ -162,9 +174,8 @@ namespace AxeSoftware.Quest.Scripts
             private SwitchScript m_parent;
 
             public SwitchCases(SwitchScript parent, Dictionary<IFunctionGeneric, IScript> cases)
+                : this(parent)
             {
-                m_parent = parent;
-                m_cases.UndoLog = parent.m_worldModel.UndoLogger;
 
                 foreach (var switchCase in cases)
                 {
@@ -175,6 +186,24 @@ namespace AxeSoftware.Quest.Scripts
                     m_cases.Add(caseString, script);
                     m_compiledExpressions.Add(caseString, compiledExpression);
                 }
+            }
+
+            private SwitchCases(SwitchScript parent)
+            {
+                m_parent = parent;
+                m_cases.UndoLog = parent.m_worldModel.UndoLogger;
+            }
+
+            internal SwitchCases Clone(SwitchScript newParent)
+            {
+                SwitchCases clone = new SwitchCases(newParent);
+                clone.m_cases = (QuestDictionary<IScript>)m_cases.Clone();
+                clone.m_compiledExpressions = new Dictionary<string, IFunctionGeneric>();
+                foreach (var compiledExpression in m_compiledExpressions)
+                {
+                    clone.m_compiledExpressions.Add(compiledExpression.Key, compiledExpression.Value);
+                }
+                return clone;
             }
 
             public QuestDictionary<IScript> CasesAsQuestDictionary

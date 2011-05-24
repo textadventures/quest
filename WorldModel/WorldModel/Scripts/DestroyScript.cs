@@ -38,6 +38,11 @@ namespace AxeSoftware.Quest.Scripts
             m_expr = expr;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new DestroyScript(m_worldModel, m_expr.Clone());
+        }
+
         public override void Execute(Context c)
         {
             m_worldModel.ObjectFactory.DestroyElement(m_expr.Execute(c));

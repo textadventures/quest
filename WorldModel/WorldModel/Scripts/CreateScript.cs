@@ -38,6 +38,11 @@ namespace AxeSoftware.Quest.Scripts
             m_expr = expr;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new CreateScript(m_worldModel, m_expr.Clone());
+        }
+
         #region IScript Members
 
         public override void Execute(Context c)
@@ -105,6 +110,11 @@ namespace AxeSoftware.Quest.Scripts
             m_name = name;
             m_from = from;
             m_to = to;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new CreateExitScript(m_worldModel, m_name.Clone(), m_from.Clone(), m_to.Clone());
         }
 
         public override void Execute(Context c)

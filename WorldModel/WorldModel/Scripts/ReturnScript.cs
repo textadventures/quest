@@ -51,6 +51,11 @@ namespace AxeSoftware.Quest.Scripts
             m_returnValue = returnValue;
         }
 
+        protected override ScriptBase CloneScript()
+        {
+            return new ReturnScript(m_worldModel, m_returnValue.Clone());
+        }
+
         public override void Execute(Context c)
         {
             c.ReturnValue = m_returnValue.Execute(c);

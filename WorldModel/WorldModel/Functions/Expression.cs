@@ -14,7 +14,7 @@ namespace AxeSoftware.Quest.Functions
         protected string m_originalExpression;
         protected string m_expression;
         private Dictionary<string, Type> m_types = new Dictionary<string, Type>();
-        private WorldModel m_worldModel;
+        protected WorldModel m_worldModel;
 
         public ExpressionBase(string expression, WorldModel worldModel)
         {
@@ -166,6 +166,11 @@ namespace AxeSoftware.Quest.Functions
         {
         }
 
+        public IFunction<T> Clone()
+        {
+            return new Expression<T>(m_expression, m_worldModel);
+        }
+
         #region IFunction<T> Members
 
         public T Execute(Context c)
@@ -202,6 +207,11 @@ namespace AxeSoftware.Quest.Functions
         public ExpressionGeneric(string expression, WorldModel worldModel)
             : base(expression, worldModel)
         {
+        }
+
+        public IFunctionGeneric Clone()
+        {
+            return new ExpressionGeneric(m_expression, m_worldModel);
         }
 
         #region IFunctionGeneric Members

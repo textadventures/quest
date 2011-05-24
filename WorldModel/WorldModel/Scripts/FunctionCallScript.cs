@@ -60,11 +60,16 @@ namespace AxeSoftware.Quest.Scripts
         {
         }
 
-        public FunctionCallScript(WorldModel worldModel, string procedure, List<IFunction<object>> parameters)
+        public FunctionCallScript(WorldModel worldModel, string procedure, IList<IFunction<object>> parameters)
         {
             m_worldModel = worldModel;
             m_procedure = procedure;
             m_parameters = new FunctionCallParameters(worldModel, parameters);
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new FunctionCallScript(m_worldModel, m_procedure, m_parameters == null ? null : m_parameters.Parameters);
         }
 
         public override void Execute(Context c)

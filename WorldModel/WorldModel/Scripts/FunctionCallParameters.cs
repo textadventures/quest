@@ -14,10 +14,10 @@ namespace AxeSoftware.Quest.Scripts
     // a game there is no mechanism for modifying a script command.
     internal class FunctionCallParameters
     {
-        private List<IFunction<object>> m_parameters;
+        private IList<IFunction<object>> m_parameters;
         private QuestList<string> m_parameterStrings = new QuestList<string>();
 
-        public FunctionCallParameters(WorldModel worldModel, List<IFunction<object>> parameters)
+        public FunctionCallParameters(WorldModel worldModel, IList<IFunction<object>> parameters)
         {
             m_parameterStrings.UndoLog = worldModel.UndoLogger;
             m_parameters = parameters;
