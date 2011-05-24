@@ -300,7 +300,16 @@
 
     Private Sub cmdPaste_Click(sender As System.Object, e As System.EventArgs) Handles cmdPaste.Click
         Save()
-        m_scripts.Paste(m_editIndex)
+        If m_scripts Is Nothing Then
+            m_controller.StartTransaction("Paste script")
+            m_scripts = m_controller.CreateNewEditableScripts(m_elementName, m_attribute, Nothing, False)
+            m_scripts.Paste(m_editIndex, False)
+            m_controller.EndTransaction()
+            UpdateList()
+        Else
+            m_scripts.Paste(m_editIndex, True)
+        End If
+        Save()
     End Sub
 
     Private Function GetSelectedIndicesArray() As Integer()

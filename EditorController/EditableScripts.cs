@@ -267,15 +267,21 @@ namespace AxeSoftware.Quest
             m_controller.SetClipboardScript(scripts);
         }
 
-        public void Paste(int index)
+        public void Paste(int index, bool useTransaction)
         {
-            m_controller.StartTransaction("Paste script");
+            if (useTransaction)
+            {
+                m_controller.StartTransaction("Paste script");
+            }
             foreach (IScript script in m_controller.GetClipboardScript())
             {
                 m_underlyingScript.Insert(index, m_controller.ScriptFactory.Clone(script));
                 index++;
             }
-            m_controller.EndTransaction();
+            if (useTransaction)
+            {
+                m_controller.EndTransaction();
+            }
         }
     }
 }

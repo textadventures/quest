@@ -673,7 +673,12 @@ namespace AxeSoftware.Quest
             {
                 newValue.AddNewInternal(keyword);
             }
-            if (element != null && attribute != null) element.Fields.Set(attribute, newValue.GetUnderlyingValue());
+            if (element != null && attribute != null)
+            {
+                element.Fields.Set(attribute, newValue.GetUnderlyingValue());
+                // Setting the element field value will clone the IScript, so we need to return an updated reference
+                newValue = EditableScripts.GetInstance(this, element.Fields.GetAsType<IScript>(attribute));
+            }
             if (useTransaction)
             {
                 WorldModel.UndoLogger.EndTransaction();

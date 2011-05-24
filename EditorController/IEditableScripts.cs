@@ -33,6 +33,6 @@ namespace AxeSoftware.Quest
         void Swap(int index1, int index2);
         void Cut(int[] indexes);
         void Copy(int[] indexes);
-        void Paste(int index);
+        void Paste(int index, bool useTransaction);
     }
 }
