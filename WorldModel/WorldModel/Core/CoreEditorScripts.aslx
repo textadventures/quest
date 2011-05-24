@@ -26,6 +26,20 @@
       <caption>Filename</caption>
       <attribute>0</attribute>
     </control>
+    
+    <!-- TO DO: We want to be able to use a file picker here, but also bear in mind we might want to
+    be able to use an expression like "myrandompic" + some_random_function(1,100) + ".jpg"  -->
+    
+    <!--
+    <control>
+      <controltype>file</controltype>
+      <attribute>0</attribute>
+      <caption>Filename</caption>
+      <source>*.jpg</source>
+      <width>300</width>
+      <filefiltername>Picture Files</filefiltername>
+    </control>
+    -->
   </editor>
 
   <editor>

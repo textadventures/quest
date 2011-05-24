@@ -175,6 +175,11 @@ namespace AxeSoftware.Quest
             return ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables, "$1" + k_dotReplacementString + "$2", false);
         }
 
+        public static string ConvertVariableToDottedProperties(string expression)
+        {
+            return expression.Replace(k_dotReplacementString, ".");
+        }
+
         private static string ReplaceRegexMatchesRespectingQuotes(string input, Regex regex, string replaceWith, bool replaceInsideQuote)
         {
             // We ignore regex matches which appear within quotes by splitting the string

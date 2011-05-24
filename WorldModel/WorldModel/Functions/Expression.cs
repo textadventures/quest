@@ -189,7 +189,7 @@ namespace AxeSoftware.Quest.Functions
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(string.Format("Error compiling expression '{0}': {1}", m_expression, ex.Message), ex);
+                    throw new Exception(string.Format("Error compiling expression '{0}': {1}", Utility.ConvertVariableToDottedProperties(m_expression), ex.Message), ex);
                 }
             }
             return m_compiledExpression.Evaluate();
