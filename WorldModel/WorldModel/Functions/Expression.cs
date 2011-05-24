@@ -29,7 +29,10 @@ namespace AxeSoftware.Quest.Functions
             m_expressionContext.Options.ParseCulture = System.Globalization.CultureInfo.InvariantCulture;
 
             m_originalExpression = expression;
-            expression = Utility.ConvertDottedPropertiesToVariable(expression);
+            if (!m_worldModel.EditMode)
+            {
+                expression = Utility.ConvertDottedPropertiesToVariable(expression);
+            }
 
             // While it would be nice to compile expressions here when the game is loaded,
             // we don't necessarily have all the properties created that an expression may
