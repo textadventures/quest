@@ -43,6 +43,42 @@
   </editor>
 
   <editor>
+    <appliesto>play sound</appliesto>
+    <display>Play sound #0</display>
+    <category>Output</category>
+    <create>play sound ("", false, false)</create>
+    <add>Play a sound</add>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Filename</caption>
+      <attribute>0</attribute>
+    </control>
+    
+    <!-- TO DO: As with "filename" above, it would be good to display checkboxes for these attributes, but
+    remember they're expressions so it's valid for them to be more complicated than just a simple "true" or "false" -->
+    
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Wait for sound to finish before continuing</caption>
+      <attribute>1</attribute>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Loop</caption>
+      <attribute>2</attribute>
+    </control>
+
+  </editor>
+
+  <editor>
+    <appliesto>stop sound</appliesto>
+    <display>Stop sound</display>
+    <category>Output</category>
+    <create>stop sound</create>
+    <add>Stop sound</add>
+  </editor>
+
+  <editor>
     <appliesto>insert</appliesto>
     <display>Insert HTML from file #0</display>
     <category>Output</category>

@@ -230,6 +230,7 @@
     </Compile>
     <Compile Include="Scripts\MsgScript.cs" />
     <Compile Include="Scripts\MultiScript.cs" />
+    <Compile Include="Scripts\PlaySoundScript.cs" />
     <Compile Include="Scripts\RequestScript.cs" />
     <Compile Include="Scripts\ReturnScript.cs" />
     <Compile Include="Scripts\RunDelegateScript.cs" />
