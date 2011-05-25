@@ -53,21 +53,20 @@
   <dynamictemplate name="DisambiguateMenu">"Bitte wähle, was du mit '" + text + "' meinst:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
 
-  <template name="CompassNW">nordwesten</template>
-  <template name="CompassN">norden</template>
-  <template name="CompassNE">nordosten</template>
-  <template name="CompassW">westen</template>
+  <template name="CompassNW">Nordwesten</template>
+  <template name="CompassN">Norden</template>
+  <template name="CompassNE">Nordosten</template>
+  <template name="CompassW">Westen</template>
   <template name="CompassOut">raus</template>
-  <template name="CompassE">osten</template>
-  <template name="CompassSW">südwesten</template>
-  <template name="CompassS">süden</template>
-  <template name="CompassSE">südosten</template>
+  <template name="CompassE">Osten</template>
+  <template name="CompassSW">Südwesten</template>
+  <template name="CompassS">Süden</template>
+  <template name="CompassSE">Südosten</template>
   <template name="CompassUp">hoch</template>
   <template name="CompassDown">runter</template>
 
   <template templatetype="command" name="go"><![CDATA[^gehe nach (?<exit>.*)$|^gehe (?<exit>.*)$|^nach (?<exit>.*)$|^(?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
-  <template templatetype="command" name="look">^schau$</template>
-  <template name="look">^schaue$</template>
+  <template templatetype="command" name="look">^schau$|^schaue$</template>
   <verbtemplate name="lookat">untersuche</verbtemplate>
   <verbtemplate name="lookat">betrachte</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
@@ -97,6 +96,8 @@
   <dynamictemplate name="DefaultDrink">"Du kannst " + object.article + " nicht drinken."</dynamictemplate>
   <verbtemplate name="eat">iss</verbtemplate>
   <verbtemplate name="eat">esse</verbtemplate>
+  <template templatetype="command" name="give"><![CDATA[^gib (?<object1>.*) an (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " möchte " + object2.article + " nicht."</dynamictemplate>
   <dynamictemplate name="DefaultEat">"Du kannst " + object.article + " nicht essen."</dynamictemplate>
   <verbtemplate name="hit">schlage</verbtemplate>
   <dynamictemplate name="DefaultHit">"Du kannst " + object.article + " nicht schlagen."</dynamictemplate>
@@ -164,6 +165,8 @@
   <dynamictemplate name="DefaultUnlock">"Du kannst " + object.article + " nicht aufschließen."</dynamictemplate>
   <verbtemplate name="untie">löse</verbtemplate>
   <dynamictemplate name="DefaultUntie">"Du kannst " + object.article + " nicht lösen."</dynamictemplate>
+  <template templatetype="command" name="useon"><![CDATA[^benutze (?<object1>.*) mit (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultUseOn">"Du kannst " + object2.article + " so nicht benutzen."</dynamictemplate>
   <template name="wear"><![CDATA[^ziehe an (?<object>.*)$|^zieh an (?<object>.*)$|^ziehe (?<object>.*) an$|^zieh (?<object>.*) an$]]></template>
   <dynamictemplate name="DefaultWear">"Du kannst " + object.article + " nicht anziehen."</dynamictemplate>
   <template templatetype="command" name="listen">^lausche$|^höre$|^hoere$</template>
@@ -180,6 +183,16 @@
   <template name="DefaultWait">Zeit vergeht.</template>
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">Überraschenderweise passiert gar nichts.</template>
+  <template templatetype="command" name="help">^hilfe$|^\?$</template>
+  <template name="DefaultHelp"><![CDATA[<br/><u>Befehlsübersicht</u><br/><br/>
+<b>- Häufig vorkommende Befehle:</b> UNTERSUCHE..., NIMM..., LEGE..., ÖFFNE..., GIB... AN..., BENUTZE... MIT..., SPRICH MIT..., VERWENDE...<br/>
+<b>- Inventar:</b> getragene Gegenstände können über INV oder INVENTAR angezeigt werden.<br/>
+<b>- Bewegung:</b>  Verwende die Buttons des Kompasses oder gib z.B. GEHE NACH NORDEN, SÜDEN oder RUNTER ein.<br/>
+<b>- Shortcuts:</b>  'Pfeil nach oben' und 'Pfeil nach unten' lässt dich durch die bereits eingegebenen Befehle blättern.<br/>
+   X... entspricht UNTERSUCHE..., I zeigt das Inventar,
+   die Himmelrichtungen können auch über N, S, W, O, NW, SO abgekürzt werden, dazu noch H für hoch und R für runter.
+   ]]></template>
+ 
  
     <function name="GetDefaultPrefix" type="string" parameters="obj">
 		if (Instr(obj.gender, "sie") > 0) {
