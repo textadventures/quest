@@ -1,7 +1,7 @@
 ﻿<library>  
   <!-- Contributed by Pertex -->
 
-  <!-- Get any undefined templates from the English library -->
+  <!-- nicht übersetzte Templates werden aus der English.aslx übernommen -->
   <include ref="English.aslx"/>
 
   <template name="UnresolvedObject">Ich kann das hier nicht sehen.</template>
