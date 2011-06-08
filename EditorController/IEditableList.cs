@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace AxeSoftware.Quest
 {
@@ -12,7 +13,7 @@ namespace AxeSoftware.Quest
         public EditorUpdateSource Source { get; set; }
     }
 
-    public interface IEditableList<T>
+    public interface IEditableList<T> : IEnumerable
     {
         event EventHandler<EditableListUpdatedEventArgs<T>> Added;
         event EventHandler<EditableListUpdatedEventArgs<T>> Removed;

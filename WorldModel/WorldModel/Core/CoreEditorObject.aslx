@@ -126,7 +126,6 @@
         <editors>
           string=richtext
         </editors>
-        <listwidth>150</listwidth>
         <expand/>
       </control>
 
@@ -178,7 +177,6 @@
         <types>
           boolean=Default behaviour; script=Run script
         </types>
-        <listwidth>150</listwidth>
         <checkbox>Object can be taken</checkbox>
       </control>
 
@@ -206,7 +204,6 @@
         <types>
           boolean=Default behaviour; script=Run script
         </types>
-        <listwidth>150</listwidth>
         <checkbox>Object can be dropped</checkbox>
       </control>
 
@@ -235,7 +232,6 @@
           null=Cannot be given objects;scriptdictionary=Handle objects individually;string=Print a message
         </types>
         <keyprompt>Please enter the object name</keyprompt>
-        <listwidth>250</listwidth>
       </control>
 
       <control>
@@ -252,7 +248,6 @@
           null=Objects cannot be used;scriptdictionary=Handle objects individually;string=Print a message
         </types>
         <keyprompt>Please enter the object name</keyprompt>
-        <listwidth>250</listwidth>
       </control>
     </tab>
 

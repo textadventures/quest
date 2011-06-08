@@ -336,4 +336,83 @@ namespace AxeSoftware.Quest
             get; set;
         }
     }
+
+    public class IfExpressionControlDefinition : IEditorControl
+    {
+        public static IfExpressionControlDefinition Instance
+        {
+            get { return new IfExpressionControlDefinition(); }
+        }
+
+        public string ControlType
+        {
+            get { return "textbox"; }
+        }
+
+        public string Caption
+        {
+            get { return null; }
+        }
+
+        public int? Height
+        {
+            get { return null; }
+        }
+
+        public int? Width
+        {
+            get { return null; }
+        }
+
+        public string Attribute
+        {
+            get { return "expression"; }
+        }
+
+        public bool Expand
+        {
+            get { return false; }
+        }
+
+        public string GetString(string tag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetListString(string tag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDictionary<string, string> GetDictionary(string tag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetInt(string tag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool GetBool(string tag)
+        {
+            if (tag == "nullable") return false;
+            throw new NotImplementedException();
+        }
+
+        public bool IsControlVisible(IEditorData data)
+        {
+            return true;
+        }
+
+        public int? PaddingTop
+        {
+            get { return null; }
+        }
+
+        public IEditorDefinition Parent
+        {
+            get { throw new NotImplementedException(); }
+        }
+    }
 }

@@ -1,8 +1,8 @@
 ﻿Public Class Editor
 
     Private WithEvents m_controller As EditorController
-    Private m_elementEditors As Dictionary(Of String, ElementEditor)
-    Private m_currentEditor As ElementEditor
+    Private m_elementEditors As Dictionary(Of String, WPFElementEditor)
+    Private m_currentEditor As WPFElementEditor
     Private m_menu As AxeSoftware.Quest.Controls.Menu
     Private m_filename As String
     Private m_currentElement As String
@@ -49,12 +49,7 @@
     End Function
 
     Private Sub InitialiseEditorControlsList()
-        For Each t As Type In AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(), GetType(IElementEditorControl))
-            Dim controlType As ControlTypeAttribute = DirectCast(Attribute.GetCustomAttribute(t, GetType(ControlTypeAttribute)), ControlTypeAttribute)
-            If Not controlType Is Nothing Then
-                m_controller.AddControlType(controlType.ControlType, t)
-            End If
-        Next
+        EditorControls.ElementEditor.InitialiseEditorControls(m_controller)
     End Sub
 
     Public Sub SetMenu(menu As AxeSoftware.Quest.Controls.Menu)
@@ -128,7 +123,7 @@
     End Sub
 
     Private Sub SetUpEditors()
-        m_elementEditors = New Dictionary(Of String, ElementEditor)
+        m_elementEditors = New Dictionary(Of String, WPFElementEditor)
 
         For Each editor As String In m_controller.GetAllEditorNames()
             AddEditor(editor)
@@ -138,8 +133,8 @@
     Private Sub AddEditor(name As String)
         ' Get an EditorDefinition from the EditorController, then pass it in to the ElementEditor so it can initialise its
         ' tabs and subcontrols.
-        Dim editor As ElementEditor
-        editor = New ElementEditor
+        Dim editor As WPFElementEditor
+        editor = New WPFElementEditor
         editor.Initialise(m_controller, m_controller.GetEditorDefinition(name))
         editor.Visible = False
         editor.Parent = pnlContent
@@ -266,7 +261,7 @@
             m_currentEditor = Nothing
             BannerVisible = False
         Else
-            Dim nextEditor As ElementEditor = m_elementEditors(editorName)
+            Dim nextEditor As WPFElementEditor = m_elementEditors(editorName)
 
             If Not m_currentEditor Is Nothing Then
                 If Not m_currentEditor.Equals(nextEditor) Then

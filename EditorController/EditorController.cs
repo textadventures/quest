@@ -190,7 +190,7 @@ namespace AxeSoftware.Quest
             string newName = e.Element.Name;
 
             RenamedNode(oldName, newName);
-            ElementsUpdated();
+            if (ElementsUpdated != null) ElementsUpdated();
         }
 
         void UndoLogger_TransactionsUpdated(object sender, EventArgs e)
@@ -224,7 +224,7 @@ namespace AxeSoftware.Quest
                 {
                     // element name might be null if we're undoing an element add
                     RetitledNode(e.Element.Name, GetDisplayName(e.Element));
-                    ElementsUpdated();
+                    if (ElementsUpdated != null) ElementsUpdated();
                 }
             }
 
@@ -298,7 +298,7 @@ namespace AxeSoftware.Quest
                 RemovedNode(args.Removed);
             }
 
-            ElementsUpdated();
+            if (ElementsUpdated != null) ElementsUpdated();
         }
 
         private void InitialiseTreeStructure()
@@ -782,8 +782,11 @@ namespace AxeSoftware.Quest
 
             Element element = m_worldModel.Elements.Get(parent);
 
-            // Point to itself as a sensible default
-            element.Fields.Set(attribute, element);
+            if (attribute != "parent")
+            {
+                // Point to itself as a sensible default
+                element.Fields.Set(attribute, element);
+            }
 
             if (useTransaction)
             {

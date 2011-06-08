@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="AxeSoftware.Quest.EditorControls.FileControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <ComboBox Name="lstFiles" SelectionChanged="lstFiles_SelectionChanged" Padding="8,3,8,3" IsEditable="False" VerticalAlignment="Center"/>
+        <Button Grid.Column="1" Margin="10,0,0,0" Padding="8,0,8,0" Click="Button_Click">Browse...</Button>
+    </Grid>
+</UserControl>

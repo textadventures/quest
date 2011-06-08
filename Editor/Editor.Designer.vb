@@ -27,7 +27,7 @@ Partial Class Editor
         Me.pnlHeader = New System.Windows.Forms.Panel()
         Me.lblHeader = New System.Windows.Forms.Label()
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
-        Me.ctlTree = New AxeSoftware.Quest.EditorTree()
+        Me.ctlTree = New AxeSoftware.Quest.EditorControls.WFEditorTree()
         Me.ctlBanner = New AxeSoftware.Quest.AlertBanner()
         Me.ctlTextEditor = New AxeSoftware.Quest.TextEditorControl()
         Me.ctlToolbar = New AxeSoftware.Quest.MainToolbar()
@@ -149,7 +149,7 @@ Partial Class Editor
 
     End Sub
     Friend WithEvents splitMain As System.Windows.Forms.SplitContainer
-    Friend WithEvents ctlTree As EditorTree
+    Friend WithEvents ctlTree As AxeSoftware.Quest.EditorControls.WFEditorTree
     Friend WithEvents ctlToolbar As AxeSoftware.Quest.MainToolbar
     Private WithEvents ctlSaveFile As System.Windows.Forms.SaveFileDialog
     Friend WithEvents pnlHeader As System.Windows.Forms.Panel

@@ -38,6 +38,7 @@ namespace AxeSoftware.Quest
         public bool IsParameterUpdate { get; private set; }
         public bool IsNamedParameterUpdate { get; private set; }
         public bool IsWholeScriptUpdate { get; private set; }
+        public bool IsNestedScriptUpdate { get; set; }
     }
 
     public enum ScriptType

@@ -70,6 +70,7 @@ namespace AxeSoftware.Quest
                 }
                 result.Add(kvp.Key, newValue);
             }
+            result.UndoLog = UndoLog;
             return result;
         }
 

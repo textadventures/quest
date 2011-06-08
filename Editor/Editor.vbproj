@@ -69,9 +69,6 @@
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit">
-      <HintPath>..\Dependencies\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -112,122 +109,17 @@
     <Compile Include="AlertBanner.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="AttributesControl.Designer.vb">
-      <DependentUpon>AttributesControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="AttributesControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CheckBoxControl.Designer.vb">
-      <DependentUpon>CheckBoxControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="CheckBoxControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DictionaryScriptControl.Designer.vb">
-      <DependentUpon>DictionaryScriptControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="DictionaryScriptControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DictionaryStringControl.Designer.vb">
-      <DependentUpon>DictionaryStringControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="DictionaryStringControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DropDownControl.Designer.vb">
-      <DependentUpon>DropDownControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="DropDownControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DropDownFileControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DropDownFilterControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DropDownObjectsControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DropDownTypesControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="EditorControl.Designer.vb">
-      <DependentUpon>EditorControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="EditorControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ControlTypeAttribute.vb" />
-    <Compile Include="EditorTree.Designer.vb">
-      <DependentUpon>EditorTree.vb</DependentUpon>
-    </Compile>
-    <Compile Include="EditorTree.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ElementEditor.Designer.vb">
-      <DependentUpon>ElementEditor.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ElementEditor.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ElementsListControl.Designer.vb">
-      <DependentUpon>ElementsListControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ElementsListControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FileControl.Designer.vb">
-      <DependentUpon>FileControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="FileControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ICommandEditor.vb" />
     <Compile Include="IElementEditorControl.vb" />
-    <Compile Include="IfEditor.Designer.vb">
-      <DependentUpon>IfEditor.vb</DependentUpon>
-    </Compile>
-    <Compile Include="IfEditor.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="IfEditorChild.Designer.vb">
-      <DependentUpon>IfEditorChild.vb</DependentUpon>
-    </Compile>
-    <Compile Include="IfEditorChild.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="IListEditorDelegate.vb" />
     <Compile Include="InputWindow.Designer.vb">
       <DependentUpon>InputWindow.vb</DependentUpon>
     </Compile>
     <Compile Include="InputWindow.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ListEditor.Designer.vb">
-      <DependentUpon>ListEditor.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ListEditor.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ListStringControl.Designer.vb">
-      <DependentUpon>ListStringControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ListStringControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="MainToolbar.Designer.vb">
       <DependentUpon>MainToolbar.vb</DependentUpon>
     </Compile>
     <Compile Include="MainToolbar.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MultiControl.Designer.vb">
-      <DependentUpon>MultiControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="MultiControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="My Project\Application.Designer.vb">
@@ -257,75 +149,17 @@
     <Compile Include="NewGameWindow.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NumberControl.Designer.vb">
-      <DependentUpon>NumberControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="NumberControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PatternControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="RichTextControl.Designer.vb">
-      <DependentUpon>RichTextControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="RichTextControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScriptAdder.Designer.vb">
-      <DependentUpon>ScriptAdder.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ScriptAdder.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScriptCommandEditor.Designer.vb">
-      <DependentUpon>ScriptCommandEditor.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ScriptCommandEditor.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScriptControl.Designer.vb">
-      <DependentUpon>ScriptControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ScriptControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScriptEditor.Designer.vb">
-      <DependentUpon>ScriptEditor.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ScriptEditor.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScriptEditorPopOut.Designer.vb">
-      <DependentUpon>ScriptEditorPopOut.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ScriptEditorPopOut.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TextBoxControl.Designer.vb">
-      <DependentUpon>TextBoxControl.vb</DependentUpon>
-    </Compile>
-    <Compile Include="TextBoxControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="PopupEditors.vb" />
-    <Compile Include="TextEditor.xaml.vb">
-      <DependentUpon>TextEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="TextEditorControl.Designer.vb">
       <DependentUpon>TextEditorControl.vb</DependentUpon>
     </Compile>
     <Compile Include="TextEditorControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TitleControl.Designer.vb">
-      <DependentUpon>TitleControl.vb</DependentUpon>
+    <Compile Include="WPFElementEditor.Designer.vb">
+      <DependentUpon>WPFElementEditor.vb</DependentUpon>
     </Compile>
-    <Compile Include="TitleControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Utility.vb" />
-    <Compile Include="VerbsControl.vb">
+    <Compile Include="WPFElementEditor.vb">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
@@ -333,60 +167,15 @@
     <EmbeddedResource Include="AlertBanner.resx">
       <DependentUpon>AlertBanner.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AttributesControl.resx">
-      <DependentUpon>AttributesControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CheckBoxControl.resx">
-      <DependentUpon>CheckBoxControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DictionaryScriptControl.resx">
-      <DependentUpon>DictionaryScriptControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DictionaryStringControl.resx">
-      <DependentUpon>DictionaryStringControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DropDownControl.resx">
-      <DependentUpon>DropDownControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EditorControl.resx">
-      <DependentUpon>EditorControl.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Editor.resx">
       <DependentUpon>Editor.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EditorTree.resx">
-      <DependentUpon>EditorTree.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ElementEditor.resx">
-      <DependentUpon>ElementEditor.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ElementsListControl.resx">
-      <DependentUpon>ElementsListControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FileControl.resx">
-      <DependentUpon>FileControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="IfEditor.resx">
-      <DependentUpon>IfEditor.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="IfEditorChild.resx">
-      <DependentUpon>IfEditorChild.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InputWindow.resx">
       <DependentUpon>InputWindow.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ListEditor.resx">
-      <DependentUpon>ListEditor.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ListStringControl.resx">
-      <DependentUpon>ListStringControl.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainToolbar.resx">
       <DependentUpon>MainToolbar.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MultiControl.resx">
-      <DependentUpon>MultiControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -397,35 +186,11 @@
     <EmbeddedResource Include="NewGameWindow.resx">
       <DependentUpon>NewGameWindow.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NumberControl.resx">
-      <DependentUpon>NumberControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RichTextControl.resx">
-      <DependentUpon>RichTextControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScriptAdder.resx">
-      <DependentUpon>ScriptAdder.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScriptCommandEditor.resx">
-      <DependentUpon>ScriptCommandEditor.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScriptControl.resx">
-      <DependentUpon>ScriptControl.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScriptEditor.resx">
-      <DependentUpon>ScriptEditor.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScriptEditorPopOut.resx">
-      <DependentUpon>ScriptEditorPopOut.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TextBoxControl.resx">
-      <DependentUpon>TextBoxControl.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TextEditorControl.resx">
       <DependentUpon>TextEditorControl.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TitleControl.resx">
-      <DependentUpon>TitleControl.vb</DependentUpon>
+    <EmbeddedResource Include="WPFElementEditor.resx">
+      <DependentUpon>WPFElementEditor.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -447,6 +212,10 @@
       <Project>{B3B92783-0D5E-43BB-833B-87DEA9B67D00}</Project>
       <Name>EditorController</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EditorControls\EditorControls.csproj">
+      <Project>{4FE4228C-502B-47B7-A79B-79BEE6221C25}</Project>
+      <Name>EditorControls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Menus\Menus.vbproj">
       <Project>{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}</Project>
       <Name>Menus</Name>
@@ -461,12 +230,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\addroom.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="TextEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="MSHTML">

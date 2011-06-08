@@ -8,9 +8,14 @@
     <category>Output</category>
     <create>msg ("")</create>
     <add>Print a message</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Print</caption>
+    </control>
+    
     <control>
       <controltype>textbox</controltype>
-      <caption>Message</caption>
       <attribute>0</attribute>
     </control>
   </editor>
@@ -21,9 +26,14 @@
     <category>Output</category>
     <create>picture ("")</create>
     <add>Show a picture</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Show picture</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Filename</caption>
       <attribute>0</attribute>
     </control>
     
@@ -48,9 +58,14 @@
     <category>Output</category>
     <create>play sound ("", false, false)</create>
     <add>Play a sound</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Play sound</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Filename</caption>
       <attribute>0</attribute>
     </control>
     
@@ -76,6 +91,11 @@
     <category>Output</category>
     <create>stop sound</create>
     <add>Stop sound</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Stop sound</caption>
+    </control>
   </editor>
 
   <editor>
@@ -84,9 +104,14 @@
     <category>Output</category>
     <create>insert ("")</create>
     <add>Insert HTML from a file</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Insert HTML from</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Filename</caption>
       <attribute>0</attribute>
     </control>
   </editor>
@@ -97,16 +122,26 @@
     <category>Output</category>
     <create>request (ClearScreen,)</create>
     <add>Raise a UI request</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Raise UI request</caption>
+    </control>
+
     <control>
       <controltype>dropdown</controltype>
-      <width>150</width>
       <validvalues type="list">Quit;Load;Save;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Speak;Restart;Show;Hide</validvalues>
       <caption>Request</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, parameter</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Parameter</caption>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -119,9 +154,14 @@
     <category>Objects</category>
     <create>create ("")</create>
     <add>Create an object</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Create object</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Name</caption>
       <attribute>0</attribute>
     </control>
   </editor>
@@ -132,19 +172,34 @@
     <category>Objects</category>
     <create>create exit ("",,)</create>
     <add>Create an exit</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Create exit named</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Name</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, from</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>From</caption>
       <attribute>1</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>to</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>To</caption>
       <attribute>2</attribute>
     </control>
   </editor>
@@ -155,9 +210,14 @@
     <category>Objects</category>
     <create>destroy ("")</create>
     <add>Destroy an object</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Destroy</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Name</caption>
       <attribute>0</attribute>
     </control>
   </editor>
@@ -178,25 +238,42 @@
     <category>Scripts</category>
     <add>For...</add>
     <create>for (,,)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>For: loop variable</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Iterator variable</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>from</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>From</caption>
       <attribute>1</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>to</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>To</caption>
       <attribute>2</attribute>
     </control>
+
     <control>
       <controltype>script</controltype>
-      <caption>Script</caption>
       <attribute>3</attribute>
+      <caption>Run script</caption>
+      <breakbefore/>
     </control>
   </editor>
 
@@ -206,20 +283,32 @@
     <category>Scripts</category>
     <add>For each...</add>
     <create>foreach (,)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>For each: loop variable</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Iterator variable</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>in source</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Source</caption>
       <attribute>1</attribute>
     </control>
+
     <control>
       <controltype>script</controltype>
-      <caption>Script</caption>
       <attribute>2</attribute>
+      <caption>Run script</caption>
+      <breakbefore/>
     </control>
   </editor>
 
@@ -229,10 +318,21 @@
     <category>Scripts</category>
     <add>Switch...</add>
     <create>switch ()</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Switch:</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
       <caption>Expression</caption>
       <attribute>0</attribute>
+    </control>
+    <control>
+      <controltype>label</controltype>
+      <caption>Cases:</caption>
+      <breakbefore/>
     </control>
     <control>
       <controltype>scriptdictionary</controltype>
@@ -241,6 +341,7 @@
       <keyprompt>Please enter the case expression</keyprompt>
     </control>
     <control>
+      <breakbefore/>
       <controltype>script</controltype>
       <caption>Default</caption>
       <attribute>2</attribute>
@@ -253,11 +354,22 @@
     <category>Scripts</category>
     <add>Call function</add>
     <create></create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Call function</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Function</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, parameters:</caption>
+    </control>
+    
     <control>
       <controltype>list</controltype>
       <caption>Parameters</caption>
@@ -273,6 +385,12 @@
     <category>Scripts</category>
     <add>Run an object's script property</add>
     <create>do (,"")</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Run</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
       <caption>Object</caption>
@@ -297,6 +415,12 @@
     <category>Scripts</category>
     <add>Run an script returned by an expression</add>
     <create>invoke ()</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Invoke</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
       <caption>Script expression</caption>
@@ -315,9 +439,14 @@
     <category>Scripts</category>
     <create>error ("")</create>
     <add>Raise an error</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Raise error</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Message</caption>
       <attribute>0</attribute>
     </control>
   </editor>
@@ -328,9 +457,14 @@
     <category>Scripts</category>
     <create>return ()</create>
     <add>Set this function's return value</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set this function's return value to</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Value</caption>
       <attribute>0</attribute>
     </control>
   </editor>
@@ -341,6 +475,12 @@
     <category>Scripts</category>
     <create>rundelegate (,"","")</create>
     <add>Run an object's delegate implementation</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Run delegate implementation</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
       <caption>Object</caption>
@@ -351,6 +491,12 @@
       <caption>Property</caption>
       <attribute>1</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, parameters:</caption>
+    </control>
+
     <control>
       <controltype>list</controltype>
       <caption>Parameters</caption>
@@ -367,14 +513,24 @@
     <category>Variables</category>
     <add>Set a variable or property</add>
     <create>=</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set variable</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Variable</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>=</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Value</caption>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -385,14 +541,24 @@
     <category>Variables</category>
     <add>Set a variable or property to a script</add>
     <create>=></create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set variable</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Variable</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>= script:</caption>
+    </control>
+
     <control>
       <controltype>script</controltype>
-      <caption>Script</caption>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -403,19 +569,35 @@
     <category>Variables</category>
     <add>Set a variable or property (named by an expression)</add>
     <create>set (,"",)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
       <caption>Object</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>.</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Property</caption>
       <attribute>1</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>=</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Value</caption>
       <attribute>2</attribute>
     </control>
   </editor>
@@ -426,14 +608,24 @@
     <category>Variables</category>
     <add>Add a value to a list</add>
     <create>list add (,)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Add to list</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>List</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>value</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Value</caption>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -444,14 +636,24 @@
     <category>Variables</category>
     <add>Remove a value from a list</add>
     <create>list remove (,)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Remove from list</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>List</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>value</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Value</caption>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -462,19 +664,34 @@
     <category>Variables</category>
     <add>Add a value to a dictionary</add>
     <create>dictionary add (,"",)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Add to dictionary</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Dictionary</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>key</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Key</caption>
       <attribute>1</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>value</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Value</caption>
       <attribute>2</attribute>
     </control>
   </editor>
@@ -485,14 +702,24 @@
     <category>Variables</category>
     <add>Remove a value from a dictionary</add>
     <create>dictionary remove (,"")</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Remove from dictionary</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Dictionary</caption>
       <attribute>0</attribute>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>key</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Key</caption>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -505,6 +732,11 @@
     <category>Game State</category>
     <add>Finish the game</add>
     <create>finish</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Finish the game</caption>
+    </control>
   </editor>
 
   <editor>
@@ -513,6 +745,11 @@
     <category>Game State</category>
     <add>Undo</add>
     <create>undo</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Undo one transaction</caption>
+    </control>
   </editor>
 
   <editor>
@@ -521,9 +758,14 @@
     <category>Game State</category>
     <add>Start transaction</add>
     <create>start transaction ("")</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Start transaction for command</caption>
+    </control>
+
     <control>
       <controltype>textbox</controltype>
-      <caption>Command</caption>
       <attribute>0</attribute>
     </control>
   </editor>
@@ -534,5 +776,10 @@
     <category>Game State</category>
     <add>End transaction</add>
     <create>end transaction</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>End transaction</caption>
+    </control>
   </editor>
 </library>

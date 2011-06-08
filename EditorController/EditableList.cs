@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Specialized;
+using System.Collections;
 
 namespace AxeSoftware.Quest
 {
-    public class EditableList<T> : IEditableList<T>, IDataWrapper
+    public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollectionChanged
     {
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
         public event EventHandler<EditableListUpdatedEventArgs<T>> Added;
         public event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
 
@@ -103,6 +107,7 @@ namespace AxeSoftware.Quest
             m_wrappedItemKeys.Insert(index, key);
 
             if (Added != null) Added(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = wrappedValue, Index = index, Source = source });
+            if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, wrappedValue, index));
         }
 
         private string GetUniqueId()
@@ -159,6 +164,7 @@ namespace AxeSoftware.Quest
             m_wrappedItemsList.Remove(item);
             m_wrappedItemKeys.Remove(item.Key);
             if (Removed != null) Removed(this, new EditableListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
+            if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
         }
 
         void m_source_Added(object sender, QuestListUpdatedEventArgs<T> e)
@@ -233,6 +239,11 @@ namespace AxeSoftware.Quest
             parent.Fields.Set(attribute, newSource);
             newSource = (QuestList<T>)parent.Fields.Get(attribute);
             return EditableList<T>.GetNewInstance(m_controller, newSource);
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return m_wrappedItemsList.GetEnumerator();
         }
     }
 }

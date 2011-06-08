@@ -127,6 +127,7 @@ namespace AxeSoftware.Quest.Scripts
             {
                 clone.m_elseIfScript.Add(elseif.Clone(clone));
             }
+            clone.m_lastElseIfId = m_lastElseIfId;
             return clone;
         }
 

@@ -1,0 +1,425 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4FE4228C-502B-47B7-A79B-79BEE6221C25}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AxeSoftware.Quest.EditorControls</RootNamespace>
+    <AssemblyName>EditorControls</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>q2_48x48c.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\Dependencies\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WPFToolkit.Extended">
+      <HintPath>..\Dependencies\WPFToolkit.Extended.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AttributesControl.xaml.cs">
+      <DependentUpon>AttributesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ControlFactory.cs" />
+    <Compile Include="DictionaryScriptControl.xaml.cs">
+      <DependentUpon>DictionaryScriptControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DictionaryStringControl.xaml.cs">
+      <DependentUpon>DictionaryStringControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DropDownControl.xaml.cs">
+      <DependentUpon>DropDownControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DropDownFilterControl.xaml.cs">
+      <DependentUpon>DropDownFilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DropDownObjectsControl.xaml.cs">
+      <DependentUpon>DropDownObjectsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DropDownTypesControl.xaml.cs">
+      <DependentUpon>DropDownTypesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ElementsListControl.xaml.cs">
+      <DependentUpon>ElementsListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileControl.xaml.cs">
+      <DependentUpon>FileControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IfEditor.xaml.cs">
+      <DependentUpon>IfEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IfEditorChild.xaml.cs">
+      <DependentUpon>IfEditorChild.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InputWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputWindow.Designer.cs">
+      <DependentUpon>InputWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LabelControl.xaml.cs">
+      <DependentUpon>LabelControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MultiControl.xaml.cs">
+      <DependentUpon>MultiControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NumberControl.xaml.cs">
+      <DependentUpon>NumberControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PatternControl.xaml.cs">
+      <DependentUpon>PatternControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PopupEditors.cs" />
+    <Compile Include="RichTextControl.xaml.cs">
+      <DependentUpon>RichTextControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptAdder.xaml.cs">
+      <DependentUpon>ScriptAdder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptEditorControl.xaml.cs">
+      <DependentUpon>ScriptEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptEditorPopOut.xaml.cs">
+      <DependentUpon>ScriptEditorPopOut.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptExpander.xaml.cs">
+      <DependentUpon>ScriptExpander.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptToolbar.xaml.cs">
+      <DependentUpon>ScriptToolbar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditorControl.xaml.cs">
+      <DependentUpon>TextEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TitleControl.xaml.cs">
+      <DependentUpon>TitleControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VerbsControl.xaml.cs">
+      <DependentUpon>VerbsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WFAttributesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFAttributesControl.Designer.cs">
+      <DependentUpon>WFAttributesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CheckBoxControl.xaml.cs">
+      <DependentUpon>CheckBoxControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ControlDataHelper.cs" />
+    <Compile Include="ControlTypeAttribute.cs" />
+    <Compile Include="ElementEditor.xaml.cs">
+      <DependentUpon>ElementEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IElementEditorControl.cs" />
+    <Compile Include="ListStringControl.xaml.cs">
+      <DependentUpon>ListStringControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="TextBoxControl.xaml.cs">
+      <DependentUpon>TextBoxControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WFDictionaryScriptControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFDictionaryScriptControl.Designer.cs">
+      <DependentUpon>WFDictionaryScriptControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WFDictionaryStringControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFDictionaryStringControl.Designer.cs">
+      <DependentUpon>WFDictionaryStringControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WFEditorTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFEditorTree.Designer.cs">
+      <DependentUpon>WFEditorTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WFElementsListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFElementsListControl.Designer.cs">
+      <DependentUpon>WFElementsListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WFListEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFListEditor.Designer.cs">
+      <DependentUpon>WFListEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WFMultiControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFMultiControl.Designer.cs">
+      <DependentUpon>WFMultiControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WFRichTextControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFRichTextControl.Designer.cs">
+      <DependentUpon>WFRichTextControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WFToolbar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFToolbar.Designer.cs">
+      <DependentUpon>WFToolbar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WFVerbsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <EmbeddedResource Include="InputWindow.resx">
+      <DependentUpon>InputWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFAttributesControl.resx">
+      <DependentUpon>WFAttributesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFDictionaryScriptControl.resx">
+      <DependentUpon>WFDictionaryScriptControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFDictionaryStringControl.resx">
+      <DependentUpon>WFDictionaryStringControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFEditorTree.resx">
+      <DependentUpon>WFEditorTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFElementsListControl.resx">
+      <DependentUpon>WFElementsListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFListEditor.resx">
+      <DependentUpon>WFListEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFMultiControl.resx">
+      <DependentUpon>WFMultiControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFRichTextControl.resx">
+      <DependentUpon>WFRichTextControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFToolbar.resx">
+      <DependentUpon>WFToolbar.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="AttributesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CheckBoxControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DictionaryScriptControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DictionaryStringControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DropDownControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DropDownFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DropDownObjectsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DropDownTypesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ElementEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ElementsListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IfEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IfEditorChild.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LabelControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListStringControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MultiControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NumberControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PatternControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RichTextControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScriptAdder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScriptEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScriptEditorPopOut.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScriptExpander.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScriptToolbar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TextBoxControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TextEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TitleControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VerbsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EditorController\EditorController.csproj">
+      <Project>{B3B92783-0D5E-43BB-833B-87DEA9B67D00}</Project>
+      <Name>EditorController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{0E926905-F750-49F9-AEBD-CE14B2B231D8}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="MSHTML">
+      <Guid>{3050F1C5-98B5-11CF-BB82-00AA00BDCE0B}</Guid>
+      <VersionMajor>4</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CopyHS.png" />
+    <Resource Include="Images\CutHS.png" />
+    <Resource Include="Images\DeleteHS.png" />
+    <Resource Include="Images\Down.png" />
+    <Resource Include="Images\FullView.png" />
+    <Resource Include="Images\PasteHS.png" />
+    <Resource Include="Images\Up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="q2_48x48c.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -12,7 +12,6 @@
         <types>
           simplepattern=Command pattern; string=Regular expression
         </types>
-        <listwidth>150</listwidth>
       </control>
 
       <control>

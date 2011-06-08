@@ -83,7 +83,7 @@ namespace AxeSoftware.Quest
 
         protected void RaiseUpdateForNestedScriptChange(EditableScriptsUpdatedEventArgs e)
         {
-            RaiseUpdated(new EditableScriptUpdatedEventArgs(-1, string.Empty));
+            RaiseUpdated(new EditableScriptUpdatedEventArgs { IsNestedScriptUpdate = true });
         }
 
         protected EditorController Controller

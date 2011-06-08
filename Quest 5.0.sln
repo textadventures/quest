@@ -43,6 +43,8 @@ Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Setup", "Setup\Setup.isproj
 		{C7367F28-22F8-4111-A434-26D497EF0FBA} = {C7367F28-22F8-4111-A434-26D497EF0FBA}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorControls", "EditorControls\EditorControls.csproj", "{4FE4228C-502B-47B7-A79B-79BEE6221C25}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Quest 5.0.vsmdi
@@ -211,6 +213,18 @@ Global
 		{51D99479-B857-40B4-9292-14BE1E7C2803}.ReleaseSetup|Any CPU.Build.0 = SingleImage
 		{51D99479-B857-40B4-9292-14BE1E7C2803}.SingleImage|Any CPU.ActiveCfg = SingleImage
 		{51D99479-B857-40B4-9292-14BE1E7C2803}.SingleImage|Any CPU.Build.0 = SingleImage
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.ReleaseSetup|Any CPU.ActiveCfg = Release|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.ReleaseSetup|Any CPU.Build.0 = Release|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{4FE4228C-502B-47B7-A79B-79BEE6221C25}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
