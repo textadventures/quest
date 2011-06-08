@@ -32,6 +32,7 @@ namespace AxeSoftware.Quest.EditorControls
         public IfEditorChild()
         {
             InitializeComponent();
+            ctlExpression.IsSimpleModeAvailable = false;
             Mode = IfEditorChildMode.If;
         }
 

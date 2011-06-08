@@ -17,6 +17,6 @@
         </Grid.RowDefinitions>
         <ComboBox Name="lstType" SelectionChanged="lstType_SelectionChanged" />
         <TextBox Name="txtExpression" Grid.Column="1" TextChanged="txtExpression_TextChanged" LostFocus="txtExpression_LostFocus"></TextBox>
-        <Button Name="cmdInsert" Grid.Column="2">Insert</Button>
+        <Button Name="cmdInsert" Grid.Column="2" Padding="5,0,5,0">Insert</Button>
     </Grid>
 </UserControl>

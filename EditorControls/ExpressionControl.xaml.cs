@@ -21,6 +21,7 @@ namespace AxeSoftware.Quest.EditorControls
         private Control m_simpleEditor;
         private bool m_simpleMode;
         private bool m_updatingList;
+        private bool m_isSimpleModeAvailable = true;
 
         public ExpressionControl()
         {
@@ -31,29 +32,32 @@ namespace AxeSoftware.Quest.EditorControls
 
         void Initialise()
         {
-            string simpleEditor = m_helper.ControlDefinition.GetString("simpleeditor") ?? "textbox";
-
-            // TO DO: Also want to handle checkbox and file controls
-
-            switch (simpleEditor)
+            if (IsSimpleModeAvailable)
             {
-                case "textbox":
-                    TextBox newTextBox = new TextBox();
-                    newTextBox.TextChanged += SimpleEditor_TextChanged;
-                    newTextBox.LostFocus += SimpleEditor_LostFocus;
-                    m_simpleEditor = newTextBox;
-                    break;
-                default:
-                    throw new InvalidOperationException("Invalid control type for expression");
-            }
-            Grid.SetRow(m_simpleEditor, Grid.GetRow(txtExpression));
-            Grid.SetColumn(m_simpleEditor, Grid.GetColumn(txtExpression));
-            grid.Children.Add(m_simpleEditor);
+                string simpleEditor = m_helper.ControlDefinition.GetString("simpleeditor") ?? "textbox";
 
-            m_updatingList = true;
-            lstType.Items.Add(m_helper.ControlDefinition.GetString("simple"));
-            lstType.Items.Add("expression");
-            m_updatingList = false;
+                // TO DO: Also want to handle checkbox and file controls
+
+                switch (simpleEditor)
+                {
+                    case "textbox":
+                        TextBox newTextBox = new TextBox();
+                        newTextBox.TextChanged += SimpleEditor_TextChanged;
+                        newTextBox.LostFocus += SimpleEditor_LostFocus;
+                        m_simpleEditor = newTextBox;
+                        break;
+                    default:
+                        throw new InvalidOperationException("Invalid control type for expression");
+                }
+                Grid.SetRow(m_simpleEditor, Grid.GetRow(txtExpression));
+                Grid.SetColumn(m_simpleEditor, Grid.GetColumn(txtExpression));
+                grid.Children.Add(m_simpleEditor);
+
+                m_updatingList = true;
+                lstType.Items.Add(m_helper.ControlDefinition.GetString("simple"));
+                lstType.Items.Add("expression");
+                m_updatingList = false;
+            }
         }
 
         void SimpleEditor_LostFocus(object sender, RoutedEventArgs e)
@@ -126,9 +130,10 @@ namespace AxeSoftware.Quest.EditorControls
 
         private bool SimpleMode
         {
-            get { return m_simpleMode; }
+            get { return IsSimpleModeAvailable ? m_simpleMode : false; }
             set
             {
+                if (!IsSimpleModeAvailable) return;
                 m_simpleMode = value;
 
                 m_updatingList = true;
@@ -167,6 +172,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         private bool IsSimpleExpression(string expression)
         {
+            if (!IsSimpleModeAvailable) return false;
+
             // must start and end with quote character
             if (!(expression.StartsWith("\"") && expression.EndsWith("\""))) return false;
 
@@ -193,6 +200,17 @@ namespace AxeSoftware.Quest.EditorControls
             set
             {
                 ((TextBox)m_simpleEditor).Text = value;
+            }
+        }
+
+        public bool IsSimpleModeAvailable
+        {
+            get { return m_isSimpleModeAvailable; }
+            set
+            {
+                m_isSimpleModeAvailable = value;
+
+                lstType.Visibility = m_isSimpleModeAvailable ? Visibility.Visible : Visibility.Collapsed;
             }
         }
     }

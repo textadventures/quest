@@ -16,8 +16,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label Name="lblIf" Padding="0,5,10,5">If:</Label>
-            <my:TextBoxControl x:Name="ctlExpression" Grid.Column="1" HorizontalAlignment="Stretch" />
+            <Label Name="lblIf" Padding="0,3,10,0">If:</Label>
+            <my:ExpressionControl x:Name="ctlExpression" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
             <Button Name="cmdDelete" Click="cmdDelete_Click" Grid.Column="2" Padding="10,0,10,0" Margin="10,0,0,0">Remove</Button>
         </Grid>
         <my:ScriptExpander x:Name="ctlScriptExpander" Grid.Row="1" Grid.ColumnSpan="2" Padding="20,0,0,0" />
