@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
 
 namespace AxeSoftware.Quest.EditorControls
 {
@@ -26,8 +27,10 @@ namespace AxeSoftware.Quest.EditorControls
         public ExpressionControl()
         {
             InitializeComponent();
+
             m_helper = new ControlDataHelper<string>(this);
             m_helper.Initialise += Initialise;
+            InitialiseInsertMenu();
         }
 
         void Initialise()
@@ -212,6 +215,57 @@ namespace AxeSoftware.Quest.EditorControls
 
                 lstType.Visibility = m_isSimpleModeAvailable ? Visibility.Visible : Visibility.Collapsed;
             }
+        }
+
+        private void cmdInsert_Click(object sender, RoutedEventArgs e)
+        {
+            TextOptions.SetTextFormattingMode(mnuInsertMenu, TextFormattingMode.Display);
+            mnuInsertMenu.IsOpen = true;
+        }
+
+        private void InitialiseInsertMenu()
+        {
+            AddInsertMenuItem("Variable", InsertVariable);
+            AddInsertMenuItem("Object", InsertObject);
+            AddInsertMenuItem("Property", InsertProperty);
+            AddInsertMenuItem("Function", InsertFunction);
+            mnuInsertMenu.Items.Add(new Separator());
+            AddInsertMenuItem("and", () => InsertString(" and "));
+            AddInsertMenuItem("or", () => InsertString(" or "));
+            AddInsertMenuItem("+", () => InsertString(" + "));
+            AddInsertMenuItem("-", () => InsertString(" - "));
+            AddInsertMenuItem("*", () => InsertString(" * "));
+            AddInsertMenuItem("/", () => InsertString(" / "));
+            AddInsertMenuItem("=", () => InsertString(" = "));
+        }
+
+        private void AddInsertMenuItem(string caption, Action insertAction)
+        {
+            MenuItem newItem = new MenuItem();
+            newItem.Header = caption;
+            newItem.Click += (object sender, RoutedEventArgs e) => insertAction.Invoke();
+            mnuInsertMenu.Items.Add(newItem);
+        }
+
+        private void InsertVariable()
+        {
+        }
+
+        private void InsertObject()
+        {
+        }
+
+        private void InsertProperty()
+        {
+        }
+
+        private void InsertFunction()
+        {
+        }
+
+        private void InsertString(string text)
+        {
+            txtExpression.Text = txtExpression.Text.Insert(txtExpression.SelectionStart, text);
         }
     }
 }
