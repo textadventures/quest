@@ -248,14 +248,6 @@ namespace AxeSoftware.Quest.EditorControls
         {
             Control newControl = ControlFactory.CreateEditorControl(m_controller, controlType);
             newControl.Margin = new Thickness(0, 8, 0, 0);
-
-            IElementEditorControl newElementEditorControl = newControl as IElementEditorControl;
-            if (newElementEditorControl != null)
-            {
-                //newElementEditorControl.Helper.Dirty += Control_Dirty;
-                //newElementEditorControl.Helper.RequestParentElementEditorSave += Control_RequestParentElementEditorSave;
-            }
-
             return (Control)newControl;
         }
 

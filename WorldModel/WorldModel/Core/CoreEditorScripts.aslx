@@ -15,8 +15,9 @@
     </control>
     
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>message</simple>
     </control>
   </editor>
 
