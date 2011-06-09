@@ -23,8 +23,8 @@ namespace AxeSoftware.Quest.EditorControls
         private bool m_simpleMode;
         private bool m_updatingList;
         private bool m_isSimpleModeAvailable = true;
-        private bool m_focusing = false;
         private bool m_saving = false;
+        private IEditorData m_data;
 
         public ExpressionControl()
         {
@@ -82,6 +82,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Populate(IEditorData data)
         {
+            m_data = data;
             if (data == null) return;
             m_helper.StartPopulating();
 
@@ -258,6 +259,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void InsertVariable()
         {
+            InsertFromList("variable", m_data.GetVariablesInScope());
         }
 
         private void InsertObject()
@@ -272,14 +274,24 @@ namespace AxeSoftware.Quest.EditorControls
         {
         }
 
+        private void InsertFromList(string itemName, IEnumerable<string> items)
+        {
+            var result = PopupEditors.EditStringWithDropdown(
+                string.Format("Please enter a {0} name", itemName),
+                string.Empty, null, null, "",
+                items);
+
+            if (result.Cancelled) return;
+
+            InsertString(result.Result);
+        }
+
         private void InsertString(string text)
         {
             int index = txtExpression.SelectionStart;
             txtExpression.Text = txtExpression.Text.Insert(index, text);
             txtExpression.SelectionStart = index + text.Length;
-            m_focusing = true;
             txtExpression.Focus();
-            m_focusing = false;
         }
     }
 }

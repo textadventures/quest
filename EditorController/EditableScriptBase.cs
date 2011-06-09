@@ -90,5 +90,10 @@ namespace AxeSoftware.Quest
         {
             get { return m_controller; }
         }
+
+        public IEnumerable<string> GetVariablesInScope()
+        {
+            return Script.Parent.GetVariablesInScope();
+        }
     }
 }

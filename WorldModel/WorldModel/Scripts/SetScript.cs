@@ -147,6 +147,16 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
+        public override IEnumerable<string> GetDefinedVariables()
+        {
+            if (m_appliesTo == null)
+            {
+                // If m_appliesTo is null, then this is an expression setting a simple variable value
+                return new List<string> { m_property };
+            }
+            return base.GetDefinedVariables();
+        }
+
         protected abstract object GetResult(Context c);
         protected abstract string GetEqualsString { get; }
         protected abstract string GetSaveString();

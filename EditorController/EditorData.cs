@@ -183,5 +183,10 @@ namespace AxeSoftware.Quest
             get { return IsLibraryElement; }
             set { }
         }
+
+        public IEnumerable<string> GetVariablesInScope()
+        {
+            return null;
+        }
     }
 }

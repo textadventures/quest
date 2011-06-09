@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AxeSoftware.Quest.Scripts
 {
-    public class MultiScript : ScriptBase
+    public class MultiScript : ScriptBase, IScriptParent
     {
         private List<IScript> m_scripts;
 
@@ -20,7 +20,9 @@ namespace AxeSoftware.Quest.Scripts
             clone.m_scripts = new List<IScript>();
             foreach (IScript script in m_scripts)
             {
-                clone.m_scripts.Add((IScript)script.Clone());
+                IScript clonedScript = (IScript)script.Clone();
+                clonedScript.Parent = clone;
+                clone.m_scripts.Add(clonedScript);
             }
             return clone;
         }
@@ -40,6 +42,7 @@ namespace AxeSoftware.Quest.Scripts
 
             foreach (IScript script in scripts)
             {
+                script.Parent = this;
                 NotifyUpdate(script, null);
             }
         }
@@ -55,12 +58,14 @@ namespace AxeSoftware.Quest.Scripts
 
         private void RemoveSilent(IScript script)
         {
+            script.Parent = null;
             m_scripts.Remove(script);
             NotifyUpdate(null, script);
         }
 
         private void AddSilent(IScript script)
         {
+            script.Parent = this;
             m_scripts.Add(script);
             NotifyUpdate(script, null);
         }
@@ -76,6 +81,7 @@ namespace AxeSoftware.Quest.Scripts
 
         private void InsertSilent(int index, IScript script)
         {
+            script.Parent = this;
             m_scripts.Insert(index, script);
             NotifyUpdate(script, index);
         }
@@ -161,6 +167,22 @@ namespace AxeSoftware.Quest.Scripts
         public override object GetParameter(int index)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetVariablesInScope()
+        {
+            List<string> result = new List<string>();
+            foreach (IScript script in m_scripts)
+            {
+                // add any variables defined by the child script to the list
+                var definedVariables = script.GetDefinedVariables();
+                if (definedVariables != null)
+                {
+                    result.AddRange(definedVariables);
+                }
+            }
+
+            return result;
         }
 
         private class UndoMultiScriptAddRemove : AxeSoftware.Quest.UndoLogger.IUndoAction

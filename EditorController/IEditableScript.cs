@@ -56,5 +56,6 @@ namespace AxeSoftware.Quest
         void SetParameter(int index, object value);
         event EventHandler<EditableScriptUpdatedEventArgs> Updated;
         ScriptType Type { get; }
+        IEnumerable<string> GetVariablesInScope();
     }
 }

@@ -95,6 +95,11 @@ namespace AxeSoftware.Quest
                 get;
                 set;
             }
+
+            public IEnumerable<string> GetVariablesInScope()
+            {
+                return m_parent.GetVariablesInScope();
+            }
         }
 
         private IfScript m_ifScript;

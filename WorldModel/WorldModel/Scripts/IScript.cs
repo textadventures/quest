@@ -47,6 +47,11 @@ namespace AxeSoftware.Quest.Scripts
         public string Id { get; private set; }
     }
 
+    public interface IScriptParent
+    {
+        IEnumerable<string> GetVariablesInScope();
+    }
+
     public interface IScript : IMutableField
     {
         void Execute(Context c);
@@ -57,6 +62,8 @@ namespace AxeSoftware.Quest.Scripts
         object GetParameter(int index);
         string Keyword { get; }
         event EventHandler<ScriptUpdatedEventArgs> ScriptUpdated;
+        IScriptParent Parent { get; set; }
+        IEnumerable<string> GetDefinedVariables();
     }
 
     public interface IScriptConstructor
@@ -126,8 +133,6 @@ namespace AxeSoftware.Quest.Scripts
 
         protected abstract ScriptBase CloneScript();
 
-        #region IScript Members
-
         public abstract void Execute(Context c);
 
         public abstract string Save();
@@ -167,7 +172,12 @@ namespace AxeSoftware.Quest.Scripts
 
         public event EventHandler<ScriptUpdatedEventArgs> ScriptUpdated;
 
-        #endregion
+        public IScriptParent Parent { get; set; }
+
+        public virtual IEnumerable<string> GetDefinedVariables()
+        {
+            return null;
+        }
 
         #region IMutableField Members
 

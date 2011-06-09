@@ -60,5 +60,10 @@ namespace AxeSoftware.Quest
             get;
             set;
         }
+
+        public IEnumerable<string> GetVariablesInScope()
+        {
+            return m_script.GetVariablesInScope();
+        }
     }
 }

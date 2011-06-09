@@ -22,6 +22,7 @@ namespace AxeSoftware.Quest
         string GetSelectedFilter(string filterGroup);
         void SetSelectedFilter(string filterGroup, string filter);
         bool ReadOnly { get; set; }
+        IEnumerable<string> GetVariablesInScope();
 
         event EventHandler Changed;
     }
