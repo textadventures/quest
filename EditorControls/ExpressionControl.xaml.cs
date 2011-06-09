@@ -51,9 +51,18 @@ namespace AxeSoftware.Quest.EditorControls
                         newTextBox.LostFocus += SimpleEditor_LostFocus;
                         m_simpleEditor = newTextBox;
                         break;
+                    case "file":
+                        FileControl newFileControl = new FileControl();
+                        newFileControl.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
+                        newFileControl.RefreshFileList();
+                        newFileControl.Helper.Dirty += SimpleEditor_Dirty;
+                        newFileControl.lstFiles.SelectionChanged += SimpleEditor_SelectionChanged;
+                        m_simpleEditor = newFileControl;
+                        break;
                     default:
                         throw new InvalidOperationException("Invalid control type for expression");
                 }
+                m_simpleEditor.MinWidth = 40;
                 Grid.SetRow(m_simpleEditor, Grid.GetRow(txtExpression));
                 Grid.SetColumn(m_simpleEditor, Grid.GetColumn(txtExpression));
                 grid.Children.Add(m_simpleEditor);
@@ -63,6 +72,18 @@ namespace AxeSoftware.Quest.EditorControls
                 lstType.Items.Add("expression");
                 m_updatingList = false;
             }
+        }
+
+        void SimpleEditor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (((FileControl)m_simpleEditor).IsUpdatingList) return;
+            m_helper.SetDirty(ConvertFromSimpleExpression(SimpleValue));
+            Save();
+        }
+
+        void SimpleEditor_Dirty(object sender, DataModifiedEventArgs e)
+        {
+            m_helper.RaiseDirtyEvent(e.NewValue);
         }
 
         void SimpleEditor_LostFocus(object sender, RoutedEventArgs e)
@@ -208,11 +229,29 @@ namespace AxeSoftware.Quest.EditorControls
         {
             get
             {
-                return ((TextBox)m_simpleEditor).Text;
+                if (m_simpleEditor is TextBox)
+                {
+                    return ((TextBox)m_simpleEditor).Text;
+                }
+                if (m_simpleEditor is FileControl)
+                {
+                    return ((FileControl)m_simpleEditor).Filename;
+                }
+                throw new InvalidOperationException("Unknown control type");
             }
             set
             {
-                ((TextBox)m_simpleEditor).Text = value;
+                if (m_simpleEditor is TextBox)
+                {
+                    ((TextBox)m_simpleEditor).Text = value;
+                }
+                else if (m_simpleEditor is FileControl)
+                {
+                    ((FileControl)m_simpleEditor).Filename = value;
+                }
+                else {
+                    throw new InvalidOperationException("Unknown control type");
+                }
             }
         }
 

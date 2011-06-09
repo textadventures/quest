@@ -22,6 +22,7 @@ namespace AxeSoftware.Quest.EditorControls
         private string m_source;
         private Func<IEnumerable<string>> m_fileLister;
         private IEditorData m_data;
+        private bool m_updatingList;
 
         public FileControl()
         {
@@ -70,18 +71,21 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Save()
         {
+            if (m_data == null) return;
             if (!m_helper.IsDirty) return;
             string saveValue = (string)lstFiles.SelectedItem;
             m_helper.Save(saveValue);
         }
 
-        private void RefreshFileList()
+        public void RefreshFileList()
         {
+            m_updatingList = true;
             lstFiles.Items.Clear();
             foreach (string file in m_fileLister.Invoke())
             {
                 lstFiles.Items.Add(file);
             }
+            m_updatingList = false;
         }
 
         private IEnumerable<string> GetAvailableLibraries()
@@ -107,7 +111,7 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 string gameFolder = Path.GetDirectoryName(m_helper.Controller.Filename);
                 string filename = Path.GetFileName(dlgOpenFile.FileName);
-                
+
                 try
                 {
                     File.Copy(dlgOpenFile.FileName, Path.Combine(gameFolder, filename));
@@ -122,12 +126,38 @@ namespace AxeSoftware.Quest.EditorControls
                     return;
                 }
 
-                m_helper.Controller.StartTransaction(String.Format("Set filename to '{0}'", filename));
-                m_data.SetAttribute(m_helper.ControlDefinition.Attribute, filename);
-                m_helper.Controller.EndTransaction();
-
-                Populate(m_data);
+                if (m_data != null)
+                {
+                    m_helper.Controller.StartTransaction(String.Format("Set filename to '{0}'", filename));
+                    m_data.SetAttribute(m_helper.ControlDefinition.Attribute, filename);
+                    m_helper.Controller.EndTransaction();
+                    Populate(m_data);
+                }
+                else
+                {
+                    // m_data is null if this control is being used in an ExpressionControl, so in this case
+                    // just set the list text
+                    RefreshFileList();
+                    lstFiles.Text = filename;
+                }
             }
+        }
+
+        public string Filename
+        {
+            get
+            {
+                return (string)lstFiles.SelectedItem;
+            }
+            set
+            {
+                lstFiles.Text = value;
+            }
+        }
+
+        public bool IsUpdatingList
+        {
+            get { return m_updatingList; }
         }
     }
 }
