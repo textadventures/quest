@@ -40,7 +40,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (IsSimpleModeAvailable)
             {
-                if (m_helper.ControlDefinition.GetString("simple") == null)
+                if (m_helper.ControlDefinition.GetString("simpleeditor") != "boolean" && m_helper.ControlDefinition.GetString("simple") == null)
                 {
                     IsSimpleModeAvailable = false;
                 }
