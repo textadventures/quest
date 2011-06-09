@@ -229,12 +229,13 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Destroy</caption>
+      <caption>Destroy object</caption>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>name</simple>
     </control>
   </editor>
 
@@ -271,8 +272,10 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
     </control>
 
     <control>
@@ -281,8 +284,10 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>2</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
     </control>
 
     <control>

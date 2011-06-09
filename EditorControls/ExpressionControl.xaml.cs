@@ -73,6 +73,13 @@ namespace AxeSoftware.Quest.EditorControls
                         newDropDown.lstDropdown.SelectionChanged += DropDownObjects_SelectionChanged;
                         m_simpleEditor = newDropDown;
                         break;
+                    case "number":
+                        NumberControl newNumber = new NumberControl();
+                        newNumber.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
+                        newNumber.Helper.Dirty += SimpleEditor_Dirty;
+                        newNumber.LostFocus += SimpleEditor_LostFocus;
+                        m_simpleEditor = newNumber;
+                        break;
                     default:
                         throw new InvalidOperationException("Invalid control type for expression");
                 }
@@ -114,7 +121,15 @@ namespace AxeSoftware.Quest.EditorControls
 
         void SimpleEditor_Dirty(object sender, DataModifiedEventArgs e)
         {
-            m_helper.RaiseDirtyEvent(e.NewValue);
+            if (m_simpleEditor is NumberControl)
+            {
+                m_helper.SetDirty(e.NewValue.ToString());
+                Save();
+            }
+            else
+            {
+                m_helper.RaiseDirtyEvent(e.NewValue);
+            }
         }
 
         void SimpleEditor_LostFocus(object sender, RoutedEventArgs e)
@@ -297,6 +312,12 @@ namespace AxeSoftware.Quest.EditorControls
                 return expression.Length == 0 || m_helper.Controller.GetObjectNames("object").Contains(expression);
             }
 
+            if (m_simpleEditor is NumberControl)
+            {
+                int number;
+                return int.TryParse(expression, out number);
+            }
+
             // must start and end with quote character
             if (!(expression.StartsWith("\"") && expression.EndsWith("\""))) return false;
 
@@ -306,12 +327,10 @@ namespace AxeSoftware.Quest.EditorControls
 
         private string ConvertToSimpleExpression(string expression)
         {
-            if (m_booleanEditor)
-            {
-                return expression;
-            }
-
-            if (m_simpleEditor is DropDownObjectsControl)
+            if (m_booleanEditor
+                || m_simpleEditor is DropDownObjectsControl
+                || m_simpleEditor is NumberControl
+                )
             {
                 return expression;
             }
@@ -321,12 +340,10 @@ namespace AxeSoftware.Quest.EditorControls
 
         private string ConvertFromSimpleExpression(string simpleValue)
         {
-            if (m_booleanEditor)
-            {
-                return simpleValue;
-            }
-
-            if (m_simpleEditor is DropDownObjectsControl)
+            if (m_booleanEditor
+                || m_simpleEditor is DropDownObjectsControl
+                || m_simpleEditor is NumberControl
+                )
             {
                 return simpleValue;
             }
@@ -354,6 +371,10 @@ namespace AxeSoftware.Quest.EditorControls
                 {
                     return ((DropDownObjectsControl)m_simpleEditor).SelectedItem;
                 }
+                else if (m_simpleEditor is NumberControl)
+                {
+                    return ((NumberControl)m_simpleEditor).StringValue;
+                }
                 throw new InvalidOperationException("Unknown control type");
             }
             set
@@ -376,6 +397,15 @@ namespace AxeSoftware.Quest.EditorControls
                 else if (m_simpleEditor is DropDownObjectsControl)
                 {
                     ((DropDownObjectsControl)m_simpleEditor).SelectedItem = value;
+                }
+                else if (m_simpleEditor is NumberControl)
+                {
+                    int number;
+                    if (!int.TryParse(value, out number))
+                    {
+                        value = "0";
+                    }
+                    ((NumberControl)m_simpleEditor).StringValue = value;
                 }
                 else
                 {

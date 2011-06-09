@@ -62,6 +62,11 @@ namespace AxeSoftware.Quest.Scripts
             return new ForScript(m_worldModel, m_scriptFactory, m_variable, m_from.Clone(), m_to.Clone(), (IScript)m_loopScript.Clone());
         }
 
+        protected override void ParentUpdated()
+        {
+            m_loopScript.Parent = Parent;
+        }
+
         public override void Execute(Context c)
         {
             int from = m_from.Execute(c);
@@ -125,6 +130,11 @@ namespace AxeSoftware.Quest.Scripts
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public override IEnumerable<string> GetDefinedVariables()
+        {
+            return new List<string> { m_variable };
         }
     }
 }

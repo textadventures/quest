@@ -172,7 +172,19 @@ namespace AxeSoftware.Quest.Scripts
 
         public event EventHandler<ScriptUpdatedEventArgs> ScriptUpdated;
 
-        public IScriptParent Parent { get; set; }
+        private IScriptParent m_parent;
+        public IScriptParent Parent
+        {
+            get { return m_parent; }
+            set
+            {
+                bool changed = (m_parent != value);
+                m_parent = value;
+                if (changed) ParentUpdated();
+            }
+        }
+
+        protected virtual void ParentUpdated() { }
 
         public virtual IEnumerable<string> GetDefinedVariables()
         {

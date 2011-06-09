@@ -171,18 +171,25 @@ namespace AxeSoftware.Quest.Scripts
 
         public IEnumerable<string> GetVariablesInScope()
         {
-            List<string> result = new List<string>();
-            foreach (IScript script in m_scripts)
+            if (Parent == null)
             {
-                // add any variables defined by the child script to the list
-                var definedVariables = script.GetDefinedVariables();
-                if (definedVariables != null)
+                List<string> result = new List<string>();
+                foreach (IScript script in m_scripts)
                 {
-                    result.AddRange(definedVariables);
+                    // add any variables defined by the child script to the list
+                    var definedVariables = script.GetDefinedVariables();
+                    if (definedVariables != null)
+                    {
+                        result.AddRange(definedVariables);
+                    }
                 }
-            }
 
-            return result;
+                return result;
+            }
+            else
+            {
+                return Parent.GetVariablesInScope();
+            }
         }
 
         private class UndoMultiScriptAddRemove : AxeSoftware.Quest.UndoLogger.IUndoAction

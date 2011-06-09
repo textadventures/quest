@@ -18,6 +18,7 @@ namespace AxeSoftware.Quest.EditorControls
     public partial class NumberControl : UserControl, IElementEditorControl
     {
         private ControlDataHelper<int> m_helper;
+        private IEditorData m_data;
 
         public NumberControl()
         {
@@ -32,6 +33,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Populate(IEditorData data)
         {
+            m_data = data;
             if (data == null) return;
             m_helper.StartPopulating();
             ctlNumber.Value = m_helper.Populate(data);
@@ -41,6 +43,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Save()
         {
+            if (m_data == null) return;
             if (!m_helper.IsDirty) return;
             int saveValue = ctlNumber.Value.Value;
             m_helper.Save(saveValue);
@@ -55,6 +58,12 @@ namespace AxeSoftware.Quest.EditorControls
             }
             m_helper.SetDirty(ctlNumber.Value.Value);
             Save();
+        }
+
+        public string StringValue
+        {
+            get { return ctlNumber.Value.Value.ToString(); }
+            set { ctlNumber.Value = int.Parse(value); }
         }
     }
 }
