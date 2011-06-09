@@ -56,22 +56,36 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>filename</simple>
+      <simpleeditor>file</simpleeditor>
+      <source>*.wav;*.mp3</source>
+      <filefiltername>Sound Files</filefiltername>
     </control>
 
-    <!-- TO DO: As with "filename" above, it would be good to display checkboxes for these attributes, but
-    remember they're expressions so it's valid for them to be more complicated than just a simple "true" or "false" -->
-
     <control>
-      <controltype>textbox</controltype>
-      <caption>Wait for sound to finish before continuing</caption>
+      <controltype>label</controltype>
+      <caption>Wait for sound to finish before continuing:</caption>
+      <breakbefore/>
+    </control>
+    
+    <control>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
+      <simpleeditor>boolean</simpleeditor>
     </control>
+
     <control>
-      <controltype>textbox</controltype>
-      <caption>Loop</caption>
+      <controltype>label</controltype>
+      <caption>Loop:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
       <attribute>2</attribute>
+      <simpleeditor>boolean</simpleeditor>
     </control>
 
   </editor>

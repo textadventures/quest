@@ -25,6 +25,7 @@ namespace AxeSoftware.Quest.EditorControls
         private bool m_isSimpleModeAvailable = true;
         private bool m_saving = false;
         private IEditorData m_data;
+        private bool m_booleanEditor;
 
         public ExpressionControl()
         {
@@ -41,7 +42,7 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 string simpleEditor = m_helper.ControlDefinition.GetString("simpleeditor") ?? "textbox";
 
-                // TO DO: Also want to handle checkbox and file controls
+                m_updatingList = true;
 
                 switch (simpleEditor)
                 {
@@ -59,16 +60,28 @@ namespace AxeSoftware.Quest.EditorControls
                         newFileControl.lstFiles.SelectionChanged += SimpleEditor_SelectionChanged;
                         m_simpleEditor = newFileControl;
                         break;
+                    case "boolean":
+                        m_simpleEditor = null;
+                        lstType.Items.Add("yes");
+                        lstType.Items.Add("no");
+                        m_booleanEditor = true;
+                        break;
                     default:
                         throw new InvalidOperationException("Invalid control type for expression");
                 }
-                m_simpleEditor.MinWidth = 40;
-                Grid.SetRow(m_simpleEditor, Grid.GetRow(txtExpression));
-                Grid.SetColumn(m_simpleEditor, Grid.GetColumn(txtExpression));
-                grid.Children.Add(m_simpleEditor);
 
-                m_updatingList = true;
-                lstType.Items.Add(m_helper.ControlDefinition.GetString("simple"));
+                if (m_simpleEditor != null)
+                {
+                    m_simpleEditor.MinWidth = 40;
+                    Grid.SetRow(m_simpleEditor, Grid.GetRow(txtExpression));
+                    Grid.SetColumn(m_simpleEditor, Grid.GetColumn(txtExpression));
+                    grid.Children.Add(m_simpleEditor);
+                }
+
+                if (m_simpleEditor != null)
+                {
+                    lstType.Items.Add(m_helper.ControlDefinition.GetString("simple"));
+                }
                 lstType.Items.Add("expression");
                 m_updatingList = false;
             }
@@ -120,10 +133,8 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 SimpleValue = ConvertToSimpleExpression(value);
             }
-            else
-            {
-                txtExpression.Text = m_helper.Populate(data);
-            }
+
+            txtExpression.Text = value;
 
             txtExpression.IsEnabled = m_helper.CanEdit(data);
             txtExpression.IsReadOnly = data.ReadOnly;
@@ -171,22 +182,59 @@ namespace AxeSoftware.Quest.EditorControls
                 m_simpleMode = value;
 
                 m_updatingList = true;
-                lstType.SelectedIndex = m_simpleMode ? 0 : 1;
+                if (m_booleanEditor)
+                {
+                    if (m_simpleMode)
+                    {
+                        // forces the dropdown to set to the correct value
+                        SimpleValue = SimpleValue;
+                    }
+                    else
+                    {
+                        lstType.SelectedIndex = 2;
+                    }
+                }
+                else
+                {
+                    lstType.SelectedIndex = m_simpleMode ? 0 : 1;
+                }
                 m_updatingList = false;
 
                 Visibility visibility = m_simpleMode ? Visibility.Collapsed : Visibility.Visible;
                 txtExpression.Visibility = visibility;
                 cmdInsert.Visibility = visibility;
 
-                ((Control)m_simpleEditor).Visibility = m_simpleMode ? Visibility.Visible : Visibility.Collapsed;
+                if (m_simpleEditor != null)
+                {
+                    ((Control)m_simpleEditor).Visibility = m_simpleMode ? Visibility.Visible : Visibility.Collapsed;
+                }
             }
         }
 
         private void lstType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (m_updatingList) return;
+
+            if (m_booleanEditor)
+            {
+                if (lstType.SelectedIndex <= 1)
+                {
+                    m_helper.SetDirty(SimpleValue);
+                    txtExpression.Text = SimpleValue;
+                }
+            }
+
             Save();
-            SimpleMode = (lstType.SelectedIndex == 0);
+
+            if (m_booleanEditor)
+            {
+                SimpleMode = (lstType.SelectedIndex <= 1);
+            }
+            else
+            {
+                SimpleMode = (lstType.SelectedIndex == 0);
+            }
+
             if (SimpleMode)
             {
                 if (IsSimpleExpression(txtExpression.Text))
@@ -200,13 +248,21 @@ namespace AxeSoftware.Quest.EditorControls
             }
             else
             {
-                txtExpression.Text = ConvertFromSimpleExpression(SimpleValue);
+                if (!m_booleanEditor)
+                {
+                    txtExpression.Text = ConvertFromSimpleExpression(SimpleValue);
+                }
             }
         }
 
         private bool IsSimpleExpression(string expression)
         {
             if (!IsSimpleModeAvailable) return false;
+
+            if (m_booleanEditor)
+            {
+                return (expression == "true" || expression == "false");
+            }
 
             // must start and end with quote character
             if (!(expression.StartsWith("\"") && expression.EndsWith("\""))) return false;
@@ -217,11 +273,19 @@ namespace AxeSoftware.Quest.EditorControls
 
         private string ConvertToSimpleExpression(string expression)
         {
+            if (m_booleanEditor)
+            {
+                return expression;
+            }
             return expression.Substring(1, expression.Length - 2);
         }
 
         private string ConvertFromSimpleExpression(string simpleValue)
         {
+            if (m_booleanEditor)
+            {
+                return simpleValue;
+            }
             return string.Format("\"{0}\"", simpleValue);
         }
 
@@ -237,6 +301,10 @@ namespace AxeSoftware.Quest.EditorControls
                 {
                     return ((FileControl)m_simpleEditor).Filename;
                 }
+                if (m_booleanEditor)
+                {
+                    return lstType.SelectedIndex == 0 ? "true" : "false";
+                }
                 throw new InvalidOperationException("Unknown control type");
             }
             set
@@ -249,7 +317,15 @@ namespace AxeSoftware.Quest.EditorControls
                 {
                     ((FileControl)m_simpleEditor).Filename = value;
                 }
-                else {
+                else if (m_booleanEditor)
+                {
+                    bool oldValue = m_updatingList;
+                    m_updatingList = true;
+                    lstType.SelectedIndex = (value == "true") ? 0 : 1;
+                    m_updatingList = oldValue;
+                }
+                else
+                {
                     throw new InvalidOperationException("Unknown control type");
                 }
             }

@@ -864,10 +864,14 @@ namespace AxeSoftware.Quest
             }
         }
 
-        public IEnumerable<string> GetAvailableExternalFiles(string searchPattern)
+        public IEnumerable<string> GetAvailableExternalFiles(string searchPatterns)
         {
             List<string> result = new List<string>();
-            AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(Filename), false, searchPattern);
+            string[] patterns = searchPatterns.Split(';');
+            foreach (string searchPattern in patterns)
+            {
+                AddFilesInPathToList(result, System.IO.Path.GetDirectoryName(Filename), false, searchPattern);
+            }
             return result;
         }
 

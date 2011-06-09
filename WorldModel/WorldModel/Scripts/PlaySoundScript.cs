@@ -18,7 +18,7 @@ namespace AxeSoftware.Quest.Scripts
             return new PlaySoundScript(WorldModel,
                 new Expression<string>(parameters[0], WorldModel),
                 new Expression<bool>(parameters[1], WorldModel),
-                new Expression<bool>(parameters[1], WorldModel));
+                new Expression<bool>(parameters[2], WorldModel));
         }
 
         protected override int[] ExpectedParameters
