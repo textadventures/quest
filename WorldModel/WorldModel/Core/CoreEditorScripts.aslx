@@ -116,8 +116,12 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>filename</simple>
+      <simpleeditor>file</simpleeditor>
+      <source>*.htm;*.html</source>
+      <filefiltername>HTML Files</filefiltername>
     </control>
   </editor>
 
@@ -142,12 +146,13 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, parameter</caption>
+      <caption>with parameter</caption>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
+      <simple>string</simple>
     </control>
   </editor>
 
@@ -155,7 +160,7 @@
 
   <editor>
     <appliesto>create</appliesto>
-    <display>Create #0</display>
+    <display>Create object named #0</display>
     <category>Objects</category>
     <create>create ("")</create>
     <add>Create an object</add>
@@ -166,8 +171,9 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>name</simple>
     </control>
   </editor>
 
@@ -180,22 +186,25 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Create exit named</caption>
+      <caption>Create exit</caption>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>name</simple>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <caption>, from</caption>
+      <caption>from</caption>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
+      <simple>room</simple>
+      <simpleeditor>objects</simpleeditor>
     </control>
 
     <control>
@@ -204,8 +213,10 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>2</attribute>
+      <simple>room</simple>
+      <simpleeditor>objects</simpleeditor>
     </control>
   </editor>
 

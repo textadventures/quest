@@ -71,6 +71,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Save()
         {
+            if (m_data == null) return;
             if (m_populating) return;
             string currentValue = m_value == null ? string.Empty : m_value.Reference;
             string selectedValue = (string)lstDropdown.SelectedItem;
@@ -84,14 +85,17 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
-        private void PopulateList()
+        public void PopulateList()
         {
+            bool oldValue = m_populating;
+            m_populating = true;
             lstDropdown.Items.Clear();
             IEnumerable<string> allObjects = m_controller.GetObjectNames("object");
             foreach (string obj in allObjects)
             {
                 lstDropdown.Items.Add(obj);
             }
+            m_populating = oldValue;
         }
 
         public Type ExpectedType
@@ -113,6 +117,20 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller = controller;
             m_definition = definition;
+        }
+
+        public string SelectedItem
+        {
+            get { return (string)lstDropdown.SelectedItem; }
+            set
+            {
+                lstDropdown.Text = value;
+            }
+        }
+
+        public bool IsUpdatingList
+        {
+            get { return m_populating; }
         }
     }
 }
