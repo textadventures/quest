@@ -23,6 +23,8 @@ namespace AxeSoftware.Quest.EditorControls
         private bool m_simpleMode;
         private bool m_updatingList;
         private bool m_isSimpleModeAvailable = true;
+        private bool m_focusing = false;
+        private bool m_saving = false;
 
         public ExpressionControl()
         {
@@ -85,14 +87,19 @@ namespace AxeSoftware.Quest.EditorControls
 
             string value = m_helper.Populate(data) ?? string.Empty;
 
-            if (IsSimpleExpression(value))
+            // Don't change the SimpleMode setting if we're just repopulating because this expression has
+            // been saved
+            if (!m_saving)
             {
-                SimpleMode = true;
+                SimpleMode = IsSimpleExpression(value);
+            }
+
+            if (SimpleMode)
+            {
                 SimpleValue = ConvertToSimpleExpression(value);
             }
             else
             {
-                SimpleMode = false;
                 txtExpression.Text = m_helper.Populate(data);
             }
 
@@ -109,6 +116,7 @@ namespace AxeSoftware.Quest.EditorControls
         public void Save()
         {
             if (!m_helper.IsDirty) return;
+            m_saving = true;
             string saveValue = null;
             if (SimpleMode)
             {
@@ -119,6 +127,7 @@ namespace AxeSoftware.Quest.EditorControls
                 saveValue = txtExpression.Text;
             }
             m_helper.Save(saveValue);
+            m_saving = false;
         }
 
         private void txtExpression_TextChanged(object sender, TextChangedEventArgs e)
@@ -265,7 +274,12 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void InsertString(string text)
         {
-            txtExpression.Text = txtExpression.Text.Insert(txtExpression.SelectionStart, text);
+            int index = txtExpression.SelectionStart;
+            txtExpression.Text = txtExpression.Text.Insert(index, text);
+            txtExpression.SelectionStart = index + text.Length;
+            m_focusing = true;
+            txtExpression.Focus();
+            m_focusing = false;
         }
     }
 }
