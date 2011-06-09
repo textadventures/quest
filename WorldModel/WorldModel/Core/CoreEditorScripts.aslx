@@ -321,7 +321,7 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
     </control>
 
@@ -346,21 +346,25 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
-      <caption>Expression</caption>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
     </control>
+    
     <control>
       <controltype>label</controltype>
       <caption>Cases:</caption>
       <breakbefore/>
     </control>
+    
+    <!-- TO DO: Popup needs to have ExpressionControl in it -->
+    
     <control>
       <controltype>scriptdictionary</controltype>
       <caption>Cases</caption>
       <attribute>1</attribute>
       <keyprompt>Please enter the case expression</keyprompt>
     </control>
+    
     <control>
       <breakbefore/>
       <controltype>script</controltype>
@@ -388,9 +392,11 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, parameters:</caption>
+      <caption>with parameters:</caption>
     </control>
 
+    <!-- TO DO: Popup needs to have ExpressionControl in it -->
+    
     <control>
       <controltype>list</controltype>
       <caption>Parameters</caption>
@@ -409,22 +415,35 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Run</caption>
+      <caption>Run object</caption>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
-      <caption>Object</caption>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
     </control>
+
     <control>
-      <controltype>textbox</controltype>
-      <caption>Property</caption>
+      <controltype>label</controltype>
+      <caption>script property</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
+      <simple>name</simple>
     </control>
+
     <control>
-      <controltype>textbox</controltype>
-      <caption>Parameter dictionary</caption>
+      <controltype>label</controltype>
+      <caption>Using parameter dictionary</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
       <attribute>2</attribute>
     </control>
   </editor>
@@ -434,22 +453,27 @@
     <!-- TO DO: Don't display parameter #1 if it's null or empty -->
     <display>Run '#0' script with parameters from dictionary #1</display>
     <category>Scripts</category>
-    <add>Run an script returned by an expression</add>
+    <add>Run a script returned by an expression</add>
     <create>invoke ()</create>
 
     <control>
       <controltype>label</controltype>
-      <caption>Invoke</caption>
+      <caption>Invoke script</caption>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
-      <caption>Script expression</caption>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
     </control>
+
     <control>
-      <controltype>textbox</controltype>
-      <caption>Parameter dictionary</caption>
+      <controltype>label</controltype>
+      <caption>Using parameter dictionary</caption>
+      <breakbefore/>
+    </control>
+    
+    <control>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -467,8 +491,9 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>text</simple>
     </control>
   </editor>
 
@@ -485,7 +510,7 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
     </control>
   </editor>
@@ -499,24 +524,35 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Run delegate implementation</caption>
+      <caption>Run delegate implementation of object</caption>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
-      <caption>Object</caption>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
-    </control>
-    <control>
-      <controltype>textbox</controltype>
-      <caption>Property</caption>
-      <attribute>1</attribute>
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <caption>, parameters:</caption>
+      <caption>Property:</caption>
+      <breakbefore/>
     </control>
+    
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>name</simple>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>With parameters:</caption>
+      <breakbefore/>
+    </control>
+
+    <!-- TO DO: Popup needs to have ExpressionControl in it -->
 
     <control>
       <controltype>list</controltype>
@@ -551,7 +587,7 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
     </control>
   </editor>
@@ -588,37 +624,40 @@
     <appliesto>set</appliesto>
     <display>Set #0's #1 property to #2</display>
     <category>Variables</category>
-    <add>Set a variable or property (named by an expression)</add>
+    <add>Set an object's property (named by an expression)</add>
     <create>set (,"",)</create>
 
     <control>
       <controltype>label</controltype>
-      <caption>Set</caption>
+      <caption>Set object</caption>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
-      <caption>Object</caption>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <caption>.</caption>
+      <caption>Property:</caption>
+      <breakbefore/>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <caption>=</caption>
+      <caption>Value:</caption>
+      <breakbefore/>
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>2</attribute>
     </control>
   </editor>
@@ -636,7 +675,7 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
     </control>
 
@@ -646,8 +685,9 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
+      <simple>text</simple>
     </control>
   </editor>
 
@@ -664,7 +704,7 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
     </control>
 
@@ -674,8 +714,9 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
+      <simple>text</simple>
     </control>
   </editor>
 
@@ -692,7 +733,7 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
     </control>
 
@@ -702,8 +743,9 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
+      <simple>string</simple>
     </control>
 
     <control>
@@ -712,8 +754,9 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>2</attribute>
+      <simple>string</simple>
     </control>
   </editor>
 
@@ -730,7 +773,7 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
     </control>
 
@@ -740,8 +783,9 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>1</attribute>
+      <simple>string</simple>
     </control>
   </editor>
 
@@ -786,8 +830,9 @@
     </control>
 
     <control>
-      <controltype>textbox</controltype>
+      <controltype>expression</controltype>
       <attribute>0</attribute>
+      <simple>text</simple>
     </control>
   </editor>
 

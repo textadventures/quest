@@ -40,6 +40,14 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (IsSimpleModeAvailable)
             {
+                if (m_helper.ControlDefinition.GetString("simple") == null)
+                {
+                    IsSimpleModeAvailable = false;
+                }
+            }
+
+            if (IsSimpleModeAvailable)
+            {
                 string simpleEditor = m_helper.ControlDefinition.GetString("simpleeditor") ?? "textbox";
 
                 m_updatingList = true;
@@ -433,6 +441,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void InitialiseInsertMenu()
         {
+            AddInsertMenuItem("(Clear)", ClearText);
+            mnuInsertMenu.Items.Add(new Separator());
             AddInsertMenuItem("Variable", InsertVariable);
             AddInsertMenuItem("Object", InsertObject);
             AddInsertMenuItem("Property", InsertProperty);
@@ -472,6 +482,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void InsertFunction()
         {
+            // TO DO: Also need built-in functions defined in WorldModel
             InsertFromList("a function", m_helper.Controller.GetElementNames("function", true).OrderBy(n => n));
         }
 
@@ -482,7 +493,11 @@ namespace AxeSoftware.Quest.EditorControls
                 string.Empty, null, null, "",
                 items);
 
-            if (result.Cancelled) return;
+            if (result.Cancelled)
+            {
+                txtExpression.Focus();
+                return;
+            }
 
             InsertString(result.Result);
         }
@@ -492,6 +507,12 @@ namespace AxeSoftware.Quest.EditorControls
             int index = txtExpression.SelectionStart;
             txtExpression.Text = txtExpression.Text.Insert(index, text);
             txtExpression.SelectionStart = index + text.Length;
+            txtExpression.Focus();
+        }
+
+        private void ClearText()
+        {
+            txtExpression.Text = "";
             txtExpression.Focus();
         }
     }
