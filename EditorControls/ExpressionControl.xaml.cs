@@ -259,25 +259,28 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void InsertVariable()
         {
-            InsertFromList("variable", m_data.GetVariablesInScope());
+            InsertFromList("a variable", m_data.GetVariablesInScope());
         }
 
         private void InsertObject()
         {
+            InsertFromList("an object", m_helper.Controller.GetObjectNames("object", true));
         }
 
         private void InsertProperty()
         {
+            InsertFromList("a property", m_helper.Controller.GetPropertyNames().OrderBy(n => n));
         }
 
         private void InsertFunction()
         {
+            InsertFromList("a function", m_helper.Controller.GetElementNames("function", true).OrderBy(n => n));
         }
 
         private void InsertFromList(string itemName, IEnumerable<string> items)
         {
             var result = PopupEditors.EditStringWithDropdown(
-                string.Format("Please enter a {0} name", itemName),
+                string.Format("Please enter {0} name", itemName),
                 string.Empty, null, null, "",
                 items);
 

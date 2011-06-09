@@ -370,6 +370,8 @@ namespace AxeSoftware.Quest
                 string attribute = reader.Name;
                 string type = reader.GetAttribute("type");
 
+                WorldModel.AddAttributeName(attribute);
+
                 if (type == null)
                 {
                     string currentElementType = current.Fields.GetString("type");

@@ -51,6 +51,7 @@ namespace AxeSoftware.Quest
         private ThreadState m_threadState = ThreadState.Ready;
         private object m_threadLock = new object();
         private Walkthroughs m_walkthroughs;
+        private List<string> m_attributeNames = new List<string>();
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -1024,6 +1025,16 @@ namespace AxeSoftware.Quest
             }
 
             return result;
+        }
+
+        internal void AddAttributeName(string name)
+        {
+            if (!m_attributeNames.Contains(name)) m_attributeNames.Add(name);
+        }
+
+        public IEnumerable<string> GetAllAttributeNames
+        {
+            get { return m_attributeNames.AsReadOnly(); }
         }
     }
 }

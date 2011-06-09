@@ -1337,5 +1337,10 @@ namespace AxeSoftware.Quest
         {
             return m_clipboardScripts.AsReadOnly();
         }
+
+        public IEnumerable<string> GetPropertyNames()
+        {
+            return m_worldModel.GetAllAttributeNames;
+        }
     }
 }

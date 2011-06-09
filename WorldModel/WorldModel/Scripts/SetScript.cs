@@ -78,24 +78,52 @@ namespace AxeSoftware.Quest.Scripts
         {
             m_constructor = constructor;
             m_worldModel = constructor.WorldModel;
-            m_appliesTo = appliesTo;
-            m_property = property;
+            AppliesTo = appliesTo;
+            Property = property;
+        }
+
+        protected IFunction<Element> AppliesTo
+        {
+            get { return m_appliesTo; }
+            private set
+            {
+                m_appliesTo = value;
+                AddAttributeNameToWorldModel();
+            }
+        }
+
+        protected string Property
+        {
+            get { return m_property; }
+            private set
+            {
+                m_property = value;
+                AddAttributeNameToWorldModel();
+            }
+        }
+
+        private void AddAttributeNameToWorldModel()
+        {
+            if (AppliesTo != null && Property != null)
+            {
+                m_worldModel.AddAttributeName(Property);
+            }
         }
 
         public override void Execute(Context c)
         {
             object result = GetResult(c);
 
-            if (m_appliesTo != null)
+            if (AppliesTo != null)
             {
                 // we're setting an object property
-                Element obj = m_appliesTo.Execute(c);
-                obj.Fields.Set(m_property, result);
+                Element obj = AppliesTo.Execute(c);
+                obj.Fields.Set(Property, result);
             }
             else
             {
                 // we're setting a local variable
-                c.Parameters[m_property] = result;
+                c.Parameters[Property] = result;
             }
         }
 
@@ -103,13 +131,13 @@ namespace AxeSoftware.Quest.Scripts
         {
             string result;
 
-            if (m_appliesTo != null)
+            if (AppliesTo != null)
             {
-                result = m_appliesTo.Save() + "." + m_property;
+                result = AppliesTo.Save() + "." + Property;
             }
             else
             {
-                result = m_property;
+                result = Property;
             }
 
             result += GetEqualsString + GetSaveString();
@@ -122,7 +150,7 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    return m_appliesTo == null ? m_property : m_appliesTo.Save() + "." + m_property;
+                    return AppliesTo == null ? Property : AppliesTo.Save() + "." + Property;
                 case 1:
                     return GetValue();
                 default:
@@ -136,8 +164,8 @@ namespace AxeSoftware.Quest.Scripts
             {
                 case 0:
                     string variable;
-                    m_appliesTo = m_constructor.GetAppliesTo((string)value, out variable);
-                    m_property = variable;
+                    AppliesTo = m_constructor.GetAppliesTo((string)value, out variable);
+                    Property = variable;
                     break;
                 case 1:
                     SetValue((string)value);
@@ -149,10 +177,10 @@ namespace AxeSoftware.Quest.Scripts
 
         public override IEnumerable<string> GetDefinedVariables()
         {
-            if (m_appliesTo == null)
+            if (AppliesTo == null)
             {
-                // If m_appliesTo is null, then this is an expression setting a simple variable value
-                return new List<string> { m_property };
+                // If AppliesTo is null, then this is an expression setting a simple variable value
+                return new List<string> { Property };
             }
             return base.GetDefinedVariables();
         }
@@ -164,8 +192,6 @@ namespace AxeSoftware.Quest.Scripts
         protected abstract void SetValue(string newValue);
         protected WorldModel WorldModel { get { return m_worldModel; } }
         protected SetScriptConstructor Constructor { get { return m_constructor; } }
-        protected IFunction<Element> AppliesTo { get { return m_appliesTo; } }
-        protected string Property { get { return m_property; } }
     }
 
     public class SetExpressionScript : SetScriptBase
