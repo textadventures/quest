@@ -115,5 +115,10 @@ namespace AxeSoftware.Quest.EditorControls
                 return m_dictionaryValuesToKeys[lstDropdown.Text];
             }
         }
+
+        public Control FocusableControl
+        {
+            get { return lstDropdown; }
+        }
     }
 }

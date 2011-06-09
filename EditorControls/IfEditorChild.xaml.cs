@@ -122,5 +122,13 @@ namespace AxeSoftware.Quest.EditorControls
         }
 
         public EditableIfScript.EditableElseIf ElseIfData { get; set; }
+
+        public Control FocusableControl
+        {
+            get
+            {
+                return ctlExpression.FocusableControl;
+            }
+        }
     }
 }

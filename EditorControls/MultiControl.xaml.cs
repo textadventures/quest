@@ -366,5 +366,10 @@ namespace AxeSoftware.Quest.EditorControls
             string typeName = GetTypeName(value);
             return m_types.Any(t => t.TypeName == typeName);
         }
+
+        public Control FocusableControl
+        {
+            get { return null; }
+        }
     }
 }

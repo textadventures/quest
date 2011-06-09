@@ -61,5 +61,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             checkBox.Content = caption;
         }
+
+        public Control FocusableControl
+        {
+            get { return checkBox; }
+        }
     }
 }

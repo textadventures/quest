@@ -105,5 +105,10 @@ namespace AxeSoftware.Quest.EditorControls
             get { return header.Text; }
             set { header.Text = value; }
         }
+
+        public Control FocusableControl
+        {
+            get { return null; }
+        }
     }
 }

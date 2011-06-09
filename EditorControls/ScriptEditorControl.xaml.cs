@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
 
 namespace AxeSoftware.Quest.EditorControls
 {
@@ -70,7 +71,40 @@ namespace AxeSoftware.Quest.EditorControls
                 m_scripts.AddNew(script, ElementName);
             }
 
+            int newScriptIndex = m_scripts.Count - 1;
+
             RefreshScriptsList();
+
+            SetSelectedIndex(newScriptIndex);
+            lstScripts.Focus();
+
+            IEditableScript newScript = m_scripts[newScriptIndex];
+            if (m_scriptParameterControlMap[newScript].ContainsKey("0"))
+            {
+                IElementEditorControl ctl = m_scriptParameterControlMap[newScript]["0"];
+                Control focusControl = ctl.FocusableControl;
+
+                if (focusControl != null)
+                {
+                    Thread newThread = new Thread(() => SetFocusAfterDelay(focusControl));
+                    newThread.Start();
+                }
+            }
+        }
+
+        private void SetFocusAfterDelay(Control ctl)
+        {
+            // This is horrible but is needed to get around some WPF weirdness with setting the focus
+            
+            Thread.Sleep(100);
+
+            Dispatcher.BeginInvoke((ThreadStart)delegate()
+            {
+                ctl.Focus();
+                FocusManager.SetFocusedElement(ctl, ctl);
+                Keyboard.Focus(ctl);
+                
+            });
         }
 
         public IControlDataHelper Helper
@@ -499,6 +533,11 @@ namespace AxeSoftware.Quest.EditorControls
         internal IEditableScripts Scripts
         {
             get { return m_scripts; }
+        }
+
+        public Control FocusableControl
+        {
+            get { return null; }
         }
     }
 }

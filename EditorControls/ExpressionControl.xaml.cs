@@ -515,5 +515,22 @@ namespace AxeSoftware.Quest.EditorControls
             txtExpression.Text = "";
             txtExpression.Focus();
         }
+
+        public Control FocusableControl
+        {
+            get
+            {
+                if (SimpleMode)
+                {
+                    return m_simpleEditor;
+                }
+                else
+                {
+                    return txtExpression;
+                }
+            }
+
+        }
+
     }
 }

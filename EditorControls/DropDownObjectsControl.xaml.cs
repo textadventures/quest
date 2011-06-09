@@ -132,5 +132,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             get { return m_populating; }
         }
+
+        public Control FocusableControl
+        {
+            get { return lstDropdown; }
+        }
     }
 }

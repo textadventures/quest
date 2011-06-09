@@ -89,5 +89,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             ctlAttributes.AttributeChanged(attribute, value);
         }
+
+        public Control FocusableControl
+        {
+            get { return null; }
+        }
     }
 }

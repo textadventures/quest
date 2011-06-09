@@ -48,5 +48,10 @@ namespace AxeSoftware.Quest.EditorControls
         public void Save()
         {
         }
+
+        public Control FocusableControl
+        {
+            get { return null; }
+        }
     }
 }

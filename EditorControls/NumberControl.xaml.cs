@@ -65,5 +65,10 @@ namespace AxeSoftware.Quest.EditorControls
             get { return ctlNumber.Value.Value.ToString(); }
             set { ctlNumber.Value = int.Parse(value); }
         }
+
+        public Control FocusableControl
+        {
+            get { return ctlNumber; }
+        }
     }
 }

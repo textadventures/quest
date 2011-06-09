@@ -265,5 +265,10 @@ namespace AxeSoftware.Quest.EditorControls
                 m_data.RemoveElseIf(sender.ElseIfData);
             }
         }
+
+        public Control FocusableControl
+        {
+            get { return ctlChild.FocusableControl; }
+        }
     }
 }

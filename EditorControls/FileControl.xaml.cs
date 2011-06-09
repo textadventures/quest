@@ -159,5 +159,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             get { return m_updatingList; }
         }
+
+        public Control FocusableControl
+        {
+            get { return lstFiles; }
+        }
     }
 }

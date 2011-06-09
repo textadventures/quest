@@ -23,6 +23,7 @@ namespace AxeSoftware.Quest.EditorControls
         IControlDataHelper Helper { get; }
         void Populate(IEditorData data);
         void Save();
+        Control FocusableControl { get; }
     }
 
     internal interface IMultiAttributeElementEditorControl

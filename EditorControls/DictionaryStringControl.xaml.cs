@@ -65,5 +65,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             ctlDictionaryString.Save(m_data);
         }
+
+        public Control FocusableControl
+        {
+            get { return null; }
+        }
     }
 }

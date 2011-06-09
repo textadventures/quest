@@ -278,5 +278,10 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_filename == null) return;
             Save(m_filename);
         }
+
+        public Control FocusableControl
+        {
+            get { return textEditor; }
+        }
     }
 }

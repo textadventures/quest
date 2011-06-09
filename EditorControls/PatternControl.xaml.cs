@@ -71,5 +71,10 @@ namespace AxeSoftware.Quest.EditorControls
             m_value = m_helper.Controller.CreateNewEditableCommandPattern(m_data.Name, m_helper.ControlDefinition.Attribute, newValue, false);
             m_helper.Controller.EndTransaction();
         }
+
+        public Control FocusableControl
+        {
+            get { return textBox; }
+        }
     }
 }

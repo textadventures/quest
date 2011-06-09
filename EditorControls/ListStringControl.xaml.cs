@@ -161,5 +161,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             get { return (WFToolbar)toolbarHost.Child; }
         }
+
+        public Control FocusableControl
+        {
+            get { return null; }
+        }
     }
 }

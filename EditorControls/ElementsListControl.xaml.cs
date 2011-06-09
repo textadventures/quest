@@ -76,5 +76,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             get { return (WFElementsListControl)elementsListHost.Child; }
         }
+
+        public Control FocusableControl
+        {
+            get { return null; }
+        }
     }
 }

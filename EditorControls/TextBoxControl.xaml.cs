@@ -61,5 +61,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             Save();
         }
+
+        public Control FocusableControl
+        {
+            get { return textBox; }
+        }
     }
 }

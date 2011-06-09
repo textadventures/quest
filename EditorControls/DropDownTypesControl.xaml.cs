@@ -128,5 +128,9 @@ namespace AxeSoftware.Quest.EditorControls
             return m_dropDownValues.Keys.ToArray()[lstTypes.SelectedIndex];
         }
 
+        public Control FocusableControl
+        {
+            get { return lstTypes; }
+        }
     }
 }
