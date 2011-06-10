@@ -19,6 +19,11 @@ namespace AxeSoftware.Quest.EditorControls
     /// </summary>
     public partial class ExpressionTemplate : UserControl
     {
+        private List<IElementEditorControl> m_controls = new List<IElementEditorControl>();
+        private IEditorData m_data;
+
+        public event Action<string> Dirty;
+
         public ExpressionTemplate()
         {
             InitializeComponent();
@@ -28,9 +33,15 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Initialise(IEditorDefinition definition, string expression)
         {
+            foreach (IElementEditorControl ctl in m_controls)
+            {
+                ctl.Helper.Dirty -= SubControl_Dirty;
+            }
+
+            m_controls.Clear();
             stackPanel.Children.Clear();
 
-            // TO DO: Unhook event handlers
+            m_data = Controller.GetExpressionEditorData(expression);
 
             foreach (IEditorControl ctl in definition.Controls)
             {
@@ -47,10 +58,25 @@ namespace AxeSoftware.Quest.EditorControls
             if (elementEditor != null)
             {
                 elementEditor.Helper.DoInitialise(Controller, ctl);
-                elementEditor.Populate(Controller.GetExpressionEditorData(expression));
+                elementEditor.Populate(m_data);
+                elementEditor.Helper.Dirty += SubControl_Dirty;
+                m_controls.Add(elementEditor);
             }
+        }
 
-            // TO DO: Hook up event handlers Dirty etc
+        void SubControl_Dirty(object sender, DataModifiedEventArgs e)
+        {
+            Dirty(SaveExpression(e.Attribute, (string)e.NewValue));
+        }
+
+        public string SaveExpression()
+        {
+            return SaveExpression(null, null);
+        }
+
+        private string SaveExpression(string changedAttribute, string changedValue)
+        {
+            return Controller.GetExpression(m_data, changedAttribute, changedValue);
         }
     }
 }

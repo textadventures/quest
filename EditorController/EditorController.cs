@@ -1392,5 +1392,22 @@ namespace AxeSoftware.Quest
         {
             return new ExpressionTemplateEditorData(expression, GetExpressionEditorDefinitionInternal(expression));
         }
+
+        public string GetNewExpression(string templateName)
+        {
+            var definitions = from def in m_expressionDefinitions.Values
+                                          where def.Description == templateName
+                                          select def;
+
+            EditorDefinition definition = definitions.First();
+
+            return definition.Create;
+        }
+
+        public string GetExpression(IEditorData data, string changedAttribute, string changedValue)
+        {
+            ExpressionTemplateEditorData expressionData = (ExpressionTemplateEditorData)data;
+            return expressionData.SaveExpression(changedAttribute, changedValue);
+        }
     }
 }

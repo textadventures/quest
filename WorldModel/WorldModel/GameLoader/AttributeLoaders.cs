@@ -260,6 +260,12 @@ namespace AxeSoftware.Quest
                     // For Editor elements, use the normal pattern loader to convert this
                     // simple pattern to a regex.
                     m_patternLoader.Load(element, attribute, value);
+
+                    if (attribute == FieldDefinitions.Pattern.Property)
+                    {
+                        // Save the original pattern for convenience so we can generate expression easily
+                        element.Fields[FieldDefinitions.OriginalPattern] = value;
+                    }
                 }
                 else
                 {

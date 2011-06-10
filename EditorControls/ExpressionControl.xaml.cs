@@ -217,6 +217,10 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 saveValue = ConvertFromSimpleExpression(SimpleValue);
             }
+            else if (TemplateMode)
+            {
+                saveValue = m_templateEditor.SaveExpression();
+            }
             else
             {
                 saveValue = txtExpression.Text;
@@ -606,7 +610,21 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void lstTemplate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (m_updatingList) return;
 
+            Save();
+
+            TemplateMode = (lstTemplate.SelectedIndex > 0);
+
+            if (TemplateMode)
+            {
+                string expression = m_helper.Controller.GetNewExpression((string)lstTemplate.Items[lstTemplate.SelectedIndex]);
+                PopulateTemplate(expression);
+            }
+            else
+            {
+                txtExpression.Text = m_helper.Populate(m_data);
+            }
         }
 
         private void PopulateTemplate(string expression)
@@ -615,15 +633,24 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 m_templateEditor = new ExpressionTemplate();
                 m_templateEditor.Controller = m_helper.Controller;
+                m_templateEditor.Dirty += m_templateEditor_Dirty;
                 Grid.SetRow(m_templateEditor, Grid.GetRow(txtExpression));
                 Grid.SetColumn(m_templateEditor, Grid.GetColumn(txtExpression));
                 grid.Children.Add(m_templateEditor);
             }
 
             IEditorDefinition definition = m_helper.Controller.GetExpressionEditorDefinition(expression);
+
+            m_updatingList = true;
             lstTemplate.Text = m_helper.Controller.GetExpressionEditorDefinitionName(expression);
+            m_updatingList = false;
 
             m_templateEditor.Initialise(definition, expression);
+        }
+
+        void m_templateEditor_Dirty(string newValue)
+        {
+            m_helper.SetDirty(newValue);
         }
 
     }

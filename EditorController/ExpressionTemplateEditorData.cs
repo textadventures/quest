@@ -8,17 +8,35 @@ namespace AxeSoftware.Quest
     internal class ExpressionTemplateEditorData : IEditorData
     {
         private IDictionary<string, string> m_parameters;
+        private string m_originalPattern;
 
         public event EventHandler Changed;
 
         public ExpressionTemplateEditorData(string expression, EditorDefinition definition)
         {
-            // We get passed in an expression like "(Got(myobject))"
-            // The definition has pattern like "(Got(#object#))" (as a regex)
+            // We get passed in an expression like "Got(myobject)"
+            // The definition has pattern like "Got(#object#)" (as a regex)
             // We create the parameter dictionary in the same way as the command parser, so
             // we end up with a dictionary like "object=myobject".
 
             m_parameters = Utility.Populate(definition.Pattern, expression);
+            m_originalPattern = definition.OriginalPattern;
+        }
+
+        public string SaveExpression(string changedAttribute, string changedValue)
+        {
+            // Take the original pattern (e.g. "Got(#myobject#)") and replace the parameter
+            // names with their values. If changedAttribute and changedValue are set, then
+            // we're in the middle of editing, so use the specified change in place of the
+            // currently saved values.
+            string result = m_originalPattern;
+            foreach (var parameter in m_parameters)
+            {
+                string value = parameter.Key == changedAttribute ? changedValue : parameter.Value;
+                result = result.Replace(string.Format("#{0}#", parameter.Key), value);
+            }
+
+            return result;
         }
 
         public string Name
@@ -34,7 +52,7 @@ namespace AxeSoftware.Quest
         public void SetAttribute(string attribute, object value)
         {
             m_parameters[attribute] = (string)value;
-            // TO DO: raise Changed event
+            if (Changed != null) Changed(this, new EventArgs());
         }
 
         public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
