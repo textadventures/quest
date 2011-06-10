@@ -1357,5 +1357,25 @@ namespace AxeSoftware.Quest
         {
             return m_expressionDefinitions.Values.Select(d => d.Description);
         }
+
+        public IEditorDefinition GetExpressionEditorDefinition(string expression)
+        {
+            // Get the Expression Editor Definition which matches the current expression.
+            // e.g. if the expression is "(Got(myobject))", we want to return the Editor
+            // Definition which corresponds to "(Got(#object#))" [note: this is turned into a
+            // regex by the SimplePattern attribute loader]
+
+            var candidates = from def in m_expressionDefinitions.Values
+                             where Utility.IsRegexMatch(def.Pattern, expression)
+                             select def;
+
+            if (!candidates.Any()) return null;
+
+            var orderedCandidates = from def in candidates
+                                    orderby Utility.GetMatchStrength(def.Pattern, expression) descending
+                                    select def;
+
+            return orderedCandidates.First();
+        }
     }
 }

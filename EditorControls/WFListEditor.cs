@@ -104,15 +104,15 @@ namespace AxeSoftware.Quest.EditorControls
             switch (Style)
             {
                 case ColumnStyle.OneColumn:
-                    lvItem = new ListViewItem(Utility.FormatAsOneLine(item.Value));
+                    lvItem = new ListViewItem(EditorUtility.FormatAsOneLine(item.Value));
                     lvItem.Name = item.Key;
                     newListViewItem = lstList.Items.Insert(index, lvItem);
                     break;
                 case ColumnStyle.TwoColumns:
-                    lvItem = new ListViewItem(Utility.FormatAsOneLine(item.Key));
+                    lvItem = new ListViewItem(EditorUtility.FormatAsOneLine(item.Key));
                     lvItem.Name = item.Key;
                     newListViewItem = lstList.Items.Insert(index, lvItem);
-                    newListViewItem.SubItems.Add(Utility.FormatAsOneLine(item.Value));
+                    newListViewItem.SubItems.Add(EditorUtility.FormatAsOneLine(item.Value));
                     break;
                 default:
                     throw new InvalidOperationException("Invalid column style");
@@ -255,7 +255,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void UpdateValue(int index, string text)
         {
-            lstList.Items[index].SubItems[1].Text = Utility.FormatAsOneLine(text);
+            lstList.Items[index].SubItems[1].Text = EditorUtility.FormatAsOneLine(text);
         }
 
         public bool IsReadOnly

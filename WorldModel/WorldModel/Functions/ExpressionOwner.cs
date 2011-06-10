@@ -217,55 +217,17 @@ namespace AxeSoftware.Quest.Functions
 
         public bool IsRegexMatch(string regexPattern, string input)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            return regex.IsMatch(input);
+            return Utility.IsRegexMatch(regexPattern, input);
         }
 
         public int GetMatchStrength(string regexPattern, string input)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regexPattern));
-
-            // The idea is that you have a regex like
-            //          look at (?<object>.*)
-            // And you have a string like
-            //          look at thing
-            // The strength is the length of the "fixed" bit of the string, in this case "look at ".
-            // So we calculate this as the length of the input string, minus the length of the
-            // text that matches the named groups.
-
-            int lengthOfTextMatchedByGroups = 0;
-
-            foreach (string groupName in regex.GetGroupNames())
-            {
-                // exclude group names like "0", we only want the explicitly named groups
-                if (!AxeSoftware.Utility.Strings.IsNumeric(groupName))
-                {
-                    string groupMatch = regex.Match(input).Groups[groupName].Value;
-                    lengthOfTextMatchedByGroups += groupMatch.Length;
-                }
-            }
-
-            return input.Length - lengthOfTextMatchedByGroups;
+            return Utility.GetMatchStrength(regexPattern, input);
         }
 
         public QuestDictionary<string> Populate(string regexPattern, string input)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regexPattern));
-
-            QuestDictionary<string> result = new QuestDictionary<string>();
-
-            foreach (string groupName in regex.GetGroupNames())
-            {
-                if (!AxeSoftware.Utility.Strings.IsNumeric(groupName))
-                {
-                    string groupMatch = regex.Match(input).Groups[groupName].Value;
-                    result.Add(groupName, groupMatch);
-                }
-            }
-
-            return result;
+            return Utility.Populate(regexPattern, input);
         }
 
         public object DictionaryItem(IDictionary dictionary, string key)

@@ -21,6 +21,7 @@ namespace AxeSoftware.Quest.EditorControls
         private ControlDataHelper<string> m_helper;
         private Control m_simpleEditor;
         private bool m_simpleMode;
+        private bool m_templateMode;
         private bool m_useExpressionTemplates = false;
         private bool m_updatingList;
         private bool m_isSimpleModeAvailable = true;
@@ -171,6 +172,7 @@ namespace AxeSoftware.Quest.EditorControls
             if (!m_saving)
             {
                 SimpleMode = IsSimpleExpression(value);
+                TemplateMode = IsTemplateExpression(value);
             }
 
             PopulateSimpleControl();
@@ -178,6 +180,11 @@ namespace AxeSoftware.Quest.EditorControls
             if (SimpleMode)
             {
                 SimpleValue = ConvertToSimpleExpression(value);
+            }
+
+            if (TemplateMode)
+            {
+                // TO DO: Populate template
             }
 
             txtExpression.Text = value;
@@ -254,15 +261,38 @@ namespace AxeSoftware.Quest.EditorControls
                 }
                 m_updatingList = false;
 
-                Visibility visibility = m_simpleMode ? Visibility.Collapsed : Visibility.Visible;
-                txtExpression.Visibility = visibility;
-                cmdInsert.Visibility = visibility;
+                SetExpressionVisibility(!m_simpleMode);
 
                 if (m_simpleEditor != null)
                 {
                     ((Control)m_simpleEditor).Visibility = m_simpleMode ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
+        }
+
+        private bool TemplateMode
+        {
+            get { return UseExpressionTemplates ? m_templateMode : false; }
+            set
+            {
+                if (!UseExpressionTemplates) return;
+
+                m_templateMode = value;
+
+                if (!m_templateMode)
+                {
+                    lstTemplate.SelectedIndex = 0;
+                }
+
+                SetExpressionVisibility(!m_templateMode);
+            }
+        }
+
+        private void SetExpressionVisibility(bool visible)
+        {
+            Visibility visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            txtExpression.Visibility = visibility;
+            cmdInsert.Visibility = visibility;
         }
 
         private void lstType_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -443,6 +473,11 @@ namespace AxeSoftware.Quest.EditorControls
                 m_useExpressionTemplates = value;
                 UpdateListVisibility();
             }
+        }
+
+        private bool IsTemplateExpression(string expression)
+        {
+            return m_helper.Controller.GetExpressionEditorDefinition(expression) != null;
         }
 
         private void UpdateListVisibility()

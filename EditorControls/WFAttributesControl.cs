@@ -243,7 +243,7 @@ namespace AxeSoftware.Quest.EditorControls
                 result = value.ToString();
             }
 
-            return Utility.FormatAsOneLine(result);
+            return EditorUtility.FormatAsOneLine(result);
         }
 
         private string GetAttributeDisplayString(IEditorAttributeData attr)

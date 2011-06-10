@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
-    public static class Utility
+    public static class EditorUtility
     {
         public static string FormatAsOneLine(string input)
         {

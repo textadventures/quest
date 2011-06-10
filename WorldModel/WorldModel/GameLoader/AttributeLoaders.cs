@@ -196,6 +196,7 @@ namespace AxeSoftware.Quest
 
             private void LoadCommand(Element element, string attribute, string value)
             {
+                value = value.Replace("(", @"\(").Replace(")", @"\)");
                 value = m_regex.Replace(value, MatchReplace);
 
                 if (value.Contains("#"))
@@ -245,6 +246,8 @@ namespace AxeSoftware.Quest
 
         private class EditorSimplePatternLoader : AttributeLoaderBase
         {
+            private SimplePatternLoader m_patternLoader = new SimplePatternLoader();
+
             public override string AppliesTo
             {
                 get { return "simplepattern"; }
@@ -252,7 +255,18 @@ namespace AxeSoftware.Quest
 
             public override void Load(Element element, string attribute, string value)
             {
-                element.Fields.Set(attribute, new EditorCommandPattern(value));
+                if (element.ElemType == ElementType.Editor)
+                {
+                    // For Editor elements, use the normal pattern loader to convert this
+                    // simple pattern to a regex.
+                    m_patternLoader.Load(element, attribute, value);
+                }
+                else
+                {
+                    // For all other element types, create an EditorCommandPattern so the pattern
+                    // can be edited as a simple string
+                    element.Fields.Set(attribute, new EditorCommandPattern(value));
+                }
             }
 
             public override bool SupportsMode(LoadMode mode)
