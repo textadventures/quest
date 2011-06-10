@@ -80,5 +80,7 @@ namespace AxeSoftware.Quest
         {
             throw new NotImplementedException();
         }
+
+        public bool IsDirectlySaveable { get { return false; } }
     }
 }

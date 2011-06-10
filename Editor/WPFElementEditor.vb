@@ -1,6 +1,5 @@
 ﻿Public Class WPFElementEditor
     Public Event Dirty(sender As Object, args As DataModifiedEventArgs)
-    Public Event RequestParentElementEditorSave()
 
     Public Sub New()
 
@@ -33,6 +32,6 @@
     End Sub
 
     Private Sub ElementEditor_RequestParentElementEditorSave()
-        RaiseEvent RequestParentElementEditorSave()
+        SaveData()
     End Sub
 End Class

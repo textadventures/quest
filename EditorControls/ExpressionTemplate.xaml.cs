@@ -23,6 +23,7 @@ namespace AxeSoftware.Quest.EditorControls
         private IEditorData m_data;
 
         public event Action<string> Dirty;
+        public event Action RequestParentEditorSave;
 
         public ExpressionTemplate()
         {
@@ -41,12 +42,23 @@ namespace AxeSoftware.Quest.EditorControls
             m_controls.Clear();
             stackPanel.Children.Clear();
 
+            if (m_data != null)
+            {
+                m_data.Changed -= m_data_Changed;
+            }
+
             m_data = Controller.GetExpressionEditorData(expression);
+            m_data.Changed += m_data_Changed;
 
             foreach (IEditorControl ctl in definition.Controls)
             {
                 AddControl(ctl, expression);
             }
+        }
+
+        void m_data_Changed(object sender, EventArgs e)
+        {
+            RequestParentEditorSave();
         }
 
         private void AddControl(IEditorControl ctl, string expression)
@@ -60,8 +72,14 @@ namespace AxeSoftware.Quest.EditorControls
                 elementEditor.Helper.DoInitialise(Controller, ctl);
                 elementEditor.Populate(m_data);
                 elementEditor.Helper.Dirty += SubControl_Dirty;
+                elementEditor.Helper.RequestParentElementEditorSave += SubControl_RequestParentElementEditorSave;
                 m_controls.Add(elementEditor);
             }
+        }
+
+        void SubControl_RequestParentElementEditorSave()
+        {
+            RequestParentEditorSave();
         }
 
         void SubControl_Dirty(object sender, DataModifiedEventArgs e)
@@ -71,6 +89,12 @@ namespace AxeSoftware.Quest.EditorControls
 
         public string SaveExpression()
         {
+            // Copy control list as saving will cause it to be repopulated
+            List<IElementEditorControl> controls = new List<IElementEditorControl>(m_controls);
+            foreach (IElementEditorControl ctl in controls)
+            {
+                ctl.Save();
+            }
             return SaveExpression(null, null);
         }
 

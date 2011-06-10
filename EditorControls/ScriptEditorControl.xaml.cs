@@ -394,6 +394,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         void SubControl_RequestParentElementEditorSave()
         {
+            m_helper.RaiseRequestParentElementEditorSaveEvent();
         }
 
         private int[] GetSelectedIndicesArray()

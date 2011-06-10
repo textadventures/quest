@@ -111,9 +111,15 @@ namespace AxeSoftware.Quest.EditorControls
             if (!m_dirty) return;
             if (m_saving) return;
             m_saving = true;
-            Controller.StartTransaction(string.Format("Set {0} to '{1}'", ControlDefinition.Caption, newValue == null ? "null" : newValue.ToString()));
+            if (m_data.IsDirectlySaveable)
+            {
+                Controller.StartTransaction(string.Format("Set {0} to '{1}'", ControlDefinition.Caption, newValue == null ? "null" : newValue.ToString()));
+            }
             m_data.SetAttribute(ControlDefinition.Attribute, newValue);
-            Controller.EndTransaction();
+            if (m_data.IsDirectlySaveable)
+            {
+                Controller.EndTransaction();
+            }
             m_saving = false;
 
             // Repopulating ensures we see the currently set value, and that dirty=false
@@ -144,7 +150,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         internal void RaiseRequestParentElementEditorSaveEvent()
         {
-            RequestParentElementEditorSave();
+            if (RequestParentElementEditorSave != null) RequestParentElementEditorSave();
         }
     }
 }

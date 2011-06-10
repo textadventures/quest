@@ -100,6 +100,8 @@ namespace AxeSoftware.Quest
             {
                 return m_parent.GetVariablesInScope();
             }
+
+            public bool IsDirectlySaveable { get { return true; } }
         }
 
         private IfScript m_ifScript;
@@ -340,6 +342,8 @@ namespace AxeSoftware.Quest
         {
             get; set;
         }
+
+        public bool IsDirectlySaveable { get { return true; } }
     }
 
     public class IfExpressionControlDefinition : IEditorControl

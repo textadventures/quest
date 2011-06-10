@@ -188,5 +188,7 @@ namespace AxeSoftware.Quest
         {
             return null;
         }
+
+        public bool IsDirectlySaveable { get { return true; } }
     }
 }

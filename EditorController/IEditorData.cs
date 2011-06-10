@@ -24,6 +24,11 @@ namespace AxeSoftware.Quest
         bool ReadOnly { get; set; }
         IEnumerable<string> GetVariablesInScope();
 
+        // Usually set to True, but set to false for ExpressionTemplateEditorData as any update
+        // to an expression template parameter can only be persisted by saving the entire parent
+        // expression.
+        bool IsDirectlySaveable { get; }
+
         event EventHandler Changed;
     }
 

@@ -129,7 +129,14 @@ namespace AxeSoftware.Quest.EditorControls
         private void SimpleEditor_SelectionChanged()
         {
             m_helper.SetDirty(ConvertFromSimpleExpression(SimpleValue));
-            Save();
+            if (m_data.IsDirectlySaveable)
+            {
+                Save();
+            }
+            else
+            {
+                m_helper.RaiseRequestParentElementEditorSaveEvent();
+            }
         }
 
         void SimpleEditor_Dirty(object sender, DataModifiedEventArgs e)
@@ -634,6 +641,7 @@ namespace AxeSoftware.Quest.EditorControls
                 m_templateEditor = new ExpressionTemplate();
                 m_templateEditor.Controller = m_helper.Controller;
                 m_templateEditor.Dirty += m_templateEditor_Dirty;
+                m_templateEditor.RequestParentEditorSave += m_templateEditor_RequestParentEditorSave;
                 Grid.SetRow(m_templateEditor, Grid.GetRow(txtExpression));
                 Grid.SetColumn(m_templateEditor, Grid.GetColumn(txtExpression));
                 grid.Children.Add(m_templateEditor);
@@ -653,5 +661,9 @@ namespace AxeSoftware.Quest.EditorControls
             m_helper.SetDirty(newValue);
         }
 
+        void m_templateEditor_RequestParentEditorSave()
+        {
+            m_helper.RaiseRequestParentElementEditorSaveEvent();
+        }
     }
 }

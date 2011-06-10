@@ -65,5 +65,7 @@ namespace AxeSoftware.Quest
         {
             return m_script.GetVariablesInScope();
         }
+
+        public bool IsDirectlySaveable { get { return true; } }
     }
 }
