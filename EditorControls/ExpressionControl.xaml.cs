@@ -641,7 +641,7 @@ namespace AxeSoftware.Quest.EditorControls
                 m_templateEditor = new ExpressionTemplate();
                 m_templateEditor.Controller = m_helper.Controller;
                 m_templateEditor.Dirty += m_templateEditor_Dirty;
-                m_templateEditor.RequestParentEditorSave += m_templateEditor_RequestParentEditorSave;
+                m_templateEditor.RequestSave += m_templateEditor_RequestSave;
                 Grid.SetRow(m_templateEditor, Grid.GetRow(txtExpression));
                 Grid.SetColumn(m_templateEditor, Grid.GetColumn(txtExpression));
                 grid.Children.Add(m_templateEditor);
@@ -661,9 +661,9 @@ namespace AxeSoftware.Quest.EditorControls
             m_helper.SetDirty(newValue);
         }
 
-        void m_templateEditor_RequestParentEditorSave()
+        void m_templateEditor_RequestSave()
         {
-            m_helper.RaiseRequestParentElementEditorSaveEvent();
+            Save();
         }
     }
 }

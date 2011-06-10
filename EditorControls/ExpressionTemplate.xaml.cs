@@ -23,7 +23,7 @@ namespace AxeSoftware.Quest.EditorControls
         private IEditorData m_data;
 
         public event Action<string> Dirty;
-        public event Action RequestParentEditorSave;
+        public event Action RequestSave;
 
         public ExpressionTemplate()
         {
@@ -58,7 +58,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         void m_data_Changed(object sender, EventArgs e)
         {
-            RequestParentEditorSave();
+            RequestSave();
         }
 
         private void AddControl(IEditorControl ctl, string expression)
@@ -89,7 +89,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         void SubControl_RequestParentElementEditorSave()
         {
-            RequestParentEditorSave();
+            RequestSave();
         }
 
         void SubControl_Dirty(object sender, DataModifiedEventArgs e)
