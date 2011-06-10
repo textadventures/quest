@@ -1,0 +1,14 @@
+﻿<library>
+  <editor>
+    <pattern>(Got(#object#))</pattern>
+    <description>player has an object</description>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+
+  </editor>
+</library>

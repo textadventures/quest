@@ -33,6 +33,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             InitializeComponent();
             ctlExpression.IsSimpleModeAvailable = false;
+            ctlExpression.UseExpressionTemplates = true;
             Mode = IfEditorChildMode.If;
         }
 

@@ -21,6 +21,7 @@ namespace AxeSoftware.Quest.EditorControls
         private ControlDataHelper<string> m_helper;
         private Control m_simpleEditor;
         private bool m_simpleMode;
+        private bool m_useExpressionTemplates = false;
         private bool m_updatingList;
         private bool m_isSimpleModeAvailable = true;
         private bool m_saving = false;
@@ -38,6 +39,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         void Initialise()
         {
+            PopulateExpressionTemplates();
+
             if (IsSimpleModeAvailable)
             {
                 if (m_helper.ControlDefinition.GetString("simpleeditor") != "boolean" && m_helper.ControlDefinition.GetString("simple") == null)
@@ -428,8 +431,36 @@ namespace AxeSoftware.Quest.EditorControls
             set
             {
                 m_isSimpleModeAvailable = value;
+                UpdateListVisibility();
+            }
+        }
 
-                lstType.Visibility = m_isSimpleModeAvailable ? Visibility.Visible : Visibility.Collapsed;
+        public bool UseExpressionTemplates
+        {
+            get { return m_useExpressionTemplates; }
+            set
+            {
+                m_useExpressionTemplates = value;
+                UpdateListVisibility();
+            }
+        }
+
+        private void UpdateListVisibility()
+        {
+            lstType.Visibility = (IsSimpleModeAvailable && !UseExpressionTemplates) ? Visibility.Visible : Visibility.Collapsed;
+            lstTemplate.Visibility = UseExpressionTemplates ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void PopulateExpressionTemplates()
+        {
+            if (!UseExpressionTemplates) return;
+            if (lstTemplate.Items.Count > 0) return;
+
+            lstTemplate.Items.Add("expression");
+
+            foreach (string item in m_helper.Controller.GetExpressionEditorNames())
+            {
+                lstTemplate.Items.Add(item);
             }
         }
 
@@ -529,6 +560,11 @@ namespace AxeSoftware.Quest.EditorControls
                     return txtExpression;
                 }
             }
+
+        }
+
+        private void lstTemplate_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
 
         }
 

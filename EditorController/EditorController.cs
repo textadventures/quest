@@ -45,7 +45,8 @@ namespace AxeSoftware.Quest
         private AvailableFilters m_availableFilters;
         private FilterOptions m_filterOptions;
         private EditableScriptFactory m_editableScriptFactory;
-        private Dictionary<string, IEditorDefinition> m_editorDefinitions = new Dictionary<string, IEditorDefinition>();
+        private Dictionary<string, EditorDefinition> m_editorDefinitions = new Dictionary<string, EditorDefinition>();
+        private Dictionary<string, EditorDefinition> m_expressionDefinitions = new Dictionary<string, EditorDefinition>();
         private Dictionary<ElementType, TreeHeader> m_elementTreeStructure;
         private Dictionary<string, string> m_treeTitles;
         private bool m_initialised = false;
@@ -164,7 +165,16 @@ namespace AxeSoftware.Quest
             foreach (Element e in m_worldModel.Elements.GetElements(ElementType.Editor))
             {
                 EditorDefinition def = new EditorDefinition(m_worldModel, e);
-                m_editorDefinitions.Add(def.AppliesTo, def);
+                if (def.AppliesTo != null)
+                {
+                    // Normal editor definition for editing an element or a script command
+                    m_editorDefinitions.Add(def.AppliesTo, def);
+                }
+                else if (def.Pattern != null)
+                {
+                    // Editor definition for an expression template in the "if" editor
+                    m_expressionDefinitions.Add(def.Pattern, def);
+                }
             }
 
             if (ok)
@@ -1341,6 +1351,11 @@ namespace AxeSoftware.Quest
         public IEnumerable<string> GetPropertyNames()
         {
             return m_worldModel.GetAllAttributeNames;
+        }
+
+        public IEnumerable<string> GetExpressionEditorNames()
+        {
+            return m_expressionDefinitions.Values.Select(d => d.Description);
         }
     }
 }

@@ -16,6 +16,7 @@
   <include ref="CoreEditorCommand.aslx"/>
   <include ref="CoreEditorVerb.aslx"/>
   <include ref="CoreEditorScripts.aslx"/>
+  <include ref="CoreEditorExpressions.aslx"/>
   <include ref="CoreEditorFunction.aslx"/>
   <include ref="CoreEditorType.aslx"/>
   <include ref="CoreEditorElements.aslx"/>

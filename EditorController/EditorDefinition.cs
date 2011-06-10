@@ -38,6 +38,8 @@ namespace AxeSoftware.Quest
         private Dictionary<string, IEditorTab> m_tabs = null;
         private Dictionary<string, IEditorControl> m_controls = null;
         private string m_appliesTo = null;
+        private string m_pattern = null;
+        private string m_description = null;
         private Dictionary<string, FilterGroup> m_filterGroups = new Dictionary<string, FilterGroup>();
 
         public EditorDefinition(WorldModel worldModel, Element source)
@@ -45,6 +47,8 @@ namespace AxeSoftware.Quest
             m_tabs = new Dictionary<string, IEditorTab>();
             m_controls = new Dictionary<string, IEditorControl>();
             m_appliesTo = source.Fields.GetString("appliesto");
+            m_pattern = source.Fields.GetString("pattern");
+            m_description = source.Fields.GetString("description");
 
             foreach (Element e in worldModel.Elements.GetElements(ElementType.EditorTab))
             {
@@ -66,6 +70,16 @@ namespace AxeSoftware.Quest
         public string AppliesTo
         {
             get { return m_appliesTo; }
+        }
+
+        public string Pattern
+        {
+            get { return m_pattern; }
+        }
+
+        public string Description
+        {
+            get { return m_description; }
         }
 
         public IDictionary<string, IEditorTab> Tabs
