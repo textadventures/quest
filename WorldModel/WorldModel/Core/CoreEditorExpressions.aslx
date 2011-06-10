@@ -5,14 +5,109 @@
   <editor>
     <pattern>Got(#object#)</pattern>
     <create>Got()</create>
-    <description>player has an object</description>
+    <description>the player is carrying an object</description>
 
     <control>
       <controltype>expression</controltype>
-      <simple>name</simple>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>ListContains(ScopeVisible(), #object#)</pattern>
+    <create>ListContains(ScopeVisible(), )</create>
+    <description>an object is visible</description>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>ListContains(ScopeReachable(), #object#)</pattern>
+    <create>ListContains(ScopeReachable(), )</create>
+    <description>an object is reachable</description>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>Contains (#object1#,#object2#)</pattern>
+    <create>Contains (,)</create>
+    <description>an object contains a specific object</description>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Parent:</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Contains child:</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object2</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>#object#.#property# = #value#</pattern>
+    <create> . = </create>
+    <description>object property</description>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
       <simpleeditor>objects</simpleeditor>
       <attribute>object</attribute>
     </control>
 
+    <control>
+      <controltype>label</controltype>
+      <caption>Property</caption>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>property</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>=</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>value</attribute>
+    </control>
+
   </editor>
+  
 </library>

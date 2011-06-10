@@ -66,6 +66,16 @@ namespace AxeSoftware.Quest.EditorControls
             Control newControl = ControlFactory.CreateEditorControl(Controller, ctl.ControlType);
             stackPanel.Children.Add(newControl);
 
+            newControl.VerticalAlignment = VerticalAlignment.Top;
+            if (newControl is LabelControl)
+            {
+                newControl.Padding = new Thickness(3, 3, 3, 0);
+            }
+            else
+            {
+                newControl.Padding = new Thickness(3, 0, 3, 0);
+            }
+
             IElementEditorControl elementEditor = newControl as IElementEditorControl;
             if (elementEditor != null)
             {
