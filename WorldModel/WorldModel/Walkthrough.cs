@@ -53,7 +53,13 @@ namespace AxeSoftware.Quest
 
         private List<string> ThisSteps()
         {
-            return new List<string>(m_element.Fields[FieldDefinitions.Steps]);
+            List<string> result = new List<string>();
+            IEnumerable<string> steps = m_element.Fields[FieldDefinitions.Steps];
+            if (steps != null)
+            {
+                result.AddRange(steps);
+            }
+            return result;
         }
     }
 }
