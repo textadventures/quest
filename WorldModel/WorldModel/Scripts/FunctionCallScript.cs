@@ -23,9 +23,12 @@ namespace AxeSoftware.Quest.Scripts
                 List<string> parameters = Utility.SplitParameter(param);
                 procName = script.Substring(0, script.IndexOf('(')).Trim();
                 paramExpressions = new List<IFunction<object>>();
-                foreach (string s in parameters)
+                if (param.Trim().Length > 0)
                 {
-                    paramExpressions.Add(new Expression<object>(s, WorldModel));
+                    foreach (string s in parameters)
+                    {
+                        paramExpressions.Add(new Expression<object>(s, WorldModel));
+                    }
                 }
             }
 
