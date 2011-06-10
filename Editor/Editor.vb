@@ -781,4 +781,8 @@
 
         Return True
     End Function
+
+    Public Sub CancelUnsavedChanges()
+        m_unsavedChanges = False
+    End Sub
 End Class

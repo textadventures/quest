@@ -217,6 +217,7 @@ Public Class Main
         ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
         ctlLauncher.RefreshLists()
         ctlEditor.Visible = False
+        ctlEditor.CancelUnsavedChanges()
         ctlLauncher.Visible = True
         SetWindowTitle()
     End Sub
