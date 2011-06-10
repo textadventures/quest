@@ -32,7 +32,7 @@ Partial Class Menu
         'lblCaption
         '
         Me.lblCaption.AutoSize = True
-        Me.lblCaption.Location = New System.Drawing.Point(13, 13)
+        Me.lblCaption.Location = New System.Drawing.Point(9, 9)
         Me.lblCaption.Name = "lblCaption"
         Me.lblCaption.Size = New System.Drawing.Size(28, 13)
         Me.lblCaption.TabIndex = 0
@@ -61,14 +61,13 @@ Partial Class Menu
         '
         'lstOptions
         '
-        Me.lstOptions.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lstOptions.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lstOptions.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lstOptions.HideSelection = False
-        Me.lstOptions.Location = New System.Drawing.Point(16, 30)
+        Me.lstOptions.Location = New System.Drawing.Point(12, 30)
         Me.lstOptions.Name = "lstOptions"
-        Me.lstOptions.Size = New System.Drawing.Size(325, 216)
+        Me.lstOptions.Size = New System.Drawing.Size(329, 216)
         Me.lstOptions.TabIndex = 0
         Me.lstOptions.UseCompatibleStateImageBehavior = False
         Me.lstOptions.View = System.Windows.Forms.View.List
@@ -83,13 +82,14 @@ Partial Class Menu
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(353, 284)
+        Me.ClientSize = New System.Drawing.Size(353, 285)
         Me.Controls.Add(Me.lstOptions)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdSelect)
         Me.Controls.Add(Me.lblCaption)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(300, 300)
         Me.Name = "Menu"
         Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent

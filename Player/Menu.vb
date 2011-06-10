@@ -14,6 +14,7 @@
     Public WriteOnly Property Caption() As String
         Set(value As String)
             lblCaption.Text = value
+            DoResize()
         End Set
     End Property
 
@@ -56,5 +57,15 @@
 
     Private Sub lstOptions_Resize(sender As Object, e As System.EventArgs) Handles lstOptions.Resize
         lstOptions.Columns(0).Width = lstOptions.Width
+    End Sub
+
+    Private Sub Menu_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
+        DoResize()
+    End Sub
+
+    Private Sub DoResize()
+        lblCaption.MaximumSize = New Size(Me.Width - 24, lblCaption.MaximumSize.Height)
+        lstOptions.Top = lblCaption.Top + lblCaption.Height + 8
+        lstOptions.Height = Me.Height - (lstOptions.Top + 76)
     End Sub
 End Class
