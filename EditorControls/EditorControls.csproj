@@ -90,6 +90,9 @@
     <Compile Include="ExpressionControl.xaml.cs">
       <DependentUpon>ExpressionControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExpressionTemplate.xaml.cs">
+      <DependentUpon>ExpressionTemplate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FileControl.xaml.cs">
       <DependentUpon>FileControl.xaml</DependentUpon>
     </Compile>
@@ -312,6 +315,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ExpressionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ExpressionTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

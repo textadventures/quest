@@ -88,6 +88,7 @@
     <Compile Include="EditorDefinition.cs" />
     <Compile Include="EditorTab.cs" />
     <Compile Include="EditorVisibilityHelper.cs" />
+    <Compile Include="ExpressionTemplateEditorData.cs" />
     <Compile Include="FilterOptions.cs" />
     <Compile Include="IDataWrapper.cs" />
     <Compile Include="IEditableCommandPattern.cs" />

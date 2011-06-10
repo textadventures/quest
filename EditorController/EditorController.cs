@@ -1358,7 +1358,17 @@ namespace AxeSoftware.Quest
             return m_expressionDefinitions.Values.Select(d => d.Description);
         }
 
+        public string GetExpressionEditorDefinitionName(string expression)
+        {
+            return GetExpressionEditorDefinitionInternal(expression).Description;
+        }
+
         public IEditorDefinition GetExpressionEditorDefinition(string expression)
+        {
+            return GetExpressionEditorDefinitionInternal(expression);
+        }
+
+        private EditorDefinition GetExpressionEditorDefinitionInternal(string expression)
         {
             // Get the Expression Editor Definition which matches the current expression.
             // e.g. if the expression is "(Got(myobject))", we want to return the Editor
@@ -1376,6 +1386,11 @@ namespace AxeSoftware.Quest
                                     select def;
 
             return orderedCandidates.First();
+        }
+
+        public IEditorData GetExpressionEditorData(string expression)
+        {
+            return new ExpressionTemplateEditorData(expression, GetExpressionEditorDefinitionInternal(expression));
         }
     }
 }

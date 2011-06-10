@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest.EditorControls
         private bool m_saving = false;
         private IEditorData m_data;
         private bool m_booleanEditor;
+        private ExpressionTemplate m_templateEditor;
 
         public ExpressionControl()
         {
@@ -184,7 +185,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (TemplateMode)
             {
-                // TO DO: Populate template
+                PopulateTemplate(value);
             }
 
             txtExpression.Text = value;
@@ -285,6 +286,11 @@ namespace AxeSoftware.Quest.EditorControls
                 }
 
                 SetExpressionVisibility(!m_templateMode);
+
+                if (m_templateEditor != null)
+                {
+                    m_templateEditor.Visibility = m_templateMode ? Visibility.Visible : Visibility.Collapsed;
+                }
             }
         }
 
@@ -601,6 +607,23 @@ namespace AxeSoftware.Quest.EditorControls
         private void lstTemplate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void PopulateTemplate(string expression)
+        {
+            if (m_templateEditor == null)
+            {
+                m_templateEditor = new ExpressionTemplate();
+                m_templateEditor.Controller = m_helper.Controller;
+                Grid.SetRow(m_templateEditor, Grid.GetRow(txtExpression));
+                Grid.SetColumn(m_templateEditor, Grid.GetColumn(txtExpression));
+                grid.Children.Add(m_templateEditor);
+            }
+
+            IEditorDefinition definition = m_helper.Controller.GetExpressionEditorDefinition(expression);
+            lstTemplate.Text = m_helper.Controller.GetExpressionEditorDefinitionName(expression);
+
+            m_templateEditor.Initialise(definition, expression);
         }
 
     }

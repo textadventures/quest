@@ -3,8 +3,8 @@
   <implied element="editor" property="pattern" type="simplepattern"/>
   
   <editor>
-    <pattern>(Got(#object#))</pattern>
-    <create>(Got())</create>
+    <pattern>Got(#object#)</pattern>
+    <create>Got()</create>
     <description>player has an object</description>
 
     <control>
