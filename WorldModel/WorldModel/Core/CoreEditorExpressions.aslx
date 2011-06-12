@@ -2,10 +2,13 @@
 
   <implied element="editor" property="pattern" type="simplepattern"/>
   
+  <!-- Templates for "if" -->
+  
   <editor>
     <pattern>Got(#object#)</pattern>
     <create>Got()</create>
     <description>the player is carrying an object</description>
+    <expressiontype>if</expressiontype>
 
     <control>
       <controltype>expression</controltype>
@@ -19,6 +22,7 @@
     <pattern>ListContains(ScopeVisible(), #object#)</pattern>
     <create>ListContains(ScopeVisible(), )</create>
     <description>an object is visible</description>
+    <expressiontype>if</expressiontype>
 
     <control>
       <controltype>expression</controltype>
@@ -32,6 +36,7 @@
     <pattern>ListContains(ScopeReachable(), #object#)</pattern>
     <create>ListContains(ScopeReachable(), )</create>
     <description>an object is reachable</description>
+    <expressiontype>if</expressiontype>
 
     <control>
       <controltype>expression</controltype>
@@ -45,6 +50,7 @@
     <pattern>Contains (#object1#,#object2#)</pattern>
     <create>Contains (,)</create>
     <description>an object contains a specific object</description>
+    <expressiontype>if</expressiontype>
 
     <control>
       <controltype>label</controltype>
@@ -75,6 +81,7 @@
     <pattern>#object#.#property# = #value#</pattern>
     <create> . = </create>
     <description>object property</description>
+    <expressiontype>if</expressiontype>
 
     <control>
       <controltype>label</controltype>
@@ -110,4 +117,34 @@
 
   </editor>
   
+  <!-- Templates for "set" -->
+
+  <editor>
+    <pattern>NewStringList()</pattern>
+    <create>NewStringList()</create>
+    <description>new string list</description>
+    <expressiontype>set</expressiontype>
+  </editor>
+
+  <editor>
+    <pattern>NewObjectList()</pattern>
+    <create>NewObjectList()</create>
+    <description>new object list</description>
+    <expressiontype>set</expressiontype>
+  </editor>
+
+  <editor>
+    <pattern>NewStringDictionary()</pattern>
+    <create>NewStringDictionary()</create>
+    <description>new string dictionary</description>
+    <expressiontype>set</expressiontype>
+  </editor>
+
+  <editor>
+    <pattern>NewObjectDictionary()</pattern>
+    <create>NewObjectDictionary()</create>
+    <description>new object dictionary</description>
+    <expressiontype>set</expressiontype>
+  </editor>
+
 </library>

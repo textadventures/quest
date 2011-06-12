@@ -21,6 +21,7 @@ namespace AxeSoftware.Quest.EditorControls
     {
         private List<IElementEditorControl> m_controls = new List<IElementEditorControl>();
         private IEditorData m_data;
+        private string m_templatesFilter;
 
         public event Action<string> Dirty;
         public event Action RequestSave;
@@ -47,7 +48,7 @@ namespace AxeSoftware.Quest.EditorControls
                 m_data.Changed -= m_data_Changed;
             }
 
-            m_data = Controller.GetExpressionEditorData(expression);
+            m_data = Controller.GetExpressionEditorData(expression, ExpressionTypeTemplateFilter);
             m_data.Changed += m_data_Changed;
 
             foreach (IEditorControl ctl in definition.Controls)
@@ -111,6 +112,12 @@ namespace AxeSoftware.Quest.EditorControls
         private string SaveExpression(string changedAttribute, string changedValue)
         {
             return Controller.GetExpression(m_data, changedAttribute, changedValue);
+        }
+
+        public string ExpressionTypeTemplateFilter
+        {
+            get { return m_templatesFilter; }
+            set { m_templatesFilter = value; }
         }
     }
 }

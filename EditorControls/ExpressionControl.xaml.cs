@@ -29,6 +29,7 @@ namespace AxeSoftware.Quest.EditorControls
         private IEditorData m_data;
         private bool m_booleanEditor;
         private ExpressionTemplate m_templateEditor;
+        private string m_templatesFilter;
 
         public ExpressionControl()
         {
@@ -41,7 +42,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         void Initialise()
         {
-            PopulateExpressionTemplates();
+            m_templatesFilter = m_helper.ControlDefinition.GetString("usetemplates");
+            if (m_templatesFilter != null) UseExpressionTemplates = true;
 
             if (IsSimpleModeAvailable)
             {
@@ -53,65 +55,75 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (IsSimpleModeAvailable)
             {
-                string simpleEditor = m_helper.ControlDefinition.GetString("simpleeditor") ?? "textbox";
-
-                m_updatingList = true;
-
-                switch (simpleEditor)
-                {
-                    case "textbox":
-                        TextBox newTextBox = new TextBox();
-                        newTextBox.TextChanged += SimpleEditor_TextChanged;
-                        newTextBox.LostFocus += SimpleEditor_LostFocus;
-                        m_simpleEditor = newTextBox;
-                        break;
-                    case "file":
-                        FileControl newFileControl = new FileControl();
-                        newFileControl.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
-                        newFileControl.RefreshFileList();
-                        newFileControl.Helper.Dirty += SimpleEditor_Dirty;
-                        newFileControl.lstFiles.SelectionChanged += FileControl_SelectionChanged;
-                        m_simpleEditor = newFileControl;
-                        break;
-                    case "boolean":
-                        m_simpleEditor = null;
-                        lstType.Items.Add("yes");
-                        lstType.Items.Add("no");
-                        m_booleanEditor = true;
-                        break;
-                    case "objects":
-                        DropDownObjectsControl newDropDown = new DropDownObjectsControl();
-                        newDropDown.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
-                        newDropDown.Helper.Dirty += SimpleEditor_Dirty;
-                        newDropDown.lstDropdown.SelectionChanged += DropDownObjects_SelectionChanged;
-                        m_simpleEditor = newDropDown;
-                        break;
-                    case "number":
-                        NumberControl newNumber = new NumberControl();
-                        newNumber.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
-                        newNumber.Helper.Dirty += SimpleEditor_Dirty;
-                        newNumber.LostFocus += SimpleEditor_LostFocus;
-                        m_simpleEditor = newNumber;
-                        break;
-                    default:
-                        throw new InvalidOperationException("Invalid control type for expression");
-                }
-
-                if (m_simpleEditor != null)
-                {
-                    m_simpleEditor.MinWidth = 40;
-                    Grid.SetRow(m_simpleEditor, Grid.GetRow(txtExpression));
-                    Grid.SetColumn(m_simpleEditor, Grid.GetColumn(txtExpression));
-                    grid.Children.Add(m_simpleEditor);
-                }
-
-                if (m_simpleEditor != null)
-                {
-                    lstType.Items.Add(m_helper.ControlDefinition.GetString("simple"));
-                }
-                lstType.Items.Add("expression");
-                m_updatingList = false;
+                InitialiseSimpleEditor();
             }
+
+            if (UseExpressionTemplates)
+            {
+                PopulateExpressionTemplates();
+            }
+        }
+
+        private void InitialiseSimpleEditor()
+        {
+            string simpleEditor = m_helper.ControlDefinition.GetString("simpleeditor") ?? "textbox";
+
+            m_updatingList = true;
+
+            switch (simpleEditor)
+            {
+                case "textbox":
+                    TextBox newTextBox = new TextBox();
+                    newTextBox.TextChanged += SimpleEditor_TextChanged;
+                    newTextBox.LostFocus += SimpleEditor_LostFocus;
+                    m_simpleEditor = newTextBox;
+                    break;
+                case "file":
+                    FileControl newFileControl = new FileControl();
+                    newFileControl.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
+                    newFileControl.RefreshFileList();
+                    newFileControl.Helper.Dirty += SimpleEditor_Dirty;
+                    newFileControl.lstFiles.SelectionChanged += FileControl_SelectionChanged;
+                    m_simpleEditor = newFileControl;
+                    break;
+                case "boolean":
+                    m_simpleEditor = null;
+                    lstType.Items.Add("yes");
+                    lstType.Items.Add("no");
+                    m_booleanEditor = true;
+                    break;
+                case "objects":
+                    DropDownObjectsControl newDropDown = new DropDownObjectsControl();
+                    newDropDown.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
+                    newDropDown.Helper.Dirty += SimpleEditor_Dirty;
+                    newDropDown.lstDropdown.SelectionChanged += DropDownObjects_SelectionChanged;
+                    m_simpleEditor = newDropDown;
+                    break;
+                case "number":
+                    NumberControl newNumber = new NumberControl();
+                    newNumber.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
+                    newNumber.Helper.Dirty += SimpleEditor_Dirty;
+                    newNumber.LostFocus += SimpleEditor_LostFocus;
+                    m_simpleEditor = newNumber;
+                    break;
+                default:
+                    throw new InvalidOperationException("Invalid control type for expression");
+            }
+
+            if (m_simpleEditor != null)
+            {
+                m_simpleEditor.MinWidth = 40;
+                Grid.SetRow(m_simpleEditor, Grid.GetRow(txtExpression));
+                Grid.SetColumn(m_simpleEditor, Grid.GetColumn(txtExpression));
+                grid.Children.Add(m_simpleEditor);
+            }
+
+            if (m_simpleEditor != null)
+            {
+                lstType.Items.Add(m_helper.ControlDefinition.GetString("simple"));
+            }
+            lstType.Items.Add("expression");
+            m_updatingList = false;
         }
 
         void DropDownObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -494,7 +506,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private bool IsTemplateExpression(string expression)
         {
-            return m_helper.Controller.GetExpressionEditorDefinition(expression) != null;
+            return m_helper.Controller.GetExpressionEditorDefinition(expression, ExpressionTypeTemplateFilter) != null;
         }
 
         private void UpdateListVisibility()
@@ -505,12 +517,11 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void PopulateExpressionTemplates()
         {
-            if (!UseExpressionTemplates) return;
             if (lstTemplate.Items.Count > 0) return;
 
             lstTemplate.Items.Add("expression");
 
-            foreach (string item in m_helper.Controller.GetExpressionEditorNames())
+            foreach (string item in m_helper.Controller.GetExpressionEditorNames(ExpressionTypeTemplateFilter))
             {
                 lstTemplate.Items.Add(item);
             }
@@ -627,6 +638,8 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 string expression = m_helper.Controller.GetNewExpression((string)lstTemplate.Items[lstTemplate.SelectedIndex]);
                 PopulateTemplate(expression);
+                m_helper.SetDirty(expression);
+                Save();
             }
             else
             {
@@ -642,15 +655,16 @@ namespace AxeSoftware.Quest.EditorControls
                 m_templateEditor.Controller = m_helper.Controller;
                 m_templateEditor.Dirty += m_templateEditor_Dirty;
                 m_templateEditor.RequestSave += m_templateEditor_RequestSave;
+                m_templateEditor.ExpressionTypeTemplateFilter = ExpressionTypeTemplateFilter;
                 Grid.SetRow(m_templateEditor, Grid.GetRow(txtExpression));
                 Grid.SetColumn(m_templateEditor, Grid.GetColumn(txtExpression));
                 grid.Children.Add(m_templateEditor);
             }
 
-            IEditorDefinition definition = m_helper.Controller.GetExpressionEditorDefinition(expression);
+            IEditorDefinition definition = m_helper.Controller.GetExpressionEditorDefinition(expression, ExpressionTypeTemplateFilter);
 
             m_updatingList = true;
-            lstTemplate.Text = m_helper.Controller.GetExpressionEditorDefinitionName(expression);
+            lstTemplate.Text = m_helper.Controller.GetExpressionEditorDefinitionName(expression, ExpressionTypeTemplateFilter);
             m_updatingList = false;
 
             m_templateEditor.Initialise(definition, expression);
@@ -664,6 +678,12 @@ namespace AxeSoftware.Quest.EditorControls
         void m_templateEditor_RequestSave()
         {
             Save();
+        }
+
+        public string ExpressionTypeTemplateFilter
+        {
+            get { return m_templatesFilter; }
+            set { m_templatesFilter = value; }
         }
     }
 }

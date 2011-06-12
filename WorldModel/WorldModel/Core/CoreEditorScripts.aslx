@@ -588,6 +588,7 @@
 
     <control>
       <controltype>expression</controltype>
+      <usetemplates>set</usetemplates>
       <attribute>1</attribute>
     </control>
   </editor>

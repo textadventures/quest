@@ -34,6 +34,7 @@ namespace AxeSoftware.Quest.EditorControls
             InitializeComponent();
             ctlExpression.IsSimpleModeAvailable = false;
             ctlExpression.UseExpressionTemplates = true;
+            ctlExpression.ExpressionTypeTemplateFilter = "if";
             Mode = IfEditorChildMode.If;
         }
 

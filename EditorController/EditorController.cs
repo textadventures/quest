@@ -1353,22 +1353,22 @@ namespace AxeSoftware.Quest
             return m_worldModel.GetAllAttributeNames;
         }
 
-        public IEnumerable<string> GetExpressionEditorNames()
+        public IEnumerable<string> GetExpressionEditorNames(string expressionType)
         {
-            return m_expressionDefinitions.Values.Select(d => d.Description);
+            return m_expressionDefinitions.Values.Where(d => d.ExpressionType == expressionType).Select(d => d.Description);
         }
 
-        public string GetExpressionEditorDefinitionName(string expression)
+        public string GetExpressionEditorDefinitionName(string expression, string expressionType)
         {
-            return GetExpressionEditorDefinitionInternal(expression).Description;
+            return GetExpressionEditorDefinitionInternal(expression, expressionType).Description;
         }
 
-        public IEditorDefinition GetExpressionEditorDefinition(string expression)
+        public IEditorDefinition GetExpressionEditorDefinition(string expression, string expressionType)
         {
-            return GetExpressionEditorDefinitionInternal(expression);
+            return GetExpressionEditorDefinitionInternal(expression, expressionType);
         }
 
-        private EditorDefinition GetExpressionEditorDefinitionInternal(string expression)
+        private EditorDefinition GetExpressionEditorDefinitionInternal(string expression, string expressionType)
         {
             // Get the Expression Editor Definition which matches the current expression.
             // e.g. if the expression is "(Got(myobject))", we want to return the Editor
@@ -1376,6 +1376,7 @@ namespace AxeSoftware.Quest
             // regex by the SimplePattern attribute loader]
 
             var candidates = from def in m_expressionDefinitions.Values
+                             where def.ExpressionType == expressionType
                              where Utility.IsRegexMatch(def.Pattern, expression)
                              select def;
 
@@ -1388,16 +1389,16 @@ namespace AxeSoftware.Quest
             return orderedCandidates.First();
         }
 
-        public IEditorData GetExpressionEditorData(string expression)
+        public IEditorData GetExpressionEditorData(string expression, string expressionType)
         {
-            return new ExpressionTemplateEditorData(expression, GetExpressionEditorDefinitionInternal(expression));
+            return new ExpressionTemplateEditorData(expression, GetExpressionEditorDefinitionInternal(expression, expressionType));
         }
 
         public string GetNewExpression(string templateName)
         {
             var definitions = from def in m_expressionDefinitions.Values
-                                          where def.Description == templateName
-                                          select def;
+                              where def.Description == templateName
+                              select def;
 
             EditorDefinition definition = definitions.First();
 

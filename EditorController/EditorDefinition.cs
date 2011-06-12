@@ -42,6 +42,7 @@ namespace AxeSoftware.Quest
         private string m_originalPattern = null;
         private string m_description = null;
         private string m_create = null;
+        private string m_expressionType = null;
         private Dictionary<string, FilterGroup> m_filterGroups = new Dictionary<string, FilterGroup>();
 
         public EditorDefinition(WorldModel worldModel, Element source)
@@ -53,6 +54,7 @@ namespace AxeSoftware.Quest
             m_originalPattern = source.Fields.GetString(FieldDefinitions.OriginalPattern.Property);
             m_description = source.Fields.GetString("description");
             m_create = source.Fields.GetString("create");
+            m_expressionType = source.Fields.GetString("expressiontype");
 
             foreach (Element e in worldModel.Elements.GetElements(ElementType.EditorTab))
             {
@@ -94,6 +96,11 @@ namespace AxeSoftware.Quest
         public string Create
         {
             get { return m_create; }
+        }
+
+        public string ExpressionType
+        {
+            get { return m_expressionType; }
         }
 
         public IDictionary<string, IEditorTab> Tabs
