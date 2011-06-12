@@ -146,5 +146,42 @@
     <description>new object dictionary</description>
     <expressiontype>set</expressiontype>
   </editor>
+  
+  <!-- Templates for "foreach" -->
+
+  <editor>
+    <pattern>AllObjects()</pattern>
+    <create>AllObjects()</create>
+    <description>all objects</description>
+    <expressiontype>foreach</expressiontype>
+  </editor>
+
+  <editor>
+    <pattern>ScopeVisible()</pattern>
+    <create>ScopeVisible()</create>
+    <description>all visible objects</description>
+    <expressiontype>foreach</expressiontype>
+  </editor>
+
+  <editor>
+    <pattern>ScopeInventory()</pattern>
+    <create>ScopeInventory()</create>
+    <description>the inventory</description>
+    <expressiontype>foreach</expressiontype>
+  </editor>
+  
+  <editor>
+    <pattern>AllExits()</pattern>
+    <create>AllExits()</create>
+    <description>all exits</description>
+    <expressiontype>foreach</expressiontype>
+  </editor>
+
+  <editor>
+    <pattern>AllCommands()</pattern>
+    <create>AllCommands()</create>
+    <description>all commands</description>
+    <expressiontype>foreach</expressiontype>
+  </editor>
 
 </library>

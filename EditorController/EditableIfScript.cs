@@ -385,7 +385,7 @@ namespace AxeSoftware.Quest
 
         public string GetString(string tag)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public IEnumerable<string> GetListString(string tag)
