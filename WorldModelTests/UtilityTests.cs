@@ -41,5 +41,33 @@ namespace WorldModelTests
             Assert.IsTrue(result.EndsWith("\" of obscuring strings"));
             Assert.IsFalse(result.Contains("a test"));
         }
+
+        [TestMethod]
+        public void TestSplitParameter()
+        {
+            // ("This contains two parameters, even though the first has a comma", "this is the second parameter")
+
+            string param1 = "\"This contains two parameters, even though the first has a comma\"";
+            string param2 = "\"this is the second parameter\"";
+            string input = param1 + ", " + param2;
+            var result = Utility.SplitParameter(input);
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(param1, result[0]);
+            Assert.AreEqual(param2, result[1]);
+        }
+
+        [TestMethod]
+        public void TestSplitParameterWithNestedQuotes()
+        {
+            // ("This contains \"a nested quote, with a comma\"", "this is the second parameter")
+
+            string param1 = "\"This contains \\\"a nested quote, with a comma\\\"\"";
+            string param2 = "\"this is the second parameter\"";
+            string input = param1 + ", " + param2;
+            var result = Utility.SplitParameter(input);
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(param1, result[0]);
+            Assert.AreEqual(param2, result[1]);
+        }
     }
 }

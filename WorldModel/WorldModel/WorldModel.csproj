@@ -156,6 +156,7 @@
     </None>
     <None Include="Core\CoreEditorExpressions.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorFunction.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

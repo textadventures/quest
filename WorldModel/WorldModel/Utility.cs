@@ -114,28 +114,41 @@ namespace AxeSoftware.Quest
         {
             List<string> result = new List<string>();
             bool inQuote = false;
+            bool processThisCharacter;
+            bool processNextCharacter = true;
             int bracketCount = 0;
             string curParam = string.Empty;
 
             for (int i = 0; i < text.Length; i++)
             {
+                processThisCharacter = processNextCharacter;
+                processNextCharacter = true;
+
                 string curChar = text.Substring(i, 1);
 
-                if (curChar == "\"")
+                if (processThisCharacter)
                 {
-                    inQuote = !inQuote;
-                }
-                else
-                {
-                    if (!inQuote)
+                    if (curChar == "\\")
                     {
-                        if (curChar == "(") bracketCount++;
-                        if (curChar == ")") bracketCount--;
-                        if (bracketCount == 0 && curChar == ",")
+                        // Don't process the character after a backslash
+                        processNextCharacter = false;
+                    }
+                    else if (curChar == "\"")
+                    {
+                        inQuote = !inQuote;
+                    }
+                    else
+                    {
+                        if (!inQuote)
                         {
-                            result.Add(curParam.Trim());
-                            curParam = string.Empty;
-                            continue;
+                            if (curChar == "(") bracketCount++;
+                            if (curChar == ")") bracketCount--;
+                            if (bracketCount == 0 && curChar == ",")
+                            {
+                                result.Add(curParam.Trim());
+                                curParam = string.Empty;
+                                continue;
+                            }
                         }
                     }
                 }
