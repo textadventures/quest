@@ -8,35 +8,39 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Name="containerRowDefinition" Height="*"/>
         </Grid.RowDefinitions>
-        <this:ScriptToolbar x:Name="ctlToolbar" IsTabStop="False"/>
-        <ListBox Name="lstScripts" Grid.Row="1" SelectionMode="Extended" SelectionChanged="lstScripts_SelectionChanged" AlternationCount="2">
-            <ListBox.Resources>
-                <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" StartPoint="0,0" EndPoint="0,0.5" SpreadMethod="Reflect">
-                    <GradientStop Color="#DFE7F2" Offset="0" />
-                    <GradientStop Color="#E7EDF5" Offset="1" />
-                </LinearGradientBrush>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-                <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#F0F0F0" Offset="0" />
-                    <GradientStop Color="White" Offset="1" />
-                </LinearGradientBrush>
-            </ListBox.Resources>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,0.9">
-                                <GradientStop Color="#F0F0F0" Offset="0" />
-                                <GradientStop Color="White" Offset="1" />
-                            </LinearGradientBrush>
-                        </Setter.Value>
-                    </Setter>
-                    <!--
+        <Grid VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <this:ScriptToolbar x:Name="ctlToolbar" IsTabStop="False"/>
+            <ListBox Name="lstScripts" Grid.Row="1" SelectionMode="Extended" SelectionChanged="lstScripts_SelectionChanged" AlternationCount="2">
+                <ListBox.Resources>
+                    <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" StartPoint="0,0" EndPoint="0,0.5" SpreadMethod="Reflect">
+                        <GradientStop Color="#DFE7F2" Offset="0" />
+                        <GradientStop Color="#E7EDF5" Offset="1" />
+                    </LinearGradientBrush>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                    <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#F0F0F0" Offset="0" />
+                        <GradientStop Color="White" Offset="1" />
+                    </LinearGradientBrush>
+                </ListBox.Resources>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,0.9">
+                                    <GradientStop Color="#F0F0F0" Offset="0" />
+                                    <GradientStop Color="White" Offset="1" />
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                        <!--
                     <Style.Triggers>
                         <Trigger Property="ItemsControl.AlternationIndex" Value="0">
                             <Setter Property="Background" Value="White"></Setter>
@@ -46,24 +50,24 @@
                         </Trigger>
                     </Style.Triggers>
                     -->
-                </Style>
-            </ListBox.ItemContainerStyle>
-            <!-- a DockPanel is used as the ItemsPanel, so that when nested Expanders are collapsed,
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <!-- a DockPanel is used as the ItemsPanel, so that when nested Expanders are collapsed,
                  they don't leave a blank space -->
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <DockPanel></DockPanel>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-        </ListBox>
-        <Expander HorizontalAlignment="Stretch" Grid.Row="2" Name="adderExpander">
-            <Expander.Header>
-                <TextBlock>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <DockPanel></DockPanel>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+            <Expander HorizontalAlignment="Stretch" Grid.Row="2" Name="adderExpander">
+                <Expander.Header>
+                    <TextBlock>
                         Add new script
-                </TextBlock>
-            </Expander.Header>
-            <this:ScriptAdder HorizontalAlignment="Stretch" x:Name="ctlScriptAdder" />
-        </Expander>
-
+                    </TextBlock>
+                </Expander.Header>
+                <this:ScriptAdder HorizontalAlignment="Stretch" x:Name="ctlScriptAdder" />
+            </Expander>
+        </Grid>
     </Grid>
 </UserControl>
