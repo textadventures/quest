@@ -75,6 +75,7 @@ namespace AxeSoftware.Quest
             private Dictionary<string, string> LoadScriptDictionary(XmlReader reader, Element current, string xmlElementName)
             {
                 Dictionary<string, string> newDictionary = new Dictionary<string, string>();
+                if (reader.IsEmptyElement) return newDictionary;
 
                 int nestCount = 1;
                 string key = null;
@@ -96,7 +97,7 @@ namespace AxeSoftware.Quest
                                 throw new InvalidOperationException(string.Format("Invalid element '{0}' in scriptdictionary block for '{1}.{2}' - expected only 'item' elements", reader.Name, current.Name, xmlElementName));
                             }
                             break;
-                        case XmlNodeType.EndElement:                            
+                        case XmlNodeType.EndElement:
                             if (reader.Name == "item")
                             {
                                 newDictionary.Add(key, value);
