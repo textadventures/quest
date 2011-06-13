@@ -96,6 +96,8 @@
         ctlToolbar.AddButtonHandler("paste", AddressOf Paste)
         ctlToolbar.AddButtonHandler("delete", AddressOf Delete)
         ctlToolbar.AddButtonHandler("code", AddressOf ToggleCodeView)
+        ctlToolbar.AddButtonHandler("logbug", AddressOf LogBug)
+        ctlToolbar.AddButtonHandler("help", AddressOf Help)
     End Sub
 
     Private Sub SetUpTree()
@@ -789,4 +791,21 @@
     Public Sub CancelUnsavedChanges()
         m_unsavedChanges = False
     End Sub
+
+    Private Sub LogBug()
+        LaunchURL("http://quest.codeplex.com/workitem/list/basic")
+    End Sub
+
+    Private Sub Help()
+        LaunchURL("http://quest5.net")
+    End Sub
+
+    Private Sub LaunchURL(url As String)
+        Try
+            System.Diagnostics.Process.Start(url)
+        Catch ex As Exception
+            MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
+        End Try
+    End Sub
+
 End Class

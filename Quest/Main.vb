@@ -32,6 +32,9 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("openedit", AddressOf OpenEditMenuClick)
         ctlMenu.AddMenuClickHandler("restart", AddressOf RestartMenuClick)
         ctlMenu.AddMenuClickHandler("createnew", AddressOf CreateNewMenuClick)
+        ctlMenu.AddMenuClickHandler("viewhelp", AddressOf Help)
+        ctlMenu.AddMenuClickHandler("forums", AddressOf Forums)
+        ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
     End Sub
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
@@ -255,4 +258,25 @@ Public Class Main
         ctlLauncher.Visible = False
         m_cmdLineLaunch = filename
     End Sub
+
+    Private Sub LogBug()
+        LaunchURL("http://quest.codeplex.com/workitem/list/basic")
+    End Sub
+
+    Private Sub Forums()
+        LaunchURL("http://www.axeuk.com/phpBB3/")
+    End Sub
+
+    Private Sub Help()
+        LaunchURL("http://quest5.net")
+    End Sub
+
+    Private Sub LaunchURL(url As String)
+        Try
+            System.Diagnostics.Process.Start(url)
+        Catch ex As Exception
+            MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
+        End Try
+    End Sub
+
 End Class
