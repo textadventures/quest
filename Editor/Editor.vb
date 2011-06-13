@@ -750,6 +750,10 @@
         m_menu.MenuEnabled("cut") = canCutCopy
         m_menu.MenuEnabled("copy") = canCutCopy
         ctlToolbar.CanCutCopy = canCutCopy
+
+        Dim canDelete As Boolean = (Not m_codeView) AndAlso m_controller.CanDelete(ctlTree.SelectedItem)
+        m_menu.MenuEnabled("delete") = canDelete
+        ctlToolbar.CanDelete = canDelete
     End Sub
 
     Public Sub SetWindowTitle()

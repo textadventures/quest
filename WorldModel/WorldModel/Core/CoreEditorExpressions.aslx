@@ -120,6 +120,13 @@
   <!-- Templates for "set" -->
 
   <editor>
+    <pattern>GetInput()</pattern>
+    <create>GetInput()</create>
+    <description>player input</description>
+    <expressiontype>set</expressiontype>
+  </editor>
+
+  <editor>
     <pattern>NewStringList()</pattern>
     <create>NewStringList()</create>
     <description>new string list</description>

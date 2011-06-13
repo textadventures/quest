@@ -1333,6 +1333,13 @@ namespace AxeSoftware.Quest
             return true;
         }
 
+        public bool CanDelete(string elementName)
+        {
+            if (!ElementExists(elementName)) return false;
+            if (elementName == "game") return false;
+            return true;
+        }
+
         public bool CanPasteScript()
         {
             return m_clipboardScripts != null && m_clipboardScripts.Count > 0;
