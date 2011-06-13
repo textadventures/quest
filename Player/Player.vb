@@ -69,6 +69,7 @@ Public Class Player
         SetPanesVisible(True)
         SetCommandVisible(True)
         SetLocationVisible(True)
+        SetStatusText("")
         m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
         m_menu.ClearWindowMenu()
         m_game = game
