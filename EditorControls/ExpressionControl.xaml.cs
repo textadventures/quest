@@ -213,6 +213,8 @@ namespace AxeSoftware.Quest.EditorControls
             txtExpression.IsReadOnly = data.ReadOnly;
 
             lstType.IsEnabled = !data.ReadOnly;
+            lstTemplate.IsEnabled = !data.ReadOnly;
+            cmdInsert.IsEnabled = !data.ReadOnly;
 
             // TO DO: Enabled/Readonly state for simple editor
 

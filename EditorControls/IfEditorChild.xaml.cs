@@ -24,6 +24,7 @@ namespace AxeSoftware.Quest.EditorControls
         }
 
         private IfEditorChildMode m_mode;
+        private bool m_readOnly;
 
         public event Action Dirty;
         public event Action RequestParentElementEditorSave;
@@ -66,14 +67,16 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Populate(IEditorData data, IEditableScripts script)
         {
-            //m_data = data;
-
             if (data != null)
             {
+                data.ReadOnly = m_readOnly;
                 ctlExpression.Populate(data);
             }
 
+            ctlScriptExpander.ReadOnly = m_readOnly;
             ctlScriptExpander.Populate(data, script);
+
+            cmdDelete.IsEnabled = !m_readOnly;
         }
 
         public void Save()
@@ -131,6 +134,12 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 return ctlExpression.FocusableControl;
             }
+        }
+
+        public bool ReadOnly
+        {
+            get { return m_readOnly; }
+            set { m_readOnly = value; }
         }
     }
 }

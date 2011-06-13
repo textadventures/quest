@@ -95,7 +95,7 @@ namespace AxeSoftware.Quest.EditorControls
         private void SetFocusAfterDelay(Control ctl)
         {
             // This is horrible but is needed to get around some WPF weirdness with setting the focus
-            
+
             Thread.Sleep(100);
 
             Dispatcher.BeginInvoke((ThreadStart)delegate()
@@ -103,7 +103,7 @@ namespace AxeSoftware.Quest.EditorControls
                 ctl.Focus();
                 FocusManager.SetFocusedElement(ctl, ctl);
                 Keyboard.Focus(ctl);
-                
+
             });
         }
 
@@ -118,11 +118,10 @@ namespace AxeSoftware.Quest.EditorControls
             if (data == null) return;
             m_helper.StartPopulating();
 
+            m_readOnly = data.ReadOnly;
             Populate(m_helper.Populate(data));
 
-            m_readOnly = data.ReadOnly;
-            lstScripts.IsEnabled = m_helper.CanEdit(data) && !data.ReadOnly;
-            adderExpander.IsEnabled = m_helper.CanEdit(data) && !data.ReadOnly;
+            adderExpander.Visibility = (m_helper.CanEdit(data) && !data.ReadOnly) ? Visibility.Visible : Visibility.Collapsed;
             if (m_readOnly)
             {
                 SetEditButtonsEnabled(false);
@@ -270,6 +269,7 @@ namespace AxeSoftware.Quest.EditorControls
                 newIfEditor.HorizontalAlignment = HorizontalAlignment.Stretch;
                 AddEditorControl(newIfEditor, newItem, null);
                 newItem.Content = newIfEditor;
+                newIfEditor.ReadOnly = m_readOnly;
                 newIfEditor.Populate((EditableIfScript)script);
 
                 // Ensure the expression responds to updates e.g. from undo/redo. The nested scripts will take
@@ -295,6 +295,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             IEditorDefinition definition = m_controller.GetEditorDefinition(script.EditorName);
             IEditorData data = m_controller.GetScriptEditorData(script);
+            data.ReadOnly = m_readOnly;
             Grid grid = NewScriptControlGrid(parentGrid);
 
             foreach (IEditorControl ctl in definition.Controls)
@@ -353,8 +354,6 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void AddEditorControl(IElementEditorControl control, ListBoxItem listItem, IEditorControl ctl)
         {
-            // TO DO: set readonly if required
-
             m_subControls.Add(control);
             ((Control)control).Tag = listItem;
             ((Control)control).GotFocus += SubControl_GotFocus;
@@ -485,6 +484,7 @@ namespace AxeSoftware.Quest.EditorControls
             popOut.ScriptEditor.Helper.Dirty += PopOut_Dirty;
             popOut.ScriptEditor.Helper.RequestParentElementEditorSave += PopOut_RequestParentElementEditorSave;
             popOut.ScriptEditor.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
+            popOut.ScriptEditor.ReadOnly = m_readOnly;
             popOut.ScriptEditor.Populate(m_scripts);
             popOut.ShowDialog();
             m_scripts = popOut.ScriptEditor.m_scripts;
@@ -539,6 +539,16 @@ namespace AxeSoftware.Quest.EditorControls
         public Control FocusableControl
         {
             get { return null; }
+        }
+
+        public bool ReadOnly
+        {
+            get { return m_readOnly; }
+            set
+            {
+                m_readOnly = value;
+                if (m_readOnly) adderExpander.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

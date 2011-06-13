@@ -22,6 +22,7 @@ namespace AxeSoftware.Quest.EditorControls
         private EditorController m_controller;
         private Dictionary<string, IfEditorChild> m_elseIfEditors = new Dictionary<string, IfEditorChild>();
         private List<RowDefinition> m_elseIfGridRows = new List<RowDefinition>();
+        private bool m_readOnly;
 
         public event EventHandler<DataModifiedEventArgs> Dirty;
         public event Action RequestParentElementEditorSave;
@@ -88,6 +89,7 @@ namespace AxeSoftware.Quest.EditorControls
             RemoveAllElseIfChildControls();
 
             // The expression is contained in the "expression" attribute of the data IEditorData
+            ctlChild.ReadOnly = m_readOnly;
             ctlChild.Populate(data, data == null ? null : data.ThenScript);
 
             if (data != null)
@@ -103,6 +105,12 @@ namespace AxeSoftware.Quest.EditorControls
                 {
                     AddElseChildControl();
                 }
+            }
+
+            if (m_readOnly)
+            {
+                cmdAddElse.Visibility = Visibility.Collapsed;
+                cmdAddElseIf.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -133,6 +141,7 @@ namespace AxeSoftware.Quest.EditorControls
             // add to grid
             ctlElse.Visibility = Visibility.Visible;
 
+            ctlElse.ReadOnly = m_readOnly;
             ctlElse.Populate(null, m_data.ElseScript);
 
             // remove "Add Else" button
@@ -177,6 +186,7 @@ namespace AxeSoftware.Quest.EditorControls
             newChild.RequestParentElementEditorSave += RaiseRequestParentElementEditorSaveEvent;
             newChild.Delete += IfEditorChild_Delete;
             newChild.Initialise(m_controller);
+            newChild.ReadOnly = m_readOnly;
             newChild.Populate(elseIfData, elseIfData.EditableScripts);
             newChild.ElseIfData = elseIfData;
 
@@ -269,6 +279,12 @@ namespace AxeSoftware.Quest.EditorControls
         public Control FocusableControl
         {
             get { return ctlChild.FocusableControl; }
+        }
+
+        public bool ReadOnly
+        {
+            get { return m_readOnly; }
+            set { m_readOnly = value; }
         }
     }
 }

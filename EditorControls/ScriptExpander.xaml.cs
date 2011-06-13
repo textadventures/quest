@@ -66,17 +66,25 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Populate(IEditorData data, IEditableScripts script)
         {
-            if (data != null)
-            {
-                // TO DO:
-                //ctlScript.IsReadOnly = data.ReadOnly;
-            }
             m_script = script;
         }
 
         public void Populate(IEditorData data)
         {
             m_data = data;
+        }
+
+        public bool ReadOnly
+        {
+            get { return ctlScript.ReadOnly; }
+            set
+            {
+                ctlScript.ReadOnly = value;
+                if (ctlScript.ReadOnly)
+                {
+                    cmdDelete.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         public IControlDataHelper Helper
