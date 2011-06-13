@@ -61,12 +61,24 @@ Public Class Main
         Browse()
     End Sub
 
+    Private Sub ctlLauncher_BrowseForGameEdit() Handles ctlLauncher.BrowseForGameEdit
+        BrowseEdit()
+    End Sub
+
+    Private Sub ctlLauncher_CreateNewGame() Handles ctlLauncher.CreateNewGame
+        CreateNewMenuClick()
+    End Sub
+
     Private Sub ctlLauncher_EditGame(filename As String) Handles ctlLauncher.EditGame
         LaunchEdit(filename)
     End Sub
 
     Private Sub ctlLauncher_LaunchGame(filename As String) Handles ctlLauncher.LaunchGame
         Launch(filename)
+    End Sub
+
+    Private Sub ctlLauncher_Tutorial() Handles ctlLauncher.Tutorial
+        MsgBox("Sorry, the tutorial has not yet been created")
     End Sub
 
     Private Sub Browse()

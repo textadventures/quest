@@ -2,6 +2,9 @@
     Public Event BrowseForGame()
     Public Event LaunchGame(filename As String)
     Public Event EditGame(filename As String)
+    Public Event CreateNewGame()
+    Public Event BrowseForGameEdit()
+    Public Event Tutorial()
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -25,6 +28,18 @@
 
     Private Sub ctlEditBrowser_EditGame(filename As String) Handles ctlEditBrowser.EditGame
         RaiseEvent EditGame(filename)
+    End Sub
+
+    Private Sub ctlEditBrowser_CreateNewGame() Handles ctlEditBrowser.CreateNewGame
+        RaiseEvent CreateNewGame()
+    End Sub
+
+    Private Sub ctlEditBrowser_OpenGame() Handles ctlEditBrowser.OpenGame
+        RaiseEvent BrowseForGameEdit()
+    End Sub
+
+    Private Sub ctlEditBrowser_Tutorial() Handles ctlEditBrowser.Tutorial
+        RaiseEvent Tutorial()
     End Sub
 
     Private Sub ctlTabs_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles ctlTabs.SelectedIndexChanged
@@ -55,4 +70,5 @@
     Private Sub ctlPlayBrowser_GotUpdateData(data As UpdatesData) Handles ctlPlayBrowser.GotUpdateData
         ctlVersionInfo.UpdateInfo = data
     End Sub
+
 End Class
