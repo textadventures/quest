@@ -285,5 +285,10 @@ namespace AxeSoftware.Quest.Functions
             int result;
             return int.TryParse(number, out result);
         }
+
+        public string GetInput()
+        {
+            return m_worldModel.GetNextCommandInput();
+        }
     }
 }

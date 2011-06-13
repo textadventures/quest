@@ -52,6 +52,9 @@ namespace AxeSoftware.Quest
         private object m_threadLock = new object();
         private Walkthroughs m_walkthroughs;
         private List<string> m_attributeNames = new List<string>();
+        private bool m_commandOverride = false;
+        private string m_commandOverrideInput;
+        private object m_commandOverrideLock = new object();
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -87,7 +90,7 @@ namespace AxeSoftware.Quest
 
             public Element Element { get; private set; }
         }
-        
+
         static WorldModel()
         {
             s_defaultTypeNames.Add(ObjectType.Object, "defaultobject");
@@ -177,6 +180,24 @@ namespace AxeSoftware.Quest
         public void FinishGame()
         {
             m_state = GameState.Finished;
+
+            // Pulse all locks in case we're in the middle of waiting for player input for GetInput() etc.
+
+            lock (m_commandOverrideLock)
+            {
+                Monitor.PulseAll(m_commandOverrideLock);
+            }
+
+            lock (m_threadLock)
+            {
+                Monitor.PulseAll(m_threadLock);
+            }
+
+            lock (m_menuLock)
+            {
+                Monitor.PulseAll(m_menuLock);
+            }
+
             if (Finished != null) Finished();
         }
 
@@ -379,20 +400,25 @@ namespace AxeSoftware.Quest
 
         public void Begin()
         {
-            if (!m_elements.ContainsKey(ElementType.Object, "player")) throw new Exception("No player object found in game");
-            m_player = Object("player");
-            if (m_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
-            if (!m_loadedFromSaved)
+            DoInNewThreadAndWait(() =>
             {
-                if (m_elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
-            }
-            if (m_player.Parent == null) throw new Exception("No start location specified for player");
-            UpdateLists();
-            if (m_loadedFromSaved)
-            {
-                Print(string.Format("Loaded saved game in {0}", m_saveFilename));
-                Print(string.Format("  (original game at {0})", m_filename));
-            }
+                if (!m_elements.ContainsKey(ElementType.Object, "player")) throw new Exception("No player object found in game");
+                m_player = Object("player");
+                if (m_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
+                if (!m_loadedFromSaved)
+                {
+                    if (m_elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
+                }
+                if (m_player.Parent == null) throw new Exception("No start location specified for player");
+                UpdateLists();
+                if (m_loadedFromSaved)
+                {
+                    Print(string.Format("Loaded saved game in {0}", m_saveFilename));
+                    Print(string.Format("  (original game at {0})", m_filename));
+                }
+
+                ChangeThreadState(ThreadState.Ready);
+            });
         }
 
         public List<string> Errors
@@ -417,24 +443,36 @@ namespace AxeSoftware.Quest
         {
             DoInNewThreadAndWait(() =>
             {
-                Print("");
-                Print("> " + Utility.SafeXML(command));
-
-                try
+                if (!m_commandOverride)
                 {
-                    RunProcedure("HandleCommand", new Parameters("command", command), false);
-                }
-                catch (Exception ex)
-                {
-                    LogException(ex);
-                }
+                    Print("");
+                    Print("> " + Utility.SafeXML(command));
 
-                if (State != GameState.Finished)
-                {
-                    UpdateLists();
-                }
+                    try
+                    {
+                        RunProcedure("HandleCommand", new Parameters("command", command), false);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogException(ex);
+                    }
 
-                ChangeThreadState(ThreadState.Ready);
+                    if (State != GameState.Finished)
+                    {
+                        UpdateLists();
+                    }
+
+                    ChangeThreadState(ThreadState.Ready);
+                }
+                else
+                {
+                    m_commandOverrideInput = command;
+
+                    lock (m_commandOverrideLock)
+                    {
+                        Monitor.Pulse(m_commandOverrideLock);
+                    }
+                }
             });
         }
 
@@ -618,7 +656,7 @@ namespace AxeSoftware.Quest
 
             foreach (Element obj in m_elements.ObjectsFiltered(o => o.Type == filterType))
             {
-               result.Add(obj.Name);
+                result.Add(obj.Name);
             }
 
             return result;
@@ -775,7 +813,7 @@ namespace AxeSoftware.Quest
         }
 
         public void Save(string filename)
-        {            
+        {
             string saveData = Save(SaveMode.SavedGame);
             System.IO.File.WriteAllText(filename, saveData);
         }
@@ -1020,7 +1058,7 @@ namespace AxeSoftware.Quest
             bool elementAlreadyExists = true;
             int number = 0;
             string result = null;
-            
+
             while (elementAlreadyExists)
             {
                 number++;
@@ -1039,6 +1077,23 @@ namespace AxeSoftware.Quest
         public IEnumerable<string> GetAllAttributeNames
         {
             get { return m_attributeNames.AsReadOnly(); }
+        }
+
+        internal string GetNextCommandInput()
+        {
+            m_commandOverride = true;
+
+            ChangeThreadState(ThreadState.Waiting);
+
+            lock (m_commandOverrideLock)
+            {
+                Monitor.Wait(m_commandOverrideLock);
+            }
+
+            ChangeThreadState(ThreadState.Working);
+
+            m_commandOverride = false;
+            return m_commandOverrideInput;
         }
     }
 }
