@@ -191,6 +191,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         void m_scripts_Updated(object sender, EditableScriptsUpdatedEventArgs e)
         {
+            m_helper.RaiseDirtyEvent(m_scripts.DisplayString());
+
             if (e.UpdatedScriptEventArgs != null)
             {
                 // For nested script updates (e.g. an "if"'s "then" script), there's no need to repopulate the parent script control,
