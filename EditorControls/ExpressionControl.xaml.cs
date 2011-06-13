@@ -388,11 +388,7 @@ namespace AxeSoftware.Quest.EditorControls
                 return int.TryParse(expression, out number);
             }
 
-            // must start and end with quote character
-            if (!(expression.StartsWith("\"") && expression.EndsWith("\""))) return false;
-
-            // must not contain a quote character
-            return !ConvertToSimpleExpression(expression).Contains("\"");
+            return EditorUtility.IsSimpleStringExpression(expression);
         }
 
         private string ConvertToSimpleExpression(string expression)
@@ -405,7 +401,7 @@ namespace AxeSoftware.Quest.EditorControls
                 return expression;
             }
 
-            return expression.Substring(1, expression.Length - 2);
+            return EditorUtility.ConvertToSimpleStringExpression(expression);
         }
 
         private string ConvertFromSimpleExpression(string simpleValue)
@@ -418,7 +414,7 @@ namespace AxeSoftware.Quest.EditorControls
                 return simpleValue;
             }
 
-            return string.Format("\"{0}\"", simpleValue);
+            return EditorUtility.ConvertFromSimpleStringExpression(simpleValue);
         }
 
         private string SimpleValue
