@@ -42,15 +42,15 @@ namespace AxeSoftware.Quest.EditorControls
             ctlToolbar.Copy += ctlToolbar_Copy;
             ctlToolbar.Paste += ctlToolbar_Paste;
             ctlToolbar.PopOut += ctlToolbar_PopOut;
+
+            ctlScriptAdder.AddScript += ctlScriptAdder_AddScript;
         }
 
         void m_helper_Initialise()
         {
-            if (m_controller != null) throw new InvalidOperationException("Control has already been initialised");
             m_controller = m_helper.Controller;
             ctlScriptAdder.CloseButtonVisible = false;
             ctlScriptAdder.Initialise(m_controller);
-            ctlScriptAdder.AddScript += ctlScriptAdder_AddScript;
 
             if (Initialise != null) Initialise();
         }

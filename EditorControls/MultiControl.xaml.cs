@@ -283,6 +283,8 @@ namespace AxeSoftware.Quest.EditorControls
             lstTypes.Items.Clear();
             m_settingType = false;
 
+            m_storedValues.Clear();
+
             m_types = new List<TypesListItem>();
 
             if (m_definition != null)
