@@ -40,16 +40,7 @@ namespace AxeSoftware.Quest
             }
             set
             {
-                EditorCommandPattern pattern = m_parent.Fields.GetAsType<EditorCommandPattern>(m_attribute);
-
-                if (pattern == null)
-                {
-                    m_parent.Fields.Set(m_attribute, new EditorCommandPattern(value));
-                }
-                else
-                {
-                    pattern.Pattern = value;
-                }
+                m_parent.Fields.Set(m_attribute, new EditorCommandPattern(value));
             }
         }
     }

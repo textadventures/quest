@@ -69,7 +69,8 @@ namespace AxeSoftware.Quest.EditorControls
                     string newVerbId = Controller.CreateNewVerb(null, false);
                     IEditorData verbData = Controller.GetEditorData(newVerbId);
                     verbData.SetAttribute("property", selectedAttribute);
-                    verbData.SetAttribute("pattern", selectedPattern);
+                    EditableCommandPattern pattern = (EditableCommandPattern)verbData.GetAttribute("pattern");
+                    pattern.Pattern = selectedPattern;
                     verbData.SetAttribute("defaulttext", "You can't " + selectedPattern + " that.");
                 }
 
