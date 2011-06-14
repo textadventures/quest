@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using AxeSoftware.Quest;
+using System.Windows.Forms;
 
 namespace AxeSoftware.Quest.EditorControls
 {
@@ -19,7 +20,8 @@ namespace AxeSoftware.Quest.EditorControls
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
 		    {ValidationMessage.ItemAlreadyExists,"Item '{0}' already exists in the list"},
-		    {ValidationMessage.ElementAlreadyExists,"An element called '{0}' already exists in this game"}
+		    {ValidationMessage.ElementAlreadyExists,"An element called '{0}' already exists in this game"},
+            {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
         };
 
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null)
@@ -63,6 +65,11 @@ namespace AxeSoftware.Quest.EditorControls
         public static string GetError(ValidationMessage validationMessage, string item)
         {
             return string.Format(s_validationMessages[validationMessage], item);
+        }
+
+        public static void DisplayValidationError(ValidationResult result, string input, string title)
+        {
+            MessageBox.Show(PopupEditors.GetError(result.Message, input), title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         public static void EditScript(EditorController controller, ref IEditableScripts scripts, string attribute, string element, bool isReadOnly, Action dirtyAction)

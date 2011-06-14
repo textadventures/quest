@@ -19,6 +19,7 @@ namespace AxeSoftware.Quest
         OK,
         ItemAlreadyExists,
         ElementAlreadyExists,
+        InvalidAttributeName
     }
 
     public struct ValidationResult

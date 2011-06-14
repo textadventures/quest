@@ -89,6 +89,12 @@ namespace AxeSoftware.Quest
                     m_element.Fields[FieldDefinitions.Anonymous] = false;
                 }
             }
+
+            if (attribute.Contains(" "))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidAttributeName };
+            }
+
             IDataWrapper wrapper = value as IDataWrapper;
             if (wrapper != null)
             {

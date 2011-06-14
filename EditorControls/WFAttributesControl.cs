@@ -390,15 +390,27 @@ namespace AxeSoftware.Quest.EditorControls
             PopupEditors.EditStringResult result = PopupEditors.EditString("Please enter a name for the new attribute", string.Empty);
             if (result.Cancelled) return;
 
+            bool setSelection = true;
+
             if (!lstAttributes.Items.ContainsKey(result.Result))
             {
                 m_controller.StartTransaction(string.Format("Add '{0}' attribute", result.Result));
-                m_data.SetAttribute(result.Result, string.Empty);
+
+                ValidationResult setAttrResult = m_data.SetAttribute(result.Result, string.Empty);
+                if (!setAttrResult.Valid)
+                {
+                    PopupEditors.DisplayValidationError(setAttrResult, result.Result, "Unable to add attribute");
+                    setSelection = false;
+                }
+
                 m_controller.EndTransaction();
             }
 
-            lstAttributes.Items[result.Result].Selected = true;
-            lstAttributes.SelectedItems[0].EnsureVisible();
+            if (setSelection)
+            {
+                lstAttributes.Items[result.Result].Selected = true;
+                lstAttributes.SelectedItems[0].EnsureVisible();
+            }
         }
 
         private void cmdDelete_Click(System.Object sender, System.EventArgs e)

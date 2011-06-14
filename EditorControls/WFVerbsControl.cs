@@ -43,6 +43,8 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (result.Cancelled) return;
 
+            bool setSelection = true;
+
             if (!lstAttributes.Items.ContainsKey(result.Result))
             {
                 Controller.StartTransaction(string.Format("Add '{0}' verb", result.Result));
@@ -56,12 +58,20 @@ namespace AxeSoftware.Quest.EditorControls
                     verbData.SetAttribute("defaulttext", "You can't " + result.Result + " that.");
                 }
 
-                Data.SetAttribute(result.Result, String.Empty);
+                ValidationResult setAttrResult = Data.SetAttribute(result.Result, String.Empty);
+                if (!setAttrResult.Valid)
+                {
+                    PopupEditors.DisplayValidationError(setAttrResult, result.Result, "Unable to add verb");
+                    setSelection = false;
+                }
                 Controller.EndTransaction();
             }
 
-            lstAttributes.Items[result.Result].Selected = true;
-            lstAttributes.SelectedItems[0].EnsureVisible();
+            if (setSelection)
+            {
+                lstAttributes.Items[result.Result].Selected = true;
+                lstAttributes.SelectedItems[0].EnsureVisible();
+            }
         }
     }
 }
