@@ -103,11 +103,6 @@ namespace AxeSoftware.Quest.EditorControls
                 get { return null; }
             }
 
-            public int? PaddingTop
-            {
-                get { return null; }
-            }
-
             public IEditorDefinition Parent
             {
                 get { return null; }

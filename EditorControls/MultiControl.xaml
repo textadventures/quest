@@ -11,7 +11,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Name="controlRow" Height="*"/>
             </Grid.RowDefinitions>
-            <ComboBox Name="lstTypes" SelectionChanged="lstTypes_SelectionChanged" HorizontalAlignment="Left" Padding="8,3,8,3" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="lblSelfCaption" Margin="0,2,10,0" Visibility="Collapsed"></TextBlock>
+                <ComboBox Name="lstTypes" SelectionChanged="lstTypes_SelectionChanged" HorizontalAlignment="Left" Padding="8,3,8,3" />
+            </StackPanel>
         </Grid>
     </ScrollViewer>
 </UserControl>

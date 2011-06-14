@@ -130,15 +130,23 @@ namespace AxeSoftware.Quest.EditorControls
                     newControl.Padding = new Thickness(5, 3, 5, 5);
 
                     // Create StackPanel, label at top and control underneath
-                    StackPanel stackPanel = new StackPanel();
-                    m_controlUIElements[ctl].Add(stackPanel);
+                    Grid subGrid = new Grid();
+                    AddRowToGrid(subGrid, false);
+                    AddRowToGrid(subGrid, ctl.Expand);
 
-                    stackPanel.Children.Add(newLabel);
-                    stackPanel.Children.Add(newControl);
-                    Grid.SetColumn(stackPanel, 0);
-                    Grid.SetRow(stackPanel, currentRow);
-                    Grid.SetColumnSpan(stackPanel, 2);
-                    grid.Children.Add(stackPanel);
+                    m_controlUIElements[ctl].Add(subGrid);
+
+                    // Add label and new control to subgrid
+                    Grid.SetRow(newLabel, 0);
+                    Grid.SetRow(newControl, 1);
+                    subGrid.Children.Add(newLabel);
+                    subGrid.Children.Add(newControl);
+
+                    // Add subgrid to parent editor grid
+                    Grid.SetColumn(subGrid, 0);
+                    Grid.SetRow(subGrid, currentRow);
+                    Grid.SetColumnSpan(subGrid, 2);
+                    grid.Children.Add(subGrid);
                 }
                 else
                 {

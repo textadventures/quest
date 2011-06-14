@@ -293,6 +293,13 @@ namespace AxeSoftware.Quest.EditorControls
                 InitialiseTypesList(types);
 
                 m_overrideControlTypesMap = definition.GetDictionary("editors");
+
+                string selfCaption = definition.GetString("selfcaption");
+                if (selfCaption != null)
+                {
+                    lblSelfCaption.Visibility = Visibility.Visible;
+                    lblSelfCaption.Text = selfCaption + ":";
+                }
             }
         }
 

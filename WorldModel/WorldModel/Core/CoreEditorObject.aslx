@@ -72,11 +72,23 @@
       </control>
 
       <control>
-        <mustnotinherit>editor_room</mustnotinherit>
-        <controltype>verbs</controltype>
-        <expand/>
+        <controltype>title</controltype>
+        <caption>Description</caption>
       </control>
 
+      <control>
+        <mustnotinherit>editor_room</mustnotinherit>
+        <selfcaption>"Look at" object description</selfcaption>
+        <controltype>multi</controltype>
+        <attribute>look</attribute>
+        <types>
+          null=No description; string=Text; script=Run script
+        </types>
+        <editors>
+          string=richtext
+        </editors>
+        <expand/>
+      </control>
     </tab>
 
     <tab>
@@ -167,7 +179,6 @@
       <control>
         <controltype>title</controltype>
         <caption>Take</caption>
-        <paddingtop>12</paddingtop>
       </control>
 
       <control>
@@ -194,7 +205,6 @@
       <control>
         <controltype>title</controltype>
         <caption>Drop</caption>
-        <paddingtop>12</paddingtop>
       </control>
 
       <control>
@@ -221,7 +231,6 @@
       <control>
         <controltype>title</controltype>
         <caption>Give</caption>
-        <paddingtop>12</paddingtop>
       </control>
 
       <control>
@@ -237,7 +246,6 @@
       <control>
         <controltype>title</controltype>
         <caption>Use</caption>
-        <paddingtop>12</paddingtop>
       </control>
 
       <control>
@@ -248,6 +256,15 @@
           null=Objects cannot be used;scriptdictionary=Handle objects individually;string=Print a message
         </types>
         <keyprompt>Please enter the object name</keyprompt>
+      </control>
+    </tab>
+
+    <tab>
+      <caption>Verbs</caption>
+      <mustnotinherit>editor_room</mustnotinherit>
+      <control>
+        <controltype>verbs</controltype>
+        <expand/>
       </control>
     </tab>
 

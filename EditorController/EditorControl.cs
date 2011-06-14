@@ -12,7 +12,6 @@ namespace AxeSoftware.Quest
         private string m_caption;
         private int? m_height = null;
         private int? m_width = null;
-        private int? m_paddingTop = null;
         private string m_attribute;
         private bool m_expand = false;
         private Element m_source;
@@ -29,7 +28,6 @@ namespace AxeSoftware.Quest
             m_attribute = source.Fields.GetString("attribute");
             if (source.Fields.HasType<int>("height")) m_height = source.Fields.GetAsType<int>("height");
             if (source.Fields.HasType<int>("width")) m_width = source.Fields.GetAsType<int>("width");
-            if (source.Fields.HasType<int>("paddingtop")) m_paddingTop = source.Fields.GetAsType<int>("paddingtop");
             if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");
             m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
 
@@ -57,11 +55,6 @@ namespace AxeSoftware.Quest
         public int? Width
         {
             get { return m_width; }
-        }
-
-        public int? PaddingTop
-        {
-            get { return m_paddingTop; }
         }
 
         public string Attribute

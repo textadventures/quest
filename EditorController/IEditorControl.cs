@@ -19,7 +19,6 @@ namespace AxeSoftware.Quest
         int GetInt(string tag);
         bool GetBool(string tag);
         bool IsControlVisible(IEditorData data);
-        int? PaddingTop { get; }
         IEditorDefinition Parent { get; }
     }
 }

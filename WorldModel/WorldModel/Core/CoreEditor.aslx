@@ -2,7 +2,6 @@
 
   <implied element="control" property="height" type="int"/>
   <implied element="control" property="width" type="int"/>
-  <implied element="control" property="paddingtop" type="int"/>
   <implied element="control" property="types" type="stringdictionary"/>
   <implied element="control" property="filters" type="stringdictionary"/>
   <implied element="control" property="editors" type="stringdictionary"/>

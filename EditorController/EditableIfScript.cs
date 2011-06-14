@@ -418,11 +418,6 @@ namespace AxeSoftware.Quest
             return true;
         }
 
-        public int? PaddingTop
-        {
-            get { return null; }
-        }
-
         public IEditorDefinition Parent
         {
             get { throw new NotImplementedException(); }
