@@ -890,14 +890,30 @@ namespace AxeSoftware.Quest
             return GetObjects(objectType).Where(o => !o.MetaFields[MetaFieldDefinitions.Library]).Select(o => o.Name);
         }
 
-        public IEnumerable<string> GetVerbProperties()
+        public IDictionary<string, string> GetVerbProperties()
         {
-            return WorldModel.Elements.GetElements(ElementType.Object)
+            // get all verbs
+
+            var verbElements = WorldModel.Elements.GetElements(ElementType.Object)
                 .Where(e =>
                     e.Type == ObjectType.Command
                     && e.Fields.GetAsType<bool>("isverb")
-                    && e.Fields.GetString("property") != null)
-                .Select(e => e.Fields.GetString("property"));
+                    && e.Fields.GetString("property") != null);
+
+            // return a dictionary where key=verb property, value=verb pattern (if verb has a simple pattern)
+            // e.g. eat=eat; drink=drink; lookin=look in
+
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            foreach (Element verb in verbElements)
+            {
+                string verbProperty = verb.Fields[FieldDefinitions.Property];
+                object pattern = verb.Fields.Get(FieldDefinitions.Pattern.Property);
+                EditorCommandPattern simplePattern = pattern as EditorCommandPattern;
+                string displayName = (simplePattern != null) ? simplePattern.Pattern : verbProperty;
+                result.Add(verbProperty, displayName);
+            }
+
+            return result;
         }
 
         public bool IsDefaultTypeName(string elementType)

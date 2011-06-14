@@ -36,32 +36,47 @@ namespace AxeSoftware.Quest.EditorControls
             // TO DO: This fetches all verbs in the game, but verbs can be defined in rooms, so we should
             // filter out any out-of-scope verbs.
 
+            IDictionary<string, string> availableVerbs = Controller.GetVerbProperties();
+
             PopupEditors.EditStringResult result = PopupEditors.EditString(
                 "Please enter a name for the new verb",
                 string.Empty,
-                Controller.GetVerbProperties());
+                availableVerbs.Values);
 
             if (result.Cancelled) return;
 
+            string selectedPattern = result.Result;
+
+            var attributeForSelectedPattern = from verb in availableVerbs.Keys
+                                              where availableVerbs[verb] == selectedPattern
+                                              select verb;
+
+            string selectedAttribute = attributeForSelectedPattern.FirstOrDefault();
+
+            if (selectedAttribute == null)
+            {
+                selectedAttribute = selectedPattern.Replace(" ", "");
+            }
+
             bool setSelection = true;
 
-            if (!lstAttributes.Items.ContainsKey(result.Result))
+            if (!lstAttributes.Items.ContainsKey(selectedAttribute))
             {
-                Controller.StartTransaction(string.Format("Add '{0}' verb", result.Result));
+                Controller.StartTransaction(string.Format("Add '{0}' verb", selectedPattern));
 
-                if (!Controller.IsVerbAttribute(result.Result))
+                if (!Controller.IsVerbAttribute(selectedAttribute))
                 {
                     string newVerbId = Controller.CreateNewVerb(null, false);
                     IEditorData verbData = Controller.GetEditorData(newVerbId);
-                    verbData.SetAttribute("property", result.Result);
-                    verbData.SetAttribute("pattern", result.Result);
-                    verbData.SetAttribute("defaulttext", "You can't " + result.Result + " that.");
+                    verbData.SetAttribute("property", selectedAttribute);
+                    verbData.SetAttribute("pattern", selectedPattern);
+                    verbData.SetAttribute("defaulttext", "You can't " + selectedPattern + " that.");
                 }
 
-                ValidationResult setAttrResult = Data.SetAttribute(result.Result, String.Empty);
+                ValidationResult setAttrResult = Data.SetAttribute(selectedAttribute, String.Empty);
                 if (!setAttrResult.Valid)
                 {
-                    PopupEditors.DisplayValidationError(setAttrResult, result.Result, "Unable to add verb");
+                    PopupEditors.DisplayValidationError(setAttrResult, selectedAttribute, "Unable to add verb");
                     setSelection = false;
                 }
                 Controller.EndTransaction();
@@ -69,7 +84,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (setSelection)
             {
-                lstAttributes.Items[result.Result].Selected = true;
+                lstAttributes.Items[selectedAttribute].Selected = true;
                 lstAttributes.SelectedItems[0].EnsureVisible();
             }
         }
