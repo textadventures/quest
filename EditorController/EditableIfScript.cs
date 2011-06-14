@@ -54,7 +54,7 @@ namespace AxeSoftware.Quest
                 throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'else if' attribute");
             }
 
-            public void SetAttribute(string attribute, object value)
+            public ValidationResult SetAttribute(string attribute, object value)
             {
                 if (attribute == "expression")
                 {
@@ -64,6 +64,8 @@ namespace AxeSoftware.Quest
                 {
                     throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'else if' attribute");
                 }
+
+                return new ValidationResult { Valid = true };
             }
 
             public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
@@ -290,7 +292,7 @@ namespace AxeSoftware.Quest
             throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
         }
 
-        public void SetAttribute(string attribute, object value)
+        public ValidationResult SetAttribute(string attribute, object value)
         {
             if (attribute == "expression")
             {
@@ -300,6 +302,8 @@ namespace AxeSoftware.Quest
             {
                 throw new ArgumentOutOfRangeException("attribute", "Unrecognised 'if' attribute");
             }
+
+            return new ValidationResult { Valid = true };
         }
 
         public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)

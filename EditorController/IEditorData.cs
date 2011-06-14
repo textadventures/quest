@@ -17,7 +17,7 @@ namespace AxeSoftware.Quest
     {
         string Name { get; }
         object GetAttribute(string attribute);
-        void SetAttribute(string attribute, object value);
+        ValidationResult SetAttribute(string attribute, object value);
         IEnumerable<string> GetAffectedRelatedAttributes(string attribute);
         string GetSelectedFilter(string filterGroup);
         void SetSelectedFilter(string filterGroup, string filter);

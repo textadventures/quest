@@ -77,11 +77,17 @@ namespace AxeSoftware.Quest
             return m_controller.WrapValue(m_element.Fields.Get(attribute), m_element, attribute);
         }
 
-        public void SetAttribute(string attribute, object value)
+        public ValidationResult SetAttribute(string attribute, object value)
         {
-            if (attribute == "name" && m_element.Fields[FieldDefinitions.Anonymous])
+            if (attribute == "name")
             {
-                m_element.Fields[FieldDefinitions.Anonymous] = false;
+                ValidationResult result = m_controller.CanRename(m_element, (string)value);
+                if (!result.Valid) return result;
+
+                if (m_element.Fields[FieldDefinitions.Anonymous])
+                {
+                    m_element.Fields[FieldDefinitions.Anonymous] = false;
+                }
             }
             IDataWrapper wrapper = value as IDataWrapper;
             if (wrapper != null)
@@ -89,6 +95,8 @@ namespace AxeSoftware.Quest
                 value = wrapper.GetUnderlyingValue();
             }
             m_element.Fields.Set(attribute, value);
+
+            return new ValidationResult { Valid = true };
         }
 
         // When the "anonymous" field is updated, that affects how the "name" attribute is displayed.

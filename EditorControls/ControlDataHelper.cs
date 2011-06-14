@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace AxeSoftware.Quest.EditorControls
 {
@@ -115,7 +116,14 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 Controller.StartTransaction(string.Format("Set {0} to '{1}'", ControlDefinition.Caption, newValue == null ? "null" : newValue.ToString()));
             }
-            m_data.SetAttribute(ControlDefinition.Attribute, newValue);
+            ValidationResult result = m_data.SetAttribute(ControlDefinition.Attribute, newValue);
+
+            if (!result.Valid)
+            {
+                string errorValue = newValue as string;
+                MessageBox.Show(PopupEditors.GetError(result.Message, errorValue), string.Format("Unable to set '{0}'", ControlDefinition.Caption), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
             if (m_data.IsDirectlySaveable)
             {
                 Controller.EndTransaction();

@@ -36,9 +36,11 @@ namespace AxeSoftware.Quest
             return m_controller.WrapValue(m_script.GetParameter(int.Parse(attribute)));
         }
 
-        public void SetAttribute(string attribute, object value)
+        public ValidationResult SetAttribute(string attribute, object value)
         {
             m_script.SetParameter(int.Parse(attribute), (string)value);
+
+            return new ValidationResult { Valid = true };
         }
 
         public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)

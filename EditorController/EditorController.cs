@@ -1166,6 +1166,15 @@ namespace AxeSoftware.Quest
             return new ValidationResult { Valid = true };
         }
 
+        internal ValidationResult CanRename(Element element, string newName)
+        {
+            if (m_worldModel.Elements.ContainsKey(newName) && m_worldModel.Elements.Get(newName) != element)
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.ElementAlreadyExists };
+            }
+            return new ValidationResult { Valid = true };
+        }
+
         public ValidationResult CanAddTemplate(string name)
         {
             Element existingTemplate = m_worldModel.TryGetTemplateElement(name);

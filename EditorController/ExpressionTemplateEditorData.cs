@@ -49,10 +49,12 @@ namespace AxeSoftware.Quest
             return m_parameters[attribute];
         }
 
-        public void SetAttribute(string attribute, object value)
+        public ValidationResult SetAttribute(string attribute, object value)
         {
             m_parameters[attribute] = (string)value;
             if (Changed != null) Changed(this, new EventArgs());
+
+            return new ValidationResult { Valid = true };
         }
 
         public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
