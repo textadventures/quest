@@ -46,6 +46,7 @@
   <template name="Done">Done.</template>
   <template name="ContainerContentsPrefix">containing</template>
   <template name="SurfaceContentsPrefix">on which there is</template>
+  <dynamictemplate name="ObjectContains">CapFirst(object.gender) + " contains"</dynamictemplate>
   <dynamictemplate name="ContainerFull">CapFirst(object.gender) + " is full."</dynamictemplate>
   <dynamictemplate name="DisambiguateMenu">"Please choose which '" + text + "' you mean:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>

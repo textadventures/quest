@@ -131,7 +131,7 @@
 
     </tab>
 
-      <tab>
+    <tab>
       <caption>Scripts</caption>
       <mustnotinherit>editor_object</mustnotinherit>
 
@@ -296,6 +296,27 @@
         <controltype>checkbox</controltype>
         <caption>Transparent</caption>
         <attribute>transparent</attribute>
+      </control>
+
+      <control>
+        <!-- TO DO: this is not applicable for transparent objects, so hide it if transparent=true -->
+        <controltype>checkbox</controltype>
+        <caption>Hide children until object is looked at</caption>
+        <attribute>hidechildren</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>List children when object is looked at</caption>
+        <attribute>listchildren</attribute>
+      </control>
+
+      <control>
+        <!-- TO DO: hide this if listchildren=false -->
+        <controltype>textbox</controltype>
+        <caption>List prefix (e.g. "It contains")</caption>
+        <attribute>listchildrenprefix</attribute>
+        <nullable/>
       </control>
 
       <control>

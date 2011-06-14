@@ -1,5 +1,38 @@
 ﻿<library>
 
+  <command name="lookat" pattern="[lookat]">
+    <![CDATA[
+    if (GetBoolean(object, "hidechildren")) {
+      object.hidechildren = false
+    }
+    
+    switch (TypeOf(object, "look")) {
+      case ("script") {
+        do (object, "look")
+      }
+      case ("string") {
+        msg (object.look)
+      }
+      default {
+        msg (Template("DefaultObjectDescription"))
+      }
+    }
+    
+    if (GetBoolean(object, "listchildren")) {
+      if (HasString(object, "listchildrenprefix")) {
+        listprefix = object.listchildrenprefix
+      }
+      else {
+        listprefix = DynamicTemplate("ObjectContains", object)
+      }
+      list = FormatObjectList(listprefix, object, Template("And"), ".", false)
+      if (list <> "") {
+        msg (list)
+      }
+    }
+    ]]>
+  </command>
+
   <command name="take" pattern="[take]">
     if (ListContains(ScopeInventory(), object)) {
       msg (DynamicTemplate("AlreadyTaken", object))
@@ -272,8 +305,7 @@
   </command>
 
   <!-- The object name for a verb defaults to the same thing as its property, unless we explictly specify a name,
-       as we do here e.g. to prevent a clash with the "look" command -->
-  <verb name="lookat" pattern="[lookat]" property="look" response="DefaultObjectDescription"/>
+       as we do here e.g. to prevent a clash with the "sit" command -->
   <verb pattern="[speakto]" property="speak" response="DefaultSpeakTo"/>
   <verb pattern="[buy]" property="buy" response="DefaultBuy"/>
   <verb pattern="[climb]" property="climb" response="DefaultClimb"/>

@@ -156,7 +156,7 @@
   </function>
 
   <function name="CanReachThrough" type="boolean" parameters="obj">
-    return (GetBoolean(obj, "isopen"))
+    return (GetBoolean(obj, "isopen") and not GetBoolean(obj, "hidechildren"))
   </function>
 
   <function name="Got" type="boolean" parameters="obj">

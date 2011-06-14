@@ -114,6 +114,7 @@ namespace AxeSoftware.Quest
                         GetLoader(reader.Name, current).EndElement(reader, ref current);
                         break;
                     case XmlNodeType.Text:
+                    case XmlNodeType.CDATA:
                         currentLoader.SetText(reader.ReadContentAsString(), ref current);
                         // if we've eaten the content of this element, then the reader will have gone
                         // past the EndElement already, so we need to trigger the EndElement here
