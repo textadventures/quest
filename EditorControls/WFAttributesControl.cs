@@ -198,7 +198,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void AddListItem(ListView listView, IEditorAttributeData attr, Func<IEditorAttributeData, string> displayStringFunction)
         {
-            ListViewItem newItem = listView.Items.Add(attr.AttributeName, attr.AttributeName, 0);
+            ListViewItem newItem = listView.Items.Add(attr.AttributeName, GetAttributeDisplayName(attr), 0);
             newItem.ForeColor = GetAttributeColour(attr);
             string displayValue = displayStringFunction(attr);
             newItem.SubItems.Add(displayValue);
@@ -294,7 +294,7 @@ namespace AxeSoftware.Quest.EditorControls
         private string GetSelectedAttribute()
         {
             if (lstAttributes.SelectedItems.Count == 0) return null;
-            return lstAttributes.SelectedItems[0].Text;
+            return lstAttributes.SelectedItems[0].Name;
         }
 
         private bool DeleteAllowed(string attribute)
@@ -487,6 +487,11 @@ namespace AxeSoftware.Quest.EditorControls
         protected IEditorData Data
         {
             get { return m_data; }
+        }
+
+        protected virtual string GetAttributeDisplayName(IEditorAttributeData attr)
+        {
+            return attr.AttributeName;
         }
     }
 }

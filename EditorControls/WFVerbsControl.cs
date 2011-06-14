@@ -73,5 +73,11 @@ namespace AxeSoftware.Quest.EditorControls
                 lstAttributes.SelectedItems[0].EnsureVisible();
             }
         }
+
+        protected override string GetAttributeDisplayName(IEditorAttributeData attr)
+        {
+            string displayName = Controller.GetVerbPatternForAttribute(attr.AttributeName);
+            return displayName ?? attr.AttributeName;
+        }
     }
 }

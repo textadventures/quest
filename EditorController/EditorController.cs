@@ -1427,5 +1427,27 @@ namespace AxeSoftware.Quest
             ExpressionTemplateEditorData expressionData = (ExpressionTemplateEditorData)data;
             return expressionData.SaveExpression(changedAttribute, changedValue);
         }
+
+        public string GetVerbPatternForAttribute(string attribute)
+        {
+            // If the user adds a verb like "look in", it will have an attribute name like "lookin".
+            // Here we return the simple pattern for the corresponding verb, if it has one (library
+            // verbs use strings to contain regexes so will return null here)
+
+            var verbs = from element in m_worldModel.Elements.GetElements(ElementType.Object)
+                        where element.Type == ObjectType.Command
+                        where element.Fields[FieldDefinitions.IsVerb]
+                        where element.Fields[FieldDefinitions.Property] == attribute
+                        select element;
+
+            Element result = verbs.FirstOrDefault();
+
+            if (result == null) return null;
+            object pattern = result.Fields.Get(FieldDefinitions.Pattern.Property);
+            EditorCommandPattern simplePattern = pattern as EditorCommandPattern;
+
+            if (simplePattern == null) return null;
+            return simplePattern.Pattern;
+        }
     }
 }
