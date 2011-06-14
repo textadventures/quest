@@ -235,7 +235,7 @@ namespace AxeSoftware.Quest.EditorControls
 
                     if (thisTag == "p")
                     {
-                        if (result.Length > 0)
+                        if (result.Length > 0 && !endTag)
                         {
                             result += "<br/><br/>";
                         }
@@ -248,16 +248,23 @@ namespace AxeSoftware.Quest.EditorControls
                             throw new Exception(string.Format("Unrecognised HTML tag: ", thisTag));
                         }
 
-                        result += "<";
-
-                        if (endTag)
+                        if (thisTag == "br")
                         {
-                            result += "/";
+                            result += "<br/>";
                         }
+                        else
+                        {
+                            result += "<";
 
-                        result += s_htmlToXml[thisTag];
+                            if (endTag)
+                            {
+                                result += "/";
+                            }
 
-                        result += ">";
+                            result += s_htmlToXml[thisTag];
+
+                            result += ">";
+                        }
                     }
 
                     pos = nextTagEnd + 1;
