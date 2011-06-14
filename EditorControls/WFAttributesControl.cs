@@ -84,7 +84,7 @@ namespace AxeSoftware.Quest.EditorControls
                     case "keyprompt":
                         return "Please enter a key";
                     default:
-                        throw new NotImplementedException();
+                        return null;
                 }
             }
 
