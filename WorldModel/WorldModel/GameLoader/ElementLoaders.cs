@@ -202,7 +202,10 @@ namespace AxeSoftware.Quest
                     newCommand.Parent = (Element)current;
                 }
 
-                newCommand.Fields[FieldDefinitions.Pattern] = pattern;
+                if (pattern != null)
+                {
+                    newCommand.Fields[FieldDefinitions.Pattern] = pattern;
+                }
 
                 string unresolved = data["unresolved"];
                 if (!string.IsNullOrEmpty(unresolved)) newCommand.Fields[FieldDefinitions.Unresolved] = unresolved;
