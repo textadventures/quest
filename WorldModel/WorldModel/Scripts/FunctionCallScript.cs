@@ -58,6 +58,8 @@ namespace AxeSoftware.Quest.Scripts
         private string m_procedure;
         private FunctionCallParameters m_parameters;
 
+        public event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
+
         public FunctionCallScript(WorldModel worldModel, string procedure)
             : this(worldModel, procedure, null)
         {
@@ -68,6 +70,17 @@ namespace AxeSoftware.Quest.Scripts
             m_worldModel = worldModel;
             m_procedure = procedure;
             m_parameters = new FunctionCallParameters(worldModel, parameters);
+
+            m_parameters.ParametersAsQuestList.Added += Parameters_Added;
+        }
+
+        void Parameters_Added(object sender, QuestListUpdatedEventArgs<string> e)
+        {
+            // the number of parameters in a function call cannot change. So, as QuestList doesn't
+            // provide an Updated event (we simulate Updates with a Remove and an Add at the same
+            // index), we assume that any Added event is really an update.
+
+            FunctionCallParametersUpdated(this, new ScriptUpdatedEventArgs(e.Index, e.UpdatedItem));
         }
 
         protected override ScriptBase CloneScript()

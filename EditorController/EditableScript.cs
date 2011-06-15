@@ -49,7 +49,7 @@ namespace AxeSoftware.Quest
                 }
                 else
                 {
-                    value = Script.GetParameter(attributeNum);
+                    value = GetParameter(attributeNum);
                 }
 
                 if (value is IDataWrapper) value = ((IDataWrapper)value).GetUnderlyingValue();

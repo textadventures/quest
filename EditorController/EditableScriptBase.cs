@@ -45,11 +45,19 @@ namespace AxeSoftware.Quest
                 if (m_script != null)
                 {
                     m_script.ScriptUpdated -= ScriptUpdated;
+                    if (FunctionCallScript != null)
+                    {
+                        FunctionCallScript.FunctionCallParametersUpdated -= FunctionCallParametersUpdated;
+                    }
                 }
                 m_script = value;
                 if (m_script != null)
                 {
                     m_script.ScriptUpdated += ScriptUpdated;
+                    if (FunctionCallScript != null)
+                    {
+                        FunctionCallScript.FunctionCallParametersUpdated += FunctionCallParametersUpdated;
+                    }
                 }
             }
         }
@@ -75,6 +83,14 @@ namespace AxeSoftware.Quest
                 {
                     Updated(this, new EditableScriptUpdatedEventArgs());
                 }
+            }
+        }
+
+        void FunctionCallParametersUpdated(object sender, ScriptUpdatedEventArgs e)
+        {
+            if (EditorName.StartsWith("(function)"))
+            {
+                Updated(this, new EditableScriptUpdatedEventArgs(e.Index, m_controller.WrapValue(e.NewValue)));
             }
         }
 
