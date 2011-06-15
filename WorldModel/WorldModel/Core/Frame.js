@@ -30,6 +30,7 @@ function setFrameHeight() {
             else {
                 textFrame.height($("#divOutput").height() - 6);
             }
+            scrollToEnd();
         }, 100);
     }
     else {
