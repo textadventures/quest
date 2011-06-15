@@ -43,7 +43,7 @@ namespace AxeSoftware.Quest
         void PlaySound(string filename, bool synchronous, bool looped);
         void StopSound();
         void WriteHTML(string html);
-
+        string GetURL(string file);
         void LocationUpdated(string location);
         void UpdateGameName(string name);
         void ClearScreen();

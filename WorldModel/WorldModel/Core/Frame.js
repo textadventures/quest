@@ -23,7 +23,9 @@ function beginUsingTextFrame() {
 
 function setFrameHeight() {
     if (webPlayer) {
-        textFrame.height($("#divOutput").height() - 6);
+        setTimeout(function () {
+            textFrame.height($("#divOutput").height() - topFrame.height() - 6);
+        }, 100);
     }
     else {
         textFrame.height($(window).height() - topFrame.position().top - topFrame.height() - 6);

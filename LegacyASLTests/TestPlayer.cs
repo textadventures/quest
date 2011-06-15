@@ -188,5 +188,10 @@ namespace LegacyASLTests
         public void SetCompassDirections(IEnumerable<string> dirs)
         {
         }
+
+        public string GetURL(string file)
+        {
+            return file;
+        }
     }
 }

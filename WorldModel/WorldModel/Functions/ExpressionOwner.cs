@@ -294,11 +294,7 @@ namespace AxeSoftware.Quest.Functions
         public string GetFileURL(string filename)
         {
             if (filename.Contains("..")) throw new ArgumentOutOfRangeException("Invalid filename");
-
-            // TO DO: This will need to make a request of the current IPlayer, so that WebPlayer can use AddResource
-            // and then return the URL
-
-            return m_worldModel.GetExternalPath(filename);
+            return m_worldModel.GetExternalURL(filename);
         }
     }
 }

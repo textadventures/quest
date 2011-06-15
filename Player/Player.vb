@@ -745,4 +745,7 @@ Public Class Player
         lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
     End Sub
 
+    Public Function GetURL(file As String) As String Implements IPlayer.GetURL
+        Return file
+    End Function
 End Class

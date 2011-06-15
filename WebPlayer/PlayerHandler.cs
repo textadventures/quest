@@ -374,5 +374,10 @@ namespace WebPlayer
         {
             // TO DO: Implement
         }
+
+        public string GetURL(string file)
+        {
+            return AddResource(file);
+        }
     }
 }

@@ -877,6 +877,12 @@ namespace AxeSoftware.Quest
             throw new Exception(string.Format("Cannot find a file called '{0}' in current path or application path", file));
         }
 
+        internal string GetExternalURL(string file)
+        {
+            string path = GetExternalPath(file);
+            return m_playerUI.GetURL(path);
+        }
+
         public IEnumerable<string> GetAvailableLibraries()
         {
             List<string> result = new List<string>();
