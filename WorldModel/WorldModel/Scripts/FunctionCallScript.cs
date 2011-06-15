@@ -52,7 +52,7 @@ namespace AxeSoftware.Quest.Scripts
         }
     }
 
-    public class FunctionCallScript : ScriptBase
+    public class FunctionCallScript : ScriptBase, IFunctionCallScript
     {
         private WorldModel m_worldModel;
         private string m_procedure;
@@ -103,7 +103,7 @@ namespace AxeSoftware.Quest.Scripts
         {
             get
             {
-                return "()";
+                return "(function)" + m_procedure;
             }
         }
 
@@ -153,6 +153,17 @@ namespace AxeSoftware.Quest.Scripts
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public object GetFunctionCallParameter(int index)
+        {
+            return m_parameters.ParametersAsQuestList[index];
+        }
+
+        public void SetFunctionCallParameter(int index, object value)
+        {
+            m_parameters.ParametersAsQuestList.Remove(m_parameters.ParametersAsQuestList[index], UpdateSource.User, index);
+            m_parameters.ParametersAsQuestList.Add(value, UpdateSource.User, index);
         }
     }
 }

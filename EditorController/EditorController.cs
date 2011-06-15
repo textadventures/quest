@@ -541,6 +541,24 @@ namespace AxeSoftware.Quest
             return m_editableScriptFactory.GetCategories();
         }
 
+        public IEditorDefinition GetEditorDefinition(IEditableScript script)
+        {
+            if (script.EditorName.StartsWith("(function)"))
+            {
+                // see if we have a specific editor definition for this function
+                EditorDefinition result;
+                if (m_editorDefinitions.TryGetValue(script.EditorName, out result))
+                {
+                    return result;
+                }
+                // if not, return the default function call editor definition, and reset
+                // the EditorName for the script so it knows to get/set parameters via a
+                // parameter dictionary instead of individually.
+                script.EditorName = "()";
+            }
+            return m_editorDefinitions[script.EditorName];
+        }
+
         public IEditorDefinition GetEditorDefinition(string editorName)
         {
             return m_editorDefinitions[editorName];

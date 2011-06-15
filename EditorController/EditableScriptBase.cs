@@ -16,7 +16,7 @@ namespace AxeSoftware.Quest
         }
 
         public abstract string DisplayString(int index, object newValue);
-        public abstract string EditorName { get; }
+        public abstract string EditorName { get; set; }
         public abstract object GetParameter(int index);
         public abstract void SetParameter(int index, object value);
         public abstract ScriptType Type { get; }
@@ -52,6 +52,11 @@ namespace AxeSoftware.Quest
                     m_script.ScriptUpdated += ScriptUpdated;
                 }
             }
+        }
+
+        internal IFunctionCallScript FunctionCallScript
+        {
+            get { return m_script as IFunctionCallScript; }
         }
 
         protected void ScriptUpdated(object sender, ScriptUpdatedEventArgs e)

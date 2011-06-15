@@ -295,7 +295,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void AddScriptControls(ListBoxItem listItem, Grid parentGrid, IEditableScript script)
         {
-            IEditorDefinition definition = m_controller.GetEditorDefinition(script.EditorName);
+            IEditorDefinition definition = m_controller.GetEditorDefinition(script);
             IEditorData data = m_controller.GetScriptEditorData(script);
             data.ReadOnly = m_readOnly;
             Grid grid = NewScriptControlGrid(parentGrid);

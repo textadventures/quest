@@ -66,6 +66,12 @@ namespace AxeSoftware.Quest.Scripts
         IEnumerable<string> GetDefinedVariables();
     }
 
+    public interface IFunctionCallScript : IScript
+    {
+        object GetFunctionCallParameter(int index);
+        void SetFunctionCallParameter(int index, object value);
+    }
+
     public interface IScriptConstructor
     {
         string Keyword { get; }

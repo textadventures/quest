@@ -74,6 +74,7 @@
       <control>
         <controltype>title</controltype>
         <caption>Description</caption>
+        <mustnotinherit>editor_room</mustnotinherit>
       </control>
 
       <control>

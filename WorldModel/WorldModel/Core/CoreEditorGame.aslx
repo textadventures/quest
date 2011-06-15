@@ -79,6 +79,12 @@
         <caption>Link foreground</caption>
         <attribute>defaultlinkforeground</attribute>
       </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Use static picture frame above scrolling text</caption>
+        <attribute>useframe</attribute>
+      </control>
+      
     </tab>
 
     <tab>

@@ -44,6 +44,28 @@
   </editor>
 
   <editor>
+    <appliesto>(function)SetFramePicture</appliesto>
+    <display>Set frame picture #0</display>
+    <category>Output</category>
+    <create>SetFramePicture ("")</create>
+    <add>Set frame picture</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set frame picture</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>filename</simple>
+      <simpleeditor>file</simpleeditor>
+      <source>*.jpg</source>
+      <filefiltername>Picture Files</filefiltername>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>play sound</appliesto>
     <display>Play sound #0</display>
     <category>Output</category>

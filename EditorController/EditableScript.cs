@@ -13,10 +13,12 @@ namespace AxeSoftware.Quest
         private string m_displayTemplate = null;
         private static Regex s_regex = new Regex("#(?<attribute>\\d+)");
         private List<EditableScripts> m_watchedNestedScripts = new List<EditableScripts>();
+        private string m_editorName;
 
         internal EditableScript(EditorController controller, IScript script, UndoLogger undoLogger)
             : base(controller, script, undoLogger)
         {
+            m_editorName = Script.Keyword;
         }
 
         internal string DisplayTemplate
@@ -102,16 +104,26 @@ namespace AxeSoftware.Quest
 
         public override string EditorName
         {
-            get { return Script.Keyword; }
+            get { return m_editorName; }
+            set { m_editorName = value; }
         }
 
         public override object GetParameter(int index)
         {
+            if (EditorName.StartsWith("(function)"))
+            {
+                return FunctionCallScript.GetFunctionCallParameter(index);
+            }
             return Script.GetParameter(index);
         }
 
         public override void SetParameter(int index, object value)
         {
+            if (EditorName.StartsWith("(function)"))
+            {
+                FunctionCallScript.SetFunctionCallParameter(index, value);
+                return;
+            }
             Script.SetParameter(index, value);
         }
 

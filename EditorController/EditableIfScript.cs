@@ -240,6 +240,7 @@ namespace AxeSoftware.Quest
         public override string EditorName
         {
             get { return "if"; }
+            set { } // do nothing, EditorController won't need to change the EditorName for an "if"
         }
 
         public string IfExpression

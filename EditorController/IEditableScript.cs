@@ -51,7 +51,7 @@ namespace AxeSoftware.Quest
     {
         string DisplayString();
         string DisplayString(int index, object newValue);
-        string EditorName { get; }
+        string EditorName { get; set; }
         object GetParameter(int index);
         void SetParameter(int index, object value);
         event EventHandler<EditableScriptUpdatedEventArgs> Updated;
