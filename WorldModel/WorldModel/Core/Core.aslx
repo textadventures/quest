@@ -29,6 +29,10 @@
       request (RunScript, "beginUsingTextFrame")
     }
   </function>
+
+  <function name="SetFramePicture" parameters="filename">
+    request (RunScript, "setFramePicture; " + GetFileURL(filename))
+  </function>
   
   <function name="StartGame">
     <![CDATA[

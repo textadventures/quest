@@ -1,7 +1,9 @@
 ﻿var textFrame = null;
+var topFrame = null;
 
 function beginUsingTextFrame() {
     textFrame = $("#divText");
+    topFrame = $("#divFrame");
     setFrameHeight();
     $("body").css("overflow", "hidden");
     
@@ -21,4 +23,8 @@ function beginUsingTextFrame() {
 
 function setFrameHeight() {
     textFrame.height($(window).height() - textFrame.offset().top - 6);
+}
+
+function setFramePicture(filename) {
+    topFrame.html("<img src=\"" + filename + "\" onload=\"setFrameHeight()\"/>");
 }
