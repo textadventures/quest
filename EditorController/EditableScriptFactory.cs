@@ -49,7 +49,7 @@ namespace AxeSoftware.Quest
 
         internal EditableScriptBase CreateEditableScript(string keyword)
         {
-            IScript script = m_scriptFactory.CreateSimpleScriptFromKeyword(keyword);
+            IScript script = m_scriptFactory.CreateSimpleScript(keyword);
             return CreateEditableScript(script);
         }
 
