@@ -248,6 +248,7 @@
     <Compile Include="Scripts\SwitchScript.cs" />
     <Compile Include="Scripts\UndoScript.cs" />
     <Compile Include="Templates.cs" />
+    <Compile Include="TimerRunner.cs" />
     <Compile Include="Types\EditorCommandPattern.cs" />
     <Compile Include="UndoLogger.cs" />
     <Compile Include="Utility.cs" />

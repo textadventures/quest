@@ -26,7 +26,7 @@ namespace AxeSoftware.Quest
         User
     }
 
-    public class WorldModel : IASL, IASLDebug
+    public class WorldModel : IASL, IASLDebug, IASLTimer
     {
         private Element m_game;
         private Element m_player;
@@ -55,6 +55,7 @@ namespace AxeSoftware.Quest
         private bool m_commandOverride = false;
         private string m_commandOverrideInput;
         private object m_commandOverrideLock = new object();
+        private TimerRunner m_timerRunner = new TimerRunner();
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -63,6 +64,8 @@ namespace AxeSoftware.Quest
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementFieldUpdated;
         public event EventHandler<ElementRefreshEventArgs> ElementRefreshed;
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementMetaFieldUpdated;
+
+        public event Action<int> RequestNextTimerTick;
 
         public class ElementFieldUpdatedEventArgs : EventArgs
         {
@@ -439,7 +442,7 @@ namespace AxeSoftware.Quest
             get { return new List<string>(m_debuggerObjectTypes.Keys); }
         }
 
-        public void SendCommand(string command)
+        public void SendCommand(string command, int elapsedTime)
         {
             DoInNewThreadAndWait(() =>
             {
@@ -474,6 +477,16 @@ namespace AxeSoftware.Quest
                     }
                 }
             });
+
+            if (elapsedTime > 0)
+            {
+                Tick(elapsedTime);
+            }
+        }
+
+        public void SendCommand(string command)
+        {
+            SendCommand(command, 0);
         }
 
         public void SendEvent(string eventName, string param)
@@ -1100,6 +1113,30 @@ namespace AxeSoftware.Quest
 
             m_commandOverride = false;
             return m_commandOverrideInput;
+        }
+
+        public void Tick(int elapsedTime)
+        {
+            var scripts = m_timerRunner.TickAndGetScripts(elapsedTime);
+
+            foreach (IScript script in scripts)
+            {
+                // do it in DoInNewThreadAndWait(() => { /*script*/ });
+                // in case a timer wants to ask for input etc.
+
+                // TO DO: This will need testing with multiple timers running
+                // at the same time prompting for input etc... I think we want
+                // to return from this Tick method as soon as something requests
+                // input?? So maybe we want to DoInNewThreadAndWait around the
+                // entire loop
+
+                DoInNewThreadAndWait(() =>
+                {
+                    RunScript(script);
+                });
+            }
+
+            RequestNextTimerTick(m_timerRunner.GetTimeUntilNextTimerRuns());
         }
     }
 }

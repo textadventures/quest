@@ -5,11 +5,10 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
-    public delegate void UpdateTimerHandler(int nextTick);
-
-    public interface IASLTimer
+    public interface IASLTimer : IASL
     {
-        event UpdateTimerHandler UpdateTimer;
-        void Tick();
+        event Action<int> RequestNextTimerTick;
+        void Tick(int elapsedTime);
+        void SendCommand(string command, int elapsedTime);
     }
 }

@@ -27,6 +27,8 @@ Public Class Player
     Private m_destroyed As Boolean = False
     Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
     Private m_htmlPlayerReadyFunction As Action
+    Private m_tickCount As Integer
+    Private m_sendNextTickEventAfter As Integer
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -223,7 +225,11 @@ Public Class Player
         txtCommand.Text = ""
 
         Try
-            m_game.SendCommand(command)
+            If m_gameTimer IsNot Nothing Then
+                m_gameTimer.SendCommand(command, GetTickCountAndStopTimer())
+            Else
+                m_game.SendCommand(command)
+            End If
         Catch ex As Exception
             WriteLine(String.Format("Error running command '{0}':<br>{1}", command, ex.Message))
         End Try
@@ -600,9 +606,17 @@ Public Class Player
 
     Private Sub tmrTick_Tick(sender As System.Object, e As System.EventArgs) Handles tmrTick.Tick
         If Not m_gameTimer Is Nothing Then
-            m_gameTimer.Tick()
+            m_tickCount += 1
+            If m_tickCount >= m_sendNextTickEventAfter Then
+                m_gameTimer.Tick(GetTickCountAndStopTimer())
+            End If
         End If
     End Sub
+
+    Private Function GetTickCountAndStopTimer() As Integer
+        tmrTick.Enabled = False
+        Return m_tickCount
+    End Function
 
     Private Sub Player_HandleDestroyed(sender As Object, e As System.EventArgs) Handles Me.HandleDestroyed
         m_destroyed = True
@@ -748,4 +762,11 @@ Public Class Player
     Public Function GetURL(file As String) As String Implements IPlayer.GetURL
         Return file
     End Function
+
+    Private Sub m_gameTimer_RequestNextTimerTick(nextTick As Integer) Handles m_gameTimer.RequestNextTimerTick
+        m_sendNextTickEventAfter = nextTick
+        If m_sendNextTickEventAfter > 0 Then
+            tmrTick.Enabled = True
+        End If
+    End Sub
 End Class

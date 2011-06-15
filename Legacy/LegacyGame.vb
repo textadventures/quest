@@ -13254,6 +13254,11 @@ ErrorHandler:
         WaitForStateChange(State.Working)
     End Sub
 
+    Public Sub SendCommand(command As String, elapsedTime As Integer) Implements IASLTimer.SendCommand
+        ' TO DO: Keep track of timer ticks
+        SendCommand(command)
+    End Sub
+
     Private Sub WaitForStateChange(changedFromState As State)
         SyncLock m_stateLock
             While m_state = changedFromState And Not m_gameFinished
@@ -13374,7 +13379,7 @@ ErrorHandler:
         End Get
     End Property
 
-    Public Sub Tick() Implements IASLTimer.Tick
+    Public Sub Tick(elapsedTime As Integer) Implements IASLTimer.Tick
         Dim i As Integer
         Dim TimerScripts As New List(Of String)
 
@@ -13475,7 +13480,7 @@ ErrorHandler:
 
     ' TO DO: Use this event to tell the UI when to send the next Tick. Currently we're always ticking every
     ' second which is unnecessary for most games.
-    Public Event UpdateTimer(nextTick As Integer) Implements IASLTimer.UpdateTimer
+    Public Event RequestNextTimerTick(nextTick As Integer) Implements IASLTimer.RequestNextTimerTick
 
     Public ReadOnly Property OriginalFilename As String Implements IASL.OriginalFilename
         Get
@@ -13497,4 +13502,5 @@ ErrorHandler:
     Private Function GetUnzippedFile(filename As String) As String
         Return m_unzipFunction.Invoke(filename)
     End Function
+
 End Class

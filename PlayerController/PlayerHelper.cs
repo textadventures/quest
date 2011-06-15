@@ -44,7 +44,8 @@ namespace AxeSoftware.Quest
             m_gameTimer = m_game as IASLTimer;
             if (m_gameTimer != null)
             {
-                m_gameTimer.UpdateTimer += m_gameTimer_UpdateTimer;
+                // TO DO: Keep track of when the game would like the next timer Tick to be sent
+                //m_gameTimer.UpdateTimer += m_gameTimer_UpdateTimer;
             }
         }
 
@@ -306,7 +307,8 @@ namespace AxeSoftware.Quest
 
         public void Tick()
         {
-            if (m_gameTimer != null) m_gameTimer.Tick();
+            // TO DO: Keep track of how many seconds have elapsed since the last tick
+            if (m_gameTimer != null) m_gameTimer.Tick(1);
         }
 
         void m_gameTimer_UpdateTimer(int nextTick)
