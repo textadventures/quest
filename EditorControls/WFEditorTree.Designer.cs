@@ -55,6 +55,7 @@
             this.AddWalkthroughToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlTreeView = new System.Windows.Forms.TreeView();
+            this.addTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlToolStrip.SuspendLayout();
             this.pnlSearchContainer.SuspendLayout();
             this.ctlContextMenu.SuspendLayout();
@@ -220,6 +221,7 @@
             this.AddVerbToolStripMenuItem,
             this.AddCommandToolStripMenuItem,
             this.AddFunctionToolStripMenuItem,
+            this.addTimerToolStripMenuItem,
             this.AddWalkthroughToolStripMenuItem,
             this.AddLibraryToolStripMenuItem,
             this.AddImpliedTypeToolStripMenuItem,
@@ -230,7 +232,7 @@
             this.AddEditorToolStripMenuItem,
             this.AddJavascriptToolStripMenuItem});
             this.ctlContextMenu.Name = "ctlContextMenu";
-            this.ctlContextMenu.Size = new System.Drawing.Size(200, 334);
+            this.ctlContextMenu.Size = new System.Drawing.Size(200, 378);
             // 
             // AddExitToolStripMenuItem
             // 
@@ -285,6 +287,13 @@
             this.ctlTreeView.Size = new System.Drawing.Size(289, 292);
             this.ctlTreeView.TabIndex = 7;
             // 
+            // addTimerToolStripMenuItem
+            // 
+            this.addTimerToolStripMenuItem.Name = "addTimerToolStripMenuItem";
+            this.addTimerToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.addTimerToolStripMenuItem.Tag = "addtimer";
+            this.addTimerToolStripMenuItem.Text = "Add Timer";
+            // 
             // WFEditorTree
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -332,5 +341,6 @@
         internal System.Windows.Forms.ToolStripMenuItem AddWalkthroughToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem AddLibraryToolStripMenuItem;
         internal System.Windows.Forms.TreeView ctlTreeView;
+        private System.Windows.Forms.ToolStripMenuItem addTimerToolStripMenuItem;
     }
 }

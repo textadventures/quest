@@ -3,6 +3,18 @@
     <appliesto>timer</appliesto>
     <tab>
       <caption>Timer</caption>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>interval</attribute>
+        <caption>Interval (sec)</caption>
+      </control>
+
+      <control>
+        <controltype>script</controltype>
+        <attribute>script</attribute>
+        <caption>Script</caption>
+      </control>
     </tab>
   </editor>
 </library>

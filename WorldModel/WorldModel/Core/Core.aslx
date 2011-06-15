@@ -7,6 +7,8 @@
   <implied element="object" property="displayverbs" type="list"/>
   <implied element="object" property="inventoryverbs" type="list"/>
   <implied element="walkthrough" property="steps" type="list"/>
+  <implied element="timer" property="interval" type="int"/>
+  <implied element="timer" property="script" type="script"/>
 
   <include ref="CoreCommands.aslx"/>
   <include ref="CoreParser.aslx"/>

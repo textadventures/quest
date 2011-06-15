@@ -1080,6 +1080,11 @@ namespace AxeSoftware.Quest
             CreateNewElement(ElementType.Function, "function", name);
         }
 
+        public void CreateNewTimer(string name)
+        {
+            CreateNewElement(ElementType.Timer, "timer", name);
+        }
+
         public void CreateNewWalkthrough(string name, string parent)
         {
             CreateNewElement(ElementType.Walkthrough, "walkthrough", name, parent);

@@ -64,6 +64,7 @@
         menu.AddMenuClickHandler("addverb", AddressOf AddNewVerb)
         menu.AddMenuClickHandler("addcommand", AddressOf AddNewCommand)
         menu.AddMenuClickHandler("addfunction", AddressOf AddNewFunction)
+        menu.AddMenuClickHandler("addtimer", AddressOf AddNewTimer)
         menu.AddMenuClickHandler("addwalkthrough", AddressOf AddNewWalkthrough)
         menu.AddMenuClickHandler("addlibrary", AddressOf AddNewLibrary)
         menu.AddMenuClickHandler("addimpliedtype", AddressOf AddNewImpliedType)
@@ -113,6 +114,7 @@
         ctlTree.AddMenuClickHandler("addverb", AddressOf AddNewVerb)
         ctlTree.AddMenuClickHandler("addcommand", AddressOf AddNewCommand)
         ctlTree.AddMenuClickHandler("addfunction", AddressOf AddNewFunction)
+        ctlTree.AddMenuClickHandler("addtimer", AddressOf AddNewTimer)
         ctlTree.AddMenuClickHandler("addwalkthrough", AddressOf AddNewWalkthrough)
         ctlTree.AddMenuClickHandler("addlibrary", AddressOf AddNewLibrary)
         ctlTree.AddMenuClickHandler("addimpliedtype", AddressOf AddNewImpliedType)
@@ -448,6 +450,10 @@
         AddNewElement("function", AddressOf m_controller.CreateNewFunction)
     End Sub
 
+    Private Sub AddNewTimer()
+        AddNewElement("timer", AddressOf m_controller.CreateNewTimer)
+    End Sub
+
     Private Sub AddNewWalkthrough()
         Dim possibleParents = m_controller.GetPossibleNewParentsForCurrentSelection(ctlTree.SelectedItem, "walkthrough")
         Dim result = GetNameAndParent("Please enter a name for the new walkthrough", possibleParents)
@@ -695,6 +701,8 @@
                 End Select
             Case "function"
                 AddNewFunction()
+            Case "timer"
+                AddNewTimer()
             Case "walkthrough"
                 AddNewWalkthrough()
             Case "include"

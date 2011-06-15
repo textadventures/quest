@@ -382,5 +382,21 @@ namespace AxeSoftware.Quest
                 writer.WriteEndElement();
             }
         }
+
+        private class TimerSaver : ElementSaverBase
+        {
+            public override ElementType AppliesTo
+            {
+                get { return ElementType.Timer; }
+            }
+
+            public override void Save(GameXmlWriter writer, Element e)
+            {
+                writer.WriteStartElement("timer");
+                writer.WriteAttributeString("name", e.Name);
+                base.SaveFields(writer, e);
+                writer.WriteEndElement();
+            }
+        }
     }
 }
