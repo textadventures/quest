@@ -609,7 +609,7 @@ Public Class Player
     End Sub
 
     Public Sub WriteHTML(html As String) Implements IPlayer.WriteHTML
-        ctlPlayerHtml.WriteText(html)
+        BeginInvoke(Sub() ctlPlayerHtml.WriteText(html))
     End Sub
 
     Public Sub LocationUpdated(location As String) Implements IPlayer.LocationUpdated
@@ -698,11 +698,11 @@ Public Class Player
     End Sub
 
     Public Sub DoHide(element As String) Implements IPlayer.Hide
-        GetInterfaceVisibilitySetter(element).Invoke(False)
+        BeginInvoke(Sub() GetInterfaceVisibilitySetter(element).Invoke(False))
     End Sub
 
     Public Sub DoShow(element As String) Implements IPlayer.Show
-        GetInterfaceVisibilitySetter(element).Invoke(True)
+        BeginInvoke(Sub() GetInterfaceVisibilitySetter(element).Invoke(True))
     End Sub
 
     Private Function GetInterfaceVisibilitySetter(element As String) As Action(Of Boolean)

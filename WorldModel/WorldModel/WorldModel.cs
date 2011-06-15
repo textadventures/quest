@@ -923,7 +923,7 @@ namespace AxeSoftware.Quest
             }
             else
             {
-                if (recurse)
+                if (recurse && !file.Contains("\\"))
                 {
                     var results = System.IO.Directory.GetFiles(path, file, System.IO.SearchOption.AllDirectories);
                     if (results.Length > 0)
