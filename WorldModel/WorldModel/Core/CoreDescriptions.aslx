@@ -37,6 +37,18 @@
       do (player.parent, "beforefirstenter")
     }
     request (UpdateLocation, CapFirst(GetDisplayName(player.parent)))
+    if (game.useframe) {
+      clearFrame = true
+      if (HasString(player.parent, "picture")) {
+        if (LengthOf(player.parent.picture) > 0) {
+          clearFrame = false
+          SetFramePicture(player.parent.picture)
+        }
+      }
+      if (clearFrame) {
+        ClearFramePicture
+      }
+    }
     if (game.showdescriptiononenter) {
       ShowRoomDescription
     }

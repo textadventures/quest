@@ -34,7 +34,11 @@
   <function name="SetFramePicture" parameters="filename">
     request (RunScript, "setFramePicture; " + GetFileURL(filename))
   </function>
-  
+
+  <function name="ClearFramePicture">
+    request (RunScript, "clearFramePicture")
+  </function>
+
   <function name="StartGame">
     <![CDATA[
     if (HasScript(game, "start")) do (game, "start")

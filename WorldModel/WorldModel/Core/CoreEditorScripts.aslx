@@ -66,6 +66,19 @@
   </editor>
 
   <editor>
+    <appliesto>(function)ClearFramePicture</appliesto>
+    <display>Clear frame picture</display>
+    <category>Output</category>
+    <create>ClearFramePicture</create>
+    <add>Clear frame picture</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Clear frame picture</caption>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>play sound</appliesto>
     <display>Play sound #0</display>
     <category>Output</category>

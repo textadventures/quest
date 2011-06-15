@@ -79,7 +79,7 @@ namespace AxeSoftware.Quest.EditorControls
             lstScripts.Focus();
 
             IEditableScript newScript = m_scripts[newScriptIndex];
-            if (m_scriptParameterControlMap[newScript].ContainsKey("0"))
+            if (m_scriptParameterControlMap.ContainsKey(newScript) && m_scriptParameterControlMap[newScript].ContainsKey("0"))
             {
                 IElementEditorControl ctl = m_scriptParameterControlMap[newScript]["0"];
                 Control focusControl = ctl.FocusableControl;

@@ -122,6 +122,16 @@
     <tab>
       <caption>Room</caption>
       <mustnotinherit>editor_object</mustnotinherit>
+      
+      <!-- TO DO: Only display if game.useframe=true -->
+
+      <control>
+        <caption>Room picture</caption>
+        <controltype>file</controltype>
+        <attribute>picture</attribute>
+        <source>*.jpg</source>
+        <filefiltername>Picture Files</filefiltername>
+      </control>
 
       <control>
         <controltype>textbox</controltype>

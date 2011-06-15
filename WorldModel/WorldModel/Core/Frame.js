@@ -6,12 +6,12 @@ function beginUsingTextFrame() {
     topFrame = $("#divFrame");
     setFrameHeight();
     disableMainScrollbar();
-    
-    $(window).resize(function() {
+
+    $(window).resize(function () {
         setFrameHeight();
     });
-    
-    window.addText = function(text) {
+
+    window.addText = function (text) {
         textFrame.append(text);
         scrollToEnd();
     }
@@ -24,14 +24,31 @@ function beginUsingTextFrame() {
 function setFrameHeight() {
     if (webPlayer) {
         setTimeout(function () {
-            textFrame.height($("#divOutput").height() - topFrame.height() - 6);
+            if (topFrame.is(":visible")) {
+                textFrame.height($("#divOutput").height() - topFrame.height() - 6);
+            }
+            else {
+                textFrame.height($("#divOutput").height() - 6);
+            }
         }, 100);
     }
     else {
-        textFrame.height($(window).height() - topFrame.position().top - topFrame.height() - 6);
+        if (topFrame.is(":visible")) {
+            textFrame.height($(window).height() - topFrame.position().top - topFrame.height() - 6);
+        }
+        else {
+            textFrame.height($(window).height() - topFrame.position().top - 22);
+        }
+        scrollToEnd();
     }
 }
 
 function setFramePicture(filename) {
+    topFrame.show();
     topFrame.html("<img src=\"" + filename + "\" onload=\"setFrameHeight()\"/>");
+}
+
+function clearFramePicture(filename) {
+    topFrame.hide();
+    setFrameHeight();
 }
