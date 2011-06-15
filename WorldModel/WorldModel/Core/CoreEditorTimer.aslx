@@ -1,0 +1,8 @@
+﻿<library>
+  <editor>
+    <appliesto>timer</appliesto>
+    <tab>
+      <caption>Timer</caption>
+    </tab>
+  </editor>
+</library>

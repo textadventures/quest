@@ -24,5 +24,6 @@
   <include ref="CoreEditorTemplate.aslx"/>
   <include ref="CoreEditorDynamicTemplate.aslx"/>
   <include ref="CoreEditorJavascript.aslx"/>
+  <include ref="CoreEditorTimer.aslx"/>
 
 </library>

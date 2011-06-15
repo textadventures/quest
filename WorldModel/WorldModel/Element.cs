@@ -44,6 +44,8 @@ namespace AxeSoftware.Quest
         Walkthrough,
         [ElementTypeInfo("javascript")]
         Javascript,
+        [ElementTypeInfo("timer")]
+        Timer,
     }
 
     // These are all sub-types of the "Object" element type

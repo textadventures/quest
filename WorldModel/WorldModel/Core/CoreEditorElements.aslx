@@ -186,5 +186,19 @@
 
     </tab>
   </editor>
+
+  <editor>
+    <appliesto>_timers</appliesto>
+    <tab>
+      <caption>Timers</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>timer</elementtype>
+        <expand/>
+      </control>
+
+    </tab>
+  </editor>
   
 </library>

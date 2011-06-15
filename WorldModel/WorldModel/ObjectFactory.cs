@@ -499,4 +499,12 @@ namespace AxeSoftware.Quest
             get { return ElementType.Javascript; }
         }
     }
+
+    internal class TimerFactory : ElementFactoryBase
+    {
+        public override ElementType CreateElementType
+        {
+            get { return ElementType.Timer; }
+        }
+    }
 }

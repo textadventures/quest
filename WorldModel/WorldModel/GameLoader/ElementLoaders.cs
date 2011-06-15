@@ -790,7 +790,7 @@ namespace AxeSoftware.Quest
 
             public abstract ElementType CreateElementType { get; }
 
-            protected abstract string IDPrefix { get; }
+            protected virtual string IDPrefix { get { return AppliesTo; } }
         }
 
         private class EditorLoader : ElementLoaderBase
@@ -870,6 +870,19 @@ namespace AxeSoftware.Quest
                 }
 
                 return jsRef;
+            }
+        }
+
+        private class TimerLoader : ElementLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "timer"; }
+            }
+
+            public override ElementType CreateElementType
+            {
+                get { return ElementType.Timer; }
             }
         }
     }

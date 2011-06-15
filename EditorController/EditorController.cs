@@ -318,6 +318,7 @@ namespace AxeSoftware.Quest
             m_elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
             AddTreeHeader(ElementType.Object, "_objects", "Objects", null);
             AddTreeHeader(ElementType.Function, "_functions", "Functions", null);
+            AddTreeHeader(ElementType.Timer, "_timers", "Timers", null);
             AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null);
             AddTreeHeader(null, "_advanced", "Advanced", null);
             AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced");
