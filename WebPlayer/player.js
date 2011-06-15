@@ -5,6 +5,7 @@ var numCommands = 0;
 var thisCommand = 0;
 var commandsList = new Array();
 var fluid = false;
+var webPlayer = true;
 
 document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     function decode(s) {
@@ -422,4 +423,8 @@ function ASLEvent(event, parameter) {
         $("#fldUIMsg").val("event " + event + ";" + parameter);
         $("#cmdSubmit").click();
     }, 100);
+}
+
+function disableMainScrollbar() {
+    $("#divOutput").css("overflow", "hidden");
 }

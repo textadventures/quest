@@ -25,6 +25,7 @@
     request (LinkForeground, game.defaultlinkforeground)
     request (SetCompassDirections, Join(game.compassdirections, ";"))
     if (game.useframe) {
+      request (ClearScreen, "")
       insert ("Frame.htm")
       request (RunScript, "beginUsingTextFrame")
     }

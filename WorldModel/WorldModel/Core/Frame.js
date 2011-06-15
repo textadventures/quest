@@ -5,7 +5,7 @@ function beginUsingTextFrame() {
     textFrame = $("#divText");
     topFrame = $("#divFrame");
     setFrameHeight();
-    $("body").css("overflow", "hidden");
+    disableMainScrollbar();
     
     $(window).resize(function() {
         setFrameHeight();
@@ -22,7 +22,12 @@ function beginUsingTextFrame() {
 }
 
 function setFrameHeight() {
-    textFrame.height($(window).height() - textFrame.offset().top - 6);
+    if (webPlayer) {
+        textFrame.height($("#divOutput").height() - 6);
+    }
+    else {
+        textFrame.height($(window).height() - topFrame.position().top - topFrame.height() - 6);
+    }
 }
 
 function setFramePicture(filename) {

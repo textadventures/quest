@@ -1,4 +1,6 @@
-﻿function scrollToEnd() {
+﻿var webPlayer = false;
+
+function scrollToEnd() {
     $('html, body').animate({ scrollTop: $(document).height() }, 0);
 }
 
@@ -22,4 +24,8 @@ function SetBackground(color) {
 
 function gameFinished() {
     // we don't need to do anything - this function is just required for compatibility with WebPlayer
+}
+
+function disableMainScrollbar() {
+    $("body").css("overflow", "hidden");
 }
