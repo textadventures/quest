@@ -92,6 +92,9 @@ namespace AxeSoftware.Quest
         public static IField<bool> Anonymous = new FieldDef<bool>("anonymous");
         public static IField<string> TemplateName = new FieldDef<string>("templatename");
         public static IField<string> OriginalPattern = new FieldDef<string>("originalpattern");
+        public static IField<int> TimeElapsed = new FieldDef<int>("timeelapsed");
+        public static IField<int> Trigger = new FieldDef<int>("trigger");
+        public static IField<int> Interval = new FieldDef<int>("interval");
     }
 
     public static class MetaFieldDefinitions
@@ -206,6 +209,18 @@ namespace AxeSoftware.Quest
             }
         }
 
+        public int this[IField<int> field]
+        {
+            get
+            {
+                return GetAsType<int>(field.Property);
+            }
+            set
+            {
+                Set(field.Property, value);
+            }
+        }
+        
         public IFunction<string> this[IField<IFunction<string>> field]
         {
             get

@@ -55,7 +55,7 @@ namespace AxeSoftware.Quest
         private bool m_commandOverride = false;
         private string m_commandOverrideInput;
         private object m_commandOverrideLock = new object();
-        private TimerRunner m_timerRunner = new TimerRunner();
+        private TimerRunner m_timerRunner;
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -418,6 +418,10 @@ namespace AxeSoftware.Quest
                 {
                     Print(string.Format("Loaded saved game in {0}", m_saveFilename));
                     Print(string.Format("  (original game at {0})", m_filename));
+                }
+                else
+                {
+                    m_timerRunner = new TimerRunner(this);
                 }
 
                 ChangeThreadState(ThreadState.Ready);
@@ -1117,24 +1121,26 @@ namespace AxeSoftware.Quest
 
         public void Tick(int elapsedTime)
         {
-            var scripts = m_timerRunner.TickAndGetScripts(elapsedTime);
+            // do it in DoInNewThreadAndWait(() => { /*script*/ });
+            // in case a timer wants to ask for input etc.
 
-            foreach (IScript script in scripts)
+            // TO DO: This will need testing with multiple timers running
+            // at the same time prompting for input etc... I think we want
+            // to return from this Tick method as soon as something requests
+            // input?? So maybe we want to DoInNewThreadAndWait around the
+            // entire loop
+
+            DoInNewThreadAndWait(() =>
             {
-                // do it in DoInNewThreadAndWait(() => { /*script*/ });
-                // in case a timer wants to ask for input etc.
+                var scripts = m_timerRunner.TickAndGetScripts(elapsedTime);
 
-                // TO DO: This will need testing with multiple timers running
-                // at the same time prompting for input etc... I think we want
-                // to return from this Tick method as soon as something requests
-                // input?? So maybe we want to DoInNewThreadAndWait around the
-                // entire loop
-
-                DoInNewThreadAndWait(() =>
+                foreach (IScript script in scripts)
                 {
                     RunScript(script);
-                });
-            }
+                }
+
+                ChangeThreadState(ThreadState.Ready);
+            });
 
             RequestNextTimerTick(m_timerRunner.GetTimeUntilNextTimerRuns());
         }
