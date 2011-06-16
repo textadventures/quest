@@ -13203,6 +13203,8 @@ ErrorHandler:
 
         End If
 
+        RaiseNextTimerTickRequest()
+
         ChangeState(State.Ready)
     End Sub
 
@@ -13239,6 +13241,10 @@ ErrorHandler:
     End Property
 
     Public Sub SendCommand(command As String) Implements IASL.SendCommand
+        SendCommand(command, 0)
+    End Sub
+
+    Public Sub SendCommand(command As String, elapsedTime As Integer) Implements IASLTimer.SendCommand
         ' The processing of commands is done in a separate thread, so things like the "enter" command can
         ' lock the thread while waiting for further input. After starting to process the command, we wait
         ' for something to happen before returning from the SendCommand call - either the command will have
@@ -13252,11 +13258,13 @@ ErrorHandler:
         runnerThread.Start(command)
 
         WaitForStateChange(State.Working)
-    End Sub
 
-    Public Sub SendCommand(command As String, elapsedTime As Integer) Implements IASLTimer.SendCommand
-        ' TO DO: Keep track of timer ticks
-        SendCommand(command)
+        If elapsedTime > 0 Then
+            Tick(elapsedTime)
+        Else
+            RaiseNextTimerTickRequest()
+        End If
+
     End Sub
 
     Private Sub WaitForStateChange(changedFromState As State)
@@ -13383,9 +13391,11 @@ ErrorHandler:
         Dim i As Integer
         Dim TimerScripts As New List(Of String)
 
+        Debug.Print("Tick: " + elapsedTime.ToString)
+
         For i = 1 To NumberTimers
             If Timers(i).TimerActive Then
-                Timers(i).TimerTicks = Timers(i).TimerTicks + 1
+                Timers(i).TimerTicks = Timers(i).TimerTicks + elapsedTime
 
                 If Timers(i).TimerTicks >= Timers(i).TimerInterval Then
                     Timers(i).TimerTicks = 0
@@ -13396,9 +13406,13 @@ ErrorHandler:
 
         If TimerScripts.Count > 0 Then
             Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf RunTimersInNewThread))
+
+            ChangeState(State.Working)
             runnerThread.Start(TimerScripts)
+            WaitForStateChange(State.Working)
         End If
 
+        RaiseNextTimerTickRequest()
     End Sub
 
     Private Sub RunTimersInNewThread(scripts As Object)
@@ -13413,6 +13427,31 @@ ErrorHandler:
         Next
 
         ChangeState(State.Ready)
+    End Sub
+
+    Private Sub RaiseNextTimerTickRequest()
+
+        Dim anyTimerActive As Boolean = False
+        Dim nextTrigger As Integer = 60
+
+        For i As Integer = 1 To NumberTimers
+            If Timers(i).TimerActive Then
+                anyTimerActive = True
+
+                Dim thisNextTrigger As Integer = Timers(i).TimerInterval - Timers(i).TimerTicks
+                If thisNextTrigger < nextTrigger Then
+                    nextTrigger = thisNextTrigger
+                End If
+            End If
+        Next i
+
+        If Not anyTimerActive Then nextTrigger = 0
+        If m_gameFinished Then nextTrigger = 0
+
+        Debug.Print("RaiseNextTimerTickRequest " + nextTrigger.ToString)
+
+        RaiseEvent RequestNextTimerTick(nextTrigger)
+
     End Sub
 
     Private Sub ChangeState(newState As State)

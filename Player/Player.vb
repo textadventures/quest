@@ -763,10 +763,12 @@ Public Class Player
     End Function
 
     Private Sub m_gameTimer_RequestNextTimerTick(nextTick As Integer) Handles m_gameTimer.RequestNextTimerTick
-        m_sendNextTickEventAfter = nextTick
-        If m_sendNextTickEventAfter > 0 Then
-            m_tickCount = 0
-            tmrTick.Enabled = True
-        End If
+        BeginInvoke(Sub()
+                        m_sendNextTickEventAfter = nextTick
+                        If m_sendNextTickEventAfter > 0 Then
+                            m_tickCount = 0
+                            tmrTick.Enabled = True
+                        End If
+                    End Sub)
     End Sub
 End Class

@@ -446,7 +446,7 @@ function stopTimer() {
 
 function timerTick() {
     tickCount++;
-    if (tickCount > sendNextGameTickerAfter) {
+    if (tickCount >= sendNextGameTickerAfter) {
         $("#fldUITickCount").val(getTickCountAndStopTimer());
         $("#fldUIMsg").val("tick");
         $("#cmdSubmit").click();
