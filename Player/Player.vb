@@ -123,7 +123,6 @@ Public Class Player
 
     Private Sub BeginGame()
         m_initialised = True
-        tmrTick.Enabled = True
         m_game.Begin()
         txtCommand.Focus()
         ctlPlayerHtml.DisableNavigation()

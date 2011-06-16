@@ -14,9 +14,17 @@ namespace AxeSoftware.Quest
         public TimerRunner(WorldModel worldModel)
         {
             m_worldModel = worldModel;
-            foreach (Element timer in m_worldModel.Elements.GetElements(ElementType.Timer))
+            foreach (Element timer in EnabledTimers)
             {
                 timer.Fields[FieldDefinitions.Trigger] = timer.Fields[FieldDefinitions.Interval];
+            }
+        }
+
+        private IEnumerable<Element> EnabledTimers
+        {
+            get
+            {
+                return m_worldModel.Elements.GetElements(ElementType.Timer).Where(t => t.Fields[FieldDefinitions.Enabled]);
             }
         }
 
@@ -45,7 +53,7 @@ namespace AxeSoftware.Quest
 
             List<IScript> scripts = new List<IScript>();
 
-            foreach (Element timer in m_worldModel.Elements.GetElements(ElementType.Timer))
+            foreach (Element timer in EnabledTimers)
             {
                 System.Diagnostics.Debug.Print("{0}: Next trigger at {1}", timer.Name, timer.Fields[FieldDefinitions.Trigger]);
                 if (TimeElapsed >= timer.Fields[FieldDefinitions.Trigger])
@@ -64,13 +72,18 @@ namespace AxeSoftware.Quest
             // TO DO: If no timers enabled, return 0
 
             int nextTrigger = TimeElapsed + 60;
-            foreach (Element timer in m_worldModel.Elements.GetElements(ElementType.Timer))
+            bool enabledTimerExists = false;
+
+            foreach (Element timer in EnabledTimers)
             {
+                enabledTimerExists = true;
                 if (timer.Fields[FieldDefinitions.Trigger] < nextTrigger)
                 {
                     nextTrigger = timer.Fields[FieldDefinitions.Trigger];
                 }
             }
+
+            if (!enabledTimerExists) return 0;
 
             return (nextTrigger - TimeElapsed);
         }

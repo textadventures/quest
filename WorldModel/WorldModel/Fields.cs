@@ -95,6 +95,7 @@ namespace AxeSoftware.Quest
         public static IField<int> TimeElapsed = new FieldDef<int>("timeelapsed");
         public static IField<int> Trigger = new FieldDef<int>("trigger");
         public static IField<int> Interval = new FieldDef<int>("interval");
+        public static IField<bool> Enabled = new FieldDef<bool>("enabled");
     }
 
     public static class MetaFieldDefinitions

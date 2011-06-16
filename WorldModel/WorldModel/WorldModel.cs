@@ -426,6 +426,8 @@ namespace AxeSoftware.Quest
 
                 ChangeThreadState(ThreadState.Ready);
             });
+
+            SendNextTimerRequest();
         }
 
         public List<string> Errors
@@ -485,6 +487,10 @@ namespace AxeSoftware.Quest
             if (elapsedTime > 0)
             {
                 Tick(elapsedTime);
+            }
+            else
+            {
+                SendNextTimerRequest();
             }
         }
 
@@ -1142,7 +1148,14 @@ namespace AxeSoftware.Quest
                 ChangeThreadState(ThreadState.Ready);
             });
 
-            RequestNextTimerTick(m_timerRunner.GetTimeUntilNextTimerRuns());
+            SendNextTimerRequest();
+        }
+
+        private void SendNextTimerRequest()
+        {
+            int next = m_timerRunner.GetTimeUntilNextTimerRuns();
+            RequestNextTimerTick(next);
+            System.Diagnostics.Debug.Print("Request next timer in {0}", next);
         }
     }
 }
