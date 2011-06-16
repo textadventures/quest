@@ -6,6 +6,9 @@ var thisCommand = 0;
 var commandsList = new Array();
 var fluid = false;
 var webPlayer = true;
+var tmrTick = null;
+var tickCount = 0;
+var sendNextGameTickerAfter = 0;
 
 document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     function decode(s) {
@@ -115,6 +118,7 @@ function runCommand() {
 }
 
 function prepareCommand(command) {
+    $("#fldUITickCount").val(getTickCountAndStopTimer());
     $("#fldUIMsg").val("command " + command);
 }
 
@@ -427,4 +431,36 @@ function ASLEvent(event, parameter) {
 
 function disableMainScrollbar() {
     $("#divOutput").css("overflow", "hidden");
+}
+
+function startTimer() {
+    tickCount = 0;
+    tmrTick = setInterval(function () {
+        timerTick();
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(tmrTick);
+}
+
+function timerTick() {
+    tickCount++;
+    if (tickCount > sendNextGameTickerAfter) {
+        $("#fldUITickCount").val(getTickCountAndStopTimer());
+        $("#fldUIMsg").val("tick");
+        $("#cmdSubmit").click();
+    }
+}
+
+function getTickCountAndStopTimer() {
+    stopTimer();
+    return tickCount;
+}
+
+function requestNextTimerTick(seconds) {
+    sendNextGameTickerAfter = seconds;
+    if (sendNextGameTickerAfter > 0) {
+        startTimer();
+    }
 }

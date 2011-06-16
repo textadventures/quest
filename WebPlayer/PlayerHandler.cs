@@ -49,6 +49,12 @@ namespace WebPlayer
             m_controller.Game.UpdateList += UpdateList;
             m_controller.Game.Finished += GameFinished;
 
+            IASLTimer gameTimer = game as IASLTimer;
+            if (gameTimer != null)
+            {
+                gameTimer.RequestNextTimerTick += RequestNextTimerTick;
+            }
+
             bool success = m_controller.Initialise(this, out errors);
             if (success)
             {
@@ -60,6 +66,11 @@ namespace WebPlayer
             }
 
             return success;
+        }
+
+        void RequestNextTimerTick(int seconds)
+        {
+            m_buffer.AddJavaScriptToBuffer("requestNextTimerTick", new IntParameter(seconds));
         }
 
         void GameFinished()
@@ -132,11 +143,11 @@ namespace WebPlayer
             m_buffer.OutputText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" /><br />", url));
         }
 
-        public void SendCommand(string command)
+        public void SendCommand(string command, int tickCount)
         {
             if (m_finished) return;
             Logging.Log.DebugFormat("{0} Command entered: {1}", GameId, command);
-            m_controller.Game.SendCommand(command);
+            m_controller.SendCommand(command, tickCount);
         }
 
         public Action<string, IDictionary<string, string>, bool> ShowMenuDelegate { get; set; }
@@ -209,9 +220,9 @@ namespace WebPlayer
             StopAudio();
         }
 
-        public void Tick()
+        public void Tick(int tickCount)
         {
-            m_controller.Tick();
+            m_controller.GameTimer.Tick(tickCount);
         }
 
         public void EndGame()
@@ -259,11 +270,6 @@ namespace WebPlayer
                     m_finished = value;
                 }
             }
-        }
-
-        public bool UseTimer
-        {
-            get { return m_controller.UseTimer; }
         }
 
         public void LocationUpdated(string location)

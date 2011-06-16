@@ -67,6 +67,15 @@ namespace WebPlayer {
         protected global::System.Web.UI.WebControls.HiddenField fldUIMsg;
         
         /// <summary>
+        /// fldUITickCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField fldUITickCount;
+        
+        /// <summary>
         /// cmdSubmit control.
         /// </summary>
         /// <remarks>
@@ -83,14 +92,5 @@ namespace WebPlayer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.Timer tmrInit;
-        
-        /// <summary>
-        /// tmrTick control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.Timer tmrTick;
     }
 }

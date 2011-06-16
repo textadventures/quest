@@ -80,7 +80,6 @@ namespace WebPlayer
             switch (m_buffer.InitStage)
             {
                 case 1:
-                    tmrTick.Enabled = false;
                     string initialText = LoadGame(Request["file"]);
                     if (m_player == null)
                     {
@@ -96,20 +95,11 @@ namespace WebPlayer
                     break;
                 case 2:
                     tmrInit.Enabled = false;
-                    tmrTick.Enabled = m_player.UseTimer;
 
                     m_player.BeginGame();
                     OutputTextNow(m_player.ClearBuffer());
                     break;
             }
-        }
-
-        protected void TimerTick(object sender, EventArgs e)
-        {
-            if (m_player == null) return;
-            m_player.Tick();
-            string output = m_player.ClearBuffer();
-            if (output.Length > 0) OutputTextNow(output);
         }
 
         private string LoadGame(string gameFile)
@@ -231,13 +221,20 @@ namespace WebPlayer
                 return;
             }
 
+            int tickCount = 0;
+            if (fldUITickCount.Value.Length > 0)
+            {
+                int.TryParse(fldUITickCount.Value, out tickCount);
+                fldUITickCount.Value = "";
+            }
+
             if (fldUIMsg.Value.Length > 0)
             {
                 string[] args = fldUIMsg.Value.Split(new[] { ' ' }, 2);
                 switch (args[0])
                 {
                     case "command":
-                        m_player.SendCommand(args[1]);
+                        m_player.SendCommand(args[1], tickCount);
                         break;
                     case "endwait":
                         m_player.EndWait();
@@ -254,6 +251,10 @@ namespace WebPlayer
                     case "event":
                         SendEvent(args[1]);
                         break;
+                    case "tick":
+                        m_player.Tick(tickCount);
+                        break;
+
                 }
                 fldUIMsg.Value = "";
             }

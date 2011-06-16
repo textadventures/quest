@@ -42,11 +42,6 @@ namespace AxeSoftware.Quest
             m_game.PrintText += m_game_PrintText;
 
             m_gameTimer = m_game as IASLTimer;
-            if (m_gameTimer != null)
-            {
-                // TO DO: Keep track of when the game would like the next timer Tick to be sent
-                //m_gameTimer.UpdateTimer += m_gameTimer_UpdateTimer;
-            }
         }
 
         public bool Initialise(IPlayer player, out List<string> errors)
@@ -305,22 +300,20 @@ namespace AxeSoftware.Quest
             get { return m_game; }
         }
 
-        public void Tick()
+        public IASLTimer GameTimer
         {
-            // TO DO: Keep track of how many seconds have elapsed since the last tick
-            if (m_gameTimer != null) m_gameTimer.Tick(1);
+            get { return m_gameTimer; }
         }
 
-        void m_gameTimer_UpdateTimer(int nextTick)
+        public void SendCommand(string command, int tickCount)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool UseTimer
-        {
-            get
+            if (m_gameTimer != null)
             {
-                return m_gameTimer != null;
+                m_gameTimer.SendCommand(command, tickCount);
+            }
+            else
+            {
+                m_game.SendCommand(command);
             }
         }
 

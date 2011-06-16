@@ -79,6 +79,21 @@ namespace WebPlayer
         }
     }
 
+    internal class IntParameter : IJavaScriptParameter
+    {
+        private int m_param;
+
+        public IntParameter(int param)
+        {
+            m_param = param;
+        }
+
+        public string GetParameter()
+        {
+            return m_param.ToString();
+        }
+    }
+
     internal class OutputBuffer
     {
         private List<string> m_javaScriptBuffer = new List<string>();
