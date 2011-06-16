@@ -1,0 +1,16 @@
+﻿<library>
+  <function name="EnableTimer" parameters="timer">
+    timer.enabled = true
+  </function>
+
+  <function name="DisableTimer" parameters="timer">
+    timer.disabled = true
+  </function>
+
+  <function name="SetTimerInterval" parameters="timer, interval">
+    timer.interval = interval
+  </function>
+  
+  
+  
+</library>

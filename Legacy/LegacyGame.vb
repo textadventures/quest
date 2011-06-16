@@ -13517,8 +13517,6 @@ ErrorHandler:
         Return Nothing
     End Function
 
-    ' TO DO: Use this event to tell the UI when to send the next Tick. Currently we're always ticking every
-    ' second which is unnecessary for most games.
     Public Event RequestNextTimerTick(nextTick As Integer) Implements IASLTimer.RequestNextTimerTick
 
     Public ReadOnly Property OriginalFilename As String Implements IASL.OriginalFilename

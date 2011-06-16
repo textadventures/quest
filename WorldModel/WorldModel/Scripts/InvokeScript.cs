@@ -71,13 +71,13 @@ namespace AxeSoftware.Quest.Scripts
         public override string Save()
         {
             string parameters = (m_parameters == null) ? null : m_parameters.Save();
-            if (!string.IsNullOrEmpty(parameters))
+            if (string.IsNullOrEmpty(parameters))
             {
-                return SaveScript("invoke", m_script.Save(), m_parameters.Save());
+                return SaveScript("invoke", m_script.Save());
             }
             else
             {
-                return SaveScript("invoke", m_script.Save(), m_parameters.Save());
+                return SaveScript("invoke", m_script.Save(), parameters);
             }
         }
 

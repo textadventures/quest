@@ -1127,15 +1127,6 @@ namespace AxeSoftware.Quest
 
         public void Tick(int elapsedTime)
         {
-            // do it in DoInNewThreadAndWait(() => { /*script*/ });
-            // in case a timer wants to ask for input etc.
-
-            // TO DO: This will need testing with multiple timers running
-            // at the same time prompting for input etc... I think we want
-            // to return from this Tick method as soon as something requests
-            // input?? So maybe we want to DoInNewThreadAndWait around the
-            // entire loop
-
             DoInNewThreadAndWait(() =>
             {
                 var scripts = m_timerRunner.TickAndGetScripts(elapsedTime);

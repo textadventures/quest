@@ -5,6 +5,12 @@
       <caption>Timer</caption>
 
       <control>
+        <controltype>checkbox</controltype>
+        <attribute>enabled</attribute>
+        <caption>Start timer when the game begins</caption>
+      </control>
+
+      <control>
         <controltype>number</controltype>
         <attribute>interval</attribute>
         <caption>Interval (sec)</caption>

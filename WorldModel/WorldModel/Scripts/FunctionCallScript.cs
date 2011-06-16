@@ -11,24 +11,45 @@ namespace AxeSoftware.Quest.Scripts
         public IScript Create(string script, Element proc)
         {
             List<IFunction<object>> paramExpressions = null;
-            string procName;
+            string procName, afterParameter;
 
-            string param = Utility.GetParameter(script);
-            if (param == null)
+            string param = Utility.GetParameter(script, out afterParameter);
+            IScript paramScript = null;
+
+            // Handle functions of the form
+            //    SomeFunction (parameter) { script }
+            if (afterParameter != null)
+            {
+                afterParameter = afterParameter.Trim();
+                if (afterParameter.Length > 0)
+                {
+                    string paramScriptString = Utility.GetScript(afterParameter);
+                    paramScript = ScriptFactory.CreateScript(paramScriptString);
+                }
+            }
+
+            if (param == null && paramScript == null)
             {
                 procName = script;
             }
             else
             {
-                List<string> parameters = Utility.SplitParameter(param);
-                procName = script.Substring(0, script.IndexOf('(')).Trim();
-                paramExpressions = new List<IFunction<object>>();
-                if (param.Trim().Length > 0)
+                if (param != null)
                 {
-                    foreach (string s in parameters)
+                    List<string> parameters = Utility.SplitParameter(param);
+                    procName = script.Substring(0, script.IndexOf('(')).Trim();
+                    paramExpressions = new List<IFunction<object>>();
+                    if (param.Trim().Length > 0)
                     {
-                        paramExpressions.Add(new Expression<object>(s, WorldModel));
+                        foreach (string s in parameters)
+                        {
+                            paramExpressions.Add(new Expression<object>(s, WorldModel));
+                        }
                     }
+                }
+                else
+                {
+                    procName = script.Substring(0, script.IndexOfAny(new char[] { '{', ' ' }));
                 }
             }
 
@@ -38,7 +59,7 @@ namespace AxeSoftware.Quest.Scripts
             }
             else
             {
-                return new FunctionCallScript(WorldModel, procName, paramExpressions);
+                return new FunctionCallScript(WorldModel, procName, paramExpressions, paramScript);
             }
         }
 
@@ -57,19 +78,21 @@ namespace AxeSoftware.Quest.Scripts
         private WorldModel m_worldModel;
         private string m_procedure;
         private FunctionCallParameters m_parameters;
+        private IScript m_paramFunction;
 
         public event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
 
         public FunctionCallScript(WorldModel worldModel, string procedure)
-            : this(worldModel, procedure, null)
+            : this(worldModel, procedure, null, null)
         {
         }
 
-        public FunctionCallScript(WorldModel worldModel, string procedure, IList<IFunction<object>> parameters)
+        public FunctionCallScript(WorldModel worldModel, string procedure, IList<IFunction<object>> parameters, IScript paramFunction)
         {
             m_worldModel = worldModel;
             m_procedure = procedure;
             m_parameters = new FunctionCallParameters(worldModel, parameters);
+            m_paramFunction = paramFunction;
 
             m_parameters.ParametersAsQuestList.Added += Parameters_Added;
         }
@@ -85,7 +108,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new FunctionCallScript(m_worldModel, m_procedure, m_parameters == null ? null : m_parameters.Parameters);
+            return new FunctionCallScript(m_worldModel, m_procedure, m_parameters == null ? null : m_parameters.Parameters, m_paramFunction);
         }
 
         public override void Execute(Context c)
@@ -108,6 +131,11 @@ namespace AxeSoftware.Quest.Scripts
                     cnt++;
                 }
 
+                if (m_paramFunction != null)
+                {
+                    paramValues.Add((string)proc.Fields[FieldDefinitions.ParamNames][cnt], m_paramFunction);
+                }
+
                 m_worldModel.RunProcedure(m_procedure, paramValues, false);
             }
         }
@@ -127,7 +155,7 @@ namespace AxeSoftware.Quest.Scripts
                 throw new Exception(string.Format("Unable to save call to function '{0}' - function does not exist", m_procedure));
             }
 
-            if (m_parameters == null || m_parameters.ParametersAsQuestList.Count == 0)
+            if ((m_parameters == null || m_parameters.ParametersAsQuestList.Count == 0) && m_paramFunction == null)
             {
                 return m_procedure;
             }
@@ -137,7 +165,22 @@ namespace AxeSoftware.Quest.Scripts
             {
                 saveParameters.Add(p);
             }
-            return SaveScript(m_procedure, saveParameters.ToArray());
+
+            if (m_paramFunction == null)
+            {
+                return SaveScript(m_procedure, saveParameters.ToArray());
+            }
+            else
+            {
+                if (saveParameters.Count > 0)
+                {
+                    return SaveScript(m_procedure, m_paramFunction, saveParameters.ToArray());
+                }
+                else
+                {
+                    return SaveScript(m_procedure + "()", m_paramFunction);
+                }
+            }
         }
 
         public override object GetParameter(int index)
