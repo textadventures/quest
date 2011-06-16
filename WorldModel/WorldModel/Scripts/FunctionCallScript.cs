@@ -113,7 +113,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void Execute(Context c)
         {
-            if (m_parameters.Parameters == null || m_parameters.Parameters.Count == 0)
+            if ((m_parameters.Parameters == null || m_parameters.Parameters.Count == 0) && m_paramFunction == null)
             {
                 m_worldModel.RunProcedure(m_procedure);
             }
