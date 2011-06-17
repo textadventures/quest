@@ -264,12 +264,12 @@ namespace AxeSoftware.Quest
         }
 
         // these should probably not be on the interface...
-        public override object GetParameter(int index)
+        public override object GetParameter(string index)
         {
             throw new NotImplementedException();
         }
 
-        public override void SetParameter(int index, object value)
+        public override void SetParameter(string index, object value)
         {
             throw new NotImplementedException();
         }

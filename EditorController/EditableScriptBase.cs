@@ -17,8 +17,8 @@ namespace AxeSoftware.Quest
 
         public abstract string DisplayString(int index, object newValue);
         public abstract string EditorName { get; set; }
-        public abstract object GetParameter(int index);
-        public abstract void SetParameter(int index, object value);
+        public abstract object GetParameter(string index);
+        public abstract void SetParameter(string index, object value);
         public abstract ScriptType Type { get; }
 
         private IScript m_script;

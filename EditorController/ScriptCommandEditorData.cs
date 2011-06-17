@@ -33,12 +33,12 @@ namespace AxeSoftware.Quest
 
         public object GetAttribute(string attribute)
         {
-            return m_controller.WrapValue(m_script.GetParameter(int.Parse(attribute)));
+            return m_controller.WrapValue(m_script.GetParameter(attribute));
         }
 
         public ValidationResult SetAttribute(string attribute, object value)
         {
-            m_script.SetParameter(int.Parse(attribute), (string)value);
+            m_script.SetParameter(attribute, (string)value);
 
             return new ValidationResult { Valid = true };
         }

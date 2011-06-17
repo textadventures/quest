@@ -49,7 +49,7 @@ namespace AxeSoftware.Quest
                 }
                 else
                 {
-                    value = GetParameter(attributeNum);
+                    value = GetParameter(attributeNum.ToString());
                 }
 
                 if (value is IDataWrapper) value = ((IDataWrapper)value).GetUnderlyingValue();
@@ -108,23 +108,31 @@ namespace AxeSoftware.Quest
             set { m_editorName = value; }
         }
 
-        public override object GetParameter(int index)
+        public override object GetParameter(string index)
         {
             if (EditorName.StartsWith("(function)"))
             {
-                return FunctionCallScript.GetFunctionCallParameter(index);
+                if (index == "script")
+                {
+                    return FunctionCallScript.GetFunctionCallParameterScript();
+                }
+                return FunctionCallScript.GetFunctionCallParameter(int.Parse(index));
             }
-            return Script.GetParameter(index);
+            return Script.GetParameter(int.Parse(index));
         }
 
-        public override void SetParameter(int index, object value)
+        public override void SetParameter(string index, object value)
         {
             if (EditorName.StartsWith("(function)"))
             {
-                FunctionCallScript.SetFunctionCallParameter(index, value);
+                if (index == "script")
+                {
+                    throw new NotImplementedException();
+                }
+                FunctionCallScript.SetFunctionCallParameter(int.Parse(index), value);
                 return;
             }
-            Script.SetParameter(index, value);
+            Script.SetParameter(int.Parse(index), value);
         }
 
         public override ScriptType Type

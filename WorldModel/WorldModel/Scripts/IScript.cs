@@ -70,6 +70,7 @@ namespace AxeSoftware.Quest.Scripts
     {
         object GetFunctionCallParameter(int index);
         void SetFunctionCallParameter(int index, object value);
+        IScript GetFunctionCallParameterScript();
         event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
     }
 

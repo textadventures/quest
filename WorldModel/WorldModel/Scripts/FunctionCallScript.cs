@@ -225,11 +225,11 @@ namespace AxeSoftware.Quest.Scripts
 
         public object GetFunctionCallParameter(int index)
         {
-            if (index == 0 && m_parameters.ParametersAsQuestList.Count == 0)
+            if (index >= m_parameters.ParametersAsQuestList.Count)
             {
                 // In the editor, when a blank function call is created, it will have no parameters, but
                 // if the editor requests a first parameter then we want to return a blank default instead
-                // of throwing an error
+                // of throwing an error.
                 return "";
             }
             return m_parameters.ParametersAsQuestList[index];
@@ -243,6 +243,11 @@ namespace AxeSoftware.Quest.Scripts
                 m_parameters.ParametersAsQuestList.Remove(m_parameters.ParametersAsQuestList[index], UpdateSource.User, index);
             }
             m_parameters.ParametersAsQuestList.Add(value, UpdateSource.User, index);
+        }
+
+        public IScript GetFunctionCallParameterScript()
+        {
+            return m_paramFunction;
         }
     }
 }

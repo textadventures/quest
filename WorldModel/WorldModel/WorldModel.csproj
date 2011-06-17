@@ -179,6 +179,7 @@
     </None>
     <None Include="Core\CoreEditorTimer.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorType.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -79,7 +79,7 @@ namespace EditorControllerTests
                 "msg (\"hello\")",
                 "Print \"hello\"",
                 "Change msg script value",
-                (script) => script.SetParameter(0, "\"new value\""),
+                (script) => script.SetParameter("0", "\"new value\""),
                 "Print \"new value\"");
         }
 
@@ -101,7 +101,7 @@ namespace EditorControllerTests
                 "if (someExpression) { msg (\"Then script\") }",
                 "If (someExpression) Then (Print \"Then script\")",
                 "Change then script",
-                (script) => ((EditableIfScript)script).ThenScript[0].SetParameter(0, "\"new value\""),
+                (script) => ((EditableIfScript)script).ThenScript[0].SetParameter("0", "\"new value\""),
                 "If (someExpression) Then (Print \"new value\")");
         }
 

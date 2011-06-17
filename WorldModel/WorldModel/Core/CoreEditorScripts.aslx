@@ -928,5 +928,73 @@
     </control>
   </editor>
 
+  <editor>
+    <appliesto>(function)SetTimerInterval</appliesto>
+    <display>Set timer #0 interval to #1</display>
+    <category>Timers</category>
+    <create>SetTimerInterval (,1)</create>
+    <add>Set timer interval</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set timer</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+
+      <!-- TO DO: simpleeditor needs to be a dropdown timer list -->
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>interval to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>seconds</caption>
+    </control>
+
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetTimerScript</appliesto>
+    <display>Set timer #0 script</display>
+    <category>Timers</category>
+    <create>SetTimerScript () { }</create>
+    <add>Set timer script</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set timer</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+
+      <!-- TO DO: simpleeditor needs to be a dropdown timer list -->
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>script to</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>script</attribute>
+    </control>
+
+  </editor>
 
 </library>

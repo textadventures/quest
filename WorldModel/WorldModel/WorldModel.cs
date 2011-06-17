@@ -204,6 +204,8 @@ namespace AxeSoftware.Quest
                 Monitor.PulseAll(m_menuLock);
             }
 
+            RequestNextTimerTick(0);
+
             if (Finished != null) Finished();
         }
 
@@ -617,6 +619,7 @@ namespace AxeSoftware.Quest
                     break;
                 case Request.Quit:
                     m_playerUI.Quit();
+                    Finish();
                     break;
                 case Request.FontName:
                     m_playerUI.SetFont(data);
@@ -1169,6 +1172,7 @@ namespace AxeSoftware.Quest
 
         public void Tick(int elapsedTime)
         {
+            if (m_state == GameState.Finished) return;
             DoInNewThreadAndWait(() =>
             {
                 var scripts = m_timerRunner.TickAndGetScripts(elapsedTime);
@@ -1186,6 +1190,7 @@ namespace AxeSoftware.Quest
 
         private void SendNextTimerRequest()
         {
+            if (m_state == GameState.Finished) return;
             int next = m_timerRunner.GetTimeUntilNextTimerRuns();
             RequestNextTimerTick(next);
             System.Diagnostics.Debug.Print("Request next timer in {0}", next);
