@@ -51,12 +51,12 @@ namespace AxeSoftware.Quest
             TimeElapsed += elapsedTime;
         }
 
-        public IEnumerable<IScript> TickAndGetScripts(int elapsedTime)
+        public IDictionary<Element, IScript> TickAndGetScripts(int elapsedTime)
         {
             System.Diagnostics.Debug.Print("Time: {0}", TimeElapsed);
             if (elapsedTime > 0) IncrementTime(elapsedTime);
 
-            List<IScript> scripts = new List<IScript>();
+            Dictionary<Element, IScript> scripts = new Dictionary<Element, IScript>();
 
             foreach (Element timer in EnabledTimers)
             {
@@ -64,7 +64,7 @@ namespace AxeSoftware.Quest
                 if (TimeElapsed >= timer.Fields[FieldDefinitions.Trigger])
                 {
                     System.Diagnostics.Debug.Print("     - TRIGGER");
-                    scripts.Add(timer.Fields[FieldDefinitions.Script]);
+                    scripts.Add(timer, timer.Fields[FieldDefinitions.Script]);
                     timer.Fields[FieldDefinitions.Trigger] += timer.Fields[FieldDefinitions.Interval];
                 }
             }

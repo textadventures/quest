@@ -43,7 +43,7 @@ Public Class DebuggerPane
     End Sub
 
     Private Sub m_game_ObjectsUpdated() Handles m_game.ObjectsUpdated
-        UpdateObjectList()
+        BeginInvoke(Sub() UpdateObjectList())
     End Sub
 
     Friend Property Filter() As String

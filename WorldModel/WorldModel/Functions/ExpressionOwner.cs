@@ -179,6 +179,11 @@ namespace AxeSoftware.Quest.Functions
             return m_worldModel.Object(name);
         }
 
+        public Element GetTimer(string name)
+        {
+            return m_worldModel.Elements.Get(ElementType.Timer, name);
+        }
+
         public string TypeOf(Element obj, string attribute)
         {
             object value = obj.Fields.Get(attribute);
@@ -295,6 +300,11 @@ namespace AxeSoftware.Quest.Functions
         {
             if (filename.Contains("..")) throw new ArgumentOutOfRangeException("Invalid filename");
             return m_worldModel.GetExternalURL(filename);
+        }
+
+        public string GetUniqueElementName(string name)
+        {
+            return m_worldModel.GetUniqueElementName(name);
         }
     }
 }

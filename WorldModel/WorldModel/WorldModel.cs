@@ -1177,9 +1177,9 @@ namespace AxeSoftware.Quest
             {
                 var scripts = m_timerRunner.TickAndGetScripts(elapsedTime);
 
-                foreach (IScript script in scripts)
+                foreach (var timerScript in scripts)
                 {
-                    RunScript(script);
+                    RunScript(timerScript.Value, timerScript.Key);
                 }
 
                 ChangeThreadState(ThreadState.Ready);

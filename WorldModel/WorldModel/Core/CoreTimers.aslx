@@ -15,5 +15,19 @@
   <function name="SetTimerScript" parameters="timer, script">
     timer.script = script
   </function>
+
+  <function name="SetTimeout" parameters="interval, script">
+    timername = GetUniqueElementName("timeout")
+    create timer (timername)
+    timer = GetTimer(timername)
+    SetTimerInterval(timer, interval)
+    timer.timeoutscript = script
+    SetTimerScript(timer) {
+      this.enabled = false
+      invoke (this.timeoutscript)
+      destroy (this.name)
+    }
+    EnableTimer(timer)
+  </function>
   
 </library>

@@ -168,4 +168,68 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
     }
+
+    public class CreateTimerScriptConstructor : ScriptConstructorBase
+    {
+        public override string Keyword
+        {
+            get { return "create timer"; }
+        }
+
+        protected override IScript CreateInt(List<string> parameters)
+        {
+            return new CreateTimerScript(WorldModel, new Expression<string>(parameters[0], WorldModel));
+        }
+
+        protected override int[] ExpectedParameters
+        {
+            get { return new int[] { 1 }; }
+        }
+    }
+
+    public class CreateTimerScript : ScriptBase
+    {
+        private WorldModel m_worldModel;
+        private IFunction<string> m_expr;
+
+        public CreateTimerScript(WorldModel worldModel, IFunction<string> expr)
+        {
+            m_worldModel = worldModel;
+            m_expr = expr;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new CreateTimerScript(m_worldModel, m_expr.Clone());
+        }
+
+
+        public override void Execute(Context c)
+        {
+            m_worldModel.GetElementFactory(ElementType.Timer).Create(m_expr.Execute(c));
+        }
+
+        public override string Save()
+        {
+            return SaveScript("create timer", m_expr.Save());
+        }
+
+        public override string Keyword
+        {
+            get
+            {
+                return "create timer";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            return m_expr.Save();
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            m_expr = new Expression<string>((string)value, m_worldModel);
+        }
+    }
 }

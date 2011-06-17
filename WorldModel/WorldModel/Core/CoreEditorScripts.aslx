@@ -984,4 +984,36 @@
 
   </editor>
 
+  <editor>
+    <appliesto>(function)SetTimeout</appliesto>
+    <display>Run script after #0 seconds</display>
+    <category>Timers</category>
+    <create>SetTimeout (1) { }</create>
+    <add>Run script after a number of seconds</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>After</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>seconds, run</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>script</attribute>
+    </control>
+
+  </editor>
+
+
 </library>

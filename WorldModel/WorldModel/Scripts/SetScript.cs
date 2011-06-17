@@ -21,6 +21,15 @@ namespace AxeSoftware.Quest.Scripts
 
             // hide text within string expressions
             string obscuredScript = Utility.ObscureStrings(script);
+            int bracePos = obscuredScript.IndexOf('{');
+            if (bracePos != -1)
+            {
+                // only want to look for = and => before any other scripts which may
+                // be defined on the same line, for example procedure calls of type
+                //     MyProcedureCall (5) { some other script }
+
+                obscuredScript = obscuredScript.Substring(0, bracePos);
+            }
 
             eqPos = obscuredScript.IndexOf("=>");
             if (eqPos != -1)
