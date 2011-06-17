@@ -46,10 +46,15 @@ namespace AxeSoftware.Quest
             set { GameElement.Fields[FieldDefinitions.TimeElapsed] = value; }
         }
 
-        public IEnumerable<IScript> TickAndGetScripts(int elapsedTime)
+        public void IncrementTime(int elapsedTime)
         {
             TimeElapsed += elapsedTime;
+        }
+
+        public IEnumerable<IScript> TickAndGetScripts(int elapsedTime)
+        {
             System.Diagnostics.Debug.Print("Time: {0}", TimeElapsed);
+            if (elapsedTime > 0) IncrementTime(elapsedTime);
 
             List<IScript> scripts = new List<IScript>();
 
@@ -69,8 +74,6 @@ namespace AxeSoftware.Quest
 
         public int GetTimeUntilNextTimerRuns()
         {
-            // TO DO: If no timers enabled, return 0
-
             int nextTrigger = TimeElapsed + 60;
             bool enabledTimerExists = false;
 

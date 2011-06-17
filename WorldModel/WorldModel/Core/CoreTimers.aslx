@@ -1,16 +1,19 @@
 ﻿<library>
   <function name="EnableTimer" parameters="timer">
     timer.enabled = true
+    timer.trigger = game.timeelapsed + timer.interval
   </function>
 
   <function name="DisableTimer" parameters="timer">
-    timer.disabled = true
+    timer.enabled = false
   </function>
 
   <function name="SetTimerInterval" parameters="timer, interval">
     timer.interval = interval
   </function>
-  
-  
+
+  <function name="SetTimerScript" parameters="timer, script">
+    timer.script = script
+  </function>
   
 </library>

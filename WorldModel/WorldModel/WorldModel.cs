@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using AxeSoftware.Quest.Scripts;
+using System.Linq;
 
 namespace AxeSoftware.Quest
 {
@@ -39,6 +40,7 @@ namespace AxeSoftware.Quest
         private string m_libFolder = null;
         private List<string> m_errors;
         private Dictionary<string, ObjectType> m_debuggerObjectTypes = new Dictionary<string, ObjectType>();
+        private Dictionary<string, ElementType> m_debuggerElementTypes = new Dictionary<string, ElementType>();
         private GameState m_state = GameState.NotStarted;
         private Dictionary<ElementType, IElementFactory> m_elementFactories = new Dictionary<ElementType, IElementFactory>();
         private ObjectFactory m_objectFactory;
@@ -178,6 +180,7 @@ namespace AxeSoftware.Quest
             m_debuggerObjectTypes.Add("Exits", ObjectType.Exit);
             m_debuggerObjectTypes.Add("Commands", ObjectType.Command);
             m_debuggerObjectTypes.Add("Game", ObjectType.Game);
+            m_debuggerElementTypes.Add("Timers", ElementType.Timer);
         }
 
         public void FinishGame()
@@ -342,6 +345,27 @@ namespace AxeSoftware.Quest
             return m_elements.ContainsKey(ElementType.Object, name);
         }
 
+        /// <summary>
+        /// Attempt to resolve an element name from elements which are eligible for expression,
+        /// i.e. objects and timers
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool TryResolveExpressionElement(string name, out Element element)
+        {
+            element = null;
+            if (!m_elements.ContainsKey(name)) return false;
+
+            Element result = m_elements.Get(name);
+            if (result.ElemType == ElementType.Object || result.ElemType == ElementType.Timer)
+            {
+                element = result;
+                return true;
+            }
+
+            return false;
+        }
+
         internal void RemoveElement(ElementType type, string name)
         {
             m_elements.Remove(type, name);
@@ -445,11 +469,16 @@ namespace AxeSoftware.Quest
 
         public List<string> DebuggerObjectTypes
         {
-            get { return new List<string>(m_debuggerObjectTypes.Keys); }
+            get { return new List<string>(m_debuggerObjectTypes.Keys.Union(m_debuggerElementTypes.Keys)); }
         }
 
         public void SendCommand(string command, int elapsedTime)
         {
+            if (elapsedTime > 0)
+            {
+                m_timerRunner.IncrementTime(elapsedTime);
+            }
+
             DoInNewThreadAndWait(() =>
             {
                 if (!m_commandOverride)
@@ -486,7 +515,9 @@ namespace AxeSoftware.Quest
 
             if (elapsedTime > 0)
             {
-                Tick(elapsedTime);
+                // we increase the timer counter above, before the command has been run,
+                // so we pass in 0 here
+                Tick(0);
             }
             else
             {
@@ -674,10 +705,21 @@ namespace AxeSoftware.Quest
 
         public List<string> GetObjects(string type)
         {
-            ObjectType filterType = m_debuggerObjectTypes[type];
             List<string> result = new List<string>();
+            IEnumerable<Element> elements;
 
-            foreach (Element obj in m_elements.ObjectsFiltered(o => o.Type == filterType))
+            if (m_debuggerObjectTypes.ContainsKey(type))
+            {
+                ObjectType filterType = m_debuggerObjectTypes[type];
+                elements = m_elements.ObjectsFiltered(o => o.Type == filterType);
+            }
+            else
+            {
+                ElementType filterType = m_debuggerElementTypes[type];
+                elements = m_elements.GetElements(filterType);
+            }
+
+            foreach (Element obj in elements)
             {
                 result.Add(obj.Name);
             }

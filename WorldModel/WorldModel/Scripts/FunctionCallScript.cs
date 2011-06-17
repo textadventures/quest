@@ -95,6 +95,7 @@ namespace AxeSoftware.Quest.Scripts
             m_paramFunction = paramFunction;
 
             m_parameters.ParametersAsQuestList.Added += Parameters_Added;
+            m_parameters.ParametersAsQuestList.Removed += Parameters_Removed;
         }
 
         void Parameters_Added(object sender, QuestListUpdatedEventArgs<string> e)
@@ -104,6 +105,17 @@ namespace AxeSoftware.Quest.Scripts
             // index), we assume that any Added event is really an update.
 
             FunctionCallParametersUpdated(this, new ScriptUpdatedEventArgs(e.Index, e.UpdatedItem));
+        }
+
+        void Parameters_Removed(object sender, QuestListUpdatedEventArgs<string> e)
+        {
+            // the only time we care about a parameter being removed is if it's the first parameter being
+            // deleted. Everything else should simply be a Remove followed by an Add, and we handle the
+            // Add above.
+            if (e.Index == 0)
+            {
+                FunctionCallParametersUpdated(this, new ScriptUpdatedEventArgs(e.Index, string.Empty));
+            }
         }
 
         protected override ScriptBase CloneScript()
@@ -213,12 +225,23 @@ namespace AxeSoftware.Quest.Scripts
 
         public object GetFunctionCallParameter(int index)
         {
+            if (index == 0 && m_parameters.ParametersAsQuestList.Count == 0)
+            {
+                // In the editor, when a blank function call is created, it will have no parameters, but
+                // if the editor requests a first parameter then we want to return a blank default instead
+                // of throwing an error
+                return "";
+            }
             return m_parameters.ParametersAsQuestList[index];
         }
 
         public void SetFunctionCallParameter(int index, object value)
         {
-            m_parameters.ParametersAsQuestList.Remove(m_parameters.ParametersAsQuestList[index], UpdateSource.User, index);
+            if (!(index == 0 && m_parameters.ParametersAsQuestList.Count == 0))
+            {
+                // In the editor, when a blank function call is created, it will have no parameters
+                m_parameters.ParametersAsQuestList.Remove(m_parameters.ParametersAsQuestList[index], UpdateSource.User, index);
+            }
             m_parameters.ParametersAsQuestList.Add(value, UpdateSource.User, index);
         }
     }

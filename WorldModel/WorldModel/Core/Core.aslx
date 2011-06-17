@@ -15,6 +15,7 @@
   <include ref="CoreScopes.aslx"/>
   <include ref="CoreTypes.aslx"/>
   <include ref="CoreDescriptions.aslx"/>
+  <include ref="CoreTimers.aslx"/>
   <include ref="CoreEditor.aslx"/>
 
   <javascript src="Frame.js"/>

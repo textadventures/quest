@@ -101,9 +101,10 @@ namespace AxeSoftware.Quest.Functions
             }
             else
             {
-                if (m_worldModel.ObjectExists(name))
+                Element result;
+                if (m_worldModel.TryResolveExpressionElement(name, out result))
                 {
-                    return m_worldModel.Object(name);
+                    return result;
                 }
                 else
                 {
@@ -135,9 +136,11 @@ namespace AxeSoftware.Quest.Functions
         {
             string obj;
             Utility.ResolveVariableName(name, out obj, out variable);
-            if (m_worldModel.ObjectExists(name))
+
+            Element result;
+            if (m_worldModel.TryResolveExpressionElement(name, out result))
             {
-                fields = m_worldModel.Object(obj).Fields;
+                fields = result.Fields;
             }
             else
             {

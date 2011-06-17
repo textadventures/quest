@@ -885,4 +885,48 @@
       <caption>End transaction</caption>
     </control>
   </editor>
+  
+  <!-- Timers -->
+
+  <editor>
+    <appliesto>(function)EnableTimer</appliesto>
+    <display>Enable timer #0</display>
+    <category>Timers</category>
+    <create>EnableTimer ()</create>
+    <add>Enable timer</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Enable timer</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      
+      <!-- TO DO: simpleeditor needs to be a dropdown timer list -->
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DisableTimer</appliesto>
+    <display>Disable timer #0</display>
+    <category>Timers</category>
+    <create>DisableTimer ()</create>
+    <add>Disable timer</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Disable timer</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+
+      <!-- TO DO: simpleeditor needs to be a dropdown timer list -->
+    </control>
+  </editor>
+
+
 </library>

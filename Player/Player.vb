@@ -606,7 +606,7 @@ Public Class Player
     Private Sub tmrTick_Tick(sender As System.Object, e As System.EventArgs) Handles tmrTick.Tick
         If Not m_gameTimer Is Nothing Then
             m_tickCount += 1
-            If m_tickCount >= m_sendNextTickEventAfter Then
+            If m_sendNextTickEventAfter > 0 AndAlso m_tickCount >= m_sendNextTickEventAfter Then
                 m_gameTimer.Tick(GetTickCountAndStopTimer())
             End If
         End If
@@ -765,10 +765,8 @@ Public Class Player
     Private Sub m_gameTimer_RequestNextTimerTick(nextTick As Integer) Handles m_gameTimer.RequestNextTimerTick
         BeginInvoke(Sub()
                         m_sendNextTickEventAfter = nextTick
-                        If m_sendNextTickEventAfter > 0 Then
-                            m_tickCount = 0
-                            tmrTick.Enabled = True
-                        End If
+                        m_tickCount = 0
+                        tmrTick.Enabled = True
                     End Sub)
     End Sub
 End Class
