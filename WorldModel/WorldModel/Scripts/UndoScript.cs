@@ -40,7 +40,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void Execute(Context c)
         {
-            m_worldModel.UndoLogger.Undo();
+            m_worldModel.UndoLogger.RollbackTransaction();
         }
 
         public override string Save()
@@ -103,7 +103,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void Execute(Context c)
         {
-            m_worldModel.UndoLogger.StartTransaction(m_command.Execute(c));
+            m_worldModel.UndoLogger.RollTransaction(m_command.Execute(c));
         }
 
         public override string Save()
@@ -127,67 +127,6 @@ namespace AxeSoftware.Quest.Scripts
         public override void SetParameterInternal(int index, object value)
         {
             m_command = new Expression<string>((string)value, m_worldModel);
-        }
-    }
-
-    public class EndTransactionConstructor : ScriptConstructorBase
-    {
-        public override string Keyword
-        {
-            get { return "end transaction"; }
-        }
-
-        protected override IScript CreateInt(List<string> parameters)
-        {
-            return new EndTransactionScript(WorldModel);
-        }
-
-        protected override int[] ExpectedParameters
-        {
-            get { return new int[] { 0 }; }
-        }
-    }
-
-    public class EndTransactionScript : ScriptBase
-    {
-        private WorldModel m_worldModel;
-
-        public EndTransactionScript(WorldModel worldModel)
-        {
-            m_worldModel = worldModel;
-        }
-
-        protected override ScriptBase CloneScript()
-        {
-            return new EndTransactionScript(m_worldModel);
-        }
-
-        public override void Execute(Context c)
-        {
-            m_worldModel.UndoLogger.EndTransaction();
-        }
-
-        public override string Save()
-        {
-            return "end transaction";
-        }
-
-        public override string Keyword
-        {
-            get
-            {
-                return "end transaction";
-            }
-        }
-
-        public override object GetParameter(int index)
-        {
-            throw new ArgumentOutOfRangeException();
-        }
-
-        public override void SetParameterInternal(int index, object value)
-        {
-            throw new ArgumentOutOfRangeException();
         }
     }
 }

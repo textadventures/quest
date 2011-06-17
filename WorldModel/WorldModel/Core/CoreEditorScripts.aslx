@@ -873,19 +873,6 @@
     </control>
   </editor>
 
-  <editor>
-    <appliesto>end transaction</appliesto>
-    <display>End transaction</display>
-    <category>Game State</category>
-    <add>End transaction</add>
-    <create>end transaction</create>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>End transaction</caption>
-    </control>
-  </editor>
-  
   <!-- Timers -->
 
   <editor>

@@ -67,6 +67,8 @@ namespace AxeSoftware.Quest
             {
                 get { return m_command; }
             }
+
+            public Transaction PreviousTransaction { get; set; }
         }
 
         private bool m_logging = false;
@@ -85,7 +87,13 @@ namespace AxeSoftware.Quest
         {
             if (m_logging) throw new Exception("Starting transaction when previous transaction not finished");
             m_logging = true;
+            Transaction previousTransaction = null;
+            if (m_currentTransaction != null)
+            {
+                previousTransaction = (m_currentTransaction.Count > 0) ? m_currentTransaction : m_currentTransaction.PreviousTransaction;
+            }
             m_currentTransaction = new Transaction(command);
+            m_currentTransaction.PreviousTransaction = previousTransaction;
         }
 
         public void EndTransaction()
@@ -99,6 +107,12 @@ namespace AxeSoftware.Quest
             OnTransactionsUpdated();
         }
 
+        public void RollTransaction(string command)
+        {
+            if (m_currentTransaction != null) EndTransaction();
+            StartTransaction(command);
+        }
+
         private void OnTransactionsUpdated()
         {
             if (TransactionsUpdated != null) TransactionsUpdated(this, new EventArgs());
@@ -107,6 +121,16 @@ namespace AxeSoftware.Quest
         internal void AddUndoAction(IUndoAction action)
         {
             if (m_logging) m_currentTransaction.AddUndoAction(action);
+        }
+
+        public void RollbackTransaction()
+        {
+            if (m_currentTransaction != null) EndTransaction();
+            Undo();
+            if (m_currentTransaction != null)
+            {
+                m_currentTransaction = m_currentTransaction.PreviousTransaction;
+            }
         }
 
         public void Undo()

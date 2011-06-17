@@ -133,9 +133,6 @@
           start transaction (command)
         }
         do (candidate, "script", resolvedobjects)
-        if (not GetBoolean(candidate, "isundo")) {
-          end transaction
-        }
       }
       else {
         if (HasString(candidate, "unresolved")) {
