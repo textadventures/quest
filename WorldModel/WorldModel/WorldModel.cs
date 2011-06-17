@@ -445,10 +445,7 @@ namespace AxeSoftware.Quest
                     Print(string.Format("Loaded saved game in {0}", m_saveFilename));
                     Print(string.Format("  (original game at {0})", m_filename));
                 }
-                else
-                {
-                    m_timerRunner = new TimerRunner(this);
-                }
+                m_timerRunner = new TimerRunner(this, !m_loadedFromSaved);
 
                 ChangeThreadState(ThreadState.Ready);
             });

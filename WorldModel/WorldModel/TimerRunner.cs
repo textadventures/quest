@@ -11,12 +11,17 @@ namespace AxeSoftware.Quest
         private WorldModel m_worldModel;
         private Element m_gameElement;
 
-        public TimerRunner(WorldModel worldModel)
+        public TimerRunner(WorldModel worldModel, bool initialise)
         {
             m_worldModel = worldModel;
-            foreach (Element timer in EnabledTimers)
+            if (initialise)
             {
-                timer.Fields[FieldDefinitions.Trigger] = timer.Fields[FieldDefinitions.Interval];
+                // When a game begins, set initial triggers. We don't need to do this when loading
+                // a saved game.
+                foreach (Element timer in EnabledTimers)
+                {
+                    timer.Fields[FieldDefinitions.Trigger] = timer.Fields[FieldDefinitions.Interval];
+                }
             }
         }
 
