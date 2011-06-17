@@ -204,7 +204,7 @@ namespace AxeSoftware.Quest
                 Monitor.PulseAll(m_menuLock);
             }
 
-            RequestNextTimerTick(0);
+            if (RequestNextTimerTick != null) RequestNextTimerTick(0);
 
             if (Finished != null) Finished();
         }
