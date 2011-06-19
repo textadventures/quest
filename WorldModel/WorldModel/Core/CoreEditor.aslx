@@ -6,6 +6,8 @@
   <implied element="control" property="filters" type="stringdictionary"/>
   <implied element="control" property="editors" type="stringdictionary"/>
 
+  <template name="EditorImageFormats">*.jpg;*.jpeg;*.png;*.gif</template>
+
   <type name="editor_room"/>
   <type name="editor_object"/>
 

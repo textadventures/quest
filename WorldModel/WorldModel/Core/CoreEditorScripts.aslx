@@ -38,7 +38,7 @@
       <attribute>0</attribute>
       <simple>filename</simple>
       <simpleeditor>file</simpleeditor>
-      <source>*.jpg</source>
+      <source>[EditorImageFormats]</source>
       <filefiltername>Picture Files</filefiltername>
     </control>
   </editor>
@@ -60,7 +60,7 @@
       <attribute>0</attribute>
       <simple>filename</simple>
       <simpleeditor>file</simpleeditor>
-      <source>*.jpg</source>
+      <source>[EditorImageFormats]</source>
       <filefiltername>Picture Files</filefiltername>
     </control>
   </editor>
