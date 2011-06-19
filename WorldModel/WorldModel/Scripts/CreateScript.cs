@@ -232,4 +232,67 @@ namespace AxeSoftware.Quest.Scripts
             m_expr = new Expression<string>((string)value, m_worldModel);
         }
     }
+
+    public class CreateTurnScriptConstructor : ScriptConstructorBase
+    {
+        public override string Keyword
+        {
+            get { return "create turnscript"; }
+        }
+
+        protected override IScript CreateInt(List<string> parameters)
+        {
+            return new CreateTurnScript(WorldModel, new Expression<string>(parameters[0], WorldModel));
+        }
+
+        protected override int[] ExpectedParameters
+        {
+            get { return new int[] { 1 }; }
+        }
+    }
+
+    public class CreateTurnScript : ScriptBase
+    {
+        private WorldModel m_worldModel;
+        private IFunction<string> m_expr;
+
+        public CreateTurnScript(WorldModel worldModel, IFunction<string> expr)
+        {
+            m_worldModel = worldModel;
+            m_expr = expr;
+        }
+
+        protected override ScriptBase CloneScript()
+        {
+            return new CreateTurnScript(m_worldModel, m_expr.Clone());
+        }
+
+        public override void Execute(Context c)
+        {
+            m_worldModel.ObjectFactory.CreateTurnScript(m_expr.Execute(c), null);
+        }
+
+        public override string Save()
+        {
+            return SaveScript("create turnscript", m_expr.Save());
+        }
+
+        public override string Keyword
+        {
+            get
+            {
+                return "create turnscript";
+            }
+        }
+
+        public override object GetParameter(int index)
+        {
+            return m_expr.Save();
+        }
+
+        public override void SetParameterInternal(int index, object value)
+        {
+            m_expr = new Expression<string>((string)value, m_worldModel);
+        }
+    }
 }

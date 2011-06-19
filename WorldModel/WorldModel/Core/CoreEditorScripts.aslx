@@ -1015,5 +1015,108 @@
 
   </editor>
 
+  <!-- Turn Scripts -->
+
+  <editor>
+    <appliesto>(function)EnableTurnScript</appliesto>
+    <display>Enable turn script #0</display>
+    <category>Turn Scripts</category>
+    <create>EnableTurnScript ()</create>
+    <add>Enable turn script</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Enable turn script</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+
+      <!-- TO DO: simpleeditor needs to be a dropdown turnscript list -->
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DisableTurnScript</appliesto>
+    <display>Disable turn script #0</display>
+    <category>Turn Scripts</category>
+    <create>DisableTurnScript ()</create>
+    <add>Disable turn script</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Disable turn script</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+
+      <!-- TO DO: simpleeditor needs to be a dropdown turnscript list -->
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetTurnScript</appliesto>
+    <display>Set turn script #0</display>
+    <category>Turn Scripts</category>
+    <create>SetTurnScript () { }</create>
+    <add>Set turn script</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set turn script</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+
+      <!-- TO DO: simpleeditor needs to be a dropdown turnscript list -->
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>script to</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>script</attribute>
+    </control>
+
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetTurnTimeout</appliesto>
+    <display>Run script after #0 turns</display>
+    <category>Turn Scripts</category>
+    <create>SetTurnTimeout (1) { }</create>
+    <add>Run script after a number of turns</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>After</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>turns, run</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>script</attribute>
+    </control>
+
+  </editor>
 
 </library>
