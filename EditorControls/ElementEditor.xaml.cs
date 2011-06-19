@@ -123,6 +123,7 @@ namespace AxeSoftware.Quest.EditorControls
                 Label newLabel = new Label();
                 m_controlUIElements[ctl].Add(newLabel);
                 newLabel.Content = ctl.Caption + ":";
+                newLabel.Target = newControl;
 
                 if (ctl.Caption.Length > 15)
                 {
