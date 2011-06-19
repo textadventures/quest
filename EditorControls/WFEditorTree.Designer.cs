@@ -52,10 +52,11 @@
             this.AddVerbToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddFunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddWalkthroughToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlTreeView = new System.Windows.Forms.TreeView();
-            this.addTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addTurnScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlToolStrip.SuspendLayout();
             this.pnlSearchContainer.SuspendLayout();
             this.ctlContextMenu.SuspendLayout();
@@ -222,6 +223,7 @@
             this.AddCommandToolStripMenuItem,
             this.AddFunctionToolStripMenuItem,
             this.addTimerToolStripMenuItem,
+            this.addTurnScriptToolStripMenuItem,
             this.AddWalkthroughToolStripMenuItem,
             this.AddLibraryToolStripMenuItem,
             this.AddImpliedTypeToolStripMenuItem,
@@ -232,7 +234,7 @@
             this.AddEditorToolStripMenuItem,
             this.AddJavascriptToolStripMenuItem});
             this.ctlContextMenu.Name = "ctlContextMenu";
-            this.ctlContextMenu.Size = new System.Drawing.Size(200, 378);
+            this.ctlContextMenu.Size = new System.Drawing.Size(200, 400);
             // 
             // AddExitToolStripMenuItem
             // 
@@ -262,6 +264,13 @@
             this.AddFunctionToolStripMenuItem.Tag = "addfunction";
             this.AddFunctionToolStripMenuItem.Text = "Add Function";
             // 
+            // addTimerToolStripMenuItem
+            // 
+            this.addTimerToolStripMenuItem.Name = "addTimerToolStripMenuItem";
+            this.addTimerToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.addTimerToolStripMenuItem.Tag = "addtimer";
+            this.addTimerToolStripMenuItem.Text = "Add Timer";
+            // 
             // AddWalkthroughToolStripMenuItem
             // 
             this.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem";
@@ -287,12 +296,12 @@
             this.ctlTreeView.Size = new System.Drawing.Size(289, 292);
             this.ctlTreeView.TabIndex = 7;
             // 
-            // addTimerToolStripMenuItem
+            // addTurnScriptToolStripMenuItem
             // 
-            this.addTimerToolStripMenuItem.Name = "addTimerToolStripMenuItem";
-            this.addTimerToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.addTimerToolStripMenuItem.Tag = "addtimer";
-            this.addTimerToolStripMenuItem.Text = "Add Timer";
+            this.addTurnScriptToolStripMenuItem.Name = "addTurnScriptToolStripMenuItem";
+            this.addTurnScriptToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.addTurnScriptToolStripMenuItem.Tag = "addturnscript";
+            this.addTurnScriptToolStripMenuItem.Text = "Add Turn Script";
             // 
             // WFEditorTree
             // 
@@ -342,5 +351,6 @@
         internal System.Windows.Forms.ToolStripMenuItem AddLibraryToolStripMenuItem;
         internal System.Windows.Forms.TreeView ctlTreeView;
         private System.Windows.Forms.ToolStripMenuItem addTimerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addTurnScriptToolStripMenuItem;
     }
 }

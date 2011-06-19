@@ -227,6 +227,7 @@ namespace AxeSoftware.Quest
             if (e.Attribute == "anonymous"
                 || e.Element.Type == ObjectType.Exit && (e.Attribute == "to" || e.Attribute == "name")
                 || e.Element.Type == ObjectType.Command && (e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
+                || e.Element.Type == ObjectType.TurnScript && (e.Attribute == "name")
                 || e.Element.ElemType == ElementType.IncludedLibrary && (e.Attribute == "filename")
                 || e.Element.ElemType == ElementType.Template && (e.Attribute == "templatename")
                 || e.Element.ElemType == ElementType.Javascript && (e.Attribute == "src"))
@@ -449,6 +450,8 @@ namespace AxeSoftware.Quest
                                 EditorCommandPattern pattern = e.Fields.GetAsType<EditorCommandPattern>("pattern");
                                 bool isVerb = e.Fields.GetAsType<bool>("isverb");
                                 return (isVerb ? "Verb" : "Command") + ": " + (pattern == null ? "(blank)" : pattern.Pattern);
+                            case ObjectType.TurnScript:
+                                return "Turn script";
                         }
                         break;
                     case ElementType.Walkthrough:
@@ -998,6 +1001,11 @@ namespace AxeSoftware.Quest
         public string CreateNewExit(string parent)
         {
             return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit);
+        }
+
+        public string CreateNewTurnScript(string parent)
+        {
+            return CreateNewAnonymousObject(parent, "turn script", ObjectType.TurnScript);
         }
 
         public string CreateNewCommand(string parent)

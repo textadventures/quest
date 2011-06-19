@@ -65,6 +65,7 @@
         menu.AddMenuClickHandler("addcommand", AddressOf AddNewCommand)
         menu.AddMenuClickHandler("addfunction", AddressOf AddNewFunction)
         menu.AddMenuClickHandler("addtimer", AddressOf AddNewTimer)
+        menu.AddMenuClickHandler("addturnscript", AddressOf AddNewTurnScript)
         menu.AddMenuClickHandler("addwalkthrough", AddressOf AddNewWalkthrough)
         menu.AddMenuClickHandler("addlibrary", AddressOf AddNewLibrary)
         menu.AddMenuClickHandler("addimpliedtype", AddressOf AddNewImpliedType)
@@ -115,6 +116,7 @@
         ctlTree.AddMenuClickHandler("addcommand", AddressOf AddNewCommand)
         ctlTree.AddMenuClickHandler("addfunction", AddressOf AddNewFunction)
         ctlTree.AddMenuClickHandler("addtimer", AddressOf AddNewTimer)
+        ctlTree.AddMenuClickHandler("addturnscript", AddressOf AddNewTurnScript)
         ctlTree.AddMenuClickHandler("addwalkthrough", AddressOf AddNewWalkthrough)
         ctlTree.AddMenuClickHandler("addlibrary", AddressOf AddNewLibrary)
         ctlTree.AddMenuClickHandler("addimpliedtype", AddressOf AddNewImpliedType)
@@ -452,6 +454,11 @@
 
     Private Sub AddNewTimer()
         AddNewElement("timer", AddressOf m_controller.CreateNewTimer)
+    End Sub
+
+    Private Sub AddNewTurnScript()
+        Dim newTurnScript = m_controller.CreateNewTurnScript(GetParentForCurrentSelection())
+        ctlTree.SetSelectedItem(newTurnScript)
     End Sub
 
     Private Sub AddNewWalkthrough()

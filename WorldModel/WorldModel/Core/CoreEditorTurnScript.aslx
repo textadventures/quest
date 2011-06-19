@@ -1,0 +1,26 @@
+﻿<library>
+  <editor>
+    <appliesto>turnscript</appliesto>
+    <tab>
+      <caption>Turn Script</caption>
+
+      <control>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
+        <caption>Name</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>enabled</attribute>
+        <caption>Enabled when the game begins</caption>
+      </control>
+
+      <control>
+        <controltype>script</controltype>
+        <attribute>script</attribute>
+        <caption>Script</caption>
+      </control>
+    </tab>
+  </editor>
+</library>
