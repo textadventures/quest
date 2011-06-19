@@ -35,6 +35,7 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("viewhelp", AddressOf Help)
         ctlMenu.AddMenuClickHandler("forums", AddressOf Forums)
         ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
+        ctlMenu.AddMenuClickHandler("fullscreen", AddressOf GoFullScreen)
     End Sub
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
@@ -42,6 +43,7 @@ Public Class Main
     End Sub
 
     Private Sub ctlPlayer_Quit() Handles ctlPlayer.Quit
+        FullScreen = False
         If m_playingEditorGame Then
             ctlPlayer.Visible = False
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Editor
@@ -224,6 +226,12 @@ Public Class Main
         End If
     End Sub
 
+    Private Sub Main_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.Escape AndAlso FullScreen Then
+            FullScreen = False
+        End If
+    End Sub
+
     Private Sub Main_KeyPress(sender As Object, e As System.Windows.Forms.KeyPressEventArgs) Handles Me.KeyPress
         e.Handled = ctlPlayer.KeyPressed()
     End Sub
@@ -291,4 +299,26 @@ Public Class Main
         End Try
     End Sub
 
+    Private Sub GoFullScreen()
+        FullScreen = True
+        ctlPlayer.ShowExitFullScreenButton()
+    End Sub
+
+    Private m_fullScreen As Boolean
+
+    Public Property FullScreen As Boolean
+        Get
+            Return m_fullScreen
+        End Get
+        Set(value As Boolean)
+            m_fullScreen = value
+            Me.FormBorderStyle = If(m_fullScreen, Windows.Forms.FormBorderStyle.None, Windows.Forms.FormBorderStyle.Sizable)
+            Me.WindowState = If(m_fullScreen, FormWindowState.Maximized, FormWindowState.Normal)
+            ctlMenu.Visible = Not m_fullScreen
+        End Set
+    End Property
+
+    Private Sub ctlPlayer_ExitFullScreen() Handles ctlPlayer.ExitFullScreen
+        FullScreen = False
+    End Sub
 End Class

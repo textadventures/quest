@@ -34,6 +34,7 @@ Public Class Player
     Public Event AddToRecent(filename As String, name As String)
     Public Event GameNameSet(name As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
+    Public Event ExitFullScreen()
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -72,6 +73,7 @@ Public Class Player
         SetCommandVisible(True)
         SetLocationVisible(True)
         SetStatusText("")
+        cmdFullScreen.Visible = False
         m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
         m_menu.ClearWindowMenu()
         m_game = game
@@ -768,5 +770,14 @@ Public Class Player
                         m_tickCount = 0
                         tmrTick.Enabled = True
                     End Sub)
+    End Sub
+
+    Private Sub cmdFullScreen_Click(sender As System.Object, e As System.EventArgs) Handles cmdFullScreen.Click
+        RaiseEvent ExitFullScreen()
+        cmdFullScreen.Visible = False
+    End Sub
+
+    Public Sub ShowExitFullScreenButton()
+        cmdFullScreen.Visible = True
     End Sub
 End Class
