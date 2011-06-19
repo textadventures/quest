@@ -2,7 +2,17 @@
   <function name="RunTurnScripts">
     foreach (turnscript, AllTurnScripts()) {
       if (turnscript.enabled) {
-        invoke (turnscript.script)
+        inscope = false
+        if (turnscript.parent = game or turnscript.parent = null) {
+          inscope = true
+        } else {
+          if (Contains(turnscript.parent, player)) {
+            inscope = true
+          }
+        }
+        if (inscope) {
+          invoke (turnscript.script)
+        }
       }
     }
   </function>
