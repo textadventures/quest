@@ -1898,6 +1898,7 @@
 		<row><td>coreeditordynamictemplate.as</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorDynamicTemplate.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorDynamicTemplate.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorelements.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorElements.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorElements.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorexit.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorExit.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorExit.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditorexpressions.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorExpressions.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorExpressions.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorfunction.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorFunction.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorFunction.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorgame.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorGame.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorGame.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorincludedlibrary.as</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorIncludedLibrary.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorIncludedLibrary.aslx</td><td>1</td><td/></row>
@@ -1905,17 +1906,24 @@
 		<row><td>coreeditorobject.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObject.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorObject.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorscripts.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorScripts.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditortemplate.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorTemplate.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorTemplate.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditortimer.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorTimer.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorTimer.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditorturnscript.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorTurnScript.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorTurnScript.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditortype.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorType.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorType.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorverb.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorVerb.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorVerb.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorwalkthrough.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorWalkthrough.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreEditorWalkthrough.aslx</td><td>1</td><td/></row>
 		<row><td>coreparser.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREPA~1.ASL|CoreParser.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreParser.aslx</td><td>1</td><td/></row>
 		<row><td>corescopes.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORESC~1.ASL|CoreScopes.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreScopes.aslx</td><td>1</td><td/></row>
+		<row><td>coretimers.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORETI~1.ASL|CoreTimers.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreTimers.aslx</td><td>1</td><td/></row>
+		<row><td>coreturnscripts.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORETU~1.ASL|CoreTurnScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreTurnScripts.aslx</td><td>1</td><td/></row>
 		<row><td>coretypes.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORETY~1.ASL|CoreTypes.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\CoreTypes.aslx</td><td>1</td><td/></row>
 		<row><td>desktopplayer.js</td><td>ISX_DEFAULTCOMPONENT</td><td>DESKTO~1.JS|desktopplayer.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\Player\desktopplayer.js</td><td>1</td><td/></row>
 		<row><td>deutsch.aslx2</td><td>ISX_DEFAULTCOMPONENT1</td><td>DEUTSC~1.ASL|Deutsch.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\Languages\Deutsch.aslx</td><td>1</td><td/></row>
 		<row><td>deutsch.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>DEUTSC~1.TEM|Deutsch.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\Templates\Deutsch.template</td><td>1</td><td/></row>
 		<row><td>english.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>ENGLIS~1.ASL|English.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\English.aslx</td><td>1</td><td/></row>
+		<row><td>english.template</td><td>ISX_DEFAULTCOMPONENT</td><td>ENGLIS~1.TEM|English.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\English.template</td><td>1</td><td/></row>
 		<row><td>english.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>ENGLIS~1.TEM|English.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\English.template</td><td>1</td><td/></row>
+		<row><td>frame.htm</td><td>ISX_DEFAULTCOMPONENT</td><td>Frame.htm</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\Frame.htm</td><td>1</td><td/></row>
+		<row><td>frame.js</td><td>ISX_DEFAULTCOMPONENT</td><td>Frame.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\WorldModel\WorldModel\Core\Frame.js</td><td>1</td><td/></row>
 		<row><td>jjmenu.css</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\Player\jjmenu.css</td><td>1</td><td/></row>
 		<row><td>jjmenu.js</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\Player\jjmenu.js</td><td>1</td><td/></row>
 		<row><td>jquery_1.5.1.js</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-1.5.1.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\trunk\Player\jquery-1.5.1.js</td><td>1</td><td/></row>
@@ -4020,11 +4028,11 @@
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
 		<row><td>NewShortcut1_551763055A9D49AE8E08E9D6221C46CC.exe</td><td/><td>C:\VBProjects\Quest (CodePlex)\trunk\Quest\q2_48x48c.ico</td><td>0</td></row>
-		<row><td>_0A1AAAA3_0CA3_404F_910C_9154E597BD09</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_5A81DCDB_21FE_4146_B440_D321A2335D22</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_652A03BB_EA6F_4B17_A009_80EEBA4ADDC8</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_6CA88A13_4152_4B67_AE17_FB9BA99E02E3</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_80B27429_02EA_4B6B_ADAB_F2209DEBD1E3</td><td/><td>C:\Users\Alex\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_0A1AAAA3_0CA3_404F_910C_9154E597BD09</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_5A81DCDB_21FE_4146_B440_D321A2335D22</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_652A03BB_EA6F_4B17_A009_80EEBA4ADDC8</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_6CA88A13_4152_4B67_AE17_FB9BA99E02E3</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_80B27429_02EA_4B6B_ADAB_F2209DEBD1E3</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4538,7 +4546,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{06E540E6-6B2F-4FFD-85B1-C82C4934D30B}</td><td/></row>
+		<row><td>ProductCode</td><td>{D98B8A2C-9D8F-4447-BA85-5EE8837051D1}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
 		<row><td>ProductVersion</td><td>5.00.0001</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
