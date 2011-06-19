@@ -143,6 +143,17 @@ namespace AxeSoftware.Quest.Functions
             return result;
         }
 
+        public QuestList<Element> AllTurnScripts()
+        {
+            QuestList<Element> result = new QuestList<Element>();
+
+            foreach (Element item in m_worldModel.GetAllObjects().Where(o => o.Type == ObjectType.TurnScript))
+            {
+                result.Add(item);
+            }
+            return result;
+        }
+
         public QuestList<Element> AllCommands()
         {
             QuestList<Element> result = new QuestList<Element>();

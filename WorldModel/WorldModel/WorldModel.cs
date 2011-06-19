@@ -102,6 +102,7 @@ namespace AxeSoftware.Quest
             s_defaultTypeNames.Add(ObjectType.Exit, "defaultexit");
             s_defaultTypeNames.Add(ObjectType.Command, "defaultcommand");
             s_defaultTypeNames.Add(ObjectType.Game, "defaultgame");
+            s_defaultTypeNames.Add(ObjectType.TurnScript, "defaultturnscript");
 
             s_typeNamesToTypes.Add("string", typeof(string));
             s_typeNamesToTypes.Add("script", typeof(IScript));
@@ -180,6 +181,7 @@ namespace AxeSoftware.Quest
             m_debuggerObjectTypes.Add("Exits", ObjectType.Exit);
             m_debuggerObjectTypes.Add("Commands", ObjectType.Command);
             m_debuggerObjectTypes.Add("Game", ObjectType.Game);
+            m_debuggerObjectTypes.Add("Turn Scripts", ObjectType.TurnScript);
             m_debuggerElementTypes.Add("Timers", ElementType.Timer);
         }
 

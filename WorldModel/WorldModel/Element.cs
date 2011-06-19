@@ -54,7 +54,8 @@ namespace AxeSoftware.Quest
         Object,
         Exit,
         Command,
-        Game
+        Game,
+        TurnScript
     }
 
     public class Element
@@ -79,6 +80,7 @@ namespace AxeSoftware.Quest
             s_typeStrings.Add(ObjectType.Exit, "exit");
             s_typeStrings.Add(ObjectType.Command, "command");
             s_typeStrings.Add(ObjectType.Game, "game");
+            s_typeStrings.Add(ObjectType.TurnScript, "turnscript");
 
             s_mapObjectTypeStringsToElementType = new Dictionary<string, ObjectType>();
             foreach (var item in s_typeStrings)

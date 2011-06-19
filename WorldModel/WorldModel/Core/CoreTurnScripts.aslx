@@ -1,0 +1,9 @@
+﻿<library>
+  <function name="RunTurnScripts">
+    foreach (turnscript, AllTurnScripts()) {
+      if (turnscript.enabled) {
+        invoke (turnscript.script)
+      }
+    }
+  </function>
+</library>

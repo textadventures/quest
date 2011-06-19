@@ -517,6 +517,25 @@ namespace AxeSoftware.Quest
             protected override bool CanContainNestedAttributes { get { return true; } }
         }
 
+        private class TurnScriptLoader : XMLLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "turnscript"; }
+            }
+
+            public override object Load(XmlReader reader, ref Element current)
+            {
+                string id = reader.GetAttribute("name");
+                Element newElement;
+                newElement = WorldModel.ObjectFactory.CreateTurnScript(id, current);
+
+                return newElement;
+            }
+
+            protected override bool CanContainNestedAttributes { get { return true; } }
+        }
+
         private class TypeLoader : XMLLoaderBase
         {
             public override string AppliesTo

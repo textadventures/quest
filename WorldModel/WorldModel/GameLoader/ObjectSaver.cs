@@ -305,6 +305,35 @@ namespace AxeSoftware.Quest
                     writer.WriteEndElement();
                 }
             }
+
+            private class TurnScriptElementSaver : ObjectSaverBase
+            {
+                public TurnScriptElementSaver()
+                {
+                    AddIgnoreField("anonymous");
+                }
+
+                public override ObjectType AppliesTo
+                {
+                    get { return ObjectType.TurnScript; }
+                }
+
+                public override void StartSave(GameXmlWriter writer, Element e)
+                {
+                    writer.WriteStartElement("turnscript");
+                    if (!e.Fields[FieldDefinitions.Anonymous])
+                    {
+                        writer.WriteAttributeString("name", e.Name);
+                    }
+                    ObjectSaver.SaveFields(writer, e);
+                }
+
+                public override void EndSave(GameXmlWriter writer, Element e)
+                {
+                    writer.WriteEndElement();
+                }
+            }
+
         }
     }
 }

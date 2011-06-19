@@ -343,6 +343,24 @@ namespace AxeSoftware.Quest
             return newCommand;
         }
 
+        public Element CreateTurnScript(string id, Element parent)
+        {
+            bool anonymous = false;
+            if (string.IsNullOrEmpty(id))
+            {
+                anonymous = true;
+                id = WorldModel.GetUniqueID();
+            }
+            Element newTurnScript = CreateObject(id, ObjectType.TurnScript);
+            newTurnScript.Type = ObjectType.TurnScript;
+            newTurnScript.Parent = parent;
+            if (anonymous)
+            {
+                newTurnScript.Fields[FieldDefinitions.Anonymous] = true;
+            }
+            return newTurnScript;
+        }
+
         public Element CreateExit(string exitName, Element fromRoom, Element toRoom)
         {
             string exitID = WorldModel.GetUniqueID("exit");

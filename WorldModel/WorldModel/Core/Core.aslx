@@ -9,6 +9,7 @@
   <implied element="walkthrough" property="steps" type="list"/>
   <implied element="timer" property="interval" type="int"/>
   <implied element="timer" property="script" type="script"/>
+  <implied element="turnscript" property="script" type="script"/>
 
   <include ref="CoreCommands.aslx"/>
   <include ref="CoreParser.aslx"/>
@@ -16,6 +17,7 @@
   <include ref="CoreTypes.aslx"/>
   <include ref="CoreDescriptions.aslx"/>
   <include ref="CoreTimers.aslx"/>
+  <include ref="CoreTurnScripts.aslx"/>
   <include ref="CoreEditor.aslx"/>
 
   <javascript src="Frame.js"/>
