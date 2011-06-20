@@ -565,7 +565,7 @@ namespace AxeSoftware.Quest
             FinishGame();
         }
 
-        public string SaveExtension { get { return "aslx"; } }
+        public string SaveExtension { get { return "quest-save"; } }
 
         public event PrintTextHandler PrintText;
         public event UpdateListHandler UpdateList;

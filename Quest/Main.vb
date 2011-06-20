@@ -89,7 +89,7 @@ Public Class Main
 
         dlgOpenFile.InitialDirectory = startFolder
         dlgOpenFile.Multiselect = False
-        dlgOpenFile.Filter = "Quest Games (*.aslx, *.asl, *.cas, *.qsg)|*.aslx;*.asl;*.cas;*.qsg|All files|*.*"
+        dlgOpenFile.Filter = "Quest Games|*.quest;*.quest-save;*.aslx;*.asl;*.cas;*.qsg|All files|*.*"
         dlgOpenFile.FileName = ""
         dlgOpenFile.ShowDialog()
         If dlgOpenFile.FileName.Length > 0 Then

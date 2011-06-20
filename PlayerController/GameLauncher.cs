@@ -20,6 +20,8 @@ namespace AxeSoftware.Quest
             switch (System.IO.Path.GetExtension(filename).ToLower())
             {
                 case ".aslx":
+                case ".quest":
+                case ".quest-save":
                     return new WorldModel(filename, libraryFolder, originalFilename);
                 case ".asl":
                 case ".cas":

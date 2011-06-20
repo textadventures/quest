@@ -1849,6 +1849,8 @@
 		<row><td>ASLX</td><td>Quest.Primary_output</td><td>aslx.File</td><td/><td>AlwaysInstall</td></row>
 		<row><td>CAS</td><td>Quest.Primary_output</td><td>cas.File</td><td/><td>AlwaysInstall</td></row>
 		<row><td>QSG</td><td>Quest.Primary_output</td><td>qsg.File</td><td/><td>AlwaysInstall</td></row>
+		<row><td>QUEST-SAVE</td><td>ISX_DEFAULTCOMPONENT</td><td>quest-save.File</td><td/><td>AlwaysInstall</td></row>
+		<row><td>QUEST</td><td>ISX_DEFAULTCOMPONENT</td><td>quest.File</td><td/><td>AlwaysInstall</td></row>
 	</table>
 
 	<table name="Feature">
@@ -3926,6 +3928,8 @@
 		<row><td>NEW_STRING2</td><td>1033</td><td>CAS</td><td>0</td><td/><td>-1163966638</td></row>
 		<row><td>NEW_STRING3</td><td>1033</td><td>QSG</td><td>0</td><td/><td>-1163937966</td></row>
 		<row><td>NEW_STRING4</td><td>1033</td><td>ASLX</td><td>0</td><td/><td>-1163933870</td></row>
+		<row><td>NEW_STRING5</td><td>1033</td><td>QUEST</td><td>0</td><td/><td>-1558189940</td></row>
+		<row><td>NEW_STRING6</td><td>1033</td><td>QUEST-SAVE</td><td>0</td><td/><td>-1558247252</td></row>
 	</table>
 
 	<table name="ISTargetImage">
@@ -4029,7 +4033,9 @@
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
 		<row><td>NewShortcut1_551763055A9D49AE8E08E9D6221C46CC.exe</td><td/><td>C:\VBProjects\Quest (CodePlex)\trunk\Quest\q2_48x48c.ico</td><td>0</td></row>
 		<row><td>_0A1AAAA3_0CA3_404F_910C_9154E597BD09</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_199C5D61_F698_4097_9C7D_F69DC4F18F37</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
 		<row><td>_5A81DCDB_21FE_4146_B440_D321A2335D22</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_6113C5EC_4422_4D3F_9820_94420BE89063</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
 		<row><td>_652A03BB_EA6F_4B17_A009_80EEBA4ADDC8</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
 		<row><td>_6CA88A13_4152_4B67_AE17_FB9BA99E02E3</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
 		<row><td>_80B27429_02EA_4B6B_ADAB_F2209DEBD1E3</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
@@ -4469,6 +4475,8 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>aslx.File</td><td/><td/><td>Quest Game</td><td>_5A81DCDB_21FE_4146_B440_D321A2335D22</td><td>0</td><td/></row>
 		<row><td>cas.File</td><td/><td/><td>Quest Game</td><td>_652A03BB_EA6F_4B17_A009_80EEBA4ADDC8</td><td>0</td><td/></row>
 		<row><td>qsg.File</td><td/><td/><td>Quest Saved Game</td><td>_6CA88A13_4152_4B67_AE17_FB9BA99E02E3</td><td>0</td><td/></row>
+		<row><td>quest-save.File</td><td/><td/><td>Quest Saved Game</td><td>_6113C5EC_4422_4D3F_9820_94420BE89063</td><td>0</td><td/></row>
+		<row><td>quest.File</td><td/><td/><td>Quest Game</td><td>_199C5D61_F698_4097_9C7D_F69DC4F18F37</td><td>0</td><td/></row>
 	</table>
 
 	<table name="Property">
@@ -4846,6 +4854,8 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ASLX</td><td>open</td><td/><td/><td>"%1"</td></row>
 		<row><td>CAS</td><td>open</td><td/><td/><td>"%1"</td></row>
 		<row><td>QSG</td><td>open</td><td/><td/><td>"%1"</td></row>
+		<row><td>QUEST-SAVE</td><td>open</td><td/><td/><td>"%1"</td></row>
+		<row><td>QUEST</td><td>open</td><td/><td/><td>"%1"</td></row>
 	</table>
 
 	<table name="_Validation">
