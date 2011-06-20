@@ -1849,8 +1849,8 @@
 		<row><td>ASLX</td><td>Quest.Primary_output</td><td>aslx.File</td><td/><td>AlwaysInstall</td></row>
 		<row><td>CAS</td><td>Quest.Primary_output</td><td>cas.File</td><td/><td>AlwaysInstall</td></row>
 		<row><td>QSG</td><td>Quest.Primary_output</td><td>qsg.File</td><td/><td>AlwaysInstall</td></row>
-		<row><td>QUEST-SAVE</td><td>ISX_DEFAULTCOMPONENT</td><td>quest-save.File</td><td/><td>AlwaysInstall</td></row>
-		<row><td>QUEST</td><td>ISX_DEFAULTCOMPONENT</td><td>quest.File</td><td/><td>AlwaysInstall</td></row>
+		<row><td>QUEST-SAVE</td><td>Quest.Primary_output</td><td>quest-save.File</td><td/><td>AlwaysInstall</td></row>
+		<row><td>QUEST</td><td>Quest.Primary_output</td><td>quest.File</td><td/><td>AlwaysInstall</td></row>
 	</table>
 
 	<table name="Feature">
@@ -4554,7 +4554,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{D98B8A2C-9D8F-4447-BA85-5EE8837051D1}</td><td/></row>
+		<row><td>ProductCode</td><td>{4FFB404D-249E-45CF-80F6-7C3B8EB1A892}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
 		<row><td>ProductVersion</td><td>5.00.0001</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
