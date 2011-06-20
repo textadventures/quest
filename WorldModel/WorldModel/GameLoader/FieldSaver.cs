@@ -75,7 +75,7 @@ namespace AxeSoftware.Quest
             protected void WriteAttribute(GameXmlWriter writer, Element element, string attribute, string type, string value)
             {
                 writer.WriteStartElement(attribute);
-                if (!GameSaver.IsImpliedType(element, attribute, type))
+                if (!GameSaver.IsImpliedType(element, attribute, type) || value.Length == 0)
                 {
                     writer.WriteAttributeString("type", type);
                 }
@@ -98,14 +98,7 @@ namespace AxeSoftware.Quest
             public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
             {
                 string strValue = (string)value;
-                if (strValue.Length > 0)
-                {
-                    writer.WriteElementString(attribute, strValue);
-                }
-                else
-                {
-                    base.WriteAttribute(writer, element, attribute, "string", strValue);
-                }
+                base.WriteAttribute(writer, element, attribute, "string", strValue);
             }
 
             #endregion
@@ -259,7 +252,7 @@ namespace AxeSoftware.Quest
                 }
 
                 QuestDictionary<IScript> dictionary = (QuestDictionary<IScript>)value;
-                
+
                 foreach (var item in dictionary)
                 {
                     writer.WriteStartElement("item");

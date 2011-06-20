@@ -208,7 +208,7 @@ namespace AxeSoftware.Quest
             {
                 return (type == impliedType);
             }
-            return false;
+            return (type == "string");
         }
 
         private string GetImpliedTypeKey(string element, string property)
@@ -302,7 +302,8 @@ namespace AxeSoftware.Quest
 
             public abstract void Save(GameXmlWriter writer, Element e);
 
-            public GameSaver GameSaver {
+            public GameSaver GameSaver
+            {
                 get { return m_gameSaver; }
                 set
                 {
