@@ -102,6 +102,7 @@ namespace AxeSoftware.Quest
     {
         public static IField<string> Filename = new FieldDef<string>("filename");
         public static IField<bool> Library = new FieldDef<bool>("library");
+        public static IField<bool> EditorLibrary = new FieldDef<bool>("editorlibrary");
         public static IField<bool> DelegateImplementation = new FieldDef<bool>("delegateimplementation");
     }
 

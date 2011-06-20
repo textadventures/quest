@@ -13,11 +13,17 @@ namespace AxeSoftware.Quest
             Edit
         }
 
+        private struct FileData
+        {
+            public string Filename;
+            public bool IsEditorLibrary;
+        }
+
         private WorldModel m_worldModel;
         private List<string> m_errors = new List<string>();
         private ScriptFactory m_scriptFactory;
         private ImplicitTypes m_implicitTypes = new ImplicitTypes();
-        private Stack<string> m_currentFile = new Stack<string>();
+        private Stack<FileData> m_currentFile = new Stack<FileData>();
 
         public delegate void FilenameUpdatedHandler(string filename);
         public event FilenameUpdatedHandler FilenameUpdated;
@@ -100,7 +106,18 @@ namespace AxeSoftware.Quest
             Element current = null;
             IXMLLoader currentLoader = null;
 
-            m_currentFile.Push(reader.BaseURI);
+            // Set the "IsEditorLibrary" flag for any library with type="editor", and its sub-libraries
+            bool isEditorLibrary = false;
+            if (m_currentFile.Count > 0 && m_currentFile.Peek().IsEditorLibrary) isEditorLibrary = true;
+            if (reader.GetAttribute("type") == "editor") isEditorLibrary = true;
+
+            FileData data = new FileData
+            {
+                Filename = reader.BaseURI,
+                IsEditorLibrary = isEditorLibrary
+            };
+
+            m_currentFile.Push(data);
 
             while (reader.Read())
             {
@@ -129,8 +146,9 @@ namespace AxeSoftware.Quest
 
         private void AddedElement(Element newElement)
         {
-            newElement.MetaFields[MetaFieldDefinitions.Filename] = m_currentFile.Peek();
+            newElement.MetaFields[MetaFieldDefinitions.Filename] = m_currentFile.Peek().Filename;
             newElement.MetaFields[MetaFieldDefinitions.Library] = (m_currentFile.Count > 1);
+            newElement.MetaFields[MetaFieldDefinitions.EditorLibrary] = (m_currentFile.Peek().IsEditorLibrary);
         }
 
         private IXMLLoader GetLoader(string name, Element current)

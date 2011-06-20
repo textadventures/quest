@@ -1497,5 +1497,11 @@ namespace AxeSoftware.Quest
             if (simplePattern == null) return null;
             return simplePattern.Pattern;
         }
+
+        public ValidationResult Publish(string filename)
+        {
+            m_worldModel.CreatePackage(filename);
+            return new ValidationResult { Valid = true, Message = ValidationMessage.OK };
+        }
     }
 }

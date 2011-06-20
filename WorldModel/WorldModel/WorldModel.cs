@@ -1222,5 +1222,11 @@ namespace AxeSoftware.Quest
                 }
             });
         }
+
+        public void CreatePackage(string filename)
+        {
+            Packager packager = new Packager(this);
+            packager.CreatePackage(filename);
+        }
     }
 }

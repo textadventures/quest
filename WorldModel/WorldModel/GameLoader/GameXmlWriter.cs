@@ -12,9 +12,11 @@ namespace AxeSoftware.Quest
         private XmlWriter m_writer;
         private int m_indentLevel = 0;
         private const string k_indentChars = "  ";
+        private SaveMode m_mode;
 
-        public GameXmlWriter()
+        public GameXmlWriter(SaveMode mode)
         {
+            m_mode = mode;
             m_output = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -95,6 +97,11 @@ namespace AxeSoftware.Quest
         public string IndentChars
         {
             get { return k_indentChars; }
+        }
+
+        public SaveMode Mode
+        {
+            get { return m_mode; }
         }
 
     }

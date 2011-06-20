@@ -53,6 +53,7 @@
         AddMenuData("stop", MenuMode.Player)
         AddMenuData("view", MenuMode.Player)
         AddMenuData("fullscreen", MenuMode.Player)
+        AddMenuData("publish", MenuMode.Editor)
     End Sub
 
     Private Sub AddMenuData(key As String, ParamArray modes() As MenuMode)

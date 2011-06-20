@@ -128,9 +128,9 @@ namespace AxeSoftware.Quest
                 return m_savers[e.Type].CanSaveAttribute(attribute);
             }
 
-            protected override bool CanSaveTypeName(string type, Element e)
+            protected override bool CanSaveTypeName(GameXmlWriter writer, string type, Element e)
             {
-                if (!base.CanSaveTypeName(type, e)) return false;
+                if (!base.CanSaveTypeName(writer, type, e)) return false;
                 if (e.Type == ObjectType.Command && e.Fields[FieldDefinitions.IsVerb] && type == "defaultverb") return false;
                 return true;
             }

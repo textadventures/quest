@@ -81,6 +81,7 @@
         menu.AddMenuClickHandler("copy", AddressOf Copy)
         menu.AddMenuClickHandler("paste", AddressOf Paste)
         menu.AddMenuClickHandler("delete", AddressOf Delete)
+        menu.AddMenuClickHandler("publish", AddressOf Publish)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -821,6 +822,28 @@
         Catch ex As Exception
             MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
         End Try
+    End Sub
+
+    Private Sub Publish()
+        Dim outputFolder As String = System.IO.Path.Combine(
+                System.IO.Path.GetDirectoryName(m_filename),
+                "Output")
+
+        System.IO.Directory.CreateDirectory(outputFolder)
+
+        Dim outputFilename As String = System.IO.Path.Combine(
+                outputFolder,
+                System.IO.Path.GetFileNameWithoutExtension(m_filename) + ".quest")
+
+        Dim result = m_controller.Publish(outputFilename)
+
+        If Not result.Valid Then
+            EditorControls.PopupEditors.DisplayValidationError(result, String.Empty, "Unable to publish game")
+        Else
+            ' Show Output folder in a new Explorer window
+            System.Diagnostics.Process.Start("explorer.exe", "/n," + outputFolder)
+        End If
+
     End Sub
 
 End Class

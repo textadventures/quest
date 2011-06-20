@@ -10,7 +10,8 @@ namespace AxeSoftware.Quest
     public enum SaveMode
     {
         SavedGame,
-        Editor
+        Editor,
+        Package
     }
 
     internal partial class GameSaver
@@ -60,7 +61,7 @@ namespace AxeSoftware.Quest
         public string Save(SaveMode mode)
         {
             m_mode = mode;
-            GameXmlWriter writer = new GameXmlWriter();
+            GameXmlWriter writer = new GameXmlWriter(mode);
 
             UpdateImpliedTypesCache();
 
@@ -114,6 +115,10 @@ namespace AxeSoftware.Quest
                     return true;
                 case SaveMode.Editor:
                     return !e.MetaFields[MetaFieldDefinitions.Library];
+                case SaveMode.Package:
+                    if (e.ElemType == ElementType.IncludedLibrary) return false;
+                    if (e.MetaFields[MetaFieldDefinitions.EditorLibrary]) return false;
+                    return true;
                 default:
                     throw new Exception("SaveMode not implemented");
             }
@@ -247,7 +252,7 @@ namespace AxeSoftware.Quest
             {
                 foreach (Element includedType in e.Fields.Types)
                 {
-                    if (CanSaveTypeName(includedType.Name, e))
+                    if (CanSaveTypeName(writer, includedType.Name, e))
                     {
                         writer.WriteStartElement("inherit");
                         writer.WriteAttributeString("name", includedType.Name);
@@ -274,14 +279,26 @@ namespace AxeSoftware.Quest
                 return !m_ignoreFields.Contains(attribute);
             }
 
-            protected virtual bool CanSaveTypeName(string type, Element e)
+            protected virtual bool CanSaveTypeName(GameXmlWriter writer, string type, Element e)
             {
+                if (writer.Mode == SaveMode.Package)
+                {
+                    if (e.WorldModel.Elements.Get(ElementType.ObjectType, type).MetaFields[MetaFieldDefinitions.EditorLibrary])
+                    {
+                        return false;
+                    }
+                }
                 return !WorldModel.DefaultTypeNames.ContainsValue(type);
             }
 
             #region IElementSaver Members
 
             public abstract ElementType AppliesTo { get; }
+
+            public void Save(GameXmlWriter writer, Element e, SaveMode mode)
+            {
+                Save(writer, e);
+            }
 
             public abstract void Save(GameXmlWriter writer, Element e);
 

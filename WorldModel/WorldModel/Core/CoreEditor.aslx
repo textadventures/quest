@@ -1,4 +1,4 @@
-﻿<library>
+﻿<library type="editor">
 
   <implied element="control" property="height" type="int"/>
   <implied element="control" property="width" type="int"/>

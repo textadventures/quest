@@ -110,6 +110,7 @@
     <Compile Include="GameLoader\GameSaver.cs" />
     <Compile Include="GameLoader\GameXmlWriter.cs" />
     <Compile Include="GameLoader\ObjectSaver.cs" />
+    <Compile Include="GameLoader\Packager.cs" />
     <Compile Include="ObjectFactory.cs" />
     <Compile Include="QuestDictionary.cs" />
     <Compile Include="QuestList.cs" />

@@ -306,5 +306,10 @@ namespace AxeSoftware.Quest
 
             return newElement;
         }
+
+        internal WorldModel WorldModel
+        {
+            get { return m_worldModel; }
+        }
     }
 }
