@@ -398,5 +398,20 @@ namespace AxeSoftware.Quest
                 writer.WriteEndElement();
             }
         }
+
+        private class ResourceSaver : ElementSaverBase
+        {
+            public override ElementType AppliesTo
+            {
+                get { return ElementType.Resource; }
+            }
+
+            public override void Save(GameXmlWriter writer, Element e)
+            {
+                // Resource elements should never need to be saved. They can only
+                // be defined by the Core library and are there for information only
+                // (specifying which additional files to include in a .quest file)
+            }
+        }
     }
 }

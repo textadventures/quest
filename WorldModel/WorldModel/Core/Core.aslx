@@ -20,6 +20,7 @@
   <include ref="CoreTurnScripts.aslx"/>
   <include ref="CoreEditor.aslx"/>
 
+  <resource src="Frame.htm"/>
   <javascript src="Frame.js"/>
 
   <function name="InitInterface">

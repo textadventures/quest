@@ -40,7 +40,8 @@ namespace AxeSoftware.Quest
             ElementType.Delegate,
             ElementType.Editor,
             ElementType.EditorTab,
-            ElementType.EditorControl
+            ElementType.EditorControl,
+            ElementType.Resource
         };
 
         private WorldModel m_worldModel;

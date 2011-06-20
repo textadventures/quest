@@ -22,14 +22,17 @@ namespace AxeSoftware.Quest
             try
             {
                 string data = m_worldModel.Save(SaveMode.Package);
+                string baseFolder = System.IO.Path.GetDirectoryName(m_worldModel.Filename);
 
                 using (ZipFile zip = new ZipFile(filename))
                 {
                     zip.AddEntry("game.aslx", data);
                     foreach (string file in m_worldModel.GetAvailableExternalFiles("*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html"))
                     {
-                        zip.AddFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_worldModel.Filename), file), "");
+                        zip.AddFile(System.IO.Path.Combine(baseFolder, file), "");
                     }
+                    AddLibraryResources(zip, baseFolder, ElementType.Javascript);
+                    AddLibraryResources(zip, baseFolder, ElementType.Resource);
                     zip.Save();
                 }
             }
@@ -40,6 +43,22 @@ namespace AxeSoftware.Quest
             }
 
             return true;
+        }
+
+        private void AddLibraryResources(ZipFile zip, string baseFolder, ElementType elementType)
+        {
+            foreach (Element e in m_worldModel.Elements.GetElements(elementType))
+            {
+                if (e.MetaFields[MetaFieldDefinitions.Library])
+                {
+                    string libFolder = System.IO.Path.GetDirectoryName(e.MetaFields[MetaFieldDefinitions.Filename]);
+                    if (libFolder.StartsWith("file:\\")) libFolder = libFolder.Substring(6);
+                    if (libFolder != baseFolder)
+                    {
+                        zip.AddFile(System.IO.Path.Combine(libFolder, e.Fields[FieldDefinitions.Src]), "");
+                    }
+                }
+            }
         }
     }
 }

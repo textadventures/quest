@@ -525,4 +525,12 @@ namespace AxeSoftware.Quest
             get { return ElementType.Timer; }
         }
     }
+
+    internal class ResourceFactory : ElementFactoryBase
+    {
+        public override ElementType CreateElementType
+        {
+            get { return ElementType.Resource; }
+        }
+    }
 }

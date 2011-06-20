@@ -904,5 +904,28 @@ namespace AxeSoftware.Quest
                 get { return ElementType.Timer; }
             }
         }
+
+        private class ResourceLoader : ElementLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "resource"; }
+            }
+
+            public override ElementType CreateElementType
+            {
+                get { return ElementType.Resource; }
+            }
+
+            public override object Load(XmlReader reader, ref Element current)
+            {
+                Element resourceRef = WorldModel.GetElementFactory(ElementType.Resource).Create();
+                resourceRef.Fields[FieldDefinitions.Anonymous] = true;
+                string file = GameLoader.GetTemplateAttribute(reader, "src");
+                resourceRef.Fields[FieldDefinitions.Src] = file;
+
+                return resourceRef;   
+            }
+        }
     }
 }

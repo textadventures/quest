@@ -295,11 +295,6 @@ namespace AxeSoftware.Quest
 
             public abstract ElementType AppliesTo { get; }
 
-            public void Save(GameXmlWriter writer, Element e, SaveMode mode)
-            {
-                Save(writer, e);
-            }
-
             public abstract void Save(GameXmlWriter writer, Element e);
 
             public GameSaver GameSaver

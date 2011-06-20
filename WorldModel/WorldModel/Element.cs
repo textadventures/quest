@@ -46,6 +46,8 @@ namespace AxeSoftware.Quest
         Javascript,
         [ElementTypeInfo("timer")]
         Timer,
+        [ElementTypeInfo("resource")]
+        Resource,
     }
 
     // These are all sub-types of the "Object" element type

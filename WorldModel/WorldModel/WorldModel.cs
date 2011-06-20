@@ -934,13 +934,19 @@ namespace AxeSoftware.Quest
             string path;
 
             if (TryPath(current, file, out path, false)) return path;
-            if (TryPath(Environment.CurrentDirectory, file, out path, false)) return path;
-            if (m_libFolder != null && TryPath(m_libFolder, file, out path, false)) return path;
-            if (System.Reflection.Assembly.GetEntryAssembly() != null)
+            if (ResourcesFolder == null)
             {
-                if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path, true)) return path;
+                // Only try other folders if we're not using a resource folder (i.e. a .quest file)
+                // Because if we do have a resource folder, all required external files should be there.
+
+                if (TryPath(Environment.CurrentDirectory, file, out path, false)) return path;
+                if (m_libFolder != null && TryPath(m_libFolder, file, out path, false)) return path;
+                if (System.Reflection.Assembly.GetEntryAssembly() != null)
+                {
+                    if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path, true)) return path;
+                }
             }
-            throw new Exception(string.Format("Cannot find a file called '{0}' in current path or application path", file));
+            throw new Exception(string.Format("Cannot find a file called '{0}' in current path or application/resource path", file));
         }
 
         internal string GetExternalURL(string file)
