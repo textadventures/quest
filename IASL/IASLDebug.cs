@@ -13,6 +13,7 @@ namespace AxeSoftware.Quest
 
     public interface IASLDebug
     {
+        bool DebugEnabled { get; }
         event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
         List<string> GetObjects(string type);
         DebugData GetDebugData(string obj);

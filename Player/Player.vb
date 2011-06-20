@@ -74,7 +74,6 @@ Public Class Player
         SetLocationVisible(True)
         SetStatusText("")
         cmdFullScreen.Visible = False
-        m_menu.MenuEnabled("debugger") = TypeOf game Is IASLDebug
         m_menu.ClearWindowMenu()
         m_game = game
         m_gameDebug = TryCast(game, IASLDebug)
@@ -96,6 +95,7 @@ Public Class Player
 
             AddToRecentList()
             m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing AndAlso m_gameDebug.Walkthroughs.Walkthroughs.Count > 0
+            m_menu.MenuEnabled("debugger") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.DebugEnabled
 
             ' If we have external JavaScript files, we need to rebuild the HTML page source and
             ' reload it. Then, only when the page has finished loading, begin the game.

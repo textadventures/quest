@@ -414,6 +414,7 @@ namespace AxeSoftware.Quest
             m_state = GameState.Loading;
             bool success = m_filename == null ? true : loader.Load(m_filename);
             ResourcesFolder = loader.ResourcesFolder;
+            DebugEnabled = !loader.IsCompiledFile;
             m_state = success ? GameState.Running : GameState.Finished;
             m_errors = loader.Errors;
             return success;
@@ -1238,5 +1239,6 @@ namespace AxeSoftware.Quest
         }
 
         public string ResourcesFolder { get; private set; }
+        public bool DebugEnabled { get; private set; }
     }
 }

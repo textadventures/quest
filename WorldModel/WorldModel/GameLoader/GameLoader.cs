@@ -40,12 +40,11 @@ namespace AxeSoftware.Quest
 
         public bool Load(string filename)
         {
+            IsCompiledFile = false;
+
             if (System.IO.Path.GetExtension(filename) == ".quest")
             {
-                PackageReader packageReader = new PackageReader();
-                var result = packageReader.LoadPackage(filename);
-                filename = result.GameFile;
-                ResourcesFolder = result.Folder;
+                filename = LoadCompiledFile(filename);
             }
 
             XmlReader reader = null;
@@ -77,9 +76,7 @@ namespace AxeSoftware.Quest
 
                     if (!string.IsNullOrEmpty(originalFile) && System.IO.Path.GetExtension(originalFile) == ".quest")
                     {
-                        PackageReader packageReader = new PackageReader();
-                        var result = packageReader.LoadPackage(originalFile);
-                        ResourcesFolder = result.Folder;
+                        LoadCompiledFile(originalFile);
                     }
 
                     if (!string.IsNullOrEmpty(originalFile))
@@ -114,6 +111,15 @@ namespace AxeSoftware.Quest
             }
 
             return (m_errors.Count == 0);
+        }
+
+        private string LoadCompiledFile(string filename)
+        {
+            PackageReader packageReader = new PackageReader();
+            var result = packageReader.LoadPackage(filename);
+            ResourcesFolder = result.Folder;
+            IsCompiledFile = true;
+            return result.GameFile;
         }
 
         private void LoadXML(XmlReader reader)
@@ -348,5 +354,6 @@ namespace AxeSoftware.Quest
         }
 
         public string ResourcesFolder { get; set; }
+        public bool IsCompiledFile { get; private set; }
     }
 }
