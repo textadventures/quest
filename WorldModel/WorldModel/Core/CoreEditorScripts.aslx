@@ -1013,6 +1013,25 @@
       <attribute>script</attribute>
     </control>
 
+    <editor>
+      <appliesto>create timer</appliesto>
+      <display>Create timer named #0</display>
+      <category>Timers</category>
+      <create>create timer ("")</create>
+      <add>Create a timer</add>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>Create timer</caption>
+      </control>
+
+      <control>
+        <controltype>expression</controltype>
+        <attribute>0</attribute>
+        <simple>name</simple>
+      </control>
+    </editor>
+
   </editor>
 
   <!-- Turn Scripts -->
@@ -1116,6 +1135,25 @@
       <controltype>script</controltype>
       <attribute>script</attribute>
     </control>
+
+    <editor>
+      <appliesto>create turnscript</appliesto>
+      <display>Create turn script named #0</display>
+      <category>Turn Scripts</category>
+      <create>create turnscript ("")</create>
+      <add>Create a turn script</add>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>Create turn script</caption>
+      </control>
+
+      <control>
+        <controltype>expression</controltype>
+        <attribute>0</attribute>
+        <simple>name</simple>
+      </control>
+    </editor>
 
   </editor>
 

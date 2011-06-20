@@ -176,8 +176,17 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Load(string filename)
         {
-            textEditor.Load(filename);
-            Initialise();
+            if (System.IO.File.Exists(filename))
+            {
+                textEditor.IsEnabled = true;
+                textEditor.Load(filename);
+                Initialise();
+            }
+            else
+            {
+                textEditor.Text = "";
+                textEditor.IsEnabled = false;
+            }
         }
 
         public void Save(string filename)

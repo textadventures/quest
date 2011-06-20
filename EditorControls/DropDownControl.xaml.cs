@@ -91,7 +91,23 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (data == null) return;
             m_helper.StartPopulating();
-            lstDropdown.Text = m_helper.Populate(data);
+            if (m_dictionary != null)
+            {
+                string value = m_helper.Populate(data) ?? string.Empty;
+                string dropdownValue;
+                if (m_dictionary.TryGetValue(value, out dropdownValue))
+                {
+                    lstDropdown.Text = dropdownValue;
+                }
+                else
+                {
+                    lstDropdown.Text = string.Empty;
+                }
+            }
+            else
+            {
+                lstDropdown.Text = m_helper.Populate(data);
+            }
             lstDropdown.IsEnabled = m_helper.CanEdit(data) && !data.ReadOnly;
             m_helper.FinishedPopulating();
         }

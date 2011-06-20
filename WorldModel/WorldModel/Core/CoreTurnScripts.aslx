@@ -30,7 +30,6 @@
   </function>
 
   <function name="SetTurnTimeout" parameters="turncount, script">
-    msg ("timeout set")
     turnscriptname = GetUniqueElementName("turnscript")
     create turnscript (turnscriptname)
     turnscript = GetObject(turnscriptname)
