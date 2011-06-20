@@ -43,7 +43,9 @@ namespace AxeSoftware.Quest
             if (System.IO.Path.GetExtension(filename) == ".quest")
             {
                 PackageReader packageReader = new PackageReader();
-                filename = packageReader.LoadPackage(filename);
+                var result = packageReader.LoadPackage(filename);
+                filename = result.GameFile;
+                ResourcesFolder = result.Folder;
             }
 
             XmlReader reader = null;
@@ -337,5 +339,7 @@ namespace AxeSoftware.Quest
                 return element + "~" + property;
             }
         }
+
+        public string ResourcesFolder { get; set; }
     }
 }

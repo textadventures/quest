@@ -26,6 +26,10 @@ namespace AxeSoftware.Quest
                 using (ZipFile zip = new ZipFile(filename))
                 {
                     zip.AddEntry("game.aslx", data);
+                    foreach (string file in m_worldModel.GetAvailableExternalFiles("*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html"))
+                    {
+                        zip.AddFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_worldModel.Filename), file), "");
+                    }
                     zip.Save();
                 }
             }

@@ -413,6 +413,7 @@ namespace AxeSoftware.Quest
             loader.FilenameUpdated += new GameLoader.FilenameUpdatedHandler(loader_FilenameUpdated);
             m_state = GameState.Loading;
             bool success = m_filename == null ? true : loader.Load(m_filename);
+            ResourcesFolder = loader.ResourcesFolder;
             m_state = success ? GameState.Running : GameState.Finished;
             m_errors = loader.Errors;
             return success;
@@ -924,7 +925,8 @@ namespace AxeSoftware.Quest
 
         public string GetExternalPath(string file)
         {
-            return GetExternalPath(System.IO.Path.GetDirectoryName(Filename), file);
+            string resourcesFolder = ResourcesFolder ?? System.IO.Path.GetDirectoryName(Filename);
+            return GetExternalPath(resourcesFolder, file);
         }
 
         private string GetExternalPath(string current, string file)
@@ -1228,5 +1230,7 @@ namespace AxeSoftware.Quest
             Packager packager = new Packager(this);
             return packager.CreatePackage(filename, out error);
         }
+
+        public string ResourcesFolder { get; private set; }
     }
 }

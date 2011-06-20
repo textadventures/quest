@@ -9,17 +9,28 @@ namespace AxeSoftware.Quest
 {
     internal class PackageReader
     {
-        public string LoadPackage(string filename)
+        public class ReadResult
         {
+            public string GameFile;
+            public string Folder;
+        }
+
+        public ReadResult LoadPackage(string filename)
+        {
+            ReadResult result = new ReadResult();
             string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString(), Path.GetFileNameWithoutExtension(filename));
             Directory.CreateDirectory(tempDir);
             ZipFile zip = ZipFile.Read(filename);
             zip.ExtractAll(tempDir);
-            string result = Path.Combine(tempDir, "game.aslx");
-            if (!File.Exists(result))
+
+            result.Folder = tempDir;
+            result.GameFile = Path.Combine(tempDir, "game.aslx");
+
+            if (!File.Exists(result.GameFile))
             {
                 throw new InvalidDataException("Invalid game file");
             }
+
             return result;
         }
     }
