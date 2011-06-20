@@ -75,6 +75,13 @@ namespace AxeSoftware.Quest
 
                     string originalFile = reader.GetAttribute("original");
 
+                    if (!string.IsNullOrEmpty(originalFile) && System.IO.Path.GetExtension(originalFile) == ".quest")
+                    {
+                        PackageReader packageReader = new PackageReader();
+                        var result = packageReader.LoadPackage(originalFile);
+                        ResourcesFolder = result.Folder;
+                    }
+
                     if (!string.IsNullOrEmpty(originalFile))
                     {
                         FilenameUpdated(originalFile);
