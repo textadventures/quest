@@ -19,13 +19,15 @@ namespace AxeSoftware.Quest
         OK,
         ItemAlreadyExists,
         ElementAlreadyExists,
-        InvalidAttributeName
+        InvalidAttributeName,
+        ExceptionOccurred
     }
 
     public struct ValidationResult
     {
         public bool Valid;
         public ValidationMessage Message;
+        public string MessageData;
     }
 
     public class EditorController : IDisposable
@@ -1500,8 +1502,15 @@ namespace AxeSoftware.Quest
 
         public ValidationResult Publish(string filename)
         {
-            m_worldModel.CreatePackage(filename);
-            return new ValidationResult { Valid = true, Message = ValidationMessage.OK };
+            string error;
+            if (m_worldModel.CreatePackage(filename, out error))
+            {
+                return new ValidationResult { Valid = true, Message = ValidationMessage.OK };
+            }
+            else
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.ExceptionOccurred, MessageData = error };
+            }
         }
     }
 }

@@ -15,15 +15,27 @@ namespace AxeSoftware.Quest
             m_worldModel = worldModel;
         }
 
-        public void CreatePackage(string filename)
+        public bool CreatePackage(string filename, out string error)
         {
-            string data = m_worldModel.Save(SaveMode.Package);
+            error = string.Empty;
 
-            using (ZipFile zip = new ZipFile(filename))
+            try
             {
-                zip.AddEntry("game.aslx", data);
-                zip.Save();
+                string data = m_worldModel.Save(SaveMode.Package);
+
+                using (ZipFile zip = new ZipFile(filename))
+                {
+                    zip.AddEntry("game.aslx", data);
+                    zip.Save();
+                }
             }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
+
+            return true;
         }
     }
 }

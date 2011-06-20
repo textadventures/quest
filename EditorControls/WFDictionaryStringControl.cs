@@ -145,7 +145,7 @@ namespace AxeSoftware.Quest.EditorControls
             var result = m_list.CanAdd(input);
             if (result.Valid) return true;
 
-            MessageBox.Show(PopupEditors.GetError(result.Message, input), "Unable to add item", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            PopupEditors.DisplayValidationError(result, input, "Unable to add item");
             return false;
         }
 

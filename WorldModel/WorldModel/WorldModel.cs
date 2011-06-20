@@ -1223,10 +1223,10 @@ namespace AxeSoftware.Quest
             });
         }
 
-        public void CreatePackage(string filename)
+        public bool CreatePackage(string filename, out string error)
         {
             Packager packager = new Packager(this);
-            packager.CreatePackage(filename);
+            return packager.CreatePackage(filename, out error);
         }
     }
 }

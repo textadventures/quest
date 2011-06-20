@@ -22,6 +22,7 @@ namespace AxeSoftware.Quest.EditorControls
 		    {ValidationMessage.ItemAlreadyExists,"Item '{0}' already exists in the list"},
 		    {ValidationMessage.ElementAlreadyExists,"An element called '{0}' already exists in this game"},
             {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
+            {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"}
         };
 
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null)
@@ -62,14 +63,14 @@ namespace AxeSoftware.Quest.EditorControls
             return result;
         }
 
-        public static string GetError(ValidationMessage validationMessage, string item)
+        private static string GetError(ValidationMessage validationMessage, string item, string data)
         {
-            return string.Format(s_validationMessages[validationMessage], item);
+            return string.Format(s_validationMessages[validationMessage], item, data);
         }
 
         public static void DisplayValidationError(ValidationResult result, string input, string title)
         {
-            MessageBox.Show(PopupEditors.GetError(result.Message, input), title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(GetError(result.Message, input, result.MessageData), title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         public static void EditScript(EditorController controller, ref IEditableScripts scripts, string attribute, string element, bool isReadOnly, Action dirtyAction)

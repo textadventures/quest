@@ -121,7 +121,7 @@ namespace AxeSoftware.Quest.EditorControls
             if (!result.Valid)
             {
                 string errorValue = newValue as string;
-                MessageBox.Show(PopupEditors.GetError(result.Message, errorValue), string.Format("Unable to set '{0}'", ControlDefinition.Caption), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                PopupEditors.DisplayValidationError(result, errorValue, string.Format("Unable to set '{0}'", ControlDefinition.Caption));
             }
 
             if (m_data.IsDirectlySaveable)
