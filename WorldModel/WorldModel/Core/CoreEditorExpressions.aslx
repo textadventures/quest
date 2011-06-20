@@ -130,7 +130,25 @@
     </control>
   </editor>
 
+  <editor>
+    <pattern>RandomChance(#percentile#)</pattern>
+    <create>RandomChance(50)</create>
+    <description>random chance</description>
+    <expressiontype>if</expressiontype>
 
+    <control>
+      <controltype>expression</controltype>
+      <simple>percentage</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>percentile</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>% of the time</caption>
+    </control>
+  </editor>
+  
   <!-- Templates for "set" -->
 
   <editor>
@@ -166,6 +184,38 @@
     <create>NewObjectDictionary()</create>
     <description>new object dictionary</description>
     <expressiontype>set</expressiontype>
+  </editor>
+
+  <editor>
+    <pattern>GetRandomInt(#min#,#max#)</pattern>
+    <create>GetRandomInt(1,10)</create>
+    <description>random number</description>
+    <expressiontype>set</expressiontype>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>between</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>min</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>and</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>max</attribute>
+    </control>
+
   </editor>
   
   <!-- Templates for "foreach" -->

@@ -75,6 +75,12 @@
     ]]>
   </function>
 
+  <function name="RandomChance" parameters="percentile" type="boolean">
+    <![CDATA[
+    return (GetRandomInt(0,100) < percentile)
+    ]]>
+  </function>
+
   <object name="player">
     <alias>me</alias>
     <alt>myself; self</alt>

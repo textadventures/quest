@@ -10,6 +10,7 @@ namespace AxeSoftware.Quest.Functions
     internal class ExpressionOwner
     {
         private WorldModel m_worldModel;
+        private Random m_random = new Random();
 
         public ExpressionOwner(WorldModel worldModel)
         {
@@ -321,6 +322,16 @@ namespace AxeSoftware.Quest.Functions
         public bool Ask(string caption)
         {
             return m_worldModel.ShowQuestion(caption);
+        }
+
+        public int GetRandomInt(int min, int max)
+        {
+            return m_random.Next(min, max);
+        }
+
+        public double GetRandomDouble()
+        {
+            return m_random.NextDouble();
         }
     }
 }
