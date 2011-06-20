@@ -201,9 +201,9 @@ namespace AxeSoftware.Quest
                 Monitor.PulseAll(m_threadLock);
             }
 
-            lock (m_menuLock)
+            lock (m_waitForResponseLock)
             {
-                Monitor.PulseAll(m_menuLock);
+                Monitor.PulseAll(m_waitForResponseLock);
             }
 
             if (RequestNextTimerTick != null) RequestNextTimerTick(0);
@@ -288,7 +288,7 @@ namespace AxeSoftware.Quest
             return ObjectContains(parent, searchObj.Parent);
         }
 
-        private object m_menuLock = new object();
+        private object m_waitForResponseLock = new object();
         private string m_menuResponse = null;
 
         internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel)
@@ -299,9 +299,9 @@ namespace AxeSoftware.Quest
 
             ChangeThreadState(ThreadState.Waiting);
 
-            lock (m_menuLock)
+            lock (m_waitForResponseLock)
             {
-                Monitor.Wait(m_menuLock);
+                Monitor.Wait(m_waitForResponseLock);
             }
 
             ChangeThreadState(ThreadState.Working);
@@ -325,15 +325,12 @@ namespace AxeSoftware.Quest
             {
                 m_menuResponse = response;
 
-                lock (m_menuLock)
+                lock (m_waitForResponseLock)
                 {
-                    Monitor.Pulse(m_menuLock);
+                    Monitor.Pulse(m_waitForResponseLock);
                 }
             });
         }
-
-        // This is actually currently not needed, as we don't have an "if ask" equivalent for Quest 5.0 games.
-        public void SetQuestionResponse(bool response) { }
 
         public IEnumerable<Element> Objects
         {
@@ -1193,6 +1190,37 @@ namespace AxeSoftware.Quest
             int next = m_timerRunner.GetTimeUntilNextTimerRuns();
             RequestNextTimerTick(next);
             System.Diagnostics.Debug.Print("Request next timer in {0}", next);
+        }
+
+        private bool m_questionResponse;
+
+        internal bool ShowQuestion(string caption)
+        {
+            m_playerUI.ShowQuestion(caption);
+
+            ChangeThreadState(ThreadState.Waiting);
+
+            lock (m_waitForResponseLock)
+            {
+                Monitor.Wait(m_waitForResponseLock);
+            }
+
+            ChangeThreadState(ThreadState.Working);
+
+            return m_questionResponse;
+        }
+
+        public void SetQuestionResponse(bool response)
+        {
+            DoInNewThreadAndWait(() =>
+            {
+                m_questionResponse = response;
+
+                lock (m_waitForResponseLock)
+                {
+                    Monitor.Pulse(m_waitForResponseLock);
+                }
+            });
         }
     }
 }

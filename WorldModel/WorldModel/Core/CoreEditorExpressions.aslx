@@ -116,7 +116,21 @@
     </control>
 
   </editor>
-  
+
+  <editor>
+    <pattern>Ask(#question#)</pattern>
+    <create>Ask("")</create>
+    <description>the player answers "Yes" to</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>question</simple>
+      <attribute>question</attribute>
+    </control>
+  </editor>
+
+
   <!-- Templates for "set" -->
 
   <editor>

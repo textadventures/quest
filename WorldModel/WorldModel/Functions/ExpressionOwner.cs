@@ -317,5 +317,10 @@ namespace AxeSoftware.Quest.Functions
         {
             return m_worldModel.GetUniqueElementName(name);
         }
+
+        public bool Ask(string caption)
+        {
+            return m_worldModel.ShowQuestion(caption);
+        }
     }
 }
