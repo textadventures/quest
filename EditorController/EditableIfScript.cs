@@ -390,6 +390,7 @@ namespace AxeSoftware.Quest
 
         public string GetString(string tag)
         {
+            if (tag == "usetemplates") return "if";
             return null;
         }
 
