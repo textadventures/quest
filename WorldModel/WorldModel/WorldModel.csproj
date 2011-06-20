@@ -76,6 +76,9 @@
     <Reference Include="Ciloci.Flee">
       <HintPath>..\..\Dependencies\Ciloci.Flee.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\..\Dependencies\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -111,6 +114,7 @@
     <Compile Include="GameLoader\GameXmlWriter.cs" />
     <Compile Include="GameLoader\ObjectSaver.cs" />
     <Compile Include="GameLoader\Packager.cs" />
+    <Compile Include="GameLoader\PackageReader.cs" />
     <Compile Include="ObjectFactory.cs" />
     <Compile Include="QuestDictionary.cs" />
     <Compile Include="QuestList.cs" />

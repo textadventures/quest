@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ionic.Zip;
 
 namespace AxeSoftware.Quest
 {
@@ -17,7 +18,12 @@ namespace AxeSoftware.Quest
         public void CreatePackage(string filename)
         {
             string data = m_worldModel.Save(SaveMode.Package);
-            System.IO.File.WriteAllText(filename, data);
+
+            using (ZipFile zip = new ZipFile(filename))
+            {
+                zip.AddEntry("game.aslx", data);
+                zip.Save();
+            }
         }
     }
 }

@@ -40,6 +40,12 @@ namespace AxeSoftware.Quest
 
         public bool Load(string filename)
         {
+            if (System.IO.Path.GetExtension(filename) == ".quest")
+            {
+                PackageReader packageReader = new PackageReader();
+                filename = packageReader.LoadPackage(filename);
+            }
+
             XmlReader reader = null;
 
             try
