@@ -23,14 +23,15 @@ Partial Class Editor
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.splitMain = New System.Windows.Forms.SplitContainer()
+        Me.ctlTree = New AxeSoftware.Quest.EditorControls.WFEditorTree()
         Me.pnlContent = New System.Windows.Forms.Panel()
         Me.pnlHeader = New System.Windows.Forms.Panel()
+        Me.ctlBanner = New AxeSoftware.Quest.AlertBanner()
         Me.lblHeader = New System.Windows.Forms.Label()
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
-        Me.ctlTree = New AxeSoftware.Quest.EditorControls.WFEditorTree()
-        Me.ctlBanner = New AxeSoftware.Quest.AlertBanner()
         Me.ctlTextEditor = New AxeSoftware.Quest.TextEditorControl()
         Me.ctlToolbar = New AxeSoftware.Quest.MainToolbar()
+        Me.ctlPublishFile = New System.Windows.Forms.SaveFileDialog()
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.Panel2.SuspendLayout()
@@ -57,6 +58,16 @@ Partial Class Editor
         Me.splitMain.SplitterDistance = 206
         Me.splitMain.TabIndex = 0
         '
+        'ctlTree
+        '
+        Me.ctlTree.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlTree.IncludeRootLevelInSearchResults = True
+        Me.ctlTree.Location = New System.Drawing.Point(0, 0)
+        Me.ctlTree.Name = "ctlTree"
+        Me.ctlTree.ShowFilterBar = True
+        Me.ctlTree.Size = New System.Drawing.Size(206, 304)
+        Me.ctlTree.TabIndex = 0
+        '
         'pnlContent
         '
         Me.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill
@@ -75,6 +86,17 @@ Partial Class Editor
         Me.pnlHeader.Size = New System.Drawing.Size(408, 41)
         Me.pnlHeader.TabIndex = 0
         '
+        'ctlBanner
+        '
+        Me.ctlBanner.AlertText = "Text"
+        Me.ctlBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.ctlBanner.ButtonText = "Action"
+        Me.ctlBanner.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ctlBanner.Location = New System.Drawing.Point(0, 16)
+        Me.ctlBanner.Name = "ctlBanner"
+        Me.ctlBanner.Size = New System.Drawing.Size(408, 23)
+        Me.ctlBanner.TabIndex = 1
+        '
         'lblHeader
         '
         Me.lblHeader.Dock = System.Windows.Forms.DockStyle.Top
@@ -88,27 +110,6 @@ Partial Class Editor
         '
         Me.ctlSaveFile.DefaultExt = "aslx"
         Me.ctlSaveFile.Filter = "Quest Games|*.aslx|All files|*.*"
-        '
-        'ctlTree
-        '
-        Me.ctlTree.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlTree.IncludeRootLevelInSearchResults = True
-        Me.ctlTree.Location = New System.Drawing.Point(0, 0)
-        Me.ctlTree.Name = "ctlTree"
-        Me.ctlTree.ShowFilterBar = True
-        Me.ctlTree.Size = New System.Drawing.Size(206, 304)
-        Me.ctlTree.TabIndex = 0
-        '
-        'ctlBanner
-        '
-        Me.ctlBanner.AlertText = "Text"
-        Me.ctlBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.ctlBanner.ButtonText = "Action"
-        Me.ctlBanner.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ctlBanner.Location = New System.Drawing.Point(0, 16)
-        Me.ctlBanner.Name = "ctlBanner"
-        Me.ctlBanner.Size = New System.Drawing.Size(408, 23)
-        Me.ctlBanner.TabIndex = 1
         '
         'ctlTextEditor
         '
@@ -130,6 +131,11 @@ Partial Class Editor
         Me.ctlToolbar.Size = New System.Drawing.Size(618, 25)
         Me.ctlToolbar.TabIndex = 2
         Me.ctlToolbar.UndoButtonEnabled = False
+        '
+        'ctlPublishFile
+        '
+        Me.ctlPublishFile.DefaultExt = "quest"
+        Me.ctlPublishFile.Filter = "Quest Games|*.quest|All files|*.*"
         '
         'Editor
         '
@@ -157,5 +163,6 @@ Partial Class Editor
     Friend WithEvents lblHeader As System.Windows.Forms.Label
     Friend WithEvents ctlTextEditor As AxeSoftware.Quest.TextEditorControl
     Friend WithEvents ctlBanner As AxeSoftware.Quest.AlertBanner
+    Private WithEvents ctlPublishFile As System.Windows.Forms.SaveFileDialog
 
 End Class

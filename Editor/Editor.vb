@@ -835,6 +835,28 @@
                 outputFolder,
                 System.IO.Path.GetFileNameWithoutExtension(m_filename) + ".quest")
 
+        If System.IO.File.Exists(outputFilename) Then
+            Dim deleteExisting = MsgBox("Do you want to overwrite the existing .quest file?", MsgBoxStyle.Question Or MsgBoxStyle.YesNoCancel, "Output already exists")
+        
+            If deleteExisting = MsgBoxResult.Yes Then
+                Try
+                    System.IO.File.Delete(outputFilename)
+                Catch ex As Exception
+                    MsgBox("Unable to delete file: " + ex.Message, MsgBoxStyle.Critical, "Unable to delete file")
+                    Return
+                End Try
+            ElseIf deleteExisting = MsgBoxResult.No Then
+                ctlPublishFile.FileName = outputFilename
+                If ctlPublishFile.ShowDialog() = DialogResult.OK Then
+                    outputFilename = ctlPublishFile.FileName
+                Else
+                    Return
+                End If
+            ElseIf deleteExisting = MsgBoxResult.Cancel Then
+                Return
+            End If
+        End If
+
         Dim result = m_controller.Publish(outputFilename)
 
         If Not result.Valid Then
