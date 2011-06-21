@@ -395,6 +395,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         private string ConvertToSimpleExpression(string expression)
         {
+            if (!IsSimpleExpression(expression)) return string.Empty;
+
             if (m_booleanEditor
                 || m_simpleEditor is DropDownObjectsControl
                 || m_simpleEditor is NumberControl
@@ -408,6 +410,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         private string ConvertFromSimpleExpression(string simpleValue)
         {
+            if (simpleValue == null) return string.Empty;
+
             if (m_booleanEditor
                 || m_simpleEditor is DropDownObjectsControl
                 || m_simpleEditor is NumberControl

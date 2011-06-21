@@ -79,7 +79,6 @@ namespace AxeSoftware.Quest.Scripts
         private string m_procedure;
         private FunctionCallParameters m_parameters;
         private IScript m_paramFunction;
-        private bool m_changingParameter = false;
 
         public event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
 
@@ -113,7 +112,7 @@ namespace AxeSoftware.Quest.Scripts
             // the only time we care about a parameter being removed is if it's the first parameter being
             // deleted. Everything else should simply be a Remove followed by an Add, and we handle the
             // Add above.
-            if (e.Index == 0 && !m_changingParameter)
+            if (e.Index == 0)
             {
                 FunctionCallParametersUpdated(this, new ScriptUpdatedEventArgs(e.Index, string.Empty));
             }
@@ -241,10 +240,7 @@ namespace AxeSoftware.Quest.Scripts
             if (!(index == 0 && m_parameters.ParametersAsQuestList.Count == 0))
             {
                 // In the editor, when a blank function call is created, it will have no parameters
-
-                if (value != null) m_changingParameter = true;
                 m_parameters.ParametersAsQuestList.Remove(m_parameters.ParametersAsQuestList[index], UpdateSource.User, index);
-                m_changingParameter = false;
             }
             m_parameters.ParametersAsQuestList.Add(value, UpdateSource.User, index);
         }
