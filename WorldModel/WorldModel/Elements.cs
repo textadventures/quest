@@ -22,6 +22,11 @@ namespace AxeSoftware.Quest
 
         public void Add(ElementType t, string key, Element e)
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentException("Invalid object name");
+            }
+
             if (m_allElements.ContainsKey(key))
             {
                 // An element with this name already exists. This is OK if the new element
@@ -48,6 +53,11 @@ namespace AxeSoftware.Quest
 
         void ElementNameChanged(object sender, NameChangedEventArgs e)
         {
+            if (string.IsNullOrEmpty(e.Element.Name))
+            {
+                throw new ArgumentException("Invalid object name");
+            }
+
             m_allElements.Remove(e.OldName);
             m_elements[e.Element.ElemType].Remove(e.OldName);
 

@@ -126,7 +126,7 @@ namespace AxeSoftware.Quest.EditorControls
             object value = m_data.GetAttribute(m_definition.Attribute);
             bool canEdit = CanEditType(value);
 
-            lstTypes.IsEnabled = canEdit && !data.ReadOnly;
+            lstTypes.IsEnabled = canEdit && !data.ReadOnly && m_definition.Attribute != "name";
 
             if (canEdit)
             {
@@ -208,7 +208,7 @@ namespace AxeSoftware.Quest.EditorControls
                             controlRowGridUnit = GridUnitType.Star;
                         }
                     }
-                    
+
                     CurrentEditor.Visibility = Visibility.Visible;
                     controlRow.Height = new GridLength(1, controlRowGridUnit);
                 }
@@ -364,7 +364,12 @@ namespace AxeSoftware.Quest.EditorControls
                 }
             }
 
-            m_data.SetAttribute(m_definition.Attribute, newValue);
+            var result = m_data.SetAttribute(m_definition.Attribute, newValue);
+
+            if (!result.Valid)
+            {
+                PopupEditors.DisplayValidationError(result, newValue as string, "Unable to set attribute value");
+            }
 
             m_controller.EndTransaction();
         }

@@ -341,6 +341,11 @@ namespace AxeSoftware.Quest
                 }
             }
 
+            if (name == "name" && !(value is string))
+            {
+                throw new ArgumentOutOfRangeException("Invalid data type for 'name'");
+            }
+
             m_attributes[name] = value;
 
             if (name == "name" && changed && value != null && !added && NameChanged != null)

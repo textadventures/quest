@@ -20,7 +20,8 @@ namespace AxeSoftware.Quest
         ItemAlreadyExists,
         ElementAlreadyExists,
         InvalidAttributeName,
-        ExceptionOccurred
+        ExceptionOccurred,
+        InvalidElementName
     }
 
     public struct ValidationResult
@@ -1226,6 +1227,16 @@ namespace AxeSoftware.Quest
             }
             return new ValidationResult { Valid = true };
         }
+
+        internal ValidationResult ValidateElementName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidElementName };
+            }
+            return new ValidationResult { Valid = true };
+        }
+
 
         public ValidationResult CanAddTemplate(string name)
         {

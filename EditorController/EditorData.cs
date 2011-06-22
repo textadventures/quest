@@ -81,7 +81,17 @@ namespace AxeSoftware.Quest
         {
             if (attribute == "name")
             {
-                ValidationResult result = m_controller.CanRename(m_element, (string)value);
+                if (!(value is string))
+                {
+                    return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidAttributeName };
+                }
+
+                ValidationResult result;
+
+                result = m_controller.ValidateElementName((string)value);
+                if (!result.Valid) return result;
+
+                result = m_controller.CanRename(m_element, (string)value);
                 if (!result.Valid) return result;
 
                 if (m_element.Fields[FieldDefinitions.Anonymous])

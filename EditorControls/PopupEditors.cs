@@ -22,7 +22,8 @@ namespace AxeSoftware.Quest.EditorControls
 		    {ValidationMessage.ItemAlreadyExists,"Item '{0}' already exists in the list"},
 		    {ValidationMessage.ElementAlreadyExists,"An element called '{0}' already exists in this game"},
             {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
-            {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"}
+            {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
+            {ValidationMessage.InvalidElementName, "Invalid element name"},
         };
 
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null)
