@@ -24,6 +24,16 @@ namespace AxeSoftware.Quest.EditorControls
         {
             InitializeComponent();
             m_helper = new ControlDataHelper<int>(this);
+            m_helper.Initialise += m_helper_Initialise;
+        }
+
+        void m_helper_Initialise()
+        {
+            int? minimum = m_helper.ControlDefinition.GetInt("minimum");
+            if (minimum.HasValue)
+            {
+                ctlNumber.Minimum = minimum;
+            }
         }
 
         public IControlDataHelper Helper

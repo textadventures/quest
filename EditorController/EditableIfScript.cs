@@ -404,7 +404,7 @@ namespace AxeSoftware.Quest
             throw new NotImplementedException();
         }
 
-        public int GetInt(string tag)
+        public int? GetInt(string tag)
         {
             throw new NotImplementedException();
         }

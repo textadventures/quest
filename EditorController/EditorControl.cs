@@ -87,8 +87,9 @@ namespace AxeSoftware.Quest
             return m_source.Fields.GetAsType<bool>(tag);
         }
 
-        public int GetInt(string tag)
+        public int? GetInt(string tag)
         {
+            if (!m_source.Fields.HasType<int>(tag)) return null;
             return m_source.Fields.GetAsType<int>(tag);
         }
 

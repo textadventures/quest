@@ -353,6 +353,7 @@
         <attribute>maxobjects</attribute>
         <width>100</width>
         <mustinherit>container_limited</mustinherit>
+        <minimum>0</minimum>
       </control>
 
     </tab>

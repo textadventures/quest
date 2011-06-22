@@ -14,6 +14,7 @@
         <controltype>number</controltype>
         <attribute>interval</attribute>
         <caption>Interval (sec)</caption>
+        <minimum>1</minimum>
       </control>
 
       <control>

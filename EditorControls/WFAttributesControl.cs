@@ -63,9 +63,9 @@ namespace AxeSoftware.Quest.EditorControls
                 }
             }
 
-            public int GetInt(string tag)
+            public int? GetInt(string tag)
             {
-                return 0;
+                return null;
             }
 
             public System.Collections.Generic.IEnumerable<string> GetListString(string tag)
