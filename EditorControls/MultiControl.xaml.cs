@@ -120,6 +120,7 @@ namespace AxeSoftware.Quest.EditorControls
         public void Populate(IEditorData data)
         {
             m_data = data;
+            m_storedValues.Clear();
             if (m_data == null) return;
 
             object value = m_data.GetAttribute(m_definition.Attribute);
@@ -282,8 +283,6 @@ namespace AxeSoftware.Quest.EditorControls
             m_settingType = true;
             lstTypes.Items.Clear();
             m_settingType = false;
-
-            m_storedValues.Clear();
 
             m_types = new List<TypesListItem>();
 
