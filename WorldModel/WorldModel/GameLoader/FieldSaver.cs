@@ -266,5 +266,17 @@ namespace AxeSoftware.Quest
             public GameSaver GameSaver { get; set; }
         }
 
+        private class ObjectReferenceSaver : FieldSaverBase
+        {
+            public override Type AppliesTo
+            {
+                get { return typeof(Element); }
+            }
+
+            public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
+            {
+                base.WriteAttribute(writer, element, attribute, "object", ((Element)value).Name);
+            }
+        }
     }
 }

@@ -310,5 +310,18 @@ namespace AxeSoftware.Quest
                 element.Fields.Set(attribute, result);
             }
         }
+
+        private class ObjectReferenceLoader : AttributeLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "object"; }
+            }
+
+            public override void Load(Element element, string attribute, string value)
+            {
+                element.Fields.LazyFields.AddObjectField(attribute, value);   
+            }
+        }
     }
 }
