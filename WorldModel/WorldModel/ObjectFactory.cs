@@ -153,6 +153,8 @@ namespace AxeSoftware.Quest
                     DestroyElement(child.Name, silent);
                 }
 
+                RemoveReferences(destroy);
+
                 if (!silent) AddDestroyToUndoLog(destroy, destroy.Type);
                 WorldModel.RemoveElement(CreateElementType, elementName);
                 NotifyRemovedElement(elementName);
@@ -162,6 +164,8 @@ namespace AxeSoftware.Quest
                 throw new Exception(string.Format("Cannot destroy element '{0}': {1}", elementName, e.Message), e);
             }
         }
+
+        protected virtual void RemoveReferences(Element e) { }
 
         private void AddDestroyToUndoLog(Element appliesTo, ObjectType type)
         {
@@ -415,6 +419,20 @@ namespace AxeSoftware.Quest
             Element newType = base.Create(name);
             newType.Fields.MutableFieldsLocked = true;
             return newType;
+        }
+
+        protected override void RemoveReferences(Element destroyedElement)
+        {
+            // When deleting an object type, we must also remove references to the deleted type
+            // from other elements.
+
+            foreach (Element e in WorldModel.Elements.GetElements())
+            {
+                if (e.Fields.InheritsType(destroyedElement))
+                {
+                    e.Fields.RemoveTypeUndoable(destroyedElement);
+                }
+            }
         }
     }
 
