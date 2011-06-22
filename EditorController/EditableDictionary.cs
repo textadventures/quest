@@ -221,5 +221,13 @@ namespace AxeSoftware.Quest
             newSource = (QuestDictionary<T>)parent.Fields.Get(attribute);
             return EditableDictionary<T>.GetNewInstance(m_controller, newSource);
         }
+
+        public string Owner
+        {
+            get
+            {
+                return m_source.Owner.Name;
+            }
+        }
     }
 }

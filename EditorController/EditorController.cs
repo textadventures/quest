@@ -755,13 +755,20 @@ namespace AxeSoftware.Quest
             return newValue;
         }
 
-        public IEditableDictionary<string> CreateNewEditableStringDictionary(string parent, string attribute, string key, string item)
+        public IEditableDictionary<string> CreateNewEditableStringDictionary(string parent, string attribute, string key, string item, bool useTransaction)
         {
-            WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} to '{2}'", parent, attribute, item));
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} to '{2}'", parent, attribute, item));
+            }
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
 
             QuestDictionary<string> newDictionary = new QuestDictionary<string>();
-            newDictionary.Add(key, item);
+
+            if (key != null)
+            {
+                newDictionary.Add(key, item);
+            }
 
             if (element != null)
             {
@@ -772,7 +779,11 @@ namespace AxeSoftware.Quest
             }
 
             EditableDictionary<string> newValue = new EditableDictionary<string>(this, newDictionary);
-            WorldModel.UndoLogger.EndTransaction();
+
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.EndTransaction();
+            }
 
             return newValue;
         }

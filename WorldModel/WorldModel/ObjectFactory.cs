@@ -417,7 +417,10 @@ namespace AxeSoftware.Quest
         public override Element Create(string name)
         {
             Element newType = base.Create(name);
-            newType.Fields.MutableFieldsLocked = true;
+            if (!WorldModel.EditMode)
+            {
+                newType.Fields.MutableFieldsLocked = true;
+            }
             return newType;
         }
 

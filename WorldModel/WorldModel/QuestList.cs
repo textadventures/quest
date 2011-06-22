@@ -54,6 +54,8 @@ namespace AxeSoftware.Quest
             set;
         }
 
+        public Element Owner { get; set; }
+
         public IMutableField Clone()
         {
             return new QuestList<T>(m_list);

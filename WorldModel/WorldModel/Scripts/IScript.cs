@@ -139,6 +139,8 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
+        public Element Owner { get; set; }
+
         protected abstract ScriptBase CloneScript();
 
         public abstract void Execute(Context c);

@@ -115,7 +115,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (m_list == null)
             {
-                Value = m_controller.CreateNewEditableStringDictionary(m_elementName, m_attributeName, addKey.Result, addValue.Result);
+                Value = m_controller.CreateNewEditableStringDictionary(m_elementName, m_attributeName, addKey.Result, addValue.Result, true);
             }
             else
             {
@@ -189,7 +189,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (m_list == null) return;
 
-            if (m_list.Locked)
+            if (m_list.Owner != m_data.Name)
             {
                 Value = m_list.Clone(m_elementName, m_attributeName);
             }

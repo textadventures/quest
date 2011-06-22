@@ -239,5 +239,13 @@ namespace AxeSoftware.Quest
         //    newSource = (QuestDictionary<TSource>)parent.Fields.Get(attribute);
         //    return EditableWrappedItemDictionary<TSource, TWrapped>.GetNewInstance(m_controller, newSource);
         //}
+
+        public string Owner
+        {
+            get
+            {
+                return m_source.Owner.Name;
+            }
+        }
     }
 }

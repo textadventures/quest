@@ -25,6 +25,7 @@ namespace AxeSoftware.Quest.EditorControls
             {"int", "number"},
             {"object", "objects"},
             {"simplepattern", "pattern"},
+            {"stringdictionary", "stringdictionary"},
             {"scriptdictionary", "scriptdictionary"},
             {"null", null}
         };
@@ -37,6 +38,7 @@ namespace AxeSoftware.Quest.EditorControls
             {typeof(int), "int"},
             {typeof(IEditableObjectReference), "object"},
             {typeof(IEditableCommandPattern), "simplepattern"},
+            {typeof(IEditableDictionary<string>),"stringdictionary"},
             {typeof(IEditableDictionary<IEditableScripts>), "scriptdictionary"}
         };
 
@@ -352,6 +354,9 @@ namespace AxeSoftware.Quest.EditorControls
                         break;
                     case "simplepattern":
                         newValue = m_controller.CreateNewEditableCommandPattern(m_data.Name, m_definition.Attribute, "", false);
+                        break;
+                    case "stringdictionary":
+                        newValue = m_controller.CreateNewEditableStringDictionary(m_data.Name, m_definition.Attribute, null, null, false);
                         break;
                     case "scriptdictionary":
                         newValue = m_controller.CreateNewEditableScriptDictionary(m_data.Name, m_definition.Attribute, null, null, false);

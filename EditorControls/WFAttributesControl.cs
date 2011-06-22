@@ -80,6 +80,7 @@ namespace AxeSoftware.Quest.EditorControls
                     case "checkbox":
                         return "True";
                     case "editprompt":
+                    case "valueprompt":
                         return "Please enter a value";
                     case "keyprompt":
                         return "Please enter a key";
@@ -125,6 +126,7 @@ namespace AxeSoftware.Quest.EditorControls
 		    {"stringlist","String List"},
 		    {"object","Object"},
 		    {"simplepattern","Command pattern"},
+            {"stringdictionary","String dictionary"},
 		    {"scriptdictionary","Script dictionary"},
 		    {"null","Null"}
 	    };

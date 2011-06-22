@@ -35,6 +35,8 @@ namespace AxeSoftware.Quest
     {
         UndoLogger UndoLog { get; set; }
 
+        Element Owner { get; set; }
+
         /// <summary>
         /// True if we're in an inherited type, so we must be unmodifable. Implementors must check this and throw an exception
         /// if an attempt is made to change a locked object
@@ -336,8 +338,10 @@ namespace AxeSoftware.Quest
                 if (mutableNewValue != null)
                 {
                     if (m_worldModel.EditMode || mutableNewValue.RequiresCloning) value = mutableNewValue.Clone();
-                    ((IMutableField)value).Locked = m_mutableFieldsLocked;
-                    ((IMutableField)value).UndoLog = m_worldModel.UndoLogger;
+                    IMutableField mutableValue = (IMutableField)value;
+                    mutableValue.Locked = m_mutableFieldsLocked;
+                    mutableValue.UndoLog = m_worldModel.UndoLogger;
+                    mutableValue.Owner = m_element;
                 }
             }
 

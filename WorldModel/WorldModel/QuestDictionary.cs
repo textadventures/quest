@@ -51,6 +51,8 @@ namespace AxeSoftware.Quest
 
         #region IMutableField Members
 
+        public Element Owner { get; set; }
+
         public UndoLogger UndoLog
         {
             get;

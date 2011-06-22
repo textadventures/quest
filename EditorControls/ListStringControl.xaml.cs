@@ -68,7 +68,7 @@ namespace AxeSoftware.Quest.EditorControls
             // we must clone the list before we can edit it.
 
             if (m_list == null) return;
-            if (m_list.Locked)
+            if (m_list.Owner != m_data.Name)
             {
                 CurrentList = m_list.Clone(m_data.Name, m_helper.ControlDefinition.Attribute);
             }

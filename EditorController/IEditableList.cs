@@ -26,6 +26,7 @@ namespace AxeSoftware.Quest
         ValidationResult CanAdd(T item);
         bool Locked { get; }
         IEditableList<T> Clone(string parent, string attribute);
+        string Owner { get; }
     }
 
     public interface IEditableListItem<T>
@@ -49,5 +50,6 @@ namespace AxeSoftware.Quest
         T this[string key] { get; }
         bool Locked { get; }
         IEditableDictionary<T> Clone(string parent, string attribute);
+        string Owner { get; }
     }
 }

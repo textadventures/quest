@@ -245,5 +245,13 @@ namespace AxeSoftware.Quest
         {
             return m_wrappedItemsList.GetEnumerator();
         }
+
+        public string Owner
+        {
+            get
+            {
+                return m_source.Owner.Name;
+            }
+        }
     }
 }
