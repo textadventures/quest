@@ -24,6 +24,7 @@ namespace AxeSoftware.Quest.EditorControls
             {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
             {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
             {ValidationMessage.InvalidElementName, "Invalid element name"},
+            {ValidationMessage.CircularTypeReference, "Circular type reference"},
         };
 
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null)

@@ -222,7 +222,7 @@ namespace AxeSoftware.Quest
                 Set(field.Property, value);
             }
         }
-        
+
         public IFunction<string> this[IField<IFunction<string>> field]
         {
             get
@@ -440,6 +440,11 @@ namespace AxeSoftware.Quest
 
         public void AddType(Element addType)
         {
+            if (m_element.ElemType == ElementType.ObjectType &&
+                (addType == m_element || addType.Fields.InheritsTypeRecursive(m_element)))
+            {
+                throw new Exception("Circular type reference");
+            }
             m_types.Push(addType);
         }
 
@@ -630,6 +635,24 @@ namespace AxeSoftware.Quest
         {
             return m_types.Contains(type);
         }
+
+        public bool InheritsTypeRecursive(Element type)
+        {
+            if (m_types.Contains(type))
+            {
+                return true;
+            }
+
+            foreach (Element inheritedType in m_types)
+            {
+                if (inheritedType.Fields.InheritsType(type))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
     public class LazyFields
@@ -745,7 +768,7 @@ namespace AxeSoftware.Quest
             m_appliesTo = appliesTo;
             m_property = property;
             m_useMetaFields = useMetaFields;
-            
+
             if (oldValue is Element)
             {
                 m_oldValueElementName = ((Element)oldValue).Name;
@@ -763,7 +786,7 @@ namespace AxeSoftware.Quest
             {
                 m_newValue = newValue;
             }
-            
+
             m_added = added;
 
             //System.Diagnostics.Debug.Print("UndoFieldSet: {0}.{1} from '{2}' to '{3}'", appliesTo, property, oldValue, newValue);

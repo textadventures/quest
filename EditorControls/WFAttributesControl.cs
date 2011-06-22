@@ -449,7 +449,8 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (m_readOnly) return;
             string typeToAdd = ((ToolStripItem)sender).Text;
-            m_controller.AddInheritedTypeToElement(m_data.Name, typeToAdd, true);
+            var result = m_controller.AddInheritedTypeToElement(m_data.Name, typeToAdd, true);
+            if (!result.Valid) PopupEditors.DisplayValidationError(result, null, "Unable to add type");
         }
 
         private void lstTypes_SelectedIndexChanged(System.Object sender, System.EventArgs e)

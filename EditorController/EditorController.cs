@@ -21,7 +21,8 @@ namespace AxeSoftware.Quest
         ElementAlreadyExists,
         InvalidAttributeName,
         ExceptionOccurred,
-        InvalidElementName
+        InvalidElementName,
+        CircularTypeReference,
     }
 
     public struct ValidationResult
@@ -947,21 +948,30 @@ namespace AxeSoftware.Quest
             return elementType == "defaultverb" || WorldModel.IsDefaultTypeName(elementType);
         }
 
-        public void AddInheritedTypeToElement(string elementName, string typeName, bool useTransaction)
+        public ValidationResult AddInheritedTypeToElement(string elementName, string typeName, bool useTransaction)
         {
+            Element element = m_worldModel.Elements.Get(elementName);
+            Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
+
+            if (element.ElemType == ElementType.ObjectType &&
+                (element == type || type.Fields.InheritsTypeRecursive(element)))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.CircularTypeReference };
+            }
+
             if (useTransaction)
             {
                 WorldModel.UndoLogger.StartTransaction(string.Format("Add type '{0}' to '{1}'", typeName, elementName));
             }
 
-            Element element = m_worldModel.Elements.Get(elementName);
-            Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
             element.Fields.AddTypeUndoable(type);
 
             if (useTransaction)
             {
                 WorldModel.UndoLogger.EndTransaction();
             }
+
+            return new ValidationResult { Valid = true };
         }
 
         public void RemoveInheritedTypeFromElement(string elementName, string typeName, bool useTransaction)
