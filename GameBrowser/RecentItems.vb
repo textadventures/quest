@@ -31,16 +31,22 @@ Friend Class RecentItems
 
         For Each value As String In values
             If value.StartsWith("Recent") Then
-                Dim nameValue As String
-                Dim name As String = Nothing
-                nameValue = "Name" + value.Substring(6)
-                If values.Contains(nameValue) Then
-                    name = DirectCast(key.GetValue(nameValue), String)
+                Dim filename As String = DirectCast(key.GetValue(value), String)
+
+                If System.IO.File.Exists(filename) Then
+                    Dim nameValue As String
+                    Dim name As String = Nothing
+                    nameValue = "Name" + value.Substring(6)
+                    If values.Contains(nameValue) Then
+                        name = DirectCast(key.GetValue(nameValue), String)
+                    End If
+
+                    If String.IsNullOrEmpty(name) Then name = "(unknown)"
+                    m_recent.Add(New GameListItemData(filename, name))
+                Else
+                    key.DeleteValue(value)
+                    key.DeleteValue("Name" + value.Substring(6))
                 End If
-
-                If String.IsNullOrEmpty(name) Then name = "(unknown)"
-
-                m_recent.Add(New GameListItemData(DirectCast(key.GetValue(value), String), name))
             End If
         Next
     End Sub
