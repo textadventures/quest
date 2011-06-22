@@ -434,6 +434,7 @@ namespace AxeSoftware.Quest
             {
                 if (!m_elements.ContainsKey(ElementType.Object, "player")) throw new Exception("No player object found in game");
                 m_player = Object("player");
+                m_timerRunner = new TimerRunner(this, !m_loadedFromSaved);
                 if (m_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
                 if (!m_loadedFromSaved)
                 {
@@ -446,7 +447,6 @@ namespace AxeSoftware.Quest
                     Print(string.Format("Loaded saved game in {0}", m_saveFilename));
                     Print(string.Format("  (original game at {0})", m_filename));
                 }
-                m_timerRunner = new TimerRunner(this, !m_loadedFromSaved);
 
                 ChangeThreadState(ThreadState.Ready);
             });

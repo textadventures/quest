@@ -38,14 +38,14 @@
     }
     request (UpdateLocation, CapFirst(GetDisplayName(player.parent)))
     if (game.useframe) {
-      clearFrame = true
+      roomFrameExists = false
       if (HasString(player.parent, "picture")) {
         if (LengthOf(player.parent.picture) > 0) {
-          clearFrame = false
+          roomFrameExists = true
           SetFramePicture(player.parent.picture)
         }
       }
-      if (clearFrame) {
+      if (game.clearframe and not roomFrameExists) {
         ClearFramePicture
       }
     }
