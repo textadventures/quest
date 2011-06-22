@@ -419,7 +419,7 @@ namespace AxeSoftware.Quest
                 }
 
                 // Don't display templates which have been overridden
-                if (m_worldModel.TryGetTemplateElement(e.Fields[FieldDefinitions.TemplateName]) != e)
+                if (e.Fields[FieldDefinitions.TemplateName] != null && m_worldModel.TryGetTemplateElement(e.Fields[FieldDefinitions.TemplateName]) != e)
                 {
                     return false;
                 }
