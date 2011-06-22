@@ -255,10 +255,21 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void UpdateControlVisibility()
         {
+            // if the currently selected tab gets hidden, switch to the first visible tab
+            bool switchToFirstVisibleTab = false;
+            TabItem firstVisibleTab = null;
+
             foreach (var tab in m_tabs)
             {
                 bool visible = tab.Key.IsTabVisible(m_data);
+                if (visible && firstVisibleTab == null) firstVisibleTab = tab.Value;
+                if (!visible && tab.Value.IsSelected) switchToFirstVisibleTab = true;
                 tab.Value.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            if (switchToFirstVisibleTab)
+            {
+                firstVisibleTab.IsSelected = true;
             }
 
             foreach (var ctl in m_controlUIElements)
