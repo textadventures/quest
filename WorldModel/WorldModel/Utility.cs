@@ -9,6 +9,7 @@ namespace AxeSoftware.Quest
     public static class Utility
     {
         private const string k_dotReplacementString = "___DOT___";
+        private const string k_spaceReplacementString = "___SPACE___";
 
         public static string CapFirst(string text)
         {
@@ -61,7 +62,7 @@ namespace AxeSoftware.Quest
             }
 
             return result;
-            
+
         }
 
         private static string GetParameterInt(string text, char open, char close, out string afterParameter)
@@ -160,8 +161,9 @@ namespace AxeSoftware.Quest
             return result;
         }
 
-        public static void ResolveVariableName(string name, out string obj, out string variable)
+        public static void ResolveVariableName(ref string name, out string obj, out string variable)
         {
+            name = ResolveElementName(name);
             int eqPos = name.IndexOf(k_dotReplacementString);
             if (eqPos == -1)
             {
@@ -174,26 +176,88 @@ namespace AxeSoftware.Quest
             variable = name.Substring(eqPos + k_dotReplacementString.Length);
         }
 
+        public static string ResolveElementName(string name)
+        {
+            return name.Replace(k_spaceReplacementString, " ");
+        }
+
         private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.(\w)");
         private static Regex s_detectComments = new Regex("//");
-        
+
         /// <summary>
         /// FLEE doesn't allow us to have control over dot notation i.e. "object.property",
         /// so instead we handle "object_property". Use this function to convert dot to underscore.
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static string ConvertDottedPropertiesToVariable(string expression)
+        public static string ConvertVariablesToFleeFormat(string expression)
         {
-            return ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables, "$1" + k_dotReplacementString + "$2", false);
+            string result = ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables, "$1" + k_dotReplacementString + "$2", false);
+            return ConvertVariableNamesWithSpaces(result);
         }
 
-        public static string ConvertVariableToDottedProperties(string expression)
+        public static string ConvertFleeFormatToVariables(string expression)
         {
-            return expression.Replace(k_dotReplacementString, ".");
+            return expression.Replace(k_dotReplacementString, ".").Replace(k_spaceReplacementString, " ");
         }
 
         private static string ReplaceRegexMatchesRespectingQuotes(string input, Regex regex, string replaceWith, bool replaceInsideQuote)
+        {
+            return ReplaceRespectingQuotes(input, replaceInsideQuote, text => regex.Replace(text, replaceWith));
+        }
+
+        private static string ConvertVariableNamesWithSpaces(string input)
+        {
+            return ReplaceRespectingQuotes(input, false, text =>
+            {
+                // Split the text up into a word array, for example
+                // "my variable = 12" becomes "my", "variable", "=", "12".
+                // If any two adjacent elements end and begin with word characters,
+                // (in this case, "my" and "variable" because "y" and "v" match
+                // regex "\w"), then we remove the space and replace it with
+                // our space placeholder. However, if one of the two words is a
+                // keyword ("and", "not" etc.), we don't convert it.
+                string[] words = text.Split(' ');
+                string result = words[0];
+
+                if (words.Length == 1) return result;
+
+                for (int i = 1; i < words.Length; i++)
+                {
+                    if (IsSplitVariableName(words[i - 1], words[i]))
+                    {
+                        result += k_spaceReplacementString;
+                    }
+                    else
+                    {
+                        result += " ";
+                    }
+                    result += words[i];
+                }
+
+                return result;
+            });
+        }
+
+        // Given two words e.g. "my" and "variable", see if they together comprise a variable name
+
+        private static Regex s_wordRegex1 = new System.Text.RegularExpressions.Regex(@"(\w+)$");
+        private static Regex s_wordRegex2 = new System.Text.RegularExpressions.Regex(@"^(\w+)");
+        private static List<string> s_keywords = new List<string> { "and", "or", "xor", "not", "if", "in" };
+
+        private static bool IsSplitVariableName(string word1, string word2)
+        {
+            if (!(s_wordRegex1.IsMatch(word1) && s_wordRegex2.IsMatch(word2))) return false;
+
+            string word1last = s_wordRegex1.Match(word1).Groups[1].Value;
+            string word2first = s_wordRegex2.Match(word2).Groups[1].Value;
+
+            if (s_keywords.Contains(word1last)) return false;
+            if (s_keywords.Contains(word2first)) return false;
+            return true;
+        }
+
+        private static string ReplaceRespectingQuotes(string input, bool replaceInsideQuote, Func<string, string> replaceFunction)
         {
             // We ignore regex matches which appear within quotes by splitting the string
             // at the position of quote marks, and then alternating whether we replace or not.
@@ -207,7 +271,7 @@ namespace AxeSoftware.Quest
                 bool doReplace = (insideQuote && replaceInsideQuote) || (!insideQuote && !replaceInsideQuote);
                 if (doReplace)
                 {
-                    result += regex.Replace(section, replaceWith);
+                    result += replaceFunction(section);
                 }
                 else
                 {

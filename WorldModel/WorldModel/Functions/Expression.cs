@@ -31,7 +31,7 @@ namespace AxeSoftware.Quest.Functions
             m_originalExpression = expression;
             if (!m_worldModel.EditMode)
             {
-                expression = Utility.ConvertDottedPropertiesToVariable(expression);
+                expression = Utility.ConvertVariablesToFleeFormat(expression);
             }
 
             // While it would be nice to compile expressions here when the game is loaded,
@@ -102,7 +102,7 @@ namespace AxeSoftware.Quest.Functions
             else
             {
                 Element result;
-                if (m_worldModel.TryResolveExpressionElement(name, out result))
+                if (m_worldModel.TryResolveExpressionElement(Utility.ResolveElementName(name), out result))
                 {
                     return result;
                 }
@@ -118,7 +118,7 @@ namespace AxeSoftware.Quest.Functions
                         {
                             // We may have been passed in something like someobj.parent.someproperty
                             string nestedObj;
-                            Utility.ResolveVariableName(variable, out nestedObj, out variable);
+                            Utility.ResolveVariableName(ref variable, out nestedObj, out variable);
                             fields = fields.GetObject(nestedObj).Fields;
                         }
                     } while (Utility.ContainsUnresolvedDotNotation(variable));
@@ -135,7 +135,7 @@ namespace AxeSoftware.Quest.Functions
         private void ResolveVariableName(string name, out Fields fields, out string variable)
         {
             string obj;
-            Utility.ResolveVariableName(name, out obj, out variable);
+            Utility.ResolveVariableName(ref name, out obj, out variable);
 
             Element result;
             if (m_worldModel.TryResolveExpressionElement(name, out result))
@@ -192,7 +192,7 @@ namespace AxeSoftware.Quest.Functions
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(string.Format("Error compiling expression '{0}': {1}", Utility.ConvertVariableToDottedProperties(m_expression), ex.Message), ex);
+                    throw new Exception(string.Format("Error compiling expression '{0}': {1}", Utility.ConvertFleeFormatToVariables(m_expression), ex.Message), ex);
                 }
             }
             return m_compiledExpression.Evaluate();

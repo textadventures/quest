@@ -65,9 +65,9 @@ namespace AxeSoftware.Quest.Scripts
 
         internal IFunction<Element> GetAppliesTo(string value, out string variable)
         {
-            string var = Utility.ConvertDottedPropertiesToVariable(value).Trim();
+            string var = Utility.ConvertVariablesToFleeFormat(value).Trim();
             string obj;
-            Utility.ResolveVariableName(var, out obj, out variable);
+            Utility.ResolveVariableName(ref var, out obj, out variable);
             return (obj == null) ? null : new Expression<Element>(obj, WorldModel);
         }
 

@@ -13,11 +13,11 @@ namespace WorldModelTests
         [TestMethod]
         public void TestConvertDottedProperties()
         {
-            Assert.AreEqual("obj___DOT___prop", Utility.ConvertDottedPropertiesToVariable("obj.prop"));
-            Assert.AreEqual("obj1___DOT___prop obj2___DOT___prop", Utility.ConvertDottedPropertiesToVariable("obj1.prop obj2.prop"));
-            Assert.AreEqual("(\"myfile.html\")", Utility.ConvertDottedPropertiesToVariable("(\"myfile.html\")"));
-            Assert.AreEqual("\"myfile.html\"", Utility.ConvertDottedPropertiesToVariable("\"myfile.html\""));
-            Assert.AreEqual("obj1___DOT___prop \"test.html\" obj2___DOT___prop", Utility.ConvertDottedPropertiesToVariable("obj1.prop \"test.html\" obj2.prop"));
+            Assert.AreEqual("obj___DOT___prop", Utility.ConvertVariablesToFleeFormat("obj.prop"));
+            Assert.AreEqual("obj1___DOT___prop, obj2___DOT___prop", Utility.ConvertVariablesToFleeFormat("obj1.prop, obj2.prop"));
+            Assert.AreEqual("(\"myfile.html\")", Utility.ConvertVariablesToFleeFormat("(\"myfile.html\")"));
+            Assert.AreEqual("\"myfile.html\"", Utility.ConvertVariablesToFleeFormat("\"myfile.html\""));
+            Assert.AreEqual("obj1___DOT___prop \"test.html\" obj2___DOT___prop", Utility.ConvertVariablesToFleeFormat("obj1.prop \"test.html\" obj2.prop"));
         }
 
         [TestMethod]
@@ -68,6 +68,23 @@ namespace WorldModelTests
             Assert.AreEqual(2, result.Count);
             Assert.AreEqual(param1, result[0]);
             Assert.AreEqual(param2, result[1]);
+        }
+
+        [TestMethod]
+        public void TestConvertVariableNamesWithSpaces()
+        {
+            Assert.AreEqual("my___SPACE___variable", Utility.ConvertVariablesToFleeFormat("my variable"));
+            Assert.AreEqual("my___SPACE___variable, other___SPACE___variable", Utility.ConvertVariablesToFleeFormat("my variable, other variable"));
+            Assert.AreEqual("my___SPACE___variable, \"some text\", other___SPACE___variable", Utility.ConvertVariablesToFleeFormat("my variable, \"some text\", other variable"));
+            Assert.AreEqual("my___SPACE___long___SPACE___variable___SPACE___name", Utility.ConvertVariablesToFleeFormat("my long variable name"));
+        }
+
+        [TestMethod]
+        public void TestNamesNearKeywordsNotConverted()
+        {
+            Assert.AreEqual("not my___SPACE___variable", Utility.ConvertVariablesToFleeFormat("not my variable"));
+            Assert.AreEqual("my___SPACE___variable or other___SPACE___variable", Utility.ConvertVariablesToFleeFormat("my variable or other variable"));
+            Assert.AreEqual("(not SomeFunction(\"hello there\"))", Utility.ConvertVariablesToFleeFormat("(not SomeFunction(\"hello there\"))"));
         }
     }
 }
