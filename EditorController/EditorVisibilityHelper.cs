@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AxeSoftware.Quest.Functions;
 
 namespace AxeSoftware.Quest
 {
@@ -17,6 +18,7 @@ namespace AxeSoftware.Quest
         private Element m_notVisibleIfElementInheritsTypeElement = null;
         private string m_filterGroup;
         private string m_filter;
+        private Expression<bool> m_visibilityExpression;
         private EditorDefinition m_parent;
 
         public EditorVisibilityHelper(EditorDefinition parent, WorldModel worldModel, Element source)
@@ -32,6 +34,13 @@ namespace AxeSoftware.Quest
             m_filterGroup = source.Fields.GetString("filtergroup");
             m_filter = source.Fields.GetString("filter");
             if (m_filter != null) m_alwaysVisible = false;
+
+            string expression = source.Fields.GetString("onlydisplayif");
+            if (expression != null)
+            {
+                m_visibilityExpression = new Expression<bool>(Utility.ConvertDottedPropertiesToVariable(expression), worldModel);
+                m_alwaysVisible = false;
+            }
         }
 
         public bool IsVisible(IEditorData data)
@@ -75,6 +84,14 @@ namespace AxeSoftware.Quest
                 if (selectedFilter == null) selectedFilter = m_parent.GetDefaultFilterName(m_filterGroup, data);
 
                 return (selectedFilter == m_filter);
+            }
+
+            if (m_visibilityExpression != null)
+            {
+                // evaluate <onlydisplayif> expression, with "this" as the current element
+                Scripts.Context context = new Scripts.Context();
+                context.Parameters = new Scripts.Parameters("this", m_worldModel.Elements.Get(data.Name));
+                return m_visibilityExpression.Execute(context);
             }
 
             return false;

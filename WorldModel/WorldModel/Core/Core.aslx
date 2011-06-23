@@ -38,7 +38,13 @@
   </function>
 
   <function name="SetFramePicture" parameters="filename">
-    request (RunScript, "setFramePicture; " + GetFileURL(filename))
+    <![CDATA[
+    if (game.useframe) {
+      request (RunScript, "setFramePicture; " + GetFileURL(filename))
+    } else {
+      msg ("<color color=\"red\"><b>ERROR: The static picture frame is not enabled. You can enable this from the Display tab of the Game editor.</b></color>")
+    }
+    ]]>
   </function>
 
   <function name="ClearFramePicture">

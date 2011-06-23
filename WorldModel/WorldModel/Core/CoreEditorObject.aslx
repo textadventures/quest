@@ -123,14 +123,13 @@
       <caption>Room</caption>
       <mustnotinherit>editor_object</mustnotinherit>
       
-      <!-- TO DO: Only display if game.useframe=true -->
-
       <control>
         <caption>Room picture</caption>
         <controltype>file</controltype>
         <attribute>picture</attribute>
         <source>[EditorImageFormats]</source>
         <filefiltername>Picture Files</filefiltername>
+        <onlydisplayif>game.useframe</onlydisplayif>
       </control>
 
       <control>
@@ -327,10 +326,10 @@
       </control>
 
       <control>
-        <!-- TO DO: this is not applicable for transparent objects, so hide it if transparent=true -->
         <controltype>checkbox</controltype>
         <caption>Hide children until object is looked at</caption>
         <attribute>hidechildren</attribute>
+        <onlydisplayif>not GetBoolean(this, "transparent")</onlydisplayif>
       </control>
 
       <control>
@@ -340,11 +339,11 @@
       </control>
 
       <control>
-        <!-- TO DO: hide this if listchildren=false -->
         <controltype>textbox</controltype>
         <caption>List prefix (e.g. "It contains")</caption>
         <attribute>listchildrenprefix</attribute>
         <nullable/>
+        <onlydisplayif>GetBoolean(this, "listchildren")</onlydisplayif>
       </control>
 
       <control>
