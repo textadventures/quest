@@ -212,6 +212,8 @@ namespace AxeSoftware.Quest.EditorControls
             bool finished = false;
             string result = string.Empty;
 
+            input = input.Replace("&nbsp;", "");
+
             do
             {
                 int nextTagStart = input.IndexOf('<', pos);
