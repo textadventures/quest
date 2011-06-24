@@ -699,7 +699,7 @@ namespace AxeSoftware.Quest
             get { return m_worldModel; }
         }
 
-        public EditableScripts CreateNewEditableScripts(string parent, string attribute, string keyword, bool useTransaction)
+        public EditableScripts CreateNewEditableScripts(string parent, string attribute, string keyword, bool useTransaction, bool nullKeywordIsFunctionCall = false)
         {
             if (useTransaction)
             {
@@ -707,7 +707,7 @@ namespace AxeSoftware.Quest
             }
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
             EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript());
-            if (keyword != null)
+            if (keyword != null || nullKeywordIsFunctionCall)
             {
                 newValue.AddNewInternal(keyword);
             }

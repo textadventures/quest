@@ -64,7 +64,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (m_scripts == null)
             {
-                m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, script, true);
+                m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, script, true, true);
             }
             else
             {

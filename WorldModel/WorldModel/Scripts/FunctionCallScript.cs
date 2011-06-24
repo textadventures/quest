@@ -164,7 +164,10 @@ namespace AxeSoftware.Quest.Scripts
         {
             if (m_worldModel.Procedure(m_procedure) == null)
             {
-                throw new Exception(string.Format("Unable to save call to function '{0}' - function does not exist", m_procedure));
+                // TO DO: this is the wrong place to be throwing an exception, because Save may be called while editing a script,
+                // and maybe the user simply hasn't created their function yet. Maybe instead we should append to a list of warnings
+                // when doing an actual File Save, then we can display any warnings after saving.
+                //throw new Exception(string.Format("Unable to save call to function '{0}' - function does not exist", m_procedure));
             }
 
             if ((m_parameters == null || m_parameters.ParametersAsQuestList.Count == 0) && m_paramFunction == null)
