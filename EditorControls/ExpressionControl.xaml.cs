@@ -546,11 +546,14 @@ namespace AxeSoftware.Quest.EditorControls
             mnuInsertMenu.Items.Add(new Separator());
             AddInsertMenuItem("and", () => InsertString(" and "));
             AddInsertMenuItem("or", () => InsertString(" or "));
-            AddInsertMenuItem("+", () => InsertString(" + "));
-            AddInsertMenuItem("-", () => InsertString(" - "));
-            AddInsertMenuItem("*", () => InsertString(" * "));
-            AddInsertMenuItem("/", () => InsertString(" / "));
-            AddInsertMenuItem("=", () => InsertString(" = "));
+            AddInsertMenuItem("+ add", () => InsertString(" + "));
+            AddInsertMenuItem("- subtract", () => InsertString(" - "));
+            AddInsertMenuItem("* multiply", () => InsertString(" * "));
+            AddInsertMenuItem("/ divide", () => InsertString(" / "));
+            AddInsertMenuItem("= equals", () => InsertString(" = "));
+            AddInsertMenuItem("<> not equals", () => InsertString(" <> "));
+            AddInsertMenuItem("> greater than", () => InsertString(" > "));
+            AddInsertMenuItem("< less than", () => InsertString(" < "));
         }
 
         private void AddInsertMenuItem(string caption, Action insertAction)
