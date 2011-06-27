@@ -326,7 +326,10 @@ namespace AxeSoftware.Quest.Functions
 
         public int GetRandomInt(int min, int max)
         {
-            return m_random.Next(min, max);
+            // The .net implementation of Random.Next defines the minValue as the
+            // inclusive lower bound, but maxValue as the EXclusive upper bound.
+            // It makes a bit more sense for maxValue to be inclusive, so we add 1.
+            return m_random.Next(min, max + 1);
         }
 
         public double GetRandomDouble()
