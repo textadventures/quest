@@ -578,8 +578,11 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void InsertFunction()
         {
-            // TO DO: Also need built-in functions defined in WorldModel
-            InsertFromList("a function", m_helper.Controller.GetElementNames("function", true).OrderBy(n => n));
+            IEnumerable<string> coreFunctions = m_helper.Controller.GetElementNames("function", true);
+            IEnumerable<string> builtInFunctions = m_helper.Controller.GetBuiltInFunctionNames();
+            IEnumerable<string> allFunctions = coreFunctions.Union(builtInFunctions);
+
+            InsertFromList("a function", allFunctions.OrderBy(n => n));
         }
 
         private void InsertFromList(string itemName, IEnumerable<string> items)

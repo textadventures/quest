@@ -1567,5 +1567,10 @@ namespace AxeSoftware.Quest
                 return new ValidationResult { Valid = false, Message = ValidationMessage.ExceptionOccurred, MessageData = error };
             }
         }
+
+        public IEnumerable<string> GetBuiltInFunctionNames()
+        {
+            return m_worldModel.GetBuiltInFunctionNames();
+        }
     }
 }

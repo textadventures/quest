@@ -1240,5 +1240,20 @@ namespace AxeSoftware.Quest
 
         public string ResourcesFolder { get; private set; }
         public bool DebugEnabled { get; private set; }
+
+        private static List<string> s_functionNames = null;
+
+        public IEnumerable<string> GetBuiltInFunctionNames()
+        {
+            if (s_functionNames == null)
+            {
+                System.Reflection.MethodInfo[] methods = typeof(AxeSoftware.Quest.Functions.ExpressionOwner)
+                                                            .GetMethods();
+
+                s_functionNames = new List<string>(methods.Select(m => m.Name));
+            }
+
+            return s_functionNames.AsReadOnly();
+        }
     }
 }
