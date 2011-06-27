@@ -134,6 +134,7 @@ namespace AxeSoftware.Quest.EditorControls
         private EditorController m_controller;
         private IEditorDataExtendedAttributeInfo m_data;
         private Dictionary<string, IEditorAttributeData> m_inheritedTypeData = new Dictionary<string, IEditorAttributeData>();
+        private Dictionary<IDataWrapper, string> m_listeningToAttributes = new Dictionary<IDataWrapper, string>();
 
         private bool m_readOnly;
         public delegate void DirtyEventHandler(object sender, DataModifiedEventArgs args);
@@ -165,6 +166,7 @@ namespace AxeSoftware.Quest.EditorControls
             lstAttributes.Items.Clear();
             lstTypes.Items.Clear();
             m_inheritedTypeData.Clear();
+            ClearListenedToAttributes();
             cmdDelete.Enabled = false;
             cmdDeleteType.Enabled = false;
             ctlMultiControl.Visible = false;
@@ -183,9 +185,38 @@ namespace AxeSoftware.Quest.EditorControls
                     if (CanDisplayAttribute(attr.AttributeName, m_data.GetAttribute(attr.AttributeName)))
                     {
                         AddListItem(lstAttributes, attr, GetAttributeDisplayString);
+                        ListenToAttribute(attr);
                     }
                 }
             }
+        }
+
+        private void ClearListenedToAttributes()
+        {
+            foreach (IDataWrapper value in m_listeningToAttributes.Keys)
+            {
+                value.UnderlyingValueUpdated -= ListenedToValue_UnderlyingValueUpdated;
+            }
+
+            m_listeningToAttributes.Clear();
+        }
+
+        private void ListenToAttribute(IEditorAttributeData attr)
+        {
+            object value = m_data.GetAttribute(attr.AttributeName);
+            IDataWrapper dataWrapperValue = value as IDataWrapper;
+            if (dataWrapperValue != null)
+            {
+                m_listeningToAttributes.Add(dataWrapperValue, attr.AttributeName);
+                dataWrapperValue.UnderlyingValueUpdated += ListenedToValue_UnderlyingValueUpdated;
+            }
+        }
+
+        void ListenedToValue_UnderlyingValueUpdated(object sender, DataWrapperUpdatedEventArgs e)
+        {
+            IDataWrapper wrappedValue = (IDataWrapper)sender;
+            string attribute = m_listeningToAttributes[wrappedValue];
+            AttributeChangedInternal(attribute, wrappedValue, false);
         }
 
         protected virtual bool CanDisplayAttribute(string attribute, object value)
