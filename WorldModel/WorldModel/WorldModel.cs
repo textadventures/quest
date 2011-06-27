@@ -1250,7 +1250,12 @@ namespace AxeSoftware.Quest
                 System.Reflection.MethodInfo[] methods = typeof(AxeSoftware.Quest.Functions.ExpressionOwner)
                                                             .GetMethods();
 
-                s_functionNames = new List<string>(methods.Select(m => m.Name));
+                System.Reflection.MethodInfo[] stringMethods = typeof(AxeSoftware.Quest.Functions.StringFunctions)
+                                                            .GetMethods();
+
+                IEnumerable<System.Reflection.MethodInfo> allMethods = methods.Union(stringMethods);
+
+                s_functionNames = new List<string>(allMethods.Select(m => m.Name));
             }
 
             return s_functionNames.AsReadOnly();
