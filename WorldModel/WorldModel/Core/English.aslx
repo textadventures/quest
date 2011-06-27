@@ -17,7 +17,7 @@
   <dynamictemplate name="AlreadyTaken">"You are already carrying " + object.article + "."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"You are not carrying " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CantUse">"You can't use " + object.article + "."</dynamictemplate>
-  <dynamictemplate name="DefaultSpeakTo">CapFirst(object.gender) + " says nothing."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "say") + " nothing."</dynamictemplate>
   <template name="UnrecognisedCommand">I don't understand your command.</template>
   <template name="YouAreIn">You are in</template>
   <template name="LookAt">Look at</template>
@@ -26,7 +26,7 @@
   <template name="Use">Use</template>
   <template name="Drop">Drop</template>
   <template name="GoTo">Go to</template>
-  <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " is not open."</dynamictemplate>
+  <dynamictemplate name="ObjectNotOpen">WriteVerb(object, "be") + " not open."</dynamictemplate>
   <template name="NeutralGender">it</template>
   <template name="MaleGender">he</template>
   <template name="FemaleGender">she</template>
@@ -35,19 +35,19 @@
   <template name="MaleArticle">him</template>
   <template name="FemaleArticle">her</template>
   <template name="SelfArticle">yourself</template>
-  <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " is already open."</dynamictemplate>
-  <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " is already closed."</dynamictemplate>
+  <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " already open."</dynamictemplate>
+  <dynamictemplate name="AlreadyClosed">WriteVerb(object, "be") + " already closed."</dynamictemplate>
   <dynamictemplate name="CantOpen">"You can't open " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CantClose">"You can't close " + object.article + "."</dynamictemplate>
   <dynamictemplate name="OpenSuccessful">"You open " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CloseSuccessful">"You close " + object.article + "."</dynamictemplate>
   <template name="CannotDoThat">You can't do that.</template>
-  <dynamictemplate name="AlreadyThere">CapFirst(object.gender) + " is already there."</dynamictemplate>
+  <dynamictemplate name="AlreadyThere">WriteVerb(object, "be") + " already there."</dynamictemplate>
   <template name="Done">Done.</template>
   <template name="ContainerContentsPrefix">containing</template>
   <template name="SurfaceContentsPrefix">on which there is</template>
-  <dynamictemplate name="ObjectContains">CapFirst(object.gender) + " contains"</dynamictemplate>
-  <dynamictemplate name="ContainerFull">CapFirst(object.gender) + " is full."</dynamictemplate>
+  <dynamictemplate name="ObjectContains">WriteVerb(object, "contain")</dynamictemplate>
+  <dynamictemplate name="ContainerFull">WriteVerb(object, "be") + " full."</dynamictemplate>
   <dynamictemplate name="DisambiguateMenu">"Please choose which '" + text + "' you mean:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   <template name="LockedExit">That way is locked.</template>
@@ -82,7 +82,8 @@
   <verbtemplate name="speakto">talk</verbtemplate>
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">close</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>  <!-- don't need those brackets (on|in) maybe square ones? -->
+  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">buy</verbtemplate>
   <dynamictemplate name="DefaultBuy">"You can't buy " + object.article + "."</dynamictemplate>
@@ -93,7 +94,7 @@
   <verbtemplate name="eat">eat</verbtemplate>
   <dynamictemplate name="DefaultEat">"You can't eat " + object.article + "."</dynamictemplate>
   <template templatetype="command" name="give"><![CDATA[^give (?<object1>.*) to (?<object2>.*)$]]></template>
-  <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " doesn't want " + object2.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultGive">WriteVerb(object1, "do") + " not want " + object2.article + "."</dynamictemplate>
   <verbtemplate name="hit">hit</verbtemplate>
   <dynamictemplate name="DefaultHit">"You can't hit " + object.article + "."</dynamictemplate>
   <verbtemplate name="kill">kill</verbtemplate>
@@ -189,5 +190,69 @@
     }
   </function>
 
+  <function name="WriteVerb" type="string" parameters="obj, verb">
+    return (CapFirst(obj.gender) + " " + Conjugate(obj, verb))
+  </function>
+
+  <function name="Conjugate" type="string" parameters="obj, verb">
+    gender = obj.gender
+    if (gender = "he" or gender = "she") {
+      gender = "it"
+    }
+    switch (verb) {
+      case ("be") {
+        switch (gender) {
+          case ("i") {
+            return ("am")
+          }
+          case ("you") {
+            return ("are")
+          }
+          case ("it") {
+            return ("is")
+          }
+          case ("we") {
+            return ("are")
+          }
+          case ("they") {
+            return ("are")
+          }
+          default {
+            return ("is")
+          }
+        }
+      }
+      case ("do") {
+        switch (gender) {
+          case ("i") {
+            return ("do")
+          }
+          case ("you") {
+            return ("do")
+          }
+          case ("it") {
+            return ("does")
+          }
+          case ("we") {
+            return ("do")
+          }
+          case ("they") {
+            return ("do")
+          }
+          default {
+            return ("do")
+          }       
+        }
+      }
+      default {
+        if (gender = "it") {
+          return (verb + "s")
+        }
+        else {
+          return (verb)
+        }
+      }
+    }
+  </function>
 
 </library>
