@@ -53,6 +53,21 @@
     <article>[FemaleArticle]</article>
   </type>
 
+  <type name="plural">
+    <gender>[NeutralPluralGender]</gender>
+    <article>[NeutralPluralArticle]</article>
+  </type>
+
+  <type name="maleplural">
+    <gender>[MalePluralGender]</gender>
+    <article>[MalePluralArticle]</article>
+  </type>
+
+  <type name="femaleplural">
+    <gender>[FemalePluralGender]</gender>
+    <article>[FemalePluralArticle]</article>
+  </type>
+
   <type name="container_base">
     <container/>
   </type>

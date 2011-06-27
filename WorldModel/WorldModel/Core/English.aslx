@@ -31,10 +31,16 @@
   <template name="MaleGender">he</template>
   <template name="FemaleGender">she</template>
   <template name="SelfGender">you</template>
+  <template name="NeutralPluralGender">they</template>
+  <template name="MalePluralGender">they</template>
+  <template name="FemalePluralGender">they</template>
   <template name="NeutralArticle">it</template>
   <template name="MaleArticle">him</template>
   <template name="FemaleArticle">her</template>
   <template name="SelfArticle">yourself</template>
+  <template name="NeutralPluralArticle">them</template>
+  <template name="MalePluralArticle">them</template>
+  <template name="FemalePluralArticle">them</template>
   <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " already open."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">WriteVerb(object, "be") + " already closed."</dynamictemplate>
   <dynamictemplate name="CantOpen">"You can't open " + object.article + "."</dynamictemplate>
