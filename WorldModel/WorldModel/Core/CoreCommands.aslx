@@ -304,6 +304,50 @@
     }
   </command>
 
+  <command name="ask" pattern="[ask]">
+    <![CDATA[
+    handled = false
+    
+    maxstrength = 0
+    match = null
+    
+    if (typeof(object, "ask") = "scriptdictionary") {
+      foreach (keywords, object.ask) {
+        if (GetKeywordsMatchStrength(keywords, text) > maxstrength) {
+          match = ScriptDictionaryItem(object.ask, keywords)
+        }
+      }
+      
+      if (match <> null) {
+        invoke (match)
+        handled = true
+      }
+    }
+    
+    if (not handled) {
+      msg (DynamicTemplate("DefaultAsk", object))
+    }
+    ]]>
+  </command>
+
+  <function name="GetKeywordsMatchStrength" parameters="keywords, input" type="int">
+    // Keywords is the subject. We split it into individual words, and then see how well
+    // the words in the input match the keywords.
+    
+    keywordlist = Split(keywords, " ")
+    inputlist = Split(input, " ")
+    
+    strength = 0
+    
+    foreach (word, inputlist) {
+      if (ListContains(keywordlist, word)) {
+        strength = strength + LengthOf(word)
+      }
+    }
+    
+    return (strength)
+  </function>
+
   <!-- The object name for a verb defaults to the same thing as its property, unless we explictly specify a name,
        as we do here e.g. to prevent a clash with the "sit" command -->
   <verb pattern="[speakto]" property="speak" response="DefaultSpeakTo"/>

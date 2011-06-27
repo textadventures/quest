@@ -358,6 +358,19 @@
     </tab>
 
     <tab>
+      <caption>Ask/tell</caption>
+      <mustnotinherit>editor_room</mustnotinherit>
+
+      <control>
+        <controltype>scriptdictionary</controltype>
+        <caption>Ask about</caption>
+        <attribute>ask</attribute>
+        <keyprompt>Please enter the topic keywords</keyprompt>
+      </control>
+      
+    </tab>
+
+    <tab>
       <caption>Attributes</caption>
 
       <control>

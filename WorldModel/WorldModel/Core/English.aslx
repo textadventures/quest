@@ -57,6 +57,7 @@
   <dynamictemplate name="DisambiguateMenu">"Please choose which '" + text + "' you mean:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   <template name="LockedExit">That way is locked.</template>
+  <dynamictemplate name="DefaultAsk">WriteVerb(object, "do") + " not reply."</dynamictemplate>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>
