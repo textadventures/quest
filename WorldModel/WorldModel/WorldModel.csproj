@@ -221,9 +221,15 @@
     <None Include="Core\Languages\Nederlands.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Core\Languages\Español.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\Templates\Deutsch.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Core\Templates\Español.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\Templates\Nederlands.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
