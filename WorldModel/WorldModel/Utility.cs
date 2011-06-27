@@ -257,6 +257,11 @@ namespace AxeSoftware.Quest
             return true;
         }
 
+        public static IList<string> ExpressionKeywords
+        {
+            get { return s_keywords.AsReadOnly(); }
+        }
+
         private static string ReplaceRespectingQuotes(string input, bool replaceInsideQuote, Func<string, string> replaceFunction)
         {
             // We ignore regex matches which appear within quotes by splitting the string

@@ -1,4 +1,6 @@
-﻿Public Class Editor
+﻿Imports AxeSoftware.Quest.EditorControls
+
+Public Class Editor
 
     Private WithEvents m_controller As EditorController
     Private m_elementEditors As Dictionary(Of String, WPFElementEditor)
@@ -544,7 +546,7 @@
         Dim result = m_controller.CanAdd(input)
         If result.Valid Then Return True
 
-        MsgBox(PopupEditors.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add element")
+        PopupEditors.DisplayValidationError(result, input, "Unable to add element")
         Return False
     End Function
 
@@ -552,7 +554,7 @@
         Dim result = m_controller.CanAddTemplate(input)
         If result.Valid Then Return True
 
-        MsgBox(PopupEditors.GetError(result.Message, input), MsgBoxStyle.Exclamation, "Unable to add template")
+        PopupEditors.DisplayValidationError(result, input, "Unable to add template")
         Return False
     End Function
 
@@ -837,7 +839,7 @@
 
         If System.IO.File.Exists(outputFilename) Then
             Dim deleteExisting = MsgBox("Do you want to overwrite the existing .quest file?", MsgBoxStyle.Question Or MsgBoxStyle.YesNoCancel, "Output already exists")
-        
+
             If deleteExisting = MsgBoxResult.Yes Then
                 Try
                     System.IO.File.Delete(outputFilename)

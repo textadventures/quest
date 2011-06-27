@@ -25,6 +25,8 @@ namespace AxeSoftware.Quest.EditorControls
             {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
             {ValidationMessage.InvalidElementName, "Invalid element name"},
             {ValidationMessage.CircularTypeReference, "Circular type reference"},
+            {ValidationMessage.InvalidElementNameMultipleSpaces, "Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces."},
+            {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
         };
 
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null)

@@ -23,6 +23,8 @@ namespace AxeSoftware.Quest
         ExceptionOccurred,
         InvalidElementName,
         CircularTypeReference,
+        InvalidElementNameMultipleSpaces,
+        InvalidElementNameInvalidWord
     }
 
     public struct ValidationResult
@@ -1237,7 +1239,7 @@ namespace AxeSoftware.Quest
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.ElementAlreadyExists };
             }
-            return new ValidationResult { Valid = true };
+            return ValidateElementName(name);
         }
 
         internal ValidationResult CanRename(Element element, string newName)
@@ -1246,18 +1248,38 @@ namespace AxeSoftware.Quest
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.ElementAlreadyExists };
             }
-            return new ValidationResult { Valid = true };
+            return ValidateElementName(newName);
         }
 
-        internal ValidationResult ValidateElementName(string name)
+        private ValidationResult ValidateElementName(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidElementName };
             }
+
+            if (name.StartsWith(" ") || name.EndsWith(" ") || name.Contains("  "))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidElementNameMultipleSpaces };
+            }
+
+            string[] words = name.Split(' ');
+            IList<string> keywords = Utility.ExpressionKeywords;
+            foreach (string word in words)
+            {
+                if (keywords.Contains(word))
+                {
+                    return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidElementNameInvalidWord };
+                }
+            }
+
             return new ValidationResult { Valid = true };
         }
 
+        public static IList<string> ExpressionKeywords
+        {
+            get { return Utility.ExpressionKeywords; }
+        }
 
         public ValidationResult CanAddTemplate(string name)
         {

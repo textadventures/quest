@@ -149,7 +149,6 @@
     <Compile Include="NewGameWindow.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PopupEditors.vb" />
     <Compile Include="TextEditorControl.Designer.vb">
       <DependentUpon>TextEditorControl.vb</DependentUpon>
     </Compile>

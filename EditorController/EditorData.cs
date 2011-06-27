@@ -88,9 +88,6 @@ namespace AxeSoftware.Quest
 
                 ValidationResult result;
 
-                result = m_controller.ValidateElementName((string)value);
-                if (!result.Valid) return result;
-
                 result = m_controller.CanRename(m_element, (string)value);
                 if (!result.Valid) return result;
 

@@ -255,6 +255,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void UpdateControlVisibility()
         {
+            if (m_data.Name == null) return;    // might be in the middle of a delete
+
             // if the currently selected tab gets hidden, switch to the first visible tab
             bool switchToFirstVisibleTab = false;
             TabItem firstVisibleTab = null;
