@@ -12,6 +12,7 @@ Public Class Editor
     Private m_lastSelection As String
     Private m_currentEditorData As IEditorDataExtendedAttributeInfo
     Private m_unsavedChanges As Boolean
+    Private WithEvents m_fileWatcher As System.IO.FileSystemWatcher
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -35,8 +36,13 @@ Public Class Editor
         m_unsavedChanges = False
         InitialiseEditorControlsList()
         DisplayCodeView(False)
+        ctlReloadBanner.Visible = False
         Dim ok As Boolean = m_controller.Initialise(filename)
         If ok Then
+            Dim path As String = System.IO.Path.GetDirectoryName(filename)
+            Dim filter As String = System.IO.Path.GetFileName(filename)
+            m_fileWatcher = New System.IO.FileSystemWatcher(path, filter)
+            m_fileWatcher.EnableRaisingEvents = True
             SetUpTree()
             SetUpToolbar()
             SetUpEditors()
@@ -324,6 +330,7 @@ Public Class Editor
 
     Private Function Save(filename As String) As Boolean
         Try
+            m_fileWatcher.EnableRaisingEvents = False
             If m_codeView Then
                 ctlTextEditor.SaveFile(filename)
             Else
@@ -338,6 +345,8 @@ Public Class Editor
         Catch ex As Exception
             MsgBox("Unable to save the file due to the following error:" + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
             Return False
+        Finally
+            m_fileWatcher.EnableRaisingEvents = True
         End Try
     End Function
 
@@ -870,4 +879,24 @@ Public Class Editor
 
     End Sub
 
+    Private Sub m_fileWatcher_Changed(sender As Object, e As System.IO.FileSystemEventArgs) Handles m_fileWatcher.Changed
+        BeginInvoke(Sub() ctlReloadBanner.Visible = True)
+    End Sub
+
+    Private Sub ctlReloadBanner_ButtonClicked() Handles ctlReloadBanner.ButtonClicked
+        Reload()
+    End Sub
+
+    Private Sub Reload()
+        Dim lastSelection As String = Nothing
+        If Not m_codeView Then
+            lastSelection = ctlTree.SelectedItem
+        End If
+
+        Initialise(m_filename)
+
+        If lastSelection IsNot Nothing Then
+            ctlTree.TrySetSelectedItem(lastSelection)
+        End If
+    End Sub
 End Class

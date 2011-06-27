@@ -26,12 +26,13 @@ Partial Class Editor
         Me.ctlTree = New AxeSoftware.Quest.EditorControls.WFEditorTree()
         Me.pnlContent = New System.Windows.Forms.Panel()
         Me.pnlHeader = New System.Windows.Forms.Panel()
-        Me.ctlBanner = New AxeSoftware.Quest.AlertBanner()
         Me.lblHeader = New System.Windows.Forms.Label()
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
-        Me.ctlTextEditor = New AxeSoftware.Quest.TextEditorControl()
-        Me.ctlToolbar = New AxeSoftware.Quest.MainToolbar()
         Me.ctlPublishFile = New System.Windows.Forms.SaveFileDialog()
+        Me.ctlBanner = New AxeSoftware.Quest.AlertBanner()
+        Me.ctlTextEditor = New AxeSoftware.Quest.TextEditorControl()
+        Me.ctlReloadBanner = New AxeSoftware.Quest.AlertBanner()
+        Me.ctlToolbar = New AxeSoftware.Quest.MainToolbar()
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.Panel2.SuspendLayout()
@@ -43,7 +44,7 @@ Partial Class Editor
         '
         Me.splitMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
-        Me.splitMain.Location = New System.Drawing.Point(0, 25)
+        Me.splitMain.Location = New System.Drawing.Point(0, 48)
         Me.splitMain.Name = "splitMain"
         '
         'splitMain.Panel1
@@ -54,7 +55,7 @@ Partial Class Editor
         '
         Me.splitMain.Panel2.Controls.Add(Me.pnlContent)
         Me.splitMain.Panel2.Controls.Add(Me.pnlHeader)
-        Me.splitMain.Size = New System.Drawing.Size(618, 304)
+        Me.splitMain.Size = New System.Drawing.Size(618, 281)
         Me.splitMain.SplitterDistance = 206
         Me.splitMain.TabIndex = 0
         '
@@ -65,7 +66,7 @@ Partial Class Editor
         Me.ctlTree.Location = New System.Drawing.Point(0, 0)
         Me.ctlTree.Name = "ctlTree"
         Me.ctlTree.ShowFilterBar = True
-        Me.ctlTree.Size = New System.Drawing.Size(206, 304)
+        Me.ctlTree.Size = New System.Drawing.Size(206, 281)
         Me.ctlTree.TabIndex = 0
         '
         'pnlContent
@@ -73,7 +74,7 @@ Partial Class Editor
         Me.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlContent.Location = New System.Drawing.Point(0, 41)
         Me.pnlContent.Name = "pnlContent"
-        Me.pnlContent.Size = New System.Drawing.Size(408, 263)
+        Me.pnlContent.Size = New System.Drawing.Size(408, 240)
         Me.pnlContent.TabIndex = 1
         '
         'pnlHeader
@@ -85,17 +86,6 @@ Partial Class Editor
         Me.pnlHeader.Name = "pnlHeader"
         Me.pnlHeader.Size = New System.Drawing.Size(408, 41)
         Me.pnlHeader.TabIndex = 0
-        '
-        'ctlBanner
-        '
-        Me.ctlBanner.AlertText = "Text"
-        Me.ctlBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.ctlBanner.ButtonText = "Action"
-        Me.ctlBanner.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ctlBanner.Location = New System.Drawing.Point(0, 16)
-        Me.ctlBanner.Name = "ctlBanner"
-        Me.ctlBanner.Size = New System.Drawing.Size(408, 23)
-        Me.ctlBanner.TabIndex = 1
         '
         'lblHeader
         '
@@ -111,15 +101,44 @@ Partial Class Editor
         Me.ctlSaveFile.DefaultExt = "aslx"
         Me.ctlSaveFile.Filter = "Quest Games|*.aslx|All files|*.*"
         '
+        'ctlPublishFile
+        '
+        Me.ctlPublishFile.DefaultExt = "quest"
+        Me.ctlPublishFile.Filter = "Quest Games|*.quest|All files|*.*"
+        '
+        'ctlBanner
+        '
+        Me.ctlBanner.AlertText = "Text"
+        Me.ctlBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.ctlBanner.ButtonText = "Action"
+        Me.ctlBanner.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ctlBanner.Location = New System.Drawing.Point(0, 16)
+        Me.ctlBanner.Name = "ctlBanner"
+        Me.ctlBanner.Size = New System.Drawing.Size(408, 23)
+        Me.ctlBanner.TabIndex = 1
+        '
         'ctlTextEditor
         '
         Me.ctlTextEditor.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlTextEditor.EditText = ""
-        Me.ctlTextEditor.Location = New System.Drawing.Point(0, 25)
+        Me.ctlTextEditor.Location = New System.Drawing.Point(0, 48)
         Me.ctlTextEditor.Name = "ctlTextEditor"
-        Me.ctlTextEditor.Size = New System.Drawing.Size(618, 304)
+        Me.ctlTextEditor.Size = New System.Drawing.Size(618, 281)
         Me.ctlTextEditor.TabIndex = 3
         Me.ctlTextEditor.Visible = False
+        '
+        'ctlReloadBanner
+        '
+        Me.ctlReloadBanner.AlertText = "This file has been modified outside Quest. Click Reload to get the latest version" & _
+    " of the file."
+        Me.ctlReloadBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.ctlReloadBanner.ButtonText = "Reload"
+        Me.ctlReloadBanner.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ctlReloadBanner.Location = New System.Drawing.Point(0, 25)
+        Me.ctlReloadBanner.Name = "ctlReloadBanner"
+        Me.ctlReloadBanner.Size = New System.Drawing.Size(618, 23)
+        Me.ctlReloadBanner.TabIndex = 4
+        Me.ctlReloadBanner.Visible = False
         '
         'ctlToolbar
         '
@@ -132,17 +151,13 @@ Partial Class Editor
         Me.ctlToolbar.TabIndex = 2
         Me.ctlToolbar.UndoButtonEnabled = False
         '
-        'ctlPublishFile
-        '
-        Me.ctlPublishFile.DefaultExt = "quest"
-        Me.ctlPublishFile.Filter = "Quest Games|*.quest|All files|*.*"
-        '
         'Editor
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.Controls.Add(Me.splitMain)
         Me.Controls.Add(Me.ctlTextEditor)
+        Me.Controls.Add(Me.ctlReloadBanner)
         Me.Controls.Add(Me.ctlToolbar)
         Me.Name = "Editor"
         Me.Size = New System.Drawing.Size(618, 329)
@@ -164,5 +179,6 @@ Partial Class Editor
     Friend WithEvents ctlTextEditor As AxeSoftware.Quest.TextEditorControl
     Friend WithEvents ctlBanner As AxeSoftware.Quest.AlertBanner
     Private WithEvents ctlPublishFile As System.Windows.Forms.SaveFileDialog
+    Friend WithEvents ctlReloadBanner As AxeSoftware.Quest.AlertBanner
 
 End Class
