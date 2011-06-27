@@ -154,6 +154,16 @@
     </tab>
 
     <tab>
+      <caption>Exits</caption>
+      <mustnotinherit>editor_object</mustnotinherit>
+
+      <control>
+        <controltype>exits</controltype>
+        <expand/>
+      </control>
+    </tab>
+
+    <tab>
       <caption>Scripts</caption>
       <mustnotinherit>editor_object</mustnotinherit>
 
