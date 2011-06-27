@@ -58,6 +58,7 @@
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   <template name="LockedExit">That way is locked.</template>
   <dynamictemplate name="DefaultAsk">WriteVerb(object, "do") + " not reply."</dynamictemplate>
+  <dynamictemplate name="DefaultTell">WriteVerb(object, "do") + " not reply."</dynamictemplate>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>
@@ -91,6 +92,7 @@
   <verbtemplate name="close">close</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">buy</verbtemplate>
   <dynamictemplate name="DefaultBuy">"You can't buy " + object.article + "."</dynamictemplate>

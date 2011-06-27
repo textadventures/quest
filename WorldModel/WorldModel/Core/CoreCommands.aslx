@@ -305,16 +305,25 @@
   </command>
 
   <command name="ask" pattern="[ask]">
+    DoAskTell (object, text, "ask", "askdefault", "DefaultAsk")
+  </command>
+
+  <command name="tell" pattern="[tell]">
+    DoAskTell (object, text, "tell", "telldefault", "DefaultTell")
+  </command>
+
+  <function name="DoAskTell" parameters="object, text, property, defaultscript, defaulttemplate">
     <![CDATA[
     handled = false
     
     maxstrength = 0
     match = null
     
-    if (typeof(object, "ask") = "scriptdictionary") {
-      foreach (keywords, object.ask) {
+    if (typeof(object, property) = "scriptdictionary") {
+      dictionary = GetAttribute(object, property)
+      foreach (keywords, dictionary) {
         if (GetKeywordsMatchStrength(keywords, text) > maxstrength) {
-          match = ScriptDictionaryItem(object.ask, keywords)
+          match = ScriptDictionaryItem(dictionary, keywords)
         }
       }
       
@@ -325,10 +334,14 @@
     }
     
     if (not handled) {
-      msg (DynamicTemplate("DefaultAsk", object))
+      if (HasScript(object, defaultscript)) {
+        do (object, defaultscript)
+      } else {
+        msg (DynamicTemplate(defaulttemplate, object))
+      }
     }
-    ]]>
-  </command>
+    ]]>    
+  </function>
 
   <function name="GetKeywordsMatchStrength" parameters="keywords, input" type="int">
     // Keywords is the subject. We split it into individual words, and then see how well

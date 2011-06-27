@@ -67,6 +67,11 @@ namespace AxeSoftware.Quest.Functions
             return obj.Fields.HasType<DelegateImplementation>(property);
         }
 
+        public object GetAttribute(Element obj, string property)
+        {
+            return obj.Fields.Get(property);
+        }
+
         public string GetExitByLink(Element from, Element to)
         {
             foreach (Element e in m_worldModel.Objects)
