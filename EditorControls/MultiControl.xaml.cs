@@ -123,9 +123,15 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_data = data;
             m_storedValues.Clear();
-            if (m_data == null) return;
+
+            if (m_data == null)
+            {
+                if (CurrentElementEditor != null) CurrentElementEditor.Populate(m_data);
+                return;
+            }
 
             object value = m_data.GetAttribute(m_definition.Attribute);
+
             bool canEdit = CanEditType(value);
 
             lstTypes.IsEnabled = canEdit && !data.ReadOnly && m_definition.Attribute != "name";

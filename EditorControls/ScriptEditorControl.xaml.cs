@@ -115,7 +115,11 @@ namespace AxeSoftware.Quest.EditorControls
         public void Populate(IEditorData data)
         {
             m_data = data;
-            if (data == null) return;
+            if (data == null)
+            {
+                Populate((IEditableScripts)null);
+                return;
+            }
             m_helper.StartPopulating();
 
             m_readOnly = data.ReadOnly;
