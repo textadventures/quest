@@ -418,5 +418,17 @@
       </control>
     </tab>
 
+    <tab>
+      <caption>Objects</caption>
+
+      <control>
+        <controltype>elementslist</controltype>
+        <elementtype>object</elementtype>
+        <objecttype>object</objecttype>
+        <expand/>
+      </control>
+
+    </tab>
+
   </editor>
 </library>

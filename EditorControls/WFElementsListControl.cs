@@ -66,18 +66,11 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_data = data;
 
-            // TO DO: Implement filtering, so we can place this control on e.g. an object editor to have it show
-            // just the sub-objects of that object.
-            //If data IsNot Nothing Then
-            //    m_elementName = data.Name
-            //Else
-            //    m_elementName = Nothing
-            //End If
-
             IEnumerable<string> elements = null;
             if (m_elementType == "object")
             {
-                elements = Controller.GetObjectNames(m_objectType, false);
+                string parent = m_data == null ? null : m_data.Name;
+                elements = Controller.GetObjectNames(m_objectType, false, parent);
             }
             else
             {
@@ -96,8 +89,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private bool Filter(string element)
         {
-            if (m_filter == null)
-                return true;
+            if (m_filter == null) return true;
             return Controller.ElementIsVerb(element) == (m_filter == "verb");
         }
 

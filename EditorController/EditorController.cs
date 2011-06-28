@@ -913,21 +913,26 @@ namespace AxeSoftware.Quest
             return WorldModel.GetTypeStringForObjectType(WorldModel.Elements.Get(element).Type);
         }
 
-        private IEnumerable<Element> GetObjects(string objectType)
+        private IEnumerable<Element> GetObjects(string objectType, string parent = null)
         {
             ObjectType t = WorldModel.GetObjectTypeForTypeString(objectType);
-            return WorldModel.Elements.GetElements(ElementType.Object).Where(e => e.Type == t && e.Name != null);
+            var result = WorldModel.Elements.GetElements(ElementType.Object).Where(e => e.Type == t && e.Name != null);
+            if (parent != null)
+            {
+                result = result.Where(e => e.Parent != null && e.Parent.Name == parent);
+            }
+            return result;
         }
 
-        public IEnumerable<string> GetObjectNames(string objectType)
+        public IEnumerable<string> GetObjectNames(string objectType, string parent = null)
         {
-            return GetObjects(objectType).Select(e => e.Name);
+            return GetObjects(objectType, parent).Select(e => e.Name);
         }
 
-        public IEnumerable<string> GetObjectNames(string objectType, bool includeLibraryObjects)
+        public IEnumerable<string> GetObjectNames(string objectType, bool includeLibraryObjects, string parent = null)
         {
-            if (includeLibraryObjects) return GetObjectNames(objectType);
-            return GetObjects(objectType).Where(o => !o.MetaFields[MetaFieldDefinitions.Library]).Select(o => o.Name);
+            if (includeLibraryObjects) return GetObjectNames(objectType, parent);
+            return GetObjects(objectType, parent).Where(o => !o.MetaFields[MetaFieldDefinitions.Library]).Select(o => o.Name);
         }
 
         public IDictionary<string, string> GetVerbProperties()

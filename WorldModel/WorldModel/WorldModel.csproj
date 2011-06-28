@@ -317,6 +317,7 @@
     </None>
     <None Include="Core\CoreEditorElements.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorDynamicTemplate.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
