@@ -229,6 +229,7 @@ namespace AxeSoftware.Quest
                 RemoveElementAndSubElementsFromTree(e.Element);
                 AddElementAndSubElementsToTree(e.Element);
                 EndTreeUpdate();
+                if (ElementsUpdated != null) ElementsUpdated();
             }
 
             if (e.Attribute == "anonymous"

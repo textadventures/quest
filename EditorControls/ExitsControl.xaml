@@ -5,7 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style x:Key="header" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Left"></Setter>
+            <Setter Property="Padding" Value="6,3,3,3"></Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid>
-        <Label>Exits</Label>
+        <ListView Name="listView">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn HeaderContainerStyle="{StaticResource header}" Width="120" Header="To" DisplayMemberBinding="{Binding Path=To}"></GridViewColumn>
+                    <GridViewColumn HeaderContainerStyle="{StaticResource header}" Width="120" Header="Alias" DisplayMemberBinding="{Binding Path=Alias}"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </UserControl>

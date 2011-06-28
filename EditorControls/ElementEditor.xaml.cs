@@ -59,6 +59,7 @@ namespace AxeSoftware.Quest.EditorControls
             TabItem newTab = new TabItem();
             m_tabs.Add(tab, newTab);
             newTab.Header = tab.Caption;
+            newTab.Padding = new Thickness(8, 2, 8, 2);
             tabControl.Items.Add(newTab);
 
             ScrollViewer scrollViewer = new ScrollViewer();
