@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest.EditorControls
         public ExitsControl()
         {
             InitializeComponent();
+            compassControl.HyperlinkClicked += compassControl_HyperlinkClicked;
         }
 
         public IControlDataHelper Helper
@@ -147,6 +148,11 @@ namespace AxeSoftware.Quest.EditorControls
         private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             toolbar.IsItemSelected = (listView.SelectedItems.Count > 0);
+        }
+
+        void compassControl_HyperlinkClicked(string destination)
+        {
+            m_controller.UIRequestEditElement(destination);
         }
     }
 }

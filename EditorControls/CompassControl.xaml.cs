@@ -18,6 +18,8 @@ namespace AxeSoftware.Quest.EditorControls
     {
         private CompassDirectionControl[] m_directionControl = new CompassDirectionControl[11];
 
+        public event Action<string> HyperlinkClicked;
+
         public CompassControl()
         {
             InitializeComponent();
@@ -32,19 +34,29 @@ namespace AxeSoftware.Quest.EditorControls
             m_directionControl[8] = dirSE;
             m_directionControl[9] = dirUp;
             m_directionControl[10] = dirDown;
+
+            foreach (CompassDirectionControl ctl in m_directionControl)
+            {
+                ctl.HyperlinkClicked += ctl_HyperlinkClicked;
+            }
+        }
+
+        void ctl_HyperlinkClicked(string destination)
+        {
+            if (HyperlinkClicked != null) HyperlinkClicked(destination);
         }
 
         public void Clear()
         {
             foreach (CompassDirectionControl ctl in m_directionControl)
             {
-                ctl.Destination = "(none)";
+                ctl.NoLinkDestination = "(none)";
             }
         }
 
         public void Populate(int direction, string to)
         {
-            m_directionControl[direction].Destination = to;
+            m_directionControl[direction].HyperlinkDestination = to;
         }
     }
 }

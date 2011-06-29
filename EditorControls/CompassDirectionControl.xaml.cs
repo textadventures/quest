@@ -18,6 +18,8 @@ namespace AxeSoftware.Quest.EditorControls
     {
         public static DependencyProperty DirectionProperty;
 
+        public event Action<string> HyperlinkClicked;
+
         static CompassDirectionControl()
         {
             DirectionProperty = DependencyProperty.Register("Direction", typeof(int), typeof(CompassDirectionControl),
@@ -67,10 +69,32 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
-        public string Destination
+        public string NoLinkDestination
         {
-            get { return destination.Text; }
-            set { destination.Text = value; }
+            get { return noLinkDestination.Text; }
+            set
+            {
+                noLinkDestination.Text = value;
+                noLinkDestination.Visibility = Visibility.Visible;
+                destination.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public string HyperlinkDestination
+        {
+            get { return ((Run)destinationLink.Inlines.FirstInline).Text; }
+            set
+            {
+                destinationLink.Inlines.Clear();
+                destinationLink.Inlines.Add(new Run(value));
+                destination.Visibility = Visibility.Visible;
+                noLinkDestination.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            if (HyperlinkClicked != null) HyperlinkClicked(HyperlinkDestination);
         }
     }
 }

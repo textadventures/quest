@@ -13,7 +13,8 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Margin="5" HorizontalAlignment="Center" FontSize="18" Name="direction">Dir</TextBlock>
-                <TextBlock Grid.Row="1" Margin="5" HorizontalAlignment="Center" Name="destination">(none)</TextBlock>
+                <TextBlock Visibility="Collapsed" Grid.Row="1" Margin="5" HorizontalAlignment="Center" Name="noLinkDestination">(none)</TextBlock>
+                <TextBlock Grid.Row="1" Margin="5" HorizontalAlignment="Center" Name="destination"><Hyperlink Name="destinationLink" Click="Hyperlink_Click">destination</Hyperlink></TextBlock>
             </Grid>
         </Border>
     </Grid>
