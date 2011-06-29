@@ -12,7 +12,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TextBlock Margin="20" HorizontalAlignment="Center" FontFamily="Wingdings" FontSize="18">ßàáâãäåæ</TextBlock>
+                <TextBlock Margin="5" HorizontalAlignment="Center" FontSize="18" Name="direction">Dir</TextBlock>
                 <TextBlock Grid.Row="1" Margin="20" HorizontalAlignment="Center">(none)</TextBlock>
             </Grid>
         </Border>

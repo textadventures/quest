@@ -8,6 +8,7 @@
     <UserControl.Resources>
         <Style TargetType="{x:Type my:CompassDirectionControl}">
             <Setter Property="MaxHeight" Value="80"></Setter>
+            <Setter Property="MaxWidth" Value="80"></Setter>
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -18,7 +19,7 @@
         
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -28,22 +29,22 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <my:CompassDirectionControl Grid.Row="0" Grid.Column="0" />
-            <my:CompassDirectionControl Grid.Row="0" Grid.Column="1" />
-            <my:CompassDirectionControl Grid.Row="0" Grid.Column="2" />
-            <my:CompassDirectionControl Grid.Row="1" Grid.Column="0" />
-            <my:CompassDirectionControl Grid.Row="1" Grid.Column="1" />
-            <my:CompassDirectionControl Grid.Row="1" Grid.Column="2" />
-            <my:CompassDirectionControl Grid.Row="2" Grid.Column="0" />
-            <my:CompassDirectionControl Grid.Row="2" Grid.Column="1" />
-            <my:CompassDirectionControl Grid.Row="2" Grid.Column="2" />
+            <my:CompassDirectionControl Grid.Row="0" Grid.Column="0" Direction="0" />
+            <my:CompassDirectionControl Grid.Row="0" Grid.Column="1" Direction="1" />
+            <my:CompassDirectionControl Grid.Row="0" Grid.Column="2" Direction="2" />
+            <my:CompassDirectionControl Grid.Row="1" Grid.Column="0" Direction="3" />
+            <my:CompassDirectionControl Grid.Row="1" Grid.Column="1" Direction="4" />
+            <my:CompassDirectionControl Grid.Row="1" Grid.Column="2" Direction="5" />
+            <my:CompassDirectionControl Grid.Row="2" Grid.Column="0" Direction="6" />
+            <my:CompassDirectionControl Grid.Row="2" Grid.Column="1" Direction="7" />
+            <my:CompassDirectionControl Grid.Row="2" Grid.Column="2" Direction="8" />
             <Grid Grid.Column="3" Grid.RowSpan="3" VerticalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <my:CompassDirectionControl Grid.Row="0" />
-                <my:CompassDirectionControl Grid.Row="1" />
+                <my:CompassDirectionControl Grid.Row="0" Direction="9" />
+                <my:CompassDirectionControl Grid.Row="1" Direction="10" />
             </Grid>
         </Grid>
         
