@@ -159,6 +159,7 @@
 
       <control>
         <controltype>exits</controltype>
+        <compass type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassOut];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown]</compass>
         <expand/>
       </control>
     </tab>

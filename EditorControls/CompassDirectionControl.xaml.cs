@@ -58,12 +58,19 @@ namespace AxeSoftware.Quest.EditorControls
             }
             else if (dir >= 9 && dir <= 10)
             {
-                ctl.direction.Text = "TODO";
+                ctl.direction.FontFamily = new FontFamily("Marlett");
+                ctl.direction.Text = "tu".Substring(dir - 9, 1);
             }
             else
             {
                 throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public string Destination
+        {
+            get { return destination.Text; }
+            set { destination.Text = value; }
         }
     }
 }

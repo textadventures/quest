@@ -20,6 +20,7 @@ namespace AxeSoftware.Quest.EditorControls
         private ControlDataOptions m_options = new ControlDataOptions();
         private IEditorData m_data;
         private EditorController m_controller;
+        private List<string> m_directionNames;
 
         public event EventHandler<DataModifiedEventArgs> Dirty { add { } remove { } }
         public event Action RequestParentElementEditorSave { add { } remove { } }
@@ -38,6 +39,8 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller = controller;
             m_controller.ElementsUpdated += m_controller_ElementsUpdated;
+
+            m_directionNames = new List<string>(definition.GetListString("compass"));
         }
 
         void m_controller_ElementsUpdated()
@@ -61,6 +64,8 @@ namespace AxeSoftware.Quest.EditorControls
             m_data = data;
 
             listView.Items.Clear();
+            compassControl.Clear();
+
             IEnumerable<string> exits = m_controller.GetObjectNames("exit", data.Name);
             foreach (string exit in exits)
             {
@@ -74,6 +79,12 @@ namespace AxeSoftware.Quest.EditorControls
                 };
 
                 listView.Items.Add(exitListData);
+
+                if (m_directionNames.Contains(exitListData.Alias))
+                {
+                    int direction = m_directionNames.IndexOf(exitListData.Alias);
+                    compassControl.Populate(direction, exitListData.To);
+                }
             }
         }
 

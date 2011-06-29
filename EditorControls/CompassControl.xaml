@@ -4,17 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
+             d:DesignHeight="300" d:DesignWidth="800">
     <UserControl.Resources>
         <Style TargetType="{x:Type my:CompassDirectionControl}">
             <Setter Property="MaxHeight" Value="80"></Setter>
-            <Setter Property="MaxWidth" Value="80"></Setter>
+            <Setter Property="MinWidth" Value="20"></Setter>
         </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         
         <Grid>
@@ -29,22 +29,22 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <my:CompassDirectionControl Grid.Row="0" Grid.Column="0" Direction="0" />
-            <my:CompassDirectionControl Grid.Row="0" Grid.Column="1" Direction="1" />
-            <my:CompassDirectionControl Grid.Row="0" Grid.Column="2" Direction="2" />
-            <my:CompassDirectionControl Grid.Row="1" Grid.Column="0" Direction="3" />
-            <my:CompassDirectionControl Grid.Row="1" Grid.Column="1" Direction="4" />
-            <my:CompassDirectionControl Grid.Row="1" Grid.Column="2" Direction="5" />
-            <my:CompassDirectionControl Grid.Row="2" Grid.Column="0" Direction="6" />
-            <my:CompassDirectionControl Grid.Row="2" Grid.Column="1" Direction="7" />
-            <my:CompassDirectionControl Grid.Row="2" Grid.Column="2" Direction="8" />
+            <my:CompassDirectionControl x:Name="dirNW" Grid.Row="0" Grid.Column="0" Direction="0" />
+            <my:CompassDirectionControl x:Name="dirN" Grid.Row="0" Grid.Column="1" Direction="1" />
+            <my:CompassDirectionControl x:Name="dirNE" Grid.Row="0" Grid.Column="2" Direction="2" />
+            <my:CompassDirectionControl x:Name="dirW" Grid.Row="1" Grid.Column="0" Direction="3" />
+            <my:CompassDirectionControl x:Name="dirOut" Grid.Row="1" Grid.Column="1" Direction="4" />
+            <my:CompassDirectionControl x:Name="dirE" Grid.Row="1" Grid.Column="2" Direction="5" />
+            <my:CompassDirectionControl x:Name="dirSW" Grid.Row="2" Grid.Column="0" Direction="6" />
+            <my:CompassDirectionControl x:Name="dirS" Grid.Row="2" Grid.Column="1" Direction="7" />
+            <my:CompassDirectionControl x:Name="dirSE" Grid.Row="2" Grid.Column="2" Direction="8" />
             <Grid Grid.Column="3" Grid.RowSpan="3" VerticalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <my:CompassDirectionControl Grid.Row="0" Direction="9" />
-                <my:CompassDirectionControl Grid.Row="1" Direction="10" />
+                <my:CompassDirectionControl x:Name="dirUp" Grid.Row="0" Direction="9" />
+                <my:CompassDirectionControl x:Name="dirDown" Grid.Row="1" Direction="10" />
             </Grid>
         </Grid>
         
