@@ -76,6 +76,9 @@
   <template templatetype="command" name="look">^look$</template>
   <verbtemplate name="lookat">look at</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
+  <verbtemplate name="lookat">examine</verbtemplate>
+  <verbtemplate name="lookat">exam</verbtemplate>
+  <verbtemplate name="lookat">ex</verbtemplate>
   <verbtemplate name="take">take</verbtemplate>
   <verbtemplate name="take">get</verbtemplate>
   <verbtemplate name="take">pick up</verbtemplate>
