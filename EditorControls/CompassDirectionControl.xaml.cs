@@ -18,6 +18,10 @@ namespace AxeSoftware.Quest.EditorControls
     {
         public static DependencyProperty DirectionProperty;
 
+        private Brush m_defaultBackground;
+        private Brush m_mouseOverBackground;
+        private Brush m_selectedBackground;
+
         public event Action<string> HyperlinkClicked;
 
         static CompassDirectionControl()
@@ -35,6 +39,35 @@ namespace AxeSoftware.Quest.EditorControls
         public CompassDirectionControl()
         {
             InitializeComponent();
+            m_defaultBackground = new SolidColorBrush(Colors.White);
+
+            m_mouseOverBackground = new LinearGradientBrush(
+                new GradientStopCollection {
+                    new GradientStop(Color.FromRgb(0xF0, 0xFA, 0xFE), 0.0),
+                    new GradientStop(Color.FromRgb(0xC6, 0xE6, 0xFA), 1.0)},
+                new Point(0.0, 0.0), new Point(0.0, 1.0));
+
+            m_selectedBackground = new LinearGradientBrush(
+                new GradientStopCollection {
+                                new GradientStop(Color.FromRgb(0xE3, 0xF4, 0xFC), 0.0),
+                                new GradientStop(Color.FromRgb(0xD8, 0xEF, 0xFC), 0.38),
+                                new GradientStop(Color.FromRgb(0xBE, 0xE6, 0xFD), 0.38),
+                                new GradientStop(Color.FromRgb(0xA6, 0xD9, 0xF4), 1.0)},
+                new Point(0.0, 0.0), new Point(0.0, 1.0));
+
+            this.Background = m_defaultBackground;
+            this.MouseEnter += MouseEnterUpdateBackground;
+            this.MouseLeave += MouseLeaveUpdateBackground;
+        }
+
+        private void MouseEnterUpdateBackground(object sender, MouseEventArgs e)
+        {
+            this.Background = m_mouseOverBackground;
+        }
+
+        private void MouseLeaveUpdateBackground(object sender, MouseEventArgs e)
+        {
+            this.Background = m_defaultBackground;
         }
 
         private static void OnDirectionChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)

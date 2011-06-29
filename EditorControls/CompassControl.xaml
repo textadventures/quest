@@ -11,7 +11,7 @@
             <Setter Property="MinWidth" Value="20"></Setter>
         </Style>
     </UserControl.Resources>
-    <Grid>
+    <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
@@ -48,6 +48,6 @@
             </Grid>
         </Grid>
         
-        <my:CompassEditorControl Grid.Column="1" Margin="20,0,0,0" />
+        <my:CompassEditorControl Background="{x:Static SystemColors.ControlBrush}" Grid.Column="1" Margin="10,0,0,0" Padding="10" />
     </Grid>
 </UserControl>
