@@ -37,10 +37,17 @@ namespace AxeSoftware.Quest.EditorControls
         public void DoInitialise(EditorController controller, IEditorControl definition)
         {
             m_controller = controller;
+            m_controller.ElementsUpdated += m_controller_ElementsUpdated;
+        }
+
+        void m_controller_ElementsUpdated()
+        {
+            Populate(m_data);
         }
 
         private class ExitListData
         {
+            public string Name { get; set; }
             public IEditableObjectReference ToRoom { get; set; }
             public string Alias { get; set; }
             public string To
@@ -51,8 +58,6 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Populate(IEditorData data)
         {
-            // TO DO: listen to Controller.ElementsUpdated and repopulate
-
             m_data = data;
 
             listView.Items.Clear();
@@ -63,6 +68,7 @@ namespace AxeSoftware.Quest.EditorControls
 
                 ExitListData exitListData = new ExitListData
                 {
+                    Name = exitData.Name,
                     ToRoom = exitData.GetAttribute("to") as IEditableObjectReference,
                     Alias = exitData.GetAttribute("alias") as string,
                 };
@@ -93,6 +99,43 @@ namespace AxeSoftware.Quest.EditorControls
         public ControlDataOptions Options
         {
             get { return m_options; }
+        }
+
+        private WFToolbar toolbar
+        {
+            get { return (WFToolbar)toolbarHost.Child; }
+        }
+
+        private void toolbar_AddClicked()
+        {
+            m_controller.UIRequestAddElement("object", "exit", "");
+        }
+
+        private void toolbar_EditClicked()
+        {
+            if (listView.SelectedItem == null) return;
+            ExitListData currentSelection = (ExitListData)listView.SelectedItem;
+            m_controller.UIRequestEditElement(currentSelection.Name);
+        }
+
+        private void toolbar_DeleteClicked()
+        {
+            string[] keys = listView.SelectedItems.Cast<ExitListData>().Select(i => i.Name).ToArray();
+            if (keys.Length == 0) return;
+
+            m_controller.StartTransaction(string.Format("Delete {0} exits", keys.Length));
+
+            foreach (var key in keys)
+            {
+                m_controller.DeleteElement(key, false);
+            }
+
+            m_controller.EndTransaction();
+        }
+
+        private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            toolbar.IsItemSelected = (listView.SelectedItems.Count > 0);
         }
     }
 }

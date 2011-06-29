@@ -232,7 +232,7 @@ namespace AxeSoftware.Quest
                 if (ElementsUpdated != null) ElementsUpdated();
             }
 
-            if (e.Attribute == "anonymous"
+            if (e.Attribute == "anonymous" || e.Attribute == "alias"
                 || e.Element.Type == ObjectType.Exit && (e.Attribute == "to" || e.Attribute == "name")
                 || e.Element.Type == ObjectType.Command && (e.Attribute == "name" || e.Attribute == "pattern" || e.Attribute == "isverb")
                 || e.Element.Type == ObjectType.TurnScript && (e.Attribute == "name")
