@@ -65,6 +65,15 @@
     <Compile Include="AttributesControl.xaml.cs">
       <DependentUpon>AttributesControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CompassControl.xaml.cs">
+      <DependentUpon>CompassControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CompassDirectionControl.xaml.cs">
+      <DependentUpon>CompassDirectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CompassEditorControl.xaml.cs">
+      <DependentUpon>CompassEditorControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ControlFactory.cs" />
     <Compile Include="DictionaryScriptControl.xaml.cs">
       <DependentUpon>DictionaryScriptControl.xaml</DependentUpon>
@@ -282,6 +291,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CheckBoxControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CompassControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CompassDirectionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CompassEditorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
