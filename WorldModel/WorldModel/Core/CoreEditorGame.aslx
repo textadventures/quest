@@ -44,6 +44,11 @@
         <caption>Show room description when entering a room</caption>
         <attribute>showdescriptiononenter</attribute>
       </control>
+	  <control>  
+	    <controltype>checkbox</controltype>
+        <caption>Append object description to room description</caption>
+        <attribute>appendobjectdescription</attribute>
+      </control>
       <control>
         <controltype>checkbox</controltype>
         <caption>Enable hyperlinks</caption>

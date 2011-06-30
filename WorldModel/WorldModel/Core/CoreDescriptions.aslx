@@ -24,11 +24,29 @@
           msg (fulldesc)
         }
       }
+	  fulldesc = ""
       if (HasString(player.parent, "description")) {
         if (LengthOf(player.parent.description) > 0) {
-          msg (player.parent.description)
+           fulldesc = player.parent.description
         }
       }
+
+	  <![CDATA[	  
+	  if (game.appendobjectdescription) {
+		  foreach (val, ScopeVisibleNotHeld()) {
+			if (HasString(val, "description")) {
+				if (LengthOf(val.description)>0 and val <> player  ) {
+					fulldesc = fulldesc + " " +  val.description
+				}
+			}
+		  }
+	  }
+	  ]]>
+	   
+	 if (LengthOf(fulldesc) > 0) {
+          msg (fulldesc)
+      }	  
+	  
     }
   </function>
 

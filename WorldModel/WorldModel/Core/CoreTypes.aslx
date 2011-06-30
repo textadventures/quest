@@ -3,6 +3,7 @@
     <enablehyperlinks/>
     <showdescriptiononenter/>
     <autodescription/>
+	<appendobjectdescription/>
     <defaultfont>Arial</defaultfont>
     <defaultfontsize type="int">9</defaultfontsize>
     <defaultbackground>White</defaultbackground>

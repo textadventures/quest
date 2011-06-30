@@ -77,7 +77,14 @@
         <mustnotinherit>editor_room</mustnotinherit>
       </control>
 
-      <control>
+     <control>
+        <mustnotinherit>editor_room</mustnotinherit>
+        <caption>Description</caption>
+        <controltype>textbox</controltype>
+        <attribute>description</attribute>
+      </control>	  
+	  
+	  <control>
         <mustnotinherit>editor_room</mustnotinherit>
         <selfcaption>"Look at" object description</selfcaption>
         <controltype>multi</controltype>
