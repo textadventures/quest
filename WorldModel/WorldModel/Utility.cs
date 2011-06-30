@@ -11,11 +11,6 @@ namespace AxeSoftware.Quest
         private const string k_dotReplacementString = "___DOT___";
         private const string k_spaceReplacementString = "___SPACE___";
 
-        public static string CapFirst(string text)
-        {
-            return text.Substring(0, 1).ToUpper() + text.Substring(1);
-        }
-
         public static string GetParameter(string script)
         {
             string afterParameter;

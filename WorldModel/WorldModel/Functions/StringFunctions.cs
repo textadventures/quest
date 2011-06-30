@@ -44,7 +44,7 @@ namespace AxeSoftware.Quest.Functions
 
         public static string CapFirst(string input)
         {
-            return Utility.CapFirst(input);
+            return AxeSoftware.Utility.Strings.CapFirst(input);
         }
 
         public static int Instr(string input, string search)

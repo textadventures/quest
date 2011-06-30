@@ -70,6 +70,7 @@ namespace AxeSoftware.Quest.EditorControls
             listView.Items.Clear();
             compassControl.Clear();
             m_directionListIndexes.Clear();
+            PopulateCompassEditor(null);
 
             IEnumerable<string> exits = m_controller.GetObjectNames("exit", data.Name);
             foreach (string exit in exits)
@@ -165,12 +166,14 @@ namespace AxeSoftware.Quest.EditorControls
             if (SelectedExit == null)
             {
                 compassControl.SelectedDirection = null;
+                PopulateCompassEditor(null);
             }
             else
             {
                 int? dirIndex = m_directionNames.IndexOf(SelectedExit.Alias);
                 if (dirIndex == -1) dirIndex = null;
                 compassControl.SelectedDirection = dirIndex;
+                PopulateCompassEditor(SelectedExit.Alias ?? string.Empty);
             }
         }
 
@@ -190,6 +193,43 @@ namespace AxeSoftware.Quest.EditorControls
                 listView.SelectedItem = listView.Items[listIndex];
             }
             m_selectionChanging = false;
+            PopulateCompassEditor(direction);
+        }
+
+        private void PopulateCompassEditor(string direction)
+        {
+            // Populate the Compass Editor (top-right) in response to a selection change in
+            // either the compass or exits list. There are four possibilities for direction:
+            //   - an existing compass direction
+            //   - a new compass direction
+            //   - not a compass direction
+            //   - null
+
+            if (direction == null)
+            {
+                CompassEditor.Mode = CompassEditorControl.CompassEditorMode.NoSelection;
+                return;
+            }
+            else if (!m_directionNames.Contains(direction))
+            {
+                CompassEditor.Mode = CompassEditorControl.CompassEditorMode.NotACompassExit;
+                return;
+            }
+            else if (m_directionListIndexes.ContainsKey(direction))
+            {
+                CompassEditor.Mode = CompassEditorControl.CompassEditorMode.ExistingCompassExit;
+            }
+            else
+            {
+                CompassEditor.Mode = CompassEditorControl.CompassEditorMode.NewCompassExit;
+            }
+
+            CompassEditor.direction.Text = AxeSoftware.Utility.Strings.CapFirst(direction);
+        }
+
+        private CompassEditorControl CompassEditor
+        {
+            get { return compassControl.compassEditor; }
         }
     }
 }

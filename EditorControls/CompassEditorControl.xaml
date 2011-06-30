@@ -6,9 +6,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel Orientation="Vertical">
-        <TextBlock Name="direction" FontWeight="Bold">North</TextBlock>
+        <TextBlock Name="direction" FontWeight="Bold" TextWrapping="Wrap">North</TextBlock>
         <StackPanel Orientation="Horizontal">
-            <Label>To:</Label>
+            <Label Name="toLabel">To:</Label>
             <ComboBox Name="to"/>
         </StackPanel>
         <Button Name="create" HorizontalAlignment="Left">Create</Button>

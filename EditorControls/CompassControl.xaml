@@ -14,7 +14,7 @@
     <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
         
         <Grid>
@@ -48,6 +48,6 @@
             </Grid>
         </Grid>
         
-        <my:CompassEditorControl Background="{x:Static SystemColors.ControlBrush}" Grid.Column="1" Margin="10,0,0,0" Padding="10" />
+        <my:CompassEditorControl x:Name="compassEditor" Background="{x:Static SystemColors.ControlBrush}" Grid.Column="1" Margin="10,0,0,0" Padding="10" />
     </Grid>
 </UserControl>

@@ -232,7 +232,7 @@ namespace AxeSoftware.Quest
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}", Utility.CapFirst(TypeString), Name);
+            return string.Format("{0}: {1}", AxeSoftware.Utility.Strings.CapFirst(TypeString), Name);
         }
 
         public ObjectType Type

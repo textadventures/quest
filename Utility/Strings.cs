@@ -11,5 +11,10 @@ namespace AxeSoftware.Utility
         {
             return Microsoft.VisualBasic.Information.IsNumeric(expression);
         }
+
+        public static string CapFirst(string text)
+        {
+            return text.Substring(0, 1).ToUpper() + text.Substring(1);
+        }
     }
 }
