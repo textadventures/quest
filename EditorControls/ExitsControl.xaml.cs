@@ -21,6 +21,8 @@ namespace AxeSoftware.Quest.EditorControls
         private IEditorData m_data;
         private EditorController m_controller;
         private List<string> m_directionNames;
+        private Dictionary<string, int> m_directionListIndexes = new Dictionary<string, int>();
+        private bool m_selectionChanging;
 
         public event EventHandler<DataModifiedEventArgs> Dirty { add { } remove { } }
         public event Action RequestParentElementEditorSave { add { } remove { } }
@@ -29,6 +31,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             InitializeComponent();
             compassControl.HyperlinkClicked += compassControl_HyperlinkClicked;
+            compassControl.SelectionChanged += compassControl_SelectionChanged;
         }
 
         public IControlDataHelper Helper
@@ -66,6 +69,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             listView.Items.Clear();
             compassControl.Clear();
+            m_directionListIndexes.Clear();
 
             IEnumerable<string> exits = m_controller.GetObjectNames("exit", data.Name);
             foreach (string exit in exits)
@@ -79,12 +83,13 @@ namespace AxeSoftware.Quest.EditorControls
                     Alias = exitData.GetAttribute("alias") as string,
                 };
 
-                listView.Items.Add(exitListData);
+                int addedIndex = listView.Items.Add(exitListData);
 
                 if (m_directionNames.Contains(exitListData.Alias))
                 {
                     int direction = m_directionNames.IndexOf(exitListData.Alias);
                     compassControl.Populate(direction, exitListData.To);
+                    m_directionListIndexes.Add(exitListData.Alias, addedIndex);
                 }
             }
         }
@@ -126,8 +131,7 @@ namespace AxeSoftware.Quest.EditorControls
         private void toolbar_EditClicked()
         {
             if (listView.SelectedItem == null) return;
-            ExitListData currentSelection = (ExitListData)listView.SelectedItem;
-            m_controller.UIRequestEditElement(currentSelection.Name);
+            m_controller.UIRequestEditElement(SelectedExit.Name);
         }
 
         private void toolbar_DeleteClicked()
@@ -145,14 +149,47 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller.EndTransaction();
         }
 
+        private ExitListData SelectedExit
+        {
+            get
+            {
+                if (listView.SelectedItem == null) return null;
+                return (ExitListData)listView.SelectedItem;
+            }
+        }
+
         private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             toolbar.IsItemSelected = (listView.SelectedItems.Count > 0);
+            if (m_selectionChanging) return;
+            if (SelectedExit == null)
+            {
+                compassControl.SelectedDirection = null;
+            }
+            else
+            {
+                int? dirIndex = m_directionNames.IndexOf(SelectedExit.Alias);
+                if (dirIndex == -1) dirIndex = null;
+                compassControl.SelectedDirection = dirIndex;
+            }
         }
 
-        void compassControl_HyperlinkClicked(string destination)
+        private void compassControl_HyperlinkClicked(string destination)
         {
             m_controller.UIRequestEditElement(destination);
+        }
+
+        private void compassControl_SelectionChanged(int dirIndex)
+        {
+            string direction = m_directionNames[dirIndex];
+            m_selectionChanging = true;
+            listView.SelectedItems.Clear();
+            if (m_directionListIndexes.ContainsKey(direction))
+            {
+                int listIndex = m_directionListIndexes[direction];
+                listView.SelectedItem = listView.Items[listIndex];
+            }
+            m_selectionChanging = false;
         }
     }
 }

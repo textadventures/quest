@@ -24,7 +24,6 @@ namespace AxeSoftware.Quest.EditorControls
         private bool m_selected;
 
         public event Action<string> HyperlinkClicked;
-        public event Action Selected;
 
         static CompassDirectionControl()
         {

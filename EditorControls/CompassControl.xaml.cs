@@ -20,6 +20,7 @@ namespace AxeSoftware.Quest.EditorControls
         private int? m_selectedDirection = null;
 
         public event Action<string> HyperlinkClicked;
+        public event Action<int> SelectionChanged;
 
         public CompassControl()
         {
@@ -48,6 +49,7 @@ namespace AxeSoftware.Quest.EditorControls
             CompassDirectionControl ctl = (CompassDirectionControl)sender;
             int dirIndex = ctl.Direction;
             SelectedDirection = dirIndex;
+            if (SelectionChanged != null) SelectionChanged(dirIndex);
         }
 
         void ctl_HyperlinkClicked(string destination)
@@ -55,7 +57,7 @@ namespace AxeSoftware.Quest.EditorControls
             if (HyperlinkClicked != null) HyperlinkClicked(destination);
         }
 
-        private int? SelectedDirection
+        public int? SelectedDirection
         {
             get { return m_selectedDirection; }
             set
