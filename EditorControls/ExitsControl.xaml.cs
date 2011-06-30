@@ -74,25 +74,28 @@ namespace AxeSoftware.Quest.EditorControls
             m_directionListIndexes.Clear();
             PopulateCompassEditor(null);
 
-            IEnumerable<string> exits = m_controller.GetObjectNames("exit", data.Name);
-            foreach (string exit in exits)
+            if (data != null)
             {
-                IEditorData exitData = m_controller.GetEditorData(exit);
-
-                ExitListData exitListData = new ExitListData
+                IEnumerable<string> exits = m_controller.GetObjectNames("exit", data.Name);
+                foreach (string exit in exits)
                 {
-                    Name = exitData.Name,
-                    ToRoom = exitData.GetAttribute("to") as IEditableObjectReference,
-                    Alias = exitData.GetAttribute("alias") as string,
-                };
+                    IEditorData exitData = m_controller.GetEditorData(exit);
 
-                int addedIndex = listView.Items.Add(exitListData);
+                    ExitListData exitListData = new ExitListData
+                    {
+                        Name = exitData.Name,
+                        ToRoom = exitData.GetAttribute("to") as IEditableObjectReference,
+                        Alias = exitData.GetAttribute("alias") as string,
+                    };
 
-                if (m_directionNames.Contains(exitListData.Alias))
-                {
-                    int direction = m_directionNames.IndexOf(exitListData.Alias);
-                    compassControl.Populate(direction, exitListData.To);
-                    m_directionListIndexes.Add(exitListData.Alias, addedIndex);
+                    int addedIndex = listView.Items.Add(exitListData);
+
+                    if (m_directionNames.Contains(exitListData.Alias))
+                    {
+                        int direction = m_directionNames.IndexOf(exitListData.Alias);
+                        compassControl.Populate(direction, exitListData.To);
+                        m_directionListIndexes.Add(exitListData.Alias, addedIndex);
+                    }
                 }
             }
         }
@@ -249,10 +252,45 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller.UIRequestEditElement(exitName);
         }
 
-        void CompassEditor_CreateExit(string to, string alias)
+        private void CompassEditor_CreateExit(object sender, CompassEditorControl.CreateExitEventArgs e)
         {
-            string newExit = m_controller.CreateNewExit(m_data.Name, to, alias);
+            string newExit;
+            if (e.CreateInverse)
+            {
+                newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction, GetInverseDirection(e.Direction));
+            }
+            else
+            {
+                newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction);
+            }
             m_controller.UIRequestEditElement(newExit);
+        }
+
+        private static List<int> s_oppositeDirs = new List<int> { 8, 7, 6, 5, -1, 3, 2, 1, 0, 10, 9 };
+
+        private string GetInverseDirection(string direction)
+        {
+            // 0 = NW, 1 = N, 2 = NE
+            // 3 = W , 4 = O, 5 = E     9 = U, 10 = D
+            // 6 = SW, 7 = S, 8 = SE
+
+            // So opposites are:
+
+            //  0 <--> 8
+            //  1 <--> 7
+            //  2 <--> 6
+            //  3 <--> 5
+            //  4 <--> not applicable
+            //  5 <--> 3
+            //  6 <--> 2
+            //  7 <--> 1
+            //  8 <--> 0
+            //  9 <--> 10
+            // 10 <--> 9
+
+            int dirIndex = m_directionNames.IndexOf(direction);
+            int opposite = s_oppositeDirs[dirIndex];
+            return m_directionNames[opposite];
         }
     }
 }
