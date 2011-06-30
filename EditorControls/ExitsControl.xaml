@@ -25,7 +25,7 @@
             <this:WFToolbar Name="toolbar" AddClicked="toolbar_AddClicked" EditClicked="toolbar_EditClicked" DeleteClicked="toolbar_DeleteClicked" />
         </WindowsFormsHost>
 
-        <ListView Name="listView" Grid.Row="2" SelectionChanged="listView_SelectionChanged">
+        <ListView Name="listView" Grid.Row="2" SelectionChanged="listView_SelectionChanged" MouseDoubleClick="listView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn HeaderContainerStyle="{StaticResource header}" Width="120" Header="To" DisplayMemberBinding="{Binding Path=To}"></GridViewColumn>

@@ -139,6 +139,11 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void toolbar_EditClicked()
         {
+            EditSelectedItem();
+        }
+
+        private void EditSelectedItem()
+        {
             if (listView.SelectedItem == null) return;
             m_controller.UIRequestEditElement(SelectedExit.Name);
         }
@@ -365,6 +370,11 @@ namespace AxeSoftware.Quest.EditorControls
                 RegistryKey key = Registry.CurrentUser.CreateSubKey(k_regPath);
                 key.SetValue(k_regName, value ? 1 : 0);
             }
+        }
+
+        private void listView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            EditSelectedItem();
         }
     }
 }
