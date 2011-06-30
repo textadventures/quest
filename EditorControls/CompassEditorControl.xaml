@@ -6,15 +6,24 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel Orientation="Vertical">
+        <StackPanel.Resources>
+            <Style x:Key="item" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="Margin" Value="0,8,0,0"></Setter>
+            </Style>
+            <Style x:Key="button" TargetType="Button" BasedOn="{StaticResource item}">
+                <Setter Property="Padding" Value="8,2,8,2"></Setter>
+            </Style>
+        </StackPanel.Resources>
         <TextBlock Name="direction" FontWeight="Bold" TextWrapping="Wrap">North</TextBlock>
-        <StackPanel Orientation="Horizontal">
-            <Label Name="toLabel">To:</Label>
-            <ComboBox Name="to"/>
+        <StackPanel Style="{StaticResource item}"  Orientation="Horizontal">
+            <Label Name="toLabel" Padding="0,3,0,0">To:</Label>
+            <ComboBox Name="to" Padding="6,3,6,3" Margin="6,0,0,0" MinWidth="90"/>
+            <TextBlock Name="toName" Padding="6,3,6,3" Margin="6,0,0,0"></TextBlock>
         </StackPanel>
-        <Button Name="create" HorizontalAlignment="Left">Create</Button>
-        <Button Name="edit" HorizontalAlignment="Left">Edit</Button>
-        <CheckBox Name="chkCorresponding">Also create exit in the other direction</CheckBox>
-        <TextBlock Name="corresponding">Exit in the other direction already exists</TextBlock>
-        <Button Name="createCorresponding" HorizontalAlignment="Left">Create exit in the other direction</Button>
+        <Button Style="{StaticResource button}"  Name="create" HorizontalAlignment="Left">Create</Button>
+        <Button Style="{StaticResource button}" Name="edit" HorizontalAlignment="Left" Click="edit_Click">Edit</Button>
+        <CheckBox Style="{StaticResource item}" Name="chkCorresponding">Also create exit in the other direction</CheckBox>
+        <TextBlock Style="{StaticResource item}" Name="corresponding">Exit in the other direction already exists</TextBlock>
+        <Button Style="{StaticResource button}" Name="createCorresponding" HorizontalAlignment="Left">Create exit in the other direction</Button>
     </StackPanel>
 </UserControl>

@@ -26,6 +26,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         private CompassEditorMode m_mode;
 
+        public event Action<string> EditExit;
+
         public CompassEditorControl()
         {
             InitializeComponent();
@@ -42,6 +44,7 @@ namespace AxeSoftware.Quest.EditorControls
                 {
                     toLabel.Visibility = Visibility.Collapsed;
                     to.Visibility = Visibility.Collapsed;
+                    toName.Visibility = Visibility.Collapsed;
                     create.Visibility = Visibility.Collapsed;
                     edit.Visibility = Visibility.Collapsed;
                     chkCorresponding.Visibility = Visibility.Collapsed;
@@ -54,6 +57,7 @@ namespace AxeSoftware.Quest.EditorControls
                 {
                     toLabel.Visibility = Visibility.Visible;
                     to.Visibility = Visibility.Visible;
+                    toName.Visibility = Visibility.Collapsed;
                     create.Visibility = Visibility.Visible;
                     edit.Visibility = Visibility.Collapsed;
 
@@ -66,7 +70,8 @@ namespace AxeSoftware.Quest.EditorControls
                 else if (m_mode == CompassEditorMode.ExistingCompassExit)
                 {
                     toLabel.Visibility = Visibility.Visible;
-                    to.Visibility = Visibility.Visible;
+                    to.Visibility = Visibility.Collapsed;
+                    toName.Visibility = Visibility.Visible;
                     create.Visibility = Visibility.Collapsed;
                     edit.Visibility = Visibility.Visible;
                     chkCorresponding.Visibility = Visibility.Collapsed;
@@ -80,6 +85,13 @@ namespace AxeSoftware.Quest.EditorControls
                     throw new ArgumentOutOfRangeException();
                 }
             }
+        }
+
+        public string ExitID { get; set; }
+
+        private void edit_Click(object sender, RoutedEventArgs e)
+        {
+            EditExit(ExitID);
         }
     }
 }
