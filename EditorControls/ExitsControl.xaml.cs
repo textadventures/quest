@@ -36,6 +36,7 @@ namespace AxeSoftware.Quest.EditorControls
             compassControl.SelectionChanged += compassControl_SelectionChanged;
             CompassEditor.EditExit += CompassEditor_EditExit;
             CompassEditor.CreateExit += CompassEditor_CreateExit;
+            CompassEditor.CreateInverseExit += CompassEditor_CreateInverseExit;
         }
 
         public IControlDataHelper Helper
@@ -228,6 +229,8 @@ namespace AxeSoftware.Quest.EditorControls
                 ExitListData data = (ExitListData)listView.Items[m_directionListIndexes[direction]];
                 CompassEditor.toName.Text = data.To;
                 CompassEditor.ExitID = data.Name;
+                CompassEditor.Destination = data.To;
+                CompassEditor.DirectionName = direction;
 
                 // See if a corresponding exit exists in the "to" room
                 string inverseExit = GetInverseDirection(data.Alias);
@@ -253,15 +256,12 @@ namespace AxeSoftware.Quest.EditorControls
                 if (inverseExitExists && inverseExitPointsHere)
                 {
                     CompassEditor.CorrespondingExitExists = true;
+                    CompassEditor.AllowCreateInverseExit = true;
                 }
                 else
                 {
                     CompassEditor.CorrespondingExitExists = false;
-                    if (inverseExitExists)
-                    {
-                        // an inverse exit exists, but it doesn't point here
-                        CompassEditor.AllowCreateInverseExit = false;
-                    }
+                    CompassEditor.AllowCreateInverseExit = !inverseExitExists;
                 }
             }
             else
@@ -274,13 +274,17 @@ namespace AxeSoftware.Quest.EditorControls
                 }
                 CompassEditor.create.IsEnabled = false;
                 CompassEditor.DirectionName = direction;
+                CompassEditor.AllowCreateInverseExit = true;
             }
 
             CompassEditor.direction.Text = AxeSoftware.Utility.Strings.CapFirst(direction);
             CompassEditor.chkCorresponding.IsChecked = DefaultCreateInverseSetting;
 
-            // Allow creating the inverse exit, except for "out" as that has no inverse.
-            CompassEditor.AllowCreateInverseExit = m_directionNames.IndexOf(direction) != k_outDirIndex;
+            if (m_directionNames.IndexOf(direction) == k_outDirIndex)
+            {
+                // Allow creating the inverse exit, except for "out" as that has no inverse.
+                CompassEditor.AllowCreateInverseExit = false;
+            }
         }
 
         private CompassEditorControl CompassEditor
@@ -308,6 +312,15 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller.UIRequestEditElement(newExit);
         }
 
+        void CompassEditor_CreateInverseExit()
+        {
+            string inverseDir = GetInverseDirection(CompassEditor.DirectionName);
+            string from = CompassEditor.Destination;
+            string to = m_data.Name;
+            string newExit = m_controller.CreateNewExit(from, to, inverseDir);
+            m_controller.UIRequestEditElement(newExit);
+        }
+
         private static List<int> s_oppositeDirs = new List<int> { 8, 7, 6, 5, -1, 3, 2, 1, 0, 10, 9 };
 
         private string GetInverseDirection(string direction)
@@ -332,6 +345,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             int dirIndex = m_directionNames.IndexOf(direction);
             int opposite = s_oppositeDirs[dirIndex];
+            if (opposite == -1) return null;
             return m_directionNames[opposite];
         }
 

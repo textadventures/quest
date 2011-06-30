@@ -37,6 +37,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public event EventHandler<CreateExitEventArgs> CreateExit;
         public event Action<string> EditExit;
+        public event Action CreateInverseExit;
 
         public CompassEditorControl()
         {
@@ -96,6 +97,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public string DirectionName { get; set; }
         public string ExitID { get; set; }
+        public string Destination { get; set; }
 
         private void edit_Click(object sender, RoutedEventArgs e)
         {
@@ -140,6 +142,11 @@ namespace AxeSoftware.Quest.EditorControls
                 corresponding.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
                 createCorresponding.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
             }
+        }
+
+        private void createCorresponding_Click(object sender, RoutedEventArgs e)
+        {
+            CreateInverseExit();
         }
     }
 }
