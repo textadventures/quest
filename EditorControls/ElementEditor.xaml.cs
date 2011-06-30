@@ -77,9 +77,12 @@ namespace AxeSoftware.Quest.EditorControls
 
             scrollViewer.Content = controlGrid;
 
+            bool firstControl = true;
+
             foreach (IEditorControl ctl in tab.Controls)
             {
-                AddControlToGrid(controlGrid, ctl);
+                AddControlToGrid(controlGrid, ctl, firstControl);
+                firstControl = false;
             }
 
             if (m_lastRowIsResizable)
@@ -97,7 +100,7 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
-        private void AddControlToGrid(Grid grid, IEditorControl ctl)
+        private void AddControlToGrid(Grid grid, IEditorControl ctl, bool firstControl)
         {
             m_controlUIElements.Add(ctl, new List<UIElement>());
 
@@ -110,6 +113,11 @@ namespace AxeSoftware.Quest.EditorControls
             Control newControl = InitialiseEditorControl(ctl);
             m_controlUIElements[ctl].Add(newControl);
             newControl.Padding = new Thickness(5);
+
+            if (ctl.ControlType == "title" && !firstControl)
+            {
+                newControl.Margin = new Thickness(0, 8, 0, 0);
+            }
 
             IElementEditorControl elementEditorControl = newControl as IElementEditorControl;
             if (elementEditorControl != null)

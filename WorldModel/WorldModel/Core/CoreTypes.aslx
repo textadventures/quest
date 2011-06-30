@@ -4,10 +4,10 @@
     <showdescriptiononenter/>
     <autodescription/>
     <defaultfont>Arial</defaultfont>
-    <defaultfontsize>9</defaultfontsize>
-    <defaultbackground>white</defaultbackground>
-    <defaultforeground>black</defaultforeground>
-    <defaultlinkforeground>blue</defaultlinkforeground>
+    <defaultfontsize type="int">9</defaultfontsize>
+    <defaultbackground>White</defaultbackground>
+    <defaultforeground>Black</defaultforeground>
+    <defaultlinkforeground>Blue</defaultlinkforeground>
     <compassdirections type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassOut];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown]</compassdirections>
     <useframe type="boolean">false</useframe>
     <clearframe type="boolean">false</clearframe>

@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Margin="0,4,0,0">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Label Name="label" FontSize="16" Padding="0" HorizontalAlignment="Left">Title</Label>
+        <Label Name="label" FontSize="16" Padding="0" HorizontalAlignment="Left" Foreground="Gray">Title</Label>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition/>

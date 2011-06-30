@@ -6,6 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <ComboBox Name="lstDropdown" SelectionChanged="lstDropdown_SelectionChanged" HorizontalAlignment="Left" Padding="8,3,8,3" IsEditable="False" />
+        <ComboBox Name="lstDropdown" SelectionChanged="lstDropdown_SelectionChanged" TextBoxBase.TextChanged="lstDropdown_TextChanged" HorizontalAlignment="Left" Padding="8,3,8,3" IsEditable="False" />
     </Grid>
 </UserControl>

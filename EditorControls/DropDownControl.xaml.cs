@@ -42,6 +42,7 @@ namespace AxeSoftware.Quest.EditorControls
             // validvalues may be a simple string list, or a dictionary
             IEnumerable<string> valuesList = m_helper.ControlDefinition.GetListString("validvalues");
             IDictionary<string, string> valuesDictionary = m_helper.ControlDefinition.GetDictionary("validvalues");
+            bool fontsList = m_helper.ControlDefinition.GetBool("fontslist");
 
             if (valuesList != null)
             {
@@ -51,6 +52,15 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 SetListItems(valuesDictionary.Values.ToArray());
                 InitialiseDictionary(valuesDictionary);
+            }
+            else if (fontsList)
+            {
+                List<string> fonts = new List<string>();
+                foreach (var family in System.Drawing.FontFamily.Families)
+                {
+                    fonts.Add(family.Name);
+                }
+                SetListItems(fonts);
             }
             else
             {
@@ -101,7 +111,14 @@ namespace AxeSoftware.Quest.EditorControls
                 }
                 else
                 {
-                    lstDropdown.Text = string.Empty;
+                    if (lstDropdown.IsEditable)
+                    {
+                        lstDropdown.Text = value;
+                    }
+                    else
+                    {
+                        lstDropdown.Text = string.Empty;
+                    }
                 }
             }
             else
@@ -123,7 +140,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (m_dictionary == null)
             {
-                return (string)lstDropdown.SelectedItem;
+                return (string)lstDropdown.SelectedItem ?? lstDropdown.Text;
             }
             else
             {
@@ -135,6 +152,11 @@ namespace AxeSoftware.Quest.EditorControls
         public Control FocusableControl
         {
             get { return lstDropdown; }
+        }
+
+        private void lstDropdown_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            m_helper.SetDirty(lstDropdown.Text);
         }
     }
 }

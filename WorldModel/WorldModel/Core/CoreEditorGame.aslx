@@ -55,30 +55,59 @@
       <caption>Display</caption>
 
       <control>
-        <controltype>textbox</controltype>
+        <controltype>title</controltype>
+        <caption>Font</caption>
+      </control>
+      
+      <control>
+        <controltype>dropdown</controltype>
         <caption>Font</caption>
         <attribute>defaultfont</attribute>
+        <fontslist/>
+        <freetext/>
       </control>
       <control>
-        <controltype>textbox</controltype>
+        <controltype>number</controltype>
         <caption>Font size</caption>
         <attribute>defaultfontsize</attribute>
       </control>
+
       <control>
-        <controltype>textbox</controltype>
+        <controltype>title</controltype>
+        <caption>Colour</caption>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>You can use any valid HTML colour name, including the hexadecimal form (#RRGGBB - valid values #000000 to #FFFFFF)</caption>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
         <caption>Background</caption>
         <attribute>defaultbackground</attribute>
+        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <freetext/>
       </control>
       <control>
-        <controltype>textbox</controltype>
+        <controltype>dropdown</controltype>
         <caption>Foreground</caption>
         <attribute>defaultforeground</attribute>
+        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <freetext/>
       </control>
       <control>
-        <controltype>textbox</controltype>
+        <controltype>dropdown</controltype>
         <caption>Link foreground</caption>
         <attribute>defaultlinkforeground</attribute>
+        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <freetext/>
       </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Layout</caption>
+      </control>
+
       <control>
         <controltype>checkbox</controltype>
         <caption>Use static picture frame above scrolling text</caption>

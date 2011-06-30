@@ -6,6 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TextBlock Name="textblock" />
+        <TextBlock Name="textblock" TextWrapping="Wrap" />
     </Grid>
 </UserControl>
