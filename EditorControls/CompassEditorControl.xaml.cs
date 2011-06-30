@@ -26,6 +26,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private CompassEditorMode m_mode;
 
+        public event Action<string, string> CreateExit;
         public event Action<string> EditExit;
 
         public CompassEditorControl()
@@ -87,11 +88,22 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
+        public string DirectionName { get; set; }
         public string ExitID { get; set; }
 
         private void edit_Click(object sender, RoutedEventArgs e)
         {
             EditExit(ExitID);
+        }
+
+        private void to_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            create.IsEnabled = true;
+        }
+
+        private void create_Click(object sender, RoutedEventArgs e)
+        {
+            CreateExit((string)to.SelectedItem, DirectionName);
         }
     }
 }

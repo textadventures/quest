@@ -33,6 +33,7 @@ namespace AxeSoftware.Quest.EditorControls
             compassControl.HyperlinkClicked += compassControl_HyperlinkClicked;
             compassControl.SelectionChanged += compassControl_SelectionChanged;
             CompassEditor.EditExit += CompassEditor_EditExit;
+            CompassEditor.CreateExit += CompassEditor_CreateExit;
         }
 
         public IControlDataHelper Helper
@@ -231,6 +232,8 @@ namespace AxeSoftware.Quest.EditorControls
                 {
                     CompassEditor.to.Items.Add(objectName);
                 }
+                CompassEditor.create.IsEnabled = false;
+                CompassEditor.DirectionName = direction;
             }
 
             CompassEditor.direction.Text = AxeSoftware.Utility.Strings.CapFirst(direction);
@@ -244,6 +247,12 @@ namespace AxeSoftware.Quest.EditorControls
         private void CompassEditor_EditExit(string exitName)
         {
             m_controller.UIRequestEditElement(exitName);
+        }
+
+        void CompassEditor_CreateExit(string to, string alias)
+        {
+            string newExit = m_controller.CreateNewExit(m_data.Name, to, alias);
+            m_controller.UIRequestEditElement(newExit);
         }
     }
 }

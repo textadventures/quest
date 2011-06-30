@@ -1036,6 +1036,15 @@ namespace AxeSoftware.Quest
             return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit);
         }
 
+        public string CreateNewExit(string parent, string to, string alias)
+        {
+            return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, null,
+                new Dictionary<string, object> {
+                    { "to", m_worldModel.Elements.Get(to) },
+                    { "alias", alias }
+                });
+        }
+
         public string CreateNewTurnScript(string parent)
         {
             return CreateNewAnonymousObject(parent, "turn script", ObjectType.TurnScript);
