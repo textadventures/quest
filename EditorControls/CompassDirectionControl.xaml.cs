@@ -21,8 +21,10 @@ namespace AxeSoftware.Quest.EditorControls
         private Brush m_defaultBackground;
         private Brush m_mouseOverBackground;
         private Brush m_selectedBackground;
+        private bool m_selected;
 
         public event Action<string> HyperlinkClicked;
+        public event Action Selected;
 
         static CompassDirectionControl()
         {
@@ -44,7 +46,7 @@ namespace AxeSoftware.Quest.EditorControls
             m_mouseOverBackground = new LinearGradientBrush(
                 new GradientStopCollection {
                     new GradientStop(Color.FromRgb(0xF0, 0xFA, 0xFE), 0.0),
-                    new GradientStop(Color.FromRgb(0xC6, 0xE6, 0xFA), 1.0)},
+                    new GradientStop(Color.FromRgb(0xD6, 0xF0, 0xFF), 1.0)},
                 new Point(0.0, 0.0), new Point(0.0, 1.0));
 
             m_selectedBackground = new LinearGradientBrush(
@@ -62,12 +64,31 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void MouseEnterUpdateBackground(object sender, MouseEventArgs e)
         {
+            if (IsSelected) return;
             this.Background = m_mouseOverBackground;
         }
 
         private void MouseLeaveUpdateBackground(object sender, MouseEventArgs e)
         {
+            if (IsSelected) return;
             this.Background = m_defaultBackground;
+        }
+
+        public bool IsSelected
+        {
+            get { return m_selected; }
+            set
+            {
+                m_selected = value;
+                if (value)
+                {
+                    this.Background = m_selectedBackground;
+                }
+                else
+                {
+                    this.Background = IsMouseOver ? m_mouseOverBackground : m_defaultBackground;
+                }
+            }
         }
 
         private static void OnDirectionChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)

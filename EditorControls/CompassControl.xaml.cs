@@ -17,6 +17,7 @@ namespace AxeSoftware.Quest.EditorControls
     public partial class CompassControl : UserControl
     {
         private CompassDirectionControl[] m_directionControl = new CompassDirectionControl[11];
+        private int? m_selectedDirection = null;
 
         public event Action<string> HyperlinkClicked;
 
@@ -38,12 +39,37 @@ namespace AxeSoftware.Quest.EditorControls
             foreach (CompassDirectionControl ctl in m_directionControl)
             {
                 ctl.HyperlinkClicked += ctl_HyperlinkClicked;
+                ctl.MouseDown += ctl_MouseDown;
             }
+        }
+
+        void ctl_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            CompassDirectionControl ctl = (CompassDirectionControl)sender;
+            int dirIndex = ctl.Direction;
+            SelectedDirection = dirIndex;
         }
 
         void ctl_HyperlinkClicked(string destination)
         {
             if (HyperlinkClicked != null) HyperlinkClicked(destination);
+        }
+
+        private int? SelectedDirection
+        {
+            get { return m_selectedDirection; }
+            set
+            {
+                if (m_selectedDirection.HasValue)
+                {
+                    m_directionControl[m_selectedDirection.Value].IsSelected = false;
+                }
+                m_selectedDirection = value;
+                if (m_selectedDirection.HasValue)
+                {
+                    m_directionControl[m_selectedDirection.Value].IsSelected = true;
+                }
+            }
         }
 
         public void Clear()
@@ -52,6 +78,7 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 ctl.NoLinkDestination = "(none)";
             }
+            SelectedDirection = null;
         }
 
         public void Populate(int direction, string to)
