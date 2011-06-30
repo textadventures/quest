@@ -33,6 +33,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private CompassEditorMode m_mode;
         private bool m_allowCreateInverse;
+        private bool m_correspondingExitExists;
 
         public event EventHandler<CreateExitEventArgs> CreateExit;
         public event Action<string> EditExit;
@@ -69,11 +70,8 @@ namespace AxeSoftware.Quest.EditorControls
                     toName.Visibility = Visibility.Collapsed;
                     create.Visibility = Visibility.Visible;
                     edit.Visibility = Visibility.Collapsed;
-
-                    // depends on where the exit points
                     chkCorresponding.Visibility = Visibility.Visible;
-                    corresponding.Visibility = Visibility.Visible;
-
+                    corresponding.Visibility = Visibility.Collapsed;
                     createCorresponding.Visibility = Visibility.Collapsed;
                 }
                 else if (m_mode == CompassEditorMode.ExistingCompassExit)
@@ -125,11 +123,22 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 m_allowCreateInverse = value;
                 chkCorresponding.IsEnabled = value;
+                createCorresponding.IsEnabled = value;
                 if (!value)
                 {
                     chkCorresponding.IsChecked = false;
-                    corresponding.Text = string.Empty;
                 }
+            }
+        }
+
+        public bool CorrespondingExitExists
+        {
+            get { return m_correspondingExitExists; }
+            set
+            {
+                m_correspondingExitExists = value;
+                corresponding.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                createCorresponding.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
             }
         }
     }

@@ -96,7 +96,7 @@ namespace AxeSoftware.Quest.EditorControls
                     {
                         int direction = m_directionNames.IndexOf(exitListData.Alias);
                         compassControl.Populate(direction, exitListData.To);
-                        m_directionListIndexes.Add(exitListData.Alias, addedIndex);
+                        m_directionListIndexes[exitListData.Alias] = addedIndex;
                     }
                 }
             }
@@ -228,6 +228,41 @@ namespace AxeSoftware.Quest.EditorControls
                 ExitListData data = (ExitListData)listView.Items[m_directionListIndexes[direction]];
                 CompassEditor.toName.Text = data.To;
                 CompassEditor.ExitID = data.Name;
+
+                // See if a corresponding exit exists in the "to" room
+                string inverseExit = GetInverseDirection(data.Alias);
+                bool inverseExitExists = false;
+                bool inverseExitPointsHere = false;
+
+                foreach (string exitName in m_controller.GetObjectNames("exit", data.To))
+                {
+                    IEditorData otherRoomExitData = m_controller.GetEditorData(exitName);
+                    string otherRoomExitAlias = otherRoomExitData.GetAttribute("alias") as string;
+                    if (inverseExit == otherRoomExitAlias)
+                    {
+                        inverseExitExists = true;
+                        IEditableObjectReference otherExitTo = otherRoomExitData.GetAttribute("to") as IEditableObjectReference;
+                        if (otherExitTo != null)
+                        {
+                            inverseExitPointsHere = (otherExitTo.Reference == m_data.Name);
+                        }
+                        break;
+                    }
+                }
+
+                if (inverseExitExists && inverseExitPointsHere)
+                {
+                    CompassEditor.CorrespondingExitExists = true;
+                }
+                else
+                {
+                    CompassEditor.CorrespondingExitExists = false;
+                    if (inverseExitExists)
+                    {
+                        // an inverse exit exists, but it doesn't point here
+                        CompassEditor.AllowCreateInverseExit = false;
+                    }
+                }
             }
             else
             {
