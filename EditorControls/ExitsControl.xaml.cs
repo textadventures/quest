@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace AxeSoftware.Quest.EditorControls
 {
@@ -23,6 +24,7 @@ namespace AxeSoftware.Quest.EditorControls
         private List<string> m_directionNames;
         private Dictionary<string, int> m_directionListIndexes = new Dictionary<string, int>();
         private bool m_selectionChanging;
+        private const int k_outDirIndex = 4;
 
         public event EventHandler<DataModifiedEventArgs> Dirty { add { } remove { } }
         public event Action RequestParentElementEditorSave { add { } remove { } }
@@ -240,6 +242,10 @@ namespace AxeSoftware.Quest.EditorControls
             }
 
             CompassEditor.direction.Text = AxeSoftware.Utility.Strings.CapFirst(direction);
+            CompassEditor.chkCorresponding.IsChecked = DefaultCreateInverseSetting;
+
+            // Allow creating the inverse exit, except for "out" as that has no inverse.
+            CompassEditor.AllowCreateInverseExit = m_directionNames.IndexOf(direction) != k_outDirIndex;
         }
 
         private CompassEditorControl CompassEditor
@@ -255,6 +261,7 @@ namespace AxeSoftware.Quest.EditorControls
         private void CompassEditor_CreateExit(object sender, CompassEditorControl.CreateExitEventArgs e)
         {
             string newExit;
+            if (CompassEditor.AllowCreateInverseExit) DefaultCreateInverseSetting = e.CreateInverse;
             if (e.CreateInverse)
             {
                 newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction, GetInverseDirection(e.Direction));
@@ -291,6 +298,24 @@ namespace AxeSoftware.Quest.EditorControls
             int dirIndex = m_directionNames.IndexOf(direction);
             int opposite = s_oppositeDirs[dirIndex];
             return m_directionNames[opposite];
+        }
+
+        private const string k_regPath = @"Software\Quest\Settings";
+        private const string k_regName = "DefaultCreateInverseSetting";
+
+        private bool DefaultCreateInverseSetting
+        {
+            get
+            {
+                RegistryKey key = Registry.CurrentUser.CreateSubKey(k_regPath);
+                int? value =  key.GetValue(k_regName) as int?;
+                return (value ?? 1) == 1;
+            }
+            set
+            {
+                RegistryKey key = Registry.CurrentUser.CreateSubKey(k_regPath);
+                key.SetValue(k_regName, value ? 1 : 0);
+            }
         }
     }
 }

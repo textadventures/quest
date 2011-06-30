@@ -32,6 +32,7 @@ namespace AxeSoftware.Quest.EditorControls
         }
 
         private CompassEditorMode m_mode;
+        private bool m_allowCreateInverse;
 
         public event EventHandler<CreateExitEventArgs> CreateExit;
         public event Action<string> EditExit;
@@ -115,6 +116,21 @@ namespace AxeSoftware.Quest.EditorControls
                 Direction = DirectionName,
                 CreateInverse = chkCorresponding.IsChecked.Value
             });
+        }
+
+        public bool AllowCreateInverseExit
+        {
+            get { return m_allowCreateInverse; }
+            set
+            {
+                m_allowCreateInverse = value;
+                chkCorresponding.IsEnabled = value;
+                if (!value)
+                {
+                    chkCorresponding.IsChecked = false;
+                    corresponding.Text = string.Empty;
+                }
+            }
         }
     }
 }
