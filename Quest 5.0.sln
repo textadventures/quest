@@ -1,10 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Quest", "Quest\Quest.vbproj", "{C7367F28-22F8-4111-A434-26D497EF0FBA}"
+EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Player", "Player\Player.vbproj", "{F383D1E8-2883-420D-9CAB-223A2B72B1DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldModel", "WorldModel\WorldModel\WorldModel.csproj", "{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}"
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Quest", "Quest\Quest.vbproj", "{C7367F28-22F8-4111-A434-26D497EF0FBA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IASL", "IASL\IASL.csproj", "{BE34CB28-317F-4732-AA32-9D715B4F2C7E}"
 EndProject
