@@ -174,7 +174,7 @@
 
     <control>
       <controltype>dropdown</controltype>
-      <validvalues type="list">Quit;Load;Save;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Speak;Restart;Show;Hide</validvalues>
+      <validvalues type="list">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide</validvalues>
       <caption>Request</caption>
       <attribute>0</attribute>
     </control>

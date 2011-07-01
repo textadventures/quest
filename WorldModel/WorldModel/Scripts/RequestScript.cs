@@ -9,8 +9,6 @@ namespace AxeSoftware.Quest.Scripts
     internal enum Request
     {
         Quit,
-        Load,
-        Save,
         UpdateLocation,
         GameName,
         FontName,
@@ -23,8 +21,6 @@ namespace AxeSoftware.Quest.Scripts
         ClearScreen,
         PanesVisible,
         ShowPicture,
-        Speak,
-        Restart,
         Show,
         Hide,
         SetCompassDirections
@@ -118,6 +114,9 @@ namespace AxeSoftware.Quest.Scripts
                     break;
                 case Request.SetCompassDirections:
                     m_worldModel.PlayerUI.SetCompassDirections(data.Split(';'));
+                    break;
+                case Request.SetStatus:
+                    //TO DO
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");
