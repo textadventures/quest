@@ -47,6 +47,15 @@ namespace AxeSoftware.Quest
         {
             if (m_alwaysVisible) return true;
 
+            if (m_visibilityExpression != null)
+            {
+                // evaluate <onlydisplayif> expression, with "this" as the current element
+                Scripts.Context context = new Scripts.Context();
+                context.Parameters = new Scripts.Parameters("this", m_worldModel.Elements.Get(data.Name));
+                bool result = m_visibilityExpression.Execute(context);
+                if (!result) return false;
+            }
+
             if (m_relatedAttribute != null)
             {
                 object relatedAttributeValue = data.GetAttribute(m_relatedAttribute);
@@ -84,14 +93,6 @@ namespace AxeSoftware.Quest
                 if (selectedFilter == null) selectedFilter = m_parent.GetDefaultFilterName(m_filterGroup, data);
 
                 return (selectedFilter == m_filter);
-            }
-
-            if (m_visibilityExpression != null)
-            {
-                // evaluate <onlydisplayif> expression, with "this" as the current element
-                Scripts.Context context = new Scripts.Context();
-                context.Parameters = new Scripts.Parameters("this", m_worldModel.Elements.Get(data.Name));
-                return m_visibilityExpression.Execute(context);
             }
 
             return false;

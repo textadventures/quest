@@ -1,5 +1,6 @@
 ﻿<library>
   <function name="ShowRoomDescription">
+    <![CDATA[
     if (HasScript(player.parent, "description")) {
       do (player.parent, "description")
     }
@@ -24,30 +25,29 @@
           msg (fulldesc)
         }
       }
-	  fulldesc = ""
+      
+	    fulldesc = ""
       if (HasString(player.parent, "description")) {
         if (LengthOf(player.parent.description) > 0) {
            fulldesc = player.parent.description
         }
       }
-
-	  <![CDATA[	  
-	  if (game.appendobjectdescription) {
-		  foreach (val, ScopeVisibleNotHeld()) {
-			if (HasString(val, "description")) {
-				if (LengthOf(val.description)>0 and val <> player  ) {
-					fulldesc = fulldesc + " " +  val.description
-				}
-			}
-		  }
-	  }
-	  ]]>
+      
+  	  if (game.appendobjectdescription) {
+	  	  foreach (val, ScopeVisibleNotHeld()) {
+		    	if (HasString(val, "description")) {
+				    if (LengthOf(val.description) > 0 and val <> player) {
+					    fulldesc = fulldesc + " " + val.description
+				    }
+			    }
+		    }
+	    }
 	   
-	 if (LengthOf(fulldesc) > 0) {
-          msg (fulldesc)
+	    if (LengthOf(fulldesc) > 0) {
+        msg (fulldesc)
       }	  
-	  
     }
+    ]]>
   </function>
 
   <function name="OnEnterRoom">

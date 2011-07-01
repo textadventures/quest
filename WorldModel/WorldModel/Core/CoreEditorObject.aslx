@@ -77,14 +77,15 @@
         <mustnotinherit>editor_room</mustnotinherit>
       </control>
 
-     <control>
+      <control>
         <mustnotinherit>editor_room</mustnotinherit>
-        <caption>Description</caption>
+        <caption>Room object description</caption>
         <controltype>textbox</controltype>
         <attribute>description</attribute>
-      </control>	  
-	  
-	  <control>
+        <onlydisplayif>game.appendobjectdescription</onlydisplayif>
+      </control>
+
+      <control>
         <mustnotinherit>editor_room</mustnotinherit>
         <selfcaption>"Look at" object description</selfcaption>
         <controltype>multi</controltype>
@@ -129,7 +130,7 @@
     <tab>
       <caption>Room</caption>
       <mustnotinherit>editor_object</mustnotinherit>
-      
+
       <control>
         <caption>Room picture</caption>
         <controltype>file</controltype>
@@ -378,7 +379,7 @@
     <tab>
       <caption>Ask/tell</caption>
       <mustnotinherit>editor_room</mustnotinherit>
-      
+
       <control>
         <controltype>title</controltype>
         <caption>Ask</caption>

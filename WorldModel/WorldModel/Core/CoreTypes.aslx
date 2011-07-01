@@ -3,7 +3,6 @@
     <enablehyperlinks/>
     <showdescriptiononenter/>
     <autodescription/>
-	<appendobjectdescription/>
     <defaultfont>Arial</defaultfont>
     <defaultfontsize type="int">9</defaultfontsize>
     <defaultbackground>White</defaultbackground>
@@ -13,8 +12,9 @@
     <useframe type="boolean">false</useframe>
     <clearframe type="boolean">false</clearframe>
     <timeelapsed type="int">0</timeelapsed>
+    <appendobjectdescription type="boolean">false</appendobjectdescription>
   </type>
-  
+
   <type name="defaultobject">
     <displayverbs type="list">[LookAt];[Take];[SpeakTo]</displayverbs>
     <inventoryverbs type="list">[LookAt];[Use];[Drop]</inventoryverbs>
