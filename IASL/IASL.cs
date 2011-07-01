@@ -66,30 +66,6 @@ namespace AxeSoftware.Quest
         void SetCompassDirections(IEnumerable<string> dirs);
     }
 
-    public enum Request
-    {
-        Quit,
-        Load,
-        Save,
-        UpdateLocation,
-        GameName,
-        FontName,
-        FontSize,
-        Background,
-        Foreground,
-        LinkForeground,
-        RunScript,
-        SetStatus,
-        ClearScreen,
-        PanesVisible,
-        ShowPicture,
-        Speak,
-        Restart,
-        Show,
-        Hide,
-        SetCompassDirections
-    }
-
     public enum ListType
     {
         InventoryList,

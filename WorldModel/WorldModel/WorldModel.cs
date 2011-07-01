@@ -585,63 +585,6 @@ namespace AxeSoftware.Quest
             get { return m_undoLogger; }
         }
 
-        internal void RaiseRequest(Request request, string data)
-        {
-            // TO DO: Replace with dictionary mapping the enum to lambda functions
-            // TO DO: Move to RequestScript.cs?
-            switch (request)
-            {
-                case Request.UpdateLocation:
-                    m_playerUI.LocationUpdated(data);
-                    break;
-                case Request.GameName:
-                    m_playerUI.UpdateGameName(data);
-                    break;
-                case Request.ClearScreen:
-                    m_playerUI.ClearScreen();
-                    break;
-                case Request.ShowPicture:
-                    m_playerUI.ShowPicture(data);
-                    break;
-                case Request.PanesVisible:
-                    m_playerUI.SetPanesVisible(data);
-                    break;
-                case Request.Background:
-                    m_playerUI.SetBackground(data);
-                    break;
-                case Request.Foreground:
-                    m_playerUI.SetForeground(data);
-                    break;
-                case Request.RunScript:
-                    m_playerUI.RunScript(data);
-                    break;
-                case Request.Quit:
-                    m_playerUI.Quit();
-                    Finish();
-                    break;
-                case Request.FontName:
-                    m_playerUI.SetFont(data);
-                    break;
-                case Request.FontSize:
-                    m_playerUI.SetFontSize(data);
-                    break;
-                case Request.LinkForeground:
-                    m_playerUI.SetLinkForeground(data);
-                    break;
-                case Request.Show:
-                    m_playerUI.Show(data);
-                    break;
-                case Request.Hide:
-                    m_playerUI.Hide(data);
-                    break;
-                case Request.SetCompassDirections:
-                    m_playerUI.SetCompassDirections(data.Split(';'));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("request", "Unhandled request type");
-            }
-        }
-
         internal void UpdateLists()
         {
             UpdateObjectsList();

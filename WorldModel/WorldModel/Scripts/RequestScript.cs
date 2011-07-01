@@ -6,6 +6,30 @@ using AxeSoftware.Quest.Functions;
 
 namespace AxeSoftware.Quest.Scripts
 {
+    internal enum Request
+    {
+        Quit,
+        Load,
+        Save,
+        UpdateLocation,
+        GameName,
+        FontName,
+        FontSize,
+        Background,
+        Foreground,
+        LinkForeground,
+        RunScript,
+        SetStatus,
+        ClearScreen,
+        PanesVisible,
+        ShowPicture,
+        Speak,
+        Restart,
+        Show,
+        Hide,
+        SetCompassDirections
+    }
+
     public class RequestScriptConstructor : ScriptConstructorBase
     {
         public override string Keyword
@@ -44,7 +68,60 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void Execute(Context c)
         {
-            m_worldModel.RaiseRequest(m_request, m_data.Execute(c));
+            string data = m_data.Execute(c);
+
+            // TO DO: Replace with dictionary mapping the enum to lambda functions
+            switch (m_request)
+            {
+                case Request.UpdateLocation:
+                    m_worldModel.PlayerUI.LocationUpdated(data);
+                    break;
+                case Request.GameName:
+                    m_worldModel.PlayerUI.UpdateGameName(data);
+                    break;
+                case Request.ClearScreen:
+                    m_worldModel.PlayerUI.ClearScreen();
+                    break;
+                case Request.ShowPicture:
+                    m_worldModel.PlayerUI.ShowPicture(data);
+                    break;
+                case Request.PanesVisible:
+                    m_worldModel.PlayerUI.SetPanesVisible(data);
+                    break;
+                case Request.Background:
+                    m_worldModel.PlayerUI.SetBackground(data);
+                    break;
+                case Request.Foreground:
+                    m_worldModel.PlayerUI.SetForeground(data);
+                    break;
+                case Request.RunScript:
+                    m_worldModel.PlayerUI.RunScript(data);
+                    break;
+                case Request.Quit:
+                    m_worldModel.PlayerUI.Quit();
+                    m_worldModel.Finish();
+                    break;
+                case Request.FontName:
+                    m_worldModel.PlayerUI.SetFont(data);
+                    break;
+                case Request.FontSize:
+                    m_worldModel.PlayerUI.SetFontSize(data);
+                    break;
+                case Request.LinkForeground:
+                    m_worldModel.PlayerUI.SetLinkForeground(data);
+                    break;
+                case Request.Show:
+                    m_worldModel.PlayerUI.Show(data);
+                    break;
+                case Request.Hide:
+                    m_worldModel.PlayerUI.Hide(data);
+                    break;
+                case Request.SetCompassDirections:
+                    m_worldModel.PlayerUI.SetCompassDirections(data.Split(';'));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("request", "Unhandled request type");
+            }
         }
 
         public override string Save()

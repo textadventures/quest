@@ -43,10 +43,6 @@ namespace LegacyASLTests
             m_output.Add(text);
         }
 
-        public void RequestRaised(Request request, string data)
-        {
-        }
-
         public void ShowMenu(MenuData menuData)
         {
             LatestMenu = menuData;
