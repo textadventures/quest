@@ -15,7 +15,7 @@
         if (LengthOf(desc) > 0) {
           fulldesc = desc
           if (LengthOf(exits) > 0) {
-            fulldesc = fulldesc + "&lt;br /&gt;"
+            fulldesc = fulldesc + "<br />"
           }
         }
         if (LengthOf(exits) > 0) {
