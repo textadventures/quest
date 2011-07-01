@@ -1,0 +1,12 @@
+﻿<library>
+  <function name="UpdateStatusAttributes">
+    status = ""
+    foreach (attr, game.statusattributes) {
+      if (LengthOf(status) > 0) {
+        status = status + "\n"
+      }
+      status = status + CapFirst(attr) + ": " + GetAttribute(game, attr)
+    }
+    request (SetStatus, status)
+  </function>
+</library>

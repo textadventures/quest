@@ -116,7 +116,7 @@ namespace AxeSoftware.Quest.Scripts
                     m_worldModel.PlayerUI.SetCompassDirections(data.Split(';'));
                     break;
                 case Request.SetStatus:
-                    //TO DO
+                    m_worldModel.PlayerUI.SetStatusText(data.Replace("\n", Environment.NewLine));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");

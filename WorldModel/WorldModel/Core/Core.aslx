@@ -18,6 +18,7 @@
   <include ref="CoreDescriptions.aslx"/>
   <include ref="CoreTimers.aslx"/>
   <include ref="CoreTurnScripts.aslx"/>
+  <include ref="CoreStatusAttributes.aslx"/>
   <include ref="CoreEditor.aslx"/>
 
   <resource src="Frame.htm"/>
@@ -53,7 +54,9 @@
 
   <function name="StartGame">
     <![CDATA[
+    UpdateStatusAttributes
     if (HasScript(game, "start")) do (game, "start")
+    UpdateStatusAttributes
     startset = false
     firstroom = null
     foreach (obj, AllObjects()) {
@@ -78,6 +81,7 @@
       }
       player.parent = firstroom
     }
+    UpdateStatusAttributes
     ]]>
   </function>
 

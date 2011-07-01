@@ -130,6 +130,13 @@
       <caption>Attributes</caption>
 
       <control>
+        <controltype>list</controltype>
+        <caption>Status attributes</caption>
+        <editprompt>Please enter the attribute name</editprompt>
+        <attribute>statusattributes</attribute>
+      </control>
+
+      <control>
         <controltype>attributes</controltype>
         <expand/>
       </control>

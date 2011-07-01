@@ -142,7 +142,7 @@ namespace AxeSoftware.Quest.EditorControls
                     // Create StackPanel, label at top and control underneath
                     Grid subGrid = new Grid();
                     AddRowToGrid(subGrid, false);
-                    AddRowToGrid(subGrid, ctl.Expand);
+                    AddRowToGrid(subGrid, ctl.Expand || resizableRow);
 
                     m_controlUIElements[ctl].Add(subGrid);
 
