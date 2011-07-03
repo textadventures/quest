@@ -57,6 +57,16 @@ namespace AxeSoftware.Quest.Functions
             return Microsoft.VisualBasic.Strings.InStr(start, input, search, Microsoft.VisualBasic.CompareMethod.Binary);
         }
 
+        public static int InstrRev(string input, string search)
+        {
+            return Microsoft.VisualBasic.Strings.InStrRev(input, search, Compare: Microsoft.VisualBasic.CompareMethod.Binary);
+        }
+
+        public static int InstrRev(int start, string input, string search)
+        {
+            return Microsoft.VisualBasic.Strings.InStrRev( input, search, start, Microsoft.VisualBasic.CompareMethod.Binary);
+        }
+
         public static bool StartsWith(string input, string search)
         {
             return input.StartsWith(search);
@@ -85,6 +95,31 @@ namespace AxeSoftware.Quest.Functions
         public static string Replace(string input, string oldString, string newString)
         {
             return input.Replace(oldString, newString);
+        }
+        
+        public static string Trim(string input)
+        {
+            return Microsoft.VisualBasic.Strings.Trim(input);
+        }
+
+        public static string LTrim(string input)
+        {
+            return Microsoft.VisualBasic.Strings.LTrim(input);
+        }
+        
+        public static string RTrim(string input)
+        {
+            return Microsoft.VisualBasic.Strings.RTrim(input);
+        }
+        
+        public static int Asc(string input)
+        {
+            return Microsoft.VisualBasic.Strings.Asc(input);
+        }
+
+        public static int Chr(int input)
+        {
+            return Microsoft.VisualBasic.Strings.Chr(input);
         }
     }
 }
