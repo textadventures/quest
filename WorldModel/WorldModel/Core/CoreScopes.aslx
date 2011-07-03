@@ -20,32 +20,57 @@
   </function>
   
   <function name="ScopeVisibleNotHeld" type="objectlist">
-    return (ScopeReachableNotHeld() + ScopeVisibleNotReachable() + player)
+    return (ScopeVisibleNotHeldForRoom(player.parent))
   </function>
-
+  
+    <function name="ScopeVisibleNotHeldForRoom" type="objectlist" parameters="room">
+    if (room=player.parent) {
+		return (ScopeReachableNotHeldForRoom(room) + ScopeVisibleNotReachableForRoom(room) + player)
+	} else {
+		return (ScopeReachableNotHeldForRoom(room) + ScopeVisibleNotReachableForRoom(room))
+	}
+  </function>
+  
   <function name="ScopeVisibleNotHeldNotScenery" type="objectlist">
-    return (RemoveSceneryObjects(ScopeVisibleNotHeld()))
+    return (ScopeVisibleNotHeldNotSceneryForRoom(player.parent))
   </function>
-
+  
+  <function name="ScopeVisibleNotHeldNotSceneryForRoom" type="objectlist" parameters="room">
+    return (RemoveSceneryObjects(ScopeVisibleNotHeldForRoom(room)))
+  </function>
+  
   <function name="ScopeReachable" type="objectlist">
-    result = ScopeReachableNotHeld() + ScopeReachableInventory()
-    list add(result, player)
-    return (result)
+    return (ScopeReachableForRoom(player.parent))
   </function>
 
+  <function name="ScopeReachableForRoom" type="objectlist" parameters="room">
+    if (room=player.parent) {
+		result = ScopeReachableNotHeldForRoom(room) + ScopeReachableInventory()	
+		list add(result, player)
+	} else {
+		result = ScopeReachableNotHeldForRoom(room)
+	}	
+    return (result)
+  </function>  
+  
   <function name="ScopeVisibleNotReachable" type="objectlist">
+    return (ScopeVisibleNotReachableForRoom(player.parent))
+  </function>
+  
+  <function name="ScopeVisibleNotReachableForRoom" type="objectlist" parameters="room">
     result = NewObjectList()
-    exclude = ScopeReachable()
+    exclude = ScopeReachableForRoom(room)
     list add(exclude, player)
-    newParent = GetNonTransparentParent(player.parent)
+    newParent = GetNonTransparentParent(room)
     foreach (obj, AllObjects()) {
       if (ContainsVisible(newParent, obj) and not ListContains(exclude, obj)) {
         list add(result, obj)
       }
     }    
     return (result)
-  </function>
+  </function>  
 
+  
   <function name="GetNonTransparentParent" type="object" parameters="room">
     if (GetBoolean(room, "transparent")) {
       if (room.parent = null) {
@@ -61,10 +86,14 @@
   </function>
 
   <function name="ScopeReachableNotHeld" type="objectlist">    
+    return (ScopeReachableNotHeldForRoom(player.parent))
+  </function>
+  
+  <function name="ScopeReachableNotHeldForRoom" type="objectlist" parameters="room">    
   <![CDATA[
     result = NewObjectList()
     foreach (obj, AllObjects()) {
-      if (ContainsReachable(player.parent, obj) and obj <> player and not Contains(player, obj)) {
+      if (ContainsReachable(room, obj) and obj <> player and not Contains(player, obj)) {
         list add(result, obj)
       }
     }
@@ -73,13 +102,25 @@
   </function>
 
   <function name="ScopeVisible" type="objectlist">
-    return (ScopeVisibleNotHeld() + ScopeInventory())
+    return (ScopeVisibleForRoom(player.parent))
   </function>
+  
+  <function name="ScopeVisibleForRoom" type="objectlist" parameters="room">
+    if (room=player.parent) {
+		return (ScopeVisibleNotHeldForRoom(room) + ScopeInventory())
+	} else {
+		return (ScopeVisibleNotHeldForRoom(room))
+	}	
+  </function>  
 
   <function name="ScopeExits" type="objectlist">
+    return (ScopeExitsForRoom(player.parent))
+  </function>
+  
+  <function name="ScopeExitsForRoom" type="objectlist" parameters="room">
     result = NewObjectList()
     foreach (exit, AllExits()) {
-      if (exit.parent = player.parent) {
+      if (exit.parent = room) {
         list add(result, exit)
       }
     }
