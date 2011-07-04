@@ -29,5 +29,9 @@
     }
     EnableTimer(timer)
   </function>
+
+  <function name="Pause" parameters="interval">
+    request (Pause, ToString(interval * 1000))
+  </function>
   
 </library>

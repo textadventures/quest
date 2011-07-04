@@ -161,7 +161,7 @@
       <caption>Wait for sound to finish before continuing:</caption>
       <breakbefore/>
     </control>
-    
+
     <control>
       <controltype>expression</controltype>
       <attribute>1</attribute>
@@ -231,7 +231,7 @@
 
     <control>
       <controltype>dropdown</controltype>
-      <validvalues type="list">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide</validvalues>
+      <validvalues type="list">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause</validvalues>
       <caption>Request</caption>
       <attribute>0</attribute>
     </control>
@@ -442,22 +442,22 @@
       <controltype>expression</controltype>
       <attribute>0</attribute>
     </control>
-    
+
     <control>
       <controltype>label</controltype>
       <caption>Cases:</caption>
       <breakbefore/>
     </control>
-    
+
     <!-- TO DO: Popup needs to have ExpressionControl in it -->
-    
+
     <control>
       <controltype>scriptdictionary</controltype>
       <caption>Cases</caption>
       <attribute>1</attribute>
       <keyprompt>Please enter the case expression</keyprompt>
     </control>
-    
+
     <control>
       <breakbefore/>
       <controltype>script</controltype>
@@ -489,7 +489,7 @@
     </control>
 
     <!-- TO DO: Popup needs to have ExpressionControl in it -->
-    
+
     <control>
       <controltype>list</controltype>
       <caption>Parameters</caption>
@@ -564,7 +564,7 @@
       <caption>Using parameter dictionary</caption>
       <breakbefore/>
     </control>
-    
+
     <control>
       <controltype>expression</controltype>
       <attribute>1</attribute>
@@ -632,7 +632,7 @@
       <caption>Property:</caption>
       <breakbefore/>
     </control>
-    
+
     <control>
       <controltype>expression</controltype>
       <attribute>1</attribute>
@@ -947,7 +947,7 @@
     <control>
       <controltype>expression</controltype>
       <attribute>0</attribute>
-      
+
       <!-- TO DO: simpleeditor needs to be a dropdown timer list -->
     </control>
   </editor>
@@ -1069,26 +1069,50 @@
       <controltype>script</controltype>
       <attribute>script</attribute>
     </control>
+  </editor>
 
-    <editor>
-      <appliesto>create timer</appliesto>
-      <display>Create timer named #0</display>
-      <category>Timers</category>
-      <create>create timer ("")</create>
-      <add>Create a timer</add>
+  <editor>
+    <appliesto>(function)Pause</appliesto>
+    <display>Pause for #0 seconds</display>
+    <category>Timers</category>
+    <create>Pause (1)</create>
+    <add>Pause the game</add>
 
-      <control>
-        <controltype>label</controltype>
-        <caption>Create timer</caption>
-      </control>
+    <control>
+      <controltype>label</controltype>
+      <caption>Pause for</caption>
+    </control>
 
-      <control>
-        <controltype>expression</controltype>
-        <attribute>0</attribute>
-        <simple>name</simple>
-      </control>
-    </editor>
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
 
+    <control>
+      <controltype>label</controltype>
+      <caption>seconds</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>create timer</appliesto>
+    <display>Create timer named #0</display>
+    <category>Timers</category>
+    <create>create timer ("")</create>
+    <add>Create a timer</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Create timer</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>name</simple>
+    </control>
   </editor>
 
   <!-- Turn Scripts -->
@@ -1192,26 +1216,25 @@
       <controltype>script</controltype>
       <attribute>script</attribute>
     </control>
+  </editor>
 
-    <editor>
-      <appliesto>create turnscript</appliesto>
-      <display>Create turn script named #0</display>
-      <category>Turn Scripts</category>
-      <create>create turnscript ("")</create>
-      <add>Create a turn script</add>
+  <editor>
+    <appliesto>create turnscript</appliesto>
+    <display>Create turn script named #0</display>
+    <category>Turn Scripts</category>
+    <create>create turnscript ("")</create>
+    <add>Create a turn script</add>
 
-      <control>
-        <controltype>label</controltype>
-        <caption>Create turn script</caption>
-      </control>
+    <control>
+      <controltype>label</controltype>
+      <caption>Create turn script</caption>
+    </control>
 
-      <control>
-        <controltype>expression</controltype>
-        <attribute>0</attribute>
-        <simple>name</simple>
-      </control>
-    </editor>
-
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>name</simple>
+    </control>
   </editor>
 
 </library>

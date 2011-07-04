@@ -6,6 +6,7 @@ using AxeSoftware.Quest.Functions;
 
 namespace AxeSoftware.Quest.Scripts
 {
+    // Any changes here should also be reflected in CoreEditorScripts.aslx (validvalues for "request" command)
     internal enum Request
     {
         Quit,
@@ -23,7 +24,8 @@ namespace AxeSoftware.Quest.Scripts
         ShowPicture,
         Show,
         Hide,
-        SetCompassDirections
+        SetCompassDirections,
+        Pause
     }
 
     public class RequestScriptConstructor : ScriptConstructorBase
@@ -117,6 +119,12 @@ namespace AxeSoftware.Quest.Scripts
                     break;
                 case Request.SetStatus:
                     m_worldModel.PlayerUI.SetStatusText(data.Replace("\n", Environment.NewLine));
+                    break;
+                case Request.Pause:
+                    int ms;
+                    if (int.TryParse(data, out ms)){
+                        m_worldModel.StartPause(ms);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");

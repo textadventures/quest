@@ -698,8 +698,29 @@ namespace AxeSoftware.Quest
         {
         }
 
+        public void StartPause(int ms)
+        {
+            m_playerUI.DoPause(ms);
+
+            ChangeThreadState(ThreadState.Waiting);
+
+            lock (m_waitForResponseLock)
+            {
+                Monitor.Wait(m_waitForResponseLock);
+            }
+
+            ChangeThreadState(ThreadState.Working);
+        }
+
         public void FinishPause()
         {
+            DoInNewThreadAndWait(() =>
+            {
+                lock (m_waitForResponseLock)
+                {
+                    Monitor.Pulse(m_waitForResponseLock);
+                }
+            });
         }
 
         public IEnumerable<string> GetExternalScripts()
