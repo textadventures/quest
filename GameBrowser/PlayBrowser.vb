@@ -13,6 +13,7 @@
         m_recentItems = New RecentItems("Recent")
         ctlGameList.LaunchCaption = "Play"
         ctlOnlineGameList.LaunchCaption = "Play"
+        ctlOnlineGameList.EnableContextMenu = False
         Populate()
     End Sub
 
@@ -22,6 +23,15 @@
 
     Private Sub ctlGameList_Launch(filename As String) Handles ctlGameList.Launch
         RaiseEvent LaunchGame(filename)
+    End Sub
+
+    Private Sub ctlGameList_ClearAllItems() Handles ctlGameList.ClearAllItems
+        m_recentItems.Clear()
+        Populate()
+    End Sub
+
+    Private Sub ctlGameList_RemoveItem(filename As String) Handles ctlGameList.RemoveItem
+        m_recentItems.Remove(filename)
     End Sub
 
     Private Sub ctlOnlineGameList_Launch(filename As String) Handles ctlOnlineGameList.Launch
@@ -55,4 +65,5 @@
     Private Sub m_onlineGames_GotUpdateData(data As UpdatesData) Handles m_onlineGames.GotUpdateData
         RaiseEvent GotUpdateData(data)
     End Sub
+
 End Class

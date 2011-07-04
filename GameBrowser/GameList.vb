@@ -2,8 +2,11 @@
     Private m_launchCaption As String
     Private m_visibleGameListItems As New List(Of GameListItem)
     Private m_gameListItems As New Dictionary(Of String, GameListItem)
+    Private m_enableContextMenu As Boolean
 
     Public Event Launch(filename As String)
+    Public Event RemoveItem(filename As String)
+    Public Event ClearAllItems()
 
     Public Sub New()
 
@@ -11,6 +14,7 @@
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        m_enableContextMenu = True
 
         ' This gets around a bug where the appearance of the vertical scrollbar causes contained controls not to resize
         Dim p As Padding = ctlTableLayout.Padding
@@ -42,6 +46,7 @@
                 newItem.Dock = DockStyle.Fill
                 newItem.Width = Me.Width
                 newItem.GameName = data.GameName
+                If Not EnableContextMenu Then newItem.DisableContextMenu()
 
                 If Not String.IsNullOrEmpty(data.DownloadFilename) Then
                     m_gameListItems.Add(data.DownloadFilename, newItem)
@@ -78,6 +83,8 @@
                 End If
 
                 AddHandler newItem.Launch, AddressOf LaunchHandler
+                AddHandler newItem.RemoveItem, AddressOf RemoveItemHandler
+                AddHandler newItem.ClearAllItems, AddressOf ClearItemsHandler
             End If
             
             m_visibleGameListItems.Add(newItem)
@@ -96,5 +103,25 @@
     Private Sub LaunchHandler(filename As String)
         RaiseEvent Launch(filename)
     End Sub
+
+    Public Property EnableContextMenu As Boolean
+        Get
+            Return m_enableContextMenu
+        End Get
+        Set(value As Boolean)
+            m_enableContextMenu = value
+        End Set
+    End Property
+
+    Private Sub RemoveItemHandler(filename As String)
+        RaiseEvent RemoveItem(filename)
+        Dim itemsToRemove = From item In ctlTableLayout.Controls Where DirectCast(item, GameListItem).Filename = filename Select item
+        ctlTableLayout.Controls.Remove(DirectCast(itemsToRemove.First(), Control))
+    End Sub
+
+    Private Sub ClearItemsHandler()
+        RaiseEvent ClearAllItems()
+    End Sub
+
 End Class
 

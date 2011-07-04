@@ -34,6 +34,15 @@
         RaiseEvent EditGame(filename)
     End Sub
 
+    Private Sub ctlGameList_ClearAllItems() Handles ctlGameList.ClearAllItems
+        m_recentItems.Clear()
+        Populate()
+    End Sub
+
+    Private Sub ctlGameList_RemoveItem(filename As String) Handles ctlGameList.RemoveItem
+        m_recentItems.Remove(filename)
+    End Sub
+
     Public Sub Populate()
         m_recentItems.PopulateGameList(ctlGameList)
     End Sub
@@ -49,4 +58,5 @@
     Private Sub DoTutorial()
         RaiseEvent Tutorial()
     End Sub
+
 End Class

@@ -1,5 +1,7 @@
 ﻿Friend Class GameListItem
     Public Event Launch(filename As String)
+    Public Event ClearAllItems()
+    Public Event RemoveItem(filename As String)
 
     Private m_filename As String
     Private m_url As String
@@ -183,5 +185,17 @@
         If System.IO.File.Exists(m_downloadFilename) Then
             System.IO.File.Delete(m_downloadFilename)
         End If
+    End Sub
+
+    Public Sub DisableContextMenu()
+        Me.ContextMenuStrip = Nothing
+    End Sub
+
+    Private Sub mnuClear_Click(sender As Object, e As System.EventArgs) Handles mnuClear.Click
+        RaiseEvent ClearAllItems()
+    End Sub
+
+    Private Sub mnuRemove_Click(sender As Object, e As System.EventArgs) Handles mnuRemove.Click
+        RaiseEvent RemoveItem(m_filename)
     End Sub
 End Class

@@ -28,6 +28,10 @@ Partial Class GameListItem
         Me.cmdLaunch = New System.Windows.Forms.Button()
         Me.ctlToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.lblAuthor = New System.Windows.Forms.Label()
+        Me.ctlContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.mnuClear = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuRemove = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ctlContextMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'lblName
@@ -69,17 +73,37 @@ Partial Class GameListItem
         Me.lblAuthor.Text = "by ..."
         Me.lblAuthor.Visible = False
         '
+        'ctlContextMenu
+        '
+        Me.ctlContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuClear, Me.mnuRemove})
+        Me.ctlContextMenu.Name = "ctlContextMenu"
+        Me.ctlContextMenu.Size = New System.Drawing.Size(167, 48)
+        '
+        'mnuClear
+        '
+        Me.mnuClear.Name = "mnuClear"
+        Me.mnuClear.Size = New System.Drawing.Size(166, 22)
+        Me.mnuClear.Text = "Clear all items"
+        '
+        'mnuRemove
+        '
+        Me.mnuRemove.Name = "mnuRemove"
+        Me.mnuRemove.Size = New System.Drawing.Size(166, 22)
+        Me.mnuRemove.Text = "Remove this item"
+        '
         'GameListItem
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
+        Me.ContextMenuStrip = Me.ctlContextMenu
         Me.Controls.Add(Me.cmdLaunch)
         Me.Controls.Add(Me.lblAuthor)
         Me.Controls.Add(Me.lblInfo)
         Me.Controls.Add(Me.lblName)
         Me.Name = "GameListItem"
         Me.Size = New System.Drawing.Size(204, 34)
+        Me.ctlContextMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -89,5 +113,8 @@ Partial Class GameListItem
     Private WithEvents lblInfo As System.Windows.Forms.Label
     Friend WithEvents ctlToolTip As System.Windows.Forms.ToolTip
     Friend WithEvents lblAuthor As System.Windows.Forms.Label
+    Friend WithEvents ctlContextMenu As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents mnuClear As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents mnuRemove As System.Windows.Forms.ToolStripMenuItem
 
 End Class

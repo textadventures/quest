@@ -22,6 +22,16 @@ Friend Class RecentItems
         SaveRecentList()
     End Sub
 
+    Public Sub Remove(filename As String)
+        m_recent.Remove(filename)
+        SaveRecentList()
+    End Sub
+
+    Public Sub Clear()
+        m_recent.Clear()
+        SaveRecentList()
+    End Sub
+
     Private Sub LoadRecentList()
         Dim key As RegistryKey
         key = Registry.CurrentUser.CreateSubKey(m_regPath)

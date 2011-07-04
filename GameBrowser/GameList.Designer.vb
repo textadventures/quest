@@ -22,8 +22,8 @@ Partial Class GameList
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog
-        Me.ctlTableLayout = New System.Windows.Forms.TableLayoutPanel
+        Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
+        Me.ctlTableLayout = New System.Windows.Forms.TableLayoutPanel()
         Me.SuspendLayout()
         '
         'ctlTableLayout
@@ -36,7 +36,7 @@ Partial Class GameList
         Me.ctlTableLayout.Location = New System.Drawing.Point(0, 0)
         Me.ctlTableLayout.Name = "ctlTableLayout"
         Me.ctlTableLayout.RowCount = 1
-        Me.ctlTableLayout.RowStyles.Add(New System.Windows.Forms.RowStyle)
+        Me.ctlTableLayout.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.ctlTableLayout.Size = New System.Drawing.Size(316, 260)
         Me.ctlTableLayout.TabIndex = 0
         '
