@@ -25,4 +25,12 @@
     request (Background, colour)
   </function>
 
+  <function name="SetFontName" parameters="font">
+    request (FontName, font)
+  </function>
+
+  <function name="SetFontSize" parameters="size">
+    request (FontSize, ToString(size))
+  </function>
+
 </library>
