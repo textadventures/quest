@@ -5,4 +5,12 @@
 
   <game name="$NAME$"/>
 
+  <object name="room">
+    <inherit name="editor_room" />
+
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
 </asl>

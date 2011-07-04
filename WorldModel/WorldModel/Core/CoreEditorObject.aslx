@@ -36,13 +36,6 @@
       </control>
 
       <control>
-        <mustnotinherit>editor_object</mustnotinherit>
-        <controltype>checkbox</controltype>
-        <caption>Player starts game in this room</caption>
-        <attribute>start</attribute>
-      </control>
-
-      <control>
         <mustnotinherit>editor_room</mustnotinherit>
         <controltype>dropdowntypes</controltype>
         <caption>Type</caption>
@@ -198,12 +191,6 @@
     <tab>
       <caption>Inventory</caption>
       <mustnotinherit>editor_room</mustnotinherit>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <attribute>startinventory</attribute>
-        <caption>Player is carrying this object when the game begins</caption>
-      </control>
 
       <control>
         <controltype>title</controltype>
