@@ -9,6 +9,7 @@
         <controltype>dropdowntypes</controltype>
         <types>editor_room=Room; editor_object=Object; *=Object and/or room</types>
         <width>150</width>
+        <mustnotinherit>defaultplayer</mustnotinherit>
       </control>
 
       <control>
@@ -36,7 +37,7 @@
       </control>
 
       <control>
-        <mustnotinherit>editor_room</mustnotinherit>
+        <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
         <controltype>dropdowntypes</controltype>
         <caption>Type</caption>
         <types>*=Inanimate object; male=Male character; female=Female character; plural=Inanimate objects (plural); maleplural=Male characters (plural); femaleplural=Female characters (plural)</types>
@@ -109,6 +110,7 @@
         <controltype>list</controltype>
         <attribute>displayverbs</attribute>
         <editprompt>Please enter a verb</editprompt>
+        <mustnotinherit>defaultplayer</mustnotinherit>
       </control>
 
       <control>
@@ -116,13 +118,14 @@
         <controltype>list</controltype>
         <attribute>inventoryverbs</attribute>
         <editprompt>Please enter a verb</editprompt>
+        <mustnotinherit>defaultplayer</mustnotinherit>
       </control>
 
     </tab>
 
     <tab>
       <caption>Room</caption>
-      <mustnotinherit>editor_object</mustnotinherit>
+      <mustnotinherit>editor_object; defaultplayer</mustnotinherit>
 
       <control>
         <caption>Room picture</caption>
@@ -156,7 +159,7 @@
 
     <tab>
       <caption>Exits</caption>
-      <mustnotinherit>editor_object</mustnotinherit>
+      <mustnotinherit>editor_object; defaultplayer</mustnotinherit>
 
       <control>
         <controltype>exits</controltype>
@@ -167,7 +170,7 @@
 
     <tab>
       <caption>Scripts</caption>
-      <mustnotinherit>editor_object</mustnotinherit>
+      <mustnotinherit>editor_object; defaultplayer</mustnotinherit>
 
       <control>
         <controltype>script</controltype>
@@ -190,7 +193,7 @@
 
     <tab>
       <caption>Inventory</caption>
-      <mustnotinherit>editor_room</mustnotinherit>
+      <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
 
       <control>
         <controltype>title</controltype>
@@ -286,7 +289,7 @@
 
     <tab>
       <caption>Container</caption>
-      <mustnotinherit>editor_room</mustnotinherit>
+      <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
 
       <control>
         <controltype>dropdowntypes</controltype>
@@ -365,7 +368,7 @@
 
     <tab>
       <caption>Ask/tell</caption>
-      <mustnotinherit>editor_room</mustnotinherit>
+      <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
 
       <control>
         <controltype>title</controltype>

@@ -10,12 +10,12 @@ namespace AxeSoftware.Quest
     {
         private WorldModel m_worldModel;
         private bool m_alwaysVisible = true;
-        private string m_relatedAttribute = null;
-        private string m_visibleIfRelatedAttributeIsType = null;
-        private string m_visibleIfElementInheritsType = null;
-        private string m_notVisibleIfElementInheritsType = null;
-        private Element m_visibleIfElementInheritsTypeElement = null;
-        private Element m_notVisibleIfElementInheritsTypeElement = null;
+        private string m_relatedAttribute;
+        private string m_visibleIfRelatedAttributeIsType;
+        private string m_visibleIfElementInheritsType;
+        private IList<string> m_notVisibleIfElementInheritsType;
+        private Element m_visibleIfElementInheritsTypeElement;
+        private List<Element> m_notVisibleIfElementInheritsTypeElement;
         private string m_filterGroup;
         private string m_filter;
         private Expression<bool> m_visibilityExpression;
@@ -29,7 +29,7 @@ namespace AxeSoftware.Quest
             if (m_relatedAttribute != null) m_alwaysVisible = false;
             m_visibleIfRelatedAttributeIsType = source.Fields.GetString("relatedattributedisplaytype");
             m_visibleIfElementInheritsType = source.Fields.GetString("mustinherit");
-            m_notVisibleIfElementInheritsType = source.Fields.GetString("mustnotinherit");
+            m_notVisibleIfElementInheritsType = source.Fields.GetAsType<QuestList<string>>("mustnotinherit");
             if (m_visibleIfElementInheritsType != null || m_notVisibleIfElementInheritsType != null) m_alwaysVisible = false;
             m_filterGroup = source.Fields.GetString("filtergroup");
             m_filter = source.Fields.GetString("filter");
@@ -78,9 +78,25 @@ namespace AxeSoftware.Quest
             {
                 if (m_notVisibleIfElementInheritsTypeElement == null)
                 {
-                    m_notVisibleIfElementInheritsTypeElement = m_worldModel.Elements.Get(ElementType.ObjectType, m_notVisibleIfElementInheritsType);
+                    // convert "mustnotinherit" type names list into a list of type elements
+                    m_notVisibleIfElementInheritsTypeElement = new List<Element>(
+                        m_notVisibleIfElementInheritsType.Select(t => m_worldModel.Elements.Get(ElementType.ObjectType, t))
+                    );
                 }
-                return !m_worldModel.Elements.Get(data.Name).Fields.InheritsType(m_notVisibleIfElementInheritsTypeElement);
+
+                // if the element does inherit any of the "forbidden" types, then this control is not visible
+
+                Element element = m_worldModel.Elements.Get(data.Name);
+
+                foreach (Element forbiddenType in m_notVisibleIfElementInheritsTypeElement)
+                {
+                    if (element.Fields.InheritsType(forbiddenType))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
 
             if (m_filterGroup != null)
