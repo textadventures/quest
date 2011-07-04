@@ -1,12 +1,16 @@
 ﻿<library>
   <function name="UpdateStatusAttributes">
-    status = ""
-    foreach (attr, game.statusattributes) {
-      if (LengthOf(status) > 0) {
-        status = status + "\n"
+    <![CDATA[
+    if (game.statusattributes <> null) {
+      status = ""
+      foreach (attr, game.statusattributes) {
+        if (LengthOf(status) > 0) {
+          status = status + "\n"
+        }
+        status = status + CapFirst(attr) + ": " + GetAttribute(game, attr)
       }
-      status = status + CapFirst(attr) + ": " + GetAttribute(game, attr)
+      request (SetStatus, status)
     }
-    request (SetStatus, status)
+    ]]>
   </function>
 </library>
