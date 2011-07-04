@@ -24,7 +24,9 @@ namespace AxeSoftware.Quest.EditorControls
         {
             InitializeComponent();
             m_helper = new ControlDataHelper<IEditableDictionary<string>>(this);
-            m_helper.Options.Resizable = true;
+            // "Resizable" option doesn't work well for WinForms usercontrols - this should be made resizable
+            // when the control is fully converted to WPF.
+            //m_helper.Options.Resizable = true;
             m_helper.Initialise += m_helper_Initialise;
             ctlDictionaryString.Dirty += ctlDictionaryString_Dirty;
             ctlDictionaryString.RequestParentElementEditorSave += ctlDictionaryString_RequestParentElementEditorSave;

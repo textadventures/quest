@@ -194,6 +194,7 @@ namespace AxeSoftware.Quest.EditorControls
                 Grid.SetColumnSpan(splitter, 2);
                 Grid.SetRow(splitter, gridRow);
                 grid.Children.Add(splitter);
+                m_controlUIElements[ctl].Add(splitter);
             }
 
             m_lastRowIsResizable = resizableRow;
