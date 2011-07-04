@@ -119,6 +119,9 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_list == null)
             {
                 Value = m_controller.CreateNewEditableScriptDictionary(m_elementName, m_attributeName, addKey.Result, script, true);
+                
+                // Script will have been cloned, so ensure we use a reference to the script that actually appears in the dictionary
+                script = m_list[addKey.Result];
             }
             else
             {
