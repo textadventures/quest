@@ -324,7 +324,6 @@ Public Class LegacyGame
     Private DefaultFontName As String
     Private DefaultFontSize As Double
     Private AutoIntro As Boolean
-    Private PauseMode As Boolean
     Private CommandOverrideModeOn As Boolean
     Private CommandOverrideVariable As String
     Private AfterTurnScript As String
@@ -6043,21 +6042,12 @@ ErrorHandler:
     End Sub
 
     Public Sub Pause(ByRef Duration As Integer)
+        m_player.DoPause(Duration)
         ChangeState(State.Waiting)
-        PauseMode = True
 
-        Const k_interval As Integer = 100
-
-        Dim elapsed As Integer = 0
-
-        Do
-            Threading.Thread.Sleep(k_interval)
-            elapsed += k_interval
-            System.Windows.Forms.Application.DoEvents()
-        Loop Until elapsed >= Duration Or m_gameFinished
-
-        PauseMode = False
-        ChangeState(State.Working)
+        SyncLock m_waitLock
+            System.Threading.Monitor.Wait(m_waitLock)
+        End SyncLock
     End Sub
 
     Private Function ConvertParameter(ByRef sParameter As String, ByRef sConvertChar As String, ByRef ConvertAction As Integer, ByRef Thread As ThreadData) As String
@@ -10096,9 +10086,6 @@ errhandle:
             End If
         End SyncLock
 
-        ' TO DO: Not sure if this line is necessary any more
-        If PauseMode Then Return True
-
         Dim UserCommandReturn As Boolean
         Dim newcommand As String
 
@@ -13479,6 +13466,10 @@ ErrorHandler:
         SyncLock m_waitLock
             System.Threading.Monitor.PulseAll(m_waitLock)
         End SyncLock
+    End Sub
+
+    Public Sub FinishPause() Implements IASL.FinishPause
+        FinishWait()
     End Sub
 
     Private m_menuResponse As String

@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest
         void Save(string filename);
         string SaveExtension { get; }
         void FinishWait();
+        void FinishPause();
         void SetMenuResponse(string response);
         void SetQuestionResponse(bool response);
         IEnumerable<string> GetExternalScripts();
@@ -37,6 +38,7 @@ namespace AxeSoftware.Quest
     {
         void ShowMenu(MenuData menuData);
         void DoWait();
+        void DoPause(int ms);
         void ShowQuestion(string caption);
         void SetWindowMenu(MenuData menuData);
         string GetNewGameFile(string originalFilename, string extensions);

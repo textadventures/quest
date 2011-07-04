@@ -24,6 +24,7 @@ namespace WebPlayer
         }
 
         public event Action BeginWait;
+        public event Action<int> BeginPause;
         public event Func<string, string> AddResource;
         public event EventHandler<PlayAudioEventArgs> PlayAudio;
         public event Action StopAudio;
@@ -178,11 +179,24 @@ namespace WebPlayer
             BeginWait();
         }
 
+        public void DoPause(int ms)
+        {
+            Logging.Log.DebugFormat("{0} Pause beginning", GameId);
+            BeginPause(ms);
+        }
+
         public void EndWait()
         {
             if (m_finished) return;
             Logging.Log.DebugFormat("{0} Wait ending", GameId);
             m_controller.Game.FinishWait();
+        }
+
+        public void EndPause()
+        {
+            if (m_finished) return;
+            Logging.Log.DebugFormat("{0} Pause ending", GameId);
+            m_controller.Game.FinishPause();
         }
 
         public Action<string> ShowQuestionDelegate { get; set; }

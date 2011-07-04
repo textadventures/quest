@@ -77,6 +77,21 @@ function endWait() {
     }, 100);
 }
 
+function beginPause(ms) {
+    $("#txtCommand").hide();
+    window.setTimeout(function () {
+        endPause()
+    }, ms);
+}
+
+function endPause() {
+    $("#txtCommand").show();
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("endpause");
+        $("#cmdSubmit").click();
+    }, 100);
+}
+
 function globalKey(e) {
     if (_waitMode) {
         endWait();

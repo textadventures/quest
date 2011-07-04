@@ -698,6 +698,10 @@ namespace AxeSoftware.Quest
         {
         }
 
+        public void FinishPause()
+        {
+        }
+
         public IEnumerable<string> GetExternalScripts()
         {
             var result = new List<string>();

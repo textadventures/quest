@@ -189,5 +189,9 @@ namespace LegacyASLTests
         {
             return file;
         }
+
+        public void DoPause(int ms)
+        {
+        }
     }
 }

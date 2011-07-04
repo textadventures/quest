@@ -29,6 +29,7 @@ Public Class Player
     Private m_htmlPlayerReadyFunction As Action
     Private m_tickCount As Integer
     Private m_sendNextTickEventAfter As Integer
+    Private m_pausing As Boolean
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -212,6 +213,7 @@ Public Class Player
     End Sub
 
     Private Sub EnterText()
+        If m_pausing Then Return
         If txtCommand.Text.Length > 0 Then
             m_history.Add(txtCommand.Text)
             SetHistoryPoint(0)
@@ -782,5 +784,19 @@ Public Class Player
 
     Public Sub ShowExitFullScreenButton()
         cmdFullScreen.Visible = True
+    End Sub
+
+    Public Sub DoPause(ms As Integer) Implements IPlayer.DoPause
+        BeginInvoke(Sub()
+                        m_pausing = True
+                        tmrPause.Interval = ms
+                        tmrPause.Enabled = True
+                    End Sub)
+    End Sub
+
+    Private Sub tmrPause_Tick(sender As Object, e As System.EventArgs) Handles tmrPause.Tick
+        tmrPause.Enabled = False
+        m_pausing = False
+        m_game.FinishPause()
     End Sub
 End Class

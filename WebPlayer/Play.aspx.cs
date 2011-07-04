@@ -127,6 +127,7 @@ namespace WebPlayer
                 m_player.LibraryFolder = libPath;
                 m_gamesInSession[m_gameId] = m_player;
                 m_player.BeginWait += m_player_BeginWait;
+                m_player.BeginPause += m_player_BeginPause;
                 m_player.ShowMenuDelegate = m_player_ShowMenu;
                 m_player.ShowQuestionDelegate = m_player_ShowQuestion;
                 m_player.AddResource += AddResource;
@@ -203,6 +204,11 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer("beginWait");
         }
 
+        void m_player_BeginPause(int ms)
+        {
+            m_buffer.AddJavaScriptToBuffer("beginPause", new IntParameter(ms));
+        }
+
         void m_player_ShowMenu(string caption, IDictionary<string, string> options, bool allowCancel)
         {
             m_buffer.AddJavaScriptToBuffer("showMenu", new StringParameter(caption), new JSONParameter(options), new BooleanParameter(allowCancel));
@@ -238,6 +244,9 @@ namespace WebPlayer
                         break;
                     case "endwait":
                         m_player.EndWait();
+                        break;
+                    case "endpause":
+                        m_player.EndPause();
                         break;
                     case "choice":
                         m_player.SetMenuResponse(args[1]);
