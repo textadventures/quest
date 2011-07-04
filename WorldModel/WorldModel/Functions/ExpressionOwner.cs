@@ -204,7 +204,11 @@ namespace AxeSoftware.Quest.Functions
         public string TypeOf(Element obj, string attribute)
         {
             object value = obj.Fields.Get(attribute);
+            return TypeOf(value);
+        }
 
+        public string TypeOf(object value)
+        {
             if (value == null) return "null";
             if (value is DelegateImplementation) return ((DelegateImplementation)value).TypeName;
 
@@ -298,6 +302,11 @@ namespace AxeSoftware.Quest.Functions
         }
 
         public string ToString(int number)
+        {
+            return number.ToString();
+        }
+
+        public string ToString(double number)
         {
             return number.ToString();
         }

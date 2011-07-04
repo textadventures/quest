@@ -7,10 +7,21 @@
         if (LengthOf(status) > 0) {
           status = status + "\n"
         }
-        status = status + CapFirst(attr) + ": " + GetAttribute(game, attr)
+        status = status + FormatStatusAttribute(attr, GetAttribute(game, attr), StringDictionaryItem(game.statusattributes, attr))
       }
       request (SetStatus, status)
     }
     ]]>
+  </function>
+
+  <function name="FormatStatusAttribute" parameters="attr, value, format" type="string">
+    if (LengthOf(format) = 0) {
+      return (CapFirst(attr) + ": " + GetAttribute(game, attr))
+    } else {
+      if (TypeOf(value) = "int" or TypeOf(value) = "double") {
+        value = ToString(value)
+      }
+      return (Replace(format, "!", value))
+    }
   </function>
 </library>

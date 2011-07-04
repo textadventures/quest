@@ -21,6 +21,12 @@ namespace WorldModelTests
         }
 
         [TestMethod]
+        public void TestDecimalPointsNotConvertedToDottedProperties()
+        {
+            Assert.AreEqual("3.141", Utility.ConvertVariablesToFleeFormat("3.141"));
+        }
+
+        [TestMethod]
         public void TestRemoveComments()
         {
             Assert.AreEqual("msg (\"Something\")", Utility.RemoveComments("msg (\"Something\")"));

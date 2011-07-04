@@ -176,7 +176,7 @@ namespace AxeSoftware.Quest
             return name.Replace(k_spaceReplacementString, " ");
         }
 
-        private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.(\w)");
+        private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.([a-zA-Z])");
         private static Regex s_detectComments = new Regex("//");
 
         /// <summary>
