@@ -200,6 +200,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Core\CoreOutput.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\CoreStatusAttributes.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

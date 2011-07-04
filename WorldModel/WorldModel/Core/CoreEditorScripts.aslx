@@ -79,6 +79,63 @@
   </editor>
 
   <editor>
+    <appliesto>(function)ClearScreen</appliesto>
+    <display>Clear the screen</display>
+    <category>Output</category>
+    <create>ClearScreen</create>
+    <add>Clear the screen</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Clear the screen</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetForegroundColour</appliesto>
+    <display>Change foreground colour to #0</display>
+    <category>Output</category>
+    <create>SetForegroundColour ("Black")</create>
+    <add>Change foreground colour</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the foreground colour to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetBackgroundColour</appliesto>
+    <display>Change background colour to #0</display>
+    <category>Output</category>
+    <create>SetBackgroundColour ("White")</create>
+    <add>Change background colour</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the background colour to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>play sound</appliesto>
     <display>Play sound #0</display>
     <category>Output</category>

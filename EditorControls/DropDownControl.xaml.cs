@@ -158,5 +158,19 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_helper.SetDirty(lstDropdown.Text);
         }
+
+        public string SelectedItem
+        {
+            get { return (string)lstDropdown.SelectedItem; }
+            set
+            {
+                lstDropdown.Text = value;
+            }
+        }
+
+        public bool IsUpdatingList
+        {
+            get { return m_helper.IsPopulating; }
+        }
     }
 }

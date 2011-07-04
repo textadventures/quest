@@ -93,11 +93,11 @@ namespace AxeSoftware.Quest.EditorControls
                     m_booleanEditor = true;
                     break;
                 case "objects":
-                    DropDownObjectsControl newDropDown = new DropDownObjectsControl();
-                    newDropDown.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
-                    newDropDown.Helper.Dirty += SimpleEditor_Dirty;
-                    newDropDown.lstDropdown.SelectionChanged += DropDownObjects_SelectionChanged;
-                    m_simpleEditor = newDropDown;
+                    DropDownObjectsControl newDropDownObjects = new DropDownObjectsControl();
+                    newDropDownObjects.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
+                    newDropDownObjects.Helper.Dirty += SimpleEditor_Dirty;
+                    newDropDownObjects.lstDropdown.SelectionChanged += DropDownObjects_SelectionChanged;
+                    m_simpleEditor = newDropDownObjects;
                     break;
                 case "number":
                     NumberControl newNumber = new NumberControl();
@@ -105,6 +105,13 @@ namespace AxeSoftware.Quest.EditorControls
                     newNumber.Helper.Dirty += SimpleEditor_Dirty;
                     newNumber.LostFocus += SimpleEditor_LostFocus;
                     m_simpleEditor = newNumber;
+                    break;
+                case "dropdown":
+                    DropDownControl newDropDown = new DropDownControl();
+                    newDropDown.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
+                    newDropDown.Helper.Dirty += SimpleEditor_Dirty;
+                    newDropDown.lstDropdown.SelectionChanged += DropDown_SelectionChanged;
+                    m_simpleEditor = newDropDown;
                     break;
                 default:
                     throw new InvalidOperationException("Invalid control type for expression");
@@ -129,6 +136,12 @@ namespace AxeSoftware.Quest.EditorControls
         void DropDownObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (((DropDownObjectsControl)m_simpleEditor).IsUpdatingList) return;
+            SimpleEditor_SelectionChanged();
+        }
+
+        void DropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (((DropDownControl)m_simpleEditor).IsUpdatingList) return;
             SimpleEditor_SelectionChanged();
         }
 
@@ -443,6 +456,10 @@ namespace AxeSoftware.Quest.EditorControls
                 {
                     return ((DropDownObjectsControl)m_simpleEditor).SelectedItem;
                 }
+                else if (m_simpleEditor is DropDownControl)
+                {
+                    return ((DropDownControl)m_simpleEditor).SelectedItem;
+                }
                 else if (m_simpleEditor is NumberControl)
                 {
                     return ((NumberControl)m_simpleEditor).StringValue;
@@ -469,6 +486,10 @@ namespace AxeSoftware.Quest.EditorControls
                 else if (m_simpleEditor is DropDownObjectsControl)
                 {
                     ((DropDownObjectsControl)m_simpleEditor).SelectedItem = value;
+                }
+                else if (m_simpleEditor is DropDownControl)
+                {
+                    ((DropDownControl)m_simpleEditor).SelectedItem = value;
                 }
                 else if (m_simpleEditor is NumberControl)
                 {

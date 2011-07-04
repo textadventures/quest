@@ -1,0 +1,28 @@
+﻿<library>
+  <function name="SetFramePicture" parameters="filename">
+    <![CDATA[
+    if (game.useframe) {
+      request (RunScript, "setFramePicture; " + GetFileURL(filename))
+    } else {
+      msg ("<color color=\"red\"><b>ERROR: The static picture frame is not enabled. You can enable this from the Display tab of the Game editor.</b></color>")
+    }
+    ]]>
+  </function>
+
+  <function name="ClearFramePicture">
+    request (RunScript, "clearFramePicture")
+  </function>
+
+  <function name="ClearScreen">
+    request (ClearScreen, "")
+  </function>
+
+  <function name="SetForegroundColour" parameters="colour">
+    request (Foreground, colour)
+  </function>
+
+  <function name="SetBackgroundColour" parameters="colour">
+    request (Background, colour)
+  </function>
+
+</library>

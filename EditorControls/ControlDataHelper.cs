@@ -160,5 +160,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (RequestParentElementEditorSave != null) RequestParentElementEditorSave();
         }
+
+        internal bool IsPopulating
+        {
+            get { return m_populating; }
+        }
     }
 }
