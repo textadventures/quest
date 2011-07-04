@@ -1,22 +1,27 @@
 ﻿<library>
   <function name="UpdateStatusAttributes">
+    status = AddStatusAttributesForElement("", game)
+    status = AddStatusAttributesForElement(status, player)
+    request (SetStatus, status)
+  </function>
+
+  <function name="AddStatusAttributesForElement" parameters="status, element" type="string">
     <![CDATA[
-    if (game.statusattributes <> null) {
-      status = ""
-      foreach (attr, game.statusattributes) {
+    if (element.statusattributes <> null) {
+      foreach (attr, element.statusattributes) {
         if (LengthOf(status) > 0) {
           status = status + "\n"
         }
-        status = status + FormatStatusAttribute(attr, GetAttribute(game, attr), StringDictionaryItem(game.statusattributes, attr))
+        status = status + FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(element.statusattributes, attr))
       }
-      request (SetStatus, status)
     }
+    return (status)
     ]]>
   </function>
 
   <function name="FormatStatusAttribute" parameters="attr, value, format" type="string">
     if (LengthOf(format) = 0) {
-      return (CapFirst(attr) + ": " + GetAttribute(game, attr))
+      return (CapFirst(attr) + ": " + value)
     } else {
       if (TypeOf(value) = "int" or TypeOf(value) = "double") {
         value = ToString(value)
