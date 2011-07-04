@@ -23,11 +23,13 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void cmdOK_Click(System.Object sender, System.EventArgs e)
         {
+            Cancelled = false;
             this.Hide();
         }
 
         private void cmdCancel_Click(System.Object sender, System.EventArgs e)
         {
+            Cancelled = true;
             m_activeControl.Text = "";
             this.Hide();
         }
@@ -74,5 +76,6 @@ namespace AxeSoftware.Quest.EditorControls
             get { return m_activeControl; }
         }
 
+        public bool Cancelled { get; private set; }
     }
 }

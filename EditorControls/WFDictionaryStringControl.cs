@@ -108,7 +108,7 @@ namespace AxeSoftware.Quest.EditorControls
             if (addKey.Cancelled) return;
             if (!ValidateInput(addKey.Result)) return;
 
-            var addValue = PopupEditors.EditString(m_controlData.GetString("valueprompt"), string.Empty);
+            var addValue = PopupEditors.EditString(m_controlData.GetString("valueprompt"), string.Empty, allowEmptyString: true);
             if (addValue.Cancelled) return;
 
             PrepareForEditing();
@@ -125,7 +125,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoEdit(string key, int index)
         {
-            var result = PopupEditors.EditString(m_controlData.GetString("valueprompt"), m_list[key]);
+            var result = PopupEditors.EditString(m_controlData.GetString("valueprompt"), m_list[key], allowEmptyString: true);
             if (result.Cancelled) return;
             if (result.Result == m_list[key]) return;
 

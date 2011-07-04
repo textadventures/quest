@@ -130,9 +130,10 @@
       <caption>Attributes</caption>
 
       <control>
-        <controltype>list</controltype>
+        <controltype>stringdictionary</controltype>
         <caption>Status attributes</caption>
-        <editprompt>Please enter the attribute name</editprompt>
+        <keyprompt>Please enter the attribute name</keyprompt>
+        <valueprompt>Please enter the format string (blank for default)</valueprompt>
         <attribute>statusattributes</attribute>
       </control>
 

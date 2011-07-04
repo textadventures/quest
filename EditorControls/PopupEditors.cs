@@ -29,12 +29,12 @@ namespace AxeSoftware.Quest.EditorControls
             {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
         };
 
-        public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null)
+        public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null, bool allowEmptyString = false)
         {
-            return EditStringWithDropdown(prompt, defaultResult, null, null, null, autoCompleteList);
+            return EditStringWithDropdown(prompt, defaultResult, null, null, null, autoCompleteList, allowEmptyString);
         }
 
-        public static EditStringResult EditStringWithDropdown(string prompt, string defaultResult, string listCaption, IEnumerable<string> listItems, string defaultListSelection, IEnumerable<string> autoCompleteList = null)
+        public static EditStringResult EditStringWithDropdown(string prompt, string defaultResult, string listCaption, IEnumerable<string> listItems, string defaultListSelection, IEnumerable<string> autoCompleteList = null, bool allowEmptyString = false)
         {
             EditStringResult result = new EditStringResult();
 
@@ -56,7 +56,7 @@ namespace AxeSoftware.Quest.EditorControls
             inputWindow.ShowDialog();
 
             string inputResult = inputWindow.ActiveInputControl.Text;
-            result.Cancelled = (inputResult.Length == 0);
+            result.Cancelled = (inputWindow.Cancelled || (!allowEmptyString && inputResult.Length == 0));
             result.Result = inputResult;
 
             if (listItems != null)
