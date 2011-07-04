@@ -432,20 +432,28 @@ namespace AxeSoftware.Quest
         {
             DoInNewThreadAndWait(() =>
             {
-                if (!m_elements.ContainsKey(ElementType.Object, "player")) throw new Exception("No player object found in game");
-                m_player = Object("player");
-                m_timerRunner = new TimerRunner(this, !m_loadedFromSaved);
-                if (m_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
-                if (!m_loadedFromSaved)
+                try
                 {
-                    if (m_elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
+                    if (!m_elements.ContainsKey(ElementType.Object, "player")) throw new Exception("No player object found in game");
+                    m_player = Object("player");
+                    m_timerRunner = new TimerRunner(this, !m_loadedFromSaved);
+                    if (m_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
+                    if (!m_loadedFromSaved)
+                    {
+                        if (m_elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
+                    }
+                    if (m_player.Parent == null) throw new Exception("No start location specified for player");
+                    UpdateLists();
+                    if (m_loadedFromSaved)
+                    {
+                        Print(string.Format("Loaded saved game in {0}", m_saveFilename));
+                        Print(string.Format("  (original game at {0})", m_filename));
+                    }
                 }
-                if (m_player.Parent == null) throw new Exception("No start location specified for player");
-                UpdateLists();
-                if (m_loadedFromSaved)
+                catch (Exception ex)
                 {
-                    Print(string.Format("Loaded saved game in {0}", m_saveFilename));
-                    Print(string.Format("  (original game at {0})", m_filename));
+                    LogException(ex);
+                    Finish();
                 }
 
                 ChangeThreadState(ThreadState.Ready);
@@ -1123,11 +1131,18 @@ namespace AxeSoftware.Quest
             if (m_state == GameState.Finished) return;
             DoInNewThreadAndWait(() =>
             {
-                var scripts = m_timerRunner.TickAndGetScripts(elapsedTime);
-
-                foreach (var timerScript in scripts)
+                try
                 {
-                    RunScript(timerScript.Value, timerScript.Key);
+                    var scripts = m_timerRunner.TickAndGetScripts(elapsedTime);
+
+                    foreach (var timerScript in scripts)
+                    {
+                        RunScript(timerScript.Value, timerScript.Key);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogException(ex);
                 }
 
                 ChangeThreadState(ThreadState.Ready);

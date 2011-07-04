@@ -256,7 +256,10 @@ Public Class Player
     End Sub
 
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
-        BeginInvoke(Sub() WriteLine("<output>[Sorry, an error occurred]</output>"))
+        BeginInvoke(Sub()
+                        WriteLine("<output><b>Sorry, an error occurred.</b></output>")
+                        WriteLine("<output>" + errorMessage + "</output>")
+                    End Sub)
     End Sub
 
     Private Sub AddToRecentList()
