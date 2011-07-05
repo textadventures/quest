@@ -33,12 +33,29 @@
     ]]>
   </command>
 
-  <command name="take" pattern="[take]">
+  <command name="take">
+    <pattern type="string">[take]</pattern>
+    <multiple>
+      return (ScopeVisibleNotHeld() - player)
+    </multiple>
+    <script>
+      foreach (obj, object) {
+        DoTake(obj, multiple)
+      }
+    </script>
+  </command>
+
+  <function name="DoTake" parameters="object, ismultiple">
+    prefix = ""
+    if (ismultiple) {
+      prefix = GetDisplayAlias(object) + ": "
+    }
+    
     if (ListContains(ScopeInventory(), object)) {
-      msg (DynamicTemplate("AlreadyTaken", object))
+      msg (prefix + DynamicTemplate("AlreadyTaken", object))
     }
     else if (not ListContains(ScopeReachable(), object)) {
-      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+      msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
     }
     else {
       found = true
@@ -46,6 +63,9 @@
       
       switch (TypeOf(object, "take")) {
         case ("script") {
+          if (ismultiple) {
+            msg (prefix)
+          }
           do (object, "take")
           takemsg = ""
         }
@@ -72,10 +92,11 @@
       if (not found and takemsg = null) takemsg = DynamicTemplate("TakeUnsuccessful", object)
       
       if (LengthOf(takemsg) > 0) {
-        msg (takemsg)
+        msg (prefix + takemsg)
       }
     }
-  </command>
+  </function>
+  
   <command name="drop" pattern="[drop]">
     if (not ListContains(ScopeInventory(), object)) {
       msg (DynamicTemplate("NotCarrying", object))

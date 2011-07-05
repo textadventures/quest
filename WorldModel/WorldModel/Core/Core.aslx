@@ -1,9 +1,11 @@
 ﻿<library>
 
-  <delegate name="AddScript" parameters="object" />
+  <delegate name="AddScript" parameters="object"/>
+  <delegate name="AssociatedScope" type="objectlist"/>
   <implied element="object" property="alt" type="list"/>
   <implied element="command" property="pattern" type="simplepattern"/>
   <implied element="command" property="script" type="script"/>
+  <implied element="command" property="multiple" type="AssociatedScope"/>
   <implied element="object" property="displayverbs" type="list"/>
   <implied element="object" property="inventoryverbs" type="list"/>
   <implied element="walkthrough" property="steps" type="list"/>

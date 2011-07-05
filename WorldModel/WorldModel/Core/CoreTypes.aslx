@@ -13,6 +13,7 @@
     <clearframe type="boolean">false</clearframe>
     <timeelapsed type="int">0</timeelapsed>
     <appendobjectdescription type="boolean">false</appendobjectdescription>
+    <allobjects type="list">[AllObjects]</allobjects>
   </type>
 
   <type name="defaultobject">

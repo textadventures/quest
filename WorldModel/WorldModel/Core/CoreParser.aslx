@@ -72,6 +72,31 @@
     }
   </function>
 
+  <function name="ResolveNameList" parameters="value, scope, objtype, resultdictionary" type="objectlist">
+    // TO DO: Allow multiple objects separated by comma or "and" (using template)
+    return (ResolveNameListItem(value, scope, objtype, resultdictionary))
+  </function>
+
+  <function name="ResolveNameListItem" parameters="value, scope, objtype, resultdictionary" type="objectlist">
+    if (ListContains(game.allobjects, value)) {
+      if (not DictionaryContains(resultdictionary, "multiple")) {
+        dictionary add (resultdictionary, "multiple", true)
+      }
+      return (scope)
+    }
+    else {
+      object = ResolveName(value, objtype)
+      if (object = null) {
+        return (null)
+      }
+      else {
+        result = NewObjectList()
+        list add (result, object)
+        return (result)
+      }
+    }
+  </function>
+
   <function name="HandleCommand" parameters="command">
     candidates = NewObjectList()
     foreach (cmd, ScopeCommands()) {
@@ -95,7 +120,7 @@
       msg (Template("UnrecognisedCommand"))
     }
     else {
-      varlist = Populate(candidate.pattern, command)
+      varlist = Populate(thiscommand.pattern, command)
       
       resolved = true
       resolvedobjects = NewDictionary()
@@ -106,7 +131,12 @@
           result = null
           
           if (StartsWith(var, "object")) {
-            result = ResolveName(value, "object")
+            if (HasDelegateImplementation(thiscommand, "multiple")) {
+              result = ResolveNameList(value, RunDelegateFunction(thiscommand, "multiple"), "object", resolvedobjects)
+            }
+            else {
+              result = ResolveName(value, "object")
+            }
           }
           else if (StartsWith(var, "exit")) {
             result = ResolveName(value, "exit")
@@ -124,19 +154,22 @@
           else {
             dictionary add(resolvedobjects, var, result)
           }
-
         }
       }
       
+      if (not DictionaryContains(resolvedobjects, "multiple")) {
+        dictionary add (resolvedobjects, "multiple", false)
+      }
+      
       if (resolved) {
-        if (not GetBoolean(candidate, "isundo")) {
+        if (not GetBoolean(thiscommand, "isundo")) {
           start transaction (command)
         }
-        do (candidate, "script", resolvedobjects)
+        do (thiscommand, "script", resolvedobjects)
       }
       else {
-        if (HasString(candidate, "unresolved")) {
-          msg (candidate.unresolved)
+        if (HasString(thiscommand, "unresolved")) {
+          msg (thiscommand.unresolved)
         }
         else {
           msg (Template("UnresolvedObject"))
