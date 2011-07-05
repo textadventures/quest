@@ -76,6 +76,7 @@ namespace AxeSoftware.Quest.EditorControls
                     TextBox newTextBox = new TextBox();
                     newTextBox.TextChanged += SimpleEditor_TextChanged;
                     newTextBox.LostFocus += SimpleEditor_LostFocus;
+                    newTextBox.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
                     m_simpleEditor = newTextBox;
                     break;
                 case "file":

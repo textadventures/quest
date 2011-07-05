@@ -23,10 +23,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ComboBox Name="lstType" SelectionChanged="lstType_SelectionChanged" Margin="0,0,10,0" />
-        <ComboBox Name="lstTemplate" SelectionChanged="lstTemplate_SelectionChanged" Margin="0,0,10,0" Visibility="Collapsed" />
-        <TextBox Name="txtExpression" Grid.Column="1" TextChanged="txtExpression_TextChanged" LostFocus="txtExpression_LostFocus" MinWidth="40"></TextBox>
-        <Button Name="cmdInsert" Click="cmdInsert_Click"  Grid.Column="2" Padding="1,0,1,0" Margin="0,0,0,0" Background="{StaticResource InsertButtonBackground}" Foreground="White" ToolTip="Insert...">
+        <ComboBox Name="lstType" SelectionChanged="lstType_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Top" />
+        <ComboBox Name="lstTemplate" SelectionChanged="lstTemplate_SelectionChanged" Margin="0,0,10,0" Visibility="Collapsed" VerticalAlignment="Top" />
+        <TextBox Name="txtExpression" Grid.Column="1" TextChanged="txtExpression_TextChanged" LostFocus="txtExpression_LostFocus" HorizontalScrollBarVisibility="Auto" MinWidth="40"></TextBox>
+        <Button Name="cmdInsert" Click="cmdInsert_Click"  Grid.Column="2" Padding="1,0,1,0" Margin="0,0,0,0" Background="{StaticResource InsertButtonBackground}" Foreground="White" ToolTip="Insert..." VerticalAlignment="Top" Height="{Binding ElementName=lstType, Path=ActualHeight}" >
             <Button.FontFamily>Marlett</Button.FontFamily>
             <Button.Content>u</Button.Content>
             <Button.ContextMenu>
