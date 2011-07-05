@@ -76,7 +76,12 @@ namespace AxeSoftware.Quest.EditorControls
                     TextBox newTextBox = new TextBox();
                     newTextBox.TextChanged += SimpleEditor_TextChanged;
                     newTextBox.LostFocus += SimpleEditor_LostFocus;
-                    newTextBox.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+                    if (m_helper.ControlDefinition.GetBool("multiline"))
+                    {
+                        newTextBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                        newTextBox.TextWrapping = TextWrapping.Wrap;
+                        newTextBox.AcceptsReturn = true;
+                    }
                     m_simpleEditor = newTextBox;
                     break;
                 case "file":
@@ -537,6 +542,9 @@ namespace AxeSoftware.Quest.EditorControls
         {
             lstType.Visibility = (IsSimpleModeAvailable && !UseExpressionTemplates) ? Visibility.Visible : Visibility.Collapsed;
             lstTemplate.Visibility = UseExpressionTemplates ? Visibility.Visible : Visibility.Collapsed;
+
+            Binding heightBinding = new Binding(string.Format("ElementName={0}, Path=ActualHeight", UseExpressionTemplates ? "lstTemplate" : "lstType"));
+            cmdInsert.SetBinding(Button.HeightProperty, heightBinding);
         }
 
         private void PopulateExpressionTemplates()

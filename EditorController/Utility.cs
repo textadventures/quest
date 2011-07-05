@@ -29,7 +29,11 @@ namespace AxeSoftware.Quest
 
         public static string ConvertToSimpleStringExpression(string expression)
         {
+            // remove surrounding quotes
             string inner = expression.Substring(1, expression.Length - 2);
+
+            // replace newline markup
+            inner = inner.Replace("<br/>", Environment.NewLine);
 
             // replace escaped quotes with unescaped quotes, i.e. replace \" with "
             return inner.Replace("\\\"", "\"");
@@ -37,7 +41,13 @@ namespace AxeSoftware.Quest
 
         public static string ConvertFromSimpleStringExpression(string simpleValue)
         {
+            // escape quotes
             string result = simpleValue.Replace("\"", "\\\"");
+
+            // markup newlines
+            result = result.Replace(Environment.NewLine, "<br/>");
+
+            // surround with quotes
             return string.Format("\"{0}\"", result);
         }
     }
