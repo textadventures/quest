@@ -73,8 +73,37 @@
   </function>
 
   <function name="ResolveNameList" parameters="value, scope, objtype, resultdictionary" type="objectlist">
-    // TO DO: Allow multiple objects separated by comma or "and" (using template)
-    return (ResolveNameListItem(value, scope, objtype, resultdictionary))
+    <![CDATA[
+    result = NewObjectList()
+    isfinished = false
+    
+    inputlist = Split(value, ",")
+    foreach (inputbase, inputlist) {
+      inputlist2 = Split(inputbase, Template("And"))
+      
+      foreach (input, inputlist2) {
+        if (not isfinished) {
+          newitem = ResolveNameListItem(Trim(input), scope, objtype, resultdictionary)
+          if (newitem = null) {
+            isfinished = true
+            result = null
+          }
+          else {
+            result = result + newitem
+          }
+        }
+      }
+    }
+    
+    if (result <> null) {
+      if (ListCount(result) > 1) {
+        if (not DictionaryContains(resultdictionary, "multiple")) {
+          dictionary add (resultdictionary, "multiple", true)
+        }    
+      }
+    }
+    return (result)
+    ]]>
   </function>
 
   <function name="ResolveNameListItem" parameters="value, scope, objtype, resultdictionary" type="objectlist">
