@@ -113,6 +113,74 @@
     </addscript>
   </type>
 
+  <type name="container_lockable">
+    <openscript type="script">
+      if (this.locked) {
+        if (this.autounlock and ListContains(ScopeInventory(), this.key)) {
+          do (this, "unlock")
+          if (not this.isopen) {
+            OpenObject (this)
+          }
+        }
+        else {
+          msg (DynamicTemplate("LockedObject", this))
+        }
+      }
+      else {
+        OpenObject (this)
+      }
+    </openscript>
+    <closescript type="script">
+      if (this.locked) {
+        msg (DynamicTemplate("LockedObject", this))
+      }
+      else {
+        CloseObject (this)
+      }
+    </closescript>
+    <lock type="script">
+      if (this.locked) {
+        msg (DynamicTemplate("AlreadyLocked", this))
+      }
+      else if (this.isopen and not this.canlockopen) {
+        msg (DynamicTemplate("CannotLockOpen", this))
+      }
+      else {
+        if (ListContains(ScopeInventory(), this.key)) {
+          msg (this.lockmessage)
+          this.locked = true
+        }
+        else {
+          msg (this.nokeymessage)
+        }
+      }
+    </lock>
+    <unlock type="script">
+      if (not this.locked) {
+        msg (DynamicTemplate("AlreadyUnlocked", this))
+      }
+      else {
+        if (ListContains(ScopeInventory(), this.key)) {
+          msg (this.unlockmessage)
+          this.locked = false
+          if (this.autoopen and not this.isopen) {
+            TryOpenClose (true, this)
+          }
+        }
+        else {
+          msg (this.nokeymessage)
+        }
+      }
+    </unlock>
+    <locked/>
+    <nokeymessage>[NoKey]</nokeymessage>
+    <unlockmessage>[UnlockMessage]</unlockmessage>
+    <lockmessage>[LockMessage]</lockmessage>
+    <canlockopen type="boolean">false</canlockopen>
+    <autoopen/>
+    <autounlock/>
+  </type>
+
   <type name="defaultplayer">
     <alias>[SelfAlias]</alias>
     <alt type="list">[SelfAlt]</alt>

@@ -1,6 +1,9 @@
 ﻿<library>
   <editor>
     <appliesto>object</appliesto>
+    
+    <!-- Setup -->
+    
     <tab>
       <caption>Setup</caption>
 
@@ -93,6 +96,8 @@
         <expand/>
       </control>
     </tab>
+    
+    <!-- Object -->
 
     <tab>
       <caption>Object</caption>
@@ -122,6 +127,8 @@
       </control>
 
     </tab>
+    
+    <!-- Room -->
 
     <tab>
       <caption>Room</caption>
@@ -156,6 +163,8 @@
       </control>
 
     </tab>
+    
+    <!-- Exits -->
 
     <tab>
       <caption>Exits</caption>
@@ -167,6 +176,8 @@
         <expand/>
       </control>
     </tab>
+    
+    <!-- Scripts -->
 
     <tab>
       <caption>Scripts</caption>
@@ -190,6 +201,8 @@
         <attribute>firstenter</attribute>
       </control>
     </tab>
+    
+    <!-- Inventory -->
 
     <tab>
       <caption>Inventory</caption>
@@ -277,6 +290,8 @@
         <keyprompt>Please enter the object name</keyprompt>
       </control>
     </tab>
+    
+    <!-- Verbs -->
 
     <tab>
       <caption>Verbs</caption>
@@ -286,6 +301,8 @@
         <expand/>
       </control>
     </tab>
+    
+    <!-- Container -->
 
     <tab>
       <caption>Container</caption>
@@ -343,7 +360,7 @@
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>List children when object is looked at</caption>
+        <caption>List children when object is looked at or opened</caption>
         <attribute>listchildren</attribute>
       </control>
 
@@ -364,7 +381,77 @@
         <minimum>0</minimum>
       </control>
 
+      <control>
+        <controltype>title</controltype>
+        <caption>Locking</caption>
+      </control>
+
+      <control>
+        <controltype>dropdowntypes</controltype>
+        <caption>Lock type</caption>
+        <types>*=Not lockable; container_lockable=Lockable</types>
+        <width>150</width>
+      </control>
+
+      <control>
+        <controltype>objects</controltype>
+        <caption>Key</caption>
+        <attribute>key</attribute>
+        <mustinherit>container_lockable</mustinherit>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Locked</caption>
+        <attribute>locked</attribute>
+        <mustinherit>container_lockable</mustinherit>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Automatically unlock if player has the key</caption>
+        <attribute>autounlock</attribute>
+        <mustinherit>container_lockable</mustinherit>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Automatically open when unlocked</caption>
+        <attribute>autoopen</attribute>
+        <mustinherit>container_lockable</mustinherit>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>If the player tries to lock/unlock the object, but does not have the key, print</caption>
+        <attribute>nokeymessage</attribute>
+        <mustinherit>container_lockable</mustinherit>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Unlock message</caption>
+        <attribute>unlockmessage</attribute>
+        <mustinherit>container_lockable</mustinherit>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Lock message</caption>
+        <attribute>lockmessage</attribute>
+        <mustinherit>container_lockable</mustinherit>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Can be locked open</caption>
+        <attribute>canlockopen</attribute>
+        <mustinherit>container_lockable</mustinherit>
+      </control>
+
     </tab>
+    
+    <!-- Ask/tell -->
 
     <tab>
       <caption>Ask/tell</caption>
@@ -407,6 +494,8 @@
       </control>
 
     </tab>
+    
+    <!-- Attributes -->
 
     <tab>
       <caption>Attributes</caption>
@@ -425,6 +514,8 @@
         <expand/>
       </control>
     </tab>
+    
+    <!-- Objects -->
 
     <tab>
       <caption>Objects</caption>

@@ -111,7 +111,7 @@ namespace AxeSoftware.Quest
                 return (selectedFilter == m_filter);
             }
 
-            return false;
+            return true;
         }
     }
 }

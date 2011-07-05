@@ -1,7 +1,7 @@
 ﻿<library>
 
   <command name="lookat" pattern="[lookat]">
-    <![CDATA[
+    
     if (GetBoolean(object, "hidechildren")) {
       object.hidechildren = false
     }
@@ -18,7 +18,12 @@
       }
     }
     
-    if (GetBoolean(object, "listchildren")) {
+    ListObjectContents (object)
+  </command>
+
+  <function name="ListObjectContents" parameters="object">
+    <![CDATA[
+    if (GetBoolean(object, "isopen") and GetBoolean(object, "listchildren")) {
       if (HasString(object, "listchildrenprefix")) {
         listprefix = object.listchildrenprefix
       }
@@ -31,7 +36,7 @@
       }
     }
     ]]>
-  </command>
+  </function>
 
   <command name="take">
     <pattern type="string">[take]</pattern>
@@ -206,54 +211,48 @@
   <function name="TryOpenClose" parameters="open, object">
     if (open) {
       action = "open"
+      scriptaction = "openscript"
     }
     else {
       action = "close"
+      scriptaction = "closescript"
     }
 
     if (not ListContains(ScopeReachable(), object)) {
       msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
     }
     else {
-      found = true
+      found = false
       
-      switch (TypeOf(object, action)) {
-        case ("script") {
-          do (object, action)
-        }
-        case ("boolean") {
-          if (open and object.open) {
-            if (object.isopen) {
-              msg (DynamicTemplate("AlreadyOpen", object))
-            }
-            else {
-              object.isopen = true
-              msg (DynamicTemplate("OpenSuccessful", object))
-            }
-          }
-          else if (not open and object.close) {
-            if (not object.isopen) {
-              msg (DynamicTemplate("AlreadyClosed", object))
-            }
-            else {
-              object.isopen = false
-              msg (DynamicTemplate("CloseSuccessful", object))
-            }
+      if (GetBoolean(object, action)) {
+        if (open) {
+          if (object.isopen) {
+            msg (DynamicTemplate("AlreadyOpen", object))
           }
           else {
-            found = false
+            if (HasScript(object, scriptaction)) {
+              do (object, scriptaction)
+            }
+            else {
+              OpenObject (object)
+            }
           }
         }
-        case ("string") {
-          object.isopen = open
-          msg (GetString(object, action))
-        }
-        default {
-          found = false
+        else {
+          if (not object.isopen) {
+            msg (DynamicTemplate("AlreadyClosed", object))
+          }
+          else {
+            if (HasScript(object, scriptaction)) {
+              do (object, scriptaction)
+            }
+            else {
+              CloseObject (object)
+            }
+          }
         }
       }
-      
-      if (not found) {
+      else {
         if (open) {
           msg (DynamicTemplate("CantOpen", object))
         }
@@ -262,6 +261,17 @@
         }
       }
     }
+  </function>
+
+  <function name="OpenObject" parameters="object">
+    object.isopen = true
+    msg (DynamicTemplate("OpenSuccessful", object))
+    ListObjectContents (object)
+  </function>
+
+  <function name="CloseObject" parameters="object">
+    object.isopen = false
+    msg (DynamicTemplate("CloseSuccessful", object))
   </function>
 
   <command name="open" pattern="[open]">

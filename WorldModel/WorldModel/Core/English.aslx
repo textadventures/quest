@@ -62,6 +62,13 @@
   <template name="LockedExit">That way is locked.</template>
   <dynamictemplate name="DefaultAsk">WriteVerb(object, "do") + " not reply."</dynamictemplate>
   <dynamictemplate name="DefaultTell">WriteVerb(object, "do") + " not reply."</dynamictemplate>
+  <template name="NoKey">You do not have the key.</template>
+  <template name="UnlockMessage">Unlocked.</template>
+  <template name="LockMessage">Locked.</template>
+  <dynamictemplate name="LockedObject">WriteVerb(object, "be") + " locked."</dynamictemplate>
+  <dynamictemplate name="AlreadyLocked">WriteVerb(object, "be") + " already locked."</dynamictemplate>
+  <dynamictemplate name="AlreadyUnlocked">WriteVerb(object, "be") + " already unlocked."</dynamictemplate>
+  <dynamictemplate name="CannotLockOpen">"You cannot lock " + object.article + " when " + object.gender + " " + Conjugate(object, "be") + " open."</dynamictemplate>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>
