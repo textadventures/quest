@@ -30,6 +30,7 @@ Public Class Player
     Private m_tickCount As Integer
     Private m_sendNextTickEventAfter As Integer
     Private m_pausing As Boolean
+    Private WithEvents m_walkthroughRunner As WalkthroughRunner
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -345,16 +346,22 @@ Public Class Player
         Dim walkThrough As String = ChooseWalkthrough()
         If walkThrough Is Nothing Then Return
 
-        Dim runnerThread As New Thread(Sub()
-                                           Try
-                                               For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(walkThrough).Steps
-                                                   m_game.SendCommand(cmd)
-                                               Next
-                                           Catch ex As Exception
-                                               WriteLine(String.Format("Error running command '{0}' - walkthrough halted:<br>{1}", Command, ex.Message))
-                                           End Try
-                                       End Sub)
+        m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, walkThrough)
+
+        Dim runnerThread As New Thread(Sub() WalkthroughRunner())
         runnerThread.Start()
+    End Sub
+
+    Private Sub WalkthroughRunner()
+        Try
+            m_walkthroughRunner.Run()
+
+        Catch ex As Exception
+            BeginInvoke(Sub() WriteLine(String.Format("Error - walkthrough halted:<br>{0}", ex.Message)))
+
+        Finally
+            m_walkthroughRunner = Nothing
+        End Try
     End Sub
 
     Private Function ChooseWalkthrough() As String
@@ -461,19 +468,23 @@ Public Class Player
     End Sub
 
     Public Sub ShowMenu(menuData As MenuData) Implements IPlayer.ShowMenu
-        BeginInvoke(Sub()
-                        Dim menuForm As Menu
-                        menuForm = New Menu()
+        If m_walkthroughRunner IsNot Nothing Then
+            m_walkthroughRunner.ShowMenu(menuData)
+        Else
+            BeginInvoke(Sub()
+                            Dim menuForm As Menu
+                            menuForm = New Menu()
 
-                        menuForm.Caption = menuData.Caption
-                        menuForm.Options = menuData.Options
-                        menuForm.AllowCancel = menuData.AllowCancel
-                        menuForm.ShowDialog()
+                            menuForm.Caption = menuData.Caption
+                            menuForm.Options = menuData.Options
+                            menuForm.AllowCancel = menuData.AllowCancel
+                            menuForm.ShowDialog()
 
-                        Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetMenuResponseInNewThread))
-                        runnerThread.Start(menuForm.SelectedItem)
-                    End Sub
-        )
+                            Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetMenuResponseInNewThread))
+                            runnerThread.Start(menuForm.SelectedItem)
+                        End Sub
+            )
+        End If
     End Sub
 
     Private Sub SetMenuResponseInNewThread(response As Object)
@@ -798,5 +809,9 @@ Public Class Player
         tmrPause.Enabled = False
         m_pausing = False
         m_game.FinishPause()
+    End Sub
+
+    Private Sub m_walkthroughRunner_Output(text As String) Handles m_walkthroughRunner.Output
+        BeginInvoke(Sub() m_htmlHelper.PrintText("<output>" + text + "</output>"))
     End Sub
 End Class

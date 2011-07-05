@@ -188,6 +188,7 @@
     <Compile Include="PlayerHTML.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="WalkthroughRunner.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Compass.resx">

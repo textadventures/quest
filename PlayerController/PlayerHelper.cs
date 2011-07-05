@@ -61,6 +61,11 @@ namespace AxeSoftware.Quest
 
         void m_game_PrintText(string text)
         {
+            PrintText(text);
+        }
+
+        public void PrintText(string text)
+        {
             string currentTagValue = "";
             string currentVerbs = "";
             bool generatingLink = false;
