@@ -96,13 +96,30 @@
       }
     }
   </function>
-  
-  <command name="drop" pattern="[drop]">
+
+  <command name="drop">
+    <pattern type="string">[drop]</pattern>
+    <multiple>
+      return (ScopeInventory())
+    </multiple>
+    <script>
+      foreach (obj, object) {
+        DoDrop(obj, multiple)
+      }
+    </script>
+  </command>
+
+  <function name="DoDrop" parameters="object, ismultiple">
+    prefix = ""
+    if (ismultiple) {
+      prefix = GetDisplayAlias(object) + ": "
+    }
+
     if (not ListContains(ScopeInventory(), object)) {
-      msg (DynamicTemplate("NotCarrying", object))
+      msg (prefix + DynamicTemplate("NotCarrying", object))
     }
     else if (not ListContains(ScopeReachable(), object)) {
-      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+      msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
     }
     else {
       found = true
@@ -110,6 +127,9 @@
       
       switch (TypeOf(object, "drop")) {
         case ("script") {
+          if (ismultiple) {
+            msg (prefix)
+          }
           do (object, "drop")
           dropmsg = ""
         }
@@ -136,10 +156,10 @@
       if (not found and dropmsg = null) dropmsg = DynamicTemplate("DropUnsuccessful", object)
       
       if (LengthOf(dropmsg) > 0) {
-        msg (dropmsg)
+        msg (prefix + dropmsg)
       }
     }
-  </command>
+  </function>
   
   <command name="use" pattern="[use]">
     if (HasScript(object, "use")) {
