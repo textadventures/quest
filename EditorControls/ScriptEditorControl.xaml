@@ -17,7 +17,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <this:ScriptToolbar x:Name="ctlToolbar" IsTabStop="False"/>
-            <ListBox Name="lstScripts" Grid.Row="1" SelectionMode="Extended" SelectionChanged="lstScripts_SelectionChanged" AlternationCount="2">
+            <ListBox Name="lstScripts" Grid.Row="1" SelectionMode="Extended" SelectionChanged="lstScripts_SelectionChanged" AlternationCount="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.Resources>
                     <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" StartPoint="0,0" EndPoint="0,0.5" SpreadMethod="Reflect">
                         <GradientStop Color="#DFE7F2" Offset="0" />

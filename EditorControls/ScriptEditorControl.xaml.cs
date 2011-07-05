@@ -313,7 +313,7 @@ namespace AxeSoftware.Quest.EditorControls
                     controlType = "scriptexpander";
                     isFullWidthControl = true;
                 }
-                if (ctl.ControlType == "scriptdictionary" || ctl.ControlType == "list")
+                if (ctl.ControlType == "scriptdictionary" || ctl.ControlType == "list" || ctl.Expand)
                 {
                     isFullWidthControl = true;
                 }
