@@ -127,6 +127,16 @@
   </function>
 
   <function name="HandleCommand" parameters="command">
+    commands = Split(command, ".")
+    foreach (command, commands) {
+      command = Trim(command)
+      if (LengthOf(command) > 0) {
+        HandleSingleCommand (command)
+      }
+    }
+  </function>
+
+  <function name="HandleSingleCommand" parameters="command">
     candidates = NewObjectList()
     foreach (cmd, ScopeCommands()) {
       if (IsRegexMatch(cmd.pattern, command)) {
