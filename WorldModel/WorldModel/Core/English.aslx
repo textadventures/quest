@@ -26,7 +26,7 @@
   <template name="Use">Use</template>
   <template name="Drop">Drop</template>
   <template name="GoTo">Go to</template>
-  <dynamictemplate name="ObjectNotOpen">WriteVerb(object, "be") + " not open."</dynamictemplate>
+  <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " " + Conjugate(object, "be") + " not open."</dynamictemplate>
   <template name="NeutralGender">it</template>
   <template name="MaleGender">he</template>
   <template name="FemaleGender">she</template>

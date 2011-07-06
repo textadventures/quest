@@ -40,7 +40,9 @@
   </game>
 
   <object name="house">
-    <start/>
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
     <exit name="south" to="forest"/>
   </object>
 

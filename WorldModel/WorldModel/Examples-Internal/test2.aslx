@@ -42,8 +42,10 @@
       request (Foreground, "black")
       request (LinkForeground, "blue")
     </command>
-    
-    <start/>
+
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
 
     <object name="table">
       <inherit name="surface"/>

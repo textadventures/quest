@@ -268,7 +268,11 @@
   </game>
 
   <object name="lounge">
-    <start/>
+
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+    
     <prefix>the</prefix>
     <object name="sofa">
       <prefix>a</prefix>

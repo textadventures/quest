@@ -241,8 +241,6 @@
     <None Include="Core\Templates\Nederlands.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Examples-Internal\forest.aslx" />
-    <None Include="Examples-Internal\media.aslx" />
     <None Include="Examples-Public\template.aslx" />
     <None Include="Examples-Internal\test.aslx">
       <SubType>Designer</SubType>
@@ -334,7 +332,6 @@
     <Content Include="Core\Frame.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Examples-Internal\Media.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

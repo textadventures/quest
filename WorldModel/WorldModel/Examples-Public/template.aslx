@@ -3,7 +3,9 @@
   <include ref="Core.aslx"/>
 
   <object name="room">
-    <start/>
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
   </object>
 
 </asl>

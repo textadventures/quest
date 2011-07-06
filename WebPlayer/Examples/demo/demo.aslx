@@ -6,7 +6,7 @@
   <javascript src="YouTube.js"/>
 
   <game name="Standard WebPlayer Features">
-    <defaultfontsize>12</defaultfontsize>
+    <defaultfontsize type="int">12</defaultfontsize>
     <start type="script">
       guide.parent = player
     </start>
@@ -22,7 +22,9 @@
   </object>
 
   <object name="beginning">
-    <start/>
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
     <prefix>The</prefix>
     
     <!-- maybe no links here in this room, not until we get to the "next gen" stuff in the next room... -->
@@ -31,7 +33,7 @@
       <![CDATA[
       msg ("Hello. Here you can see the standard WebPlayer interface, featuring &quot;panes&quot; to the right and a command entry box at the bottom.<br/>")
       msg ("This is the way pretty much all existing Quest games appear for the web (though the panes can be turned off).<br/>")
-      msg ("For games written for Quest 5.0 and later, it gets more exciting. The first new feature is hyperlinks - you can go <exit>east</exit> to find out more.<br/>")
+      msg ("For games written for Quest 5.0 and later, it gets more exciting. The first new feature is hyperlinks - you can go <object verbs=\"go\">east</object> to find out more.<br/>")
       ]]>
     </description>
     <exit alias="east" to="cinema"/>

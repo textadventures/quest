@@ -54,8 +54,10 @@
   ]]></function>
 
   <object name="ward">
-    <start/>
-    
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+
     <prefix>a</prefix>
 
     <description>I am lying on a bed, alone in a room with white walls. A bright fluorescent light hangs loosely on the ceiling. To my left is a mirror.</description>

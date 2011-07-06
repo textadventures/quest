@@ -12,7 +12,9 @@
 
   <object name="lounge">
 
-    <start/>
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
 
     <object name="table">
       <inherit name="surface"/>
