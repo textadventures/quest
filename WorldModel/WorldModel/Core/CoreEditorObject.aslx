@@ -386,6 +386,7 @@
         <caption>Full container message (leave blank for default)</caption>
         <attribute>containerfullmessage</attribute>
         <mustinherit>container_limited</mustinherit>
+        <nullable/>
       </control>
 
       <control>
