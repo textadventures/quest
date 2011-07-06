@@ -180,6 +180,8 @@ namespace AxeSoftware.Quest
             return result;
         }
 
+        private static Regex s_nonWordCharacterRegex = new Regex(@"^\W");
+
         private IScriptConstructor GetScriptConstructor(string line)
         {
             IScriptConstructor constructor = null;
@@ -188,10 +190,17 @@ namespace AxeSoftware.Quest
             {
                 if (line.StartsWith(c.Keyword))
                 {
-                    if (c.Keyword.Length > strength)
+                    // The line must start with the script keyword, and then the following
+                    // character must be a non-word character. For example "msgfunction" is not
+                    // a match for "msg".
+
+                    if (line.Length == c.Keyword.Length || s_nonWordCharacterRegex.IsMatch(line.Substring(c.Keyword.Length)))
                     {
-                        constructor = c;
-                        strength = c.Keyword.Length;
+                        if (c.Keyword.Length > strength)
+                        {
+                            constructor = c;
+                            strength = c.Keyword.Length;
+                        }
                     }
                 }
             }
