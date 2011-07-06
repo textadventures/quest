@@ -80,7 +80,7 @@ Public Class Main
     End Sub
 
     Private Sub ctlLauncher_Tutorial() Handles ctlLauncher.Tutorial
-        MsgBox("Sorry, the tutorial has not yet been created")
+        Tutorial()
     End Sub
 
     Private Sub Browse()
@@ -289,6 +289,10 @@ Public Class Main
 
     Private Sub Help()
         LaunchURL("http://quest5.net")
+    End Sub
+
+    Private Sub Tutorial()
+        LaunchURL("http://quest5.net/wiki/Tutorial")
     End Sub
 
     Private Sub LaunchURL(url As String)
