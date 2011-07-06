@@ -104,7 +104,12 @@
     <addscript type="AddScript">
       children = GetDirectChildren(this)
       if (listcount(children) >= this.maxobjects) {
-        msg (DynamicTemplate("ContainerFull", this))
+        if (HasString(this, "containerfullmessage")) {
+          msg (this.containerfullmessage)
+        }
+        else {
+          msg (DynamicTemplate("ContainerFull", this))
+        }
       }
       else {
         object.parent = this

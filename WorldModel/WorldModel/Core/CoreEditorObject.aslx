@@ -382,6 +382,13 @@
       </control>
 
       <control>
+        <controltype>textbox</controltype>
+        <caption>Full container message (leave blank for default)</caption>
+        <attribute>containerfullmessage</attribute>
+        <mustinherit>container_limited</mustinherit>
+      </control>
+
+      <control>
         <controltype>title</controltype>
         <caption>Locking</caption>
       </control>
