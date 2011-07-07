@@ -19,6 +19,10 @@ function beginUsingTextFrame() {
     window.scrollToEnd = function () {
         textFrame.scrollTop(textFrame.attr("scrollHeight"));
     }
+
+    window.clearScreen = function () {
+        textFrame.html("");
+    }
 }
 
 function setFrameHeight() {
