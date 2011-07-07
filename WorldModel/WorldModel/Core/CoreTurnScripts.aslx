@@ -1,7 +1,7 @@
 ﻿<library>
   <function name="RunTurnScripts">
     foreach (turnscript, AllTurnScripts()) {
-      if (turnscript.enabled) {
+      if (GetBoolean(turnscript, "enabled")) {
         inscope = false
         if (turnscript.parent = game or turnscript.parent = null) {
           inscope = true
