@@ -57,4 +57,12 @@
     ]]>
   </function>
 
+  <function name="SetObjectFlagOn" parameters="object, flag">
+    set (object, flag, true)
+  </function>
+
+  <function name="SetObjectFlagOff" parameters="object, flag">
+    set (object, flag, false)
+  </function>
+
 </library>

@@ -702,6 +702,58 @@
   <!-- Variables -->
 
   <editor>
+    <appliesto>(function)SetObjectFlagOn</appliesto>
+    <display>Turn on #0 flag #1</display>
+    <category>Variables</category>
+    <add>Turn on object flag</add>
+    <create>SetObjectFlagOn (,"")</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Turn on flag</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>flag name</simple>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetObjectFlagOff</appliesto>
+    <display>Turn off #0 flag #1</display>
+    <category>Variables</category>
+    <add>Turn off object flag</add>
+    <create>SetObjectFlagOff (,"")</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Turn off flag</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>flag name</simple>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>=</appliesto>
     <display>Set #0 = #1</display>
     <category>Variables</category>

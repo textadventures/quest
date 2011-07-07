@@ -3,6 +3,26 @@
   <implied element="editor" property="pattern" type="simplepattern"/>
   
   <!-- Templates for "if" -->
+
+  <editor>
+    <pattern>GetBoolean(#object#, #flag#)</pattern>
+    <create>GetBoolean(, "")</create>
+    <description>object flag is on</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>flag name</simple>
+      <attribute>flag</attribute>
+    </control>
+  </editor>
   
   <editor>
     <pattern>Got(#object#)</pattern>

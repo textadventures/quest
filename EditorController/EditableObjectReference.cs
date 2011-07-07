@@ -40,7 +40,7 @@ namespace AxeSoftware.Quest
             }
             set
             {
-                m_object = m_controller.WorldModel.Elements.Get(value);
+                m_object = string.IsNullOrEmpty(value) ? null : m_controller.WorldModel.Elements.Get(value);
                 m_parent.Fields.Set(m_attribute, m_object);
             }
         }
