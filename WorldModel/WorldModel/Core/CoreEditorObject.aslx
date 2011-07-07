@@ -28,15 +28,31 @@
       </control>
 
       <control>
+        <mustnotinherit>editor_room</mustnotinherit>
+        <caption>Scenery (do not display in room description)</caption>
+        <controltype>checkbox</controltype>
+        <attribute>scenery</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Use default prefix and suffix</caption>
+        <attribute>usedefaultprefix</attribute>
+        <onlydisplayif>not this.scenery</onlydisplayif>
+      </control>
+
+      <control>
         <caption>Prefix</caption>
         <controltype>textbox</controltype>
         <attribute>prefix</attribute>
+        <onlydisplayif>not this.usedefaultprefix and not this.scenery</onlydisplayif>
       </control>
 
       <control>
         <caption>Suffix</caption>
         <controltype>textbox</controltype>
         <attribute>suffix</attribute>
+        <onlydisplayif>not this.usedefaultprefix and not this.scenery</onlydisplayif>
       </control>
 
       <control>
@@ -59,13 +75,6 @@
         <caption>Article</caption>
         <controltype>textbox</controltype>
         <attribute>article</attribute>
-      </control>
-
-      <control>
-        <mustnotinherit>editor_room</mustnotinherit>
-        <caption>Scenery (do not display automatically in room descriptions)</caption>
-        <controltype>checkbox</controltype>
-        <attribute>scenery</attribute>
       </control>
 
       <control>

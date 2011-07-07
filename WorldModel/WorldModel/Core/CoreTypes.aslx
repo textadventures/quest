@@ -33,6 +33,7 @@
     <scenery type="boolean">false</scenery>
     <hidechildren type="boolean">false</hidechildren>
     <listchildren type="boolean">false</listchildren>
+    <usedefaultprefix/>
   </type>
 
   <type name="defaultexit">

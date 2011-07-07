@@ -176,8 +176,13 @@
   <function name="GetDisplayNameLink" type="string" parameters="obj, type, verbs">
   <![CDATA[
     result = GetTaggedName(obj, type, verbs)
-    if (obj.prefix <> null) {
-      prefix = obj.prefix
+    if (not GetBoolean(obj, "usedefaultprefix")) {
+      if (obj.prefix = null) {
+        prefix = ""
+      }
+      else {
+        prefix = obj.prefix
+      }
     }
     else if (type = "exit") {
       prefix = ""
@@ -187,7 +192,7 @@
     }
     if (LengthOf(prefix)>0) prefix = prefix + " "
     result = prefix + result
-    if (HasString(obj, "suffix")) {
+    if (not GetBoolean(obj, "usedefaultprefix") and HasString(obj, "suffix")) {
       result = result + " " + obj.suffix
     }
     return (result)
