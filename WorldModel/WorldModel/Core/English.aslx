@@ -164,9 +164,15 @@
   <dynamictemplate name="DefaultTie">"You can't tie " + object.article + "."</dynamictemplate>
   <verbtemplate name="touch">touch</verbtemplate>
   <dynamictemplate name="DefaultTouch">"You can't touch " + object.article + "."</dynamictemplate>
-  <template templatetype="command" name="turnon"><![CDATA[^turn on (?<object>.*)$|^turn (?<object>.*) on$|^switch on (?<object>.*)$|^switch (?<object>.*) on$]]></template>
+  <verbtemplate name="turnon">turn on</verbtemplate>
+  <verbtemplate name="turnon">turn #object# on</verbtemplate>
+  <verbtemplate name="turnon">switch on</verbtemplate>
+  <verbtemplate name="turnon">switch #object# on</verbtemplate>
   <dynamictemplate name="DefaultTurnOn">"You can't turn " + object.article + " on."</dynamictemplate>
-  <template templatetype="command" name="turnoff"><![CDATA[^turn off (?<object>.*)$|^turn (?<object>.*) off$|^switch off (?<object>.*)$|^switch (?<object>.*) off$]]></template>
+  <verbtemplate name="turnoff">turn off</verbtemplate>
+  <verbtemplate name="turnoff">turn #object# off</verbtemplate>
+  <verbtemplate name="turnoff">switch off</verbtemplate>
+  <verbtemplate name="turnoff">switch #object# off</verbtemplate>
   <dynamictemplate name="DefaultTurnOff">"You can't turn " + object.article + " off."</dynamictemplate>
   <verbtemplate name="turn">turn</verbtemplate>
   <dynamictemplate name="DefaultTurn">"You can't turn " + object.article + "."</dynamictemplate>

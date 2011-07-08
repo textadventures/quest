@@ -89,7 +89,7 @@ namespace AxeSoftware.Quest
                 template.Fields[FieldDefinitions.Text] += "|";
             }
 
-            template.Fields[FieldDefinitions.Text] += "^" + text + " (?<object>.*)$";
+            template.Fields[FieldDefinitions.Text] += Utility.ConvertVerbSimplePattern(text);
             return template;
         }
 
@@ -133,3 +133,4 @@ namespace AxeSoftware.Quest
         }
     }
 }
+

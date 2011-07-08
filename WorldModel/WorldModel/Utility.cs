@@ -416,5 +416,35 @@ namespace AxeSoftware.Quest
 
             return result;
         }
+
+        public static string ConvertVerbSimplePattern(string pattern)
+        {
+            // For verbs, we replace "eat; consume; munch" with
+            // "^eat (?<object>.*)$|^consume (?<object>.*)$|^munch (?<object>.*)$"
+            
+            // Optionally the position of the object can be specified, for example
+            // "switch #object# on" would become "^switch (?<object>.*) on$"
+
+            string[] verbs = Utility.ListSplit(pattern);
+            string result = string.Empty;
+            foreach (string verb in verbs)
+            {
+                if (result.Length > 0) result += "|";
+                const string objectRegex = "(?<object>.*)";
+
+                string textToAdd;
+                if (verb.Contains("#object#"))
+                {
+                    textToAdd = "^" + verb.Replace("#object#", objectRegex) + "$";
+                }
+                else
+                {
+                    textToAdd = "^" + verb + " " + objectRegex + "$";
+                }
+                result += textToAdd;
+            }
+
+            return result;
+        }
     }
 }

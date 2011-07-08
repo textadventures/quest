@@ -224,18 +224,7 @@ namespace AxeSoftware.Quest
 
             private void LoadVerb(Element element, string attribute, string value)
             {
-                // For verbs, we replace "eat; consume; munch" with
-                // "^eat (?<object>.*)$|^consume (?<object>.*)$|^munch (?<object>.*)$"
-
-                string[] verbs = Utility.ListSplit(value);
-                string result = string.Empty;
-                foreach (string verb in verbs)
-                {
-                    if (result.Length > 0) result += "|";
-                    result += "^" + verb + " (?<object>.*)$";
-                }
-
-                element.Fields.Set(attribute, result);
+                element.Fields.Set(attribute, Utility.ConvertVerbSimplePattern(value));
             }
 
             public override bool SupportsMode(LoadMode mode)
