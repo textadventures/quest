@@ -4,6 +4,7 @@ var topFrame = null;
 function beginUsingTextFrame() {
     textFrame = $("#divText");
     topFrame = $("#divFrame");
+    clearFramePicture();
     setFrameHeight();
     disableMainScrollbar();
 
