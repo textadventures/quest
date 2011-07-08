@@ -127,12 +127,9 @@
   <dynamictemplate name="DefaultTie">"Je kan " + object.article + " niet knopen."</dynamictemplate>
   <verbtemplate name="touch">aanraken</verbtemplate>
   <dynamictemplate name="DefaultTouch">"Je kan " + object.article + " niet aanraken."</dynamictemplate>
-  <template templatetype="command" name="turnon"><![CDATA[^turn on (?<object>.*)$|^turn (?<object>.*) on$|^switch on (?<object>.*)$|^switch (?<object>.*) on$]]></template>
+  <verbtemplate name="turnon">turn on</verbtemplate>
   <dynamictemplate name="DefaultTurnOn">"Je kan " + object.article + " niet aanzetten."</dynamictemplate>
   <verbtemplate name="turnoff">zet uit</verbtemplate>
-  <verbtemplate name="turnoff">zet uit</verbtemplate>
-  <!-- TO DO: Fix -->
-  <!-- <template templatetype="command" name="turnoff"><![CDATA[^turn off (?<object>.*)$|^turn (?<object>.*) off$|^switch off (?<object>.*)$|^switch (?<object>.*) off$]]></template> -->
   <dynamictemplate name="DefaultTurnOff">"Je kan " + object.article + " niet uitzetten."</dynamictemplate>
   <verbtemplate name="turn">draai</verbtemplate>
   <dynamictemplate name="DefaultTurn">"Je kan " + object.article + " niet draaien."</dynamictemplate>
