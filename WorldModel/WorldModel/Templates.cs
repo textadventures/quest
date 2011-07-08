@@ -86,10 +86,10 @@ namespace AxeSoftware.Quest
             else
             {
                 template = m_templateLookup[c];
-                template.Fields[FieldDefinitions.Text] += "|";
+                template.Fields[FieldDefinitions.Text] += "; ";
             }
 
-            template.Fields[FieldDefinitions.Text] += Utility.ConvertVerbSimplePattern(text);
+            template.Fields[FieldDefinitions.Text] += text;
             return template;
         }
 

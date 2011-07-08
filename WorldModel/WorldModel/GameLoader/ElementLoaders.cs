@@ -162,7 +162,8 @@ namespace AxeSoftware.Quest
             private RequiredAttributes m_requiredAttributes = new RequiredAttributes(
                 new RequiredAttribute("name", true, true, false),
                 new RequiredAttribute("pattern", true, true, false),
-                new RequiredAttribute("unresolved", true, true, false));
+                new RequiredAttribute("unresolved", true, true, false),
+                new RequiredAttribute("template", false, true, false));
 
             public override string AppliesTo
             {
@@ -180,6 +181,7 @@ namespace AxeSoftware.Quest
 
                 string pattern = data["pattern"];
                 string name = data["name"];
+                string template = data["template"];
 
                 bool anonymous = false;
 
@@ -207,10 +209,20 @@ namespace AxeSoftware.Quest
                     newCommand.Fields[FieldDefinitions.Pattern] = pattern;
                 }
 
+                if (template != null)
+                {
+                    LoadTemplate(newCommand, template);
+                }
+
                 string unresolved = data["unresolved"];
                 if (!string.IsNullOrEmpty(unresolved)) newCommand.Fields[FieldDefinitions.Unresolved] = unresolved;
 
                 return newCommand;
+            }
+
+            protected virtual void LoadTemplate(Element newCommand, string template)
+            {
+                newCommand.Fields[FieldDefinitions.Pattern] = WorldModel.Template.GetText(template);
             }
 
             public override void SetText(string text, ref Element current)
@@ -268,6 +280,19 @@ namespace AxeSoftware.Quest
             {
                 string contents = GameLoader.GetTemplate(text);
                 current.Fields[FieldDefinitions.DefaultText] = contents;
+            }
+
+            protected override void LoadTemplate(Element newCommand, string template)
+            {
+                string pattern = WorldModel.Template.GetText(template);
+                if (WorldModel.EditMode)
+                {
+                    newCommand.Fields.Set(FieldDefinitions.Pattern.Property, new EditorCommandPattern(pattern));
+                }
+                else
+                {
+                    newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern);
+                }
             }
         }
 
