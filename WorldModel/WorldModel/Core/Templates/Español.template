@@ -1,8 +1,0 @@
-﻿<asl version="500">
-
-  <include ref="Español.aslx"/>
-  <include ref="Core.aslx"/>
-
-  <game name="$NAME$"/>
-
-</asl>
