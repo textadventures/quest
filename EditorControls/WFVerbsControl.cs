@@ -55,7 +55,20 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (selectedAttribute == null)
             {
-                selectedAttribute = selectedPattern.Replace(" ", "");
+                // selectedPattern may be like "look in", "grab; snatch". We need to get a valid
+                // attribute name from the pattern.
+
+                int semicolonPos = selectedPattern.IndexOf(';');
+                if (semicolonPos > -1)
+                {
+                    selectedAttribute = selectedPattern.Substring(0, semicolonPos);
+                }
+                else
+                {
+                    selectedAttribute = selectedPattern;
+                }
+
+                selectedAttribute = selectedAttribute.Replace(" ", "").Replace("#object#", "");
             }
 
             bool setSelection = true;
