@@ -55,6 +55,23 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (selectedAttribute == null)
             {
+                // we couldn't find a matching verb property name, so see if there is a matching verb
+                // pattern instead. For example, if the user typed "sit on" then we want to match
+                // the "sit" verb, as "sit on" is one of its patterns.
+
+                foreach (var verb in availableVerbs)
+                {
+                    List<string> patterns = new List<string>(verb.Value.Split(new[] { ";", "; " }, StringSplitOptions.None));
+                    if (patterns.Contains(selectedPattern))
+                    {
+                        selectedAttribute = verb.Key;
+                        break;
+                    }
+                }
+            }
+
+            if (selectedAttribute == null)
+            {
                 // selectedPattern may be like "look in", "grab; snatch". We need to get a valid
                 // attribute name from the pattern.
 
