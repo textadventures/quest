@@ -133,6 +133,7 @@ Public Class Main
     Private Sub LaunchEdit(filename As String)
         Dim game As AxeSoftware.Quest.IASL = Nothing
         Dim ext As String
+        Dim loadOK As Boolean = False
 
         Try
             ext = System.IO.Path.GetExtension(filename)
@@ -148,7 +149,7 @@ Public Class Main
                     Me.ResumeLayout()
                     'ctlPlayer.RestoreSplitterPositions()
                     Application.DoEvents()
-                    ctlEditor.Initialise(filename)
+                    loadOK = ctlEditor.Initialise(filename)
                     ctlEditor.Focus()
                 Case Else
                     MsgBox(String.Format("Unrecognised file type '{0}'", ext))
@@ -156,6 +157,10 @@ Public Class Main
 
         Catch ex As Exception
             MsgBox("Error launching game: " & ex.Message)
+        Finally
+            If Not loadOK Then
+                CloseEditor()
+            End If
         End Try
 
     End Sub
@@ -237,6 +242,10 @@ Public Class Main
     End Sub
 
     Private Sub ctlEditor_Close() Handles ctlEditor.Close
+        CloseEditor()
+    End Sub
+
+    Private Sub CloseEditor()
         ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
         ctlLauncher.RefreshLists()
         ctlEditor.Visible = False
