@@ -1,7 +1,6 @@
 ﻿<library>
 
-  <command name="lookat" pattern="[lookat]">
-    
+  <command name="lookat" template="lookat">
     if (GetBoolean(object, "hidechildren")) {
       object.hidechildren = false
     }
@@ -38,8 +37,7 @@
     ]]>
   </function>
 
-  <command name="take">
-    <pattern type="string">[take]</pattern>
+  <command name="take" template="take">
     <multiple>
       return (ScopeVisibleNotHeld() - player)
     </multiple>
@@ -102,8 +100,7 @@
     }
   </function>
 
-  <command name="drop">
-    <pattern type="string">[drop]</pattern>
+  <command name="drop" template="drop">
     <multiple>
       return (ScopeInventory())
     </multiple>
@@ -166,7 +163,7 @@
     }
   </function>
   
-  <command name="use" pattern="[use]">
+  <command name="use" template="use">
     if (HasScript(object, "use")) {
       do (object, "use")
     }
@@ -274,11 +271,11 @@
     msg (DynamicTemplate("CloseSuccessful", object))
   </function>
 
-  <command name="open" pattern="[open]">
+  <command name="open" template="open">
     TryOpenClose(true, object)
   </command>
 
-  <command name="close" pattern="[close]">
+  <command name="close" template="close">
     TryOpenClose(false, object)
   </command>
 

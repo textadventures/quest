@@ -220,9 +220,17 @@ namespace AxeSoftware.Quest
                 return newCommand;
             }
 
-            protected virtual void LoadTemplate(Element newCommand, string template)
+            private void LoadTemplate(Element newCommand, string template)
             {
-                newCommand.Fields[FieldDefinitions.Pattern] = WorldModel.Template.GetText(template);
+                string pattern = WorldModel.Template.GetText(template);
+                if (WorldModel.EditMode)
+                {
+                    newCommand.Fields.Set(FieldDefinitions.Pattern.Property, new EditorCommandPattern(pattern));
+                }
+                else
+                {
+                    newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern);
+                }
             }
 
             public override void SetText(string text, ref Element current)
@@ -280,19 +288,6 @@ namespace AxeSoftware.Quest
             {
                 string contents = GameLoader.GetTemplate(text);
                 current.Fields[FieldDefinitions.DefaultText] = contents;
-            }
-
-            protected override void LoadTemplate(Element newCommand, string template)
-            {
-                string pattern = WorldModel.Template.GetText(template);
-                if (WorldModel.EditMode)
-                {
-                    newCommand.Fields.Set(FieldDefinitions.Pattern.Property, new EditorCommandPattern(pattern));
-                }
-                else
-                {
-                    newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern);
-                }
             }
         }
 
