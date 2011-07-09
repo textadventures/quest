@@ -61,7 +61,7 @@ namespace AxeSoftware.Quest.EditorControls
 
                 foreach (var verb in availableVerbs)
                 {
-                    List<string> patterns = new List<string>(verb.Value.Split(new[] { ";", "; " }, StringSplitOptions.None));
+                    List<string> patterns = new List<string>(verb.Value.Split(';').Select(p => p.Trim()));
                     if (patterns.Contains(selectedPattern))
                     {
                         selectedAttribute = verb.Key;
