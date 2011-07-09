@@ -446,5 +446,18 @@ namespace AxeSoftware.Quest
 
             return result;
         }
+
+        // Valid attribute names:
+        //  - must not start with a number
+        //  - must not contain keywords "and", "or" etc.
+        //  - can contain spaces, but not at the beginning or end
+        private static Regex s_validAttributeName = new Regex(@"^[A-Za-z][\w ]*\w$");
+
+        public static bool IsValidAttributeName(string name)
+        {
+            if (!s_validAttributeName.IsMatch(name)) return false;
+            if (name.Split(' ').Any(w => s_keywords.Contains(w))) return false;
+            return true;
+        }
     }
 }

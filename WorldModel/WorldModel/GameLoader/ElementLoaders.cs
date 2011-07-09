@@ -391,6 +391,10 @@ namespace AxeSoftware.Quest
             public override object Load(XmlReader reader, ref Element current)
             {
                 string attribute = reader.Name;
+                if (attribute == "attr")
+                {
+                    attribute = reader.GetAttribute("name");
+                }
                 string type = reader.GetAttribute("type");
 
                 WorldModel.AddAttributeName(attribute);

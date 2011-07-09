@@ -74,7 +74,19 @@ namespace AxeSoftware.Quest
 
             protected void WriteAttribute(GameXmlWriter writer, Element element, string attribute, string type, string value)
             {
-                writer.WriteStartElement(attribute);
+                if (attribute.Contains(" "))
+                {
+                    // For attribute names with spaces, we output
+                    //      <attr name="my attribute" ... />
+                    writer.WriteStartElement("attr");
+                    writer.WriteAttributeString("name", attribute);
+                }
+                else
+                {
+                    // For attribute names without spaces, we output
+                    //      <myattribute ... />
+                    writer.WriteStartElement(attribute);
+                }
                 if (!GameSaver.IsImpliedType(element, attribute, type) || value.Length == 0)
                 {
                     writer.WriteAttributeString("type", type);
@@ -118,7 +130,14 @@ namespace AxeSoftware.Quest
                 bool boolVal = (bool)value;
                 if (boolVal)
                 {
-                    writer.WriteElementString(attribute, null);
+                    if (attribute.Contains(" "))
+                    {
+                        base.WriteAttribute(writer, element, attribute, "boolean", "true");
+                    }
+                    else
+                    {
+                        writer.WriteElementString(attribute, null);
+                    }
                 }
                 else
                 {

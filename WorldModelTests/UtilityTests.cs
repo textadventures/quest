@@ -92,5 +92,22 @@ namespace WorldModelTests
             Assert.AreEqual("my___SPACE___variable or other___SPACE___variable", Utility.ConvertVariablesToFleeFormat("my variable or other variable"));
             Assert.AreEqual("(not SomeFunction(\"hello there\"))", Utility.ConvertVariablesToFleeFormat("(not SomeFunction(\"hello there\"))"));
         }
+
+        [TestMethod]
+        public void TestIsValidAttributeName_ValidAttributes()
+        {
+            Assert.IsTrue(Utility.IsValidAttributeName("attribute"));
+            Assert.IsTrue(Utility.IsValidAttributeName("attribute name"));
+            Assert.IsTrue(Utility.IsValidAttributeName("attribute name2"));
+        }
+
+        [TestMethod]
+        public void TestIsValidAttributeName_InvalidAttributes()
+        {
+            Assert.IsFalse(Utility.IsValidAttributeName("attribute "));
+            Assert.IsFalse(Utility.IsValidAttributeName("1attribute"));
+            Assert.IsFalse(Utility.IsValidAttributeName("attri.bute"));
+            Assert.IsFalse(Utility.IsValidAttributeName("this and that"));
+        }
     }
 }

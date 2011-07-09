@@ -97,7 +97,7 @@ namespace AxeSoftware.Quest
                 }
             }
 
-            if (attribute.Contains(" "))
+            if (!Utility.IsValidAttributeName(attribute))
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidAttributeName };
             }
