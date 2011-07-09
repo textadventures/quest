@@ -810,7 +810,15 @@ namespace AxeSoftware.Quest
         {
             get
             {
-                if (m_oldValueElementName != null) return m_worldModel.Elements.Get(m_oldValueElementName);
+                if (m_oldValueElementName != null)
+                {
+                    if (m_worldModel.Elements.ContainsKey(m_oldValueElementName))
+                    {
+                        return m_worldModel.Elements.Get(m_oldValueElementName);
+                    }
+                    // element may have been deleted
+                    return null;
+                }
                 return m_oldValue;
             }
         }
