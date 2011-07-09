@@ -705,7 +705,7 @@ namespace AxeSoftware.Quest.EditorControls
             lstTemplate.Text = m_helper.Controller.GetExpressionEditorDefinitionName(expression, ExpressionTypeTemplateFilter);
             m_updatingList = false;
 
-            m_templateEditor.Initialise(definition, expression);
+            m_templateEditor.Initialise(definition, expression, m_data);
         }
 
         void m_templateEditor_Dirty(string newValue)

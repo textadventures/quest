@@ -1541,9 +1541,9 @@ namespace AxeSoftware.Quest
             return orderedCandidates.First();
         }
 
-        public IEditorData GetExpressionEditorData(string expression, string expressionType)
+        public IEditorData GetExpressionEditorData(string expression, string expressionType, IEditorData parentData)
         {
-            return new ExpressionTemplateEditorData(expression, GetExpressionEditorDefinitionInternal(expression, expressionType));
+            return new ExpressionTemplateEditorData(expression, GetExpressionEditorDefinitionInternal(expression, expressionType), parentData);
         }
 
         public string GetNewExpression(string templateName)

@@ -9,10 +9,11 @@ namespace AxeSoftware.Quest
     {
         private IDictionary<string, string> m_parameters;
         private string m_originalPattern;
+        private IEditorData m_parentData;
 
         public event EventHandler Changed;
 
-        public ExpressionTemplateEditorData(string expression, EditorDefinition definition)
+        public ExpressionTemplateEditorData(string expression, EditorDefinition definition, IEditorData parentData)
         {
             // We get passed in an expression like "Got(myobject)"
             // The definition has pattern like "Got(#object#)" (as a regex)
@@ -21,6 +22,7 @@ namespace AxeSoftware.Quest
 
             m_parameters = Utility.Populate(definition.Pattern, expression);
             m_originalPattern = definition.OriginalPattern;
+            m_parentData = parentData;
         }
 
         public string SaveExpression(string changedAttribute, string changedValue)
@@ -80,7 +82,7 @@ namespace AxeSoftware.Quest
 
         public IEnumerable<string> GetVariablesInScope()
         {
-            throw new NotImplementedException();
+            return m_parentData.GetVariablesInScope();
         }
 
         public bool IsDirectlySaveable { get { return false; } }

@@ -33,7 +33,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public EditorController Controller { get; set; }
 
-        public void Initialise(IEditorDefinition definition, string expression)
+        public void Initialise(IEditorDefinition definition, string expression, IEditorData parentData)
         {
             foreach (IElementEditorControl ctl in m_controls)
             {
@@ -48,7 +48,7 @@ namespace AxeSoftware.Quest.EditorControls
                 m_data.Changed -= m_data_Changed;
             }
 
-            m_data = Controller.GetExpressionEditorData(expression, ExpressionTypeTemplateFilter);
+            m_data = Controller.GetExpressionEditorData(expression, ExpressionTypeTemplateFilter, parentData);
             m_data.Changed += m_data_Changed;
 
             foreach (IEditorControl ctl in definition.Controls)
