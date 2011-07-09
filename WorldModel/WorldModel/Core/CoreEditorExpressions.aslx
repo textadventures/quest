@@ -99,7 +99,7 @@
 
   <editor>
     <pattern>#object#.#property# = #value#</pattern>
-    <create> . = </create>
+    <create>. = </create>
     <description>object property</description>
     <expressiontype>if</expressiontype>
 
