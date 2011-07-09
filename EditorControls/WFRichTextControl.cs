@@ -244,28 +244,25 @@ namespace AxeSoftware.Quest.EditorControls
                     }
                     else
                     {
-                        if (!s_htmlToXml.ContainsKey(thisTag))
+                        if (s_htmlToXml.ContainsKey(thisTag))
                         {
-                            // TO DO: We will want to just ignore unrecognised tags as you could paste any HTML into the box
-                            throw new Exception(string.Format("Unrecognised HTML tag: ", thisTag));
-                        }
-
-                        if (thisTag == "br")
-                        {
-                            result += "<br/>";
-                        }
-                        else
-                        {
-                            result += "<";
-
-                            if (endTag)
+                            if (thisTag == "br")
                             {
-                                result += "/";
+                                result += "<br/>";
                             }
+                            else
+                            {
+                                result += "<";
 
-                            result += s_htmlToXml[thisTag];
+                                if (endTag)
+                                {
+                                    result += "/";
+                                }
 
-                            result += ">";
+                                result += s_htmlToXml[thisTag];
+
+                                result += ">";
+                            }
                         }
                     }
 
