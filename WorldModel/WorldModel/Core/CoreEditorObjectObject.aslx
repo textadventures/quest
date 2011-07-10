@@ -1,0 +1,31 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Object</caption>
+    <mustnotinherit>editor_room</mustnotinherit>
+
+    <control>
+      <caption>Other names</caption>
+      <controltype>list</controltype>
+      <attribute>alt</attribute>
+      <editprompt>Please enter an additional name for this object</editprompt>
+    </control>
+
+    <control>
+      <caption>Display verbs</caption>
+      <controltype>list</controltype>
+      <attribute>displayverbs</attribute>
+      <editprompt>Please enter a verb</editprompt>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+    </control>
+
+    <control>
+      <caption>Inventory verbs</caption>
+      <controltype>list</controltype>
+      <attribute>inventoryverbs</attribute>
+      <editprompt>Please enter a verb</editprompt>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+    </control>
+
+  </tab>
+</library>

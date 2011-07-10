@@ -1,0 +1,36 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Room</caption>
+    <mustnotinherit>editor_object; defaultplayer</mustnotinherit>
+
+    <control>
+      <caption>Room picture</caption>
+      <controltype>file</controltype>
+      <attribute>picture</attribute>
+      <source>[EditorImageFormats]</source>
+      <filefiltername>Picture Files</filefiltername>
+      <onlydisplayif>game.useframe</onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description prefix</caption>
+      <attribute>descprefix</attribute>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <caption>Description</caption>
+      <attribute>description</attribute>
+      <types>
+        string=Text; script=Run script
+      </types>
+      <editors>
+        string=richtext
+      </editors>
+      <expand/>
+    </control>
+
+  </tab>
+</library>

@@ -1,0 +1,105 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Setup</caption>
+
+    <control>
+      <caption>Type</caption>
+      <controltype>dropdowntypes</controltype>
+      <types>editor_room=Room; editor_object=Object; *=Object and/or room</types>
+      <width>150</width>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+    </control>
+
+    <control>
+      <caption>Name</caption>
+      <controltype>textbox</controltype>
+      <attribute>name</attribute>
+    </control>
+
+    <control>
+      <caption>Alias</caption>
+      <controltype>textbox</controltype>
+      <attribute>alias</attribute>
+    </control>
+
+    <control>
+      <mustnotinherit>editor_room</mustnotinherit>
+      <caption>Scenery (do not display in room description)</caption>
+      <controltype>checkbox</controltype>
+      <attribute>scenery</attribute>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Use default prefix and suffix</caption>
+      <attribute>usedefaultprefix</attribute>
+      <onlydisplayif>not this.scenery</onlydisplayif>
+    </control>
+
+    <control>
+      <caption>Prefix</caption>
+      <controltype>textbox</controltype>
+      <attribute>prefix</attribute>
+      <onlydisplayif>not this.usedefaultprefix and not this.scenery</onlydisplayif>
+    </control>
+
+    <control>
+      <caption>Suffix</caption>
+      <controltype>textbox</controltype>
+      <attribute>suffix</attribute>
+      <onlydisplayif>not this.usedefaultprefix and not this.scenery</onlydisplayif>
+    </control>
+
+    <control>
+      <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+      <controltype>dropdowntypes</controltype>
+      <caption>Type</caption>
+      <types>*=Inanimate object; male=Male character; female=Female character; plural=Inanimate objects (plural); maleplural=Male characters (plural); femaleplural=Female characters (plural)</types>
+      <width>150</width>
+    </control>
+
+    <control>
+      <mustnotinherit>editor_room</mustnotinherit>
+      <caption>Gender</caption>
+      <controltype>textbox</controltype>
+      <attribute>gender</attribute>
+    </control>
+
+    <control>
+      <mustnotinherit>editor_room</mustnotinherit>
+      <caption>Article</caption>
+      <controltype>textbox</controltype>
+      <attribute>article</attribute>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Description</caption>
+      <mustnotinherit>editor_room</mustnotinherit>
+    </control>
+
+    <control>
+      <mustnotinherit>editor_room</mustnotinherit>
+      <caption>Room object description</caption>
+      <controltype>textbox</controltype>
+      <attribute>description</attribute>
+      <onlydisplayif>game.appendobjectdescription</onlydisplayif>
+    </control>
+
+    <control>
+      <mustnotinherit>editor_room</mustnotinherit>
+      <selfcaption>"Look at" object description</selfcaption>
+      <controltype>multi</controltype>
+      <attribute>look</attribute>
+      <types>
+        null=No description; string=Text; script=Run script
+      </types>
+      <editors>
+        string=richtext
+      </editors>
+      <expand/>
+    </control>
+  </tab>
+
+</library>

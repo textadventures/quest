@@ -1,0 +1,11 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Verbs</caption>
+    <mustnotinherit>editor_room</mustnotinherit>
+    <control>
+      <controltype>verbs</controltype>
+      <expand/>
+    </control>
+  </tab>
+</library>

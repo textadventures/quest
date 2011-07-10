@@ -1,0 +1,89 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Inventory</caption>
+    <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Take</caption>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <caption>Take</caption>
+      <attribute>take</attribute>
+      <types>
+        boolean=Default behaviour; script=Run script
+      </types>
+      <checkbox>Object can be taken</checkbox>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Take message (leave blank for default)</caption>
+      <attribute>takemsg</attribute>
+      <nullable/>
+
+      <!-- show only if take type is boolean -->
+      <relatedattribute>take</relatedattribute>
+      <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Drop</caption>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <caption>Drop</caption>
+      <attribute>drop</attribute>
+      <types>
+        boolean=Default behaviour; script=Run script
+      </types>
+      <checkbox>Object can be dropped</checkbox>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Drop message (leave blank for default)</caption>
+      <attribute>dropmsg</attribute>
+      <nullable/>
+
+      <!-- show only if drop type is boolean -->
+      <relatedattribute>drop</relatedattribute>
+      <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Give</caption>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <caption>Give</caption>
+      <attribute>give</attribute>
+      <types>
+        null=Cannot be given objects;scriptdictionary=Handle objects individually;string=Print a message
+      </types>
+      <keyprompt>Please enter the object name</keyprompt>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Use</caption>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <caption>Use</caption>
+      <attribute>useon</attribute>
+      <types>
+        null=Objects cannot be used;scriptdictionary=Handle objects individually;string=Print a message
+      </types>
+      <keyprompt>Please enter the object name</keyprompt>
+    </control>
+  </tab>
+</library>

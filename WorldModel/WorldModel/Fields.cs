@@ -693,7 +693,7 @@ namespace AxeSoftware.Quest
             }
             foreach (string property in m_objectFields.Keys)
             {
-                m_fields.Set(property, m_worldModel.Object(m_objectFields[property]));
+                m_fields.Set(property, m_worldModel.Elements.Get(m_objectFields[property]));
             }
             foreach (string property in m_scripts.Keys)
             {

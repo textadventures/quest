@@ -1,0 +1,25 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Scripts</caption>
+    <mustnotinherit>editor_object; defaultplayer</mustnotinherit>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>After entering the room</caption>
+      <attribute>enter</attribute>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Before entering the room for the first time</caption>
+      <attribute>beforefirstenter</attribute>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>After entering the room for the first time</caption>
+      <attribute>firstenter</attribute>
+    </control>
+  </tab>
+</library>
