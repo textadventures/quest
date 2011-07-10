@@ -65,4 +65,8 @@
     set (object, flag, false)
   </function>
 
+  <function name="IsSwitchedOn" parameters="object" type="boolean">
+    return (GetBoolean(object, "switchedon"))
+  </function>
+
 </library>

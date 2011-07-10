@@ -7,7 +7,7 @@
   <editor>
     <pattern>GetBoolean(#object#, #flag#)</pattern>
     <create>GetBoolean(, "")</create>
-    <description>object flag is on</description>
+    <description>object has flag</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -23,11 +23,75 @@
       <attribute>flag</attribute>
     </control>
   </editor>
-  
+
+  <editor>
+    <pattern>not GetBoolean(#object#, #flag#)</pattern>
+    <create>not GetBoolean(, "")</create>
+    <description>object does not have flag</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>flag name</simple>
+      <attribute>flag</attribute>
+    </control>
+  </editor>
+
+
   <editor>
     <pattern>Got(#object#)</pattern>
     <create>Got()</create>
-    <description>the player is carrying an object</description>
+    <description>player is carrying object</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>not Got(#object#)</pattern>
+    <create>not Got()</create>
+    <description>player is not carrying object</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+
+  <editor>
+    <pattern>IsSwitchedOn(#object#)</pattern>
+    <create>IsSwitchedOn()</create>
+    <description>object is switched on</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>not IsSwitchedOn(#object#)</pattern>
+    <create>not IsSwitchedOn()</create>
+    <description>object is switched off</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -41,7 +105,7 @@
   <editor>
     <pattern>ListContains(ScopeVisible(), #object#)</pattern>
     <create>ListContains(ScopeVisible(), )</create>
-    <description>an object is visible</description>
+    <description>object is visible</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -51,11 +115,11 @@
       <attribute>object</attribute>
     </control>
   </editor>
-
+  
   <editor>
     <pattern>ListContains(ScopeReachable(), #object#)</pattern>
     <create>ListContains(ScopeReachable(), )</create>
-    <description>an object is reachable</description>
+    <description>object is reachable</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -69,7 +133,7 @@
   <editor>
     <pattern>Contains (#object1#,#object2#)</pattern>
     <create>Contains (,)</create>
-    <description>an object contains a specific object</description>
+    <description>object contains</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -140,7 +204,7 @@
   <editor>
     <pattern>Ask(#question#)</pattern>
     <create>Ask("")</create>
-    <description>the player answers "Yes" to</description>
+    <description>player answers "Yes" to</description>
     <expressiontype>if</expressiontype>
 
     <control>

@@ -724,14 +724,14 @@
 
   <editor>
     <appliesto>(function)SetObjectFlagOn</appliesto>
-    <display>Turn on #0 flag #1</display>
+    <display>Set #0 flag #1</display>
     <category>Variables</category>
-    <add>Turn on object flag</add>
+    <add>Set object flag</add>
     <create>SetObjectFlagOn (,"")</create>
 
     <control>
       <controltype>label</controltype>
-      <caption>Turn on flag</caption>
+      <caption>Set flag</caption>
     </control>
 
     <control>
@@ -750,14 +750,14 @@
 
   <editor>
     <appliesto>(function)SetObjectFlagOff</appliesto>
-    <display>Turn off #0 flag #1</display>
+    <display>Unset #0 flag #1</display>
     <category>Variables</category>
-    <add>Turn off object flag</add>
+    <add>Unset object flag</add>
     <create>SetObjectFlagOff (,"")</create>
 
     <control>
       <controltype>label</controltype>
-      <caption>Turn off flag</caption>
+      <caption>Unset flag</caption>
     </control>
 
     <control>
