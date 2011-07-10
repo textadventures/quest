@@ -116,6 +116,8 @@ namespace AxeSoftware.Quest.EditorControls
             m_nodes.Add(newKey, node);
             node.Name = newKey;
             node.Text = newKey;
+
+            if (oldKey == m_selection) m_selection = newKey;
         }
 
         public void RetitleNode(string key, string title)

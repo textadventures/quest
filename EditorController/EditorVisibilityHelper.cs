@@ -52,7 +52,15 @@ namespace AxeSoftware.Quest
                 // evaluate <onlydisplayif> expression, with "this" as the current element
                 Scripts.Context context = new Scripts.Context();
                 context.Parameters = new Scripts.Parameters("this", m_worldModel.Elements.Get(data.Name));
-                bool result = m_visibilityExpression.Execute(context);
+                bool result = false;
+                try
+                {
+                    result = m_visibilityExpression.Execute(context);
+                }
+                catch
+                {
+                    // ignore any exceptions which may occur, for example if the element is being deleted
+                }
                 if (!result) return false;
             }
 

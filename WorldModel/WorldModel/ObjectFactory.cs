@@ -68,6 +68,11 @@ namespace AxeSoftware.Quest
             newElement.Name = name;
             newElement.ElemType = CreateElementType;
 
+            if (elementToClone != null)
+            {
+                newElement.Type = elementToClone.Type;
+            }
+
             if (extraInitialisation != null)
             {
                 extraInitialisation.Invoke(newElement);
