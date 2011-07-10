@@ -21,6 +21,7 @@ namespace AxeSoftware.Quest.EditorControls
             cmdSearch.Click += cmdSearch_Click;
             ctlTreeView.AfterSelect += ctlTreeView_AfterSelect;
             ctlTreeView.DoubleClick += ctlTreeView_DoubleClick;
+            ctlTreeView.KeyUp += ctlTreeView_KeyUp;
             ctlTreeView.DragDrop += ctlTreeView_DragDrop;
             ctlTreeView.DragOver += ctlTreeView_DragOver;
             ctlTreeView.GotFocus += ctlTreeView_GotFocus;
@@ -311,6 +312,14 @@ namespace AxeSoftware.Quest.EditorControls
         private void ctlTreeView_DoubleClick(object sender, System.EventArgs e)
         {
             if (CommitSelection != null)
+            {
+                CommitSelection();
+            }
+        }
+
+        void ctlTreeView_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && CommitSelection != null)
             {
                 CommitSelection();
             }
