@@ -1,0 +1,58 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Options</caption>
+    <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Switch on/off</caption>
+    </control>
+    
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Switchable</caption>
+      <types>*=Cannot be switched on/off; switchable=Can be switched on/off</types>
+      <width>150</width>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <attribute>switchedon</attribute>
+      <caption>Switched on at the start of the game</caption>
+      <mustinherit>switchable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>switchonmsg</attribute>
+      <caption>Message to print when switching on (leave blank for default)</caption>
+      <nullable/>
+      <mustinherit>switchable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>switchoffmsg</attribute>
+      <caption>Message to print when switching off (leave blank for default)</caption>
+      <nullable/>
+      <mustinherit>switchable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>switchedondesc</attribute>
+      <caption>Extra object description when switched on</caption>
+      <nullable/>
+      <mustinherit>switchable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>switchedoffdesc</attribute>
+      <caption>Extra object description when switched off</caption>
+      <nullable/>
+      <mustinherit>switchable</mustinherit>
+    </control>
+  </tab>
+</library>

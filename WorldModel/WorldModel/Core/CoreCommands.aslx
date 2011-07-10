@@ -5,16 +5,31 @@
       object.hidechildren = false
     }
     
-    switch (TypeOf(object, "look")) {
-      case ("script") {
-        do (object, "look")
+    if (TypeOf(object, "look") = "script") {
+      do (object, "look")
+    }
+    else {
+      lookdesc = ""
+      if (HasString(object, "look")) {
+        lookdesc = object.look
       }
-      case ("string") {
-        msg (object.look)
+      
+      if (LengthOf(lookdesc) = 0) {
+        lookdesc = Template("DefaultObjectDescription")
       }
-      default {
-        msg (Template("DefaultObjectDescription"))
+      
+      if (GetBoolean(object, "switchedon")) {
+        if (HasString(object, "switchedondesc")) {
+          lookdesc = lookdesc + " " + object.switchedondesc
+        }
       }
+      else {
+        if (HasString(object, "switchedoffdesc")) {
+          lookdesc = lookdesc + " " + object.switchedoffdesc
+        }
+      }
+
+      msg (lookdesc)
     }
     
     ListObjectContents (object)

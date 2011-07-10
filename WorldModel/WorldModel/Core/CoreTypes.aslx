@@ -197,4 +197,36 @@
     <changedparent type="script">OnEnterRoom</changedparent>
   </type>
 
+  <type name="switchable">
+    <switchedon type="boolean">false</switchedon>
+    <turnon type="script">
+      if (this.switchedon) {
+        msg (DynamicTemplate("AlreadySwitchedOn", this))
+      }
+      else {
+        this.switchedon = true
+        if (HasString(this, "switchonmsg")) {
+          msg (this.switchonmsg)
+        }
+        else {
+          msg (DynamicTemplate("SwitchOn", this))
+        }
+      }
+    </turnon>
+    <turnoff type="script">
+      if (not this.switchedon) {
+        msg (DynamicTemplate("AlreadySwitchedOff", this))
+      }
+      else {
+        this.switchedon = false
+        if (HasString(this, "switchoffmsg")) {
+          msg (this.switchoffmsg)
+        }
+        else {
+          msg (DynamicTemplate("SwitchOff", this))
+        }
+      }
+    </turnoff>
+  </type>
+
 </library>

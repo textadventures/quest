@@ -69,6 +69,10 @@
   <dynamictemplate name="AlreadyLocked">WriteVerb(object, "be") + " already locked."</dynamictemplate>
   <dynamictemplate name="AlreadyUnlocked">WriteVerb(object, "be") + " already unlocked."</dynamictemplate>
   <dynamictemplate name="CannotLockOpen">"You cannot lock " + object.article + " when " + object.gender + " " + Conjugate(object, "be") + " open."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOn">WriteVerb(object, "be") + " already switched on."</dynamictemplate>"
+  <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "be") + " already switched off."</dynamictemplate>"
+  <dynamictemplate name="SwitchOn">"You switch " + object.article + " on."</dynamictemplate>
+  <dynamictemplate name="SwitchOff">"You switch " + object.article + " off."</dynamictemplate>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>

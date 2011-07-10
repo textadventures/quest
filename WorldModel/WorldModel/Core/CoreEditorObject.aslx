@@ -11,6 +11,7 @@
   <include ref="CoreEditorObjectInventory.aslx"/>
   <include ref="CoreEditorObjectVerbs.aslx"/>
   <include ref="CoreEditorObjectContainer.aslx"/>
+  <include ref="CoreEditorObjectOptions.aslx"/>
   <include ref="CoreEditorObjectAskTell.aslx"/>
   <include ref="CoreEditorObjectAttributes.aslx"/>
   <include ref="CoreEditorObjectChildren.aslx"/>

@@ -200,6 +200,9 @@
     <None Include="Core\CoreEditorObjectObject.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Core\CoreEditorObjectOptions.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\CoreEditorObjectRoom.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
