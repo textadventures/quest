@@ -12,11 +12,6 @@ function beginUsingTextFrame() {
         setFrameHeight();
     });
 
-    window.addText = function (text) {
-        textFrame.append(text);
-        scrollToEnd();
-    }
-
     window.scrollToEnd = function () {
         textFrame.scrollTop(textFrame.attr("scrollHeight"));
     }
@@ -24,6 +19,19 @@ function beginUsingTextFrame() {
     window.clearScreen = function () {
         textFrame.html("");
     }
+
+    window.createNewDiv = function (alignment) {
+        _divCount++;
+        textFrame.append(
+            $("<div/>", {
+                id: "divOutputAlign" + _divCount,
+                style: "text-align: " + alignment
+            })
+        );
+        _currentDiv = $("#divOutputAlign" + _divCount);
+    }
+
+    createNewDiv("left");
 }
 
 function setFrameHeight() {
