@@ -33,4 +33,10 @@
     request (FontSize, ToString(size))
   </function>
 
+  <function name="PrintCentered" parameters="text">
+    <![CDATA[
+    msg ("<align align=\"center\">" + text + "</align>")
+    ]]>
+  </function>
+
 </library>

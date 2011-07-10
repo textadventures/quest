@@ -10,6 +10,7 @@ Public Class PlayerHTML
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
     Private m_deleteFile As String = Nothing
     Private m_navigationAllowed As Boolean = True
+    Private m_buffer As New List(Of Action)
 
     Public Sub Setup()
         m_navigationAllowed = True
@@ -17,7 +18,9 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub WriteText(text As String)
-        InvokeScript("addText", text)
+        If (text.Length > 0) Then
+            InvokeScript("addText", text)
+        End If
     End Sub
 
     Public Sub SetAlignment(align As String)
@@ -99,11 +102,18 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub InvokeScript(functionName As String, ParamArray args() As String)
-        wbOutput.Document.InvokeScript(functionName, args)
+        m_buffer.Add(Sub() wbOutput.Document.InvokeScript(functionName, args))
     End Sub
 
     Public Sub SetBackground(colour As String)
         InvokeScript("SetBackground", colour)
+    End Sub
+
+    Public Sub ClearBuffer()
+        For Each script In m_buffer
+            script.Invoke()
+        Next
+        m_buffer.Clear()
     End Sub
 
     Private Const k_scriptsPlaceholder As String = "<!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->"

@@ -180,6 +180,27 @@
   </editor>
 
   <editor>
+    <appliesto>(function)PrintCentered</appliesto>
+    <display>Print (centered) #0</display>
+    <category>Output</category>
+    <create>PrintCentered ("")</create>
+    <add>Print a centered message</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Print (centered)</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>message</simple>
+      <expand/>
+      <multiline/>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>play sound</appliesto>
     <display>Play sound #0</display>
     <category>Output</category>

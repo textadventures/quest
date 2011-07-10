@@ -85,7 +85,7 @@ Public Class Player
         m_gameReady = True
         txtCommand.Text = ""
         SetEnabledState(True)
-        m_htmlHelper = New PlayerHelper(m_game, Me, False)
+        m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlPlayerReadyFunction = AddressOf FinishInitialise
 
         ' we don't finish initialising the game until the webbrowser's DocumentCompleted fires
@@ -130,8 +130,14 @@ Public Class Player
     Private Sub BeginGame()
         m_initialised = True
         m_game.Begin()
+        ClearBuffer()
         txtCommand.Focus()
         ctlPlayerHtml.DisableNavigation()
+    End Sub
+
+    Private Sub ClearBuffer()
+        WriteHTML(m_htmlHelper.ClearBuffer())
+        BeginInvoke(Sub() ctlPlayerHtml.ClearBuffer())
     End Sub
 
     Public Sub Reset()
@@ -236,6 +242,7 @@ Public Class Player
             Else
                 m_game.SendCommand(command)
             End If
+            ClearBuffer()
         Catch ex As Exception
             WriteLine(String.Format("Error running command '{0}':<br>{1}", command, ex.Message))
         End Try
@@ -258,12 +265,14 @@ Public Class Player
         SetEnabledState(False)
         StopSound()
         BeginInvoke(Sub() ctlPlayerHtml.Finished())
+        ClearBuffer()
     End Sub
 
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
         BeginInvoke(Sub()
                         WriteLine("<output><b>Sorry, an error occurred.</b></output>")
                         WriteLine("<output>" + errorMessage + "</output>")
+                        ClearBuffer()
                     End Sub)
     End Sub
 
@@ -464,6 +473,7 @@ Public Class Player
             RaiseEvent AddToRecent(filename, m_gameName + " (Saved)")
             WriteLine("")
             WriteLine("Saved: " + filename)
+            ClearBuffer()
         Catch ex As Exception
             MsgBox("Unable to save the file due to the following error:" + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
         End Try
@@ -491,6 +501,7 @@ Public Class Player
 
     Private Sub SetMenuResponseInNewThread(response As Object)
         m_game.SetMenuResponse(DirectCast(response, String))
+        ClearBuffer()
     End Sub
 
     Public Sub DoWait() Implements IPlayer.DoWait
@@ -504,12 +515,14 @@ Public Class Player
             Application.DoEvents()
         Loop Until Not m_waiting Or Not m_initialised
         m_game.FinishWait()
+        ClearBuffer()
     End Sub
 
     Public Sub ShowQuestion(caption As String) Implements IPlayer.ShowQuestion
         BeginInvoke(Sub()
                         Dim result As Boolean = (MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes)
                         m_game.SetQuestionResponse(result)
+                        ClearBuffer()
                     End Sub
         )
     End Sub
@@ -570,6 +583,7 @@ Public Class Player
                                 Application.DoEvents()
                             Loop Until Not m_soundPlaying
                             m_game.FinishWait()
+                            ClearBuffer()
                         End If
                     End Sub
         )
@@ -716,6 +730,7 @@ Public Class Player
 
     Private Sub ctlPlayerHtml_SendEvent(eventName As String, param As String) Handles ctlPlayerHtml.SendEvent
         m_game.SendEvent(eventName, param)
+        ClearBuffer()
     End Sub
 
     Public Sub BindMenu(linkid As String, verbs As String, text As String) Implements IPlayerHelperUI.BindMenu
@@ -727,6 +742,7 @@ Public Class Player
     End Sub
 
     Public Sub SetAlignment(alignment As String) Implements IPlayerHelperUI.SetAlignment
+        ClearBuffer()
         BeginInvoke(Sub() ctlPlayerHtml.SetAlignment(alignment))
     End Sub
 
@@ -788,6 +804,7 @@ Public Class Player
                         m_tickCount = 0
                         tmrTick.Enabled = True
                     End Sub)
+        ClearBuffer()
     End Sub
 
     Private Sub cmdFullScreen_Click(sender As System.Object, e As System.EventArgs) Handles cmdFullScreen.Click
@@ -811,6 +828,7 @@ Public Class Player
         tmrPause.Enabled = False
         m_pausing = False
         m_game.FinishPause()
+        ClearBuffer()
     End Sub
 
     Private Sub m_walkthroughRunner_Output(text As String) Handles m_walkthroughRunner.Output

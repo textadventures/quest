@@ -31,13 +31,11 @@ namespace AxeSoftware.Quest
         private string m_linkForeground = "";
         private string m_fontSizeOverride = "";
         private string m_textBuffer = "";
-        private bool m_useBuffer;
 
-        public PlayerHelper(IASL game, IPlayerHelperUI playerUI, bool useBuffer)
+        public PlayerHelper(IASL game, IPlayerHelperUI playerUI)
         {
             m_playerUI = playerUI;
             m_game = game;
-            m_useBuffer = useBuffer;
 
             m_game.PrintText += m_game_PrintText;
 
@@ -190,24 +188,17 @@ namespace AxeSoftware.Quest
                 }
             }
 
-            if (!m_useBuffer)
-            {
-                // If not using the buffer, then immediately output the text
-                m_playerUI.OutputText(ClearBuffer());
-            }
         }
 
         private string FormatText(string text)
         {
             if (text.Length == 0) return text;
-            if (!m_useBuffer)
+
+            // if you add an element whose content starts with a space, that
+            // space will be ignored. By replacing an initial space with &nbps; we prevent that.
+            if (text.Substring(0, 1) == " ")
             {
-                // When not using the buffer, if you add an element whose content starts with a space, that
-                // space will be ignored. By replacing an initial space with &nbps; we prevent that.
-                if (text.Substring(0, 1) == " ")
-                {
-                    text = "&nbsp;" + ((text.Length > 1) ? text.Substring(1) : string.Empty);
-                }
+                text = "&nbsp;" + ((text.Length > 1) ? text.Substring(1) : string.Empty);
             }
 
             string style = GetCurrentFormat();
