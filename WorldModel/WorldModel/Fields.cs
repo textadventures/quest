@@ -420,6 +420,7 @@ namespace AxeSoftware.Quest
                 if (type.Fields.Exists(attribute))
                 {
                     result = type.Fields.Get(attribute);
+                    break;
                 }
             }
 
