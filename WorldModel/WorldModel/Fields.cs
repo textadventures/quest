@@ -678,10 +678,10 @@ namespace AxeSoftware.Quest
 
         internal IEnumerable<string> FieldNames
         {
-            get { return m_attributes.Keys.Union(FieldExtensionNames) ; }
+            get { return m_attributes.Keys; }
         }
 
-        private IEnumerable<string> FieldExtensionNames
+        internal IEnumerable<string> FieldExtensionNames
         {
             get
             {

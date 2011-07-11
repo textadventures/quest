@@ -260,7 +260,13 @@ namespace AxeSoftware.Quest
                     }
                 }
 
-                foreach (string attribute in e.Fields.FieldNames)
+                IEnumerable<string> fieldNames = e.Fields.FieldNames;
+                if (!m_gameSaver.m_worldModel.EditMode)
+                {
+                    fieldNames = fieldNames.Union(e.Fields.FieldExtensionNames);
+                }
+
+                foreach (string attribute in fieldNames)
                 {
                     if (CanSaveAttribute(attribute, e))
                     {
