@@ -1,4 +1,8 @@
 ﻿<library>
+  <function name="GetPlacesObjectsList" type="objectlist">
+    return (ScopeVisibleNotHeldNotScenery() - player)
+  </function>
+  
   <function name="ScopeInventory" type="objectlist">
     result = NewObjectList()
     foreach (obj, AllObjects()) {
