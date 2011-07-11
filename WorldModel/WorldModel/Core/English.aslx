@@ -26,6 +26,10 @@
   <template name="Use">Use</template>
   <template name="Drop">Drop</template>
   <template name="GoTo">Go to</template>
+  <template name="SwitchOn">Switch on</template>
+  <template name="SwitchOff">Switch off</template>
+  <template name="Open">Open</template>
+  <template name="Close">Close</template>
   <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " " + Conjugate(object, "be") + " not open."</dynamictemplate>
   <template name="NeutralGender">it</template>
   <template name="MaleGender">he</template>
@@ -71,8 +75,8 @@
   <dynamictemplate name="CannotLockOpen">"You cannot lock " + object.article + " when " + object.gender + " " + Conjugate(object, "be") + " open."</dynamictemplate>
   <dynamictemplate name="AlreadySwitchedOn">WriteVerb(object, "be") + " already switched on."</dynamictemplate>"
   <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "be") + " already switched off."</dynamictemplate>"
-  <dynamictemplate name="SwitchOn">"You switch " + object.article + " on."</dynamictemplate>
-  <dynamictemplate name="SwitchOff">"You switch " + object.article + " off."</dynamictemplate>
+  <dynamictemplate name="SwitchedOn">"You switch " + object.article + " on."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">"You switch " + object.article + " off."</dynamictemplate>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>

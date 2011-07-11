@@ -24,7 +24,7 @@ namespace AxeSoftware.Quest
         public UpdateSource Source { get; set; }
     }
 
-    public class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollection
+    public class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollection, IExtendableField
     {
         public event EventHandler<QuestListUpdatedEventArgs<T>> Added;
         public event EventHandler<QuestListUpdatedEventArgs<T>> Removed;
@@ -46,6 +46,12 @@ namespace AxeSoftware.Quest
             {
                 m_list = new List<T>(collection);
             }
+        }
+
+        public QuestList(IEnumerable<T> collection, bool extended)
+            :this(collection)
+        {
+            Extended = extended;
         }
 
         public UndoLogger UndoLog
@@ -279,6 +285,15 @@ namespace AxeSoftware.Quest
         {
             return m_list.ToArray();
         }
+
+        public bool Extended { get; private set; }
+
+        public IExtendableField Merge(IExtendableField parent)
+        {
+            QuestList<T> parentList = parent as QuestList<T>;
+            return parentList + this;
+        }
+
 
         #region IEnumerable<T> Members
 

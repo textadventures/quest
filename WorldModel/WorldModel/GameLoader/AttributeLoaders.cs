@@ -63,6 +63,12 @@ namespace AxeSoftware.Quest
 
             public override void Load(Element element, string attribute, string value)
             {
+                string[] values = GetValues(value);
+                element.Fields.Set(attribute, new QuestList<string>(values));
+            }
+
+            protected string[] GetValues(string value)
+            {
                 string[] values;
                 if (value.IndexOf("\n") >= 0)
                 {
@@ -72,7 +78,21 @@ namespace AxeSoftware.Quest
                 {
                     values = Utility.ListSplit(value);
                 }
-                element.Fields.Set(attribute, new QuestList<string>(values));
+                return values;
+            }
+        }
+
+        private class ListExtensionLoader : ListLoader
+        {
+            public override string AppliesTo
+            {
+                get { return "listextend"; }
+            }
+
+            public override void Load(Element element, string attribute, string value)
+            {
+                string[] values = GetValues(value);
+                element.Fields.AddFieldExtension(attribute, new QuestList<string>(values, true));
             }
         }
 

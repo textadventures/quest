@@ -51,6 +51,12 @@ namespace AxeSoftware.Quest
         IMutableField Clone();
     }
 
+    public interface IExtendableField
+    {
+        bool Extended { get; }
+        IExtendableField Merge(IExtendableField parent);
+    }
+
     public interface IField<T>
     {
         string Property { get; }
@@ -114,6 +120,7 @@ namespace AxeSoftware.Quest
         private WorldModel m_worldModel;
         private Element m_element;
         private Dictionary<string, object> m_attributes = new Dictionary<string, object>();
+        private Dictionary<string, IExtendableField> m_extendableFields = new Dictionary<string, IExtendableField>();
         private Dictionary<Type, DebugFormatDelegate> m_formatters = new Dictionary<Type, DebugFormatDelegate>();
         private Stack<Element> m_types = new Stack<Element>();
         private LazyFields m_lazyFields;
@@ -306,6 +313,20 @@ namespace AxeSoftware.Quest
             RemoveFieldInternal(name);
         }
 
+        public void AddFieldExtension(string name, IExtendableField value)
+        {
+            if (value.Extended)
+            {
+                // extendable fields should only ever exist in types, and be set at the start of the game,
+                // so we should never need to worry about adding them to the undo log etc.
+                m_extendableFields[name] = value;
+            }
+            else
+            {
+                Set(name, value);
+            }
+        }
+
         private void Set(string name, object value, bool raiseEvent, bool cloneClonableValues)
         {
             bool changed = false;
@@ -391,15 +412,73 @@ namespace AxeSoftware.Quest
             {
                 return m_attributes[attribute];
             }
-            else
+
+            object result = null;
+
+            foreach (Element type in m_types)
             {
-                foreach (Element type in m_types)
+                if (type.Fields.Exists(attribute))
                 {
-                    if (type.Fields.Exists(attribute)) return type.Fields.Get(attribute);
+                    result = type.Fields.Get(attribute);
                 }
             }
 
-            return null;
+            // if for example we have a "listextend" field in the type hierarchy, we need to merge
+            // that field with the base field
+
+            if (HasExtendableField(attribute))
+            {
+                return GetMergedResult(attribute, result);
+            }
+
+            return result;
+        }
+
+        private object GetMergedResult(string attribute, object baseField)
+        {
+            IExtendableField extendableBaseField = baseField as IExtendableField;
+            if (extendableBaseField == null) return baseField;
+
+            IExtendableField mergedResult = GetExtendableField(attribute);
+
+            return mergedResult.Merge(extendableBaseField);
+        }
+
+        private bool HasExtendableField(string attribute)
+        {
+            if (m_extendableFields.ContainsKey(attribute)) return true;
+
+            foreach (Element type in m_types)
+            {
+                if (type.Fields.HasExtendableField(attribute)) return true;
+            }
+            return false;
+        }
+
+        private IExtendableField GetExtendableField(string attribute)
+        {
+            IExtendableField result = null;
+
+            if (m_extendableFields.ContainsKey(attribute))
+            {
+                result = MergeExtendableFields(result, m_extendableFields[attribute]);
+            }
+            
+            foreach (Element type in m_types)
+            {
+                if (type.Fields.HasExtendableField(attribute))
+                {
+                    result = MergeExtendableFields(result, type.Fields.GetExtendableField(attribute));
+                }
+            }
+
+            return result;
+        }
+
+        private IExtendableField MergeExtendableFields(IExtendableField field, IExtendableField parent)
+        {
+            if (field == null) return parent;
+            return field.Merge(parent);
         }
 
         internal DebugDataItem GetDebugDataItem(string attribute)

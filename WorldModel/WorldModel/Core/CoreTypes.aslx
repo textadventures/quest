@@ -17,7 +17,7 @@
   </type>
 
   <type name="defaultobject">
-    <displayverbs type="list">[LookAt];[Take];[SpeakTo]</displayverbs>
+    <displayverbs type="list">[LookAt];[Take]</displayverbs>
     <inventoryverbs type="list">[LookAt];[Use];[Drop]</inventoryverbs>
     <take type="boolean">false</take>
     <drop/>
@@ -47,11 +47,13 @@
   </type>
 
   <type name="male">
+    <displayverbs type="listextend">[SpeakTo]</displayverbs>
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
   </type>
 
   <type name="female">
+    <displayverbs type="listextend">[SpeakTo]</displayverbs>
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>
   </type>
@@ -62,11 +64,13 @@
   </type>
 
   <type name="maleplural">
+    <displayverbs type="listextend">[SpeakTo]</displayverbs>
     <gender>[MalePluralGender]</gender>
     <article>[MalePluralArticle]</article>
   </type>
 
   <type name="femaleplural">
+    <displayverbs type="listextend">[SpeakTo]</displayverbs>
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>
   </type>
@@ -77,12 +81,14 @@
 
   <type name="container_closed">
     <inherit name="container_base"/>
+    <displayverbs type="listextend">[Open];[Close]</displayverbs>
     <open/>
     <close/>
   </type>
 
   <type name="container_open">
     <inherit name="container_base"/>
+    <displayverbs type="listextend">[Open];[Close]</displayverbs>
     <isopen/>
     <open/>
     <close/>
@@ -198,6 +204,7 @@
   </type>
 
   <type name="switchable">
+    <displayverbs type="listextend">[SwitchOn];[SwitchOff]</displayverbs>
     <switchedon type="boolean">false</switchedon>
     <turnon type="script">
       if (this.switchedon) {
@@ -209,7 +216,7 @@
           msg (this.switchonmsg)
         }
         else {
-          msg (DynamicTemplate("SwitchOn", this))
+          msg (DynamicTemplate("SwitchedOn", this))
         }
       }
     </turnon>
@@ -223,7 +230,7 @@
           msg (this.switchoffmsg)
         }
         else {
-          msg (DynamicTemplate("SwitchOff", this))
+          msg (DynamicTemplate("SwitchedOff", this))
         }
       }
     </turnoff>
