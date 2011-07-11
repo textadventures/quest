@@ -464,7 +464,7 @@ namespace AxeSoftware.Quest
             {
                 result = MergeExtendableFields(result, m_extendableFields[attribute]);
             }
-            
+
             foreach (Element type in m_types)
             {
                 if (type.Fields.HasExtendableField(attribute))
@@ -678,7 +678,22 @@ namespace AxeSoftware.Quest
 
         internal IEnumerable<string> FieldNames
         {
-            get { return m_attributes.Keys; }
+            get { return m_attributes.Keys.Union(FieldExtensionNames) ; }
+        }
+
+        private IEnumerable<string> FieldExtensionNames
+        {
+            get
+            {
+                List<string> result = new List<string>(m_extendableFields.Keys);
+
+                foreach (Element type in m_types)
+                {
+                    result.AddRange(type.Fields.FieldExtensionNames);
+                }
+
+                return result;
+            }
         }
 
         internal IEnumerable<Element> Types
