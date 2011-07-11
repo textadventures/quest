@@ -404,6 +404,7 @@ Public Class Player
     End Sub
 
     Private Sub RunScript(data As String) Implements IPlayer.RunScript
+        ClearBuffer()
         BeginInvoke(Sub()
                         Dim functionName As String = ""
                         Dim dataList As List(Of String)

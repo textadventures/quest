@@ -261,6 +261,44 @@
   </editor>
 
   <editor>
+    <appliesto>(function)ShowYouTube</appliesto>
+    <display>Play YouTube video #0</display>
+    <category>Output</category>
+    <create>ShowYouTube ("")</create>
+    <add>Play YouTube video</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Play YouTube video</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>id</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)ShowVimeo</appliesto>
+    <display>Play Vimeo video #0</display>
+    <category>Output</category>
+    <create>ShowVimeo ("")</create>
+    <add>Play Vimeo video</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Play Vimeo video</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>id</simple>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>insert</appliesto>
     <display>Insert HTML from file #0</display>
     <category>Output</category>

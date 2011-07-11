@@ -39,4 +39,12 @@
     ]]>
   </function>
 
+  <function name="ShowYouTube" parameters="id">
+    request (RunScript, "AddYouTube; " + id)
+  </function>
+
+  <function name="ShowVimeo" parameters="id">
+    request (RunScript, "AddVimeo; " + id)
+  </function>
+
 </library>
