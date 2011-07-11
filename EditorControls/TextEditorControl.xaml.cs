@@ -106,6 +106,13 @@ namespace AxeSoftware.Quest.EditorControls
                 dynamic data = m_completionWindow.CompletionList.CompletionData;
                 data.Add(new CompletionData("object"));
                 data.Add(new CompletionData("command"));
+                data.Add(new CompletionData("verb"));
+                data.Add(new CompletionData("exit"));
+                data.Add(new CompletionData("function"));
+                data.Add(new CompletionData("type"));
+                data.Add(new CompletionData("walkthrough"));
+                data.Add(new CompletionData("javascript"));
+                data.Add(new CompletionData("inherit"));
                 m_completionWindow.Show();
                 m_completionWindow.Closed += m_completionWindow_Closed;
             }
@@ -155,7 +162,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             public object Description
             {
-                get { return "Description for " + m_text; }
+                get { return null; }
             }
 
             public ImageSource Image
@@ -278,7 +285,7 @@ namespace AxeSoftware.Quest.EditorControls
                 m_filename = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_helper.Controller.Filename), filename);
                 Load(m_filename);
             }
-            
+
             m_helper.FinishedPopulating();
         }
 
