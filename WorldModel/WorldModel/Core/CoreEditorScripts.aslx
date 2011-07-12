@@ -606,7 +606,7 @@
     <!-- TO DO: Don't display parameter #2 if it's null or empty -->
     <display>Run #0's '#1' script with parameters from dictionary #2</display>
     <category>Scripts</category>
-    <add>Run an object's script property</add>
+    <add>Run an object's script attribute</add>
     <create>do (,"")</create>
 
     <control>
@@ -623,7 +623,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>script property</caption>
+      <caption>script attribute</caption>
     </control>
 
     <control>
@@ -732,7 +732,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Property:</caption>
+      <caption>Attribute:</caption>
       <breakbefore/>
     </control>
 
@@ -816,7 +816,7 @@
     <appliesto>=</appliesto>
     <display>Set #0 = #1</display>
     <category>Variables</category>
-    <add>Set a variable or property</add>
+    <add>Set a variable or attribute</add>
     <create>=</create>
 
     <control>
@@ -845,7 +845,7 @@
     <appliesto>=></appliesto>
     <display>Set #0 script: #1</display>
     <category>Variables</category>
-    <add>Set a variable or property to a script</add>
+    <add>Set a variable or attribute to a script</add>
     <create>=></create>
 
     <control>
@@ -871,9 +871,9 @@
 
   <editor>
     <appliesto>set</appliesto>
-    <display>Set #0's #1 property to #2</display>
+    <display>Set #0's #1 attribute to #2</display>
     <category>Variables</category>
-    <add>Set an object's property (named by an expression)</add>
+    <add>Set an object's attribute (named by an expression)</add>
     <create>set (,"",)</create>
 
     <control>
@@ -890,7 +890,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Property:</caption>
+      <caption>Attribute:</caption>
       <breakbefore/>
     </control>
 

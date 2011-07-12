@@ -571,7 +571,7 @@ namespace AxeSoftware.Quest.EditorControls
             mnuInsertMenu.Items.Add(new Separator());
             AddInsertMenuItem("Variable", InsertVariable);
             AddInsertMenuItem("Object", InsertObject);
-            AddInsertMenuItem("Property", InsertProperty);
+            AddInsertMenuItem("Attribute", InsertProperty);
             AddInsertMenuItem("Function", InsertFunction);
             mnuInsertMenu.Items.Add(new Separator());
             AddInsertMenuItem("and", () => InsertString(" and "));
@@ -606,7 +606,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void InsertProperty()
         {
-            InsertFromList("a property", m_helper.Controller.GetPropertyNames().OrderBy(n => n));
+            InsertFromList("an attribute", m_helper.Controller.GetPropertyNames().OrderBy(n => n));
         }
 
         private void InsertFunction()
