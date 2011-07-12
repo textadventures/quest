@@ -53,6 +53,15 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Save()
         {
+            // work around a bug where if user types a number but does not press Enter, the
+            // number never gets written. So here we force the number control to lose focus
+            // so that it saves the currently entered value.
+            ctlNumber.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+            DoSave();
+        }
+
+        private void DoSave()
+        {
             if (m_data == null) return;
             if (!m_helper.IsDirty) return;
             int saveValue = ctlNumber.Value.Value;
@@ -64,10 +73,9 @@ namespace AxeSoftware.Quest.EditorControls
             if (!ctlNumber.Value.HasValue)
             {
                 ctlNumber.Value = 0;
-                return;
             }
             m_helper.SetDirty(ctlNumber.Value.Value);
-            Save();
+            DoSave();
         }
 
         public string StringValue
