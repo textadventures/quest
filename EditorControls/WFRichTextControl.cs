@@ -145,7 +145,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void ctlWebBrowser_Navigated(object sender, System.Windows.Forms.WebBrowserNavigatedEventArgs e)
         {
-            ctlWebBrowser.Document.Body.KeyDown += Document_KeyDown;
+            ctlWebBrowser.Document.Body.KeyUp += Document_KeyUp;
             if (m_valueToSet != null)
             {
                 HTML = m_valueToSet;
@@ -273,7 +273,7 @@ namespace AxeSoftware.Quest.EditorControls
             return result;
         }
 
-        private void Document_KeyDown(object sender, System.Windows.Forms.HtmlElementEventArgs e)
+        void Document_KeyUp(object sender, HtmlElementEventArgs e)
         {
             if (IsDirty)
             {
