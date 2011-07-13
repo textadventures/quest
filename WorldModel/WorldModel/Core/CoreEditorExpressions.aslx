@@ -73,6 +73,19 @@
     </control>
   </editor>
 
+  <editor>
+    <pattern>player.parent = #parent#</pattern>
+    <create>player.parent = </create>
+    <description>player is in room</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>parent</attribute>
+    </control>
+  </editor>
 
   <editor>
     <pattern>IsSwitchedOn(#object#)</pattern>
