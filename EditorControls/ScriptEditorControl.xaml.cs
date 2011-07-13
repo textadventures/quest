@@ -177,6 +177,7 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_scripts == null || m_scripts.Scripts == null)
             {
                 lstScripts.Visibility = Visibility.Collapsed;
+                SetEditButtonsEnabled(false);
                 return;
             }
 
