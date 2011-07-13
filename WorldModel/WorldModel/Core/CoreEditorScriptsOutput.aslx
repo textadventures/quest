@@ -1,0 +1,350 @@
+﻿<library>
+  <editor>
+    <appliesto>msg</appliesto>
+    <display>Print #0</display>
+    <category>Output</category>
+    <create>msg ("")</create>
+    <add>Print a message</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Print</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>message</simple>
+      <expand/>
+      <multiline/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>picture</appliesto>
+    <display>Show picture #0</display>
+    <category>Output</category>
+    <create>picture ("")</create>
+    <add>Show a picture</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Show picture</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>filename</simple>
+      <simpleeditor>file</simpleeditor>
+      <source>[EditorImageFormats]</source>
+      <filefiltername>Picture Files</filefiltername>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetFramePicture</appliesto>
+    <display>Set frame picture #0</display>
+    <category>Output</category>
+    <create>SetFramePicture ("")</create>
+    <add>Set frame picture</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set frame picture</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>filename</simple>
+      <simpleeditor>file</simpleeditor>
+      <source>[EditorImageFormats]</source>
+      <filefiltername>Picture Files</filefiltername>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)ClearFramePicture</appliesto>
+    <display>Clear frame picture</display>
+    <category>Output</category>
+    <create>ClearFramePicture</create>
+    <add>Clear frame picture</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Clear frame picture</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)ClearScreen</appliesto>
+    <display>Clear the screen</display>
+    <category>Output</category>
+    <create>ClearScreen</create>
+    <add>Clear the screen</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Clear the screen</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetForegroundColour</appliesto>
+    <display>Change foreground colour to #0</display>
+    <category>Output</category>
+    <create>SetForegroundColour ("Black")</create>
+    <add>Change foreground colour</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the foreground colour to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetBackgroundColour</appliesto>
+    <display>Change background colour to #0</display>
+    <category>Output</category>
+    <create>SetBackgroundColour ("White")</create>
+    <add>Change background colour</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the background colour to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetFontName</appliesto>
+    <display>Change font to #0</display>
+    <category>Output</category>
+    <create>SetFontName ("Arial")</create>
+    <add>Change font</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the font to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <fontslist/>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetFontSize</appliesto>
+    <display>Change font size to #0</display>
+    <category>Output</category>
+    <create>SetFontSize (9)</create>
+    <add>Change font size</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the font size to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>size</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)PrintCentered</appliesto>
+    <display>Print (centered) #0</display>
+    <category>Output</category>
+    <create>PrintCentered ("")</create>
+    <add>Print a centered message</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Print (centered)</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>message</simple>
+      <expand/>
+      <multiline/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>play sound</appliesto>
+    <display>Play sound #0</display>
+    <category>Output</category>
+    <create>play sound ("", false, false)</create>
+    <add>Play a sound</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Play sound</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>filename</simple>
+      <simpleeditor>file</simpleeditor>
+      <source>*.wav;*.mp3</source>
+      <filefiltername>Sound Files</filefiltername>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Wait for sound to finish before continuing:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Loop:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+
+  </editor>
+
+  <editor>
+    <appliesto>stop sound</appliesto>
+    <display>Stop sound</display>
+    <category>Output</category>
+    <create>stop sound</create>
+    <add>Stop sound</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Stop sound</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)ShowYouTube</appliesto>
+    <display>Play YouTube video #0</display>
+    <category>Output</category>
+    <create>ShowYouTube ("")</create>
+    <add>Play YouTube video</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Play YouTube video</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>id</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)ShowVimeo</appliesto>
+    <display>Play Vimeo video #0</display>
+    <category>Output</category>
+    <create>ShowVimeo ("")</create>
+    <add>Play Vimeo video</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Play Vimeo video</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>id</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>insert</appliesto>
+    <display>Insert HTML from file #0</display>
+    <category>Output</category>
+    <create>insert ("")</create>
+    <add>Insert HTML from a file</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Insert HTML from</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>filename</simple>
+      <simpleeditor>file</simpleeditor>
+      <source>*.htm;*.html</source>
+      <filefiltername>HTML Files</filefiltername>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>request</appliesto>
+    <display>Raise UI request "#0" (parameter #1)</display>
+    <category>Output</category>
+    <create>request (ClearScreen,)</create>
+    <add>Raise a UI request</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Raise UI request</caption>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <validvalues type="list">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause</validvalues>
+      <caption>Request</caption>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>with parameter</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>string</simple>
+    </control>
+  </editor>
+</library>

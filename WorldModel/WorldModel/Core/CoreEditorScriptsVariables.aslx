@@ -1,0 +1,279 @@
+﻿<library>
+  <editor>
+    <appliesto>(function)SetObjectFlagOn</appliesto>
+    <display>Set #0 flag #1</display>
+    <category>Variables</category>
+    <add>Set object flag</add>
+    <create>SetObjectFlagOn (,"")</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set flag</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>flag name</simple>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetObjectFlagOff</appliesto>
+    <display>Unset #0 flag #1</display>
+    <category>Variables</category>
+    <add>Unset object flag</add>
+    <create>SetObjectFlagOff (,"")</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Unset flag</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>flag name</simple>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>=</appliesto>
+    <display>Set #0 = #1</display>
+    <category>Variables</category>
+    <add>Set a variable or attribute</add>
+    <create>=</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set variable</caption>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>=</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <usetemplates>set</usetemplates>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>=></appliesto>
+    <display>Set #0 script: #1</display>
+    <category>Variables</category>
+    <add>Set a variable or attribute to a script</add>
+    <create>=></create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set variable</caption>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>= script:</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>set</appliesto>
+    <display>Set #0's #1 attribute to #2</display>
+    <category>Variables</category>
+    <add>Set an object's attribute (named by an expression)</add>
+    <create>set (,"",)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Attribute:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Value:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>list add</appliesto>
+    <display>Add to list #0 value #1</display>
+    <category>Variables</category>
+    <add>Add a value to a list</add>
+    <create>list add (,)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Add to list</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>value</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>text</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>list remove</appliesto>
+    <display>Remove from list #0 value #1</display>
+    <category>Variables</category>
+    <add>Remove a value from a list</add>
+    <create>list remove (,)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Remove from list</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>value</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>text</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>dictionary add</appliesto>
+    <display>Add to dictionary #0: #1 = #2</display>
+    <category>Variables</category>
+    <add>Add a value to a dictionary</add>
+    <create>dictionary add (,"",)</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Add to dictionary</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>key</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>string</simple>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>value</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simple>string</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>dictionary remove</appliesto>
+    <display>Remove from dictionary #0: #1</display>
+    <category>Variables</category>
+    <add>Remove a value from a dictionary</add>
+    <create>dictionary remove (,"")</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Remove from dictionary</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>key</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>string</simple>
+    </control>
+  </editor>
+</library>

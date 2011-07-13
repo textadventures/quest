@@ -1,0 +1,46 @@
+﻿<library>
+  <editor>
+    <appliesto>finish</appliesto>
+    <display>Finish the game</display>
+    <category>Game State</category>
+    <add>Finish the game</add>
+    <create>finish</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Finish the game</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>undo</appliesto>
+    <display>Undo one transaction</display>
+    <category>Game State</category>
+    <add>Undo</add>
+    <create>undo</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Undo one transaction</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>start transaction</appliesto>
+    <display>Start transaction for command #0</display>
+    <category>Game State</category>
+    <add>Start transaction</add>
+    <create>start transaction ("")</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Start transaction for command</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+    </control>
+  </editor>
+</library>

@@ -1,0 +1,82 @@
+﻿<library>
+  <editor>
+    <appliesto>create</appliesto>
+    <display>Create object named #0</display>
+    <category>Objects</category>
+    <create>create ("")</create>
+    <add>Create an object</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Create object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>name</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>create exit</appliesto>
+    <display>Create exit #0 from #1 to #2</display>
+    <category>Objects</category>
+    <create>create exit ("",,)</create>
+    <add>Create an exit</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Create exit</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>name</simple>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>from</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>room</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simple>room</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>destroy</appliesto>
+    <display>Destroy #0</display>
+    <category>Objects</category>
+    <create>destroy ("")</create>
+    <add>Destroy an object</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Destroy object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>name</simple>
+    </control>
+  </editor>
+</library>
