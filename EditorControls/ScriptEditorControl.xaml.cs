@@ -126,10 +126,6 @@ namespace AxeSoftware.Quest.EditorControls
             Populate(m_helper.Populate(data));
 
             adderExpander.Visibility = (m_helper.CanEdit(data) && !data.ReadOnly) ? Visibility.Visible : Visibility.Collapsed;
-            if (m_readOnly)
-            {
-                SetEditButtonsEnabled(false);
-            }
 
             m_helper.FinishedPopulating();
         }
@@ -191,6 +187,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             lstScripts.Visibility = (lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
             adderExpander.IsExpanded = (lstScripts.Items.Count == 0);
+            SetEditButtonsEnabled(lstScripts.SelectedItems.Count > 0);
         }
 
         void m_scripts_Updated(object sender, EditableScriptsUpdatedEventArgs e)
@@ -465,9 +462,18 @@ namespace AxeSoftware.Quest.EditorControls
 
         void ctlToolbar_Paste()
         {
-            int index = lstScripts.SelectedIndex;
-            if (index < 0) return;
+            int index;
+            if (lstScripts.SelectedIndex < 0)
+            {
+                index = lstScripts.Items.Count;
+            }
+            else
+            {
+                index = lstScripts.SelectedIndex + 1;
+            }
+
             Save();
+
             if (m_scripts == null)
             {
                 m_controller.StartTransaction("Paste script");
@@ -513,7 +519,7 @@ namespace AxeSoftware.Quest.EditorControls
             ctlToolbar.CanCopy = enabled;
 
             // Paste is enabled only if not in read-only mode, and if we have something to paste
-            ctlToolbar.CanPaste = enabled && (!m_readOnly) && m_controller != null && m_controller.CanPasteScript();
+            ctlToolbar.CanPaste = (!m_readOnly) && m_controller != null && m_controller.CanPasteScript();
 
             if (m_readOnly) enabled = false;
             ctlToolbar.CanDelete = enabled;
