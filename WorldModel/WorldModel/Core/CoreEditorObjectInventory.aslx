@@ -78,12 +78,18 @@
 
     <control>
       <controltype>multi</controltype>
-      <caption>Use</caption>
+      <selfcaption>Use other objects on this</selfcaption>
       <attribute>useon</attribute>
       <types>
         null=Objects cannot be used;scriptdictionary=Handle objects individually;string=Print a message
       </types>
       <keyprompt>Please enter the object name</keyprompt>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Use this object (on its own)</caption>
+      <attribute>use</attribute>
     </control>
   </tab>
 </library>
