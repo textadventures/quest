@@ -744,7 +744,7 @@ namespace AxeSoftware.Quest
 
             foreach (Element inheritedType in m_types)
             {
-                if (inheritedType.Fields.InheritsType(type))
+                if (inheritedType.Fields.InheritsTypeRecursive(type))
                 {
                     return true;
                 }

@@ -79,7 +79,7 @@ namespace AxeSoftware.Quest
                 {
                     m_visibleIfElementInheritsTypeElement = m_worldModel.Elements.Get(ElementType.ObjectType, m_visibleIfElementInheritsType);
                 }
-                return m_worldModel.Elements.Get(data.Name).Fields.InheritsType(m_visibleIfElementInheritsTypeElement);
+                return m_worldModel.Elements.Get(data.Name).Fields.InheritsTypeRecursive(m_visibleIfElementInheritsTypeElement);
             }
 
             if (m_notVisibleIfElementInheritsType != null)
@@ -98,7 +98,7 @@ namespace AxeSoftware.Quest
 
                 foreach (Element forbiddenType in m_notVisibleIfElementInheritsTypeElement)
                 {
-                    if (element.Fields.InheritsType(forbiddenType))
+                    if (element.Fields.InheritsTypeRecursive(forbiddenType))
                     {
                         return false;
                     }
