@@ -77,6 +77,7 @@ Public Class Player
         SetCommandVisible(True)
         SetLocationVisible(True)
         SetStatusText("")
+        LocationUpdated("")
         cmdFullScreen.Visible = False
         m_menu.ClearWindowMenu()
         m_game = game
