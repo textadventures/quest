@@ -72,6 +72,11 @@ namespace AxeSoftware.Quest.Functions
             return obj.Fields.Get(property);
         }
 
+        public bool HasAttribute(Element obj, string property)
+        {
+            return obj.Fields.Exists(property);
+        }
+
         public string GetExitByLink(Element from, Element to)
         {
             foreach (Element e in m_worldModel.Objects)

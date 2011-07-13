@@ -162,9 +162,37 @@
   </editor>
 
   <editor>
+    <pattern>HasAttribute(#object#, #property#)</pattern>
+    <create>HasAttribute(, "")</create>
+    <description>object has attribute</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>object</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Attribute</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>property</attribute>
+      <simple>name</simple>
+    </control>
+  </editor>
+
+  <editor>
     <pattern>#object#.#property# = #value#</pattern>
     <create>. = </create>
-    <description>object property</description>
+    <description>object attribute equals</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -181,7 +209,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Property</caption>
+      <caption>Attribute</caption>
     </control>
 
     <control>
