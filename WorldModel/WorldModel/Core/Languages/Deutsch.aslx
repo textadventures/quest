@@ -46,6 +46,9 @@
   <template·name="NeutralPluralArticle">sie</template>
   <template·name="MalePluralArticle">sie</template>
   <template·name="FemalePluralArticle">sie</template> 
+  <template·name="SelfAlias">ich</template>
+  <template·name="SelfAlt">mich</template>
+  <template·name="AllObjects">alles</template>
   <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " ist bereits offen."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " ist bereits geschlossen."</dynamictemplate>
   <dynamictemplate name="CantOpen">"Du kannst " + object.article + " nicht öffnen."</dynamictemplate>
@@ -61,7 +64,20 @@
   <dynamictemplate name="DisambiguateMenu">"Bitte wähle, was du mit '" + text + "' meinst:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   <template name="LockedExit">Dieser Ausgang ist versperrt.</template>
-  
+  <dynamictemplate·name="DefaultAsk">"Du erhälst keine Antwort."</dynamictemplate>
+  <dynamictemplate·name="DefaultTell">"Du erhälst keine Antwort."</dynamictemplate>
+  <template·name="NoKey">Du hast den passenden Schlüssel nicht.</template>
+  <template·name="UnlockMessage">Entsperrt.</template>
+  <template·name="LockMessage">Verschlossen.</template>
+  <dynamictemplate·name="LockedObject">CapFirst(object.gender) + " ist verschlossen."</dynamictemplate>
+  <dynamictemplate·name="AlreadyLocked">CapFirst(object.gender) + " ist bereits verschlossen."</dynamictemplate>
+  <dynamictemplate·name="AlreadyUnlocked">CapFirst(object.gender) + " ist bereits entsperrt."</dynamictemplate>
+  <dynamictemplate·name="CannotLockOpen">"Du kannst " + object.article + " nicht verschließen wenn " + object.gender + " noch geöffnet ist."</dynamictemplate>
+  <dynamictemplate·name="AlreadySwitchedOn">CapFirst(object.gender) + " ist bereits angeschaltet."</dynamictemplate>"
+  <dynamictemplate·name="AlreadySwitchedOff">CapFirst(object.gender) + " ist bereits ausgeschaltet."</dynamictemplate>"
+  <dynamictemplate·name="SwitchOn">"Du schaltest " + object.article + " an."</dynamictemplate>
+  <dynamictemplate·name="SwitchOff">"Du schaltest " + object.article + " aus."</dynamictemplate>  
+
   <template name="CompassNW">Nordwesten</template>
   <template name="CompassN">Norden</template>
   <template name="CompassNE">Nordosten</template>
@@ -163,9 +179,19 @@
   <dynamictemplate name="DefaultTie">"Du kannst " + object.article + " nicht festbinden."</dynamictemplate>
   <verbtemplate name="touch">berühre</verbtemplate>
   <dynamictemplate name="DefaultTouch">Du kannst bzw. willst das nicht berühren.</dynamictemplate>
-  <template templatetype="command" name="turnon"><![CDATA[^schalte an (?<object>.*)$|^schalte (?<object>.*) an$|^schalt an (?<object>.*)$|^schalt (?<object>.*) an$]]></template>
+  <verbtemplate·name="turnon">schalte an #object#</verbtemplate>
+  <verbtemplate·name="turnon">schalte #object# an</verbtemplate>
+  <verbtemplate·name="turnon">schalt an #object#</verbtemplate>
+  <verbtemplate·name="turnon">schalt #object# an</verbtemplate>
   <dynamictemplate name="DefaultTurnOn">"Du kannst " + object.article + " nicht anschalten."</dynamictemplate>
-  <template templatetype="command" name="turnoff"><![CDATA[^schalte aus (?<object>.*)$|^schalte (?<object>.*) aus$|^schalt aus (?<object>.*)$|^schalt (?<object>.*) aus$|^schalte ab (?<object>.*)$|^schalte (?<object>.*) ab$|^schalt ab (?<object>.*)$|^schalt (?<object>.*) ab$]]></template>
+  <verbtemplate·name="turnoff">schalte aus #object#</verbtemplate>
+  <verbtemplate·name="turnoff">schalt aus #object#</verbtemplate>
+  <verbtemplate·name="turnoff">schalte #object# aus</verbtemplate>
+  <verbtemplate·name="turnoff">schalt #object# aus</verbtemplate> 
+  <verbtemplate·name="turnoff">schalte ab #object#</verbtemplate>
+  <verbtemplate·name="turnoff">schalt ab #object#</verbtemplate>
+  <verbtemplate·name="turnoff">schalte #object# ab</verbtemplate>
+  <verbtemplate·name="turnoff">schalt #object# ab</verbtemplate> 
   <template name="DefaultTurnOff">Du kannst dies nicht abschalten.</template>
   <verbtemplate name="turn">drehe</verbtemplate>
   <verbtemplate name="turn">wende</verbtemplate>
@@ -213,69 +239,5 @@
 		}
 	</function>
 		
-	 <function name="WriteVerb" type="string" parameters="obj, verb">
-	   return (CapFirst(obj.gender) + " " + Conjugate(obj, verb))
-	 </function>
-
-	 <function name="Conjugate" type="string" parameters="obj, verb">
-	   gender = obj.gender
-	   if (gender = "he" or gender = "she") {
-		 gender = "it"
-	   }
-	   switch (verb) {
-		 case ("be") {
-		   switch (gender) {
-			 case ("i") {
-			   return ("am")
-			 }
-			 case ("you") {
-			   return ("are")
-			 }
-			 case ("it") {
-			   return ("is")
-			 }
-			 case ("we") {
-			   return ("are")
-			 }
-			 case ("they") {
-			   return ("are")
-			 }
-			 default {
-			   return ("is")
-			 }
-		   }
-		 }
-		 case ("do") {
-		   switch (gender) {
-			 case ("i") {
-			   return ("do")
-			 }
-			 case ("you") {
-			   return ("do")
-			 }
-			 case ("it") {
-			   return ("does")
-			 }
-			 case ("we") {
-			   return ("do")
-			 }
-			 case ("they") {
-			   return ("do")
-			 }
-			 default {
-			   return ("do")
-			 }       
-		   }
-		 }
-		 default {
-		   if (gender = "it") {
-			 return (verb + "s")
-		   }
-		   else {
-			 return (verb)
-		   }
-		 }
-	   }
-	 </function>	
 		
 </library>
