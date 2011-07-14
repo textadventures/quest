@@ -400,7 +400,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (m_simpleEditor is DropDownObjectsControl)
             {
-                return expression.Length == 0 || m_helper.Controller.GetObjectNames("object").Contains(expression);
+                return expression.Length == 0 || ((DropDownObjectsControl)m_simpleEditor).GetValidNames().Contains(expression);
             }
 
             if (m_simpleEditor is NumberControl)

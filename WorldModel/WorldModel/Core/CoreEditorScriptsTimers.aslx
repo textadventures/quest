@@ -14,8 +14,9 @@
     <control>
       <controltype>expression</controltype>
       <attribute>0</attribute>
-
-      <!-- TO DO: simpleeditor needs to be a dropdown timer list -->
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
+      <source>timer</source>
     </control>
   </editor>
 
@@ -34,8 +35,9 @@
     <control>
       <controltype>expression</controltype>
       <attribute>0</attribute>
-
-      <!-- TO DO: simpleeditor needs to be a dropdown timer list -->
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
+      <source>timer</source>
     </control>
   </editor>
 
@@ -54,8 +56,9 @@
     <control>
       <controltype>expression</controltype>
       <attribute>0</attribute>
-
-      <!-- TO DO: simpleeditor needs to be a dropdown timer list -->
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
+      <source>timer</source>
     </control>
 
     <control>
@@ -92,8 +95,9 @@
     <control>
       <controltype>expression</controltype>
       <attribute>0</attribute>
-
-      <!-- TO DO: simpleeditor needs to be a dropdown timer list -->
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
+      <source>timer</source>
     </control>
 
     <control>

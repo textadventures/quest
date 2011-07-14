@@ -23,6 +23,7 @@ namespace AxeSoftware.Quest.EditorControls
         private bool m_populating = false;
         private IEditableObjectReference m_value;
         private IEditorData m_data;
+        private string m_source;
 
         public event EventHandler<DataModifiedEventArgs> Dirty { add { } remove { } }
         public event Action RequestParentElementEditorSave { add { } remove { } }
@@ -60,7 +61,7 @@ namespace AxeSoftware.Quest.EditorControls
             }
             else
             {
-                lstDropdown.Text = value.Reference;
+                lstDropdown.SelectedItem = value.Reference;
                 lstDropdown.IsEnabled = !data.ReadOnly;
             }
 
@@ -90,12 +91,17 @@ namespace AxeSoftware.Quest.EditorControls
             bool oldValue = m_populating;
             m_populating = true;
             lstDropdown.Items.Clear();
-            IEnumerable<string> allObjects = m_controller.GetObjectNames("object");
+            IEnumerable<string> allObjects = GetValidNames();
             foreach (string obj in allObjects)
             {
                 lstDropdown.Items.Add(obj);
             }
             m_populating = oldValue;
+        }
+
+        public IEnumerable<string> GetValidNames()
+        {
+            return (m_source == null) ? m_controller.GetObjectNames("object") : m_controller.GetElementNames(m_source);
         }
 
         public Type ExpectedType
@@ -117,6 +123,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller = controller;
             m_definition = definition;
+            m_source = definition.GetString("source");
         }
 
         public string SelectedItem
