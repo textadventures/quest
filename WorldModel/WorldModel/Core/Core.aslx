@@ -69,4 +69,12 @@
     return (GetBoolean(object, "switchedon"))
   </function>
 
+  <function name="MoveObject" parameters="object, parent">
+    object.parent = parent
+  </function>
+
+  <function name="RemoveObject" parameters="object">
+    object.parent = null
+  </function>
+
 </library>

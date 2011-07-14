@@ -1,5 +1,57 @@
 ﻿<library>
   <editor>
+    <appliesto>(function)MoveObject</appliesto>
+    <display>Move #0 to #1</display>
+    <category>Objects</category>
+    <create>MoveObject (,)</create>
+    <add>Move object</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Move object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)RemoveObject</appliesto>
+    <display>Remove #0</display>
+    <category>Objects</category>
+    <create>RemoveObject ()</create>
+    <add>Remove object</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Remove object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>create</appliesto>
     <display>Create object named #0</display>
     <category>Objects</category>
