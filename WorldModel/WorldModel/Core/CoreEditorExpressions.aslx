@@ -175,6 +175,34 @@
   </editor>
 
   <editor>
+    <pattern>#object#.isopen</pattern>
+    <create>.isopen</create>
+    <description>object is open</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>not #object#.isopen</pattern>
+    <create>not .isopen</create>
+    <description>object is closed</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <pattern>HasAttribute(#object#, #property#)</pattern>
     <create>HasAttribute(, "")</create>
     <description>object has attribute</description>
