@@ -124,7 +124,7 @@ namespace AxeSoftware.Quest.EditorControls
             get { return (string)lstDropdown.SelectedItem; }
             set
             {
-                lstDropdown.Text = value;
+                lstDropdown.SelectedItem = value;
             }
         }
 
