@@ -12,9 +12,9 @@ namespace AxeSoftware.Quest
         private bool m_alwaysVisible = true;
         private string m_relatedAttribute;
         private string m_visibleIfRelatedAttributeIsType;
-        private string m_visibleIfElementInheritsType;
+        private IList<string> m_visibleIfElementInheritsType;
         private IList<string> m_notVisibleIfElementInheritsType;
-        private Element m_visibleIfElementInheritsTypeElement;
+        private List<Element> m_visibleIfElementInheritsTypeElement;
         private List<Element> m_notVisibleIfElementInheritsTypeElement;
         private string m_filterGroup;
         private string m_filter;
@@ -28,7 +28,7 @@ namespace AxeSoftware.Quest
             m_relatedAttribute = source.Fields.GetString("relatedattribute");
             if (m_relatedAttribute != null) m_alwaysVisible = false;
             m_visibleIfRelatedAttributeIsType = source.Fields.GetString("relatedattributedisplaytype");
-            m_visibleIfElementInheritsType = source.Fields.GetString("mustinherit");
+            m_visibleIfElementInheritsType = source.Fields.GetAsType<QuestList<string>>("mustinherit");
             m_notVisibleIfElementInheritsType = source.Fields.GetAsType<QuestList<string>>("mustnotinherit");
             if (m_visibleIfElementInheritsType != null || m_notVisibleIfElementInheritsType != null) m_alwaysVisible = false;
             m_filterGroup = source.Fields.GetString("filtergroup");
@@ -77,9 +77,25 @@ namespace AxeSoftware.Quest
             {
                 if (m_visibleIfElementInheritsTypeElement == null)
                 {
-                    m_visibleIfElementInheritsTypeElement = m_worldModel.Elements.Get(ElementType.ObjectType, m_visibleIfElementInheritsType);
+                    // convert "mustinherit" type names list into a list of type elements
+                    m_visibleIfElementInheritsTypeElement = new List<Element>(
+                        m_visibleIfElementInheritsType.Select(t => m_worldModel.Elements.Get(ElementType.ObjectType, t))
+                    );
                 }
-                return m_worldModel.Elements.Get(data.Name).Fields.InheritsTypeRecursive(m_visibleIfElementInheritsTypeElement);
+
+                // if the element does inherit any of the types, then this control is visible
+
+                Element element = m_worldModel.Elements.Get(data.Name);
+
+                foreach (Element type in m_visibleIfElementInheritsTypeElement)
+                {
+                    if (element.Fields.InheritsTypeRecursive(type))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             if (m_notVisibleIfElementInheritsType != null)

@@ -75,6 +75,12 @@
     <article>[FemalePluralArticle]</article>
   </type>
 
+  <type name="openable">
+    <displayverbs type="listextend">[Open];[Close]</displayverbs>
+    <open/>
+    <close/>
+  </type>
+
   <type name="container_base">
     <container/>
   </type>

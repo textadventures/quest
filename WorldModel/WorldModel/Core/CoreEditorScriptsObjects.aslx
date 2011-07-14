@@ -52,6 +52,46 @@
   </editor>
 
   <editor>
+    <appliesto>(function)HelperOpenObject</appliesto>
+    <display>Open #0</display>
+    <category>Objects</category>
+    <create>HelperOpenObject ()</create>
+    <add>Open object</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Open object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)HelperCloseObject</appliesto>
+    <display>Close #0</display>
+    <category>Objects</category>
+    <create>HelperCloseObject ()</create>
+    <add>Close object</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Close object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>create</appliesto>
     <display>Create object named #0</display>
     <category>Objects</category>

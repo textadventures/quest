@@ -77,4 +77,11 @@
     object.parent = null
   </function>
 
+  <function name="HelperOpenObject" parameters="object">
+    object.isopen = true
+  </function>
+
+  <function name="HelperCloseObject" parameters="object">
+    object.isopen = false
+  </function>
 </library>

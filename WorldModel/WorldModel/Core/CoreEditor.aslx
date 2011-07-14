@@ -6,7 +6,9 @@
   <implied element="control" property="filters" type="stringdictionary"/>
   <implied element="control" property="editors" type="stringdictionary"/>
   <implied element="control" property="minimum" type="int"/>
+  <implied element="control" property="mustinherit" type="list"/>
   <implied element="control" property="mustnotinherit" type="list"/>
+  <implied element="tab" property="mustinherit" type="list"/>
   <implied element="tab" property="mustnotinherit" type="list"/>
   <implied element="tab" property="parent" type="object"/>
 

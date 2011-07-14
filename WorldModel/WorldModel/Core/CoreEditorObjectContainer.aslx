@@ -7,7 +7,7 @@
     <control>
       <controltype>dropdowntypes</controltype>
       <caption>Container type</caption>
-      <types>*=Not a container; container_open=Container; container_closed=Closed container; surface=Surface; container_limited=Limited container</types>
+      <types>*=Not a container; container_open=Container; container_closed=Closed container; surface=Surface; container_limited=Limited container; openable=Openable/Closable</types>
       <width>150</width>
     </control>
 
@@ -22,21 +22,35 @@
       <controltype>checkbox</controltype>
       <caption>Can be opened</caption>
       <attribute>open</attribute>
-      <mustinherit>container_base</mustinherit>
+      <mustinherit>container_base; openable</mustinherit>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
       <caption>Can be closed</caption>
       <attribute>close</attribute>
-      <mustinherit>container_base</mustinherit>
+      <mustinherit>container_base; openable</mustinherit>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
       <caption>Is open</caption>
       <attribute>isopen</attribute>
-      <mustinherit>container_base</mustinherit>
+      <mustinherit>container_base; openable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Script to run when opening object</caption>
+      <attribute>openscript</attribute>
+      <mustinherit>openable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Script to run when closing object</caption>
+      <attribute>closescript</attribute>
+      <mustinherit>openable</mustinherit>
     </control>
 
     <control>
