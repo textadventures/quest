@@ -565,6 +565,7 @@ Public Class Player
     End Sub
 
     Private Sub ShowPicture(filename As String) Implements IPlayer.ShowPicture
+        ClearBuffer()
         BeginInvoke(Sub() ctlPlayerHtml.ShowPicture(filename))
     End Sub
 
