@@ -1167,6 +1167,8 @@ namespace AxeSoftware.Quest
                     LogException(ex);
                 }
 
+                UpdateLists();
+
                 ChangeThreadState(ThreadState.Ready);
             });
 
