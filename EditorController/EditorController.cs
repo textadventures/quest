@@ -1116,7 +1116,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private string CreateNewElement(ElementType type, string typeName, string elementName, string parent = null)
+        private string CreateNewElement(ElementType type, string typeName, string elementName, string parent = null, IDictionary<string, object> initialFields = null)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create {0} '{1}'", typeName, elementName));
             Element newElement;
@@ -1135,6 +1135,15 @@ namespace AxeSoftware.Quest
             {
                 newElement.Parent = m_worldModel.Elements.Get(parent);
             }
+
+            if (initialFields != null)
+            {
+                foreach (var field in initialFields)
+                {
+                    newElement.Fields.Set(field.Key, field.Value);
+                }
+            }
+
             m_worldModel.UndoLogger.EndTransaction();
 
             return newElement.Name;
@@ -1147,7 +1156,7 @@ namespace AxeSoftware.Quest
 
         public void CreateNewTimer(string name)
         {
-            CreateNewElement(ElementType.Timer, "timer", name);
+            CreateNewElement(ElementType.Timer, "timer", name, initialFields: new Dictionary<string, object> { { "interval", 1 } });
         }
 
         public void CreateNewWalkthrough(string name, string parent)
