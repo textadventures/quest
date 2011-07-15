@@ -47,4 +47,8 @@
     request (RunScript, "AddVimeo; " + id)
   </function>
 
+  <function name="WaitForKeyPress">
+    request (Wait, "")
+  </function>
+
 </library>

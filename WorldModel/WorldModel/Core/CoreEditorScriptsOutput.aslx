@@ -296,6 +296,19 @@
   </editor>
 
   <editor>
+    <appliesto>(function)WaitForKeyPress</appliesto>
+    <display>Wait for key press</display>
+    <category>Output</category>
+    <create>WaitForKeyPress</create>
+    <add>Wait for key press</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Wait for key press</caption>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>insert</appliesto>
     <display>Insert HTML from file #0</display>
     <category>Output</category>
@@ -331,7 +344,7 @@
 
     <control>
       <controltype>dropdown</controltype>
-      <validvalues type="list">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause</validvalues>
+      <validvalues type="list">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause;Wait</validvalues>
       <caption>Request</caption>
       <attribute>0</attribute>
     </control>

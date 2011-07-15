@@ -25,7 +25,8 @@ namespace AxeSoftware.Quest.Scripts
         Show,
         Hide,
         SetCompassDirections,
-        Pause
+        Pause,
+        Wait
     }
 
     public class RequestScriptConstructor : ScriptConstructorBase
@@ -125,6 +126,9 @@ namespace AxeSoftware.Quest.Scripts
                     if (int.TryParse(data, out ms)){
                         m_worldModel.StartPause(ms);
                     }
+                    break;
+                case Request.Wait:
+                    m_worldModel.StartWait();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");

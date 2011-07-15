@@ -691,8 +691,29 @@ namespace AxeSoftware.Quest
             return m_elements.Get(el).Fields.GetDebugDataItem(attribute);
         }
 
+        public void StartWait()
+        {
+            m_playerUI.DoWait();
+
+            ChangeThreadState(ThreadState.Waiting);
+
+            lock (m_waitForResponseLock)
+            {
+                Monitor.Wait(m_waitForResponseLock);
+            }
+
+            ChangeThreadState(ThreadState.Working);
+        }
+
         public void FinishWait()
         {
+            DoInNewThreadAndWait(() =>
+            {
+                lock (m_waitForResponseLock)
+                {
+                    Monitor.Pulse(m_waitForResponseLock);
+                }
+            });
         }
 
         public void StartPause(int ms)
