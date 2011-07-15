@@ -11436,7 +11436,8 @@ errhandle:
         ElseIf BeginsWith(ScriptLine, "debug ") Then
             LogASLError(RetrieveParameter(ScriptLine, Thread), LOGTYPE_MISC)
         ElseIf BeginsWith(ScriptLine, "mailto ") Then
-            LogASLError("'mailto' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
+            Dim emailAddress As String = RetrieveParameter(ScriptLine, Thread)
+            RaiseEvent PrintText("<a target=""_blank"" href=""mailto:" + emailAddress + """>" + emailAddress + "</a>")
         ElseIf BeginsWith(ScriptLine, "shell ") And GameASLVersion < 410 Then
             LogASLError("'shell' is not supported in this version of Quest", LOGTYPE_WARNINGERROR)
         ElseIf BeginsWith(ScriptLine, "shellexe ") And GameASLVersion < 410 Then
