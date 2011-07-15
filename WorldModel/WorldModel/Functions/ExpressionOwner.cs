@@ -198,12 +198,19 @@ namespace AxeSoftware.Quest.Functions
 
         public Element GetObject(string name)
         {
-            return m_worldModel.Object(name);
+            return TryGetElement(ElementType.Object, name);
         }
 
         public Element GetTimer(string name)
         {
-            return m_worldModel.Elements.Get(ElementType.Timer, name);
+            return TryGetElement(ElementType.Timer, name);
+        }
+
+        private Element TryGetElement(ElementType type, string name)
+        {
+            Element result;
+            m_worldModel.Elements.TryGetValue(type, name, out result);
+            return result;
         }
 
         public string TypeOf(Element obj, string attribute)
