@@ -18,6 +18,7 @@ function beginUsingTextFrame() {
 
     window.clearScreen = function () {
         textFrame.html("");
+        createNewDiv("left");
     }
 
     window.createNewDiv = function (alignment) {

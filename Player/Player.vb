@@ -671,6 +671,7 @@ Public Class Player
     End Sub
 
     Public Sub ClearScreen() Implements IPlayer.ClearScreen
+        ClearBuffer()
         BeginInvoke(Sub() ctlPlayerHtml.Clear())
     End Sub
 
