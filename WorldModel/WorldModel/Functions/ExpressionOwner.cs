@@ -52,6 +52,16 @@ namespace AxeSoftware.Quest.Functions
             return obj.Fields.GetAsType<bool>(property);
         }
 
+		public bool HasInt(Element obj, string property)
+        {
+            return obj.Fields.HasType<int>(property);
+        }
+		
+		public int GetInt(Element obj, string property)
+        {
+            return obj.Fields.GetAsType<int>(property);
+        }
+
         public bool HasScript(Element obj, string property)
         {
             return obj.Fields.HasType<IScript>(property);
