@@ -269,6 +269,7 @@ namespace AxeSoftware.Quest
 
             public void Save(GameXmlWriter writer, WorldModel worldModel)
             {
+                if (writer.Mode == SaveMode.Package) return;
                 foreach (Element walkThrough in worldModel.Elements.GetElements(ElementType.Walkthrough).Where(e => e.Parent == null))
                 {
                     SaveElementAndChildren(writer, worldModel, walkThrough);
