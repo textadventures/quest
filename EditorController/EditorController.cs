@@ -93,6 +93,9 @@ namespace AxeSoftware.Quest
         public delegate void ElementsUpdatedHandler();
         public event ElementsUpdatedHandler ElementsUpdated;
 
+        public delegate void ScriptClipboardUpdateHandler(bool hasScript);
+        public event ScriptClipboardUpdateHandler ScriptClipboardUpdated;
+
         public event EventHandler<ElementUpdatedEventArgs> ElementUpdated;
         public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
         public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
@@ -1502,6 +1505,10 @@ namespace AxeSoftware.Quest
         internal void SetClipboardScript(IEnumerable<IScript> script)
         {
             m_clipboardScripts = new List<IScript>(script);
+            if (ScriptClipboardUpdated != null)
+            {
+                ScriptClipboardUpdated(m_clipboardScripts.Count > 0);
+            }
         }
 
         internal IEnumerable<IScript> GetClipboardScript()

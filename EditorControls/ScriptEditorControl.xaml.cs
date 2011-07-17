@@ -50,6 +50,7 @@ namespace AxeSoftware.Quest.EditorControls
         void m_helper_Initialise()
         {
             m_controller = m_helper.Controller;
+            m_controller.ScriptClipboardUpdated += m_controller_ScriptClipboardUpdated;
             ctlScriptAdder.CloseButtonVisible = false;
             ctlScriptAdder.Initialise(m_controller);
 
@@ -468,11 +469,11 @@ namespace AxeSoftware.Quest.EditorControls
         {
             Save();
             m_scripts.Copy(GetSelectedIndicesArray());
-            ctlToolbar.CanPaste = m_controller.CanPasteScript();
         }
 
         void ctlToolbar_Paste()
         {
+            if (m_readOnly) return;
             int index;
             if (lstScripts.SelectedIndex < 0)
             {
@@ -594,5 +595,9 @@ namespace AxeSoftware.Quest.EditorControls
             return (m_scripts.Owner != m_data.Name);
         }
 
+        void m_controller_ScriptClipboardUpdated(bool hasScript)
+        {
+            ctlToolbar.CanPaste = hasScript && !m_readOnly;
+        }
     }
 }
