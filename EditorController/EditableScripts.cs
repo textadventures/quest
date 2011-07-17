@@ -15,7 +15,7 @@ namespace AxeSoftware.Quest
         private EditorController m_controller;
         private MultiScript m_underlyingScript;
         private static EditableDataWrapper<IScript, EditableScripts> s_wrapper;
-        
+
         static EditableScripts()
         {
             s_wrapper = new EditableDataWrapper<IScript, EditableScripts>(GetNewInstance);
@@ -281,6 +281,27 @@ namespace AxeSoftware.Quest
             if (useTransaction)
             {
                 m_controller.EndTransaction();
+            }
+        }
+
+        public IEditableScripts Clone(string parent, string attribute)
+        {
+            IScript clonedScript = (IScript)m_underlyingScript.Clone();
+            Element parentElement = m_controller.WorldModel.Elements.Get(parent);
+            parentElement.Fields.Set(attribute, clonedScript);
+            clonedScript = (IScript)parentElement.Fields.Get(attribute);
+            EditableScripts result = new EditableScripts(m_controller, clonedScript);
+
+            return result;
+        }
+
+        public string Owner
+        {
+            get
+            {
+                if (m_underlyingScript == null) return null;
+                if (m_underlyingScript.Owner == null) return null;
+                return m_underlyingScript.Owner.Name;
             }
         }
     }

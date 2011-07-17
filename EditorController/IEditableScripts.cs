@@ -34,5 +34,7 @@ namespace AxeSoftware.Quest
         void Cut(int[] indexes);
         void Copy(int[] indexes);
         void Paste(int index, bool useTransaction);
+        IEditableScripts Clone(string parent, string attribute);
+        string Owner { get; }
     }
 }

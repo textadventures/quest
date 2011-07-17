@@ -125,7 +125,7 @@ namespace AxeSoftware.Quest.EditorControls
             m_readOnly = data.ReadOnly;
             Populate(m_helper.Populate(data));
 
-            adderExpander.Visibility = (m_helper.CanEdit(data) && !data.ReadOnly) ? Visibility.Visible : Visibility.Collapsed;
+            adderExpander.Visibility = (m_helper.CanEdit(data) && !m_readOnly) ? Visibility.Visible : Visibility.Collapsed;
 
             m_helper.FinishedPopulating();
         }
@@ -141,6 +141,8 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 m_scripts.Updated += m_scripts_Updated;
             }
+
+            if (IsScriptFromInheritedType()) m_readOnly = true;
 
             RefreshScriptsList();
         }
@@ -563,5 +565,24 @@ namespace AxeSoftware.Quest.EditorControls
                 if (m_readOnly) adderExpander.Visibility = Visibility.Collapsed;
             }
         }
+
+        private void PrepareForEditing()
+        {
+            // If we're currently displaying script which belongs to a type we inherit from,
+            // we must clone the script before we can edit it.
+
+            if (!IsScriptFromInheritedType()) return;
+
+            m_scripts = m_scripts.Clone(m_data.Name, m_helper.ControlDefinition.Attribute);
+            RefreshScriptsList();
+        }
+
+        private bool IsScriptFromInheritedType()
+        {
+            if (m_scripts == null) return false;
+            if (m_data == null) return false;
+            return (m_scripts.Owner != m_data.Name);
+        }
+
     }
 }

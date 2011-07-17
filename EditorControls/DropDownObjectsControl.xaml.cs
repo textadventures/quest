@@ -123,7 +123,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller = controller;
             m_definition = definition;
-            m_source = definition.GetString("source");
+            m_source = definition == null ? null : definition.GetString("source");
         }
 
         public string SelectedItem

@@ -235,7 +235,14 @@ namespace AxeSoftware.Quest.EditorControls
             lstTemplate.IsEnabled = !data.ReadOnly;
             cmdInsert.IsEnabled = !data.ReadOnly;
 
-            // TO DO: Enabled/Readonly state for simple editor
+            if (m_simpleEditor is TextBox)
+            {
+                ((TextBox)m_simpleEditor).IsReadOnly = data.ReadOnly;
+            }
+            else
+            {
+                m_simpleEditor.IsEnabled = !data.ReadOnly;
+            }
 
             m_helper.FinishedPopulating();
         }
