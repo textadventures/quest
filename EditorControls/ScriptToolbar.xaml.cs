@@ -16,6 +16,7 @@ namespace AxeSoftware.Quest.EditorControls
 {
     public partial class ScriptToolbar : UserControl
     {
+        public event Action MakeEditable;
         public event Action Delete;
         public event Action MoveUp;
         public event Action MoveDown;
@@ -27,6 +28,11 @@ namespace AxeSoftware.Quest.EditorControls
         public ScriptToolbar()
         {
             InitializeComponent();
+        }
+
+        private void cmdMakeEditable_Click(object sender, RoutedEventArgs e)
+        {
+            MakeEditable();
         }
 
         private void cmdDelete_Click(object sender, RoutedEventArgs e)
@@ -62,6 +68,12 @@ namespace AxeSoftware.Quest.EditorControls
         private void cmdPopOut_Click(object sender, RoutedEventArgs e)
         {
             PopOut();
+        }
+
+        public bool CanMakeEditable
+        {
+            get { return cmdMakeEditable.Visibility == Visibility.Visible; }
+            set { cmdMakeEditable.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         public bool CanCut

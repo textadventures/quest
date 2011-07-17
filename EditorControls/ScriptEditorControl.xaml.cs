@@ -35,6 +35,7 @@ namespace AxeSoftware.Quest.EditorControls
             m_helper = new ControlDataHelper<IEditableScripts>(this);
             m_helper.Initialise += m_helper_Initialise;
 
+            ctlToolbar.MakeEditable += ctlToolbar_MakeEditable;
             ctlToolbar.Delete += ctlToolbar_Delete;
             ctlToolbar.MoveUp += ctlToolbar_MoveUp;
             ctlToolbar.MoveDown += ctlToolbar_MoveDown;
@@ -142,7 +143,9 @@ namespace AxeSoftware.Quest.EditorControls
                 m_scripts.Updated += m_scripts_Updated;
             }
 
-            if (IsScriptFromInheritedType()) m_readOnly = true;
+            bool fromInheritedType = IsScriptFromInheritedType();
+            if (fromInheritedType) m_readOnly = true;
+            ctlToolbar.CanMakeEditable = fromInheritedType;
 
             RefreshScriptsList();
         }
@@ -422,6 +425,11 @@ namespace AxeSoftware.Quest.EditorControls
             lstScripts.SelectedItem = lstScripts.Items[index];
         }
 
+        void ctlToolbar_MakeEditable()
+        {
+            PrepareForEditing();
+        }
+
         void ctlToolbar_Delete()
         {
             Save();
@@ -573,7 +581,9 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (!IsScriptFromInheritedType()) return;
 
+            m_controller.StartTransaction(string.Format("Copy {0} script to {1}", m_helper.ControlDefinition.Attribute, m_data.Name));
             m_scripts = m_scripts.Clone(m_data.Name, m_helper.ControlDefinition.Attribute);
+            m_controller.EndTransaction();
             RefreshScriptsList();
         }
 

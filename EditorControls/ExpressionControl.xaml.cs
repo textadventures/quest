@@ -241,7 +241,7 @@ namespace AxeSoftware.Quest.EditorControls
             }
             else
             {
-                m_simpleEditor.IsEnabled = !data.ReadOnly;
+                if (m_simpleEditor != null) m_simpleEditor.IsEnabled = !data.ReadOnly;
             }
 
             m_helper.FinishedPopulating();

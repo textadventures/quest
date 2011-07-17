@@ -17,6 +17,7 @@
     <Grid UseLayoutRounding="True">
         <ToolBarTray Background="{x:Null}">
             <ToolBar KeyboardNavigation.TabNavigation="Local" ToolBarTray.IsLocked="True">
+                <Button Name="cmdMakeEditable" Click="cmdMakeEditable_Click" Visibility="Collapsed">Make Editable Copy</Button>
                 <Button Name="cmdDelete" ToolTip="Delete" Click="cmdDelete_Click" SnapsToDevicePixels="True">
                     <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/DeleteHS.png" SnapsToDevicePixels="True"></Image>
                 </Button>
