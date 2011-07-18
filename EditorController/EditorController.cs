@@ -152,10 +152,10 @@ namespace AxeSoftware.Quest
             // set default filters here
         }
 
-        public bool Initialise(string filename)
+        public bool Initialise(string filename, string libFolder = null)
         {
             m_filename = filename;
-            m_worldModel = new WorldModel(filename, null);
+            m_worldModel = new WorldModel(filename, libFolder, null);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
@@ -361,6 +361,8 @@ namespace AxeSoftware.Quest
 
         private void UpdateTree()
         {
+            if (BeginTreeUpdate == null) return;
+
             BeginTreeUpdate();
             ClearTree();
             InitialiseTreeStructure();
@@ -1619,12 +1621,12 @@ namespace AxeSoftware.Quest
             return m_worldModel.GetBuiltInFunctionNames();
         }
 
-        public static Dictionary<string, string> GetAvailableTemplates()
+        public static Dictionary<string, string> GetAvailableTemplates(string folder = null)
         {
             Dictionary<string, string> templates = new Dictionary<string, string>();
 
-            string folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
-            folder = folder.Substring(6);   // remove initial "file://"
+            if (folder == null) folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
+            if (folder.StartsWith("file://")) folder = folder.Substring(6);
 
             foreach (string file in System.IO.Directory.GetFiles(folder, "*.template", System.IO.SearchOption.AllDirectories))
             {
