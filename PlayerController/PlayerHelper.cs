@@ -66,6 +66,7 @@ namespace AxeSoftware.Quest
         {
             string currentTagValue = "";
             string currentVerbs = "";
+            string currentHref = "";
             bool generatingLink = false;
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
@@ -115,10 +116,8 @@ namespace AxeSoftware.Quest
                                 m_playerUI.SetAlignment(reader.GetAttribute("align"));
                                 break;
                             case "a":
-                                string target = reader.GetAttribute("target");
-                                WriteText(string.Format("<a href=\"{0}\"{1}>",
-                                    reader.GetAttribute("href"),
-                                    target != null ? "target=\"" + target + "\"" : ""));
+                                generatingLink = true;
+                                currentHref = reader.GetAttribute("href");
                                 break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
@@ -167,7 +166,8 @@ namespace AxeSoftware.Quest
                                 alignmentSet = true;
                                 break;
                             case "a":
-                                WriteText("</a>");
+                                AddExternalLink(currentTagValue, currentHref);
+                                generatingLink = false;
                                 break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
@@ -277,6 +277,14 @@ namespace AxeSoftware.Quest
                 m_playerUI.OutputText(ClearBuffer());
                 m_playerUI.BindMenu(linkid, verbs, text);
             }
+        }
+
+        private void AddExternalLink(string text, string href)
+        {
+            WriteText(string.Format("<a style=\"{0}\" class=\"cmdlink\" onclick=\"goUrl('{1}')\">{2}</a>",
+                GetCurrentFormat(m_linkForeground),
+                href,
+                text));
         }
 
         private void WriteText(string text)

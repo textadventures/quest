@@ -477,3 +477,7 @@ function requestNextTimerTick(seconds) {
     sendNextGameTickerAfter = seconds;
     startTimer();
 }
+
+function goUrl(href) {
+    window.open(href);
+}

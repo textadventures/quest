@@ -12,6 +12,10 @@ function ASLEvent(event, parameter) {
     UIEvent("ASLEvent", event + ";" + parameter);
 }
 
+function goUrl(href) {
+    UIEvent("GoURL", href);
+}
+
 function UIEvent(cmd, parameter) {
     var elem = $("#_UIEvent");
     elem.html(cmd + " " + parameter);

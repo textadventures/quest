@@ -72,6 +72,8 @@ Public Class PlayerHTML
                 RunCommand(args)
             Case "ASLEvent"
                 RunASLEvent(args)
+            Case "GoURL"
+                GoURL(args)
         End Select
 
     End Sub
@@ -83,6 +85,12 @@ Public Class PlayerHTML
 
     Private Sub RunCommand(data As String)
         RaiseEvent CommandRequested(data)
+    End Sub
+
+    Private Sub GoURL(data As String)
+        If data.StartsWith("http://") Or data.StartsWith("https://") Or data.StartsWith("mailto:") Then
+            System.Diagnostics.Process.Start(data)
+        End If
     End Sub
 
     Public Sub Clear()
