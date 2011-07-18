@@ -296,6 +296,84 @@
   </editor>
 
   <editor>
+    <appliesto>(function)DisplayHttpLink</appliesto>
+    <display>Display link '#0' to http(s)://#1</display>
+    <category>Output</category>
+    <create>DisplayHttpLink ("", "", false)</create>
+    <add>Print web link</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Display link</caption>
+    </control>
+    
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+      <expand/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>http://</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>URL</simple>
+      <expand/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Use HTTPS:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DisplayMailtoLink</appliesto>
+    <display>Display link '#0' to email #1</display>
+    <category>Output</category>
+    <create>DisplayMailtoLink ("", "")</create>
+    <add>Print email link</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Display link</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+      <expand/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Email address:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>email</simple>
+      <expand/>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>(function)WaitForKeyPress</appliesto>
     <display>Wait for key press</display>
     <category>Output</category>

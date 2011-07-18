@@ -51,4 +51,23 @@
     request (Wait, "")
   </function>
 
+  <function name="DisplayHttpLink" parameters="text, url, https">
+    <![CDATA[
+    if (https) {
+      url = "https://" + url
+    }
+    else {
+      url = "http://" + url
+    }
+    msg ("<a href=\"" + url + "\">" + text + "</a>")
+    ]]>
+  </function>
+
+  <function name="DisplayMailtoLink" parameters="text, url">
+    <![CDATA[
+    url = "mailto:" + url
+    msg ("<a href=\"" + url + "\">" + text + "</a>")
+    ]]>
+  </function>
+
 </library>
