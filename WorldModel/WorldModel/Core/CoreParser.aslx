@@ -160,63 +160,89 @@
     }
     else {
       varlist = Populate(thiscommand.pattern, command)
-      
-      resolved = true
-      resolvedobjects = NewDictionary()
+      HandleSingleCommandPattern (command, thiscommand, varlist)
+    }
+    RunTurnScripts
+    UpdateStatusAttributes
+  </function>
 
-      foreach (var, varlist) {
-        if (resolved) {
-          value = LCase(StringDictionaryItem(varlist, var))
-          result = null
+  <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
+    resolved = true
+    resolvedobjects = NewDictionary()
+    unresolvedobject = null
+
+    foreach (var, varlist) {
+      if (resolved) {
+        value = LCase(StringDictionaryItem(varlist, var))
+        result = null
           
-          if (StartsWith(var, "object")) {
-            if (HasDelegateImplementation(thiscommand, "multiple")) {
-              result = ResolveNameList(value, RunDelegateFunction(thiscommand, "multiple"), "object", resolvedobjects)
-            }
-            else {
-              result = ResolveName(value, "object")
-            }
-          }
-          else if (StartsWith(var, "exit")) {
-            result = ResolveName(value, "exit")
-          }
-          else if (StartsWith(var, "text")) {
-            result = value
+        if (StartsWith(var, "object")) {
+          if (HasDelegateImplementation(thiscommand, "multiple")) {
+            result = ResolveNameList(value, RunDelegateFunction(thiscommand, "multiple"), "object", resolvedobjects)
           }
           else {
-            error ("Unhandled command variable '" + var + "'")
-          }
-            
-          if (result = null) {
-            resolved = false
-          }
-          else {
-            dictionary add(resolvedobjects, var, result)
+            result = ResolveName(value, "object")
           }
         }
+        else if (StartsWith(var, "exit")) {
+          result = ResolveName(value, "exit")
+        }
+        else if (StartsWith(var, "text")) {
+          result = value
+        }
+        else {
+          error ("Unhandled command variable '" + var + "'")
+        }
+            
+        if (result = null) {
+          resolved = false
+          unresolvedobject = value
+          unresolvedkey = var
+        }
+        else {
+          dictionary add(resolvedobjects, var, result)
+        }
       }
+    }
       
-      if (not DictionaryContains(resolvedobjects, "multiple")) {
-        dictionary add (resolvedobjects, "multiple", false)
-      }
+    if (not DictionaryContains(resolvedobjects, "multiple")) {
+      dictionary add (resolvedobjects, "multiple", false)
+    }
       
-      if (resolved) {
-        if (not GetBoolean(thiscommand, "isundo")) {
+    if (resolved) {
+      if (not GetBoolean(thiscommand, "isundo")) {
+        if (LengthOf(command) > 0) {
           start transaction (command)
         }
-        do (thiscommand, "script", resolvedobjects)
+      }
+      if (not GetBoolean(thiscommand, "isoops")) {
+        game.unresolvedcommand = null
+        game.unresolvedcommandvarlist = null
+        game.unresolvedcommandkey = null
+      }
+      do (thiscommand, "script", resolvedobjects)
+    }
+    else {
+      if (HasString(thiscommand, "unresolved")) {
+        if (ListCount(varlist) > 1) {
+          msg (thiscommand.unresolved + " (" + unresolvedobject + ")")
+        }
+        else {
+          msg (thiscommand.unresolved)
+        }
       }
       else {
-        if (HasString(thiscommand, "unresolved")) {
-          msg (thiscommand.unresolved)
+        if (ListCount(varlist) > 1) {
+          msg (Template("UnresolvedObject") + " (" + unresolvedobject + ")")
         }
         else {
           msg (Template("UnresolvedObject"))
         }
       }
+      game.unresolvedcommand = thiscommand
+      game.unresolvedcommandvarlist = varlist
+      game.unresolvedcommandkey = unresolvedkey
     }
-    RunTurnScripts
-    UpdateStatusAttributes
   </function>
 
   <type name="defaultverb">

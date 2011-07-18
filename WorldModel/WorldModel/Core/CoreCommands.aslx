@@ -424,6 +424,26 @@
     return (strength)
   </function>
 
+  <command name="oops" pattern="[oops]">
+    <isoops/>
+    <script><![CDATA[
+      hasoops = false
+      if (HasAttribute(game, "unresolvedcommand")) {
+        if (game.unresolvedcommand <> null) {
+          hasoops = true
+        }
+      }
+      if (not hasoops) {
+        msg (Template("DefaultOops"))
+      }
+      else {
+        dictionary remove (game.unresolvedcommandvarlist, game.unresolvedcommandkey)
+        dictionary add (game.unresolvedcommandvarlist, game.unresolvedcommandkey, text)
+        HandleSingleCommandPattern ("", game.unresolvedcommand, game.unresolvedcommandvarlist)
+      }
+    ]]></script>
+  </command>
+
   <!-- The object name for a verb defaults to the same thing as its property, unless we explictly specify a name,
        as we do here e.g. to prevent a clash with the "sit" command -->
   <verb template="speakto" property="speak" response="DefaultSpeakTo"/>

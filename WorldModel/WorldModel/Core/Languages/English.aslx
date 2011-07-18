@@ -77,6 +77,7 @@
   <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "be") + " already switched off."</dynamictemplate>"
   <dynamictemplate name="SwitchedOn">"You switch " + object.article + " on."</dynamictemplate>
   <dynamictemplate name="SwitchedOff">"You switch " + object.article + " off."</dynamictemplate>
+  <template name="DefaultOops">There is nothing to correct.</template>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>
@@ -114,6 +115,7 @@
   <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">buy</verbtemplate>
   <dynamictemplate name="DefaultBuy">"You can't buy " + object.article + "."</dynamictemplate>
