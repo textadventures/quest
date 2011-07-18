@@ -1618,5 +1618,31 @@ namespace AxeSoftware.Quest
         {
             return m_worldModel.GetBuiltInFunctionNames();
         }
+
+        public static Dictionary<string, string> GetAvailableTemplates()
+        {
+            Dictionary<string, string> templates = new Dictionary<string, string>();
+
+            string folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
+            folder = folder.Substring(6);   // remove initial "file://"
+
+            foreach (string file in System.IO.Directory.GetFiles(folder, "*.template", System.IO.SearchOption.AllDirectories))
+            {
+                string key = System.IO.Path.GetFileNameWithoutExtension(file);
+                if (!templates.ContainsKey(key))
+                {
+                    templates.Add(key, file);
+                }
+            }
+
+            return templates;
+        }
+
+        public static void CreateNewGameFile(string filename, string template, string gameName)
+        {
+            string templateText = System.IO.File.ReadAllText(template);
+            string initialFileText = templateText.Replace("$NAME$", gameName);
+            System.IO.File.WriteAllText(filename, initialFileText);
+        }
     }
 }

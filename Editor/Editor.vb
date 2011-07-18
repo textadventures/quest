@@ -568,7 +568,7 @@ Public Class Editor
     End Function
 
     Public Function CreateNewGame() As String
-        Dim templates As Dictionary(Of String, String) = GetAvailableTemplates()
+        Dim templates As Dictionary(Of String, String) = EditorController.GetAvailableTemplates()
         Dim newGameWindow As New NewGameWindow
         newGameWindow.SetAvailableTemplates(templates)
         newGameWindow.ShowDialog()
@@ -581,28 +581,9 @@ Public Class Editor
             System.IO.Directory.CreateDirectory(folder)
         End If
 
-        Dim templateText = System.IO.File.ReadAllText(templates(newGameWindow.lstTemplate.Text))
-        Dim initialFileText = templateText.Replace("$NAME$", newGameWindow.txtGameName.Text)
-
-        System.IO.File.WriteAllText(filename, initialFileText)
+        EditorController.CreateNewGameFile(filename, templates(newGameWindow.lstTemplate.Text), newGameWindow.txtGameName.Text)
 
         Return filename
-    End Function
-
-    Public Function GetAvailableTemplates() As Dictionary(Of String, String)
-        Dim templates As New Dictionary(Of String, String)
-
-        Dim folder As String = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase)
-        folder = folder.Substring(6) ' remove initial "file://"
-
-        For Each file In System.IO.Directory.GetFiles(folder, "*.template", System.IO.SearchOption.AllDirectories)
-            Dim key As String = System.IO.Path.GetFileNameWithoutExtension(file)
-            If Not templates.ContainsKey(key) Then
-                templates.Add(key, file)
-            End If
-        Next
-
-        Return templates
     End Function
 
     Private Sub PlayGame()

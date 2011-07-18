@@ -281,7 +281,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Core\Languages\Espanol.aslx" />
+    <None Include="Core\Languages\Espanol.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\Languages\Nederlands.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -289,7 +291,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Core\Templates\Espanol.template" />
+    <None Include="Core\Templates\Espanol.template">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\Templates\Nederlands.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
