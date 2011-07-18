@@ -1626,7 +1626,7 @@ namespace AxeSoftware.Quest
             Dictionary<string, string> templates = new Dictionary<string, string>();
 
             if (folder == null) folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
-            if (folder.StartsWith("file://")) folder = folder.Substring(6);
+            if (folder.StartsWith("file:\\")) folder = folder.Substring(6);
 
             foreach (string file in System.IO.Directory.GetFiles(folder, "*.template", System.IO.SearchOption.AllDirectories))
             {

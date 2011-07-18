@@ -935,7 +935,7 @@ namespace AxeSoftware.Quest
                 // Because if we do have a resource folder, all required external files should be there.
 
                 if (TryPath(Environment.CurrentDirectory, file, out path, false)) return path;
-                if (m_libFolder != null && TryPath(m_libFolder, file, out path, true)) return path;
+                if (!string.IsNullOrEmpty(m_libFolder) && TryPath(m_libFolder, file, out path, true)) return path;
                 if (System.Reflection.Assembly.GetEntryAssembly() != null)
                 {
                     if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path, true)) return path;
