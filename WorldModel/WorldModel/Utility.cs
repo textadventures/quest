@@ -261,7 +261,7 @@ namespace AxeSoftware.Quest
         {
             // We ignore regex matches which appear within quotes by splitting the string
             // at the position of quote marks, and then alternating whether we replace or not.
-            string[] sections = input.Split('\"');
+            string[] sections = SplitQuotes(input);
             string result = string.Empty;
 
             bool insideQuote = false;
@@ -282,6 +282,45 @@ namespace AxeSoftware.Quest
             }
 
             return result;
+        }
+
+        private static string[] SplitQuotes(string text)
+        {
+            List<string> result = new List<string>();
+            bool processThisCharacter;
+            bool processNextCharacter = true;
+            string curParam = string.Empty;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                processThisCharacter = processNextCharacter;
+                processNextCharacter = true;
+
+                string curChar = text.Substring(i, 1);
+
+                if (processThisCharacter)
+                {
+                    if (curChar == "\\")
+                    {
+                        // Don't process the character after a backslash
+                        processNextCharacter = false;
+                    }
+                    else
+                    {
+                        if (curChar == "\"")
+                        {
+                            result.Add(curParam);
+                            curParam = string.Empty;
+                            continue;
+                        }
+                    }
+                }
+
+                curParam += curChar;
+            }
+            result.Add(curParam);
+
+            return result.ToArray();
         }
 
         public static string RemoveComments(string input)
@@ -338,7 +377,7 @@ namespace AxeSoftware.Quest
 
         public static string ObscureStrings(string input)
         {
-            string[] sections = input.Split('\"');
+            string[] sections = SplitQuotes(input);
             string result = string.Empty;
 
             bool insideQuote = false;

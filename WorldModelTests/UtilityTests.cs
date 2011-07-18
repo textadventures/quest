@@ -35,6 +35,7 @@ namespace WorldModelTests
             Assert.AreEqual("msg (\"Something with // two slashes\")", Utility.RemoveComments("msg (\"Something with // two slashes\")"));
             Assert.AreEqual("msg (\"Something with // two slashes\")", Utility.RemoveComments("msg (\"Something with // two slashes\")//comment"));
             Assert.AreEqual("msg (\"Something with // two slashes\")", Utility.RemoveComments("msg (\"Something with // two slashes\")//comment \"with a string\""));
+            Assert.AreEqual("msg (\"A quote \\\"with // two slashes\\\"\")", Utility.RemoveComments("msg (\"A quote \\\"with // two slashes\\\"\")"));
         }
 
         [TestMethod]
@@ -46,6 +47,18 @@ namespace WorldModelTests
             Assert.IsTrue(result.StartsWith("This is \""));
             Assert.IsTrue(result.EndsWith("\" of obscuring strings"));
             Assert.IsFalse(result.Contains("a test"));
+        }
+
+        [TestMethod]
+        public void TestObscureStringsWithNestedQuotes()
+        {
+            string input = "This is \"a test \\\"with a nested quote\\\"\" of obscuring strings";
+            string result = Utility.ObscureStrings(input);
+            Assert.AreEqual(input.Length, result.Length);
+            Assert.IsTrue(result.StartsWith("This is \""));
+            Assert.IsTrue(result.EndsWith("\" of obscuring strings"));
+            Assert.IsFalse(result.Contains("a test"));
+            Assert.IsFalse(result.Contains("a nested quote"));
         }
 
         [TestMethod]
