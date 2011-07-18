@@ -1,4 +1,4 @@
-﻿<asl version="500">
+﻿<asl version="500" template="Español">
 
   <include ref="Espanol.aslx"/>
   <include ref="Core.aslx"/>

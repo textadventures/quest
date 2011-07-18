@@ -1633,11 +1633,32 @@ namespace AxeSoftware.Quest
                 string key = System.IO.Path.GetFileNameWithoutExtension(file);
                 if (!templates.ContainsKey(key))
                 {
-                    templates.Add(key, file);
+                    AddTemplateName(templates, key, file);
                 }
             }
 
             return templates;
+        }
+
+        private static void AddTemplateName(Dictionary<string, string> templates, string key, string filename)
+        {
+            try
+            {
+                string templateName = key;
+
+                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(filename);
+                xmlReader.Read();
+                if (xmlReader.Name == "asl")
+                {
+                    string templateAttr = xmlReader.GetAttribute("template");
+                    if (!string.IsNullOrEmpty(templateAttr)) templateName = templateAttr;
+                }
+                templates.Add(templateName, filename);
+            }
+            catch
+            {
+                // ignore any templates which fail to load
+            }
         }
 
         public static void CreateNewGameFile(string filename, string template, string gameName)
