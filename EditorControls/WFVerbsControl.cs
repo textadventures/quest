@@ -14,11 +14,19 @@ namespace AxeSoftware.Quest.EditorControls
             {"script", "Run a script"}
         };
 
+        private IDictionary<string, string> m_clashMessages;
+
         public WFVerbsControl()
         {
             ctlSplitContainerMain.Panel1Collapsed = true;
             lblAttributesTitle.Text = "Verbs";
             lblAttributesTitle.Width = 60;
+        }
+
+        public override void Initialise(EditorController controller, IEditorControl controlData)
+        {
+            base.Initialise(controller, controlData);
+            m_clashMessages = controlData.GetDictionary("clashmessages");
         }
 
         protected override bool CanDisplayAttribute(string attribute, object value)
@@ -98,14 +106,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (!lstAttributes.Items.ContainsKey(selectedAttribute))
             {
-                if (!Controller.IsVerbAttribute(selectedAttribute))
-                {
-                    if (!Controller.CanAddVerb(selectedPattern))
-                    {
-                        MessageBox.Show("Unable to add verb", "Unable to add verb", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        return;
-                    }
-                }
+                if (!CanAddVerb(selectedPattern, selectedAttribute)) return;
 
                 Controller.StartTransaction(string.Format("Add '{0}' verb", selectedPattern));
 
@@ -128,6 +129,25 @@ namespace AxeSoftware.Quest.EditorControls
                 lstAttributes.Items[selectedAttribute].Selected = true;
                 lstAttributes.SelectedItems[0].EnsureVisible();
             }
+        }
+
+        private bool CanAddVerb(string selectedPattern, string selectedAttribute)
+        {
+            if (!Controller.IsVerbAttribute(selectedAttribute))
+            {
+                AxeSoftware.Quest.EditorController.CanAddVerbResult canAddResult = Controller.CanAddVerb(selectedPattern);
+                if (!canAddResult.CanAdd)
+                {
+                    string clashMessage = "Verb would clash with command: " + canAddResult.ClashingCommandDisplay;
+                    if (m_clashMessages.ContainsKey(canAddResult.ClashingCommand))
+                    {
+                        clashMessage += Environment.NewLine + Environment.NewLine + m_clashMessages[canAddResult.ClashingCommand];
+                    }
+                    MessageBox.Show(clashMessage, "Unable to add verb", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void CreateNewVerb(string selectedPattern, string selectedAttribute)

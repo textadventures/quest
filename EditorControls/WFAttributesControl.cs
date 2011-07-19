@@ -312,7 +312,7 @@ namespace AxeSoftware.Quest.EditorControls
             return result;
         }
 
-        public void Initialise(EditorController controller, IEditorControl controlData)
+        public virtual void Initialise(EditorController controller, IEditorControl controlData)
         {
             m_controller = controller;
         }

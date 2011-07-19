@@ -1668,8 +1668,16 @@ namespace AxeSoftware.Quest
             System.IO.File.WriteAllText(filename, initialFileText);
         }
 
-        public bool CanAddVerb(string verbPattern)
+        public struct CanAddVerbResult
         {
+            public bool CanAdd;
+            public string ClashingCommand;
+            public string ClashingCommandDisplay;
+        }
+
+        public CanAddVerbResult CanAddVerb(string verbPattern)
+        {
+            CanAddVerbResult result = new CanAddVerbResult();
             verbPattern += " object";
 
             // Now see if "verb object" is a match for the regex of an existing command in the game
@@ -1700,13 +1708,27 @@ namespace AxeSoftware.Quest
                     System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
                     if (regex.IsMatch(verbPattern))
                     {
-                        // TO DO: also pass the name of the verb that fails so we can print an appropriate message
-                        return false;
+                        result.ClashingCommand = cmd.Name;
+                        result.ClashingCommandDisplay = cmd.Name;
+                        if (cmd.Fields[FieldDefinitions.Anonymous])
+                        {
+                            if (editorCommandPattern != null)
+                            {
+                                result.ClashingCommandDisplay = editorCommandPattern.Pattern;
+                            }
+                            else
+                            {
+                                result.ClashingCommandDisplay = stringPattern;
+                            }
+                        }
+                        result.CanAdd = false;
+                        return result;
                     }
                 }
             }
 
-            return true;
+            result.CanAdd = true;
+            return result;
         }
     }
 }

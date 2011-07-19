@@ -5,6 +5,7 @@
     <mustnotinherit>editor_room</mustnotinherit>
     <control>
       <controltype>verbs</controltype>
+      <clashmessages type="stringdictionary">lookat=To configure the response for this command, set the Description on the Setup tab.;take=Use the Inventory tab to configure taking the object.;drop=Use the Inventory tab to configure dropping the object.;give=Use the Inventory tab to configure giving the object.;use=Use the Inventory tab to configure using the object.;useon=Use the Inventory tab to configure using the object.;go=Use the room Exits tab to create an exit to this object.;open=Use the Container to tab to configure opening the object.;close=Use the Container tab to configure closing the object.;put=Use the Container tab to configure container behaviour.;ask=Use the Ask/Tell tab to configure topics.;tell=Use the Ask/Tell tab to configure topics.</clashmessages>
       <expand/>
     </control>
   </tab>
