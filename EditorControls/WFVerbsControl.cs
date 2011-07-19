@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace AxeSoftware.Quest.EditorControls
 {
@@ -88,20 +89,29 @@ namespace AxeSoftware.Quest.EditorControls
                 selectedAttribute = selectedAttribute.Replace(" ", "").Replace("#object#", "");
             }
 
+            AddVerb(selectedPattern, selectedAttribute);
+        }
+
+        private void AddVerb(string selectedPattern, string selectedAttribute)
+        {
             bool setSelection = true;
 
             if (!lstAttributes.Items.ContainsKey(selectedAttribute))
             {
+                if (!Controller.IsVerbAttribute(selectedAttribute))
+                {
+                    if (!Controller.CanAddVerb(selectedPattern))
+                    {
+                        MessageBox.Show("Unable to add verb", "Unable to add verb", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                }
+
                 Controller.StartTransaction(string.Format("Add '{0}' verb", selectedPattern));
 
                 if (!Controller.IsVerbAttribute(selectedAttribute))
                 {
-                    string newVerbId = Controller.CreateNewVerb(null, false);
-                    IEditorData verbData = Controller.GetEditorData(newVerbId);
-                    verbData.SetAttribute("property", selectedAttribute);
-                    EditableCommandPattern pattern = (EditableCommandPattern)verbData.GetAttribute("pattern");
-                    pattern.Pattern = selectedPattern;
-                    verbData.SetAttribute("defaulttext", "You can't " + selectedPattern + " that.");
+                    CreateNewVerb(selectedPattern, selectedAttribute);
                 }
 
                 ValidationResult setAttrResult = Data.SetAttribute(selectedAttribute, String.Empty);
@@ -118,6 +128,16 @@ namespace AxeSoftware.Quest.EditorControls
                 lstAttributes.Items[selectedAttribute].Selected = true;
                 lstAttributes.SelectedItems[0].EnsureVisible();
             }
+        }
+
+        private void CreateNewVerb(string selectedPattern, string selectedAttribute)
+        {
+            string newVerbId = Controller.CreateNewVerb(null, false);
+            IEditorData verbData = Controller.GetEditorData(newVerbId);
+            verbData.SetAttribute("property", selectedAttribute);
+            EditableCommandPattern pattern = (EditableCommandPattern)verbData.GetAttribute("pattern");
+            pattern.Pattern = selectedPattern;
+            verbData.SetAttribute("defaulttext", "You can't " + selectedPattern + " that.");
         }
 
         protected override string GetAttributeDisplayName(IEditorAttributeData attr)

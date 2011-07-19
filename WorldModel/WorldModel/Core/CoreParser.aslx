@@ -149,7 +149,8 @@
         
     foreach (candidate, candidates) {
       strength = GetMatchStrength(candidate.pattern, command)
-      if (strength > maxstrength) {
+      // favour commands defined later, so an author can override a library command
+      if (strength >= maxstrength) {
         thiscommand = candidate
         maxstrength = strength
       }

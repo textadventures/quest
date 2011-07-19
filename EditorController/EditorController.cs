@@ -1667,5 +1667,46 @@ namespace AxeSoftware.Quest
             string initialFileText = templateText.Replace("$NAME$", gameName);
             System.IO.File.WriteAllText(filename, initialFileText);
         }
+
+        public bool CanAddVerb(string verbPattern)
+        {
+            verbPattern += " object";
+
+            // Now see if "verb object" is a match for the regex of an existing command in the game
+
+            foreach (Element cmd in from e in m_worldModel.Objects
+                                    where e.Type == ObjectType.Command
+                                    where e.Parent == null
+                                    where !e.Fields[FieldDefinitions.IsVerb]
+                                    select e)
+            {
+                string regexPattern = null;
+
+                object pattern = cmd.Fields.Get(FieldDefinitions.Pattern.Property);
+                EditorCommandPattern editorCommandPattern = pattern as EditorCommandPattern;
+                string stringPattern = pattern as string;
+
+                if (editorCommandPattern != null)
+                {
+                    regexPattern = Utility.ConvertVerbSimplePattern(editorCommandPattern.Pattern);
+                }
+                else
+                {
+                    regexPattern = stringPattern;
+                }
+
+                if (regexPattern != null)
+                {
+                    System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
+                    if (regex.IsMatch(verbPattern))
+                    {
+                        // TO DO: also pass the name of the verb that fails so we can print an appropriate message
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
     }
 }
