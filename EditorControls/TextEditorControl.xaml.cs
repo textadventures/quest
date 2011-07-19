@@ -299,5 +299,11 @@ namespace AxeSoftware.Quest.EditorControls
         {
             get { return textEditor; }
         }
+
+        public void Find()
+        {
+            FindReplaceWindow findWindow = new FindReplaceWindow();
+            findWindow.ShowDialog();
+        }
     }
 }

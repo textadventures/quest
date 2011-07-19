@@ -90,6 +90,7 @@ Public Class Editor
         menu.AddMenuClickHandler("paste", AddressOf Paste)
         menu.AddMenuClickHandler("delete", AddressOf Delete)
         menu.AddMenuClickHandler("publish", AddressOf Publish)
+        menu.AddMenuClickHandler("find", AddressOf Find)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -885,5 +886,9 @@ Public Class Editor
         If lastSelection IsNot Nothing Then
             ctlTree.TrySetSelectedItem(lastSelection)
         End If
+    End Sub
+
+    Private Sub Find()
+        ctlTextEditor.Find()
     End Sub
 End Class

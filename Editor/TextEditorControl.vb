@@ -77,4 +77,8 @@
             Return wpfTextEditor.TextWasSaved
         End Get
     End Property
+
+    Public Sub Find()
+        wpfTextEditor.Find()
+    End Sub
 End Class
