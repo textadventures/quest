@@ -236,6 +236,9 @@ Public Class Main
         If e.KeyCode = Keys.Escape AndAlso FullScreen Then
             FullScreen = False
         End If
+        If e.KeyCode = Keys.Enter Then
+            ctlPlayer.KeyPressed()
+        End If
     End Sub
 
     Private Sub Main_KeyPress(sender As Object, e As System.Windows.Forms.KeyPressEventArgs) Handles Me.KeyPress
