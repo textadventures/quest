@@ -25,7 +25,7 @@ function bindMenu(linkid, verbs, text) {
     var options = [];
 
     $.each(verbsList, function (key, value) {
-        options = options.concat({ title: value, action: { type: "fn", callback: "doMenuClick('" + value.toLowerCase() + " " + text + "');"} });
+        options = options.concat({ title: value, action: { type: "fn", callback: "doMenuClick('" + value.toLowerCase() + " " + text.replace("'", "\\'") + "');"} });
     });
 
     $("#" + linkid).jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
