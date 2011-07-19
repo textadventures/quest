@@ -54,6 +54,7 @@
         AddMenuData("view", MenuMode.Player)
         AddMenuData("fullscreen", MenuMode.Player)
         AddMenuData("publish", MenuMode.Editor)
+        AddMenuData("find", MenuMode.Editor)
     End Sub
 
     Private Sub AddMenuData(key As String, ParamArray modes() As MenuMode)
@@ -115,6 +116,16 @@
         End Set
     End Property
 
+    Public Property MenuVisible(key As String) As Boolean
+        Get
+            Return m_menus(key).Visible
+        End Get
+        Set(value As Boolean)
+            m_menus(key).Visible = value
+            HideDuplicateSeparators()
+        End Set
+    End Property
+
     Public Property Mode() As MenuMode
         Get
             Return m_mode
@@ -164,6 +175,7 @@
 
     Private Sub HideDuplicateSeparators(menu As ToolStripMenuItem)
         Dim lastWasSeparator As Boolean = True  ' so we don't get a separator at the top of the menu
+        Dim lastItem As ToolStripItem = Nothing
 
         For Each item As ToolStripItem In menu.DropDownItems
             If item.Available Then
@@ -177,8 +189,14 @@
 
                     lastWasSeparator = True
                 End If
+
+                lastItem = item
             End If
         Next
+
+        If lastWasSeparator AndAlso lastItem IsNot Nothing Then
+            lastItem.Available = False
+        End If
     End Sub
 
     Private Sub HideEmptyMenus()

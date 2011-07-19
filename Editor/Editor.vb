@@ -674,6 +674,12 @@ Public Class Editor
         ctlTextEditor.Visible = codeView
         splitMain.Visible = Not codeView
         ctlToolbar.CodeView = codeView
+        m_menu.MenuVisible("add") = Not codeView
+        m_menu.MenuVisible("find") = codeView
+    End Sub
+
+    Public Sub Redisplay()
+        DisplayCodeView(m_codeView)
     End Sub
 
     Private Sub ctlTextEditor_UndoRedoEnabledUpdated(undoEnabled As Boolean, redoEnabled As Boolean) Handles ctlTextEditor.UndoRedoEnabledUpdated

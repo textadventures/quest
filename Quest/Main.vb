@@ -51,6 +51,7 @@ Public Class Main
             m_playingEditorGame = False
             ctlEditor.SetWindowTitle()
             ctlEditor.SetMenu(ctlMenu)
+            ctlEditor.Redisplay()
         Else
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
             ctlLauncher.RefreshLists()
