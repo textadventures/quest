@@ -23,6 +23,7 @@ Public Class Player
     Private m_waiting As Boolean = False
     Private m_speech As New System.Speech.Synthesis.SpeechSynthesizer
     Private m_loopSound As Boolean = False
+    Private m_waitingForSoundToFinish As Boolean = False
     Private m_soundPlaying As Boolean = False
     Private m_destroyed As Boolean = False
     Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
@@ -580,14 +581,7 @@ Public Class Player
                         m_mediaPlayer.Open(New System.Uri(filename))
                         m_mediaPlayer.Play()
 
-                        If synchronous Then
-                            Do
-                                Threading.Thread.Sleep(10)
-                                Application.DoEvents()
-                            Loop Until Not m_soundPlaying
-                            m_game.FinishWait()
-                            ClearBuffer()
-                        End If
+                        m_waitingForSoundToFinish = synchronous
                     End Sub
         )
     End Sub
@@ -603,6 +597,11 @@ Public Class Player
 
     Private Sub m_mediaPlayer_MediaEnded(sender As Object, e As System.EventArgs) Handles m_mediaPlayer.MediaEnded
         m_soundPlaying = False
+        If m_waitingForSoundToFinish Then
+            m_waitingForSoundToFinish = False
+            m_game.FinishWait()
+            ClearBuffer()
+        End If
         If m_loopSound Then
             m_mediaPlayer.Position = New TimeSpan(0)
             m_mediaPlayer.Play()

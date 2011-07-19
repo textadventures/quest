@@ -1263,5 +1263,19 @@ namespace AxeSoftware.Quest
 
             return s_functionNames.AsReadOnly();
         }
+
+        public void PlaySound(string filename, bool sync, bool looped)
+        {
+            m_playerUI.PlaySound(filename, sync, looped);
+            if (sync)
+            {
+                ChangeThreadState(ThreadState.Waiting);
+
+                lock (m_waitForResponseLock)
+                {
+                    Monitor.Wait(m_waitForResponseLock);
+                }
+            }
+        }
     }
 }

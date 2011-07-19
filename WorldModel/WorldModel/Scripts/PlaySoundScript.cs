@@ -51,7 +51,7 @@ namespace AxeSoftware.Quest.Scripts
         {
             string filename = m_filename.Execute(c);
             string path = m_worldModel.GetExternalPath(filename);
-            m_worldModel.PlayerUI.PlaySound(path, m_synchronous.Execute(c), m_loop.Execute(c));
+            m_worldModel.PlaySound(path, m_synchronous.Execute(c), m_loop.Execute(c));
         }
 
         public override string Save()
