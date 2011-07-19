@@ -9,8 +9,8 @@
         youarein = player.parent.descprefix
         msg (youarein + " " + GetDisplayName(player.parent) + ".")
 
-        desc = FormatObjectList(Template("SeeListHeader"), GetNonTransparentParent(player.parent), Template("And"), ".", false)
-        exits = FormatExitList(Template("GoListHeader"), ScopeExits(), Template("Or"), ".")
+        desc = FormatObjectList(player.parent.objectslistprefix, GetNonTransparentParent(player.parent), Template("And"), ".", false)
+        exits = FormatExitList(player.parent.exitslistprefix, ScopeExits(), Template("Or"), ".")
         fulldesc = ""
         if (LengthOf(desc) > 0) {
           fulldesc = desc

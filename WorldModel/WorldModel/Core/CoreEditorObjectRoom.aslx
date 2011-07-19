@@ -20,6 +20,12 @@
     </control>
 
     <control>
+      <controltype>textbox</controltype>
+      <caption>Objects list prefix</caption>
+      <attribute>objectslistprefix</attribute>
+    </control>
+
+    <control>
       <controltype>multi</controltype>
       <caption>Description</caption>
       <attribute>description</attribute>

@@ -28,6 +28,8 @@
     <close type="boolean">false</close>
     <container type="boolean">false</container>
     <descprefix>[YouAreIn]</descprefix>
+    <objectslistprefix>[SeeListHeader]</objectslistprefix>
+    <exitslistprefix>[GoListHeader]</exitslistprefix>
     <contentsprefix>[ContainerContentsPrefix]</contentsprefix>
     <description type="string"></description>
     <scenery type="boolean">false</scenery>

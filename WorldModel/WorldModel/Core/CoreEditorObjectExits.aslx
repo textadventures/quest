@@ -5,6 +5,12 @@
     <mustnotinherit>editor_object; defaultplayer</mustnotinherit>
 
     <control>
+      <controltype>textbox</controltype>
+      <caption>Exits list prefix</caption>
+      <attribute>exitslistprefix</attribute>
+    </control>
+
+    <control>
       <controltype>exits</controltype>
       <compass type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassOut];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown]</compass>
       <expand/>
