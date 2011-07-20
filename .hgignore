@@ -1,0 +1,6 @@
+[Bb]in/
+obj/
+[Dd]ebug/
+[Rr]elease/
+.*\.suo
+WebPlayer/playercore\..*
