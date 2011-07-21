@@ -7,7 +7,7 @@
   <template name="UnresolvedObject">Ich kann das hier nicht sehen.</template>
   <template name="UnresolvedLocation">Du kannst nicht dahin gehen.</template>
   <template name="DefaultObjectDescription">Du siehst nichts Bemerkenswertes.</template>
-  <dynamictemplate name="TakeSuccessful">"Du nimmst es an dich."</dynamictemplate>
+  <dynamictemplate name="TakeSuccessful">"Du nimmst " + object.gender + " an dich."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Das kannst du nicht nehmen."</dynamictemplate>
   <template name="SeeListHeader">Du siehst</template>
   <template name="GoListHeader">Mögliche Ausgänge:</template>
