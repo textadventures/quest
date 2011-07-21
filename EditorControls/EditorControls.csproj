@@ -108,8 +108,8 @@
     <Compile Include="FileControl.xaml.cs">
       <DependentUpon>FileControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FindReplaceWindow.xaml.cs">
-      <DependentUpon>FindReplaceWindow.xaml</DependentUpon>
+    <Compile Include="FindControl.xaml.cs">
+      <DependentUpon>FindControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="IfEditor.xaml.cs">
       <DependentUpon>IfEditor.xaml</DependentUpon>
@@ -357,7 +357,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FindReplaceWindow.xaml">
+    <Page Include="FindControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

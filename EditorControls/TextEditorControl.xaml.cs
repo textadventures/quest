@@ -302,8 +302,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Find()
         {
-            FindReplaceWindow findWindow = new FindReplaceWindow();
-            findWindow.ShowDialog();
+            ctlFind.Visibility = Visibility.Visible;
+            ctlFind.txtFind.Focus();
         }
     }
 }
