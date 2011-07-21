@@ -295,7 +295,7 @@ namespace AxeSoftware.Quest
 
         internal void SetFromUndo(string name, object value)
         {
-            Set(name, value, false, false);
+            Set(name, value, false, false, allowUpdateSortOrder: false);
         }
 
         internal void RemoveFieldInternal(string name)
@@ -328,7 +328,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private void Set(string name, object value, bool raiseEvent, bool cloneClonableValues)
+        private void Set(string name, object value, bool raiseEvent, bool cloneClonableValues, bool allowUpdateSortOrder = true)
         {
             bool changed = false;
             bool added = true;
@@ -374,7 +374,7 @@ namespace AxeSoftware.Quest
 
             m_attributes[name] = value;
 
-            if (changed && name == "parent" && m_element.Initialised)
+            if (changed && allowUpdateSortOrder && name == "parent" && m_element.Initialised)
             {
                 m_worldModel.UpdateElementSortOrder(m_element);
             }
