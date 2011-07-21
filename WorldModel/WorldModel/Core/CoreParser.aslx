@@ -44,7 +44,7 @@
       CompareNames (name, value, obj, fullmatches, partialmatches)
       if (not obj.alt = null) {
         foreach (altname, obj.alt) {
-          CompareNames (altname, value, obj, fullmatches, partialmatches)
+          CompareNames (LCase(altname), value, obj, fullmatches, partialmatches)
         }
       }
     }
