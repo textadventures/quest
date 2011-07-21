@@ -305,5 +305,30 @@ namespace AxeSoftware.Quest.EditorControls
             ctlFind.Visibility = Visibility.Visible;
             ctlFind.txtFind.Focus();
         }
+
+        private void ctlFind_Find(string findText)
+        {
+            int start = textEditor.SelectionStart;
+            int findIndex = textEditor.Text.IndexOf(findText, start + 1, StringComparison.CurrentCultureIgnoreCase);
+            if (findIndex == -1)
+            {
+                findIndex = textEditor.Text.IndexOf(findText, 0, StringComparison.CurrentCultureIgnoreCase);
+            }
+            if (findIndex > -1)
+            {
+                textEditor.SelectionStart = findIndex;
+                textEditor.SelectionLength = findText.Length;
+                textEditor.ScrollToLine(textEditor.TextArea.Document.GetLineByOffset(findIndex).LineNumber);
+            }
+            else
+            {
+                MessageBox.Show(string.Format("Text not found: {0}", findText));
+            }
+        }
+
+        private void ctlFind_Close()
+        {
+            ctlFind.Visibility = Visibility.Collapsed;
+        }
     }
 }

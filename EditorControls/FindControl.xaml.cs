@@ -14,14 +14,41 @@ using System.Windows.Shapes;
 
 namespace AxeSoftware.Quest.EditorControls
 {
-    /// <summary>
-    /// Interaction logic for FindControl.xaml
-    /// </summary>
     public partial class FindControl : UserControl
     {
+        public event Action<string> Find;
+        public event Action Close;
+
         public FindControl()
         {
             InitializeComponent();
+        }
+
+        private void cmdFind_Click(object sender, RoutedEventArgs e)
+        {
+            DoFind();
+        }
+
+        private void cmdClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void DoFind()
+        {
+            Find(txtFind.Text);
+        }
+
+        private void txtFind_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                DoFind();
+            }
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
         }
     }
 }

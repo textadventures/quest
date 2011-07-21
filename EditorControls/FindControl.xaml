@@ -15,10 +15,10 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Label Margin="5,0,3,0">Find:</Label>
-        <TextBox Name="txtFind" Grid.Column="1"/>
+        <TextBox Name="txtFind" Grid.Column="1" KeyDown="txtFind_KeyDown"/>
         <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Right" Grid.Column="2" Orientation="Horizontal">
-            <Button Name="cmdFind" Margin="2" Padding="3,1,3,1">Find Next</Button>
-            <Button Name="cmdClose" Margin="2" Padding="3,1,3,1">Close</Button>
+            <Button Name="cmdFind" Margin="2" Padding="3,1,3,1" Click="cmdFind_Click">Find Next</Button>
+            <Button Name="cmdClose" Margin="2" Padding="3,1,3,1" Click="cmdClose_Click">Close</Button>
         </StackPanel>
     </Grid>
 </UserControl>
