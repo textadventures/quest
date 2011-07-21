@@ -80,5 +80,30 @@ namespace WorldModelTests
                 > m_worldModel.Elements.Get("a").MetaFields[MetaFieldDefinitions.SortIndex],
                 "f should be after a in the sort order");
         }
+
+        [TestMethod]
+        public void TestSortIndexesOnMove()
+        {
+            // move d as child of a, so new tree looks like this:
+            // a
+            // - b
+            //   - c
+            // - e
+            // - d
+            // f
+
+            Element d = m_worldModel.Elements.Get("d");
+            d.Parent = m_worldModel.Elements.Get("a");
+
+            // e is after b
+            Assert.IsTrue(m_worldModel.Elements.Get("e").MetaFields[MetaFieldDefinitions.SortIndex]
+                > m_worldModel.Elements.Get("b").MetaFields[MetaFieldDefinitions.SortIndex],
+                "e should be after b in the sort order");
+
+            // d is after e
+            Assert.IsTrue(m_worldModel.Elements.Get("d").MetaFields[MetaFieldDefinitions.SortIndex]
+                > m_worldModel.Elements.Get("e").MetaFields[MetaFieldDefinitions.SortIndex],
+                "d should be after e in the sort order");
+        }
     }
 }
