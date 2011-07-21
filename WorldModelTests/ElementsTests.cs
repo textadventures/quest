@@ -61,5 +61,24 @@ namespace WorldModelTests
 
             Assert.AreEqual(0, childList.Count);
         }
+
+        [TestMethod]
+        public void TestSortIndexes()
+        {
+            // d is after c
+            Assert.IsTrue(m_worldModel.Elements.Get("d").MetaFields[MetaFieldDefinitions.SortIndex]
+                > m_worldModel.Elements.Get("c").MetaFields[MetaFieldDefinitions.SortIndex],
+                "d should be after c in the sort order");
+
+            // e is after b
+            Assert.IsTrue(m_worldModel.Elements.Get("e").MetaFields[MetaFieldDefinitions.SortIndex]
+                > m_worldModel.Elements.Get("b").MetaFields[MetaFieldDefinitions.SortIndex],
+                "e should be after b in the sort order");
+
+            // f is after a
+            Assert.IsTrue(m_worldModel.Elements.Get("f").MetaFields[MetaFieldDefinitions.SortIndex]
+                > m_worldModel.Elements.Get("a").MetaFields[MetaFieldDefinitions.SortIndex],
+                "f should be after a in the sort order");
+        }
     }
 }

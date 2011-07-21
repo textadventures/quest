@@ -96,6 +96,8 @@ namespace AxeSoftware.Quest
 
             newElement.FinishedInitialisation();
 
+            WorldModel.UpdateElementSortOrder(newElement);
+
             NotifyAddedElement(name);
 
             return newElement;

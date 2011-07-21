@@ -1277,5 +1277,21 @@ namespace AxeSoftware.Quest
                 }
             }
         }
+
+        internal void UpdateElementSortOrder(Element movedElement)
+        {
+            // This function is called when an element is moved to a new parent.
+            // When this happens, its SortIndex MetaField must be updated so that it
+            // is at the end of the list of children.
+
+            int maxIndex = -1;
+            foreach (Element sibling in m_elements.GetElements().Where(e => e.Parent == movedElement.Parent))
+            {
+                int thisSortIndex = sibling.MetaFields[MetaFieldDefinitions.SortIndex];
+                if (thisSortIndex > maxIndex) maxIndex = thisSortIndex;
+            }
+
+            movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
+        }
     }
 }

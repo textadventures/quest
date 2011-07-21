@@ -112,6 +112,7 @@ namespace AxeSoftware.Quest
         public static IField<bool> Library = new FieldDef<bool>("library");
         public static IField<bool> EditorLibrary = new FieldDef<bool>("editorlibrary");
         public static IField<bool> DelegateImplementation = new FieldDef<bool>("delegateimplementation");
+        public static IField<int> SortIndex = new FieldDef<int>("sortindex");
     }
 
     public class Fields
@@ -372,6 +373,11 @@ namespace AxeSoftware.Quest
             }
 
             m_attributes[name] = value;
+
+            if (changed && name == "parent" && m_element.Initialised)
+            {
+                m_worldModel.UpdateElementSortOrder(m_element);
+            }
 
             if (name == "name" && changed && value != null && !added && NameChanged != null)
             {
