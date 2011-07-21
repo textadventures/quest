@@ -139,10 +139,10 @@ namespace AxeSoftware.Quest
                 foreach (Element editor in allEditors.Where(e => !e.MetaFields[MetaFieldDefinitions.Library]))
                 {
                     m_editorSaver.StartSave(writer, editor);
-                    foreach (Element tab in allTabs.Where(t => t.Parent == editor))
+                    foreach (Element tab in allTabs.Where(t => t.Parent == editor).OrderBy(t => t.MetaFields[MetaFieldDefinitions.SortIndex]))
                     {
                         m_tabSaver.StartSave(writer, tab);
-                        foreach (Element control in allControls.Where(c => c.Parent == tab))
+                        foreach (Element control in allControls.Where(c => c.Parent == tab).OrderBy(c => c.MetaFields[MetaFieldDefinitions.SortIndex]))
                         {
                             m_controlSaver.Save(writer, control);
                         }
@@ -279,10 +279,17 @@ namespace AxeSoftware.Quest
             private void SaveElementAndChildren(GameXmlWriter writer, WorldModel worldModel, Element walkThrough)
             {
                 m_walkthroughSaver.StartSave(writer, walkThrough);
-                foreach (Element child in worldModel.Elements.GetElements(ElementType.Walkthrough).Where(e => e.Parent == walkThrough))
+
+                IEnumerable<Element> orderedChildren = from child in worldModel.Elements.GetElements(ElementType.Walkthrough)
+                                                       where child.Parent == walkThrough
+                                                       orderby child.MetaFields[MetaFieldDefinitions.SortIndex]
+                                                       select child;
+
+                foreach (Element child in orderedChildren)
                 {
                     SaveElementAndChildren(writer, worldModel, child);
                 }
+
                 m_walkthroughSaver.EndSave(writer, walkThrough);
             }
 

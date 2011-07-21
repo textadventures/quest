@@ -37,13 +37,14 @@ namespace AxeSoftware.Quest
             private void SaveObjectAndChildren(GameXmlWriter writer, IEnumerable<Element> allObjects, Element e, ObjectSaver saver)
             {
                 saver.StartSave(writer, e);
+                IEnumerable<Element> orderedChildren = from child in allObjects
+                                                       where child.Parent == e
+                                                       orderby child.MetaFields[MetaFieldDefinitions.SortIndex]
+                                                       select child;
 
-                foreach (Element child in allObjects)
+                foreach (Element child in orderedChildren)
                 {
-                    if (child.Parent == e)
-                    {
-                        SaveObjectAndChildren(writer, allObjects, child, saver);
-                    }
+                    SaveObjectAndChildren(writer, allObjects, child, saver);
                 }
 
                 saver.EndSave(writer, e);
