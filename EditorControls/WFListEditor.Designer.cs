@@ -34,6 +34,8 @@
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
             this.cmdEdit = new System.Windows.Forms.ToolStripButton();
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
+            this.cmdMoveUp = new System.Windows.Forms.ToolStripButton();
+            this.cmdMoveDown = new System.Windows.Forms.ToolStripButton();
             this.ctlToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,7 +45,7 @@
             this.lstList.HideSelection = false;
             this.lstList.Location = new System.Drawing.Point(0, 25);
             this.lstList.Name = "lstList";
-            this.lstList.Size = new System.Drawing.Size(316, 232);
+            this.lstList.Size = new System.Drawing.Size(424, 246);
             this.lstList.TabIndex = 5;
             this.lstList.UseCompatibleStateImageBehavior = false;
             this.lstList.View = System.Windows.Forms.View.Details;
@@ -53,10 +55,12 @@
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdAdd,
             this.cmdEdit,
-            this.cmdDelete});
+            this.cmdDelete,
+            this.cmdMoveUp,
+            this.cmdMoveDown});
             this.ctlToolStrip.Location = new System.Drawing.Point(0, 0);
             this.ctlToolStrip.Name = "ctlToolStrip";
-            this.ctlToolStrip.Size = new System.Drawing.Size(316, 25);
+            this.ctlToolStrip.Size = new System.Drawing.Size(424, 25);
             this.ctlToolStrip.TabIndex = 4;
             this.ctlToolStrip.Text = "ToolStrip1";
             // 
@@ -84,6 +88,22 @@
             this.cmdDelete.Size = new System.Drawing.Size(60, 22);
             this.cmdDelete.Text = "Delete";
             // 
+            // cmdMoveUp
+            // 
+            this.cmdMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("cmdMoveUp.Image")));
+            this.cmdMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdMoveUp.Name = "cmdMoveUp";
+            this.cmdMoveUp.Size = new System.Drawing.Size(75, 22);
+            this.cmdMoveUp.Text = "Move Up";
+            // 
+            // cmdMoveDown
+            // 
+            this.cmdMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("cmdMoveDown.Image")));
+            this.cmdMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdMoveDown.Name = "cmdMoveDown";
+            this.cmdMoveDown.Size = new System.Drawing.Size(91, 22);
+            this.cmdMoveDown.Text = "Move Down";
+            // 
             // WFListEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -91,7 +111,7 @@
             this.Controls.Add(this.lstList);
             this.Controls.Add(this.ctlToolStrip);
             this.Name = "WFListEditor";
-            this.Size = new System.Drawing.Size(316, 257);
+            this.Size = new System.Drawing.Size(424, 271);
             this.ctlToolStrip.ResumeLayout(false);
             this.ctlToolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -106,5 +126,7 @@
         internal System.Windows.Forms.ToolStripButton cmdAdd;
         internal System.Windows.Forms.ToolStripButton cmdEdit;
         internal System.Windows.Forms.ToolStripButton cmdDelete;
+        private System.Windows.Forms.ToolStripButton cmdMoveUp;
+        private System.Windows.Forms.ToolStripButton cmdMoveDown;
     }
 }
