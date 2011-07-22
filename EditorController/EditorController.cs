@@ -1730,5 +1730,15 @@ namespace AxeSoftware.Quest
             result.CanAdd = true;
             return result;
         }
+
+        public void SwapElements(string key1, string key2)
+        {
+            Element a = m_worldModel.Elements.Get(key1);
+            Element b = m_worldModel.Elements.Get(key2);
+
+            int index = a.MetaFields[MetaFieldDefinitions.SortIndex];
+            a.MetaFields[MetaFieldDefinitions.SortIndex] = b.MetaFields[MetaFieldDefinitions.SortIndex];
+            b.MetaFields[MetaFieldDefinitions.SortIndex] = index;
+        }
     }
 }

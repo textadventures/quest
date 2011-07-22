@@ -18,7 +18,7 @@ namespace AxeSoftware.Quest.EditorControls
 
     public interface IRearrangeableListEditorDelegate : IListEditorDelegate
     {
-        void DoSwap(int index1, int index2);
+        void DoSwap(string key1, string key2);
     }
 
     public partial class WFListEditor : UserControl
@@ -297,6 +297,20 @@ namespace AxeSoftware.Quest.EditorControls
                 m_readOnly = value;
                 cmdAdd.Enabled = !m_readOnly;
             }
+        }
+
+        private void cmdMoveUp_Click(object sender, EventArgs e)
+        {
+            string key1 = lstList.SelectedItems[0].Name;
+            string key2 = lstList.Items[lstList.SelectedItems[0].Index - 1].Name;
+            m_rearrangeDelegate.DoSwap(key1, key2);
+        }
+
+        private void cmdMoveDown_Click(object sender, EventArgs e)
+        {
+            string key1 = lstList.SelectedItems[0].Name;
+            string key2 = lstList.Items[lstList.SelectedItems[0].Index + 1].Name;
+            m_rearrangeDelegate.DoSwap(key1, key2);
         }
     }
 }

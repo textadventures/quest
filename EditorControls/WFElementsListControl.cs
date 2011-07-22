@@ -124,9 +124,11 @@ namespace AxeSoftware.Quest.EditorControls
             Controller.EndTransaction();
         }
 
-        public void DoSwap(int index1, int index2)
+        public void DoSwap(string key1, string key2)
         {
-            // TO DO
+            Controller.StartTransaction("Reorder elements");
+            Controller.SwapElements(key1, key2);
+            Controller.EndTransaction();
         }
 
         private void ctlListEditor_ToolbarClicked()
