@@ -81,7 +81,7 @@ namespace AxeSoftware.Quest.EditorControls
             SendMessage(new HandleRef(this, txtSearch.Handle), EM_SETCUEBANNER, IntPtr.Zero, hintText);
         }
 
-        public void AddNode(string key, string text, string parentKey, System.Drawing.Color? foreColor, System.Drawing.Color? backColor)
+        public void AddNode(string key, string text, string parentKey, System.Drawing.Color? foreColor, System.Drawing.Color? backColor, int? position = null)
         {
             TreeNode newNode = default(TreeNode);
             TreeNodeCollection parent = default(TreeNodeCollection);
@@ -95,7 +95,15 @@ namespace AxeSoftware.Quest.EditorControls
                 parent = m_nodes[parentKey].Nodes;
             }
 
-            newNode = parent.Add(key, text);
+            if (position == null)
+            {
+                newNode = parent.Add(key, text);
+            }
+            else
+            {
+                newNode = parent.Insert(position.Value, key, text);
+            }
+
             if (foreColor.HasValue)
             {
                 newNode.ForeColor = foreColor.Value;

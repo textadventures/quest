@@ -261,7 +261,13 @@ namespace AxeSoftware.Quest
         {
             if (!m_initialised) return;
 
-            System.Diagnostics.Debug.Print("Updated: {0}.{1} = {2}", e.Element, e.Attribute, e.NewValue);
+            //System.Diagnostics.Debug.Print("Updated: {0}.{1} = {2}", e.Element, e.Attribute, e.NewValue);
+
+            if (e.Attribute == "sortindex")
+            {
+                RemovedNode(e.Element.Name);
+                AddElementAndSubElementsToTree(e.Element, GetElementPosition(e.Element));
+            }
 
             if (e.Attribute == "library")
             {
@@ -271,15 +277,23 @@ namespace AxeSoftware.Quest
             }
         }
 
+        private int GetElementPosition(Element e)
+        {
+            List<Element> siblings = new List<Element>(from Element child in m_worldModel.Elements.GetChildElements(e.Parent)
+                                                       orderby child.MetaFields[MetaFieldDefinitions.SortIndex]
+                                                       select child);
+            return siblings.IndexOf(e);
+        }
+
         private void MoveNove(string key, string text, string newParent)
         {
             RemovedNode(key);
             AddedNode(key, text, newParent, false, null);
         }
 
-        private void AddElementAndSubElementsToTree(Element e)
+        private void AddElementAndSubElementsToTree(Element e, int? position = null)
         {
-            AddElementToTree(e);
+            AddElementToTree(e, position);
             foreach (Element child in m_worldModel.Elements.GetChildElements(e))
             {
                 AddElementToTree(child);
@@ -379,7 +393,7 @@ namespace AxeSoftware.Quest
             EndTreeUpdate();
         }
 
-        private void AddElementToTree(Element o)
+        private void AddElementToTree(Element o, int? position = null)
         {
             if (!IsElementVisible(o)) return;
 
@@ -396,7 +410,7 @@ namespace AxeSoftware.Quest
 
             if (display)
             {
-                AddedNode(o.Name, text, parent, isLibrary, null);
+                AddedNode(o.Name, text, parent, isLibrary, position);
 
                 if (o.Name == "game")
                 {
