@@ -83,6 +83,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void AddNode(string key, string text, string parentKey, System.Drawing.Color? foreColor, System.Drawing.Color? backColor, int? position = null)
         {
+            if (m_nodes.ContainsKey(key)) return;
             TreeNode newNode = default(TreeNode);
             TreeNodeCollection parent = default(TreeNodeCollection);
 
@@ -114,6 +115,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void RemoveNode(string key)
         {
+            if (!m_nodes.ContainsKey(key)) return;
             ctlTreeView.Nodes.Remove(m_nodes[key]);
             m_nodes.Remove(key);
         }

@@ -42,6 +42,7 @@ namespace AxeSoftware.Quest.EditorControls
             ctlListEditor.UpdateList(null);
             m_controller = controller;
             m_controller.ElementsUpdated += m_controller_ElementsUpdated;
+            m_controller.ElementMoved += m_controller_ElementMoved;
             m_controlData = controlData;
 
             m_elementType = controlData.GetString("elementtype");
@@ -126,9 +127,12 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoSwap(string key1, string key2)
         {
+            string selectedItem = ctlListEditor.SelectedItem;
             Controller.StartTransaction("Reorder elements");
             Controller.SwapElements(key1, key2);
             Controller.EndTransaction();
+            Populate(m_data);
+            ctlListEditor.SetSelectedItem(selectedItem);
         }
 
         private void ctlListEditor_ToolbarClicked()
@@ -145,6 +149,11 @@ namespace AxeSoftware.Quest.EditorControls
         }
 
         private void m_controller_ElementsUpdated()
+        {
+            Populate(m_data);
+        }
+
+        private void m_controller_ElementMoved(string key)
         {
             Populate(m_data);
         }

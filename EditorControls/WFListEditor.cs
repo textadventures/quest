@@ -200,6 +200,11 @@ namespace AxeSoftware.Quest.EditorControls
             return result;
         }
 
+        public string SelectedItem
+        {
+            get { return lstList.SelectedItems[0].Name; }
+        }
+
         private void lstList_DoubleClick(object sender, System.EventArgs e)
         {
             if (IsEditAllowed()) EditSelectedItem();

@@ -93,6 +93,9 @@ namespace AxeSoftware.Quest
         public delegate void ElementsUpdatedHandler();
         public event ElementsUpdatedHandler ElementsUpdated;
 
+        public delegate void ElementMovedHandler(string key);
+        public event ElementMovedHandler ElementMoved;
+
         public delegate void ScriptClipboardUpdateHandler(bool hasScript);
         public event ScriptClipboardUpdateHandler ScriptClipboardUpdated;
 
@@ -267,6 +270,7 @@ namespace AxeSoftware.Quest
             {
                 RemovedNode(e.Element.Name);
                 AddElementAndSubElementsToTree(e.Element, GetElementPosition(e.Element));
+                if (ElementMoved != null) ElementMoved(e.Element.Name);
             }
 
             if (e.Attribute == "library")
@@ -934,7 +938,7 @@ namespace AxeSoftware.Quest
             {
                 result = result.Where(e => e.Parent != null && e.Parent.Name == parent);
             }
-            return result;
+            return result.OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex]);
         }
 
         public IEnumerable<string> GetObjectNames(string objectType, string parent = null)
