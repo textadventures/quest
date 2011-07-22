@@ -16,6 +16,11 @@ namespace AxeSoftware.Quest.EditorControls
         void DoRemove(string[] keys);
     }
 
+    public interface IRearrangeableListEditorDelegate : IListEditorDelegate
+    {
+        void DoSwap(int index1, int index2);
+    }
+
     public partial class WFListEditor : UserControl
     {
         public WFListEditor()
@@ -41,6 +46,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private Dictionary<string, ListViewItem> m_listItems = new Dictionary<string, ListViewItem>();
         private IListEditorDelegate m_delegate;
+        private IRearrangeableListEditorDelegate m_rearrangeDelegate;
         private ColumnStyle m_style;
         private string[] m_headers = new string[3];
 
@@ -213,6 +219,8 @@ namespace AxeSoftware.Quest.EditorControls
         {
             cmdEdit.Enabled = IsEditAllowed();
             cmdDelete.Enabled = IsDeleteAllowed();
+            cmdMoveUp.Enabled = IsMoveUpEnabled();
+            cmdMoveDown.Enabled = IsMoveDownEnabled();
         }
 
         private bool IsEditAllowed()
@@ -227,10 +235,33 @@ namespace AxeSoftware.Quest.EditorControls
             return lstList.SelectedItems.Count > 0;
         }
 
+        private bool IsMoveUpEnabled()
+        {
+            if (m_readOnly) return false;
+            if (m_rearrangeDelegate == null) return false;
+            if (lstList.SelectedItems.Count != 1) return false;
+            return lstList.SelectedItems[0].Index > 0;
+        }
+
+        private bool IsMoveDownEnabled()
+        {
+            if (m_readOnly) return false;
+            if (m_rearrangeDelegate == null) return false;
+            if (lstList.SelectedItems.Count != 1) return false;
+            return lstList.SelectedItems[0].Index < lstList.Items.Count - 1;
+        }
+
         public IListEditorDelegate EditorDelegate
         {
             get { return m_delegate; }
-            set { m_delegate = value; }
+            set
+            {
+                m_delegate = value;
+                m_rearrangeDelegate = value as IRearrangeableListEditorDelegate;
+                bool isRearrangeable = (m_rearrangeDelegate != null);
+                cmdMoveUp.Available = isRearrangeable;
+                cmdMoveDown.Available = isRearrangeable;
+            }
         }
 
         public void SetSelectedItem(string key)

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace AxeSoftware.Quest.EditorControls
 {
-    public partial class WFElementsListControl : UserControl, IListEditorDelegate
+    public partial class WFElementsListControl : UserControl, IRearrangeableListEditorDelegate
     {
         private EditorController m_controller;
         private IEditorData m_data;
@@ -124,6 +124,11 @@ namespace AxeSoftware.Quest.EditorControls
             Controller.EndTransaction();
         }
 
+        public void DoSwap(int index1, int index2)
+        {
+            // TO DO
+        }
+
         private void ctlListEditor_ToolbarClicked()
         {
             if (RequestParentElementEditorSave != null)
@@ -141,6 +146,5 @@ namespace AxeSoftware.Quest.EditorControls
         {
             Populate(m_data);
         }
-
     }
 }
