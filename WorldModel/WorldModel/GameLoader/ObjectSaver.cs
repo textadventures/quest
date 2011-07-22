@@ -22,7 +22,7 @@ namespace AxeSoftware.Quest
                 ObjectSaver elementSaver = new ObjectSaver();
                 elementSaver.GameSaver = GameSaver;
 
-                IEnumerable<Element> allObjects = worldModel.Elements.GetElements(ElementType.Object);
+                IEnumerable<Element> allObjects = worldModel.Elements.GetElements(ElementType.Object).OrderBy(o => o.MetaFields[MetaFieldDefinitions.SortIndex]);
 
                 foreach (Element e in allObjects.Where(e => e.Parent == null && GameSaver.CanSave(e)))
                 {
