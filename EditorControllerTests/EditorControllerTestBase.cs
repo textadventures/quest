@@ -69,7 +69,7 @@ namespace EditorControllerTests
             m_tree.EndUpdate();
         }
 
-        void m_controller_AddedNode(string key, string text, string parent, System.Drawing.Color? foreColor, System.Drawing.Color? backColor)
+        void m_controller_AddedNode(string key, string text, string parent, bool isLibraryNode, int? position)
         {
             m_tree.Add(key, text, parent);
         }

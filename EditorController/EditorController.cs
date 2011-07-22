@@ -69,7 +69,7 @@ namespace AxeSoftware.Quest
         public event VoidHandler BeginTreeUpdate;
         public event VoidHandler EndTreeUpdate;
 
-        public delegate void AddedNodeHandler(string key, string text, string parent, System.Drawing.Color? foreColor, System.Drawing.Color? backColor);
+        public delegate void AddedNodeHandler(string key, string text, string parent, bool isLibraryNode, int? position);
         public event AddedNodeHandler AddedNode;
 
         public delegate void RemovedNodeHandler(string key);
@@ -261,6 +261,8 @@ namespace AxeSoftware.Quest
         {
             if (!m_initialised) return;
 
+            System.Diagnostics.Debug.Print("Updated: {0}.{1} = {2}", e.Element, e.Attribute, e.NewValue);
+
             if (e.Attribute == "library")
             {
                 // Refresh the element in the tree by deleting and readding it
@@ -272,7 +274,7 @@ namespace AxeSoftware.Quest
         private void MoveNove(string key, string text, string newParent)
         {
             RemovedNode(key);
-            AddedNode(key, text, newParent, null, null);
+            AddedNode(key, text, newParent, false, null);
         }
 
         private void AddElementAndSubElementsToTree(Element e)
@@ -356,7 +358,7 @@ namespace AxeSoftware.Quest
             {
                 m_elementTreeStructure.Add(type.Value, header);
             }
-            AddedNode(key, title, parent, null, null);
+            AddedNode(key, title, parent, false, null);
         }
 
         private void UpdateTree()
@@ -382,10 +384,6 @@ namespace AxeSoftware.Quest
             if (!IsElementVisible(o)) return;
 
             string parent = GetElementTreeParent(o);
-            System.Drawing.Color? foreColor = null;
-
-            // TO DO: Colours should be an option, so we probably shouldn't
-            // even have a reference to System.Drawing in EditorController.
 
             string text = GetDisplayName(o);
             bool display = true;
@@ -396,19 +394,14 @@ namespace AxeSoftware.Quest
                 display = false;
             }
 
-            if (isLibrary)
-            {
-                foreColor = System.Drawing.Color.Gray;
-            }
-
             if (display)
             {
-                AddedNode(o.Name, text, parent, foreColor, null);
+                AddedNode(o.Name, text, parent, isLibrary, null);
 
                 if (o.Name == "game")
                 {
-                    AddedNode(k_verbs, "Verbs", "game", null, null);
-                    AddedNode(k_commands, "Commands", "game", null, null);
+                    AddedNode(k_verbs, "Verbs", "game", false, null);
+                    AddedNode(k_commands, "Commands", "game", false, null);
                 }
             }
         }

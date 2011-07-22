@@ -164,8 +164,9 @@ Public Class Editor
         m_unsavedChanges = True
     End Sub
 
-    Private Sub m_controller_AddedNode(key As String, text As String, parent As String, foreColor As System.Drawing.Color?, backColor As System.Drawing.Color?) Handles m_controller.AddedNode
-        ctlTree.AddNode(key, text, parent, foreColor, backColor)
+    Private Sub m_controller_AddedNode(key As String, text As String, parent As String, isLibraryNode As Boolean, position As Integer?) Handles m_controller.AddedNode
+        Dim foreColor As Color = If(isLibraryNode, Color.Gray, Color.Black)
+        ctlTree.AddNode(key, text, parent, foreColor, Nothing)
     End Sub
 
     Private Sub m_controller_RemovedNode(key As String) Handles m_controller.RemovedNode
