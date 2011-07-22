@@ -33,6 +33,8 @@
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
             this.cmdEdit = new System.Windows.Forms.ToolStripButton();
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
+            this.cmdPlay = new System.Windows.Forms.ToolStripButton();
+            this.cmdRecord = new System.Windows.Forms.ToolStripButton();
             this.ctlToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -41,7 +43,9 @@
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdAdd,
             this.cmdEdit,
-            this.cmdDelete});
+            this.cmdDelete,
+            this.cmdPlay,
+            this.cmdRecord});
             this.ctlToolStrip.Location = new System.Drawing.Point(0, 0);
             this.ctlToolStrip.Name = "ctlToolStrip";
             this.ctlToolStrip.Size = new System.Drawing.Size(404, 25);
@@ -75,6 +79,22 @@
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
+            // cmdPlay
+            // 
+            this.cmdPlay.Image = ((System.Drawing.Image)(resources.GetObject("cmdPlay.Image")));
+            this.cmdPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdPlay.Name = "cmdPlay";
+            this.cmdPlay.Size = new System.Drawing.Size(49, 22);
+            this.cmdPlay.Text = "Play";
+            // 
+            // cmdRecord
+            // 
+            this.cmdRecord.Image = ((System.Drawing.Image)(resources.GetObject("cmdRecord.Image")));
+            this.cmdRecord.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdRecord.Name = "cmdRecord";
+            this.cmdRecord.Size = new System.Drawing.Size(64, 22);
+            this.cmdRecord.Text = "Record";
+            // 
             // WFToolbar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -95,6 +115,8 @@
         internal System.Windows.Forms.ToolStripButton cmdAdd;
         internal System.Windows.Forms.ToolStripButton cmdEdit;
         internal System.Windows.Forms.ToolStripButton cmdDelete;
+        private System.Windows.Forms.ToolStripButton cmdPlay;
+        private System.Windows.Forms.ToolStripButton cmdRecord;
 
     }
 }

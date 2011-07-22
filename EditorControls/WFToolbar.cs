@@ -64,5 +64,15 @@ namespace AxeSoftware.Quest.EditorControls
             cmdEdit.Enabled = !ReadOnly && IsItemSelected;
             cmdDelete.Enabled = !ReadOnly && IsItemSelected;
         }
+
+        public bool ShowPlayRecord
+        {
+            get { return cmdPlay.Available; }
+            set
+            {
+                cmdPlay.Available = value;
+                cmdRecord.Available = value;
+            }
+        }
     }
 }

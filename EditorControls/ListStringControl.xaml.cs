@@ -32,6 +32,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         void m_helper_Initialise()
         {
+            toolbar.ShowPlayRecord = m_helper.ControlDefinition.GetBool("iswalkthrough");
         }
 
         public IControlDataHelper Helper
@@ -86,7 +87,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         private List<IEditableListItem<string>> CurrentSelection
         {
-            get {
+            get
+            {
                 return listBox.SelectedItems.Cast<IEditableListItem<string>>().ToList();
             }
         }
