@@ -37,6 +37,10 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Initialise(EditorController controller, IEditorControl controlData)
         {
+            m_elementType = controlData.GetString("elementtype");
+            m_objectType = controlData.GetString("objecttype");
+            m_filter = controlData.GetString("listfilter");
+
             ctlListEditor.EditorDelegate = this;
             ctlListEditor.Style = WFListEditor.ColumnStyle.OneColumn;
             ctlListEditor.UpdateList(null);
@@ -44,10 +48,6 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller.ElementsUpdated += m_controller_ElementsUpdated;
             m_controller.ElementMoved += m_controller_ElementMoved;
             m_controlData = controlData;
-
-            m_elementType = controlData.GetString("elementtype");
-            m_objectType = controlData.GetString("objecttype");
-            m_filter = controlData.GetString("listfilter");
 
             if (m_filter != null)
             {
@@ -156,6 +156,14 @@ namespace AxeSoftware.Quest.EditorControls
         private void m_controller_ElementMoved(string key)
         {
             Populate(m_data);
+        }
+
+        public bool CanRearrange
+        {
+            get
+            {
+                return m_elementType == "object";
+            }
         }
     }
 }

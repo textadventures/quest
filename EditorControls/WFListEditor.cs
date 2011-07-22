@@ -18,6 +18,7 @@ namespace AxeSoftware.Quest.EditorControls
 
     public interface IRearrangeableListEditorDelegate : IListEditorDelegate
     {
+        bool CanRearrange { get; }
         void DoSwap(string key1, string key2);
     }
 
@@ -263,7 +264,7 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 m_delegate = value;
                 m_rearrangeDelegate = value as IRearrangeableListEditorDelegate;
-                bool isRearrangeable = (m_rearrangeDelegate != null);
+                bool isRearrangeable = (m_rearrangeDelegate != null && m_rearrangeDelegate.CanRearrange);
                 cmdMoveUp.Available = isRearrangeable;
                 cmdMoveDown.Available = isRearrangeable;
             }
