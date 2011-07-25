@@ -53,7 +53,7 @@ namespace AxeSoftware.Quest.Scripts
                 }
             }
 
-            if (WorldModel.Procedure(procName) == null)
+            if (!WorldModel.EditMode && WorldModel.Procedure(procName) == null)
             {
                 throw new Exception(string.Format("Function not found: '{0}'", procName));
             }
