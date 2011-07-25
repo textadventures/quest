@@ -22,6 +22,9 @@ namespace AxeSoftware.Quest.EditorControls
         private IEditorData m_data;
         private EditorController m_controller;
         private List<string> m_directionNames;
+        private List<string> m_compassDirections;
+        private List<string> m_upDownDirections;
+        private List<string> m_inOutDirections;
         private Dictionary<string, int> m_directionListIndexes = new Dictionary<string, int>();
         private bool m_selectionChanging;
         private const int k_outDirIndex = 4;
@@ -51,6 +54,9 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller.ElementsUpdated += m_controller_ElementsUpdated;
 
             m_directionNames = new List<string>(definition.GetListString("compass"));
+            m_compassDirections = new List<string>(definition.GetListString("compassdirections"));
+            m_upDownDirections = new List<string>(definition.GetListString("updowndirections"));
+            m_inOutDirections = new List<string>(definition.GetListString("inoutdirections"));
         }
 
         void m_controller_ElementsUpdated()
@@ -329,7 +335,19 @@ namespace AxeSoftware.Quest.EditorControls
 
         string GetDirectionType(string direction)
         {
-            return "compassdirection";
+            if (m_compassDirections.Contains(direction))
+            {
+                return "compassdirection";
+            }
+            if (m_upDownDirections.Contains(direction))
+            {
+                return "updowndirection";
+            }
+            if (m_inOutDirections.Contains(direction))
+            {
+                return "inoutdirection";
+            }
+            throw new ArgumentOutOfRangeException(string.Format("Unknown direction {0}", direction));
         }
 
         private static List<int> s_oppositeDirs = new List<int> { 8, 7, 6, 5, -1, 3, 2, 1, 0, 10, 9 };
