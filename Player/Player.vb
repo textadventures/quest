@@ -515,6 +515,10 @@ Public Class Player
                             menuForm.AllowCancel = menuData.AllowCancel
                             menuForm.ShowDialog()
 
+                            If RecordWalkthrough IsNot Nothing Then
+                                m_recordedWalkthrough.Add("menu:" + menuForm.SelectedItem)
+                            End If
+
                             Dim runnerThread As New System.Threading.Thread(New System.Threading.ParameterizedThreadStart(AddressOf SetMenuResponseInNewThread))
                             runnerThread.Start(menuForm.SelectedItem)
                         End Sub
