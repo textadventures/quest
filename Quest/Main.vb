@@ -276,6 +276,15 @@ Public Class Main
         Launch(filename)
     End Sub
 
+    Private Sub ctlEditor_PlayWalkthrough(filename As String, walkthrough As String, record As Boolean) Handles ctlEditor.PlayWalkthrough
+        m_playingEditorGame = True
+        ctlPlayer.PostLaunchAction = Sub() ctlPlayer.RunWalkthrough(walkthrough)
+        Launch(filename)
+
+        ' TO DO: if record flag set, when game is finished, give the Editor a list of commands run, which it then passes
+        ' to the EditorController which then adds those steps to the selected walkthrough
+    End Sub
+
     Private Sub Main_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
         ctlLauncher.MainWindowShown()
 
@@ -339,4 +348,5 @@ Public Class Main
     Private Sub ctlPlayer_ExitFullScreen() Handles ctlPlayer.ExitFullScreen
         FullScreen = False
     End Sub
+
 End Class

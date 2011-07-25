@@ -141,12 +141,12 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void toolbar_PlayClicked()
         {
-
+            m_helper.Controller.BeginWalkthrough(m_data.Name, false);
         }
 
         private void toolbar_RecordClicked()
         {
-
+            m_helper.Controller.BeginWalkthrough(m_data.Name, true);
         }
 
         private void ListItemDoubleClick(object sender, RoutedEventArgs e)

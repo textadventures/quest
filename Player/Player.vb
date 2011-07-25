@@ -32,6 +32,7 @@ Public Class Player
     Private m_sendNextTickEventAfter As Integer
     Private m_pausing As Boolean
     Private WithEvents m_walkthroughRunner As WalkthroughRunner
+    Private m_postLaunchAction As Action
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -135,6 +136,10 @@ Public Class Player
         ClearBuffer()
         txtCommand.Focus()
         ctlPlayerHtml.DisableNavigation()
+        If m_postLaunchAction IsNot Nothing Then
+            m_postLaunchAction.Invoke()
+            m_postLaunchAction = Nothing
+        End If
     End Sub
 
     Private Sub ClearBuffer()
@@ -352,14 +357,18 @@ Public Class Player
         m_menu.MenuChecked("debugger") = m_debugger.Visible
     End Sub
 
-    Public Sub RunWalkthrough()
+    Private Sub RunWalkthrough()
         ' Eventually we want to pop up a debugging panel on the right of the screen where we can select
         ' walkthroughs, step through etc.
 
         Dim walkThrough As String = ChooseWalkthrough()
         If walkThrough Is Nothing Then Return
 
-        m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, walkThrough)
+        RunWalkthrough(walkThrough)
+    End Sub
+
+    Public Sub RunWalkthrough(name As String)
+        m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, name)
 
         Dim runnerThread As New Thread(Sub() WalkthroughRunner())
         runnerThread.Start()
@@ -837,4 +846,13 @@ Public Class Player
     Private Sub m_walkthroughRunner_Output(text As String) Handles m_walkthroughRunner.Output
         BeginInvoke(Sub() m_htmlHelper.PrintText("<output>" + text + "</output>"))
     End Sub
+
+    Public Property PostLaunchAction As Action
+        Get
+            Return m_postLaunchAction
+        End Get
+        Set(value As Action)
+            m_postLaunchAction = value
+        End Set
+    End Property
 End Class

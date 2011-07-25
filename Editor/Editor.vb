@@ -20,6 +20,7 @@ Public Class Editor
     Public Event Loaded(name As String)
     Public Event NewGame()
     Public Event OpenGame()
+    Public Event PlayWalkthrough(filename As String, walkthrough As String, record As Boolean)
 
     Public Sub New()
         ' This call is required by the designer.
@@ -891,5 +892,10 @@ Public Class Editor
 
     Private Sub Find()
         ctlTextEditor.Find()
+    End Sub
+
+    Private Sub m_controller_RequestRunWalkthrough(name As String, record As Boolean) Handles m_controller.RequestRunWalkthrough
+        If Not CheckGameIsSaved("Do you wish to save your changes before playing this game?") Then Return
+        RaiseEvent PlayWalkthrough(m_filename, name, record)
     End Sub
 End Class

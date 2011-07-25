@@ -99,6 +99,9 @@ namespace AxeSoftware.Quest
         public delegate void ScriptClipboardUpdateHandler(bool hasScript);
         public event ScriptClipboardUpdateHandler ScriptClipboardUpdated;
 
+        public delegate void RequestRunWalkthroughHandler(string name, bool record);
+        public event RequestRunWalkthroughHandler RequestRunWalkthrough;
+
         public event EventHandler<ElementUpdatedEventArgs> ElementUpdated;
         public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
         public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
@@ -1750,6 +1753,11 @@ namespace AxeSoftware.Quest
             int index = a.MetaFields[MetaFieldDefinitions.SortIndex];
             a.MetaFields[MetaFieldDefinitions.SortIndex] = b.MetaFields[MetaFieldDefinitions.SortIndex];
             b.MetaFields[MetaFieldDefinitions.SortIndex] = index;
+        }
+
+        public void BeginWalkthrough(string name, bool record)
+        {
+            RequestRunWalkthrough(name, record);
         }
     }
 }
