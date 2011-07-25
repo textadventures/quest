@@ -33,12 +33,15 @@ Public Class Player
     Private m_pausing As Boolean
     Private WithEvents m_walkthroughRunner As WalkthroughRunner
     Private m_postLaunchAction As Action
+    Private m_recordWalkthrough As String
+    Private m_recordedWalkthrough As List(Of String)
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
     Public Event GameNameSet(name As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
     Public Event ExitFullScreen()
+    Public Event RecordedWalkthrough(name As String, steps As List(Of String))
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -241,6 +244,10 @@ Public Class Player
 
         If Not m_initialised Then Exit Sub
 
+        If RecordWalkthrough IsNot Nothing Then
+            m_recordedWalkthrough.Add(command)
+        End If
+
         txtCommand.Text = ""
 
         Try
@@ -273,6 +280,10 @@ Public Class Player
         StopSound()
         BeginInvoke(Sub() ctlPlayerHtml.Finished())
         ClearBuffer()
+        If RecordWalkthrough IsNot Nothing Then
+            RaiseEvent RecordedWalkthrough(RecordWalkthrough, m_recordedWalkthrough)
+        End If
+        RecordWalkthrough = Nothing
     End Sub
 
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
@@ -853,6 +864,18 @@ Public Class Player
         End Get
         Set(value As Action)
             m_postLaunchAction = value
+        End Set
+    End Property
+
+    Public Property RecordWalkthrough As String
+        Get
+            Return m_recordWalkthrough
+        End Get
+        Set(value As String)
+            m_recordWalkthrough = value
+            If value IsNot Nothing Then
+                m_recordedWalkthrough = New List(Of String)
+            End If
         End Set
     End Property
 End Class

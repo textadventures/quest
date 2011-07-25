@@ -898,4 +898,8 @@ Public Class Editor
         If Not CheckGameIsSaved("Do you wish to save your changes before playing this game?") Then Return
         RaiseEvent PlayWalkthrough(m_filename, name, record)
     End Sub
+
+    Public Sub SetRecordedWalkthrough(name As String, steps As List(Of String))
+        m_controller.RecordWalkthrough(name, steps)
+    End Sub
 End Class

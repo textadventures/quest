@@ -1759,5 +1759,15 @@ namespace AxeSoftware.Quest
         {
             RequestRunWalkthrough(name, record);
         }
+
+        public void RecordWalkthrough(string name, IEnumerable<string> steps)
+        {
+            if (!steps.Any()) return;
+            StartTransaction(string.Format("Add {0} walkthrough steps", steps.Count()));
+            Element walkthrough = m_worldModel.Elements.Get(ElementType.Walkthrough, name);
+            QuestList<string> newSteps = new QuestList<string>(steps);
+            walkthrough.Fields[FieldDefinitions.Steps] = walkthrough.Fields[FieldDefinitions.Steps] + newSteps;
+            EndTransaction();
+        }
     }
 }

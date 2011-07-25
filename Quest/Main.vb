@@ -279,6 +279,9 @@ Public Class Main
     Private Sub ctlEditor_PlayWalkthrough(filename As String, walkthrough As String, record As Boolean) Handles ctlEditor.PlayWalkthrough
         m_playingEditorGame = True
         ctlPlayer.PostLaunchAction = Sub() ctlPlayer.RunWalkthrough(walkthrough)
+        If record Then
+            ctlPlayer.RecordWalkthrough = walkthrough
+        End If
         Launch(filename)
 
         ' TO DO: if record flag set, when game is finished, give the Editor a list of commands run, which it then passes
@@ -349,4 +352,7 @@ Public Class Main
         FullScreen = False
     End Sub
 
+    Private Sub ctlPlayer_RecordedWalkthrough(name As String, steps As System.Collections.Generic.List(Of String)) Handles ctlPlayer.RecordedWalkthrough
+        ctlEditor.SetRecordedWalkthrough(name, steps)
+    End Sub
 End Class
