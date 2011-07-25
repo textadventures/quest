@@ -67,7 +67,10 @@
   <template name="CompassSE">sureste</template>
   <template name="CompassUp">arriba</template>
   <template name="CompassDown">abajo</template>
-  
+  <template name="CompassDirectionPrefix">al</template>
+  <template name="UpDownDirectionPrefix"></template>
+  <template name="InOutDirectionPrefix"></template>
+
   <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
   <template templatetype="command" name="look">^look$</template>
   <verbtemplate name="lookat">examinar</verbtemplate>
