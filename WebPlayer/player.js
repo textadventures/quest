@@ -375,13 +375,14 @@ function updateCompass(listData) {
     updateDir(directions, "N", "north");
     updateDir(directions, "NE", "northeast");
     updateDir(directions, "W", "west");
-    updateDir(directions, "Out", "out");
     updateDir(directions, "E", "east");
     updateDir(directions, "SW", "southwest");
     updateDir(directions, "S", "south");
     updateDir(directions, "SE", "southeast");
     updateDir(directions, "U", "up");
     updateDir(directions, "D", "down");
+    updateDir(directions, "Out", "out");
+    updateDir(directions, "In", "in");
 }
 
 function updateDir(directions, label, dir) {
