@@ -1055,25 +1055,25 @@ namespace AxeSoftware.Quest
             return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit);
         }
 
-        public string CreateNewExit(string parent, string to, string alias)
+        public string CreateNewExit(string parent, string to, string alias, string type)
         {
-            return CreateNewExitInternal(parent, to, alias, true);
+            return CreateNewExitInternal(parent, to, alias, true, type);
         }
 
-        public string CreateNewExitInternal(string parent, string to, string alias, bool useTransaction)
+        public string CreateNewExitInternal(string parent, string to, string alias, bool useTransaction, string type)
         {
-            return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, null,
+            return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, new List<string> { type },
                 new Dictionary<string, object> {
                     { "to", m_worldModel.Elements.Get(to) },
                     { "alias", alias }
                 }, useTransaction);
         }
 
-        public string CreateNewExit(string parent, string to, string alias, string inverseAlias)
+        public string CreateNewExit(string parent, string to, string alias, string inverseAlias, string type)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create two-way exit {0} to {1}", parent, to));
-            string result = CreateNewExitInternal(parent, to, alias, false);
-            CreateNewExitInternal(to, parent, inverseAlias, false);
+            string result = CreateNewExitInternal(parent, to, alias, false, type);
+            CreateNewExitInternal(to, parent, inverseAlias, false, type);
             m_worldModel.UndoLogger.EndTransaction();
 
             return result;
