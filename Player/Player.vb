@@ -274,6 +274,7 @@ Public Class Player
     End Sub
 
     Private Sub GameFinished()
+        If Not m_initialised Then Return
         m_initialised = False
         tmrTick.Enabled = False
         SetEnabledState(False)
