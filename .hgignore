@@ -6,4 +6,5 @@ TestResults/
 .*\.suo
 .*\.user
 WebPlayer/playercore\..*
+WebPlayer/WebPlayerSettings\.xml
 Setup/Setup/
