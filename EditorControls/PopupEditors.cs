@@ -27,6 +27,7 @@ namespace AxeSoftware.Quest.EditorControls
             {ValidationMessage.CircularTypeReference, "Circular type reference"},
             {ValidationMessage.InvalidElementNameMultipleSpaces, "Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces."},
             {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
+            {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
         };
 
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null, bool allowEmptyString = false)

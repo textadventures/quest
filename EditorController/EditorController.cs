@@ -24,7 +24,8 @@ namespace AxeSoftware.Quest
         InvalidElementName,
         CircularTypeReference,
         InvalidElementNameMultipleSpaces,
-        InvalidElementNameInvalidWord
+        InvalidElementNameInvalidWord,
+        CannotRenamePlayerElement
     }
 
     public struct ValidationResult
@@ -1302,6 +1303,10 @@ namespace AxeSoftware.Quest
 
         internal ValidationResult CanRename(Element element, string newName)
         {
+            if (element.Name == "player")
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.CannotRenamePlayerElement };
+            }
             if (m_worldModel.Elements.ContainsKey(newName) && m_worldModel.Elements.Get(newName) != element)
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.ElementAlreadyExists };
@@ -1309,9 +1314,11 @@ namespace AxeSoftware.Quest
             return ValidateElementName(newName);
         }
 
+        private System.Text.RegularExpressions.Regex s_validNameRegex = new System.Text.RegularExpressions.Regex(@"^[\w ]+$");
+
         private ValidationResult ValidateElementName(string name)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name) || !s_validNameRegex.IsMatch(name))
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidElementName };
             }
@@ -1510,6 +1517,8 @@ namespace AxeSoftware.Quest
         {
             if (!ElementExists(elementName)) return false;
             if (elementName == "game") return false;
+            if (elementName == "player") return false;
+            if (m_worldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
             return true;
         }
 
