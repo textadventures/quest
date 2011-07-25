@@ -8,7 +8,7 @@
     <defaultbackground>White</defaultbackground>
     <defaultforeground>Black</defaultforeground>
     <defaultlinkforeground>Blue</defaultlinkforeground>
-    <compassdirections type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassOut];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown]</compassdirections>
+    <compassdirections type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown];[CompassIn];[CompassOut]</compassdirections>
     <useframe type="boolean">false</useframe>
     <clearframe type="boolean">false</clearframe>
     <timeelapsed type="int">0</timeelapsed>

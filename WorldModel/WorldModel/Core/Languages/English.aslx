@@ -84,13 +84,14 @@
   <template name="CompassN">north</template>
   <template name="CompassNE">northeast</template>
   <template name="CompassW">west</template>
-  <template name="CompassOut">out</template>
   <template name="CompassE">east</template>
   <template name="CompassSW">southwest</template>
   <template name="CompassS">south</template>
   <template name="CompassSE">southeast</template>
   <template name="CompassUp">up</template>
   <template name="CompassDown">down</template>
+  <template name="CompassIn">in</template>
+  <template name="CompassOut">out</template>
   <template name="CompassDirectionPrefix"></template>
   <template name="UpDownDirectionPrefix"></template>
   <template name="InOutDirectionPrefix"></template>

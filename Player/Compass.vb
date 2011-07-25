@@ -2,16 +2,19 @@
 
 Public Class Compass
 
-    Private Const numButtons As Integer = 11
+    Private Const numButtons As Integer = 12
     Private Const buttonSize As Integer = 28
     Private Const buttonSpacing As Integer = 2
 
     ' Wingdings arrows
-    Private Const buttonCaptions As String = "ãáäß àåâætu"
-    Private buttonCommands As New List(Of String)({"northwest", "north", "northeast", _
-                                          "west", "out", "east", _
-                                          "southwest", "south", "southeast", _
-                                          "up", "down"})
+    Private Const buttonCaptions As String = "ãáäßàåâætu"
+    Private buttonCommands As New List(Of String)({
+                                        "northwest", "north", "northeast",
+                                        "west", "east",
+                                        "southwest", "south", "southeast",
+                                        "up", "down",
+                                        "in", "out"
+                                    })
 
     Private buttons As Dictionary(Of Integer, System.Windows.Forms.Button) = New Dictionary(Of Integer, System.Windows.Forms.Button)
 
@@ -30,24 +33,25 @@ Public Class Compass
             With button
                 .Height = buttonSize
                 .Width = buttonSize
-                .Left = (i Mod 3) * (buttonSize + buttonSpacing)
-                .Top = (i \ 3) * (buttonSize + buttonSpacing)
-                If i >= 9 Then
-                    .Left = 3 * (buttonSize + buttonSpacing)
-                    ' up and down buttons are displaced half a button height downwards
-                    .Top = CInt(((i - 9) + 0.5) * (buttonSize + buttonSpacing))
+                If i < 8 Then
+                    Dim x As Integer = If(i <= 3, i, i + 1)
+                    .Left = (x Mod 3) * (buttonSize + buttonSpacing)
+                    .Top = (x \ 3) * (buttonSize + buttonSpacing)
+                Else
+                    .Left = (((i - 8) \ 2) + 3) * (buttonSize + buttonSpacing)
+                    ' up/down/in/out buttons are displaced half a button height downwards
+                    .Top = CInt((((i - 8) Mod 2) + 0.5) * (buttonSize + buttonSpacing))
                 End If
 
-                If i <> 4 Then
-                    If i < 9 Then
-                        .Font = New Font("Wingdings", 9)
-                    Else
-                        .Font = New Font("Marlett", 10)
-                    End If
+                If i < 8 Then
+                    .Font = New Font("Wingdings", 9)
+                    .Text = Mid(buttonCaptions, i + 1, 1)
+                ElseIf i < 10 Then
+                    .Font = New Font("Marlett", 10)
                     .Text = Mid(buttonCaptions, i + 1, 1)
                 Else
                     .Font = New Font("Tahoma", 7)
-                    .Text = "out"
+                    .Text = buttonCommands(i)
                 End If
 
                 .Tag = i
@@ -57,7 +61,7 @@ Public Class Compass
             buttons.Add(i, button)
         Next
 
-        pnlContainer.Width = (buttonSize * 4) + (buttonSpacing * 3)
+        pnlContainer.Width = (buttonSize * 5) + (buttonSpacing * 4)
         pnlContainer.Height = (buttonSize * 3) + (buttonSpacing * 2)
     End Sub
 
