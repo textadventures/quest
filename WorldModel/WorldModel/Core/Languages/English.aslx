@@ -26,6 +26,7 @@
   <template name="Use">Use</template>
   <template name="Drop">Drop</template>
   <template name="GoTo">Go to</template>
+  <template name="Go">Go</template>
   <template name="SwitchOn">Switch on</template>
   <template name="SwitchOff">Switch off</template>
   <template name="Open">Open</template>

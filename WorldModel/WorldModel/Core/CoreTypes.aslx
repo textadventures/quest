@@ -44,6 +44,22 @@
     <lockmessage>[LockedExit]</lockmessage>
   </type>
 
+  <type name="direction">
+    <displayverbs type="list">[Go]</displayverbs>
+  </type>
+
+  <type name="compassdirection">
+    <inherit name="direction"/>
+  </type>
+
+  <type name="updowndirection">
+    <inherit name="direction"/>
+  </type>
+
+  <type name="inoutdirection">
+    <inherit name="direction"/>
+  </type>
+
   <type name="defaultcommand">
     <pattern type="simplepattern"></pattern>
   </type>

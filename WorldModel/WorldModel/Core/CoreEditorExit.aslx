@@ -23,6 +23,13 @@
       </control>
 
       <control>
+        <caption>Type</caption>
+        <controltype>dropdowntypes</controltype>
+        <types>compassdirection=Compass direction; updowndirection=Up/down direction; inoutdirection=In/out direction; *=Exit</types>
+        <width>150</width>
+      </control>
+
+      <control>
         <caption>Prefix</caption>
         <controltype>textbox</controltype>
         <attribute>prefix</attribute>
