@@ -6,3 +6,4 @@ TestResults/
 .*\.suo
 .*\.user
 WebPlayer/playercore\..*
+Setup/Setup/
