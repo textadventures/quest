@@ -12,10 +12,10 @@
 
     <control>
       <controltype>exits</controltype>
-      <compass type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassOut];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown]</compass>
+      <compass type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown];[CompassIn];[CompassOut]</compass>
       <compassdirections type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassE];[CompassSW];[CompassS];[CompassSE]</compassdirections>
       <updowndirections type="list">[CompassUp];[CompassDown]</updowndirections>
-      <inoutdirections type="list">[CompassOut]</inoutdirections>
+      <inoutdirections type="list">[CompassIn];[CompassOut]</inoutdirections>
       <expand/>
     </control>
   </tab>

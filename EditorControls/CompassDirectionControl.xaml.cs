@@ -93,28 +93,32 @@ namespace AxeSoftware.Quest.EditorControls
         private static void OnDirectionChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             // 0 = NW, 1 = N, 2 = NE
-            // 3 = W , 4 = O, 5 = E     9 = U, 10 = D
-            // 6 = SW, 7 = S, 8 = SE
-            // Directions 0-3, 5-8 in Wingdings ãáäß àåâæ
-            // Direction 4 = "out"
-            // Directions 9-10 in Marlett
+            // 3 = W ,        4 = E     8 = U, 10 = In
+            // 5 = SW, 6 = S, 7 = SE    9 = D, 11 = Out
+            // Directions 0-7 in Wingdings ãáäßàåâæ
+            // Directions 8-9 in Marlett
+            // Direction 10,11 = "in","out"
 
             CompassDirectionControl ctl = (CompassDirectionControl)sender;
 
             int dir = (int)e.NewValue;
-            if ((dir >= 0 && dir <= 3) || (dir >= 5 && dir <= 8))
+            if ((dir >= 0 && dir <= 7))
             {
                 ctl.direction.FontFamily = new FontFamily("Wingdings");
-                ctl.direction.Text = "ãáäß àåâæ".Substring(dir, 1);
+                ctl.direction.Text = "ãáäßàåâæ".Substring(dir, 1);
             }
-            else if (dir == 4)
-            {
-                ctl.direction.Text = "out";
-            }
-            else if (dir >= 9 && dir <= 10)
+            else if (dir >= 8 && dir <= 9)
             {
                 ctl.direction.FontFamily = new FontFamily("Marlett");
-                ctl.direction.Text = "tu".Substring(dir - 9, 1);
+                ctl.direction.Text = "tu".Substring(dir - 8, 1);
+            }
+            else if (dir == 10)
+            {
+                ctl.direction.Text = "in";
+            }
+            else if (dir == 11)
+            {
+                ctl.direction.Text = "out";
             }
             else
             {

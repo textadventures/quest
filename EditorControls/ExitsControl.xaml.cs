@@ -350,27 +350,28 @@ namespace AxeSoftware.Quest.EditorControls
             throw new ArgumentOutOfRangeException(string.Format("Unknown direction {0}", direction));
         }
 
-        private static List<int> s_oppositeDirs = new List<int> { 8, 7, 6, 5, -1, 3, 2, 1, 0, 10, 9 };
+        private static List<int> s_oppositeDirs = new List<int> { 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 11, 10 };
 
         private string GetInverseDirection(string direction)
         {
             // 0 = NW, 1 = N, 2 = NE
-            // 3 = W , 4 = O, 5 = E     9 = U, 10 = D
-            // 6 = SW, 7 = S, 8 = SE
+            // 3 = W ,        4 = E     8 = U, 10 = In
+            // 5 = SW, 6 = S, 7 = SE    9 = D, 11 = Out
 
             // So opposites are:
 
-            //  0 <--> 8
-            //  1 <--> 7
-            //  2 <--> 6
-            //  3 <--> 5
-            //  4 <--> not applicable
-            //  5 <--> 3
-            //  6 <--> 2
-            //  7 <--> 1
-            //  8 <--> 0
-            //  9 <--> 10
-            // 10 <--> 9
+            //   0 <--> 7
+            //   1 <--> 6
+            //   2 <--> 5
+            //   3 <--> 4
+            //   4 <--> 3
+            //   5 <--> 2
+            //   6 <--> 1
+            //   7 <--> 0
+            //   8 <--> 9
+            //   9 <--> 8
+            //  10 <--> 11
+            //  11 <--> 10
 
             int dirIndex = m_directionNames.IndexOf(direction);
             int opposite = s_oppositeDirs[dirIndex];
@@ -386,7 +387,7 @@ namespace AxeSoftware.Quest.EditorControls
             get
             {
                 RegistryKey key = Registry.CurrentUser.CreateSubKey(k_regPath);
-                int? value =  key.GetValue(k_regName) as int?;
+                int? value = key.GetValue(k_regName) as int?;
                 return (value ?? 1) == 1;
             }
             set
