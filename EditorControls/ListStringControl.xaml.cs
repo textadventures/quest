@@ -139,6 +139,16 @@ namespace AxeSoftware.Quest.EditorControls
             m_list.Remove(keys);
         }
 
+        private void toolbar_PlayClicked()
+        {
+
+        }
+
+        private void toolbar_RecordClicked()
+        {
+
+        }
+
         private void ListItemDoubleClick(object sender, RoutedEventArgs e)
         {
             EditCurrentSelection();

@@ -86,6 +86,7 @@
             this.cmdPlay.Name = "cmdPlay";
             this.cmdPlay.Size = new System.Drawing.Size(49, 22);
             this.cmdPlay.Text = "Play";
+            this.cmdPlay.Click += new System.EventHandler(this.cmdPlay_Click);
             // 
             // cmdRecord
             // 
@@ -94,6 +95,7 @@
             this.cmdRecord.Name = "cmdRecord";
             this.cmdRecord.Size = new System.Drawing.Size(64, 22);
             this.cmdRecord.Text = "Record";
+            this.cmdRecord.Click += new System.EventHandler(this.cmdRecord_Click);
             // 
             // WFToolbar
             // 

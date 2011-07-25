@@ -13,7 +13,7 @@
         </Grid.RowDefinitions>
 
         <WindowsFormsHost Name="toolbarHost">
-            <this:WFToolbar Name="toolbar" AddClicked="toolbar_AddClicked" EditClicked="toolbar_EditClicked" DeleteClicked="toolbar_DeleteClicked" />
+            <this:WFToolbar Name="toolbar" AddClicked="toolbar_AddClicked" EditClicked="toolbar_EditClicked" DeleteClicked="toolbar_DeleteClicked" PlayClicked="toolbar_PlayClicked" RecordClicked="toolbar_RecordClicked" />
         </WindowsFormsHost>
 
         <ListBox Name="listBox" MinHeight="80" SelectionMode="Extended" VerticalAlignment="Stretch" Grid.Row="1" SelectionChanged="listBox_SelectionChanged">

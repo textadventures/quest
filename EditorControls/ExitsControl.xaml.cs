@@ -32,6 +32,7 @@ namespace AxeSoftware.Quest.EditorControls
         public ExitsControl()
         {
             InitializeComponent();
+            toolbar.ShowPlayRecord = false;
             compassControl.HyperlinkClicked += compassControl_HyperlinkClicked;
             compassControl.SelectionChanged += compassControl_SelectionChanged;
             CompassEditor.EditExit += CompassEditor_EditExit;

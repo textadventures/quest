@@ -14,6 +14,8 @@ namespace AxeSoftware.Quest.EditorControls
         public event Action AddClicked;
         public event Action EditClicked;
         public event Action DeleteClicked;
+        public event Action PlayClicked;
+        public event Action RecordClicked;
 
         private bool m_readOnly;
         private bool m_isItemSelected;
@@ -36,6 +38,16 @@ namespace AxeSoftware.Quest.EditorControls
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             DeleteClicked();
+        }
+
+        private void cmdPlay_Click(object sender, EventArgs e)
+        {
+            PlayClicked();
+        }
+
+        private void cmdRecord_Click(object sender, EventArgs e)
+        {
+            RecordClicked();
         }
 
         public bool ReadOnly
