@@ -53,10 +53,13 @@
             this.AddCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddFunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addTurnScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddWalkthroughToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlTreeView = new System.Windows.Forms.TreeView();
-            this.addTurnScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlToolStrip.SuspendLayout();
             this.pnlSearchContainer.SuspendLayout();
             this.ctlContextMenu.SuspendLayout();
@@ -232,9 +235,12 @@
             this.AddDelegateToolStripMenuItem,
             this.AddObjectTypeToolStripMenuItem,
             this.AddEditorToolStripMenuItem,
-            this.AddJavascriptToolStripMenuItem});
+            this.AddJavascriptToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.expandAllToolStripMenuItem,
+            this.collapseAllToolStripMenuItem});
             this.ctlContextMenu.Name = "ctlContextMenu";
-            this.ctlContextMenu.Size = new System.Drawing.Size(200, 400);
+            this.ctlContextMenu.Size = new System.Drawing.Size(200, 450);
             // 
             // AddExitToolStripMenuItem
             // 
@@ -271,6 +277,13 @@
             this.addTimerToolStripMenuItem.Tag = "addtimer";
             this.addTimerToolStripMenuItem.Text = "Add Timer";
             // 
+            // addTurnScriptToolStripMenuItem
+            // 
+            this.addTurnScriptToolStripMenuItem.Name = "addTurnScriptToolStripMenuItem";
+            this.addTurnScriptToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.addTurnScriptToolStripMenuItem.Tag = "addturnscript";
+            this.addTurnScriptToolStripMenuItem.Text = "Add Turn Script";
+            // 
             // AddWalkthroughToolStripMenuItem
             // 
             this.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem";
@@ -296,12 +309,24 @@
             this.ctlTreeView.Size = new System.Drawing.Size(289, 292);
             this.ctlTreeView.TabIndex = 7;
             // 
-            // addTurnScriptToolStripMenuItem
+            // toolStripSeparator1
             // 
-            this.addTurnScriptToolStripMenuItem.Name = "addTurnScriptToolStripMenuItem";
-            this.addTurnScriptToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.addTurnScriptToolStripMenuItem.Tag = "addturnscript";
-            this.addTurnScriptToolStripMenuItem.Text = "Add Turn Script";
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
+            // 
+            // expandAllToolStripMenuItem
+            // 
+            this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
+            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.expandAllToolStripMenuItem.Tag = "expandall";
+            this.expandAllToolStripMenuItem.Text = "Expand All";
+            // 
+            // collapseAllToolStripMenuItem
+            // 
+            this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
+            this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.collapseAllToolStripMenuItem.Tag = "collapseall";
+            this.collapseAllToolStripMenuItem.Text = "Collapse All";
             // 
             // WFEditorTree
             // 
@@ -352,5 +377,8 @@
         internal System.Windows.Forms.TreeView ctlTreeView;
         private System.Windows.Forms.ToolStripMenuItem addTimerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addTurnScriptToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem collapseAllToolStripMenuItem;
     }
 }

@@ -36,6 +36,9 @@ namespace AxeSoftware.Quest.EditorControls
             ShowSearchResults = false;
             ResizeColumn();
             AddHandlers();
+
+            AddMenuClickHandler("expandall", ExpandAll);
+            AddMenuClickHandler("collapseall", CollapseAll);
         }
 
         private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();
@@ -586,7 +589,8 @@ namespace AxeSoftware.Quest.EditorControls
         {
             foreach (var item in ctlContextMenu.Items)
             {
-                AddHandlers((ToolStripMenuItem)item);
+                ToolStripMenuItem menuItem = item as ToolStripMenuItem;
+                if (menuItem != null) AddHandlers((ToolStripMenuItem)item);
             }
         }
 
