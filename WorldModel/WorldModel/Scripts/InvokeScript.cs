@@ -21,7 +21,7 @@ namespace AxeSoftware.Quest.Scripts
                 case 1:
                     return new InvokeScript(WorldModel, new Expression<IScript>(parameters[0], WorldModel));
                 case 2:
-                    return new InvokeScript(WorldModel, new Expression<IScript>(parameters[0], WorldModel), new Expression<IDictionary>(parameters[2], WorldModel));
+                    return new InvokeScript(WorldModel, new Expression<IScript>(parameters[0], WorldModel), new Expression<IDictionary>(parameters[1], WorldModel));
             }
             return null;
         }
