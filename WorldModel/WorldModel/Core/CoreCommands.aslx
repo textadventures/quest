@@ -323,6 +323,10 @@
       msg (DynamicTemplate("ObjectNotOpen", object2))
     }
     else {
+      if (GetBoolean(object2, "hidechildren")) {
+        object2.hidechildren = false
+      }
+
       if (HasDelegateImplementation(object2, "addscript")) {
         rundelegate (object2, "addscript", object1)
       }
