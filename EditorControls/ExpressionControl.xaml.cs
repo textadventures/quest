@@ -231,9 +231,9 @@ namespace AxeSoftware.Quest.EditorControls
             txtExpression.IsEnabled = m_helper.CanEdit(data);
             txtExpression.IsReadOnly = data.ReadOnly;
 
-            lstType.IsEnabled = !data.ReadOnly;
-            lstTemplate.IsEnabled = !data.ReadOnly;
-            cmdInsert.IsEnabled = !data.ReadOnly;
+            lstType.IsEnabled = txtExpression.IsEnabled && !data.ReadOnly;
+            lstTemplate.IsEnabled = txtExpression.IsEnabled && !data.ReadOnly;
+            cmdInsert.IsEnabled = txtExpression.IsEnabled && !data.ReadOnly;
 
             if (m_simpleEditor is TextBox)
             {
