@@ -419,8 +419,10 @@
     strength = 0
     
     foreach (word, inputlist) {
-      if (ListContains(keywordlist, word)) {
-        strength = strength + LengthOf(word)
+      foreach (keyword, keywordlist) {
+        if (StartsWith(word, keyword)) {
+          strength = strength + LengthOf(keyword)
+        }
       }
     }
     
