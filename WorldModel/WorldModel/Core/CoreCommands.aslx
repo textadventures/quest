@@ -72,7 +72,7 @@
       prefix = GetDisplayAlias(object) + ": "
     }
     
-    if (ListContains(ScopeInventory(), object)) {
+    if (object.parent = player) {
       msg (prefix + DynamicTemplate("AlreadyTaken", object))
     }
     else if (not ListContains(ScopeReachable(), object)) {
