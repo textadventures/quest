@@ -15,6 +15,7 @@ namespace AxeSoftware.Quest.EditorControls
         };
 
         private IDictionary<string, string> m_clashMessages;
+        private string m_defaultExpression;
 
         public WFVerbsControl()
         {
@@ -27,6 +28,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             base.Initialise(controller, controlData);
             m_clashMessages = controlData.GetDictionary("clashmessages");
+            m_defaultExpression = controlData.GetString("defaultexpression");
         }
 
         protected override bool CanDisplayAttribute(string attribute, object value)
@@ -157,7 +159,7 @@ namespace AxeSoftware.Quest.EditorControls
             verbData.SetAttribute("property", selectedAttribute);
             EditableCommandPattern pattern = (EditableCommandPattern)verbData.GetAttribute("pattern");
             pattern.Pattern = selectedPattern;
-            verbData.SetAttribute("defaulttext", "You can't " + selectedPattern + " that.");
+            verbData.SetAttribute("defaultexpression", m_defaultExpression.Replace("#verb#", selectedPattern));
         }
 
         protected override string GetAttributeDisplayName(IEditorAttributeData attr)
