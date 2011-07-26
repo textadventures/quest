@@ -110,7 +110,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoAdd()
         {
-            var addKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), string.Empty);
+            var addKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), string.Empty, GetAutoCompleteList());
             if (addKey.Cancelled) return;
             if (!ValidateInput(addKey.Result)) return;
 
@@ -141,6 +141,13 @@ namespace AxeSoftware.Quest.EditorControls
         public void DoRemove(string[] keys)
         {
             m_list.Remove(keys);
+        }
+
+        private IEnumerable<string> GetAutoCompleteList()
+        {
+            string listsource = m_controlData.GetString("source");
+            if (listsource == null) return null;
+            return (listsource == "object") ? m_controller.GetObjectNames("object") : m_controller.GetElementNames(listsource);
         }
 
         private bool ValidateInput(string input)
