@@ -52,12 +52,12 @@ namespace AxeSoftware.Quest.Functions
             return obj.Fields.GetAsType<bool>(property);
         }
 
-		public bool HasInt(Element obj, string property)
+        public bool HasInt(Element obj, string property)
         {
             return obj.Fields.HasType<int>(property);
         }
-		
-		public int GetInt(Element obj, string property)
+
+        public int GetInt(Element obj, string property)
         {
             return obj.Fields.GetAsType<int>(property);
         }
@@ -371,6 +371,19 @@ namespace AxeSoftware.Quest.Functions
         public double GetRandomDouble()
         {
             return m_random.NextDouble();
+        }
+
+        public object Eval(string expression)
+        {
+            return Eval(expression, null);
+        }
+
+        public object Eval(string expression, IDictionary parameters)
+        {
+            ExpressionGeneric expr = new ExpressionGeneric(expression, m_worldModel);
+            Context context = new Context();
+            if (parameters != null) context.Parameters = new Parameters(parameters);
+            return expr.Execute(context);
         }
     }
 }

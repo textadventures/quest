@@ -23,7 +23,7 @@
       <control>
         <caption>Default</caption>
         <controltype>filter</controltype>
-        <filters>text=Text; template=Template</filters>
+        <filters>text=Text; template=Template; expression=Expression</filters>
         <width>150</width>
         <filtergroupname>responsetype</filtergroupname>
       </control>
@@ -44,6 +44,14 @@
         <filtergroup>responsetype</filtergroup>
         <filter>template</filter>
         <nullable/>
+      </control>
+
+      <control>
+        <caption>Expression</caption>
+        <controltype>expression</controltype>
+        <attribute>defaultexpression</attribute>
+        <filtergroup>responsetype</filtergroup>
+        <filter>expression</filter>
       </control>
 
       <control>

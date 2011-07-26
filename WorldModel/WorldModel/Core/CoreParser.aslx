@@ -262,6 +262,11 @@
           else if (not this.defaulttemplate = null) {
             msg (DynamicTemplate(this.defaulttemplate, object))
           }
+          else if (not this.defaultexpression = null) {
+            params = NewDictionary()
+            dictionary add (params, "object", object)
+            msg (Eval(this.defaultexpression, params))
+          }
           else {
             error ("No verb response defined")
           }
