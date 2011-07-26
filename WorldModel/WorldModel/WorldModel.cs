@@ -707,6 +707,7 @@ namespace AxeSoftware.Quest
 
         public void FinishWait()
         {
+            if (m_state == GameState.Finished) return;
             DoInNewThreadAndWait(() =>
             {
                 lock (m_waitForResponseLock)
@@ -1038,6 +1039,7 @@ namespace AxeSoftware.Quest
 
         private void ChangeThreadState(ThreadState newState)
         {
+            if (newState == ThreadState.Waiting && m_state == GameState.Finished) throw new Exception("Game is finished");
             m_threadState = newState;
             lock (m_threadLock)
             {

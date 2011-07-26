@@ -146,6 +146,7 @@ Public Class Player
     End Sub
 
     Private Sub ClearBuffer()
+        If Not Me.IsHandleCreated Then Return
         WriteHTML(m_htmlHelper.ClearBuffer())
         BeginInvoke(Sub() ctlPlayerHtml.ClearBuffer())
     End Sub
@@ -270,6 +271,7 @@ Public Class Player
     End Sub
 
     Private Sub m_game_Finished() Handles m_game.Finished
+        If Not Me.IsHandleCreated Then Return
         BeginInvoke(Sub() GameFinished())
     End Sub
 
@@ -279,7 +281,9 @@ Public Class Player
         tmrTick.Enabled = False
         SetEnabledState(False)
         StopSound()
-        BeginInvoke(Sub() ctlPlayerHtml.Finished())
+        If Me.IsHandleCreated Then
+            BeginInvoke(Sub() ctlPlayerHtml.Finished())
+        End If
         ClearBuffer()
         If RecordWalkthrough IsNot Nothing Then
             RaiseEvent RecordedWalkthrough(RecordWalkthrough, m_recordedWalkthrough)
@@ -288,6 +292,7 @@ Public Class Player
     End Sub
 
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
+        If Not Me.IsHandleCreated Then Return
         BeginInvoke(Sub()
                         WriteLine("<output><b>Sorry, an error occurred.</b></output>")
                         WriteLine("<output>" + errorMessage + "</output>")
@@ -541,7 +546,7 @@ Public Class Player
         Do
             Threading.Thread.Sleep(100)
             Application.DoEvents()
-        Loop Until Not m_waiting Or Not m_initialised
+        Loop Until Not m_waiting Or Not m_initialised Or Not Me.IsHandleCreated
         m_game.FinishWait()
         ClearBuffer()
     End Sub
@@ -683,6 +688,7 @@ Public Class Player
     End Sub
 
     Public Sub WriteHTML(html As String) Implements IPlayer.WriteHTML
+        If Not Me.IsHandleCreated Then Return
         BeginInvoke(Sub() ctlPlayerHtml.WriteText(html))
     End Sub
 
@@ -827,6 +833,7 @@ Public Class Player
     End Function
 
     Private Sub m_gameTimer_RequestNextTimerTick(nextTick As Integer) Handles m_gameTimer.RequestNextTimerTick
+        If Not Me.IsHandleCreated Then Return
         BeginInvoke(Sub()
                         m_sendNextTickEventAfter = nextTick
                         m_tickCount = 0

@@ -118,6 +118,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub ClearBuffer()
+        If Not Me.IsHandleCreated Then Return
         For Each script In m_buffer
             script.Invoke()
         Next
