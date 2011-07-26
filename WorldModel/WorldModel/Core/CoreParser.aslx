@@ -39,6 +39,8 @@
       scope = ScopeExits()
     }
     
+    value = Trim(value)
+    
     foreach (obj, scope) {
       name = LCase(GetDisplayAlias(obj))
       CompareNames (name, value, obj, fullmatches, partialmatches)
