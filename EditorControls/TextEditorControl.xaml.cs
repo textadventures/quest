@@ -309,7 +309,11 @@ namespace AxeSoftware.Quest.EditorControls
         private void ctlFind_Find(string findText)
         {
             int start = textEditor.SelectionStart;
-            int findIndex = textEditor.Text.IndexOf(findText, start + 1, StringComparison.CurrentCultureIgnoreCase);
+            int findIndex = -1;
+            if (start < textEditor.Text.Length)
+            {
+                findIndex = textEditor.Text.IndexOf(findText, start + 1, StringComparison.CurrentCultureIgnoreCase);
+            }
             if (findIndex == -1)
             {
                 findIndex = textEditor.Text.IndexOf(findText, 0, StringComparison.CurrentCultureIgnoreCase);
