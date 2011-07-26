@@ -300,7 +300,7 @@
   <command name="put" pattern="[put]">
     // put object1 in/on object 2
     
-    if (Contains(object2, object1)) {
+    if (object1.parent = object2) {
       msg (DynamicTemplate("AlreadyThere", object1))
     }
     // must be carrying object1
@@ -336,6 +336,18 @@
       }
     }
     
+  </command>
+
+  <command name="removefrom" pattern="[removefrom]">
+    // remove object1 from object2
+    // if object2 does indeed contain object1, this is a synonym for "take object1"
+    
+    if (not Contains(object2, object1)) {
+      msg (DynamicTemplate("ObjectDoesNotContain", object2, object1))
+    }
+    else {
+      DoTake (object1, false)
+    }
   </command>
 
   <command name="give" pattern="[give]">

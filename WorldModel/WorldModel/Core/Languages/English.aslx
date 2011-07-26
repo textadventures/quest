@@ -31,7 +31,7 @@
   <template name="SwitchOff">Switch off</template>
   <template name="Open">Open</template>
   <template name="Close">Close</template>
-  <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " " + Conjugate(object, "be") + " not open."</dynamictemplate>
+  <dynamictemplate name="ObjectNotOpen">CapFirst(GetDisplayAlias(object)) + " " + Conjugate(object, "be") + " not open."</dynamictemplate>
   <template name="NeutralGender">it</template>
   <template name="MaleGender">he</template>
   <template name="FemaleGender">she</template>
@@ -79,6 +79,7 @@
   <dynamictemplate name="SwitchedOn">"You switch " + object.article + " on."</dynamictemplate>
   <dynamictemplate name="SwitchedOff">"You switch " + object.article + " off."</dynamictemplate>
   <template name="DefaultOops">There is nothing to correct.</template>
+  <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " + Conjugate(object1, "do") + " not contain " + GetDisplayAlias(object2) + "."</dynamictemplate>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>
@@ -118,6 +119,7 @@
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">close</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
   <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
