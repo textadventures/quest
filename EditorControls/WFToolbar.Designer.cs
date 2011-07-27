@@ -108,6 +108,7 @@
             this.cmdMoveUp.Name = "cmdMoveUp";
             this.cmdMoveUp.Size = new System.Drawing.Size(75, 22);
             this.cmdMoveUp.Text = "Move Up";
+            this.cmdMoveUp.Click += new System.EventHandler(this.cmdMoveUp_Click);
             // 
             // cmdMoveDown
             // 
@@ -116,6 +117,7 @@
             this.cmdMoveDown.Name = "cmdMoveDown";
             this.cmdMoveDown.Size = new System.Drawing.Size(91, 22);
             this.cmdMoveDown.Text = "Move Down";
+            this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
             // 
             // WFToolbar
             // 

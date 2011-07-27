@@ -52,6 +52,16 @@ namespace AxeSoftware.Quest.EditorControls
             RecordClicked();
         }
 
+        private void cmdMoveUp_Click(object sender, EventArgs e)
+        {
+            MoveUpClicked();
+        }
+
+        private void cmdMoveDown_Click(object sender, EventArgs e)
+        {
+            MoveDownClicked();
+        }
+
         public bool ReadOnly
         {
             get { return m_readOnly; }

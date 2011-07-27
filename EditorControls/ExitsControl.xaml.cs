@@ -171,6 +171,32 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller.EndTransaction();
         }
 
+        private void toolbar_MoveUpClicked()
+        {
+            if (listView.SelectedItem == null) return;
+            int index = listView.SelectedIndex;
+            Swap(index, index - 1);
+        }
+
+        private void toolbar_MoveDownClicked()
+        {
+            if (listView.SelectedItem == null) return;
+            int index = listView.SelectedIndex;
+            Swap(index, index + 1);
+        }
+
+        private void Swap(int index1, int index2)
+        {
+            string key1 = ((ExitListData)listView.Items[index1]).Name;
+            string key2 = ((ExitListData)listView.Items[index2]).Name;
+
+            m_controller.StartTransaction("Reorder elements");
+            m_controller.SwapElements(key1, key2);
+            m_controller.EndTransaction();
+            Populate(m_data);
+            listView.SelectedItem = listView.Items[index2];
+        }
+
         private ExitListData SelectedExit
         {
             get

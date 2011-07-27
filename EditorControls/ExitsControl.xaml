@@ -22,7 +22,7 @@
         <this:CompassControl x:Name="compassControl" />
         
         <WindowsFormsHost Name="toolbarHost" Grid.Row="1">
-            <this:WFToolbar Name="toolbar" AddClicked="toolbar_AddClicked" EditClicked="toolbar_EditClicked" DeleteClicked="toolbar_DeleteClicked" />
+            <this:WFToolbar Name="toolbar" AddClicked="toolbar_AddClicked" EditClicked="toolbar_EditClicked" DeleteClicked="toolbar_DeleteClicked" MoveUpClicked="toolbar_MoveUpClicked" MoveDownClicked="toolbar_MoveDownClicked" />
         </WindowsFormsHost>
 
         <ListView Name="listView" Grid.Row="2" SelectionChanged="listView_SelectionChanged" MouseDoubleClick="listView_MouseDoubleClick">
