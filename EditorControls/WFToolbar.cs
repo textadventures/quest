@@ -16,6 +16,8 @@ namespace AxeSoftware.Quest.EditorControls
         public event Action DeleteClicked;
         public event Action PlayClicked;
         public event Action RecordClicked;
+        public event Action MoveUpClicked;
+        public event Action MoveDownClicked;
 
         private bool m_readOnly;
         private bool m_isItemSelected;
@@ -57,6 +59,11 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 m_readOnly = value;
                 UpdateEnabledState();
+                if (value)
+                {
+                    cmdMoveUp.Enabled = false;
+                    cmdMoveDown.Enabled = false;
+                }
             }
         }
 
@@ -85,6 +92,28 @@ namespace AxeSoftware.Quest.EditorControls
                 cmdPlay.Available = value;
                 cmdRecord.Available = value;
             }
+        }
+
+        public bool ShowMoveButtons
+        {
+            get { return cmdMoveUp.Available; }
+            set
+            {
+                cmdMoveUp.Available = value;
+                cmdMoveDown.Available = value;
+            }
+        }
+
+        public bool CanMoveUp
+        {
+            get { return cmdMoveUp.Enabled; }
+            set { cmdMoveUp.Enabled = !ReadOnly && value; }
+        }
+
+        public bool CanMoveDown
+        {
+            get { return cmdMoveDown.Enabled; }
+            set { cmdMoveDown.Enabled = !ReadOnly && value; }
         }
     }
 }

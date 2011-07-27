@@ -36,6 +36,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             InitializeComponent();
             toolbar.ShowPlayRecord = false;
+            toolbar.ShowMoveButtons = true;
             compassControl.HyperlinkClicked += compassControl_HyperlinkClicked;
             compassControl.SelectionChanged += compassControl_SelectionChanged;
             CompassEditor.EditExit += CompassEditor_EditExit;
@@ -182,6 +183,17 @@ namespace AxeSoftware.Quest.EditorControls
         private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             toolbar.IsItemSelected = (listView.SelectedItems.Count > 0);
+            if (listView.SelectedItems.Count == 1)
+            {
+                toolbar.CanMoveUp = listView.SelectedIndex > 0;
+                toolbar.CanMoveDown = listView.SelectedIndex < listView.Items.Count - 1;
+            }
+            else
+            {
+                toolbar.CanMoveUp = false;
+                toolbar.CanMoveDown = false;
+            }
+
             if (m_selectionChanging) return;
             if (SelectedExit == null)
             {

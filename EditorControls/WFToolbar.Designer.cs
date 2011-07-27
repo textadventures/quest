@@ -35,6 +35,8 @@
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
             this.cmdPlay = new System.Windows.Forms.ToolStripButton();
             this.cmdRecord = new System.Windows.Forms.ToolStripButton();
+            this.cmdMoveUp = new System.Windows.Forms.ToolStripButton();
+            this.cmdMoveDown = new System.Windows.Forms.ToolStripButton();
             this.ctlToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,10 +47,12 @@
             this.cmdEdit,
             this.cmdDelete,
             this.cmdPlay,
-            this.cmdRecord});
+            this.cmdRecord,
+            this.cmdMoveUp,
+            this.cmdMoveDown});
             this.ctlToolStrip.Location = new System.Drawing.Point(0, 0);
             this.ctlToolStrip.Name = "ctlToolStrip";
-            this.ctlToolStrip.Size = new System.Drawing.Size(404, 25);
+            this.ctlToolStrip.Size = new System.Drawing.Size(495, 25);
             this.ctlToolStrip.TabIndex = 3;
             this.ctlToolStrip.Text = "ToolStrip1";
             // 
@@ -97,13 +101,29 @@
             this.cmdRecord.Text = "Record";
             this.cmdRecord.Click += new System.EventHandler(this.cmdRecord_Click);
             // 
+            // cmdMoveUp
+            // 
+            this.cmdMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("cmdMoveUp.Image")));
+            this.cmdMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdMoveUp.Name = "cmdMoveUp";
+            this.cmdMoveUp.Size = new System.Drawing.Size(75, 22);
+            this.cmdMoveUp.Text = "Move Up";
+            // 
+            // cmdMoveDown
+            // 
+            this.cmdMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("cmdMoveDown.Image")));
+            this.cmdMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdMoveDown.Name = "cmdMoveDown";
+            this.cmdMoveDown.Size = new System.Drawing.Size(91, 22);
+            this.cmdMoveDown.Text = "Move Down";
+            // 
             // WFToolbar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ctlToolStrip);
             this.Name = "WFToolbar";
-            this.Size = new System.Drawing.Size(404, 26);
+            this.Size = new System.Drawing.Size(495, 26);
             this.ctlToolStrip.ResumeLayout(false);
             this.ctlToolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -119,6 +139,8 @@
         internal System.Windows.Forms.ToolStripButton cmdDelete;
         private System.Windows.Forms.ToolStripButton cmdPlay;
         private System.Windows.Forms.ToolStripButton cmdRecord;
+        private System.Windows.Forms.ToolStripButton cmdMoveUp;
+        private System.Windows.Forms.ToolStripButton cmdMoveDown;
 
     }
 }

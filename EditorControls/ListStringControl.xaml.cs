@@ -33,6 +33,7 @@ namespace AxeSoftware.Quest.EditorControls
         void m_helper_Initialise()
         {
             toolbar.ShowPlayRecord = m_helper.ControlDefinition.GetBool("iswalkthrough");
+            toolbar.ShowMoveButtons = false;
         }
 
         public IControlDataHelper Helper
