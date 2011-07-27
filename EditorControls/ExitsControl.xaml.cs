@@ -53,6 +53,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller = controller;
             m_controller.ElementsUpdated += m_controller_ElementsUpdated;
+            m_controller.ElementMoved += m_controller_ElementMoved;
 
             m_directionNames = new List<string>(definition.GetListString("compass"));
             m_compassDirections = new List<string>(definition.GetListString("compassdirections"));
@@ -61,6 +62,11 @@ namespace AxeSoftware.Quest.EditorControls
         }
 
         void m_controller_ElementsUpdated()
+        {
+            Populate(m_data);
+        }
+
+        void m_controller_ElementMoved(string key)
         {
             Populate(m_data);
         }
