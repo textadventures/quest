@@ -51,6 +51,13 @@
       }
     }
     
+    if (not game.lastobjects = null) {
+      foreach (obj, game.lastobjects) {
+        CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
+        CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
+      }
+    }
+    
     if (ListCount(fullmatches) = 1) {
       return (ListItem(fullmatches, 0))
     }
@@ -171,9 +178,10 @@
 
   <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
     resolved = true
-    resolvedobjects = NewDictionary()
+    resolvedelements = NewDictionary()
+    resolvedobjects = NewObjectList()
     unresolvedobject = null
-
+    
     foreach (var, varlist) {
       if (resolved) {
         value = LCase(StringDictionaryItem(varlist, var))
@@ -181,10 +189,18 @@
           
         if (StartsWith(var, "object")) {
           if (HasDelegateImplementation(thiscommand, "multiple")) {
-            result = ResolveNameList(value, RunDelegateFunction(thiscommand, "multiple"), "object", resolvedobjects)
+            result = ResolveNameList(value, RunDelegateFunction(thiscommand, "multiple"), "object", resolvedelements)
+            if (not result = null) {
+              foreach (obj, result) {
+                list add (resolvedobjects, obj)
+              }
+            }
           }
           else {
             result = ResolveName(value, "object")
+            if (not result = null) {
+              list add (resolvedobjects, result)
+            }
           }
         }
         else if (StartsWith(var, "exit")) {
@@ -203,13 +219,15 @@
           unresolvedkey = var
         }
         else {
-          dictionary add(resolvedobjects, var, result)
+          dictionary add(resolvedelements, var, result)
         }
       }
     }
+    
+    game.lastobjects = resolvedobjects
       
-    if (not DictionaryContains(resolvedobjects, "multiple")) {
-      dictionary add (resolvedobjects, "multiple", false)
+    if (not DictionaryContains(resolvedelements, "multiple")) {
+      dictionary add (resolvedelements, "multiple", false)
     }
       
     if (resolved) {
@@ -223,7 +241,7 @@
         game.unresolvedcommandvarlist = null
         game.unresolvedcommandkey = null
       }
-      do (thiscommand, "script", resolvedobjects)
+      do (thiscommand, "script", resolvedelements)
     }
     else {
       if (HasString(thiscommand, "unresolved")) {
