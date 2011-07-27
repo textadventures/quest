@@ -89,7 +89,7 @@
   <verbtemplate name="speakto">habla</verbtemplate>
   <verbtemplate name="open">abrir</verbtemplate>
   <verbtemplate name="close">cerrar</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>  <!-- don't need those brackets (on|in) maybe square ones? -->
+  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
 
   <verbtemplate name="buy">comprar</verbtemplate>
   <dynamictemplate name="DefaultBuy">"No puedes comprar" + object.article + "."</dynamictemplate>

@@ -70,7 +70,6 @@
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">close</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
-  <!-- don't need those brackets (on|in) maybe square ones? -->
 
   <verbtemplate name="buy">buy</verbtemplate>
   <dynamictemplate name="DefaultBuy">"Je kan " + object.article + " niet kopen."</dynamictemplate>
