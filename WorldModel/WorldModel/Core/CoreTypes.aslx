@@ -52,6 +52,14 @@
         do (this, "onunlock")
       }
     </changedlocked>
+    <changedswitchedon type="script">
+      if (this.switchedon and HasScript(this, "onswitchon")) {
+        do (this, "onswitchon")
+      }
+      if (not this.switchedon and HasScript(this, "onswitchoff")) {
+        do (this, "onswitchoff")
+      }      
+    </changedswitchedon>
   </type>
 
   <type name="defaultexit">
@@ -254,13 +262,13 @@
         msg (DynamicTemplate("AlreadySwitchedOn", this))
       }
       else {
-        this.switchedon = true
         if (HasString(this, "switchonmsg")) {
           msg (this.switchonmsg)
         }
         else {
           msg (DynamicTemplate("SwitchedOn", this))
         }
+        this.switchedon = true
       }
     </turnon>
     <turnoff type="script">
@@ -268,13 +276,13 @@
         msg (DynamicTemplate("AlreadySwitchedOff", this))
       }
       else {
-        this.switchedon = false
         if (HasString(this, "switchoffmsg")) {
           msg (this.switchoffmsg)
         }
         else {
           msg (DynamicTemplate("SwitchedOff", this))
         }
+        this.switchedon = false
       }
     </turnoff>
   </type>

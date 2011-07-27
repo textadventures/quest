@@ -54,5 +54,20 @@
       <nullable/>
       <mustinherit>switchable</mustinherit>
     </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>After switching on the object</caption>
+      <attribute>onswitchon</attribute>
+      <mustinherit>switchable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>After switching off the object</caption>
+      <attribute>onswitchoff</attribute>
+      <mustinherit>switchable</mustinherit>
+    </control>
+
   </tab>
 </library>
