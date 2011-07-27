@@ -44,6 +44,14 @@
         do (this, "onclose")
       }
     </changedisopen>
+    <changedlocked type="script">
+      if (this.locked and HasScript(this, "onlock")) {
+        do (this, "onlock")
+      }
+      if (not this.locked and HasScript(this, "onunlock")) {
+        do (this, "onunlock")
+      }
+    </changedlocked>
   </type>
 
   <type name="defaultexit">

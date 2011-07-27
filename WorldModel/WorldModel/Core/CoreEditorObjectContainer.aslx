@@ -184,5 +184,19 @@
       <mustinherit>container_lockable</mustinherit>
     </control>
 
+    <control>
+      <controltype>script</controltype>
+      <caption>After locking the object</caption>
+      <attribute>onlock</attribute>
+      <mustinherit>container_lockable</mustinherit>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>After unlocking the object</caption>
+      <attribute>onunlock</attribute>
+      <mustinherit>container_lockable</mustinherit>
+    </control>
+
   </tab>
 </library>
