@@ -31,6 +31,13 @@
     </control>
 
     <control>
+      <controltype>script</controltype>
+      <caption>After taking the object</caption>
+      <attribute>ontake</attribute>
+      <onlydisplayif>GetBoolean(this, "take")</onlydisplayif>
+    </control>
+
+    <control>
       <controltype>title</controltype>
       <caption>Drop</caption>
     </control>
@@ -54,6 +61,13 @@
       <!-- show only if drop type is boolean -->
       <relatedattribute>drop</relatedattribute>
       <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>After dropping the object</caption>
+      <attribute>ondrop</attribute>
+      <onlydisplayif>GetBoolean(this, "drop")</onlydisplayif>
     </control>
 
     <control>

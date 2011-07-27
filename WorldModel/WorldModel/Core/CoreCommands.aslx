@@ -115,6 +115,10 @@
       if (LengthOf(takemsg) > 0) {
         msg (prefix + takemsg)
       }
+      
+      if (HasScript(object, "ontake")) {
+        do (object, "ontake")
+      }
     }
   </function>
 
@@ -177,6 +181,10 @@
       
       if (LengthOf(dropmsg) > 0) {
         msg (prefix + dropmsg)
+      }
+      
+      if (HasScript(object, "ondrop")) {
+        do (object, "ondrop")
       }
     }
   </function>
