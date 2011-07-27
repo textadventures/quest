@@ -101,6 +101,20 @@
     </control>
 
     <control>
+      <controltype>script</controltype>
+      <caption>After opening the object</caption>
+      <attribute>onopen</attribute>
+      <mustinherit>container_base</mustinherit>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>After closing the object</caption>
+      <attribute>onclose</attribute>
+      <mustinherit>container_base</mustinherit>
+    </control>
+
+    <control>
       <controltype>title</controltype>
       <caption>Locking</caption>
       <mustinherit>container_base</mustinherit>

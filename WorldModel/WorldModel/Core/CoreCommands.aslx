@@ -279,14 +279,14 @@
   </function>
 
   <function name="OpenObject" parameters="object">
-    object.isopen = true
     msg (DynamicTemplate("OpenSuccessful", object))
+    object.isopen = true
     ListObjectContents (object)
   </function>
 
   <function name="CloseObject" parameters="object">
-    object.isopen = false
     msg (DynamicTemplate("CloseSuccessful", object))
+    object.isopen = false
   </function>
 
   <command name="open" template="open">
