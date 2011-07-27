@@ -85,6 +85,7 @@ Public Class Player
         LocationUpdated("")
         cmdFullScreen.Visible = False
         m_menu.ClearWindowMenu()
+        m_menu.MenuEnabled("copy") = True
         m_game = game
         m_gameDebug = TryCast(game, IASLDebug)
         m_gameTimer = TryCast(m_game, IASLTimer)

@@ -683,6 +683,7 @@ Public Class Editor
 
     Public Sub Redisplay()
         DisplayCodeView(m_codeView)
+        UpdateClipboardButtons()
     End Sub
 
     Private Sub ctlTextEditor_UndoRedoEnabledUpdated(undoEnabled As Boolean, redoEnabled As Boolean) Handles ctlTextEditor.UndoRedoEnabledUpdated
