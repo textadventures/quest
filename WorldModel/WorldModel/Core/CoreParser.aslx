@@ -27,8 +27,23 @@
       dictionary add (dictionary, obj.name, GetDisplayAlias(obj))
     }
   </function>
-  
+
   <function name="ResolveName" parameters="value, objtype" type="object">
+    result = ResolveNameInternal(value, objtype)
+    if (not result = null) {
+      return (result)
+    }
+    else {
+      foreach (prefix, game.parserignoreprefixes) {
+        if (StartsWith(value, prefix + " ")) {
+          result = ResolveNameInternal(Mid(value, LengthOf(prefix) + 1), objtype)
+        }
+      }
+      return (result)
+    }
+  </function>
+  
+  <function name="ResolveNameInternal" parameters="value, objtype" type="object">
     fullmatches = NewObjectList()
     partialmatches = NewObjectList()
     

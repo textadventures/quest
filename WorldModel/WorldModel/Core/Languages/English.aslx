@@ -49,6 +49,7 @@
   <template name="SelfAlias">me</template>
   <template name="SelfAlt">myself; self</template>
   <template name="AllObjects">all; everything</template>
+  <template name="ParserIgnorePrefixes">the; a; an</template>
   <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " already open."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">WriteVerb(object, "be") + " already closed."</dynamictemplate>
   <dynamictemplate name="CantOpen">"You can't open " + object.article + "."</dynamictemplate>
