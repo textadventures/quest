@@ -49,7 +49,7 @@ namespace AxeSoftware.Quest
         }
 
         public QuestList(IEnumerable<T> collection, bool extended)
-            :this(collection)
+            : this(collection)
         {
             Extended = extended;
         }
@@ -276,7 +276,7 @@ namespace AxeSoftware.Quest
             string result = "List: ";
             foreach (T item in this)
             {
-                result += item.ToString() + "; ";
+                result += ((item == null) ? null : item.ToString()) + "; ";
             }
             return result;
         }
