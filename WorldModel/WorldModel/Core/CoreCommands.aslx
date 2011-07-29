@@ -210,13 +210,16 @@
   </command>
 
   <command name="lookdir" pattern="[lookdir]">
+   <![CDATA[
     if (HasScript(exit, "look")) {
         do (exit, "look")
     }
     else {
       message = DynamicTemplate("YouLooking",exit.alias)
       if (HasString(exit, "look")){
-        message = exit.look
+        if (exit.look <> "") {
+          message = exit.look
+        }
       }
       if (exit.locked) {
         if (HasString(exit,"lockmessage")) {
@@ -231,6 +234,7 @@
         msg (message)
       }
     }
+   ]]>
   </command>
 
   <command name="quit" pattern="[quit]">
