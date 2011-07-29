@@ -129,6 +129,20 @@
     }
     return (result)
   </function>
+
+  <function name="ScopeExitsAll" type="objectlist">
+    return (ScopeAllExitsForRoom(player.parent))
+  </function>
+
+  <function name="ScopeAllExitsForRoom" type="objectlist" parameters="room">
+    result = NewObjectList()
+    foreach (exit, AllExits()) {
+      if (exit.parent = room) {
+        list add(result, exit)
+      }
+    }
+    return (result)
+  </function>
   
   <function name="ScopeCommands" type="objectlist">
     result = NewObjectList()

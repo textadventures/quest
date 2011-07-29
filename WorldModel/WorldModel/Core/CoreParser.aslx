@@ -36,7 +36,7 @@
       scope = ScopeVisible()
     }
     else if (objtype = "exit") {
-      scope = ScopeExits()
+      scope = ScopeExitsAll()
     }
     
     foreach (obj, scope) {

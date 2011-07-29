@@ -208,6 +208,31 @@
   <command name="look" pattern="[look]">
     ShowRoomDescription
   </command>
+
+  <command name="lookdir" pattern="[lookdir]">
+    if (HasScript(exit, "look")) {
+        do (exit, "look")
+    }
+    else {
+      message = DynamicTemplate("YouLooking",exit.alias)
+      if (HasString(exit, "look")){
+        message = exit.look
+      }
+      if (exit.locked) {
+        if (HasString(exit,"lockmessage")) {
+          lockmessage = exit.lockmessage
+        }
+        else {
+          lockmessage = Template("LockedExit")
+        }
+        msg (message+" "+lockmessage)
+      } 
+      else {
+        msg (message)
+      }
+    }
+  </command>
+
   <command name="quit" pattern="[quit]">
     request (Quit, "")
   </command>

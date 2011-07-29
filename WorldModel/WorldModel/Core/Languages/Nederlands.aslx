@@ -52,6 +52,7 @@
   <dynamictemplate name="UndoTurn">"Ongedaan maken: " + text</dynamictemplate>
 
   <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
   <template templatetype="command" name="look">^look$</template>
   <verbtemplate name="lookat">look at</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
@@ -69,6 +70,7 @@
   <verbtemplate name="speakto">talk</verbtemplate>
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">close</verbtemplate>
+  <dynamictemplate name="YouLooking">"U bent op zoek " + text +"."</dynamictemplate>
   <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
   <!-- don't need those brackets (on|in) maybe square ones? -->
 
