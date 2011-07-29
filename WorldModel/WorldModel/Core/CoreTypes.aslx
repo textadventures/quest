@@ -67,6 +67,7 @@
     <displayverbs type="list">[GoTo]</displayverbs>
     <locked type="boolean">false</locked>
     <lockmessage>[LockedExit]</lockmessage>
+    <lookonly type="boolean">false</lookonly>
   </type>
 
   <type name="direction">

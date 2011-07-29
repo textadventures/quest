@@ -97,8 +97,10 @@
   <template name="CompassDirectionPrefix"></template>
   <template name="UpDownDirectionPrefix"></template>
   <template name="InOutDirectionPrefix"></template>
-  
+  <dynamictemplate name="YouLooking">"You are looking " + text +"."</dynamictemplate>
+
   <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
   <template templatetype="command" name="look">^look$</template>
   <verbtemplate name="lookat">look at</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>

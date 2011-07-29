@@ -89,8 +89,10 @@
   <template name="CompassSE">Südosten</template>
   <template name="CompassUp">hoch</template>
   <template name="CompassDown">runter</template>
+  <dynamictemplate name="YouLooking">"Sie suchen " + text +"."</dynamictemplate>
 
   <template templatetype="command" name="go"><![CDATA[^gehe nach (?<exit>.*)$|^gehe (?<exit>.*)$|^nach (?<exit>.*)$|^(?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^(schau|schaue) (?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
   <template templatetype="command" name="look">^schau$|^schaue$</template>
   <verbtemplate name="lookat">untersuche</verbtemplate>
   <verbtemplate name="lookat">betrachte</verbtemplate>
