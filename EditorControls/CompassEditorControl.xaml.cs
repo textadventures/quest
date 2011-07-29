@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             public string To { get; set; }
             public string Direction { get; set; }
+            public bool LookOnly { get; set; }
             public bool CreateInverse { get; set; }
         }
 
@@ -56,6 +57,7 @@ namespace AxeSoftware.Quest.EditorControls
                     toLabel.Visibility = Visibility.Collapsed;
                     to.Visibility = Visibility.Collapsed;
                     toName.Visibility = Visibility.Collapsed;
+                    chkLookOnly.Visibility = Visibility.Collapsed;
                     create.Visibility = Visibility.Collapsed;
                     edit.Visibility = Visibility.Collapsed;
                     chkCorresponding.Visibility = Visibility.Collapsed;
@@ -69,6 +71,7 @@ namespace AxeSoftware.Quest.EditorControls
                     toLabel.Visibility = Visibility.Visible;
                     to.Visibility = Visibility.Visible;
                     toName.Visibility = Visibility.Collapsed;
+                    chkLookOnly.Visibility = Visibility.Visible;
                     create.Visibility = Visibility.Visible;
                     edit.Visibility = Visibility.Collapsed;
                     chkCorresponding.Visibility = Visibility.Visible;
@@ -80,6 +83,7 @@ namespace AxeSoftware.Quest.EditorControls
                     toLabel.Visibility = Visibility.Visible;
                     to.Visibility = Visibility.Collapsed;
                     toName.Visibility = Visibility.Visible;
+                    chkLookOnly.Visibility = Visibility.Collapsed;
                     create.Visibility = Visibility.Collapsed;
                     edit.Visibility = Visibility.Visible;
                     chkCorresponding.Visibility = Visibility.Collapsed;
@@ -107,6 +111,8 @@ namespace AxeSoftware.Quest.EditorControls
         private void to_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             create.IsEnabled = true;
+            chkLookOnly.IsChecked = false;
+            chkLookOnly.IsEnabled = false;
         }
 
         private void create_Click(object sender, RoutedEventArgs e)
@@ -114,6 +120,7 @@ namespace AxeSoftware.Quest.EditorControls
             CreateExit(this, new CreateExitEventArgs {
                 To = (string)to.SelectedItem,
                 Direction = DirectionName,
+                LookOnly = chkLookOnly.IsChecked.Value,
                 CreateInverse = chkCorresponding.IsChecked.Value
             });
         }
@@ -147,6 +154,14 @@ namespace AxeSoftware.Quest.EditorControls
         private void createCorresponding_Click(object sender, RoutedEventArgs e)
         {
             CreateInverseExit();
+        }
+
+        private void chkLookOnly_Checked(object sender, RoutedEventArgs e)
+        {
+            create.IsEnabled = true;
+            chkCorresponding.IsEnabled = false;
+            chkCorresponding.IsChecked = false;
+            to.IsEnabled = false;
         }
     }
 }

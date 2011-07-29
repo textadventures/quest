@@ -1055,25 +1055,38 @@ namespace AxeSoftware.Quest
             return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit);
         }
 
-        public string CreateNewExit(string parent, string to, string alias, string type)
+        public string CreateNewExit(string parent, string to, string alias, string type, bool lookonly)
         {
-            return CreateNewExitInternal(parent, to, alias, true, type);
+            return CreateNewExitInternal(parent, to, alias, true, type, lookonly);
         }
 
-        public string CreateNewExitInternal(string parent, string to, string alias, bool useTransaction, string type)
+        public string CreateNewExitInternal(string parent, string to, string alias, bool useTransaction, string type, bool lookonly)
         {
-            return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, new List<string> { type },
+            if (to == null && lookonly)
+            {
+                return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, new List<string> { type },
+                new Dictionary<string, object> {
+                    { "to", m_worldModel.Elements.Get(parent) },
+                    { "alias", alias },
+                    { "lookonly", lookonly },
+                    { "look", ""}
+                }, useTransaction);
+            }
+            else
+            {
+                return CreateNewAnonymousObject(parent, "exit", ObjectType.Exit, new List<string> { type },
                 new Dictionary<string, object> {
                     { "to", m_worldModel.Elements.Get(to) },
                     { "alias", alias }
                 }, useTransaction);
+            }
         }
 
-        public string CreateNewExit(string parent, string to, string alias, string inverseAlias, string type)
+        public string CreateNewExit(string parent, string to, string alias, string inverseAlias, string type, bool lookonly = false)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create two-way exit {0} to {1}", parent, to));
-            string result = CreateNewExitInternal(parent, to, alias, false, type);
-            CreateNewExitInternal(to, parent, inverseAlias, false, type);
+            string result = CreateNewExitInternal(parent, to, alias, false, type, lookonly);
+            CreateNewExitInternal(to, parent, inverseAlias, false, type, lookonly);
             m_worldModel.UndoLogger.EndTransaction();
 
             return result;
