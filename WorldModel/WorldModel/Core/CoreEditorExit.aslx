@@ -58,6 +58,23 @@
         <controltype>script</controltype>
         <attribute>script</attribute>
       </control>
+      <control>
+        <caption>Look Only</caption>
+        <controltype>checkbox</controltype>
+        <attribute>lookonly</attribute>
+      </control>
+
+      <control>
+        <caption>Look</caption>
+        <controltype>multi</controltype>
+        <attribute>look</attribute>
+        <types>
+          string=Text; script=script
+        </types>
+        <editors>
+          string=textbox
+        </editors>     
+      </control>
 
     </tab>
 
