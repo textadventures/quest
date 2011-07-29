@@ -244,7 +244,12 @@
       do (exit, "script")
     }
     else {
-      player.parent = exit.to
+      if (exit.lookonly) {
+         msg ("[UnresolvedLocation]")
+      } 
+      else {
+        player.parent = exit.to
+      }
     }
   </command>
 
