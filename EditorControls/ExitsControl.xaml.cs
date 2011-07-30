@@ -27,7 +27,7 @@ namespace AxeSoftware.Quest.EditorControls
         private List<string> m_inOutDirections;
         private Dictionary<string, int> m_directionListIndexes = new Dictionary<string, int>();
         private bool m_selectionChanging;
-        private const int k_outDirIndex = 4;
+        //private const int k_outDirIndex = 4;
 
         public event EventHandler<DataModifiedEventArgs> Dirty { add { } remove { } }
         public event Action RequestParentElementEditorSave { add { } remove { } }
@@ -329,6 +329,9 @@ namespace AxeSoftware.Quest.EditorControls
                     CompassEditor.to.Items.Add(objectName);
                 }
                 CompassEditor.create.IsEnabled = false;
+                CompassEditor.to.IsEnabled = true;
+                CompassEditor.chkLookOnly.IsEnabled = true;
+                CompassEditor.chkLookOnly.IsChecked = false;
                 CompassEditor.DirectionName = direction;
                 CompassEditor.AllowCreateInverseExit = true;
             }
@@ -336,11 +339,11 @@ namespace AxeSoftware.Quest.EditorControls
             CompassEditor.direction.Text = AxeSoftware.Utility.Strings.CapFirst(direction);
             CompassEditor.chkCorresponding.IsChecked = DefaultCreateInverseSetting;
 
-            if (m_directionNames.IndexOf(direction) == k_outDirIndex)
-            {
+            //if (m_directionNames.IndexOf(direction) == k_outDirIndex)
+            //{
                 // Allow creating the inverse exit, except for "out" as that has no inverse.
-                CompassEditor.AllowCreateInverseExit = false;
-            }
+                //CompassEditor.AllowCreateInverseExit = false;
+            //}
         }
 
         private CompassEditorControl CompassEditor
@@ -363,7 +366,7 @@ namespace AxeSoftware.Quest.EditorControls
             }
             else
             {
-                newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction, GetDirectionType(e.Direction));
+                newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction, GetDirectionType(e.Direction),e.LookOnly);
             }
             m_controller.UIRequestEditElement(newExit);
         }
@@ -373,7 +376,7 @@ namespace AxeSoftware.Quest.EditorControls
             string inverseDir = GetInverseDirection(CompassEditor.DirectionName);
             string from = CompassEditor.Destination;
             string to = m_data.Name;
-            string newExit = m_controller.CreateNewExit(from, to, inverseDir, GetDirectionType(inverseDir));
+            string newExit = m_controller.CreateNewExit(from, to, inverseDir, GetDirectionType(inverseDir),false);
             m_controller.UIRequestEditElement(newExit);
         }
 
@@ -444,6 +447,11 @@ namespace AxeSoftware.Quest.EditorControls
         private void listView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             EditSelectedItem();
+        }
+
+        private void compassControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

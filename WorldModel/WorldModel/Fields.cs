@@ -80,6 +80,7 @@ namespace AxeSoftware.Quest
         public static IField<QuestList<string>> DisplayVerbs = new FieldDef<QuestList<string>>("displayverbs");
         public static IField<QuestList<string>> InventoryVerbs = new FieldDef<QuestList<string>>("inventoryverbs");
         public static IField<Element> To = new FieldDef<Element>("to");
+        public static IField<bool> LookOnly = new FieldDef<bool>("lookonly");
         public static IField<QuestList<string>> ParamNames = new FieldDef<QuestList<string>>("paramnames");
         public static IField<IScript> Script = new FieldDef<IScript>("script");
         public static IField<string> ReturnType = new FieldDef<string>("returntype");
