@@ -27,7 +27,6 @@ namespace AxeSoftware.Quest.EditorControls
         private List<string> m_inOutDirections;
         private Dictionary<string, int> m_directionListIndexes = new Dictionary<string, int>();
         private bool m_selectionChanging;
-        //private const int k_outDirIndex = 4;
 
         public event EventHandler<DataModifiedEventArgs> Dirty { add { } remove { } }
         public event Action RequestParentElementEditorSave { add { } remove { } }
@@ -338,12 +337,6 @@ namespace AxeSoftware.Quest.EditorControls
 
             CompassEditor.direction.Text = AxeSoftware.Utility.Strings.CapFirst(direction);
             CompassEditor.chkCorresponding.IsChecked = DefaultCreateInverseSetting;
-
-            //if (m_directionNames.IndexOf(direction) == k_outDirIndex)
-            //{
-                // Allow creating the inverse exit, except for "out" as that has no inverse.
-                //CompassEditor.AllowCreateInverseExit = false;
-            //}
         }
 
         private CompassEditorControl CompassEditor
