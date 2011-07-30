@@ -472,7 +472,15 @@ namespace AxeSoftware.Quest
                         {
                             case ObjectType.Exit:
                                 Element to = e.Fields[FieldDefinitions.To];
-                                return "Exit: " + (to == null ? "(nowhere)" : to.Name);
+                                Boolean lookonly = e.Fields[FieldDefinitions.LookOnly];
+                                if (lookonly)
+                                {
+                                    return "Look: " + e.Fields[FieldDefinitions.Alias];
+                                }
+                                else
+                                {
+                                    return "Exit: " + (to == null ? "(nowhere)" : to.Name);
+                                }
                             case ObjectType.Command:
                                 EditorCommandPattern pattern = e.Fields.GetAsType<EditorCommandPattern>("pattern");
                                 bool isVerb = e.Fields.GetAsType<bool>("isverb");
