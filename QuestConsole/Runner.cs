@@ -22,12 +22,6 @@ namespace QuestConsole
         {
             IASL game = GameLauncher.GetGame(m_filename, null);
 
-            IASLTimer gameTimer = game as IASLTimer;
-            if (gameTimer != null)
-            {
-                gameTimer.RequestNextTimerTick += game_RequestNextTimerTick;
-            }
-
             m_player = new ConsolePlayer(game);
             m_player.ClearBuffer += ClearBuffer;
             m_player.Finish += Finish;
@@ -61,11 +55,6 @@ namespace QuestConsole
             m_player.OutputText(m_helper.ClearBuffer());
         }
 
-        private void game_RequestNextTimerTick(int obj)
-        {
-            //Console.WriteLine("<timers not implemented>");
-        }
-
         private void PlayGame()
         {
             do
@@ -73,7 +62,7 @@ namespace QuestConsole
                 ClearBuffer();
                 string input = Console.ReadLine();
 
-                m_helper.SendCommand(input, 0);
+                m_helper.SendCommand(input, m_player.GetTickCountAndStopTimer());
             } while (m_running);
         }
     }

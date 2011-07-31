@@ -11,6 +11,11 @@ namespace QuestConsole
     class ConsolePlayer : IPlayerHelperUI
     {
         private IASL m_game;
+        private IASLTimer m_gameTimer;
+
+        private int m_elapsedTime = 0;
+        private int m_nextTick = 0;
+        private System.Timers.Timer m_timer;
 
         public event Action ClearBuffer;
         public event Action Finish;
@@ -18,6 +23,15 @@ namespace QuestConsole
         public ConsolePlayer(IASL game)
         {
             m_game = game;
+
+            m_gameTimer = game as IASLTimer;
+            if (m_gameTimer != null)
+            {
+                m_timer = new System.Timers.Timer(1000);
+                m_timer.Elapsed += timer_Elapsed;
+                m_timer.AutoReset = true;
+                m_gameTimer.RequestNextTimerTick += game_RequestNextTimerTick;
+            }
         }
 
         public void ShowMenu(MenuData menuData)
@@ -202,6 +216,33 @@ namespace QuestConsole
 
         public void BindMenu(string linkid, string verbs, string text)
         {
+        }
+
+        private void game_RequestNextTimerTick(int secs)
+        {
+            m_elapsedTime = 0;
+            m_nextTick = secs;
+            if (m_nextTick > 0)
+            {
+                m_timer.Start();
+            }
+        }
+
+        private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            m_elapsedTime += 1;
+            if (m_nextTick > 0 && m_elapsedTime >= m_nextTick)
+            {
+                m_nextTick = 0;
+                m_gameTimer.Tick(GetTickCountAndStopTimer());
+                ClearBuffer();
+            }
+        }
+
+        public int GetTickCountAndStopTimer()
+        {
+            m_timer.Stop();
+            return m_elapsedTime;
         }
     }
 }
