@@ -58,7 +58,16 @@ namespace QuestConsole
 
         public void DoWait()
         {
-            throw new NotImplementedException();
+            ClearBuffer();
+            Console.ReadKey();
+
+            Thread newThread = new Thread(() =>
+            {
+                m_game.FinishWait();
+                ClearBuffer();
+            });
+            newThread.Start();
+
         }
 
         public void DoPause(int ms)
