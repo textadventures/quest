@@ -14,7 +14,7 @@ namespace EditorControllerTests
         public void TestTemplates()
         {
             string folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Substring(6).Replace("/", @"\");
-            string templateFolder = System.IO.Path.Combine(folder, @"..\..\..\WorldModel\WorldModel\Core");
+            string templateFolder = System.IO.Path.Combine(folder, @"..\..\..\..\WorldModel\WorldModel\Core");
             Dictionary<string, string> templates = EditorController.GetAvailableTemplates(templateFolder);
 
             foreach (string template in templates.Values)
