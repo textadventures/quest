@@ -33,7 +33,8 @@ namespace QuestConsole
                 response = Console.ReadLine();
             } while (!menuData.Options.ContainsKey(response));
 
-            Thread newThread = new Thread(() => {
+            Thread newThread = new Thread(() =>
+            {
                 m_game.SetMenuResponse(response);
                 ClearBuffer();
             });
@@ -52,7 +53,21 @@ namespace QuestConsole
 
         public void ShowQuestion(string caption)
         {
-            throw new NotImplementedException();
+            ClearBuffer();
+            OutputText(caption + "<br/>Y/N:");
+            string response;
+            do
+            {
+                response = Console.ReadKey().KeyChar.ToString().ToUpper();
+            } while (response != "Y" && response != "N");
+            Console.WriteLine();
+
+            Thread newThread = new Thread(() =>
+            {
+                m_game.SetQuestionResponse(response == "Y");
+                ClearBuffer();
+            });
+            newThread.Start();
         }
 
         public void SetWindowMenu(MenuData menuData)
