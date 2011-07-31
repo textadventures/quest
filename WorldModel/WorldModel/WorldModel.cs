@@ -989,7 +989,8 @@ namespace AxeSoftware.Quest
 
         private bool TryPath(string path, string file, out string fullPath, bool recurse)
         {
-            if (path.StartsWith("file:\\")) path = path.Substring(6);
+            if (path.StartsWith(@"file:\")) path = path.Substring(6);
+            if (path.StartsWith(@"file:")) path = path.Substring(5);
             fullPath = System.IO.Path.Combine(path, file);
             if (System.IO.File.Exists(fullPath))
             {
