@@ -27,10 +27,10 @@ namespace QuestConsole
                 gameTimer.RequestNextTimerTick += game_RequestNextTimerTick;
             }
 
-            m_player = new ConsolePlayer();
+            m_player = new ConsolePlayer(game);
+            m_player.ClearBuffer += ClearBuffer;
             m_helper = new PlayerHelper(game, m_player);
 
-            m_player.Output += player_Output;
             List<string> errors = new List<string>();
             if (!m_helper.Initialise(m_player, out errors))
             {
@@ -48,6 +48,11 @@ namespace QuestConsole
             }
         }
 
+        private void ClearBuffer()
+        {
+            m_player.OutputText(m_helper.ClearBuffer());
+        }
+
         private void game_RequestNextTimerTick(int obj)
         {
             //Console.WriteLine("<timers not implemented>");
@@ -57,15 +62,11 @@ namespace QuestConsole
         {
             do
             {
-                m_player.OutputText(m_helper.ClearBuffer());
+                ClearBuffer();
                 string input = Console.ReadLine();
+
                 m_helper.SendCommand(input, 0);
             } while (true);
-        }
-
-        private void player_Output(string text)
-        {
-            Console.Write(text);
         }
     }
 }

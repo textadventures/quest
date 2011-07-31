@@ -4,16 +4,40 @@ using System.Linq;
 using System.Text;
 using AxeSoftware.Quest;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace QuestConsole
 {
     class ConsolePlayer : IPlayerHelperUI
     {
-        public event Action<string> Output;
+        private IASL m_game;
+
+        public event Action ClearBuffer;
+
+        public ConsolePlayer(IASL game)
+        {
+            m_game = game;
+        }
 
         public void ShowMenu(MenuData menuData)
         {
-            throw new NotImplementedException();
+            ClearBuffer();
+            OutputText(menuData.Caption + "<br/>");
+            foreach (var option in menuData.Options)
+            {
+                OutputText(string.Format("{0}: {1}<br/>", option.Key, option.Value));
+            }
+            string response;
+            do
+            {
+                response = Console.ReadLine();
+            } while (!menuData.Options.ContainsKey(response));
+
+            Thread newThread = new Thread(() => {
+                m_game.SetMenuResponse(response);
+                ClearBuffer();
+            });
+            newThread.Start();
         }
 
         public void DoWait()
@@ -153,7 +177,7 @@ namespace QuestConsole
             text = s_regexNewLine.Replace(text, Environment.NewLine);
             text = s_regexHtml.Replace(text, "");
             text = text.Replace("&nbsp;", " ").Replace("&gt;", ">").Replace("&lt;", "<");
-            Output(text);
+            Console.Write(text);
         }
 
         public void SetAlignment(string alignment)
