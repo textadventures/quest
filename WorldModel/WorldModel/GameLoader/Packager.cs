@@ -52,7 +52,7 @@ namespace AxeSoftware.Quest
                 if (e.MetaFields[MetaFieldDefinitions.Library])
                 {
                     string libFolder = System.IO.Path.GetDirectoryName(e.MetaFields[MetaFieldDefinitions.Filename]);
-                    if (libFolder.StartsWith("file:\\")) libFolder = libFolder.Substring(6);
+                    libFolder = AxeSoftware.Utility.Utility.RemoveFileColonPrefix(libFolder);
                     if (libFolder != baseFolder)
                     {
                         zip.AddFile(System.IO.Path.Combine(libFolder, e.Fields[FieldDefinitions.Src]), "");

@@ -966,7 +966,7 @@ namespace AxeSoftware.Quest
 
         private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
         {
-            if (path.StartsWith("file:\\")) path = path.Substring(6);
+            path = AxeSoftware.Utility.Utility.RemoveFileColonPrefix(path);
             System.IO.SearchOption option = recurse ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
             foreach (var result in System.IO.Directory.GetFiles(path, searchPattern, option))
             {
@@ -989,8 +989,7 @@ namespace AxeSoftware.Quest
 
         private bool TryPath(string path, string file, out string fullPath, bool recurse)
         {
-            if (path.StartsWith(@"file:\")) path = path.Substring(6);
-            if (path.StartsWith(@"file:")) path = path.Substring(5);
+            path = AxeSoftware.Utility.Utility.RemoveFileColonPrefix(path);
             fullPath = System.IO.Path.Combine(path, file);
             if (System.IO.File.Exists(fullPath))
             {

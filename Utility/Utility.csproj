@@ -72,6 +72,7 @@
     <Compile Include="Classes.cs" />
     <Compile Include="Registry.cs" />
     <Compile Include="Strings.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="WindowHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
