@@ -55,8 +55,12 @@ namespace QuestConsole
 
         private void PlayGame()
         {
-            m_player.OutputText(m_helper.ClearBuffer());
-            string input = Console.ReadLine();
+            do
+            {
+                m_player.OutputText(m_helper.ClearBuffer());
+                string input = Console.ReadLine();
+                m_helper.SendCommand(input, 0);
+            } while (true);
         }
 
         private void player_Output(string text)
