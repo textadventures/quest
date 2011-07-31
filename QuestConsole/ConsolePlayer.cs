@@ -87,22 +87,19 @@ namespace QuestConsole
 
         public void SetWindowMenu(MenuData menuData)
         {
-            throw new NotImplementedException();
         }
 
         public string GetNewGameFile(string originalFilename, string extensions)
         {
-            throw new NotImplementedException();
+            return string.Empty;
         }
 
         public void PlaySound(string filename, bool synchronous, bool looped)
         {
-            throw new NotImplementedException();
         }
 
         public void StopSound()
         {
-            throw new NotImplementedException();
         }
 
         public void WriteHTML(string html)
@@ -169,22 +166,21 @@ namespace QuestConsole
 
         public void Speak(string text)
         {
-            throw new NotImplementedException();
         }
 
         public void RequestSave()
         {
-            throw new NotImplementedException();
+            OutputText("Saving is not currently supported");
         }
 
         public void RequestLoad()
         {
-            throw new NotImplementedException();
+            OutputText("Loading is not currently supported");
         }
 
         public void RequestRestart()
         {
-            throw new NotImplementedException();
+            OutputText("Restart is not currently supported");
         }
 
         public void Show(string element)
