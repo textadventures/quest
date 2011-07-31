@@ -11,6 +11,7 @@ namespace QuestConsole
         private string m_filename;
         private ConsolePlayer m_player;
         private PlayerHelper m_helper;
+        private bool m_running = true;
 
         public Runner(string filename)
         {
@@ -29,6 +30,7 @@ namespace QuestConsole
 
             m_player = new ConsolePlayer(game);
             m_player.ClearBuffer += ClearBuffer;
+            m_player.Finish += Finish;
             m_helper = new PlayerHelper(game, m_player);
 
             List<string> errors = new List<string>();
@@ -46,6 +48,12 @@ namespace QuestConsole
                 game.Begin();
                 PlayGame();
             }
+        }
+
+        private void Finish()
+        {
+            m_running = false;
+            ClearBuffer();
         }
 
         private void ClearBuffer()
@@ -66,7 +74,7 @@ namespace QuestConsole
                 string input = Console.ReadLine();
 
                 m_helper.SendCommand(input, 0);
-            } while (true);
+            } while (m_running);
         }
     }
 }

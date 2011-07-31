@@ -13,6 +13,7 @@ namespace QuestConsole
         private IASL m_game;
 
         public event Action ClearBuffer;
+        public event Action Finish;
 
         public ConsolePlayer(IASL game)
         {
@@ -141,7 +142,7 @@ namespace QuestConsole
 
         public void Quit()
         {
-            throw new NotImplementedException();
+            Finish();
         }
 
         public void SetFont(string fontName)
