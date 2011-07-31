@@ -67,12 +67,18 @@ namespace QuestConsole
                 ClearBuffer();
             });
             newThread.Start();
-
         }
 
         public void DoPause(int ms)
         {
-            throw new NotImplementedException();
+            ClearBuffer();
+            System.Timers.Timer timer = new System.Timers.Timer(ms);
+            timer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
+            {
+                m_game.FinishPause();
+                ClearBuffer();
+            };
+            timer.Start();
         }
 
         public void ShowQuestion(string caption)
