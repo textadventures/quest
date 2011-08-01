@@ -19,7 +19,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <this:CompassControl x:Name="compassControl" Loaded="compassControl_Loaded" />
+        <this:CompassControl x:Name="compassControl" />
         
         <WindowsFormsHost Name="toolbarHost" Grid.Row="1">
             <this:WFToolbar Name="toolbar" AddClicked="toolbar_AddClicked" EditClicked="toolbar_EditClicked" DeleteClicked="toolbar_DeleteClicked" MoveUpClicked="toolbar_MoveUpClicked" MoveDownClicked="toolbar_MoveDownClicked" />

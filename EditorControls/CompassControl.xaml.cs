@@ -84,9 +84,16 @@ namespace AxeSoftware.Quest.EditorControls
             SelectedDirection = null;
         }
 
-        public void Populate(int direction, string to)
+        public void Populate(int direction, string to, bool lookonly)
         {
-            m_directionControl[direction].HyperlinkDestination = to;
+            if (!lookonly)
+            {
+                m_directionControl[direction].HyperlinkDestination = to;
+            }
+            else
+            {
+                m_directionControl[direction].NoLinkDestination = "look";
+            }
         }
     }
 }

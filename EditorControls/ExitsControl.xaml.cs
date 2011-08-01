@@ -75,9 +75,14 @@ namespace AxeSoftware.Quest.EditorControls
             public string Name { get; set; }
             public IEditableObjectReference ToRoom { get; set; }
             public string Alias { get; set; }
+            public bool LookOnly { get; set; }
             public string To
             {
-                get { return ToRoom == null ? null : ToRoom.Reference; }
+                get
+                {
+                    if (LookOnly) return "(look)";
+                    return ToRoom == null ? null : ToRoom.Reference;
+                }
             }
         }
 
@@ -102,6 +107,7 @@ namespace AxeSoftware.Quest.EditorControls
                         Name = exitData.Name,
                         ToRoom = exitData.GetAttribute("to") as IEditableObjectReference,
                         Alias = exitData.GetAttribute("alias") as string,
+                        LookOnly = (exitData.GetAttribute("lookonly") as bool? == true)
                     };
 
                     int addedIndex = listView.Items.Add(exitListData);
@@ -109,7 +115,7 @@ namespace AxeSoftware.Quest.EditorControls
                     if (m_directionNames.Contains(exitListData.Alias))
                     {
                         int direction = m_directionNames.IndexOf(exitListData.Alias);
-                        compassControl.Populate(direction, exitListData.To);
+                        compassControl.Populate(direction, exitListData.To, exitListData.LookOnly);
                         m_directionListIndexes[exitListData.Alias] = addedIndex;
                     }
                 }
@@ -359,7 +365,7 @@ namespace AxeSoftware.Quest.EditorControls
             }
             else
             {
-                newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction, GetDirectionType(e.Direction),e.LookOnly);
+                newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction, GetDirectionType(e.Direction), e.LookOnly);
             }
             m_controller.UIRequestEditElement(newExit);
         }
@@ -369,7 +375,7 @@ namespace AxeSoftware.Quest.EditorControls
             string inverseDir = GetInverseDirection(CompassEditor.DirectionName);
             string from = CompassEditor.Destination;
             string to = m_data.Name;
-            string newExit = m_controller.CreateNewExit(from, to, inverseDir, GetDirectionType(inverseDir),false);
+            string newExit = m_controller.CreateNewExit(from, to, inverseDir, GetDirectionType(inverseDir), false);
             m_controller.UIRequestEditElement(newExit);
         }
 
@@ -440,11 +446,6 @@ namespace AxeSoftware.Quest.EditorControls
         private void listView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             EditSelectedItem();
-        }
-
-        private void compassControl_Loaded(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
