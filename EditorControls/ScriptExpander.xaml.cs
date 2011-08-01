@@ -67,11 +67,13 @@ namespace AxeSoftware.Quest.EditorControls
         public void Populate(IEditorData data, IEditableScripts script)
         {
             m_script = script;
+            if (script == null) ctlScript.Populate(script);
         }
 
         public void Populate(IEditorData data)
         {
             m_data = data;
+            if (data == null) ctlScript.Populate(data);
         }
 
         public bool ReadOnly

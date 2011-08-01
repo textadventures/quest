@@ -151,6 +151,7 @@ namespace AxeSoftware.Quest.EditorControls
         private void RemoveElseChildControl()
         {
             m_hasElse = false;
+            ctlElse.Populate(null, null);
 
             // remove from grid
             ctlElse.Visibility = Visibility.Collapsed;
@@ -170,6 +171,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void RemoveElseIfEditor(IfEditorChild child)
         {
+            child.Populate(null, null);
             child.Visibility = Visibility.Collapsed;
             grid.Children.Remove(child);
             child.Dirty -= RaiseDirtyEvent;
