@@ -293,36 +293,44 @@ namespace AxeSoftware.Quest.EditorControls
                 CompassEditor.Destination = data.To;
                 CompassEditor.DirectionName = direction;
 
-                // See if a corresponding exit exists in the "to" room
-                string inverseExit = GetInverseDirection(data.Alias);
-                bool inverseExitExists = false;
-                bool inverseExitPointsHere = false;
-
-                foreach (string exitName in m_controller.GetObjectNames("exit", data.To))
+                if (data.LookOnly)
                 {
-                    IEditorData otherRoomExitData = m_controller.GetEditorData(exitName);
-                    string otherRoomExitAlias = otherRoomExitData.GetAttribute("alias") as string;
-                    if (inverseExit == otherRoomExitAlias)
-                    {
-                        inverseExitExists = true;
-                        IEditableObjectReference otherExitTo = otherRoomExitData.GetAttribute("to") as IEditableObjectReference;
-                        if (otherExitTo != null)
-                        {
-                            inverseExitPointsHere = (otherExitTo.Reference == m_data.Name);
-                        }
-                        break;
-                    }
-                }
-
-                if (inverseExitExists && inverseExitPointsHere)
-                {
-                    CompassEditor.CorrespondingExitExists = true;
-                    CompassEditor.AllowCreateInverseExit = true;
+                    CompassEditor.CorrespondingExitExists = false;
+                    CompassEditor.AllowCreateInverseExit = false;
                 }
                 else
                 {
-                    CompassEditor.CorrespondingExitExists = false;
-                    CompassEditor.AllowCreateInverseExit = !inverseExitExists;
+                    // See if a corresponding exit exists in the "to" room
+                    string inverseExit = GetInverseDirection(data.Alias);
+                    bool inverseExitExists = false;
+                    bool inverseExitPointsHere = false;
+
+                    foreach (string exitName in m_controller.GetObjectNames("exit", data.To))
+                    {
+                        IEditorData otherRoomExitData = m_controller.GetEditorData(exitName);
+                        string otherRoomExitAlias = otherRoomExitData.GetAttribute("alias") as string;
+                        if (inverseExit == otherRoomExitAlias)
+                        {
+                            inverseExitExists = true;
+                            IEditableObjectReference otherExitTo = otherRoomExitData.GetAttribute("to") as IEditableObjectReference;
+                            if (otherExitTo != null)
+                            {
+                                inverseExitPointsHere = (otherExitTo.Reference == m_data.Name);
+                            }
+                            break;
+                        }
+                    }
+
+                    if (inverseExitExists && inverseExitPointsHere)
+                    {
+                        CompassEditor.CorrespondingExitExists = true;
+                        CompassEditor.AllowCreateInverseExit = true;
+                    }
+                    else
+                    {
+                        CompassEditor.CorrespondingExitExists = false;
+                        CompassEditor.AllowCreateInverseExit = !inverseExitExists;
+                    }
                 }
             }
             else
@@ -335,8 +343,6 @@ namespace AxeSoftware.Quest.EditorControls
                 }
                 CompassEditor.create.IsEnabled = false;
                 CompassEditor.to.IsEnabled = true;
-                CompassEditor.chkLookOnly.IsEnabled = true;
-                CompassEditor.chkLookOnly.IsChecked = false;
                 CompassEditor.DirectionName = direction;
                 CompassEditor.AllowCreateInverseExit = true;
             }

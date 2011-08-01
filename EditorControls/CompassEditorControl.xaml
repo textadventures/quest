@@ -15,16 +15,19 @@
             </Style>
         </StackPanel.Resources>
         <TextBlock Name="direction" FontWeight="Bold" TextWrapping="Wrap">North</TextBlock>
+        <TextBlock Style="{StaticResource item}" FontWeight="Bold" Name="createExitTitle">Create an exit:</TextBlock>
         <StackPanel Style="{StaticResource item}"  Orientation="Horizontal">
             <Label Name="toLabel" Padding="0,3,0,0">To:</Label>
             <ComboBox Name="to" Padding="6,3,6,3" Margin="6,0,0,0" MinWidth="90" SelectionChanged="to_SelectionChanged"/>
             <TextBlock Name="toName" Padding="6,3,6,3" Margin="6,0,0,0"></TextBlock>
         </StackPanel>
-        <CheckBox Content="Create a dummy exit for that direction" Height="17" Name="chkLookOnly" Width="298" Checked="chkLookOnly_Checked" ToolTip="Creates an exit that will not need a room, add a script or text to the exit look attribute to enable in room directional looking. i.e. look up." VerticalContentAlignment="Center" Padding="4,0,0,0" HorizontalAlignment="Stretch" Margin="0,8,0,0" IsEnabled="True" />
-        <Button Style="{StaticResource button}"  Name="create" HorizontalAlignment="Left" Click="create_Click">Create</Button>
+        <Button Style="{StaticResource button}"  Name="create" HorizontalAlignment="Left" Click="create_Click">Create exit</Button>
         <Button Style="{StaticResource button}" Name="edit" HorizontalAlignment="Left" Click="edit_Click">Edit</Button>
         <CheckBox Style="{StaticResource item}" Name="chkCorresponding">Also create exit in the other direction</CheckBox>
         <TextBlock Style="{StaticResource item}" Name="corresponding">Exit in the other direction already exists</TextBlock>
         <Button Style="{StaticResource button}" Name="createCorresponding" HorizontalAlignment="Left" Click="createCorresponding_Click">Create exit in the other direction</Button>
+        <TextBlock Style="{StaticResource item}" FontWeight="Bold" Name="createLookOnlyTitle" Margin="0,20,0,0">Create a "look" direction:</TextBlock>
+        <TextBlock Style="{StaticResource item}" Name="createLookOnlyDesc" TextWrapping="Wrap">Allows players to look in this direction, but not move this way.</TextBlock>
+        <Button Style="{StaticResource button}"  Name="createLookOnly" HorizontalAlignment="Left" Click="createLookOnly_Click">Create "look" direction</Button>
     </StackPanel>
 </UserControl>

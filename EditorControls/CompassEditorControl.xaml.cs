@@ -54,10 +54,13 @@ namespace AxeSoftware.Quest.EditorControls
 
                 if (m_mode == CompassEditorMode.NoSelection || m_mode == CompassEditorMode.NotACompassExit)
                 {
+                    createExitTitle.Visibility = Visibility.Collapsed;
                     toLabel.Visibility = Visibility.Collapsed;
                     to.Visibility = Visibility.Collapsed;
                     toName.Visibility = Visibility.Collapsed;
-                    chkLookOnly.Visibility = Visibility.Collapsed;
+                    createLookOnlyTitle.Visibility = Visibility.Collapsed;
+                    createLookOnlyDesc.Visibility = Visibility.Collapsed;
+                    createLookOnly.Visibility = Visibility.Collapsed;
                     create.Visibility = Visibility.Collapsed;
                     edit.Visibility = Visibility.Collapsed;
                     chkCorresponding.Visibility = Visibility.Collapsed;
@@ -68,10 +71,13 @@ namespace AxeSoftware.Quest.EditorControls
                 }
                 else if (m_mode == CompassEditorMode.NewCompassExit)
                 {
+                    createExitTitle.Visibility = Visibility.Visible;
                     toLabel.Visibility = Visibility.Visible;
                     to.Visibility = Visibility.Visible;
                     toName.Visibility = Visibility.Collapsed;
-                    chkLookOnly.Visibility = Visibility.Visible;
+                    createLookOnlyTitle.Visibility = Visibility.Visible;
+                    createLookOnlyDesc.Visibility = Visibility.Visible;
+                    createLookOnly.Visibility = Visibility.Visible;
                     create.Visibility = Visibility.Visible;
                     edit.Visibility = Visibility.Collapsed;
                     chkCorresponding.Visibility = Visibility.Visible;
@@ -80,10 +86,13 @@ namespace AxeSoftware.Quest.EditorControls
                 }
                 else if (m_mode == CompassEditorMode.ExistingCompassExit)
                 {
+                    createExitTitle.Visibility = Visibility.Collapsed;
                     toLabel.Visibility = Visibility.Visible;
                     to.Visibility = Visibility.Collapsed;
                     toName.Visibility = Visibility.Visible;
-                    chkLookOnly.Visibility = Visibility.Collapsed;
+                    createLookOnlyTitle.Visibility = Visibility.Collapsed;
+                    createLookOnlyDesc.Visibility = Visibility.Collapsed;
+                    createLookOnly.Visibility = Visibility.Collapsed;
                     create.Visibility = Visibility.Collapsed;
                     edit.Visibility = Visibility.Visible;
                     chkCorresponding.Visibility = Visibility.Collapsed;
@@ -111,8 +120,6 @@ namespace AxeSoftware.Quest.EditorControls
         private void to_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             create.IsEnabled = true;
-            chkLookOnly.IsChecked = false;
-            chkLookOnly.IsEnabled = false;
         }
 
         private void create_Click(object sender, RoutedEventArgs e)
@@ -120,8 +127,17 @@ namespace AxeSoftware.Quest.EditorControls
             CreateExit(this, new CreateExitEventArgs {
                 To = (string)to.SelectedItem,
                 Direction = DirectionName,
-                LookOnly = chkLookOnly.IsChecked.Value,
+                LookOnly = false,
                 CreateInverse = chkCorresponding.IsChecked.Value
+            });
+        }
+
+        private void createLookOnly_Click(object sender, RoutedEventArgs e)
+        {
+            CreateExit(this, new CreateExitEventArgs
+            {
+                Direction = DirectionName,
+                LookOnly = true,
             });
         }
 
@@ -154,14 +170,6 @@ namespace AxeSoftware.Quest.EditorControls
         private void createCorresponding_Click(object sender, RoutedEventArgs e)
         {
             CreateInverseExit();
-        }
-
-        private void chkLookOnly_Checked(object sender, RoutedEventArgs e)
-        {
-            create.IsEnabled = true;
-            chkCorresponding.IsEnabled = false;
-            chkCorresponding.IsChecked = false;
-            to.IsEnabled = false;
         }
     }
 }
