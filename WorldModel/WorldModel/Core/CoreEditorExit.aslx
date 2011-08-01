@@ -10,6 +10,7 @@
         <controltype>objects</controltype>
         <attribute>to</attribute>
         <width>200</width>
+        <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
 
       <control>
@@ -45,21 +46,30 @@
         <caption>Locked</caption>
         <controltype>checkbox</controltype>
         <attribute>locked</attribute>
+        <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
 
       <control>
         <caption>Print message when locked</caption>
         <controltype>textbox</controltype>
         <attribute>lockmessage</attribute>
+        <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
-      
+
       <control>
         <caption>Script to run (leave blank to automatically go to the specified location)</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>
+        <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
+
       <control>
-        <caption>Look Only</caption>
+        <controltype>title</controltype>
+        <caption>Look (in this direction)</caption>
+      </control>
+
+      <control>
+        <caption>Exit is a look direction only (players can't move this way)</caption>
         <controltype>checkbox</controltype>
         <attribute>lookonly</attribute>
       </control>
@@ -69,7 +79,7 @@
         <controltype>multi</controltype>
         <attribute>look</attribute>
         <types>
-          string=Text; script=script
+          null=No description; string=Text; script=Run script
         </types>
         <editors>
           string=textbox
