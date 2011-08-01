@@ -147,6 +147,11 @@ namespace AxeSoftware.Quest.EditorControls
                     m_storedValues[typeName] = value;
                 }
             }
+            else
+            {
+                CurrentEditor = null;
+                HideOtherEditors();
+            }
         }
 
         private string GetTypeName(object value)
