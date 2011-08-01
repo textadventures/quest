@@ -46,7 +46,9 @@
     UpdateStatusAttributes
     if (HasScript(game, "start")) do (game, "start")
     UpdateStatusAttributes
-    invoke (player.changedparent)
+    if (game.displayroomdescriptiononstart) {
+      invoke (player.changedparent)
+    }
     UpdateStatusAttributes
     ]]>
   </function>

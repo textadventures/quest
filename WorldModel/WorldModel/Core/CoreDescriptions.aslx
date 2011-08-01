@@ -51,6 +51,7 @@
   </function>
 
   <function name="OnEnterRoom">
+    game.displayroomdescriptiononstart = false
     if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "beforefirstenter")) {
       do (player.parent, "beforefirstenter")
     }
