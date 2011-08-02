@@ -225,7 +225,7 @@ namespace AxeSoftware.Quest
                 string pattern = WorldModel.Template.GetText(template);
                 if (WorldModel.EditMode)
                 {
-                    newCommand.Fields.Set(FieldDefinitions.Pattern.Property, new EditorCommandPattern(pattern));
+                    newCommand.Fields.Set(FieldDefinitions.Pattern.Property, new EditorCommandPattern(Utility.ConvertVerbSimplePatternForEditor(pattern)));
                 }
                 else
                 {

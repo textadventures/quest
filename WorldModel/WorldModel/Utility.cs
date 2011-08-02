@@ -486,6 +486,33 @@ namespace AxeSoftware.Quest
             return result;
         }
 
+        public static string ConvertVerbSimplePatternForEditor(string pattern)
+        {
+            // For verbs, we replace "eat; consume; munch" with
+            // "eat #object#; consume #object#; munch #object#"
+
+            string[] verbs = Utility.ListSplit(pattern);
+            string result = string.Empty;
+            foreach (string verb in verbs)
+            {
+                if (result.Length > 0) result += "; ";
+
+                string textToAdd;
+                if (verb.Contains("#object#"))
+                {
+                    textToAdd = verb;
+                }
+                else
+                {
+                    textToAdd = verb + " #object#";
+                }
+                result += textToAdd;
+            }
+
+            return result;
+        }
+
+
         // Valid attribute names:
         //  - must not start with a number
         //  - must not contain keywords "and", "or" etc.
