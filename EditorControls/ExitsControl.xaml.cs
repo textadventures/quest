@@ -22,9 +22,7 @@ namespace AxeSoftware.Quest.EditorControls
         private IEditorData m_data;
         private EditorController m_controller;
         private List<string> m_directionNames;
-        private List<string> m_compassDirections;
-        private List<string> m_upDownDirections;
-        private List<string> m_inOutDirections;
+        private IDictionary<string, string> m_compassTypes;
         private Dictionary<string, int> m_directionListIndexes = new Dictionary<string, int>();
         private bool m_selectionChanging;
 
@@ -55,9 +53,7 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller.ElementMoved += m_controller_ElementMoved;
 
             m_directionNames = new List<string>(definition.GetListString("compass"));
-            m_compassDirections = new List<string>(definition.GetListString("compassdirections"));
-            m_upDownDirections = new List<string>(definition.GetListString("updowndirections"));
-            m_inOutDirections = new List<string>(definition.GetListString("inoutdirections"));
+            m_compassTypes = definition.GetDictionary("compasstypes");
         }
 
         void m_controller_ElementsUpdated()
@@ -367,7 +363,7 @@ namespace AxeSoftware.Quest.EditorControls
             if (CompassEditor.AllowCreateInverseExit) DefaultCreateInverseSetting = e.CreateInverse;
             if (e.CreateInverse)
             {
-                newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction, GetInverseDirection(e.Direction), GetDirectionType(e.Direction));
+                newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction, GetInverseDirection(e.Direction), GetDirectionType(e.Direction), GetDirectionType(GetInverseDirection(e.Direction)));
             }
             else
             {
@@ -385,19 +381,11 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller.UIRequestEditElement(newExit);
         }
 
-        string GetDirectionType(string direction)
+        private string GetDirectionType(string direction)
         {
-            if (m_compassDirections.Contains(direction))
+            if (m_compassTypes.ContainsKey(direction))
             {
-                return "compassdirection";
-            }
-            if (m_upDownDirections.Contains(direction))
-            {
-                return "updowndirection";
-            }
-            if (m_inOutDirections.Contains(direction))
-            {
-                return "inoutdirection";
+                return m_compassTypes[direction];
             }
             throw new ArgumentOutOfRangeException(string.Format("Unknown direction {0}", direction));
         }

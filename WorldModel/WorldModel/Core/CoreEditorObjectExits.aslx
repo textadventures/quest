@@ -13,9 +13,7 @@
     <control>
       <controltype>exits</controltype>
       <compass type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown];[CompassIn];[CompassOut]</compass>
-      <compassdirections type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassE];[CompassSW];[CompassS];[CompassSE]</compassdirections>
-      <updowndirections type="list">[CompassUp];[CompassDown]</updowndirections>
-      <inoutdirections type="list">[CompassIn];[CompassOut]</inoutdirections>
+      <compasstypes type="stringdictionary">[CompassNW]=northwestdirection;[CompassN]=northdirection;[CompassNE]=northeastdirection;[CompassW]=westdirection;[CompassE]=eastdirection;[CompassSW]=southwestdirection;[CompassS]=southdirection;[CompassSE]=southeastdirection;[CompassUp]=updirection;[CompassDown]=downdirection;[CompassIn]=indirection;[CompassOut]=outdirection</compasstypes>
       <expand/>
     </control>
   </tab>

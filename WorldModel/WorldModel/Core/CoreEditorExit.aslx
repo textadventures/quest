@@ -14,6 +14,13 @@
       </control>
 
       <control>
+        <caption>Type</caption>
+        <controltype>dropdowntypes</controltype>
+        <types>*=Non-directional exit;northwestdirection=[CompassNW];northdirection=[CompassN];northeastdirection=[CompassNE];westdirection=[CompassW];eastdirection=[CompassE];southwestdirection=[CompassSW];southdirection=[CompassS];southeastdirection=[CompassSE];updirection=[CompassUp];downdirection=[CompassDown];indirection=[CompassIn];outdirection=[CompassOut]</types>
+        <width>150</width>
+      </control>
+
+      <control>
         <caption>Alias</caption>
         <controltype>dropdown</controltype>
         <attribute>alias</attribute>
@@ -21,13 +28,6 @@
         <freetext/>
         <nullable/>
         <width>200</width>
-      </control>
-
-      <control>
-        <caption>Type</caption>
-        <controltype>dropdowntypes</controltype>
-        <types>compassdirection=Compass direction; updowndirection=Up/down direction; inoutdirection=In/out direction; *=Exit</types>
-        <width>150</width>
       </control>
 
       <control>

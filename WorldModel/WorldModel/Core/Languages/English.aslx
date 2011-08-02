@@ -97,6 +97,18 @@
   <template name="CompassDirectionPrefix"></template>
   <template name="UpDownDirectionPrefix"></template>
   <template name="InOutDirectionPrefix"></template>
+  <template name="CompassNWShort">nw</template>
+  <template name="CompassNShort">n</template>
+  <template name="CompassNEShort">ne</template>
+  <template name="CompassWShort">w</template>
+  <template name="CompassEShort">e</template>
+  <template name="CompassSWShort">sw</template>
+  <template name="CompassSShort">s</template>
+  <template name="CompassSEShort">se</template>
+  <template name="CompassUpShort">u</template>
+  <template name="CompassDownShort">d</template>
+  <template name="CompassInShort"></template>
+  <template name="CompassOutShort">o</template>
   <dynamictemplate name="YouLooking">"You are looking " + text +"."</dynamictemplate>
 
   <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>

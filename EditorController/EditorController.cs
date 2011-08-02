@@ -1091,11 +1091,11 @@ namespace AxeSoftware.Quest
             }
         }
 
-        public string CreateNewExit(string parent, string to, string alias, string inverseAlias, string type, bool lookonly = false)
+        public string CreateNewExit(string parent, string to, string alias, string inverseAlias, string type, string inverseType, bool lookonly = false)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create two-way exit {0} to {1}", parent, to));
             string result = CreateNewExitInternal(parent, to, alias, false, type, lookonly);
-            CreateNewExitInternal(to, parent, inverseAlias, false, type, lookonly);
+            CreateNewExitInternal(to, parent, inverseAlias, false, inverseType, lookonly);
             m_worldModel.UndoLogger.EndTransaction();
 
             return result;

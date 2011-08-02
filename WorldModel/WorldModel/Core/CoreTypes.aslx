@@ -90,6 +90,78 @@
     <prefix type="string">[InOutDirectionPrefix]</prefix>
   </type>
 
+  <type name="northwestdirection">
+    <inherit name="compassdirection"/>
+    <alias>[CompassNW]</alias>
+    <alt type="list">[CompassNWShort]</alt>
+  </type>
+
+  <type name="northdirection">
+    <inherit name="compassdirection"/>
+    <alias>[CompassN]</alias>
+    <alt type="list">[CompassNShort]</alt>
+  </type>
+
+  <type name="northeastdirection">
+    <inherit name="compassdirection"/>
+    <alias>[CompassNE]</alias>
+    <alt type="list">[CompassNEShort]</alt>
+  </type>
+
+  <type name="westdirection">
+    <inherit name="compassdirection"/>
+    <alias>[CompassW]</alias>
+    <alt type="list">[CompassWShort]</alt>
+  </type>
+
+  <type name="eastdirection">
+    <inherit name="compassdirection"/>
+    <alias>[CompassE]</alias>
+    <alt type="list">[CompassEShort]</alt>
+  </type>
+
+  <type name="southwestdirection">
+    <inherit name="compassdirection"/>
+    <alias>[CompassSW]</alias>
+    <alt type="list">[CompassSWShort]</alt>
+  </type>
+
+  <type name="southdirection">
+    <inherit name="compassdirection"/>
+    <alias>[CompassS]</alias>
+    <alt type="list">[CompassSShort]</alt>
+  </type>
+
+  <type name="southeastdirection">
+    <inherit name="compassdirection"/>
+    <alias>[CompassSE]</alias>
+    <alt type="list">[CompassSEShort]</alt>
+  </type>
+
+  <type name="updirection">
+    <inherit name="updowndirection"/>
+    <alias>[CompassUp]</alias>
+    <alt type="list">[CompassUpShort]</alt>
+  </type>
+
+  <type name="downdirection">
+    <inherit name="updowndirection"/>
+    <alias>[CompassDown]</alias>
+    <alt type="list">[CompassDownShort]</alt>
+  </type>
+
+  <type name="indirection">
+    <inherit name="inoutdirection"/>
+    <alias>[CompassIn]</alias>
+    <alt type="list">[CompassInShort]</alt>
+  </type>
+
+  <type name="outdirection">
+    <inherit name="inoutdirection"/>
+    <alias>[CompassOut]</alias>
+    <alt type="list">[CompassOutShort]</alt>
+  </type>
+
   <type name="defaultcommand">
     <pattern type="simplepattern"></pattern>
   </type>
