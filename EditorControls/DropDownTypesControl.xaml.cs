@@ -84,11 +84,11 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 case 0:
                     // Default - no types inherited
-                    lstTypes.Text = m_dropDownValues[k_noType];
+                    lstTypes.SelectedItem = m_dropDownValues[k_noType];
                     m_currentType = k_noType;
                     break;
                 case 1:
-                    lstTypes.Text = m_dropDownValues[inheritedTypes[0]];
+                    lstTypes.SelectedItem = m_dropDownValues[inheritedTypes[0]];
                     m_currentType = inheritedTypes[0];
                     break;
                 default:
@@ -124,7 +124,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private string GetSelectedType()
         {
-            if (lstTypes.Text.Length == 0) return null;
+            if (lstTypes.Text.Length == 0 || lstTypes.SelectedIndex == -1) return null;
             return m_dropDownValues.Keys.ToArray()[lstTypes.SelectedIndex];
         }
 
