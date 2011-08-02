@@ -279,6 +279,7 @@ namespace AxeSoftware.Quest.EditorControls
             if (key != m_selection)
             {
                 m_selection = key;
+                SetSelectedItemNoEvent(key);
                 if (SelectionChanged != null)
                 {
                     SelectionChanged(key);
