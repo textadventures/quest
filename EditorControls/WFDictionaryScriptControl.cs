@@ -138,6 +138,14 @@ namespace AxeSoftware.Quest.EditorControls
             PopupEditors.EditScript(m_controller, ref script, null, null, false, () => Dirty(this, new DataModifiedEventArgs(null, m_list)));
         }
 
+        public void DoEditKey(string key, int index)
+        {
+            var newKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), key, GetAutoCompleteList());
+            if (newKey.Cancelled || newKey.Result == key) return;
+            if (!ValidateInput(newKey.Result)) return;
+            m_list.ChangeKey(key, newKey.Result);
+        }
+
         public void DoRemove(string[] keys)
         {
             m_list.Remove(keys);
@@ -207,10 +215,6 @@ namespace AxeSoftware.Quest.EditorControls
         public bool CanEditKey
         {
             get { return true; }
-        }
-
-        public void DoEditKey(string key, int index)
-        {
         }
     }
 }

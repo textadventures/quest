@@ -46,6 +46,7 @@ namespace AxeSoftware.Quest
         void Add(string key, T value);
         void Remove(params string[] keys);
         void Update(string key, T value);
+        void ChangeKey(string oldKey, string newKey);
         ValidationResult CanAdd(string key);
         T this[string key] { get; }
         bool Locked { get; }

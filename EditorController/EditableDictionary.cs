@@ -229,5 +229,10 @@ namespace AxeSoftware.Quest
                 return m_source.Owner.Name;
             }
         }
+
+        public void ChangeKey(string oldKey, string newKey)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

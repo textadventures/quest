@@ -209,6 +209,16 @@ namespace AxeSoftware.Quest
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
+        public void ChangeKey(string oldKey, string newKey)
+        {
+            m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Update key '{0}' to '{1}'", oldKey, newKey));
+            int index = m_source.IndexOfKey(oldKey);
+            TSource value = m_source[oldKey];
+            m_source.Remove(oldKey, UpdateSource.User);
+            m_source.Add(newKey, value, UpdateSource.User, index);
+            m_controller.WorldModel.UndoLogger.EndTransaction();
+        }
+
         public string DisplayString()
         {
             return string.Format("(Script Dictionary: {0} items)", m_source.Count);
