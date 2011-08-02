@@ -36,6 +36,7 @@
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveUp = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveDown = new System.Windows.Forms.ToolStripButton();
+            this.cmdEditKey = new System.Windows.Forms.ToolStripButton();
             this.ctlToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,6 +55,7 @@
             // 
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdAdd,
+            this.cmdEditKey,
             this.cmdEdit,
             this.cmdDelete,
             this.cmdMoveUp,
@@ -106,6 +108,14 @@
             this.cmdMoveDown.Text = "Move Down";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
             // 
+            // cmdEditKey
+            // 
+            this.cmdEditKey.Image = ((System.Drawing.Image)(resources.GetObject("cmdEditKey.Image")));
+            this.cmdEditKey.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdEditKey.Name = "cmdEditKey";
+            this.cmdEditKey.Size = new System.Drawing.Size(69, 22);
+            this.cmdEditKey.Text = "Edit Key";
+            // 
             // WFListEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -130,5 +140,6 @@
         internal System.Windows.Forms.ToolStripButton cmdDelete;
         private System.Windows.Forms.ToolStripButton cmdMoveUp;
         private System.Windows.Forms.ToolStripButton cmdMoveDown;
+        internal System.Windows.Forms.ToolStripButton cmdEditKey;
     }
 }

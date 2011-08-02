@@ -13,7 +13,9 @@ namespace AxeSoftware.Quest.EditorControls
     {
         void DoAdd();
         void DoEdit(string key, int index);
+        void DoEditKey(string key, int index);
         void DoRemove(string[] keys);
+        bool CanEditKey { get; }
     }
 
     public interface IRearrangeableListEditorDelegate : IListEditorDelegate
@@ -32,6 +34,7 @@ namespace AxeSoftware.Quest.EditorControls
             cmdAdd.Click += cmdAdd_Click;
             cmdDelete.Click += cmdDelete_Click;
             cmdEdit.Click += cmdEdit_Click;
+            cmdEditKey.Click += cmdEditKey_Click;
             lstList.DoubleClick += lstList_DoubleClick;
             lstList.ItemSelectionChanged += lstList_ItemSelectionChanged;
             lstList.SelectedIndexChanged += lstList_SelectedIndexChanged;
@@ -191,6 +194,21 @@ namespace AxeSoftware.Quest.EditorControls
             m_delegate.DoEdit(lstList.SelectedItems[0].Name, lstList.SelectedItems[0].Index);
         }
 
+        private void cmdEditKey_Click(object sender, EventArgs e)
+        {
+            if (m_readOnly) return;
+            if (ToolbarClicked != null)
+            {
+                ToolbarClicked();
+            }
+            EditSelectedItemKey();
+        }
+
+        private void EditSelectedItemKey()
+        {
+            m_delegate.DoEditKey(lstList.SelectedItems[0].Name, lstList.SelectedItems[0].Index);
+        }
+
         private List<string> GetSelectedItems()
         {
             List<string> result = new List<string>();
@@ -224,6 +242,7 @@ namespace AxeSoftware.Quest.EditorControls
         private void SetButtonsEnabledStatus()
         {
             cmdEdit.Enabled = IsEditAllowed();
+            cmdEditKey.Enabled = IsEditAllowed();
             cmdDelete.Enabled = IsDeleteAllowed();
             cmdMoveUp.Enabled = IsMoveUpEnabled();
             cmdMoveDown.Enabled = IsMoveDownEnabled();
@@ -267,6 +286,7 @@ namespace AxeSoftware.Quest.EditorControls
                 bool isRearrangeable = (m_rearrangeDelegate != null && m_rearrangeDelegate.CanRearrange);
                 cmdMoveUp.Available = isRearrangeable;
                 cmdMoveDown.Available = isRearrangeable;
+                cmdEditKey.Available = m_delegate != null && m_delegate.CanEditKey;
             }
         }
 

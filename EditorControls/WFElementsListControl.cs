@@ -165,5 +165,14 @@ namespace AxeSoftware.Quest.EditorControls
                 return m_elementType == "object";
             }
         }
+
+        public bool CanEditKey
+        {
+            get { return false; }
+        }
+
+        public void DoEditKey(string key, int index)
+        {
+        }
     }
 }

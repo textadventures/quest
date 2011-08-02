@@ -203,5 +203,14 @@ namespace AxeSoftware.Quest.EditorControls
                 RequestParentElementEditorSave();
             }
         }
+
+        public bool CanEditKey
+        {
+            get { return true; }
+        }
+
+        public void DoEditKey(string key, int index)
+        {
+        }
     }
 }

@@ -194,5 +194,14 @@ namespace AxeSoftware.Quest.EditorControls
                 Value = m_list.Clone(m_elementName, m_attributeName);
             }
         }
+
+        public bool CanEditKey
+        {
+            get { return false; }
+        }
+
+        public void DoEditKey(string key, int index)
+        {
+        }
     }
 }
