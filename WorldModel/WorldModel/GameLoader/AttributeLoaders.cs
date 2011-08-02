@@ -96,6 +96,34 @@ namespace AxeSoftware.Quest
             }
         }
 
+        private class ObjectListLoader : AttributeLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "objectlist"; }
+            }
+
+            public override void Load(Element element, string attribute, string value)
+            {
+                IEnumerable<string> values = GetValues(value);
+                element.Fields.LazyFields.AddObjectList(attribute, values);
+            }
+
+            protected IEnumerable<string> GetValues(string value)
+            {
+                string[] values;
+                if (value.IndexOf("\n") >= 0)
+                {
+                    values = Utility.SplitIntoLines(value).ToArray();
+                }
+                else
+                {
+                    values = Utility.ListSplit(value);
+                }
+                return values.Where(v => v.Length > 0);
+            }
+        }
+
         private class ScriptLoader : AttributeLoaderBase
         {
             public override string AppliesTo

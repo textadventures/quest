@@ -181,6 +181,21 @@ namespace AxeSoftware.Quest
             }
         }
 
+        private class ObjectListSaver : FieldSaverBase
+        {
+            public override Type AppliesTo
+            {
+                get { return typeof(QuestList<Element>); }
+            }
+
+            public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
+            {
+                QuestList<Element> list = (QuestList<Element>)value;
+                string saveString = String.Join("; ", list.Select(e => e.Name));
+                base.WriteAttribute(writer, element, attribute, "objectlist", saveString);
+            }
+        }
+
         private class ScriptSaver : FieldSaverBase
         {
             public override Type AppliesTo
