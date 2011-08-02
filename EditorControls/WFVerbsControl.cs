@@ -164,7 +164,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         protected override string GetAttributeDisplayName(IEditorAttributeData attr)
         {
-            string displayName = Controller.GetVerbPatternForAttribute(attr.AttributeName);
+            string displayName = Controller.GetDisplayVerbPatternForAttribute(attr.AttributeName);
             return displayName ?? attr.AttributeName;
         }
     }

@@ -984,9 +984,22 @@ namespace AxeSoftware.Quest
                 object pattern = verb.Fields.Get(FieldDefinitions.Pattern.Property);
                 EditorCommandPattern simplePattern = pattern as EditorCommandPattern;
                 string displayName = (simplePattern != null) ? simplePattern.Pattern : verbProperty;
-                result[verbProperty] = displayName;
+                result[verbProperty] = FriendlyVerbDisplayName(displayName);
             }
 
+            return result;
+        }
+
+        private string FriendlyVerbDisplayName(string input)
+        {
+            string[] verbs = input.Split(new string[] { ";", "; " }, StringSplitOptions.None);
+            string result = string.Empty;
+            foreach (string verb in verbs)
+            {
+                string verbToAdd = verb.EndsWith(" #object#") ? verb.Substring(0, verb.Length - 9) : verb;
+                if (result.Length > 0) result += "; ";
+                result += verbToAdd.Trim();
+            }
             return result;
         }
 
@@ -1625,7 +1638,7 @@ namespace AxeSoftware.Quest
             return expressionData.SaveExpression(changedAttribute, changedValue);
         }
 
-        public string GetVerbPatternForAttribute(string attribute)
+        public string GetDisplayVerbPatternForAttribute(string attribute)
         {
             // If the user adds a verb like "look in", it will have an attribute name like "lookin".
             // Here we return the simple pattern for the corresponding verb, if it has one (library
@@ -1644,7 +1657,7 @@ namespace AxeSoftware.Quest
             EditorCommandPattern simplePattern = pattern as EditorCommandPattern;
 
             if (simplePattern == null) return null;
-            return simplePattern.Pattern;
+            return FriendlyVerbDisplayName(simplePattern.Pattern);
         }
 
         public ValidationResult Publish(string filename)
