@@ -39,6 +39,12 @@
       insert ("Frame.htm")
       request (RunScript, "beginUsingTextFrame")
     }
+    if (game.showpanes) {
+      request (Show, "Panes")
+    }
+    else {
+      request (Hide, "Panes")
+    }
   </function>
 
   <function name="StartGame">

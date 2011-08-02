@@ -16,6 +16,7 @@
     <allobjects type="list">[AllObjects]</allobjects>
     <parserignoreprefixes type="list">[ParserIgnorePrefixes]</parserignoreprefixes>
     <displayroomdescriptiononstart type="boolean">true</displayroomdescriptiononstart>
+    <showpanes/>
   </type>
 
   <type name="defaultobject">

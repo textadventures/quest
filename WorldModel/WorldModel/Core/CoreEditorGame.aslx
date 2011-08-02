@@ -118,11 +118,18 @@
         <caption>Use static picture frame above scrolling text</caption>
         <attribute>useframe</attribute>
       </control>
+      
       <control>
         <controltype>checkbox</controltype>
         <caption>Clear frame if room has no picture</caption>
         <attribute>clearframe</attribute>
         <onlydisplayif>game.useframe</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show panes (Inventory, Places and Objects, Compass)</caption>
+        <attribute>showpanes</attribute>
       </control>
     </tab>
 
