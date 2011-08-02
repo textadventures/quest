@@ -984,7 +984,7 @@ namespace AxeSoftware.Quest
                 object pattern = verb.Fields.Get(FieldDefinitions.Pattern.Property);
                 EditorCommandPattern simplePattern = pattern as EditorCommandPattern;
                 string displayName = (simplePattern != null) ? simplePattern.Pattern : verbProperty;
-                result.Add(verbProperty, displayName);
+                result[verbProperty] = displayName;
             }
 
             return result;
