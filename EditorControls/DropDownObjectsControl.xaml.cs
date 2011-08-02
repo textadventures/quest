@@ -91,7 +91,7 @@ namespace AxeSoftware.Quest.EditorControls
             bool oldValue = m_populating;
             m_populating = true;
             lstDropdown.Items.Clear();
-            IEnumerable<string> allObjects = GetValidNames();
+            IEnumerable<string> allObjects = GetValidNames().OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase);
             foreach (string obj in allObjects)
             {
                 lstDropdown.Items.Add(obj);
