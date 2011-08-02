@@ -146,6 +146,7 @@ namespace AxeSoftware.Quest.EditorControls
         private void ctlWebBrowser_Navigated(object sender, System.Windows.Forms.WebBrowserNavigatedEventArgs e)
         {
             ctlWebBrowser.Document.Body.KeyUp += Document_KeyUp;
+            ctlWebBrowser.Document.Body.LostFocus += Document_LostFocus;
             if (m_valueToSet != null)
             {
                 HTML = m_valueToSet;
@@ -282,6 +283,11 @@ namespace AxeSoftware.Quest.EditorControls
                     Dirty(this, new DataModifiedEventArgs(m_oldValue, GetValue()));
                 }
             }
+        }
+
+        void Document_LostFocus(object sender, HtmlElementEventArgs e)
+        {
+            Save(m_data);
         }
 
         private void Bold()
