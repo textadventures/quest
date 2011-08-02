@@ -770,6 +770,7 @@ namespace AxeSoftware.Quest
         private Dictionary<string, string> m_scripts = new Dictionary<string, string>();
         private Dictionary<string, IDictionary<string, string>> m_scriptDictionaries = new Dictionary<string, IDictionary<string, string>>();
         private Dictionary<string, IEnumerable<string>> m_objectLists = new Dictionary<string, IEnumerable<string>>();
+        private Dictionary<string, IDictionary<string, string>> m_objectDictionaries = new Dictionary<string, IDictionary<string, string>>();
         private WorldModel m_worldModel;
         private bool m_resolved = false;
 
@@ -810,6 +811,10 @@ namespace AxeSoftware.Quest
             {
                 m_fields.Set(property, new QuestList<Element>(m_objectLists[property].Select(n => m_worldModel.Elements.Get(n))));
             }
+            foreach (string property in m_objectDictionaries.Keys)
+            {
+                m_fields.Set(property, ConvertToObjectDictionary(m_objectDictionaries[property]));
+            }
             m_resolved = true;
         }
 
@@ -820,6 +825,17 @@ namespace AxeSoftware.Quest
             {
                 IScript newScript = scriptFactory.CreateScript(item.Value);
                 newDictionary.Add(item.Key, newScript);
+            }
+            return newDictionary;
+        }
+
+        private QuestDictionary<Element> ConvertToObjectDictionary(IDictionary<string, string> dictionary)
+        {
+            QuestDictionary<Element> newDictionary = new QuestDictionary<Element>();
+            foreach (var item in dictionary)
+            {
+                Element element = m_worldModel.Elements.Get(item.Value);
+                newDictionary.Add(item.Key, element);
             }
             return newDictionary;
         }
@@ -858,6 +874,12 @@ namespace AxeSoftware.Quest
         {
             CheckNotResolved();
             m_objectLists.Add(property, value);
+        }
+
+        public void AddObjectDictionary(string property, IDictionary<string, string> value)
+        {
+            CheckNotResolved();
+            m_objectDictionaries.Add(property, value);
         }
 
         private void CheckNotResolved()

@@ -319,17 +319,22 @@ namespace AxeSoftware.Quest
 
         internal string SaveString()
         {
+            return SaveString(v => v.ToString());
+        }
+
+        internal string SaveString(Func<T, string> converter)
+        {
             string result = string.Empty;
             int count = 0;
 
             foreach (KeyValuePair<string, T> kvp in m_dictionary)
             {
                 count++;
-                result += kvp.Key + " = " + kvp.Value.ToString();
+                result += kvp.Key + " = " + converter(kvp.Value);
                 if (count < m_dictionary.Count) result += ";";
             }
 
-            return result;
+            return result;   
         }
 
         private void NotifyAdd(string key, T value, UpdateSource source, int index)

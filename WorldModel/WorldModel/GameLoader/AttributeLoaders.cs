@@ -351,6 +351,39 @@ namespace AxeSoftware.Quest
             }
         }
 
+        private class ObjectDictionaryLoader : AttributeLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "objectdictionary"; }
+            }
+
+            public override void Load(Element element, string attribute, string value)
+            {
+                Dictionary<string, string> result = new Dictionary<string, string>();
+
+                string[] values = Utility.ListSplit(value);
+                foreach (string pair in values)
+                {
+                    if (pair.Length > 0)
+                    {
+                        string trimmedPair = pair.Trim();
+                        int splitPos = trimmedPair.IndexOf('=');
+                        if (splitPos == -1)
+                        {
+                            GameLoader.AddError(string.Format("Missing '=' in dictionary element '{0}' in '{1}.{2}'", trimmedPair, element.Name, attribute));
+                            return;
+                        }
+                        string key = trimmedPair.Substring(0, splitPos).Trim();
+                        string dictValue = trimmedPair.Substring(splitPos + 1).Trim();
+                        result.Add(key, dictValue);
+                    }
+                }
+
+                element.Fields.LazyFields.AddObjectDictionary(attribute, result);
+            }
+        }
+
         private class ObjectReferenceLoader : AttributeLoaderBase
         {
             public override string AppliesTo
