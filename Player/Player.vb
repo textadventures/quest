@@ -746,7 +746,8 @@ Public Class Player
     End Sub
 
     Private Sub WriteLine(text As String)
-        ctlPlayerHtml.WriteLine(text)
+        m_htmlHelper.AppendText(text)
+        ClearBuffer()
     End Sub
 
     Private Sub ctlPlayerHtml_CommandRequested(command As String) Handles ctlPlayerHtml.CommandRequested
