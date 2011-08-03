@@ -246,6 +246,11 @@ Public Class Player
 
         If Not m_initialised Then Exit Sub
 
+        If m_waiting Then
+            m_waiting = False
+            Return
+        End If
+
         If RecordWalkthrough IsNot Nothing Then
             m_recordedWalkthrough.Add(command)
         End If
@@ -892,4 +897,5 @@ Public Class Player
             End If
         End Set
     End Property
+
 End Class
