@@ -92,4 +92,18 @@
   <function name="HelperCloseObject" parameters="object">
     object.isopen = false
   </function>
+
+  <function name="CloneObject" parameters="object" type="object">
+    newobject = Clone(object)
+    if (not HasString(object, "alias")) {
+      newobject.alias = object.name
+    }
+    return (newobject)
+  </function>
+
+  <function name="CloneObjectAndMove" parameters="object, newparent" type="object">
+    newobject = CloneObject(object)
+    newobject.parent = newparent
+    return (newobject)
+  </function>
 </library>

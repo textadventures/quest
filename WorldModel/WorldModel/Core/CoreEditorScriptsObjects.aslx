@@ -154,6 +154,58 @@
   </editor>
 
   <editor>
+    <appliesto>(function)CloneObject</appliesto>
+    <display>Clone #0</display>
+    <category>Objects</category>
+    <create>CloneObject ()</create>
+    <add>Clone object</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Clone object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)CloneObjectAndMove</appliesto>
+    <display>Clone #0 and move to #1</display>
+    <category>Objects</category>
+    <create>CloneObjectAndMove (,)</create>
+    <add>Clone object and move</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Clone object</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>and move to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>destroy</appliesto>
     <display>Destroy #0</display>
     <category>Objects</category>

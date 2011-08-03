@@ -152,11 +152,6 @@ namespace AxeSoftware.Quest
 
         }
 
-        internal Element CreateClone()
-        {
-            return new Element(m_worldModel, this);
-        }
-
         void Fields_AttributeChangedSilent(object sender, AttributeChangedEventArgs e)
         {
             // used by the Editor to receive notifications of updates when undoing

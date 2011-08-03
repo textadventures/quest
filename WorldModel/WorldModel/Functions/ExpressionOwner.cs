@@ -385,5 +385,11 @@ namespace AxeSoftware.Quest.Functions
             if (parameters != null) context.Parameters = new Parameters(parameters);
             return expr.Execute(context);
         }
+
+        public Element Clone(Element element)
+        {
+            Element newElement = element.Clone();
+            return newElement;
+        }
     }
 }
