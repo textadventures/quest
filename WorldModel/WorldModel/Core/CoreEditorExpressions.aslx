@@ -88,6 +88,20 @@
   </editor>
 
   <editor>
+    <pattern>not player.parent = #parent#</pattern>
+    <create>not player.parent = </create>
+    <description>player is not in room</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>parent</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <pattern>IsSwitchedOn(#object#)</pattern>
     <create>IsSwitchedOn()</create>
     <description>object is switched on</description>
@@ -128,11 +142,39 @@
       <attribute>object</attribute>
     </control>
   </editor>
-  
+
+  <editor>
+    <pattern>not ListContains(ScopeVisible(), #object#)</pattern>
+    <create>not ListContains(ScopeVisible(), )</create>
+    <description>object is not visible</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+ 
   <editor>
     <pattern>ListContains(ScopeReachable(), #object#)</pattern>
     <create>ListContains(ScopeReachable(), )</create>
     <description>object is reachable</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>not ListContains(ScopeReachable(), #object#)</pattern>
+    <create>not ListContains(ScopeReachable(), )</create>
+    <description>object is not reachable</description>
     <expressiontype>if</expressiontype>
 
     <control>
