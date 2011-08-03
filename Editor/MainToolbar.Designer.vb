@@ -50,9 +50,9 @@ Partial Class MainToolbar
         Me.butCode = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.butHelp = New System.Windows.Forms.ToolStripButton()
-        Me.tmrUndoTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.butLogError = New System.Windows.Forms.ToolStripButton()
+        Me.tmrUndoTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -278,14 +278,11 @@ Partial Class MainToolbar
         Me.butHelp.Tag = "help"
         Me.butHelp.Text = "He&lp"
         '
-        'tmrUndoTimer
-        '
-        Me.tmrUndoTimer.Interval = 20
-        '
         'ToolStripSeparator6
         '
         Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
         Me.ToolStripSeparator6.Size = New System.Drawing.Size(6, 25)
+        Me.ToolStripSeparator6.Visible = False
         '
         'butLogError
         '
@@ -296,6 +293,11 @@ Partial Class MainToolbar
         Me.butLogError.Size = New System.Drawing.Size(140, 22)
         Me.butLogError.Tag = "logbug"
         Me.butLogError.Text = "Log a Bug or Suggestion"
+        Me.butLogError.Visible = False
+        '
+        'tmrUndoTimer
+        '
+        Me.tmrUndoTimer.Interval = 20
         '
         'MainToolbar
         '
