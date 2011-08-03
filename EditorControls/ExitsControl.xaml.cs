@@ -270,10 +270,8 @@ namespace AxeSoftware.Quest.EditorControls
             //   - a new compass direction
             //   - not a compass direction
             //   - null
-            object LookOnly = m_data.GetAttribute("lookonly") as object;
-            bool LookOnlyExit = (bool)LookOnly;
-
-            if (direction == null || LookOnlyExit)
+            
+            if (direction == null )
             {
                 CompassEditor.Mode = CompassEditorControl.CompassEditorMode.NoSelection;
                 return;
