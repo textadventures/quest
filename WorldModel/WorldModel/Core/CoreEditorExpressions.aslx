@@ -217,6 +217,37 @@
   </editor>
 
   <editor>
+    <pattern>not Contains (#object1#,#object2#)</pattern>
+    <create>not Contains (,)</create>
+    <description>object does not contain</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Parent:</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Does not contain child:</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object2</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <pattern>#object#.isopen</pattern>
     <create>.isopen</create>
     <description>object is open</description>
