@@ -446,13 +446,13 @@ namespace AxeSoftware.Quest.EditorControls
                     }
                 }
             }
-            if (inverseExitExists && inverseExitPointsHere)
+            if (inverseExitPointsHere)
             {
                 return true;
             }
             else
             {
-                return false;
+                return !inverseExitExists;
             }
 
         }
