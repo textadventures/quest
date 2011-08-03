@@ -39,6 +39,7 @@ namespace AxeSoftware.Quest.EditorControls
             CompassEditor.EditExit += CompassEditor_EditExit;
             CompassEditor.CreateExit += CompassEditor_CreateExit;
             CompassEditor.CreateInverseExit += CompassEditor_CreateInverseExit;
+            CompassEditor.CheckInverseExit += CompassEditor_CheckInverseExit;
         }
 
         public IControlDataHelper Helper
@@ -335,7 +336,10 @@ namespace AxeSoftware.Quest.EditorControls
                 CompassEditor.to.Items.Clear();
                 foreach (string objectName in m_controller.GetObjectNames("object"))
                 {
-                    CompassEditor.to.Items.Add(objectName);
+                    if (objectName != "player")
+                    {
+                        CompassEditor.to.Items.Add(objectName);
+                    }
                 }
                 CompassEditor.create.IsEnabled = false;
                 CompassEditor.to.IsEnabled = true;
@@ -440,6 +444,40 @@ namespace AxeSoftware.Quest.EditorControls
         private void listView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             EditSelectedItem();
+        }
+
+        private void CompassEditor_CheckInverseExit(object sender, CompassEditorControl.CreateExitEventArgs e)
+        {
+            string inverseExit = GetInverseDirection(e.Direction);
+            bool inverseExitExists = false;
+            bool inverseExitPointsHere = false;
+
+            foreach (string exitName in m_controller.GetObjectNames("exit", e.To))
+            {
+                IEditorData otherRoomExitData = m_controller.GetEditorData(exitName);
+                string otherRoomExitAlias = otherRoomExitData.GetAttribute("alias") as string;
+                if (inverseExit == otherRoomExitAlias)
+                {
+                    inverseExitExists = true;
+                    IEditableObjectReference otherExitTo = otherRoomExitData.GetAttribute("to") as IEditableObjectReference;
+                    if (otherExitTo != null)
+                    {
+                        inverseExitPointsHere = (otherExitTo.Reference == m_data.Name);
+                    }
+                    break;
+                }
+            }
+
+            if (inverseExitExists && inverseExitPointsHere)
+            {
+                CompassEditor.CorrespondingExitExists = true;
+                CompassEditor.AllowCreateInverseExit = false;
+            }
+            else
+            {
+                CompassEditor.CorrespondingExitExists = false;
+                CompassEditor.AllowCreateInverseExit = !inverseExitExists;
+            }
         }
     }
 }

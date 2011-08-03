@@ -39,6 +39,7 @@ namespace AxeSoftware.Quest.EditorControls
         public event EventHandler<CreateExitEventArgs> CreateExit;
         public event Action<string> EditExit;
         public event Action CreateInverseExit;
+        public event EventHandler<CreateExitEventArgs> CheckInverseExit;
 
         public CompassEditorControl()
         {
@@ -120,6 +121,11 @@ namespace AxeSoftware.Quest.EditorControls
         private void to_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             create.IsEnabled = true;
+            CheckInverseExit(this, new CreateExitEventArgs
+            {
+                To = (string)to.SelectedItem,
+                Direction = DirectionName
+            });
         }
 
         private void create_Click(object sender, RoutedEventArgs e)
@@ -153,7 +159,7 @@ namespace AxeSoftware.Quest.EditorControls
                 {
                     chkCorresponding.IsChecked = false;
                 }
-            }
+            } 
         }
 
         public bool CorrespondingExitExists
