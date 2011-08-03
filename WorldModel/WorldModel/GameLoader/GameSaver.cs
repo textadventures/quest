@@ -65,7 +65,8 @@ namespace AxeSoftware.Quest
 
             UpdateImpliedTypesCache();
 
-            writer.WriteComment("Saved by Quest Editor v5.0");
+            Version ver = new Version(System.Windows.Forms.Application.ProductVersion);
+            writer.WriteComment(string.Format("Saved by Quest {0}", ver));
             writer.WriteStartElement("asl");
             writer.WriteAttributeString("version", "500");
             if (mode == SaveMode.SavedGame)
