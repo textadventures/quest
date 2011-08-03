@@ -60,6 +60,8 @@ function setGameName(text) {
 }
 
 var _waitMode = false;
+var _pauseMode = false;
+var _waitingForSoundToFinish = false;
 
 function beginWait() {
     _waitMode = true;
@@ -78,6 +80,7 @@ function endWait() {
 }
 
 function beginPause(ms) {
+    _pauseMode = true;
     $("#txtCommand").hide();
     window.setTimeout(function () {
         endPause()
@@ -85,6 +88,7 @@ function beginPause(ms) {
 }
 
 function endPause() {
+    _pauseMode = false;
     $("#txtCommand").show();
     window.setTimeout(function () {
         $("#fldUIMsg").val("endpause");
@@ -285,6 +289,8 @@ function playAudio(filename, format, sync, looped) {
         endFunction = function () { $("#jquery_jplayer").jPlayer("play"); };
     }
     else if (sync) {
+        _waitingForSoundToFinish = true;
+        $("#txtCommand").hide();
         endFunction = function () { finishSync(); };
     }
     else {
@@ -312,7 +318,9 @@ function stopAudio() {
 }
 
 function finishSync() {
+    _waitingForSoundToFinish = false;
     window.setTimeout(function () {
+        $("#txtCommand").show();
         $("#fldUIMsg").val("endwait");
         $("#cmdSubmit").click();
     }, 100);
@@ -401,6 +409,7 @@ function compassClick(direction) {
 }
 
 function sendCommand(text) {
+    if (_pauseMode || _waitingForSoundToFinish) return;
     if (_waitMode) {
         endWait();
         return;
