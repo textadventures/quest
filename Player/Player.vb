@@ -234,7 +234,7 @@ Public Class Player
     End Sub
 
     Private Sub EnterText()
-        If m_pausing Then Return
+        If m_pausing Or m_waitingForSoundToFinish Then Return
         If txtCommand.Text.Length > 0 Then
             m_history.Add(txtCommand.Text)
             SetHistoryPoint(0)
@@ -245,6 +245,8 @@ Public Class Player
     Private Sub RunCommand(command As String)
 
         If Not m_initialised Then Exit Sub
+
+        If m_pausing Or m_waitingForSoundToFinish Then Return
 
         If m_waiting Then
             m_waiting = False
