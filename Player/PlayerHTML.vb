@@ -20,6 +20,7 @@ Public Class PlayerHTML
     Public Sub WriteText(text As String)
         If (text.Length > 0) Then
             InvokeScript("addText", text)
+            StripTagsAndSendToJaws(text)
         End If
     End Sub
 
@@ -178,5 +179,13 @@ Public Class PlayerHTML
         ' With WebBrowserShortcutsEnabled = False, *all* shortcut keys are suppressed, not just webbrowser ones.
         ' So to enable Quest menu shortcut keys to work, we handle them here.
         RaiseEvent ShortcutKeyPressed(e.KeyData)
+    End Sub
+
+    Private Shared s_regexHtml As New System.Text.RegularExpressions.Regex("\<.+?\>")
+
+    Private Sub StripTagsAndSendToJaws(text As String)
+        text = s_regexHtml.Replace(text, "")
+        text = text.Replace("&nbsp;", " ").Replace("&gt;", ">").Replace("&lt;", "<")
+        JawsApi.JawsApi.JFWSayString(text, False)
     End Sub
 End Class

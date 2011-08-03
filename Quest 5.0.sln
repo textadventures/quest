@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorControls", "EditorCon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestConsole", "QuestConsole\QuestConsole.csproj", "{5087E30D-95F3-49B6-B534-2EBA91C599CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JawsApi", "JawsApi\JawsApi.csproj", "{B351E843-2BE4-4302-BD98-43D149185FB7}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Quest 5.0.vsmdi
@@ -641,6 +643,36 @@ Global
 		{5087E30D-95F3-49B6-B534-2EBA91C599CC}.SingleImage|Mixed Platforms.Build.0 = Release|x86
 		{5087E30D-95F3-49B6-B534-2EBA91C599CC}.SingleImage|x86.ActiveCfg = Release|x86
 		{5087E30D-95F3-49B6-B534-2EBA91C599CC}.SingleImage|x86.Build.0 = Release|x86
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.CD_ROM|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.CD_ROM|Mixed Platforms.Build.0 = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.CD_ROM|x86.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.DVD-5|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.DVD-5|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.DVD-5|x86.ActiveCfg = Debug|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.Release|x86.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.ReleaseSetup|Any CPU.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.ReleaseSetup|Any CPU.Build.0 = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.ReleaseSetup|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.ReleaseSetup|Mixed Platforms.Build.0 = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.ReleaseSetup|x86.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.SingleImage|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.SingleImage|Mixed Platforms.Build.0 = Release|Any CPU
+		{B351E843-2BE4-4302-BD98-43D149185FB7}.SingleImage|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
