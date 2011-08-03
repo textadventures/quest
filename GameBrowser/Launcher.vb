@@ -62,13 +62,35 @@
             Return m_questVersion
         End Get
         Set(value As Version)
-            ctlVersionInfo.CurrentVersion = value
+            m_questVersion = value
             WebClientFactory.QuestVersion = value.ToString
         End Set
     End Property
 
     Private Sub ctlPlayBrowser_GotUpdateData(data As UpdatesData) Handles ctlPlayBrowser.GotUpdateData
         ctlVersionInfo.UpdateInfo = data
+        If IsNewVersion(data) Then
+            BeginInvoke(Sub()
+                            ctlVersionInfo.UpdateInfo = data
+                            ctlVersionInfo.Visible = True
+                        End Sub)
+        End If
     End Sub
+
+    Private Function IsNewVersion(updateData As UpdatesData) As Boolean
+        If updateData Is Nothing Then Return False
+        Dim latestMajor As Integer
+        Dim latestMinor As Integer
+        Dim latestBuild As Integer
+        Dim latestRevision As Integer
+
+        Integer.TryParse(updateData.Major, latestMajor)
+        Integer.TryParse(updateData.Minor, latestMinor)
+        Integer.TryParse(updateData.Build, latestBuild)
+        Integer.TryParse(updateData.Revision, latestRevision)
+
+        Dim latestVersion As New Version(latestMajor, latestMinor, latestBuild, latestRevision)
+        Return latestVersion > QuestVersion
+    End Function
 
 End Class

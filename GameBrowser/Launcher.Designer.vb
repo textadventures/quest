@@ -24,10 +24,10 @@ Partial Class Launcher
     Private Sub InitializeComponent()
         Me.ctlTabs = New System.Windows.Forms.TabControl()
         Me.tabPlay = New System.Windows.Forms.TabPage()
-        Me.tabEdit = New System.Windows.Forms.TabPage()
         Me.ctlPlayBrowser = New GameBrowser.PlayBrowser()
+        Me.tabEdit = New System.Windows.Forms.TabPage()
         Me.ctlEditBrowser = New GameBrowser.EditBrowser()
-        Me.ctlVersionInfo = New GameBrowser.BetaInfo()
+        Me.ctlVersionInfo = New GameBrowser.VersionInfo()
         Me.ctlTabs.SuspendLayout()
         Me.tabPlay.SuspendLayout()
         Me.tabEdit.SuspendLayout()
@@ -57,17 +57,6 @@ Partial Class Launcher
         Me.tabPlay.Text = "Play"
         Me.tabPlay.UseVisualStyleBackColor = True
         '
-        'tabEdit
-        '
-        Me.tabEdit.Controls.Add(Me.ctlEditBrowser)
-        Me.tabEdit.Location = New System.Drawing.Point(4, 22)
-        Me.tabEdit.Name = "tabEdit"
-        Me.tabEdit.Size = New System.Drawing.Size(655, 339)
-        Me.tabEdit.TabIndex = 1
-        Me.tabEdit.Tag = ""
-        Me.tabEdit.Text = "Edit"
-        Me.tabEdit.UseVisualStyleBackColor = True
-        '
         'ctlPlayBrowser
         '
         Me.ctlPlayBrowser.Dock = System.Windows.Forms.DockStyle.Fill
@@ -76,6 +65,17 @@ Partial Class Launcher
         Me.ctlPlayBrowser.Name = "ctlPlayBrowser"
         Me.ctlPlayBrowser.Size = New System.Drawing.Size(655, 345)
         Me.ctlPlayBrowser.TabIndex = 0
+        '
+        'tabEdit
+        '
+        Me.tabEdit.Controls.Add(Me.ctlEditBrowser)
+        Me.tabEdit.Location = New System.Drawing.Point(4, 22)
+        Me.tabEdit.Name = "tabEdit"
+        Me.tabEdit.Size = New System.Drawing.Size(655, 345)
+        Me.tabEdit.TabIndex = 1
+        Me.tabEdit.Tag = ""
+        Me.tabEdit.Text = "Edit"
+        Me.tabEdit.UseVisualStyleBackColor = True
         '
         'ctlEditBrowser
         '
@@ -89,13 +89,13 @@ Partial Class Launcher
         'ctlVersionInfo
         '
         Me.ctlVersionInfo.BackColor = System.Drawing.Color.White
-        Me.ctlVersionInfo.CurrentVersion = Nothing
         Me.ctlVersionInfo.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.ctlVersionInfo.Location = New System.Drawing.Point(0, 371)
         Me.ctlVersionInfo.Name = "ctlVersionInfo"
         Me.ctlVersionInfo.Size = New System.Drawing.Size(663, 86)
         Me.ctlVersionInfo.TabIndex = 2
         Me.ctlVersionInfo.UpdateInfo = Nothing
+        Me.ctlVersionInfo.Visible = False
         '
         'Launcher
         '
@@ -116,6 +116,6 @@ Partial Class Launcher
     Friend WithEvents tabEdit As System.Windows.Forms.TabPage
     Friend WithEvents ctlPlayBrowser As GameBrowser.PlayBrowser
     Friend WithEvents ctlEditBrowser As GameBrowser.EditBrowser
-    Friend WithEvents ctlVersionInfo As GameBrowser.BetaInfo
+    Friend WithEvents ctlVersionInfo As GameBrowser.VersionInfo
 
 End Class

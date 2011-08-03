@@ -130,10 +130,10 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BetaInfo.Designer.vb">
-      <DependentUpon>BetaInfo.vb</DependentUpon>
+    <Compile Include="VersionInfo.Designer.vb">
+      <DependentUpon>VersionInfo.vb</DependentUpon>
     </Compile>
-    <Compile Include="BetaInfo.vb">
+    <Compile Include="VersionInfo.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="BrowseFilter.Designer.vb">
@@ -198,8 +198,8 @@
     <Compile Include="WebClientFactory.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BetaInfo.resx">
-      <DependentUpon>BetaInfo.vb</DependentUpon>
+    <EmbeddedResource Include="VersionInfo.resx">
+      <DependentUpon>VersionInfo.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BrowseFilter.resx">
       <DependentUpon>BrowseFilter.vb</DependentUpon>
