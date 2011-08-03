@@ -401,6 +401,10 @@ function compassClick(direction) {
 }
 
 function sendCommand(text) {
+    if (_waitMode) {
+        endWait();
+        return;
+    }
     window.setTimeout(function () {
         prepareCommand(text);
         $("#cmdSubmit").click();
