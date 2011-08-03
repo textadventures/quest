@@ -270,8 +270,10 @@ namespace AxeSoftware.Quest.EditorControls
             //   - a new compass direction
             //   - not a compass direction
             //   - null
+            object LookOnly = m_data.GetAttribute("lookonly") as object;
+            bool LookOnlyExit = (bool)LookOnly;
 
-            if (direction == null)
+            if (direction == null || LookOnlyExit)
             {
                 CompassEditor.Mode = CompassEditorControl.CompassEditorMode.NoSelection;
                 return;
@@ -421,40 +423,37 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void CompassEditor_CheckInverseExit(object sender, CompassEditorControl.CreateExitEventArgs e)
         {
-            bool exitsInverseExists = ExitsInverseExists(e.To, e.Direction);
-            CompassEditor.CorrespondingExitExists = exitsInverseExists;
-            CompassEditor.AllowCreateInverseExit = !exitsInverseExists;
+            if (e.To != null)
+            {
+                bool exitsInverseExists = ExitsInverseExists(e.To, e.Direction);
+                CompassEditor.CorrespondingExitExists = exitsInverseExists;
+                CompassEditor.AllowCreateInverseExit = !exitsInverseExists;
+            }
         }
         private bool ExitsInverseExists(string to, string direction)
         {
             string inverseExit = GetInverseDirection(direction);
             bool inverseExitExists = false;
-            bool inverseExitPointsHere = false;
 
-            foreach (string exitName in m_controller.GetObjectNames("exit",to == m_data.Name ? null:to))
+            foreach (string exitName in m_controller.GetObjectNames("exit",to == m_data.Name ? null: to))
             {
                 IEditorData otherRoomExitData = m_controller.GetEditorData(exitName);
-                string otherRoomExitAlias = otherRoomExitData.GetAttribute("alias") as string;
-                if (inverseExit == otherRoomExitAlias)
+                object otherRoomLookOnly = otherRoomExitData.GetAttribute("lookonly") as object;
+                if (!(bool)otherRoomLookOnly)
                 {
-                    inverseExitExists = true;
-                    IEditableObjectReference otherExitTo = otherRoomExitData.GetAttribute("to") as IEditableObjectReference;
-                    if (otherExitTo != null)
+                    string otherRoomExitAlias = otherRoomExitData.GetAttribute("alias") as string;
+                    if (inverseExit == otherRoomExitAlias)
                     {
-                        inverseExitPointsHere = (otherExitTo.Reference == m_data.Name);
-                        break;
+                        if (inverseExitExists = (to != m_data.Name)) { break; } 
+                        IEditableObjectReference otherExitTo = otherRoomExitData.GetAttribute("to") as IEditableObjectReference;
+                        if (otherExitTo != null)
+                        {
+                            if (inverseExitExists = (otherExitTo.Reference == m_data.Name)) { break; }
+                        }
                     }
                 }
             }
-            if (inverseExitPointsHere)
-            {
-                return true;
-            }
-            else
-            {
-                return inverseExitExists;
-            }
-
+            return inverseExitExists;
         }
     }
 }
