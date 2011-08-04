@@ -391,5 +391,11 @@ namespace AxeSoftware.Quest.Functions
             Element newElement = element.Clone();
             return newElement;
         }
+
+        public bool DoesInherit(Element element, string typeName)
+        {
+            Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
+            return element.Fields.InheritsTypeRecursive(type);
+        }
     }
 }
