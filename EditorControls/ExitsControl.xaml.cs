@@ -298,7 +298,7 @@ namespace AxeSoftware.Quest.EditorControls
                 else
                 {
                     // See if a corresponding exit exists in the "to" room
-                    bool exitsInverseExists = ExitsInverseExists(m_data.Name , direction);
+                    bool exitsInverseExists = ExitsInverseExists(CompassEditor.Destination, direction);
                     CompassEditor.CorrespondingExitExists = exitsInverseExists;
                     CompassEditor.AllowCreateInverseExit = !exitsInverseExists;
                 }
@@ -433,22 +433,14 @@ namespace AxeSoftware.Quest.EditorControls
             string inverseExit = GetInverseDirection(direction);
             bool inverseExitExists = false;
 
-            foreach (string exitName in m_controller.GetObjectNames("exit",to == m_data.Name ? null: to))
+            foreach (string exitName in m_controller.GetObjectNames("exit",to))
             {
                 IEditorData otherRoomExitData = m_controller.GetEditorData(exitName);
                 object otherRoomLookOnly = otherRoomExitData.GetAttribute("lookonly") as object;
                 if (!(bool)otherRoomLookOnly)
                 {
                     string otherRoomExitAlias = otherRoomExitData.GetAttribute("alias") as string;
-                    if (inverseExit == otherRoomExitAlias)
-                    {
-                        if (inverseExitExists = (to != m_data.Name)) { break; } 
-                        IEditableObjectReference otherExitTo = otherRoomExitData.GetAttribute("to") as IEditableObjectReference;
-                        if (otherExitTo != null)
-                        {
-                            if (inverseExitExists = (otherExitTo.Reference == m_data.Name)) { break; }
-                        }
-                    }
+                    if (inverseExitExists = (inverseExit == otherRoomExitAlias)) { break; }
                 }
             }
             return inverseExitExists;
