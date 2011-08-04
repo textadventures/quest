@@ -106,4 +106,12 @@
     newobject.parent = newparent
     return (newobject)
   </function>
+
+  <function name="LockExit" parameters="exit">
+    exit.locked = true
+  </function>
+
+  <function name="UnlockExit" parameters="exit">
+    exit.locked = false
+  </function>
 </library>

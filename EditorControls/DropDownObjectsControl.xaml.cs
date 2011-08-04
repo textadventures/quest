@@ -24,6 +24,7 @@ namespace AxeSoftware.Quest.EditorControls
         private IEditableObjectReference m_value;
         private IEditorData m_data;
         private string m_source;
+        private string m_objectType;
 
         public event EventHandler<DataModifiedEventArgs> Dirty { add { } remove { } }
         public event Action RequestParentElementEditorSave { add { } remove { } }
@@ -101,7 +102,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public IEnumerable<string> GetValidNames()
         {
-            return (m_source == null) ? m_controller.GetObjectNames("object") : m_controller.GetElementNames(m_source);
+            return (m_source == null) ? m_controller.GetObjectNames(m_objectType ?? "object") : m_controller.GetElementNames(m_source);
         }
 
         public Type ExpectedType
@@ -124,6 +125,7 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller = controller;
             m_definition = definition;
             m_source = definition == null ? null : definition.GetString("source");
+            m_objectType = definition == null ? null : definition.GetString("objecttype");
         }
 
         public string SelectedItem

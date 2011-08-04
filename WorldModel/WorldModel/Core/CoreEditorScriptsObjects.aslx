@@ -92,6 +92,48 @@
   </editor>
 
   <editor>
+    <appliesto>(function)LockExit</appliesto>
+    <display>Lock #0</display>
+    <category>Objects</category>
+    <create>LockExit ()</create>
+    <add>Lock exit</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Lock exit</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>exit</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>exit</objecttype>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)UnlockExit</appliesto>
+    <display>Unlock #0</display>
+    <category>Objects</category>
+    <create>UnlockExit ()</create>
+    <add>Unlock exit</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Unlock exit</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>exit</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>exit</objecttype>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>create</appliesto>
     <display>Create object named #0</display>
     <category>Objects</category>
