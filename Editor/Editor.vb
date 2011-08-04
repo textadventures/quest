@@ -354,8 +354,9 @@ Public Class Editor
     End Function
 
     Private Sub ctlToolbar_HistoryClicked(Key As String) Handles ctlToolbar.HistoryClicked
-        ctlTree.SetSelectedItemNoEvent(Key)
-        ShowEditor(Key)
+        If ctlTree.TrySetSelectedItemNoEvent(Key) Then
+            ShowEditor(Key)
+        End If
     End Sub
 
     Private Sub Undo()

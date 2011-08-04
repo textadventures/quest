@@ -307,6 +307,13 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
+        public bool TrySetSelectedItemNoEvent(string key)
+        {
+            if (!m_nodes.ContainsKey(key)) return false;
+            SetSelectedItemNoEvent(key);
+            return true;
+        }
+
         public bool ShowFilterBar
         {
             get { return ctlToolStrip.Visible; }
