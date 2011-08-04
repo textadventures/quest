@@ -217,7 +217,7 @@ namespace QuestConsole
         {
             text = s_regexNewLine.Replace(text, Environment.NewLine);
             text = s_regexHtml.Replace(text, "");
-            text = text.Replace("&nbsp;", " ").Replace("&gt;", ">").Replace("&lt;", "<");
+            text = text.Replace("&nbsp;", " ").Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&");
             Console.Write(text);
         }
 

@@ -185,7 +185,7 @@ Public Class PlayerHTML
 
     Private Sub StripTagsAndSendToJaws(text As String)
         text = s_regexHtml.Replace(text, "")
-        text = text.Replace("&nbsp;", " ").Replace("&gt;", ">").Replace("&lt;", "<")
+        text = text.Replace("&nbsp;", " ").Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&");
         JawsApi.JawsApi.JFWSayString(text, False)
     End Sub
 End Class
