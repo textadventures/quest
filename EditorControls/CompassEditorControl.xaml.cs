@@ -155,10 +155,7 @@ namespace AxeSoftware.Quest.EditorControls
                 m_allowCreateInverse = value;
                 chkCorresponding.IsEnabled = value;
                 createCorresponding.IsEnabled = value;
-                if (!value)
-                {
-                    chkCorresponding.IsChecked = false;
-                }
+                chkCorresponding.IsChecked = value;
             } 
         }
 
