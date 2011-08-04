@@ -7,6 +7,7 @@
   <template name="UnresolvedObject">Ich kann das hier nicht sehen.</template>
   <template name="UnresolvedLocation">Du kannst nicht dahin gehen.</template>
   <template name="DefaultObjectDescription">Du siehst nichts Bemerkenswertes.</template>
+  <template name="DefaultSelfDescription">Du siehst aber gut aus.</template>
   <dynamictemplate name="TakeSuccessful">"Du nimmst " + object.gender + " an dich."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Das kannst du nicht nehmen."</dynamictemplate>
   <template name="SeeListHeader">Du siehst</template>
@@ -30,7 +31,13 @@
   <template name="Use">Nutze</template>
   <template name="Drop">Lege</template>
   <template name="GoTo">Gehe</template>
+  <template name="Go">Go</template>
   <template name="Eat">Iss</template>
+  <template name="SwitchOn">Schalte an</template>
+  <template name="SwitchOff">Schalte aus</template>
+  <template name="Open">Öffne</template>
+  <template name="Close">Schließe</template> 
+  
   <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " ist nicht offen."</dynamictemplate>
   <template name="NeutralGender">es</template>
   <template name="MaleGender">er</template>
@@ -49,6 +56,7 @@
   <template name="SelfAlias">ich</template>
   <template name="SelfAlt">mich</template>
   <template name="AllObjects">alles</template>
+  <template name="ParserIgnorePrefixes">der; die; das; ein; eine; einen; den;</template>
   <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " ist bereits offen."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " ist bereits geschlossen."</dynamictemplate>
   <dynamictemplate name="CantOpen">"Du kannst " + object.article + " nicht öffnen."</dynamictemplate>
@@ -59,7 +67,8 @@
   <dynamictemplate name="AlreadyThere">CapFirst(object.gender) + " ist bereits dort."</dynamictemplate>
   <template name="Done">Erledigt.</template>
   <template name="ContainerContentsPrefix">enthält</template>
-  <template name="SurfaceContentsPrefix">,darauf liegt</template>
+  <template name="SurfaceContentsPrefix">darauf siehst du</template>
+  <dynamictemplate name="ObjectContains">CapFirst(object.gender) + " enthält"</dynamictemplate>
   <dynamictemplate name="ContainerFull">CapFirst(object.gender) + " ist voll."</dynamictemplate>
   <dynamictemplate name="DisambiguateMenu">"Bitte wähle, was du mit '" + text + "' meinst:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
@@ -75,8 +84,10 @@
   <dynamictemplate name="CannotLockOpen">"Du kannst " + object.article + " nicht verschließen wenn " + object.gender + " noch geöffnet ist."</dynamictemplate>
   <dynamictemplate name="AlreadySwitchedOn">CapFirst(object.gender) + " ist bereits angeschaltet."</dynamictemplate>"
   <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.gender) + " ist bereits ausgeschaltet."</dynamictemplate>"
-  <dynamictemplate name="SwitchOn">"Du schaltest " + object.article + " an."</dynamictemplate>
-  <dynamictemplate name="SwitchOff">"Du schaltest " + object.article + " aus."</dynamictemplate>  
+  <dynamictemplate name="SwitchedOn">"Du schaltest " + object.article + " an."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">"Du schaltest " + object.article + " aus."</dynamictemplate>  
+  <template name="DefaultOops">Da gibt es nichts zu korrigieren.</template>
+  <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " enthält " + GetNegativPrefix(object2) + " " + GetDisplayAlias(object2) + "."</dynamictemplate>
 
   <template name="CompassNW">Nordwesten</template>
   <template name="CompassN">Norden</template>
@@ -89,10 +100,27 @@
   <template name="CompassSE">Südosten</template>
   <template name="CompassUp">hoch</template>
   <template name="CompassDown">runter</template>
-  <dynamictemplate name="YouLooking">"Sie suchen " + text +"."</dynamictemplate>
+  <template name="CompassIn">rein</template>
+  <template name="CompassOut">raus</template>
+  <template name="CompassNWShort">nw</template>
+  <template name="CompassNShort">n</template>
+  <template name="CompassNEShort">no</template>
+  <template name="CompassWShort">w</template>
+  <template name="CompassEShort">o</template>
+  <template name="CompassSWShort">sw</template>
+  <template name="CompassSShort">s</template>
+  <template name="CompassSEShort">so</template>
+  <template name="CompassUpShort">h</template>
+  <template name="CompassDownShort">r</template>
+  <template name="CompassInShort"></template>
+  <template name="CompassOutShort"></template>
+  <template name="CompassDirectionPrefix">nach</template>
+  <template name="UpDownDirectionPrefix"></template>
+  <template name="InOutDirectionPrefix"></template>
+  <dynamictemplate name="YouLooking">"Du schaust " + text +"."</dynamictemplate>
 
-  <template templatetype="command" name="go"><![CDATA[^gehe nach (?<exit>.*)$|^gehe (?<exit>.*)$|^nach (?<exit>.*)$|^(?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^(schau|schaue) (?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
+  <template templatetype="command" name="go"><![CDATA[^gehe nach (?<exit>.*)$|^gehe (?<exit>.*)$|^nach (?<exit>.*)$|^(?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|rein|raus|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^(schau|schaue|schau nach|schaue nach) (?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|rein|raus|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
   <template templatetype="command" name="look">^schau$|^schaue$</template>
   <verbtemplate name="lookat">untersuche</verbtemplate>
   <verbtemplate name="lookat">betrachte</verbtemplate>
@@ -111,6 +139,10 @@
   <verbtemplate name="open">öffne</verbtemplate>
   <verbtemplate name="close">schließe</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^lege (?<object>.*) (auf|in) (?<object2>.*)$]]></template>  
+  <template templatetype="command" name="removefrom"><![CDATA[^entferne (?<object1>.*) (von|aus) (?<object2>.*)$|^nimm (?<object1>.*) (von|aus) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^frage (?<object>.*) nach (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^erzähle (?<object>.*) von (?<text>.*)$|^rede mit (?<object>.*) über (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^uups (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">kaufe</verbtemplate>
   <dynamictemplate name="DefaultBuy">"Du kannst das nicht kaufen."</dynamictemplate>
@@ -194,17 +226,24 @@
   <verbtemplate name="turnoff">schalt ab #object#</verbtemplate>
   <verbtemplate name="turnoff">schalte #object# ab</verbtemplate>
   <verbtemplate name="turnoff">schalt #object# ab</verbtemplate> 
-  <template name="DefaultTurnOff">Du kannst dies nicht abschalten.</template>
+  <dynamictemplate name="DefaultTurnOff">"Du kannst dies nicht abschalten."</dynamictemplate>
   <verbtemplate name="turn">drehe</verbtemplate>
   <verbtemplate name="turn">wende</verbtemplate>
   <dynamictemplate name="DefaultTurn">"Das lässt sich nicht drehen."</dynamictemplate>
-  <template name="unlock"><![CDATA[^schließe auf (?<object>.*)$|^schließ auf (?<object>.*)$|^schließe (?<object>.*) auf$|^schließ (?<object>.*) auf$]]></template>
+  <verbtemplate name="unlock">schließe auf #object#</verbtemplate>
+  <verbtemplate name="unlock">schließ auf #object#</verbtemplate>
+  <verbtemplate name="unlock">schließe #object# auf</verbtemplate>
+  <verbtemplate name="unlock">schließ #object# auf</verbtemplate>
   <dynamictemplate name="DefaultUnlock">"Du kannst " + object.article + " nicht aufschließen."</dynamictemplate>
   <verbtemplate name="untie">löse</verbtemplate>
   <dynamictemplate name="DefaultUntie">"Du kannst " + object.article + " nicht lösen."</dynamictemplate>
   <template templatetype="command" name="useon"><![CDATA[^benutze (?<object1>.*) mit (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultUseOn">"Du kannst " + object2.article + " so nicht benutzen."</dynamictemplate>
-  <template name="wear"><![CDATA[^ziehe an (?<object>.*)$|^zieh an (?<object>.*)$|^ziehe (?<object>.*) an$|^zieh (?<object>.*) an$]]></template>
+  <verbtemplate name="wear">ziehe an #object#</verbtemplate> 
+  <verbtemplate name="wear">zieh an #object#</verbtemplate> 
+  <verbtemplate name="wear">ziehe #object# an</verbtemplate> 
+  <verbtemplate name="wear">zieh #object# an</verbtemplate>   
+  
   <dynamictemplate name="DefaultWear">"Du kannst " + object.article + " nicht anziehen."</dynamictemplate>
   <template templatetype="command" name="listen">^lausche$|^höre$|^hoere$</template>
   <template name="DefaultListen">Du hörst nichts Besonderes.</template>
@@ -230,7 +269,15 @@
    die Himmelrichtungen können auch über N, S, W, O, NW, SO abgekürzt werden, dazu noch H für hoch und R für runter.
    ]]></template>
  
- 
+  <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
+  <template name="LanguageSpecificObjectTypes"></template>
+  <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
+  <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
+  <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
+
+  <template name="EditorVerbDefaultExpression">"Das kannst Du nicht machen."</template>
+
+  
     <function name="GetDefaultPrefix" type="string" parameters="obj">
 		if (Instr(obj.gender, "sie") > 0) {
 			return ("eine")
@@ -240,6 +287,16 @@
 			return ("ein")
 		}
 	</function>
-		
+
+	<function name="GetNegativPrefix" type="string" parameters="obj">
+		if (Instr(obj.gender, "sie") > 0) {
+			return ("keine")
+		} else if (Instr(obj.gender, "er") > 0) {
+			return ("keinen")
+		} else	{	
+			return ("kein")
+		}
+	</function>
+	
 		
 </library>
