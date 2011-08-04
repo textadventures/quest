@@ -270,8 +270,8 @@ namespace AxeSoftware.Quest.EditorControls
             //   - a new compass direction
             //   - not a compass direction
             //   - null
-            
-            if (direction == null )
+
+            if (direction == null)
             {
                 CompassEditor.Mode = CompassEditorControl.CompassEditorMode.NoSelection;
                 return;
@@ -428,19 +428,21 @@ namespace AxeSoftware.Quest.EditorControls
                 CompassEditor.AllowCreateInverseExit = !exitsInverseExists;
             }
         }
+
         private bool ExitsInverseExists(string to, string direction)
         {
             string inverseExit = GetInverseDirection(direction);
             bool inverseExitExists = false;
 
-            foreach (string exitName in m_controller.GetObjectNames("exit",to))
+            foreach (string exitName in m_controller.GetObjectNames("exit", to))
             {
                 IEditorData otherRoomExitData = m_controller.GetEditorData(exitName);
-                object otherRoomLookOnly = otherRoomExitData.GetAttribute("lookonly") as object;
-                if (!(bool)otherRoomLookOnly)
+                bool otherRoomLookOnly = otherRoomExitData.GetAttribute("lookonly") as bool? == true;
+                if (!otherRoomLookOnly)
                 {
                     string otherRoomExitAlias = otherRoomExitData.GetAttribute("alias") as string;
-                    if (inverseExitExists = (inverseExit == otherRoomExitAlias)) { break; }
+                    inverseExitExists = (inverseExit == otherRoomExitAlias);
+                    if (inverseExitExists) break;
                 }
             }
             return inverseExitExists;

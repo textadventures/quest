@@ -134,7 +134,7 @@ namespace AxeSoftware.Quest.EditorControls
                 To = (string)to.SelectedItem,
                 Direction = DirectionName,
                 LookOnly = false,
-                CreateInverse = chkCorresponding.IsChecked.Value
+                CreateInverse = chkCorresponding.IsEnabled && chkCorresponding.IsChecked.Value
             });
         }
 
@@ -155,7 +155,6 @@ namespace AxeSoftware.Quest.EditorControls
                 m_allowCreateInverse = value;
                 chkCorresponding.IsEnabled = value;
                 createCorresponding.IsEnabled = value;
-                chkCorresponding.IsChecked = value;
             } 
         }
 
@@ -166,7 +165,7 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 m_correspondingExitExists = value;
                 corresponding.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
-                createCorresponding.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
+                createCorresponding.Visibility = (value || m_mode == CompassEditorMode.NewCompassExit) ? Visibility.Collapsed : Visibility.Visible;
             }
         }
 
