@@ -30,6 +30,10 @@ namespace AxeSoftware.Quest.EditorControls
         void m_helper_Initialise()
         {
             textblock.Text = m_helper.ControlDefinition.Caption;
+            if (m_helper.ControlDefinition.GetBool("bold"))
+            {
+                textblock.FontWeight = FontWeights.Bold;
+            }
         }
 
         public IControlDataHelper Helper

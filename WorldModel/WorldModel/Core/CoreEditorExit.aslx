@@ -37,6 +37,13 @@
       </control>
 
       <control>
+        <controltype>label</controltype>
+        <caption>To unlock this exit during the game using a script, you must give it a name below.</caption>
+        <onlydisplayif>this.anonymous and this.locked</onlydisplayif>
+        <bold/>
+      </control>
+
+      <control>
         <caption>Name</caption>
         <controltype>textbox</controltype>
         <attribute>name</attribute>
