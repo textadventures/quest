@@ -307,7 +307,7 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 CompassEditor.Mode = CompassEditorControl.CompassEditorMode.NewCompassExit;
                 CompassEditor.to.Items.Clear();
-                foreach (string objectName in m_controller.GetObjectNames("object"))
+                foreach (string objectName in m_controller.GetObjectNames("object").OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase))
                 {
                     if (objectName != "player")
                     {
