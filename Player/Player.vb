@@ -865,11 +865,15 @@ Public Class Player
     End Sub
 
     Public Sub DoPause(ms As Integer) Implements IPlayer.DoPause
-        BeginInvoke(Sub()
-                        m_pausing = True
-                        tmrPause.Interval = ms
-                        tmrPause.Enabled = True
-                    End Sub)
+        If m_walkthroughRunner IsNot Nothing Then
+            m_walkthroughRunner.BeginPause()
+        Else
+            BeginInvoke(Sub()
+                            m_pausing = True
+                            tmrPause.Interval = ms
+                            tmrPause.Enabled = True
+                        End Sub)
+        End If
     End Sub
 
     Private Sub tmrPause_Tick(sender As Object, e As System.EventArgs) Handles tmrPause.Tick

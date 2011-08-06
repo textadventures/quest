@@ -4,6 +4,7 @@
     Private m_walkthrough As String
     Private m_showingMenu As Boolean
     Private m_waiting As Boolean
+    Private m_pausing As Boolean
     Private m_menuOptions As IDictionary(Of String, String)
 
     Public Event Output(text As String)
@@ -22,12 +23,17 @@
                 m_game.SendCommand(cmd)
             End If
 
-            If m_waiting Then
-                Do
+            Do
+                If m_waiting Then
                     m_waiting = False
                     FinishWait()
-                Loop Until Not m_waiting
-            End If
+                End If
+
+                If m_pausing Then
+                    m_pausing = False
+                    FinishPause()
+                End If
+            Loop Until Not m_waiting And Not m_pausing
         Next
     End Sub
 
@@ -58,6 +64,14 @@
 
     Private Sub FinishWait()
         m_game.FinishWait()
+    End Sub
+
+    Public Sub BeginPause()
+        m_pausing = True
+    End Sub
+
+    Private Sub FinishPause()
+        m_game.FinishPause()
     End Sub
 
     Private Sub WriteLine(text As String)
