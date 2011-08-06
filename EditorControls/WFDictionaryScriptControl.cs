@@ -155,7 +155,8 @@ namespace AxeSoftware.Quest.EditorControls
         {
             string listsource = m_controlData.GetString("source");
             if (listsource == null) return null;
-            return (listsource == "object") ? m_controller.GetObjectNames("object") : m_controller.GetElementNames(listsource);
+            IEnumerable<string> result = (listsource == "object") ? m_controller.GetObjectNames("object") : m_controller.GetElementNames(listsource);
+            return result.OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase);
         }
 
         private bool ValidateInput(string input)
