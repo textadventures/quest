@@ -118,6 +118,7 @@ namespace AxeSoftware.Quest
                             }
                             break;
                         case XmlNodeType.Text:
+                        case XmlNodeType.CDATA:
                             value = reader.Value;
                             break;
                     }
