@@ -94,7 +94,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (data != null)
             {
-                IEnumerable<string> exits = m_controller.GetObjectNames("exit", data.Name);
+                IEnumerable<string> exits = m_controller.GetObjectNames("exit", data.Name, true);
                 foreach (string exit in exits)
                 {
                     IEditorData exitData = m_controller.GetEditorData(exit);
@@ -434,7 +434,7 @@ namespace AxeSoftware.Quest.EditorControls
             string inverseExit = GetInverseDirection(direction);
             bool inverseExitExists = false;
 
-            foreach (string exitName in m_controller.GetObjectNames("exit", to))
+            foreach (string exitName in m_controller.GetObjectNames("exit", to, true))
             {
                 IEditorData otherRoomExitData = m_controller.GetEditorData(exitName);
                 bool otherRoomLookOnly = otherRoomExitData.GetAttribute("lookonly") as bool? == true;
