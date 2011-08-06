@@ -613,6 +613,10 @@ Public Class Player
     End Sub
 
     Private Sub PlaySound(filename As String, synchronous As Boolean, looped As Boolean) Implements IPlayer.PlaySound
+        If m_walkthroughRunner IsNot Nothing AndAlso synchronous Then
+            synchronous = False
+            m_walkthroughRunner.BeginWait()
+        End If
         BeginInvoke(Sub()
                         If synchronous And looped Then
                             Throw New Exception("Can't play sound that is both synchronous and looped")
