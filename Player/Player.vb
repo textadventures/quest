@@ -546,7 +546,11 @@ Public Class Player
     End Sub
 
     Public Sub DoWait() Implements IPlayer.DoWait
-        BeginInvoke(Sub() BeginWait())
+        If m_walkthroughRunner IsNot Nothing Then
+            m_walkthroughRunner.BeginWait()
+        Else
+            BeginInvoke(Sub() BeginWait())
+        End If
     End Sub
 
     Private Sub BeginWait()

@@ -3,6 +3,7 @@
     Private m_game As IASL
     Private m_walkthrough As String
     Private m_showingMenu As Boolean
+    Private m_waiting As Boolean
     Private m_menuOptions As IDictionary(Of String, String)
 
     Public Event Output(text As String)
@@ -19,6 +20,13 @@
                 SetMenuResponse(cmd)
             Else
                 m_game.SendCommand(cmd)
+            End If
+
+            If m_waiting Then
+                Do
+                    m_waiting = False
+                    FinishWait()
+                Loop Until Not m_waiting
             End If
         Next
     End Sub
@@ -42,6 +50,14 @@
         Else
             Throw New Exception("No menu response defined in walkthrough")
         End If
+    End Sub
+
+    Public Sub BeginWait()
+        m_waiting = True
+    End Sub
+
+    Private Sub FinishWait()
+        m_game.FinishWait()
     End Sub
 
     Private Sub WriteLine(text As String)
