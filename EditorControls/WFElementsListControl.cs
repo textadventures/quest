@@ -71,7 +71,7 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_elementType == "object")
             {
                 string parent = m_data == null ? null : m_data.Name;
-                elements = Controller.GetObjectNames(m_objectType, false, parent);
+                elements = Controller.GetObjectNames(m_objectType, false, parent, true);
             }
             else
             {
