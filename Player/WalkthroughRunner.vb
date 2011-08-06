@@ -3,6 +3,7 @@
     Private m_game As IASL
     Private m_walkthrough As String
     Private m_showingMenu As Boolean
+    Private m_showingQuestion As Boolean
     Private m_waiting As Boolean
     Private m_pausing As Boolean
     Private m_menuOptions As IDictionary(Of String, String)
@@ -19,6 +20,8 @@
         For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps
             If m_showingMenu Then
                 SetMenuResponse(cmd)
+            ElseIf m_showingQuestion Then
+                SetQuestionResponse(cmd)
             Else
                 m_game.SendCommand(cmd)
             End If
@@ -55,6 +58,28 @@
             End If
         Else
             Throw New Exception("No menu response defined in walkthrough")
+        End If
+    End Sub
+
+    Public Sub ShowQuestion(question As String)
+        m_showingQuestion = True
+        WriteLine("Question: " + question)
+    End Sub
+
+    Private Sub SetQuestionResponse(response As String)
+        If response.StartsWith("answer:") Then
+            m_showingQuestion = False
+            Dim questionResponse As String = response.Substring(7)
+            WriteLine("  - " + questionResponse)
+            If questionResponse = "yes" Then
+                m_game.SetQuestionResponse(True)
+            ElseIf questionResponse = "no" Then
+                m_game.SetQuestionResponse(False)
+            Else
+                Throw New Exception("Question response was invalid")
+            End If
+        Else
+            Throw New Exception("Question response not defined in walkthrough")
         End If
     End Sub
 

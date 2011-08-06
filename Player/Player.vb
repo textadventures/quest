@@ -564,12 +564,21 @@ Public Class Player
     End Sub
 
     Public Sub ShowQuestion(caption As String) Implements IPlayer.ShowQuestion
-        BeginInvoke(Sub()
-                        Dim result As Boolean = (MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes)
-                        m_game.SetQuestionResponse(result)
-                        ClearBuffer()
-                    End Sub
-        )
+        If m_walkthroughRunner IsNot Nothing Then
+            m_walkthroughRunner.ShowQuestion(caption)
+        Else
+            BeginInvoke(Sub()
+                            Dim result As Boolean = (MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes)
+
+                            If RecordWalkthrough IsNot Nothing Then
+                                m_recordedWalkthrough.Add("answer:" + If(result, "yes", "no"))
+                            End If
+
+                            m_game.SetQuestionResponse(result)
+                            ClearBuffer()
+                        End Sub
+            )
+        End If
     End Sub
 
     Public Function KeyPressed() As Boolean
@@ -888,7 +897,7 @@ Public Class Player
     End Sub
 
     Private Sub m_walkthroughRunner_Output(text As String) Handles m_walkthroughRunner.Output
-        BeginInvoke(Sub() m_htmlHelper.PrintText("<output>" + text + "</output>"))
+        WriteLine(text)
     End Sub
 
     Public Property PostLaunchAction As Action
