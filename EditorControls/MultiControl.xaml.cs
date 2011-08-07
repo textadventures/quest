@@ -317,6 +317,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoUninitialise()
         {
+            m_controller = null;
+            m_definition = null;
         }
 
         private void InitialiseTypesList(IDictionary<string, string> types)

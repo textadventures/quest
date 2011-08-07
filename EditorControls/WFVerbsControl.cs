@@ -27,8 +27,8 @@ namespace AxeSoftware.Quest.EditorControls
         public override void Initialise(EditorController controller, IEditorControl controlData)
         {
             base.Initialise(controller, controlData);
-            m_clashMessages = controlData.GetDictionary("clashmessages");
-            m_defaultExpression = controlData.GetString("defaultexpression");
+            m_clashMessages = controlData == null ? null : controlData.GetDictionary("clashmessages");
+            m_defaultExpression = controlData == null ? null : controlData.GetString("defaultexpression");
         }
 
         protected override bool CanDisplayAttribute(string attribute, object value)

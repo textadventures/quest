@@ -130,6 +130,10 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoUninitialise()
         {
+            m_controller = null;
+            m_definition = null;
+            m_source = null;
+            m_objectType = null;
         }
 
         public string SelectedItem

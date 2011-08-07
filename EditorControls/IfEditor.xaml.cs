@@ -256,6 +256,9 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoUninitialise()
         {
+            m_controller = null;
+            ctlChild.Uninitialise();
+            ctlElse.Uninitialise();
         }
 
         private void cmdAddElseIf_Click(object sender, RoutedEventArgs e)

@@ -332,7 +332,18 @@ namespace AxeSoftware.Quest.EditorControls
                         elementEditor.Helper.DoUninitialise();
                     }
                 }
+                ctlList.Clear();
             }
+
+            m_controlUIElements.Clear();
+
+            foreach (TabItem tab in m_tabs.Values)
+            {
+                tabControl.Items.Remove(tab);
+            }
+
+            m_tabs.Clear();
+            m_controls.Clear();
         }
     }
 }

@@ -33,6 +33,9 @@ Public Class Editor
     Public Function Initialise(ByRef filename As String) As Boolean
         m_currentElement = Nothing
         m_filename = filename
+        If m_controller IsNot Nothing Then
+            m_controller.Uninitialise()
+        End If
         m_controller = New EditorController()
         m_unsavedChanges = False
         InitialiseEditorControlsList()

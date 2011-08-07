@@ -50,6 +50,17 @@ namespace AxeSoftware.Quest.EditorControls
             ctlScriptExpander.Helper.RequestParentElementEditorSave += RaiseRequestParentElementEditorSave;
         }
 
+        public void Uninitialise()
+        {
+            ctlExpression.Helper.DoUninitialise();
+            ctlScriptExpander.DoUninitialise();
+            ctlScriptExpander.Delete -= ctlScriptExpander_Delete;
+            ctlExpression.Helper.Dirty -= RaiseDirty;
+            ctlExpression.Helper.RequestParentElementEditorSave -= RaiseRequestParentElementEditorSave;
+            ctlScriptExpander.Helper.Dirty -= RaiseDirty;
+            ctlScriptExpander.Helper.RequestParentElementEditorSave -= RaiseRequestParentElementEditorSave;
+        }
+
         void ctlScriptExpander_Delete()
         {
             RaiseDeleteEvent();

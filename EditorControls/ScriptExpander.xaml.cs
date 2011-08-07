@@ -50,6 +50,11 @@ namespace AxeSoftware.Quest.EditorControls
             ctlScript.Helper.DoInitialise(controller, definition);
         }
 
+        public void DoUninitialise()
+        {
+            ctlScript.Helper.DoUninitialise();
+        }
+
         void ctlScript_Initialise()
         {
             if (ctlScript.Definition != null)

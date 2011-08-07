@@ -61,6 +61,9 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller.ElementsUpdated -= m_controller_ElementsUpdated;
             m_controller.ElementMoved -= m_controller_ElementMoved;
+            m_controller = null;
+            m_directionNames = null;
+            m_compassTypes = null;
         }
 
         void m_controller_ElementsUpdated()

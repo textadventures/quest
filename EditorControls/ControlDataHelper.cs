@@ -64,6 +64,8 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoUninitialise()
         {
+            Controller = null;
+            ControlDefinition = null;
             if (Uninitialise != null)
             {
                 Uninitialise();
