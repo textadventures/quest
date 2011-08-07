@@ -303,7 +303,7 @@ namespace AxeSoftware.Quest
         {
             m_attributes.Remove(name);
 
-            if (AttributeChangedSilent != null)
+            if (AttributeChangedSilent != null && name != "name")
             {
                 AttributeChangedSilent(this, new AttributeChangedEventArgs(name, Get(name)));
             }
