@@ -26,6 +26,7 @@ namespace AxeSoftware.Quest.EditorControls
             m_helper = new ControlDataHelper<IEditableDictionary<IEditableScripts>>(this);
             m_helper.Options.Resizable = true;
             m_helper.Initialise += m_helper_Initialise;
+            m_helper.Uninitialise += m_helper_Uninitialise;
 
             ctlDictionaryScript.Dirty += ctlDictionaryScript_Dirty;
             ctlDictionaryScript.RequestParentElementEditorSave += ctlDictionaryScript_RequestParentElementEditorSave;
@@ -44,6 +45,11 @@ namespace AxeSoftware.Quest.EditorControls
         void m_helper_Initialise()
         {
             ctlDictionaryScript.Initialise(m_helper.Controller, m_helper.ControlDefinition);
+        }
+
+        void m_helper_Uninitialise()
+        {
+            ctlDictionaryScript.Initialise(null, null);
         }
 
         private WFDictionaryScriptControl ctlDictionaryScript

@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest.EditorControls
             // when the control is fully converted to WPF.
             //m_helper.Options.Resizable = true;
             m_helper.Initialise += m_helper_Initialise;
+            m_helper.Uninitialise += m_helper_Uninitialise;
             ctlDictionaryString.Dirty += ctlDictionaryString_Dirty;
             ctlDictionaryString.RequestParentElementEditorSave += ctlDictionaryString_RequestParentElementEditorSave;
         }
@@ -45,6 +46,11 @@ namespace AxeSoftware.Quest.EditorControls
         void m_helper_Initialise()
         {
             ctlDictionaryString.Initialise(m_helper.Controller, m_helper.ControlDefinition);
+        }
+
+        void m_helper_Uninitialise()
+        {
+            ctlDictionaryString.Initialise(null, null);
         }
 
         private WFDictionaryStringControl ctlDictionaryString

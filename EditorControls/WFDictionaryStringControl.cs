@@ -61,7 +61,7 @@ namespace AxeSoftware.Quest.EditorControls
             ctlListEditor.SetHeader(2, "Value");
             ctlListEditor.UpdateList(null);
             m_controller = controller;
-            m_attributeName = controlData.Attribute;
+            m_attributeName = controlData == null ? null : controlData.Attribute;
             m_controlData = controlData;
         }
 

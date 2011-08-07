@@ -331,6 +331,12 @@ namespace AxeSoftware.Quest.EditorControls
                         elementEditor.Helper.RequestParentElementEditorSave -= Control_RequestParentElementEditorSave;
                         elementEditor.Helper.DoUninitialise();
                     }
+
+                    Grid grid = element as Grid;
+                    if (grid != null)
+                    {
+                        grid.Children.Clear();
+                    }
                 }
                 ctlList.Clear();
             }
@@ -340,6 +346,7 @@ namespace AxeSoftware.Quest.EditorControls
             foreach (TabItem tab in m_tabs.Values)
             {
                 tabControl.Items.Remove(tab);
+                tab.Content = null;
             }
 
             m_tabs.Clear();

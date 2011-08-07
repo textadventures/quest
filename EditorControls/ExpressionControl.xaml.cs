@@ -37,6 +37,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             m_helper = new ControlDataHelper<string>(this);
             m_helper.Initialise += Initialise;
+            m_helper.Uninitialise += Uninitialise;
             InitialiseInsertMenu();
         }
 
@@ -62,6 +63,11 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 PopulateExpressionTemplates();
             }
+        }
+
+        void Uninitialise()
+        {
+            UninitialiseSimpleEditor();
         }
 
         private void InitialiseSimpleEditor()
@@ -137,6 +143,48 @@ namespace AxeSoftware.Quest.EditorControls
             }
             lstType.Items.Add("expression");
             m_updatingList = false;
+        }
+
+        private void UninitialiseSimpleEditor()
+        {
+            TextBox textBox = m_simpleEditor as TextBox;
+            if (textBox != null)
+            {
+                textBox.TextChanged -= SimpleEditor_TextChanged;
+                textBox.LostFocus -= SimpleEditor_LostFocus;
+            }
+
+            FileControl fileControl = m_simpleEditor as FileControl;
+            if (fileControl != null)
+            {
+                fileControl.Helper.DoUninitialise();
+                fileControl.Helper.Dirty -= SimpleEditor_Dirty;
+                fileControl.lstFiles.SelectionChanged -= FileControl_SelectionChanged;
+            }
+
+            DropDownObjectsControl dropDownObjects = m_simpleEditor as DropDownObjectsControl;
+            if (dropDownObjects != null)
+            {
+                dropDownObjects.Helper.DoUninitialise();
+                dropDownObjects.Helper.Dirty -= SimpleEditor_Dirty;
+                dropDownObjects.lstDropdown.SelectionChanged -= DropDownObjects_SelectionChanged;
+            }
+
+            NumberControl number = m_simpleEditor as NumberControl;
+            if (number != null)
+            {
+                number.Helper.DoUninitialise();
+                number.Helper.Dirty -= SimpleEditor_Dirty;
+                number.LostFocus -= SimpleEditor_LostFocus;
+            }
+
+            DropDownControl dropDown = m_simpleEditor as DropDownControl;
+            if (dropDown != null)
+            {
+                dropDown.Helper.DoUninitialise();
+                dropDown.Helper.Dirty -= SimpleEditor_Dirty;
+                dropDown.lstDropdown.SelectionChanged -= DropDown_SelectionChanged;
+            }
         }
 
         void DropDownObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)

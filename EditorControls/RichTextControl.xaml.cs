@@ -26,6 +26,7 @@ namespace AxeSoftware.Quest.EditorControls
             m_helper = new ControlDataHelper<string>(this);
             m_helper.Options.Resizable = true;
             m_helper.Initialise += m_helper_Initialise;
+            m_helper.Uninitialise += m_helper_Uninitialise;
 
             ctlRichText.Dirty += new WFRichTextControl.DirtyEventHandler(ctlRichText_Dirty);
         }
@@ -38,6 +39,12 @@ namespace AxeSoftware.Quest.EditorControls
         void m_helper_Initialise()
         {
             ctlRichText.Initialise(m_helper.Controller, m_helper.ControlDefinition);
+        }
+
+        void m_helper_Uninitialise()
+        {
+            ctlRichText.Initialise(null, null);
+            ctlRichText.Dirty -= ctlRichText_Dirty;
         }
 
         private WFRichTextControl ctlRichText
