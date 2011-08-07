@@ -72,6 +72,11 @@ namespace AxeSoftware.Quest.EditorControls
             ctlElementsList.Initialise(controller, definition);
         }
 
+        public void DoUninitialise()
+        {
+            ctlElementsList.Uninitialise();
+        }
+
         private WFElementsListControl ctlElementsList
         {
             get { return (WFElementsListControl)elementsListHost.Child; }

@@ -140,6 +140,7 @@ Public Class Editor
     End Sub
 
     Private Sub SetUpEditors()
+        UnloadEditors()
         m_elementEditors = New Dictionary(Of String, WPFElementEditor)
 
         For Each editor As String In m_controller.GetAllEditorNames()
@@ -163,6 +164,16 @@ Public Class Editor
     Private Sub Editor_Dirty(sender As Object, args As DataModifiedEventArgs)
         ctlToolbar.EnableUndo()
         m_unsavedChanges = True
+    End Sub
+
+    Private Sub UnloadEditors()
+        If m_elementEditors Is Nothing Then Return
+
+        For Each editor As WPFElementEditor In m_elementEditors.Values
+            editor.Populate(Nothing)
+            editor.Uninitialise()
+            RemoveHandler editor.Dirty, AddressOf Editor_Dirty
+        Next
     End Sub
 
     Private Sub m_controller_AddedNode(key As String, text As String, parent As String, isLibraryNode As Boolean, position As Integer?) Handles m_controller.AddedNode

@@ -128,6 +128,10 @@ namespace AxeSoftware.Quest.EditorControls
             m_objectType = definition == null ? null : definition.GetString("objecttype");
         }
 
+        public void DoUninitialise()
+        {
+        }
+
         public string SelectedItem
         {
             get { return (string)lstDropdown.SelectedItem; }

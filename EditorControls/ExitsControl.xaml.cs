@@ -57,6 +57,12 @@ namespace AxeSoftware.Quest.EditorControls
             m_compassTypes = definition.GetDictionary("compasstypes");
         }
 
+        public void DoUninitialise()
+        {
+            m_controller.ElementsUpdated -= m_controller_ElementsUpdated;
+            m_controller.ElementMoved -= m_controller_ElementMoved;
+        }
+
         void m_controller_ElementsUpdated()
         {
             Populate(m_data);

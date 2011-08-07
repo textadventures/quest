@@ -34,4 +34,10 @@
     Private Sub ElementEditor_RequestParentElementEditorSave()
         SaveData()
     End Sub
+
+    Public Sub Uninitialise()
+        ctlElementEditor.Uninitialise()
+        RemoveHandler ctlElementEditor.Dirty, AddressOf ElementEditor_Dirty
+        RemoveHandler ctlElementEditor.RequestParentElementEditorSave, AddressOf ElementEditor_RequestParentElementEditorSave
+    End Sub
 End Class

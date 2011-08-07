@@ -85,6 +85,10 @@ namespace AxeSoftware.Quest.EditorControls
             ctlAttributes.Initialise(controller, definition);
         }
 
+        public void DoUninitialise()
+        {
+        }
+
         public void AttributeChanged(string attribute, object value)
         {
             ctlAttributes.AttributeChanged(attribute, value);

@@ -59,6 +59,7 @@ namespace AxeSoftware.Quest.EditorControls
         public void Populate(IEditorData data)
         {
             m_data = data;
+            if (data == null) return;
             List<string> inheritedTypes = new List<string>();
 
             // The inherited types look like:

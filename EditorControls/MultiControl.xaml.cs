@@ -315,6 +315,10 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
+        public void DoUninitialise()
+        {
+        }
+
         private void InitialiseTypesList(IDictionary<string, string> types)
         {
             int index = 0;

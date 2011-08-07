@@ -34,6 +34,7 @@ namespace AxeSoftware.Quest.EditorControls
             SetEditButtonsEnabled(false);
             m_helper = new ControlDataHelper<IEditableScripts>(this);
             m_helper.Initialise += m_helper_Initialise;
+            m_helper.Uninitialise += m_helper_Uninitialise;
 
             ctlToolbar.MakeEditable += ctlToolbar_MakeEditable;
             ctlToolbar.Delete += ctlToolbar_Delete;
@@ -55,6 +56,11 @@ namespace AxeSoftware.Quest.EditorControls
             ctlScriptAdder.Initialise(m_controller);
 
             if (Initialise != null) Initialise();
+        }
+
+        void m_helper_Uninitialise()
+        {
+            m_controller.ScriptClipboardUpdated -= m_controller_ScriptClipboardUpdated;
         }
 
         private string ElementName

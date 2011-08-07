@@ -159,7 +159,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Populate(IEditorData data)
         {
-            m_readOnly = data.ReadOnly;
+            m_readOnly = data != null && data.ReadOnly;
             cmdAdd.Enabled = !m_readOnly;
             cmdAddType.Enabled = !m_readOnly;
 
@@ -172,7 +172,7 @@ namespace AxeSoftware.Quest.EditorControls
             ctlMultiControl.Visible = false;
             m_data = (IEditorDataExtendedAttributeInfo)data;
 
-            if ((data != null))
+            if (data != null)
             {
                 foreach (var type in m_data.GetInheritedTypes())
                 {

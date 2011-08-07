@@ -317,5 +317,22 @@ namespace AxeSoftware.Quest.EditorControls
                 ((IMultiAttributeElementEditorControl)ctl).AttributeChanged(attribute, m_data.GetAttribute(attribute));
             }
         }
+
+        public void Uninitialise()
+        {
+            foreach (List<UIElement> ctlList in m_controlUIElements.Values)
+            {
+                foreach (UIElement element in ctlList)
+                {
+                    IElementEditorControl elementEditor = element as IElementEditorControl;
+                    if (elementEditor != null)
+                    {
+                        elementEditor.Helper.Dirty -= Control_Dirty;
+                        elementEditor.Helper.RequestParentElementEditorSave -= Control_RequestParentElementEditorSave;
+                        elementEditor.Helper.DoUninitialise();
+                    }
+                }
+            }
+        }
     }
 }

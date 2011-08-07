@@ -63,6 +63,12 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
+        public void Uninitialise()
+        {
+            m_controller.ElementsUpdated -= m_controller_ElementsUpdated;
+            m_controller.ElementMoved -= m_controller_ElementMoved;
+        }
+
         public void Populate(IEditorData data)
         {
             m_data = data;

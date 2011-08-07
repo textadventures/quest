@@ -25,6 +25,7 @@ namespace AxeSoftware.Quest.EditorControls
         ControlDataOptions Options { get; }
 
         void DoInitialise(EditorController controller, IEditorControl definition);
+        void DoUninitialise();
     }
 
     public class ControlDataHelper<T> : IControlDataHelper
@@ -32,6 +33,7 @@ namespace AxeSoftware.Quest.EditorControls
         public event EventHandler<DataModifiedEventArgs> Dirty;
         public event Action RequestParentElementEditorSave;
         internal event Action Initialise;
+        internal event Action Uninitialise;
 
         public EditorController Controller { get; private set; }
         public IEditorControl ControlDefinition { get; private set; }
@@ -57,6 +59,14 @@ namespace AxeSoftware.Quest.EditorControls
             if (controller != null && Initialise != null)
             {
                 Initialise();
+            }
+        }
+
+        public void DoUninitialise()
+        {
+            if (Uninitialise != null)
+            {
+                Uninitialise();
             }
         }
 

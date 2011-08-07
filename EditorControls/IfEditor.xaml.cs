@@ -254,6 +254,10 @@ namespace AxeSoftware.Quest.EditorControls
             ctlElse.Initialise(controller);
         }
 
+        public void DoUninitialise()
+        {
+        }
+
         private void cmdAddElseIf_Click(object sender, RoutedEventArgs e)
         {
             m_data.AddElseIf();
