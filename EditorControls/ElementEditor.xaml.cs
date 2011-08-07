@@ -344,6 +344,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             m_tabs.Clear();
             m_controls.Clear();
+            m_controller = null;
         }
     }
 }

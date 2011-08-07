@@ -32,6 +32,7 @@ Public Class Editor
 
     Public Function Initialise(ByRef filename As String) As Boolean
         m_currentElement = Nothing
+        m_currentEditor = Nothing
         m_filename = filename
         If m_controller IsNot Nothing Then
             m_controller.Uninitialise()
@@ -175,8 +176,11 @@ Public Class Editor
         For Each editor As WPFElementEditor In m_elementEditors.Values
             editor.Populate(Nothing)
             editor.Uninitialise()
+            editor.Parent = Nothing
             RemoveHandler editor.Dirty, AddressOf Editor_Dirty
         Next
+
+        m_elementEditors.Clear()
     End Sub
 
     Private Sub m_controller_AddedNode(key As String, text As String, parent As String, isLibraryNode As Boolean, position As Integer?) Handles m_controller.AddedNode
