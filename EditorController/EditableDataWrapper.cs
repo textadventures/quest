@@ -27,5 +27,10 @@ namespace AxeSoftware.Quest
             s_instances.Add(source, instance);
             return instance;
         }
+
+        internal void Clear()
+        {
+            s_instances.Clear();
+        }
     }
 }

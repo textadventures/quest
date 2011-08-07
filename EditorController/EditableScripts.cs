@@ -31,6 +31,11 @@ namespace AxeSoftware.Quest
             return new EditableScripts(controller, script);
         }
 
+        public static void Clear()
+        {
+            s_wrapper.Clear();
+        }
+
         private EditableScripts(EditorController controller)
         {
             m_controller = controller;

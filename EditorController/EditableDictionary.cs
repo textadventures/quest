@@ -42,6 +42,11 @@ namespace AxeSoftware.Quest
         {
             return new EditableDictionary<T>(controller, list);
         }
+
+        public static void Clear()
+        {
+            s_wrapper.Clear();
+        }
         #endregion
 
         private QuestDictionary<T> m_source;

@@ -38,6 +38,11 @@ namespace AxeSoftware.Quest
         {
             return new EditableList<T>(controller, list);
         }
+
+        public static void Clear()
+        {
+            s_wrapper.Clear();
+        }
         #endregion
 
         private QuestList<T> m_source;

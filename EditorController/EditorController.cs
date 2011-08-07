@@ -1830,6 +1830,10 @@ namespace AxeSoftware.Quest
             m_worldModel.UndoLogger.TransactionsUpdated -= UndoLogger_TransactionsUpdated;
             m_worldModel.Elements.ElementRenamed -= Elements_ElementRenamed;
             m_worldModel.ObjectsUpdated -= m_worldModel_ObjectsUpdated;
+            EditableScripts.Clear();
+            EditableDictionary<string>.Clear();
+            EditableList<string>.Clear();
+            EditableWrappedItemDictionary<IScript, IEditableScripts>.Clear();
         }
     }
 }
