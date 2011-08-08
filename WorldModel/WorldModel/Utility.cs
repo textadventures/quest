@@ -63,7 +63,8 @@ namespace AxeSoftware.Quest
         private static string GetParameterInt(string text, char open, char close, out string afterParameter)
         {
             afterParameter = null;
-            int start = text.IndexOf(open);
+            string obscuredText = ObscureStrings(text);
+            int start = obscuredText.IndexOf(open);
             if (start == -1) return null;
 
             bool finished = false;
@@ -73,10 +74,10 @@ namespace AxeSoftware.Quest
             while (!finished)
             {
                 pos++;
-                string curChar = text.Substring(pos, 1);
+                string curChar = obscuredText.Substring(pos, 1);
                 if (curChar == open.ToString()) braceCount++;
                 if (curChar == close.ToString()) braceCount--;
-                if (braceCount == 0 || pos == text.Length - 1) finished = true;
+                if (braceCount == 0 || pos == obscuredText.Length - 1) finished = true;
             }
 
             if (braceCount != 0)
