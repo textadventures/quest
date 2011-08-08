@@ -94,6 +94,27 @@ namespace WebPlayer
         }
     }
 
+    internal class StringArrayParameter : IJavaScriptParameter
+    {
+        private IEnumerable<string> m_param;
+
+        public StringArrayParameter(IEnumerable<string> param)
+        {
+            m_param = param;
+        }
+
+        public string GetParameter()
+        {
+            string result = string.Empty;
+            foreach (string param in m_param)
+            {
+                if (result.Length > 0) result += ", ";
+                result += JavaScriptParameterHelpers.StringParameter(param);
+            }
+            return "[" + result + "]";
+        }
+    }
+
     internal class OutputBuffer
     {
         private List<string> m_javaScriptBuffer = new List<string>();

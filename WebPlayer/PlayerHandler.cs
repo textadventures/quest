@@ -392,7 +392,7 @@ namespace WebPlayer
 
         public void SetCompassDirections(IEnumerable<string> dirs)
         {
-            // TO DO: Implement
+            m_buffer.AddJavaScriptToBuffer("setCompassDirections", new StringArrayParameter(dirs));
         }
 
         public string GetURL(string file)

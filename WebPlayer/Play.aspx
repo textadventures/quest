@@ -63,42 +63,42 @@
                                 <tr>
                                     <td>
                                         <input id="cmdCompassNW" class="compassbutton" type="button" value="&#8598;" title="go northwest"
-                                            onclick="compassClick('northwest');" />
+                                            onclick="compassClick(_compassDirs[0]);" />
                                     </td>
                                     <td>
                                         <input id="cmdCompassN" class="compassbutton" type="button" value="&#8593;" title="go north"
-                                            onclick="compassClick('north');" />
+                                            onclick="compassClick(_compassDirs[1]);" />
                                     </td>
                                     <td>
                                         <input id="cmdCompassNE" class="compassbutton" type="button" value="&#8599;" title="go northeast"
-                                            onclick="compassClick('northeast');" />
+                                            onclick="compassClick(_compassDirs[2]);" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <input id="cmdCompassW" class="compassbutton" type="button" value="&#8592;" title="go west"
-                                            onclick="compassClick('west');" />
+                                            onclick="compassClick(_compassDirs[3]);" />
                                     </td>
                                     <td>
                                         &nbsp;
                                     </td>
                                     <td>
                                         <input id="cmdCompassE" class="compassbutton" type="button" value="&#8594;" title="go east"
-                                            onclick="compassClick('east');" />
+                                            onclick="compassClick(_compassDirs[4]);" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <input id="cmdCompassSW" class="compassbutton" type="button" value="&#8601;" title="go southwest"
-                                            onclick="compassClick('southwest');" />
+                                            onclick="compassClick(_compassDirs[5]);" />
                                     </td>
                                     <td>
                                         <input id="cmdCompassS" class="compassbutton" type="button" value="&#8595;" title="go south"
-                                            onclick="compassClick('south');" />
+                                            onclick="compassClick(_compassDirs[6]);" />
                                     </td>
                                     <td>
                                         <input id="cmdCompassSE" class="compassbutton" type="button" value="&#8600;" title="go southeast"
-                                            onclick="compassClick('southeast');" />
+                                            onclick="compassClick(_compassDirs[7]);" />
                                     </td>
                                 </tr>
                             </table>
@@ -108,21 +108,21 @@
                                 <tr>
                                     <td>
                                         <input id="cmdCompassU" class="compassbutton" type="button" value="&#8679;" title="go up"
-                                            onclick="compassClick('up');" />
+                                            onclick="compassClick(_compassDirs[8]);" />
                                     </td>
                                     <td>
                                         <input id="cmdCompassIn" class="compassbutton" type="button" value="in" title="go in"
-                                            onclick="compassClick('in');" />
+                                            onclick="compassClick(_compassDirs[10]);" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <input id="cmdCompassD" class="compassbutton" type="button" value="&#8681;" title="go down"
-                                            onclick="compassClick('down');" />
+                                            onclick="compassClick(_compassDirs[9]);" />
                                     </td>
                                     <td>
                                         <input id="cmdCompassOut" class="compassbutton" type="button" value="out" title="go out"
-                                            onclick="compassClick('out');" />
+                                            onclick="compassClick(_compassDirs[11]);" />
                                     </td>
                                 </tr>
                             </table>

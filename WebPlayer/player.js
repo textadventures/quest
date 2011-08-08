@@ -345,7 +345,7 @@ function uiHide(element) {
 
 var _places;
 
-var _compassDirs = ["northwest", "north", "northeast", "west", "out", "east", "southwest", "south", "southeast", "up", "down"];
+var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwest", "south", "southeast", "up", "down", "in", "out"];
 
 function updateList(listName, listData) {
     // TO DO: We currently discard the verb data we receive - this is fine for v4.x games
@@ -379,18 +379,18 @@ function updateList(listName, listData) {
 
 function updateCompass(listData) {
     var directions = listData.split("/");
-    updateDir(directions, "NW", "northwest");
-    updateDir(directions, "N", "north");
-    updateDir(directions, "NE", "northeast");
-    updateDir(directions, "W", "west");
-    updateDir(directions, "E", "east");
-    updateDir(directions, "SW", "southwest");
-    updateDir(directions, "S", "south");
-    updateDir(directions, "SE", "southeast");
-    updateDir(directions, "U", "up");
-    updateDir(directions, "D", "down");
-    updateDir(directions, "Out", "out");
-    updateDir(directions, "In", "in");
+    updateDir(directions, "NW", _compassDirs[0]);
+    updateDir(directions, "N", _compassDirs[1]);
+    updateDir(directions, "NE", _compassDirs[2]);
+    updateDir(directions, "W", _compassDirs[3]);
+    updateDir(directions, "E", _compassDirs[4]);
+    updateDir(directions, "SW", _compassDirs[5]);
+    updateDir(directions, "S", _compassDirs[6]);
+    updateDir(directions, "SE", _compassDirs[7]);
+    updateDir(directions, "U", _compassDirs[8]);
+    updateDir(directions, "D", _compassDirs[9]);
+    updateDir(directions, "In", _compassDirs[10]);
+    updateDir(directions, "Out", _compassDirs[11]);
 }
 
 function updateDir(directions, label, dir) {
@@ -494,4 +494,20 @@ function requestNextTimerTick(seconds) {
 
 function goUrl(href) {
     window.open(href);
+}
+
+function setCompassDirections(directions) {
+    _compassDirs = directions;
+    $("#cmdCompassNW").attr("title", _compassDirs[0]);
+    $("#cmdCompassN").attr("title", _compassDirs[1]);
+    $("#cmdCompassNE").attr("title", _compassDirs[2]);
+    $("#cmdCompassW").attr("title", _compassDirs[3]);
+    $("#cmdCompassE").attr("title", _compassDirs[4]);
+    $("#cmdCompassSW").attr("title", _compassDirs[5]);
+    $("#cmdCompassS").attr("title", _compassDirs[6]);
+    $("#cmdCompassSE").attr("title", _compassDirs[7]);
+    $("#cmdCompassU").attr("title", _compassDirs[8]);
+    $("#cmdCompassD").attr("title", _compassDirs[9]);
+    $("#cmdCompassIn").attr("title", _compassDirs[10]);
+    $("#cmdCompassOut").attr("title", _compassDirs[11]);
 }
