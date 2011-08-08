@@ -630,6 +630,7 @@ Public Class Editor
         End If
         m_controller = Nothing
         UnloadEditors()
+        ctlTree.UnhookDelegates()
 
         ' uncomment for debugging memory leaks
         'GC.Collect()

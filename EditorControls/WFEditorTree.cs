@@ -583,6 +583,12 @@ namespace AxeSoftware.Quest.EditorControls
             m_doDragDelegate = del;
         }
 
+        public void UnhookDelegates()
+        {
+            m_canDragDelegate = null;
+            m_doDragDelegate = null;
+        }
+
         public string SelectedItem
         {
             get { return m_selection; }
