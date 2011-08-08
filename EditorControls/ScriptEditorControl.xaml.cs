@@ -124,11 +124,6 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Populate(IEditorData data)
         {
-            if (m_data != null)
-            {
-                m_data.Discard();
-            }
-
             m_data = data;
             if (data == null)
             {

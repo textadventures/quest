@@ -68,6 +68,7 @@ namespace AxeSoftware.Quest.EditorControls
             ControlDefinition = null;
             m_parent = null;
             m_oldValue = default(T);
+            m_data = null;
             if (Uninitialise != null)
             {
                 Uninitialise();

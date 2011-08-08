@@ -21,12 +21,6 @@ namespace AxeSoftware.Quest
             m_script.Updated += m_script_Updated;
         }
 
-        public void Discard()
-        {
-            m_controller = null;
-            m_script.Updated -= m_script_Updated;
-        }
-
         void m_script_Updated(object sender, EditableScriptUpdatedEventArgs e)
         {
             if (Changed != null) Changed(this, new EventArgs());

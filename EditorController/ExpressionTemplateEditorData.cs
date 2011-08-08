@@ -25,10 +25,6 @@ namespace AxeSoftware.Quest
             m_parentData = parentData;
         }
 
-        public void Discard()
-        {
-        }
-
         public string SaveExpression(string changedAttribute, string changedValue)
         {
             // Take the original pattern (e.g. "Got(#myobject#)") and replace the parameter

@@ -241,7 +241,6 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_data != null)
             {
                 m_data.Changed -= m_data_Changed;
-                m_data.Discard();
             }
 
             m_data = data;

@@ -30,7 +30,6 @@ namespace AxeSoftware.Quest
         bool IsDirectlySaveable { get; }
 
         event EventHandler Changed;
-        void Discard();
     }
 
     public interface IEditorDataExtendedAttributeInfo : IEditorData

@@ -58,18 +58,6 @@ namespace AxeSoftware.Quest
             element.Fields.AttributeChangedSilent += Fields_AttributeChanged;
         }
 
-        private bool m_discarded = false;
-
-        public void Discard()
-        {
-            if (m_discarded) return;
-            m_discarded = true;
-            m_controller = null;
-            m_element.Fields.AttributeChanged -= Fields_AttributeChanged;
-            m_element.Fields.AttributeChangedSilent -= Fields_AttributeChanged;
-            m_element = null;
-        }
-
         void Fields_AttributeChanged(object sender, AttributeChangedEventArgs e)
         {
             if (Changed != null) Changed(this, new EventArgs());

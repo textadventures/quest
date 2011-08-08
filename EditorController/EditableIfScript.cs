@@ -32,10 +32,6 @@ namespace AxeSoftware.Quest
                 EditableScripts = AxeSoftware.Quest.EditableScripts.GetInstance(parent.Controller, elseIfScript.Script);
             }
 
-            public void Discard()
-            {
-            }
-
             public IEditableScripts EditableScripts { get; private set; }
 
             public string Expression
@@ -148,13 +144,6 @@ namespace AxeSoftware.Quest
                 m_elseScript = EditableScripts.GetInstance(Controller, m_ifScript.ElseScript);
                 m_elseScript.Updated += nestedScript_Updated;
             }
-        }
-
-        public void Discard()
-        {
-            m_ifScript.IfScriptUpdated -= m_ifScript_IfScriptUpdated;
-            if (m_thenScript != null) m_thenScript.Updated -= nestedScript_Updated;
-            if (m_elseScript != null) m_elseScript.Updated -= nestedScript_Updated;
         }
 
         void m_ifScript_IfScriptUpdated(object sender, IfScript.IfScriptUpdatedEventArgs e)

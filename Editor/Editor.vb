@@ -625,6 +625,7 @@ Public Class Editor
 
         m_currentElement = Nothing
         m_currentEditor = Nothing
+        m_currentEditorData = Nothing
         If m_controller IsNot Nothing Then
             m_controller.Uninitialise()
         End If
