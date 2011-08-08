@@ -511,3 +511,27 @@ function setCompassDirections(directions) {
     $("#cmdCompassIn").attr("title", _compassDirs[10]);
     $("#cmdCompassOut").attr("title", _compassDirs[11]);
 }
+
+function setInterfaceString(name, text) {
+    switch (name) {
+        case "InventoryLabel":
+            $("#inventoryLabel").html(text);
+            break;
+        case "PlacesObjectsLabel":
+            $("#placesObjectsLabel").html(text);
+            break;
+        case "CompassLabel":
+            $("#compassLabel").html(text);
+            break;
+        case "InButtonLabel":
+            $("#cmdCompassIn").attr("value", text);
+            break;
+        case "OutButtonLabel":
+            $("#cmdCompassOut").attr("value", text);
+            break;
+        case "EmptyListLabel":
+            break;
+        case "NothingSelectedLabel":
+            break;
+    }
+}

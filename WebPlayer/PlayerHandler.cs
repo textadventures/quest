@@ -402,7 +402,7 @@ namespace WebPlayer
 
         public void SetInterfaceString(string name, string text)
         {
-            // TO DO: Implement
+            m_buffer.AddJavaScriptToBuffer("setInterfaceString", new StringParameter(name), new StringParameter(text));
         }
     }
 }

@@ -33,8 +33,7 @@
         </div>
         <div id="gamePanes">
             <div id="gamePanesRunning">
-                <h2>
-                    Inventory</h2>
+                <h2 id="inventoryLabel">Inventory</h2>
                 <input id="cmdInventory1" type="button" value="Look at" onclick="paneButtonClick('#lstInventory','look at');" />
                 <input id="cmdInventory2" type="button" value="Use" onclick="paneButtonClick('#lstInventory','use');" />
                 <input id="cmdInventory3" type="button" value="Drop" onclick="paneButtonClick('#lstInventory','drop');" />
@@ -42,8 +41,7 @@
                 </select>
                 <div id="statusVars">
                 </div>
-                <h2>
-                    Places &amp; Objects</h2>
+                <h2 id="placesObjectsLabel">Places &amp; Objects</h2>
                 <div id="objectVerbs">
                     <input id="cmdPlacesObjects1" type="button" value="Look at" onclick="paneButtonClick('#lstPlacesObjects','look at');" />
                     <input id="cmdPlacesObjects2" type="button" value="Take" onclick="paneButtonClick('#lstPlacesObjects','take');" />
@@ -54,8 +52,7 @@
                 </div>
                 <select id="lstPlacesObjects" size="8" class="elementList" onclick="updateVerbs();">
                 </select>
-                <h2>
-                    Compass</h2>
+                <h2 id="compassLabel">Compass</h2>
                 <table>
                     <tr>
                         <td>
