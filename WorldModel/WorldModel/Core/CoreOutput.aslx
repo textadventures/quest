@@ -19,18 +19,22 @@
 
   <function name="SetForegroundColour" parameters="colour">
     request (Foreground, colour)
+    game.defaultforeground = colour
   </function>
 
   <function name="SetBackgroundColour" parameters="colour">
     request (Background, colour)
+    game.defaultbackground = colour
   </function>
 
   <function name="SetFontName" parameters="font">
     request (FontName, font)
+    game.defaultfont = font
   </function>
 
   <function name="SetFontSize" parameters="size">
     request (FontSize, ToString(size))
+    game.defaultfontsize = size
   </function>
 
   <function name="PrintCentered" parameters="text">
