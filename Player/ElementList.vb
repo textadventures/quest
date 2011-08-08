@@ -5,6 +5,8 @@ Public Class ElementList
     Public Event SendCommand(command As String)
     Private m_ignoreNames As New List(Of String)
     Private m_verbs() As List(Of String)
+    Private m_emptyListLabel As String = "(empty)"
+    Private m_nothingSelectedLabel As String = "(nothing selected)"
 
     Public Property Title() As String
         Get
@@ -15,6 +17,24 @@ Public Class ElementList
         End Set
     End Property
 
+    Public Property EmptyListLabel As String
+        Get
+            Return m_emptyListLabel
+        End Get
+        Set(value As String)
+            m_emptyListLabel = value
+        End Set
+    End Property
+
+    Public Property NothingSelectedLabel As String
+        Get
+            Return m_nothingSelectedLabel
+        End Get
+        Set(value As String)
+            m_nothingSelectedLabel = value
+        End Set
+    End Property
+
     Private WriteOnly Property ToolbarButtons() As String()
         Set(value As String())
             tlbToolbar.Items.Clear()
@@ -22,9 +42,9 @@ Public Class ElementList
             If value Is Nothing Then
                 Dim btn As New System.Windows.Forms.ToolStripButton
                 If lstList.Items.Count = 0 Then
-                    btn.Text = "(empty)"
+                    btn.Text = m_emptyListLabel
                 Else
-                    btn.Text = "(nothing selected)"
+                    btn.Text = m_nothingSelectedLabel
                 End If
                 btn.Enabled = False
                 tlbToolbar.Items.Add(btn)

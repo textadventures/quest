@@ -92,6 +92,7 @@ Public Class Player
         m_gameReady = True
         txtCommand.Text = ""
         ctlCompass.ResetCompassDirections()
+        ResetInterfaceStrings()
         SetEnabledState(True)
         m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlPlayerReadyFunction = AddressOf FinishInitialise
@@ -853,6 +854,39 @@ Public Class Player
     Public Sub SetCompassDirections(dirs As IEnumerable(Of String)) Implements IPlayer.SetCompassDirections
         ctlCompass.CompassDirections = New List(Of String)(dirs)
         lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
+    End Sub
+
+    Private Sub ResetInterfaceStrings()
+        SetInterfaceString("InventoryLabel", "Inventory")
+        SetInterfaceString("PlacesObjectsLabel", "Places and Objects")
+        SetInterfaceString("CompassLabel", "Compass")
+        SetInterfaceString("InButtonLabel", "in")
+        SetInterfaceString("OutButtonLabel", "out")
+        SetInterfaceString("EmptyListLabel", "(empty)")
+        SetInterfaceString("NothingSelectedLabel", "(nothing selected)")
+    End Sub
+
+    Public Sub SetInterfaceString(name As String, text As String) Implements IPlayer.SetInterfaceString
+        BeginInvoke(Sub()
+                        Select Case name
+                            Case "InventoryLabel"
+                                lstInventory.Title = text
+                            Case "PlacesObjectsLabel"
+                                lstPlacesObjects.Title = text
+                            Case "CompassLabel"
+                                lblCompass.Text = text
+                            Case "InButtonLabel"
+                                ctlCompass.InLabel = text
+                            Case "OutButtonLabel"
+                                ctlCompass.OutLabel = text
+                            Case "EmptyListLabel"
+                                lstInventory.EmptyListLabel = text
+                                lstPlacesObjects.EmptyListLabel = text
+                            Case "NothingSelectedLabel"
+                                lstInventory.NothingSelectedLabel = text
+                                lstPlacesObjects.NothingSelectedLabel = text
+                        End Select
+                    End Sub)
     End Sub
 
     Public Function GetURL(file As String) As String Implements IPlayer.GetURL

@@ -399,5 +399,10 @@ namespace WebPlayer
         {
             return AddResource(file);
         }
+
+        public void SetInterfaceString(string name, string text)
+        {
+            // TO DO: Implement
+        }
     }
 }

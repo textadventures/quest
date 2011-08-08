@@ -34,6 +34,13 @@
     request (Foreground, game.defaultforeground)
     request (LinkForeground, game.defaultlinkforeground)
     request (SetCompassDirections, Join(game.compassdirections, ";"))
+    request (SetInterfaceString, "InventoryLabel=[InventoryLabel]")
+    request (SetInterfaceString, "PlacesObjectsLabel=[PlacesObjectsLabel]")
+    request (SetInterfaceString, "CompassLabel=[CompassLabel]")
+    request (SetInterfaceString, "InButtonLabel=[InButtonLabel]")
+    request (SetInterfaceString, "OutButtonLabel=[OutButtonLabel]")
+    request (SetInterfaceString, "EmptyListLabel=[EmptyListLabel]")
+    request (SetInterfaceString, "NothingSelectedLabel=[NothingSelectedLabel]")
     if (game.useframe) {
       request (ClearScreen, "")
       insert ("Frame.htm")

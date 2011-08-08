@@ -103,4 +103,22 @@ Public Class Compass
     Friend Sub ResetCompassDirections()
         buttonCommands = defaultButtonCommands
     End Sub
+
+    Friend Property InLabel As String
+        Get
+            Return buttons(10).Text
+        End Get
+        Set(value As String)
+            buttons(10).Text = value
+        End Set
+    End Property
+
+    Friend Property OutLabel As String
+        Get
+            Return buttons(11).Text
+        End Get
+        Set(value As String)
+            buttons(11).Text = value
+        End Set
+    End Property
 End Class

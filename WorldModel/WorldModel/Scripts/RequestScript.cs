@@ -26,7 +26,8 @@ namespace AxeSoftware.Quest.Scripts
         Hide,
         SetCompassDirections,
         Pause,
-        Wait
+        Wait,
+        SetInterfaceString
     }
 
     public class RequestScriptConstructor : ScriptConstructorBase
@@ -129,6 +130,10 @@ namespace AxeSoftware.Quest.Scripts
                     break;
                 case Request.Wait:
                     m_worldModel.StartWait();
+                    break;
+                case Request.SetInterfaceString:
+                    string[] args = data.Split('=');
+                    m_worldModel.PlayerUI.SetInterfaceString(args[0], args[1]);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");

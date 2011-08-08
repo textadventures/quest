@@ -81,6 +81,7 @@
   <dynamictemplate name="SwitchedOff">"You switch " + object.article + " off."</dynamictemplate>
   <template name="DefaultOops">There is nothing to correct.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " + Conjugate(object1, "do") + " not contain " + GetDisplayAlias(object2) + "."</dynamictemplate>
+  <dynamictemplate name="YouLooking">"You are looking " + text +"."</dynamictemplate>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>
@@ -109,7 +110,14 @@
   <template name="CompassDownShort">d</template>
   <template name="CompassInShort"></template>
   <template name="CompassOutShort">o</template>
-  <dynamictemplate name="YouLooking">"You are looking " + text +"."</dynamictemplate>
+
+  <template name="InventoryLabel">Inventory</template>
+  <template name="PlacesObjectsLabel">Places and Objects</template>
+  <template name="CompassLabel">Compass</template>
+  <template name="InButtonLabel">in</template>
+  <template name="OutButtonLabel">out</template>
+  <template name="EmptyListLabel">(empty)</template>
+  <template name="NothingSelectedLabel">(nothing selected)</template>
 
   <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
   <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>

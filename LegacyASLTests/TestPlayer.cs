@@ -193,5 +193,9 @@ namespace LegacyASLTests
         public void DoPause(int ms)
         {
         }
+
+        public void SetInterfaceString(string name, string text)
+        {
+        }
     }
 }

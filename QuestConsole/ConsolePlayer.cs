@@ -255,5 +255,9 @@ namespace QuestConsole
             m_timer.Stop();
             return m_elapsedTime;
         }
+
+        public void SetInterfaceString(string name, string text)
+        {
+        }
     }
 }
