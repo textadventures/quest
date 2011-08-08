@@ -443,10 +443,12 @@
     maxstrength = 0
     match = null
     
+    text = LCase(text)
+    
     if (typeof(object, property) = "scriptdictionary") {
       dictionary = GetAttribute(object, property)
       foreach (keywords, dictionary) {
-        if (GetKeywordsMatchStrength(keywords, text) > maxstrength) {
+        if (GetKeywordsMatchStrength(LCase(keywords), text) > maxstrength) {
           match = ScriptDictionaryItem(dictionary, keywords)
         }
       }

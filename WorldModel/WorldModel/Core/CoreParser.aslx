@@ -222,7 +222,7 @@
           result = ResolveName(value, "exit")
         }
         else if (StartsWith(var, "text")) {
-          result = value
+          result = StringDictionaryItem(varlist, var)
         }
         else {
           error ("Unhandled command variable '" + var + "'")
