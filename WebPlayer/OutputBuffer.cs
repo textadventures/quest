@@ -24,7 +24,7 @@ namespace WebPlayer
 
         public StringParameter(string param)
         {
-            m_param = param;
+            m_param = param.Replace("\r", "").Replace("\n", "");
         }
 
         public string GetParameter()
