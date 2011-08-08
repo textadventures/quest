@@ -8,13 +8,16 @@ Public Class Compass
 
     ' Wingdings arrows
     Private Const buttonCaptions As String = "ãáäßàåâætu"
-    Private buttonCommands As New List(Of String)({
-                                        "northwest", "north", "northeast",
-                                        "west", "east",
-                                        "southwest", "south", "southeast",
-                                        "up", "down",
-                                        "in", "out"
-                                    })
+
+    Private defaultButtonCommands As New List(Of String)({
+                                    "northwest", "north", "northeast",
+                                    "west", "east",
+                                    "southwest", "south", "southeast",
+                                    "up", "down",
+                                    "in", "out"
+                                })
+
+    Private buttonCommands As List(Of String) = defaultButtonCommands
 
     Private buttons As Dictionary(Of Integer, System.Windows.Forms.Button) = New Dictionary(Of Integer, System.Windows.Forms.Button)
 
@@ -96,4 +99,8 @@ Public Class Compass
             buttonCommands = value
         End Set
     End Property
+
+    Friend Sub ResetCompassDirections()
+        buttonCommands = defaultButtonCommands
+    End Sub
 End Class

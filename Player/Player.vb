@@ -91,6 +91,7 @@ Public Class Player
         m_gameTimer = TryCast(m_game, IASLTimer)
         m_gameReady = True
         txtCommand.Text = ""
+        ctlCompass.ResetCompassDirections()
         SetEnabledState(True)
         m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlPlayerReadyFunction = AddressOf FinishInitialise
