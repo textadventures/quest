@@ -26,8 +26,6 @@ namespace AxeSoftware.Quest.EditorControls
         public ScriptAdder()
         {
             InitializeComponent();
-            ctlEditorTree.CommitSelection += ctlEditorTree_CommitSelection;
-            ctlEditorTree.SelectionChanged += ctlEditorTree_SelectionChanged;
         }
 
         void ctlEditorTree_SelectionChanged(string key)
@@ -44,6 +42,9 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (!m_initialised)
             {
+                ctlEditorTree.CommitSelection += ctlEditorTree_CommitSelection;
+                ctlEditorTree.SelectionChanged += ctlEditorTree_SelectionChanged;
+
                 m_controller = controller;
 
                 ctlEditorTree.RemoveContextMenu();
@@ -64,6 +65,13 @@ namespace AxeSoftware.Quest.EditorControls
             }
 
             ctlEditorTree.ExpandAll();
+        }
+
+        public void Uninitialise()
+        {
+            ctlEditorTree.CommitSelection -= ctlEditorTree_CommitSelection;
+            ctlEditorTree.SelectionChanged -= ctlEditorTree_SelectionChanged;
+            m_controller = null;
         }
 
         private WFEditorTree ctlEditorTree

@@ -26,6 +26,7 @@ namespace AxeSoftware.Quest.EditorControls
             InitializeComponent();
             m_helper = new ControlDataHelper<string>(this);
             m_helper.Initialise += m_helper_Initialise;
+            m_helper.Uninitialise += m_helper_Uninitialise;
         }
 
         void m_helper_Initialise()
@@ -66,6 +67,12 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 throw new Exception("Invalid type for validvalues");
             }
+        }
+
+        void m_helper_Uninitialise()
+        {
+            m_dictionary = null;
+            m_dictionaryValuesToKeys = null;
         }
 
         private void InitialiseDictionary(IDictionary<string, string> dictionary)

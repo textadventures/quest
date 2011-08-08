@@ -67,6 +67,9 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller.ElementsUpdated -= m_controller_ElementsUpdated;
             m_controller.ElementMoved -= m_controller_ElementMoved;
+            m_controller = null;
+            m_controlData = null;
+            m_data = null;
         }
 
         public void Populate(IEditorData data)

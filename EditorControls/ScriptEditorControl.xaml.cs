@@ -62,7 +62,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller.ScriptClipboardUpdated -= m_controller_ScriptClipboardUpdated;
             m_controller = null;
-            ctlScriptAdder.Initialise(null);
+            ctlScriptAdder.Uninitialise();
         }
 
         private string ElementName
