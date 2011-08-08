@@ -338,6 +338,8 @@ namespace AxeSoftware.Quest.EditorControls
                     {
                         grid.Children.Clear();
                     }
+
+                    IDisposable disposableElement = element as IDisposable;
                 }
                 ctlList.Clear();
             }

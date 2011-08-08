@@ -177,6 +177,7 @@ Public Class Editor
             editor.Populate(Nothing)
             editor.Uninitialise()
             editor.Parent = Nothing
+            editor.Dispose()
             RemoveHandler editor.Dirty, AddressOf Editor_Dirty
         Next
 
@@ -621,6 +622,19 @@ Public Class Editor
         If Not CheckGameIsSaved("Do you wish to save your changes before closing?") Then Return False
 
         If raiseCloseEvent Then RaiseEvent Close()
+
+        m_currentElement = Nothing
+        m_currentEditor = Nothing
+        If m_controller IsNot Nothing Then
+            m_controller.Uninitialise()
+        End If
+        m_controller = Nothing
+        UnloadEditors()
+
+        ' uncomment for debugging memory leaks
+        'GC.Collect()
+        'GC.WaitForPendingFinalizers()
+        'GC.Collect()
 
         Return True
     End Function
