@@ -122,5 +122,13 @@ namespace WorldModelTests
             Assert.IsFalse(Utility.IsValidAttributeName("attri.bute"));
             Assert.IsFalse(Utility.IsValidAttributeName("this and that"));
         }
+
+        [TestMethod]
+        public void TestGetParameter()
+        {
+            Assert.AreEqual("\"parameter\"", Utility.GetParameter("msg (\"parameter\")"));
+            Assert.AreEqual("\"parameter 1\", \"parameter 2\"", Utility.GetParameter("msg (\"parameter 1\", \"parameter 2\")"));
+            Assert.AreEqual("\"parameter with a bracket ) in a string\"", Utility.GetParameter("msg (\"parameter with a bracket ) in a string\")"));
+        }
     }
 }
