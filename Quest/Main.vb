@@ -341,10 +341,12 @@ Public Class Main
             Return m_fullScreen
         End Get
         Set(value As Boolean)
-            m_fullScreen = value
-            Me.FormBorderStyle = If(m_fullScreen, Windows.Forms.FormBorderStyle.None, Windows.Forms.FormBorderStyle.Sizable)
-            Me.WindowState = If(m_fullScreen, FormWindowState.Maximized, FormWindowState.Normal)
-            ctlMenu.Visible = Not m_fullScreen
+            If m_fullScreen <> value Then
+                m_fullScreen = value
+                Me.FormBorderStyle = If(m_fullScreen, Windows.Forms.FormBorderStyle.None, Windows.Forms.FormBorderStyle.Sizable)
+                Me.WindowState = If(m_fullScreen, FormWindowState.Maximized, FormWindowState.Normal)
+                ctlMenu.Visible = Not m_fullScreen
+            End If
         End Set
     End Property
 
