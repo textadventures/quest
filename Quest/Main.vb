@@ -120,7 +120,7 @@ Public Class Main
                 ctlPlayer.Visible = True
                 ctlPlayer.SetMenu(ctlMenu)
                 Me.ResumeLayout()
-                ctlPlayer.RestoreSplitterPositions()
+                'ctlPlayer.RestoreSplitterPositions()
                 Application.DoEvents()
                 ctlPlayer.Initialise(game)
                 ctlPlayer.Focus()
