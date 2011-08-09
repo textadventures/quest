@@ -615,10 +615,10 @@ Public Class Editor
     End Sub
 
     Private Sub DoClose()
-        CloseEditor(True)
+        CloseEditor(True, False)
     End Sub
 
-    Public Function CloseEditor(raiseCloseEvent As Boolean) As Boolean
+    Public Function CloseEditor(raiseCloseEvent As Boolean, appIsExiting As Boolean) As Boolean
         If Not CheckGameIsSaved("Do you wish to save your changes before closing?") Then Return False
 
         If raiseCloseEvent Then RaiseEvent Close()
@@ -630,13 +630,16 @@ Public Class Editor
             m_controller.Uninitialise()
         End If
         m_controller = Nothing
-        UnloadEditors()
-        ctlTree.UnhookDelegates()
 
-        ' uncomment for debugging memory leaks
-        'GC.Collect()
-        'GC.WaitForPendingFinalizers()
-        'GC.Collect()
+        If Not appIsExiting Then
+            UnloadEditors()
+            ctlTree.UnhookDelegates()
+
+            ' uncomment for debugging memory leaks
+            'GC.Collect()
+            'GC.WaitForPendingFinalizers()
+            'GC.Collect()
+        End If
 
         Return True
     End Function

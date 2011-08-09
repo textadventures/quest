@@ -228,7 +228,7 @@ Public Class Main
 
     Private Sub Main_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         ctlPlayer.WindowClosing()
-        If Not ctlEditor.CloseEditor(False) Then
+        If Not ctlEditor.CloseEditor(False, True) Then
             e.Cancel = True
         End If
     End Sub

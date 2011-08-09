@@ -1819,17 +1819,20 @@ namespace AxeSoftware.Quest
 
         public void Uninitialise()
         {
-            m_editorDefinitions.Clear();
-            m_expressionDefinitions.Clear();
-            m_elementTreeStructure.Clear();
+            if (m_editorDefinitions != null) m_editorDefinitions.Clear();
+            if (m_expressionDefinitions != null) m_expressionDefinitions.Clear();
+            if (m_elementTreeStructure != null) m_elementTreeStructure.Clear();
             if (m_clipboardScripts != null) m_clipboardElements.Clear();
             if (m_clipboardScripts != null) m_clipboardScripts.Clear();
-            m_worldModel.ElementFieldUpdated -= m_worldModel_ElementFieldUpdated;
-            m_worldModel.ElementRefreshed -= m_worldModel_ElementRefreshed;
-            m_worldModel.ElementMetaFieldUpdated -= m_worldModel_ElementMetaFieldUpdated;
-            m_worldModel.UndoLogger.TransactionsUpdated -= UndoLogger_TransactionsUpdated;
-            m_worldModel.Elements.ElementRenamed -= Elements_ElementRenamed;
-            m_worldModel.ObjectsUpdated -= m_worldModel_ObjectsUpdated;
+            if (m_worldModel != null)
+            {
+                m_worldModel.ElementFieldUpdated -= m_worldModel_ElementFieldUpdated;
+                m_worldModel.ElementRefreshed -= m_worldModel_ElementRefreshed;
+                m_worldModel.ElementMetaFieldUpdated -= m_worldModel_ElementMetaFieldUpdated;
+                m_worldModel.UndoLogger.TransactionsUpdated -= UndoLogger_TransactionsUpdated;
+                m_worldModel.Elements.ElementRenamed -= Elements_ElementRenamed;
+                m_worldModel.ObjectsUpdated -= m_worldModel_ObjectsUpdated;
+            }
             EditableScripts.Clear();
             EditableDictionary<string>.Clear();
             EditableList<string>.Clear();
