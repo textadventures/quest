@@ -1,0 +1,16 @@
+﻿<asl version="500" template="Français">
+
+  <include ref="Francais.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="$NAME$"/>
+
+  <object name="room">
+    <inherit name="editor_room" />
+
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>
