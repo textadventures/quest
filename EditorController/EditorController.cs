@@ -1822,7 +1822,7 @@ namespace AxeSoftware.Quest
             if (m_editorDefinitions != null) m_editorDefinitions.Clear();
             if (m_expressionDefinitions != null) m_expressionDefinitions.Clear();
             if (m_elementTreeStructure != null) m_elementTreeStructure.Clear();
-            if (m_clipboardScripts != null) m_clipboardElements.Clear();
+            if (m_clipboardElements != null) m_clipboardElements.Clear();
             if (m_clipboardScripts != null) m_clipboardScripts.Clear();
             if (m_worldModel != null)
             {
