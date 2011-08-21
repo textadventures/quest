@@ -188,8 +188,8 @@
   <dynamictemplate name="DefaultSearch">"Il n'y a rien à fouiller."</dynamictemplate>
   <verbtemplate name="show">montrer</verbtemplate>
   <dynamictemplate name="DefaultShow">"Vous ne pouvez pas " + object.article + " montrer."</dynamictemplate>
-  <verbtemplate name="sit">s'asseoir</verbtemplate>
   <verbtemplate name="sit">s'asseoir sur</verbtemplate>
+  <verbtemplate name="sit">s'asseoir</verbtemplate>
   <dynamictemplate name="DefaultSit">"Vous ne pouvez pas vous asseoir ici."</dynamictemplate>
   <verbtemplate name="smell">sentir</verbtemplate>
   <verbtemplate name="smell">sniff</verbtemplate>

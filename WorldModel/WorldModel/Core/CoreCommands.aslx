@@ -533,7 +533,7 @@
   <verb template="smell" property="smell" response="DefaultSmell"/>
   <verb template="taste" property="taste" response="DefaultTaste"/>
   <verb template="throw" property="throw" response="DefaultThrow"/>
-  <verb template="tie" property="tie" response="DefaultThrow"/>
+  <verb template="tie" property="tie" response="DefaultTie"/>
   <verb template="touch" property="touch" response="DefaultTouch"/>
   <verb template="turnon" property="turnon" response="DefaultTurnOn"/>
   <verb template="turnoff" property="turnoff" response="DefaultTurnOff"/>
