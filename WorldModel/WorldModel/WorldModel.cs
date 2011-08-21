@@ -1192,6 +1192,18 @@ namespace AxeSoftware.Quest
 
                 UpdateLists();
 
+                if (m_elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
+                {
+                    try
+                    {
+                        RunProcedure("UpdateStatusAttributes");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogException(ex);
+                    }
+                }
+
                 ChangeThreadState(ThreadState.Ready);
             });
 
