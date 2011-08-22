@@ -78,6 +78,17 @@ namespace AxeSoftware.Quest.Scripts
             {
                 c.Parameters[m_variable] = count;
                 m_loopScript.Execute(c);
+
+                object newCount = c.Parameters[m_variable];
+                if (newCount is int)
+                {
+                    count = (int)newCount;
+                }
+                else
+                {
+                    // The type of the count variable has changed, so abort the loop
+                    break;
+                }
             }
         }
 
