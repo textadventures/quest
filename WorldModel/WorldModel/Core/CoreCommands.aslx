@@ -57,7 +57,7 @@
 
   <command name="take" template="take">
     <multiple>
-      return (ScopeVisibleNotHeld() - player)
+      return (ScopeVisibleNotHeldNotScenery() - player)
     </multiple>
     <script>
       foreach (obj, object) {
