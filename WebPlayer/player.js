@@ -414,7 +414,8 @@ function updateDir(directions, label, dir) {
 function paneButtonClick(target, verb) {
     var selectedObject = $(target + " option:selected").text();
     if (selectedObject.length > 0) {
-        sendCommand(verb + " " + selectedObject);
+        var cmd = verb + " " + selectedObject;
+        sendCommand(cmd.toLowerCase());
     }
 }
 
