@@ -154,9 +154,9 @@
 
   <editor>
     <appliesto>create exit</appliesto>
-    <display>Create exit #0 from #1 to #2</display>
+    <display>Create exit #0 from #1 to #2 (type #3)</display>
     <category>Objects</category>
-    <create>create exit ("",,)</create>
+    <create>create exit ("",,,"")</create>
     <add>Create an exit</add>
 
     <control>
@@ -192,6 +192,17 @@
       <attribute>2</attribute>
       <simple>room</simple>
       <simpleeditor>objects</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, type</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>3</attribute>
+      <nullable/>
     </control>
   </editor>
 
