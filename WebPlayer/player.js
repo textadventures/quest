@@ -23,7 +23,6 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 
 function init() {
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
-    $("#placeVerbs").hide();
     showStatusVisible(false);
 
     fluid = ($_GET["style"] == "fluid");
@@ -355,16 +354,9 @@ function uiHide(element) {
     $(element).hide();
 }
 
-var _places;
-
 var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwest", "south", "southeast", "up", "down", "in", "out"];
 
 function updateList(listName, listData) {
-    // TO DO: We currently discard the verb data we receive - this is fine for v4.x games
-    // and earlier, but this will need to be implemented for v5 games. Currently we're using
-    // a hacky _places array to store the list of objects which are actually places (and which
-    // therefore need the "go to" button to be displayed)
-
     var listElement = "";
 
     if (listName == "inventory") {
@@ -374,7 +366,6 @@ function updateList(listName, listData) {
 
     if (listName == "placesobjects") {
         listElement = "#lstPlacesObjects";
-        _places = new Array();
         placesObjectsVerbs = new Array();
     }
 
@@ -396,10 +387,6 @@ function updateList(listName, listData) {
             $(listElement).append(
                 $("<option/>").attr("value", key).text(objectDisplayName)
             );
-        }
-
-        if (value.indexOf("Go to") != -1) {
-            _places.push(key);
         }
     });
 }
@@ -445,21 +432,6 @@ function sendCommand(text) {
         prepareCommand(text);
         $("#cmdSubmit").click();
     }, 100);
-}
-
-function updateVerbs() {
-    var selectedObject = $("#lstPlacesObjects").val();
-    if (selectedObject.length > 0) {
-        var showGoTo = ($.inArray(selectedObject, _places) != -1);
-        if (showGoTo) {
-            $("#placeVerbs").show();
-            $("#objectVerbs").hide();
-        }
-        else {
-            $("#objectVerbs").show();
-            $("#placeVerbs").hide();
-        }
-    }
 }
 
 function updateStatus(text) {

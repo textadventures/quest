@@ -47,21 +47,16 @@
                 <div id="statusVars">
                 </div>
                 <h2 id="placesObjectsLabel">Places &amp; Objects</h2>
-                <div id="objectVerbs">
-                    <input id="cmdPlacesObjects1" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                    <input id="cmdPlacesObjects2" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                    <input id="cmdPlacesObjects3" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                    <input id="cmdPlacesObjects4" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                    <input id="cmdPlacesObjects5" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                    <input id="cmdPlacesObjects6" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                    <input id="cmdPlacesObjects7" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                    <input id="cmdPlacesObjects8" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                    <input id="cmdPlacesObjects9" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                </div>
-                <div id="placeVerbs">
-                    <input id="cmdPlacesObjectsGoTo" type="button" value="Go to" onclick="paneButtonClick('#lstPlacesObjects','go to');" />
-                </div>
-                <select id="lstPlacesObjects" size="8" class="elementList" onclick="updateVerbs();">
+                <input id="cmdPlacesObjects1" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects2" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects3" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects4" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects5" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects6" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects7" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects8" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects9" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <select id="lstPlacesObjects" size="8" class="elementList">
                 </select>
                 <h2 id="compassLabel">Compass</h2>
                 <table>
