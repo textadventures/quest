@@ -68,6 +68,7 @@ function updateLocation(text) {
 
 function setGameName(text) {
     $("#gameTitle").html(text);
+    document.title = text;
 }
 
 var _waitMode = false;

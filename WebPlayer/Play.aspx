@@ -13,7 +13,6 @@
     <link rel="Stylesheet" type="text/css" href="js/jjmenu.css" />
     <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
-    <title>Player</title>
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
     <form id="playerform" runat="server" defaultbutton="cmdSubmit">
