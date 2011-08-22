@@ -9,6 +9,9 @@ var webPlayer = true;
 var tmrTick = null;
 var tickCount = 0;
 var sendNextGameTickerAfter = 0;
+var inventoryVerbs = null;
+var placesObjectsVerbs = null;
+var verbButtonCount = 9;
 
 document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     function decode(s) {
@@ -27,6 +30,14 @@ function init() {
     if (fluid) {
         panesVisible(false);
     }
+
+    $("#lstInventory").change(function () {
+        updateVerbButtons($("#lstInventory"), inventoryVerbs, "cmdInventory");
+    });
+
+    $("#lstPlacesObjects").change(function () {
+        updateVerbButtons($("#lstPlacesObjects"), placesObjectsVerbs, "cmdPlacesObjects");
+    });
 }
 
 function showStatusVisible(visible) {
@@ -355,10 +366,15 @@ function updateList(listName, listData) {
 
     var listElement = "";
 
-    if (listName == "inventory") listElement = "#lstInventory";
+    if (listName == "inventory") {
+        listElement = "#lstInventory";
+        inventoryVerbs = new Array();
+    }
+
     if (listName == "placesobjects") {
         listElement = "#lstPlacesObjects";
         _places = new Array();
+        placesObjectsVerbs = new Array();
     }
 
     $(listElement).empty();
@@ -366,11 +382,21 @@ function updateList(listName, listData) {
         var splitString = value.split(":");
         var objectDisplayName = splitString[0];
         var objectVerbs = splitString[1];
+
+        if (listName == "inventory") {
+            inventoryVerbs.push(objectVerbs);
+        }
+
+        if (listName == "placesobjects") {
+            placesObjectsVerbs.push(objectVerbs);
+        }
+
         if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
             $(listElement).append(
                 $("<option/>").attr("value", key).text(objectDisplayName)
             );
         }
+
         if (value.indexOf("Go to") != -1) {
             _places.push(key);
         }
@@ -533,5 +559,21 @@ function setInterfaceString(name, text) {
             break;
         case "NothingSelectedLabel":
             break;
+    }
+}
+
+function updateVerbButtons(list, verbsArray, idprefix) {
+    var selectedIndex = list.attr("selectedIndex");
+    var verbs = verbsArray[selectedIndex].split("/");
+    var count = 1;
+    $.each(verbs, function () {
+        var target = $("#" + idprefix + count);
+        target.attr("value", this);
+        target.show();
+        count++;
+    });
+    for (var i = count; i <= verbButtonCount; i++) {
+        var target = $("#" + idprefix + i);
+        target.hide();
     }
 }
