@@ -190,6 +190,7 @@
     </None>
     <None Include="Core\CoreEditorObjectContainer.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorObjectExits.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -211,6 +212,7 @@
     </None>
     <None Include="Core\CoreEditorObjectSetup.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorObjectVerbs.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -367,6 +369,7 @@
     </None>
     <None Include="Core\CoreDescriptions.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreScopes.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

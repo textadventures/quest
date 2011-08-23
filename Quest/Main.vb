@@ -283,9 +283,6 @@ Public Class Main
             ctlPlayer.RecordWalkthrough = walkthrough
         End If
         Launch(filename)
-
-        ' TO DO: if record flag set, when game is finished, give the Editor a list of commands run, which it then passes
-        ' to the EditorController which then adds those steps to the selected walkthrough
     End Sub
 
     Private Sub Main_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown

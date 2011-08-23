@@ -180,8 +180,6 @@ namespace AxeSoftware.Quest
 
             Dictionary<string, object> allAttributes = fields.GetAllAttributes();
 
-            // TO DO: We should also add all MetaFields to the UndoLog
-
             foreach (string attr in allAttributes.Keys.Where(key => key != "name"))
             {
                 WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false, false));
