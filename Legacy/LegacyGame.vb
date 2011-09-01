@@ -1273,11 +1273,8 @@ Public Class LegacyGame
 
     Private Function ConvertCASKeyword(ByRef CASchar As String) As String
 
-        Dim c As Integer
-        Dim CK As String
-
-        c = Asc(CASchar)
-        CK = CASkeywords(c)
+        Dim c As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(CASchar)(0)
+        Dim CK As String = CASkeywords(c)
 
         If CK = "!cr" Then
             CK = vbCrLf
@@ -2113,7 +2110,8 @@ ErrorHandler:
 
         OS = ""
         For Z = 1 To Len(sString)
-            OS = OS & Chr(Asc(Mid(sString, Z, 1)) Xor 255)
+            Dim v As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(Mid(sString, Z, 1))(0)
+            OS = OS & Chr(v Xor 255)
         Next Z
 
         DecryptString = OS
