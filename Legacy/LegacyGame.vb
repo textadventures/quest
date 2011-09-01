@@ -1467,7 +1467,7 @@ Public Class LegacyGame
     Private Function GetResourceLines(res As Byte()) As String()
         Dim enc As New System.Text.UTF8Encoding()
         Dim resFile As String = enc.GetString(res)
-        Return Split(resFile, Environment.NewLine)
+        Return Split(resFile, Chr(13) + Chr(10))
     End Function
 
     Private Function ParseFile(ByRef Filename As String) As Boolean
