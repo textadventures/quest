@@ -397,5 +397,39 @@ namespace AxeSoftware.Quest.Functions
             Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
             return element.Fields.InheritsTypeRecursive(type);
         }
+
+        public QuestList<string> ListCombine(QuestList<string> list1, QuestList<string> list2)
+        {
+            return ListCombine<string>(list1, list2);
+        }
+
+        public QuestList<Element> ListCombine(QuestList<Element> list1, QuestList<Element> list2)
+        {
+            return ListCombine<Element>(list1, list2);
+        }
+
+        private QuestList<T> ListCombine<T>(QuestList<T> list1, QuestList<T> list2)
+        {
+            QuestList<T> result = new QuestList<T>(list1);
+            result.AddRange(list2);
+            return result;
+        }
+
+        public QuestList<string> ListExclude(QuestList<string> list, string element)
+        {
+            return ListExclude<string>(list, element);
+        }
+
+        public QuestList<Element> ListExclude(QuestList<Element> list, Element element)
+        {
+            return ListExclude<Element>(list, element);
+        }
+
+        private QuestList<T> ListExclude<T>(QuestList<T> list, T element)
+        {
+            QuestList<T> result = new QuestList<T>(list);
+            result.Remove(element);
+            return result;
+        }
     }
 }
