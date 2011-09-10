@@ -112,7 +112,7 @@
   
   <function name="ScopeVisibleForRoom" type="objectlist" parameters="room">
     if (room = player.parent) {
-      return (ScopeVisibleNotHeldForRoom(room) + ScopeInventory())
+      return (ListCombine(ScopeVisibleNotHeldForRoom(room), ScopeInventory()))
     } else {
       return (ScopeVisibleNotHeldForRoom(room))
     }  
