@@ -29,8 +29,9 @@
   </function>
 
   <function name="ResolveName" parameters="value, objtype" type="object">
+    <![CDATA[
     result = ResolveNameInternal(value, objtype)
-    if (not result = null) {
+    if (result <> null) {
       return (result)
     }
     else {
@@ -41,9 +42,11 @@
       }
       return (result)
     }
+    ]]>
   </function>
   
   <function name="ResolveNameInternal" parameters="value, objtype" type="object">
+    <![CDATA[
     fullmatches = NewObjectList()
     partialmatches = NewObjectList()
     
@@ -59,14 +62,14 @@
     foreach (obj, scope) {
       name = LCase(GetDisplayAlias(obj))
       CompareNames (name, value, obj, fullmatches, partialmatches)
-      if (not obj.alt = null) {
+      if (obj.alt <> null) {
         foreach (altname, obj.alt) {
           CompareNames (LCase(altname), value, obj, fullmatches, partialmatches)
         }
       }
     }
     
-    if (not game.lastobjects = null) {
+    if (game.lastobjects <> null) {
       foreach (obj, game.lastobjects) {
         CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
         CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
@@ -94,6 +97,7 @@
         return (GetObject(result))
       }
     }
+    ]]>
   </function>
 
   <function name="ResolveNameList" parameters="value, scope, objtype, resultdictionary" type="objectlist">
@@ -192,6 +196,7 @@
   </function>
 
   <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
+    <![CDATA[
     resolved = true
     resolvedelements = NewDictionary()
     resolvedobjects = NewObjectList()
@@ -205,7 +210,7 @@
         if (StartsWith(var, "object")) {
           if (HasDelegateImplementation(thiscommand, "multiple")) {
             result = ResolveNameList(value, RunDelegateFunction(thiscommand, "multiple"), "object", resolvedelements)
-            if (not result = null) {
+            if (result <> null) {
               foreach (obj, result) {
                 list add (resolvedobjects, obj)
               }
@@ -213,7 +218,7 @@
           }
           else {
             result = ResolveName(value, "object")
-            if (not result = null) {
+            if (result <> null) {
               list add (resolvedobjects, result)
             }
           }
@@ -279,10 +284,12 @@
       game.unresolvedcommandvarlist = varlist
       game.unresolvedcommandkey = unresolvedkey
     }
+    ]]>
   </function>
 
   <type name="defaultverb">
     <script type="script">
+      <![CDATA[
       switch (TypeOf(object, this.property)) {
         case ("script") {
           do (object, this.property)
@@ -291,13 +298,13 @@
           msg (GetString(object, this.property))
         }
         case ("null") {
-          if (not this.defaulttext = null) {
+          if (this.defaulttext <> null) {
             msg (this.defaulttext)
           }
-          else if (not this.defaulttemplate = null) {
+          else if (this.defaulttemplate <> null) {
             msg (DynamicTemplate(this.defaulttemplate, object))
           }
-          else if (not this.defaultexpression = null) {
+          else if (this.defaultexpression <> null) {
             params = NewDictionary()
             dictionary add (params, "object", object)
             msg (Eval(this.defaultexpression, params))
@@ -310,6 +317,7 @@
           error ("No verb response defined")
         }
       }
+      ]]>
     </script>
   </type>
 </library>
