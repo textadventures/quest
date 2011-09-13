@@ -410,9 +410,7 @@ namespace AxeSoftware.Quest.Functions
 
         private QuestList<T> ListCombine<T>(QuestList<T> list1, QuestList<T> list2)
         {
-            QuestList<T> result = new QuestList<T>(list1);
-            result.AddRange(list2);
-            return result;
+            return list1.MergeLists(list2);
         }
 
         public QuestList<string> ListExclude(QuestList<string> list, string element)

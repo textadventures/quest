@@ -117,7 +117,7 @@
             result = null
           }
           else {
-            result = result + newitem
+            result = ListCombine(result, newitem)
           }
         }
       }

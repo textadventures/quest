@@ -214,7 +214,12 @@ namespace AxeSoftware.Quest
         public static QuestList<T> operator +(QuestList<T> list1, QuestList<T> list2)
         {
             System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
-            QuestList<T> result = new QuestList<T>(list1);
+            return list1.MergeLists(list2);
+        }
+
+        public QuestList<T> MergeLists(QuestList<T> list2)
+        {
+            QuestList<T> result = new QuestList<T>(this);
             result.AddRange(list2);
             return result;
         }
@@ -295,7 +300,7 @@ namespace AxeSoftware.Quest
         public IExtendableField Merge(IExtendableField parent)
         {
             QuestList<T> parentList = parent as QuestList<T>;
-            return parentList + this;
+            return parentList.MergeLists(this);
         }
 
 
