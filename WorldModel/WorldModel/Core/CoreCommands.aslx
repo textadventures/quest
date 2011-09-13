@@ -265,8 +265,8 @@
     }
   </command>
 
-  <function name="TryOpenClose" parameters="open, object">
-    if (open) {
+  <function name="TryOpenClose" parameters="doopen, object">
+    if (doopen) {
       action = "open"
       scriptaction = "openscript"
     }
@@ -282,7 +282,7 @@
       found = false
       
       if (GetBoolean(object, action)) {
-        if (open) {
+        if (doopen) {
           if (object.isopen) {
             msg (DynamicTemplate("AlreadyOpen", object))
           }
@@ -310,7 +310,7 @@
         }
       }
       else {
-        if (open) {
+        if (doopen) {
           msg (DynamicTemplate("CantOpen", object))
         }
         else {
