@@ -262,7 +262,7 @@ namespace AxeSoftware.Quest
                 }
 
                 IEnumerable<string> fieldNames = e.Fields.FieldNames;
-                if (!m_gameSaver.m_worldModel.EditMode)
+                if (writer.Mode != SaveMode.Editor)
                 {
                     fieldNames = fieldNames.Union(e.Fields.FieldExtensionNames);
                 }
