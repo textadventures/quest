@@ -387,6 +387,55 @@
   </editor>
 
   <editor>
+    <appliesto>show menu</appliesto>
+    <display>Show a menu</display>
+    <category>Output</category>
+    <create>show menu ("",,true) { }</create>
+    <add>Show a menu</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Show menu with caption</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+    </control>
+
+    <control>
+      <breakbefore/>
+      <controltype>label</controltype>
+      <caption>Options from list/dictionary:</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Allow player to cancel:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>3</attribute>
+      <caption>After choosing, run script:</caption>
+      <breakbefore/>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>insert</appliesto>
     <display>Insert HTML from file #0</display>
     <category>Output</category>
