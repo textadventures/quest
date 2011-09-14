@@ -398,7 +398,7 @@
       msg (object2.give)
       handled = true
     }
-    else if (typeof(object2, "give") = "scriptdictionary") {
+    else if (TypeOf(object2, "give") = "scriptdictionary") {
       if (DictionaryContains(object2.give, object1.name)) {
         invoke (ScriptDictionaryItem(object2.give, object1.name))
         handled = true
@@ -416,7 +416,7 @@
       msg (object2.useon)
       handled = true
     }
-    else if (typeof(object2, "useon") = "scriptdictionary") {
+    else if (TypeOf(object2, "useon") = "scriptdictionary") {
       if (DictionaryContains(object2.useon, object1.name)) {
         invoke (ScriptDictionaryItem(object2.useon, object1.name))
         handled = true
@@ -445,7 +445,7 @@
     
     text = LCase(text)
     
-    if (typeof(object, property) = "scriptdictionary") {
+    if (TypeOf(object, property) = "scriptdictionary") {
       dictionary = GetAttribute(object, property)
       foreach (keywords, dictionary) {
         if (GetKeywordsMatchStrength(LCase(keywords), text) > maxstrength) {
