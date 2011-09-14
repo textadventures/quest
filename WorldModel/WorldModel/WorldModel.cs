@@ -289,12 +289,22 @@ namespace AxeSoftware.Quest
 
         private object m_waitForResponseLock = new object();
         private string m_menuResponse = null;
+        private IScript m_menuCallback = null;
+        private Context m_menuCallbackContext = null;
 
-        internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel)
+        internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
         {
             MenuData menuData = new MenuData(caption, options, allowCancel);
 
             m_playerUI.ShowMenu(menuData);
+
+            if (async)
+            {
+                return string.Empty;
+            }
+
+            m_menuCallback = null;
+            m_menuCallbackContext = null;
 
             ChangeThreadState(ThreadState.Waiting);
 
@@ -308,27 +318,53 @@ namespace AxeSoftware.Quest
             return m_menuResponse;
         }
 
-        internal string DisplayMenu(string caption, IList<string> options, bool allowCancel)
+        internal string DisplayMenu(string caption, IList<string> options, bool allowCancel, bool async)
         {
             Dictionary<string, string> optionsDictionary = new Dictionary<string, string>();
             foreach (string option in options)
             {
                 optionsDictionary.Add(option, option);
             }
-            return DisplayMenu(caption, optionsDictionary, allowCancel);
+            return DisplayMenu(caption, optionsDictionary, allowCancel, async);
         }
 
         public void SetMenuResponse(string response)
         {
-            DoInNewThreadAndWait(() =>
+            if (m_menuCallback != null)
             {
-                m_menuResponse = response;
-
-                lock (m_waitForResponseLock)
+                m_menuCallbackContext.Parameters["result"] = response;
+                IScript script = m_menuCallback;
+                Context context = m_menuCallbackContext;
+                m_menuCallback = null;
+                m_menuCallbackContext = null;
+                script.Execute(context);
+            }
+            else
+            {
+                DoInNewThreadAndWait(() =>
                 {
-                    Monitor.Pulse(m_waitForResponseLock);
-                }
-            });
+                    m_menuResponse = response;
+
+                    lock (m_waitForResponseLock)
+                    {
+                        Monitor.Pulse(m_waitForResponseLock);
+                    }
+                });
+            }
+        }
+
+        internal void DisplayMenuAsync(string caption, IList<string> options, bool allowCancel, IScript callback, Context c)
+        {
+            m_menuCallback = callback;
+            m_menuCallbackContext = c;
+            string result = DisplayMenu(caption, options, allowCancel, true);
+        }
+
+        internal void DisplayMenuAsync(string caption, IDictionary<string, string> options, bool allowCancel, IScript callback, Context c)
+        {
+            m_menuCallback = callback;
+            m_menuCallbackContext = c;
+            string result = DisplayMenu(caption, options, allowCancel, true);
         }
 
         public IEnumerable<Element> Objects

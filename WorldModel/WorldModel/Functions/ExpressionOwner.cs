@@ -300,12 +300,12 @@ namespace AxeSoftware.Quest.Functions
 
         public string ShowMenu(string caption, QuestDictionary<string> options, bool allowCancel)
         {
-            return m_worldModel.DisplayMenu(caption, options, allowCancel);
+            return m_worldModel.DisplayMenu(caption, options, allowCancel, false);
         }
 
         public string ShowMenu(string caption, QuestList<string> options, bool allowCancel)
         {
-            return m_worldModel.DisplayMenu(caption, options, allowCancel);
+            return m_worldModel.DisplayMenu(caption, options, allowCancel, false);
         }
 
         public bool DictionaryContains(IDictionary dictionary, string key)
