@@ -28,16 +28,16 @@
     }
   </function>
 
-  <function name="ResolveName" parameters="value, objtype" type="object">
+  <function name="ResolveName" parameters="variable, value, objtype" type="object">
     <![CDATA[
-    result = ResolveNameInternal(value, objtype)
+    result = ResolveNameInternal(variable, value, objtype)
     if (result <> null) {
       return (result)
     }
     else {
       foreach (prefix, game.parserignoreprefixes) {
         if (StartsWith(value, prefix + " ")) {
-          result = ResolveNameInternal(Mid(value, LengthOf(prefix) + 1), objtype)
+          result = ResolveNameInternal(variable, Mid(value, LengthOf(prefix) + 1), objtype)
         }
       }
       return (result)
@@ -45,7 +45,7 @@
     ]]>
   </function>
   
-  <function name="ResolveNameInternal" parameters="value, objtype" type="object">
+  <function name="ResolveNameInternal" parameters="variable, value, objtype" type="object">
     <![CDATA[
     fullmatches = NewObjectList()
     partialmatches = NewObjectList()
@@ -89,13 +89,26 @@
       menu = NewStringDictionary()
       GenerateMenuChoices(menu, fullmatches)
       GenerateMenuChoices(menu, partialmatches)
-      result = ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu, true)
-      if (result = null) {
-        return (null)
+      
+      player.currentcommandpendingvariable = variable
+      
+      show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
+        varname = player.currentcommandpendingvariable
+        player.currentcommandpendingvariable = null
+        if (result <> null) {
+          AddToResolvedNames(varname, GetObject(result))
+        }
       }
-      else {
-        return (GetObject(result))
-      }
+      
+      //result = ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu, true)
+      //if (result = null) {
+      //  return (null)
+      //}
+      //else {
+      //  return (GetObject(result))
+      //}
+      
+      return (null)
     }
     ]]>
   </function>
@@ -142,7 +155,8 @@
       return (scope)
     }
     else {
-      object = ResolveName(value, objtype)
+      // TO DO: First parameter is variable name
+      object = ResolveName("", value, objtype)
       if (object = null) {
         return (null)
       }
@@ -286,14 +300,14 @@
             }
           }
           else {
-            result = ResolveName(value, "object")
+            result = ResolveName(var, value, "object")
             if (result <> null) {
               list add (player.currentcommandresolvedobjects, result)
             }
           }
         }
         else if (StartsWith(var, "exit")) {
-          result = ResolveName(value, "exit")
+          result = ResolveName(var, value, "exit")
         }
         else if (StartsWith(var, "text")) {
           result = StringDictionaryItem(player.currentcommandvarlist, var)
@@ -301,18 +315,24 @@
         else {
           error ("Unhandled command variable '" + var + "'")
         }
+        
+        // at this point, ResolveName has returned - either an object name, unresolved, or pending
             
         if (result = null) {
-          resolved = false
-          unresolvedobject = value
-          unresolvedkey = var
-          msg ("Unresolved")
-          
-          // TO DO: these need to be saved so we can use "oops"
+        
+          if (LengthOf(GetString(player, "currentcommandpendingvariable")) = 0) {
+            // TO DO: these need to be saved so we can use "oops"
+            resolved = false
+            unresolvedobject = value
+            unresolvedkey = var
+            msg ("Unresolved")
+          }
+          else {
+            msg ("pending")
+          }
         }
         else {
-          dictionary add(player.currentcommandresolvedelements, var, result)
-          ResolveNextName
+          AddToResolvedNames(var, result)
         }
       }
       else {
@@ -350,6 +370,12 @@
     ]]>
   </function>
 
+  <function name="AddToResolvedNames" parameters="var, result">
+    dictionary add(player.currentcommandresolvedelements, var, result)
+    ResolveNextName
+  </function>
+
+  <!--
   <function name="HandleSingleCommandPatternOld" parameters="command, thiscommand, varlist">
     <![CDATA[
     resolved = true
@@ -441,7 +467,8 @@
     }
     ]]>
   </function>
-
+  -->
+  
   <type name="defaultverb">
     <script type="script">
       <![CDATA[
