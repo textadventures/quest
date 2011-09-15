@@ -27,6 +27,14 @@
       dictionary add (dictionary, obj.name, GetDisplayAlias(obj))
     }
   </function>
+  
+  <!--
+  ResolveName function
+  Parameters: variable    - for single object commands. If we show a menu, key to populate in player.currentcommandresolvedelements.
+                            Leave blank for multi-object commands. In this case, we add the object to player.currentcommandpendingobjectlist
+              value       - string to resolve to an object e.g. "book", "south"
+              objtype     - object type, must be "object" or "exit"
+  -->
 
   <function name="ResolveName" parameters="variable, value, objtype" type="object">
     <![CDATA[
@@ -90,82 +98,122 @@
       GenerateMenuChoices(menu, fullmatches)
       GenerateMenuChoices(menu, partialmatches)
       
-      player.currentcommandpendingvariable = variable
+      if (LengthOf(variable) > 0) {
+        // single object command, so after showing the menu, add the object to player.currentcommandresolvedelements
+        player.currentcommandpendingvariable = variable
       
-      show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
-        varname = player.currentcommandpendingvariable
-        player.currentcommandpendingvariable = null
-        if (result <> null) {
-          AddToResolvedNames(varname, GetObject(result))
+        show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
+          varname = player.currentcommandpendingvariable
+          player.currentcommandpendingvariable = null
+          if (result <> null) {
+            AddToResolvedNames(varname, GetObject(result))
+          }
         }
       }
-      
-      //result = ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu, true)
-      //if (result = null) {
-      //  return (null)
-      //}
-      //else {
-      //  return (GetObject(result))
-      //}
+      else {
+        // multi-object command, so after showing the menu, add the object to the list
+        
+        show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
+          if (result <> null) {
+            list add (player.currentcommandpendingobjectlist, GetObject(result))
+            ResolveNextNameListItem
+          }
+        }        
+      }
       
       return (null)
     }
     ]]>
   </function>
+  
+  <!--
+  ResolveNameList function
+  Parameters: value     - value to resolve into the object list e.g. "book", "all", "newspaper, book and magazine"
+              scope     - objectlist to use if value is "all"
+              objtype   - object type, must be "object" or "exit"
+              
+  Populates player.currentcommandpendingobjectlist with the object names.
+  Adds "multiple" entry to player.currentcommandresolvedelements if there is more than one element.
+  -->
 
-  <function name="ResolveNameList" parameters="value, scope, objtype, resultdictionary" type="objectlist">
+  <function name="ResolveNameList" parameters="value, scope, objtype">
     <![CDATA[
-    result = NewObjectList()
-    isfinished = false
+    player.currentcommandpendingobjectlist = NewObjectList()
+    player.currentcommandpendingobjectlistunresolved = NewStringList()
+    player.currentcommandpendingobjectscope = scope
+    player.currentcommandpendingobjecttype = objtype
     
     inputlist = Split(value, ",")
     foreach (inputbase, inputlist) {
       inputlist2 = Split(inputbase, Template("And"))
-      
       foreach (input, inputlist2) {
-        if (not isfinished) {
-          newitem = ResolveNameListItem(Trim(input), scope, objtype, resultdictionary)
-          if (newitem = null) {
-            isfinished = true
-            result = null
-          }
-          else {
-            result = ListCombine(result, newitem)
-          }
-        }
+        list add (player.currentcommandpendingobjectlistunresolved, input)
       }
     }
-    
-    if (result <> null) {
-      if (ListCount(result) > 1) {
-        if (not DictionaryContains(resultdictionary, "multiple")) {
-          dictionary add (resultdictionary, "multiple", true)
-        }    
-      }
-    }
-    return (result)
+    ResolveNextNameListItem
     ]]>
   </function>
 
-  <function name="ResolveNameListItem" parameters="value, scope, objtype, resultdictionary" type="objectlist">
-    if (ListContains(game.allobjects, value)) {
-      if (not DictionaryContains(resultdictionary, "multiple")) {
-        dictionary add (resultdictionary, "multiple", true)
-      }
-      return (scope)
-    }
-    else {
-      // TO DO: First parameter is variable name
-      object = ResolveName("", value, objtype)
-      if (object = null) {
-        return (null)
+  <function name="ResolveNextNameListItem">
+    resolvedall = false
+    if (TypeOf(player, "currentcommandpendingobjectlistunresolved") = "stringlist") {
+      queuelength = ListCount(player.currentcommandpendingobjectlistunresolved)
+      if (queuelength > 0) {
+        thisitem = Trim(StringListItem(player.currentcommandpendingobjectlistunresolved, 0))
+        if (queuelength = 1) {
+          player.currentcommandpendingobjectlistunresolved = null
+        }
+        else {
+          newqueue = NewStringList()
+          for (i, 1, queuelength - 1) {
+            list add (newqueue, StringListItem(player.currentcommandpendingobjectlistunresolved, i))
+          }
+          player.currentcommandpendingobjectlistunresolved = newqueue
+        }
+        
+        ResolveNameListItem(Trim(thisitem))
       }
       else {
-        result = NewObjectList()
-        list add (result, object)
-        return (result)
+        resolvedall = true
       }
     }
+    else {
+      resolvedall = true
+    }
+    
+    if (resolvedall) {
+      ResolveNameListItemFinished(player.currentcommandpendingobjectlist)
+    }
+  </function>
+
+  <function name="ResolveNameListItem" parameters="value">
+    <![CDATA[
+    if (ListContains(game.allobjects, value)) {
+      // value is "all"
+      
+      if (not DictionaryContains(player.currentcommandresolvedelements, "multiple")) {
+        dictionary add (player.currentcommandresolvedelements, "multiple", true)
+      }
+      ResolveNameListItemFinished (player.currentcommandpendingobjectscope)
+    }
+    else {
+      object = ResolveName("", value, player.currentcommandpendingobjecttype)
+      if (object <> null) {
+        list add (player.currentcommandpendingobjectlist, object)
+        ResolveNextNameListItem
+      }
+    }
+    ]]>
+  </function>
+
+  <function name="ResolveNameListItemFinished" parameters="result">
+    if (ListCount(result) > 1) {
+      if (not DictionaryContains(player.currentcommandresolvedelements, "multiple")) {
+        dictionary add (player.currentcommandresolvedelements, "multiple", true)
+      }    
+    }
+    
+    AddToResolvedNames(player.currentcommandpendingvariable, result)
   </function>
 
   <function name="HandleCommand" parameters="command">
@@ -289,19 +337,25 @@
         // Resolve variable
         value = LCase(StringDictionaryItem(player.currentcommandvarlist, var))
         result = null
+        resolvinglist = false
           
         if (StartsWith(var, "object")) {
           if (HasDelegateImplementation(player.currentcommandpattern, "multiple")) {
-            result = ResolveNameList(value, RunDelegateFunction(player.currentcommandpattern, "multiple"), "object", player.currentcommandresolvedelements)
-            if (result <> null) {
-              foreach (obj, result) {
-                list add (player.currentcommandresolvedobjects, obj)
-              }
-            }
+            player.currentcommandpendingobjectlist = NewObjectList()
+            player.currentcommandpendingvariable = var
+            ResolveNameList(value, RunDelegateFunction(player.currentcommandpattern, "multiple"), "object")
+            resolvinglist = true
+            //if (result <> null) {
+            //  foreach (obj, result) {
+            //    // TO DO: need to add these to the list after calling show menu
+            //    list add (player.currentcommandresolvedobjects, obj)
+            //  }
+            //}
           }
           else {
             result = ResolveName(var, value, "object")
             if (result <> null) {
+              // TO DO: need to add these to the list after calling show menu
               list add (player.currentcommandresolvedobjects, result)
             }
           }
@@ -320,15 +374,11 @@
             
         if (result = null) {
         
-          if (LengthOf(GetString(player, "currentcommandpendingvariable")) = 0) {
+          if ((not resolvinglist) and LengthOf(GetString(player, "currentcommandpendingvariable")) = 0) {
             // TO DO: these need to be saved so we can use "oops"
             resolved = false
             unresolvedobject = value
             unresolvedkey = var
-            msg ("Unresolved")
-          }
-          else {
-            msg ("pending")
           }
         }
         else {
