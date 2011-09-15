@@ -43,6 +43,7 @@
       return (result)
     }
     else {
+      // TO DO: Check this behaviour. We only want to try ignoring prefixes if we have definitely got an unresolved name.
       foreach (prefix, game.parserignoreprefixes) {
         if (StartsWith(value, prefix + " ")) {
           result = ResolveNameInternal(variable, Mid(value, LengthOf(prefix) + 1), objtype)
@@ -91,6 +92,9 @@
       return (ListItem(partialmatches, 0))
     }
     else if (ListCount(fullmatches) + ListCount(partialmatches) = 0) {
+      if (LengthOf(variable) = 0) {
+        UnresolvedCommand (value, player.currentcommandpendingvariable)
+      }
       return (null)
     }
     else {
