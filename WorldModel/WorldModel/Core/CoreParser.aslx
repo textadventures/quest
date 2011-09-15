@@ -156,10 +156,36 @@
 
   <function name="HandleCommand" parameters="command">
     commands = Split(command, ".")
-    foreach (command, commands) {
-      command = Trim(command)
-      if (LengthOf(command) > 0) {
-        HandleSingleCommand (command)
+    if (ListCount(commands) = 1) {
+      HandleSingleCommand (Trim(command))
+    }
+    else {
+      player.commandqueue = commands
+      HandleNextCommandQueueItem
+    }
+  </function>
+
+  <function name="HandleNextCommandQueueItem">
+    if (TypeOf(player, "commandqueue") = "stringlist") {
+      queuelength = ListCount(player.commandqueue)
+      if (queuelength > 0) {
+        thiscommand = Trim(StringListItem(player.commandqueue, 0))
+        if (queuelength = 1) {
+          player.commandqueue = null
+        }
+        else {
+          newqueue = NewStringList()
+          for (i, 1, queuelength - 1) {
+            list add (newqueue, StringListItem(player.commandqueue, i))
+          }
+          player.commandqueue = newqueue
+        }
+        if (LengthOf(thiscommand) > 0) {
+          HandleSingleCommand (thiscommand)
+        }
+        else {
+          HandleNextCommandQueueItem
+        }
       }
     }
   </function>
@@ -193,6 +219,7 @@
     }
     RunTurnScripts
     UpdateStatusAttributes
+    HandleNextCommandQueueItem
   </function>
 
   <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
