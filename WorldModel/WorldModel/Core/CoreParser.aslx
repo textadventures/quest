@@ -219,10 +219,138 @@
     }
     RunTurnScripts
     UpdateStatusAttributes
+    
+    // this call should be moved to UnrecognisedCommand above only,
+    // as HandleSingleCommandPattern must be responsible for processing the next command only when it is ready
     HandleNextCommandQueueItem
   </function>
 
   <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
+    // current command string
+    player.currentcommand = command
+    
+    // current command object
+    player.currentcommandpattern = thiscommand
+    
+    // string dictionary of variables, e.g. object1="book"; object2="table"
+    player.currentcommandvarlist = varlist
+    
+    // string list of variables left to resolve
+    player.currentcommandvarlistqueue = NewStringList()
+    foreach (key, varlist) {
+      list add (player.currentcommandvarlistqueue, key)
+    }
+    
+    // dictionary of resolved elements, e.g. object1=book_object; object2=table_object
+    player.currentcommandresolvedelements = NewDictionary()
+    
+    // list of resolved elements, e.g. book_object; table_object
+    player.currentcommandresolvedobjects = NewObjectList()
+    
+    player.currentcommandunresolvedobject = null
+    ResolveNextName
+  </function>
+
+  <function name="ResolveNextName">
+    <![CDATA[
+    resolvedall = false
+    queuetype = TypeOf(player, "currentcommandvarlistqueue")
+    if (queuetype = "stringlist") {
+      queuelength = ListCount(player.currentcommandvarlistqueue)
+      if (queuelength > 0) {
+      
+        // Pop next variable off the queue
+        var = StringListItem(player.currentcommandvarlistqueue, 0)
+        if (queuelength = 1) {
+          player.currentcommandvarlistqueue = null
+        }
+        else {
+          newqueue = NewStringList()
+          for (i, 1, queuelength - 1) {
+            list add (newqueue, StringListItem(player.currentcommandvarlistqueue, i))
+          }
+          player.currentcommandvarlistqueue = newqueue
+        }
+        
+        // Resolve variable
+        value = LCase(StringDictionaryItem(player.currentcommandvarlist, var))
+        result = null
+          
+        if (StartsWith(var, "object")) {
+          if (HasDelegateImplementation(player.currentcommandpattern, "multiple")) {
+            result = ResolveNameList(value, RunDelegateFunction(player.currentcommandpattern, "multiple"), "object", player.currentcommandresolvedelements)
+            if (result <> null) {
+              foreach (obj, result) {
+                list add (player.currentcommandresolvedobjects, obj)
+              }
+            }
+          }
+          else {
+            result = ResolveName(value, "object")
+            if (result <> null) {
+              list add (player.currentcommandresolvedobjects, result)
+            }
+          }
+        }
+        else if (StartsWith(var, "exit")) {
+          result = ResolveName(value, "exit")
+        }
+        else if (StartsWith(var, "text")) {
+          result = StringDictionaryItem(player.currentcommandvarlist, var)
+        }
+        else {
+          error ("Unhandled command variable '" + var + "'")
+        }
+            
+        if (result = null) {
+          resolved = false
+          unresolvedobject = value
+          unresolvedkey = var
+          msg ("Unresolved")
+          
+          // TO DO: these need to be saved so we can use "oops"
+        }
+        else {
+          dictionary add(player.currentcommandresolvedelements, var, result)
+          ResolveNextName
+        }
+      }
+      else {
+        resolvedall = true
+      }
+    }
+    else if (queuetype = "null") {
+      resolvedall = true
+    }
+    else {
+      error ("Invalid queue type")
+    }
+    
+    if (resolvedall) {
+      // TO DO: game.lastobjects should be player.lastobjects
+      game.lastobjects = player.currentcommandresolvedobjects
+      
+      if (not DictionaryContains(player.currentcommandresolvedelements, "multiple")) {
+        dictionary add (player.currentcommandresolvedelements, "multiple", false)
+      }
+      
+      if (not GetBoolean(player.currentcommandpattern, "isundo")) {
+        if (LengthOf(player.currentcommand) > 0) {
+          start transaction (player.currentcommand)
+        }
+      }
+      if (not GetBoolean(player.currentcommandpattern, "isoops")) {
+        // TO DO: game.unresolved* should be player.unresolved*
+        game.unresolvedcommand = null
+        game.unresolvedcommandvarlist = null
+        game.unresolvedcommandkey = null
+      }
+      do (player.currentcommandpattern, "script", player.currentcommandresolvedelements)
+    }
+    ]]>
+  </function>
+
+  <function name="HandleSingleCommandPatternOld" parameters="command, thiscommand, varlist">
     <![CDATA[
     resolved = true
     resolvedelements = NewDictionary()
