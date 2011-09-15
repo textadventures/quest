@@ -338,6 +338,10 @@ namespace AxeSoftware.Quest
                 m_menuCallback = null;
                 m_menuCallbackContext = null;
                 script.Execute(context);
+                if (State != GameState.Finished)
+                {
+                    UpdateLists();
+                }
             }
             else
             {

@@ -49,6 +49,11 @@
           result = ResolveNameInternal(variable, Mid(value, LengthOf(prefix) + 1), objtype)
         }
       }
+      
+      if (result = null and LengthOf(variable) = 0 and not GetBoolean(player, "currentcommandmultiobjectpending")) {
+        UnresolvedCommand (value, player.currentcommandpendingvariable)
+      }
+      
       return (result)
     }
     ]]>
@@ -58,6 +63,7 @@
     <![CDATA[
     fullmatches = NewObjectList()
     partialmatches = NewObjectList()
+    player.currentcommandmultiobjectpending = false
     
     if (objtype = "object") {
       scope = ScopeVisible()
@@ -92,9 +98,6 @@
       return (ListItem(partialmatches, 0))
     }
     else if (ListCount(fullmatches) + ListCount(partialmatches) = 0) {
-      if (LengthOf(variable) = 0) {
-        UnresolvedCommand (value, player.currentcommandpendingvariable)
-      }
       return (null)
     }
     else {
@@ -116,6 +119,8 @@
       }
       else {
         // multi-object command, so after showing the menu, add the object to the list
+        
+        player.currentcommandmultiobjectpending = true
         
         show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
           if (result <> null) {
