@@ -274,6 +274,7 @@
     
     if (thiscommand = null) {
       msg (Template("UnrecognisedCommand"))
+      HandleNextCommandQueueItem
     }
     else {
       varlist = Populate(thiscommand.pattern, command)
@@ -281,10 +282,6 @@
     }
     RunTurnScripts
     UpdateStatusAttributes
-    
-    // this call should be moved to UnrecognisedCommand above only,
-    // as HandleSingleCommandPattern must be responsible for processing the next command only when it is ready
-    HandleNextCommandQueueItem
   </function>
 
   <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
@@ -375,10 +372,7 @@
         if (result = null) {
         
           if ((not resolvinglist) and LengthOf(GetString(player, "currentcommandpendingvariable")) = 0) {
-            // TO DO: these need to be saved so we can use "oops"
-            resolved = false
-            unresolvedobject = value
-            unresolvedkey = var
+            UnresolvedCommand(value, var)
           }
         }
         else {
@@ -416,6 +410,7 @@
         game.unresolvedcommandkey = null
       }
       do (player.currentcommandpattern, "script", player.currentcommandresolvedelements)
+      HandleNextCommandQueueItem
     }
     ]]>
   </function>
@@ -423,6 +418,32 @@
   <function name="AddToResolvedNames" parameters="var, result">
     dictionary add(player.currentcommandresolvedelements, var, result)
     ResolveNextName
+  </function>
+
+  <function name="UnresolvedCommand" parameters="objectname, varname">
+    // TO DO: Update names below, we don't need these two variables
+    unresolvedobject = objectname
+    unresolvedkey = varname
+    
+    if (HasString(player.currentcommandpattern, "unresolved")) {
+      if (ListCount(player.currentcommandvarlist) > 1) {
+        msg (player.currentcommandpattern.unresolved + " (" + unresolvedobject + ")")
+      }
+      else {
+        msg (player.currentcommandpattern.unresolved)
+      }
+    }
+    else {
+      if (ListCount(player.currentcommandvarlist) > 1) {
+        msg (Template("UnresolvedObject") + " (" + unresolvedobject + ")")
+      }
+      else {
+        msg (Template("UnresolvedObject"))
+      }
+    }
+    game.unresolvedcommand = player.currentcommandpattern
+    game.unresolvedcommandvarlist = player.currentcommandvarlist
+    game.unresolvedcommandkey = unresolvedkey
   </function>
 
   <!--
