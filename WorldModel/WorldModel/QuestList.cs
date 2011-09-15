@@ -15,6 +15,7 @@ namespace AxeSoftware.Quest
         bool Remove(object item, UpdateSource source, int index);
         bool Contains(object item);
         object this[int index] { get; }
+        int Count { get; }
     }
 
     public class QuestListUpdatedEventArgs<T> : EventArgs

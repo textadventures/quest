@@ -193,17 +193,38 @@ namespace AxeSoftware.Quest.Functions
 
         public object ListItem(IQuestList list, int index)
         {
-            return list[index];
+            try
+            {
+                return list[index];
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                throw new Exception(string.Format("ListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, list.Count, list.Count - 1), ex);
+            }
         }
 
         public string StringListItem(IQuestList list, int index)
         {
-            return list[index] as string;
+            try
+            {
+                return list[index] as string;
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                throw new Exception(string.Format("StringListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, list.Count, list.Count - 1), ex);
+            }
         }
 
         public Element ObjectListItem(IQuestList list, int index)
         {
-            return list[index] as Element;
+            try
+            {
+                return list[index] as Element;
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                throw new Exception(string.Format("ObjectListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, list.Count, list.Count - 1), ex);
+            }
         }
 
         public Element GetObject(string name)
