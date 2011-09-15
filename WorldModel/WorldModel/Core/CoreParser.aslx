@@ -211,13 +211,15 @@
   </function>
 
   <function name="ResolveNameListItemFinished" parameters="result">
+    <![CDATA[
     if (ListCount(result) > 1) {
       if (not DictionaryContains(player.currentcommandresolvedelements, "multiple")) {
         dictionary add (player.currentcommandresolvedelements, "multiple", true)
-      }    
+      }
     }
     
     AddToResolvedNames(player.currentcommandpendingvariable, result)
+    ]]>
   </function>
 
   <function name="HandleCommand" parameters="command">
@@ -346,19 +348,9 @@
             player.currentcommandpendingvariable = var
             ResolveNameList(value, RunDelegateFunction(player.currentcommandpattern, "multiple"), "object")
             resolvinglist = true
-            //if (result <> null) {
-            //  foreach (obj, result) {
-            //    // TO DO: need to add these to the list after calling show menu
-            //    list add (player.currentcommandresolvedobjects, obj)
-            //  }
-            //}
           }
           else {
             result = ResolveName(var, value, "object")
-            if (result <> null) {
-              // TO DO: need to add these to the list after calling show menu
-              list add (player.currentcommandresolvedobjects, result)
-            }
           }
         }
         else if (StartsWith(var, "exit")) {
@@ -420,6 +412,14 @@
   </function>
 
   <function name="AddToResolvedNames" parameters="var, result">
+    if (TypeOf(result) = "object") {
+      list add (player.currentcommandresolvedobjects, result)
+    }
+    else if (TypeOf(result) = "objectlist") {
+      foreach (obj, result) {
+        list add (player.currentcommandresolvedobjects, obj)
+      }
+    }
     dictionary add(player.currentcommandresolvedelements, var, result)
     ResolveNextName
   </function>
