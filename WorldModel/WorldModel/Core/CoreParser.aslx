@@ -419,11 +419,15 @@
 
   <function name="AddToResolvedNames" parameters="var, result">
     if (TypeOf(result) = "object") {
-      list add (player.currentcommandresolvedobjects, result)
+      if (result.type = "object") {
+        list add (player.currentcommandresolvedobjects, result)
+      }
     }
     else if (TypeOf(result) = "objectlist") {
       foreach (obj, result) {
-        list add (player.currentcommandresolvedobjects, obj)
+        if (obj.type = "object") {
+          list add (player.currentcommandresolvedobjects, obj)
+        }
       }
     }
     dictionary add(player.currentcommandresolvedelements, var, result)
