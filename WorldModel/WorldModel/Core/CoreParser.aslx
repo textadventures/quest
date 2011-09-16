@@ -318,6 +318,7 @@
     player.currentcommandresolvedobjects = NewObjectList()
     
     player.currentcommandunresolvedobject = null
+    player.currentcommandpendingvariable = null
     ResolveNextName
   </function>
 
