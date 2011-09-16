@@ -149,6 +149,12 @@
     <Compile Include="NewGameWindow.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="PublishWindow.Designer.vb">
+      <DependentUpon>PublishWindow.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PublishWindow.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="TextEditorControl.Designer.vb">
       <DependentUpon>TextEditorControl.vb</DependentUpon>
     </Compile>
@@ -184,6 +190,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewGameWindow.resx">
       <DependentUpon>NewGameWindow.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PublishWindow.resx">
+      <DependentUpon>PublishWindow.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TextEditorControl.resx">
       <DependentUpon>TextEditorControl.vb</DependentUpon>

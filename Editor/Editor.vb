@@ -865,47 +865,8 @@ Public Class Editor
     End Sub
 
     Private Sub Publish()
-        Dim outputFolder As String = System.IO.Path.Combine(
-                System.IO.Path.GetDirectoryName(m_filename),
-                "Output")
-
-        System.IO.Directory.CreateDirectory(outputFolder)
-
-        Dim outputFilename As String = System.IO.Path.Combine(
-                outputFolder,
-                System.IO.Path.GetFileNameWithoutExtension(m_filename) + ".quest")
-
-        If System.IO.File.Exists(outputFilename) Then
-            Dim deleteExisting = MsgBox("Do you want to overwrite the existing .quest file?", MsgBoxStyle.Question Or MsgBoxStyle.YesNoCancel, "Output already exists")
-
-            If deleteExisting = MsgBoxResult.Yes Then
-                Try
-                    System.IO.File.Delete(outputFilename)
-                Catch ex As Exception
-                    MsgBox("Unable to delete file: " + ex.Message, MsgBoxStyle.Critical, "Unable to delete file")
-                    Return
-                End Try
-            ElseIf deleteExisting = MsgBoxResult.No Then
-                ctlPublishFile.FileName = outputFilename
-                If ctlPublishFile.ShowDialog() = DialogResult.OK Then
-                    outputFilename = ctlPublishFile.FileName
-                Else
-                    Return
-                End If
-            ElseIf deleteExisting = MsgBoxResult.Cancel Then
-                Return
-            End If
-        End If
-
-        Dim result = m_controller.Publish(outputFilename)
-
-        If Not result.Valid Then
-            EditorControls.PopupEditors.DisplayValidationError(result, String.Empty, "Unable to publish game")
-        Else
-            ' Show Output folder in a new Explorer window
-            System.Diagnostics.Process.Start("explorer.exe", "/n," + outputFolder)
-        End If
-
+        Dim frmPublish As New PublishWindow(m_filename, m_controller)
+        frmPublish.ShowDialog()
     End Sub
 
     Private Sub m_fileWatcher_Changed(sender As Object, e As System.IO.FileSystemEventArgs) Handles m_fileWatcher.Changed

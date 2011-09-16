@@ -28,7 +28,6 @@ Partial Class Editor
         Me.pnlHeader = New System.Windows.Forms.Panel()
         Me.lblHeader = New System.Windows.Forms.Label()
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
-        Me.ctlPublishFile = New System.Windows.Forms.SaveFileDialog()
         Me.ctlBanner = New AxeSoftware.Quest.AlertBanner()
         Me.ctlTextEditor = New AxeSoftware.Quest.TextEditorControl()
         Me.ctlReloadBanner = New AxeSoftware.Quest.AlertBanner()
@@ -100,11 +99,6 @@ Partial Class Editor
         '
         Me.ctlSaveFile.DefaultExt = "aslx"
         Me.ctlSaveFile.Filter = "Quest Games|*.aslx|All files|*.*"
-        '
-        'ctlPublishFile
-        '
-        Me.ctlPublishFile.DefaultExt = "quest"
-        Me.ctlPublishFile.Filter = "Quest Games|*.quest|All files|*.*"
         '
         'ctlBanner
         '
@@ -178,7 +172,6 @@ Partial Class Editor
     Friend WithEvents lblHeader As System.Windows.Forms.Label
     Friend WithEvents ctlTextEditor As AxeSoftware.Quest.TextEditorControl
     Friend WithEvents ctlBanner As AxeSoftware.Quest.AlertBanner
-    Private WithEvents ctlPublishFile As System.Windows.Forms.SaveFileDialog
     Friend WithEvents ctlReloadBanner As AxeSoftware.Quest.AlertBanner
 
 End Class
