@@ -919,9 +919,9 @@ namespace AxeSoftware.Quest
             System.IO.File.WriteAllText(filename, saveData);
         }
 
-        public string Save(SaveMode mode)
+        public string Save(SaveMode mode, bool? includeWalkthrough = null)
         {
-            return m_saver.Save(mode);
+            return m_saver.Save(mode, includeWalkthrough);
         }
 
         public static Type ConvertTypeNameToType(string name)
@@ -1289,10 +1289,10 @@ namespace AxeSoftware.Quest
             });
         }
 
-        public bool CreatePackage(string filename, out string error)
+        public bool CreatePackage(string filename, bool includeWalkthrough, out string error)
         {
             Packager packager = new Packager(this);
-            return packager.CreatePackage(filename, out error);
+            return packager.CreatePackage(filename, includeWalkthrough, out error);
         }
 
         public string ResourcesFolder { get; private set; }

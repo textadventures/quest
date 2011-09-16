@@ -431,6 +431,7 @@ namespace AxeSoftware.Quest.Functions
 
         private QuestList<T> ListCombine<T>(QuestList<T> list1, QuestList<T> list2)
         {
+            if (list1 == null) return new QuestList<T>(list2);
             return list1.MergeLists(list2);
         }
 

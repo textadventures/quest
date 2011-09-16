@@ -215,6 +215,7 @@ namespace AxeSoftware.Quest
         public static QuestList<T> operator +(QuestList<T> list1, QuestList<T> list2)
         {
             System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
+            if (list1 == null) return new QuestList<T>(list2);
             return list1.MergeLists(list2);
         }
 

@@ -80,7 +80,7 @@
             End If
         End If
 
-        Dim result = m_controller.Publish(outputFilename)
+        Dim result = m_controller.Publish(outputFilename, chkIncludeWalkthrough.Checked)
 
         If Not result.Valid Then
             EditorControls.PopupEditors.DisplayValidationError(result, String.Empty, "Unable to publish game")

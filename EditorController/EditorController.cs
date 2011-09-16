@@ -1664,10 +1664,10 @@ namespace AxeSoftware.Quest
             return FriendlyVerbDisplayName(simplePattern.Pattern);
         }
 
-        public ValidationResult Publish(string filename)
+        public ValidationResult Publish(string filename, bool includeWalkthrough)
         {
             string error;
-            if (m_worldModel.CreatePackage(filename, out error))
+            if (m_worldModel.CreatePackage(filename, includeWalkthrough, out error))
             {
                 return new ValidationResult { Valid = true, Message = ValidationMessage.OK };
             }
@@ -1813,6 +1813,7 @@ namespace AxeSoftware.Quest
             StartTransaction(string.Format("Add {0} walkthrough steps", steps.Count()));
             Element walkthrough = m_worldModel.Elements.Get(ElementType.Walkthrough, name);
             QuestList<string> newSteps = new QuestList<string>(steps);
+            // TO DO: Use MergeLists
             walkthrough.Fields[FieldDefinitions.Steps] = walkthrough.Fields[FieldDefinitions.Steps] + newSteps;
             EndTransaction();
         }

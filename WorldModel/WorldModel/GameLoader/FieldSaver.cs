@@ -210,6 +210,19 @@ namespace AxeSoftware.Quest
             }
         }
 
+        private class GenericDictionarySaver : FieldSaverBase
+        {
+            public override Type AppliesTo
+            {
+                get { return typeof(QuestDictionary<object>); }
+            }
+
+            public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
+            {
+                // TO DO: Implement
+            }
+        }
+
         private class ScriptSaver : FieldSaverBase
         {
             public override Type AppliesTo
