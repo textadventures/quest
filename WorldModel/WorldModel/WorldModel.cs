@@ -1255,7 +1255,7 @@ namespace AxeSoftware.Quest
         {
             if (m_state == GameState.Finished) return;
             int next = m_timerRunner.GetTimeUntilNextTimerRuns();
-            RequestNextTimerTick(next);
+            if (RequestNextTimerTick != null) RequestNextTimerTick(next);
             System.Diagnostics.Debug.Print("Request next timer in {0}", next);
         }
 

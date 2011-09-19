@@ -1,0 +1,19 @@
+<asl version="500">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="assert" />
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="lamp">
+    </object>
+  </object>
+  <walkthrough name="debug">
+    <steps>
+      x lamp
+      assert:player.parent = start
+      assert:lamp.parent = start
+    </steps>
+  </walkthrough>
+</asl>
