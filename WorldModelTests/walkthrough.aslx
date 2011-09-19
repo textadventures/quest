@@ -7,13 +7,29 @@
       <inherit name="defaultplayer" />
     </object>
     <object name="lamp">
+      <lookcount type="int">0</lookcount>
+      <look type="script">
+        lamp.lookcount = lamp.lookcount + 1
+        msg ("Lamp look count: " + lamp.lookcount)
+      </look>
     </object>
   </object>
   <walkthrough name="debug">
     <steps>
-      x lamp
       assert:player.parent = start
       assert:lamp.parent = start
+      assert:lamp.lookcount = 0
+      x lamp
+      assert:lamp.lookcount = 1
+      x lamp
+      x lamp
+      assert:lamp.lookcount = 3
+      undo
+      assert:lamp.lookcount = 2
+      undo
+      assert:lamp.lookcount = 1
+      x lamp
+      assert:lamp.lookcount = 2
     </steps>
   </walkthrough>
 </asl>
