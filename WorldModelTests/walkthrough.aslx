@@ -6,18 +6,27 @@
     <object name="player">
       <inherit name="defaultplayer" />
     </object>
-    <object name="lamp">
-      <lookcount type="int">0</lookcount>
+    <object name="table">
+      <inherit name="surface"/>
+      <tablelist type="list">item</tablelist>
       <look type="script">
-        lamp.lookcount = lamp.lookcount + 1
-        msg ("Lamp look count: " + lamp.lookcount)
+        list add (table.tablelist, "newitem")
+        msg ("Table list count: " + ListCount(table.tablelist))
       </look>
+      <object name="lamp">
+        <lookcount type="int">0</lookcount>
+        <look type="script">
+          lamp.lookcount = lamp.lookcount + 1
+          msg ("Lamp look count: " + lamp.lookcount)
+        </look>
+      </object>
     </object>
   </object>
   <walkthrough name="debug">
     <steps>
       assert:player.parent = start
-      assert:lamp.parent = start
+      assert:table.parent = start
+      assert:lamp.parent = table
       assert:lamp.lookcount = 0
       x lamp
       assert:lamp.lookcount = 1
@@ -30,6 +39,14 @@
       assert:lamp.lookcount = 1
       x lamp
       assert:lamp.lookcount = 2
+      assert:ListCount(table.tablelist) = 1
+      x table
+      x table
+      assert:ListCount(table.tablelist) = 3
+      undo
+      assert:ListCount(table.tablelist) = 2
+      undo
+      assert:ListCount(table.tablelist) = 1
     </steps>
   </walkthrough>
 </asl>
