@@ -23,7 +23,18 @@
             ElseIf m_showingQuestion Then
                 SetQuestionResponse(cmd)
             Else
-                m_game.SendCommand(cmd)
+                If cmd.StartsWith("assert:") Then
+                    Dim expr As String = cmd.Substring(7)
+                    WriteLine("<br/><b>Assert:</b> " + expr)
+                    If m_gameDebug.Assert(expr) Then
+                        WriteLine("<span style=""color:green""><b>Pass</b></span>")
+                    Else
+                        WriteLine("<span style=""color:red""><b>Failed</b></span>")
+                        Return
+                    End If
+                Else
+                    m_game.SendCommand(cmd)
+                End If
             End If
 
             Do

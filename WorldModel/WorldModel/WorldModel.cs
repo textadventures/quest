@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using AxeSoftware.Quest.Scripts;
 using System.Linq;
+using AxeSoftware.Quest.Functions;
 
 namespace AxeSoftware.Quest
 {
@@ -1346,6 +1347,13 @@ namespace AxeSoftware.Quest
             }
 
             movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
+        }
+
+        public bool Assert(string expr)
+        {
+            Expression<bool> expression = new Expression<bool>(expr, this);
+            Context c = new Context();
+            return expression.Execute(c);
         }
     }
 }
