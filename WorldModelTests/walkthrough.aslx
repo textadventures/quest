@@ -1,7 +1,9 @@
 <asl version="500">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
-  <game name="assert" />
+  <game name="assert">
+    <dictionary type="stringdictionary">key1=value1; key2=value2</dictionary>
+  </game>
   <object name="start">
     <object name="player">
       <inherit name="defaultplayer" />
@@ -22,6 +24,13 @@
       </object>
     </object>
   </object>
+  <command>
+    <pattern>dictionary add</pattern>
+    <script>
+      game.dictionarycopy = game.dictionary
+      dictionary add (game.dictionary, "key3", "value3")
+    </script>
+  </command>
   <walkthrough name="debug">
     <steps>
       assert:player.parent = start
@@ -47,6 +56,23 @@
       assert:ListCount(table.tablelist) = 2
       undo
       assert:ListCount(table.tablelist) = 1
+      assert:DictionaryCount(game.dictionary) = 2
+      assert:StringDictionaryItem(game.dictionary, "key1") = "value1"
+      assert:StringDictionaryItem(game.dictionary, "key2") = "value2"
+      assert:not DictionaryContains(game.dictionary, "key3")
+      dictionary add
+      assert:DictionaryCount(game.dictionary) = 3
+      assert:StringDictionaryItem(game.dictionary, "key1") = "value1"
+      assert:StringDictionaryItem(game.dictionary, "key2") = "value2"
+      assert:DictionaryContains(game.dictionary, "key3")
+      assert:StringDictionaryItem(game.dictionary, "key3") = "value3"
+      assert:DictionaryCount(game.dictionarycopy) = 2
+      assert:not DictionaryContains(game.dictionarycopy, "key3")
+      undo
+      assert:DictionaryCount(game.dictionary) = 2
+      assert:StringDictionaryItem(game.dictionary, "key1") = "value1"
+      assert:StringDictionaryItem(game.dictionary, "key2") = "value2"
+      assert:not DictionaryContains(game.dictionary, "key3")
     </steps>
   </walkthrough>
 </asl>
