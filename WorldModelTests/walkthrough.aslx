@@ -3,6 +3,7 @@
   <include ref="Core.aslx" />
   <game name="assert">
     <dictionary type="stringdictionary">key1=value1; key2=value2</dictionary>
+    <list type="list">value1; value2; value3</list>
   </game>
   <object name="start">
     <object name="player">
@@ -24,6 +25,8 @@
       </object>
     </object>
   </object>
+  <object name="other">
+  </object>
   <command>
     <pattern>dictionary add</pattern>
     <script>
@@ -41,6 +44,25 @@
     <pattern>create</pattern>
     <script>
       create ("dynamicobject")
+    </script>
+  </command>
+  <command>
+    <pattern>list remove</pattern>
+    <script>
+      game.listcopy = game.list
+      list remove (game.list, "value2")
+    </script>
+  </command>
+  <command>
+    <pattern>create exit</pattern>
+    <script>
+      create exit ("east", start, other)
+    </script>
+  </command>
+  <command>
+    <pattern>destroy</pattern>
+    <script>
+      destroy ("lamp")
     </script>
   </command>
   <walkthrough name="debug">
@@ -97,6 +119,26 @@
       assert:GetObject("dynamicobject") <> null
       undo
       assert:GetObject("dynamicobject") = null
+      assert:ListCount(game.list) = 3
+      assert:ListContains(game.list, "value2")
+      list remove
+      assert:ListCount(game.list) = 2
+      assert:ListCount(game.listcopy) = 3
+      assert:not ListContains(game.list, "value2")
+      assert:ListContains(game.listcopy, "value2")
+      undo
+      assert:ListCount(game.list) = 3
+      assert:ListContains(game.list, "value2")
+      assert:GetExitByName(start, "east") = null
+      create exit
+      assert:GetExitByName(start, "east") <> null
+      undo
+      assert:GetExitByName(start, "east") = null
+      assert:GetObject("lamp") <> null
+      destroy
+      assert:GetObject("lamp") = null
+      undo
+      assert:GetObject("lamp") <> null
       ]]>
     </steps>
   </walkthrough>
