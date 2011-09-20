@@ -31,8 +31,21 @@
       dictionary add (game.dictionary, "key3", "value3")
     </script>
   </command>
+  <command>
+    <pattern>dictionary remove</pattern>
+    <script>
+      dictionary remove (game.dictionary, "key1")
+    </script>
+  </command>
+  <command>
+    <pattern>create</pattern>
+    <script>
+      create ("dynamicobject")
+    </script>
+  </command>
   <walkthrough name="debug">
     <steps>
+      <![CDATA[
       assert:player.parent = start
       assert:table.parent = start
       assert:lamp.parent = table
@@ -73,6 +86,18 @@
       assert:StringDictionaryItem(game.dictionary, "key1") = "value1"
       assert:StringDictionaryItem(game.dictionary, "key2") = "value2"
       assert:not DictionaryContains(game.dictionary, "key3")
+      dictionary remove
+      assert:DictionaryCount(game.dictionary) = 1
+      assert:not DictionaryContains(game.dictionary, "key1")
+      undo
+      assert:DictionaryCount(game.dictionary) = 2
+      assert:StringDictionaryItem(game.dictionary, "key1") = "value1"
+      assert:GetObject("dynamicobject") = null
+      create
+      assert:GetObject("dynamicobject") <> null
+      undo
+      assert:GetObject("dynamicobject") = null
+      ]]>
     </steps>
   </walkthrough>
 </asl>
