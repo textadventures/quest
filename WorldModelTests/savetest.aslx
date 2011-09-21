@@ -28,6 +28,8 @@
             lamp.scriptresult = "script key2 old"
           </item>
         </scriptdictionaryattr>
+        <objectattr type="object">start</objectattr>
+        <booleanattr type="boolean">false</booleanattr>
       </object>
     </object>
   </object>
@@ -51,6 +53,8 @@
       dictionary add (lamp.scriptdictionaryattr, "key3", newscriptkey3)
       dictionary remove (lamp.scriptdictionaryattr, "key1")
       dictionary add (lamp.scriptdictionaryattr, "key1", newscriptkey1)
+      lamp.objectattr = player
+      lamp.booleanattr = true
     </script>
   </command>
   <command>
@@ -92,6 +96,8 @@
       assert:lamp.scriptresult = "script key1 new"
       run lamp scriptdictionaryattr key3
       assert:lamp.scriptresult = "script key3 new"
+      assert:lamp.objectattr = player
+      assert:lamp.booleanattr
       ]]>
     </steps>
   </walkthrough>
