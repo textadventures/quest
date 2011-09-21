@@ -20,6 +20,14 @@
         <objlistattr type="objectlist">start; player</objlistattr>
         <stringdictionaryattr type="stringdictionary">key1=old1; key2=old2</stringdictionaryattr>
         <objectdictionaryattr type="objectdictionary">key1=table; key2=player</objectdictionaryattr>
+        <scriptdictionaryattr type="scriptdictionary">
+          <item key="key1">
+            lamp.scriptresult = "script key1 old"
+          </item>
+          <item key="key2">
+            lamp.scriptresult = "script key2 old"
+          </item>
+        </scriptdictionaryattr>
       </object>
     </object>
   </object>
@@ -38,12 +46,29 @@
       dictionary add (lamp.objectdictionaryattr, "key3", start)
       dictionary remove (lamp.objectdictionaryattr, "key1")
       dictionary add (lamp.objectdictionaryattr, "key1", lamp)
+      newscriptkey1 => lamp.scriptresult = "script key1 new"
+      newscriptkey3 => lamp.scriptresult = "script key3 new"
+      dictionary add (lamp.scriptdictionaryattr, "key3", newscriptkey3)
+      dictionary remove (lamp.scriptdictionaryattr, "key1")
+      dictionary add (lamp.scriptdictionaryattr, "key1", newscriptkey1)
     </script>
   </command>
   <command>
     <pattern>run lamp scriptattr</pattern>
     <script>
       invoke (lamp.scriptattr)
+    </script>
+  </command>
+  <command>
+    <pattern>run lamp scriptdictionaryattr key1</pattern>
+    <script>
+      invoke (ScriptDictionaryItem(lamp.scriptdictionaryattr, "key1"))
+    </script>
+  </command>
+  <command>
+    <pattern>run lamp scriptdictionaryattr key3</pattern>
+    <script>
+      invoke (ScriptDictionaryItem(lamp.scriptdictionaryattr, "key3"))
     </script>
   </command>
   <walkthrough name="verify">
@@ -62,6 +87,11 @@
       assert:DictionaryCount(lamp.objectdictionaryattr) = 3
       assert:ObjectDictionaryItem(lamp.objectdictionaryattr, "key1") = lamp
       assert:ObjectDictionaryItem(lamp.objectdictionaryattr, "key3") = start
+      assert:DictionaryCount(lamp.scriptdictionaryattr) = 3
+      run lamp scriptdictionaryattr key1
+      assert:lamp.scriptresult = "script key1 new"
+      run lamp scriptdictionaryattr key3
+      assert:lamp.scriptresult = "script key3 new"
       ]]>
     </steps>
   </walkthrough>
