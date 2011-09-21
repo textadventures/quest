@@ -254,7 +254,7 @@ namespace AxeSoftware.Quest
                     {
                         writer.WriteStartElement("command");
                     }
-                    if (!e.Fields[FieldDefinitions.Anonymous])
+                    if (writer.Mode == SaveMode.SavedGame || !e.Fields[FieldDefinitions.Anonymous])
                     {
                         writer.WriteAttributeString("name", e.Name);
                     }
@@ -286,7 +286,7 @@ namespace AxeSoftware.Quest
                 public override void StartSave(GameXmlWriter writer, Element e)
                 {
                     writer.WriteStartElement("exit");
-                    if (!e.Fields[FieldDefinitions.Anonymous])
+                    if (writer.Mode == SaveMode.SavedGame || !e.Fields[FieldDefinitions.Anonymous])
                     {
                         writer.WriteAttributeString("name", e.Name);
                     }
@@ -322,7 +322,7 @@ namespace AxeSoftware.Quest
                 public override void StartSave(GameXmlWriter writer, Element e)
                 {
                     writer.WriteStartElement("turnscript");
-                    if (!e.Fields[FieldDefinitions.Anonymous])
+                    if (writer.Mode == SaveMode.SavedGame || !e.Fields[FieldDefinitions.Anonymous])
                     {
                         writer.WriteAttributeString("name", e.Name);
                     }
