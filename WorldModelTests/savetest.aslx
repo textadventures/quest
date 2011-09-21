@@ -33,6 +33,7 @@
       </object>
     </object>
   </object>
+  <object name="room2"/>
   <object name="destroyedobject"/>
   <command>
     <pattern>update</pattern>
@@ -62,6 +63,7 @@
       newobj.stringattr = "test"
       lamp.newobjref = newobj
       destroy ("destroyedobject")
+      create exit ("northeast", start, room2, "northeastdirection")
     </script>
   </command>
   <command>
@@ -82,6 +84,12 @@
       invoke (ScriptDictionaryItem(lamp.scriptdictionaryattr, "key3"))
     </script>
   </command>
+  <function name="VerifyCreatedExit" type="boolean">
+    exitname = GetExitByName(start, "northeast")
+    exitobject = GetObject(exitname)
+    altattr = exitobject.alt
+    return (ListContains(altattr, "ne"))
+  </function>
   <walkthrough name="verify">
     <steps>
       <![CDATA[
@@ -109,6 +117,9 @@
       assert:lamp.newobjref.intattr = 2
       assert:lamp.newobjref.stringattr = "test"
       assert:GetObject("destroyedobject") = null
+      ne
+      assert:player.parent = room2
+      assert:VerifyCreatedExit()
       ]]>
     </steps>
   </walkthrough>
