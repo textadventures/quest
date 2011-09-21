@@ -10,6 +10,11 @@
       <inherit name="surface"/>
       <object name="lamp">
         <intattr type="int">1</intattr>
+        <stringattr>not updated</stringattr>
+        <scriptresult>not run</scriptresult>
+        <scriptattr type="script">
+          lamp.scriptresult = "run, old"
+        </scriptattr>
       </object>
     </object>
   </object>
@@ -17,12 +22,23 @@
     <pattern>update</pattern>
     <script>
       lamp.intattr = 2
+      lamp.stringattr = "updated"
+      lamp.scriptattr => lamp.scriptresult = "run, new"
+    </script>
+  </command>
+  <command>
+    <pattern>run lamp scriptattr</pattern>
+    <script>
+      invoke (lamp.scriptattr)
     </script>
   </command>
   <walkthrough name="verify">
     <steps>
       <![CDATA[
       assert:lamp.intattr = 2
+      assert:lamp.stringattr = "updated"
+      run lamp scriptattr
+      assert:lamp.scriptresult = "run, new"
       ]]>
     </steps>
   </walkthrough>

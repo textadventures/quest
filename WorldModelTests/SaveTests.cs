@@ -46,6 +46,8 @@ namespace WorldModelTests
                     worldModel.SendCommand(cmd);
                 }
             }
+
+            System.IO.File.Delete(tempFilename);
         }
     }
 }
