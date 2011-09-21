@@ -1,0 +1,29 @@
+﻿<asl version="500">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="savetest"/>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="table">
+      <inherit name="surface"/>
+      <object name="lamp">
+        <intattr type="int">1</intattr>
+      </object>
+    </object>
+  </object>
+  <command>
+    <pattern>update</pattern>
+    <script>
+      lamp.intattr = 2
+    </script>
+  </command>
+  <walkthrough name="verify">
+    <steps>
+      <![CDATA[
+      assert:lamp.intattr = 2
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>
