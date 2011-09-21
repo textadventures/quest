@@ -33,6 +33,7 @@
       </object>
     </object>
   </object>
+  <object name="destroyedobject"/>
   <command>
     <pattern>update</pattern>
     <script>
@@ -55,6 +56,12 @@
       dictionary add (lamp.scriptdictionaryattr, "key1", newscriptkey1)
       lamp.objectattr = player
       lamp.booleanattr = true
+      create ("newobject")
+      newobj = GetObject("newobject")
+      newobj.intattr = 2
+      newobj.stringattr = "test"
+      lamp.newobjref = newobj
+      destroy ("destroyedobject")
     </script>
   </command>
   <command>
@@ -98,6 +105,10 @@
       assert:lamp.scriptresult = "script key3 new"
       assert:lamp.objectattr = player
       assert:lamp.booleanattr
+      assert:GetObject("newobject") <> null
+      assert:lamp.newobjref.intattr = 2
+      assert:lamp.newobjref.stringattr = "test"
+      assert:GetObject("destroyedobject") = null
       ]]>
     </steps>
   </walkthrough>
