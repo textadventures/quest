@@ -15,6 +15,11 @@
         <scriptattr type="script">
           lamp.scriptresult = "run, old"
         </scriptattr>
+        <becomesnull>some value</becomesnull>
+        <listattr type="list">one; two</listattr>
+        <objlistattr type="objectlist">start; player</objlistattr>
+        <stringdictionaryattr type="stringdictionary">key1=old1; key2=old2</stringdictionaryattr>
+        <objectdictionaryattr type="objectdictionary">key1=table; key2=player</objectdictionaryattr>
       </object>
     </object>
   </object>
@@ -24,6 +29,15 @@
       lamp.intattr = 2
       lamp.stringattr = "updated"
       lamp.scriptattr => lamp.scriptresult = "run, new"
+      lamp.becomesnull = null
+      list add (lamp.listattr, "three")
+      list add (lamp.objlistattr, table)
+      dictionary add (lamp.stringdictionaryattr, "key3", "value3")
+      dictionary remove (lamp.stringdictionaryattr, "key1")
+      dictionary add (lamp.stringdictionaryattr, "key1", "value1")
+      dictionary add (lamp.objectdictionaryattr, "key3", start)
+      dictionary remove (lamp.objectdictionaryattr, "key1")
+      dictionary add (lamp.objectdictionaryattr, "key1", lamp)
     </script>
   </command>
   <command>
@@ -39,6 +53,15 @@
       assert:lamp.stringattr = "updated"
       run lamp scriptattr
       assert:lamp.scriptresult = "run, new"
+      assert:lamp.becomesnull = null
+      assert:ListCount(lamp.listattr) = 3
+      assert:ListCount(lamp.objlistattr) = 3
+      assert:DictionaryCount(lamp.stringdictionaryattr) = 3
+      assert:StringDictionaryItem(lamp.stringdictionaryattr, "key1") = "value1"
+      assert:StringDictionaryItem(lamp.stringdictionaryattr, "key3") = "value3"
+      assert:DictionaryCount(lamp.objectdictionaryattr) = 3
+      assert:ObjectDictionaryItem(lamp.objectdictionaryattr, "key1") = lamp
+      assert:ObjectDictionaryItem(lamp.objectdictionaryattr, "key3") = start
       ]]>
     </steps>
   </walkthrough>
