@@ -13324,18 +13324,8 @@ ErrorHandler:
     End Sub
 
     Private Sub DeleteDirectory(dir As String)
-        If Not System.IO.Directory.Exists(dir) Then Exit Sub
-        Dim files As String() = System.IO.Directory.GetFiles(dir)
-        Dim dirs As String() = System.IO.Directory.GetDirectories(dir)
-
         Try
-            For Each file As String In files
-                System.IO.File.Delete(file)
-            Next
-            For Each subdir As String In dirs
-                DeleteDirectory(subdir)
-            Next
-            System.IO.Directory.Delete(dir)
+            System.IO.Directory.Delete(dir, True)
         Catch
         End Try
     End Sub

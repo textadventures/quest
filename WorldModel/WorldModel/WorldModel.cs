@@ -1355,5 +1355,14 @@ namespace AxeSoftware.Quest
             Context c = new Context();
             return expression.Execute(c);
         }
+
+        ~WorldModel()
+        {
+            try
+            {
+                System.IO.Directory.Delete(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Quest"), true);
+            }
+            catch { }
+        }
     }
 }
