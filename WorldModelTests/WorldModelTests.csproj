@@ -69,7 +69,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="savetest.aslx" />
+    <None Include="savetest.aslx">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="walkthrough.aslx">
       <SubType>Designer</SubType>
     </None>
