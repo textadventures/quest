@@ -266,7 +266,7 @@
   <function name="HandleSingleCommand" parameters="command">
     candidates = NewObjectList()
     foreach (cmd, ScopeCommands()) {
-      if (IsRegexMatch(cmd.pattern, command)) {
+      if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
         list add (candidates, cmd)
       }
     }
@@ -275,7 +275,7 @@
     thiscommand = null
         
     foreach (candidate, candidates) {
-      strength = GetMatchStrength(candidate.pattern, command)
+      strength = GetMatchStrength(candidate.pattern, command, candidate.name)
       // favour commands defined later, so an author can override a library command
       if (strength >= maxstrength) {
         thiscommand = candidate
@@ -288,7 +288,7 @@
       HandleNextCommandQueueItem
     }
     else {
-      varlist = Populate(thiscommand.pattern, command)
+      varlist = Populate(thiscommand.pattern, command, thiscommand.name)
       HandleSingleCommandPattern (command, thiscommand, varlist)
     }
     RunTurnScripts
