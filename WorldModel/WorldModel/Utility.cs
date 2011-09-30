@@ -406,14 +406,29 @@ namespace AxeSoftware.Quest
 
         public static bool IsRegexMatch(string regexPattern, string input)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            Regex regex = new Regex(regexPattern, RegexOptions.IgnoreCase);
+            return regex.IsMatch(input);
+        }
+
+        internal static bool IsRegexMatch(string regexPattern, string input, RegexCache cache, string cacheID)
+        {
+            Regex regex = cache.GetRegex(regexPattern, cacheID);
             return regex.IsMatch(input);
         }
 
         public static int GetMatchStrength(string regexPattern, string input)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regexPattern));
+            return GetMatchStrengthInternal(new Regex(regexPattern, RegexOptions.IgnoreCase), input);
+        }
+
+        internal static int GetMatchStrength(string regexPattern, string input, RegexCache cache, string cacheID)
+        {
+            return GetMatchStrengthInternal(cache.GetRegex(regexPattern, cacheID), input);
+        }
+
+        private static int GetMatchStrengthInternal(Regex regex, string input)
+        {
+            if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regex.ToString()));
 
             // The idea is that you have a regex like
             //          look at (?<object>.*)
@@ -440,8 +455,17 @@ namespace AxeSoftware.Quest
 
         public static QuestDictionary<string> Populate(string regexPattern, string input)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regexPattern));
+            return PopulateInternal(new Regex(regexPattern, RegexOptions.IgnoreCase), input);
+        }
+
+        internal static QuestDictionary<string> Populate(string regexPattern, string input, RegexCache cache, string cacheID)
+        {
+            return PopulateInternal(cache.GetRegex(regexPattern, cacheID), input);
+        }
+
+        private static QuestDictionary<string> PopulateInternal(Regex regex, string input)
+        {
+            if (!regex.IsMatch(input)) throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regex.ToString()));
 
             QuestDictionary<string> result = new QuestDictionary<string>();
 

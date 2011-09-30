@@ -289,14 +289,29 @@ namespace AxeSoftware.Quest.Functions
             return Utility.IsRegexMatch(regexPattern, input);
         }
 
+        public bool IsRegexMatch(string regexPattern, string input, string cacheID)
+        {
+            return Utility.IsRegexMatch(regexPattern, input, m_worldModel.RegexCache, cacheID);
+        }
+
         public int GetMatchStrength(string regexPattern, string input)
         {
             return Utility.GetMatchStrength(regexPattern, input);
         }
 
+        public int GetMatchStrength(string regexPattern, string input, string cacheID)
+        {
+            return Utility.GetMatchStrength(regexPattern, input, m_worldModel.RegexCache, cacheID);
+        }
+
         public QuestDictionary<string> Populate(string regexPattern, string input)
         {
             return Utility.Populate(regexPattern, input);
+        }
+
+        public QuestDictionary<string> Populate(string regexPattern, string input, string cacheID)
+        {
+            return Utility.Populate(regexPattern, input, m_worldModel.RegexCache, cacheID);
         }
 
         public object DictionaryItem(IDictionary dictionary, string key)

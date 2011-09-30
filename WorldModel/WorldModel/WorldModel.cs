@@ -59,6 +59,7 @@ namespace AxeSoftware.Quest
         private string m_commandOverrideInput;
         private object m_commandOverrideLock = new object();
         private TimerRunner m_timerRunner;
+        private RegexCache m_regexCache = new RegexCache();
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -1355,6 +1356,8 @@ namespace AxeSoftware.Quest
             Context c = new Context();
             return expression.Execute(c);
         }
+
+        internal RegexCache RegexCache { get { return m_regexCache; } }
 
         ~WorldModel()
         {
