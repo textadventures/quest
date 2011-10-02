@@ -342,6 +342,7 @@
     <Compile Include="Scripts\SortScript.cs" />
     <Compile Include="Scripts\SwitchScript.cs" />
     <Compile Include="Scripts\UndoScript.cs" />
+    <Compile Include="Scripts\WhileScript.cs" />
     <Compile Include="Templates.cs" />
     <Compile Include="TimerRunner.cs" />
     <Compile Include="Types\EditorCommandPattern.cs" />
