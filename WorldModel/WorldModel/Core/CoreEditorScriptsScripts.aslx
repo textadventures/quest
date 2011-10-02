@@ -9,10 +9,10 @@
 
   <editor>
     <appliesto>for</appliesto>
-    <display>For #0 values #1 to #2, run: #3</display>
+    <display>For #0 values #1 to #2, run: #4</display>
     <category>Scripts</category>
     <add>For...</add>
-    <create>for (,,)</create>
+    <create>for (,,,1)</create>
 
     <control>
       <controltype>label</controltype>
@@ -49,8 +49,20 @@
     </control>
 
     <control>
-      <controltype>script</controltype>
+      <controltype>label</controltype>
+      <caption>in steps of</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
       <attribute>3</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>4</attribute>
       <caption>Run script</caption>
       <breakbefore/>
     </control>
