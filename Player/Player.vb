@@ -632,13 +632,16 @@ Public Class Player
                         If synchronous And looped Then
                             Throw New Exception("Can't play sound that is both synchronous and looped")
                         End If
-                        m_loopSound = looped
-                        m_soundPlaying = True
 
-                        m_mediaPlayer.Open(New System.Uri(filename))
-                        m_mediaPlayer.Play()
+                        If System.IO.File.Exists(filename) Then
+                            m_loopSound = looped
+                            m_soundPlaying = True
 
-                        m_waitingForSoundToFinish = synchronous
+                            m_mediaPlayer.Open(New System.Uri(filename))
+                            m_mediaPlayer.Play()
+
+                            m_waitingForSoundToFinish = synchronous
+                        End If
                     End Sub
         )
     End Sub
