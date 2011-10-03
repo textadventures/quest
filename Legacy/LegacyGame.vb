@@ -1504,6 +1504,7 @@ Public Class LegacyGame
         If LCase(Right(Filename, 4)) = ".zip" Then
             m_originalFilename = Filename
             Filename = GetUnzippedFile(Filename)
+            GamePath = System.IO.Path.GetDirectoryName(Filename)
         End If
 
         If LCase(Right(Filename, 4)) = ".asl" Or LCase(Right(Filename, 4)) = ".txt" Then
