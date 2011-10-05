@@ -23,13 +23,15 @@ Partial Class Options
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.chkOverrideColours = New System.Windows.Forms.CheckBox()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.ColorDialog1 = New System.Windows.Forms.ColorDialog()
+        Me.lblForeground = New System.Windows.Forms.Label()
+        Me.lblBackground = New System.Windows.Forms.Label()
+        Me.dlgColor = New System.Windows.Forms.ColorDialog()
         Me.cmdForeground = New System.Windows.Forms.Button()
         Me.cmdBackground = New System.Windows.Forms.Button()
         Me.cmdCancel = New System.Windows.Forms.Button()
         Me.cmdOK = New System.Windows.Forms.Button()
+        Me.lblLink = New System.Windows.Forms.Label()
+        Me.cmdLink = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'chkOverrideColours
@@ -42,23 +44,23 @@ Partial Class Options
         Me.chkOverrideColours.Text = "Use default game colours"
         Me.chkOverrideColours.UseVisualStyleBackColor = True
         '
-        'Label1
+        'lblForeground
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(56, 37)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(64, 13)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Foreground:"
+        Me.lblForeground.AutoSize = True
+        Me.lblForeground.Location = New System.Drawing.Point(56, 37)
+        Me.lblForeground.Name = "lblForeground"
+        Me.lblForeground.Size = New System.Drawing.Size(31, 13)
+        Me.lblForeground.TabIndex = 1
+        Me.lblForeground.Text = "Text:"
         '
-        'Label2
+        'lblBackground
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(56, 62)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(68, 13)
-        Me.Label2.TabIndex = 2
-        Me.Label2.Text = "Background:"
+        Me.lblBackground.AutoSize = True
+        Me.lblBackground.Location = New System.Drawing.Point(56, 66)
+        Me.lblBackground.Name = "lblBackground"
+        Me.lblBackground.Size = New System.Drawing.Size(68, 13)
+        Me.lblBackground.TabIndex = 2
+        Me.lblBackground.Text = "Background:"
         '
         'cmdForeground
         '
@@ -72,7 +74,7 @@ Partial Class Options
         'cmdBackground
         '
         Me.cmdBackground.BackColor = System.Drawing.Color.Black
-        Me.cmdBackground.Location = New System.Drawing.Point(126, 57)
+        Me.cmdBackground.Location = New System.Drawing.Point(126, 61)
         Me.cmdBackground.Name = "cmdBackground"
         Me.cmdBackground.Size = New System.Drawing.Size(42, 23)
         Me.cmdBackground.TabIndex = 4
@@ -82,7 +84,7 @@ Partial Class Options
         '
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(193, 119)
+        Me.cmdCancel.Location = New System.Drawing.Point(193, 139)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
         Me.cmdCancel.TabIndex = 5
@@ -92,12 +94,30 @@ Partial Class Options
         'cmdOK
         '
         Me.cmdOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdOK.Location = New System.Drawing.Point(112, 119)
+        Me.cmdOK.Location = New System.Drawing.Point(112, 139)
         Me.cmdOK.Name = "cmdOK"
         Me.cmdOK.Size = New System.Drawing.Size(75, 23)
         Me.cmdOK.TabIndex = 6
         Me.cmdOK.Text = "OK"
         Me.cmdOK.UseVisualStyleBackColor = True
+        '
+        'lblLink
+        '
+        Me.lblLink.AutoSize = True
+        Me.lblLink.Location = New System.Drawing.Point(56, 95)
+        Me.lblLink.Name = "lblLink"
+        Me.lblLink.Size = New System.Drawing.Size(30, 13)
+        Me.lblLink.TabIndex = 7
+        Me.lblLink.Text = "Link:"
+        '
+        'cmdLink
+        '
+        Me.cmdLink.BackColor = System.Drawing.Color.Blue
+        Me.cmdLink.Location = New System.Drawing.Point(126, 90)
+        Me.cmdLink.Name = "cmdLink"
+        Me.cmdLink.Size = New System.Drawing.Size(42, 23)
+        Me.cmdLink.TabIndex = 8
+        Me.cmdLink.UseVisualStyleBackColor = False
         '
         'Options
         '
@@ -105,13 +125,15 @@ Partial Class Options
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(280, 154)
+        Me.ClientSize = New System.Drawing.Size(280, 174)
+        Me.Controls.Add(Me.cmdLink)
+        Me.Controls.Add(Me.lblLink)
         Me.Controls.Add(Me.cmdOK)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdBackground)
         Me.Controls.Add(Me.cmdForeground)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.lblBackground)
+        Me.Controls.Add(Me.lblForeground)
         Me.Controls.Add(Me.chkOverrideColours)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
@@ -124,11 +146,13 @@ Partial Class Options
 
     End Sub
     Friend WithEvents chkOverrideColours As System.Windows.Forms.CheckBox
-    Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents ColorDialog1 As System.Windows.Forms.ColorDialog
+    Friend WithEvents lblForeground As System.Windows.Forms.Label
+    Friend WithEvents lblBackground As System.Windows.Forms.Label
+    Friend WithEvents dlgColor As System.Windows.Forms.ColorDialog
     Friend WithEvents cmdForeground As System.Windows.Forms.Button
     Friend WithEvents cmdBackground As System.Windows.Forms.Button
     Friend WithEvents cmdCancel As System.Windows.Forms.Button
     Friend WithEvents cmdOK As System.Windows.Forms.Button
+    Friend WithEvents lblLink As System.Windows.Forms.Label
+    Friend WithEvents cmdLink As System.Windows.Forms.Button
 End Class
