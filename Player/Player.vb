@@ -96,6 +96,7 @@ Public Class Player
         ResetInterfaceStrings()
         SetEnabledState(True)
         m_htmlHelper = New PlayerHelper(m_game, Me)
+        m_htmlHelper.UseGameColours = UseGameColours
         m_htmlPlayerReadyFunction = AddressOf FinishInitialise
 
         ' we don't finish initialising the game until the webbrowser's DocumentCompleted fires
@@ -980,6 +981,7 @@ Public Class Player
         Set(value As Boolean)
             Dim changed As Boolean = m_allowColourChange <> value
             m_allowColourChange = value
+            If m_htmlHelper IsNot Nothing Then m_htmlHelper.UseGameColours = value
             If changed Then ResetPlayerOverrideColours()
         End Set
     End Property
@@ -992,6 +994,9 @@ Public Class Player
         m_playerOverrideBackground = background
         m_playerOverrideForeground = foreground
         m_playerOverrideLink = link
+        If m_htmlHelper IsNot Nothing Then
+            m_htmlHelper.PlayerOverrideForeground = ColorTranslator.ToHtml(foreground)
+        End If
         If Not UseGameColours Then
             BeginInvoke(Sub() ctlPlayerHtml.SetBackground(ColorTranslator.ToHtml(background)))
             If m_htmlHelper IsNot Nothing Then

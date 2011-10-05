@@ -225,14 +225,21 @@ namespace AxeSoftware.Quest
             }
 
             string colour;
-            if (!string.IsNullOrEmpty(linkForeground))
+            if (UseGameColours)
             {
-                colour = linkForeground;
+                if (!string.IsNullOrEmpty(linkForeground))
+                {
+                    colour = linkForeground;
+                }
+                else
+                {
+                    colour = m_foregroundOverride;
+                    if (colour.Length == 0) colour = m_foreground;
+                }
             }
             else
             {
-                colour = m_foregroundOverride;
-                if (colour.Length == 0) colour = m_foreground;
+                colour = PlayerOverrideForeground;
             }
             if (colour.Length > 0)
             {
@@ -345,5 +352,9 @@ namespace AxeSoftware.Quest
         {
             WriteText(FormatText(text) + "<br />");
         }
+
+        public bool UseGameColours { get; set; }
+
+        public string PlayerOverrideForeground { get; set; }
     }
 }
