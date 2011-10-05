@@ -187,10 +187,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Options.Designer.vb">
-      <DependentUpon>Options.vb</DependentUpon>
+    <Compile Include="OptionsDialog.Designer.vb">
+      <DependentUpon>OptionsDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="Options.vb">
+    <Compile Include="OptionsDialog.vb">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
@@ -210,8 +210,8 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Options.resx">
-      <DependentUpon>Options.vb</DependentUpon>
+    <EmbeddedResource Include="OptionsDialog.resx">
+      <DependentUpon>OptionsDialog.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

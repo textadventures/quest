@@ -1,4 +1,4 @@
-﻿Public Class Options
+﻿Public Class OptionsDialog
 
     Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
         Me.Hide()

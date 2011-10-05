@@ -357,7 +357,7 @@ Public Class Main
     End Sub
 
     Private Sub ShowOptions()
-        Dim optionsForm As New Options
+        Dim optionsForm As New OptionsDialog
         optionsForm.ShowDialog()
     End Sub
 End Class
