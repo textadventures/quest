@@ -6,10 +6,10 @@
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        chkOverrideColours.Checked = Options.GetBooleanValue(OptionNames.UseGameColours)
-        cmdForeground.BackColor = Options.GetColourValue(OptionNames.ForegroundColour)
-        cmdBackground.BackColor = Options.GetColourValue(OptionNames.BackgroundColour)
-        cmdLink.BackColor = Options.GetColourValue(OptionNames.LinkColour)
+        chkOverrideColours.Checked = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
+        cmdForeground.BackColor = Options.Instance.GetColourValue(OptionNames.ForegroundColour)
+        cmdBackground.BackColor = Options.Instance.GetColourValue(OptionNames.BackgroundColour)
+        cmdLink.BackColor = Options.Instance.GetColourValue(OptionNames.LinkColour)
     End Sub
 
     Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
@@ -17,10 +17,10 @@
     End Sub
 
     Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
-        Options.SetBooleanValue(OptionNames.UseGameColours, chkOverrideColours.Checked)
-        Options.SetColourValue(OptionNames.ForegroundColour, cmdForeground.BackColor)
-        Options.SetColourValue(OptionNames.BackgroundColour, cmdBackground.BackColor)
-        Options.SetColourValue(OptionNames.LinkColour, cmdLink.BackColor)
+        Options.Instance.SetBooleanValue(OptionNames.UseGameColours, chkOverrideColours.Checked)
+        Options.Instance.SetColourValue(OptionNames.ForegroundColour, cmdForeground.BackColor)
+        Options.Instance.SetColourValue(OptionNames.BackgroundColour, cmdBackground.BackColor)
+        Options.Instance.SetColourValue(OptionNames.LinkColour, cmdLink.BackColor)
         Me.Hide()
     End Sub
 

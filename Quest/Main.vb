@@ -123,6 +123,13 @@ Public Class Main
                 Me.ResumeLayout()
                 'ctlPlayer.RestoreSplitterPositions()
                 Application.DoEvents()
+                ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
+                If Not ctlPlayer.UseGameColours Then
+                    ctlPlayer.SetPlayerOverrideColours(
+                        Options.Instance.GetColourValue(OptionNames.BackgroundColour),
+                        Options.Instance.GetColourValue(OptionNames.ForegroundColour),
+                        Options.Instance.GetColourValue(OptionNames.LinkColour))
+                End If
                 ctlPlayer.Initialise(game)
                 ctlPlayer.Focus()
             End If
