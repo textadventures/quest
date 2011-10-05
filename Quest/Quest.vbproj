@@ -187,6 +187,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Options.vb" />
     <Compile Include="OptionsDialog.Designer.vb">
       <DependentUpon>OptionsDialog.vb</DependentUpon>
     </Compile>

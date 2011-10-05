@@ -1,10 +1,26 @@
 ﻿Public Class OptionsDialog
 
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        chkOverrideColours.Checked = Options.GetBooleanValue(OptionNames.UseGameColours)
+        cmdForeground.BackColor = Options.GetColourValue(OptionNames.ForegroundColour)
+        cmdBackground.BackColor = Options.GetColourValue(OptionNames.BackgroundColour)
+        cmdLink.BackColor = Options.GetColourValue(OptionNames.LinkColour)
+    End Sub
+
     Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
         Me.Hide()
     End Sub
 
     Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
+        Options.SetBooleanValue(OptionNames.UseGameColours, chkOverrideColours.Checked)
+        Options.SetColourValue(OptionNames.ForegroundColour, cmdForeground.BackColor)
+        Options.SetColourValue(OptionNames.BackgroundColour, cmdBackground.BackColor)
+        Options.SetColourValue(OptionNames.LinkColour, cmdLink.BackColor)
         Me.Hide()
     End Sub
 
