@@ -25,6 +25,8 @@ Public Class Options
         {OptionNames.LinkColour, Color.Blue.ToArgb().ToString()}
     }
 
+    Public Event OptionChanged(optionName As OptionNames)
+
     Private Function GetOptionKey(optionName As OptionNames) As String
         Return optionName.ToString()
     End Function
@@ -34,7 +36,11 @@ Public Class Options
     End Function
 
     Private Sub SetValue(optionName As OptionNames, value As String)
+        Dim oldValue As String = GetValue(optionName)
         Registry.SaveSetting("Quest", "Settings", GetOptionKey(optionName), value)
+        If oldValue <> value Then
+            RaiseEvent OptionChanged(optionName)
+        End If
     End Sub
 
     Public Function GetColourValue(optionName As OptionNames) As Color

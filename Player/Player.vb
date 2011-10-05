@@ -151,7 +151,7 @@ Public Class Player
 
     Private Sub ClearBuffer()
         If Not Me.IsHandleCreated Then Return
-        WriteHTML(m_htmlHelper.ClearBuffer())
+        If Not m_htmlHelper Is Nothing Then WriteHTML(m_htmlHelper.ClearBuffer())
         BeginInvoke(Sub() ctlPlayerHtml.ClearBuffer())
     End Sub
 
@@ -438,7 +438,10 @@ Public Class Player
         Return menuForm.SelectedItem
     End Function
 
+    Private m_gameBackground As String = Nothing
+
     Private Sub SetBackground(colour As String) Implements IPlayer.SetBackground
+        m_gameBackground = colour
         If Not UseGameColours Then Return
         BeginInvoke(Sub() ctlPlayerHtml.SetBackground(colour))
     End Sub
@@ -748,7 +751,10 @@ Public Class Player
                     End Sub)
     End Sub
 
+    Private m_gameForeground As String = Nothing
+
     Public Sub SetForeground(colour As String) Implements IPlayer.SetForeground
+        m_gameForeground = colour
         If Not UseGameColours Then Return
         m_htmlHelper.SetForeground(colour)
     End Sub
@@ -773,7 +779,10 @@ Public Class Player
         BeginInvoke(Sub() Save())
     End Sub
 
+    Private m_gameLinkForeground As String = Nothing
+
     Public Sub SetLinkForeground(colour As String) Implements IPlayer.SetLinkForeground
+        m_gameLinkForeground = colour
         If Not UseGameColours Then Return
         m_htmlHelper.SetLinkForeground(colour)
     End Sub
@@ -969,7 +978,9 @@ Public Class Player
             Return m_allowColourChange
         End Get
         Set(value As Boolean)
+            Dim changed As Boolean = m_allowColourChange <> value
             m_allowColourChange = value
+            If changed Then ResetPlayerOverrideColours()
         End Set
     End Property
 
@@ -978,21 +989,27 @@ Public Class Player
     Private m_playerOverrideLink As Color
 
     Public Sub SetPlayerOverrideColours(background As Color, foreground As Color, link As Color)
+        m_playerOverrideBackground = background
+        m_playerOverrideForeground = foreground
+        m_playerOverrideLink = link
         If Not UseGameColours Then
-            m_playerOverrideBackground = background
-            m_playerOverrideForeground = foreground
-            m_playerOverrideLink = link
             BeginInvoke(Sub() ctlPlayerHtml.SetBackground(ColorTranslator.ToHtml(background)))
             If m_htmlHelper IsNot Nothing Then
                 m_htmlHelper.SetForeground(ColorTranslator.ToHtml(foreground))
                 m_htmlHelper.SetLinkForeground(ColorTranslator.ToHtml(link))
             End If
+            ClearBuffer()
         End If
     End Sub
 
     Private Sub ResetPlayerOverrideColours()
         If Not UseGameColours Then
             SetPlayerOverrideColours(m_playerOverrideBackground, m_playerOverrideForeground, m_playerOverrideLink)
+        Else
+            If m_gameBackground IsNot Nothing Then SetBackground(m_gameBackground)
+            If m_gameForeground IsNot Nothing Then SetForeground(m_gameForeground)
+            If m_gameLinkForeground IsNot Nothing Then SetLinkForeground(m_gameLinkForeground)
+            ClearBuffer()
         End If
     End Sub
 

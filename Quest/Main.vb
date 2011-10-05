@@ -23,6 +23,8 @@ Public Class Main
         If args.Count > 1 Then
             CmdLineLaunch(args(1))
         End If
+
+        AddHandler Options.Instance.OptionChanged, AddressOf OptionsChanged
     End Sub
 
     Private Sub InitialiseMenuHandlers()
@@ -124,12 +126,10 @@ Public Class Main
                 'ctlPlayer.RestoreSplitterPositions()
                 Application.DoEvents()
                 ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
-                If Not ctlPlayer.UseGameColours Then
-                    ctlPlayer.SetPlayerOverrideColours(
+                ctlPlayer.SetPlayerOverrideColours(
                         Options.Instance.GetColourValue(OptionNames.BackgroundColour),
                         Options.Instance.GetColourValue(OptionNames.ForegroundColour),
                         Options.Instance.GetColourValue(OptionNames.LinkColour))
-                End If
                 ctlPlayer.Initialise(game)
                 ctlPlayer.Focus()
             End If
@@ -367,4 +367,17 @@ Public Class Main
         Dim optionsForm As New OptionsDialog
         optionsForm.ShowDialog()
     End Sub
+
+    Private Sub OptionsChanged(optionName As OptionNames)
+        Select Case optionName
+            Case OptionNames.BackgroundColour, OptionNames.ForegroundColour, OptionNames.LinkColour
+                ctlPlayer.SetPlayerOverrideColours(
+                    Options.Instance.GetColourValue(OptionNames.BackgroundColour),
+                    Options.Instance.GetColourValue(OptionNames.ForegroundColour),
+                    Options.Instance.GetColourValue(OptionNames.LinkColour))
+            Case OptionNames.UseGameColours
+                ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
+        End Select
+    End Sub
+
 End Class
