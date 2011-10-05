@@ -34,6 +34,7 @@ namespace AxeSoftware.Quest
 
         public PlayerHelper(IASL game, IPlayerHelperUI playerUI)
         {
+            UseGameColours = true;
             m_playerUI = playerUI;
             m_game = game;
 
