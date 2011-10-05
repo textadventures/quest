@@ -36,6 +36,7 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("forums", AddressOf Forums)
         ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
         ctlMenu.AddMenuClickHandler("fullscreen", AddressOf GoFullScreen)
+        ctlMenu.AddMenuClickHandler("options", AddressOf ShowOptions)
     End Sub
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
@@ -353,5 +354,10 @@ Public Class Main
 
     Private Sub ctlPlayer_RecordedWalkthrough(name As String, steps As System.Collections.Generic.List(Of String)) Handles ctlPlayer.RecordedWalkthrough
         ctlEditor.SetRecordedWalkthrough(name, steps)
+    End Sub
+
+    Private Sub ShowOptions()
+        Dim optionsForm As New Options
+        optionsForm.ShowDialog()
     End Sub
 End Class
