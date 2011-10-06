@@ -1361,11 +1361,13 @@ namespace AxeSoftware.Quest
 
         ~WorldModel()
         {
+#if (!DEBUG)
             try
             {
                 System.IO.Directory.Delete(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Quest"), true);
             }
             catch { }
+#endif
         }
     }
 }

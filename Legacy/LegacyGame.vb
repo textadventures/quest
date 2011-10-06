@@ -13320,10 +13320,13 @@ ErrorHandler:
     End Function
 
     Private Sub Cleanup()
+#If Not Debug Then
         DeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest"))
+#End If
     End Sub
 
     Private Sub DeleteDirectory(dir As String)
+
         Try
             System.IO.Directory.Delete(dir, True)
         Catch
