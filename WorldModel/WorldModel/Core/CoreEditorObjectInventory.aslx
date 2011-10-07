@@ -104,6 +104,13 @@
 
     <control>
       <controltype>script</controltype>
+      <caption>Use any other object on this</caption>
+      <attribute>useanything</attribute>
+      <onlydisplayif>TypeOf(this, "useon") = "scriptdictionary"</onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
       <caption>Use this object (on its own)</caption>
       <attribute>use</attribute>
     </control>
