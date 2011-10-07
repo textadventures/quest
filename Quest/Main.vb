@@ -278,7 +278,8 @@ Public Class Main
 
     Private Sub ctlEditor_PlayWalkthrough(filename As String, walkthrough As String, record As Boolean) Handles ctlEditor.PlayWalkthrough
         m_playingEditorGame = True
-        ctlPlayer.PostLaunchAction = Sub() ctlPlayer.RunWalkthrough(walkthrough)
+        ctlPlayer.PreLaunchAction = Sub() ctlPlayer.InitWalthrough(walkthrough)
+        ctlPlayer.PostLaunchAction = Sub() ctlPlayer.StartWalkthrough()
         If record Then
             ctlPlayer.RecordWalkthrough = walkthrough
         End If

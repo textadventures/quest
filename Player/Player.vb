@@ -32,6 +32,7 @@ Public Class Player
     Private m_sendNextTickEventAfter As Integer
     Private m_pausing As Boolean
     Private WithEvents m_walkthroughRunner As WalkthroughRunner
+    Private m_preLaunchAction As Action
     Private m_postLaunchAction As Action
     Private m_recordWalkthrough As String
     Private m_recordedWalkthrough As List(Of String)
@@ -138,6 +139,10 @@ Public Class Player
 
     Private Sub BeginGame()
         m_initialised = True
+        If m_preLaunchAction IsNot Nothing Then
+            m_preLaunchAction.Invoke()
+            m_preLaunchAction = Nothing
+        End If
         m_game.Begin()
         ClearBuffer()
         txtCommand.Focus()
@@ -395,8 +400,15 @@ Public Class Player
     End Sub
 
     Public Sub RunWalkthrough(name As String)
-        m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, name)
+        InitWalthrough(name)
+        StartWalkthrough()
+    End Sub
 
+    Public Sub InitWalthrough(name As String)
+        m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, name)
+    End Sub
+
+    Public Sub StartWalkthrough()
         Dim runnerThread As New Thread(Sub() WalkthroughRunner())
         runnerThread.Start()
     End Sub
@@ -934,6 +946,15 @@ Public Class Player
     Private Sub m_walkthroughRunner_Output(text As String) Handles m_walkthroughRunner.Output
         WriteLine(text)
     End Sub
+
+    Public Property PreLaunchAction As Action
+        Get
+            Return m_preLaunchAction
+        End Get
+        Set(value As Action)
+            m_preLaunchAction = value
+        End Set
+    End Property
 
     Public Property PostLaunchAction As Action
         Get
