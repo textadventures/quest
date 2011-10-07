@@ -9,6 +9,7 @@
   <include ref="CoreEditorObjectExits.aslx"/>
   <include ref="CoreEditorObjectScripts.aslx"/>
   <include ref="CoreEditorObjectInventory.aslx"/>
+  <include ref="CoreEditorObjectUseGive.aslx"/>
   <include ref="CoreEditorObjectVerbs.aslx"/>
   <include ref="CoreEditorObjectContainer.aslx"/>
   <include ref="CoreEditorObjectOptions.aslx"/>

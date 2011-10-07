@@ -1,7 +1,7 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Ask/tell</caption>
+    <caption>Ask/Tell</caption>
     <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
 
     <control>

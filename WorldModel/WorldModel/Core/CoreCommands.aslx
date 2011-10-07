@@ -415,6 +415,28 @@
     }
     
     if (not handled) {
+      if (HasString(object1, "giveto")) {
+        msg (object1.giveto)
+        handled = true
+      }
+      else if (TypeOf(object1, "giveto") = "scriptdictionary") {
+        if (DictionaryContains(object1.giveto, object2.name)) {
+          invoke (ScriptDictionaryItem(object1.giveto, object2.name))
+          handled = true
+        }
+        else {
+          if (HasScript(object1, "givetoanything")) {
+            // TO DO: Would be better to use a delegate for givetoanything, but need to implement Editor support first
+            parameters = NewObjectDictionary()
+            dictionary add (parameters, "object", object2)
+            do (object1, "givetoanything", parameters)
+            handled = true
+          }
+        }
+      }
+    }
+    
+    if (not handled) {
       msg (DynamicTemplate("DefaultGive", object2, object1))
     }
   </command>
@@ -430,13 +452,35 @@
         invoke (ScriptDictionaryItem(object2.useon, object1.name))
         handled = true
       }
-      if (not handled) {
+      else {
         if (HasScript(object2, "useanything")) {
           // TO DO: Would be better to use a delegate for useanything, but need to implement Editor support first
           parameters = NewObjectDictionary()
           dictionary add (parameters, "object", object1)
           do (object2, "useanything", parameters)
           handled = true
+        }
+      }
+    }
+    
+    if (not handled) {
+      if (HasString(object1, "selfuseon")) {
+        msg (object1.selfuseon)
+        handled = true
+      }
+      else if (TypeOf(object1, "selfuseon") = "scriptdictionary") {
+        if (DictionaryContains(object1.selfuseon, object2.name)) {
+          invoke (ScriptDictionaryItem(object1.selfuseon, object2.name))
+          handled = true
+        }
+        else {
+          if (HasScript(object1, "selfuseanything")) {
+            // TO DO: Would be better to use a delegate for selfuseanything, but need to implement Editor support first
+            parameters = NewObjectDictionary()
+            dictionary add (parameters, "object", object2)
+            do (object1, "selfuseanything", parameters)
+            handled = true
+          }
         }
       }
     }

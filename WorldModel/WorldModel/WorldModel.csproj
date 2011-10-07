@@ -196,6 +196,9 @@
     <None Include="Core\CoreEditorObjectExits.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Core\CoreEditorObjectUseGive.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\CoreEditorObjectInventory.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

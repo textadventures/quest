@@ -70,56 +70,5 @@
       <onlydisplayif>GetBoolean(this, "drop")</onlydisplayif>
     </control>
 
-    <control>
-      <controltype>title</controltype>
-      <caption>Give</caption>
-    </control>
-
-    <control>
-      <controltype>multi</controltype>
-      <caption>Give</caption>
-      <attribute>give</attribute>
-      <types>
-        null=Cannot be given objects;scriptdictionary=Handle objects individually;string=Print a message
-      </types>
-      <keyprompt>Please enter the object name</keyprompt>
-      <source>object</source>
-    </control>
-
-    <control>
-      <controltype>script</controltype>
-      <caption>Give any other object to this</caption>
-      <attribute>giveanything</attribute>
-      <onlydisplayif>TypeOf(this, "give") = "scriptdictionary"</onlydisplayif>
-    </control>
-
-    <control>
-      <controltype>title</controltype>
-      <caption>Use</caption>
-    </control>
-
-    <control>
-      <controltype>multi</controltype>
-      <selfcaption>Use other objects on this</selfcaption>
-      <attribute>useon</attribute>
-      <types>
-        null=Objects cannot be used;scriptdictionary=Handle objects individually;string=Print a message
-      </types>
-      <keyprompt>Please enter the object name</keyprompt>
-      <source>object</source>
-    </control>
-
-    <control>
-      <controltype>script</controltype>
-      <caption>Use any other object on this</caption>
-      <attribute>useanything</attribute>
-      <onlydisplayif>TypeOf(this, "useon") = "scriptdictionary"</onlydisplayif>
-    </control>
-
-    <control>
-      <controltype>script</controltype>
-      <caption>Use this object (on its own)</caption>
-      <attribute>use</attribute>
-    </control>
   </tab>
 </library>
