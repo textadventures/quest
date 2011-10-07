@@ -403,6 +403,15 @@
         invoke (ScriptDictionaryItem(object2.give, object1.name))
         handled = true
       }
+      if (not handled) {
+        if (HasScript(object2, "giveanything")) {
+          // TO DO: Would be better to use a delegate for giveanything, but need to implement Editor support first
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "object", object1)
+          do (object2, "giveanything", parameters)
+          handled = true
+        }
+      }
     }
     
     if (not handled) {

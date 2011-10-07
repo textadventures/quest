@@ -87,6 +87,13 @@
     </control>
 
     <control>
+      <controltype>script</controltype>
+      <caption>Give any other object to this</caption>
+      <attribute>giveanything</attribute>
+      <onlydisplayif>TypeOf(this, "give") = "scriptdictionary"</onlydisplayif>
+    </control>
+
+    <control>
       <controltype>title</controltype>
       <caption>Use</caption>
     </control>
