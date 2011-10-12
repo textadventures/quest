@@ -220,9 +220,16 @@ namespace AxeSoftware.Quest
         private string GetCurrentFormat(string linkForeground)
         {
             string style = "";
-            if (m_font.Length > 0)
+            if (UseGameFont)
             {
-                style += string.Format("font-family:{0};", m_font);
+                if (m_font.Length > 0)
+                {
+                    style += string.Format("font-family:{0};", m_font);
+                }
+            }
+            else
+            {
+                style += string.Format("font-family:{0};", PlayerOverrideFontFamily);
             }
 
             string colour;
@@ -247,8 +254,16 @@ namespace AxeSoftware.Quest
                 style += string.Format("color:{0};", colour);
             }
 
-            string fontSize = m_fontSizeOverride;
-            if (fontSize.Length == 0) fontSize = m_fontSize;
+            string fontSize;
+            if (UseGameFont)
+            {
+                fontSize = m_fontSizeOverride;
+                if (fontSize.Length == 0) fontSize = m_fontSize;
+            }
+            else
+            {
+                fontSize = PlayerOverrideFontSize.ToString();
+            }
 
             if (fontSize.Length > 0)
             {
@@ -355,7 +370,10 @@ namespace AxeSoftware.Quest
         }
 
         public bool UseGameColours { get; set; }
+        public bool UseGameFont { get; set; }
 
         public string PlayerOverrideForeground { get; set; }
+        public string PlayerOverrideFontFamily { get; set; }
+        public float PlayerOverrideFontSize { get; set; }
     }
 }

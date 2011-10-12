@@ -36,6 +36,7 @@ Public Class Player
     Private m_recordWalkthrough As String
     Private m_recordedWalkthrough As List(Of String)
     Private m_allowColourChange As Boolean = True
+    Private m_allowFontChange As Boolean = True
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -803,6 +804,7 @@ Public Class Player
         'runnerThread.Start()
 
         ResetPlayerOverrideColours()
+        ResetPlayerOverrideFont()
         BeginInvoke(Sub()
                         m_htmlPlayerReadyFunction.Invoke()
                     End Sub)
@@ -986,6 +988,18 @@ Public Class Player
         End Set
     End Property
 
+    Public Property UseGameFont As Boolean
+        Get
+            Return m_allowFontChange
+        End Get
+        Set(value As Boolean)
+            Dim changed As Boolean = m_allowFontChange <> value
+            m_allowFontChange = value
+            If m_htmlHelper IsNot Nothing Then m_htmlHelper.UseGameFont = value
+            If changed Then ResetPlayerOverrideFont()
+        End Set
+    End Property
+
     Private m_playerOverrideBackground As Color
     Private m_playerOverrideForeground As Color
     Private m_playerOverrideLink As Color
@@ -1015,6 +1029,30 @@ Public Class Player
             If m_gameForeground IsNot Nothing Then SetForeground(m_gameForeground)
             If m_gameLinkForeground IsNot Nothing Then SetLinkForeground(m_gameLinkForeground)
             ClearBuffer()
+        End If
+    End Sub
+
+    Private m_playerOverrideFontFamily As String
+    Private m_playerOverrideFontSize As Single
+    Private m_playerOverrideFontStyle As FontStyle
+
+    Public Sub SetPlayerOverrideFont(fontFamily As String, fontSize As Single, fontStyle As FontStyle)
+        m_playerOverrideFontFamily = fontFamily
+        m_playerOverrideFontSize = fontSize
+        m_playerOverrideFontStyle = fontStyle
+        If m_htmlHelper IsNot Nothing Then
+            m_htmlHelper.PlayerOverrideFontFamily = fontFamily
+            m_htmlHelper.PlayerOverrideFontSize = fontSize
+            ' TO DO: Font style is currently ignored
+        End If
+    End Sub
+
+    Private Sub ResetPlayerOverrideFont()
+        If m_htmlHelper IsNot Nothing Then
+            m_htmlHelper.UseGameFont = UseGameFont
+        End If
+        If Not UseGameFont Then
+            SetPlayerOverrideFont(m_playerOverrideFontFamily, m_playerOverrideFontSize, m_playerOverrideFontStyle)
         End If
     End Sub
 

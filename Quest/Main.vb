@@ -130,6 +130,11 @@ Public Class Main
                         Options.Instance.GetColourValue(OptionNames.BackgroundColour),
                         Options.Instance.GetColourValue(OptionNames.ForegroundColour),
                         Options.Instance.GetColourValue(OptionNames.LinkColour))
+                ctlPlayer.UseGameFont = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
+                ctlPlayer.SetPlayerOverrideFont(
+                        Options.Instance.GetStringValue(OptionNames.FontFamily),
+                        Options.Instance.GetSingleValue(OptionNames.FontSize),
+                        DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
                 ctlPlayer.Initialise(game)
                 ctlPlayer.Focus()
             End If
@@ -377,6 +382,13 @@ Public Class Main
                     Options.Instance.GetColourValue(OptionNames.LinkColour))
             Case OptionNames.UseGameColours
                 ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
+            Case OptionNames.FontFamily, OptionNames.FontSize, OptionNames.FontStyle
+                ctlPlayer.SetPlayerOverrideFont(
+                    Options.Instance.GetStringValue(OptionNames.FontFamily),
+                    Options.Instance.GetSingleValue(OptionNames.FontSize),
+                    DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
+            Case OptionNames.UseGameFont
+                ctlPlayer.UseGameFont = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
         End Select
     End Sub
 
