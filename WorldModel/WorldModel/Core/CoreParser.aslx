@@ -103,7 +103,7 @@
     
     inputlist = Split(value, ",")
     foreach (inputbase, inputlist) {
-      inputlist2 = Split(inputbase, Template("And"))
+      inputlist2 = Split(inputbase, " " + Template("And") + " ")
       
       foreach (input, inputlist2) {
         if (not isfinished) {
