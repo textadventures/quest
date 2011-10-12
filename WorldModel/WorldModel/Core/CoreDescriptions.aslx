@@ -204,7 +204,7 @@
     <![CDATA[
     alias = GetDisplayAlias(obj)
     if (not game.enablehyperlinks) {
-      tag = ""
+      type = ""
     }
     if (not type = "") {
       result = "<object"
