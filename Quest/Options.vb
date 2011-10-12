@@ -5,6 +5,10 @@ Public Enum OptionNames
     ForegroundColour
     BackgroundColour
     LinkColour
+    UseGameFont
+    FontFamily
+    FontSize
+    FontStyle
 End Enum
 
 Public Class Options
@@ -22,7 +26,11 @@ Public Class Options
         {OptionNames.UseGameColours, True.ToString()},
         {OptionNames.ForegroundColour, Color.Black.ToArgb().ToString()},
         {OptionNames.BackgroundColour, Color.White.ToArgb().ToString()},
-        {OptionNames.LinkColour, Color.Blue.ToArgb().ToString()}
+        {OptionNames.LinkColour, Color.Blue.ToArgb().ToString()},
+        {OptionNames.UseGameFont, True.ToString()},
+        {OptionNames.FontFamily, "Arial"},
+        {OptionNames.FontSize, "9"},
+        {OptionNames.FontStyle, "0"}
     }
 
     Public Event OptionChanged(optionName As OptionNames)
@@ -64,6 +72,22 @@ Public Class Options
     End Function
 
     Public Sub SetBooleanValue(optionName As OptionNames, value As Boolean)
+        SetValue(optionName, value.ToString())
+    End Sub
+
+    Public Function GetSingleValue(optionName As OptionNames) As Single
+        Return Single.Parse(GetValue(optionName))
+    End Function
+
+    Public Sub SetSingleValue(optionName As OptionNames, value As Single)
+        SetValue(optionName, value.ToString())
+    End Sub
+
+    Public Function GetIntValue(optionName As OptionNames) As Integer
+        Return Integer.Parse(GetValue(optionName))
+    End Function
+
+    Public Sub SetIntValue(optionName As OptionNames, value As Integer)
         SetValue(optionName, value.ToString())
     End Sub
 
