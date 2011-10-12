@@ -74,10 +74,10 @@
     if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "firstenter")) {
       do (player.parent, "firstenter")
     }
-    set (player.parent, "visited", true)
     if (HasScript(player.parent, "enter")) {
       do (player.parent, "enter")
     }
+    set (player.parent, "visited", true)
   </function>
 
   <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList, useinventoryverbs">
