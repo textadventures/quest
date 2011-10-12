@@ -1917,6 +1917,7 @@
 		<row><td>coreeditorobjectroom.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectRoom.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectRoom.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectscripts.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectScripts.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectsetup.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectSetup.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectSetup.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditorobjectusegive.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectUseGive.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectUseGive.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectverbs.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectVerbs.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectVerbs.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorscripts.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScripts.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorscriptsgamestate.a</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScriptsGameState.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScriptsGameState.aslx</td><td>1</td><td/></row>
@@ -4578,9 +4579,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{E393ABCB-C550-4620-96BE-92F37392E944}</td><td/></row>
+		<row><td>ProductCode</td><td>{59F6010A-F92E-4566-943D-730C6CB5758D}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
-		<row><td>ProductVersion</td><td>5.00.0001</td><td/></row>
+		<row><td>ProductVersion</td><td>5.10.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
