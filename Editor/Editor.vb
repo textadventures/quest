@@ -185,7 +185,7 @@ Public Class Editor
     End Sub
 
     Private Sub m_controller_AddedNode(key As String, text As String, parent As String, isLibraryNode As Boolean, position As Integer?) Handles m_controller.AddedNode
-        Dim foreColor As Color = If(isLibraryNode, Color.Gray, Color.Black)
+        Dim foreColor As Color = If(isLibraryNode, SystemColors.ControlDarkDark, SystemColors.ControlText)
         ctlTree.AddNode(key, text, parent, foreColor, Nothing, position)
     End Sub
 
