@@ -68,7 +68,7 @@
 
   <function name="RandomChance" parameters="percentile" type="boolean">
     <![CDATA[
-    return (GetRandomInt(0,100) < percentile)
+    return (GetRandomInt(1,100) <= percentile)
     ]]>
   </function>
 
