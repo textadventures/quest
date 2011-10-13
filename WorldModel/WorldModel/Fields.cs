@@ -793,27 +793,70 @@ namespace AxeSoftware.Quest
             }
             foreach (string typename in m_types)
             {
-                m_fields.AddType(m_worldModel.GetObjectType(typename));
+                try
+                {
+                    m_fields.AddType(m_worldModel.GetObjectType(typename));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Error adding type '{0}' to element '{1}': {2}", typename, m_fields.Get("name"), ex.Message), ex);
+                }
             }
             foreach (string property in m_objectFields.Keys)
             {
-                m_fields.Set(property, m_worldModel.Elements.Get(m_objectFields[property]));
+                try
+                {
+                    m_fields.Set(property, m_worldModel.Elements.Get(m_objectFields[property]));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Error adding attribute '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
+                }
             }
             foreach (string property in m_scripts.Keys)
             {
-                m_fields.Set(property, scriptFactory.CreateScript(m_scripts[property]));
+                try
+                {
+                    m_fields.Set(property, scriptFactory.CreateScript(m_scripts[property]));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Error adding script attribute '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
+                }
             }
             foreach (string property in m_scriptDictionaries.Keys)
             {
-                m_fields.Set(property, ConvertToScriptDictionary(m_scriptDictionaries[property], scriptFactory));
+                try
+                {
+                    m_fields.Set(property, ConvertToScriptDictionary(m_scriptDictionaries[property], scriptFactory));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Error adding script dictionary '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
+                }
             }
             foreach (string property in m_objectLists.Keys)
             {
-                m_fields.Set(property, new QuestList<Element>(m_objectLists[property].Select(n => m_worldModel.Elements.Get(n))));
+                try
+                {
+                    m_fields.Set(property, new QuestList<Element>(m_objectLists[property].Select(n => m_worldModel.Elements.Get(n))));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Error adding object list '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
+                }
+
             }
             foreach (string property in m_objectDictionaries.Keys)
             {
-                m_fields.Set(property, ConvertToObjectDictionary(m_objectDictionaries[property]));
+                try
+                {
+                    m_fields.Set(property, ConvertToObjectDictionary(m_objectDictionaries[property]));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Error adding object dictionary '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
+                }
             }
             m_resolved = true;
         }

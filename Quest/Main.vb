@@ -171,7 +171,7 @@ Public Class Main
             End Select
 
         Catch ex As Exception
-            MsgBox("Error launching game: " & ex.Message)
+            MsgBox("Error loading game: " + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
         Finally
             If Not loadOK Then
                 CloseEditor()
