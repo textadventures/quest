@@ -81,8 +81,8 @@ namespace AxeSoftware.Quest.EditorControls
             if (data != null)
             {
                 data.ReadOnly = m_readOnly;
-                ctlExpression.Populate(data);
             }
+            ctlExpression.Populate(data);
 
             ctlScriptExpander.ReadOnly = m_readOnly;
             ctlScriptExpander.Populate(data, script);

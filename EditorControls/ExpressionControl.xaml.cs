@@ -67,6 +67,13 @@ namespace AxeSoftware.Quest.EditorControls
 
         void Uninitialise()
         {
+            if (m_templateEditor != null)
+            {
+                m_templateEditor.Controller = null;
+                m_templateEditor.Dirty -= m_templateEditor_Dirty;
+                m_templateEditor.RequestSave -= m_templateEditor_RequestSave;
+                m_templateEditor.Uninitialise();
+            }
             UninitialiseSimpleEditor();
         }
 

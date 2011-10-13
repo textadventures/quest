@@ -48,7 +48,13 @@ namespace AxeSoftware.Quest.EditorControls
         public void Populate(IEditorData data)
         {
             m_data = data;
-            if (data == null) return;
+
+            if (data == null)
+            {
+                m_value = null;
+                return;
+            }
+
             m_populating = true;
             PopulateList();
 

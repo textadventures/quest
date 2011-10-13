@@ -57,6 +57,22 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
+        public void Uninitialise()
+        {
+            foreach (IElementEditorControl ctl in m_controls)
+            {
+                ctl.Populate(null);
+                ctl.Helper.Dirty -= SubControl_Dirty;
+                ctl.Helper.RequestParentElementEditorSave -= SubControl_RequestParentElementEditorSave;
+                ctl.Helper.DoUninitialise();
+            }
+            if (m_data != null)
+            {
+                m_data.Changed -= m_data_Changed;
+            }
+            m_data = null;
+        }
+
         void m_data_Changed(object sender, EventArgs e)
         {
             RequestSave();
