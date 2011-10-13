@@ -19,6 +19,13 @@ namespace AxeSoftware.Quest.Scripts
         {
             string afterExpr;
             string expr = Utility.GetParameter(script, out afterExpr);
+
+            if (afterExpr.StartsWith(")"))
+            {
+                // We have a mismatch of brackets in the expression
+                throw new Exception("Too many ')'");
+            }
+
             string then = Utility.GetScript(afterExpr);
 
             IScript thenScript = ScriptFactory.CreateScript(then, proc);

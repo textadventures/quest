@@ -106,15 +106,22 @@ namespace AxeSoftware.Quest
                     dontAdd = false;
                     addedError = false;
 
-                    if (lastIf != null && line.StartsWith("else"))
+                    if (line.StartsWith("else"))
                     {
-                        if (line.StartsWith("else if"))
+                        if (lastIf == null)
                         {
-                            ifConstructor.AddElseIf(lastIf, line, proc);
+                            AddError("Unexpected 'else' (error with parent 'if'?):" + line);
                         }
                         else
                         {
-                            ifConstructor.AddElse(lastIf, line, proc);
+                            if (line.StartsWith("else if"))
+                            {
+                                ifConstructor.AddElseIf(lastIf, line, proc);
+                            }
+                            else
+                            {
+                                ifConstructor.AddElse(lastIf, line, proc);
+                            }
                         }
                         dontAdd = true;
                     }
