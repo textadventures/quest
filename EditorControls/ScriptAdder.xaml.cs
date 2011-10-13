@@ -69,9 +69,11 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Uninitialise()
         {
+            if (!m_initialised) return;
             ctlEditorTree.CommitSelection -= ctlEditorTree_CommitSelection;
             ctlEditorTree.SelectionChanged -= ctlEditorTree_SelectionChanged;
             m_controller = null;
+            m_initialised = false;
         }
 
         private WFEditorTree ctlEditorTree
