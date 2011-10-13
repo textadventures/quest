@@ -146,20 +146,23 @@ namespace AxeSoftware.Quest
                             }
                         }
 
-                        if (newScript == null)
+                        if (!addedError)
                         {
-                            // See if the script is like "myvar = 2". newScript will be null otherwise.
-                            newScript = m_setConstructor.Create(line, proc);
-                        }
+                            if (newScript == null)
+                            {
+                                // See if the script is like "myvar = 2". newScript will be null otherwise.
+                                newScript = m_setConstructor.Create(line, proc);
+                            }
 
-                        if (newScript == null)
-                        {
-                            // See if the script calls a procedure defined by the game
-                            newScript = m_procConstructor.Create(line, proc);
+                            if (newScript == null)
+                            {
+                                // See if the script calls a procedure defined by the game
+                                newScript = m_procConstructor.Create(line, proc);
+                            }
                         }
                     }
 
-                    if (!dontAdd)
+                    if (!dontAdd && !addedError)
                     {
                         if (newScript == null)
                         {

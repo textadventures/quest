@@ -41,6 +41,7 @@ namespace AxeSoftware.Quest.Scripts
         public void AddElseIf(IScript script, string elseIfScript, Element proc)
         {
             IScript add = GetElse(elseIfScript, proc);
+            if (add.Line == "") return;
 
             // GetElse uses the ScriptFactory to parse the "else if" block, so it will return
             // a MultiScript containing an IfScript with one expression and one "then" script block.
