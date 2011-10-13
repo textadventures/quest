@@ -93,7 +93,16 @@ namespace AxeSoftware.Quest
 
             while (!finished)
             {
-                line = Utility.GetScript(line, out remainingScript);
+                try
+                {
+                    line = Utility.GetScript(line, out remainingScript);
+                }
+                catch (Exception ex)
+                {
+                    AddError(string.Format("Error adding script '{0}': {1}", line, ex.Message));
+                    break;
+                }
+
                 if (line != null)
                 {
                     line = line.Trim();

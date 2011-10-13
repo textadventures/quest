@@ -131,7 +131,7 @@ Public Class Player
             If (m_game.Errors.Count > 0) Then
                 WriteLine("The following errors occurred:")
                 For Each loadError As String In m_game.Errors
-                    WriteLine(loadError)
+                    WriteLine(loadError.Replace(Chr(10), "<br/>"))
                 Next
             End If
             GameFinished()
