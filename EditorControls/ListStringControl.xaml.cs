@@ -47,7 +47,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (data == null)
             {
-                m_list = null;
+                CurrentList = null;
                 return;
             }
 

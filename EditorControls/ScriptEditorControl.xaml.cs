@@ -180,6 +180,7 @@ namespace AxeSoftware.Quest.EditorControls
                 ((Control)subCtl).GotFocus -= SubControl_GotFocus;
                 subCtl.Helper.Dirty -= SubControl_Dirty;
                 subCtl.Helper.RequestParentElementEditorSave -= SubControl_RequestParentElementEditorSave;
+                subCtl.Helper.DoUninitialise();
 
                 // Populating with null data is a signal to subcontrols to detach any event handlers from the previous data,
                 // so they don't respond to updates for data which they are not currently editing.
