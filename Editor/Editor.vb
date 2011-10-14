@@ -15,6 +15,7 @@ Public Class Editor
     Private WithEvents m_fileWatcher As System.IO.FileSystemWatcher
     Private m_simpleMode As Boolean
     Private m_reloadingFromCodeView As Boolean
+    Private m_uiHidden As Boolean
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -35,6 +36,10 @@ Public Class Editor
     End Sub
 
     Public Sub Initialise(ByRef filename As String)
+        m_menu.Visible = False
+        If Not m_uiHidden Then
+            HideUI()
+        End If
         m_currentElement = Nothing
         m_currentEditor = Nothing
         m_filename = filename
@@ -63,6 +68,8 @@ Public Class Editor
                             SetUpEditors()
                             RaiseEvent AddToRecent(m_filename, m_controller.GameName)
                             SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
+                            m_menu.Visible = True
+                            m_uiHidden = False
                             DisplayCodeView(False)
                             splitMain.Visible = True
                             ctlTree.Visible = True
@@ -678,6 +685,7 @@ Public Class Editor
     End Function
 
     Private Sub HideUI()
+        m_uiHidden = True
         splitMain.Visible = False
         ctlTree.Visible = False
         ctlToolbar.Visible = False

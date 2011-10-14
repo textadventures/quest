@@ -179,6 +179,7 @@ Public Class Main
 
     Private Sub ctlEditor_InitialiseFinished(success As Boolean) Handles ctlEditor.InitialiseFinished
         Me.Cursor = Cursors.Default
+        ctlMenu.Visible = True
         If Not success Then
             CloseEditor()
         End If
