@@ -53,6 +53,7 @@ Public Class Editor
             SetUpToolbar()
             SetUpEditors()
             RaiseEvent AddToRecent(filename, m_controller.GameName)
+            SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
             ctlTree.SetSelectedItem("game")
             ctlTree.FocusOnTree()
             SetWindowTitle()
@@ -945,6 +946,8 @@ Public Class Editor
                 For Each editor As WPFElementEditor In m_elementEditors.Values
                     editor.SimpleMode = m_simpleMode
                 Next
+
+                AxeSoftware.Utility.Registry.SaveSetting("Quest", "Settings", "EditorSimpleMode", If(m_simpleMode, 1, 0))
             End If
         End Set
     End Property

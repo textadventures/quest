@@ -137,6 +137,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void RetitleNode(string key, string title)
         {
+            if (!m_nodes.ContainsKey(key)) return;
             TreeNode node = m_nodes[key];
             node.Text = title;
         }
