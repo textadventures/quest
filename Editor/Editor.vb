@@ -917,6 +917,7 @@ Public Class Editor
         Set(value As Boolean)
             If (value <> m_simpleMode) Then
                 m_simpleMode = value
+                m_controller.SimpleMode = value
                 m_menu.MenuChecked("simplemode") = m_simpleMode
                 ctlToolbar.SimpleMode = value
 

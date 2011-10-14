@@ -40,13 +40,26 @@ namespace AxeSoftware.Quest
         private const string k_commands = "_gameCommands";
         private const string k_verbs = "_gameVerbs";
 
-        private List<ElementType> m_ignoredTypes = new List<ElementType> {
+        private List<ElementType> m_ignoredTypes = new List<ElementType>
+        {
             ElementType.ImpliedType,
             ElementType.Delegate,
             ElementType.Editor,
             ElementType.EditorTab,
             ElementType.EditorControl,
             ElementType.Resource
+        };
+
+        private List<ElementType> m_advancedTypes = new List<ElementType>
+        {
+            ElementType.DynamicTemplate,
+            ElementType.Function,
+            ElementType.IncludedLibrary,
+            ElementType.Javascript,
+            ElementType.ObjectType,
+            ElementType.Template,
+            ElementType.Timer,
+            ElementType.Walkthrough
         };
 
         private WorldModel m_worldModel;
@@ -64,6 +77,7 @@ namespace AxeSoftware.Quest
         private List<Element> m_clipboardElements;
         private ElementType m_clipboardElementType;
         private List<IScript> m_clipboardScripts;
+        private bool m_simpleMode;
 
         public delegate void VoidHandler();
         public event VoidHandler ClearTree;
@@ -352,35 +366,38 @@ namespace AxeSoftware.Quest
         {
             m_treeTitles = new Dictionary<string, string> { { k_commands, "Commands" }, { k_verbs, "Verbs" } };
             m_elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
-            AddTreeHeader(ElementType.Object, "_objects", "Objects", null);
-            AddTreeHeader(ElementType.Function, "_functions", "Functions", null);
-            AddTreeHeader(ElementType.Timer, "_timers", "Timers", null);
-            AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null);
-            AddTreeHeader(null, "_advanced", "Advanced", null);
-            AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced");
+            AddTreeHeader(ElementType.Object, "_objects", "Objects", null, true);
+            AddTreeHeader(ElementType.Function, "_functions", "Functions", null, false);
+            AddTreeHeader(ElementType.Timer, "_timers", "Timers", null, false);
+            AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
+            AddTreeHeader(null, "_advanced", "Advanced", null, false);
+            AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
             // Ignore Implied Types - there's no reason for game authors to edit them
             //AddTreeHeader(ElementType.ImpliedType, "_implied", "Implied Types", "_advanced");
-            AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced");
-            AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced");
+            AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced", false);
+            AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced", false);
             // Ignore Delegate elements - there's no reason for game authors to edit them (I think)
             //AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
-            AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced");
+            AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced", false);
             // Ignore Editor elements - there's no reason for game authors to edit them
             //AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
-            AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced");
+            AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
         }
 
-        private void AddTreeHeader(ElementType? type, string key, string title, string parent)
+        private void AddTreeHeader(ElementType? type, string key, string title, string parent, bool simple)
         {
-            m_treeTitles.Add(key, title);
-            TreeHeader header = new TreeHeader();
-            header.Key = key;
-            header.Title = title;
-            if (type != null)
+            if (simple || !SimpleMode)
             {
-                m_elementTreeStructure.Add(type.Value, header);
+                m_treeTitles.Add(key, title);
+                TreeHeader header = new TreeHeader();
+                header.Key = key;
+                header.Title = title;
+                if (type != null)
+                {
+                    m_elementTreeStructure.Add(type.Value, header);
+                }
+                AddedNode(key, title, parent, false, null);
             }
-            AddedNode(key, title, parent, false, null);
         }
 
         private void UpdateTree()
@@ -432,6 +449,7 @@ namespace AxeSoftware.Quest
         {
             // Don't display implied types, editor elements etc.
             if (m_ignoredTypes.Contains(e.ElemType)) return false;
+            if (SimpleMode && m_advancedTypes.Contains(e.ElemType)) return false;
             if (e.ElemType == ElementType.Template)
             {
                 // Don't display verb templates (if the user wants to edit a verb's regex,
@@ -1838,6 +1856,19 @@ namespace AxeSoftware.Quest
             EditableDictionary<string>.Clear();
             EditableList<string>.Clear();
             EditableWrappedItemDictionary<IScript, IEditableScripts>.Clear();
+        }
+
+        public bool SimpleMode
+        {
+            get { return m_simpleMode; }
+            set
+            {
+                if (m_simpleMode != value)
+                {
+                    m_simpleMode = value;
+                    UpdateTree();
+                }
+            }
         }
     }
 }
