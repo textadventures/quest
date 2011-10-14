@@ -148,9 +148,9 @@ Public Class Main
     Private Sub LaunchEdit(filename As String)
         Dim game As AxeSoftware.Quest.IASL = Nothing
         Dim ext As String
-        Dim loadOK As Boolean = False
 
         Try
+            Me.Cursor = Cursors.WaitCursor
             ext = System.IO.Path.GetExtension(filename)
 
             Select Case ext
@@ -164,7 +164,7 @@ Public Class Main
                     Me.ResumeLayout()
                     'ctlPlayer.RestoreSplitterPositions()
                     Application.DoEvents()
-                    loadOK = ctlEditor.Initialise(filename)
+                    ctlEditor.Initialise(filename)
                     ctlEditor.Focus()
                 Case Else
                     MsgBox(String.Format("Unrecognised file type '{0}'", ext))
@@ -172,12 +172,16 @@ Public Class Main
 
         Catch ex As Exception
             MsgBox("Error loading game: " + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
-        Finally
-            If Not loadOK Then
-                CloseEditor()
-            End If
+            Me.Cursor = Cursors.Default
         End Try
 
+    End Sub
+
+    Private Sub ctlEditor_InitialiseFinished(success As Boolean) Handles ctlEditor.InitialiseFinished
+        Me.Cursor = Cursors.Default
+        If Not success Then
+            CloseEditor()
+        End If
     End Sub
 
     Private Sub AboutMenuClick()

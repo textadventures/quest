@@ -14,6 +14,7 @@ Public Class Editor
     Private m_unsavedChanges As Boolean
     Private WithEvents m_fileWatcher As System.IO.FileSystemWatcher
     Private m_simpleMode As Boolean
+    Private m_reloadingFromCodeView As Boolean
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -22,6 +23,7 @@ Public Class Editor
     Public Event NewGame()
     Public Event OpenGame()
     Public Event PlayWalkthrough(filename As String, walkthrough As String, record As Boolean)
+    Public Event InitialiseFinished(success As Boolean)
 
     Public Sub New()
         ' This call is required by the designer.
@@ -32,49 +34,59 @@ Public Class Editor
         HideUI()
     End Sub
 
-    Public Function Initialise(ByRef filename As String) As Boolean
-        Try
-            Me.Cursor = Cursors.WaitCursor
-            m_currentElement = Nothing
-            m_currentEditor = Nothing
-            m_filename = filename
-            If m_controller IsNot Nothing Then
-                m_controller.Uninitialise()
-            End If
-            m_controller = New EditorController()
-            m_unsavedChanges = False
-            InitialiseEditorControlsList()
-            DisplayCodeView(False)
-            ctlReloadBanner.Visible = False
-            Dim ok As Boolean = m_controller.Initialise(filename)
-            If ok Then
-                Application.DoEvents()
-                Dim path As String = System.IO.Path.GetDirectoryName(filename)
-                Dim filter As String = System.IO.Path.GetFileName(filename)
-                m_fileWatcher = New System.IO.FileSystemWatcher(path, filter)
-                m_fileWatcher.EnableRaisingEvents = True
-                m_simpleMode = False
-                SetUpTree()
-                SetUpToolbar()
-                SetUpEditors()
-                RaiseEvent AddToRecent(filename, m_controller.GameName)
-                SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
-                splitMain.Visible = True
-                ctlTree.Visible = True
-                ctlToolbar.Visible = True
-                ctlLoading.Visible = False
-                ctlTree.SetSelectedItem("game")
-                ctlTree.FocusOnTree()
-                SetWindowTitle()
-                ShowEditor("game")
-            End If
+    Public Sub Initialise(ByRef filename As String)
+        m_currentElement = Nothing
+        m_currentEditor = Nothing
+        m_filename = filename
+        If m_controller IsNot Nothing Then
+            m_controller.Uninitialise()
+        End If
+        m_controller = New EditorController()
+        m_unsavedChanges = False
+        InitialiseEditorControlsList()
+        ctlReloadBanner.Visible = False
+        m_controller.StartInitialise(filename)
+    End Sub
 
-            Return ok
-        Finally
-            Me.Cursor = Cursors.Default
-        End Try
+    Private Sub m_controller_InitialiseFinished(sender As Object, e As EditorController.InitialiseResults) Handles m_controller.InitialiseFinished
+        BeginInvoke(Sub()
+                        If e.Success Then
+                            m_controller.UpdateTree()
+                            Application.DoEvents()
+                            Dim path As String = System.IO.Path.GetDirectoryName(m_filename)
+                            Dim filter As String = System.IO.Path.GetFileName(m_filename)
+                            m_fileWatcher = New System.IO.FileSystemWatcher(path, filter)
+                            m_fileWatcher.EnableRaisingEvents = True
+                            m_simpleMode = False
+                            SetUpTree()
+                            SetUpToolbar()
+                            SetUpEditors()
+                            RaiseEvent AddToRecent(m_filename, m_controller.GameName)
+                            SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
+                            DisplayCodeView(False)
+                            splitMain.Visible = True
+                            ctlTree.Visible = True
+                            ctlToolbar.Visible = True
+                            ctlLoading.Visible = False
+                            ctlTree.SetSelectedItem("game")
+                            ctlTree.FocusOnTree()
+                            SetWindowTitle()
+                            ShowEditor("game")
+                        End If
 
-    End Function
+                        If m_reloadingFromCodeView Then
+                            If Not e.Success Then
+                                ' Couldn't reload the file due to an error, so show code view again
+                                DisplayCodeView(True)
+                            Else
+                                ctlTree.TrySetSelectedItem(m_lastSelection)
+                            End If
+                            m_reloadingFromCodeView = False
+                        Else
+                            RaiseEvent InitialiseFinished(e.Success)
+                        End If
+                    End Sub)
+    End Sub
 
     Private Sub InitialiseEditorControlsList()
         EditorControls.ElementEditor.InitialiseEditorControls(m_controller)
@@ -723,13 +735,8 @@ Public Class Editor
         Else
             If ctlTextEditor.TextWasSaved Then
                 ' file was changed in the text editor, so reload it
-                Dim ok As Boolean = Initialise(m_filename)
-                If Not ok Then
-                    ' Couldn't reload the file due to an error, so show code view again
-                    DisplayCodeView(True)
-                Else
-                    ctlTree.TrySetSelectedItem(m_lastSelection)
-                End If
+                m_reloadingFromCodeView = True
+                Initialise(m_filename)
             Else
                 SetWindowTitle()
             End If
@@ -977,4 +984,5 @@ Public Class Editor
             End If
         End Set
     End Property
+
 End Class

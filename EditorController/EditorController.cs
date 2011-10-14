@@ -175,6 +175,28 @@ namespace AxeSoftware.Quest
             // set default filters here
         }
 
+        public class InitialiseResults : EventArgs
+        {
+            internal InitialiseResults(bool success)
+            {
+                Success = success;
+            }
+
+            public bool Success { get; private set; }
+        }
+
+        public event EventHandler<InitialiseResults> InitialiseFinished;
+
+        public void StartInitialise(string filename, string libFolder = null)
+        {
+            System.Threading.Thread newThread = new System.Threading.Thread(() =>
+            {
+                bool result = Initialise(filename, libFolder);
+                if (InitialiseFinished != null) InitialiseFinished(this, new InitialiseResults(result));
+            });
+            newThread.Start();
+        }
+
         public bool Initialise(string filename, string libFolder = null)
         {
             m_filename = filename;
@@ -211,11 +233,7 @@ namespace AxeSoftware.Quest
                 }
             }
 
-            if (ok)
-            {
-                UpdateTree();
-            }
-            else
+            if (!ok)
             {
                 string message = "Failed to load game due to the following errors:" + Environment.NewLine;
                 foreach (string error in m_worldModel.Errors)
@@ -402,7 +420,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private void UpdateTree()
+        public void UpdateTree()
         {
             if (BeginTreeUpdate == null) return;
 

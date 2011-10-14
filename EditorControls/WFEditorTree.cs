@@ -327,11 +327,13 @@ namespace AxeSoftware.Quest.EditorControls
         public void ExpandAll()
         {
             ctlTreeView.ExpandAll();
+            if (ctlTreeView.SelectedNode != null) ctlTreeView.SelectedNode.EnsureVisible();
         }
 
         public void CollapseAll()
         {
             ctlTreeView.CollapseAll();
+            if (ctlTreeView.SelectedNode != null) ctlTreeView.SelectedNode.EnsureVisible();
         }
 
         public void SelectFirstNode()
