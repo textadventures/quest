@@ -14,12 +14,14 @@ namespace AxeSoftware.Quest
             Category = editor.Fields.GetString("category");
             CreateString = editor.Fields.GetString("create");
             AdderDisplayString = editor.Fields.GetString("add");
+            IsVisibleInSimpleMode = !editor.Fields.GetAsType<bool>("advanced");
         }
 
         public string DisplayString { get; private set; }
         public string Category { get; private set; }
         public string CreateString { get; private set; }
         public string AdderDisplayString { get; private set; }
+        public bool IsVisibleInSimpleMode { get; private set; }
     }
 
     internal class EditableScriptFactory

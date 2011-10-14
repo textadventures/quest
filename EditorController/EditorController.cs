@@ -117,6 +117,8 @@ namespace AxeSoftware.Quest
         public delegate void RequestRunWalkthroughHandler(string name, bool record);
         public event RequestRunWalkthroughHandler RequestRunWalkthrough;
 
+        public event EventHandler SimpleModeChanged;
+
         public event EventHandler<ElementUpdatedEventArgs> ElementUpdated;
         public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
         public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
@@ -1879,6 +1881,7 @@ namespace AxeSoftware.Quest
                 {
                     m_simpleMode = value;
                     UpdateTree();
+                    if (SimpleModeChanged != null) SimpleModeChanged(this, new EventArgs());
                 }
             }
         }

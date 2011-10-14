@@ -5,6 +5,7 @@
     <category>Timers</category>
     <create>EnableTimer ()</create>
     <add>Enable timer</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -26,6 +27,7 @@
     <category>Timers</category>
     <create>DisableTimer ()</create>
     <add>Disable timer</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -47,6 +49,7 @@
     <category>Timers</category>
     <create>SetTimerInterval (,1)</create>
     <add>Set timer interval</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -86,6 +89,7 @@
     <category>Timers</category>
     <create>SetTimerScript () { }</create>
     <add>Set timer script</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -148,6 +152,7 @@
     <category>Timers</category>
     <create>Pause (1)</create>
     <add>Pause the game</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -173,6 +178,7 @@
     <category>Timers</category>
     <create>create timer ("")</create>
     <add>Create a timer</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>

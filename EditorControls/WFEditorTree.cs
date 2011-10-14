@@ -331,6 +331,11 @@ namespace AxeSoftware.Quest.EditorControls
             ctlTreeView.CollapseAll();
         }
 
+        public void SelectFirstNode()
+        {
+            ctlTreeView.SelectedNode = ctlTreeView.Nodes[0];
+        }
+
         private void ctlTreeView_DoubleClick(object sender, System.EventArgs e)
         {
             if (CommitSelection != null)

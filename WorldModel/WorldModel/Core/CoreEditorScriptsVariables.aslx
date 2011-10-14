@@ -57,6 +57,7 @@
     <category>Variables</category>
     <add>Set a variable or attribute</add>
     <create>=</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -86,6 +87,7 @@
     <category>Variables</category>
     <add>Set a variable or attribute to a script</add>
     <create>=></create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -114,6 +116,7 @@
     <category>Variables</category>
     <add>Set an object's attribute (named by an expression)</add>
     <create>set (,"",)</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -156,6 +159,7 @@
     <category>Variables</category>
     <add>Add a value to a list</add>
     <create>list add (,)</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -185,6 +189,7 @@
     <category>Variables</category>
     <add>Remove a value from a list</add>
     <create>list remove (,)</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -214,6 +219,7 @@
     <category>Variables</category>
     <add>Add a value to a dictionary</add>
     <create>dictionary add (,"",)</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -254,6 +260,7 @@
     <category>Variables</category>
     <add>Remove a value from a dictionary</add>
     <create>dictionary remove (,"")</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>

@@ -5,6 +5,7 @@
     <category>Turn Scripts</category>
     <create>EnableTurnScript ()</create>
     <add>Enable turn script</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -25,6 +26,7 @@
     <category>Turn Scripts</category>
     <create>DisableTurnScript ()</create>
     <add>Disable turn script</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -45,6 +47,7 @@
     <category>Turn Scripts</category>
     <create>SetTurnScript () { }</create>
     <add>Set turn script</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -106,6 +109,7 @@
     <category>Turn Scripts</category>
     <create>create turnscript ("")</create>
     <add>Create a turn script</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>

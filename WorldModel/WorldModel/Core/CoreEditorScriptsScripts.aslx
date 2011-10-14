@@ -13,6 +13,7 @@
     <category>Scripts</category>
     <add>For...</add>
     <create>for (,,,1)</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -74,6 +75,7 @@
     <category>Scripts</category>
     <add>For each...</add>
     <create>foreach (,)</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -110,6 +112,7 @@
     <category>Scripts</category>
     <add>Switch...</add>
     <create>switch ()</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -150,6 +153,7 @@
     <category>Scripts</category>
     <add>While...</add>
     <create>while ()</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -180,6 +184,7 @@
     <category>Scripts</category>
     <add>Call function</add>
     <create></create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -213,6 +218,7 @@
     <category>Scripts</category>
     <add>Run an object's script attribute</add>
     <create>do (,"")</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -256,6 +262,7 @@
     <category>Scripts</category>
     <add>Run a script returned by an expression</add>
     <create>invoke ()</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -285,6 +292,7 @@
     <category>Scripts</category>
     <create>error ("")</create>
     <add>Raise an error</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -304,6 +312,7 @@
     <category>Scripts</category>
     <create>return ()</create>
     <add>Set this function's return value</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -322,6 +331,7 @@
     <category>Scripts</category>
     <create>rundelegate (,"","")</create>
     <add>Run an object's delegate implementation</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>

@@ -37,6 +37,7 @@
     <category>Objects</category>
     <create>RemoveObject ()</create>
     <add>Remove object</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -57,6 +58,7 @@
     <category>Objects</category>
     <create>HelperOpenObject ()</create>
     <add>Open object</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -77,6 +79,7 @@
     <category>Objects</category>
     <create>HelperCloseObject ()</create>
     <add>Close object</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -139,6 +142,7 @@
     <category>Objects</category>
     <create>create ("")</create>
     <add>Create an object</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -158,6 +162,7 @@
     <category>Objects</category>
     <create>create exit ("",,,"")</create>
     <add>Create an exit</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -212,6 +217,7 @@
     <category>Objects</category>
     <create>CloneObject ()</create>
     <add>Clone object</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -232,6 +238,7 @@
     <category>Objects</category>
     <create>CloneObjectAndMove (,)</create>
     <add>Clone object and move</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -264,6 +271,7 @@
     <category>Objects</category>
     <create>destroy ("")</create>
     <add>Destroy an object</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>

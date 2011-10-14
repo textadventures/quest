@@ -48,6 +48,7 @@
     <category>Output</category>
     <create>SetFramePicture ("")</create>
     <add>Set frame picture</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -70,6 +71,7 @@
     <category>Output</category>
     <create>ClearFramePicture</create>
     <add>Clear frame picture</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -182,6 +184,7 @@
     <category>Output</category>
     <create>PrintCentered ("")</create>
     <add>Print a centered message</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -250,6 +253,7 @@
     <category>Output</category>
     <create>stop sound</create>
     <add>Stop sound</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -301,6 +305,7 @@
     <category>Output</category>
     <create>DisplayHttpLink ("", "", false)</create>
     <add>Print web link</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -346,6 +351,7 @@
     <category>Output</category>
     <create>DisplayMailtoLink ("", "")</create>
     <add>Print email link</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -379,6 +385,7 @@
     <category>Output</category>
     <create>WaitForKeyPress</create>
     <add>Wait for key press</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -392,6 +399,7 @@
     <category>Output</category>
     <create>show menu ("",,true) { }</create>
     <add>Show a menu</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -441,6 +449,7 @@
     <category>Output</category>
     <create>insert ("")</create>
     <add>Insert HTML from a file</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -463,6 +472,7 @@
     <category>Output</category>
     <create>request (ClearScreen,)</create>
     <add>Raise a UI request</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
