@@ -36,11 +36,13 @@
       <caption>Use any other object on this</caption>
       <attribute>useanything</attribute>
       <onlydisplayif>TypeOf(this, "useon") = "scriptdictionary"</onlydisplayif>
+      <advanced/>
     </control>
 
     <control>
       <controltype>title</controltype>
       <caption>Use this on (other object)</caption>
+      <advanced/>
     </control>
 
     <control>
@@ -52,6 +54,7 @@
       </types>
       <keyprompt>Please enter the object name</keyprompt>
       <source>object</source>
+      <advanced/>
     </control>
 
     <control>
@@ -59,6 +62,7 @@
       <caption>Use on any other object</caption>
       <attribute>selfuseanything</attribute>
       <onlydisplayif>TypeOf(this, "selfuseon") = "scriptdictionary"</onlydisplayif>
+      <advanced/>
     </control>
 
     <control>
@@ -82,11 +86,13 @@
       <caption>Give any other object to this</caption>
       <attribute>giveanything</attribute>
       <onlydisplayif>TypeOf(this, "give") = "scriptdictionary"</onlydisplayif>
+      <advanced/>
     </control>
 
     <control>
       <controltype>title</controltype>
       <caption>Give this to (other object)</caption>
+      <advanced/>
     </control>
 
     <control>
@@ -98,6 +104,7 @@
       </types>
       <keyprompt>Please enter the object name</keyprompt>
       <source>object</source>
+      <advanced/>
     </control>
 
     <control>
@@ -105,6 +112,7 @@
       <caption>Give to any other object</caption>
       <attribute>givetoanything</attribute>
       <onlydisplayif>TypeOf(this, "giveto") = "scriptdictionary"</onlydisplayif>
+      <advanced/>
     </control>
   </tab>
 </library>

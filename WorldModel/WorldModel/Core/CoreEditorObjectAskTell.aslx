@@ -20,6 +20,7 @@
       <controltype>script</controltype>
       <attribute>askdefault</attribute>
       <caption>Script to run when asked about an unknown topic</caption>
+      <advanced/>
     </control>
 
     <control>
@@ -38,6 +39,7 @@
       <controltype>script</controltype>
       <attribute>telldefault</attribute>
       <caption>Script to run when told about an unknown topic</caption>
+      <advanced/>
     </control>
 
   </tab>

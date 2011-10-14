@@ -9,6 +9,7 @@
       <types>editor_room=Room; editor_object=Object; *=Object and/or room</types>
       <width>150</width>
       <mustnotinherit>defaultplayer</mustnotinherit>
+      <advanced/>
     </control>
 
     <control>
@@ -21,6 +22,7 @@
       <caption>Alias</caption>
       <controltype>textbox</controltype>
       <attribute>alias</attribute>
+      <advanced/>
     </control>
 
     <control>
@@ -64,6 +66,7 @@
       <caption>Gender</caption>
       <controltype>textbox</controltype>
       <attribute>gender</attribute>
+      <advanced/>
     </control>
 
     <control>
@@ -71,6 +74,7 @@
       <caption>Article</caption>
       <controltype>textbox</controltype>
       <attribute>article</attribute>
+      <advanced/>
     </control>
 
     <control>

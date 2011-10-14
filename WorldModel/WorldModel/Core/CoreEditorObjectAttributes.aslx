@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>Attributes</caption>
+    <advanced/>
 
     <control>
       <controltype>stringdictionary</controltype>
