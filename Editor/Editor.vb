@@ -919,6 +919,26 @@ Public Class Editor
                 m_simpleMode = value
                 m_menu.MenuChecked("simplemode") = m_simpleMode
                 ctlToolbar.SimpleMode = value
+
+                m_menu.MenuVisible("addverb") = Not m_simpleMode
+                m_menu.MenuVisible("addcommand") = Not m_simpleMode
+                m_menu.MenuVisible("addfunction") = Not m_simpleMode
+                m_menu.MenuVisible("addtimer") = Not m_simpleMode
+                m_menu.MenuVisible("addturnscript") = Not m_simpleMode
+                m_menu.MenuVisible("addwalkthrough") = Not m_simpleMode
+                m_menu.MenuVisible("advanced") = Not m_simpleMode
+
+                ctlTree.SetMenuVisible("addverb", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addcommand", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addfunction", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addtimer", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addturnscript", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addwalkthrough", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addlibrary", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addtemplate", Not m_simpleMode)
+                ctlTree.SetMenuVisible("adddynamictemplate", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addobjecttype", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addjavascript", Not m_simpleMode)
             End If
         End Set
     End Property

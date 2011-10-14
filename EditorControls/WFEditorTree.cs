@@ -52,6 +52,7 @@ namespace AxeSoftware.Quest.EditorControls
         private Func<string, string, bool> m_canDragDelegate;
         private Action<string, string> m_doDragDelegate;
         public delegate void MenuClickHandler();
+        private Dictionary<string, ToolStripMenuItem> m_menus = new Dictionary<string, ToolStripMenuItem>();
 
         private Dictionary<string, MenuClickHandler> m_handlers = new Dictionary<string, MenuClickHandler>();
         public event FiltersUpdatedEventHandler FiltersUpdated;
@@ -604,7 +605,15 @@ namespace AxeSoftware.Quest.EditorControls
             foreach (var item in ctlContextMenu.Items)
             {
                 ToolStripMenuItem menuItem = item as ToolStripMenuItem;
-                if (menuItem != null) AddHandlers((ToolStripMenuItem)item);
+                if (menuItem != null)
+                {
+                    AddHandlers((ToolStripMenuItem)item);
+                    string tag = menuItem.Tag as string;
+                    if (!string.IsNullOrEmpty(tag))
+                    {
+                        m_menus.Add(tag, menuItem);
+                    }
+                }
             }
         }
 
@@ -653,6 +662,11 @@ namespace AxeSoftware.Quest.EditorControls
         public void FocusOnTree()
         {
             ctlTreeView.Focus();
+        }
+
+        public void SetMenuVisible(string key, bool visible)
+        {
+            m_menus[key].Visible = visible;
         }
     }
 }
