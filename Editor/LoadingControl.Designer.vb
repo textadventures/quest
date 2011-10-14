@@ -36,7 +36,7 @@ Partial Class LoadingControl
         Me.PictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.PictureBox1.Location = New System.Drawing.Point(47, 41)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(509, 118)
+        Me.PictureBox1.Size = New System.Drawing.Size(478, 118)
         Me.PictureBox1.TabIndex = 2
         Me.PictureBox1.TabStop = False
         '
@@ -47,7 +47,7 @@ Partial Class LoadingControl
         Me.ctlProgress.Location = New System.Drawing.Point(77, 110)
         Me.ctlProgress.MarqueeAnimationSpeed = 10
         Me.ctlProgress.Name = "ctlProgress"
-        Me.ctlProgress.Size = New System.Drawing.Size(445, 23)
+        Me.ctlProgress.Size = New System.Drawing.Size(404, 23)
         Me.ctlProgress.Style = System.Windows.Forms.ProgressBarStyle.Marquee
         Me.ctlProgress.TabIndex = 4
         '
@@ -70,7 +70,7 @@ Partial Class LoadingControl
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.PictureBox1)
         Me.Name = "LoadingControl"
-        Me.Size = New System.Drawing.Size(614, 407)
+        Me.Size = New System.Drawing.Size(573, 257)
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
