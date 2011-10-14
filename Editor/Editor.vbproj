@@ -116,6 +116,12 @@
     <Compile Include="InputWindow.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="LoadingControl.Designer.vb">
+      <DependentUpon>LoadingControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="LoadingControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="MainToolbar.Designer.vb">
       <DependentUpon>MainToolbar.vb</DependentUpon>
     </Compile>
@@ -177,6 +183,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InputWindow.resx">
       <DependentUpon>InputWindow.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadingControl.resx">
+      <DependentUpon>LoadingControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainToolbar.resx">
       <DependentUpon>MainToolbar.vb</DependentUpon>

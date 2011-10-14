@@ -293,12 +293,14 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_updatingSelection = true;
             ctlTreeView.SelectedNode = m_nodes[key];
+            ctlTreeView.SelectedNode.EnsureVisible();
             m_updatingSelection = false;
         }
 
         public void SetSelectedItem(string key)
         {
             ctlTreeView.SelectedNode = m_nodes[key];
+            ctlTreeView.SelectedNode.EnsureVisible();
         }
 
         public void TrySetSelectedItem(string key)
@@ -335,6 +337,7 @@ namespace AxeSoftware.Quest.EditorControls
         public void SelectFirstNode()
         {
             ctlTreeView.SelectedNode = ctlTreeView.Nodes[0];
+            ctlTreeView.SelectedNode.EnsureVisible();
         }
 
         private void ctlTreeView_DoubleClick(object sender, System.EventArgs e)

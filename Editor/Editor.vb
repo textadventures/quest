@@ -29,38 +29,51 @@ Public Class Editor
 
         ' Add any initialization after the InitializeComponent() call.
         BannerVisible = False
+        HideUI()
     End Sub
 
     Public Function Initialise(ByRef filename As String) As Boolean
-        m_currentElement = Nothing
-        m_currentEditor = Nothing
-        m_filename = filename
-        If m_controller IsNot Nothing Then
-            m_controller.Uninitialise()
-        End If
-        m_controller = New EditorController()
-        m_unsavedChanges = False
-        InitialiseEditorControlsList()
-        DisplayCodeView(False)
-        ctlReloadBanner.Visible = False
-        Dim ok As Boolean = m_controller.Initialise(filename)
-        If ok Then
-            Dim path As String = System.IO.Path.GetDirectoryName(filename)
-            Dim filter As String = System.IO.Path.GetFileName(filename)
-            m_fileWatcher = New System.IO.FileSystemWatcher(path, filter)
-            m_fileWatcher.EnableRaisingEvents = True
-            SetUpTree()
-            SetUpToolbar()
-            SetUpEditors()
-            RaiseEvent AddToRecent(filename, m_controller.GameName)
-            SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
-            ctlTree.SetSelectedItem("game")
-            ctlTree.FocusOnTree()
-            SetWindowTitle()
-            ShowEditor("game")
-        End If
+        Try
+            Me.Cursor = Cursors.WaitCursor
+            m_currentElement = Nothing
+            m_currentEditor = Nothing
+            m_filename = filename
+            If m_controller IsNot Nothing Then
+                m_controller.Uninitialise()
+            End If
+            m_controller = New EditorController()
+            m_unsavedChanges = False
+            InitialiseEditorControlsList()
+            DisplayCodeView(False)
+            ctlReloadBanner.Visible = False
+            Dim ok As Boolean = m_controller.Initialise(filename)
+            If ok Then
+                Application.DoEvents()
+                Dim path As String = System.IO.Path.GetDirectoryName(filename)
+                Dim filter As String = System.IO.Path.GetFileName(filename)
+                m_fileWatcher = New System.IO.FileSystemWatcher(path, filter)
+                m_fileWatcher.EnableRaisingEvents = True
+                m_simpleMode = False
+                SetUpTree()
+                SetUpToolbar()
+                SetUpEditors()
+                RaiseEvent AddToRecent(filename, m_controller.GameName)
+                SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
+                splitMain.Visible = True
+                ctlTree.Visible = True
+                ctlToolbar.Visible = True
+                ctlLoading.Visible = False
+                ctlTree.SetSelectedItem("game")
+                ctlTree.FocusOnTree()
+                SetWindowTitle()
+                ShowEditor("game")
+            End If
 
-        Return ok
+            Return ok
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+
     End Function
 
     Private Sub InitialiseEditorControlsList()
@@ -151,6 +164,7 @@ Public Class Editor
         m_elementEditors = New Dictionary(Of String, WPFElementEditor)
 
         For Each editor As String In m_controller.GetAllEditorNames()
+            Application.DoEvents()
             AddEditor(editor)
         Next
     End Sub
@@ -644,8 +658,20 @@ Public Class Editor
             'GC.Collect()
         End If
 
+        If Not appIsExiting Then
+            HideUI()
+        End If
+
         Return True
     End Function
+
+    Private Sub HideUI()
+        splitMain.Visible = False
+        ctlTree.Visible = False
+        ctlToolbar.Visible = False
+        ctlLoading.Visible = True
+        ctlLoading.BringToFront()
+    End Sub
 
     Private Sub Cut()
         If m_codeView Then

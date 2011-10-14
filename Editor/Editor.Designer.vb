@@ -32,6 +32,7 @@ Partial Class Editor
         Me.ctlTextEditor = New AxeSoftware.Quest.TextEditorControl()
         Me.ctlReloadBanner = New AxeSoftware.Quest.AlertBanner()
         Me.ctlToolbar = New AxeSoftware.Quest.MainToolbar()
+        Me.ctlLoading = New AxeSoftware.Quest.LoadingControl()
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.Panel2.SuspendLayout()
@@ -43,7 +44,7 @@ Partial Class Editor
         '
         Me.splitMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
-        Me.splitMain.Location = New System.Drawing.Point(0, 48)
+        Me.splitMain.Location = New System.Drawing.Point(0, 377)
         Me.splitMain.Name = "splitMain"
         '
         'splitMain.Panel1
@@ -54,7 +55,7 @@ Partial Class Editor
         '
         Me.splitMain.Panel2.Controls.Add(Me.pnlContent)
         Me.splitMain.Panel2.Controls.Add(Me.pnlHeader)
-        Me.splitMain.Size = New System.Drawing.Size(618, 281)
+        Me.splitMain.Size = New System.Drawing.Size(618, 0)
         Me.splitMain.SplitterDistance = 206
         Me.splitMain.TabIndex = 0
         '
@@ -65,7 +66,7 @@ Partial Class Editor
         Me.ctlTree.Location = New System.Drawing.Point(0, 0)
         Me.ctlTree.Name = "ctlTree"
         Me.ctlTree.ShowFilterBar = True
-        Me.ctlTree.Size = New System.Drawing.Size(206, 281)
+        Me.ctlTree.Size = New System.Drawing.Size(206, 0)
         Me.ctlTree.TabIndex = 0
         '
         'pnlContent
@@ -73,7 +74,7 @@ Partial Class Editor
         Me.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlContent.Location = New System.Drawing.Point(0, 41)
         Me.pnlContent.Name = "pnlContent"
-        Me.pnlContent.Size = New System.Drawing.Size(408, 240)
+        Me.pnlContent.Size = New System.Drawing.Size(408, 0)
         Me.pnlContent.TabIndex = 1
         '
         'pnlHeader
@@ -115,9 +116,9 @@ Partial Class Editor
         '
         Me.ctlTextEditor.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlTextEditor.EditText = ""
-        Me.ctlTextEditor.Location = New System.Drawing.Point(0, 48)
+        Me.ctlTextEditor.Location = New System.Drawing.Point(0, 377)
         Me.ctlTextEditor.Name = "ctlTextEditor"
-        Me.ctlTextEditor.Size = New System.Drawing.Size(618, 281)
+        Me.ctlTextEditor.Size = New System.Drawing.Size(618, 0)
         Me.ctlTextEditor.TabIndex = 3
         Me.ctlTextEditor.Visible = False
         '
@@ -128,7 +129,7 @@ Partial Class Editor
         Me.ctlReloadBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.ctlReloadBanner.ButtonText = "Reload"
         Me.ctlReloadBanner.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ctlReloadBanner.Location = New System.Drawing.Point(0, 25)
+        Me.ctlReloadBanner.Location = New System.Drawing.Point(0, 354)
         Me.ctlReloadBanner.Name = "ctlReloadBanner"
         Me.ctlReloadBanner.Size = New System.Drawing.Size(618, 23)
         Me.ctlReloadBanner.TabIndex = 4
@@ -138,12 +139,21 @@ Partial Class Editor
         '
         Me.ctlToolbar.CodeView = False
         Me.ctlToolbar.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ctlToolbar.Location = New System.Drawing.Point(0, 0)
+        Me.ctlToolbar.Location = New System.Drawing.Point(0, 329)
         Me.ctlToolbar.Name = "ctlToolbar"
         Me.ctlToolbar.RedoButtonEnabled = False
+        Me.ctlToolbar.SimpleMode = False
         Me.ctlToolbar.Size = New System.Drawing.Size(618, 25)
         Me.ctlToolbar.TabIndex = 2
         Me.ctlToolbar.UndoButtonEnabled = False
+        '
+        'ctlLoading
+        '
+        Me.ctlLoading.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ctlLoading.Location = New System.Drawing.Point(0, 0)
+        Me.ctlLoading.Name = "ctlLoading"
+        Me.ctlLoading.Size = New System.Drawing.Size(618, 329)
+        Me.ctlLoading.TabIndex = 9
         '
         'Editor
         '
@@ -153,6 +163,7 @@ Partial Class Editor
         Me.Controls.Add(Me.ctlTextEditor)
         Me.Controls.Add(Me.ctlReloadBanner)
         Me.Controls.Add(Me.ctlToolbar)
+        Me.Controls.Add(Me.ctlLoading)
         Me.Name = "Editor"
         Me.Size = New System.Drawing.Size(618, 329)
         Me.splitMain.Panel1.ResumeLayout(False)
@@ -173,5 +184,6 @@ Partial Class Editor
     Friend WithEvents ctlTextEditor As AxeSoftware.Quest.TextEditorControl
     Friend WithEvents ctlBanner As AxeSoftware.Quest.AlertBanner
     Friend WithEvents ctlReloadBanner As AxeSoftware.Quest.AlertBanner
+    Friend WithEvents ctlLoading As AxeSoftware.Quest.LoadingControl
 
 End Class
