@@ -13,6 +13,7 @@ Public Class Editor
     Private m_currentEditorData As IEditorDataExtendedAttributeInfo
     Private m_unsavedChanges As Boolean
     Private WithEvents m_fileWatcher As System.IO.FileSystemWatcher
+    Private m_simpleMode As Boolean
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -96,6 +97,7 @@ Public Class Editor
         menu.AddMenuClickHandler("delete", AddressOf Delete)
         menu.AddMenuClickHandler("publish", AddressOf Publish)
         menu.AddMenuClickHandler("find", AddressOf Find)
+        menu.AddMenuClickHandler("simplemode", AddressOf ToggleSimpleMode)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -717,6 +719,7 @@ Public Class Editor
         ctlToolbar.CodeView = codeView
         m_menu.MenuVisible("add") = Not codeView
         m_menu.MenuVisible("find") = codeView
+        m_menu.MenuEnabled("simplemode") = Not codeView
     End Sub
 
     Public Sub Redisplay()
@@ -902,4 +905,21 @@ Public Class Editor
     Public Sub SetRecordedWalkthrough(name As String, steps As List(Of String))
         m_controller.RecordWalkthrough(name, steps)
     End Sub
+
+    Private Sub ToggleSimpleMode()
+        SimpleMode = Not m_menu.MenuChecked("simplemode")
+    End Sub
+
+    Public Property SimpleMode As Boolean
+        Get
+            Return m_simpleMode
+        End Get
+        Set(value As Boolean)
+            If (value <> m_simpleMode) Then
+                m_simpleMode = value
+                m_menu.MenuChecked("simplemode") = m_simpleMode
+                ctlToolbar.SimpleMode = value
+            End If
+        End Set
+    End Property
 End Class
