@@ -366,7 +366,7 @@ namespace AxeSoftware.Quest
         {
             m_treeTitles = new Dictionary<string, string> { { k_commands, "Commands" }, { k_verbs, "Verbs" } };
             m_elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
-            AddTreeHeader(ElementType.Object, "_objects", "Objects", null, true);
+            AddTreeHeader(ElementType.Object, "_objects", "Objects", null, false);
             AddTreeHeader(ElementType.Function, "_functions", "Functions", null, false);
             AddTreeHeader(ElementType.Timer, "_timers", "Timers", null, false);
             AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
@@ -437,7 +437,7 @@ namespace AxeSoftware.Quest
             {
                 AddedNode(o.Name, text, parent, isLibrary, position);
 
-                if (o.Name == "game")
+                if (o.Name == "game" && !SimpleMode)
                 {
                     AddedNode(k_verbs, "Verbs", "game", false, null);
                     AddedNode(k_commands, "Commands", "game", false, null);
@@ -450,6 +450,13 @@ namespace AxeSoftware.Quest
             // Don't display implied types, editor elements etc.
             if (m_ignoredTypes.Contains(e.ElemType)) return false;
             if (SimpleMode && m_advancedTypes.Contains(e.ElemType)) return false;
+            if (SimpleMode)
+            {
+                if (e.ElemType == ElementType.Object && e.Type == ObjectType.Command)
+                {
+                    return false;
+                }
+            }
             if (e.ElemType == ElementType.Template)
             {
                 // Don't display verb templates (if the user wants to edit a verb's regex,
@@ -470,6 +477,11 @@ namespace AxeSoftware.Quest
 
         private string GetElementTreeParent(Element o)
         {
+            if (SimpleMode)
+            {
+                return o.Parent == null ? null : o.Parent.Name;
+            }
+
             if (o.Parent != null) return o.Parent.Name;
 
             if (o.ElemType == ElementType.Object && o.Type == ObjectType.Command)

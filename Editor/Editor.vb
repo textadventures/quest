@@ -929,6 +929,7 @@ Public Class Editor
                 m_menu.MenuVisible("addwalkthrough") = Not m_simpleMode
                 m_menu.MenuVisible("advanced") = Not m_simpleMode
 
+                ctlTree.ShowFilterBar = Not m_simpleMode
                 ctlTree.SetMenuVisible("addverb", Not m_simpleMode)
                 ctlTree.SetMenuVisible("addcommand", Not m_simpleMode)
                 ctlTree.SetMenuVisible("addfunction", Not m_simpleMode)
