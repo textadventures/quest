@@ -425,5 +425,10 @@ namespace AxeSoftware.Quest
         {
             get { throw new NotImplementedException(); }
         }
+
+        public bool IsControlVisibleInSimpleMode
+        {
+            get { return true; }
+        }
     }
 }

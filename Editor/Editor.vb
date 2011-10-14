@@ -941,6 +941,10 @@ Public Class Editor
                 ctlTree.SetMenuVisible("adddynamictemplate", Not m_simpleMode)
                 ctlTree.SetMenuVisible("addobjecttype", Not m_simpleMode)
                 ctlTree.SetMenuVisible("addjavascript", Not m_simpleMode)
+
+                For Each editor As WPFElementEditor In m_elementEditors.Values
+                    editor.SimpleMode = m_simpleMode
+                Next
             End If
         End Set
     End Property

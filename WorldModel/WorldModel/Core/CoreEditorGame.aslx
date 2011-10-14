@@ -27,12 +27,14 @@
         <caption>Start script</caption>
         <attribute>start</attribute>
         <expand/>
+        <advanced/>
       </control>
 
     </tab>
 
     <tab>
       <caption>Options</caption>
+      <advanced/>
 
       <control>
         <controltype>checkbox</controltype>
@@ -135,6 +137,7 @@
 
     <tab>
       <caption>Attributes</caption>
+      <advanced/>
 
       <control>
         <controltype>stringdictionary</controltype>

@@ -30,6 +30,7 @@ namespace AxeSoftware.Quest
             if (source.Fields.HasType<int>("width")) m_width = source.Fields.GetAsType<int>("width");
             if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");
             m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
+            IsControlVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
 
             if (source.Fields.HasString("filtergroup"))
             {
@@ -101,6 +102,12 @@ namespace AxeSoftware.Quest
         public IEditorDefinition Parent
         {
             get { return m_parent; }
+        }
+
+        public bool IsControlVisibleInSimpleMode
+        {
+            get;
+            private set;
         }
     }
 }
