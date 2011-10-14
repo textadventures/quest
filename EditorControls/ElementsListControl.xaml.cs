@@ -76,7 +76,6 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller = null;
             ctlElementsList.Uninitialise();
-            ctlElementsList.Dispose();
         }
 
         private WFElementsListControl ctlElementsList

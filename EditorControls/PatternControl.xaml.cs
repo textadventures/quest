@@ -46,7 +46,11 @@ namespace AxeSoftware.Quest.EditorControls
         public void Populate(IEditorData data)
         {
             m_data = data;
-            if (data == null) return;
+            if (data == null)
+            {
+                m_value = null;
+                return;
+            }
             m_helper.StartPopulating();
             m_value = m_helper.Populate(data);
             textBox.Text = (m_value != null) ? m_value.Pattern : string.Empty;

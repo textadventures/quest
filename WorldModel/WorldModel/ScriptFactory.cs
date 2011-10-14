@@ -93,7 +93,16 @@ namespace AxeSoftware.Quest
 
             while (!finished)
             {
-                line = Utility.GetScript(line, out remainingScript);
+                try
+                {
+                    line = Utility.GetScript(line, out remainingScript);
+                }
+                catch (Exception ex)
+                {
+                    AddError(string.Format("Error adding script '{0}': {1}", line, ex.Message));
+                    break;
+                }
+
                 if (line != null)
                 {
                     line = line.Trim();
@@ -106,15 +115,22 @@ namespace AxeSoftware.Quest
                     dontAdd = false;
                     addedError = false;
 
-                    if (lastIf != null && line.StartsWith("else"))
+                    if (line.StartsWith("else"))
                     {
-                        if (line.StartsWith("else if"))
+                        if (lastIf == null)
                         {
-                            ifConstructor.AddElseIf(lastIf, line, proc);
+                            AddError("Unexpected 'else' (error with parent 'if'?):" + line);
                         }
                         else
                         {
-                            ifConstructor.AddElse(lastIf, line, proc);
+                            if (line.StartsWith("else if"))
+                            {
+                                ifConstructor.AddElseIf(lastIf, line, proc);
+                            }
+                            else
+                            {
+                                ifConstructor.AddElse(lastIf, line, proc);
+                            }
                         }
                         dontAdd = true;
                     }
@@ -146,20 +162,23 @@ namespace AxeSoftware.Quest
                             }
                         }
 
-                        if (newScript == null)
+                        if (!addedError)
                         {
-                            // See if the script is like "myvar = 2". newScript will be null otherwise.
-                            newScript = m_setConstructor.Create(line, proc);
-                        }
+                            if (newScript == null)
+                            {
+                                // See if the script is like "myvar = 2". newScript will be null otherwise.
+                                newScript = m_setConstructor.Create(line, proc);
+                            }
 
-                        if (newScript == null)
-                        {
-                            // See if the script calls a procedure defined by the game
-                            newScript = m_procConstructor.Create(line, proc);
+                            if (newScript == null)
+                            {
+                                // See if the script calls a procedure defined by the game
+                                newScript = m_procConstructor.Create(line, proc);
+                            }
                         }
                     }
 
-                    if (!dontAdd)
+                    if (!dontAdd && !addedError)
                     {
                         if (newScript == null)
                         {

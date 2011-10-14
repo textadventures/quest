@@ -55,6 +55,7 @@
         AddMenuData("fullscreen", MenuMode.Player)
         AddMenuData("publish", MenuMode.Editor)
         AddMenuData("find", MenuMode.Editor)
+        AddMenuData("options", MenuMode.GameBrowser, MenuMode.Player)
     End Sub
 
     Private Sub AddMenuData(key As String, ParamArray modes() As MenuMode)

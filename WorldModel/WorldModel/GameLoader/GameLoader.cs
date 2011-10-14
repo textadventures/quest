@@ -106,8 +106,15 @@ namespace AxeSoftware.Quest
 
             if (m_errors.Count == 0)
             {
-                ResolveGame();
-                ValidateGame();
+                try
+                {
+                    ResolveGame();
+                    ValidateGame();
+                }
+                catch (Exception e)
+                {
+                    AddError(string.Format("Error: {0}", e.Message));
+                }
             }
 
             return (m_errors.Count == 0);

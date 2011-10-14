@@ -321,13 +321,23 @@
   </function>
 
   <function name="OpenObject" parameters="object">
-    msg (DynamicTemplate("OpenSuccessful", object))
+    if (HasString(object, "openmsg")) {
+      msg (object.openmsg)
+    }
+    else {
+      msg (DynamicTemplate("OpenSuccessful", object))
+    }
     object.isopen = true
     ListObjectContents (object)
   </function>
 
   <function name="CloseObject" parameters="object">
-    msg (DynamicTemplate("CloseSuccessful", object))
+    if (HasString(object, "closemsg")) {
+      msg (object.closemsg)
+    }
+    else {
+      msg (DynamicTemplate("CloseSuccessful", object))
+    }
     object.isopen = false
   </function>
 

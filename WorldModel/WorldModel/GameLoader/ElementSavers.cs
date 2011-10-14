@@ -333,6 +333,7 @@ namespace AxeSoftware.Quest
                     result += Environment.NewLine;
 
                     writer.WriteStartElement("steps");
+                    writer.WriteAttributeString("type", "list");
                     writer.WriteString(result);
                     writer.WriteEndElement();
                 }

@@ -1,4 +1,4 @@
-#QUESTDAT-V400-ASL400.0-160107
+#QUESTDAT-V410-ASL410.0-120709
 #TAGS-1.0+
 game;1
 procedure;2
@@ -114,6 +114,9 @@ list;107
 empty;108
 closed;109
 options;110
+abbreviations;111
+#TAGS-4.1+
+locked;112
 #SCRIPT-1.0+
 do;150
 if;151
@@ -215,6 +218,9 @@ shell;240
 popup;241
 select;242
 case;243
+#SCRIPT-4.1+
+lock;244
+unlock;245
 #MISC
 !quote;10
 !null;0

@@ -50,7 +50,6 @@ namespace AxeSoftware.Quest.EditorControls
         void m_helper_Uninitialise()
         {
             ctlDictionaryScript.Initialise(null, null);
-            ctlDictionaryScript.Dispose();
         }
 
         private WFDictionaryScriptControl ctlDictionaryScript

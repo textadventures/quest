@@ -51,7 +51,6 @@ namespace AxeSoftware.Quest.EditorControls
         void m_helper_Uninitialise()
         {
             ctlDictionaryString.Initialise(null, null);
-            ctlDictionaryString.Dispose();
         }
 
         private WFDictionaryStringControl ctlDictionaryString

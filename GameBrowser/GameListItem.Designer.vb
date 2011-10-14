@@ -95,7 +95,7 @@ Partial Class GameListItem
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.White
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.ContextMenuStrip = Me.ctlContextMenu
         Me.Controls.Add(Me.cmdLaunch)
         Me.Controls.Add(Me.lblAuthor)

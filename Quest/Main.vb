@@ -23,6 +23,8 @@ Public Class Main
         If args.Count > 1 Then
             CmdLineLaunch(args(1))
         End If
+
+        AddHandler Options.Instance.OptionChanged, AddressOf OptionsChanged
     End Sub
 
     Private Sub InitialiseMenuHandlers()
@@ -36,6 +38,7 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("forums", AddressOf Forums)
         ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
         ctlMenu.AddMenuClickHandler("fullscreen", AddressOf GoFullScreen)
+        ctlMenu.AddMenuClickHandler("options", AddressOf ShowOptions)
     End Sub
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
@@ -122,6 +125,16 @@ Public Class Main
                 Me.ResumeLayout()
                 'ctlPlayer.RestoreSplitterPositions()
                 Application.DoEvents()
+                ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
+                ctlPlayer.SetPlayerOverrideColours(
+                        Options.Instance.GetColourValue(OptionNames.BackgroundColour),
+                        Options.Instance.GetColourValue(OptionNames.ForegroundColour),
+                        Options.Instance.GetColourValue(OptionNames.LinkColour))
+                ctlPlayer.UseGameFont = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
+                ctlPlayer.SetPlayerOverrideFont(
+                        Options.Instance.GetStringValue(OptionNames.FontFamily),
+                        Options.Instance.GetSingleValue(OptionNames.FontSize),
+                        DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
                 ctlPlayer.Initialise(game)
                 ctlPlayer.Focus()
             End If
@@ -158,7 +171,7 @@ Public Class Main
             End Select
 
         Catch ex As Exception
-            MsgBox("Error launching game: " & ex.Message)
+            MsgBox("Error loading game: " + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
         Finally
             If Not loadOK Then
                 CloseEditor()
@@ -355,4 +368,29 @@ Public Class Main
     Private Sub ctlPlayer_RecordedWalkthrough(name As String, steps As System.Collections.Generic.List(Of String)) Handles ctlPlayer.RecordedWalkthrough
         ctlEditor.SetRecordedWalkthrough(name, steps)
     End Sub
+
+    Private Sub ShowOptions()
+        Dim optionsForm As New OptionsDialog
+        optionsForm.ShowDialog()
+    End Sub
+
+    Private Sub OptionsChanged(optionName As OptionNames)
+        Select Case optionName
+            Case OptionNames.BackgroundColour, OptionNames.ForegroundColour, OptionNames.LinkColour
+                ctlPlayer.SetPlayerOverrideColours(
+                    Options.Instance.GetColourValue(OptionNames.BackgroundColour),
+                    Options.Instance.GetColourValue(OptionNames.ForegroundColour),
+                    Options.Instance.GetColourValue(OptionNames.LinkColour))
+            Case OptionNames.UseGameColours
+                ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
+            Case OptionNames.FontFamily, OptionNames.FontSize, OptionNames.FontStyle
+                ctlPlayer.SetPlayerOverrideFont(
+                    Options.Instance.GetStringValue(OptionNames.FontFamily),
+                    Options.Instance.GetSingleValue(OptionNames.FontSize),
+                    DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
+            Case OptionNames.UseGameFont
+                ctlPlayer.UseGameFont = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
+        End Select
+    End Sub
+
 End Class

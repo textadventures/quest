@@ -25,6 +25,7 @@ namespace AxeSoftware.Quest.EditorControls
         private IEditorData m_data;
         private bool m_readOnly;
         private bool m_saving;
+        private bool m_initialised = false;
 
         internal event Action Initialise;
 
@@ -50,19 +51,23 @@ namespace AxeSoftware.Quest.EditorControls
 
         void m_helper_Initialise()
         {
+            if (m_initialised) return;
             m_controller = m_helper.Controller;
             m_controller.ScriptClipboardUpdated += m_controller_ScriptClipboardUpdated;
             ctlScriptAdder.CloseButtonVisible = false;
             ctlScriptAdder.Initialise(m_controller);
 
             if (Initialise != null) Initialise();
+            m_initialised = true;
         }
 
         void m_helper_Uninitialise()
         {
-            m_controller.ScriptClipboardUpdated -= m_controller_ScriptClipboardUpdated;
+            if (!m_initialised) return;
+            if (m_controller != null) m_controller.ScriptClipboardUpdated -= m_controller_ScriptClipboardUpdated;
             m_controller = null;
             ctlScriptAdder.Uninitialise();
+            m_initialised = false;
         }
 
         private string ElementName
@@ -180,6 +185,7 @@ namespace AxeSoftware.Quest.EditorControls
                 ((Control)subCtl).GotFocus -= SubControl_GotFocus;
                 subCtl.Helper.Dirty -= SubControl_Dirty;
                 subCtl.Helper.RequestParentElementEditorSave -= SubControl_RequestParentElementEditorSave;
+                subCtl.Helper.DoUninitialise();
 
                 // Populating with null data is a signal to subcontrols to detach any event handlers from the previous data,
                 // so they don't respond to updates for data which they are not currently editing.

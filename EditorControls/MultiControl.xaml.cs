@@ -127,6 +127,8 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_data == null)
             {
                 if (CurrentElementEditor != null) CurrentElementEditor.Populate(m_data);
+                CurrentEditor = null;
+                HideOtherEditors();
                 return;
             }
 
@@ -242,7 +244,8 @@ namespace AxeSoftware.Quest.EditorControls
                     IElementEditorControl editorCtl = ctl as IElementEditorControl;
                     if (editorCtl != null)
                     {
-                        editorCtl.Helper.DoInitialise(null, null);
+                        editorCtl.Populate(null);
+                        editorCtl.Helper.DoUninitialise();
                     }
                 }
             }
@@ -319,6 +322,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_controller = null;
             m_definition = null;
+            m_overrideControlTypesMap = null;
         }
 
         private void InitialiseTypesList(IDictionary<string, string> types)

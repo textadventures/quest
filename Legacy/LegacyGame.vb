@@ -139,6 +139,7 @@ Public Class LegacyGame
         Dim TimerActive As Boolean
         Dim TimerAction As String
         Dim TimerTicks As Integer
+        Dim BypassThisTurn As Boolean
     End Structure
 
     Friend Structure UserDefinedCommandType
@@ -1504,6 +1505,7 @@ Public Class LegacyGame
         If LCase(Right(Filename, 4)) = ".zip" Then
             m_originalFilename = Filename
             Filename = GetUnzippedFile(Filename)
+            GamePath = System.IO.Path.GetDirectoryName(Filename)
         End If
 
         If LCase(Right(Filename, 4)) = ".asl" Or LCase(Right(Filename, 4)) = ".txt" Then
@@ -7239,6 +7241,7 @@ errhandle:
             If LCase(TimerName) = LCase(Timers(i).TimerName) Then
                 FoundTimer = True
                 Timers(i).TimerActive = TimerState
+                Timers(i).BypassThisTurn = True     ' don't trigger timer during the turn it was first enabled
                 i = NumberTimers
             End If
         Next i
@@ -13374,11 +13377,16 @@ ErrorHandler:
 
         For i = 1 To NumberTimers
             If Timers(i).TimerActive Then
-                Timers(i).TimerTicks = Timers(i).TimerTicks + elapsedTime
+                If Timers(i).BypassThisTurn Then
+                    ' don't trigger timer during the turn it was first enabled
+                    Timers(i).BypassThisTurn = False
+                Else
+                    Timers(i).TimerTicks = Timers(i).TimerTicks + elapsedTime
 
-                If Timers(i).TimerTicks >= Timers(i).TimerInterval Then
-                    Timers(i).TimerTicks = 0
-                    TimerScripts.Add(Timers(i).TimerAction)
+                    If Timers(i).TimerTicks >= Timers(i).TimerInterval Then
+                        Timers(i).TimerTicks = 0
+                        TimerScripts.Add(Timers(i).TimerAction)
+                    End If
                 End If
             End If
         Next i

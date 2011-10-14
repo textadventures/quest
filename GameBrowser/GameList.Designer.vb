@@ -29,7 +29,7 @@ Partial Class GameList
         'ctlTableLayout
         '
         Me.ctlTableLayout.AutoScroll = True
-        Me.ctlTableLayout.BackColor = System.Drawing.Color.White
+        Me.ctlTableLayout.BackColor = System.Drawing.SystemColors.Window
         Me.ctlTableLayout.ColumnCount = 1
         Me.ctlTableLayout.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.ctlTableLayout.Dock = System.Windows.Forms.DockStyle.Fill

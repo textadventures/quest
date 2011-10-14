@@ -46,6 +46,8 @@ namespace WebPlayer
 
             IASL game = GameLauncher.GetGame(m_filename, LibraryFolder);
             m_controller = new PlayerHelper(game, this);
+            m_controller.UseGameColours = true;
+            m_controller.UseGameFont = true;
             m_controller.Game.LogError += LogError;
             m_controller.Game.UpdateList += UpdateList;
             m_controller.Game.Finished += GameFinished;

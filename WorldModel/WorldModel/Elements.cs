@@ -75,7 +75,14 @@ namespace AxeSoftware.Quest
 
         public Element Get(string key)
         {
-            return m_allElements[key];
+            try
+            {
+                return m_allElements[key];
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(string.Format("Element not found: '{0}'", key), ex);
+            }
         }
 
         public IEnumerable<Element> Objects
@@ -110,7 +117,14 @@ namespace AxeSoftware.Quest
 
         public Element Get(ElementType t, string key)
         {
-            return m_elements[t][key];
+            try
+            {
+                return m_elements[t][key];
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException(string.Format("No element '{0}' of type '{1}'", key, t), ex);
+            }
         }
 
         public bool TryGetValue(ElementType t, string key, out Element element)

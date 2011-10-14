@@ -101,6 +101,22 @@
     </control>
 
     <control>
+      <controltype>textbox</controltype>
+      <attribute>openmsg</attribute>
+      <caption>Message to print when opening (leave blank for default)</caption>
+      <nullable/>
+      <mustinherit>container_base</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>closemsg</attribute>
+      <caption>Message to print when closing (leave blank for default)</caption>
+      <nullable/>
+      <mustinherit>container_base</mustinherit>
+    </control>
+
+    <control>
       <controltype>script</controltype>
       <caption>After opening the object</caption>
       <attribute>onopen</attribute>

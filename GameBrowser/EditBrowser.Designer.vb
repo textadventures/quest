@@ -53,6 +53,7 @@ Partial Class EditBrowser
         '
         'lblRecent
         '
+        Me.lblRecent.BackColor = System.Drawing.SystemColors.Window
         Me.lblRecent.Dock = System.Windows.Forms.DockStyle.Top
         Me.lblRecent.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblRecent.Location = New System.Drawing.Point(0, 0)
@@ -63,6 +64,7 @@ Partial Class EditBrowser
         '
         'ctlElementHost
         '
+        Me.ctlElementHost.BackColor = System.Drawing.SystemColors.Window
         Me.ctlElementHost.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlElementHost.Location = New System.Drawing.Point(0, 0)
         Me.ctlElementHost.Name = "ctlElementHost"
@@ -74,6 +76,7 @@ Partial Class EditBrowser
         'ctlGameList
         '
         Me.ctlGameList.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlGameList.EnableContextMenu = True
         Me.ctlGameList.LaunchCaption = Nothing
         Me.ctlGameList.Location = New System.Drawing.Point(0, 23)
         Me.ctlGameList.Name = "ctlGameList"
