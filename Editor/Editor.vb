@@ -85,6 +85,12 @@ Public Class Editor
                         If m_reloadingFromCodeView Then
                             If Not e.Success Then
                                 ' Couldn't reload the file due to an error, so show code view again
+                                m_menu.Visible = True
+                                m_uiHidden = False
+                                splitMain.Visible = True
+                                ctlTree.Visible = True
+                                ctlToolbar.Visible = True
+                                ctlLoading.Visible = False
                                 DisplayCodeView(True)
                             Else
                                 ctlTree.TrySetSelectedItem(m_lastSelection)
@@ -751,7 +757,9 @@ Public Class Editor
             End If
         End If
 
-        UpdateClipboardButtons()
+        If Not m_reloadingFromCodeView Then
+            UpdateClipboardButtons()
+        End If
     End Sub
 
     Private Sub DisplayCodeView(codeView As Boolean)
