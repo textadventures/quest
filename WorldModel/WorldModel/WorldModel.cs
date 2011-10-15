@@ -344,6 +344,7 @@ namespace AxeSoftware.Quest
                 {
                     UpdateLists();
                 }
+                ChangeThreadState(ThreadState.Ready);
             }
             else
             {

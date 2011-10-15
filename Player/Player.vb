@@ -108,8 +108,13 @@ Public Class Player
 
     Private Sub FinishInitialise()
 
-        If m_game.Initialise(Me) Then
+        Me.Cursor = Cursors.WaitCursor
 
+        Dim success As Boolean = m_game.Initialise(Me)
+
+        Me.Cursor = Cursors.Default
+
+        If success Then
             AddToRecentList()
             m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing AndAlso m_gameDebug.Walkthroughs.Walkthroughs.Count > 0
             m_menu.MenuEnabled("debugger") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.DebugEnabled
@@ -542,6 +547,7 @@ Public Class Player
             m_walkthroughRunner.ShowMenu(menuData)
         Else
             BeginInvoke(Sub()
+                            ClearBuffer()
                             Dim menuForm As Menu
                             menuForm = New Menu()
 
@@ -589,6 +595,7 @@ Public Class Player
             m_walkthroughRunner.ShowQuestion(caption)
         Else
             BeginInvoke(Sub()
+                            ClearBuffer()
                             Dim result As Boolean = (MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes)
 
                             If RecordWalkthrough IsNot Nothing Then
