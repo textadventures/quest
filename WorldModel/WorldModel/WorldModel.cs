@@ -68,6 +68,7 @@ namespace AxeSoftware.Quest
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementFieldUpdated;
         public event EventHandler<ElementRefreshEventArgs> ElementRefreshed;
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementMetaFieldUpdated;
+        public event EventHandler<LoadStatusEventArgs> LoadStatus;
 
         public event Action<int> RequestNextTimerTick;
 
@@ -96,6 +97,16 @@ namespace AxeSoftware.Quest
             }
 
             public Element Element { get; private set; }
+        }
+
+        public class LoadStatusEventArgs : EventArgs
+        {
+            public LoadStatusEventArgs(string status)
+            {
+                Status = status;
+            }
+
+            public string Status { get; private set; }
         }
 
         static WorldModel()
@@ -452,7 +463,8 @@ namespace AxeSoftware.Quest
             {
                 throw new Exception("Game already initialised");
             }
-            loader.FilenameUpdated += new GameLoader.FilenameUpdatedHandler(loader_FilenameUpdated);
+            loader.FilenameUpdated += loader_FilenameUpdated;
+            loader.LoadStatus += loader_LoadStatus;
             m_state = GameState.Loading;
             bool success = m_filename == null ? true : loader.Load(m_filename);
             ResourcesFolder = loader.ResourcesFolder;
@@ -460,6 +472,14 @@ namespace AxeSoftware.Quest
             m_state = success ? GameState.Running : GameState.Finished;
             m_errors = loader.Errors;
             return success;
+        }
+
+        void loader_LoadStatus(object sender, GameLoader.LoadStatusEventArgs e)
+        {
+            if (LoadStatus != null)
+            {
+                LoadStatus(this, new LoadStatusEventArgs(e.Status));
+            }
         }
 
         void loader_FilenameUpdated(string filename)

@@ -65,6 +65,7 @@ Public Class Editor
                             m_simpleMode = False
                             SetUpTree()
                             SetUpToolbar()
+                            ctlLoading.UpdateStatus("Loading editors...")
                             SetUpEditors()
                             RaiseEvent AddToRecent(m_filename, m_controller.GameName)
                             SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
@@ -993,4 +994,7 @@ Public Class Editor
         End Set
     End Property
 
+    Private Sub m_controller_LoadStatus(sender As Object, e As EditorController.LoadStatusEventArgs) Handles m_controller.LoadStatus
+        BeginInvoke(Sub() ctlLoading.UpdateStatus(e.Status))
+    End Sub
 End Class

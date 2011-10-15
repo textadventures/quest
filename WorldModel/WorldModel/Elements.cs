@@ -137,6 +137,11 @@ namespace AxeSoftware.Quest
             return m_elements[t].Count;
         }
 
+        public int Count()
+        {
+            return m_allElements.Count;
+        }
+
         public Element GetSingle(ElementType t)
         {
             foreach (Element e in m_elements[t].Values)

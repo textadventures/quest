@@ -123,6 +123,7 @@ namespace AxeSoftware.Quest
         public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
         public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
         public event EventHandler<UpdateUndoListEventArgs> RedoListUpdated;
+        public event EventHandler<LoadStatusEventArgs> LoadStatus;
 
         public class ElementUpdatedEventArgs : EventArgs
         {
@@ -158,6 +159,16 @@ namespace AxeSoftware.Quest
             }
 
             public IEnumerable<string> UndoList { get; private set; }
+        }
+
+        public class LoadStatusEventArgs : EventArgs
+        {
+            public LoadStatusEventArgs(string status)
+            {
+                Status = status;
+            }
+
+            public string Status { get; private set; }
         }
 
         private class TreeHeader
@@ -207,6 +218,7 @@ namespace AxeSoftware.Quest
             m_worldModel.ElementMetaFieldUpdated += m_worldModel_ElementMetaFieldUpdated;
             m_worldModel.UndoLogger.TransactionsUpdated += UndoLogger_TransactionsUpdated;
             m_worldModel.Elements.ElementRenamed += Elements_ElementRenamed;
+            m_worldModel.LoadStatus += m_worldModel_LoadStatus;
 
             bool ok = m_worldModel.InitialiseEdit();
 
@@ -244,6 +256,14 @@ namespace AxeSoftware.Quest
             }
 
             return ok;
+        }
+
+        void m_worldModel_LoadStatus(object sender, WorldModel.LoadStatusEventArgs e)
+        {
+            if (LoadStatus != null)
+            {
+                LoadStatus(this, new LoadStatusEventArgs(e.Status));
+            }
         }
 
         void Elements_ElementRenamed(object sender, NameChangedEventArgs e)
