@@ -62,33 +62,33 @@ function AddVimeo(id) {
 }
 
 function SetMenuBackground(color) {
-    var hoverCSS = getCSSRule("div.jj_menu_item");
-    hoverCSS.style.backgroundColor = color;
+    var css = getCSSRule("div.jj_menu_item");
+    css.style.backgroundColor = color;
 }
 
 function SetMenuForeground(color) {
-    var hoverCSS = getCSSRule("div.jj_menu_item");
-    hoverCSS.style.color = color;
+    var css = getCSSRule("div.jj_menu_item");
+    css.style.color = color;
 }
 
 function SetMenuHoverBackground(color) {
-    var hoverCSS = getCSSRule("div.jj_menu_item_hover");
-    hoverCSS.style.backgroundColor = color;
+    var css = getCSSRule("div.jj_menu_item_hover");
+    css.style.backgroundColor = color;
 }
 
 function SetMenuHoverForeground(color) {
-    var hoverCSS = getCSSRule("div.jj_menu_item_hover");
-    hoverCSS.style.color = color;
+    var css = getCSSRule("div.jj_menu_item_hover");
+    css.style.color = color;
 }
 
 function SetMenuFontName(font) {
-    var hoverCSS = getCSSRule("div.jjmenu");
-    hoverCSS.style.fontFamily = font;
+    var css = getCSSRule("div.jjmenu");
+    css.style.fontFamily = font;
 }
 
 function SetMenuFontSize(size) {
-    var hoverCSS = getCSSRule("div.jjmenu");
-    hoverCSS.style.fontSize = size;
+    var css = getCSSRule("div.jjmenu");
+    css.style.fontSize = size;
 }
 
 function getCSSRule(ruleName, deleteFlag) {
