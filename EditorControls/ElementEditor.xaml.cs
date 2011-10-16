@@ -135,7 +135,7 @@ namespace AxeSoftware.Quest.EditorControls
                 newLabel.Content = ctl.Caption + ":";
                 newLabel.Target = newControl;
 
-                if (ctl.Caption.Length > 15)
+                if (ctl.Caption.Length > 17)
                 {
                     newLabel.Padding = new Thickness(5, 5, 5, 0);
                     newControl.Padding = new Thickness(5, 3, 5, 5);

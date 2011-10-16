@@ -8,6 +8,12 @@
     <defaultbackground>White</defaultbackground>
     <defaultforeground>Black</defaultforeground>
     <defaultlinkforeground>Blue</defaultlinkforeground>
+    <menufont>Arial</menufont>
+    <menufontsize type="int">9</menufontsize>
+    <menubackground>White</menubackground>
+    <menuforeground>Black</menuforeground>
+    <menuhoverbackground>LightGrey</menuhoverbackground>
+    <menuhoverforeground>Black</menuhoverforeground>
     <compassdirections type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown];[CompassIn];[CompassOut]</compassdirections>
     <useframe type="boolean">false</useframe>
     <clearframe type="boolean">false</clearframe>

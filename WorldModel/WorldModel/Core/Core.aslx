@@ -41,6 +41,12 @@
     request (SetInterfaceString, "OutButtonLabel=[OutButtonLabel]")
     request (SetInterfaceString, "EmptyListLabel=[EmptyListLabel]")
     request (SetInterfaceString, "NothingSelectedLabel=[NothingSelectedLabel]")
+    request (RunScript, "SetMenuBackground;" + game.menubackground)
+    request (RunScript, "SetMenuForeground;" + game.menuforeground)
+    request (RunScript, "SetMenuHoverBackground;" + game.menuhoverbackground)
+    request (RunScript, "SetMenuHoverForeground;" + game.menuhoverforeground)
+    request (RunScript, "SetMenuFontName;" + game.menufont)
+    request (RunScript, "SetMenuFontSize;" + game.menufontsize + "pt")
     if (game.useframe) {
       request (ClearScreen, "")
       insert ("Frame.htm")
