@@ -60,3 +60,84 @@ function AddVimeo(id) {
     var embedHTML = "<object width=\"400\" height=\"225\"><param name=\"allowfullscreen\" value=\"true\" /><param name=\"allowscriptaccess\" value=\"always\" /><param name=\"movie\" value=\"http://vimeo.com/moogaloop.swf?clip_id=" + id + "&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0\" /><embed src=\"http://vimeo.com/moogaloop.swf?clip_id=" + id + "&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0\" type=\"application/x-shockwave-flash\" allowfullscreen=\"true\" allowscriptaccess=\"always\" width=\"400\" height=\"225\"></embed></object>";
     addText(embedHTML);
 }
+
+function SetMenuBackground(color) {
+    var hoverCSS = getCSSRule("div.jj_menu_item");
+    hoverCSS.style.backgroundColor = color;
+}
+
+function SetMenuForeground(color) {
+    var hoverCSS = getCSSRule("div.jj_menu_item");
+    hoverCSS.style.color = color;
+}
+
+function SetMenuHoverBackground(color) {
+    var hoverCSS = getCSSRule("div.jj_menu_item_hover");
+    hoverCSS.style.backgroundColor = color;
+}
+
+function SetMenuHoverForeground(color) {
+    var hoverCSS = getCSSRule("div.jj_menu_item_hover");
+    hoverCSS.style.color = color;
+}
+
+function SetMenuFontName(font) {
+    var hoverCSS = getCSSRule("div.jjmenu");
+    hoverCSS.style.fontFamily = font;
+}
+
+function SetMenuFontSize(size) {
+    var hoverCSS = getCSSRule("div.jjmenu");
+    hoverCSS.style.fontSize = size;
+}
+
+function getCSSRule(ruleName, deleteFlag) {
+    ruleName = ruleName.toLowerCase();
+    if (document.styleSheets) {
+        for (var i = 0; i < document.styleSheets.length; i++) {
+            var styleSheet = document.styleSheets[i];
+            var ii = 0;
+            var cssRule = false;
+            do {
+                if (styleSheet.cssRules) {
+                    cssRule = styleSheet.cssRules[ii];
+                } else {
+                    cssRule = styleSheet.rules[ii];
+                }
+                if (cssRule) {
+                    if (cssRule.selectorText.toLowerCase() == ruleName) {
+                        if (deleteFlag == 'delete') {
+                            if (styleSheet.cssRules) {
+                                styleSheet.deleteRule(ii);
+                            } else {
+                                styleSheet.removeRule(ii);
+                            }
+                            return true;
+                        } else {
+                            return cssRule;
+                        }
+                    }
+                }
+                ii++;
+            } while (cssRule)
+        }
+    }
+    return false;
+}
+
+function killCSSRule(ruleName) {
+    return getCSSRule(ruleName, 'delete');
+}
+
+function addCSSRule(ruleName) {
+    if (document.styleSheets) {
+        if (!getCSSRule(ruleName)) {
+            if (document.styleSheets[0].addRule) {
+                document.styleSheets[0].addRule(ruleName, null, 0);
+            } else {
+                document.styleSheets[0].insertRule(ruleName + ' { }', 0);
+            }
+        }
+    }
+    return getCSSRule(ruleName);
+}
