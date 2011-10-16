@@ -101,20 +101,22 @@ function getCSSRule(ruleName, deleteFlag) {
             do {
                 if (styleSheet.cssRules) {
                     cssRule = styleSheet.cssRules[ii];
-                } else {
+                } else if (styleSheet.rules) {
                     cssRule = styleSheet.rules[ii];
                 }
                 if (cssRule) {
-                    if (cssRule.selectorText.toLowerCase() == ruleName) {
-                        if (deleteFlag == 'delete') {
-                            if (styleSheet.cssRules) {
-                                styleSheet.deleteRule(ii);
+                    if (typeof cssRule.selectorText != "undefined") {
+                        if (cssRule.selectorText.toLowerCase() == ruleName) {
+                            if (deleteFlag == 'delete') {
+                                if (styleSheet.cssRules) {
+                                    styleSheet.deleteRule(ii);
+                                } else {
+                                    styleSheet.removeRule(ii);
+                                }
+                                return true;
                             } else {
-                                styleSheet.removeRule(ii);
+                                return cssRule;
                             }
-                            return true;
-                        } else {
-                            return cssRule;
                         }
                     }
                 }
