@@ -91,6 +91,11 @@ function SetMenuFontSize(size) {
     css.style.fontSize = size;
 }
 
+function TurnOffHyperlinksUnderline() {
+    var css = getCSSRule("a.cmdlink");
+    css.style.textDecoration = "none";
+}
+
 function getCSSRule(ruleName, deleteFlag) {
     ruleName = ruleName.toLowerCase();
     if (document.styleSheets) {

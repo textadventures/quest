@@ -116,6 +116,11 @@
       </control>
 
       <control>
+        <controltype>checkbox</controltype>
+        <caption>Underline hyperlinks</caption>
+        <attribute>underlinehyperlinks</attribute>
+      </control>
+      <control>
         <controltype>dropdown</controltype>
         <caption>Font</caption>
         <attribute>menufont</attribute>

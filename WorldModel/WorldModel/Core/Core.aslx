@@ -47,6 +47,9 @@
     request (RunScript, "SetMenuHoverForeground;" + game.menuhoverforeground)
     request (RunScript, "SetMenuFontName;" + game.menufont)
     request (RunScript, "SetMenuFontSize;" + game.menufontsize + "pt")
+    if (not game.underlinehyperlinks) {
+      request (RunScript, "TurnOffHyperlinksUnderline")
+    }
     if (game.useframe) {
       request (ClearScreen, "")
       insert ("Frame.htm")

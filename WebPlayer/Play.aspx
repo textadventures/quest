@@ -8,6 +8,7 @@
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/jquery.jplayer.min.js"></script>
     <script type="text/javascript" src="js/jjmenu.js"></script>
+    <link rel="Stylesheet" type="text/css" href="playercore.css" />
     <link id="styleLink" runat="server" rel="Stylesheet" type="text/css" href="fixed.css" />
     <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/redmond/jquery-ui.css" />
     <link rel="Stylesheet" type="text/css" href="js/jjmenu.css" />
