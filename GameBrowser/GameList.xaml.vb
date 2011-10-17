@@ -128,4 +128,7 @@ Public Class GameList
         RaiseEvent ClearAllItems()
     End Sub
 
+    Private Sub GameList_Loaded(sender As Object, e As System.Windows.RoutedEventArgs) Handles Me.Loaded
+        wfPictureBox.Image = My.Resources.loading
+    End Sub
 End Class
