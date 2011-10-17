@@ -1,4 +1,4 @@
-﻿Friend Class GameListItemData
+﻿Public Class GameListItemData
     Private m_filename As String
     Private m_name As String
     Private m_url As String

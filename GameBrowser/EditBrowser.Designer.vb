@@ -23,9 +23,10 @@ Partial Class EditBrowser
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.ctlContainer = New System.Windows.Forms.SplitContainer()
-        Me.lblRecent = New System.Windows.Forms.Label()
         Me.ctlElementHost = New System.Windows.Forms.Integration.ElementHost()
         Me.EditorWelcome1 = New GameBrowser.EditorWelcome()
+        Me.lblRecent = New System.Windows.Forms.Label()
+        Me.ElementHost1 = New System.Windows.Forms.Integration.ElementHost()
         Me.ctlGameList = New GameBrowser.GameList()
         CType(Me.ctlContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlContainer.Panel1.SuspendLayout()
@@ -45,22 +46,11 @@ Partial Class EditBrowser
         '
         'ctlContainer.Panel2
         '
-        Me.ctlContainer.Panel2.Controls.Add(Me.ctlGameList)
+        Me.ctlContainer.Panel2.Controls.Add(Me.ElementHost1)
         Me.ctlContainer.Panel2.Controls.Add(Me.lblRecent)
         Me.ctlContainer.Size = New System.Drawing.Size(600, 350)
         Me.ctlContainer.SplitterDistance = 300
         Me.ctlContainer.TabIndex = 1
-        '
-        'lblRecent
-        '
-        Me.lblRecent.BackColor = System.Drawing.SystemColors.Window
-        Me.lblRecent.Dock = System.Windows.Forms.DockStyle.Top
-        Me.lblRecent.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblRecent.Location = New System.Drawing.Point(0, 0)
-        Me.lblRecent.Name = "lblRecent"
-        Me.lblRecent.Size = New System.Drawing.Size(296, 23)
-        Me.lblRecent.TabIndex = 4
-        Me.lblRecent.Text = "Recent"
         '
         'ctlElementHost
         '
@@ -73,15 +63,26 @@ Partial Class EditBrowser
         Me.ctlElementHost.Text = "ElementHost1"
         Me.ctlElementHost.Child = Me.EditorWelcome1
         '
-        'ctlGameList
+        'lblRecent
         '
-        Me.ctlGameList.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlGameList.EnableContextMenu = True
-        Me.ctlGameList.LaunchCaption = Nothing
-        Me.ctlGameList.Location = New System.Drawing.Point(0, 23)
-        Me.ctlGameList.Name = "ctlGameList"
-        Me.ctlGameList.Size = New System.Drawing.Size(296, 327)
-        Me.ctlGameList.TabIndex = 3
+        Me.lblRecent.BackColor = System.Drawing.SystemColors.Window
+        Me.lblRecent.Dock = System.Windows.Forms.DockStyle.Top
+        Me.lblRecent.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRecent.Location = New System.Drawing.Point(0, 0)
+        Me.lblRecent.Name = "lblRecent"
+        Me.lblRecent.Size = New System.Drawing.Size(296, 23)
+        Me.lblRecent.TabIndex = 4
+        Me.lblRecent.Text = "Recent"
+        '
+        'ElementHost1
+        '
+        Me.ElementHost1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ElementHost1.Location = New System.Drawing.Point(0, 23)
+        Me.ElementHost1.Name = "ElementHost1"
+        Me.ElementHost1.Size = New System.Drawing.Size(296, 327)
+        Me.ElementHost1.TabIndex = 5
+        Me.ElementHost1.Text = "ElementHost1"
+        Me.ElementHost1.Child = Me.ctlGameList
         '
         'EditBrowser
         '
@@ -99,9 +100,10 @@ Partial Class EditBrowser
 
     End Sub
     Friend WithEvents ctlContainer As System.Windows.Forms.SplitContainer
-    Friend WithEvents ctlGameList As GameBrowser.GameList
     Friend WithEvents lblRecent As System.Windows.Forms.Label
     Friend WithEvents ctlElementHost As System.Windows.Forms.Integration.ElementHost
     Friend EditorWelcome1 As GameBrowser.EditorWelcome
+    Friend WithEvents ElementHost1 As System.Windows.Forms.Integration.ElementHost
+    Friend ctlGameList As GameBrowser.GameList
 
 End Class

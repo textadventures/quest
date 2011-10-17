@@ -18,6 +18,10 @@
         AddHandler ctlEditorWelcome.CreateNewGame, AddressOf DoCreateNewGame
         AddHandler ctlEditorWelcome.OpenGame, AddressOf DoOpenGame
         AddHandler ctlEditorWelcome.Tutorial, AddressOf DoTutorial
+
+        AddHandler ctlGameList.Launch, AddressOf ctlGameList_Launch
+        AddHandler ctlGameList.ClearAllItems, AddressOf ctlGameList_ClearAllItems
+        AddHandler ctlGameList.RemoveItem, AddressOf ctlGameList_RemoveItem
     End Sub
 
     Private ReadOnly Property ctlEditorWelcome As EditorWelcome
@@ -30,16 +34,16 @@
         m_recentItems.AddToRecent(filename, name)
     End Sub
 
-    Private Sub ctlGameList_Launch(filename As String) Handles ctlGameList.Launch
+    Private Sub ctlGameList_Launch(filename As String)
         RaiseEvent EditGame(filename)
     End Sub
 
-    Private Sub ctlGameList_ClearAllItems() Handles ctlGameList.ClearAllItems
+    Private Sub ctlGameList_ClearAllItems()
         m_recentItems.Clear()
         Populate()
     End Sub
 
-    Private Sub ctlGameList_RemoveItem(filename As String) Handles ctlGameList.RemoveItem
+    Private Sub ctlGameList_RemoveItem(filename As String)
         m_recentItems.Remove(filename)
     End Sub
 

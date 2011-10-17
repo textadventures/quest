@@ -1,4 +1,4 @@
-﻿Friend Class GameList
+﻿Public Class GameList
     Private m_launchCaption As String
     Private m_visibleGameListItems As New List(Of GameListItem)
     Private m_gameListItems As New Dictionary(Of String, GameListItem)
@@ -7,19 +7,6 @@
     Public Event Launch(filename As String)
     Public Event RemoveItem(filename As String)
     Public Event ClearAllItems()
-
-    Public Sub New()
-
-        ' This call is required by the Windows Form Designer.
-        InitializeComponent()
-
-        ' Add any initialization after the InitializeComponent() call.
-        m_enableContextMenu = True
-
-        ' This gets around a bug where the appearance of the vertical scrollbar causes contained controls not to resize
-        Dim p As Padding = ctlTableLayout.Padding
-        ctlTableLayout.Padding = New Padding(p.Left, p.Top, SystemInformation.VerticalScrollBarWidth + p.Right, p.Bottom)
-    End Sub
 
     Public Property LaunchCaption() As String
         Get
@@ -43,8 +30,6 @@
                 newItem = m_gameListItems(data.DownloadFilename)
             Else
                 newItem = New GameListItem
-                newItem.Dock = DockStyle.Fill
-                newItem.Width = Me.Width
                 newItem.GameName = data.GameName
                 If Not EnableContextMenu Then newItem.DisableContextMenu()
 
@@ -86,17 +71,18 @@
                 AddHandler newItem.RemoveItem, AddressOf RemoveItemHandler
                 AddHandler newItem.ClearAllItems, AddressOf ClearItemsHandler
             End If
-            
+
             m_visibleGameListItems.Add(newItem)
 
-            ctlTableLayout.Controls.Add(newItem)
+            stackPanel.Children.Add(newItem)
         Next
     End Sub
 
     Private Sub ClearListElements()
-        For Each item In m_visibleGameListItems
-            ctlTableLayout.Controls.Remove(item)
-        Next
+        'For Each item In m_visibleGameListItems
+        '    ctlTableLayout.Controls.Remove(item)
+        'Next
+        stackPanel.Children.Clear()
         m_visibleGameListItems.Clear()
     End Sub
 
@@ -114,9 +100,9 @@
     End Property
 
     Private Sub RemoveItemHandler(filename As String)
-        RaiseEvent RemoveItem(filename)
-        Dim itemsToRemove = From item In ctlTableLayout.Controls Where DirectCast(item, GameListItem).Filename = filename Select item
-        ctlTableLayout.Controls.Remove(DirectCast(itemsToRemove.First(), Control))
+        'RaiseEvent RemoveItem(filename)
+        'Dim itemsToRemove = From item In ctlTableLayout.Controls Where DirectCast(item, WFGameListItem).Filename = filename Select item
+        'ctlTableLayout.Controls.Remove(DirectCast(itemsToRemove.First(), Control))
     End Sub
 
     Private Sub ClearItemsHandler()
@@ -124,4 +110,3 @@
     End Sub
 
 End Class
-

@@ -23,11 +23,13 @@ Partial Class PlayBrowser
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.ctlContainer = New System.Windows.Forms.SplitContainer()
+        Me.ElementHost1 = New System.Windows.Forms.Integration.ElementHost()
         Me.ctlOnlineGameList = New GameBrowser.GameList()
         Me.ctlBrowseFilter = New GameBrowser.BrowseFilter()
         Me.lblBrowseTitle = New System.Windows.Forms.Label()
-        Me.ctlGameList = New GameBrowser.GameList()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.ElementHost2 = New System.Windows.Forms.Integration.ElementHost()
+        Me.ctlGameList = New GameBrowser.GameList()
         CType(Me.ctlContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlContainer.Panel1.SuspendLayout()
         Me.ctlContainer.Panel2.SuspendLayout()
@@ -44,27 +46,27 @@ Partial Class PlayBrowser
         '
         'ctlContainer.Panel1
         '
-        Me.ctlContainer.Panel1.Controls.Add(Me.ctlOnlineGameList)
+        Me.ctlContainer.Panel1.Controls.Add(Me.ElementHost1)
         Me.ctlContainer.Panel1.Controls.Add(Me.ctlBrowseFilter)
         Me.ctlContainer.Panel1.Controls.Add(Me.lblBrowseTitle)
         '
         'ctlContainer.Panel2
         '
-        Me.ctlContainer.Panel2.Controls.Add(Me.ctlGameList)
+        Me.ctlContainer.Panel2.Controls.Add(Me.ElementHost2)
         Me.ctlContainer.Panel2.Controls.Add(Me.Label1)
         Me.ctlContainer.Size = New System.Drawing.Size(600, 400)
         Me.ctlContainer.SplitterDistance = 300
         Me.ctlContainer.TabIndex = 0
         '
-        'ctlOnlineGameList
+        'ElementHost1
         '
-        Me.ctlOnlineGameList.BackColor = System.Drawing.Color.White
-        Me.ctlOnlineGameList.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlOnlineGameList.LaunchCaption = Nothing
-        Me.ctlOnlineGameList.Location = New System.Drawing.Point(0, 45)
-        Me.ctlOnlineGameList.Name = "ctlOnlineGameList"
-        Me.ctlOnlineGameList.Size = New System.Drawing.Size(300, 355)
-        Me.ctlOnlineGameList.TabIndex = 5
+        Me.ElementHost1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ElementHost1.Location = New System.Drawing.Point(0, 45)
+        Me.ElementHost1.Name = "ElementHost1"
+        Me.ElementHost1.Size = New System.Drawing.Size(300, 355)
+        Me.ElementHost1.TabIndex = 7
+        Me.ElementHost1.Text = "ElementHost1"
+        Me.ElementHost1.Child = Me.ctlOnlineGameList
         '
         'ctlBrowseFilter
         '
@@ -84,16 +86,6 @@ Partial Class PlayBrowser
         Me.lblBrowseTitle.TabIndex = 4
         Me.lblBrowseTitle.Text = "Get Games"
         '
-        'ctlGameList
-        '
-        Me.ctlGameList.BackColor = System.Drawing.Color.White
-        Me.ctlGameList.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlGameList.LaunchCaption = Nothing
-        Me.ctlGameList.Location = New System.Drawing.Point(0, 23)
-        Me.ctlGameList.Name = "ctlGameList"
-        Me.ctlGameList.Size = New System.Drawing.Size(296, 377)
-        Me.ctlGameList.TabIndex = 2
-        '
         'Label1
         '
         Me.Label1.Dock = System.Windows.Forms.DockStyle.Top
@@ -103,6 +95,16 @@ Partial Class PlayBrowser
         Me.Label1.Size = New System.Drawing.Size(296, 23)
         Me.Label1.TabIndex = 3
         Me.Label1.Text = "Recent"
+        '
+        'ElementHost2
+        '
+        Me.ElementHost2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ElementHost2.Location = New System.Drawing.Point(0, 23)
+        Me.ElementHost2.Name = "ElementHost2"
+        Me.ElementHost2.Size = New System.Drawing.Size(296, 377)
+        Me.ElementHost2.TabIndex = 4
+        Me.ElementHost2.Text = "ElementHost2"
+        Me.ElementHost2.Child = Me.ctlGameList
         '
         'PlayBrowser
         '
@@ -119,10 +121,12 @@ Partial Class PlayBrowser
 
     End Sub
     Friend WithEvents ctlContainer As System.Windows.Forms.SplitContainer
-    Friend WithEvents ctlGameList As GameBrowser.GameList
     Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents ctlOnlineGameList As GameBrowser.GameList
     Friend WithEvents lblBrowseTitle As System.Windows.Forms.Label
     Friend WithEvents ctlBrowseFilter As GameBrowser.BrowseFilter
+    Friend WithEvents ElementHost1 As System.Windows.Forms.Integration.ElementHost
+    Friend ctlOnlineGameList As GameBrowser.GameList
+    Friend WithEvents ElementHost2 As System.Windows.Forms.Integration.ElementHost
+    Friend ctlGameList As GameBrowser.GameList
 
 End Class

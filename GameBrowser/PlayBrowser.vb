@@ -14,6 +14,10 @@
         ctlGameList.LaunchCaption = "Play"
         ctlOnlineGameList.LaunchCaption = "Play"
         ctlOnlineGameList.EnableContextMenu = False
+        AddHandler ctlOnlineGameList.Launch, AddressOf ctlOnlineGameList_Launch
+        AddHandler ctlGameList.Launch, AddressOf ctlGameList_Launch
+        AddHandler ctlGameList.ClearAllItems, AddressOf ctlGameList_ClearAllItems
+        AddHandler ctlGameList.RemoveItem, AddressOf ctlGameList_RemoveItem
         Populate()
     End Sub
 
@@ -21,20 +25,20 @@
         m_recentItems.AddToRecent(filename, name)
     End Sub
 
-    Private Sub ctlGameList_Launch(filename As String) Handles ctlGameList.Launch
+    Private Sub ctlGameList_Launch(filename As String)
         RaiseEvent LaunchGame(filename)
     End Sub
 
-    Private Sub ctlGameList_ClearAllItems() Handles ctlGameList.ClearAllItems
+    Private Sub ctlGameList_ClearAllItems()
         m_recentItems.Clear()
         Populate()
     End Sub
 
-    Private Sub ctlGameList_RemoveItem(filename As String) Handles ctlGameList.RemoveItem
+    Private Sub ctlGameList_RemoveItem(filename As String)
         m_recentItems.Remove(filename)
     End Sub
 
-    Private Sub ctlOnlineGameList_Launch(filename As String) Handles ctlOnlineGameList.Launch
+    Private Sub ctlOnlineGameList_Launch(filename As String)
         RaiseEvent LaunchGame(filename)
     End Sub
 

@@ -130,6 +130,12 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameList.xaml.vb">
+      <DependentUpon>GameList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GameListItem.xaml.vb">
+      <DependentUpon>GameListItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VersionInfo.Designer.vb">
       <DependentUpon>VersionInfo.vb</DependentUpon>
     </Compile>
@@ -151,12 +157,6 @@
     <Compile Include="EditorWelcome.xaml.vb">
       <DependentUpon>EditorWelcome.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GameListItem.Designer.vb">
-      <DependentUpon>GameListItem.vb</DependentUpon>
-    </Compile>
-    <Compile Include="GameListItem.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="GameListItemData.vb" />
     <Compile Include="GameListItems.vb" />
     <Compile Include="Launcher.Designer.vb">
@@ -168,12 +168,6 @@
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
-    </Compile>
-    <Compile Include="GameList.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GameList.Designer.vb">
-      <DependentUpon>GameList.vb</DependentUpon>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
@@ -207,9 +201,6 @@
     <EmbeddedResource Include="EditBrowser.resx">
       <DependentUpon>EditBrowser.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameListItem.resx">
-      <DependentUpon>GameListItem.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Launcher.resx">
       <DependentUpon>Launcher.vb</DependentUpon>
     </EmbeddedResource>
@@ -218,9 +209,6 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GameList.resx">
-      <DependentUpon>GameList.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayBrowser.resx">
       <DependentUpon>PlayBrowser.vb</DependentUpon>
@@ -251,6 +239,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="EditorWelcome.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameListItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
