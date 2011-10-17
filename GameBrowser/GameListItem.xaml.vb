@@ -27,6 +27,7 @@
 
         ' Add any initialization after the InitializeComponent() call.
         SetToolTipText("")
+        expander.Visibility = Windows.Visibility.Collapsed
     End Sub
 
     Public Property CurrentState As State
@@ -201,4 +202,23 @@
     Private Sub mnuRemove_Click(sender As System.Object, e As System.Windows.RoutedEventArgs)
         RaiseEvent RemoveItem(Me, m_filename)
     End Sub
+
+    Private m_rating As Double
+
+    Public Property Rating As Double
+        Get
+            Return m_rating
+        End Get
+        Set(value As Double)
+            m_rating = value
+            If value > 0 Then
+                stars.Text = New String("Ù"c, CInt(value))
+                ratingValue.Text = String.Format("({0:F2} stars)", value)
+            Else
+                ratingLabel.Text = "Not yet rated"
+                stars.Text = ""
+                ratingValue.Text = ""
+            End If
+        End Set
+    End Property
 End Class

@@ -10,6 +10,8 @@
         Public Ref As String
         Public Filename As String
         Public Author As String
+        Public Rating As Double
+        Public Description As String
     End Class
 
     Public Class GameCategory
@@ -56,7 +58,9 @@
                                                  .Name = game.@name,
                                                  .Ref = game.@ref,
                                                  .Filename = game.@filename,
-                                                 .Author = game.@author
+                                                 .Author = game.@author,
+                                                 .Rating = CDbl(game.@rating),
+                                                 .Description = game.@description
                                           }).ToList()
                          }).ToList()
 
@@ -77,7 +81,11 @@
         Dim gamesList As New List(Of GameListItemData)
 
         For Each game In GetGames(category)
-            gamesList.Add(New GameListItemData(game.Name, game.Ref, game.Filename, game.Author))
+            gamesList.Add(New GameListItemData(game.Name, game.Ref, game.Filename) With
+                          {.Author = game.Author,
+                           .Description = game.Description,
+                           .Rating = game.Rating
+                          })
         Next
 
         gameListCtl.CreateListElements(gamesList)

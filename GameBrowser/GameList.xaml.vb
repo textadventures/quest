@@ -47,6 +47,12 @@
                     m_gameListItems.Add(data.DownloadFilename, newItem)
                 End If
 
+                If Not String.IsNullOrEmpty(data.Description) Then
+                    newItem.expander.Visibility = Windows.Visibility.Visible
+                    newItem.description.Text = System.Net.WebUtility.HtmlDecode(data.Description)
+                    newItem.Rating = data.Rating
+                End If
+
                 If String.IsNullOrEmpty(data.Filename) Then
                     newItem.URL = data.URL
 
