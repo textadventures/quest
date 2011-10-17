@@ -21,27 +21,30 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Name="textBlock" Grid.Column="0" Padding="3" Margin="3">
-            <TextBlock.ToolTip>
-                <ToolTip Name="textTooltip"></ToolTip>
-            </TextBlock.ToolTip>
-            <Run Name="title" FontWeight="Bold">Game name</Run><Run xml:space="preserve">   </Run><Run Name="authorLabel">by ...</Run><LineBreak/>
-            <Run Name="info">Info</Run>
-        </TextBlock>
+        <StackPanel Margin="3">
+            <TextBlock Name="textBlock" Padding="3">
+                <Run Name="title" FontWeight="Bold">Game name</Run>
+                <Run xml:space="preserve">   </Run>
+                <Run Name="authorLabel">by ...</Run>
+                <TextBlock.ToolTip>
+                    <ToolTip Name="textTooltip"></ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Name="infoBlock" Padding="3">
+                <Run Name="info">Info</Run>
+            </TextBlock>
+            <TextBlock Name="ratingBlock" Padding="3">
+                <Run FontFamily="Wingdings 2" Foreground="Goldenrod" Name="stars">ÙÙÙÙÙ</Run>
+                <Run xml:space="preserve"> </Run>
+                <Run Name="ratingValue" FontSize="10">(5 stars)</Run>
+            </TextBlock>
+            <TextBlock Name="notRatedBlock" Padding="3">
+                Not yet rated
+            </TextBlock>
+            <StackPanel Orientation="Horizontal">
+            </StackPanel>
+        </StackPanel>
         <Button Name="cmdLaunch" Grid.Column="1" Padding="10,4,10,4" Margin="3" VerticalAlignment="Center">Play</Button>
         <ProgressBar Name="progressBar" Grid.Row="1" Grid.ColumnSpan="2" Height="12" Margin="3" Visibility="Collapsed" />
-        <Expander Grid.Row="2" Name="expander" Padding="20,0,0,5">
-            <Expander.Header>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Name="ratingLabel">Rating:</TextBlock>
-                    <TextBlock FontFamily="Wingdings 2" Padding="5,0,0,0" Foreground="Goldenrod" Name="stars">ÙÙÙÙÙ</TextBlock>
-                    <TextBlock Name="ratingValue" Padding="5,0,0,0" FontSize="10">(5 stars)</TextBlock>
-                </StackPanel>
-            </Expander.Header>
-            <StackPanel>
-                <TextBlock Padding="3,2,0,0" Name="description" TextWrapping="Wrap">Text</TextBlock>
-                <TextBlock Padding="3,2,0,0" ><Hyperlink>Read or write reviews...</Hyperlink></TextBlock>
-            </StackPanel>
-        </Expander>
     </Grid>
 </UserControl>

@@ -1,4 +1,6 @@
-﻿Public Class GameList
+﻿Imports System.Windows.Media
+
+Public Class GameList
     Private m_launchCaption As String
     Private m_visibleGameListItems As New List(Of GameListItem)
     Private m_gameListItems As New Dictionary(Of String, GameListItem)
@@ -48,8 +50,9 @@
                 End If
 
                 If Not String.IsNullOrEmpty(data.Description) Then
-                    newItem.expander.Visibility = Windows.Visibility.Visible
-                    newItem.description.Text = System.Net.WebUtility.HtmlDecode(data.Description)
+                    newItem.ratingBlock.Visibility = Windows.Visibility.Visible
+                    newItem.infoBlock.Visibility = Windows.Visibility.Collapsed
+                    'newItem.description.Text = System.Net.WebUtility.HtmlDecode(data.Description)
                     newItem.Rating = data.Rating
                 End If
 
@@ -89,6 +92,10 @@
             End If
 
             m_visibleGameListItems.Add(newItem)
+
+            If count Mod 2 = 0 Then
+                newItem.Background = New SolidColorBrush(Colors.WhiteSmoke)
+            End If
 
             stackPanel.Children.Add(newItem)
         Next

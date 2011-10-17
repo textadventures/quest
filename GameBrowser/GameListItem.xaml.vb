@@ -27,7 +27,8 @@
 
         ' Add any initialization after the InitializeComponent() call.
         SetToolTipText("")
-        expander.Visibility = Windows.Visibility.Collapsed
+        ratingBlock.Visibility = Windows.Visibility.Collapsed
+        notRatedBlock.Visibility = Windows.Visibility.Collapsed
     End Sub
 
     Public Property CurrentState As State
@@ -213,11 +214,14 @@
             m_rating = value
             If value > 0 Then
                 stars.Text = New String("Ù"c, CInt(value))
-                ratingValue.Text = String.Format("({0:F2} stars)", value)
+                ratingValue.Text = String.Format("({0:F1} stars)", value)
+                ratingBlock.Visibility = Windows.Visibility.Visible
+                notRatedBlock.Visibility = Windows.Visibility.Collapsed
             Else
-                ratingLabel.Text = "Not yet rated"
                 stars.Text = ""
                 ratingValue.Text = ""
+                ratingBlock.Visibility = Windows.Visibility.Collapsed
+                notRatedBlock.Visibility = Windows.Visibility.Visible
             End If
         End Set
     End Property
