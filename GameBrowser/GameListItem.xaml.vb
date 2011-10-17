@@ -8,7 +8,6 @@
     Private m_downloading As Boolean = False
     Private WithEvents m_client As System.Net.WebClient
     Private m_downloadFilename As String
-    'Private m_progressBar As ProgressBar
     Private m_setDownloadTooltip As Boolean
 
     Public Enum State
@@ -20,6 +19,15 @@
     Private m_state As State = State.ReadyToPlay
     Private m_playButtonWidth As Integer
     Private m_playButtonRight As Integer
+
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        SetToolTipText("")
+    End Sub
 
     Public Property CurrentState As State
         Get
@@ -38,21 +46,9 @@
                 Case State.Downloading
                     cmdLaunch.Content = "Cancel"
                     info.Text = ""
-
-                    'If m_progressBar Is Nothing Then
-                    '    m_progressBar = New ProgressBar
-                    '    m_progressBar.Parent = Me
-                    '    m_progressBar.Top = lblInfo.Top
-                    '    m_progressBar.Left = lblInfo.Left
-                    '    m_progressBar.Height = lblInfo.Height
-                    '    m_progressBar.Width = Me.Width - cmdLaunch.Width - 20
-                    '    m_progressBar.Anchor = AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
-                    'End If
             End Select
 
-            'If m_progressBar IsNot Nothing Then
-            '    m_progressBar.Visible = (m_state = State.Downloading)
-            'End If
+            progressBar.Visibility = If(m_state = State.Downloading, Windows.Visibility.Visible, Windows.Visibility.Collapsed)
         End Set
     End Property
 
@@ -109,7 +105,11 @@
         End Get
         Set(value As String)
             m_author = value
-            authorLabel.Text = "by " + value
+            If (value.Length > 0) Then
+                authorLabel.Text = "by " + value
+            Else
+                authorLabel.Text = ""
+            End If
         End Set
     End Property
 
@@ -124,10 +124,12 @@
     End Property
 
     Private Sub SetToolTipText(text As String)
-        'Dim tooltipCtls As New List(Of Control)(New Control() {lblInfo, lblName})
-        'For Each ctl As Control In tooltipCtls
-        '    ctlToolTip.SetToolTip(ctl, text)
-        'Next
+        If text.Length = 0 Then
+            Windows.Controls.ToolTipService.SetIsEnabled(textBlock, False)
+        Else
+            Windows.Controls.ToolTipService.SetIsEnabled(textBlock, True)
+            tooltip.Content = text
+        End If
     End Sub
 
     Private Sub cmdLaunch_Click(sender As System.Object, e As System.EventArgs) Handles cmdLaunch.Click
@@ -174,7 +176,7 @@
 
     Private Sub m_client_DownloadProgressChanged(sender As Object, e As System.Net.DownloadProgressChangedEventArgs) Handles m_client.DownloadProgressChanged
         Dispatcher.BeginInvoke(Sub()
-                                   'm_progressBar.Value = e.ProgressPercentage
+                                   progressBar.Value = e.ProgressPercentage
                                    If Not m_setDownloadTooltip Then
                                        SetToolTipText(String.Format("Downloading ({0} bytes)", e.TotalBytesToReceive))
                                        m_setDownloadTooltip = True

@@ -31,6 +31,7 @@
             Else
                 newItem = New GameListItem
                 newItem.GameName = data.GameName
+                newItem.Author = ""
                 If Not EnableContextMenu Then newItem.DisableContextMenu()
 
                 If Not String.IsNullOrEmpty(data.DownloadFilename) Then
