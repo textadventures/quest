@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300">
-    <Grid Name="grid" TextOptions.TextFormattingMode="Display">
+    <Grid Name="grid" TextOptions.TextFormattingMode="Display" Cursor="Hand">
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Clear all items" Name="mnuClear" Click="mnuClear_Click"></MenuItem>
@@ -44,7 +44,7 @@
             <StackPanel Orientation="Horizontal">
             </StackPanel>
         </StackPanel>
-        <Button Name="cmdLaunch" Grid.Column="1" Padding="10,4,10,4" Margin="3" VerticalAlignment="Center">Play</Button>
+        <Button Name="cmdLaunch" Grid.Column="1" Padding="10,4,10,4" Margin="3" VerticalAlignment="Center" Cursor="Arrow">Play</Button>
         <ProgressBar Name="progressBar" Grid.Row="1" Grid.ColumnSpan="2" Height="12" Margin="3" Visibility="Collapsed" />
     </Grid>
 </UserControl>

@@ -5,6 +5,7 @@ Public Class GameListItem
     Public Event Launch(filename As String)
     Public Event ClearAllItems()
     Public Event RemoveItem(sender As GameListItem, filename As String)
+    Public Event Clicked(sender As GameListItem)
 
     Private m_filename As String
     Private m_url As String
@@ -12,6 +13,7 @@ Public Class GameListItem
     Private WithEvents m_client As System.Net.WebClient
     Private m_downloadFilename As String
     Private m_setDownloadTooltip As Boolean
+    Private m_isOnlineItem As Boolean
 
     Public Enum State
         ReadyToPlay
@@ -252,4 +254,17 @@ Public Class GameListItem
     Private Sub MouseLeaveUpdateBackground(sender As Object, e As System.Windows.Input.MouseEventArgs)
         Me.Background = m_background
     End Sub
+
+    Private Sub grid_MouseUp(sender As System.Object, e As System.Windows.Input.MouseButtonEventArgs) Handles grid.MouseUp
+        RaiseEvent Clicked(Me)
+    End Sub
+
+    Public Property IsOnlineItem As Boolean
+        Get
+            Return m_isOnlineItem
+        End Get
+        Set(value As Boolean)
+            m_isOnlineItem = value
+        End Set
+    End Property
 End Class

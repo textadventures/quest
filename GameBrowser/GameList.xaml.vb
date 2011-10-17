@@ -54,6 +54,7 @@ Public Class GameList
                     newItem.infoBlock.Visibility = Windows.Visibility.Collapsed
                     'newItem.description.Text = System.Net.WebUtility.HtmlDecode(data.Description)
                     newItem.Rating = data.Rating
+                    newItem.IsOnlineItem = True
                 End If
 
                 If String.IsNullOrEmpty(data.Filename) Then
@@ -89,6 +90,7 @@ Public Class GameList
                 AddHandler newItem.Launch, AddressOf LaunchHandler
                 AddHandler newItem.RemoveItem, AddressOf RemoveItemHandler
                 AddHandler newItem.ClearAllItems, AddressOf ClearItemsHandler
+                AddHandler newItem.Clicked, AddressOf ItemClicked
             End If
 
             m_visibleGameListItems.Add(newItem)
@@ -110,6 +112,14 @@ Public Class GameList
 
     Private Sub LaunchHandler(filename As String)
         RaiseEvent Launch(filename)
+    End Sub
+
+    Private Sub ItemClicked(sender As GameListItem)
+        If sender.IsOnlineItem Then
+            ' TO DO: Show information pane
+        Else
+            RaiseEvent Launch(sender.Filename)
+        End If
     End Sub
 
     Public Property EnableContextMenu As Boolean
