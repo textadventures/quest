@@ -21,7 +21,7 @@
             <Run Name="title" FontWeight="Bold">Game name</Run> <Run Name="authorLabel">by ...</Run><LineBreak/>
             <Run Name="info">Info</Run>
         </TextBlock>
-        <Button Name="cmdLaunch" Grid.Column="1" Padding="3" Margin="3" VerticalAlignment="Center">Play</Button>
+        <Button Name="cmdLaunch" Grid.Column="1" Padding="10,4,10,4" Margin="3" VerticalAlignment="Center">Play</Button>
         <ProgressBar Name="progressBar" Grid.Row="1" Grid.ColumnSpan="2" Height="12" Margin="3" Visibility="Collapsed" />
     </Grid>
 </UserControl>

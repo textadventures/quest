@@ -8,6 +8,7 @@
     <Grid TextOptions.TextFormattingMode="Display">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -16,9 +17,9 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0" FontSize="16">Get Games</Label>
-        <Label Grid.Row="0" Grid.Column="1" FontSize="16">Recent</Label>
+        <Label Grid.Row="0" Grid.Column="2" FontSize="16">Recent</Label>
         <my:BrowseFilter Grid.Row="1" Grid.Column="0" x:Name="ctlBrowseFilter" />
         <my:GameList Grid.Row="2" Grid.Column="0" x:Name="ctlOnlineGameList" />
-        <my:GameList Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" x:Name="ctlGameList" />
+        <my:GameList Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" x:Name="ctlGameList" />
     </Grid>
 </UserControl>

@@ -45,7 +45,7 @@
                     info.Text = "Not downloaded"
                 Case State.Downloading
                     cmdLaunch.Content = "Cancel"
-                    info.Text = ""
+                    info.Text = "Downloading..."
             End Select
 
             progressBar.Visibility = If(m_state = State.Downloading, Windows.Visibility.Visible, Windows.Visibility.Collapsed)

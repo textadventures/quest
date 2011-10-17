@@ -11,10 +11,16 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TabControl Name="ctlTabs">
-            <TabItem Header="Play">
+            <TabItem Padding="14,2,14,2">
+                <TabItem.Header>
+                    <TextBlock FontSize="14">Play</TextBlock>
+                </TabItem.Header>
                 <my:PlayBrowser x:Name="ctlPlayBrowser" />
             </TabItem>
-            <TabItem Header="Edit">
+            <TabItem Padding="14,2,14,2">
+                <TabItem.Header>
+                    <TextBlock FontSize="14">Edit</TextBlock>
+                </TabItem.Header>
                 <my:EditBrowser x:Name="ctlEditBrowser" />
             </TabItem>
         </TabControl>
