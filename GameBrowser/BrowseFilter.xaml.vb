@@ -2,13 +2,16 @@
     Public Event CategoryChanged(category As String)
 
     Public Sub Populate(cats As String())
-        lstCategories.Items.AddRange(cats)
+        For Each cat As String In cats
+            lstCategories.Items.Add(cat)
+        Next
         If lstCategories.Items.Count > 0 Then
             lstCategories.SelectedIndex = 0
+            RaiseEvent CategoryChanged(lstCategories.Text)
         End If
     End Sub
 
-    Private Sub lstCategories_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles lstCategories.SelectedIndexChanged
+    Private Sub lstCategories_DropDownClosed(sender As System.Object, e As System.EventArgs)
         RaiseEvent CategoryChanged(lstCategories.Text)
     End Sub
 End Class

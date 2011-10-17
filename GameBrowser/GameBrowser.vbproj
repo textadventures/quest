@@ -130,6 +130,9 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BrowseFilter.xaml.vb">
+      <DependentUpon>BrowseFilter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameList.xaml.vb">
       <DependentUpon>GameList.xaml</DependentUpon>
     </Compile>
@@ -140,12 +143,6 @@
       <DependentUpon>VersionInfo.vb</DependentUpon>
     </Compile>
     <Compile Include="VersionInfo.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BrowseFilter.Designer.vb">
-      <DependentUpon>BrowseFilter.vb</DependentUpon>
-    </Compile>
-    <Compile Include="BrowseFilter.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="EditBrowser.Designer.vb">
@@ -195,9 +192,6 @@
     <EmbeddedResource Include="VersionInfo.resx">
       <DependentUpon>VersionInfo.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BrowseFilter.resx">
-      <DependentUpon>BrowseFilter.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="EditBrowser.resx">
       <DependentUpon>EditBrowser.vb</DependentUpon>
     </EmbeddedResource>
@@ -238,6 +232,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BrowseFilter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="EditorWelcome.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

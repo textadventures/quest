@@ -23,13 +23,14 @@ Partial Class PlayBrowser
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.ctlContainer = New System.Windows.Forms.SplitContainer()
+        Me.ElementHost3 = New System.Windows.Forms.Integration.ElementHost()
+        Me.ctlBrowseFilter = New GameBrowser.BrowseFilter()
         Me.ElementHost1 = New System.Windows.Forms.Integration.ElementHost()
         Me.ctlOnlineGameList = New GameBrowser.GameList()
-        Me.ctlBrowseFilter = New GameBrowser.BrowseFilter()
         Me.lblBrowseTitle = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.ElementHost2 = New System.Windows.Forms.Integration.ElementHost()
         Me.ctlGameList = New GameBrowser.GameList()
+        Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.ctlContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ctlContainer.Panel1.SuspendLayout()
         Me.ctlContainer.Panel2.SuspendLayout()
@@ -47,7 +48,7 @@ Partial Class PlayBrowser
         'ctlContainer.Panel1
         '
         Me.ctlContainer.Panel1.Controls.Add(Me.ElementHost1)
-        Me.ctlContainer.Panel1.Controls.Add(Me.ctlBrowseFilter)
+        Me.ctlContainer.Panel1.Controls.Add(Me.ElementHost3)
         Me.ctlContainer.Panel1.Controls.Add(Me.lblBrowseTitle)
         '
         'ctlContainer.Panel2
@@ -58,23 +59,25 @@ Partial Class PlayBrowser
         Me.ctlContainer.SplitterDistance = 300
         Me.ctlContainer.TabIndex = 0
         '
+        'ElementHost3
+        '
+        Me.ElementHost3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ElementHost3.Location = New System.Drawing.Point(0, 23)
+        Me.ElementHost3.Name = "ElementHost3"
+        Me.ElementHost3.Size = New System.Drawing.Size(300, 30)
+        Me.ElementHost3.TabIndex = 8
+        Me.ElementHost3.Text = "ElementHost3"
+        Me.ElementHost3.Child = Me.ctlBrowseFilter
+        '
         'ElementHost1
         '
         Me.ElementHost1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ElementHost1.Location = New System.Drawing.Point(0, 45)
+        Me.ElementHost1.Location = New System.Drawing.Point(0, 53)
         Me.ElementHost1.Name = "ElementHost1"
-        Me.ElementHost1.Size = New System.Drawing.Size(300, 355)
+        Me.ElementHost1.Size = New System.Drawing.Size(300, 347)
         Me.ElementHost1.TabIndex = 7
         Me.ElementHost1.Text = "ElementHost1"
         Me.ElementHost1.Child = Me.ctlOnlineGameList
-        '
-        'ctlBrowseFilter
-        '
-        Me.ctlBrowseFilter.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ctlBrowseFilter.Location = New System.Drawing.Point(0, 23)
-        Me.ctlBrowseFilter.Name = "ctlBrowseFilter"
-        Me.ctlBrowseFilter.Size = New System.Drawing.Size(300, 22)
-        Me.ctlBrowseFilter.TabIndex = 6
         '
         'lblBrowseTitle
         '
@@ -86,16 +89,6 @@ Partial Class PlayBrowser
         Me.lblBrowseTitle.TabIndex = 4
         Me.lblBrowseTitle.Text = "Get Games"
         '
-        'Label1
-        '
-        Me.Label1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(0, 0)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(296, 23)
-        Me.Label1.TabIndex = 3
-        Me.Label1.Text = "Recent"
-        '
         'ElementHost2
         '
         Me.ElementHost2.Dock = System.Windows.Forms.DockStyle.Fill
@@ -105,6 +98,16 @@ Partial Class PlayBrowser
         Me.ElementHost2.TabIndex = 4
         Me.ElementHost2.Text = "ElementHost2"
         Me.ElementHost2.Child = Me.ctlGameList
+        '
+        'Label1
+        '
+        Me.Label1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Location = New System.Drawing.Point(0, 0)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(296, 23)
+        Me.Label1.TabIndex = 3
+        Me.Label1.Text = "Recent"
         '
         'PlayBrowser
         '
@@ -123,10 +126,11 @@ Partial Class PlayBrowser
     Friend WithEvents ctlContainer As System.Windows.Forms.SplitContainer
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents lblBrowseTitle As System.Windows.Forms.Label
-    Friend WithEvents ctlBrowseFilter As GameBrowser.BrowseFilter
     Friend WithEvents ElementHost1 As System.Windows.Forms.Integration.ElementHost
     Friend ctlOnlineGameList As GameBrowser.GameList
     Friend WithEvents ElementHost2 As System.Windows.Forms.Integration.ElementHost
     Friend ctlGameList As GameBrowser.GameList
+    Friend WithEvents ElementHost3 As System.Windows.Forms.Integration.ElementHost
+    Friend ctlBrowseFilter As GameBrowser.BrowseFilter
 
 End Class

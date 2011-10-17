@@ -18,6 +18,7 @@
         AddHandler ctlGameList.Launch, AddressOf ctlGameList_Launch
         AddHandler ctlGameList.ClearAllItems, AddressOf ctlGameList_ClearAllItems
         AddHandler ctlGameList.RemoveItem, AddressOf ctlGameList_RemoveItem
+        AddHandler ctlBrowseFilter.CategoryChanged, AddressOf ctlBrowseFilter_CategoryChanged
         Populate()
     End Sub
 
@@ -58,7 +59,7 @@
         ctlBrowseFilter.Populate((From cat In m_onlineGames.Categories Select cat.Title).ToArray())
     End Sub
 
-    Private Sub ctlBrowseFilter_CategoryChanged(category As String) Handles ctlBrowseFilter.CategoryChanged
+    Private Sub ctlBrowseFilter_CategoryChanged(category As String)
         PopulateGames(category)
     End Sub
 
