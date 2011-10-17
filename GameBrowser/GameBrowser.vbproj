@@ -145,11 +145,8 @@
     <Compile Include="PlayBrowser.xaml.vb">
       <DependentUpon>PlayBrowser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VersionInfo.Designer.vb">
-      <DependentUpon>VersionInfo.vb</DependentUpon>
-    </Compile>
-    <Compile Include="VersionInfo.vb">
-      <SubType>UserControl</SubType>
+    <Compile Include="VersionInfo.xaml.vb">
+      <DependentUpon>VersionInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorWelcome.xaml.vb">
       <DependentUpon>EditorWelcome.xaml</DependentUpon>
@@ -183,9 +180,6 @@
     <Compile Include="WebClientFactory.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="VersionInfo.resx">
-      <DependentUpon>VersionInfo.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Launcher.resx">
       <DependentUpon>Launcher.vb</DependentUpon>
     </EmbeddedResource>
@@ -241,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PlayBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VersionInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

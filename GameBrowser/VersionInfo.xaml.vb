@@ -1,5 +1,4 @@
-﻿Friend Class VersionInfo
-
+﻿Public Class VersionInfo
     Private m_updateData As UpdatesData
     Private m_currentVersion As Version
 
@@ -10,7 +9,7 @@
         Set(value As UpdatesData)
             m_updateData = value
             If value IsNot Nothing Then
-                lblNewVersionDesc.Text = value.Description
+                Dispatcher.BeginInvoke(Sub() lblNewVersionDesc.Content = value.Description)
             End If
         End Set
     End Property

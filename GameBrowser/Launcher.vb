@@ -11,6 +11,7 @@
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        ctlVersionInfo.Visibility = Windows.Visibility.Collapsed
         ctlTabs.SelectedIndex = CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "SelectedTab", 0))
         AddHandler ctlPlayBrowser.LaunchGame, AddressOf ctlPlayBrowser_LaunchGame
         AddHandler ctlPlayBrowser.GotUpdateData, AddressOf ctlPlayBrowser_GotUpdateData
@@ -78,7 +79,7 @@
         If IsNewVersion(data) Then
             BeginInvoke(Sub()
                             ctlVersionInfo.UpdateInfo = data
-                            ctlVersionInfo.Visible = True
+                            ctlVersionInfo.Visibility = Windows.Visibility.Visible
                         End Sub)
         End If
     End Sub
