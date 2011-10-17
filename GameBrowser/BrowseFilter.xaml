@@ -6,6 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="200">
     <Grid>
-            <ComboBox Name="lstCategories" DropDownClosed="lstCategories_DropDownClosed" />
+            <ComboBox Name="lstCategories" SelectionChanged="lstCategories_SelectionChanged" />
     </Grid>
 </UserControl>

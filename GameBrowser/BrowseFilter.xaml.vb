@@ -11,7 +11,7 @@
         End If
     End Sub
 
-    Private Sub lstCategories_DropDownClosed(sender As System.Object, e As System.EventArgs)
-        RaiseEvent CategoryChanged(lstCategories.Text)
+    Private Sub lstCategories_SelectionChanged(sender As System.Object, e As System.Windows.Controls.SelectionChangedEventArgs)
+        RaiseEvent CategoryChanged(DirectCast(DirectCast(sender, System.Windows.Controls.ComboBox).SelectedValue, String))
     End Sub
 End Class
