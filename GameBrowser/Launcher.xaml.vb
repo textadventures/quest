@@ -49,7 +49,7 @@
         RaiseEvent Tutorial()
     End Sub
 
-    Private Sub ctlTabs_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles ctlTabs.SelectedIndexChanged
+    Private Sub ctlTabs_SelectionChanged(sender As System.Object, e As System.Windows.Controls.SelectionChangedEventArgs) Handles ctlTabs.SelectionChanged
         AxeSoftware.Utility.Registry.SaveSetting("Quest", "Settings", "SelectedTab", ctlTabs.SelectedIndex)
     End Sub
 
@@ -77,10 +77,10 @@
     Private Sub ctlPlayBrowser_GotUpdateData(data As UpdatesData)
         ctlVersionInfo.UpdateInfo = data
         If IsNewVersion(data) Then
-            BeginInvoke(Sub()
-                            ctlVersionInfo.UpdateInfo = data
-                            ctlVersionInfo.Visibility = Windows.Visibility.Visible
-                        End Sub)
+            Dispatcher.BeginInvoke(Sub()
+                                       ctlVersionInfo.UpdateInfo = data
+                                       ctlVersionInfo.Visibility = Windows.Visibility.Visible
+                                   End Sub)
         End If
     End Sub
 

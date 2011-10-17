@@ -25,6 +25,12 @@ Public Class Main
         End If
 
         AddHandler Options.Instance.OptionChanged, AddressOf OptionsChanged
+        AddHandler ctlLauncher.BrowseForGame, AddressOf ctlLauncher_BrowseForGame
+        AddHandler ctlLauncher.BrowseForGameEdit, AddressOf ctlLauncher_BrowseForGameEdit
+        AddHandler ctlLauncher.CreateNewGame, AddressOf ctlLauncher_CreateNewGame
+        AddHandler ctlLauncher.EditGame, AddressOf ctlLauncher_EditGame
+        AddHandler ctlLauncher.LaunchGame, AddressOf ctlLauncher_LaunchGame
+        AddHandler ctlLauncher.Tutorial, AddressOf ctlLauncher_Tutorial
     End Sub
 
     Private Sub InitialiseMenuHandlers()
@@ -59,32 +65,32 @@ Public Class Main
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
             ctlLauncher.RefreshLists()
             ctlPlayer.Visible = False
-            ctlLauncher.Visible = True
+            ctlLauncherHost.Visible = True
             SetWindowTitle()
         End If
     End Sub
 
-    Private Sub ctlLauncher_BrowseForGame() Handles ctlLauncher.BrowseForGame
+    Private Sub ctlLauncher_BrowseForGame()
         Browse()
     End Sub
 
-    Private Sub ctlLauncher_BrowseForGameEdit() Handles ctlLauncher.BrowseForGameEdit
+    Private Sub ctlLauncher_BrowseForGameEdit()
         BrowseEdit()
     End Sub
 
-    Private Sub ctlLauncher_CreateNewGame() Handles ctlLauncher.CreateNewGame
+    Private Sub ctlLauncher_CreateNewGame()
         CreateNewMenuClick()
     End Sub
 
-    Private Sub ctlLauncher_EditGame(filename As String) Handles ctlLauncher.EditGame
+    Private Sub ctlLauncher_EditGame(filename As String)
         LaunchEdit(filename)
     End Sub
 
-    Private Sub ctlLauncher_LaunchGame(filename As String) Handles ctlLauncher.LaunchGame
+    Private Sub ctlLauncher_LaunchGame(filename As String)
         Launch(filename)
     End Sub
 
-    Private Sub ctlLauncher_Tutorial() Handles ctlLauncher.Tutorial
+    Private Sub ctlLauncher_Tutorial()
         Tutorial()
     End Sub
 
@@ -118,7 +124,7 @@ Public Class Main
             Else
                 Me.SuspendLayout()
                 ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Player
-                ctlLauncher.Visible = False
+                ctlLauncherHost.Visible = False
                 ctlEditor.Visible = False
                 ctlPlayer.Visible = True
                 ctlPlayer.SetMenu(ctlMenu)
@@ -157,7 +163,7 @@ Public Class Main
                 Case ".aslx"
                     Me.SuspendLayout()
                     ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Editor
-                    ctlLauncher.Visible = False
+                    ctlLauncherHost.Visible = False
                     ctlPlayer.Visible = False
                     ctlEditor.Visible = True
                     ctlEditor.SetMenu(ctlMenu)
@@ -273,7 +279,7 @@ Public Class Main
         ctlLauncher.RefreshLists()
         ctlEditor.Visible = False
         ctlEditor.CancelUnsavedChanges()
-        ctlLauncher.Visible = True
+        ctlLauncherHost.Visible = True
         SetWindowTitle()
     End Sub
 
@@ -317,7 +323,7 @@ Public Class Main
     End Sub
 
     Private Sub CmdLineLaunch(filename As String)
-        ctlLauncher.Visible = False
+        ctlLauncherHost.Visible = False
         m_cmdLineLaunch = filename
     End Sub
 

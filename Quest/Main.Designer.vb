@@ -29,6 +29,7 @@ Partial Class Main
         Me.ctlPlayer = New AxeSoftware.Quest.Player()
         Me.ctlEditor = New AxeSoftware.Quest.Editor()
         Me.ctlMenu = New AxeSoftware.Quest.Controls.Menu()
+        Me.ctlLauncherHost = New System.Windows.Forms.Integration.ElementHost()
         Me.ctlLauncher = New GameBrowser.Launcher()
         Me.SuspendLayout()
         '
@@ -42,14 +43,20 @@ Partial Class Main
         Me.ctlPlayer.Location = New System.Drawing.Point(0, 24)
         Me.ctlPlayer.Name = "ctlPlayer"
         Me.ctlPlayer.PanesVisible = True
+        Me.ctlPlayer.PostLaunchAction = Nothing
+        Me.ctlPlayer.PreLaunchAction = Nothing
+        Me.ctlPlayer.RecordWalkthrough = Nothing
         Me.ctlPlayer.Size = New System.Drawing.Size(734, 464)
         Me.ctlPlayer.TabIndex = 0
+        Me.ctlPlayer.UseGameColours = True
+        Me.ctlPlayer.UseGameFont = True
         '
         'ctlEditor
         '
         Me.ctlEditor.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlEditor.Location = New System.Drawing.Point(0, 24)
         Me.ctlEditor.Name = "ctlEditor"
+        Me.ctlEditor.SimpleMode = False
         Me.ctlEditor.Size = New System.Drawing.Size(734, 464)
         Me.ctlEditor.TabIndex = 3
         Me.ctlEditor.Visible = False
@@ -63,21 +70,22 @@ Partial Class Main
         Me.ctlMenu.Size = New System.Drawing.Size(734, 24)
         Me.ctlMenu.TabIndex = 5
         '
-        'ctlLauncher
+        'ctlLauncherHost
         '
-        Me.ctlLauncher.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlLauncher.Location = New System.Drawing.Point(0, 24)
-        Me.ctlLauncher.Name = "ctlLauncher"
-        Me.ctlLauncher.Padding = New System.Windows.Forms.Padding(3)
-        Me.ctlLauncher.Size = New System.Drawing.Size(734, 464)
-        Me.ctlLauncher.TabIndex = 6
+        Me.ctlLauncherHost.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlLauncherHost.Location = New System.Drawing.Point(0, 24)
+        Me.ctlLauncherHost.Name = "ctlLauncherHost"
+        Me.ctlLauncherHost.Size = New System.Drawing.Size(734, 464)
+        Me.ctlLauncherHost.TabIndex = 6
+        Me.ctlLauncherHost.Text = "ElementHost1"
+        Me.ctlLauncherHost.Child = Me.ctlLauncher
         '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(734, 488)
-        Me.Controls.Add(Me.ctlLauncher)
+        Me.Controls.Add(Me.ctlLauncherHost)
         Me.Controls.Add(Me.ctlEditor)
         Me.Controls.Add(Me.ctlPlayer)
         Me.Controls.Add(Me.ctlMenu)
@@ -92,6 +100,7 @@ Partial Class Main
     Friend WithEvents dlgOpenFile As System.Windows.Forms.OpenFileDialog
     Friend WithEvents ctlEditor As Editor
     Friend WithEvents ctlMenu As AxeSoftware.Quest.Controls.Menu
-    Friend WithEvents ctlLauncher As GameBrowser.Launcher
+    Friend WithEvents ctlLauncherHost As System.Windows.Forms.Integration.ElementHost
+    Friend ctlLauncher As GameBrowser.Launcher
 
 End Class

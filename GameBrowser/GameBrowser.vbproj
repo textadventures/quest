@@ -142,6 +142,9 @@
     <Compile Include="GameListItem.xaml.vb">
       <DependentUpon>GameListItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Launcher.xaml.vb">
+      <DependentUpon>Launcher.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PlayBrowser.xaml.vb">
       <DependentUpon>PlayBrowser.xaml</DependentUpon>
     </Compile>
@@ -153,12 +156,6 @@
     </Compile>
     <Compile Include="GameListItemData.vb" />
     <Compile Include="GameListItems.vb" />
-    <Compile Include="Launcher.Designer.vb">
-      <DependentUpon>Launcher.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Launcher.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
@@ -180,9 +177,6 @@
     <Compile Include="WebClientFactory.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Launcher.resx">
-      <DependentUpon>Launcher.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -231,6 +225,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GameListItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Launcher.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
