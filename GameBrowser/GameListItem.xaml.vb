@@ -1,7 +1,7 @@
 ﻿Public Class GameListItem
     Public Event Launch(filename As String)
     Public Event ClearAllItems()
-    Public Event RemoveItem(filename As String)
+    Public Event RemoveItem(sender As GameListItem, filename As String)
 
     Private m_filename As String
     Private m_url As String
@@ -128,7 +128,7 @@
             Windows.Controls.ToolTipService.SetIsEnabled(textBlock, False)
         Else
             Windows.Controls.ToolTipService.SetIsEnabled(textBlock, True)
-            tooltip.Content = text
+            textTooltip.Content = text
         End If
     End Sub
 
@@ -191,15 +191,14 @@
     End Sub
 
     Public Sub DisableContextMenu()
-        'Me.ContextMenuStrip = Nothing
+        grid.ContextMenu = Nothing
     End Sub
 
-    'Private Sub mnuClear_Click(sender As Object, e As System.EventArgs) Handles mnuClear.Click
-    '    RaiseEvent ClearAllItems()
-    'End Sub
+    Private Sub mnuClear_Click(sender As System.Object, e As System.Windows.RoutedEventArgs)
+        RaiseEvent ClearAllItems()
+    End Sub
 
-    'Private Sub mnuRemove_Click(sender As Object, e As System.EventArgs) Handles mnuRemove.Click
-    '    RaiseEvent RemoveItem(m_filename)
-    'End Sub
-
+    Private Sub mnuRemove_Click(sender As System.Object, e As System.Windows.RoutedEventArgs)
+        RaiseEvent RemoveItem(Me, m_filename)
+    End Sub
 End Class

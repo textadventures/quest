@@ -8,6 +8,15 @@
     Public Event RemoveItem(filename As String)
     Public Event ClearAllItems()
 
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        EnableContextMenu = True
+    End Sub
+
     Public Property LaunchCaption() As String
         Get
             Return m_launchCaption
@@ -80,9 +89,6 @@
     End Sub
 
     Private Sub ClearListElements()
-        'For Each item In m_visibleGameListItems
-        '    ctlTableLayout.Controls.Remove(item)
-        'Next
         stackPanel.Children.Clear()
         m_visibleGameListItems.Clear()
     End Sub
@@ -100,10 +106,9 @@
         End Set
     End Property
 
-    Private Sub RemoveItemHandler(filename As String)
-        'RaiseEvent RemoveItem(filename)
-        'Dim itemsToRemove = From item In ctlTableLayout.Controls Where DirectCast(item, WFGameListItem).Filename = filename Select item
-        'ctlTableLayout.Controls.Remove(DirectCast(itemsToRemove.First(), Control))
+    Private Sub RemoveItemHandler(sender As GameListItem, filename As String)
+        RaiseEvent RemoveItem(filename)
+        stackPanel.Children.Remove(sender)
     End Sub
 
     Private Sub ClearItemsHandler()

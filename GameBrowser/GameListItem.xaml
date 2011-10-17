@@ -5,7 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="80" d:DesignWidth="300">
-    <Grid TextOptions.TextFormattingMode="Display">
+    <Grid Name="grid" TextOptions.TextFormattingMode="Display">
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Clear all items" Name="mnuClear" Click="mnuClear_Click"></MenuItem>
+                <MenuItem Header="Remove this item" Name="mnuRemove" Click="mnuRemove_Click"></MenuItem>
+            </ContextMenu>
+        </Grid.ContextMenu>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
@@ -16,7 +22,7 @@
         </Grid.RowDefinitions>
         <TextBlock Name="textBlock" Grid.Column="0" Padding="3" Margin="3">
             <TextBlock.ToolTip>
-                <ToolTip Name="tooltip"></ToolTip>
+                <ToolTip Name="textTooltip"></ToolTip>
             </TextBlock.ToolTip>
             <Run Name="title" FontWeight="Bold">Game name</Run> <Run Name="authorLabel">by ...</Run><LineBreak/>
             <Run Name="info">Info</Run>
