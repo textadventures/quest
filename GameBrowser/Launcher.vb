@@ -14,6 +14,10 @@
         ctlTabs.SelectedIndex = CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "SelectedTab", 0))
         AddHandler ctlPlayBrowser.LaunchGame, AddressOf ctlPlayBrowser_LaunchGame
         AddHandler ctlPlayBrowser.GotUpdateData, AddressOf ctlPlayBrowser_GotUpdateData
+        AddHandler ctlEditBrowser.EditGame, AddressOf ctlEditBrowser_EditGame
+        AddHandler ctlEditBrowser.CreateNewGame, AddressOf ctlEditBrowser_CreateNewGame
+        AddHandler ctlEditBrowser.OpenGame, AddressOf ctlEditBrowser_OpenGame
+        AddHandler ctlEditBrowser.Tutorial, AddressOf ctlEditBrowser_Tutorial
     End Sub
 
     Public Sub AddToRecent(filename As String, name As String)
@@ -28,19 +32,19 @@
         RaiseEvent LaunchGame(filename)
     End Sub
 
-    Private Sub ctlEditBrowser_EditGame(filename As String) Handles ctlEditBrowser.EditGame
+    Private Sub ctlEditBrowser_EditGame(filename As String)
         RaiseEvent EditGame(filename)
     End Sub
 
-    Private Sub ctlEditBrowser_CreateNewGame() Handles ctlEditBrowser.CreateNewGame
+    Private Sub ctlEditBrowser_CreateNewGame()
         RaiseEvent CreateNewGame()
     End Sub
 
-    Private Sub ctlEditBrowser_OpenGame() Handles ctlEditBrowser.OpenGame
+    Private Sub ctlEditBrowser_OpenGame()
         RaiseEvent BrowseForGameEdit()
     End Sub
 
-    Private Sub ctlEditBrowser_Tutorial() Handles ctlEditBrowser.Tutorial
+    Private Sub ctlEditBrowser_Tutorial()
         RaiseEvent Tutorial()
     End Sub
 

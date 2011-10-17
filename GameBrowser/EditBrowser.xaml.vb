@@ -7,7 +7,7 @@
     Public Event Tutorial()
 
     Public Sub New()
-        ' This call is required by the Windows Form Designer.
+        ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
@@ -23,12 +23,6 @@
         AddHandler ctlGameList.ClearAllItems, AddressOf ctlGameList_ClearAllItems
         AddHandler ctlGameList.RemoveItem, AddressOf ctlGameList_RemoveItem
     End Sub
-
-    Private ReadOnly Property ctlEditorWelcome As EditorWelcome
-        Get
-            Return DirectCast(ctlElementHost.Child, EditorWelcome)
-        End Get
-    End Property
 
     Public Sub AddToRecent(filename As String, name As String)
         m_recentItems.AddToRecent(filename, name)
@@ -62,5 +56,4 @@
     Private Sub DoTutorial()
         RaiseEvent Tutorial()
     End Sub
-
 End Class

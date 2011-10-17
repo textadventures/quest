@@ -24,11 +24,12 @@ Partial Class Launcher
     Private Sub InitializeComponent()
         Me.ctlTabs = New System.Windows.Forms.TabControl()
         Me.tabPlay = New System.Windows.Forms.TabPage()
-        Me.tabEdit = New System.Windows.Forms.TabPage()
-        Me.ctlEditBrowser = New GameBrowser.EditBrowser()
-        Me.ctlVersionInfo = New GameBrowser.VersionInfo()
         Me.ElementHost1 = New System.Windows.Forms.Integration.ElementHost()
         Me.ctlPlayBrowser = New GameBrowser.PlayBrowser()
+        Me.tabEdit = New System.Windows.Forms.TabPage()
+        Me.ctlVersionInfo = New GameBrowser.VersionInfo()
+        Me.ElementHost2 = New System.Windows.Forms.Integration.ElementHost()
+        Me.ctlEditBrowser = New GameBrowser.EditBrowser()
         Me.ctlTabs.SuspendLayout()
         Me.tabPlay.SuspendLayout()
         Me.tabEdit.SuspendLayout()
@@ -58,9 +59,19 @@ Partial Class Launcher
         Me.tabPlay.Text = "Play"
         Me.tabPlay.UseVisualStyleBackColor = True
         '
+        'ElementHost1
+        '
+        Me.ElementHost1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ElementHost1.Location = New System.Drawing.Point(0, 0)
+        Me.ElementHost1.Name = "ElementHost1"
+        Me.ElementHost1.Size = New System.Drawing.Size(655, 345)
+        Me.ElementHost1.TabIndex = 0
+        Me.ElementHost1.Text = "ElementHost1"
+        Me.ElementHost1.Child = Me.ctlPlayBrowser
+        '
         'tabEdit
         '
-        Me.tabEdit.Controls.Add(Me.ctlEditBrowser)
+        Me.tabEdit.Controls.Add(Me.ElementHost2)
         Me.tabEdit.Location = New System.Drawing.Point(4, 22)
         Me.tabEdit.Name = "tabEdit"
         Me.tabEdit.Size = New System.Drawing.Size(655, 345)
@@ -68,15 +79,6 @@ Partial Class Launcher
         Me.tabEdit.Tag = ""
         Me.tabEdit.Text = "Edit"
         Me.tabEdit.UseVisualStyleBackColor = True
-        '
-        'ctlEditBrowser
-        '
-        Me.ctlEditBrowser.BackColor = System.Drawing.Color.White
-        Me.ctlEditBrowser.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlEditBrowser.Location = New System.Drawing.Point(0, 0)
-        Me.ctlEditBrowser.Name = "ctlEditBrowser"
-        Me.ctlEditBrowser.Size = New System.Drawing.Size(655, 339)
-        Me.ctlEditBrowser.TabIndex = 2
         '
         'ctlVersionInfo
         '
@@ -89,15 +91,15 @@ Partial Class Launcher
         Me.ctlVersionInfo.UpdateInfo = Nothing
         Me.ctlVersionInfo.Visible = False
         '
-        'ElementHost1
+        'ElementHost2
         '
-        Me.ElementHost1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ElementHost1.Location = New System.Drawing.Point(0, 0)
-        Me.ElementHost1.Name = "ElementHost1"
-        Me.ElementHost1.Size = New System.Drawing.Size(655, 345)
-        Me.ElementHost1.TabIndex = 0
-        Me.ElementHost1.Text = "ElementHost1"
-        Me.ElementHost1.Child = Me.ctlPlayBrowser
+        Me.ElementHost2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ElementHost2.Location = New System.Drawing.Point(0, 0)
+        Me.ElementHost2.Name = "ElementHost2"
+        Me.ElementHost2.Size = New System.Drawing.Size(655, 345)
+        Me.ElementHost2.TabIndex = 0
+        Me.ElementHost2.Text = "ElementHost2"
+        Me.ElementHost2.Child = Me.ctlEditBrowser
         '
         'Launcher
         '
@@ -116,9 +118,10 @@ Partial Class Launcher
     Friend WithEvents ctlTabs As System.Windows.Forms.TabControl
     Friend WithEvents tabPlay As System.Windows.Forms.TabPage
     Friend WithEvents tabEdit As System.Windows.Forms.TabPage
-    Friend WithEvents ctlEditBrowser As GameBrowser.EditBrowser
     Friend WithEvents ctlVersionInfo As GameBrowser.VersionInfo
     Friend WithEvents ElementHost1 As System.Windows.Forms.Integration.ElementHost
     Friend ctlPlayBrowser As GameBrowser.PlayBrowser
+    Friend WithEvents ElementHost2 As System.Windows.Forms.Integration.ElementHost
+    Friend ctlEditBrowser As GameBrowser.EditBrowser
 
 End Class
