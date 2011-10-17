@@ -1,4 +1,7 @@
-﻿Public Class GameListItem
+﻿Imports System.Windows
+Imports System.Windows.Media
+
+Public Class GameListItem
     Public Event Launch(filename As String)
     Public Event ClearAllItems()
     Public Event RemoveItem(sender As GameListItem, filename As String)
@@ -19,6 +22,8 @@
     Private m_state As State = State.ReadyToPlay
     Private m_playButtonWidth As Integer
     Private m_playButtonRight As Integer
+    Private m_hoverBrush As Brush
+    Private m_background As Brush
 
     Public Sub New()
 
@@ -29,6 +34,15 @@
         SetToolTipText("")
         ratingBlock.Visibility = Windows.Visibility.Collapsed
         notRatedBlock.Visibility = Windows.Visibility.Collapsed
+
+        m_hoverBrush = New LinearGradientBrush(
+                New GradientStopCollection From {
+                    New GradientStop(Color.FromRgb(&HF0, &HFA, &HFE), 0.0),
+                    New GradientStop(Color.FromRgb(&HD6, &HF0, &HFF), 1.0)},
+                New Point(0, 0), New Point(0, 1))
+
+        AddHandler Me.MouseEnter, AddressOf MouseEnterUpdateBackground
+        AddHandler Me.MouseLeave, AddressOf MouseLeaveUpdateBackground
     End Sub
 
     Public Property CurrentState As State
@@ -225,4 +239,17 @@
             End If
         End Set
     End Property
+
+    Public Sub SetBackground(background As Brush)
+        m_background = background
+        Me.Background = background
+    End Sub
+
+    Private Sub MouseEnterUpdateBackground(sender As Object, e As System.Windows.Input.MouseEventArgs)
+        Me.Background = m_hoverBrush
+    End Sub
+
+    Private Sub MouseLeaveUpdateBackground(sender As Object, e As System.Windows.Input.MouseEventArgs)
+        Me.Background = m_background
+    End Sub
 End Class

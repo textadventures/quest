@@ -94,7 +94,9 @@ Public Class GameList
             m_visibleGameListItems.Add(newItem)
 
             If count Mod 2 = 0 Then
-                newItem.Background = New SolidColorBrush(Colors.WhiteSmoke)
+                newItem.SetBackground(New SolidColorBrush(Colors.WhiteSmoke))
+            Else
+                newItem.SetBackground(Nothing)
             End If
 
             stackPanel.Children.Add(newItem)
