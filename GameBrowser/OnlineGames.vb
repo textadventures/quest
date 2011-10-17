@@ -4,6 +4,7 @@
 
     Public Event DataReady()
     Public Event GotUpdateData(data As UpdatesData)
+    Public Event DownloadFailed()
 
     Public Class GameData
         Public Name As String
@@ -31,7 +32,7 @@
         If e.Error Is Nothing Then
             ProcessXML(e.Result)
         Else
-            ' TO DO: Display error message
+            RaiseEvent DownloadFailed()
         End If
     End Sub
 
@@ -90,6 +91,4 @@
 
         gameListCtl.CreateListElements(gamesList)
     End Sub
-
-
 End Class

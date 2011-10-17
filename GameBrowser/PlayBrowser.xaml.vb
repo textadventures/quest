@@ -55,6 +55,10 @@
         Dispatcher.BeginInvoke(Sub() PopulateCategories())
     End Sub
 
+    Private Sub m_onlineGames_DownloadFailed() Handles m_onlineGames.DownloadFailed
+        Dispatcher.BeginInvoke(Sub() ctlOnlineGameList.MarkAsFailed())
+    End Sub
+
     Private Sub PopulateCategories()
         ctlBrowseFilter.Populate((From cat In m_onlineGames.Categories Select cat.Title).ToArray())
     End Sub

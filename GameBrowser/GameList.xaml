@@ -17,6 +17,9 @@
                     </wf:WindowsFormsHost>
                     <TextBlock VerticalAlignment="Center" Padding="10,0,0,0">Downloading games list...</TextBlock>
                 </StackPanel>
+                <TextBlock Name="errorBlock" HorizontalAlignment="Center" Visibility="Collapsed" Margin="10">
+                    Failed to download games list
+                </TextBlock>
             </StackPanel>
         </ScrollViewer>
     </Grid>

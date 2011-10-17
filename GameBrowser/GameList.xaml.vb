@@ -131,4 +131,9 @@ Public Class GameList
     Private Sub GameList_Loaded(sender As Object, e As System.Windows.RoutedEventArgs) Handles Me.Loaded
         wfPictureBox.Image = My.Resources.loading
     End Sub
+
+    Public Sub MarkAsFailed()
+        loadingPanel.Visibility = Windows.Visibility.Collapsed
+        errorBlock.Visibility = Windows.Visibility.Visible
+    End Sub
 End Class
