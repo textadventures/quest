@@ -139,6 +139,9 @@
     <Compile Include="GameListItem.xaml.vb">
       <DependentUpon>GameListItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PlayBrowser.xaml.vb">
+      <DependentUpon>PlayBrowser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VersionInfo.Designer.vb">
       <DependentUpon>VersionInfo.vb</DependentUpon>
     </Compile>
@@ -178,12 +181,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="OnlineGames.vb" />
-    <Compile Include="PlayBrowser.Designer.vb">
-      <DependentUpon>PlayBrowser.vb</DependentUpon>
-    </Compile>
-    <Compile Include="PlayBrowser.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="RecentItems.vb" />
     <Compile Include="UpdatesData.vb" />
     <Compile Include="WebClientFactory.vb" />
@@ -203,9 +200,6 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayBrowser.resx">
-      <DependentUpon>PlayBrowser.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +239,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GameListItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PlayBrowser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

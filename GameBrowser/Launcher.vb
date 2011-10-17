@@ -12,6 +12,8 @@
 
         ' Add any initialization after the InitializeComponent() call.
         ctlTabs.SelectedIndex = CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "SelectedTab", 0))
+        AddHandler ctlPlayBrowser.LaunchGame, AddressOf ctlPlayBrowser_LaunchGame
+        AddHandler ctlPlayBrowser.GotUpdateData, AddressOf ctlPlayBrowser_GotUpdateData
     End Sub
 
     Public Sub AddToRecent(filename As String, name As String)
@@ -22,7 +24,7 @@
         ctlEditBrowser.AddToRecent(filename, name)
     End Sub
 
-    Private Sub ctlPlayBrowser_LaunchGame(filename As String) Handles ctlPlayBrowser.LaunchGame
+    Private Sub ctlPlayBrowser_LaunchGame(filename As String)
         RaiseEvent LaunchGame(filename)
     End Sub
 
@@ -67,7 +69,7 @@
         End Set
     End Property
 
-    Private Sub ctlPlayBrowser_GotUpdateData(data As UpdatesData) Handles ctlPlayBrowser.GotUpdateData
+    Private Sub ctlPlayBrowser_GotUpdateData(data As UpdatesData)
         ctlVersionInfo.UpdateInfo = data
         If IsNewVersion(data) Then
             BeginInvoke(Sub()

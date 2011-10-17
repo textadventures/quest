@@ -1,4 +1,4 @@
-﻿Friend Class PlayBrowser
+﻿Public Class PlayBrowser
     Private m_recentItems As RecentItems
     Private WithEvents m_onlineGames As New OnlineGames
 
@@ -6,7 +6,7 @@
     Public Event GotUpdateData(data As UpdatesData)
 
     Public Sub New()
-        ' This call is required by the Windows Form Designer.
+        ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
@@ -52,7 +52,7 @@
     End Sub
 
     Private Sub m_onlineGames_DataReady() Handles m_onlineGames.DataReady
-        BeginInvoke(Sub() PopulateCategories())
+        Dispatcher.BeginInvoke(Sub() PopulateCategories())
     End Sub
 
     Private Sub PopulateCategories()
