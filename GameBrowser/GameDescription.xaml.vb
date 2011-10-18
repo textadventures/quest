@@ -167,22 +167,36 @@ Public Class GameDescription
     End Class
 
     Private Sub ProcessReviewsXML(xml As String)
-        Dim doc As XDocument = XDocument.Parse(xml)
 
-        Dim reviewData = From data In doc.Descendants("review")
-                          Select New ReviewData With {
-                              .ReviewText = data.@review,
-                              .Rating = CInt(data.@rating),
-                              .ReviewDate = data.@date,
-                              .Reviewer = data.@user
-                          }
+        Dim reviewData As IEnumerable(Of ReviewData) = Nothing
 
-        m_cache(m_data.GameId).Reviews = New List(Of ReviewData)(reviewData)
-        Dispatcher.BeginInvoke(Sub() PopulateReviewData(reviewData))
+        Try
+            Dim doc As XDocument = XDocument.Parse(xml)
+
+            reviewData = From data In doc.Descendants("review")
+                              Select New ReviewData With {
+                                  .ReviewText = data.@review,
+                                  .Rating = CInt(data.@rating),
+                                  .ReviewDate = data.@date,
+                                  .Reviewer = data.@user
+                              }
+
+            m_cache(m_data.GameId).Reviews = New List(Of ReviewData)(reviewData)
+
+        Catch
+            Dispatcher.BeginInvoke(Sub()
+                                       Dim textBlock As New Windows.Controls.TextBlock
+                                       textBlock.Text = "Failed to download review data"
+                                       reviewsStack.Children.Add(textBlock)
+                                   End Sub)
+        End Try
+
+        Dispatcher.BeginInvoke(Sub() PopulateReviewData(ReviewData))
     End Sub
 
     Private Sub PopulateReviewData(data As IEnumerable(Of ReviewData))
         downloadingReviews.Visibility = Windows.Visibility.Collapsed
+        If data Is Nothing Then Return
         For Each review As ReviewData In data
             Dim reviewItem As New ReviewItem
             reviewItem.Populate(review.Rating > 0, review.Reviewer, review.ReviewText, review.Rating)
