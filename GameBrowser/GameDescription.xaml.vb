@@ -80,6 +80,7 @@ Public Class GameDescription
         Public DateAdded As String
         Public URL As String
         Public NumberReviews As Integer
+        Public Reviews As List(Of ReviewData)
     End Class
 
     Private Sub ProcessXML(xml As String)
@@ -138,11 +139,15 @@ Public Class GameDescription
                 m_reviewsClient = WebClientFactory.GetNewWebClient()
             End If
 
-            Dim URL As String = WebClientFactory.RootURL + "?id=" + m_data.GameId + "&reviews=1"
+            If m_cache(m_data.GameId).Reviews Is Nothing Then
+                Dim URL As String = WebClientFactory.RootURL + "?id=" + m_data.GameId + "&reviews=1"
 
-            m_reviewsClient.CancelAsync()
-            Dim newThread As New System.Threading.Thread(Sub() m_reviewsClient.DownloadStringAsync(New System.Uri(URL)))
-            newThread.Start()
+                m_reviewsClient.CancelAsync()
+                Dim newThread As New System.Threading.Thread(Sub() m_reviewsClient.DownloadStringAsync(New System.Uri(URL)))
+                newThread.Start()
+            Else
+                PopulateReviewData(m_cache(m_data.GameId).Reviews)
+            End If
         End If
     End Sub
 
@@ -172,6 +177,7 @@ Public Class GameDescription
                               .Reviewer = data.@user
                           }
 
+        m_cache(m_data.GameId).Reviews = New List(Of ReviewData)(reviewData)
         Dispatcher.BeginInvoke(Sub() PopulateReviewData(reviewData))
     End Sub
 
