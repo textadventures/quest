@@ -4,21 +4,28 @@ Public Class GameDescription
     Public Event Close()
 
     Private WithEvents m_client As WebClient
+    Private WithEvents m_reviewsClient As WebClient
     Private m_cache As New Dictionary(Of String, GameDescriptionData)
     Private m_linkUrl As String
     Private WithEvents m_listItemControl As GameListItem
+    Private m_downloadedReviews As Boolean
+    Private m_data As GameListItemData
 
     Private Sub cmdClose_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles cmdClose.Click
         RaiseEvent Close()
     End Sub
 
     Public Sub Populate(data As GameListItemData, control As GameListItem)
+        m_data = data
         author.Text = data.Author
         title.Text = data.GameName
         category.Text = ""
         description.Text = ""
         dateAdded.Text = ""
         m_linkUrl = ""
+        m_downloadedReviews = False
+        downloadingReviews.Visibility = Windows.Visibility.Visible
+        reviewsStack.Children.Clear()
         linkBlock.Visibility = Windows.Visibility.Collapsed
         m_listItemControl = control
         UpdateState()
@@ -71,6 +78,7 @@ Public Class GameDescription
         Public Category As String
         Public DateAdded As String
         Public URL As String
+        Public NumberReviews As Integer
     End Class
 
     Private Sub ProcessXML(xml As String)
@@ -82,7 +90,8 @@ Public Class GameDescription
                               .GameId = data.@id,
                               .Category = data.@cat,
                               .DateAdded = data.@date,
-                              .URL = data.@url
+                              .URL = data.@url,
+                              .NumberReviews = CInt(data.@reviews)
                           }
 
         Dim gameItemdata As GameDescriptionData = gameData.FirstOrDefault
@@ -97,6 +106,8 @@ Public Class GameDescription
         dateAdded.Text = "Added " + Date.Parse(data.DateAdded).ToShortDateString()
         m_linkUrl = data.URL
         linkBlock.Visibility = Windows.Visibility.Visible
+        expander.Header = String.Format("{0} reviews and comments", data.NumberReviews)
+        expander.IsEnabled = data.NumberReviews > 0
     End Sub
 
     Private Sub link_Click(sender As System.Object, e As System.Windows.RoutedEventArgs)
@@ -118,4 +129,57 @@ Public Class GameDescription
     Private Sub cmdAction_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles cmdAction.Click
         m_listItemControl.LaunchButtonClick()
     End Sub
+
+    Private Sub expander_Expanded(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles expander.Expanded
+        If m_downloadedReviews Then Return
+
+        If m_reviewsClient Is Nothing Then
+            m_reviewsClient = WebClientFactory.GetNewWebClient()
+        End If
+
+        Dim URL As String = WebClientFactory.RootURL + "?id=" + m_data.GameId + "&reviews=1"
+
+        m_reviewsClient.CancelAsync()
+        Dim newThread As New System.Threading.Thread(Sub() m_reviewsClient.DownloadStringAsync(New System.Uri(URL)))
+        newThread.Start()
+    End Sub
+
+    Private Sub m_reviewsClient_DownloadStringCompleted(sender As Object, e As System.Net.DownloadStringCompletedEventArgs) Handles m_reviewsClient.DownloadStringCompleted
+        If e.Error Is Nothing Then
+            ProcessReviewsXML(e.Result)
+        Else
+            ' TO DO: raise error
+        End If
+    End Sub
+
+    Private Class ReviewData
+        Public Rating As Integer
+        Public ReviewDate As String
+        Public ReviewText As String
+        Public Reviewer As String
+    End Class
+
+    Private Sub ProcessReviewsXML(xml As String)
+        Dim doc As XDocument = XDocument.Parse(xml)
+
+        Dim reviewData = From data In doc.Descendants("review")
+                          Select New ReviewData With {
+                              .ReviewText = data.@review,
+                              .Rating = CInt(data.@rating),
+                              .ReviewDate = data.@date,
+                              .Reviewer = data.@user
+                          }
+
+        Dispatcher.BeginInvoke(Sub() PopulateReviewData(reviewData))
+    End Sub
+
+    Private Sub PopulateReviewData(data As IEnumerable(Of ReviewData))
+        downloadingReviews.Visibility = Windows.Visibility.Collapsed
+        For Each review As ReviewData In data
+            Dim reviewItem As New ReviewItem
+            reviewItem.Populate(review.Rating > 0, review.Reviewer, review.ReviewText, review.Rating)
+            reviewsStack.Children.Add(reviewItem)
+        Next
+    End Sub
+
 End Class

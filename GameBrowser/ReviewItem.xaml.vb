@@ -1,0 +1,13 @@
+﻿Public Class ReviewItem
+    Public Sub Populate(isReview As Boolean, userName As String, text As String, rating As Integer)
+        reviewOrComment.Text = If(isReview, "Review", "Comment")
+        user.Text = userName
+        reviewText.Text = System.Net.WebUtility.HtmlDecode(text)
+        If rating > 0 Then
+            ratingBlock.Visibility = Windows.Visibility.Visible
+            ratingBlock.Text = "Rating: " + rating.ToString()
+        Else
+            ratingBlock.Visibility = Windows.Visibility.Collapsed
+        End If
+    End Sub
+End Class
