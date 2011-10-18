@@ -36,33 +36,37 @@
     End Sub
 
     Private Sub ProcessXML(xml As String)
-        Dim doc As XDocument = XDocument.Parse(xml)
+        Try
+            Dim doc As XDocument = XDocument.Parse(xml)
 
-        Dim versionData = From data In doc.Descendants("questversion")
-                          Select New UpdatesData With {
-                              .Major = data.@major,
-                              .Minor = data.@minor,
-                              .Build = data.@build,
-                              .Revision = data.@rev,
-                              .Description = data.@desc,
-                              .URL = data.@url
-                          }
+            Dim versionData = From data In doc.Descendants("questversion")
+                              Select New UpdatesData With {
+                                  .Major = data.@major,
+                                  .Minor = data.@minor,
+                                  .Build = data.@build,
+                                  .Revision = data.@rev,
+                                  .Description = data.@desc,
+                                  .URL = data.@url
+                              }
 
-        RaiseEvent GotUpdateData(versionData.FirstOrDefault)
+            RaiseEvent GotUpdateData(versionData.FirstOrDefault)
 
-        m_categories = (From cat In doc.Descendants("category")
-                        Select New GameCategory With {
-                                .Title = cat.@title,
-                                .Games = (From game In cat.Descendants("game")
-                                          Select New GameData With {
-                                                 .Name = game.@name,
-                                                 .Ref = game.@ref,
-                                                 .Filename = game.@filename,
-                                                 .Author = game.@author,
-                                                 .Rating = CDbl(game.@rating),
-                                                 .GameId = game.@id
-                                          }).ToList()
-                         }).ToList()
+            m_categories = (From cat In doc.Descendants("category")
+                            Select New GameCategory With {
+                                    .Title = cat.@title,
+                                    .Games = (From game In cat.Descendants("game")
+                                              Select New GameData With {
+                                                     .Name = game.@name,
+                                                     .Ref = game.@ref,
+                                                     .Filename = game.@filename,
+                                                     .Author = game.@author,
+                                                     .Rating = CDbl(game.@rating),
+                                                     .GameId = game.@id
+                                              }).ToList()
+                             }).ToList()
+        Catch
+            RaiseEvent DownloadFailed()
+        End Try
 
         RaiseEvent DataReady()
     End Sub
