@@ -256,7 +256,9 @@ Public Class GameListItem
     End Sub
 
     Private Sub grid_MouseUp(sender As System.Object, e As System.Windows.Input.MouseButtonEventArgs) Handles grid.MouseUp
-        RaiseEvent Clicked(Me)
+        If e.ChangedButton = Input.MouseButton.Left Then
+            RaiseEvent Clicked(Me)
+        End If
     End Sub
 
     Public Property IsOnlineItem As Boolean
