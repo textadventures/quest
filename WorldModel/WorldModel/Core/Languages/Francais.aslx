@@ -62,9 +62,9 @@
   <template name="Done">C'est fait.</template>
   <template name="ContainerContentsPrefix">contenant</template>
   <template name="SurfaceContentsPrefix">sur lequel/laquelle il y a</template>
-  <dynamictemplate name="ObjectContains">WriteVerb(object, "contenant")</dynamictemplate>
+  <dynamictemplate name="ObjectContains">WriteVerb(object, "contient")</dynamictemplate>
   <dynamictemplate name="ContainerFull">"C'est déjà plein."</dynamictemplate>
-  <dynamictemplate name="DisambiguateMenu">"Veuillez choisir quel '" + text + "' vous désirez :"</dynamictemplate>
+  <dynamictemplate name="DisambiguateMenu">"Veuillez choisir l'élément auquel vous faites référence :"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   <template name="LockedExit">Cette voie est bloquée ou verrouillée.</template>
   <dynamictemplate name="DefaultAsk">WriteVerb(object, "ne") + " répond pas."</dynamictemplate>
