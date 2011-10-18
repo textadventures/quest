@@ -27,6 +27,8 @@
                     <Button Grid.Column="1" Width="20" Height="20" VerticalAlignment="Top" FontFamily="Marlett" Name="cmdClose">r</Button>
                 </Grid>
                 <TextBlock Name="description" Padding="0,10,0,0" TextWrapping="Wrap">Description</TextBlock>
+                <TextBlock Name="dateAdded" Padding="0,10,0,0" FontSize="10">Date</TextBlock>
+                <TextBlock Name="linkBlock"><Hyperlink Name="link" Click="link_Click">View at textadventures.co.uk</Hyperlink></TextBlock>
             </StackPanel>
         </Border>
     </Grid>

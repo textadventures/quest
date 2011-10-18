@@ -59,6 +59,7 @@
     End Sub
 
     Private Sub ctlBrowseFilter_CategoryChanged(category As String) Handles ctlBrowseFilter.CategoryChanged
+        SetDescriptionVisible(False)
         PopulateGames(category)
     End Sub
 
