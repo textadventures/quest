@@ -24,6 +24,7 @@ Public Class GameDescription
         dateAdded.Text = ""
         m_linkUrl = ""
         m_downloadedReviews = False
+        expander.IsExpanded = False
         downloadingReviews.Visibility = Windows.Visibility.Visible
         reviewsStack.Children.Clear()
         linkBlock.Visibility = Windows.Visibility.Collapsed
@@ -131,17 +132,18 @@ Public Class GameDescription
     End Sub
 
     Private Sub expander_Expanded(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles expander.Expanded
-        If m_downloadedReviews Then Return
+        If Not m_downloadedReviews Then
+            m_downloadedReviews = True
+            If m_reviewsClient Is Nothing Then
+                m_reviewsClient = WebClientFactory.GetNewWebClient()
+            End If
 
-        If m_reviewsClient Is Nothing Then
-            m_reviewsClient = WebClientFactory.GetNewWebClient()
+            Dim URL As String = WebClientFactory.RootURL + "?id=" + m_data.GameId + "&reviews=1"
+
+            m_reviewsClient.CancelAsync()
+            Dim newThread As New System.Threading.Thread(Sub() m_reviewsClient.DownloadStringAsync(New System.Uri(URL)))
+            newThread.Start()
         End If
-
-        Dim URL As String = WebClientFactory.RootURL + "?id=" + m_data.GameId + "&reviews=1"
-
-        m_reviewsClient.CancelAsync()
-        Dim newThread As New System.Threading.Thread(Sub() m_reviewsClient.DownloadStringAsync(New System.Uri(URL)))
-        newThread.Start()
     End Sub
 
     Private Sub m_reviewsClient_DownloadStringCompleted(sender As Object, e As System.Net.DownloadStringCompletedEventArgs) Handles m_reviewsClient.DownloadStringCompleted
