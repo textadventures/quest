@@ -4,6 +4,7 @@ Public Class GameDescription
     Public Event Close()
 
     Private WithEvents m_client As WebClient
+    Private m_cache As New Dictionary(Of String, GameDescriptionData)
 
     Private Sub cmdClose_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles cmdClose.Click
         RaiseEvent Close()
@@ -22,10 +23,15 @@ Public Class GameDescription
             m_client = WebClientFactory.GetNewWebClient()
         End If
 
-        Dim URL As String = WebClientFactory.RootURL + "?id=" + id
+        If m_cache.ContainsKey(id) Then
+            PopulateRequestData(m_cache(id))
+        Else
+            Dim URL As String = WebClientFactory.RootURL + "?id=" + id
 
-        Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadStringAsync(New System.Uri(URL)))
-        newThread.Start()
+            Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadStringAsync(New System.Uri(URL)))
+            newThread.Start()
+        End If
+
     End Sub
 
     Private Sub m_client_DownloadStringCompleted(sender As Object, e As System.Net.DownloadStringCompletedEventArgs) Handles m_client.DownloadStringCompleted
@@ -52,7 +58,10 @@ Public Class GameDescription
                               .Category = data.@cat
                           }
 
-        Dispatcher.BeginInvoke(Sub() PopulateRequestData(gameData.FirstOrDefault))
+        Dim gameItemdata As GameDescriptionData = gameData.FirstOrDefault
+        m_cache.Add(gameItemdata.GameId, gameItemdata)
+
+        Dispatcher.BeginInvoke(Sub() PopulateRequestData(gameItemdata))
     End Sub
 
     Private Sub PopulateRequestData(data As GameDescriptionData)
