@@ -108,8 +108,6 @@ Public Class GameDescription
         dateAdded.Text = "Added " + Date.Parse(data.DateAdded).ToShortDateString()
         m_linkUrl = data.URL
         linkBlock.Visibility = Windows.Visibility.Visible
-        expander.Header = String.Format("{0} reviews and comments", data.NumberReviews)
-        expander.IsEnabled = data.NumberReviews > 0
     End Sub
 
     Private Sub link_Click(sender As System.Object, e As System.Windows.RoutedEventArgs)
@@ -202,6 +200,13 @@ Public Class GameDescription
             reviewItem.Populate(review.Rating > 0, review.Reviewer, review.ReviewText, review.Rating)
             reviewsStack.Children.Add(reviewItem)
         Next
+
+        If Not data.Any Then
+            Dim textBlock As New Windows.Controls.TextBlock
+            textBlock.Margin = New Windows.Thickness(5)
+            textBlock.Text = "No reviews or comments"
+            reviewsStack.Children.Add(textBlock)
+        End If
     End Sub
 
 End Class

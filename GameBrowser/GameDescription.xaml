@@ -33,10 +33,10 @@
                         <TextBlock Name="dateAdded" Padding="0,10,0,0" FontSize="10">Date</TextBlock>
                         <TextBlock Name="linkBlock"><Hyperlink Name="link" Click="link_Click">View at textadventures.co.uk</Hyperlink></TextBlock>
                         <Button Margin="20" Padding="5" Name="cmdAction">Action</Button>
-                        <Expander Header="0 reviews and comments" Name="expander">
+                        <Expander Header="Reviews and comments" Name="expander">
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="10" Name="downloadingReviews">
-                                    <my:Spinner />
+                                    <ProgressBar Width="50" Height="20" IsIndeterminate="True" />
                                     <TextBlock Margin="10" VerticalAlignment="Center">Downloading reviews and comments...</TextBlock>
                                 </StackPanel>
                                 <StackPanel Name="reviewsStack">

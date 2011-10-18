@@ -9,7 +9,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Name="stackPanel">
                 <StackPanel Name="loadingPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
-                    <my:Spinner />
+                    <ProgressBar Width="50" Height="20" IsIndeterminate="True" />
                     <TextBlock VerticalAlignment="Center" Padding="10,0,0,0">Downloading games list...</TextBlock>
                 </StackPanel>
                 <TextBlock Name="errorBlock" HorizontalAlignment="Center" Visibility="Collapsed" Margin="10">

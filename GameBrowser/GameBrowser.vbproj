@@ -154,9 +154,6 @@
     <Compile Include="ReviewItem.xaml.vb">
       <DependentUpon>ReviewItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Spinner.xaml.vb">
-      <DependentUpon>Spinner.xaml</DependentUpon>
-    </Compile>
     <Compile Include="VersionInfo.xaml.vb">
       <DependentUpon>VersionInfo.xaml</DependentUpon>
     </Compile>
@@ -250,10 +247,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ReviewItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Spinner.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
