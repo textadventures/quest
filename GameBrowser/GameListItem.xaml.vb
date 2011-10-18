@@ -14,6 +14,7 @@ Public Class GameListItem
     Private m_downloadFilename As String
     Private m_setDownloadTooltip As Boolean
     Private m_isOnlineItem As Boolean
+    Private m_gameId As String
 
     Public Enum State
         ReadyToPlay
@@ -131,13 +132,22 @@ Public Class GameListItem
         End Set
     End Property
 
-    Public Property Filename() As String
+    Public Property Filename As String
         Get
             Return m_filename
         End Get
         Set(value As String)
             m_filename = value
             SetToolTipText(m_filename)
+        End Set
+    End Property
+
+    Public Property GameId As String
+        Get
+            Return m_gameId
+        End Get
+        Set(value As String)
+            m_gameId = value
         End Set
     End Property
 

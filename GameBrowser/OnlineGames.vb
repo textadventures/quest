@@ -12,7 +12,7 @@
         Public Filename As String
         Public Author As String
         Public Rating As Double
-        Public Description As String
+        Public GameId As String
     End Class
 
     Public Class GameCategory
@@ -61,7 +61,7 @@
                                                  .Filename = game.@filename,
                                                  .Author = game.@author,
                                                  .Rating = CDbl(game.@rating),
-                                                 .Description = game.@description
+                                                 .GameId = game.@id
                                           }).ToList()
                          }).ToList()
 
@@ -84,7 +84,7 @@
         For Each game In GetGames(category)
             gamesList.Add(New GameListItemData(game.Name, game.Ref, game.Filename) With
                           {.Author = game.Author,
-                           .Description = game.Description,
+                           .GameId = game.GameId,
                            .Rating = game.Rating
                           })
         Next

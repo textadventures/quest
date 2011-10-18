@@ -5,19 +5,12 @@ Public Class GameList
     Private m_visibleGameListItems As New List(Of GameListItem)
     Private m_gameListItems As New Dictionary(Of String, GameListItem)
     Private m_enableContextMenu As Boolean
+    Private m_isOnlineList As Boolean
 
     Public Event Launch(filename As String)
     Public Event RemoveItem(filename As String)
     Public Event ClearAllItems()
-
-    Public Sub New()
-
-        ' This call is required by the designer.
-        InitializeComponent()
-
-        ' Add any initialization after the InitializeComponent() call.
-        EnableContextMenu = True
-    End Sub
+    Public Event ShowGameDescription(id As String)
 
     Public Property LaunchCaption() As String
         Get
@@ -43,16 +36,15 @@ Public Class GameList
                 newItem = New GameListItem
                 newItem.GameName = data.GameName
                 newItem.Author = ""
-                If Not EnableContextMenu Then newItem.DisableContextMenu()
 
                 If Not String.IsNullOrEmpty(data.DownloadFilename) Then
                     m_gameListItems.Add(data.DownloadFilename, newItem)
                 End If
 
-                If Not String.IsNullOrEmpty(data.Description) Then
+                If IsOnlineList Then
+                    newItem.DisableContextMenu()
                     newItem.ratingBlock.Visibility = Windows.Visibility.Visible
                     newItem.infoBlock.Visibility = Windows.Visibility.Collapsed
-                    'newItem.description.Text = System.Net.WebUtility.HtmlDecode(data.Description)
                     newItem.Rating = data.Rating
                     newItem.IsOnlineItem = True
                 End If
@@ -72,6 +64,7 @@ Public Class GameList
 
                     newItem.DownloadFilename = downloadFilename
                     newItem.Author = data.Author
+                    newItem.GameId = data.GameId
 
                     If System.IO.File.Exists(downloadFilename) Then
                         ' The file has already been downloaded
@@ -116,20 +109,11 @@ Public Class GameList
 
     Private Sub ItemClicked(sender As GameListItem)
         If sender.IsOnlineItem Then
-            ' TO DO: Show information pane
+            RaiseEvent ShowGameDescription(sender.GameId)
         Else
             RaiseEvent Launch(sender.Filename)
         End If
     End Sub
-
-    Public Property EnableContextMenu As Boolean
-        Get
-            Return m_enableContextMenu
-        End Get
-        Set(value As Boolean)
-            m_enableContextMenu = value
-        End Set
-    End Property
 
     Private Sub RemoveItemHandler(sender As GameListItem, filename As String)
         RaiseEvent RemoveItem(filename)
@@ -148,4 +132,13 @@ Public Class GameList
         loadingPanel.Visibility = Windows.Visibility.Collapsed
         errorBlock.Visibility = Windows.Visibility.Visible
     End Sub
+
+    Public Property IsOnlineList As Boolean
+        Get
+            Return m_isOnlineList
+        End Get
+        Set(value As Boolean)
+            m_isOnlineList = value
+        End Set
+    End Property
 End Class

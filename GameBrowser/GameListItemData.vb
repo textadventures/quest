@@ -6,6 +6,7 @@
     Private m_author As String
     Private m_rating As Double
     Private m_desc As String
+    Private m_gameId As String
 
     Public Sub New(filename As String, gameName As String)
         m_filename = filename
@@ -69,6 +70,15 @@
         End Get
         Set(value As String)
             m_desc = value
+        End Set
+    End Property
+
+    Public Property GameId As String
+        Get
+            Return m_gameId
+        End Get
+        Set(value As String)
+            m_gameId = value
         End Set
     End Property
 End Class

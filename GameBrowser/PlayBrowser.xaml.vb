@@ -13,12 +13,7 @@
         m_recentItems = New RecentItems("Recent")
         ctlGameList.LaunchCaption = "Play"
         ctlOnlineGameList.LaunchCaption = "Play"
-        ctlOnlineGameList.EnableContextMenu = False
-        AddHandler ctlOnlineGameList.Launch, AddressOf ctlOnlineGameList_Launch
-        AddHandler ctlGameList.Launch, AddressOf ctlGameList_Launch
-        AddHandler ctlGameList.ClearAllItems, AddressOf ctlGameList_ClearAllItems
-        AddHandler ctlGameList.RemoveItem, AddressOf ctlGameList_RemoveItem
-        AddHandler ctlBrowseFilter.CategoryChanged, AddressOf ctlBrowseFilter_CategoryChanged
+        ctlOnlineGameList.IsOnlineList = True
         Populate()
     End Sub
 
@@ -26,20 +21,20 @@
         m_recentItems.AddToRecent(filename, name)
     End Sub
 
-    Private Sub ctlGameList_Launch(filename As String)
+    Private Sub ctlGameList_Launch(filename As String) Handles ctlGameList.Launch
         RaiseEvent LaunchGame(filename)
     End Sub
 
-    Private Sub ctlGameList_ClearAllItems()
+    Private Sub ctlGameList_ClearAllItems() Handles ctlGameList.ClearAllItems
         m_recentItems.Clear()
         Populate()
     End Sub
 
-    Private Sub ctlGameList_RemoveItem(filename As String)
+    Private Sub ctlGameList_RemoveItem(filename As String) Handles ctlGameList.RemoveItem
         m_recentItems.Remove(filename)
     End Sub
 
-    Private Sub ctlOnlineGameList_Launch(filename As String)
+    Private Sub ctlOnlineGameList_Launch(filename As String) Handles ctlOnlineGameList.Launch
         RaiseEvent LaunchGame(filename)
     End Sub
 
@@ -63,7 +58,7 @@
         ctlBrowseFilter.Populate((From cat In m_onlineGames.Categories Select cat.Title).ToArray())
     End Sub
 
-    Private Sub ctlBrowseFilter_CategoryChanged(category As String)
+    Private Sub ctlBrowseFilter_CategoryChanged(category As String) Handles ctlBrowseFilter.CategoryChanged
         PopulateGames(category)
     End Sub
 
@@ -75,4 +70,19 @@
         RaiseEvent GotUpdateData(data)
     End Sub
 
+    Private Sub ctlOnlineGameList_ShowGameDescription(id As String) Handles ctlOnlineGameList.ShowGameDescription
+        SetDescriptionVisible(True)
+    End Sub
+
+    Private Sub SetDescriptionVisible(visible As Boolean)
+        Dim gameListVisibility As Windows.Visibility = If(visible, Windows.Visibility.Collapsed, Windows.Visibility.Visible)
+        Dim descriptionVisibility As Windows.Visibility = If(visible, Windows.Visibility.Visible, Windows.Visibility.Collapsed)
+        lblRecent.Visibility = gameListVisibility
+        ctlGameList.Visibility = gameListVisibility
+        ctlGameDescription.Visibility = descriptionVisibility
+    End Sub
+
+    Private Sub ctlGameDescription_Close() Handles ctlGameDescription.Close
+        SetDescriptionVisible(False)
+    End Sub
 End Class
