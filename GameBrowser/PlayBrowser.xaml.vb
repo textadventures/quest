@@ -70,7 +70,8 @@
         RaiseEvent GotUpdateData(data)
     End Sub
 
-    Private Sub ctlOnlineGameList_ShowGameDescription(id As String) Handles ctlOnlineGameList.ShowGameDescription
+    Private Sub ctlOnlineGameList_ShowGameDescription(data As GameListItemData) Handles ctlOnlineGameList.ShowGameDescription
+        ctlGameDescription.Populate(data)
         SetDescriptionVisible(True)
     End Sub
 

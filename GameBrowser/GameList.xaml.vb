@@ -10,7 +10,7 @@ Public Class GameList
     Public Event Launch(filename As String)
     Public Event RemoveItem(filename As String)
     Public Event ClearAllItems()
-    Public Event ShowGameDescription(id As String)
+    Public Event ShowGameDescription(data As GameListItemData)
 
     Public Property LaunchCaption() As String
         Get
@@ -34,6 +34,7 @@ Public Class GameList
                 newItem = m_gameListItems(data.DownloadFilename)
             Else
                 newItem = New GameListItem
+                newItem.Data = data
                 newItem.GameName = data.GameName
                 newItem.Author = ""
 
@@ -109,7 +110,7 @@ Public Class GameList
 
     Private Sub ItemClicked(sender As GameListItem)
         If sender.IsOnlineItem Then
-            RaiseEvent ShowGameDescription(sender.GameId)
+            RaiseEvent ShowGameDescription(sender.Data)
         Else
             RaiseEvent Launch(sender.Filename)
         End If

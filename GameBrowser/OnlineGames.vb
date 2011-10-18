@@ -1,5 +1,4 @@
 ﻿Public Class OnlineGames
-    Private Const GamesListURL As String = "http://www.textadventures.co.uk/gamesxml.php"
     Private WithEvents m_client As System.Net.WebClient
 
     Public Event DataReady()
@@ -24,7 +23,7 @@
 
     Public Sub StartDownloadGameData()
         m_client = WebClientFactory.GetNewWebClient
-        Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadStringAsync(New System.Uri(GamesListURL)))
+        Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadStringAsync(New System.Uri(WebClientFactory.RootURL)))
         newThread.Start()
     End Sub
 

@@ -15,6 +15,7 @@ Public Class GameListItem
     Private m_setDownloadTooltip As Boolean
     Private m_isOnlineItem As Boolean
     Private m_gameId As String
+    Private m_data As GameListItemData
 
     Public Enum State
         ReadyToPlay
@@ -277,6 +278,15 @@ Public Class GameListItem
         End Get
         Set(value As Boolean)
             m_isOnlineItem = value
+        End Set
+    End Property
+
+    Public Property Data As GameListItemData
+        Get
+            Return m_data
+        End Get
+        Set(value As GameListItemData)
+            m_data = value
         End Set
     End Property
 End Class

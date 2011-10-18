@@ -1,4 +1,6 @@
 ﻿Friend Class WebClientFactory
+    Private Const GamesListURL As String = "http://www.textadventures.co.uk/gamesxml.php"
+
     Private Shared m_questVersion As String
 
     Public Shared Function GetNewWebClient() As System.Net.WebClient
@@ -20,5 +22,11 @@
         Set(value As String)
             m_questVersion = value
         End Set
+    End Property
+
+    Public Shared ReadOnly Property RootURL As String
+        Get
+            Return GamesListURL
+        End Get
     End Property
 End Class
