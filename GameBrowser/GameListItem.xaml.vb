@@ -6,6 +6,7 @@ Public Class GameListItem
     Public Event ClearAllItems()
     Public Event RemoveItem(sender As GameListItem, filename As String)
     Public Event Clicked(sender As GameListItem)
+    Public Event StateChanged()
 
     Private m_filename As String
     Private m_url As String
@@ -54,6 +55,8 @@ Public Class GameListItem
             Return m_state
         End Get
         Set(value As State)
+            Dim changed As Boolean = m_state <> value
+
             m_state = value
 
             Select Case m_state
@@ -69,6 +72,8 @@ Public Class GameListItem
             End Select
 
             progressBar.Visibility = If(m_state = State.Downloading, Windows.Visibility.Visible, Windows.Visibility.Collapsed)
+
+            If changed Then RaiseEvent StateChanged()
         End Set
     End Property
 
@@ -162,6 +167,10 @@ Public Class GameListItem
     End Sub
 
     Private Sub cmdLaunch_Click(sender As System.Object, e As System.EventArgs) Handles cmdLaunch.Click
+        LaunchButtonClick()
+    End Sub
+
+    Public Sub LaunchButtonClick()
         Select Case CurrentState
             Case State.ReadyToPlay
                 RaiseEvent Launch(m_filename)

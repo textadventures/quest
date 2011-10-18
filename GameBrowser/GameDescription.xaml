@@ -29,6 +29,7 @@
                 <TextBlock Name="description" Padding="0,10,0,0" TextWrapping="Wrap">Description</TextBlock>
                 <TextBlock Name="dateAdded" Padding="0,10,0,0" FontSize="10">Date</TextBlock>
                 <TextBlock Name="linkBlock"><Hyperlink Name="link" Click="link_Click">View at textadventures.co.uk</Hyperlink></TextBlock>
+                <Button Margin="20" Padding="5" Name="cmdAction">Action</Button>
             </StackPanel>
         </Border>
     </Grid>

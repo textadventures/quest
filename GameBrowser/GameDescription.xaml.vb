@@ -6,12 +6,13 @@ Public Class GameDescription
     Private WithEvents m_client As WebClient
     Private m_cache As New Dictionary(Of String, GameDescriptionData)
     Private m_linkUrl As String
+    Private WithEvents m_listItemControl As GameListItem
 
     Private Sub cmdClose_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles cmdClose.Click
         RaiseEvent Close()
     End Sub
 
-    Public Sub Populate(data As GameListItemData)
+    Public Sub Populate(data As GameListItemData, control As GameListItem)
         author.Text = data.Author
         title.Text = data.GameName
         category.Text = ""
@@ -19,7 +20,23 @@ Public Class GameDescription
         dateAdded.Text = ""
         m_linkUrl = ""
         linkBlock.Visibility = Windows.Visibility.Collapsed
+        m_listItemControl = control
+        UpdateState()
         RequestData(data.GameId)
+    End Sub
+
+    Private Sub UpdateState()
+        Select Case m_listItemControl.CurrentState
+            Case GameListItem.State.ReadyToPlay
+                cmdAction.Content = "Play"
+                cmdAction.IsEnabled = True
+            Case GameListItem.State.NotDownloaded
+                cmdAction.Content = "Download"
+                cmdAction.IsEnabled = True
+            Case GameListItem.State.Downloading
+                cmdAction.Content = "Downloading"
+                cmdAction.IsEnabled = False
+        End Select
     End Sub
 
     Private Sub RequestData(id As String)
@@ -92,5 +109,13 @@ Public Class GameDescription
         Catch ex As Exception
             MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
         End Try
+    End Sub
+
+    Private Sub m_listItemControl_StateChanged() Handles m_listItemControl.StateChanged
+        UpdateState()
+    End Sub
+
+    Private Sub cmdAction_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles cmdAction.Click
+        m_listItemControl.LaunchButtonClick()
     End Sub
 End Class

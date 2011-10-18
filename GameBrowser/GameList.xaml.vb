@@ -10,7 +10,7 @@ Public Class GameList
     Public Event Launch(filename As String)
     Public Event RemoveItem(filename As String)
     Public Event ClearAllItems()
-    Public Event ShowGameDescription(data As GameListItemData)
+    Public Event ShowGameDescription(data As GameListItemData, control As GameListItem)
 
     Public Property LaunchCaption() As String
         Get
@@ -110,7 +110,7 @@ Public Class GameList
 
     Private Sub ItemClicked(sender As GameListItem)
         If sender.IsOnlineItem Then
-            RaiseEvent ShowGameDescription(sender.Data)
+            RaiseEvent ShowGameDescription(sender.Data, sender)
         Else
             RaiseEvent Launch(sender.Filename)
         End If
