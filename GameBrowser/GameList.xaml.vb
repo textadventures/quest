@@ -6,6 +6,7 @@ Public Class GameList
     Private m_gameListItems As New Dictionary(Of String, GameListItem)
     Private m_enableContextMenu As Boolean
     Private m_isOnlineList As Boolean
+    Private m_selectedItem As GameListItem
 
     Public Event Launch(filename As String)
     Public Event RemoveItem(filename As String)
@@ -110,9 +111,18 @@ Public Class GameList
 
     Private Sub ItemClicked(sender As GameListItem)
         If sender.IsOnlineItem Then
+            UnselectCurrentItem()
+            m_selectedItem = sender
+            m_selectedItem.IsSelected = True
             RaiseEvent ShowGameDescription(sender.Data, sender)
         Else
             RaiseEvent Launch(sender.Filename)
+        End If
+    End Sub
+
+    Public Sub UnselectCurrentItem()
+        If m_selectedItem IsNot Nothing Then
+            m_selectedItem.IsSelected = False
         End If
     End Sub
 

@@ -2,6 +2,12 @@
 Imports System.Windows.Media
 
 Public Class GameListItem
+    Public Enum State
+        ReadyToPlay
+        NotDownloaded
+        Downloading
+    End Enum
+
     Public Event Launch(filename As String)
     Public Event ClearAllItems()
     Public Event RemoveItem(sender As GameListItem, filename As String)
@@ -17,18 +23,13 @@ Public Class GameListItem
     Private m_isOnlineItem As Boolean
     Private m_gameId As String
     Private m_data As GameListItemData
-
-    Public Enum State
-        ReadyToPlay
-        NotDownloaded
-        Downloading
-    End Enum
-
     Private m_state As State = State.ReadyToPlay
     Private m_playButtonWidth As Integer
     Private m_playButtonRight As Integer
     Private m_hoverBrush As Brush
     Private m_background As Brush
+    Private m_selectedBackground As Brush
+    Private m_isSelected As Boolean
 
     Public Sub New()
 
@@ -44,6 +45,14 @@ Public Class GameListItem
                 New GradientStopCollection From {
                     New GradientStop(Color.FromRgb(&HF0, &HFA, &HFE), 0.0),
                     New GradientStop(Color.FromRgb(&HD6, &HF0, &HFF), 1.0)},
+                New Point(0, 0), New Point(0, 1))
+
+        m_selectedBackground = New LinearGradientBrush(
+                New GradientStopCollection From {
+                    New GradientStop(Color.FromRgb(&HE3, &HF4, &HFC), 0.0),
+                    New GradientStop(Color.FromRgb(&HD8, &HEF, &HFC), 0.38),
+                    New GradientStop(Color.FromRgb(&HBE, &HE6, &HFD), 0.38),
+                    New GradientStop(Color.FromRgb(&HA6, &HD9, &HF4), 1.0)},
                 New Point(0, 0), New Point(0, 1))
 
         AddHandler Me.MouseEnter, AddressOf MouseEnterUpdateBackground
@@ -268,10 +277,12 @@ Public Class GameListItem
     End Sub
 
     Private Sub MouseEnterUpdateBackground(sender As Object, e As System.Windows.Input.MouseEventArgs)
+        If IsSelected Then Return
         Me.Background = m_hoverBrush
     End Sub
 
     Private Sub MouseLeaveUpdateBackground(sender As Object, e As System.Windows.Input.MouseEventArgs)
+        If IsSelected Then Return
         Me.Background = m_background
     End Sub
 
@@ -296,6 +307,20 @@ Public Class GameListItem
         End Get
         Set(value As GameListItemData)
             m_data = value
+        End Set
+    End Property
+
+    Public Property IsSelected As Boolean
+        Get
+            Return m_isSelected
+        End Get
+        Set(value As Boolean)
+            m_isSelected = value
+            If m_isSelected Then
+                Me.Background = m_selectedBackground
+            Else
+                Me.Background = m_background
+            End If
         End Set
     End Property
 End Class

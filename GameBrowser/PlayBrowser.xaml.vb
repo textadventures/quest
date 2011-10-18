@@ -86,5 +86,6 @@
 
     Private Sub ctlGameDescription_Close() Handles ctlGameDescription.Close
         SetDescriptionVisible(False)
+        ctlOnlineGameList.UnselectCurrentItem()
     End Sub
 End Class
