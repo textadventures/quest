@@ -2,6 +2,7 @@
     Public Event CategoryChanged(category As String)
 
     Public Sub Populate(cats As String())
+        lstCategories.Items.Clear()
         For Each cat As String In cats
             lstCategories.Items.Add(cat)
         Next

@@ -109,4 +109,13 @@
         End Set
     End Property
 
+    Public Property ShowSandpit As Boolean
+        Get
+            Return ctlPlayBrowser.ShowSandpit
+        End Get
+        Set(value As Boolean)
+            ctlPlayBrowser.ShowSandpit = value
+        End Set
+    End Property
+
 End Class

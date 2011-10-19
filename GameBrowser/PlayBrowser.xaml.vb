@@ -45,11 +45,15 @@
 
     Public Sub MainWindowShown()
         m_initialised = True
+        ctlOnlineGameList.IsDownloading = True
         m_onlineGames.StartDownloadGameData()
     End Sub
 
     Private Sub m_onlineGames_DataReady() Handles m_onlineGames.DataReady
-        Dispatcher.BeginInvoke(Sub() PopulateCategories())
+        Dispatcher.BeginInvoke(Sub()
+                                   ctlOnlineGameList.IsDownloading = False
+                                   PopulateCategories()
+                               End Sub)
     End Sub
 
     Private Sub m_onlineGames_DownloadFailed() Handles m_onlineGames.DownloadFailed
@@ -106,4 +110,17 @@
             PopulateGames(ctlBrowseFilter.Category)
         End If
     End Sub
+
+    Public Property ShowSandpit As Boolean
+        Get
+            Return m_onlineGames.ShowSandpit
+        End Get
+        Set(value As Boolean)
+            m_onlineGames.ShowSandpit = value
+            If m_initialised Then
+                ctlOnlineGameList.IsDownloading = True
+                m_onlineGames.StartDownloadGameData()
+            End If
+        End Set
+    End Property
 End Class

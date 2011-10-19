@@ -1,5 +1,6 @@
 ﻿Public Class OnlineGames
     Private WithEvents m_client As System.Net.WebClient
+    Private m_showSandpit As Boolean
 
     Public Event DataReady()
     Public Event GotUpdateData(data As UpdatesData)
@@ -23,7 +24,11 @@
 
     Public Sub StartDownloadGameData()
         m_client = WebClientFactory.GetNewWebClient
-        Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadStringAsync(New System.Uri(WebClientFactory.RootURL)))
+        Dim url As String = WebClientFactory.RootURL
+        If ShowSandpit Then
+            url += "?sandpit=1"
+        End If
+        Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadStringAsync(New System.Uri(url)))
         newThread.Start()
     End Sub
 
@@ -84,14 +89,28 @@
     Friend Sub PopulateGameList(category As String, gameListCtl As GameList)
         Dim gamesList As New List(Of GameListItemData)
 
-        For Each game In GetGames(category)
-            gamesList.Add(New GameListItemData(game.Name, game.Ref, game.Filename) With
-                          {.Author = game.Author,
-                           .GameId = game.GameId,
-                           .Rating = game.Rating
-                          })
-        Next
+        If category IsNot Nothing Then
+            For Each game In GetGames(category)
+                gamesList.Add(New GameListItemData(game.Name, game.Ref, game.Filename) With
+                              {.Author = game.Author,
+                               .GameId = game.GameId,
+                               .Rating = game.Rating
+                              })
+            Next
 
-        gameListCtl.CreateListElements(gamesList)
+            gameListCtl.CreateListElements(gamesList)
+        Else
+            gameListCtl.CreateListElements(Nothing)
+        End If
+
     End Sub
+
+    Public Property ShowSandpit As Boolean
+        Get
+            Return m_showSandpit
+        End Get
+        Set(value As Boolean)
+            m_showSandpit = value
+        End Set
+    End Property
 End Class

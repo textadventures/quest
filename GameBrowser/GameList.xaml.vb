@@ -14,6 +14,15 @@ Public Class GameList
     Public Event ClearAllItems()
     Public Event ShowGameDescription(data As GameListItemData, control As GameListItem)
 
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        IsDownloading = False
+    End Sub
+
     Public Property LaunchCaption() As String
         Get
             Return m_launchCaption
@@ -28,6 +37,8 @@ Public Class GameList
         Dim count As Integer = 0
 
         ClearListElements()
+
+        If list Is Nothing Then Return
 
         For Each data As GameListItemData In list
             count += 1
@@ -154,4 +165,14 @@ Public Class GameList
             m_gameListItems.Clear()
         End Set
     End Property
+
+    Public Property IsDownloading As Boolean
+        Get
+            Return loadingPanel.Visibility = Windows.Visibility.Visible
+        End Get
+        Set(value As Boolean)
+            loadingPanel.Visibility = If(value, Windows.Visibility.Visible, Windows.Visibility.Collapsed)
+        End Set
+    End Property
+
 End Class
