@@ -14,6 +14,7 @@ Public Class Main
 
         ' Add any initialization after the InitializeComponent() call.
         ctlLauncher.QuestVersion = My.Application.Info.Version
+        ctlLauncher.DownloadFolder = Options.Instance.GetStringValue(OptionNames.GamesFolder)
         ctlPlayer.Visible = False
         InitialiseMenuHandlers()
 
@@ -401,6 +402,8 @@ Public Class Main
                     DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
             Case OptionNames.UseGameFont
                 ctlPlayer.UseGameFont = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
+            Case OptionNames.GamesFolder
+                ctlLauncher.DownloadFolder = Options.Instance.GetStringValue(OptionNames.GamesFolder)
         End Select
     End Sub
 

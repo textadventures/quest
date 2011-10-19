@@ -1,6 +1,7 @@
 ﻿Public Class PlayBrowser
     Private m_recentItems As RecentItems
     Private WithEvents m_onlineGames As New OnlineGames
+    Private m_initialised As Boolean = False
 
     Public Event LaunchGame(filename As String)
     Public Event GotUpdateData(data As UpdatesData)
@@ -43,6 +44,7 @@
     End Sub
 
     Public Sub MainWindowShown()
+        m_initialised = True
         m_onlineGames.StartDownloadGameData()
     End Sub
 
@@ -87,5 +89,21 @@
     Private Sub ctlGameDescription_Close() Handles ctlGameDescription.Close
         SetDescriptionVisible(False)
         ctlOnlineGameList.UnselectCurrentItem()
+    End Sub
+
+    Public Property DownloadFolder As String
+        Get
+            Return ctlOnlineGameList.DownloadFolder
+        End Get
+        Set(value As String)
+            ctlOnlineGameList.DownloadFolder = value
+            Refresh()
+        End Set
+    End Property
+
+    Private Sub Refresh()
+        If m_initialised Then
+            PopulateGames(ctlBrowseFilter.Category)
+        End If
     End Sub
 End Class

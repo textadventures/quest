@@ -9,6 +9,8 @@ Public Enum OptionNames
     FontFamily
     FontSize
     FontStyle
+    GamesFolder
+    ShowSandpit
 End Enum
 
 Public Class Options
@@ -30,7 +32,12 @@ Public Class Options
         {OptionNames.UseGameFont, True.ToString()},
         {OptionNames.FontFamily, "Arial"},
         {OptionNames.FontSize, "9"},
-        {OptionNames.FontStyle, "0"}
+        {OptionNames.FontStyle, "0"},
+        {OptionNames.GamesFolder, System.IO.Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                        "Quest Games",
+                        "Downloaded Games")},
+        {OptionNames.ShowSandpit, False.ToString()}
     }
 
     Public Event OptionChanged(optionName As OptionNames)

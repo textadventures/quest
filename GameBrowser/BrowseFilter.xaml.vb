@@ -14,4 +14,10 @@
     Private Sub lstCategories_SelectionChanged(sender As System.Object, e As System.Windows.Controls.SelectionChangedEventArgs)
         RaiseEvent CategoryChanged(DirectCast(DirectCast(sender, System.Windows.Controls.ComboBox).SelectedValue, String))
     End Sub
+
+    Public ReadOnly Property Category As String
+        Get
+            Return DirectCast(lstCategories.SelectedValue, String)
+        End Get
+    End Property
 End Class

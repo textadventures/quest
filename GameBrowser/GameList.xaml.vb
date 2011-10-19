@@ -7,6 +7,7 @@ Public Class GameList
     Private m_enableContextMenu As Boolean
     Private m_isOnlineList As Boolean
     Private m_selectedItem As GameListItem
+    Private m_downloadFolder As String
 
     Public Event Launch(filename As String)
     Public Event RemoveItem(filename As String)
@@ -54,15 +55,10 @@ Public Class GameList
                 If String.IsNullOrEmpty(data.Filename) Then
                     newItem.URL = data.URL
 
-                    Dim downloadFolder As String = System.IO.Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                        "Quest Games",
-                        "Downloaded Games")
-
-                    System.IO.Directory.CreateDirectory(downloadFolder)
+                    System.IO.Directory.CreateDirectory(m_downloadFolder)
 
                     Dim downloadFilename As String = System.IO.Path.Combine(
-                        downloadFolder, data.DownloadFilename)
+                        m_downloadFolder, data.DownloadFilename)
 
                     newItem.DownloadFilename = downloadFilename
                     newItem.Author = data.Author
@@ -146,6 +142,16 @@ Public Class GameList
         End Get
         Set(value As Boolean)
             m_isOnlineList = value
+        End Set
+    End Property
+
+    Public Property DownloadFolder As String
+        Get
+            Return m_downloadFolder
+        End Get
+        Set(value As String)
+            m_downloadFolder = value
+            m_gameListItems.Clear()
         End Set
     End Property
 End Class

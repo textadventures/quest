@@ -17,6 +17,8 @@
         cmdBackground.BackColor = Options.Instance.GetColourValue(OptionNames.BackgroundColour)
         cmdLink.BackColor = Options.Instance.GetColourValue(OptionNames.LinkColour)
         chkUseDefaultFont.Checked = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
+        txtGamesFolder.Text = Options.Instance.GetStringValue(OptionNames.GamesFolder)
+        chkShowSandpit.Checked = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
         UpdateSampleText()
     End Sub
 
@@ -33,6 +35,8 @@
         Options.Instance.SetStringValue(OptionNames.FontFamily, fontFamily)
         Options.Instance.SetSingleValue(OptionNames.FontSize, fontSize)
         Options.Instance.SetIntValue(OptionNames.FontStyle, fontStyle)
+        Options.Instance.SetStringValue(OptionNames.GamesFolder, txtGamesFolder.Text)
+        Options.Instance.SetBooleanValue(OptionNames.ShowSandpit, chkShowSandpit.Checked)
         Me.Hide()
     End Sub
 
@@ -99,4 +103,10 @@
         UpdateSampleText()
     End Sub
 
+    Private Sub cmdGamesFolder_Click(sender As System.Object, e As System.EventArgs) Handles cmdGamesFolder.Click
+        dlgFolderBrowser.SelectedPath = txtGamesFolder.Text
+        If dlgFolderBrowser.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            txtGamesFolder.Text = dlgFolderBrowser.SelectedPath
+        End If
+    End Sub
 End Class

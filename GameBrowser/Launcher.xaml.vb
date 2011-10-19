@@ -100,4 +100,13 @@
         Return latestVersion > QuestVersion
     End Function
 
+    Public Property DownloadFolder As String
+        Get
+            Return ctlPlayBrowser.DownloadFolder
+        End Get
+        Set(value As String)
+            ctlPlayBrowser.DownloadFolder = value
+        End Set
+    End Property
+
 End Class
