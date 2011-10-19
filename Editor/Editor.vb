@@ -183,6 +183,7 @@ Public Class Editor
         ctlTree.AddMenuClickHandler("addobjecttype", AddressOf AddNewObjectType)
         ctlTree.AddMenuClickHandler("addeditor", AddressOf AddNewEditor)
         ctlTree.AddMenuClickHandler("addjavascript", AddressOf AddNewJavascript)
+        ctlTree.AddMenuClickHandler("delete", AddressOf Delete)
     End Sub
 
     Private Sub SetUpEditors()
@@ -865,6 +866,7 @@ Public Class Editor
 
         Dim canDelete As Boolean = (Not m_codeView) AndAlso m_controller.CanDelete(ctlTree.SelectedItem)
         m_menu.MenuEnabled("delete") = canDelete
+        ctlTree.SetMenuEnabled("delete", canDelete)
         ctlToolbar.CanDelete = canDelete
     End Sub
 

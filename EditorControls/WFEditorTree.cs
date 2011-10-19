@@ -679,5 +679,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_menus[key].Visible = visible;
         }
+
+        public void SetMenuEnabled(string key, bool enabled)
+        {
+            m_menus[key].Enabled = enabled;
+        }
     }
 }
