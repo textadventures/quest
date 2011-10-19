@@ -27,6 +27,30 @@
     End Sub
 
     Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
+        If Options.Instance.GetStringValue(OptionNames.GamesFolder) <> txtGamesFolder.Text Then
+            Dim oldFolder As String = Options.Instance.GetStringValue(OptionNames.GamesFolder)
+            Dim newFolder As String = txtGamesFolder.Text
+            Dim fileCount As Integer = System.IO.Directory.GetFiles(oldFolder).Count()
+
+            If fileCount > 0 Then
+                Dim result As MsgBoxResult = MsgBox(
+                    String.Format(
+                        "You changed the Download Folder. Would you like to move the existing {0} files?{3}{3}From: {1}{3}To: {2}",
+                        fileCount,
+                        Options.Instance.GetStringValue(OptionNames.GamesFolder),
+                        txtGamesFolder.Text,
+                        Environment.NewLine
+                    ), MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Question)
+
+                If result = MsgBoxResult.Yes Then
+                    MoveDownloadFolder(oldFolder, newFolder)
+                ElseIf result = MsgBoxResult.Cancel Then
+                    Return
+                End If
+            End If
+
+        End If
+
         Options.Instance.SetBooleanValue(OptionNames.UseGameColours, chkUseDefaultColours.Checked)
         Options.Instance.SetColourValue(OptionNames.ForegroundColour, cmdForeground.BackColor)
         Options.Instance.SetColourValue(OptionNames.BackgroundColour, cmdBackground.BackColor)
@@ -38,6 +62,18 @@
         Options.Instance.SetStringValue(OptionNames.GamesFolder, txtGamesFolder.Text)
         Options.Instance.SetBooleanValue(OptionNames.ShowSandpit, chkShowSandpit.Checked)
         Me.Hide()
+    End Sub
+
+    Private Sub MoveDownloadFolder(oldFolder As String, newFolder As String)
+        Try
+            For Each file As String In System.IO.Directory.GetFiles(oldFolder)
+                Dim fileName As String = System.IO.Path.GetFileName(file)
+                Dim newFileName As String = System.IO.Path.Combine(newFolder, fileName)
+                System.IO.File.Move(file, newFileName)
+            Next
+        Catch ex As Exception
+            MsgBox("Failed to move files: " + ex.Message, MsgBoxStyle.Critical)
+        End Try
     End Sub
 
     Private Sub cmdForeground_Click(sender As System.Object, e As System.EventArgs) Handles cmdForeground.Click
