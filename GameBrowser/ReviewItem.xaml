@@ -8,7 +8,14 @@
     <StackPanel>
         <TextBlock Padding="0,15,0,0"><Run Name="reviewOrComment">Review</Run> by <Run Name="user" FontWeight="Bold">user</Run></TextBlock>
         <TextBlock Name="reviewText" TextWrapping="Wrap" Padding="0,5,0,0">Review text</TextBlock>
-        <TextBlock Name="ratingBlock" Padding="0,5,0,0">Rating</TextBlock>
+        <TextBlock Name="ratingBlock" Padding="0,5,0,0">
+                <Run>Rating:</Run>
+                <Run xml:space="preserve"> </Run>
+                <Run FontFamily="Wingdings 2" Foreground="Goldenrod" Name="stars">ÙÙÙÙÙ</Run>
+                <Run xml:space="preserve"> </Run>
+                <Run Name="ratingValue" FontSize="10">(5 stars)</Run>
+        </TextBlock>
+
         <Rectangle Name="rectangle" Height="1" VerticalAlignment="Bottom" Margin="5,15,5,0">
             <Rectangle.Fill>
                 <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">

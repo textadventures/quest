@@ -5,7 +5,8 @@
         reviewText.Text = System.Net.WebUtility.HtmlDecode(text)
         If rating > 0 Then
             ratingBlock.Visibility = Windows.Visibility.Visible
-            ratingBlock.Text = "Rating: " + rating.ToString()
+            stars.Text = New String("Ù"c, rating)
+            ratingValue.Text = String.Format("({0} stars)", rating)
         Else
             ratingBlock.Visibility = Windows.Visibility.Collapsed
         End If
