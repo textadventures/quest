@@ -21,6 +21,9 @@
     </asp:ScriptManager>
     <div id="gameBorder">
         <div id="status">
+            <div id="loginData">
+                <asp:Label ID="loggedIn" runat="server"></asp:Label>
+            </div>
             <div id="updating">
                 <asp:UpdateProgress ID="ctlUpdateProgress" runat="server">
                     <ProgressTemplate>

@@ -122,6 +122,7 @@
     <Compile Include="Resource.ashx.cs">
       <DependentUpon>Resource.ashx</DependentUpon>
     </Compile>
+    <Compile Include="SessionManager.cs" />
     <Compile Include="SessionResources.cs" />
   </ItemGroup>
   <ItemGroup>

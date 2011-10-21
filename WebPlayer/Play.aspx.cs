@@ -17,6 +17,23 @@ namespace WebPlayer
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!Page.IsPostBack)
+            {
+                ISessionManager sessionManager = SessionManagerLoader.GetSessionManager();
+                if (sessionManager != null)
+                {
+                    IUser user = sessionManager.GetUser();
+                    if (user != null)
+                    {
+                        loggedIn.Text = "Logged in as " + user.Username;
+                    }
+                    else
+                    {
+                        loggedIn.Text = "Not logged in";
+                    }
+                }
+            }
+
             string style = Request["style"];
             if (!string.IsNullOrEmpty(style))
             {
