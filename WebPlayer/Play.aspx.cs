@@ -97,7 +97,7 @@ namespace WebPlayer
             switch (m_buffer.InitStage)
             {
                 case 1:
-                    string initialText = LoadGame(Request["file"]);
+                    string initialText = LoadGameForRequest();
                     if (m_player == null)
                     {
                         tmrInit.Enabled = false;
@@ -117,6 +117,24 @@ namespace WebPlayer
                     OutputTextNow(m_player.ClearBuffer());
                     break;
             }
+        }
+
+        private string LoadGameForRequest()
+        {
+            string gameFile = Request["file"];
+            if (string.IsNullOrEmpty(gameFile))
+            {
+                string id = Request["id"];
+                if (!string.IsNullOrEmpty(id))
+                {
+                    IFileManager fileManager = FileManagerLoader.GetFileManager();
+                    if (fileManager != null)
+                    {
+                        gameFile = fileManager.GetFileForID(id);
+                    }
+                }
+            }
+            return LoadGame(gameFile);
         }
 
         private string LoadGame(string gameFile)
