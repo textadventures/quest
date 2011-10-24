@@ -52,6 +52,7 @@ namespace AxeSoftware.Quest.EditorControls
         private Func<string, string, bool> m_canDragDelegate;
         private Action<string, string> m_doDragDelegate;
         public delegate void MenuClickHandler();
+        private Dictionary<string, ToolStripMenuItem> m_menus = new Dictionary<string, ToolStripMenuItem>();
 
         private Dictionary<string, MenuClickHandler> m_handlers = new Dictionary<string, MenuClickHandler>();
         public event FiltersUpdatedEventHandler FiltersUpdated;
@@ -136,6 +137,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void RetitleNode(string key, string title)
         {
+            if (!m_nodes.ContainsKey(key)) return;
             TreeNode node = m_nodes[key];
             node.Text = title;
         }
@@ -291,12 +293,14 @@ namespace AxeSoftware.Quest.EditorControls
         {
             m_updatingSelection = true;
             ctlTreeView.SelectedNode = m_nodes[key];
+            ctlTreeView.SelectedNode.EnsureVisible();
             m_updatingSelection = false;
         }
 
         public void SetSelectedItem(string key)
         {
             ctlTreeView.SelectedNode = m_nodes[key];
+            ctlTreeView.SelectedNode.EnsureVisible();
         }
 
         public void TrySetSelectedItem(string key)
@@ -323,11 +327,19 @@ namespace AxeSoftware.Quest.EditorControls
         public void ExpandAll()
         {
             ctlTreeView.ExpandAll();
+            if (ctlTreeView.SelectedNode != null) ctlTreeView.SelectedNode.EnsureVisible();
         }
 
         public void CollapseAll()
         {
             ctlTreeView.CollapseAll();
+            if (ctlTreeView.SelectedNode != null) ctlTreeView.SelectedNode.EnsureVisible();
+        }
+
+        public void SelectFirstNode()
+        {
+            ctlTreeView.SelectedNode = ctlTreeView.Nodes[0];
+            ctlTreeView.SelectedNode.EnsureVisible();
         }
 
         private void ctlTreeView_DoubleClick(object sender, System.EventArgs e)
@@ -604,7 +616,15 @@ namespace AxeSoftware.Quest.EditorControls
             foreach (var item in ctlContextMenu.Items)
             {
                 ToolStripMenuItem menuItem = item as ToolStripMenuItem;
-                if (menuItem != null) AddHandlers((ToolStripMenuItem)item);
+                if (menuItem != null)
+                {
+                    AddHandlers((ToolStripMenuItem)item);
+                    string tag = menuItem.Tag as string;
+                    if (!string.IsNullOrEmpty(tag))
+                    {
+                        m_menus.Add(tag, menuItem);
+                    }
+                }
             }
         }
 
@@ -653,6 +673,16 @@ namespace AxeSoftware.Quest.EditorControls
         public void FocusOnTree()
         {
             ctlTreeView.Focus();
+        }
+
+        public void SetMenuVisible(string key, bool visible)
+        {
+            m_menus[key].Visible = visible;
+        }
+
+        public void SetMenuEnabled(string key, bool enabled)
+        {
+            m_menus[key].Enabled = enabled;
         }
     }
 }

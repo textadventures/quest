@@ -14,6 +14,8 @@ Public Class Main
 
         ' Add any initialization after the InitializeComponent() call.
         ctlLauncher.QuestVersion = My.Application.Info.Version
+        ctlLauncher.DownloadFolder = Options.Instance.GetStringValue(OptionNames.GamesFolder)
+        ctlLauncher.ShowSandpit = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
         ctlPlayer.Visible = False
         InitialiseMenuHandlers()
 
@@ -23,6 +25,14 @@ Public Class Main
         If args.Count > 1 Then
             CmdLineLaunch(args(1))
         End If
+
+        AddHandler Options.Instance.OptionChanged, AddressOf OptionsChanged
+        AddHandler ctlLauncher.BrowseForGame, AddressOf ctlLauncher_BrowseForGame
+        AddHandler ctlLauncher.BrowseForGameEdit, AddressOf ctlLauncher_BrowseForGameEdit
+        AddHandler ctlLauncher.CreateNewGame, AddressOf ctlLauncher_CreateNewGame
+        AddHandler ctlLauncher.EditGame, AddressOf ctlLauncher_EditGame
+        AddHandler ctlLauncher.LaunchGame, AddressOf ctlLauncher_LaunchGame
+        AddHandler ctlLauncher.Tutorial, AddressOf ctlLauncher_Tutorial
     End Sub
 
     Private Sub InitialiseMenuHandlers()
@@ -36,6 +46,7 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("forums", AddressOf Forums)
         ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
         ctlMenu.AddMenuClickHandler("fullscreen", AddressOf GoFullScreen)
+        ctlMenu.AddMenuClickHandler("options", AddressOf ShowOptions)
     End Sub
 
     Private Sub ctlPlayer_AddToRecent(filename As String, name As String) Handles ctlPlayer.AddToRecent
@@ -56,32 +67,32 @@ Public Class Main
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
             ctlLauncher.RefreshLists()
             ctlPlayer.Visible = False
-            ctlLauncher.Visible = True
+            ctlLauncherHost.Visible = True
             SetWindowTitle()
         End If
     End Sub
 
-    Private Sub ctlLauncher_BrowseForGame() Handles ctlLauncher.BrowseForGame
+    Private Sub ctlLauncher_BrowseForGame()
         Browse()
     End Sub
 
-    Private Sub ctlLauncher_BrowseForGameEdit() Handles ctlLauncher.BrowseForGameEdit
+    Private Sub ctlLauncher_BrowseForGameEdit()
         BrowseEdit()
     End Sub
 
-    Private Sub ctlLauncher_CreateNewGame() Handles ctlLauncher.CreateNewGame
+    Private Sub ctlLauncher_CreateNewGame()
         CreateNewMenuClick()
     End Sub
 
-    Private Sub ctlLauncher_EditGame(filename As String) Handles ctlLauncher.EditGame
+    Private Sub ctlLauncher_EditGame(filename As String)
         LaunchEdit(filename)
     End Sub
 
-    Private Sub ctlLauncher_LaunchGame(filename As String) Handles ctlLauncher.LaunchGame
+    Private Sub ctlLauncher_LaunchGame(filename As String)
         Launch(filename)
     End Sub
 
-    Private Sub ctlLauncher_Tutorial() Handles ctlLauncher.Tutorial
+    Private Sub ctlLauncher_Tutorial()
         Tutorial()
     End Sub
 
@@ -115,13 +126,23 @@ Public Class Main
             Else
                 Me.SuspendLayout()
                 ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Player
-                ctlLauncher.Visible = False
+                ctlLauncherHost.Visible = False
                 ctlEditor.Visible = False
                 ctlPlayer.Visible = True
                 ctlPlayer.SetMenu(ctlMenu)
                 Me.ResumeLayout()
                 'ctlPlayer.RestoreSplitterPositions()
                 Application.DoEvents()
+                ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
+                ctlPlayer.SetPlayerOverrideColours(
+                        Options.Instance.GetColourValue(OptionNames.BackgroundColour),
+                        Options.Instance.GetColourValue(OptionNames.ForegroundColour),
+                        Options.Instance.GetColourValue(OptionNames.LinkColour))
+                ctlPlayer.UseGameFont = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
+                ctlPlayer.SetPlayerOverrideFont(
+                        Options.Instance.GetStringValue(OptionNames.FontFamily),
+                        Options.Instance.GetSingleValue(OptionNames.FontSize),
+                        DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
                 ctlPlayer.Initialise(game)
                 ctlPlayer.Focus()
             End If
@@ -135,36 +156,41 @@ Public Class Main
     Private Sub LaunchEdit(filename As String)
         Dim game As AxeSoftware.Quest.IASL = Nothing
         Dim ext As String
-        Dim loadOK As Boolean = False
 
         Try
+            Me.Cursor = Cursors.WaitCursor
             ext = System.IO.Path.GetExtension(filename)
 
             Select Case ext
                 Case ".aslx"
                     Me.SuspendLayout()
                     ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Editor
-                    ctlLauncher.Visible = False
+                    ctlLauncherHost.Visible = False
                     ctlPlayer.Visible = False
                     ctlEditor.Visible = True
                     ctlEditor.SetMenu(ctlMenu)
                     Me.ResumeLayout()
                     'ctlPlayer.RestoreSplitterPositions()
                     Application.DoEvents()
-                    loadOK = ctlEditor.Initialise(filename)
+                    ctlEditor.Initialise(filename)
                     ctlEditor.Focus()
                 Case Else
                     MsgBox(String.Format("Unrecognised file type '{0}'", ext))
             End Select
 
         Catch ex As Exception
-            MsgBox("Error launching game: " & ex.Message)
-        Finally
-            If Not loadOK Then
-                CloseEditor()
-            End If
+            MsgBox("Error loading game: " + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
+            Me.Cursor = Cursors.Default
         End Try
 
+    End Sub
+
+    Private Sub ctlEditor_InitialiseFinished(success As Boolean) Handles ctlEditor.InitialiseFinished
+        Me.Cursor = Cursors.Default
+        ctlMenu.Visible = True
+        If Not success Then
+            CloseEditor()
+        End If
     End Sub
 
     Private Sub AboutMenuClick()
@@ -255,7 +281,7 @@ Public Class Main
         ctlLauncher.RefreshLists()
         ctlEditor.Visible = False
         ctlEditor.CancelUnsavedChanges()
-        ctlLauncher.Visible = True
+        ctlLauncherHost.Visible = True
         SetWindowTitle()
     End Sub
 
@@ -278,14 +304,12 @@ Public Class Main
 
     Private Sub ctlEditor_PlayWalkthrough(filename As String, walkthrough As String, record As Boolean) Handles ctlEditor.PlayWalkthrough
         m_playingEditorGame = True
-        ctlPlayer.PostLaunchAction = Sub() ctlPlayer.RunWalkthrough(walkthrough)
+        ctlPlayer.PreLaunchAction = Sub() ctlPlayer.InitWalthrough(walkthrough)
+        ctlPlayer.PostLaunchAction = Sub() ctlPlayer.StartWalkthrough()
         If record Then
             ctlPlayer.RecordWalkthrough = walkthrough
         End If
         Launch(filename)
-
-        ' TO DO: if record flag set, when game is finished, give the Editor a list of commands run, which it then passes
-        ' to the EditorController which then adds those steps to the selected walkthrough
     End Sub
 
     Private Sub Main_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
@@ -301,7 +325,7 @@ Public Class Main
     End Sub
 
     Private Sub CmdLineLaunch(filename As String)
-        ctlLauncher.Visible = False
+        ctlLauncherHost.Visible = False
         m_cmdLineLaunch = filename
     End Sub
 
@@ -357,4 +381,33 @@ Public Class Main
     Private Sub ctlPlayer_RecordedWalkthrough(name As String, steps As System.Collections.Generic.List(Of String)) Handles ctlPlayer.RecordedWalkthrough
         ctlEditor.SetRecordedWalkthrough(name, steps)
     End Sub
+
+    Private Sub ShowOptions()
+        Dim optionsForm As New OptionsDialog
+        optionsForm.ShowDialog()
+    End Sub
+
+    Private Sub OptionsChanged(optionName As OptionNames)
+        Select Case optionName
+            Case OptionNames.BackgroundColour, OptionNames.ForegroundColour, OptionNames.LinkColour
+                ctlPlayer.SetPlayerOverrideColours(
+                    Options.Instance.GetColourValue(OptionNames.BackgroundColour),
+                    Options.Instance.GetColourValue(OptionNames.ForegroundColour),
+                    Options.Instance.GetColourValue(OptionNames.LinkColour))
+            Case OptionNames.UseGameColours
+                ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
+            Case OptionNames.FontFamily, OptionNames.FontSize, OptionNames.FontStyle
+                ctlPlayer.SetPlayerOverrideFont(
+                    Options.Instance.GetStringValue(OptionNames.FontFamily),
+                    Options.Instance.GetSingleValue(OptionNames.FontSize),
+                    DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
+            Case OptionNames.UseGameFont
+                ctlPlayer.UseGameFont = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
+            Case OptionNames.GamesFolder
+                ctlLauncher.DownloadFolder = Options.Instance.GetStringValue(OptionNames.GamesFolder)
+            Case OptionNames.ShowSandpit
+                ctlLauncher.ShowSandpit = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
+        End Select
+    End Sub
+
 End Class

@@ -1,6 +1,6 @@
 ﻿<library>
   <function name="GetPlacesObjectsList" type="objectlist">
-    return (ScopeVisibleNotHeldNotScenery() - player)
+    return (ListExclude(ScopeVisibleNotHeldNotScenery(), player))
   </function>
   
   <function name="ScopeInventory" type="objectlist">
@@ -29,9 +29,11 @@
   
   <function name="ScopeVisibleNotHeldForRoom" type="objectlist" parameters="room">
     if (room = player.parent) {
-      return (ScopeReachableNotHeldForRoom(room) + ScopeVisibleNotReachableForRoom(room) + player)
+      result = ListCombine(ScopeReachableNotHeldForRoom(room), ScopeVisibleNotReachableForRoom(room))
+      list add (result, player)
+      return (result)
     } else {
-      return (ScopeReachableNotHeldForRoom(room) + ScopeVisibleNotReachableForRoom(room))
+      return (ListCombine(ScopeReachableNotHeldForRoom(room), ScopeVisibleNotReachableForRoom(room)))
     }
   </function>
   
@@ -49,7 +51,7 @@
 
   <function name="ScopeReachableForRoom" type="objectlist" parameters="room">
     if (room = player.parent) {
-      result = ScopeReachableNotHeldForRoom(room) + ScopeReachableInventory()  
+      result = ListCombine(ScopeReachableNotHeldForRoom(room), ScopeReachableInventory())
       list add(result, player)
     } else {
       result = ScopeReachableNotHeldForRoom(room)
@@ -110,7 +112,7 @@
   
   <function name="ScopeVisibleForRoom" type="objectlist" parameters="room">
     if (room = player.parent) {
-      return (ScopeVisibleNotHeldForRoom(room) + ScopeInventory())
+      return (ListCombine(ScopeVisibleNotHeldForRoom(room), ScopeInventory()))
     } else {
       return (ScopeVisibleNotHeldForRoom(room))
     }  

@@ -108,6 +108,11 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 get { return null; }
             }
+
+            public bool IsControlVisibleInSimpleMode
+            {
+                get { return true; }
+            }
         }
 
         public WFAttributesControl()

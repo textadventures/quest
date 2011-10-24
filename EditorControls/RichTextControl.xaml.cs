@@ -45,7 +45,6 @@ namespace AxeSoftware.Quest.EditorControls
         {
             ctlRichText.Initialise(null, null);
             ctlRichText.Dirty -= ctlRichText_Dirty;
-            ctlRichText.Dispose();
         }
 
         private WFRichTextControl ctlRichText

@@ -15,6 +15,7 @@ namespace AxeSoftware.Quest
         {
             m_controls = new Dictionary<string, IEditorControl>();
             m_caption = source.Fields.GetString("caption");
+            IsTabVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
 
             foreach (Element e in worldModel.Elements.GetElements(ElementType.EditorControl))
             {
@@ -42,6 +43,12 @@ namespace AxeSoftware.Quest
         public bool IsTabVisible(IEditorData data)
         {
             return m_visibilityHelper.IsVisible(data);
+        }
+
+        public bool IsTabVisibleInSimpleMode
+        {
+            get;
+            private set;
         }
     }
 }

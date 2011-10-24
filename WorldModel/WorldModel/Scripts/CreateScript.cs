@@ -8,8 +8,6 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class CreateScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "create"; }
@@ -24,7 +22,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             get { return new int[] { 1 }; }
         }
-        #endregion
     }
 
     public class CreateScript : ScriptBase
@@ -42,8 +39,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             return new CreateScript(m_worldModel, m_expr.Clone());
         }
-
-        #region IScript Members
 
         public override void Execute(Context c)
         {
@@ -72,14 +67,10 @@ namespace AxeSoftware.Quest.Scripts
         {
             m_expr = new Expression<string>((string)value, m_worldModel);
         }
-
-        #endregion
     }
 
     public class CreateExitScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "create exit"; }
@@ -87,14 +78,20 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters)
         {
-            return new CreateExitScript(WorldModel, new Expression<string>(parameters[0], WorldModel), new Expression<Element>(parameters[1], WorldModel), new Expression<Element>(parameters[2], WorldModel));
+            switch (parameters.Count)
+            {
+                case 3:
+                    return new CreateExitScript(WorldModel, new Expression<string>(parameters[0], WorldModel), new Expression<Element>(parameters[1], WorldModel), new Expression<Element>(parameters[2], WorldModel));
+                case 4:
+                    return new CreateExitScript(WorldModel, new Expression<string>(parameters[0], WorldModel), new Expression<Element>(parameters[1], WorldModel), new Expression<Element>(parameters[2], WorldModel), new Expression<string>(parameters[3], WorldModel));
+            }
+            return null;
         }
 
         protected override int[] ExpectedParameters
         {
-            get { return new int[] { 3 }; }
+            get { return new int[] { 3, 4 }; }
         }
-        #endregion
     }
 
     public class CreateExitScript : ScriptBase
@@ -103,6 +100,7 @@ namespace AxeSoftware.Quest.Scripts
         private IFunction<string> m_name;
         private IFunction<Element> m_from;
         private IFunction<Element> m_to;
+        private IFunction<string> m_initialType;
 
         public CreateExitScript(WorldModel worldModel, IFunction<string> name, IFunction<Element> from, IFunction<Element> to)
         {
@@ -112,19 +110,39 @@ namespace AxeSoftware.Quest.Scripts
             m_to = to;
         }
 
+        public CreateExitScript(WorldModel worldModel, IFunction<string> name, IFunction<Element> from, IFunction<Element> to, IFunction<string> initialType)
+            : this(worldModel, name, from, to)
+        {
+            m_initialType = initialType;
+        }
+
         protected override ScriptBase CloneScript()
         {
-            return new CreateExitScript(m_worldModel, m_name.Clone(), m_from.Clone(), m_to.Clone());
+            if (m_initialType == null)
+            {
+                return new CreateExitScript(m_worldModel, m_name.Clone(), m_from.Clone(), m_to.Clone());
+            }
+            else
+            {
+                return new CreateExitScript(m_worldModel, m_name.Clone(), m_from.Clone(), m_to.Clone(), m_initialType.Clone());
+            }
         }
 
         public override void Execute(Context c)
         {
-            m_worldModel.ObjectFactory.CreateExit(m_name.Execute(c), m_from.Execute(c), m_to.Execute(c));
+            m_worldModel.ObjectFactory.CreateExit(m_name.Execute(c), m_from.Execute(c), m_to.Execute(c), m_initialType == null ? null : m_initialType.Execute(c));
         }
 
         public override string Save()
         {
-            return SaveScript("create exit", m_name.Save(), m_from.Save(), m_to.Save());
+            if (m_initialType == null)
+            {
+                return SaveScript("create exit", m_name.Save(), m_from.Save(), m_to.Save());
+            }
+            else
+            {
+                return SaveScript("create exit", m_name.Save(), m_from.Save(), m_to.Save(), m_initialType.Save());
+            }
         }
 
         public override string Keyword
@@ -145,6 +163,8 @@ namespace AxeSoftware.Quest.Scripts
                     return m_from.Save();
                 case 2:
                     return m_to.Save();
+                case 3:
+                    return m_initialType == null ? null : m_initialType.Save();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -162,6 +182,9 @@ namespace AxeSoftware.Quest.Scripts
                     break;
                 case 2:
                     m_to = new Expression<Element>((string)value, m_worldModel);
+                    break;
+                case 3:
+                    m_initialType = new Expression<string>((string)value, m_worldModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -5,9 +5,15 @@
 <appSettings>
   <add key="GameFolder" value="C:\Games\"/>
   <add key="LibraryFolder" value="C:\Libraries\"/>
-  
+
   <!-- To enable logging, uncomment this line, and create a log config XML like the one below -->
   <!-- <add key="LogConfig" value="C:\Path\To\Config\File\logging.xml"/> -->
+
+  <!-- To enable saving and loading, specify the type name of a class that implements ISessionManager -->
+  <!-- <add key="SessionManagerType" value="SomeSessionManager.SessionManager, SomeSessionManager"/> -->
+
+  <!-- To enable loading a file by ID, specify the type name of a class that implements IFileManager -->
+  <!-- <add key="FileManagerType" value="SomeFileManager.FileManager, SomeFileManager"/> -->
 </appSettings>
 
 <!--

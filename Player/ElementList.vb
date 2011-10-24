@@ -78,7 +78,11 @@ Public Class ElementList
                 If Not m_ignoreNames.Contains(listItem.Text) Then
                     Dim listViewItem As ListViewItem = lstList.Items.Add(listItem.Text)
                     If listItem.Text = oldSelection Then listViewItem.Selected = True
-                    m_verbs(count) = New List(Of String)(listItem.Verbs)
+                    If listItem.Verbs Is Nothing Then
+                        m_verbs(count) = New List(Of String)()
+                    Else
+                        m_verbs(count) = New List(Of String)(listItem.Verbs)
+                    End If
                     count += 1
                 End If
             Next

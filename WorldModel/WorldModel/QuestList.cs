@@ -15,6 +15,7 @@ namespace AxeSoftware.Quest
         bool Remove(object item, UpdateSource source, int index);
         bool Contains(object item);
         object this[int index] { get; }
+        int Count { get; }
     }
 
     public class QuestListUpdatedEventArgs<T> : EventArgs
@@ -213,7 +214,14 @@ namespace AxeSoftware.Quest
         /// <returns></returns>
         public static QuestList<T> operator +(QuestList<T> list1, QuestList<T> list2)
         {
-            QuestList<T> result = new QuestList<T>(list1);
+            System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
+            if (list1 == null) return new QuestList<T>(list2);
+            return list1.MergeLists(list2);
+        }
+
+        public QuestList<T> MergeLists(QuestList<T> list2)
+        {
+            QuestList<T> result = new QuestList<T>(this);
             result.AddRange(list2);
             return result;
         }
@@ -226,6 +234,7 @@ namespace AxeSoftware.Quest
         /// <returns></returns>
         public static QuestList<T> operator +(QuestList<T> list, T element)
         {
+            System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
             QuestList<T> result = new QuestList<T>(list);
             result.Add(element);
             return result;
@@ -239,6 +248,7 @@ namespace AxeSoftware.Quest
         /// <returns></returns>
         public static QuestList<T> operator +(T element, QuestList<T> list)
         {
+            System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
             QuestList<T> result = new QuestList<T>();
             result.Add(element);
             result.AddRange(list);
@@ -247,6 +257,7 @@ namespace AxeSoftware.Quest
 
         public static QuestList<T> operator -(QuestList<T> list, T element)
         {
+            System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
             QuestList<T> result = new QuestList<T>(list);
             result.Remove(element);
             return result;
@@ -291,7 +302,7 @@ namespace AxeSoftware.Quest
         public IExtendableField Merge(IExtendableField parent)
         {
             QuestList<T> parentList = parent as QuestList<T>;
-            return parentList + this;
+            return parentList.MergeLists(this);
         }
 
 

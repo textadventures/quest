@@ -1917,6 +1917,7 @@
 		<row><td>coreeditorobjectroom.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectRoom.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectRoom.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectscripts.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectScripts.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectsetup.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectSetup.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectSetup.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditorobjectusegive.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectUseGive.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectUseGive.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectverbs.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectVerbs.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectVerbs.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorscripts.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScripts.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorscriptsgamestate.a</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScriptsGameState.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScriptsGameState.aslx</td><td>1</td><td/></row>
@@ -1942,13 +1943,14 @@
 		<row><td>desktopplayer.js</td><td>ISX_DEFAULTCOMPONENT</td><td>DESKTO~1.JS|desktopplayer.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\desktopplayer.js</td><td>1</td><td/></row>
 		<row><td>deutsch.aslx2</td><td>ISX_DEFAULTCOMPONENT1</td><td>DEUTSC~1.ASL|Deutsch.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Deutsch.aslx</td><td>1</td><td/></row>
 		<row><td>deutsch.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>DEUTSC~1.TEM|Deutsch.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Deutsch.template</td><td>1</td><td/></row>
-		<row><td>english.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>ENGLIS~1.ASL|English.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\English.aslx</td><td>1</td><td/></row>
-		<row><td>english.template</td><td>ISX_DEFAULTCOMPONENT</td><td>ENGLIS~1.TEM|English.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\English.template</td><td>1</td><td/></row>
+		<row><td>english.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ENGLIS~1.ASL|English.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\English.aslx</td><td>1</td><td/></row>
 		<row><td>english.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>ENGLIS~1.TEM|English.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\English.template</td><td>1</td><td/></row>
 		<row><td>espanol.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ESPANO~1.ASL|Espanol.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Espanol.aslx</td><td>1</td><td/></row>
 		<row><td>espanol.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>ESPANO~1.TEM|Espanol.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Espanol.template</td><td>1</td><td/></row>
 		<row><td>frame.htm</td><td>ISX_DEFAULTCOMPONENT</td><td>Frame.htm</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Frame.htm</td><td>1</td><td/></row>
 		<row><td>frame.js</td><td>ISX_DEFAULTCOMPONENT</td><td>Frame.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Frame.js</td><td>1</td><td/></row>
+		<row><td>francais.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>FRANCA~1.ASL|Francais.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Francais.aslx</td><td>1</td><td/></row>
+		<row><td>francais.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>FRANCA~1.TEM|Francais.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Francais.template</td><td>1</td><td/></row>
 		<row><td>jjmenu.css</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jjmenu.css</td><td>1</td><td/></row>
 		<row><td>jjmenu.js</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jjmenu.js</td><td>1</td><td/></row>
 		<row><td>jquery_1.5.1.js</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-1.5.1.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery-1.5.1.js</td><td>1</td><td/></row>
@@ -4577,9 +4579,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{BE7F5853-03D4-4200-968B-79002C8B1C71}</td><td/></row>
+		<row><td>ProductCode</td><td>{59F6010A-F92E-4566-943D-730C6CB5758D}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
-		<row><td>ProductVersion</td><td>5.00.0001</td><td/></row>
+		<row><td>ProductVersion</td><td>5.10.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>

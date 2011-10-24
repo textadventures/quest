@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <include ref="English.aslx"/>
   <template name="UnresolvedObject">[Objet introuvable. Vérifiez l'article de l'élément, et sa présence dans le lieu où vous vous trouvez. Si vous n'êtes pas sûr d'une commande, tapez "aide".]</template>
   <template name="UnresolvedLocation">Vous ne pouvez pas y aller.</template>
@@ -50,7 +50,7 @@
   <template name="SelfAlias">moi</template>
   <template name="SelfAlt">moi-même; moi</template>
   <template name="AllObjects">tout; tous</template>
-  <template name="ParserIgnorePrefixes">le; un; un</template>
+  <template name="ParserIgnorePrefixes">le; la; une; un</template>
   <dynamictemplate name="AlreadyOpen">"C'est déjà ouvert."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">"C'est déjà fermé."</dynamictemplate>
   <dynamictemplate name="CantOpen">"Vous ne pouvez pas l'ouvrir."</dynamictemplate>
@@ -64,7 +64,7 @@
   <template name="SurfaceContentsPrefix">sur lequel/laquelle il y a</template>
   <dynamictemplate name="ObjectContains">WriteVerb(object, "contenant")</dynamictemplate>
   <dynamictemplate name="ContainerFull">"C'est déjà plein."</dynamictemplate>
-  <dynamictemplate name="DisambiguateMenu">"Veuillez choisir lequel '" + text + "' vous désirez :"</dynamictemplate>
+  <dynamictemplate name="DisambiguateMenu">"Veuillez choisir quel '" + text + "' vous désirez :"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   <template name="LockedExit">Cette voie est bloquée ou verrouillée.</template>
   <dynamictemplate name="DefaultAsk">WriteVerb(object, "ne") + " répond pas."</dynamictemplate>
@@ -91,12 +91,12 @@
   <template name="CompassSW">sud-ouest</template>
   <template name="CompassS">sud</template>
   <template name="CompassSE">sud-est</template>
-  <template name="CompassUp">en haut</template>
-  <template name="CompassDown">en bas</template>
+  <template name="CompassUp">haut</template>
+  <template name="CompassDown">bas</template>
   <template name="CompassIn">dedans</template>
   <template name="CompassOut">dehors</template>
   <template name="CompassDirectionPrefix"></template>
-  <template name="UpDownDirectionPrefix"></template>
+  <template name="UpDownDirectionPrefix">en</template>
   <template name="InOutDirectionPrefix"></template>
   <template name="CompassNWShort">no</template>
   <template name="CompassNShort">n</template>
@@ -120,8 +120,8 @@
   <template name="EmptyListLabel">(vide)</template>
   <template name="NothingSelectedLabel">(rien n'est sélectionné)</template>
   
-  <template templatetype="command" name="go"><![CDATA[^aller au (?<exit>.*)$|^aller (?<exit>.*)$|^(?<exit>nord|est|sud|ouest|nord-est|nord-ouest|sud-est|sud-ouest|dedans|dehors|en haut|en bas|n|e|s|o|ne|no|se|so|d|h|b)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^regarder (?<exit>nord|est|sud|ouest|nord-est|nord-ouest|sud-est|sud-ouest|dedans|dehors|en haut|en bas|n|e|s|o|ne|no|se|so|d|h|b)$]]></template>
+  <template templatetype="command" name="go"><![CDATA[^aller au (?<exit>.*)$|^aller (?<exit>.*)$|^(?<exit>nord|est|sud|ouest|nord-est|nord-ouest|sud-est|sud-ouest|dedans|dehors|haut|bas|n|e|s|o|ne|no|se|so|d|h|b)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^regarder (?<exit>nord|est|sud|ouest|nord-est|nord-ouest|sud-est|sud-ouest|dedans|dehors|haut|bas|n|e|s|o|ne|no|se|so|d|h|b)$]]></template>
   <template templatetype="command" name="look">^regarder$</template>
   <verbtemplate name="lookat">regarder</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
@@ -188,8 +188,8 @@
   <dynamictemplate name="DefaultSearch">"Il n'y a rien à fouiller."</dynamictemplate>
   <verbtemplate name="show">montrer</verbtemplate>
   <dynamictemplate name="DefaultShow">"Vous ne pouvez pas " + object.article + " montrer."</dynamictemplate>
-  <verbtemplate name="sit">s'asseoir</verbtemplate>
   <verbtemplate name="sit">s'asseoir sur</verbtemplate>
+  <verbtemplate name="sit">s'asseoir</verbtemplate>
   <dynamictemplate name="DefaultSit">"Vous ne pouvez pas vous asseoir ici."</dynamictemplate>
   <verbtemplate name="smell">sentir</verbtemplate>
   <verbtemplate name="smell">sniff</verbtemplate>
@@ -226,7 +226,7 @@
   <template name="DefaultListen">Vous n'entendez rien d'extraordinaire.</template>
   <template templatetype="command" name="jump">^sauter$</template>
   <template name="DefaultJump">Vous sautez, mais il ne se passe rien.</template>
-  <template templatetype="command" name="sitdown">^asseoir$|^s'asseoir$</template>
+  <template templatetype="command" name="sitdown">^asseoir$|^s'asseoir$|^s'asseoir sur$</template>
   <template name="DefaultSitDown">Vous ne voulez pas vous asseoir pour le moment.</template>
   <template templatetype="command" name="liedown">^coucher$|^se coucher$|^se coucher sur$</template>
   <template name="DefaultLieDown">Vous ne voulez pas vous coucher pour le moment.</template>
@@ -243,12 +243,18 @@
 <b>- Déplacement :</b><br/>  Utilisez les boutons du compas, ou tapez NORD, SUD, EST, OUEST, N, S, E, O, NO, NE, H, B, IN, EX etc.<br/><br/>
 <b>- Raccourcis :</b><br/>  Utilisez les flèches haut et bas pour voir les commandes que vous avez déjà entrées. Notez que vous pouvez utiliser la lettre "x" plutôt que le verbe "examiner" ou "regarder".<br/>]]></template>
 
-  <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
-  <template name="LanguageSpecificObjectTypes"></template>
-  <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
-  <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
-  <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
+  <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
 
+  <type name="masculine">
+  <gender>il</gender>
+  <article>le</article>
+  </type>
+  
+  <type name="feminine">
+  <gender>elle</gender>
+  <article>la</article>
+  </type>
+  
   <template name="EditorVerbDefaultExpression">"Vous ne pouvez pas " + object.article + " #verb#."</template>
 
   <function name="GetDefaultPrefix" type="string" parameters="obj">

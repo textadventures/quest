@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using AxeSoftware.Quest.Scripts;
 using System.Linq;
+using AxeSoftware.Quest.Functions;
 
 namespace AxeSoftware.Quest
 {
@@ -58,6 +59,7 @@ namespace AxeSoftware.Quest
         private string m_commandOverrideInput;
         private object m_commandOverrideLock = new object();
         private TimerRunner m_timerRunner;
+        private RegexCache m_regexCache = new RegexCache();
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -66,6 +68,7 @@ namespace AxeSoftware.Quest
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementFieldUpdated;
         public event EventHandler<ElementRefreshEventArgs> ElementRefreshed;
         public event EventHandler<ElementFieldUpdatedEventArgs> ElementMetaFieldUpdated;
+        public event EventHandler<LoadStatusEventArgs> LoadStatus;
 
         public event Action<int> RequestNextTimerTick;
 
@@ -94,6 +97,16 @@ namespace AxeSoftware.Quest
             }
 
             public Element Element { get; private set; }
+        }
+
+        public class LoadStatusEventArgs : EventArgs
+        {
+            public LoadStatusEventArgs(string status)
+            {
+                Status = status;
+            }
+
+            public string Status { get; private set; }
         }
 
         static WorldModel()
@@ -289,12 +302,22 @@ namespace AxeSoftware.Quest
 
         private object m_waitForResponseLock = new object();
         private string m_menuResponse = null;
+        private IScript m_menuCallback = null;
+        private Context m_menuCallbackContext = null;
 
-        internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel)
+        internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
         {
             MenuData menuData = new MenuData(caption, options, allowCancel);
 
             m_playerUI.ShowMenu(menuData);
+
+            if (async)
+            {
+                return string.Empty;
+            }
+
+            m_menuCallback = null;
+            m_menuCallbackContext = null;
 
             ChangeThreadState(ThreadState.Waiting);
 
@@ -308,27 +331,58 @@ namespace AxeSoftware.Quest
             return m_menuResponse;
         }
 
-        internal string DisplayMenu(string caption, IList<string> options, bool allowCancel)
+        internal string DisplayMenu(string caption, IList<string> options, bool allowCancel, bool async)
         {
             Dictionary<string, string> optionsDictionary = new Dictionary<string, string>();
             foreach (string option in options)
             {
                 optionsDictionary.Add(option, option);
             }
-            return DisplayMenu(caption, optionsDictionary, allowCancel);
+            return DisplayMenu(caption, optionsDictionary, allowCancel, async);
         }
 
         public void SetMenuResponse(string response)
         {
-            DoInNewThreadAndWait(() =>
+            if (m_menuCallback != null)
             {
-                m_menuResponse = response;
-
-                lock (m_waitForResponseLock)
+                m_menuCallbackContext.Parameters["result"] = response;
+                IScript script = m_menuCallback;
+                Context context = m_menuCallbackContext;
+                m_menuCallback = null;
+                m_menuCallbackContext = null;
+                script.Execute(context);
+                if (State != GameState.Finished)
                 {
-                    Monitor.Pulse(m_waitForResponseLock);
+                    UpdateLists();
                 }
-            });
+                ChangeThreadState(ThreadState.Ready);
+            }
+            else
+            {
+                DoInNewThreadAndWait(() =>
+                {
+                    m_menuResponse = response;
+
+                    lock (m_waitForResponseLock)
+                    {
+                        Monitor.Pulse(m_waitForResponseLock);
+                    }
+                });
+            }
+        }
+
+        internal void DisplayMenuAsync(string caption, IList<string> options, bool allowCancel, IScript callback, Context c)
+        {
+            m_menuCallback = callback;
+            m_menuCallbackContext = c;
+            string result = DisplayMenu(caption, options, allowCancel, true);
+        }
+
+        internal void DisplayMenuAsync(string caption, IDictionary<string, string> options, bool allowCancel, IScript callback, Context c)
+        {
+            m_menuCallback = callback;
+            m_menuCallbackContext = c;
+            string result = DisplayMenu(caption, options, allowCancel, true);
         }
 
         public IEnumerable<Element> Objects
@@ -409,7 +463,8 @@ namespace AxeSoftware.Quest
             {
                 throw new Exception("Game already initialised");
             }
-            loader.FilenameUpdated += new GameLoader.FilenameUpdatedHandler(loader_FilenameUpdated);
+            loader.FilenameUpdated += loader_FilenameUpdated;
+            loader.LoadStatus += loader_LoadStatus;
             m_state = GameState.Loading;
             bool success = m_filename == null ? true : loader.Load(m_filename);
             ResourcesFolder = loader.ResourcesFolder;
@@ -417,6 +472,14 @@ namespace AxeSoftware.Quest
             m_state = success ? GameState.Running : GameState.Finished;
             m_errors = loader.Errors;
             return success;
+        }
+
+        void loader_LoadStatus(object sender, GameLoader.LoadStatusEventArgs e)
+        {
+            if (LoadStatus != null)
+            {
+                LoadStatus(this, new LoadStatusEventArgs(e.Status));
+            }
         }
 
         void loader_FilenameUpdated(string filename)
@@ -879,9 +942,9 @@ namespace AxeSoftware.Quest
             System.IO.File.WriteAllText(filename, saveData);
         }
 
-        public string Save(SaveMode mode)
+        public string Save(SaveMode mode, bool? includeWalkthrough = null)
         {
-            return m_saver.Save(mode);
+            return m_saver.Save(mode, includeWalkthrough);
         }
 
         public static Type ConvertTypeNameToType(string name)
@@ -1192,6 +1255,18 @@ namespace AxeSoftware.Quest
 
                 UpdateLists();
 
+                if (m_elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
+                {
+                    try
+                    {
+                        RunProcedure("UpdateStatusAttributes");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogException(ex);
+                    }
+                }
+
                 ChangeThreadState(ThreadState.Ready);
             });
 
@@ -1202,7 +1277,7 @@ namespace AxeSoftware.Quest
         {
             if (m_state == GameState.Finished) return;
             int next = m_timerRunner.GetTimeUntilNextTimerRuns();
-            RequestNextTimerTick(next);
+            if (RequestNextTimerTick != null) RequestNextTimerTick(next);
             System.Diagnostics.Debug.Print("Request next timer in {0}", next);
         }
 
@@ -1237,10 +1312,10 @@ namespace AxeSoftware.Quest
             });
         }
 
-        public bool CreatePackage(string filename, out string error)
+        public bool CreatePackage(string filename, bool includeWalkthrough, out string error)
         {
             Packager packager = new Packager(this);
-            return packager.CreatePackage(filename, out error);
+            return packager.CreatePackage(filename, includeWalkthrough, out error);
         }
 
         public string ResourcesFolder { get; private set; }
@@ -1294,6 +1369,26 @@ namespace AxeSoftware.Quest
             }
 
             movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
+        }
+
+        public bool Assert(string expr)
+        {
+            Expression<bool> expression = new Expression<bool>(expr, this);
+            Context c = new Context();
+            return expression.Execute(c);
+        }
+
+        internal RegexCache RegexCache { get { return m_regexCache; } }
+
+        ~WorldModel()
+        {
+#if (!DEBUG)
+            try
+            {
+                System.IO.Directory.Delete(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Quest"), true);
+            }
+            catch { }
+#endif
         }
     }
 }

@@ -8,13 +8,19 @@ namespace AxeSoftware.Quest
 {
     internal class GameXmlWriter
     {
+        internal class GameXmlWriterOptions
+        {
+            public bool IncludeWalkthrough { get; set; }
+        }
+
         private StringBuilder m_output;
         private XmlWriter m_writer;
         private int m_indentLevel = 0;
         private const string k_indentChars = "  ";
         private SaveMode m_mode;
+        private GameXmlWriterOptions m_options;
 
-        public GameXmlWriter(SaveMode mode)
+        public GameXmlWriter(SaveMode mode, GameXmlWriterOptions options = null)
         {
             m_mode = mode;
             m_output = new StringBuilder();
@@ -23,6 +29,12 @@ namespace AxeSoftware.Quest
             settings.IndentChars = k_indentChars;
             settings.OmitXmlDeclaration = true;
             m_writer = XmlWriter.Create(m_output, settings);
+            if (options == null)
+            {
+                options = new GameXmlWriterOptions();
+                options.IncludeWalkthrough = (mode != SaveMode.Package);
+            }
+            m_options = options;
         }
 
         public void WriteComment(string text)
@@ -104,5 +116,9 @@ namespace AxeSoftware.Quest
             get { return m_mode; }
         }
 
+        public GameXmlWriterOptions Options
+        {
+            get { return m_options; }
+        }
     }
 }

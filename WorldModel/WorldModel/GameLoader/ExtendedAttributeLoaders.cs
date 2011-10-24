@@ -127,5 +127,18 @@ namespace AxeSoftware.Quest
                 throw new Exception("Unexpected end of XML data");
             }
         }
+
+        private class GenericDictionaryLoader : ExtendedAttributeLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "dictionary"; }
+            }
+
+            public override void Load(XmlReader reader, Element current)
+            {
+                // TO DO: Implement
+            }
+        }
     }
 }

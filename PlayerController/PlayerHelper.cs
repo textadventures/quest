@@ -34,6 +34,8 @@ namespace AxeSoftware.Quest
 
         public PlayerHelper(IASL game, IPlayerHelperUI playerUI)
         {
+            UseGameColours = true;
+            UseGameFont = true;
             m_playerUI = playerUI;
             m_game = game;
 
@@ -219,28 +221,50 @@ namespace AxeSoftware.Quest
         private string GetCurrentFormat(string linkForeground)
         {
             string style = "";
-            if (m_font.Length > 0)
+            if (UseGameFont)
             {
-                style += string.Format("font-family:{0};", m_font);
-            }
-
-            string colour;
-            if (!string.IsNullOrEmpty(linkForeground))
-            {
-                colour = linkForeground;
+                if (m_font.Length > 0)
+                {
+                    style += string.Format("font-family:{0};", m_font);
+                }
             }
             else
             {
-                colour = m_foregroundOverride;
-                if (colour.Length == 0) colour = m_foreground;
+                style += string.Format("font-family:{0};", PlayerOverrideFontFamily);
+            }
+
+            string colour;
+            if (UseGameColours)
+            {
+                if (!string.IsNullOrEmpty(linkForeground))
+                {
+                    colour = linkForeground;
+                }
+                else
+                {
+                    colour = m_foregroundOverride;
+                    if (colour.Length == 0) colour = m_foreground;
+                }
+            }
+            else
+            {
+                colour = PlayerOverrideForeground;
             }
             if (colour.Length > 0)
             {
                 style += string.Format("color:{0};", colour);
             }
 
-            string fontSize = m_fontSizeOverride;
-            if (fontSize.Length == 0) fontSize = m_fontSize;
+            string fontSize;
+            if (UseGameFont)
+            {
+                fontSize = m_fontSizeOverride;
+                if (fontSize.Length == 0) fontSize = m_fontSize;
+            }
+            else
+            {
+                fontSize = PlayerOverrideFontSize.ToString();
+            }
 
             if (fontSize.Length > 0)
             {
@@ -345,5 +369,12 @@ namespace AxeSoftware.Quest
         {
             WriteText(FormatText(text) + "<br />");
         }
+
+        public bool UseGameColours { get; set; }
+        public bool UseGameFont { get; set; }
+
+        public string PlayerOverrideForeground { get; set; }
+        public string PlayerOverrideFontFamily { get; set; }
+        public float PlayerOverrideFontSize { get; set; }
     }
 }

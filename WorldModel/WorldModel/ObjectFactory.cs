@@ -180,8 +180,6 @@ namespace AxeSoftware.Quest
 
             Dictionary<string, object> allAttributes = fields.GetAllAttributes();
 
-            // TO DO: We should also add all MetaFields to the UndoLog
-
             foreach (string attr in allAttributes.Keys.Where(key => key != "name"))
             {
                 WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false, false));
@@ -372,18 +370,19 @@ namespace AxeSoftware.Quest
             return newTurnScript;
         }
 
-        public Element CreateExit(string exitName, Element fromRoom, Element toRoom)
+        public Element CreateExit(string exitName, Element fromRoom, Element toRoom, string initialType)
         {
+            if (string.IsNullOrEmpty(initialType)) initialType = null;
             string exitID = WorldModel.GetUniqueID("exit");
             if (WorldModel.ObjectExists(exitID)) exitID = WorldModel.GetUniqueID(exitID);
-            Element newExit = CreateExit(exitID, exitName, fromRoom, toRoom);
+            Element newExit = CreateExit(exitID, exitName, fromRoom, toRoom, initialType);
             newExit.Fields[FieldDefinitions.Anonymous] = true;
             return newExit;
         }
 
-        public Element CreateExit(string exitID, string exitName, Element fromRoom, Element toRoom)
+        public Element CreateExit(string exitID, string exitName, Element fromRoom, Element toRoom, string initialType)
         {
-            Element newExit = CreateObject(exitID, ObjectType.Exit);
+            Element newExit = CreateObject(exitID, ObjectType.Exit, true, initialType == null ? null : new List<string> { initialType });
             newExit.Fields[FieldDefinitions.Alias] = exitName;
             newExit.Parent = fromRoom;
             newExit.Fields[FieldDefinitions.To] = toRoom;
@@ -393,14 +392,14 @@ namespace AxeSoftware.Quest
 
         public Element CreateExitLazy(string exitName, Element fromRoom, string toRoom)
         {
-            Element newExit = CreateExit(exitName, fromRoom, null);
+            Element newExit = CreateExit(exitName, fromRoom, null, null);
             InitLazyExit(newExit, toRoom);
             return newExit;
         }
 
         public Element CreateExitLazy(string exitID, string exitName, Element fromRoom, string toRoom)
         {
-            Element newExit = CreateExit(exitID, exitName, fromRoom, null);
+            Element newExit = CreateExit(exitID, exitName, fromRoom, null, null);
             InitLazyExit(newExit, toRoom);
             return newExit;
         }

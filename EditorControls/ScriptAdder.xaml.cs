@@ -46,20 +46,13 @@ namespace AxeSoftware.Quest.EditorControls
                 ctlEditorTree.SelectionChanged += ctlEditorTree_SelectionChanged;
 
                 m_controller = controller;
+                m_controller.SimpleModeChanged += m_controller_SimpleModeChanged;
 
                 ctlEditorTree.RemoveContextMenu();
                 ctlEditorTree.IncludeRootLevelInSearchResults = false;
                 ctlEditorTree.ShowFilterBar = false;
 
-                foreach (string cat in m_controller.GetAllScriptEditorCategories())
-                {
-                    ctlEditorTree.AddNode(cat, cat, null, null, null);
-                }
-
-                foreach (var data in m_controller.GetScriptEditorData())
-                {
-                    ctlEditorTree.AddNode(data.Key, data.Value.AdderDisplayString, data.Value.Category, null, null);
-                }
+                PopulateTree();
 
                 m_initialised = true;
             }
@@ -67,11 +60,35 @@ namespace AxeSoftware.Quest.EditorControls
             ctlEditorTree.ExpandAll();
         }
 
+        private void PopulateTree()
+        {
+            ctlEditorTree.Clear();
+
+            foreach (string cat in m_controller.GetAllScriptEditorCategories())
+            {
+                ctlEditorTree.AddNode(cat, cat, null, null, null);
+            }
+
+            foreach (var data in m_controller.GetScriptEditorData())
+            {
+                if (data.Value.IsVisibleInSimpleMode || !m_controller.SimpleMode)
+                {
+                    ctlEditorTree.AddNode(data.Key, data.Value.AdderDisplayString, data.Value.Category, null, null);
+                }
+            }
+
+            ctlEditorTree.ExpandAll();
+            ctlEditorTree.SelectFirstNode();
+        }
+
         public void Uninitialise()
         {
+            if (!m_initialised) return;
             ctlEditorTree.CommitSelection -= ctlEditorTree_CommitSelection;
             ctlEditorTree.SelectionChanged -= ctlEditorTree_SelectionChanged;
+            m_controller.SimpleModeChanged -= m_controller_SimpleModeChanged;
             m_controller = null;
+            m_initialised = false;
         }
 
         private WFEditorTree ctlEditorTree
@@ -102,6 +119,11 @@ namespace AxeSoftware.Quest.EditorControls
         private void closeButton_Click(object sender, RoutedEventArgs e)
         {
             CloseClicked();
+        }
+
+        private void m_controller_SimpleModeChanged(object sender, EventArgs e)
+        {
+            PopulateTree();
         }
     }
 }

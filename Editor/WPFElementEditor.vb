@@ -40,4 +40,13 @@
         RemoveHandler ctlElementEditor.Dirty, AddressOf ElementEditor_Dirty
         RemoveHandler ctlElementEditor.RequestParentElementEditorSave, AddressOf ElementEditor_RequestParentElementEditorSave
     End Sub
+
+    Public Property SimpleMode As Boolean
+        Get
+            Return ctlElementEditor.SimpleMode
+        End Get
+        Set(value As Boolean)
+            ctlElementEditor.SimpleMode = value
+        End Set
+    End Property
 End Class

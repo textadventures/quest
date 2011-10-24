@@ -90,7 +90,6 @@ namespace AxeSoftware.Quest.EditorControls
             m_controller = null;
             m_definition = null;
             ctlAttributes.Initialise(null, null);
-            ctlAttributes.Dispose();
         }
 
         public void AttributeChanged(string attribute, object value)

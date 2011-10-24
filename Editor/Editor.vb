@@ -13,6 +13,9 @@ Public Class Editor
     Private m_currentEditorData As IEditorDataExtendedAttributeInfo
     Private m_unsavedChanges As Boolean
     Private WithEvents m_fileWatcher As System.IO.FileSystemWatcher
+    Private m_simpleMode As Boolean
+    Private m_reloadingFromCodeView As Boolean
+    Private m_uiHidden As Boolean
 
     Public Event AddToRecent(filename As String, name As String)
     Public Event Close()
@@ -21,6 +24,7 @@ Public Class Editor
     Public Event NewGame()
     Public Event OpenGame()
     Public Event PlayWalkthrough(filename As String, walkthrough As String, record As Boolean)
+    Public Event InitialiseFinished(success As Boolean)
 
     Public Sub New()
         ' This call is required by the designer.
@@ -28,9 +32,14 @@ Public Class Editor
 
         ' Add any initialization after the InitializeComponent() call.
         BannerVisible = False
+        HideUI()
     End Sub
 
-    Public Function Initialise(ByRef filename As String) As Boolean
+    Public Sub Initialise(ByRef filename As String)
+        m_menu.Visible = False
+        If Not m_uiHidden Then
+            HideUI()
+        End If
         m_currentElement = Nothing
         m_currentEditor = Nothing
         m_filename = filename
@@ -40,26 +49,58 @@ Public Class Editor
         m_controller = New EditorController()
         m_unsavedChanges = False
         InitialiseEditorControlsList()
-        DisplayCodeView(False)
         ctlReloadBanner.Visible = False
-        Dim ok As Boolean = m_controller.Initialise(filename)
-        If ok Then
-            Dim path As String = System.IO.Path.GetDirectoryName(filename)
-            Dim filter As String = System.IO.Path.GetFileName(filename)
-            m_fileWatcher = New System.IO.FileSystemWatcher(path, filter)
-            m_fileWatcher.EnableRaisingEvents = True
-            SetUpTree()
-            SetUpToolbar()
-            SetUpEditors()
-            RaiseEvent AddToRecent(filename, m_controller.GameName)
-            ctlTree.SetSelectedItem("game")
-            ctlTree.FocusOnTree()
-            SetWindowTitle()
-            ShowEditor("game")
-        End If
+        m_controller.StartInitialise(filename)
+    End Sub
 
-        Return ok
-    End Function
+    Private Sub m_controller_InitialiseFinished(sender As Object, e As EditorController.InitialiseResults) Handles m_controller.InitialiseFinished
+        BeginInvoke(Sub()
+                        If e.Success Then
+                            m_controller.UpdateTree()
+                            Application.DoEvents()
+                            Dim path As String = System.IO.Path.GetDirectoryName(m_filename)
+                            Dim filter As String = System.IO.Path.GetFileName(m_filename)
+                            m_fileWatcher = New System.IO.FileSystemWatcher(path, filter)
+                            m_fileWatcher.EnableRaisingEvents = True
+                            m_simpleMode = False
+                            SetUpTree()
+                            SetUpToolbar()
+                            ctlLoading.UpdateStatus("Loading editors...")
+                            SetUpEditors()
+                            RaiseEvent AddToRecent(m_filename, m_controller.GameName)
+                            SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
+                            m_menu.Visible = True
+                            m_uiHidden = False
+                            DisplayCodeView(False)
+                            splitMain.Visible = True
+                            ctlTree.Visible = True
+                            ctlToolbar.Visible = True
+                            ctlLoading.Visible = False
+                            ctlTree.SetSelectedItem("game")
+                            ctlTree.FocusOnTree()
+                            SetWindowTitle()
+                            ShowEditor("game")
+                        End If
+
+                        If m_reloadingFromCodeView Then
+                            If Not e.Success Then
+                                ' Couldn't reload the file due to an error, so show code view again
+                                m_menu.Visible = True
+                                m_uiHidden = False
+                                splitMain.Visible = True
+                                ctlTree.Visible = True
+                                ctlToolbar.Visible = True
+                                ctlLoading.Visible = False
+                                DisplayCodeView(True)
+                            Else
+                                ctlTree.TrySetSelectedItem(m_lastSelection)
+                            End If
+                            m_reloadingFromCodeView = False
+                        Else
+                            RaiseEvent InitialiseFinished(e.Success)
+                        End If
+                    End Sub)
+    End Sub
 
     Private Sub InitialiseEditorControlsList()
         EditorControls.ElementEditor.InitialiseEditorControls(m_controller)
@@ -96,6 +137,7 @@ Public Class Editor
         menu.AddMenuClickHandler("delete", AddressOf Delete)
         menu.AddMenuClickHandler("publish", AddressOf Publish)
         menu.AddMenuClickHandler("find", AddressOf Find)
+        menu.AddMenuClickHandler("simplemode", AddressOf ToggleSimpleMode)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -141,6 +183,7 @@ Public Class Editor
         ctlTree.AddMenuClickHandler("addobjecttype", AddressOf AddNewObjectType)
         ctlTree.AddMenuClickHandler("addeditor", AddressOf AddNewEditor)
         ctlTree.AddMenuClickHandler("addjavascript", AddressOf AddNewJavascript)
+        ctlTree.AddMenuClickHandler("delete", AddressOf Delete)
     End Sub
 
     Private Sub SetUpEditors()
@@ -148,6 +191,7 @@ Public Class Editor
         m_elementEditors = New Dictionary(Of String, WPFElementEditor)
 
         For Each editor As String In m_controller.GetAllEditorNames()
+            Application.DoEvents()
             AddEditor(editor)
         Next
     End Sub
@@ -185,7 +229,7 @@ Public Class Editor
     End Sub
 
     Private Sub m_controller_AddedNode(key As String, text As String, parent As String, isLibraryNode As Boolean, position As Integer?) Handles m_controller.AddedNode
-        Dim foreColor As Color = If(isLibraryNode, Color.Gray, Color.Black)
+        Dim foreColor As Color = If(isLibraryNode, SystemColors.ControlDarkDark, SystemColors.ControlText)
         ctlTree.AddNode(key, text, parent, foreColor, Nothing, position)
     End Sub
 
@@ -641,8 +685,21 @@ Public Class Editor
             'GC.Collect()
         End If
 
+        If Not appIsExiting Then
+            HideUI()
+        End If
+
         Return True
     End Function
+
+    Private Sub HideUI()
+        m_uiHidden = True
+        splitMain.Visible = False
+        ctlTree.Visible = False
+        ctlToolbar.Visible = False
+        ctlLoading.Visible = True
+        ctlLoading.BringToFront()
+    End Sub
 
     Private Sub Cut()
         If m_codeView Then
@@ -694,19 +751,16 @@ Public Class Editor
         Else
             If ctlTextEditor.TextWasSaved Then
                 ' file was changed in the text editor, so reload it
-                Dim ok As Boolean = Initialise(m_filename)
-                If Not ok Then
-                    ' Couldn't reload the file due to an error, so show code view again
-                    DisplayCodeView(True)
-                Else
-                    ctlTree.TrySetSelectedItem(m_lastSelection)
-                End If
+                m_reloadingFromCodeView = True
+                Initialise(m_filename)
             Else
                 SetWindowTitle()
             End If
         End If
 
-        UpdateClipboardButtons()
+        If Not m_reloadingFromCodeView Then
+            UpdateClipboardButtons()
+        End If
     End Sub
 
     Private Sub DisplayCodeView(codeView As Boolean)
@@ -717,6 +771,7 @@ Public Class Editor
         ctlToolbar.CodeView = codeView
         m_menu.MenuVisible("add") = Not codeView
         m_menu.MenuVisible("find") = codeView
+        m_menu.MenuEnabled("simplemode") = Not codeView
     End Sub
 
     Public Sub Redisplay()
@@ -811,6 +866,7 @@ Public Class Editor
 
         Dim canDelete As Boolean = (Not m_codeView) AndAlso m_controller.CanDelete(ctlTree.SelectedItem)
         m_menu.MenuEnabled("delete") = canDelete
+        ctlTree.SetMenuEnabled("delete", canDelete)
         ctlToolbar.CanDelete = canDelete
     End Sub
 
@@ -865,47 +921,8 @@ Public Class Editor
     End Sub
 
     Private Sub Publish()
-        Dim outputFolder As String = System.IO.Path.Combine(
-                System.IO.Path.GetDirectoryName(m_filename),
-                "Output")
-
-        System.IO.Directory.CreateDirectory(outputFolder)
-
-        Dim outputFilename As String = System.IO.Path.Combine(
-                outputFolder,
-                System.IO.Path.GetFileNameWithoutExtension(m_filename) + ".quest")
-
-        If System.IO.File.Exists(outputFilename) Then
-            Dim deleteExisting = MsgBox("Do you want to overwrite the existing .quest file?", MsgBoxStyle.Question Or MsgBoxStyle.YesNoCancel, "Output already exists")
-
-            If deleteExisting = MsgBoxResult.Yes Then
-                Try
-                    System.IO.File.Delete(outputFilename)
-                Catch ex As Exception
-                    MsgBox("Unable to delete file: " + ex.Message, MsgBoxStyle.Critical, "Unable to delete file")
-                    Return
-                End Try
-            ElseIf deleteExisting = MsgBoxResult.No Then
-                ctlPublishFile.FileName = outputFilename
-                If ctlPublishFile.ShowDialog() = DialogResult.OK Then
-                    outputFilename = ctlPublishFile.FileName
-                Else
-                    Return
-                End If
-            ElseIf deleteExisting = MsgBoxResult.Cancel Then
-                Return
-            End If
-        End If
-
-        Dim result = m_controller.Publish(outputFilename)
-
-        If Not result.Valid Then
-            EditorControls.PopupEditors.DisplayValidationError(result, String.Empty, "Unable to publish game")
-        Else
-            ' Show Output folder in a new Explorer window
-            System.Diagnostics.Process.Start("explorer.exe", "/n," + outputFolder)
-        End If
-
+        Dim frmPublish As New PublishWindow(m_filename, m_controller)
+        frmPublish.ShowDialog()
     End Sub
 
     Private Sub m_fileWatcher_Changed(sender As Object, e As System.IO.FileSystemEventArgs) Handles m_fileWatcher.Changed
@@ -940,5 +957,54 @@ Public Class Editor
 
     Public Sub SetRecordedWalkthrough(name As String, steps As List(Of String))
         m_controller.RecordWalkthrough(name, steps)
+    End Sub
+
+    Private Sub ToggleSimpleMode()
+        SimpleMode = Not m_menu.MenuChecked("simplemode")
+    End Sub
+
+    Public Property SimpleMode As Boolean
+        Get
+            Return m_simpleMode
+        End Get
+        Set(value As Boolean)
+            If (value <> m_simpleMode) Then
+                m_simpleMode = value
+                m_controller.SimpleMode = value
+                m_menu.MenuChecked("simplemode") = m_simpleMode
+                ctlToolbar.SimpleMode = value
+
+                m_menu.MenuVisible("addverb") = Not m_simpleMode
+                m_menu.MenuVisible("addcommand") = Not m_simpleMode
+                m_menu.MenuVisible("addfunction") = Not m_simpleMode
+                m_menu.MenuVisible("addtimer") = Not m_simpleMode
+                m_menu.MenuVisible("addturnscript") = Not m_simpleMode
+                m_menu.MenuVisible("addwalkthrough") = Not m_simpleMode
+                m_menu.MenuVisible("advanced") = Not m_simpleMode
+
+                ctlTree.ShowFilterBar = Not m_simpleMode
+                ctlTree.SetMenuVisible("addverb", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addcommand", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addfunction", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addtimer", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addturnscript", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addwalkthrough", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addlibrary", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addtemplate", Not m_simpleMode)
+                ctlTree.SetMenuVisible("adddynamictemplate", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addobjecttype", Not m_simpleMode)
+                ctlTree.SetMenuVisible("addjavascript", Not m_simpleMode)
+
+                For Each editor As WPFElementEditor In m_elementEditors.Values
+                    editor.SimpleMode = m_simpleMode
+                Next
+
+                AxeSoftware.Utility.Registry.SaveSetting("Quest", "Settings", "EditorSimpleMode", If(m_simpleMode, 1, 0))
+            End If
+        End Set
+    End Property
+
+    Private Sub m_controller_LoadStatus(sender As Object, e As EditorController.LoadStatusEventArgs) Handles m_controller.LoadStatus
+        BeginInvoke(Sub() ctlLoading.UpdateStatus(e.Status))
     End Sub
 End Class

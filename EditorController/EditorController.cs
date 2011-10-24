@@ -40,13 +40,26 @@ namespace AxeSoftware.Quest
         private const string k_commands = "_gameCommands";
         private const string k_verbs = "_gameVerbs";
 
-        private List<ElementType> m_ignoredTypes = new List<ElementType> {
+        private List<ElementType> m_ignoredTypes = new List<ElementType>
+        {
             ElementType.ImpliedType,
             ElementType.Delegate,
             ElementType.Editor,
             ElementType.EditorTab,
             ElementType.EditorControl,
             ElementType.Resource
+        };
+
+        private List<ElementType> m_advancedTypes = new List<ElementType>
+        {
+            ElementType.DynamicTemplate,
+            ElementType.Function,
+            ElementType.IncludedLibrary,
+            ElementType.Javascript,
+            ElementType.ObjectType,
+            ElementType.Template,
+            ElementType.Timer,
+            ElementType.Walkthrough
         };
 
         private WorldModel m_worldModel;
@@ -64,6 +77,7 @@ namespace AxeSoftware.Quest
         private List<Element> m_clipboardElements;
         private ElementType m_clipboardElementType;
         private List<IScript> m_clipboardScripts;
+        private bool m_simpleMode;
 
         public delegate void VoidHandler();
         public event VoidHandler ClearTree;
@@ -103,10 +117,13 @@ namespace AxeSoftware.Quest
         public delegate void RequestRunWalkthroughHandler(string name, bool record);
         public event RequestRunWalkthroughHandler RequestRunWalkthrough;
 
+        public event EventHandler SimpleModeChanged;
+
         public event EventHandler<ElementUpdatedEventArgs> ElementUpdated;
         public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
         public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
         public event EventHandler<UpdateUndoListEventArgs> RedoListUpdated;
+        public event EventHandler<LoadStatusEventArgs> LoadStatus;
 
         public class ElementUpdatedEventArgs : EventArgs
         {
@@ -144,6 +161,16 @@ namespace AxeSoftware.Quest
             public IEnumerable<string> UndoList { get; private set; }
         }
 
+        public class LoadStatusEventArgs : EventArgs
+        {
+            public LoadStatusEventArgs(string status)
+            {
+                Status = status;
+            }
+
+            public string Status { get; private set; }
+        }
+
         private class TreeHeader
         {
             public string Key;
@@ -159,6 +186,28 @@ namespace AxeSoftware.Quest
             // set default filters here
         }
 
+        public class InitialiseResults : EventArgs
+        {
+            internal InitialiseResults(bool success)
+            {
+                Success = success;
+            }
+
+            public bool Success { get; private set; }
+        }
+
+        public event EventHandler<InitialiseResults> InitialiseFinished;
+
+        public void StartInitialise(string filename, string libFolder = null)
+        {
+            System.Threading.Thread newThread = new System.Threading.Thread(() =>
+            {
+                bool result = Initialise(filename, libFolder);
+                if (InitialiseFinished != null) InitialiseFinished(this, new InitialiseResults(result));
+            });
+            newThread.Start();
+        }
+
         public bool Initialise(string filename, string libFolder = null)
         {
             m_filename = filename;
@@ -169,6 +218,7 @@ namespace AxeSoftware.Quest
             m_worldModel.ElementMetaFieldUpdated += m_worldModel_ElementMetaFieldUpdated;
             m_worldModel.UndoLogger.TransactionsUpdated += UndoLogger_TransactionsUpdated;
             m_worldModel.Elements.ElementRenamed += Elements_ElementRenamed;
+            m_worldModel.LoadStatus += m_worldModel_LoadStatus;
 
             bool ok = m_worldModel.InitialiseEdit();
 
@@ -195,11 +245,7 @@ namespace AxeSoftware.Quest
                 }
             }
 
-            if (ok)
-            {
-                UpdateTree();
-            }
-            else
+            if (!ok)
             {
                 string message = "Failed to load game due to the following errors:" + Environment.NewLine;
                 foreach (string error in m_worldModel.Errors)
@@ -210,6 +256,14 @@ namespace AxeSoftware.Quest
             }
 
             return ok;
+        }
+
+        void m_worldModel_LoadStatus(object sender, WorldModel.LoadStatusEventArgs e)
+        {
+            if (LoadStatus != null)
+            {
+                LoadStatus(this, new LoadStatusEventArgs(e.Status));
+            }
         }
 
         void Elements_ElementRenamed(object sender, NameChangedEventArgs e)
@@ -352,38 +406,41 @@ namespace AxeSoftware.Quest
         {
             m_treeTitles = new Dictionary<string, string> { { k_commands, "Commands" }, { k_verbs, "Verbs" } };
             m_elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
-            AddTreeHeader(ElementType.Object, "_objects", "Objects", null);
-            AddTreeHeader(ElementType.Function, "_functions", "Functions", null);
-            AddTreeHeader(ElementType.Timer, "_timers", "Timers", null);
-            AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null);
-            AddTreeHeader(null, "_advanced", "Advanced", null);
-            AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced");
+            AddTreeHeader(ElementType.Object, "_objects", "Objects", null, false);
+            AddTreeHeader(ElementType.Function, "_functions", "Functions", null, false);
+            AddTreeHeader(ElementType.Timer, "_timers", "Timers", null, false);
+            AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
+            AddTreeHeader(null, "_advanced", "Advanced", null, false);
+            AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
             // Ignore Implied Types - there's no reason for game authors to edit them
             //AddTreeHeader(ElementType.ImpliedType, "_implied", "Implied Types", "_advanced");
-            AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced");
-            AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced");
+            AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced", false);
+            AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced", false);
             // Ignore Delegate elements - there's no reason for game authors to edit them (I think)
             //AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
-            AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced");
+            AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced", false);
             // Ignore Editor elements - there's no reason for game authors to edit them
             //AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
-            AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced");
+            AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
         }
 
-        private void AddTreeHeader(ElementType? type, string key, string title, string parent)
+        private void AddTreeHeader(ElementType? type, string key, string title, string parent, bool simple)
         {
-            m_treeTitles.Add(key, title);
-            TreeHeader header = new TreeHeader();
-            header.Key = key;
-            header.Title = title;
-            if (type != null)
+            if (simple || !SimpleMode)
             {
-                m_elementTreeStructure.Add(type.Value, header);
+                m_treeTitles.Add(key, title);
+                TreeHeader header = new TreeHeader();
+                header.Key = key;
+                header.Title = title;
+                if (type != null)
+                {
+                    m_elementTreeStructure.Add(type.Value, header);
+                }
+                AddedNode(key, title, parent, false, null);
             }
-            AddedNode(key, title, parent, false, null);
         }
 
-        private void UpdateTree()
+        public void UpdateTree()
         {
             if (BeginTreeUpdate == null) return;
 
@@ -420,7 +477,7 @@ namespace AxeSoftware.Quest
             {
                 AddedNode(o.Name, text, parent, isLibrary, position);
 
-                if (o.Name == "game")
+                if (o.Name == "game" && !SimpleMode)
                 {
                     AddedNode(k_verbs, "Verbs", "game", false, null);
                     AddedNode(k_commands, "Commands", "game", false, null);
@@ -432,6 +489,14 @@ namespace AxeSoftware.Quest
         {
             // Don't display implied types, editor elements etc.
             if (m_ignoredTypes.Contains(e.ElemType)) return false;
+            if (SimpleMode && m_advancedTypes.Contains(e.ElemType)) return false;
+            if (SimpleMode)
+            {
+                if (e.ElemType == ElementType.Object && e.Type == ObjectType.Command)
+                {
+                    return false;
+                }
+            }
             if (e.ElemType == ElementType.Template)
             {
                 // Don't display verb templates (if the user wants to edit a verb's regex,
@@ -452,6 +517,11 @@ namespace AxeSoftware.Quest
 
         private string GetElementTreeParent(Element o)
         {
+            if (SimpleMode)
+            {
+                return o.Parent == null ? null : o.Parent.Name;
+            }
+
             if (o.Parent != null) return o.Parent.Name;
 
             if (o.ElemType == ElementType.Object && o.Type == ObjectType.Command)
@@ -1664,10 +1734,10 @@ namespace AxeSoftware.Quest
             return FriendlyVerbDisplayName(simplePattern.Pattern);
         }
 
-        public ValidationResult Publish(string filename)
+        public ValidationResult Publish(string filename, bool includeWalkthrough)
         {
             string error;
-            if (m_worldModel.CreatePackage(filename, out error))
+            if (m_worldModel.CreatePackage(filename, includeWalkthrough, out error))
             {
                 return new ValidationResult { Valid = true, Message = ValidationMessage.OK };
             }
@@ -1813,6 +1883,7 @@ namespace AxeSoftware.Quest
             StartTransaction(string.Format("Add {0} walkthrough steps", steps.Count()));
             Element walkthrough = m_worldModel.Elements.Get(ElementType.Walkthrough, name);
             QuestList<string> newSteps = new QuestList<string>(steps);
+            // TO DO: Use MergeLists
             walkthrough.Fields[FieldDefinitions.Steps] = walkthrough.Fields[FieldDefinitions.Steps] + newSteps;
             EndTransaction();
         }
@@ -1837,6 +1908,20 @@ namespace AxeSoftware.Quest
             EditableDictionary<string>.Clear();
             EditableList<string>.Clear();
             EditableWrappedItemDictionary<IScript, IEditableScripts>.Clear();
+        }
+
+        public bool SimpleMode
+        {
+            get { return m_simpleMode; }
+            set
+            {
+                if (m_simpleMode != value)
+                {
+                    m_simpleMode = value;
+                    UpdateTree();
+                    if (SimpleModeChanged != null) SimpleModeChanged(this, new EventArgs());
+                }
+            }
         }
     }
 }

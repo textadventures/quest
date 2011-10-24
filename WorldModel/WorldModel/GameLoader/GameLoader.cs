@@ -19,6 +19,16 @@ namespace AxeSoftware.Quest
             public bool IsEditorLibrary;
         }
 
+        public class LoadStatusEventArgs : EventArgs
+        {
+            public LoadStatusEventArgs(string status)
+            {
+                Status = status;
+            }
+
+            public string Status { get; private set; }
+        }
+
         private WorldModel m_worldModel;
         private List<string> m_errors = new List<string>();
         private ScriptFactory m_scriptFactory;
@@ -27,6 +37,8 @@ namespace AxeSoftware.Quest
 
         public delegate void FilenameUpdatedHandler(string filename);
         public event FilenameUpdatedHandler FilenameUpdated;
+
+        public event EventHandler<LoadStatusEventArgs> LoadStatus;
 
         public GameLoader(WorldModel worldModel, LoadMode mode)
         {
@@ -106,8 +118,15 @@ namespace AxeSoftware.Quest
 
             if (m_errors.Count == 0)
             {
-                ResolveGame();
-                ValidateGame();
+                try
+                {
+                    ResolveGame();
+                    ValidateGame();
+                }
+                catch (Exception e)
+                {
+                    AddError(string.Format("Error: {0}", e.Message));
+                }
             }
 
             return (m_errors.Count == 0);
@@ -139,6 +158,7 @@ namespace AxeSoftware.Quest
             };
 
             m_currentFile.Push(data);
+            UpdateLoadStatus();
 
             while (reader.Read())
             {
@@ -163,6 +183,29 @@ namespace AxeSoftware.Quest
             }
 
             m_currentFile.Pop();
+            UpdateLoadStatus();
+        }
+
+        private void UpdateLoadStatus()
+        {
+            string status;
+            if (m_currentFile.Count > 0)
+            {
+                status = "Loading " + System.IO.Path.GetFileName(m_currentFile.Peek().Filename);
+            }
+            else
+            {
+                status = "";
+            }
+            UpdateStatus(status);
+        }
+
+        private void UpdateStatus(string status)
+        {
+            if (LoadStatus != null)
+            {
+                LoadStatus(this, new LoadStatusEventArgs(status));
+            }
         }
 
         private void AddedElement(Element newElement)
@@ -214,8 +257,12 @@ namespace AxeSoftware.Quest
         // and allows scripts to refer to procedures that aren't defined until later in the XML
         private void ResolveGame()
         {
+            int total = m_worldModel.Elements.Count();
+            int count = 0;
             foreach (Element e in m_worldModel.Elements.GetElements())
             {
+                count++;
+                UpdateStatus(string.Format("Setting up element {0} / {1} ({2:P0})", count, total, 1.0 * count / total));
                 e.Fields.LazyFields.Resolve(m_scriptFactory);
             }
         }

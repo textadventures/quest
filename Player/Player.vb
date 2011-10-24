@@ -32,9 +32,12 @@ Public Class Player
     Private m_sendNextTickEventAfter As Integer
     Private m_pausing As Boolean
     Private WithEvents m_walkthroughRunner As WalkthroughRunner
+    Private m_preLaunchAction As Action
     Private m_postLaunchAction As Action
     Private m_recordWalkthrough As String
     Private m_recordedWalkthrough As List(Of String)
+    Private m_allowColourChange As Boolean = True
+    Private m_allowFontChange As Boolean = True
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -95,6 +98,7 @@ Public Class Player
         ResetInterfaceStrings()
         SetEnabledState(True)
         m_htmlHelper = New PlayerHelper(m_game, Me)
+        m_htmlHelper.UseGameColours = UseGameColours
         m_htmlPlayerReadyFunction = AddressOf FinishInitialise
 
         ' we don't finish initialising the game until the webbrowser's DocumentCompleted fires
@@ -104,8 +108,13 @@ Public Class Player
 
     Private Sub FinishInitialise()
 
-        If m_game.Initialise(Me) Then
+        Me.Cursor = Cursors.WaitCursor
 
+        Dim success As Boolean = m_game.Initialise(Me)
+
+        Me.Cursor = Cursors.Default
+
+        If success Then
             AddToRecentList()
             m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing AndAlso m_gameDebug.Walkthroughs.Walkthroughs.Count > 0
             m_menu.MenuEnabled("debugger") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.DebugEnabled
@@ -128,7 +137,7 @@ Public Class Player
             If (m_game.Errors.Count > 0) Then
                 WriteLine("The following errors occurred:")
                 For Each loadError As String In m_game.Errors
-                    WriteLine(loadError)
+                    WriteLine(loadError.Replace(Chr(10), "<br/>"))
                 Next
             End If
             GameFinished()
@@ -138,6 +147,10 @@ Public Class Player
 
     Private Sub BeginGame()
         m_initialised = True
+        If m_preLaunchAction IsNot Nothing Then
+            m_preLaunchAction.Invoke()
+            m_preLaunchAction = Nothing
+        End If
         m_game.Begin()
         ClearBuffer()
         txtCommand.Focus()
@@ -150,7 +163,7 @@ Public Class Player
 
     Private Sub ClearBuffer()
         If Not Me.IsHandleCreated Then Return
-        WriteHTML(m_htmlHelper.ClearBuffer())
+        If Not m_htmlHelper Is Nothing Then WriteHTML(m_htmlHelper.ClearBuffer())
         BeginInvoke(Sub() ctlPlayerHtml.ClearBuffer())
     End Sub
 
@@ -395,8 +408,15 @@ Public Class Player
     End Sub
 
     Public Sub RunWalkthrough(name As String)
-        m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, name)
+        InitWalthrough(name)
+        StartWalkthrough()
+    End Sub
 
+    Public Sub InitWalthrough(name As String)
+        m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, name)
+    End Sub
+
+    Public Sub StartWalkthrough()
         Dim runnerThread As New Thread(Sub() WalkthroughRunner())
         runnerThread.Start()
     End Sub
@@ -437,7 +457,11 @@ Public Class Player
         Return menuForm.SelectedItem
     End Function
 
+    Private m_gameBackground As String = Nothing
+
     Private Sub SetBackground(colour As String) Implements IPlayer.SetBackground
+        m_gameBackground = colour
+        If Not UseGameColours Then Return
         BeginInvoke(Sub() ctlPlayerHtml.SetBackground(colour))
     End Sub
 
@@ -523,6 +547,7 @@ Public Class Player
             m_walkthroughRunner.ShowMenu(menuData)
         Else
             BeginInvoke(Sub()
+                            ClearBuffer()
                             Dim menuForm As Menu
                             menuForm = New Menu()
 
@@ -570,6 +595,7 @@ Public Class Player
             m_walkthroughRunner.ShowQuestion(caption)
         Else
             BeginInvoke(Sub()
+                            ClearBuffer()
                             Dim result As Boolean = (MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes)
 
                             If RecordWalkthrough IsNot Nothing Then
@@ -632,13 +658,16 @@ Public Class Player
                         If synchronous And looped Then
                             Throw New Exception("Can't play sound that is both synchronous and looped")
                         End If
-                        m_loopSound = looped
-                        m_soundPlaying = True
 
-                        m_mediaPlayer.Open(New System.Uri(filename))
-                        m_mediaPlayer.Play()
+                        If System.IO.File.Exists(filename) Then
+                            m_loopSound = looped
+                            m_soundPlaying = True
 
-                        m_waitingForSoundToFinish = synchronous
+                            m_mediaPlayer.Open(New System.Uri(filename))
+                            m_mediaPlayer.Play()
+
+                            m_waitingForSoundToFinish = synchronous
+                        End If
                     End Sub
         )
     End Sub
@@ -743,7 +772,11 @@ Public Class Player
                     End Sub)
     End Sub
 
+    Private m_gameForeground As String = Nothing
+
     Public Sub SetForeground(colour As String) Implements IPlayer.SetForeground
+        m_gameForeground = colour
+        If Not UseGameColours Then Return
         m_htmlHelper.SetForeground(colour)
     End Sub
 
@@ -767,7 +800,11 @@ Public Class Player
         BeginInvoke(Sub() Save())
     End Sub
 
+    Private m_gameLinkForeground As String = Nothing
+
     Public Sub SetLinkForeground(colour As String) Implements IPlayer.SetLinkForeground
+        m_gameLinkForeground = colour
+        If Not UseGameColours Then Return
         m_htmlHelper.SetLinkForeground(colour)
     End Sub
 
@@ -785,6 +822,8 @@ Public Class Player
         'Dim runnerThread As New Thread(New ThreadStart(AddressOf TryInitialise))
         'runnerThread.Start()
 
+        ResetPlayerOverrideColours()
+        ResetPlayerOverrideFont()
         BeginInvoke(Sub()
                         m_htmlPlayerReadyFunction.Invoke()
                     End Sub)
@@ -935,6 +974,15 @@ Public Class Player
         WriteLine(text)
     End Sub
 
+    Public Property PreLaunchAction As Action
+        Get
+            Return m_preLaunchAction
+        End Get
+        Set(value As Action)
+            m_preLaunchAction = value
+        End Set
+    End Property
+
     Public Property PostLaunchAction As Action
         Get
             Return m_postLaunchAction
@@ -955,5 +1003,85 @@ Public Class Player
             End If
         End Set
     End Property
+
+    Public Property UseGameColours As Boolean
+        Get
+            Return m_allowColourChange
+        End Get
+        Set(value As Boolean)
+            Dim changed As Boolean = m_allowColourChange <> value
+            m_allowColourChange = value
+            If m_htmlHelper IsNot Nothing Then m_htmlHelper.UseGameColours = value
+            If changed Then ResetPlayerOverrideColours()
+        End Set
+    End Property
+
+    Public Property UseGameFont As Boolean
+        Get
+            Return m_allowFontChange
+        End Get
+        Set(value As Boolean)
+            Dim changed As Boolean = m_allowFontChange <> value
+            m_allowFontChange = value
+            If m_htmlHelper IsNot Nothing Then m_htmlHelper.UseGameFont = value
+            If changed Then ResetPlayerOverrideFont()
+        End Set
+    End Property
+
+    Private m_playerOverrideBackground As Color
+    Private m_playerOverrideForeground As Color
+    Private m_playerOverrideLink As Color
+
+    Public Sub SetPlayerOverrideColours(background As Color, foreground As Color, link As Color)
+        m_playerOverrideBackground = background
+        m_playerOverrideForeground = foreground
+        m_playerOverrideLink = link
+        If m_htmlHelper IsNot Nothing Then
+            m_htmlHelper.PlayerOverrideForeground = ColorTranslator.ToHtml(foreground)
+        End If
+        If Not UseGameColours Then
+            BeginInvoke(Sub() ctlPlayerHtml.SetBackground(ColorTranslator.ToHtml(background)))
+            If m_htmlHelper IsNot Nothing Then
+                m_htmlHelper.SetForeground(ColorTranslator.ToHtml(foreground))
+                m_htmlHelper.SetLinkForeground(ColorTranslator.ToHtml(link))
+            End If
+            ClearBuffer()
+        End If
+    End Sub
+
+    Private Sub ResetPlayerOverrideColours()
+        If Not UseGameColours Then
+            SetPlayerOverrideColours(m_playerOverrideBackground, m_playerOverrideForeground, m_playerOverrideLink)
+        Else
+            If m_gameBackground IsNot Nothing Then SetBackground(m_gameBackground)
+            If m_gameForeground IsNot Nothing Then SetForeground(m_gameForeground)
+            If m_gameLinkForeground IsNot Nothing Then SetLinkForeground(m_gameLinkForeground)
+            ClearBuffer()
+        End If
+    End Sub
+
+    Private m_playerOverrideFontFamily As String
+    Private m_playerOverrideFontSize As Single
+    Private m_playerOverrideFontStyle As FontStyle
+
+    Public Sub SetPlayerOverrideFont(fontFamily As String, fontSize As Single, fontStyle As FontStyle)
+        m_playerOverrideFontFamily = fontFamily
+        m_playerOverrideFontSize = fontSize
+        m_playerOverrideFontStyle = fontStyle
+        If m_htmlHelper IsNot Nothing Then
+            m_htmlHelper.PlayerOverrideFontFamily = fontFamily
+            m_htmlHelper.PlayerOverrideFontSize = fontSize
+            ' TO DO: Font style is currently ignored
+        End If
+    End Sub
+
+    Private Sub ResetPlayerOverrideFont()
+        If m_htmlHelper IsNot Nothing Then
+            m_htmlHelper.UseGameFont = UseGameFont
+        End If
+        If Not UseGameFont Then
+            SetPlayerOverrideFont(m_playerOverrideFontFamily, m_playerOverrideFontSize, m_playerOverrideFontStyle)
+        End If
+    End Sub
 
 End Class

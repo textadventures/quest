@@ -28,6 +28,7 @@
                         <GradientStop Color="#F0F0F0" Offset="0" />
                         <GradientStop Color="White" Offset="1" />
                     </LinearGradientBrush>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
                 </ListBox.Resources>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
@@ -40,6 +41,7 @@
                                 </LinearGradientBrush>
                             </Setter.Value>
                         </Setter>
+                        <Setter Property="Foreground" Value="Black" />
                         <!--
                     <Style.Triggers>
                         <Trigger Property="ItemsControl.AlternationIndex" Value="0">

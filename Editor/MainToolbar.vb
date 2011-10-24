@@ -19,6 +19,7 @@ Public Class MainToolbar
     Private m_defaultColour As Color
     Private m_buttons As New Dictionary(Of String, ToolStripButton)
     Private m_codeView As Boolean
+    Private m_simpleMode As Boolean
 
     Public Event HistoryClicked(key As String)
     Public Event SaveCurrentEditor()
@@ -420,6 +421,17 @@ Public Class MainToolbar
             butAddRoom.Visible = Not m_codeView
             ToolStripSeparator8.Visible = Not m_codeView
             ToolStripSeparator2.Visible = Not m_codeView
+        End Set
+    End Property
+
+    Public Property SimpleMode As Boolean
+        Get
+            Return m_simpleMode
+        End Get
+        Set(value As Boolean)
+            m_simpleMode = value
+
+            butCode.Visible = Not m_simpleMode
         End Set
     End Property
 End Class

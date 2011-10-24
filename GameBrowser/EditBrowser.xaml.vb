@@ -7,7 +7,7 @@
     Public Event Tutorial()
 
     Public Sub New()
-        ' This call is required by the Windows Form Designer.
+        ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
@@ -18,28 +18,26 @@
         AddHandler ctlEditorWelcome.CreateNewGame, AddressOf DoCreateNewGame
         AddHandler ctlEditorWelcome.OpenGame, AddressOf DoOpenGame
         AddHandler ctlEditorWelcome.Tutorial, AddressOf DoTutorial
-    End Sub
 
-    Private ReadOnly Property ctlEditorWelcome As EditorWelcome
-        Get
-            Return DirectCast(ctlElementHost.Child, EditorWelcome)
-        End Get
-    End Property
+        AddHandler ctlGameList.Launch, AddressOf ctlGameList_Launch
+        AddHandler ctlGameList.ClearAllItems, AddressOf ctlGameList_ClearAllItems
+        AddHandler ctlGameList.RemoveItem, AddressOf ctlGameList_RemoveItem
+    End Sub
 
     Public Sub AddToRecent(filename As String, name As String)
         m_recentItems.AddToRecent(filename, name)
     End Sub
 
-    Private Sub ctlGameList_Launch(filename As String) Handles ctlGameList.Launch
+    Private Sub ctlGameList_Launch(filename As String)
         RaiseEvent EditGame(filename)
     End Sub
 
-    Private Sub ctlGameList_ClearAllItems() Handles ctlGameList.ClearAllItems
+    Private Sub ctlGameList_ClearAllItems()
         m_recentItems.Clear()
         Populate()
     End Sub
 
-    Private Sub ctlGameList_RemoveItem(filename As String) Handles ctlGameList.RemoveItem
+    Private Sub ctlGameList_RemoveItem(filename As String)
         m_recentItems.Remove(filename)
     End Sub
 
@@ -58,5 +56,4 @@
     Private Sub DoTutorial()
         RaiseEvent Tutorial()
     End Sub
-
 End Class

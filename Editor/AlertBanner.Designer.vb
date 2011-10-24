@@ -29,6 +29,7 @@ Partial Class AlertBanner
         'lblAlertText
         '
         Me.lblAlertText.AutoSize = True
+        Me.lblAlertText.ForeColor = System.Drawing.Color.Black
         Me.lblAlertText.Location = New System.Drawing.Point(3, 5)
         Me.lblAlertText.Name = "lblAlertText"
         Me.lblAlertText.Size = New System.Drawing.Size(28, 13)
@@ -38,6 +39,7 @@ Partial Class AlertBanner
         'cmdAction
         '
         Me.cmdAction.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdAction.BackColor = System.Drawing.SystemColors.Control
         Me.cmdAction.Location = New System.Drawing.Point(231, 0)
         Me.cmdAction.Name = "cmdAction"
         Me.cmdAction.Size = New System.Drawing.Size(75, 23)

@@ -23,6 +23,7 @@ namespace AxeSoftware.Quest.EditorControls
         private IEditorData m_data;
         private bool m_lastRowIsResizable = false;
         private bool m_lastRowIsScrollableAndExpands = false;
+        private bool m_simpleMode = false;
 
         public event EventHandler<DataModifiedEventArgs> Dirty;
         public event Action RequestParentElementEditorSave;
@@ -134,7 +135,7 @@ namespace AxeSoftware.Quest.EditorControls
                 newLabel.Content = ctl.Caption + ":";
                 newLabel.Target = newControl;
 
-                if (ctl.Caption.Length > 15)
+                if (ctl.Caption.Length > 17)
                 {
                     newLabel.Padding = new Thickness(5, 5, 5, 0);
                     newControl.Padding = new Thickness(5, 3, 5, 5);
@@ -273,7 +274,15 @@ namespace AxeSoftware.Quest.EditorControls
 
             foreach (var tab in m_tabs)
             {
-                bool visible = tab.Key.IsTabVisible(m_data);
+                bool visible;
+                if (SimpleMode && !tab.Key.IsTabVisibleInSimpleMode)
+                {
+                    visible = false;
+                }
+                else
+                {
+                    visible = tab.Key.IsTabVisible(m_data);
+                }
                 if (visible && firstVisibleTab == null) firstVisibleTab = tab.Value;
                 if (!visible && tab.Value.IsSelected) switchToFirstVisibleTab = true;
                 tab.Value.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
@@ -286,7 +295,15 @@ namespace AxeSoftware.Quest.EditorControls
 
             foreach (var ctl in m_controlUIElements)
             {
-                bool visible = ctl.Key.IsControlVisible(m_data);
+                bool visible;
+                if (SimpleMode && !ctl.Key.IsControlVisibleInSimpleMode)
+                {
+                    visible = false;
+                }
+                else
+                {
+                    visible = ctl.Key.IsControlVisible(m_data);
+                }
                 Visibility visibility = visible ? Visibility.Visible : Visibility.Collapsed;
                 foreach (UIElement element in ctl.Value)
                 {
@@ -354,6 +371,19 @@ namespace AxeSoftware.Quest.EditorControls
             m_tabs.Clear();
             m_controls.Clear();
             m_controller = null;
+        }
+
+        public bool SimpleMode
+        {
+            get { return m_simpleMode; }
+            set
+            {
+                if (m_simpleMode != value)
+                {
+                    m_simpleMode = value;
+                    UpdateControlVisibility();
+                }
+            }
         }
     }
 }

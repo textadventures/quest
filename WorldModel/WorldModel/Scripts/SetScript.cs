@@ -260,7 +260,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new SetScriptScript(Constructor, AppliesTo.Clone(), Property, (IScript)m_script.Clone());
+            return new SetScriptScript(Constructor, AppliesTo == null ? null : AppliesTo.Clone(), Property, (IScript)m_script.Clone());
         }
 
         protected override object GetResult(Context c)

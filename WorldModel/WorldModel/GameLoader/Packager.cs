@@ -15,13 +15,13 @@ namespace AxeSoftware.Quest
             m_worldModel = worldModel;
         }
 
-        public bool CreatePackage(string filename, out string error)
+        public bool CreatePackage(string filename, bool includeWalkthrough, out string error)
         {
             error = string.Empty;
 
             try
             {
-                string data = m_worldModel.Save(SaveMode.Package);
+                string data = m_worldModel.Save(SaveMode.Package, includeWalkthrough);
                 string baseFolder = System.IO.Path.GetDirectoryName(m_worldModel.Filename);
 
                 using (ZipFile zip = new ZipFile(filename))

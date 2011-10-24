@@ -31,6 +31,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             m_helper = new ControlDataHelper<string>(this);
             m_helper.Initialise += m_helper_Initialise;
+            m_helper.Uninitialise += m_helper_Uninitialise;
         }
 
         void m_helper_Initialise()
@@ -42,6 +43,11 @@ namespace AxeSoftware.Quest.EditorControls
                 lstTypes.Items.Add(item);
             }
             m_populating = false;
+        }
+
+        void m_helper_Uninitialise()
+        {
+            m_dropDownValues = null;
         }
 
         private void lstTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)

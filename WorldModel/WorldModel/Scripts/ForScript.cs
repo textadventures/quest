@@ -20,15 +20,22 @@ namespace AxeSoftware.Quest.Scripts
             string afterExpr;
             string param = Utility.GetParameter(script, out afterExpr);
             string loop = Utility.GetScript(afterExpr);
-            
+
             string[] parameters = Utility.SplitParameter(param).ToArray();
-            if (parameters.Count() != 3)
-            {
-                throw new Exception(string.Format("'for' script should have 3 parameters: 'for ({0})'", param));
-            }
             IScript loopScript = ScriptFactory.CreateScript(loop);
 
-            return new ForScript(WorldModel, ScriptFactory, parameters[0], new Expression<int>(parameters[1], WorldModel), new Expression<int>(parameters[2], WorldModel), loopScript);
+            if (parameters.Count() == 3)
+            {
+                return new ForScript(WorldModel, ScriptFactory, parameters[0], new Expression<int>(parameters[1], WorldModel), new Expression<int>(parameters[2], WorldModel), loopScript);
+            }
+            else if (parameters.Count() == 4)
+            {
+                return new ForScript(WorldModel, ScriptFactory, parameters[0], new Expression<int>(parameters[1], WorldModel), new Expression<int>(parameters[2], WorldModel), new Expression<int>(parameters[3], WorldModel), loopScript);
+            }
+            else
+            {
+                throw new Exception(string.Format("'for' script should have 3 or 4 parameters: 'for ({0})'", param));
+            }
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -42,6 +49,7 @@ namespace AxeSoftware.Quest.Scripts
     {
         private IFunction<int> m_from;
         private IFunction<int> m_to;
+        private IFunction<int> m_step;
         private IScript m_loopScript;
         private string m_variable;
         private WorldModel m_worldModel;
@@ -57,9 +65,15 @@ namespace AxeSoftware.Quest.Scripts
             m_loopScript = loopScript;
         }
 
+        public ForScript(WorldModel worldModel, IScriptFactory scriptFactory, string variable, IFunction<int> from, IFunction<int> to, IFunction<int> step, IScript loopScript)
+            : this(worldModel, scriptFactory, variable, from, to, loopScript)
+        {
+            m_step = step;
+        }
+
         protected override ScriptBase CloneScript()
         {
-            return new ForScript(m_worldModel, m_scriptFactory, m_variable, m_from.Clone(), m_to.Clone(), (IScript)m_loopScript.Clone());
+            return new ForScript(m_worldModel, m_scriptFactory, m_variable, m_from.Clone(), m_to.Clone(), m_step == null ? null : m_step.Clone(), (IScript)m_loopScript.Clone());
         }
 
         protected override void ParentUpdated()
@@ -71,19 +85,38 @@ namespace AxeSoftware.Quest.Scripts
         {
             int from = m_from.Execute(c);
             int to = m_to.Execute(c);
+            int step = m_step == null ? 1 : m_step.Execute(c);
             int count;
             c.Parameters[m_variable] = 0;
 
-            for (count = from; count <= to; count++)
+            for (count = from; count <= to; count += step)
             {
                 c.Parameters[m_variable] = count;
                 m_loopScript.Execute(c);
+
+                object newCount = c.Parameters[m_variable];
+                if (newCount is int)
+                {
+                    count = (int)newCount;
+                }
+                else
+                {
+                    // The type of the count variable has changed, so abort the loop
+                    break;
+                }
             }
         }
 
         public override string Save()
         {
-            return SaveScript("for", m_loopScript, m_variable, m_from.Save(), m_to.Save());
+            if (m_step == null)
+            {
+                return SaveScript("for", m_loopScript, m_variable, m_from.Save(), m_to.Save());
+            }
+            else
+            {
+                return SaveScript("for", m_loopScript, m_variable, m_from.Save(), m_to.Save(), m_step.Save());
+            }
         }
 
         public override string Keyword
@@ -105,6 +138,8 @@ namespace AxeSoftware.Quest.Scripts
                 case 2:
                     return m_to.Save();
                 case 3:
+                    return m_step == null ? null : m_step.Save();
+                case 4:
                     return m_loopScript;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -125,6 +160,9 @@ namespace AxeSoftware.Quest.Scripts
                     m_to = new Expression<int>((string)value, m_worldModel);
                     break;
                 case 3:
+                    m_step = new Expression<int>((string)value, m_worldModel);
+                    break;
+                case 4:
                     // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
                     throw new InvalidOperationException("Attempt to use SetParameter to change the script of a 'for' loop");
                 default:

@@ -3,6 +3,7 @@
     <parent>_ObjectEditor</parent>
     <caption>Object</caption>
     <mustnotinherit>editor_room</mustnotinherit>
+    <advanced/>
 
     <control>
       <caption>Other names</caption>

@@ -9,10 +9,11 @@
 
   <editor>
     <appliesto>for</appliesto>
-    <display>For #0 values #1 to #2, run: #3</display>
+    <display>For #0 values #1 to #2, run: #4</display>
     <category>Scripts</category>
     <add>For...</add>
-    <create>for (,,)</create>
+    <create>for (,,,1)</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -49,8 +50,20 @@
     </control>
 
     <control>
-      <controltype>script</controltype>
+      <controltype>label</controltype>
+      <caption>in steps of</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
       <attribute>3</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>4</attribute>
       <caption>Run script</caption>
       <breakbefore/>
     </control>
@@ -62,6 +75,7 @@
     <category>Scripts</category>
     <add>For each...</add>
     <create>foreach (,)</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -98,6 +112,7 @@
     <category>Scripts</category>
     <add>Switch...</add>
     <create>switch ()</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -133,11 +148,43 @@
   </editor>
 
   <editor>
+    <appliesto>while</appliesto>
+    <display>While #0 is true, run: #1</display>
+    <category>Scripts</category>
+    <add>While...</add>
+    <create>while ()</create>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>While</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>is true,</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>1</attribute>
+      <caption>Run script</caption>
+      <breakbefore/>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>()</appliesto>
     <display>Call function #0 (#1 parameters)</display>
     <category>Scripts</category>
     <add>Call function</add>
     <create></create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -171,6 +218,7 @@
     <category>Scripts</category>
     <add>Run an object's script attribute</add>
     <create>do (,"")</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -214,6 +262,7 @@
     <category>Scripts</category>
     <add>Run a script returned by an expression</add>
     <create>invoke ()</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -243,6 +292,7 @@
     <category>Scripts</category>
     <create>error ("")</create>
     <add>Raise an error</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -262,6 +312,7 @@
     <category>Scripts</category>
     <create>return ()</create>
     <add>Set this function's return value</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -280,6 +331,7 @@
     <category>Scripts</category>
     <create>rundelegate (,"","")</create>
     <add>Run an object's delegate implementation</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>

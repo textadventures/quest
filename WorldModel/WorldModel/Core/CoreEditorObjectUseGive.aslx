@@ -1,0 +1,118 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Use/Give</caption>
+    <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Use (on its own)</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Action</caption>
+      <attribute>use</attribute>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Use (other object) on this</caption>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <selfcaption>Action</selfcaption>
+      <attribute>useon</attribute>
+      <types>
+        null=None;scriptdictionary=Handle objects individually;string=Print a message
+      </types>
+      <keyprompt>Please enter the object name</keyprompt>
+      <source>object</source>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Use any other object on this</caption>
+      <attribute>useanything</attribute>
+      <onlydisplayif>TypeOf(this, "useon") = "scriptdictionary"</onlydisplayif>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Use this on (other object)</caption>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <caption>Action</caption>
+      <attribute>selfuseon</attribute>
+      <types>
+        null=None;scriptdictionary=Handle objects individually;string=Print a message
+      </types>
+      <keyprompt>Please enter the object name</keyprompt>
+      <source>object</source>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Use on any other object</caption>
+      <attribute>selfuseanything</attribute>
+      <onlydisplayif>TypeOf(this, "selfuseon") = "scriptdictionary"</onlydisplayif>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Give (other object) to this</caption>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <caption>Action</caption>
+      <attribute>give</attribute>
+      <types>
+        null=None;scriptdictionary=Handle objects individually;string=Print a message
+      </types>
+      <keyprompt>Please enter the object name</keyprompt>
+      <source>object</source>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Give any other object to this</caption>
+      <attribute>giveanything</attribute>
+      <onlydisplayif>TypeOf(this, "give") = "scriptdictionary"</onlydisplayif>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Give this to (other object)</caption>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <caption>Action</caption>
+      <attribute>giveto</attribute>
+      <types>
+        null=None;scriptdictionary=Handle objects individually;string=Print a message
+      </types>
+      <keyprompt>Please enter the object name</keyprompt>
+      <source>object</source>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Give to any other object</caption>
+      <attribute>givetoanything</attribute>
+      <onlydisplayif>TypeOf(this, "giveto") = "scriptdictionary"</onlydisplayif>
+      <advanced/>
+    </control>
+  </tab>
+</library>

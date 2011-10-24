@@ -269,7 +269,7 @@ namespace AxeSoftware.Quest
 
             public void Save(GameXmlWriter writer, WorldModel worldModel)
             {
-                if (writer.Mode == SaveMode.Package) return;
+                if (!writer.Options.IncludeWalkthrough) return;
                 foreach (Element walkThrough in worldModel.Elements.GetElements(ElementType.Walkthrough).Where(e => e.Parent == null))
                 {
                     SaveElementAndChildren(writer, worldModel, walkThrough);
@@ -333,6 +333,7 @@ namespace AxeSoftware.Quest
                     result += Environment.NewLine;
 
                     writer.WriteStartElement("steps");
+                    writer.WriteAttributeString("type", "list");
                     writer.WriteString(result);
                     writer.WriteEndElement();
                 }

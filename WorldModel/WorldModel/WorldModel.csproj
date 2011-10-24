@@ -118,6 +118,7 @@
     <Compile Include="ObjectFactory.cs" />
     <Compile Include="QuestDictionary.cs" />
     <Compile Include="QuestList.cs" />
+    <Compile Include="RegexCache.cs" />
     <Compile Include="Scripts\CreateScript.cs" />
     <Compile Include="Scripts\DelegateImplementation.cs" />
     <Compile Include="Scripts\DestroyScript.cs" />
@@ -190,8 +191,12 @@
     </None>
     <None Include="Core\CoreEditorObjectContainer.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorObjectExits.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\CoreEditorObjectUseGive.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\CoreEditorObjectInventory.aslx">
@@ -211,6 +216,7 @@
     </None>
     <None Include="Core\CoreEditorObjectSetup.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorObjectVerbs.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -335,9 +341,11 @@
     <Compile Include="Scripts\ScriptConstructorBase.cs" />
     <Compile Include="Scripts\SetFieldScript.cs" />
     <Compile Include="Scripts\SetScript.cs" />
+    <Compile Include="Scripts\ShowMenuScript.cs" />
     <Compile Include="Scripts\SortScript.cs" />
     <Compile Include="Scripts\SwitchScript.cs" />
     <Compile Include="Scripts\UndoScript.cs" />
+    <Compile Include="Scripts\WhileScript.cs" />
     <Compile Include="Templates.cs" />
     <Compile Include="TimerRunner.cs" />
     <Compile Include="Types\EditorCommandPattern.cs" />
@@ -367,9 +375,11 @@
     </None>
     <None Include="Core\CoreDescriptions.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreScopes.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreTypes.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

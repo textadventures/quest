@@ -19,6 +19,7 @@ namespace AxeSoftware.Quest
         DebugData GetDebugData(string obj);
         List<string> DebuggerObjectTypes { get; }
         IWalkthroughs Walkthroughs { get; }
+        bool Assert(string expression);
     }
 
     public class DebugDataItem

@@ -19,6 +19,13 @@ namespace AxeSoftware.Quest.Scripts
         {
             string afterExpr;
             string expr = Utility.GetParameter(script, out afterExpr);
+
+            if (afterExpr.StartsWith(")"))
+            {
+                // We have a mismatch of brackets in the expression
+                throw new Exception("Too many ')'");
+            }
+
             string then = Utility.GetScript(afterExpr);
 
             IScript thenScript = ScriptFactory.CreateScript(then, proc);
@@ -41,6 +48,7 @@ namespace AxeSoftware.Quest.Scripts
         public void AddElseIf(IScript script, string elseIfScript, Element proc)
         {
             IScript add = GetElse(elseIfScript, proc);
+            if (add.Line == "") return;
 
             // GetElse uses the ScriptFactory to parse the "else if" block, so it will return
             // a MultiScript containing an IfScript with one expression and one "then" script block.

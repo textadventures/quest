@@ -27,12 +27,14 @@
         <caption>Start script</caption>
         <attribute>start</attribute>
         <expand/>
+        <advanced/>
       </control>
 
     </tab>
 
     <tab>
       <caption>Options</caption>
+      <advanced/>
 
       <control>
         <controltype>checkbox</controltype>
@@ -110,6 +112,57 @@
 
       <control>
         <controltype>title</controltype>
+        <caption>Hyperlink Menus</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Underline hyperlinks</caption>
+        <attribute>underlinehyperlinks</attribute>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Font</caption>
+        <attribute>menufont</attribute>
+        <fontslist/>
+        <freetext/>
+      </control>
+      <control>
+        <controltype>number</controltype>
+        <caption>Font size</caption>
+        <attribute>menufontsize</attribute>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Background</caption>
+        <attribute>menubackground</attribute>
+        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Foreground</caption>
+        <attribute>menuforeground</attribute>
+        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Hover background</caption>
+        <attribute>menuhoverbackground</attribute>
+        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Hover foreground</caption>
+        <attribute>menuhoverforeground</attribute>
+        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
         <caption>Layout</caption>
       </control>
 
@@ -117,6 +170,7 @@
         <controltype>checkbox</controltype>
         <caption>Use static picture frame above scrolling text</caption>
         <attribute>useframe</attribute>
+        <advanced/>
       </control>
       
       <control>
@@ -135,6 +189,7 @@
 
     <tab>
       <caption>Attributes</caption>
+      <advanced/>
 
       <control>
         <controltype>stringdictionary</controltype>

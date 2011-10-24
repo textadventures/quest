@@ -57,7 +57,7 @@
 
   <command name="take" template="take">
     <multiple>
-      return (ScopeVisibleNotHeld() - player)
+      return (ListExclude(ScopeVisibleNotHeldNotScenery(), player))
     </multiple>
     <script>
       foreach (obj, object) {
@@ -265,8 +265,8 @@
     }
   </command>
 
-  <function name="TryOpenClose" parameters="open, object">
-    if (open) {
+  <function name="TryOpenClose" parameters="doopen, object">
+    if (doopen) {
       action = "open"
       scriptaction = "openscript"
     }
@@ -282,7 +282,7 @@
       found = false
       
       if (GetBoolean(object, action)) {
-        if (open) {
+        if (doopen) {
           if (object.isopen) {
             msg (DynamicTemplate("AlreadyOpen", object))
           }
@@ -310,7 +310,7 @@
         }
       }
       else {
-        if (open) {
+        if (doopen) {
           msg (DynamicTemplate("CantOpen", object))
         }
         else {
@@ -321,13 +321,23 @@
   </function>
 
   <function name="OpenObject" parameters="object">
-    msg (DynamicTemplate("OpenSuccessful", object))
+    if (HasString(object, "openmsg")) {
+      msg (object.openmsg)
+    }
+    else {
+      msg (DynamicTemplate("OpenSuccessful", object))
+    }
     object.isopen = true
     ListObjectContents (object)
   </function>
 
   <function name="CloseObject" parameters="object">
-    msg (DynamicTemplate("CloseSuccessful", object))
+    if (HasString(object, "closemsg")) {
+      msg (object.closemsg)
+    }
+    else {
+      msg (DynamicTemplate("CloseSuccessful", object))
+    }
     object.isopen = false
   </function>
 
@@ -398,10 +408,41 @@
       msg (object2.give)
       handled = true
     }
-    else if (typeof(object2, "give") = "scriptdictionary") {
+    else if (TypeOf(object2, "give") = "scriptdictionary") {
       if (DictionaryContains(object2.give, object1.name)) {
         invoke (ScriptDictionaryItem(object2.give, object1.name))
         handled = true
+      }
+      if (not handled) {
+        if (HasScript(object2, "giveanything")) {
+          // TO DO: Would be better to use a delegate for giveanything, but need to implement Editor support first
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "object", object1)
+          do (object2, "giveanything", parameters)
+          handled = true
+        }
+      }
+    }
+    
+    if (not handled) {
+      if (HasString(object1, "giveto")) {
+        msg (object1.giveto)
+        handled = true
+      }
+      else if (TypeOf(object1, "giveto") = "scriptdictionary") {
+        if (DictionaryContains(object1.giveto, object2.name)) {
+          invoke (ScriptDictionaryItem(object1.giveto, object2.name))
+          handled = true
+        }
+        else {
+          if (HasScript(object1, "givetoanything")) {
+            // TO DO: Would be better to use a delegate for givetoanything, but need to implement Editor support first
+            parameters = NewObjectDictionary()
+            dictionary add (parameters, "object", object2)
+            do (object1, "givetoanything", parameters)
+            handled = true
+          }
+        }
       }
     }
     
@@ -416,10 +457,41 @@
       msg (object2.useon)
       handled = true
     }
-    else if (typeof(object2, "useon") = "scriptdictionary") {
+    else if (TypeOf(object2, "useon") = "scriptdictionary") {
       if (DictionaryContains(object2.useon, object1.name)) {
         invoke (ScriptDictionaryItem(object2.useon, object1.name))
         handled = true
+      }
+      else {
+        if (HasScript(object2, "useanything")) {
+          // TO DO: Would be better to use a delegate for useanything, but need to implement Editor support first
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "object", object1)
+          do (object2, "useanything", parameters)
+          handled = true
+        }
+      }
+    }
+    
+    if (not handled) {
+      if (HasString(object1, "selfuseon")) {
+        msg (object1.selfuseon)
+        handled = true
+      }
+      else if (TypeOf(object1, "selfuseon") = "scriptdictionary") {
+        if (DictionaryContains(object1.selfuseon, object2.name)) {
+          invoke (ScriptDictionaryItem(object1.selfuseon, object2.name))
+          handled = true
+        }
+        else {
+          if (HasScript(object1, "selfuseanything")) {
+            // TO DO: Would be better to use a delegate for selfuseanything, but need to implement Editor support first
+            parameters = NewObjectDictionary()
+            dictionary add (parameters, "object", object2)
+            do (object1, "selfuseanything", parameters)
+            handled = true
+          }
+        }
       }
     }
     
@@ -445,7 +517,7 @@
     
     text = LCase(text)
     
-    if (typeof(object, property) = "scriptdictionary") {
+    if (TypeOf(object, property) = "scriptdictionary") {
       dictionary = GetAttribute(object, property)
       foreach (keywords, dictionary) {
         if (GetKeywordsMatchStrength(LCase(keywords), text) > maxstrength) {
@@ -533,7 +605,7 @@
   <verb template="smell" property="smell" response="DefaultSmell"/>
   <verb template="taste" property="taste" response="DefaultTaste"/>
   <verb template="throw" property="throw" response="DefaultThrow"/>
-  <verb template="tie" property="tie" response="DefaultThrow"/>
+  <verb template="tie" property="tie" response="DefaultTie"/>
   <verb template="touch" property="touch" response="DefaultTouch"/>
   <verb template="turnon" property="turnon" response="DefaultTurnOn"/>
   <verb template="turnoff" property="turnoff" response="DefaultTurnOff"/>

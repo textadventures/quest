@@ -8,12 +8,12 @@
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/jquery.jplayer.min.js"></script>
     <script type="text/javascript" src="js/jjmenu.js"></script>
+    <link rel="Stylesheet" type="text/css" href="playercore.css" />
     <link id="styleLink" runat="server" rel="Stylesheet" type="text/css" href="fixed.css" />
     <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/redmond/jquery-ui.css" />
     <link rel="Stylesheet" type="text/css" href="js/jjmenu.css" />
     <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
-    <title>Player</title>
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
     <form id="playerform" runat="server" defaultbutton="cmdSubmit">
@@ -21,6 +21,9 @@
     </asp:ScriptManager>
     <div id="gameBorder">
         <div id="status">
+            <div id="loginData">
+                <asp:Label ID="loggedIn" runat="server"></asp:Label>
+            </div>
             <div id="updating">
                 <asp:UpdateProgress ID="ctlUpdateProgress" runat="server">
                     <ProgressTemplate>
@@ -34,23 +37,30 @@
         <div id="gamePanes">
             <div id="gamePanesRunning">
                 <h2 id="inventoryLabel">Inventory</h2>
-                <input id="cmdInventory1" type="button" value="Look at" onclick="paneButtonClick('#lstInventory','look at');" />
-                <input id="cmdInventory2" type="button" value="Use" onclick="paneButtonClick('#lstInventory','use');" />
-                <input id="cmdInventory3" type="button" value="Drop" onclick="paneButtonClick('#lstInventory','drop');" />
+                <input id="cmdInventory1" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
+                <input id="cmdInventory2" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
+                <input id="cmdInventory3" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
+                <input id="cmdInventory4" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
+                <input id="cmdInventory5" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
+                <input id="cmdInventory6" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
+                <input id="cmdInventory7" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
+                <input id="cmdInventory8" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
+                <input id="cmdInventory9" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
                 <select id="lstInventory" size="8" class="elementList">
                 </select>
                 <div id="statusVars">
                 </div>
                 <h2 id="placesObjectsLabel">Places &amp; Objects</h2>
-                <div id="objectVerbs">
-                    <input id="cmdPlacesObjects1" type="button" value="Look at" onclick="paneButtonClick('#lstPlacesObjects','look at');" />
-                    <input id="cmdPlacesObjects2" type="button" value="Take" onclick="paneButtonClick('#lstPlacesObjects','take');" />
-                    <input id="cmdPlacesObjects3" type="button" value="Speak to" onclick="paneButtonClick('#lstPlacesObjects','speak to');" />
-                </div>
-                <div id="placeVerbs">
-                    <input id="cmdPlacesObjectsGoTo" type="button" value="Go to" onclick="paneButtonClick('#lstPlacesObjects','go to');" />
-                </div>
-                <select id="lstPlacesObjects" size="8" class="elementList" onclick="updateVerbs();">
+                <input id="cmdPlacesObjects1" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects2" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects3" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects4" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects5" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects6" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects7" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects8" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <input id="cmdPlacesObjects9" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <select id="lstPlacesObjects" size="8" class="elementList">
                 </select>
                 <h2 id="compassLabel">Compass</h2>
                 <table>

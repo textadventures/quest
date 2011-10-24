@@ -193,17 +193,38 @@ namespace AxeSoftware.Quest.Functions
 
         public object ListItem(IQuestList list, int index)
         {
-            return list[index];
+            try
+            {
+                return list[index];
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                throw new Exception(string.Format("ListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, list.Count, list.Count - 1), ex);
+            }
         }
 
         public string StringListItem(IQuestList list, int index)
         {
-            return list[index] as string;
+            try
+            {
+                return list[index] as string;
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                throw new Exception(string.Format("StringListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, list.Count, list.Count - 1), ex);
+            }
         }
 
         public Element ObjectListItem(IQuestList list, int index)
         {
-            return list[index] as Element;
+            try
+            {
+                return list[index] as Element;
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                throw new Exception(string.Format("ObjectListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, list.Count, list.Count - 1), ex);
+            }
         }
 
         public Element GetObject(string name)
@@ -268,14 +289,29 @@ namespace AxeSoftware.Quest.Functions
             return Utility.IsRegexMatch(regexPattern, input);
         }
 
+        public bool IsRegexMatch(string regexPattern, string input, string cacheID)
+        {
+            return Utility.IsRegexMatch(regexPattern, input, m_worldModel.RegexCache, cacheID);
+        }
+
         public int GetMatchStrength(string regexPattern, string input)
         {
             return Utility.GetMatchStrength(regexPattern, input);
         }
 
+        public int GetMatchStrength(string regexPattern, string input, string cacheID)
+        {
+            return Utility.GetMatchStrength(regexPattern, input, m_worldModel.RegexCache, cacheID);
+        }
+
         public QuestDictionary<string> Populate(string regexPattern, string input)
         {
             return Utility.Populate(regexPattern, input);
+        }
+
+        public QuestDictionary<string> Populate(string regexPattern, string input, string cacheID)
+        {
+            return Utility.Populate(regexPattern, input, m_worldModel.RegexCache, cacheID);
         }
 
         public object DictionaryItem(IDictionary dictionary, string key)
@@ -300,12 +336,12 @@ namespace AxeSoftware.Quest.Functions
 
         public string ShowMenu(string caption, QuestDictionary<string> options, bool allowCancel)
         {
-            return m_worldModel.DisplayMenu(caption, options, allowCancel);
+            return m_worldModel.DisplayMenu(caption, options, allowCancel, false);
         }
 
         public string ShowMenu(string caption, QuestList<string> options, bool allowCancel)
         {
-            return m_worldModel.DisplayMenu(caption, options, allowCancel);
+            return m_worldModel.DisplayMenu(caption, options, allowCancel, false);
         }
 
         public bool DictionaryContains(IDictionary dictionary, string key)
@@ -396,6 +432,39 @@ namespace AxeSoftware.Quest.Functions
         {
             Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
             return element.Fields.InheritsTypeRecursive(type);
+        }
+
+        public QuestList<string> ListCombine(QuestList<string> list1, QuestList<string> list2)
+        {
+            return ListCombine<string>(list1, list2);
+        }
+
+        public QuestList<Element> ListCombine(QuestList<Element> list1, QuestList<Element> list2)
+        {
+            return ListCombine<Element>(list1, list2);
+        }
+
+        private QuestList<T> ListCombine<T>(QuestList<T> list1, QuestList<T> list2)
+        {
+            if (list1 == null) return new QuestList<T>(list2);
+            return list1.MergeLists(list2);
+        }
+
+        public QuestList<string> ListExclude(QuestList<string> list, string element)
+        {
+            return ListExclude<string>(list, element);
+        }
+
+        public QuestList<Element> ListExclude(QuestList<Element> list, Element element)
+        {
+            return ListExclude<Element>(list, element);
+        }
+
+        private QuestList<T> ListExclude<T>(QuestList<T> list, T element)
+        {
+            QuestList<T> result = new QuestList<T>(list);
+            result.Remove(element);
+            return result;
         }
     }
 }

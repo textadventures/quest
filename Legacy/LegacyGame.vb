@@ -139,6 +139,7 @@ Public Class LegacyGame
         Dim TimerActive As Boolean
         Dim TimerAction As String
         Dim TimerTicks As Integer
+        Dim BypassThisTurn As Boolean
     End Structure
 
     Friend Structure UserDefinedCommandType
@@ -1273,11 +1274,8 @@ Public Class LegacyGame
 
     Private Function ConvertCASKeyword(ByRef CASchar As String) As String
 
-        Dim c As Integer
-        Dim CK As String
-
-        c = Asc(CASchar)
-        CK = CASkeywords(c)
+        Dim c As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(CASchar)(0)
+        Dim CK As String = CASkeywords(c)
 
         If CK = "!cr" Then
             CK = vbCrLf
@@ -1467,7 +1465,7 @@ Public Class LegacyGame
     Private Function GetResourceLines(res As Byte()) As String()
         Dim enc As New System.Text.UTF8Encoding()
         Dim resFile As String = enc.GetString(res)
-        Return Split(resFile, Environment.NewLine)
+        Return Split(resFile, Chr(13) + Chr(10))
     End Function
 
     Private Function ParseFile(ByRef Filename As String) As Boolean
@@ -1507,6 +1505,7 @@ Public Class LegacyGame
         If LCase(Right(Filename, 4)) = ".zip" Then
             m_originalFilename = Filename
             Filename = GetUnzippedFile(Filename)
+            GamePath = System.IO.Path.GetDirectoryName(Filename)
         End If
 
         If LCase(Right(Filename, 4)) = ".asl" Or LCase(Right(Filename, 4)) = ".txt" Then
@@ -2113,7 +2112,8 @@ ErrorHandler:
 
         OS = ""
         For Z = 1 To Len(sString)
-            OS = OS & Chr(Asc(Mid(sString, Z, 1)) Xor 255)
+            Dim v As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(Mid(sString, Z, 1))(0)
+            OS = OS & Chr(v Xor 255)
         Next Z
 
         DecryptString = OS
@@ -7241,6 +7241,7 @@ errhandle:
             If LCase(TimerName) = LCase(Timers(i).TimerName) Then
                 FoundTimer = True
                 Timers(i).TimerActive = TimerState
+                Timers(i).BypassThisTurn = True     ' don't trigger timer during the turn it was first enabled
                 i = NumberTimers
             End If
         Next i
@@ -13322,22 +13323,15 @@ ErrorHandler:
     End Function
 
     Private Sub Cleanup()
+#If Not Debug Then
         DeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest"))
+#End If
     End Sub
 
     Private Sub DeleteDirectory(dir As String)
-        If Not System.IO.Directory.Exists(dir) Then Exit Sub
-        Dim files As String() = System.IO.Directory.GetFiles(dir)
-        Dim dirs As String() = System.IO.Directory.GetDirectories(dir)
 
         Try
-            For Each file As String In files
-                System.IO.File.Delete(file)
-            Next
-            For Each subdir As String In dirs
-                DeleteDirectory(subdir)
-            Next
-            System.IO.Directory.Delete(dir)
+            System.IO.Directory.Delete(dir, True)
         Catch
         End Try
     End Sub
@@ -13383,11 +13377,16 @@ ErrorHandler:
 
         For i = 1 To NumberTimers
             If Timers(i).TimerActive Then
-                Timers(i).TimerTicks = Timers(i).TimerTicks + elapsedTime
+                If Timers(i).BypassThisTurn Then
+                    ' don't trigger timer during the turn it was first enabled
+                    Timers(i).BypassThisTurn = False
+                Else
+                    Timers(i).TimerTicks = Timers(i).TimerTicks + elapsedTime
 
-                If Timers(i).TimerTicks >= Timers(i).TimerInterval Then
-                    Timers(i).TimerTicks = 0
-                    TimerScripts.Add(Timers(i).TimerAction)
+                    If Timers(i).TimerTicks >= Timers(i).TimerInterval Then
+                        Timers(i).TimerTicks = 0
+                        TimerScripts.Add(Timers(i).TimerAction)
+                    End If
                 End If
             End If
         Next i

@@ -66,6 +66,7 @@
       <attribute>hidechildren</attribute>
       <onlydisplayif>not GetBoolean(this, "transparent")</onlydisplayif>
       <mustinherit>container_base</mustinherit>
+      <advanced/>
     </control>
 
     <control>
@@ -73,6 +74,7 @@
       <caption>List children when object is looked at or opened</caption>
       <attribute>listchildren</attribute>
       <mustinherit>container_base</mustinherit>
+      <advanced/>
     </control>
 
     <control>
@@ -98,6 +100,22 @@
       <attribute>containerfullmessage</attribute>
       <mustinherit>container_limited</mustinherit>
       <nullable/>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>openmsg</attribute>
+      <caption>Message to print when opening (leave blank for default)</caption>
+      <nullable/>
+      <mustinherit>container_base</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>closemsg</attribute>
+      <caption>Message to print when closing (leave blank for default)</caption>
+      <nullable/>
+      <mustinherit>container_base</mustinherit>
     </control>
 
     <control>

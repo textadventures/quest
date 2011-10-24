@@ -172,6 +172,8 @@ namespace AxeSoftware.Quest.EditorControls
         private void RemoveElseIfEditor(IfEditorChild child)
         {
             child.Populate(null, null);
+            child.ElseIfData = null;
+            child.Uninitialise();
             child.Visibility = Visibility.Collapsed;
             grid.Children.Remove(child);
             child.Dirty -= RaiseDirtyEvent;

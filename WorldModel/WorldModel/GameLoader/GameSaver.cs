@@ -58,10 +58,15 @@ namespace AxeSoftware.Quest
             return m_elementSavers[t];
         }
 
-        public string Save(SaveMode mode)
+        public string Save(SaveMode mode, bool? includeWalkthrough = null)
         {
             m_mode = mode;
-            GameXmlWriter writer = new GameXmlWriter(mode);
+            GameXmlWriter.GameXmlWriterOptions options = null;
+            if (includeWalkthrough.HasValue)
+            {
+                options = new GameXmlWriter.GameXmlWriterOptions { IncludeWalkthrough = includeWalkthrough.Value };
+            }
+            GameXmlWriter writer = new GameXmlWriter(mode, options);
 
             UpdateImpliedTypesCache();
 
@@ -262,7 +267,7 @@ namespace AxeSoftware.Quest
                 }
 
                 IEnumerable<string> fieldNames = e.Fields.FieldNames;
-                if (!m_gameSaver.m_worldModel.EditMode)
+                if (writer.Mode != SaveMode.Editor)
                 {
                     fieldNames = fieldNames.Union(e.Fields.FieldExtensionNames);
                 }

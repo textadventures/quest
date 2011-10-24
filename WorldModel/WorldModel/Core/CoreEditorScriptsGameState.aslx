@@ -18,6 +18,7 @@
     <category>Game State</category>
     <add>Undo</add>
     <create>undo</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -31,6 +32,7 @@
     <category>Game State</category>
     <add>Start transaction</add>
     <create>start transaction ("")</create>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>

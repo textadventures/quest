@@ -38,6 +38,10 @@ div#updating
 {
     float: right;
 }
+div#loginData
+{
+    float: right;
+}
 .hiddenbutton
 {
     display: none;
