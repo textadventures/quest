@@ -8,7 +8,7 @@
   <template name="UnresolvedLocation">Du kannst nicht dahin gehen.</template>
   <template name="DefaultObjectDescription">Du siehst nichts Bemerkenswertes.</template>
   <template name="DefaultSelfDescription">Du siehst aber gut aus.</template>
-  <dynamictemplate name="TakeSuccessful">"Du nimmst " + object.gender + " an dich."</dynamictemplate>
+  <dynamictemplate name="TakeSuccessful">"Du nimmst " + GetPrefix (object,"ihn")+ " an dich."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Das kannst du nicht nehmen."</dynamictemplate>
   <template name="SeeListHeader">Du siehst</template>
   <template name="GoListHeader">Mögliche Ausgänge:</template>
@@ -17,7 +17,7 @@
   <template name="NothingToUndo">Kein Undo möglich!</template>
   <template name="NotCarryingAnything">Du trägst überhaupt nichts.</template>
   <template name="CarryingListHeader">Du trägst</template>
-  <dynamictemplate name="DropSuccessful">"Du legst es ab."</dynamictemplate>
+  <dynamictemplate name="DropSuccessful">"Du legst " + GetPrefix (object,"ihn")+ " ab."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"Du kannst das nicht ablegen."</dynamictemplate>
   <dynamictemplate name="AlreadyTaken">"Das trägst du bereits."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"Das trägst du nicht bei dir."</dynamictemplate>
@@ -68,20 +68,20 @@
   <template name="Done">Erledigt.</template>
   <template name="ContainerContentsPrefix">enthält</template>
   <template name="SurfaceContentsPrefix">darauf siehst du</template>
-  <dynamictemplate name="ObjectContains">CapFirst(object.gender) + " enthält"</dynamictemplate>
+  <dynamictemplate name="ObjectContains">containerOrSurface(object)</dynamictemplate>
   <dynamictemplate name="ContainerFull">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " voll."</dynamictemplate>
   <dynamictemplate name="DisambiguateMenu">"Bitte wähle, was du mit '" + text + "' meinst:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   <template name="LockedExit">Dieser Ausgang ist versperrt.</template>
   <dynamictemplate name="DefaultAsk">"Du erhälst keine Antwort."</dynamictemplate>
   <dynamictemplate name="DefaultTell">"Du erhälst keine Antwort."</dynamictemplate>
-  <template name="NoKey">Du hast den passenden Schlüssel nicht.</template>
+  <template name="NoKey">Dir fehlt der passende Schlüssel.</template>
   <template name="UnlockMessage">Entsperrt.</template>
   <template name="LockMessage">Verschlossen.</template>
   <dynamictemplate name="LockedObject">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " verschlossen."</dynamictemplate>
   <dynamictemplate name="AlreadyLocked">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits verschlossen."</dynamictemplate>
   <dynamictemplate name="AlreadyUnlocked">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits entsperrt."</dynamictemplate>
-  <dynamictemplate name="CannotLockOpen">"Du kannst " + object.article + " nicht verschließen wenn " + object.gender + " noch geöffnet ist."</dynamictemplate>
+  <dynamictemplate name="CannotLockOpen">"Du kannst " + object.article + " nicht verschließen wenn " + GetPrefix (object,"er") + " noch geöffnet " + GetPrefix (object,"sein") + "."</dynamictemplate>
   <dynamictemplate name="AlreadySwitchedOn">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits angeschaltet."</dynamictemplate>"
   <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits ausgeschaltet."</dynamictemplate>"
   <dynamictemplate name="SwitchedOn">"Du schaltest " + object.article + " an."</dynamictemplate>
@@ -89,7 +89,7 @@
   <template name="DefaultOops">Da gibt es nichts zu korrigieren.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " enthält " + " " + GetPrefix (object2,"kein")  + " " + GetDisplayAlias(object2) + "."</dynamictemplate>
 
-  <dynamictemplate name="YouLooking">"Du schaust " + text +"."</dynamictemplate>
+  <dynamictemplate name="YouLooking">"Du schaust nach " + text +"."</dynamictemplate>
 
   <template name="CompassNW">Nordwesten</template>
   <template name="CompassN">Norden</template>
@@ -165,7 +165,7 @@
   <dynamictemplate name="DefaultDrink">"Du kannst " + object.article + " nicht drinken."</dynamictemplate>
   <verbtemplate name="eat">iss</verbtemplate>
   <verbtemplate name="eat">esse</verbtemplate>
-  <template templatetype="command" name="give"><![CDATA[^gib (?<object1>.*) an (?<object2>.*)$]]></template>
+  <template templatetype="command" name="give"><![CDATA[^(gib|gebe) (?<object1>.*) an (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " möchte " + object2.article + " nicht."</dynamictemplate>
   <dynamictemplate name="DefaultEat">"Du kannst " + object.article + " nicht essen."</dynamictemplate>
   <verbtemplate name="hit">schlage</verbtemplate>
@@ -188,11 +188,17 @@
   <verbtemplate name="listento">hoere</verbtemplate>
   <verbtemplate name="listento">höre</verbtemplate>
   <dynamictemplate name="DefaultListenTo">"Du horchst, doch " + object.article + " gibt keinen Ton von sich."</dynamictemplate>
-  <verbtemplate name="lock">schließe ab</verbtemplate>
-  <verbtemplate name="lock">schliesse ab</verbtemplate>
-  <verbtemplate name="lock">sperre ab</verbtemplate>
-  <verbtemplate name="lock">sperre zu</verbtemplate>
-  <verbtemplate name="lock">versperre</verbtemplate>
+  <verbtemplate name="lock">schließe ab #object#</verbtemplate>
+  <verbtemplate name="lock">schliesse ab #object#</verbtemplate>
+  <verbtemplate name="lock">sperre ab #object#</verbtemplate>
+  <verbtemplate name="lock">sperre zu #object#</verbtemplate>
+  <verbtemplate name="lock">versperre #object#</verbtemplate>
+  <verbtemplate name="lock">verschließe #object#</verbtemplate>
+  <verbtemplate name="lock">verschliesse #object#</verbtemplate>
+  <verbtemplate name="lock">schließe #object# ab</verbtemplate>
+  <verbtemplate name="lock">schliesse #object# ab</verbtemplate>
+  <verbtemplate name="lock">sperre #object# ab</verbtemplate>
+  <verbtemplate name="lock">sperre #object# zu</verbtemplate>
   <dynamictemplate name="DefaultLock">"Du kannst " + object.article + " nicht verschließen."</dynamictemplate>
   <verbtemplate name="move">bewege</verbtemplate>
   <dynamictemplate name="DefaultMove">"Du kannst " + object.article + " nicht bewegen."</dynamictemplate>
@@ -244,6 +250,10 @@
   <verbtemplate name="unlock">schließ auf #object#</verbtemplate>
   <verbtemplate name="unlock">schließe #object# auf</verbtemplate>
   <verbtemplate name="unlock">schließ #object# auf</verbtemplate>
+  <verbtemplate name="unlock">schliesse auf #object#</verbtemplate>
+  <verbtemplate name="unlock">schliess auf #object#</verbtemplate>
+  <verbtemplate name="unlock">schliesse #object# auf</verbtemplate>
+  <verbtemplate name="unlock">schliess #object# auf</verbtemplate>
   <dynamictemplate name="DefaultUnlock">"Du kannst " + object.article + " nicht aufschließen."</dynamictemplate>
   <verbtemplate name="untie">löse</verbtemplate>
   <dynamictemplate name="DefaultUntie">"Du kannst " + object.article + " nicht lösen."</dynamictemplate>
@@ -323,28 +333,45 @@
 				"ein"	für ein, eine, einer
 				"kein"	für kein, keine, keiner
 				"sein"	für bin, bist, ist
+				"er"	für er, sie, es
+				"ihn"   für ihn, sie, es
 	-->			
 		if ( DoesInherit (obj, "male") or DoesInherit (obj, "maleobject") ) {
 			if (type="der") { return ("der") }
 			else if (type="ein") { return ("einen") }
 			else if (type="kein") { return ("keinen") }
 			else if (type="sein") { return ("ist") }
+			else if (type="er") { return ("er") }
+			else if (type="ihn") { return ("ihn") }
 		} else if ( DoesInherit (obj, "female") or DoesInherit (obj, "femaleobject") ) {
 			if (type="der") { return ("die") }
 			else if (type="ein") { return ("eine") }
 			else if (type="kein") { return ("keine") }
 			else if (type="sein") { return ("ist") }
+			else if (type="er") { return ("sie") }
+			else if (type="ihn") { return ("sie") }
 		} else if ( DoesInherit (obj, "maleobjectplural") or DoesInherit (obj, "maleplural") or DoesInherit (obj, "femaleobjectplural") or DoesInherit (obj, "femaleplural") or DoesInherit (obj, "plural")) {
 			if (type="der") { return ("die") }
 			else if (type="ein") { return ("") }
 			else if (type="kein") { return ("keine") }
 			else if (type="sein") { return ("sind") }
+			else if (type="er") { return ("sie") }
+			else if (type="ihn") { return ("sie") }
 		} else { 
 			if (type="der") { return ("das") }
 			else if (type="ein") { return ("ein") }
 			else if (type="kein") { return ("kein") }
 			else if (type="sein") { return ("ist") }
+			else if (type="er") { return ("es") }
+			else if (type="ihn") { return ("es") }
 		}
-	
 	</function>	
+	
+	<function name="containerOrSurface" type="string" parameters="obj">
+	if ( DoesInherit (obj, "surface")  ){
+		return("Darauf befindet sich")
+	} else {
+		return(CapFirst(GetPrefix (obj,"er")) + " enthält")
+	}
+	</function>		
 </library>
