@@ -21,9 +21,6 @@
     </asp:ScriptManager>
     <div id="gameBorder">
         <div id="status">
-            <div id="loginData">
-                <asp:Label ID="loggedIn" runat="server"></asp:Label>
-            </div>
             <div id="updating">
                 <asp:UpdateProgress ID="ctlUpdateProgress" runat="server">
                     <ProgressTemplate>
@@ -36,6 +33,7 @@
         </div>
         <div id="gamePanes">
             <div id="gamePanesRunning">
+                <input id="cmdSave" runat="server" type="button" value="Save" onclick="sendCommand('save');" />
                 <h2 id="inventoryLabel">Inventory</h2>
                 <input id="cmdInventory1" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
                 <input id="cmdInventory2" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
