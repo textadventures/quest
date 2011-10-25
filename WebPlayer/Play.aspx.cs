@@ -13,25 +13,12 @@ namespace WebPlayer
         private PlayerHandler m_player;
         private OutputBuffer m_buffer;
         private string m_gameId;
-        private Dictionary<string, PlayerHandler> m_gamesInSession;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
-                ISessionManager sessionManager = SessionManagerLoader.GetSessionManager();
-                if (sessionManager != null)
-                {
-                    IUser user = sessionManager.GetUser();
-                    if (user != null)
-                    {
-                        loggedIn.Text = "Logged in as " + user.Username;
-                    }
-                    else
-                    {
-                        loggedIn.Text = "Not logged in";
-                    }
-                }
+                cmdSave.Visible = IsLoggedIn && !string.IsNullOrEmpty(Request["id"]);
             }
 
             string style = Request["style"];
@@ -47,18 +34,14 @@ namespace WebPlayer
             // are stored in the ViewState. This allows the same user in the same browser
             // to open multiple games in different browser tabs.
 
-            m_gamesInSession = (Dictionary<string, PlayerHandler>)Session["Games"];
-            if (m_gamesInSession == null)
+            if (Games == null)
             {
-                m_gamesInSession = new Dictionary<string, PlayerHandler>();
-                Session["Games"] = m_gamesInSession;
+                Games = new Dictionary<string, PlayerHandler>();
             }
 
-            Dictionary<string, OutputBuffer> outputBuffersInSession = (Dictionary<string, OutputBuffer>)Session["OutputBuffers"];
-            if (outputBuffersInSession == null)
+            if (OutputBuffers == null)
             {
-                outputBuffersInSession = new Dictionary<string, OutputBuffer>();
-                Session["OutputBuffers"] = outputBuffersInSession;
+                OutputBuffers = new Dictionary<string, OutputBuffer>();
             }
 
             m_gameId = (string)ViewState["GameId"];
@@ -70,22 +53,22 @@ namespace WebPlayer
 
             if (Page.IsPostBack)
             {
-                if (m_gamesInSession.ContainsKey(m_gameId))
+                if (Games.ContainsKey(m_gameId))
                 {
-                    m_player = m_gamesInSession[m_gameId];
+                    m_player = Games[m_gameId];
                 }
 
-                if (!outputBuffersInSession.ContainsKey(m_gameId))
+                if (!OutputBuffers.ContainsKey(m_gameId))
                 {
                     // TO DO: Think this only ever happens while debugging?
                     return;
                 }
-                m_buffer = outputBuffersInSession[m_gameId];
+                m_buffer = OutputBuffers[m_gameId];
             }
             else
             {
                 m_buffer = new OutputBuffer();
-                outputBuffersInSession.Add(m_gameId, m_buffer);
+                OutputBuffers.Add(m_gameId, m_buffer);
             }
         }
 
@@ -101,7 +84,6 @@ namespace WebPlayer
                     if (m_player == null)
                     {
                         tmrInit.Enabled = false;
-                        m_player.UpdateGameName("Error loading game");
                     }
                     else
                     {
@@ -121,10 +103,12 @@ namespace WebPlayer
 
         private string LoadGameForRequest()
         {
+            string folder = null;
             string gameFile = Request["file"];
+            string id = Request["id"];
+            string loadId = Request["load"];
             if (string.IsNullOrEmpty(gameFile))
             {
-                string id = Request["id"];
                 if (!string.IsNullOrEmpty(id))
                 {
                     IFileManager fileManager = FileManagerLoader.GetFileManager();
@@ -133,11 +117,20 @@ namespace WebPlayer
                         gameFile = fileManager.GetFileForID(id);
                     }
                 }
+                else if (!string.IsNullOrEmpty(loadId))
+                {
+                    IFileManager fileManager = FileManagerLoader.GetFileManager();
+                    if (fileManager != null)
+                    {
+                        gameFile = fileManager.GetSaveFileForID(loadId, out id);
+                        folder = ConfigurationManager.AppSettings["GameSaveFolder"];
+                    }
+                }
             }
-            return LoadGame(gameFile);
+            return LoadGame(gameFile, id, folder);
         }
 
-        private string LoadGame(string gameFile)
+        private string LoadGame(string gameFile, string id, string folder)
         {
             if (string.IsNullOrEmpty(gameFile))
             {
@@ -150,17 +143,17 @@ namespace WebPlayer
                 return "Invalid filename";
             }
 
-            string rootPath = ConfigurationManager.AppSettings["GameFolder"];
+            string rootPath = folder ?? ConfigurationManager.AppSettings["GameFolder"];
             string libPath = ConfigurationManager.AppSettings["LibraryFolder"];
             string filename = System.IO.Path.Combine(rootPath, gameFile);
             List<string> errors;
 
             try
             {
-                m_player = new PlayerHandler(filename, m_buffer);
+                m_player = new PlayerHandler(filename, m_buffer, id, SessionManagerLoader.GetSessionManager().GetUser());
                 m_player.GameId = m_gameId;
                 m_player.LibraryFolder = libPath;
-                m_gamesInSession[m_gameId] = m_player;
+                Games[m_gameId] = m_player;
                 m_player.BeginWait += m_player_BeginWait;
                 m_player.BeginPause += m_player_BeginPause;
                 m_player.ShowMenuDelegate = m_player_ShowMenu;
@@ -224,14 +217,12 @@ namespace WebPlayer
 
         string AddResource(string filename)
         {
-            SessionResources resources = Session["Resources"] as SessionResources;
-            if (resources == null)
+            if (Resources == null)
             {
-                resources = new SessionResources();
-                Session["Resources"] = resources;
+                Resources = new SessionResources();
             }
 
-            return resources.Add(filename);
+            return Resources.Add(filename);
         }
 
         void m_player_BeginWait()
@@ -336,6 +327,35 @@ namespace WebPlayer
         {
             string[] args = data.Split(new[] { ';' }, 2);
             m_player.SendEvent(args[0], args[1]);
+        }
+
+        private SessionResources Resources
+        {
+            get { return Session["Resources"] as SessionResources; }
+            set { Session["Resources"] = value; }
+        }
+
+        private Dictionary<string, PlayerHandler> Games
+        {
+            get { return Session["Games"] as Dictionary<string, PlayerHandler>; }
+            set { Session["Games"] = value; }
+        }
+
+        private Dictionary<string, OutputBuffer> OutputBuffers
+        {
+            get { return Session["OutputBuffers"] as Dictionary<string, OutputBuffer>; }
+            set { Session["OutputBuffers"] = value; }
+        }
+
+        private bool IsLoggedIn
+        {
+            get
+            {
+                ISessionManager sessionManager = SessionManagerLoader.GetSessionManager();
+                if (sessionManager == null) return false;
+                IUser user = sessionManager.GetUser();
+                return (user != null);
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace WebPlayer
 {
-    internal static class Logging
+    public static class Logging
     {
         private static readonly log4net.ILog s_log = log4net.LogManager.GetLogger("WebPlayer");
 
