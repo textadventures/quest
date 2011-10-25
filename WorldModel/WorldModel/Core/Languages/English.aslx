@@ -239,6 +239,8 @@
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">Surprisingly, absolutely nothing happens.</template>
   <template templatetype="command" name="help">^help$|^\?$</template>
+  <template templatetype="command" name="save">^save$</template>
+
   <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
 <b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>
 <b>- Inventory:</b>  See which items you are carrying by typing I, INV or INVENTORY.<br/>
