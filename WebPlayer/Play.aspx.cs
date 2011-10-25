@@ -84,7 +84,6 @@ namespace WebPlayer
                     if (m_player == null)
                     {
                         tmrInit.Enabled = false;
-                        m_player.UpdateGameName("Error loading game");
                     }
                     else
                     {
@@ -141,7 +140,7 @@ namespace WebPlayer
 
             try
             {
-                m_player = new PlayerHandler(filename, m_buffer);
+                m_player = new PlayerHandler(filename, m_buffer, this);
                 m_player.GameId = m_gameId;
                 m_player.LibraryFolder = libPath;
                 Games[m_gameId] = m_player;
@@ -338,7 +337,7 @@ namespace WebPlayer
             set { Session["OutputBuffers"] = value; }
         }
 
-        private string GameFileId
+        public string GameFileId
         {
             get { return Session["GameFileId"] as string; }
             set { Session["GameFileId"] = value; }
@@ -355,7 +354,7 @@ namespace WebPlayer
             }
         }
 
-        private bool CanSave
+        public bool CanSave
         {
             get
             {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using AxeSoftware.Quest;
 using System.Xml;
+using System.Configuration;
 
 namespace WebPlayer
 {
@@ -15,6 +16,7 @@ namespace WebPlayer
         private InterfaceListHandler m_listHandler;
         private OutputBuffer m_buffer;
         private bool m_finished = false;
+        private Play m_parent;
 
         public class PlayAudioEventArgs : EventArgs
         {
@@ -29,11 +31,12 @@ namespace WebPlayer
         public event EventHandler<PlayAudioEventArgs> PlayAudio;
         public event Action StopAudio;
 
-        public PlayerHandler(string filename, OutputBuffer buffer)
+        public PlayerHandler(string filename, OutputBuffer buffer, Play parent)
         {
             m_filename = filename;
             m_buffer = buffer;
             m_listHandler = new InterfaceListHandler(buffer);
+            m_parent = parent;
         }
 
         public string GameId { get; set; }
@@ -343,11 +346,28 @@ namespace WebPlayer
 
         public void RequestSave()
         {
-            m_controller.AppendText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
+            if (!m_parent.CanSave)
+            {
+                m_controller.AppendText("Sorry, you are not logged in. You must be logged in to save your progress.");
+                return;
+            }
+
+            string fullPath = m_controller.Game.SaveFilename;
+            if (string.IsNullOrEmpty(fullPath))
+            {
+                string filename = Guid.NewGuid().ToString() + "." + m_controller.Game.SaveExtension;
+                fullPath = System.IO.Path.Combine(ConfigurationManager.AppSettings["GameSaveFolder"], filename);
+
+                // TO DO: Send XML API request
+            }
+            m_controller.Game.Save(fullPath);
+
+            m_controller.AppendText("Saved.");
         }
 
         public void RequestLoad()
         {
+            // TO DO: This will need to link to the textadventures.co.uk "Restore Game" page (or other page as determined by plugin)
             m_controller.AppendText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
         }
 
