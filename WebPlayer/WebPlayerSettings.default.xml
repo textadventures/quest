@@ -25,7 +25,8 @@
   <!-- <add key="FileManagerType" value="WebPlayer.DebugFileManager, WebPlayer"/> -->
   <!-- <add key="GameSaveFolder" value="C:\Path\To\Save Game Folder"/> -->
   <!-- <add key="DebugFileManagerFile" value="C:\Path\To\some game file.aslx"/> -->
-  
+  <!-- <add key="DebugFileManagerSaveFile" value="C:\Path\To\some game file.quest-save"/> -->
+
 </appSettings>
 
 <!--

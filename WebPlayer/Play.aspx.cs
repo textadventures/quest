@@ -103,8 +103,10 @@ namespace WebPlayer
 
         private string LoadGameForRequest()
         {
+            string folder = null;
             string gameFile = Request["file"];
             string id = Request["id"];
+            string loadId = Request["load"];
             if (string.IsNullOrEmpty(gameFile))
             {
                 if (!string.IsNullOrEmpty(id))
@@ -115,11 +117,20 @@ namespace WebPlayer
                         gameFile = fileManager.GetFileForID(id);
                     }
                 }
+                else if (!string.IsNullOrEmpty(loadId))
+                {
+                    IFileManager fileManager = FileManagerLoader.GetFileManager();
+                    if (fileManager != null)
+                    {
+                        gameFile = fileManager.GetSaveFileForID(loadId, out id);
+                        folder = ConfigurationManager.AppSettings["GameSaveFolder"];
+                    }
+                }
             }
-            return LoadGame(gameFile, id);
+            return LoadGame(gameFile, id, folder);
         }
 
-        private string LoadGame(string gameFile, string id)
+        private string LoadGame(string gameFile, string id, string folder)
         {
             if (string.IsNullOrEmpty(gameFile))
             {
@@ -132,7 +143,7 @@ namespace WebPlayer
                 return "Invalid filename";
             }
 
-            string rootPath = ConfigurationManager.AppSettings["GameFolder"];
+            string rootPath = folder ?? ConfigurationManager.AppSettings["GameFolder"];
             string libPath = ConfigurationManager.AppSettings["LibraryFolder"];
             string filename = System.IO.Path.Combine(rootPath, gameFile);
             List<string> errors;

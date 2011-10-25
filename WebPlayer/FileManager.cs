@@ -31,5 +31,6 @@ namespace WebPlayer
     {
         string GetFileForID(string id);
         void NotifySave(IUser user, string gameId, string filename);
+        string GetSaveFileForID(string id, out string gameId);
     }
 }

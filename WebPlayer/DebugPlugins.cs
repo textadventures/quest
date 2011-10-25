@@ -30,5 +30,11 @@ namespace WebPlayer
         public void NotifySave(IUser user, string gameId, string filename)
         {
         }
+
+        public string GetSaveFileForID(string id, out string gameId)
+        {
+            gameId = "1";
+            return ConfigurationManager.AppSettings["DebugFileManagerSaveFile"];
+        }
     }
 }
