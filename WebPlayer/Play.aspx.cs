@@ -18,7 +18,7 @@ namespace WebPlayer
         {
             if (!Page.IsPostBack)
             {
-                cmdSave.Visible = CanSave;
+                cmdSave.Visible = IsLoggedIn && !string.IsNullOrEmpty(Request["id"]);
             }
 
             string style = Request["style"];
@@ -104,10 +104,9 @@ namespace WebPlayer
         private string LoadGameForRequest()
         {
             string gameFile = Request["file"];
+            string id = Request["id"];
             if (string.IsNullOrEmpty(gameFile))
             {
-                string id = Request["id"];
-                GameFileId = id;
                 if (!string.IsNullOrEmpty(id))
                 {
                     IFileManager fileManager = FileManagerLoader.GetFileManager();
@@ -117,10 +116,10 @@ namespace WebPlayer
                     }
                 }
             }
-            return LoadGame(gameFile);
+            return LoadGame(gameFile, id);
         }
 
-        private string LoadGame(string gameFile)
+        private string LoadGame(string gameFile, string id)
         {
             if (string.IsNullOrEmpty(gameFile))
             {
@@ -140,7 +139,7 @@ namespace WebPlayer
 
             try
             {
-                m_player = new PlayerHandler(filename, m_buffer, this);
+                m_player = new PlayerHandler(filename, m_buffer, id, SessionManagerLoader.GetSessionManager().GetUser());
                 m_player.GameId = m_gameId;
                 m_player.LibraryFolder = libPath;
                 Games[m_gameId] = m_player;
@@ -337,12 +336,6 @@ namespace WebPlayer
             set { Session["OutputBuffers"] = value; }
         }
 
-        public string GameFileId
-        {
-            get { return Session["GameFileId"] as string; }
-            set { Session["GameFileId"] = value; }
-        }
-
         private bool IsLoggedIn
         {
             get
@@ -351,14 +344,6 @@ namespace WebPlayer
                 if (sessionManager == null) return false;
                 IUser user = sessionManager.GetUser();
                 return (user != null);
-            }
-        }
-
-        public bool CanSave
-        {
-            get
-            {
-                return IsLoggedIn && (!string.IsNullOrEmpty(GameFileId) || !string.IsNullOrEmpty(Request["id"]));
             }
         }
     }

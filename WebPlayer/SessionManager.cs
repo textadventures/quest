@@ -34,6 +34,5 @@ namespace WebPlayer
 
     public interface IUser
     {
-        string Username { get; }
     }
 }

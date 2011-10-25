@@ -12,11 +12,13 @@ namespace WebPlayer
     {
         private PlayerHelper m_controller;
         private readonly string m_filename;
+        private readonly string m_gameId;
+        private readonly IUser m_user;
+        private string m_saveFilename;
 
         private InterfaceListHandler m_listHandler;
         private OutputBuffer m_buffer;
         private bool m_finished = false;
-        private Play m_parent;
 
         public class PlayAudioEventArgs : EventArgs
         {
@@ -31,12 +33,13 @@ namespace WebPlayer
         public event EventHandler<PlayAudioEventArgs> PlayAudio;
         public event Action StopAudio;
 
-        public PlayerHandler(string filename, OutputBuffer buffer, Play parent)
+        public PlayerHandler(string filename, OutputBuffer buffer, string gameId, IUser user)
         {
             m_filename = filename;
+            m_gameId = gameId;
+            m_user = user;
             m_buffer = buffer;
             m_listHandler = new InterfaceListHandler(buffer);
-            m_parent = parent;
         }
 
         public string GameId { get; set; }
@@ -346,7 +349,7 @@ namespace WebPlayer
 
         public void RequestSave()
         {
-            if (!m_parent.CanSave)
+            if (m_user == null || string.IsNullOrEmpty(m_gameId))
             {
                 m_controller.AppendText("Sorry, you are not logged in. You must be logged in to save your progress.");
                 return;
@@ -355,13 +358,16 @@ namespace WebPlayer
             string fullPath = m_controller.Game.SaveFilename;
             if (string.IsNullOrEmpty(fullPath))
             {
-                string filename = Guid.NewGuid().ToString() + "." + m_controller.Game.SaveExtension;
-                fullPath = System.IO.Path.Combine(ConfigurationManager.AppSettings["GameSaveFolder"], filename);
-
-                // TO DO: Send XML API request
+                m_saveFilename = Guid.NewGuid().ToString() + "." + m_controller.Game.SaveExtension;
+                fullPath = System.IO.Path.Combine(ConfigurationManager.AppSettings["GameSaveFolder"], m_saveFilename);
             }
             m_controller.Game.Save(fullPath);
 
+            FileManagerLoader.GetFileManager().NotifySave(
+                m_user,
+                m_gameId,
+                m_saveFilename);
+            
             m_controller.AppendText("Saved.");
         }
 

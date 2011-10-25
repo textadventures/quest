@@ -18,13 +18,6 @@ namespace WebPlayer
 
     internal class DebugUser : IUser
     {
-        public string Username
-        {
-            get
-            {
-                return "Debug User";
-            }
-        }
     }
 
     internal class DebugFileManager : IFileManager
@@ -32,6 +25,10 @@ namespace WebPlayer
         public string GetFileForID(string id)
         {
             return ConfigurationManager.AppSettings["DebugFileManagerFile"];
+        }
+
+        public void NotifySave(IUser user, string gameId, string filename)
+        {
         }
     }
 }

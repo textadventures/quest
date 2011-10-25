@@ -30,5 +30,6 @@ namespace WebPlayer
     public interface IFileManager
     {
         string GetFileForID(string id);
+        void NotifySave(IUser user, string gameId, string filename);
     }
 }
