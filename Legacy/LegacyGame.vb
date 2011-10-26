@@ -13518,7 +13518,7 @@ ErrorHandler:
 
     Private Function GetOriginalFilenameForQSG() As String
         If m_originalFilename IsNot Nothing Then Return m_originalFilename
-        Return m_filename
+        Return GameFileName
     End Function
 
     Private m_unzipFunction As Func(Of String, String)
