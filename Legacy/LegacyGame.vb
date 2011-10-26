@@ -13179,7 +13179,7 @@ ErrorHandler:
         Else
             UpdateItems(NullThread)
 
-            Print("Loaded game " & GetOriginalFilenameForQSG() & " - " & GameName, NullThread)
+            Print("Restored saved game", NullThread)
             Print("", NullThread)
             PlayGame(CurrentRoom, NullThread)
             Print("", NullThread)

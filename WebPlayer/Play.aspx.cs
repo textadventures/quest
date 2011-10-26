@@ -18,7 +18,7 @@ namespace WebPlayer
         {
             if (!Page.IsPostBack)
             {
-                cmdSave.Visible = IsLoggedIn && !string.IsNullOrEmpty(Request["id"]);
+                cmdSave.Visible = IsLoggedIn && (!string.IsNullOrEmpty(Request["id"]) || !string.IsNullOrEmpty(Request["load"]));
             }
 
             string style = Request["style"];
