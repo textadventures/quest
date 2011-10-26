@@ -237,8 +237,14 @@ namespace AxeSoftware.Quest
                 m_nextUniqueID.Add(prefix, 0);
             }
 
-            m_nextUniqueID[prefix]++;
-            return prefix + m_nextUniqueID[prefix].ToString();
+            string newid;
+            do
+            {
+                m_nextUniqueID[prefix]++;
+                newid = prefix + m_nextUniqueID[prefix].ToString();
+            } while (m_elements.ContainsKey(newid));
+            
+            return newid;
         }
 
         public Element Game
