@@ -289,7 +289,9 @@ namespace WebPlayer
                     case "tick":
                         m_player.Tick(tickCount);
                         break;
-
+                    case "save":
+                        m_player.RequestSave();
+                        break;
                 }
                 fldUIMsg.Value = "";
             }

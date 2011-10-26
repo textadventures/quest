@@ -76,3 +76,7 @@ div#updating
 {
     display: none;
 }
+#cmdSave
+{
+    margin-top: 10px;
+}

@@ -551,3 +551,10 @@ function updateVerbButtons(list, verbsArray, idprefix) {
         target.hide();
     }
 }
+
+function saveGame() {
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("save");
+        $("#cmdSubmit").click();
+    }, 100);
+}

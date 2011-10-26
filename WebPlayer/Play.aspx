@@ -33,7 +33,7 @@
         </div>
         <div id="gamePanes">
             <div id="gamePanesRunning">
-                <input id="cmdSave" runat="server" type="button" value="Save" onclick="sendCommand('save');" />
+                <input id="cmdSave" runat="server" type="button" value="Save" onclick="saveGame();" />
                 <h2 id="inventoryLabel">Inventory</h2>
                 <input id="cmdInventory1" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
                 <input id="cmdInventory2" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
