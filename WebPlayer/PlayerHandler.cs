@@ -355,19 +355,24 @@ namespace WebPlayer
                 return;
             }
 
+            bool notifySave = false;
             string fullPath = m_controller.Game.SaveFilename;
             if (string.IsNullOrEmpty(fullPath))
             {
                 m_saveFilename = Guid.NewGuid().ToString() + "." + m_controller.Game.SaveExtension;
                 fullPath = System.IO.Path.Combine(ConfigurationManager.AppSettings["GameSaveFolder"], m_saveFilename);
+                notifySave = true;
             }
             m_controller.Game.Save(fullPath);
 
-            FileManagerLoader.GetFileManager().NotifySave(
-                m_user,
-                m_gameId,
-                m_saveFilename);
-            
+            if (notifySave)
+            {
+                FileManagerLoader.GetFileManager().NotifySave(
+                    m_user,
+                    m_gameId,
+                    m_saveFilename);
+            }
+
             m_controller.AppendText("Saved.");
         }
 

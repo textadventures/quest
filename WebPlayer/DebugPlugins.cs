@@ -31,7 +31,7 @@ namespace WebPlayer
         {
         }
 
-        public string GetSaveFileForID(string id, out string gameId)
+        public string GetSaveFileForID(IUser user, string id, out string gameId)
         {
             gameId = "1";
             return ConfigurationManager.AppSettings["DebugFileManagerSaveFile"];

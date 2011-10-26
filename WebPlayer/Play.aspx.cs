@@ -122,7 +122,7 @@ namespace WebPlayer
                     IFileManager fileManager = FileManagerLoader.GetFileManager();
                     if (fileManager != null)
                     {
-                        gameFile = fileManager.GetSaveFileForID(loadId, out id);
+                        gameFile = fileManager.GetSaveFileForID(SessionManagerLoader.GetSessionManager().GetUser(), loadId, out id);
                         folder = ConfigurationManager.AppSettings["GameSaveFolder"];
                     }
                 }
