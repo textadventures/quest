@@ -9,3 +9,5 @@ WebPlayer/playercore\..*
 WebPlayer/WebPlayerSettings\.xml
 WebPlayer/WebPlayer\.Publish\.xml
 Setup/Setup/
+syntax: glob
+WebPlayer/LogConfig.xml
