@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using AxeSoftware.Quest;
 using System.Configuration;
 
 namespace WebEditor.Controllers
@@ -20,14 +19,13 @@ namespace WebEditor.Controllers
             return View(model);
         }
 
-        public ActionResult Load(int id)
+        public PartialViewResult Load(int id)
         {
-            EditorController editor = new EditorController();
+            Services.EditorService editor = new Services.EditorService();
             string debugFile = ConfigurationManager.AppSettings["DebugFile"];
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
             editor.Initialise(debugFile, libFolder);
-            Models.Game model = new Models.Game();
-            model.Name = editor.GameName;
+            Models.Game model = editor.GetModelForView();
             return PartialView("GameInfo", model);
         }
     }

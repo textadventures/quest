@@ -1,8 +1,23 @@
 ﻿@using WebEditor.Models
 @model Game
 
-@{
-    ViewBag.Title = "GameInfo";
-}
-
 <h2>@Model.Name</h2>
+
+@* TO DO: Use something like jsTree http://www.jstree.com to render the tree  *@
+
+@RenderTreeItems(Model.Elements)
+
+@helper RenderTreeItems(IEnumerable<Game.TreeItem> list) {
+    if (list!=null)
+    {
+        <ul>
+            @foreach (Game.TreeItem item in list)
+            {
+                <li>
+                    @item.Text
+                    @RenderTreeItems(item.Children)
+                </li>
+            }
+        </ul>        
+    }
+}
