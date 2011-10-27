@@ -1,4 +1,23 @@
-﻿@using WebEditor.Models
-@model Element
+﻿@using AxeSoftware.Quest;
+@model WebEditor.Models.Element
 
-<h2>@Model.Key</h2>
+<h2>@Model.Name</h2>
+
+@foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
+{
+    <h3>@def.Caption</h3>
+    
+    <ul>
+        @foreach (IEditorControl ctl in def.Controls)
+        {
+            if (ctl.Attribute != null)
+            {
+                <li>@ctl.Caption = @Model.EditorData.GetAttribute(ctl.Attribute)</li>
+            }
+            else
+            {
+                <li>@ctl.Caption</li>
+            }
+        }
+    </ul>
+}

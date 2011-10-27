@@ -22,6 +22,7 @@ namespace WebEditor.Controllers
         public PartialViewResult Load(int id)
         {
             Services.EditorService editor = new Services.EditorService();
+            EditorDictionary[id] = editor;
             string debugFile = ConfigurationManager.AppSettings["DebugFile"];
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
             editor.Initialise(id, debugFile, libFolder);
@@ -31,8 +32,22 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditElement(int id, string key)
         {
-            Models.Element model = new Models.Element { Key = key };
+            Models.Element model = EditorDictionary[id].GetElementModelForView(key);
             return PartialView("ElementEditor", model);
+        }
+
+        private Dictionary<int, Services.EditorService> EditorDictionary
+        {
+            get
+            {
+                Dictionary<int, Services.EditorService> result = Session["EditorDictionary"] as Dictionary<int, Services.EditorService>;
+                if (result == null)
+                {
+                    result = new Dictionary<int, Services.EditorService>();
+                    Session["EditorDictionary"] = result;
+                }
+                return result;
+            }
         }
     }
 }

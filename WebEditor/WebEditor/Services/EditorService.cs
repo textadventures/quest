@@ -39,7 +39,8 @@ namespace WebEditor.Services
 
         void m_controller_AddedNode(string key, string text, string parent, bool isLibraryNode, int? position)
         {
-            m_elements.Add(key, new TreeItem { 
+            m_elements.Add(key, new TreeItem
+            {
                 Key = key,
                 Text = text,
                 Parent = (parent == null) ? null : m_elements[parent]
@@ -85,6 +86,18 @@ namespace WebEditor.Services
                 result.Add(modelTreeItem);
             }
             return result;
+        }
+
+        public Models.Element GetElementModelForView(string key)
+        {
+            IEditorData data = m_controller.GetEditorData(key);
+            IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(key));
+            return new Models.Element {
+                Key = key,
+                Name = m_controller.GetDisplayName(key),
+                EditorData = data,
+                EditorDefinition = def
+            };
         }
     }
 }
