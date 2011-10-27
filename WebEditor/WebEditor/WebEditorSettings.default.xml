@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" ?>
+
+<!-- After entering settings, this file should be saved as WebEditorSettings.xml -->
+
+<appSettings>
+  <add key="DebugFile" value="C:\Path\To\gamefile.aslx"/>
+  <add key="LibraryFolder" value="C:\Libraries\"/>
+</appSettings>

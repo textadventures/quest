@@ -1,0 +1,20 @@
+﻿@section scripts {
+    <script src="@Url.Content("~/Scripts/GameEdit.js")" type="text/javascript"></script>
+}
+
+@{
+    ViewBag.Title = "Game";
+}
+<script type="text/javascript">
+    $(function () {
+        $.get('@Url.Action("Load")', function (data) {
+            $("#gameinfo").replaceWith(data);
+        });
+    });
+</script>
+
+<h2>Quest WebEditor</h2>
+
+<div id="gameinfo">
+Loading...
+</div>

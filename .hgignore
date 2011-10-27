@@ -11,3 +11,4 @@ WebPlayer/WebPlayer\.Publish\.xml
 Setup/Setup/
 syntax: glob
 WebPlayer/LogConfig.xml
+WebEditor/WebEditor/WebEditorSettings.xml
