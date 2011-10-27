@@ -32,8 +32,15 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditElement(int id, string key)
         {
-            Models.Element model = EditorDictionary[id].GetElementModelForView(key);
+            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key);
             return PartialView("ElementEditor", model);
+        }
+
+        [HttpPost]
+        public PartialViewResult SaveElement(Models.ElementSaveData element)
+        {
+            // TO DO: Save...
+            return EditElement(element.GameId, element.Key);
         }
 
         private Dictionary<int, Services.EditorService> EditorDictionary

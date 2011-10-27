@@ -88,11 +88,12 @@ namespace WebEditor.Services
             return result;
         }
 
-        public Models.Element GetElementModelForView(string key)
+        public Models.Element GetElementModelForView(int gameId, string key)
         {
             IEditorData data = m_controller.GetEditorData(key);
             IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(key));
             return new Models.Element {
+                GameId = gameId,
                 Key = key,
                 Name = m_controller.GetDisplayName(key),
                 EditorData = data,

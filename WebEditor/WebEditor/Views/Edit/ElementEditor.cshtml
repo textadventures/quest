@@ -1,23 +1,30 @@
 ﻿@using AxeSoftware.Quest;
 @model WebEditor.Models.Element
 
-<h2>@Model.Name</h2>
+<div id="elementEditorForm">
+    <h2>@Model.Name</h2>
 
-@foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
-{
-    <h3>@def.Caption</h3>
-    
-    <ul>
-        @foreach (IEditorControl ctl in def.Controls)
+    @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm" }))
+    {
+        <input type="hidden" name="_game_id" value="@Model.GameId" />
+        <input type="hidden" name="_key" value="@Model.Key" />
+        foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
         {
-            if (ctl.Attribute != null)
-            {
-                <li>@ctl.Caption = @Model.EditorData.GetAttribute(ctl.Attribute)</li>
-            }
-            else
-            {
-                <li>@ctl.Caption</li>
-            }
+            <h3>@def.Caption</h3>
+    
+                <ul>
+                    @foreach (IEditorControl ctl in def.Controls)
+                    {
+                        <li>
+                            [@ctl.ControlType] @ctl.Caption
+                            @if (ctl.Attribute != null)
+                            {
+                                <input type="text" name="@ctl.Attribute" value="@Model.EditorData.GetAttribute(ctl.Attribute)" />
+                            }
+                        </li>
+                    }
+                </ul>    
         }
-    </ul>
-}
+        <input type="submit" value="Save" />
+    }
+    </div>
