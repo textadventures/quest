@@ -14,6 +14,7 @@ namespace WebEditor.Models
             public IEnumerable<TreeItem> Children { get; set; }
         }
 
+        public int GameId { get; set; }
         public string Name { get; set; }
         public IEnumerable<TreeItem> Elements { get; set; }
     }

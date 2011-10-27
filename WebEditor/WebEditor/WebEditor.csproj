@@ -68,6 +68,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Editor.cs" />
+    <Compile Include="Models\Element.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EditorService.cs" />
@@ -130,7 +131,9 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="WebEditorSettings.default.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Views\Edit\ElementEditor.cshtml" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>

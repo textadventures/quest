@@ -17,14 +17,16 @@ namespace WebEditor.Services
 
         private EditorController m_controller;
         private Dictionary<string, TreeItem> m_elements = new Dictionary<string, TreeItem>();
+        private int m_id;
 
         public EditorService()
         {
             m_controller = new EditorController();
         }
 
-        public void Initialise(string filename, string libFolder)
+        public void Initialise(int id, string filename, string libFolder)
         {
+            m_id = id;
             if (m_controller.Initialise(filename, libFolder))
             {
                 m_controller.ClearTree += new EditorController.VoidHandler(m_controller_ClearTree);
@@ -63,7 +65,8 @@ namespace WebEditor.Services
             return new Models.Game
             {
                 Elements = GetTreeItemsForParent(null),
-                Name = m_controller.GameName
+                Name = m_controller.GameName,
+                GameId = m_id
             };
         }
 

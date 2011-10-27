@@ -24,9 +24,15 @@ namespace WebEditor.Controllers
             Services.EditorService editor = new Services.EditorService();
             string debugFile = ConfigurationManager.AppSettings["DebugFile"];
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
-            editor.Initialise(debugFile, libFolder);
+            editor.Initialise(id, debugFile, libFolder);
             Models.Game model = editor.GetModelForView();
             return PartialView("GameInfo", model);
+        }
+
+        public PartialViewResult EditElement(int id, string key)
+        {
+            Models.Element model = new Models.Element { Key = key };
+            return PartialView("ElementEditor", model);
         }
     }
 }
