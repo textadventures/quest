@@ -8,13 +8,15 @@
 <script type="text/javascript">
     $(function () {
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
-            $("#gameinfo").replaceWith(data);
+            $("#treeContent").replaceWith(data);
         });
     });
 </script>
 
-<h2>Quest WebEditor</h2>
-
-<div id="gameinfo">
-Loading...
+<div id="gameTree">
+    <div id="treeContent">
+    Loading...
+    </div>
 </div>
+
+<div id="elementEditor"></div>
