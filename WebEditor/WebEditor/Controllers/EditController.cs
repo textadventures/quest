@@ -15,16 +15,18 @@ namespace WebEditor.Controllers
 
         public ActionResult Game(int id)
         {
-            return View();
+            Models.Editor model = new Models.Editor();
+            model.GameId = id;
+            return View(model);
         }
 
-        public ActionResult Load()
+        public ActionResult Load(int id)
         {
             EditorController editor = new EditorController();
             string debugFile = ConfigurationManager.AppSettings["DebugFile"];
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
             editor.Initialise(debugFile, libFolder);
-            WebEditor.Models.Game model = new Models.Game();
+            Models.Game model = new Models.Game();
             model.Name = editor.GameName;
             return PartialView("GameInfo", model);
         }

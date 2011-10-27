@@ -1,13 +1,17 @@
-﻿@section scripts {
+﻿@using WebEditor.Models
+@model Editor
+           
+@section scripts {
     <script src="@Url.Content("~/Scripts/GameEdit.js")" type="text/javascript"></script>
 }
 
 @{
     ViewBag.Title = "Game";
 }
+
 <script type="text/javascript">
     $(function () {
-        $.get('@Url.Action("Load")', function (data) {
+        $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
             $("#gameinfo").replaceWith(data);
         });
     });
