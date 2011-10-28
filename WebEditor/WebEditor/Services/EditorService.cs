@@ -100,13 +100,48 @@ namespace WebEditor.Services
         {
             IEditorData data = m_controller.GetEditorData(key);
             IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(key));
-            return new Models.Element {
+            return new Models.Element
+            {
                 GameId = gameId,
                 Key = key,
                 Name = m_controller.GetDisplayName(key),
                 EditorData = data,
                 EditorDefinition = def
             };
+        }
+
+        public void SaveElement(string key, Models.ElementSaveData saveData)
+        {
+            IEditorData data = m_controller.GetEditorData(key);
+            foreach (var kvp in saveData.Values)
+            {
+                if (DataChanged(data.GetAttribute(kvp.Key), (kvp.Value)))
+                {
+                    System.Diagnostics.Debug.WriteLine("New value for {0}: Was {1}, now {2}", kvp.Key, data.GetAttribute(kvp.Key), kvp.Value);
+                    data.SetAttribute(kvp.Key, kvp.Value);
+                }
+            }
+        }
+
+        private bool DataChanged(object oldValue, object newValue)
+        {
+            if (oldValue == null && newValue is string)
+            {
+                return ((string)newValue).Length > 0;
+            }
+            if (oldValue == null && newValue is bool)
+            {
+                return (bool)newValue;
+            }
+            if (oldValue is string && newValue is string)
+            {
+                return (string)oldValue != (string)newValue;
+            }
+            if (oldValue is bool && newValue is bool)
+            {
+                return (bool)oldValue != (bool)newValue;
+            }
+            throw new NotImplementedException();
         }
     }
 }

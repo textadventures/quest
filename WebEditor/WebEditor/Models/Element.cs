@@ -42,13 +42,29 @@ namespace WebEditor.Models
 
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
             {
-                foreach (IEditorControl ctl in tab.Controls)
+                foreach (IEditorControl ctl in tab.Controls.Where(c => c.Attribute != null))
                 {
-                    // TO DO: Some form fields are duplicated (remove ContainsKey condition -> throws exception)
-                    if (ctl.Attribute != null && !result.Values.ContainsKey(ctl.Attribute))
+                    object saveValue = null;
+                    bool handled = true;    // TO DO: Temporary until all controltypes are handled
+
+                    ValueProviderResult value = bindingContext.ValueProvider.GetValue(ctl.Attribute);
+
+                    switch (ctl.ControlType)
                     {
-                        // TO DO: This will need to have some logic to convert the value to the correct type
-                        result.Values.Add(ctl.Attribute, bindingContext.ValueProvider.GetValue(ctl.Attribute).ConvertTo(typeof(string)));
+                        case "textbox":
+                            saveValue = value.ConvertTo(typeof(string));
+                            break;
+                        case "checkbox":
+                            saveValue = value.ConvertTo(typeof(bool));
+                            break;
+                        default:
+                            handled = false;    // TO DO: Temporary until all controltypes are handled
+                            break;
+                    }
+
+                    if (handled)
+                    {
+                        result.Values.Add(ctl.Attribute, saveValue);
                     }
                 }
             }

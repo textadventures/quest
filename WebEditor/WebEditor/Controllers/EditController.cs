@@ -38,7 +38,7 @@ namespace WebEditor.Controllers
         [HttpPost]
         public PartialViewResult SaveElement(Models.ElementSaveData element)
         {
-            // TO DO: Save...
+            EditorDictionary[element.GameId].SaveElement(element.Key, element);
             return EditElement(element.GameId, element.Key);
         }
 
