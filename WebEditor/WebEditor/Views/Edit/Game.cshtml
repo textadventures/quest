@@ -2,12 +2,12 @@
 @model Editor
            
 @section scripts {
-    <script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/GameEdit.js")" type="text/javascript"></script>
 }
 
 <script type="text/javascript">
     $(function () {
+        $('body').layout({ applyDefaultStyles: true });
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
             $("#gameTree").jstree({
                 plugins: ["themes", "ui", "json_data"],
@@ -26,10 +26,19 @@
     });
 </script>
 
-<div id="gameTree">
-    <div id="treeContent">
-    Loading...
+<div class="ui-layout-north">
+    <input type="button" value="Add room" />
+    <input type="button" value="Add object" />
+</div>
+
+<div class="ui-layout-west">
+    <div id="gameTree">
+        <div id="treeContent">
+        Loading...
+        </div>
     </div>
 </div>
 
-<div id="elementEditor"></div>
+<div class="ui-layout-center">
+    <div id="elementEditor"></div>
+</div>
