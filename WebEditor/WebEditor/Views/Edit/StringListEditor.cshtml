@@ -1,0 +1,11 @@
+﻿@model WebEditor.Models.StringList
+
+@if (Model.Items != null)
+{
+    <ul>
+        @foreach (string item in Model.Items)
+        {
+            <li>@item</li>
+        }
+    </ul>
+}

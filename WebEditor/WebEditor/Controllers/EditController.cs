@@ -42,6 +42,11 @@ namespace WebEditor.Controllers
             return EditElement(element.GameId, element.RedirectToElement);
         }
 
+        public PartialViewResult EditStringList(int id, string key, string attribute)
+        {
+            return PartialView("StringListEditor", EditorDictionary[id].GetStringList(key, attribute));
+        }
+
         private Dictionary<int, Services.EditorService> EditorDictionary
         {
             get

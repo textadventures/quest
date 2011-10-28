@@ -77,10 +77,13 @@
         case "checkbox":
             @Html.CheckBox(ctl.Attribute, Model.EditorData.GetAttribute(ctl.Attribute) as bool? == true)
             @Html.Label(ctl.Attribute, ctl.Caption)
-       break;
+            break;
         case "textbox":
             @Html.TextBox(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), new { style = "width: 100%" })
-       break;
+            break;
+        case "list":
+            @Html.Action("EditStringList", new { id = Model.GameId, key = Model.Key, attribute = ctl.Attribute })
+            break;
         case "label":
             <div class="elementEditorLabel">@ctl.Caption</div>
             break;
