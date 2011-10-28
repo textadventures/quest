@@ -12,19 +12,72 @@
         {
             <h3>@def.Caption</h3>
     
-                <ul>
+                <table style="width: 100%">
+                    <colgroup>
+                        <col style="width: 15%" />
+                        <col />
+                    </colgroup>
                     @foreach (IEditorControl ctl in def.Controls)
                     {
-                        <li>
-                            [@ctl.ControlType] @ctl.Caption
-                            @if (ctl.Attribute != null)
-                            {
-                                <input type="text" name="@ctl.Attribute" value="@Model.EditorData.GetAttribute(ctl.Attribute)" />
-                            }
-                        </li>
+                        if (IsSelfCaption(ctl)) {
+                            <tr>
+                                <td colspan="2">@RenderEditorControl(ctl)</td>
+                            </tr>
+                        }
+                        else if (IsLongCaption(ctl)) {
+                            <tr>
+                                <td colspan="2">@ctl.Caption</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">@RenderEditorControl(ctl)</td>
+                            </tr>
+                        }
+                        else {                            
+                            <tr>
+                                <td>@ctl.Caption</td>
+                                <td>
+                                    @if (ctl.Attribute != null)
+                                    {
+                                        @RenderEditorControl(ctl)
+                                    }
+                                </td>
+                            </tr>
+                        }
                     }
-                </ul>    
+                </table>  
         }
         <input type="submit" value="Save" />
     }
-    </div>
+</div>
+
+@helper RenderEditorControl(IEditorControl ctl) {
+    switch (ctl.ControlType)
+    {
+        case "checkbox":
+            @Html.CheckBox(ctl.Attribute, Model.EditorData.GetAttribute(ctl.Attribute) as bool? == true)
+            @Html.Label(ctl.Attribute, ctl.Caption)
+            break;
+        case "textbox":
+            @Html.TextBox(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), new { style = "width: 100%" } )
+            break;
+        default:
+            <text>[@ctl.ControlType]</text>
+            break;
+    }
+}
+
+@functions {
+    bool IsLongCaption(IEditorControl ctl) {
+        if (ctl.Caption == null) return false;
+        return (ctl.Caption.Length > 10);
+    }
+    
+    bool IsSelfCaption(IEditorControl ctl) {
+        switch (ctl.ControlType)
+        {
+            case "checkbox":
+                return true;
+        }
+        return false;
+    }
+}
