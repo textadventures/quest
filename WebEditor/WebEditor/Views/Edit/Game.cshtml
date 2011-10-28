@@ -25,7 +25,10 @@
                 $.get('@Url.Action("EditElement", new { id = Model.GameId, key = "KEY" })'.replace("KEY", data.rslt.obj.attr("data-key")), function (data) {
                     $("#elementEditor").html(data);
                 });
-            }).delegate("a", "click", function (event, data) { event.preventDefault(); });
+            }).delegate("a", "click", function (event, data) { event.preventDefault(); })
+            .bind("loaded.jstree", function (e, data) {
+                data.inst.open_all(-1);
+            });
         });
     });
 </script>
