@@ -4,47 +4,68 @@
 <div id="elementEditorForm">
     <h2>@Model.Name</h2>
 
-    @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm", OnComplete = "scrollElementEditorToTop" }))
+    @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm", OnComplete = "initialiseElementEditor" }))
     {
         <input type="hidden" name="_game_id" value="@Model.GameId" />
         <input type="hidden" name="_key" value="@Model.Key" />
         <input type="hidden" name="_redirectToElement" id="_redirectToElement" value="@Model.Key" />
-        foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
-        {
-            <h3>@def.Caption</h3>    
-            bool isFirst = true;
-            <table style="width: 100%">
-                <colgroup>
-                    <col style="width: 15%" />
-                    <col />
-                </colgroup>
-                @foreach (IEditorControl ctl in def.Controls)
+        <div id="elementEditorTabs">
+            @{
+                int count = 0;
+            }
+            <ul>    
+                @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
                 {
-                    if (IsSelfCaption(ctl)) {
-                        <tr>
-                            <td colspan="2">@RenderEditorControl(ctl, isFirst)</td>
-                        </tr>
-                    }
-                    else if (IsLongCaption(ctl)) {
-                        <tr>
-                            <td colspan="2">@ctl.Caption</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">@RenderEditorControl(ctl, isFirst)</td>
-                        </tr>
-                    }
-                    else {                            
-                        <tr>
-                            <td>@ctl.Caption</td>
-                            <td>
-                                @RenderEditorControl(ctl, isFirst)
-                            </td>
-                        </tr>
-                    }
-                    isFirst = false;
+                    count++;
+                    string id = "#elementEditorTab" + count;
+                    <li><a href="@id">@def.Caption</a></li>
                 }
-            </table>
-        }
+            </ul>
+            @{
+                count = 0;
+            }
+            @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
+            {
+                count++;
+                string id = "elementEditorTab" + count;
+                <div id="@id">
+                    @{
+                        bool isFirst = true;
+                    }
+                    <table style="width: 100%">
+                        <colgroup>
+                            <col style="width: 15%" />
+                            <col />
+                        </colgroup>
+                        @foreach (IEditorControl ctl in def.Controls)
+                        {
+                            if (IsSelfCaption(ctl)) {
+                                <tr>
+                                    <td colspan="2">@RenderEditorControl(ctl, isFirst)</td>
+                                </tr>
+                            }
+                            else if (IsLongCaption(ctl)) {
+                                <tr>
+                                    <td colspan="2">@ctl.Caption</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">@RenderEditorControl(ctl, isFirst)</td>
+                                </tr>
+                            }
+                            else {                            
+                                <tr>
+                                    <td>@ctl.Caption</td>
+                                    <td>
+                                        @RenderEditorControl(ctl, isFirst)
+                                    </td>
+                                </tr>
+                            }
+                            isFirst = false;
+                        }
+                    </table>
+                </div>
+            }
+        </div>
         <input id="elementEditorSave" type="submit" value="Save" />
     }
 </div>
