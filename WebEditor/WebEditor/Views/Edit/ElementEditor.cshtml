@@ -11,55 +11,61 @@
         <input type="hidden" name="_redirectToElement" id="_redirectToElement" value="@Model.Key" />
         foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
         {
-            <h3>@def.Caption</h3>
-    
-                <table style="width: 100%">
-                    <colgroup>
-                        <col style="width: 15%" />
-                        <col />
-                    </colgroup>
-                    @foreach (IEditorControl ctl in def.Controls)
-                    {
-                        if (IsSelfCaption(ctl)) {
-                            <tr>
-                                <td colspan="2">@RenderEditorControl(ctl)</td>
-                            </tr>
-                        }
-                        else if (IsLongCaption(ctl)) {
-                            <tr>
-                                <td colspan="2">@ctl.Caption</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">@RenderEditorControl(ctl)</td>
-                            </tr>
-                        }
-                        else {                            
-                            <tr>
-                                <td>@ctl.Caption</td>
-                                <td>
-                                    @if (ctl.Attribute != null)
-                                    {
-                                        @RenderEditorControl(ctl)
-                                    }
-                                </td>
-                            </tr>
-                        }
+            <h3>@def.Caption</h3>    
+            bool isFirst = true;
+            <table style="width: 100%">
+                <colgroup>
+                    <col style="width: 15%" />
+                    <col />
+                </colgroup>
+                @foreach (IEditorControl ctl in def.Controls)
+                {
+                    if (IsSelfCaption(ctl)) {
+                        <tr>
+                            <td colspan="2">@RenderEditorControl(ctl, isFirst)</td>
+                        </tr>
                     }
-                </table>  
+                    else if (IsLongCaption(ctl)) {
+                        <tr>
+                            <td colspan="2">@ctl.Caption</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">@RenderEditorControl(ctl, isFirst)</td>
+                        </tr>
+                    }
+                    else {                            
+                        <tr>
+                            <td>@ctl.Caption</td>
+                            <td>
+                                @RenderEditorControl(ctl, isFirst)
+                            </td>
+                        </tr>
+                    }
+                    isFirst = false;
+                }
+            </table>
         }
         <input id="elementEditorSave" type="submit" value="Save" />
     }
 </div>
 
-@helper RenderEditorControl(IEditorControl ctl) {
+@helper RenderEditorControl(IEditorControl ctl, bool isFirst)
+    {
     switch (ctl.ControlType)
     {
         case "checkbox":
             @Html.CheckBox(ctl.Attribute, Model.EditorData.GetAttribute(ctl.Attribute) as bool? == true)
             @Html.Label(ctl.Attribute, ctl.Caption)
-            break;
+       break;
         case "textbox":
-            @Html.TextBox(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), new { style = "width: 100%" } )
+            @Html.TextBox(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), new { style = "width: 100%" })
+       break;
+        case "label":
+            <div class="elementEditorLabel">@ctl.Caption</div>
+            break;
+        case "title":
+            string className = isFirst ? "elementEditorTitleTop" : "elementEditorTitle";
+            <div class="@className">@ctl.Caption</div>
             break;
         default:
             <text>[@ctl.ControlType]</text>
@@ -68,15 +74,19 @@
 }
 
 @functions {
-    bool IsLongCaption(IEditorControl ctl) {
+    bool IsLongCaption(IEditorControl ctl)
+    {
         if (ctl.Caption == null) return false;
         return (ctl.Caption.Length > 10);
     }
-    
-    bool IsSelfCaption(IEditorControl ctl) {
+
+    bool IsSelfCaption(IEditorControl ctl)
+    {
         switch (ctl.ControlType)
         {
             case "checkbox":
+            case "label":
+            case "title":
                 return true;
         }
         return false;

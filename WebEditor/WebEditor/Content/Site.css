@@ -23,6 +23,20 @@ section {
     display: block;
 }
 
+.elementEditorLabel 
+{
+    font-size: 80%;
+}
+.elementEditorTitle 
+{
+    font-size: 130%;
+    padding-top: 14px;
+}
+.elementEditorTitleTop
+{
+    font-size: 130%;
+}
+
 /* Styles for basic forms
 -----------------------------------------------------------*/
 
