@@ -22,6 +22,7 @@ namespace WebEditor.Models
         public Dictionary<string, object> Values { get; set; }
         public int GameId { get; set; }
         public string Key { get; set; }
+        public string RedirectToElement { get; set; }
     }
 
     public class ElementSaveDataModelBinder : IModelBinder
@@ -33,9 +34,11 @@ namespace WebEditor.Models
 
             int gameId = (int)bindingContext.ValueProvider.GetValue("_game_id").ConvertTo(typeof(int));
             string key = (string)bindingContext.ValueProvider.GetValue("_key").ConvertTo(typeof(string));
+            string redirectToElement = (string)bindingContext.ValueProvider.GetValue("_redirectToElement").ConvertTo(typeof(string));
 
             result.GameId = gameId;
             result.Key = key;
+            result.RedirectToElement = redirectToElement;
 
             var editorDictionary = controllerContext.RequestContext.HttpContext.Session["EditorDictionary"] as Dictionary<int, Services.EditorService>;
             Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key);

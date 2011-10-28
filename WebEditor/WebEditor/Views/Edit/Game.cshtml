@@ -22,9 +22,16 @@
                     icons: false
                 }
             }).bind("select_node.jstree", function (event, data) {
-                $.get('@Url.Action("EditElement", new { id = Model.GameId, key = "KEY" })'.replace("KEY", data.rslt.obj.attr("data-key")), function (data) {
-                    $("#elementEditor").html(data);
-                });
+                if ($("#elementEditorSave").length > 0) {
+                    // save current element editor first
+                    $("#_redirectToElement").val(data.rslt.obj.attr("data-key"));
+                    $("#elementEditorSave").submit();
+                }
+                else {
+                    $.get('@Url.Action("EditElement", new { id = Model.GameId, key = "KEY" })'.replace("KEY", data.rslt.obj.attr("data-key")), function (data) {
+                        $("#elementEditor").html(data);
+                    });
+                }
             }).delegate("a", "click", function (event, data) { event.preventDefault(); })
             .bind("loaded.jstree", function (e, data) {
                 data.inst.open_all(-1);

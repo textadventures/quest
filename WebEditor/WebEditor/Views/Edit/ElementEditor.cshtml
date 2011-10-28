@@ -8,6 +8,7 @@
     {
         <input type="hidden" name="_game_id" value="@Model.GameId" />
         <input type="hidden" name="_key" value="@Model.Key" />
+        <input type="hidden" name="_redirectToElement" id="_redirectToElement" value="@Model.Key" />
         foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
         {
             <h3>@def.Caption</h3>
@@ -46,7 +47,7 @@
                     }
                 </table>  
         }
-        <input type="submit" value="Save" />
+        <input id="elementEditorSave" type="submit" value="Save" />
     }
 </div>
 

@@ -39,7 +39,7 @@ namespace WebEditor.Controllers
         public PartialViewResult SaveElement(Models.ElementSaveData element)
         {
             EditorDictionary[element.GameId].SaveElement(element.Key, element);
-            return EditElement(element.GameId, element.Key);
+            return EditElement(element.GameId, element.RedirectToElement);
         }
 
         private Dictionary<int, Services.EditorService> EditorDictionary
