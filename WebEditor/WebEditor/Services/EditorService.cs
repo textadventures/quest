@@ -61,28 +61,36 @@ namespace WebEditor.Services
         {
         }
 
-        public Models.Game GetModelForView()
+        private class JsonTreeElement
         {
-            return new Models.Game
-            {
-                Elements = GetTreeItemsForParent(null),
-                Name = m_controller.GameName,
-                GameId = m_id
-            };
+            public Dictionary<string, string> attr = new Dictionary<string, string>();
+            public string data;
+            public string state;
+            public IEnumerable<JsonTreeElement> children;
         }
 
-        private List<Models.Game.TreeItem> GetTreeItemsForParent(string parent)
+        private class JsonParentElement
         {
-            List<Models.Game.TreeItem> result = new List<Models.Game.TreeItem>();
+            public IEnumerable<JsonTreeElement> data;
+        }
+
+        public object GetElementTreeForJson()
+        {
+            return new JsonParentElement { data = GetJsonTreeItemsForParent(null) };
+        }
+
+        private List<JsonTreeElement> GetJsonTreeItemsForParent(string parent)
+        {
+            List<JsonTreeElement> result = new List<JsonTreeElement>();
             TreeItem parentElement = (parent == null) ? null : m_elements[parent];
             foreach (TreeItem item in m_elements.Values.Where(e => e.Parent == parentElement))
             {
-                Models.Game.TreeItem modelTreeItem = new Models.Game.TreeItem
+                JsonTreeElement modelTreeItem = new JsonTreeElement
                 {
-                    Key = item.Key,
-                    Text = item.Text,
-                    Children = GetTreeItemsForParent(item.Key)
+                    data = item.Text,
+                    children = GetJsonTreeItemsForParent(item.Key)
                 };
+                modelTreeItem.attr.Add("data-key", item.Key);
                 result.Add(modelTreeItem);
             }
             return result;

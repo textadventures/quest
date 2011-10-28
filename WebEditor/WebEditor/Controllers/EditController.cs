@@ -19,15 +19,14 @@ namespace WebEditor.Controllers
             return View(model);
         }
 
-        public PartialViewResult Load(int id)
+        public JsonResult Load(int id)
         {
             Services.EditorService editor = new Services.EditorService();
             EditorDictionary[id] = editor;
             string debugFile = ConfigurationManager.AppSettings["DebugFile"];
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
             editor.Initialise(id, debugFile, libFolder);
-            Models.Game model = editor.GetModelForView();
-            return PartialView("GameInfo", model);
+            return Json(editor.GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
         }
 
         public PartialViewResult EditElement(int id, string key)

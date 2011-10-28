@@ -2,13 +2,26 @@
 @model Editor
            
 @section scripts {
+    <script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/GameEdit.js")" type="text/javascript"></script>
 }
 
 <script type="text/javascript">
     $(function () {
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
-            $("#treeContent").replaceWith(data);
+            $("#gameTree").jstree({
+                plugins: ["themes", "ui", "json_data"],
+                json_data: data,
+                animation: 0,
+                themes: {
+                    theme: "default",
+                    icons: false
+                }
+            }).bind("select_node.jstree", function (event, data) {
+                $.get('@Url.Action("EditElement", new { id = Model.GameId, key = "KEY" })'.replace("KEY", data.rslt.obj.attr("data-key")), function (data) {
+                    $("#elementEditor").html(data);
+                });
+            }).delegate("a", "click", function (event, data) { event.preventDefault(); });
         });
     });
 </script>
