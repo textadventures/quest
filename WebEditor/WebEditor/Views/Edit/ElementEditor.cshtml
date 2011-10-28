@@ -2,7 +2,7 @@
 @model WebEditor.Models.Element
 
 <div id="elementEditorForm">
-    <h2>@Model.Name</h2>
+    <div class="elementEditorName">@Model.Name</div>
 
     @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm", OnComplete = "initialiseElementEditor" }))
     {

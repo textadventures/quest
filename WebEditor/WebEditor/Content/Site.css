@@ -23,6 +23,11 @@ section {
     display: block;
 }
 
+.elementEditorName
+{
+    font-size: 130%;
+    padding-bottom: 6px;
+}
 .elementEditorLabel 
 {
     font-size: 80%;
