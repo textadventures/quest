@@ -7,7 +7,11 @@
 
 <script type="text/javascript">
     $(function () {
-        $('body').layout({ applyDefaultStyles: true });
+        var layout = $('body').layout({
+            applyDefaultStyles: true,
+            north__resizable: false,
+            north__closable: false
+        });
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
             $("#gameTree").jstree({
                 plugins: ["themes", "ui", "json_data"],
