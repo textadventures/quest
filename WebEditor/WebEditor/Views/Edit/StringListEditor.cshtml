@@ -3,13 +3,14 @@
 <div class="ui-widget-header ui-corner-all toolbar">
     <button type="button" class="stringlist-add" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Add</button>
     <button type="button" class="stringlist-edit" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Edit</button>
-    <button type="button" class="stringlist-delete" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Delete</button>
+    <button type="button" class="stringlist-delete" data-key="@Model.Attribute">Delete</button>
 </div>
 
 @if (Model.Items != null)
 {
+    string id = "select-" + Model.Attribute;
     <div>
-        <select size="5" style="width: 100%">
+        <select size="5" style="width: 100%" id="@id" class="stringlist" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">
             @foreach (var item in Model.Items)
             {
                 <option value="@item.Key">@item.Value</option>

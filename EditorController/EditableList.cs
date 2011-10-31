@@ -163,6 +163,11 @@ namespace AxeSoftware.Quest
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
+        public void Update(string key, T item)
+        {
+            Update(m_wrappedItemKeys.IndexOf(key), item);
+        }
+
         private void RemoveWrappedItem(IEditableListItem<T> item, EditorUpdateSource source, int index)
         {
             m_wrappedItems.Remove(item.Key);

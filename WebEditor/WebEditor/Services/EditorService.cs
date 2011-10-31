@@ -188,6 +188,10 @@ namespace WebEditor.Services
                             data = stringListParameter.Split(new[] { ';' }, 2);
                             StringListAdd(key, data[0], data[1]);
                             break;
+                        case "edit":
+                            data = stringListParameter.Split(new[] { ';' }, 3);
+                            StringListEdit(key, data[0], data[1], data[2]);
+                            break;
                     }
                     break;
             }
@@ -208,6 +212,16 @@ namespace WebEditor.Services
                 PrepareStringListForEditing(element, attribute, ref list);
                 list.Add(value);
             }
+        }
+
+        private void StringListEdit(string element, string attribute, string key, string value)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+            // TO DO: Validate input first
+
+            IEditableList<string> list = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableList<string>;
+            PrepareStringListForEditing(element, attribute, ref list);
+            list.Update(key, value);
         }
 
         private void PrepareStringListForEditing(string element, string attribute, ref IEditableList<string> list)

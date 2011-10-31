@@ -22,6 +22,7 @@ namespace AxeSoftware.Quest
         void Add(T item);
         void Remove(params string[] keys);
         void Update(int index, T item);
+        void Update(string key, T item);
         IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }
         ValidationResult CanAdd(T item);
         bool Locked { get; }
