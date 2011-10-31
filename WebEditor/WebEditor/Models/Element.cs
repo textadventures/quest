@@ -66,6 +66,7 @@ namespace WebEditor.Models
                     switch (ctl.ControlType)
                     {
                         case "textbox":
+                        case "dropdown":
                             saveValue = value.ConvertTo(typeof(string));
                             break;
                         case "checkbox":

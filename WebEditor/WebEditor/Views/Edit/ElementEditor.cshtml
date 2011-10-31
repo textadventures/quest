@@ -133,18 +133,9 @@
             }
 
             string selectedItem = Model.EditorData.GetAttribute(ctl.Attribute) as string;
+            
+            @Html.DropDownList(ctl.Attribute, valuesList.Select(v => new SelectListItem { Text = v, Selected = (v == selectedItem) }));
 
-            <select>
-                @foreach (string item in valuesList) {
-                    if (item == selectedItem) {
-                        <option selected="selected">@item</option>
-                    }
-                    else
-                    {
-                        <option>@item</option>
-                    }
-                }
-            </select>
             break;
         default:
             <text>[@ctl.ControlType]</text>
