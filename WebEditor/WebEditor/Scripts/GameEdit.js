@@ -1,12 +1,25 @@
-﻿function initialiseElementEditor() {
-    $("#elementEditorTabs").tabs();
+﻿function initialiseElementEditor(tab) {
+    var selectTab = $("#_additionalActionTab").val();
+    $("#elementEditorTabs").tabs({
+        create: function () {
+            if (selectTab && selectTab.length > 0) {
+                $("#elementEditorTabs").tabs("select", parseInt(selectTab));
+            }
+        }
+    });
     $("#centerPane").scrollTop(0);
     $(".stringlist-add").click(function () {
         $("#dialog-input-text-entry").val("");
         var key = $(this).attr("data-key");
         $("#dialog-input-text").data("dialog_ok", function () {
-            alert(key + ", add: " + $("#dialog-input-text-entry").val());
+            sendAdditionalAction("stringlist add " + key + ";" + $("#dialog-input-text-entry").val());
         });
         $("#dialog-input-text").dialog("open");
     });
+}
+
+function sendAdditionalAction(action) {
+    $("#_additionalAction").val(action);
+    $("#_additionalActionTab").val($("#elementEditorTabs").tabs('option', 'selected'));
+    $("#elementEditorSave").submit();
 }

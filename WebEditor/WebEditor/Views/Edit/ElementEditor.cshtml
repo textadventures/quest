@@ -9,6 +9,8 @@
         <input type="hidden" name="_game_id" value="@Model.GameId" />
         <input type="hidden" name="_key" value="@Model.Key" />
         <input type="hidden" name="_redirectToElement" id="_redirectToElement" value="@Model.Key" />
+        <input type="hidden" name="_additionalAction" id="_additionalAction" value="" />
+        <input type="hidden" name="_additionalActionTab" id="_additionalActionTab" value="@Model.Tab" />
         <div id="elementEditorTabs">
             @{
                 int count = 0;

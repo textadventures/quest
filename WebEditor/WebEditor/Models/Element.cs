@@ -14,6 +14,7 @@ namespace WebEditor.Models
         public string Name { get; set; }
         public IEditorDefinition EditorDefinition { get; set; }
         public IEditorData EditorData { get; set; }
+        public string Tab { get; set; }
     }
 
     [ModelBinder(typeof(ElementSaveDataModelBinder))]
@@ -23,6 +24,8 @@ namespace WebEditor.Models
         public int GameId { get; set; }
         public string Key { get; set; }
         public string RedirectToElement { get; set; }
+        public string AdditionalAction { get; set; }
+        public string AdditionalActionTab { get; set; }
     }
 
     public class ElementSaveDataModelBinder : IModelBinder
@@ -35,15 +38,19 @@ namespace WebEditor.Models
             int gameId = (int)bindingContext.ValueProvider.GetValue("_game_id").ConvertTo(typeof(int));
             string key = (string)bindingContext.ValueProvider.GetValue("_key").ConvertTo(typeof(string));
             string redirectToElement = (string)bindingContext.ValueProvider.GetValue("_redirectToElement").ConvertTo(typeof(string));
+            string additionalAction = (string)bindingContext.ValueProvider.GetValue("_additionalAction").ConvertTo(typeof(string));
+            string additionalActionTab = (string)bindingContext.ValueProvider.GetValue("_additionalActionTab").ConvertTo(typeof(string));
 
             result.GameId = gameId;
             result.Key = key;
             result.RedirectToElement = redirectToElement;
+            result.AdditionalAction = additionalAction;
+            result.AdditionalActionTab = additionalActionTab;
 
             var editorDictionary = controllerContext.RequestContext.HttpContext.Session["EditorDictionary"] as Dictionary<int, Services.EditorService>;
 
             // TO DO: This throws exception if session has expired (editorDictionary = null)
-            Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key);
+            Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key, null);
 
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
             {

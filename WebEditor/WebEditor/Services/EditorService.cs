@@ -96,7 +96,7 @@ namespace WebEditor.Services
             return result;
         }
 
-        public Models.Element GetElementModelForView(int gameId, string key)
+        public Models.Element GetElementModelForView(int gameId, string key, string tab)
         {
             IEditorData data = m_controller.GetEditorData(key);
             IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(key));
@@ -106,7 +106,8 @@ namespace WebEditor.Services
                 Key = key,
                 Name = m_controller.GetDisplayName(key),
                 EditorData = data,
-                EditorDefinition = def
+                EditorDefinition = def,
+                Tab = tab
             };
         }
 
@@ -120,6 +121,10 @@ namespace WebEditor.Services
                     System.Diagnostics.Debug.WriteLine("New value for {0}: Was {1}, now {2}", kvp.Key, data.GetAttribute(kvp.Key), kvp.Value);
                     data.SetAttribute(kvp.Key, kvp.Value);
                 }
+            }
+            if (!string.IsNullOrEmpty(saveData.AdditionalAction))
+            {
+                ProcessAdditionalAction(saveData.AdditionalAction);
             }
         }
 
@@ -147,10 +152,38 @@ namespace WebEditor.Services
         public Models.StringList GetStringList(string key, string attribute)
         {
             IEditableList<string> value = (IEditableList<string>)m_controller.GetEditorData(key).GetAttribute(attribute);
-            return new Models.StringList {
+            return new Models.StringList
+            {
                 Attribute = attribute,
                 Items = (value == null) ? null : value.Items.Values.Select(v => v.Value)
             };
+        }
+
+        private void ProcessAdditionalAction(string action)
+        {
+            string[] data = action.Split(new[] { ' ' }, 2);
+            string cmd = data[0];
+            string parameter = data[1];
+            switch (cmd)
+            {
+                case "stringlist":
+                    data = parameter.Split(new[] { ' ' }, 2);
+                    string stringListCmd = data[0];
+                    string stringListParameter = data[1];
+                    switch (stringListCmd)
+                    {
+                        case "add":
+                            data = stringListParameter.Split(new[] { ';' }, 2);
+                            StringListAdd("", data[0], data[1]);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void StringListAdd(string element, string attribute, string value)
+        {
+
         }
     }
 }

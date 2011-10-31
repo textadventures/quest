@@ -29,9 +29,9 @@ namespace WebEditor.Controllers
             return Json(editor.GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
         }
 
-        public PartialViewResult EditElement(int id, string key)
+        public PartialViewResult EditElement(int id, string key, string tab)
         {
-            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key);
+            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, tab);
             return PartialView("ElementEditor", model);
         }
 
@@ -39,7 +39,8 @@ namespace WebEditor.Controllers
         public PartialViewResult SaveElement(Models.ElementSaveData element)
         {
             EditorDictionary[element.GameId].SaveElement(element.Key, element);
-            return EditElement(element.GameId, element.RedirectToElement);
+            string tab = !string.IsNullOrEmpty(element.AdditionalAction) ? element.AdditionalActionTab : null;
+            return EditElement(element.GameId, element.RedirectToElement, tab);
         }
 
         public PartialViewResult EditStringList(int id, string key, string attribute)
