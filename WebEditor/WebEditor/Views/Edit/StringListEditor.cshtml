@@ -11,15 +11,18 @@
     <button type="button" class="stringlist-delete" id="@deleteId" data-key="@Model.Attribute">Delete</button>
 </div>
 
-@if (Model.Items != null)
-{
-    string id = "select-" + Model.Attribute;
-    <div>
-        <select size="5" style="width: 100%" id="@id" class="stringlist" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">
-            @foreach (var item in Model.Items)
+@{    
+    string id = "select-" + Model.Attribute;  
+}
+
+<div>
+    <select size="5" style="width: 100%" id="@id" class="stringlist" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">
+        @if (Model.Items != null)
+        {
+            foreach (var item in Model.Items)
             {
                 <option value="@item.Key">@item.Value</option>
             }
-        </select>
-    </div>
-}
+        }
+    </select>
+</div>
