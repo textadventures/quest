@@ -8,7 +8,9 @@
         }
     });
     $("#centerPane").scrollTop(0);
-    $(".stringlist-add").click(function () {
+    $(".stringlist-add")
+        .button()
+        .click(function () {
         $("#dialog-input-text-entry").val("");
         $("#dialog-input-text-prompt").html($(this).attr("data-prompt") + ":");
         var key = $(this).attr("data-key");
@@ -17,6 +19,8 @@
         });
         $("#dialog-input-text").dialog("open");
     });
+    $(".stringlist-edit").button();
+    $(".stringlist-delete").button();
 }
 
 function sendAdditionalAction(action) {

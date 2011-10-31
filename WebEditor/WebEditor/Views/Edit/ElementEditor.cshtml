@@ -56,7 +56,7 @@
                             }
                             else {                            
                                 <tr>
-                                    <td>@ctl.Caption:</td>
+                                    <td class="elementEditorCaption">@ctl.Caption:</td>
                                     <td>
                                         @RenderEditorControl(ctl, isFirst)
                                     </td>
@@ -103,7 +103,7 @@
     bool IsLongCaption(IEditorControl ctl)
     {
         if (ctl.Caption == null) return false;
-        return (ctl.Caption.Length > 10);
+        return (ctl.Caption.Length > 15);
     }
 
     bool IsSelfCaption(IEditorControl ctl)

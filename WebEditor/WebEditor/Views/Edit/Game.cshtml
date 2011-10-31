@@ -7,6 +7,8 @@
 
 <script type="text/javascript">
     $(function () {
+        $("#addroom").button();
+        $("#addobject").button();
         var layout = $('body').layout({
             applyDefaultStyles: true,
             north__resizable: false,
@@ -62,8 +64,8 @@
 </script>
 
 <div class="ui-layout-north">
-    <input type="button" value="Add room" />
-    <input type="button" value="Add object" />
+    <button id="addroom">Add room</button>
+    <button id="addobject">Add object</button>
 </div>
 
 <div class="ui-layout-west">

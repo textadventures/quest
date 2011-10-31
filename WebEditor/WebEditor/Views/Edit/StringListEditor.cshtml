@@ -1,6 +1,10 @@
 ﻿@model WebEditor.Models.StringList
 
-<input type="button" value="Add" class="stringlist-add" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt" />
+<span class="ui-widget-header ui-corner-all toolbar">
+    <button class="stringlist-add" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Add</button>
+    <button class="stringlist-edit" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Edit</button>
+    <button class="stringlist-delete" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Delete</button>
+</span>
 
 @if (Model.Items != null)
 {

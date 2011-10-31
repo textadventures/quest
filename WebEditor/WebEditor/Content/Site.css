@@ -41,6 +41,14 @@ section {
 {
     font-size: 130%;
 }
+.toolbar
+{
+    padding: 10px 4px;
+}
+.elementEditorCaption 
+{
+    vertical-align: top;
+}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/
