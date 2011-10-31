@@ -54,8 +54,10 @@ namespace WebEditor.Models
 
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
             {
+                if (!tab.IsTabVisible(originalElement.EditorData)) continue;
                 foreach (IEditorControl ctl in tab.Controls.Where(c => c.Attribute != null))
                 {
+                    if (!ctl.IsControlVisible(originalElement.EditorData)) continue;
                     object saveValue = null;
                     bool handled = true;    // TO DO: Temporary until all controltypes are handled
 

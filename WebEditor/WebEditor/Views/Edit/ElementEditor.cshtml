@@ -18,6 +18,10 @@
             <ul>    
                 @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
                 {
+                    if (!def.IsTabVisible(Model.EditorData))
+                    {
+                        continue;
+                    }
                     count++;
                     string id = "#elementEditorTab" + count;
                     <li><a href="@id">@def.Caption</a></li>
@@ -28,6 +32,10 @@
             }
             @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
             {
+                if (!def.IsTabVisible(Model.EditorData))
+                {
+                    continue;
+                }
                 count++;
                 string id = "elementEditorTab" + count;
                 <div id="@id">
@@ -41,6 +49,10 @@
                         </colgroup>
                         @foreach (IEditorControl ctl in def.Controls)
                         {
+                            if (!ctl.IsControlVisible(Model.EditorData))
+                            {
+                                continue;
+                            }
                             if (IsSelfCaption(ctl)) {
                                 <tr>
                                     <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst)</td>
