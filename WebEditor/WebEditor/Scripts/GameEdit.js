@@ -27,6 +27,9 @@
     $(".stringlist-delete")
         .button()
         .click(function () {
+            var key = $(this).attr("data-key");
+            var selectElement = $("#select-" + key + " option:selected");
+            sendAdditionalAction("stringlist delete " + key + ";" + selectElement.val());
         });
     $(".stringlist").dblclick(function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
@@ -34,12 +37,15 @@
 }
 
 function stringListEdit(key, prompt) {
-    var selectElement = $("#select-" + key  + " option:selected");
-    $("#dialog-input-text-entry").val(selectElement.text());
+    var selectElement = $("#select-" + key + " option:selected");
+    var oldValue = selectElement.text();
+    $("#dialog-input-text-entry").val(oldValue);
     $("#dialog-input-text-prompt").html(prompt + ":");
     $("#dialog-input-text").data("dialog_ok", function () {
-        // TO DO: Don't send if old value = new value
-        sendAdditionalAction("stringlist edit " + key + ";" + selectElement.val() + ";" + $("#dialog-input-text-entry").val());
+        var newValue = $("#dialog-input-text-entry").val();
+        if (oldValue != newValue) {
+            sendAdditionalAction("stringlist edit " + key + ";" + selectElement.val() + ";" + newValue);
+        }
     });
     $("#dialog-input-text").dialog("open");
 }

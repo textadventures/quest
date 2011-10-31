@@ -192,6 +192,10 @@ namespace WebEditor.Services
                             data = stringListParameter.Split(new[] { ';' }, 3);
                             StringListEdit(key, data[0], data[1], data[2]);
                             break;
+                        case "delete":
+                            data = stringListParameter.Split(new[] { ';' }, 2);
+                            StringListDelete(key, data[0], data[1]);
+                            break;
                     }
                     break;
             }
@@ -222,6 +226,15 @@ namespace WebEditor.Services
             IEditableList<string> list = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableList<string>;
             PrepareStringListForEditing(element, attribute, ref list);
             list.Update(key, value);
+        }
+
+        private void StringListDelete(string element, string attribute, string key)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableList<string> list = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableList<string>;
+            PrepareStringListForEditing(element, attribute, ref list);
+            list.Remove(key);
         }
 
         private void PrepareStringListForEditing(string element, string attribute, ref IEditableList<string> list)
