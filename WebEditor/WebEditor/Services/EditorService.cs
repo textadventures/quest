@@ -124,7 +124,7 @@ namespace WebEditor.Services
             }
             if (!string.IsNullOrEmpty(saveData.AdditionalAction))
             {
-                ProcessAdditionalAction(saveData.AdditionalAction);
+                ProcessAdditionalAction(key, saveData.AdditionalAction);
             }
         }
 
@@ -159,7 +159,7 @@ namespace WebEditor.Services
             };
         }
 
-        private void ProcessAdditionalAction(string action)
+        private void ProcessAdditionalAction(string key, string action)
         {
             string[] data = action.Split(new[] { ' ' }, 2);
             string cmd = data[0];
@@ -174,7 +174,7 @@ namespace WebEditor.Services
                     {
                         case "add":
                             data = stringListParameter.Split(new[] { ';' }, 2);
-                            StringListAdd("", data[0], data[1]);
+                            StringListAdd(key, data[0], data[1]);
                             break;
                     }
                     break;
@@ -183,7 +183,32 @@ namespace WebEditor.Services
 
         private void StringListAdd(string element, string attribute, string value)
         {
+            // TO DO: if (m_data.ReadOnly) return;
+            // TO DO: Validate input first
 
+            IEditableList<string> list = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableList<string>;
+            if (list == null)
+            {
+                list = m_controller.CreateNewEditableList(element, attribute, value, true);
+            }
+            else
+            {
+                PrepareStringListForEditing(element, attribute, ref list);
+                list.Add(value);
+            }
         }
+
+        private void PrepareStringListForEditing(string element, string attribute, ref IEditableList<string> list)
+        {
+            // If we're currently displaying a list which belongs to a type we inherit from,
+            // we must clone the list before we can edit it.
+
+            if (list == null) return;
+            if (list.Owner != element)
+            {
+                list = list.Clone(element, attribute);
+            }
+        }
+
     }
 }
