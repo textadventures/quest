@@ -43,7 +43,7 @@
                         {
                             if (IsSelfCaption(ctl)) {
                                 <tr>
-                                    <td colspan="2">@RenderEditorControl(ctl, isFirst)</td>
+                                    <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst)</td>
                                 </tr>
                             }
                             else if (IsLongCaption(ctl)) {
@@ -51,13 +51,13 @@
                                     <td colspan="2">@ctl.Caption:</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2">@RenderEditorControl(ctl, isFirst)</td>
+                                    <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst)</td>
                                 </tr>
                             }
                             else {                            
                                 <tr>
                                     <td class="elementEditorCaption">@ctl.Caption:</td>
-                                    <td>
+                                    <td class="elementEditorCell">
                                         @RenderEditorControl(ctl, isFirst)
                                     </td>
                                 </tr>

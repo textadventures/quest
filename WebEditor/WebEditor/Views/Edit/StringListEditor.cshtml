@@ -1,17 +1,19 @@
 ﻿@model WebEditor.Models.StringList
 
-<span class="ui-widget-header ui-corner-all toolbar">
-    <button class="stringlist-add" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Add</button>
-    <button class="stringlist-edit" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Edit</button>
-    <button class="stringlist-delete" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Delete</button>
-</span>
+<div class="ui-widget-header ui-corner-all toolbar">
+    <button type="button" class="stringlist-add" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Add</button>
+    <button type="button" class="stringlist-edit" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Edit</button>
+    <button type="button" class="stringlist-delete" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Delete</button>
+</div>
 
 @if (Model.Items != null)
 {
-    <ul>
-        @foreach (string item in Model.Items)
-        {
-            <li>@item</li>
-        }
-    </ul>
+    <div>
+        <select size="5" style="width: 100%">
+            @foreach (var item in Model.Items)
+            {
+                <option value="@item.Key">@item.Value</option>
+            }
+        </select>
+    </div>
 }

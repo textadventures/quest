@@ -43,11 +43,15 @@ section {
 }
 .toolbar
 {
-    padding: 10px 4px;
+    margin-bottom: 4px;
 }
 .elementEditorCaption 
 {
     vertical-align: top;
+}
+td.elementEditorCell
+{
+    padding-bottom: 8px;
 }
 
 /* Styles for basic forms

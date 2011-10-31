@@ -152,11 +152,22 @@ namespace WebEditor.Services
         public Models.StringList GetStringList(string key, IEditorControl ctl)
         {
             IEditableList<string> value = (IEditableList<string>)m_controller.GetEditorData(key).GetAttribute(ctl.Attribute);
+
+            IDictionary<string, string> items = null;
+            if (value != null)
+            {
+                items = new Dictionary<string, string>();
+                foreach (var item in value.Items)
+                {
+                    items.Add(item.Key, item.Value.Value);
+                }
+            }
+
             return new Models.StringList
             {
                 Attribute = ctl.Attribute,
                 EditPrompt = ctl.GetString("editprompt"),
-                Items = (value == null) ? null : value.Items.Values.Select(v => v.Value)
+                Items = items
             };
         }
 

@@ -9,6 +9,6 @@ namespace WebEditor.Models
     {
         public string Attribute { get; set; }
         public string EditPrompt { get; set; }
-        public IEnumerable<string> Items { get; set; }
+        public IDictionary<string, string> Items { get; set; }
     }
 }
