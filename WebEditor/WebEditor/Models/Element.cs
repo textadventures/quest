@@ -41,6 +41,8 @@ namespace WebEditor.Models
             result.RedirectToElement = redirectToElement;
 
             var editorDictionary = controllerContext.RequestContext.HttpContext.Session["EditorDictionary"] as Dictionary<int, Services.EditorService>;
+
+            // TO DO: This throws exception if session has expired (editorDictionary = null)
             Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key);
 
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)

@@ -1,5 +1,7 @@
 ﻿@model WebEditor.Models.StringList
 
+<input type="button" value="Add" class="stringlist-add" data-key="@Model.Attribute" />
+
 @if (Model.Items != null)
 {
     <ul>

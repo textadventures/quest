@@ -7,6 +7,7 @@ namespace WebEditor.Models
 {
     public class StringList
     {
+        public string Attribute { get; set; }
         public IEnumerable<string> Items { get; set; }
     }
 }

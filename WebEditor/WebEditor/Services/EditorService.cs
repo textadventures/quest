@@ -147,7 +147,10 @@ namespace WebEditor.Services
         public Models.StringList GetStringList(string key, string attribute)
         {
             IEditableList<string> value = (IEditableList<string>)m_controller.GetEditorData(key).GetAttribute(attribute);
-            return new Models.StringList { Items = (value == null) ? null : value.Items.Values.Select(v => v.Value) };
+            return new Models.StringList {
+                Attribute = attribute,
+                Items = (value == null) ? null : value.Items.Values.Select(v => v.Value)
+            };
         }
     }
 }
