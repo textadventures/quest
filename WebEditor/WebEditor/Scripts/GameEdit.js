@@ -34,6 +34,25 @@
     $(".stringlist").dblclick(function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
+    $(".stringlist-edit").each(function () {
+        $(this).attr("disabled", "disabled");
+    });
+    $(".stringlist-delete").each(function () {
+        $(this).attr("disabled", "disabled");
+    });
+    $(".stringlist").change(function () {
+        var editButton = $("#stringlist-" + $(this).attr("data-key") + "-edit");
+        var deleteButton = $("#stringlist-" + $(this).attr("data-key") + "-delete");
+        var selectElement = $("#" + this.id + " option:selected");
+        if (selectElement.val() === undefined) {
+            editButton.attr("disabled", "disabled");
+            deleteButton.attr("disabled", "disabled");
+        }
+        else {
+            editButton.removeAttr("disabled");
+            deleteButton.removeAttr("disabled");
+        }
+    });
 }
 
 function stringListEdit(key, prompt) {

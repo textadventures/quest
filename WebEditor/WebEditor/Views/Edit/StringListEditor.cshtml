@@ -1,9 +1,14 @@
 ﻿@model WebEditor.Models.StringList
 
 <div class="ui-widget-header ui-corner-all toolbar">
-    <button type="button" class="stringlist-add" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Add</button>
-    <button type="button" class="stringlist-edit" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Edit</button>
-    <button type="button" class="stringlist-delete" data-key="@Model.Attribute">Delete</button>
+    @{
+        string addId = "stringlist-" + Model.Attribute + "-add";
+        string editId = "stringlist-" + Model.Attribute + "-edit";
+        string deleteId = "stringlist-" + Model.Attribute + "-delete";
+    }
+    <button type="button" class="stringlist-add" id="@addId" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Add</button>
+    <button type="button" class="stringlist-edit" id="@editId" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt">Edit</button>
+    <button type="button" class="stringlist-delete" id="@deleteId" data-key="@Model.Attribute">Delete</button>
 </div>
 
 @if (Model.Items != null)
