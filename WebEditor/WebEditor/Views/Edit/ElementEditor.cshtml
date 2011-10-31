@@ -48,7 +48,7 @@
                             }
                             else if (IsLongCaption(ctl)) {
                                 <tr>
-                                    <td colspan="2">@ctl.Caption</td>
+                                    <td colspan="2">@ctl.Caption:</td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">@RenderEditorControl(ctl, isFirst)</td>
@@ -56,7 +56,7 @@
                             }
                             else {                            
                                 <tr>
-                                    <td>@ctl.Caption</td>
+                                    <td>@ctl.Caption:</td>
                                     <td>
                                         @RenderEditorControl(ctl, isFirst)
                                     </td>
@@ -84,7 +84,7 @@
             @Html.TextBox(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), new { style = "width: 100%" })
             break;
         case "list":
-            @Html.Action("EditStringList", new { id = Model.GameId, key = Model.Key, attribute = ctl.Attribute })
+            @Html.Action("EditStringList", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
         case "label":
             <div class="elementEditorLabel">@ctl.Caption</div>

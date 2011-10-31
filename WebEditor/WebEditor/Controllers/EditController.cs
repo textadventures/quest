@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Configuration;
+using AxeSoftware.Quest;
 
 namespace WebEditor.Controllers
 {
@@ -43,9 +44,9 @@ namespace WebEditor.Controllers
             return EditElement(element.GameId, element.RedirectToElement, tab);
         }
 
-        public PartialViewResult EditStringList(int id, string key, string attribute)
+        public PartialViewResult EditStringList(int id, string key, IEditorControl control)
         {
-            return PartialView("StringListEditor", EditorDictionary[id].GetStringList(key, attribute));
+            return PartialView("StringListEditor", EditorDictionary[id].GetStringList(key, control));
         }
 
         private Dictionary<int, Services.EditorService> EditorDictionary

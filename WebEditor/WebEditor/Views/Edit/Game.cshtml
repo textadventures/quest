@@ -16,6 +16,7 @@
             autoOpen: false,
             modal: true,
             resizable: false,
+            width: 400,
             buttons: {
                 "OK": function () {
                     $(this).dialog("close");
@@ -24,6 +25,12 @@
                 "Cancel": function () {
                     $(this).dialog("close");
                 }
+            }
+        });
+        $("#dialog-input-text").keyup(function (e) {
+            if (e.keyCode == 13) {
+                $(this).dialog("close");
+                $(this).data("dialog_ok")();
             }
         });
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {

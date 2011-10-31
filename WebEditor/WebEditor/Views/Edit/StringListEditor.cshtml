@@ -1,6 +1,6 @@
 ﻿@model WebEditor.Models.StringList
 
-<input type="button" value="Add" class="stringlist-add" data-key="@Model.Attribute" />
+<input type="button" value="Add" class="stringlist-add" data-key="@Model.Attribute" data-prompt="@Model.EditPrompt" />
 
 @if (Model.Items != null)
 {

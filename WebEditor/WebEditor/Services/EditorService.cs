@@ -149,12 +149,13 @@ namespace WebEditor.Services
             throw new NotImplementedException();
         }
 
-        public Models.StringList GetStringList(string key, string attribute)
+        public Models.StringList GetStringList(string key, IEditorControl ctl)
         {
-            IEditableList<string> value = (IEditableList<string>)m_controller.GetEditorData(key).GetAttribute(attribute);
+            IEditableList<string> value = (IEditableList<string>)m_controller.GetEditorData(key).GetAttribute(ctl.Attribute);
             return new Models.StringList
             {
-                Attribute = attribute,
+                Attribute = ctl.Attribute,
+                EditPrompt = ctl.GetString("editprompt"),
                 Items = (value == null) ? null : value.Items.Values.Select(v => v.Value)
             };
         }
