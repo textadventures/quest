@@ -379,17 +379,34 @@
     </control>
   </editor>
 
+  <!-- synchronous wait function is deprecated, so can no longer be added, but still needs a friendly display for older games -->
   <editor>
     <appliesto>(function)WaitForKeyPress</appliesto>
     <display>Wait for key press</display>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Wait for key press</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>wait</appliesto>
+    <display>Wait for key press</display>
     <category>Output</category>
-    <create>WaitForKeyPress</create>
+    <create>wait { }</create>
     <add>Wait for key press</add>
     <advanced/>
 
     <control>
       <controltype>label</controltype>
-      <caption>Wait for key press</caption>
+      <caption>Wait for key press, then</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>0</attribute>
+      <caption>run script:</caption>
     </control>
   </editor>
 

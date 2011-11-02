@@ -774,16 +774,42 @@ namespace AxeSoftware.Quest
             ChangeThreadState(ThreadState.Working);
         }
 
+        private IScript m_waitCallback = null;
+        private Context m_waitCallbackContext = null;
+
+        public void StartWaitAsync(IScript callback, Context c)
+        {
+            m_waitCallback = callback;
+            m_waitCallbackContext = c;
+            m_playerUI.DoWait();
+        }
+
         public void FinishWait()
         {
-            if (m_state == GameState.Finished) return;
-            DoInNewThreadAndWait(() =>
+            if (m_waitCallback != null)
             {
-                lock (m_waitForResponseLock)
+                IScript script = m_waitCallback;
+                Context context = m_waitCallbackContext;
+                m_waitCallback = null;
+                m_waitCallbackContext = null;
+                script.Execute(context);
+                if (State != GameState.Finished)
                 {
-                    Monitor.Pulse(m_waitForResponseLock);
+                    UpdateLists();
                 }
-            });
+                ChangeThreadState(ThreadState.Ready);
+            }
+            else
+            {
+                if (m_state == GameState.Finished) return;
+                DoInNewThreadAndWait(() =>
+                {
+                    lock (m_waitForResponseLock)
+                    {
+                        Monitor.Pulse(m_waitForResponseLock);
+                    }
+                });
+            }
         }
 
         public void StartPause(int ms)
