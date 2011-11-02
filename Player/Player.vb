@@ -38,6 +38,7 @@ Public Class Player
     Private m_recordedWalkthrough As List(Of String)
     Private m_allowColourChange As Boolean = True
     Private m_allowFontChange As Boolean = True
+    Private m_playSounds As Boolean = True
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -659,7 +660,7 @@ Public Class Player
                             Throw New Exception("Can't play sound that is both synchronous and looped")
                         End If
 
-                        If System.IO.File.Exists(filename) Then
+                        If System.IO.File.Exists(filename) And PlaySounds Then
                             m_loopSound = looped
                             m_soundPlaying = True
 
@@ -1083,5 +1084,14 @@ Public Class Player
             SetPlayerOverrideFont(m_playerOverrideFontFamily, m_playerOverrideFontSize, m_playerOverrideFontStyle)
         End If
     End Sub
+
+    Public Property PlaySounds As Boolean
+        Get
+            Return m_playSounds
+        End Get
+        Set(value As Boolean)
+            m_playSounds = value
+        End Set
+    End Property
 
 End Class

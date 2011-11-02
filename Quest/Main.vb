@@ -143,6 +143,7 @@ Public Class Main
                         Options.Instance.GetStringValue(OptionNames.FontFamily),
                         Options.Instance.GetSingleValue(OptionNames.FontSize),
                         DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
+                ctlPlayer.PlaySounds = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
                 ctlPlayer.Initialise(game)
                 ctlPlayer.Focus()
             End If
@@ -407,6 +408,8 @@ Public Class Main
                 ctlLauncher.DownloadFolder = Options.Instance.GetStringValue(OptionNames.GamesFolder)
             Case OptionNames.ShowSandpit
                 ctlLauncher.ShowSandpit = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
+            Case OptionNames.PlaySounds
+                ctlPlayer.PlaySounds = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
         End Select
     End Sub
 

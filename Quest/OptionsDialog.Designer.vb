@@ -39,11 +39,12 @@ Partial Class OptionsDialog
         Me.cmdLink = New System.Windows.Forms.Button()
         Me.chkUseDefaultColours = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.txtGamesFolder = New System.Windows.Forms.TextBox()
-        Me.cmdGamesFolder = New System.Windows.Forms.Button()
         Me.chkShowSandpit = New System.Windows.Forms.CheckBox()
+        Me.cmdGamesFolder = New System.Windows.Forms.Button()
+        Me.txtGamesFolder = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.dlgFolderBrowser = New System.Windows.Forms.FolderBrowserDialog()
+        Me.chkPlaySounds = New System.Windows.Forms.CheckBox()
         Me.ctlTabs.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
@@ -53,7 +54,7 @@ Partial Class OptionsDialog
         '
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(418, 325)
+        Me.cmdCancel.Location = New System.Drawing.Point(418, 357)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
         Me.cmdCancel.TabIndex = 9
@@ -63,7 +64,7 @@ Partial Class OptionsDialog
         'cmdOK
         '
         Me.cmdOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdOK.Location = New System.Drawing.Point(337, 325)
+        Me.cmdOK.Location = New System.Drawing.Point(337, 357)
         Me.cmdOK.Name = "cmdOK"
         Me.cmdOK.Size = New System.Drawing.Size(75, 23)
         Me.cmdOK.TabIndex = 8
@@ -85,11 +86,12 @@ Partial Class OptionsDialog
         Me.ctlTabs.Location = New System.Drawing.Point(12, 12)
         Me.ctlTabs.Name = "ctlTabs"
         Me.ctlTabs.SelectedIndex = 0
-        Me.ctlTabs.Size = New System.Drawing.Size(481, 284)
+        Me.ctlTabs.Size = New System.Drawing.Size(481, 316)
         Me.ctlTabs.TabIndex = 12
         '
         'TabPage1
         '
+        Me.TabPage1.Controls.Add(Me.chkPlaySounds)
         Me.TabPage1.Controls.Add(Me.cmdFont)
         Me.TabPage1.Controls.Add(Me.lblFontSample)
         Me.TabPage1.Controls.Add(Me.chkUseDefaultFont)
@@ -103,7 +105,7 @@ Partial Class OptionsDialog
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(473, 258)
+        Me.TabPage1.Size = New System.Drawing.Size(473, 290)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Player"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -215,24 +217,15 @@ Partial Class OptionsDialog
         Me.TabPage2.Text = "Game Browser"
         Me.TabPage2.UseVisualStyleBackColor = True
         '
-        'Label1
+        'chkShowSandpit
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(7, 7)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(104, 13)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "Download games to:"
-        '
-        'txtGamesFolder
-        '
-        Me.txtGamesFolder.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtGamesFolder.Location = New System.Drawing.Point(10, 24)
-        Me.txtGamesFolder.Name = "txtGamesFolder"
-        Me.txtGamesFolder.ReadOnly = True
-        Me.txtGamesFolder.Size = New System.Drawing.Size(376, 20)
-        Me.txtGamesFolder.TabIndex = 1
+        Me.chkShowSandpit.AutoSize = True
+        Me.chkShowSandpit.Location = New System.Drawing.Point(10, 59)
+        Me.chkShowSandpit.Name = "chkShowSandpit"
+        Me.chkShowSandpit.Size = New System.Drawing.Size(134, 17)
+        Me.chkShowSandpit.TabIndex = 3
+        Me.chkShowSandpit.Text = "Show sandpit category"
+        Me.chkShowSandpit.UseVisualStyleBackColor = True
         '
         'cmdGamesFolder
         '
@@ -244,15 +237,34 @@ Partial Class OptionsDialog
         Me.cmdGamesFolder.Text = "Change..."
         Me.cmdGamesFolder.UseVisualStyleBackColor = True
         '
-        'chkShowSandpit
+        'txtGamesFolder
         '
-        Me.chkShowSandpit.AutoSize = True
-        Me.chkShowSandpit.Location = New System.Drawing.Point(10, 59)
-        Me.chkShowSandpit.Name = "chkShowSandpit"
-        Me.chkShowSandpit.Size = New System.Drawing.Size(134, 17)
-        Me.chkShowSandpit.TabIndex = 3
-        Me.chkShowSandpit.Text = "Show sandpit category"
-        Me.chkShowSandpit.UseVisualStyleBackColor = True
+        Me.txtGamesFolder.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtGamesFolder.Location = New System.Drawing.Point(10, 24)
+        Me.txtGamesFolder.Name = "txtGamesFolder"
+        Me.txtGamesFolder.ReadOnly = True
+        Me.txtGamesFolder.Size = New System.Drawing.Size(376, 20)
+        Me.txtGamesFolder.TabIndex = 1
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(7, 7)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(104, 13)
+        Me.Label1.TabIndex = 0
+        Me.Label1.Text = "Download games to:"
+        '
+        'chkPlaySounds
+        '
+        Me.chkPlaySounds.AutoSize = True
+        Me.chkPlaySounds.Location = New System.Drawing.Point(6, 257)
+        Me.chkPlaySounds.Name = "chkPlaySounds"
+        Me.chkPlaySounds.Size = New System.Drawing.Size(83, 17)
+        Me.chkPlaySounds.TabIndex = 22
+        Me.chkPlaySounds.Text = "Play &sounds"
+        Me.chkPlaySounds.UseVisualStyleBackColor = True
         '
         'OptionsDialog
         '
@@ -260,7 +272,7 @@ Partial Class OptionsDialog
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(505, 360)
+        Me.ClientSize = New System.Drawing.Size(505, 392)
         Me.Controls.Add(Me.ctlTabs)
         Me.Controls.Add(Me.cmdOK)
         Me.Controls.Add(Me.cmdCancel)
@@ -300,4 +312,5 @@ Partial Class OptionsDialog
     Friend WithEvents cmdGamesFolder As System.Windows.Forms.Button
     Friend WithEvents chkShowSandpit As System.Windows.Forms.CheckBox
     Friend WithEvents dlgFolderBrowser As System.Windows.Forms.FolderBrowserDialog
+    Friend WithEvents chkPlaySounds As System.Windows.Forms.CheckBox
 End Class

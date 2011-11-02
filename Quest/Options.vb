@@ -11,6 +11,7 @@ Public Enum OptionNames
     FontStyle
     GamesFolder
     ShowSandpit
+    PlaySounds
 End Enum
 
 Public Class Options
@@ -37,7 +38,8 @@ Public Class Options
                         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                         "Quest Games",
                         "Downloaded Games")},
-        {OptionNames.ShowSandpit, False.ToString()}
+        {OptionNames.ShowSandpit, False.ToString()},
+        {OptionNames.PlaySounds, True.ToString()}
     }
 
     Public Event OptionChanged(optionName As OptionNames)
