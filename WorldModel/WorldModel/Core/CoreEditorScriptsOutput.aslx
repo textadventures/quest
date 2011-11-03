@@ -461,6 +461,33 @@
   </editor>
 
   <editor>
+    <appliesto>ask</appliesto>
+    <display>Ask a question</display>
+    <category>Output</category>
+    <create>ask ("") { }</create>
+    <add>Ask a question</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Ask question</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>1</attribute>
+      <caption>After choosing, run script:</caption>
+      <breakbefore/>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>insert</appliesto>
     <display>Insert HTML from file #0</display>
     <category>Output</category>

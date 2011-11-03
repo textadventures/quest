@@ -762,6 +762,8 @@ namespace AxeSoftware.Quest
 
         public void StartWait()
         {
+            m_waitCallback = null;
+            m_waitCallbackContext = null;
             m_playerUI.DoWait();
 
             ChangeThreadState(ThreadState.Waiting);
@@ -1318,6 +1320,8 @@ namespace AxeSoftware.Quest
 
         internal bool ShowQuestion(string caption)
         {
+            m_questionCallback = null;
+            m_questionCallbackContext = null;
             m_playerUI.ShowQuestion(caption);
 
             ChangeThreadState(ThreadState.Waiting);
@@ -1332,17 +1336,44 @@ namespace AxeSoftware.Quest
             return m_questionResponse;
         }
 
+        private IScript m_questionCallback = null;
+        private Context m_questionCallbackContext = null;
+
+        internal void ShowQuestionAsync(string caption, IScript callback, Context c)
+        {
+            m_questionCallback = callback;
+            m_questionCallbackContext = c;
+            m_playerUI.ShowQuestion(caption);
+        }
+
         public void SetQuestionResponse(bool response)
         {
-            DoInNewThreadAndWait(() =>
+            if (m_questionCallback != null)
             {
-                m_questionResponse = response;
-
-                lock (m_waitForResponseLock)
+                m_questionCallbackContext.Parameters["result"] = response;
+                IScript script = m_questionCallback;
+                Context context = m_questionCallbackContext;
+                m_menuCallback = null;
+                m_menuCallbackContext = null;
+                script.Execute(context);
+                if (State != GameState.Finished)
                 {
-                    Monitor.Pulse(m_waitForResponseLock);
+                    UpdateLists();
                 }
-            });
+                ChangeThreadState(ThreadState.Ready);
+            }
+            else
+            {
+                DoInNewThreadAndWait(() =>
+                {
+                    m_questionResponse = response;
+
+                    lock (m_waitForResponseLock)
+                    {
+                        Monitor.Pulse(m_waitForResponseLock);
+                    }
+                });
+            }
         }
 
         public bool CreatePackage(string filename, bool includeWalkthrough, out string error)

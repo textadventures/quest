@@ -119,6 +119,7 @@
     <Compile Include="QuestDictionary.cs" />
     <Compile Include="QuestList.cs" />
     <Compile Include="RegexCache.cs" />
+    <Compile Include="Scripts\AskScript.cs" />
     <Compile Include="Scripts\CreateScript.cs" />
     <Compile Include="Scripts\DelegateImplementation.cs" />
     <Compile Include="Scripts\DestroyScript.cs" />
