@@ -798,6 +798,7 @@ namespace AxeSoftware.Quest
                     UpdateLists();
                 }
                 ChangeThreadState(ThreadState.Ready);
+                SendNextTimerRequest();
             }
             else
             {
