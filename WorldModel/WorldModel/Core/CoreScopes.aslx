@@ -170,7 +170,9 @@
     <![CDATA[
     result = NewObjectList()
     if (obj.parent <> null) {
-      result = obj.parent + ListParents(obj.parent)
+      parent_as_list = NewObjectList()
+      list add (parent_as_list, obj.parent)
+      result = ListCombine(parent_as_list, ListParents(obj.parent))
     }
     return (result)
     ]]>
