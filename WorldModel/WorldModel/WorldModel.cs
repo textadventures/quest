@@ -661,10 +661,26 @@ namespace AxeSoftware.Quest
             get { return m_undoLogger; }
         }
 
+        private void UpdateStatusVariables()
+        {
+            if (m_elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
+            {
+                try
+                {
+                    RunProcedure("UpdateStatusAttributes");
+                }
+                catch (Exception ex)
+                {
+                    LogException(ex);
+                }
+            }
+        }
+
         internal void UpdateLists()
         {
             UpdateObjectsList();
             UpdateExitsList();
+            UpdateStatusVariables();
         }
 
         internal void UpdateObjectsList()
@@ -1289,18 +1305,6 @@ namespace AxeSoftware.Quest
                 }
 
                 UpdateLists();
-
-                if (m_elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
-                {
-                    try
-                    {
-                        RunProcedure("UpdateStatusAttributes");
-                    }
-                    catch (Exception ex)
-                    {
-                        LogException(ex);
-                    }
-                }
 
                 ChangeThreadState(ThreadState.Ready);
             });
