@@ -68,6 +68,7 @@ namespace AxeSoftware.Quest
         {
             string currentTagValue = "";
             string currentVerbs = "";
+            string currentCommand = "";
             string currentHref = "";
             bool generatingLink = false;
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -95,6 +96,10 @@ namespace AxeSoftware.Quest
                             case "object":
                                 generatingLink = true;
                                 currentVerbs = reader.GetAttribute("verbs");
+                                break;
+                            case "command":
+                                generatingLink = true;
+                                currentCommand = reader.GetAttribute("input");
                                 break;
                             case "br":
                                 WriteText(FormatText("<br />"));
@@ -147,6 +152,9 @@ namespace AxeSoftware.Quest
                             case "object":
                                 AddLink(currentTagValue, null, currentVerbs);
                                 generatingLink = false;
+                                break;
+                            case "command":
+                                AddLink(currentTagValue, currentCommand, null);
                                 break;
                             case "b":
                                 WriteText("</b>");
