@@ -357,6 +357,7 @@ namespace AxeSoftware.Quest
                 m_menuCallback = null;
                 m_menuCallbackContext = null;
                 script.Execute(context);
+                TryFinishTurn();
                 if (State != GameState.Finished)
                 {
                     UpdateLists();
@@ -565,6 +566,7 @@ namespace AxeSoftware.Quest
                     try
                     {
                         RunProcedure("HandleCommand", new Parameters("command", command), false);
+                        TryFinishTurn();
                     }
                     catch (Exception ex)
                     {
@@ -811,6 +813,7 @@ namespace AxeSoftware.Quest
                 m_waitCallback = null;
                 m_waitCallbackContext = null;
                 script.Execute(context);
+                TryFinishTurn();
                 if (State != GameState.Finished)
                 {
                     UpdateLists();
@@ -1357,9 +1360,10 @@ namespace AxeSoftware.Quest
                 m_questionCallbackContext.Parameters["result"] = response;
                 IScript script = m_questionCallback;
                 Context context = m_questionCallbackContext;
-                m_menuCallback = null;
-                m_menuCallbackContext = null;
+                m_questionCallback = null;
+                m_questionCallbackContext = null;
                 script.Execute(context);
+                TryFinishTurn();
                 if (State != GameState.Finished)
                 {
                     UpdateLists();
@@ -1377,6 +1381,26 @@ namespace AxeSoftware.Quest
                         Monitor.Pulse(m_waitForResponseLock);
                     }
                 });
+            }
+        }
+
+        private void TryFinishTurn()
+        {
+            if (m_menuCallback == null
+                && m_questionCallback == null
+                && m_waitCallback == null)
+            {
+                if (m_elements.ContainsKey(ElementType.Function, "FinishTurn"))
+                {
+                    try
+                    {
+                        RunProcedure("FinishTurn");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogException(ex);
+                    }
+                }
             }
         }
 

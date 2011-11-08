@@ -291,6 +291,9 @@
       varlist = Populate(thiscommand.pattern, command, thiscommand.name)
       HandleSingleCommandPattern (command, thiscommand, varlist)
     }
+  </function>
+
+  <function name="FinishTurn">
     RunTurnScripts
     UpdateStatusAttributes
   </function>
