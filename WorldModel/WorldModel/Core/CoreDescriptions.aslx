@@ -219,4 +219,8 @@
     return (result)
   ]]>
   </function>
+
+  <function name="ObjectLink" type="string" parameters="obj">
+    return (GetTaggedName(obj, "object", obj.displayverbs))
+  </function>
 </library>
