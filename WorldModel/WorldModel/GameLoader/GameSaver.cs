@@ -256,7 +256,9 @@ namespace AxeSoftware.Quest
 
             protected void SaveFields(GameXmlWriter writer, Element e)
             {
-                foreach (Element includedType in e.Fields.Types)
+                // reverse Types list when saving as it's a Stack, and we want to
+                // save types in the same order as they were loaded
+                foreach (Element includedType in e.Fields.Types.Reverse())
                 {
                     if (CanSaveTypeName(writer, includedType.Name, e))
                     {
