@@ -155,6 +155,7 @@ namespace AxeSoftware.Quest
                                 break;
                             case "command":
                                 AddLink(currentTagValue, currentCommand, null);
+                                generatingLink = false;
                                 break;
                             case "b":
                                 WriteText("</b>");
