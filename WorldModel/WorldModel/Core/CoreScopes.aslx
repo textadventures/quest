@@ -5,7 +5,7 @@
   
   <function name="ScopeInventory" type="objectlist">
     result = NewObjectList()
-    foreach (obj, AllObjects()) {
+    foreach (obj, GetAllChildObjects(player)) {
       if (ContainsVisible(player, obj)) {
         list add(result, obj)
       }
@@ -15,7 +15,7 @@
 
   <function name="ScopeReachableInventory" type="objectlist">
     result = NewObjectList()
-    foreach (obj, AllObjects()) {
+    foreach (obj, GetAllChildObjects(player)) {
       if (ContainsReachable(player, obj)) {
         list add(result, obj)
       }
@@ -68,7 +68,7 @@
     exclude = ScopeReachableForRoom(room)
     list add(exclude, player)
     newParent = GetNonTransparentParent(room)
-    foreach (obj, AllObjects()) {
+    foreach (obj, GetAllChildObjects(newParent)) {
       if (ContainsVisible(newParent, obj) and not ListContains(exclude, obj)) {
         list add(result, obj)
       }
@@ -97,7 +97,7 @@
   <function name="ScopeReachableNotHeldForRoom" type="objectlist" parameters="room">    
   <![CDATA[
     result = NewObjectList()
-    foreach (obj, AllObjects()) {
+    foreach (obj, GetAllChildObjects(room)) {
       if (ContainsReachable(room, obj) and obj <> player and not Contains(player, obj)) {
         list add(result, obj)
       }

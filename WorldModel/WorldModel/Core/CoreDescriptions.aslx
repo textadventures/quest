@@ -113,26 +113,16 @@
   ]]>
   </function>
 
-  <function name="GetDirectChildren" type="objectlist" parameters="parent">
+  <function name="RemoveSceneryObjects" type="objectlist" parameters="list">
     <![CDATA[
     result = NewObjectList()
-    foreach (obj, AllObjects()) {
-      if (obj.parent = parent and obj <> player) {
+    foreach (obj, list) {
+      if (not obj.scenery and obj <> player) {
         list add (result, obj)
       }
     }
     return (result)
     ]]>
-  </function>
-
-  <function name="RemoveSceneryObjects" type="objectlist" parameters="list">
-    result = NewObjectList()
-    foreach (obj, list) {
-      if (not obj.scenery) {
-        list add (result, obj)
-      }
-    }
-    return (result)
   </function>
   
   <function name="FormatExitList" type="string" parameters="preList, list, preFinal, postList">

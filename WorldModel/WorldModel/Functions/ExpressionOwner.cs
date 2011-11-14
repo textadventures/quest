@@ -466,5 +466,28 @@ namespace AxeSoftware.Quest.Functions
             result.Remove(element);
             return result;
         }
+
+        public QuestList<Element> GetAllChildObjects(Element element)
+        {
+            return GetAllChildren(element, ObjectType.Object);
+        }
+
+        private QuestList<Element> GetAllChildren(Element element, ObjectType type)
+        {
+            QuestList<Element> result = new QuestList<Element>();
+            foreach (Element child in m_worldModel.Elements.GetDirectChildren(element).Where(e => e.ElemType == ElementType.Object && e.Type == type))
+            {
+                result.Add(child);
+                result.AddRange(GetAllChildren(child, type));
+            }
+            return result;
+        }
+
+        public QuestList<Element> GetDirectChildren(Element element)
+        {
+            return new QuestList<Element>(
+                m_worldModel.Elements.GetDirectChildren(element)
+                .Where(e => e.ElemType == ElementType.Object && e.Type == ObjectType.Object));
+        }
     }
 }
