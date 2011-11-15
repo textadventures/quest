@@ -474,7 +474,6 @@ namespace AxeSoftware.Quest
             loader.LoadStatus += loader_LoadStatus;
             m_state = GameState.Loading;
             bool success = m_filename == null ? true : loader.Load(m_filename);
-            ResourcesFolder = loader.ResourcesFolder;
             DebugEnabled = !loader.IsCompiledFile;
             m_state = success ? GameState.Running : GameState.Finished;
             m_errors = loader.Errors;
@@ -1410,7 +1409,7 @@ namespace AxeSoftware.Quest
             return packager.CreatePackage(filename, includeWalkthrough, out error);
         }
 
-        public string ResourcesFolder { get; private set; }
+        public string ResourcesFolder { get; internal set; }
         public bool DebugEnabled { get; private set; }
 
         private static List<string> s_functionNames = null;

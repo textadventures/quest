@@ -136,7 +136,7 @@ namespace AxeSoftware.Quest
         {
             PackageReader packageReader = new PackageReader();
             var result = packageReader.LoadPackage(filename);
-            ResourcesFolder = result.Folder;
+            WorldModel.ResourcesFolder = result.Folder;
             IsCompiledFile = true;
             return result.GameFile;
         }
@@ -400,7 +400,6 @@ namespace AxeSoftware.Quest
             }
         }
 
-        public string ResourcesFolder { get; set; }
         public bool IsCompiledFile { get; private set; }
     }
 }
