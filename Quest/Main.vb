@@ -12,6 +12,8 @@ Public Class Main
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
 
+        AddHandler System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException, AddressOf CurrentDispatcher_UnhandledException
+
         ' Add any initialization after the InitializeComponent() call.
         ctlLauncher.QuestVersion = My.Application.Info.Version
         ctlPlayer.Visible = False
@@ -25,6 +27,13 @@ Public Class Main
         End If
 
         AddHandler Options.Instance.OptionChanged, AddressOf OptionsChanged
+    End Sub
+
+    Private Sub CurrentDispatcher_UnhandledException(sender As Object, e As System.Windows.Threading.DispatcherUnhandledExceptionEventArgs)
+        Dim frmError As New ErrorHandler
+        frmError.ErrorText = e.Exception.ToString()
+        frmError.ShowDialog()
+        e.Handled = True
     End Sub
 
     Private Sub InitialiseMenuHandlers()
