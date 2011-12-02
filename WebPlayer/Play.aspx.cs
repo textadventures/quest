@@ -359,5 +359,36 @@ namespace WebPlayer
                 return (user != null);
             }
         }
+
+        protected string GetHead()
+        {
+            IHTMLManager htmlManager = HTMLManagerLoader.GetHTMLManager();
+            if (htmlManager != null)
+            {
+                return htmlManager.GetHead();
+            }
+            return null;
+        }
+
+        protected string GetBodyHeader()
+        {
+            IHTMLManager htmlManager = HTMLManagerLoader.GetHTMLManager();
+            if (htmlManager != null)
+            {
+                return htmlManager.GetBodyHeader();
+            }
+            return null;
+        }
+
+        protected string GetBodyFooter()
+        {
+            IHTMLManager htmlManager = HTMLManagerLoader.GetHTMLManager();
+            if (htmlManager != null)
+            {
+                return htmlManager.GetBodyFooter();
+            }
+            return null;
+        }
+
     }
 }

@@ -14,8 +14,10 @@
     <link rel="Stylesheet" type="text/css" href="js/jjmenu.css" />
     <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
+    <% Response.Write(GetHead()); %>
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
+    <% Response.Write(GetBodyHeader()); %>
     <form id="playerform" runat="server" defaultbutton="cmdSubmit">
     <asp:ScriptManager ID="ctlScriptManager" runat="server">
     </asp:ScriptManager>
@@ -176,5 +178,6 @@
     </div>
     <div id="audio_embed">
     </div>
+    <% Response.Write(GetBodyFooter()); %>
 </body>
 </html>

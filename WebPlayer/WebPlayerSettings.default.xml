@@ -18,6 +18,9 @@
   <!-- <add key="FileManagerType" value="SomeFileManager.FileManager, SomeFileManager"/> -->
   <!-- <add key="GameSaveFolder" value="C:\Path\To\Save Game Folder"/> -->
 
+  <!-- To enable customise output of Play.aspx, specify the type name of a class the implements IHTMLManager -->
+  <!-- <add key="HTMLManagerType" value="SomeHTMLManager.HTMLManager, SomeHTMLManager"/> -->
+
   <!-- DEBUG PLUGINS -->
 
   <!-- OR, when debugging, use the Debug Plugins -->
@@ -26,6 +29,7 @@
   <!-- <add key="GameSaveFolder" value="C:\Path\To\Save Game Folder"/> -->
   <!-- <add key="DebugFileManagerFile" value="C:\Path\To\some game file.aslx"/> -->
   <!-- <add key="DebugFileManagerSaveFile" value="C:\Path\To\some game file.quest-save"/> -->
+  <!-- <add key="HTMLManagerType" value="WebPlayer.DebugHTMLManager, WebPlayer"/> -->
 
 </appSettings>
 
