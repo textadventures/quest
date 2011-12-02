@@ -514,8 +514,7 @@ namespace AxeSoftware.Quest
                     UpdateLists();
                     if (m_loadedFromSaved)
                     {
-                        Print(string.Format("Loaded saved game in {0}", m_saveFilename));
-                        Print(string.Format("  (original game at {0})", m_filename));
+                        Print("Loaded saved game");
                     }
                 }
                 catch (Exception ex)
