@@ -902,15 +902,14 @@ namespace AxeSoftware.Quest
                 Element jsRef = WorldModel.GetElementFactory(ElementType.Javascript).Create();
                 jsRef.Fields[FieldDefinitions.Anonymous] = true;
                 string file = GameLoader.GetTemplateAttribute(reader, "src");
-                if (!WorldModel.EditMode)
+
+                if (WorldModel.Version == WorldModelVersion.v500)
                 {
-                    string path = WorldModel.GetExternalPath(file);
-                    jsRef.Fields[FieldDefinitions.Src] = path;
+                    // Quest 5.0 would incorrectly save a full path name. We only want the filename.
+                    file = System.IO.Path.GetFileName(file);
                 }
-                else
-                {
-                    jsRef.Fields[FieldDefinitions.Src] = file;
-                }
+
+                jsRef.Fields[FieldDefinitions.Src] = file;
 
                 return jsRef;
             }
@@ -948,7 +947,7 @@ namespace AxeSoftware.Quest
                 string file = GameLoader.GetTemplateAttribute(reader, "src");
                 resourceRef.Fields[FieldDefinitions.Src] = file;
 
-                return resourceRef;   
+                return resourceRef;
             }
         }
     }

@@ -28,6 +28,12 @@ namespace AxeSoftware.Quest
         User
     }
 
+    public enum WorldModelVersion
+    {
+        v500,
+        v510
+    }
+
     public class WorldModel : IASL, IASLDebug, IASLTimer
     {
         private Element m_game;
@@ -862,7 +868,7 @@ namespace AxeSoftware.Quest
             var result = new List<string>();
             foreach (Element jsRef in m_elements.GetElements(ElementType.Javascript))
             {
-                result.Add(jsRef.Fields[FieldDefinitions.Src]);
+                result.Add(GetExternalPath(jsRef.Fields[FieldDefinitions.Src]));
             }
             return result;
         }
@@ -1480,5 +1486,7 @@ namespace AxeSoftware.Quest
             catch { }
 #endif
         }
+
+        public WorldModelVersion Version { get; internal set; }
     }
 }

@@ -40,6 +40,11 @@ namespace AxeSoftware.Quest
 
         public event EventHandler<LoadStatusEventArgs> LoadStatus;
 
+        private static Dictionary<string, WorldModelVersion> s_versions = new Dictionary<string, WorldModelVersion> {
+            {"500", WorldModelVersion.v500},
+            {"510", WorldModelVersion.v510}
+        };
+
         public GameLoader(WorldModel worldModel, LoadMode mode)
         {
             m_worldModel = worldModel;
@@ -79,9 +84,13 @@ namespace AxeSoftware.Quest
                         AddError("No ASL version number found");
                     }
 
-                    if (version != "500")
+                    if (!s_versions.ContainsKey(version))
                     {
                         AddError("Incorrect ASL version number");
+                    }
+                    else
+                    {
+                        m_worldModel.Version = s_versions[version];
                     }
 
                     string originalFile = reader.GetAttribute("original");
