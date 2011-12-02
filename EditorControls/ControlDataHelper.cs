@@ -66,7 +66,11 @@ namespace AxeSoftware.Quest.EditorControls
         {
             Controller = null;
             ControlDefinition = null;
-            m_parent = null;
+            // TO DO: Can't unset m_parent here, as this is passed in the constructor and
+            // it is valid for a ControlDataHelper to be reinitialised (in the Attributes control).
+            // Need to ensure that removing this line doesn't introduce more memory leaks - may be
+            // necessary for more parent controls to listen to the Uninitialise event?
+            //m_parent = null;
             m_oldValue = default(T);
             m_data = null;
             if (Uninitialise != null)
