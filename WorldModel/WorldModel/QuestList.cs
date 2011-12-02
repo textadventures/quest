@@ -214,7 +214,7 @@ namespace AxeSoftware.Quest
         /// <returns></returns>
         public static QuestList<T> operator +(QuestList<T> list1, QuestList<T> list2)
         {
-            System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
+            //System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
             if (list1 == null) return new QuestList<T>(list2);
             return list1.MergeLists(list2);
         }
@@ -234,7 +234,7 @@ namespace AxeSoftware.Quest
         /// <returns></returns>
         public static QuestList<T> operator +(QuestList<T> list, T element)
         {
-            System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
+            //System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
             QuestList<T> result = new QuestList<T>(list);
             result.Add(element);
             return result;
@@ -248,7 +248,7 @@ namespace AxeSoftware.Quest
         /// <returns></returns>
         public static QuestList<T> operator +(T element, QuestList<T> list)
         {
-            System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
+            //System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
             QuestList<T> result = new QuestList<T>();
             result.Add(element);
             result.AddRange(list);
@@ -257,7 +257,7 @@ namespace AxeSoftware.Quest
 
         public static QuestList<T> operator -(QuestList<T> list, T element)
         {
-            System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
+            //System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
             QuestList<T> result = new QuestList<T>(list);
             result.Remove(element);
             return result;
