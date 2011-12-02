@@ -131,21 +131,29 @@ namespace AxeSoftware.Quest.EditorControls
             if (!m_dirty) return;
             if (m_saving) return;
             m_saving = true;
-            if (m_data.IsDirectlySaveable)
+
+            // When we call m_data.SetAttribute below, that can trigger off a whole chain of events which may
+            // cause us to be Unpopulated before we finish the function. We'll still need to finish the transaction,
+            // so we make copies first.
+            bool directlySaveable = m_data.IsDirectlySaveable;
+            EditorController controller = Controller;
+            string caption = ControlDefinition.Caption;
+            
+            if (directlySaveable)
             {
-                Controller.StartTransaction(string.Format("Set {0} to '{1}'", ControlDefinition.Caption, newValue == null ? "null" : newValue.ToString()));
+                controller.StartTransaction(string.Format("Set {0} to '{1}'", ControlDefinition.Caption, newValue == null ? "null" : newValue.ToString()));
             }
             ValidationResult result = m_data.SetAttribute(ControlDefinition.Attribute, newValue);
 
             if (!result.Valid)
             {
                 string errorValue = newValue as string;
-                PopupEditors.DisplayValidationError(result, errorValue, string.Format("Unable to set '{0}'", ControlDefinition.Caption));
+                PopupEditors.DisplayValidationError(result, errorValue, string.Format("Unable to set '{0}'", caption));
             }
 
-            if (m_data.IsDirectlySaveable)
+            if (directlySaveable)
             {
-                Controller.EndTransaction();
+                controller.EndTransaction();
             }
             m_saving = false;
 
