@@ -301,6 +301,7 @@ namespace AxeSoftware.Quest
             public override object Load(XmlReader reader, ref Element current)
             {
                 string file = GameLoader.GetTemplateAttribute(reader, "ref");
+                if (file.Length == 0) return null;
                 string path = WorldModel.GetExternalPath(file);
                 XmlReader newReader = XmlReader.Create(path);
                 newReader.Read();
@@ -902,6 +903,7 @@ namespace AxeSoftware.Quest
                 Element jsRef = WorldModel.GetElementFactory(ElementType.Javascript).Create();
                 jsRef.Fields[FieldDefinitions.Anonymous] = true;
                 string file = GameLoader.GetTemplateAttribute(reader, "src");
+                if (file.Length == 0) return null;
                 if (!WorldModel.EditMode)
                 {
                     string path = WorldModel.GetExternalPath(file);
