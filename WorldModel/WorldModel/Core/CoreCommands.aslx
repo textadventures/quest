@@ -520,8 +520,10 @@
     if (TypeOf(object, property) = "scriptdictionary") {
       dictionary = GetAttribute(object, property)
       foreach (keywords, dictionary) {
-        if (GetKeywordsMatchStrength(LCase(keywords), text) > maxstrength) {
+        strength = GetKeywordsMatchStrength(LCase(keywords), text)
+        if (strength >= maxstrength) {
           match = ScriptDictionaryItem(dictionary, keywords)
+          maxstrength = strength
         }
       }
       
@@ -601,6 +603,7 @@
   <verb template="push" property="push" response="DefaultPush"/>
   <verb template="read" property="read" response="DefaultRead"/>
   <verb template="search" property="search" response="DefaultSearch"/>
+  <verb template="show" property="show" response="DefaultShow"/>
   <verb name="siton" template="sit" property="sit" response="DefaultSit"/>
   <verb template="smell" property="smell" response="DefaultSmell"/>
   <verb template="taste" property="taste" response="DefaultTaste"/>

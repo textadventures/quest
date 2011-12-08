@@ -218,9 +218,9 @@
   <dynamictemplate name="DefaultSit">"Du kannst da nicht sitzen."</dynamictemplate>
   <verbtemplate name="smell">rieche an</verbtemplate>
   <verbtemplate name="smell">rieche</verbtemplate>
-  <dynamictemplate name="DefaultSmell">Du schnüffelst, kannst aber nichts besonderes wahrnehmen.</dynamictemplate>
+  <dynamictemplate name="DefaultSmell">"Du schnüffelst, kannst aber nichts besonderes wahrnehmen."</dynamictemplate>
   <verbtemplate name="taste">taste</verbtemplate>
-  <dynamictemplate name="DefaultTaste">"You can't taste " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultTaste">"Du willst " + object.article + " nicht probieren."</dynamictemplate>
   <verbtemplate name="throw">werfe</verbtemplate>
   <verbtemplate name="throw">wirf</verbtemplate>
   <dynamictemplate name="DefaultThrow">"Das kannst du nicht werfen."</dynamictemplate>
@@ -228,7 +228,7 @@
   <verbtemplate name="tie">binde fest</verbtemplate>
   <dynamictemplate name="DefaultTie">"Du kannst " + object.article + " nicht festbinden."</dynamictemplate>
   <verbtemplate name="touch">berühre</verbtemplate>
-  <dynamictemplate name="DefaultTouch">Du kannst bzw. willst das nicht berühren.</dynamictemplate>
+  <dynamictemplate name="DefaultTouch">"Du kannst bzw. willst das nicht berühren."</dynamictemplate>
   <verbtemplate name="turnon">schalte an #object#</verbtemplate>
   <verbtemplate name="turnon">schalte #object# an</verbtemplate>
   <verbtemplate name="turnon">schalt an #object#</verbtemplate>
@@ -280,7 +280,9 @@
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">Überraschenderweise passiert gar nichts.</template>
   <template templatetype="command" name="help">^hilfe$|^\?$</template>
-  <template name="DefaultHelp"><![CDATA[<br/><u>Befehlsübersicht</u><br/><br/>
+  <template templatetype="command" name="save">^save$|^speichern$</template>
+ 
+ <template name="DefaultHelp"><![CDATA[<br/><u>Befehlsübersicht</u><br/><br/>
 <b>- Häufig vorkommende Befehle:</b> UNTERSUCHE..., NIMM..., LEGE..., ÖFFNE..., GIB... AN..., BENUTZE... MIT..., SPRICH MIT..., VERWENDE...<br/>
 <b>- Inventar:</b> getragene Gegenstände können über INV oder INVENTAR angezeigt werden.<br/>
 <b>- Bewegung:</b>  Verwende die Buttons des Kompasses oder gib z.B. GEHE NACH NORDEN, SÜDEN oder RUNTER ein.<br/>

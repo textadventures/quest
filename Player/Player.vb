@@ -683,6 +683,14 @@ Public Class Player
     End Sub
 
     Private Sub m_mediaPlayer_MediaEnded(sender As Object, e As System.EventArgs) Handles m_mediaPlayer.MediaEnded
+        PlaybackFinished()
+    End Sub
+
+    Private Sub m_mediaPlayer_MediaFailed(sender As Object, e As System.Windows.Media.ExceptionEventArgs) Handles m_mediaPlayer.MediaFailed
+        PlaybackFinished()
+    End Sub
+
+    Private Sub PlaybackFinished()
         m_soundPlaying = False
         If m_waitingForSoundToFinish Then
             m_waitingForSoundToFinish = False

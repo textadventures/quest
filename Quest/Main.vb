@@ -12,6 +12,8 @@ Public Class Main
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
 
+        AddHandler System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException, AddressOf CurrentDispatcher_UnhandledException
+
         ' Add any initialization after the InitializeComponent() call.
         ctlLauncher.QuestVersion = My.Application.Info.Version
         ctlLauncher.DownloadFolder = Options.Instance.GetStringValue(OptionNames.GamesFolder)
@@ -33,6 +35,13 @@ Public Class Main
         AddHandler ctlLauncher.EditGame, AddressOf ctlLauncher_EditGame
         AddHandler ctlLauncher.LaunchGame, AddressOf ctlLauncher_LaunchGame
         AddHandler ctlLauncher.Tutorial, AddressOf ctlLauncher_Tutorial
+    End Sub
+
+    Private Sub CurrentDispatcher_UnhandledException(sender As Object, e As System.Windows.Threading.DispatcherUnhandledExceptionEventArgs)
+        Dim frmError As New ErrorHandler
+        frmError.ErrorText = e.Exception.ToString()
+        frmError.ShowDialog()
+        e.Handled = True
     End Sub
 
     Private Sub InitialiseMenuHandlers()
@@ -335,7 +344,7 @@ Public Class Main
     End Sub
 
     Private Sub Forums()
-        LaunchURL("http://www.axeuk.com/phpBB3/")
+        LaunchURL("http://www.textadventures.co.uk/forum/")
     End Sub
 
     Private Sub Help()

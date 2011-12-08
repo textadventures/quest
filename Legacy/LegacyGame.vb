@@ -1512,15 +1512,16 @@ Public Class LegacyGame
             'Read file into Lines array
             Dim fileData As String = System.IO.File.ReadAllText(Filename)
             Dim aslLines As String() = fileData.Split(Chr(13))
-            ReDim Lines(aslLines.Length - 1)
+            ReDim Lines(aslLines.Length)
+            Lines(0) = ""
 
-            For l = 0 To aslLines.Length - 1
-                Lines(l) = aslLines(l)
+            For l = 1 To aslLines.Length
+                Lines(l) = aslLines(l - 1)
                 RemoveTabs(Lines(l))
                 Lines(l) = Lines(l).Trim(" "c, Chr(10), Chr(13))
             Next
 
-            l = aslLines.Length - 1
+            l = aslLines.Length
 
         ElseIf LCase(Right(Filename, 4)) = ".cas" Then
             LogASLError("Loading CAS")

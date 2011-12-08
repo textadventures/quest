@@ -354,8 +354,10 @@ namespace AxeSoftware.Quest
 
             public override void Save(GameXmlWriter writer, Element e)
             {
+                string filename = e.Fields[FieldDefinitions.Filename];
+                if (string.IsNullOrEmpty(filename)) return;
                 writer.WriteStartElement("include");
-                writer.WriteAttributeString("ref", e.Fields[FieldDefinitions.Filename]);
+                writer.WriteAttributeString("ref", filename);
                 writer.WriteEndElement();
             }
         }
@@ -386,8 +388,10 @@ namespace AxeSoftware.Quest
 
             public override void Save(GameXmlWriter writer, Element e)
             {
+                string filename = e.Fields[FieldDefinitions.Src];
+                if (string.IsNullOrEmpty(filename)) return;
                 writer.WriteStartElement("javascript");
-                writer.WriteAttributeString("src", e.Fields[FieldDefinitions.Src]);
+                writer.WriteAttributeString("src", filename);
                 writer.WriteEndElement();
             }
         }
