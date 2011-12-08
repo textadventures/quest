@@ -51,7 +51,7 @@ Partial Class About
         Me.lblTitle.Name = "lblTitle"
         Me.lblTitle.Size = New System.Drawing.Size(73, 13)
         Me.lblTitle.TabIndex = 4
-        Me.lblTitle.Text = "Quest 5.0.1"
+        Me.lblTitle.Text = "Quest"
         '
         'lblCopyright
         '
