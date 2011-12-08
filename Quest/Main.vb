@@ -329,7 +329,7 @@ Public Class Main
     End Sub
 
     Private Sub Forums()
-        LaunchURL("http://www.axeuk.com/phpBB3/")
+        LaunchURL("http://www.textadventures.co.uk/forum/")
     End Sub
 
     Private Sub Help()

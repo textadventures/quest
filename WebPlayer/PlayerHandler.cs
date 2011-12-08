@@ -343,12 +343,12 @@ namespace WebPlayer
 
         public void RequestSave()
         {
-            m_controller.AppendText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
+            m_controller.AppendText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.textadventures.co.uk/quest/\">Download Quest</a> for load/save support.");
         }
 
         public void RequestLoad()
         {
-            m_controller.AppendText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
+            m_controller.AppendText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.textadventures.co.uk/quest/\">Download Quest</a> for load/save support.");
         }
 
         public void RequestRestart()
