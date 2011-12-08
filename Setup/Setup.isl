@@ -2843,7 +2843,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1033</td><td>Axe Software</td><td>0</td><td/><td>-1163980368</td></row>
+		<row><td>COMPANY_NAME</td><td>1033</td><td>Text Adventures Ltd</td><td>0</td><td/><td>1176447309</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1033</td><td>Always Install</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1033</td><td>The color settings of your system are not adequate for running [ProductName].</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_DOTNETVERSION40CLIENT</td><td>1033</td><td>Microsoft .NET Framework 4.0 Client Package or greater needs to be installed for this installation to continue.</td><td>0</td><td/><td>-1163972176</td></row>
@@ -3944,8 +3944,8 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>-1163984720</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>http://www.axeuk.com/</td><td>0</td><td/><td>-1163965550</td></row>
-		<row><td>ID_STRING3</td><td>1033</td><td>Axe Software</td><td>0</td><td/><td>-1163980368</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.textadventures.co.uk/quest/</td><td>0</td><td/><td>1176455501</td></row>
+		<row><td>ID_STRING3</td><td>1033</td><td>Text Adventures Ltd</td><td>0</td><td/><td>1176437069</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>Quest</td><td>0</td><td/><td>-1163970158</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>NEW_STRING1</td><td>1033</td><td>ASL</td><td>0</td><td/><td>-1163936110</td></row>
@@ -4578,7 +4578,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{8B6B3BE9-0BE1-4D0D-B207-BF939BBEF1A7}</td><td/></row>
+		<row><td>ProductCode</td><td>{4E1BA5FA-B9BA-42F1-AD5C-3E21A15CF51A}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
 		<row><td>ProductVersion</td><td>5.00.0001</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
