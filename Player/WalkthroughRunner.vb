@@ -32,6 +32,8 @@
                         WriteLine("<span style=""color:red""><b>Failed</b></span>")
                         Return
                     End If
+                ElseIf cmd.StartsWith("label:") Then
+                    ' ignore
                 Else
                     m_game.SendCommand(cmd)
                 End If
