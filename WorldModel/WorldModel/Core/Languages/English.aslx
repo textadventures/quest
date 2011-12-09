@@ -121,7 +121,7 @@
 
   <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
   <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
-  <template templatetype="command" name="look">^look$</template>
+  <template templatetype="command" name="look">^look$|^l$</template>
   <verbtemplate name="lookat">look at</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
   <verbtemplate name="lookat">examine</verbtemplate>
@@ -234,7 +234,7 @@
   <template name="DefaultLieDown">No time for lounging about now.</template>
   <template templatetype="command" name="sleep">^sleep$|^rest$</template>
   <template name="DefaultSleep">No time for lounging about now.</template>
-  <template templatetype="command" name="wait">^wait$</template>
+  <template templatetype="command" name="wait">^wait$|^z$</template>
   <template name="DefaultWait">Time passes.</template>
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">Surprisingly, absolutely nothing happens.</template>
