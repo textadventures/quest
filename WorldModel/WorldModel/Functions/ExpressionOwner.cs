@@ -489,5 +489,10 @@ namespace AxeSoftware.Quest.Functions
                 m_worldModel.Elements.GetDirectChildren(element)
                 .Where(e => e.ElemType == ElementType.Object && e.Type == ObjectType.Object));
         }
+
+        public bool IsGameRunning()
+        {
+            return m_worldModel.State != GameState.Finished;
+        }
     }
 }
