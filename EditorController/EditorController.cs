@@ -1926,7 +1926,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private static string GetNewGameId()
+        public static string GetNewGameId()
         {
             return Guid.NewGuid().ToString();
         }

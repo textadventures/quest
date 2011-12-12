@@ -111,6 +111,9 @@
     <Compile Include="FindControl.xaml.cs">
       <DependentUpon>FindControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameIdControl.xaml.cs">
+      <DependentUpon>GameIdControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IfEditor.xaml.cs">
       <DependentUpon>IfEditor.xaml</DependentUpon>
     </Compile>
@@ -358,6 +361,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FindControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameIdControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

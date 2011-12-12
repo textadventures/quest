@@ -11,6 +11,19 @@
       </control>
 
       <control>
+        <controltype>label</controltype>
+        <caption>The Game ID below is used to uniquely identify your game. You should only generate a new ID if you have copied a game to create a new one.</caption>
+        <advanced/>
+      </control>
+
+      <control>
+        <controltype>gameid</controltype>
+        <caption>Game ID</caption>
+        <attribute>gameid</attribute>
+        <advanced/>
+      </control>
+
+      <control>
         <controltype>textbox</controltype>
         <caption>Version</caption>
         <attribute>version</attribute>
