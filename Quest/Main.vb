@@ -270,6 +270,12 @@ Public Class Main
     End Sub
 
     Private Sub Main_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+        'If e.KeyCode = Keys.F11 Then
+        '    Dim frmError As New ErrorHandler
+        '    frmError.ErrorText = "Test error"
+        '    frmError.ShowDialog()
+        'End If
+
         If e.KeyCode = Keys.Escape AndAlso FullScreen Then
             FullScreen = False
         End If

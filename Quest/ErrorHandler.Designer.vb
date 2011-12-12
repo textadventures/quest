@@ -23,10 +23,11 @@ Partial Class ErrorHandler
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ErrorHandler))
-        Me.lblInfo = New System.Windows.Forms.Label
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox
-        Me.txtError = New System.Windows.Forms.TextBox
-        Me.cmdClose = New System.Windows.Forms.Button
+        Me.lblInfo = New System.Windows.Forms.Label()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.txtError = New System.Windows.Forms.TextBox()
+        Me.cmdClose = New System.Windows.Forms.Button()
+        Me.cmdReport = New System.Windows.Forms.Button()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -51,8 +52,8 @@ Partial Class ErrorHandler
         'txtError
         '
         Me.txtError.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtError.Location = New System.Drawing.Point(72, 30)
         Me.txtError.Multiline = True
         Me.txtError.Name = "txtError"
@@ -71,13 +72,23 @@ Partial Class ErrorHandler
         Me.cmdClose.Text = "Close"
         Me.cmdClose.UseVisualStyleBackColor = True
         '
+        'cmdReport
+        '
+        Me.cmdReport.Location = New System.Drawing.Point(197, 259)
+        Me.cmdReport.Name = "cmdReport"
+        Me.cmdReport.Size = New System.Drawing.Size(152, 23)
+        Me.cmdReport.TabIndex = 4
+        Me.cmdReport.Text = "Report this error"
+        Me.cmdReport.UseVisualStyleBackColor = True
+        '
         'ErrorHandler
         '
-        Me.AcceptButton = Me.cmdClose
+        Me.AcceptButton = Me.cmdReport
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.cmdClose
         Me.ClientSize = New System.Drawing.Size(442, 294)
+        Me.Controls.Add(Me.cmdReport)
         Me.Controls.Add(Me.cmdClose)
         Me.Controls.Add(Me.txtError)
         Me.Controls.Add(Me.PictureBox1)
@@ -97,4 +108,5 @@ Partial Class ErrorHandler
     Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
     Friend WithEvents txtError As System.Windows.Forms.TextBox
     Friend WithEvents cmdClose As System.Windows.Forms.Button
+    Friend WithEvents cmdReport As System.Windows.Forms.Button
 End Class
