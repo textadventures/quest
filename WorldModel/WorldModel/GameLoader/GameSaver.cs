@@ -73,7 +73,15 @@ namespace AxeSoftware.Quest
             Version ver = new Version(System.Windows.Forms.Application.ProductVersion);
             writer.WriteComment(string.Format("Saved by Quest {0}", ver));
             writer.WriteStartElement("asl");
-            writer.WriteAttributeString("version", "500");
+            if (mode == SaveMode.Editor)
+            {
+                writer.WriteAttributeString("version", "510");
+            }
+            else
+            {
+                writer.WriteAttributeString("version", m_worldModel.VersionString);
+            }
+
             if (mode == SaveMode.SavedGame)
             {
                 writer.WriteAttributeString("original", m_worldModel.Filename);

@@ -1,9 +1,11 @@
-﻿<asl version="500">
+﻿<asl version="510">
 
   <include ref="Nederlands.aslx"/>
   <include ref="Core.aslx"/>
 
-  <game name="$NAME$"/>
+  <game name="$NAME$">
+    <gameid>$ID$</gameid>
+  </game>
 
   <object name="room">
     <inherit name="editor_room" />

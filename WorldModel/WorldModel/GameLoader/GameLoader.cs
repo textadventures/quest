@@ -91,6 +91,7 @@ namespace AxeSoftware.Quest
                     else
                     {
                         m_worldModel.Version = s_versions[version];
+                        m_worldModel.VersionString = version;
                     }
 
                     string originalFile = reader.GetAttribute("original");

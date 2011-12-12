@@ -1795,7 +1795,9 @@ namespace AxeSoftware.Quest
         public static void CreateNewGameFile(string filename, string template, string gameName)
         {
             string templateText = System.IO.File.ReadAllText(template);
-            string initialFileText = templateText.Replace("$NAME$", gameName);
+            string initialFileText = templateText
+                .Replace("$NAME$", gameName)
+                .Replace("$ID$", GetNewGameId());
             System.IO.File.WriteAllText(filename, initialFileText);
         }
 
@@ -1922,6 +1924,11 @@ namespace AxeSoftware.Quest
                     if (SimpleModeChanged != null) SimpleModeChanged(this, new EventArgs());
                 }
             }
+        }
+
+        private static string GetNewGameId()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }
