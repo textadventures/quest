@@ -11,7 +11,7 @@
         <TextBlock Name="ratingBlock" Padding="0,5,0,0">
                 <Run>Rating:</Run>
                 <Run xml:space="preserve"> </Run>
-                <Run FontFamily="Wingdings 2" Foreground="Goldenrod" Name="stars">ÙÙÙÙÙ</Run>
+                <Run Foreground="Goldenrod" Name="stars">★★★★★</Run>
                 <Run xml:space="preserve"> </Run>
                 <Run Name="ratingValue" FontSize="10">(5 stars)</Run>
         </TextBlock>
