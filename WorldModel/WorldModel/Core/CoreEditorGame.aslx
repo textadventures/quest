@@ -36,11 +36,31 @@
       </control>
 
       <control>
+        <controltype>dropdown</controltype>
+        <caption>Category</caption>
+        <attribute>category</attribute>
+        <validvalues type="list">Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>richtext</controltype>
+        <caption>Description</caption>
+        <attribute>description</attribute>
+        <expand/>
+      </control>
+
+    </tab>
+
+    <tab>
+      <caption>Script</caption>
+      <advanced/>
+
+      <control>
         <controltype>script</controltype>
         <caption>Start script</caption>
         <attribute>start</attribute>
         <expand/>
-        <advanced/>
       </control>
 
     </tab>
