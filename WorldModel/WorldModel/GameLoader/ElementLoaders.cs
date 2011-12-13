@@ -304,7 +304,10 @@ namespace AxeSoftware.Quest
                 if (file.Length == 0) return null;
                 string path = WorldModel.GetExternalPath(file);
                 XmlReader newReader = XmlReader.Create(path);
-                newReader.Read();
+                while (newReader.NodeType != XmlNodeType.Element && !newReader.EOF)
+                {
+                    newReader.Read();
+                }
                 if (newReader.Name != "library")
                 {
                     RaiseError(string.Format("Included file '{0}' is not a library", file));
