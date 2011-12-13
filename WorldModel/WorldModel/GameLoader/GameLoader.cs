@@ -267,12 +267,13 @@ namespace AxeSoftware.Quest
         // and allows scripts to refer to procedures that aren't defined until later in the XML
         private void ResolveGame()
         {
-            int total = m_worldModel.Elements.Count();
-            int count = 0;
+            //int total = m_worldModel.Elements.Count();
+            //int count = 0;
+            UpdateStatus("Initialising elements...");
             foreach (Element e in m_worldModel.Elements.GetElements())
             {
-                count++;
-                UpdateStatus(string.Format("Setting up element {0} / {1} ({2:P0})", count, total, 1.0 * count / total));
+                //count++;
+                //UpdateStatus(string.Format("Setting up element {0} / {1} ({2:P0})", count, total, 1.0 * count / total));
                 e.Fields.LazyFields.Resolve(m_scriptFactory);
             }
         }
