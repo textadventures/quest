@@ -22,5 +22,12 @@ namespace AxeSoftware.Utility
         {
             return Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\" + product + @"\" + keyName);
         }
+
+        public static object GetHKLMSetting(string product, string keyName, string valueName, object defaultValue)
+        {
+            RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"Software\" + product + @"\" + keyName);
+            if (key == null) return defaultValue;
+            return key.GetValue(valueName, defaultValue);
+        }
     }
 }

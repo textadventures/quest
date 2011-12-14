@@ -1,4 +1,6 @@
-﻿Public Class OptionsDialog
+﻿Imports AxeSoftware.Utility
+
+Public Class OptionsDialog
 
     Private fontFamily As String
     Private fontSize As Single
@@ -20,6 +22,7 @@
         txtGamesFolder.Text = Options.Instance.GetStringValue(OptionNames.GamesFolder)
         chkShowSandpit.Checked = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
         chkShowAdult.Checked = Options.Instance.GetBooleanValue(OptionNames.ShowAdult)
+        chkShowAdult.Visible = DirectCast(Registry.GetHKLMSetting("Quest", "Settings", "LockAdult", "0"), String) = "0"
         chkPlaySounds.Checked = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
         UpdateSampleText()
     End Sub
@@ -128,7 +131,7 @@
         End If
 
         If chkUseDefaultFont.Checked Then
-            lblFontSample.Font = New Font("Arial", 9, FontStyle.Regular)
+            lblFontSample.Font = New Font("Arial", 9, fontStyle.Regular)
         Else
             lblFontSample.Font = New Font(fontFamily, fontSize, fontStyle)
         End If
