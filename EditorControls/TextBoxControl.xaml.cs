@@ -30,6 +30,17 @@ namespace AxeSoftware.Quest.EditorControls
         void Initialise()
         {
             m_nullable = m_helper.ControlDefinition.GetBool("nullable");
+            string colour = m_helper.ControlDefinition.GetString("colour");
+            if (!string.IsNullOrEmpty(colour))
+            {
+                textBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colour));
+            }
+            if (m_helper.ControlDefinition.GetBool("multiline"))
+            {
+                textBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                textBox.TextWrapping = TextWrapping.Wrap;
+                textBox.AcceptsReturn = true;
+            }
         }
 
         public IControlDataHelper Helper { get { return m_helper; } }

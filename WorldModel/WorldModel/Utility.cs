@@ -324,12 +324,19 @@ namespace AxeSoftware.Quest
             return result.ToArray();
         }
 
-        public static string RemoveComments(string input)
+        public static string RemoveComments(string input, bool onlyRemoveMidLineComments = false)
         {
             if (!input.Contains("//")) return input;
             if (input.Contains("\n"))
             {
-                return RemoveCommentsMultiLine(input);
+                return RemoveCommentsMultiLine(input, onlyRemoveMidLineComments);
+            }
+
+            // In the Editor, retain any lines that start with "//", as they will be loaded into CommentScripts.
+            // We only want to remove comments that occur after normal script commands.
+            if (onlyRemoveMidLineComments && input.Trim().StartsWith("//"))
+            {
+                return input;
             }
 
             // Replace any occurrences of "//" which are inside string expressions. Then any occurrences of "//"
@@ -342,12 +349,12 @@ namespace AxeSoftware.Quest
             return input;
         }
 
-        private static string RemoveCommentsMultiLine(string input)
+        private static string RemoveCommentsMultiLine(string input, bool onlyRemoveMidLineComments)
         {
             List<string> output = new List<string>();
             foreach (string inputLine in (input.Split(new string[] { "\n" }, StringSplitOptions.None)))
             {
-                output.Add(RemoveComments(inputLine));
+                output.Add(RemoveComments(inputLine, onlyRemoveMidLineComments));
             }
             return string.Join("\n", output.ToArray());
         }

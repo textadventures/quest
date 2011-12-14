@@ -85,6 +85,7 @@ namespace AxeSoftware.Quest
             MultiScript result = new MultiScript();
             bool finished = false;
             IScript lastIf = null;
+            IScript lastComment = null;
             bool dontAdd;
             bool addedError;
             IfScriptConstructor ifConstructor = null;
@@ -106,7 +107,7 @@ namespace AxeSoftware.Quest
                 if (line != null)
                 {
                     line = line.Trim();
-                    line = Utility.RemoveComments(line);
+                    line = Utility.RemoveComments(line, m_worldModel.EditMode);
                 }
 
                 if (!string.IsNullOrEmpty(line))
@@ -136,44 +137,62 @@ namespace AxeSoftware.Quest
                     }
                     else
                     {
-                        lastIf = null;
                         IScriptConstructor constructor = GetScriptConstructor(line);
 
-                        if (constructor != null)
+                        if (constructor is CommentScriptConstructor)
                         {
-                            try
+                            if (lastComment != null)
+                            {
+                                ((CommentScript)lastComment).AddLine(line);
+                                dontAdd = true;
+                            }
+                            else
                             {
                                 newScript = constructor.Create(line, proc);
-                                if (constructor.Keyword == "if")
-                                {
-                                    ifConstructor = (IfScriptConstructor)constructor;
-                                    lastIf = newScript;
-                                }
-                            }
-                            catch (Ciloci.Flee.ExpressionCompileException ex)
-                            {
-                                AddError(string.Format("Error compiling expression in '{0}': {1}", line, ex.Message));
-                                addedError = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                AddError(string.Format("Error adding script '{0}': {1}", line, ex.Message));
-                                addedError = true;
+                                lastComment = newScript;
                             }
                         }
-
-                        if (!addedError)
+                        else
                         {
-                            if (newScript == null)
+                            lastIf = null;
+                            lastComment = null;
+
+                            if (constructor != null)
                             {
-                                // See if the script is like "myvar = 2". newScript will be null otherwise.
-                                newScript = m_setConstructor.Create(line, proc);
+                                try
+                                {
+                                    newScript = constructor.Create(line, proc);
+                                    if (constructor.Keyword == "if")
+                                    {
+                                        ifConstructor = (IfScriptConstructor)constructor;
+                                        lastIf = newScript;
+                                    }
+                                }
+                                catch (Ciloci.Flee.ExpressionCompileException ex)
+                                {
+                                    AddError(string.Format("Error compiling expression in '{0}': {1}", line, ex.Message));
+                                    addedError = true;
+                                }
+                                catch (Exception ex)
+                                {
+                                    AddError(string.Format("Error adding script '{0}': {1}", line, ex.Message));
+                                    addedError = true;
+                                }
                             }
 
-                            if (newScript == null)
+                            if (!addedError)
                             {
-                                // See if the script calls a procedure defined by the game
-                                newScript = m_procConstructor.Create(line, proc);
+                                if (newScript == null)
+                                {
+                                    // See if the script is like "myvar = 2". newScript will be null otherwise.
+                                    newScript = m_setConstructor.Create(line, proc);
+                                }
+
+                                if (newScript == null)
+                                {
+                                    // See if the script calls a procedure defined by the game
+                                    newScript = m_procConstructor.Create(line, proc);
+                                }
                             }
                         }
                     }

@@ -1,5 +1,22 @@
 ﻿<library>
   <editor>
+    <appliesto>//</appliesto>
+    <category>Scripts</category>
+    <add>Comment</add>
+    <create>// Type comment</create>
+    <advanced/>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>0</attribute>
+      <colour>Green</colour>
+      <multiline/>
+      <expand/>
+    </control>
+
+  </editor>
+  
+  <editor>
     <appliesto>if</appliesto>
     <category>Scripts</category>
     <add>If...</add>
