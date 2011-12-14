@@ -9,10 +9,11 @@ namespace AxeSoftware.Quest
 {
     public class AttributeChangedEventArgs : EventArgs
     {
-        internal AttributeChangedEventArgs(string property, object value)
+        internal AttributeChangedEventArgs(string property, object value, object oldValue)
         {
             Property = property;
             Value = value;
+            OldValue = oldValue;
         }
 
         internal AttributeChangedEventArgs(bool inheritedTypesSet)
@@ -22,6 +23,7 @@ namespace AxeSoftware.Quest
 
         public string Property { get; private set; }
         public object Value { get; private set; }
+        public object OldValue { get; private set; }
         public bool InheritedTypesSet { get; private set; }
     }
 
@@ -301,11 +303,12 @@ namespace AxeSoftware.Quest
 
         internal void RemoveFieldInternal(string name)
         {
+            object oldValue = Get(name);
             m_attributes.Remove(name);
 
             if (AttributeChangedSilent != null && name != "name")
             {
-                AttributeChangedSilent(this, new AttributeChangedEventArgs(name, Get(name)));
+                AttributeChangedSilent(this, new AttributeChangedEventArgs(name, Get(name), oldValue));
             }
         }
 
@@ -397,12 +400,12 @@ namespace AxeSoftware.Quest
             if (raiseEvent)
             {
                 if (changed) UndoLog(name, oldValue, value, added);
-                if (changed && AttributeChanged != null) AttributeChanged(this, new AttributeChangedEventArgs(name, value));
+                if (changed && AttributeChanged != null) AttributeChanged(this, new AttributeChangedEventArgs(name, value, oldValue));
             }
             else
             {
                 // when undoing, the editor still needs a notification of a changed field
-                if (changed && AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(name, value));
+                if (changed && AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(name, value, oldValue));
             }
         }
 

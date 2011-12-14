@@ -50,8 +50,14 @@
     ]]>
   </function>
 
-  <function name="OnEnterRoom">
+  <function name="OnEnterRoom" parameters="oldRoom">
+    <![CDATA[
     game.displayroomdescriptiononstart = false
+    if (oldRoom <> null) {
+      if (HasScript(oldRoom, "onexit")) {
+        do (oldRoom, "onexit")
+      }
+    }
     if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "beforefirstenter")) {
       do (player.parent, "beforefirstenter")
     }
@@ -78,6 +84,7 @@
       do (player.parent, "enter")
     }
     set (player.parent, "visited", true)
+    ]]>
   </function>
 
   <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList, useinventoryverbs">

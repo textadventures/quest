@@ -334,7 +334,7 @@
     <look>[DefaultSelfDescription]</look>
     <gender>[SelfGender]</gender>
     <article>[SelfArticle]</article>
-    <changedparent type="script">OnEnterRoom</changedparent>
+    <changedparent type="script">OnEnterRoom(oldvalue)</changedparent>
   </type>
 
   <type name="switchable">

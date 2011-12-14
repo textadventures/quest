@@ -173,7 +173,8 @@ namespace AxeSoftware.Quest
                 string changedScript = "changed" + e.Property;
                 if (Fields.HasType<IScript>(changedScript))
                 {
-                    m_worldModel.RunScript(Fields.GetAsType<IScript>(changedScript), this);
+                    Parameters parameters = new Parameters("oldvalue", e.OldValue);
+                    m_worldModel.RunScript(Fields.GetAsType<IScript>(changedScript), parameters, this);
                 }
             }
         }

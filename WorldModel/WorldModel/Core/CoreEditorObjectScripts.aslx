@@ -12,6 +12,12 @@
 
     <control>
       <controltype>script</controltype>
+      <caption>After leaving the room</caption>
+      <attribute>onexit</attribute>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
       <caption>Before entering the room for the first time</caption>
       <attribute>beforefirstenter</attribute>
     </control>
