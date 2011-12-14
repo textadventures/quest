@@ -53,9 +53,11 @@
   <function name="OnEnterRoom" parameters="oldRoom">
     <![CDATA[
     game.displayroomdescriptiononstart = false
-    if (oldRoom <> null) {
-      if (HasScript(oldRoom, "onexit")) {
-        do (oldRoom, "onexit")
+    if (IsDefined("oldRoom")) {
+      if (oldRoom <> null) {
+        if (HasScript(oldRoom, "onexit")) {
+          do (oldRoom, "onexit")
+        }
       }
     }
     if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "beforefirstenter")) {

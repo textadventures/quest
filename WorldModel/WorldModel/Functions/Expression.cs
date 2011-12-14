@@ -44,6 +44,11 @@ namespace AxeSoftware.Quest.Functions
 
         void Variables_ResolveFunction(object sender, ResolveFunctionEventArgs e)
         {
+            if (e.FunctionName == "IsDefined")
+            {
+                e.ReturnType = typeof(bool);
+                return;
+            }
             Element proc = m_worldModel.Procedure(e.FunctionName);
             if (proc != null)
             {
@@ -53,6 +58,11 @@ namespace AxeSoftware.Quest.Functions
 
         void Variables_InvokeFunction(object sender, InvokeFunctionEventArgs e)
         {
+            if (e.FunctionName == "IsDefined")
+            {
+                e.Result = m_context.Parameters.ContainsKey((string)e.Arguments[0]);
+                return;
+            }
             Element proc = m_worldModel.Procedure(e.FunctionName);
             Parameters parameters = new Parameters();
             int cnt = 0;
