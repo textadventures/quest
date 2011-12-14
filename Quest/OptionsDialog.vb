@@ -19,6 +19,7 @@
         chkUseDefaultFont.Checked = Options.Instance.GetBooleanValue(OptionNames.UseGameFont)
         txtGamesFolder.Text = Options.Instance.GetStringValue(OptionNames.GamesFolder)
         chkShowSandpit.Checked = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
+        chkShowAdult.Checked = Options.Instance.GetBooleanValue(OptionNames.ShowAdult)
         chkPlaySounds.Checked = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
         UpdateSampleText()
     End Sub
@@ -63,6 +64,7 @@
         Options.Instance.SetStringValue(OptionNames.GamesFolder, txtGamesFolder.Text)
         Options.Instance.SetBooleanValue(OptionNames.ShowSandpit, chkShowSandpit.Checked)
         Options.Instance.SetBooleanValue(OptionNames.PlaySounds, chkPlaySounds.Checked)
+        Options.Instance.SetBooleanValue(OptionNames.ShowAdult, chkShowAdult.Checked)
         Me.Hide()
     End Sub
 

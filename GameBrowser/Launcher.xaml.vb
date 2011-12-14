@@ -118,4 +118,13 @@
         End Set
     End Property
 
+    Public Property ShowAdult As Boolean
+        Get
+            Return ctlPlayBrowser.ShowAdult
+        End Get
+        Set(value As Boolean)
+            ctlPlayBrowser.ShowAdult = value
+        End Set
+    End Property
+
 End Class

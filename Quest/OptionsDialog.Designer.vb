@@ -28,6 +28,7 @@ Partial Class OptionsDialog
         Me.dlgFont = New System.Windows.Forms.FontDialog()
         Me.ctlTabs = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.chkPlaySounds = New System.Windows.Forms.CheckBox()
         Me.cmdFont = New System.Windows.Forms.Button()
         Me.lblFontSample = New System.Windows.Forms.Label()
         Me.chkUseDefaultFont = New System.Windows.Forms.CheckBox()
@@ -44,7 +45,7 @@ Partial Class OptionsDialog
         Me.txtGamesFolder = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.dlgFolderBrowser = New System.Windows.Forms.FolderBrowserDialog()
-        Me.chkPlaySounds = New System.Windows.Forms.CheckBox()
+        Me.chkShowAdult = New System.Windows.Forms.CheckBox()
         Me.ctlTabs.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
@@ -109,6 +110,16 @@ Partial Class OptionsDialog
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Player"
         Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'chkPlaySounds
+        '
+        Me.chkPlaySounds.AutoSize = True
+        Me.chkPlaySounds.Location = New System.Drawing.Point(6, 257)
+        Me.chkPlaySounds.Name = "chkPlaySounds"
+        Me.chkPlaySounds.Size = New System.Drawing.Size(83, 17)
+        Me.chkPlaySounds.TabIndex = 22
+        Me.chkPlaySounds.Text = "Play &sounds"
+        Me.chkPlaySounds.UseVisualStyleBackColor = True
         '
         'cmdFont
         '
@@ -205,6 +216,7 @@ Partial Class OptionsDialog
         '
         'TabPage2
         '
+        Me.TabPage2.Controls.Add(Me.chkShowAdult)
         Me.TabPage2.Controls.Add(Me.chkShowSandpit)
         Me.TabPage2.Controls.Add(Me.cmdGamesFolder)
         Me.TabPage2.Controls.Add(Me.txtGamesFolder)
@@ -212,7 +224,7 @@ Partial Class OptionsDialog
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(473, 258)
+        Me.TabPage2.Size = New System.Drawing.Size(473, 290)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Game Browser"
         Me.TabPage2.UseVisualStyleBackColor = True
@@ -256,15 +268,15 @@ Partial Class OptionsDialog
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Download games to:"
         '
-        'chkPlaySounds
+        'chkShowAdult
         '
-        Me.chkPlaySounds.AutoSize = True
-        Me.chkPlaySounds.Location = New System.Drawing.Point(6, 257)
-        Me.chkPlaySounds.Name = "chkPlaySounds"
-        Me.chkPlaySounds.Size = New System.Drawing.Size(83, 17)
-        Me.chkPlaySounds.TabIndex = 22
-        Me.chkPlaySounds.Text = "Play &sounds"
-        Me.chkPlaySounds.UseVisualStyleBackColor = True
+        Me.chkShowAdult.AutoSize = True
+        Me.chkShowAdult.Location = New System.Drawing.Point(10, 82)
+        Me.chkShowAdult.Name = "chkShowAdult"
+        Me.chkShowAdult.Size = New System.Drawing.Size(113, 17)
+        Me.chkShowAdult.TabIndex = 4
+        Me.chkShowAdult.Text = "Show adult games"
+        Me.chkShowAdult.UseVisualStyleBackColor = True
         '
         'OptionsDialog
         '
@@ -313,4 +325,5 @@ Partial Class OptionsDialog
     Friend WithEvents chkShowSandpit As System.Windows.Forms.CheckBox
     Friend WithEvents dlgFolderBrowser As System.Windows.Forms.FolderBrowserDialog
     Friend WithEvents chkPlaySounds As System.Windows.Forms.CheckBox
+    Friend WithEvents chkShowAdult As System.Windows.Forms.CheckBox
 End Class

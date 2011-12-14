@@ -117,10 +117,24 @@
         End Get
         Set(value As Boolean)
             m_onlineGames.ShowSandpit = value
-            If m_initialised Then
-                ctlOnlineGameList.IsDownloading = True
-                m_onlineGames.StartDownloadGameData()
-            End If
+            RedownloadGameData()
         End Set
     End Property
+
+    Public Property ShowAdult As Boolean
+        Get
+            Return m_onlineGames.ShowAdult
+        End Get
+        Set(value As Boolean)
+            m_onlineGames.ShowAdult = value
+            RedownloadGameData()
+        End Set
+    End Property
+
+    Private Sub RedownloadGameData()
+        If m_initialised Then
+            ctlOnlineGameList.IsDownloading = True
+            m_onlineGames.StartDownloadGameData()
+        End If
+    End Sub
 End Class

@@ -12,6 +12,7 @@ Public Enum OptionNames
     GamesFolder
     ShowSandpit
     PlaySounds
+    ShowAdult
 End Enum
 
 Public Class Options
@@ -39,7 +40,8 @@ Public Class Options
                         "Quest Games",
                         "Downloaded Games")},
         {OptionNames.ShowSandpit, False.ToString()},
-        {OptionNames.PlaySounds, True.ToString()}
+        {OptionNames.PlaySounds, True.ToString()},
+        {OptionNames.ShowAdult, False.ToString()}
     }
 
     Public Event OptionChanged(optionName As OptionNames)

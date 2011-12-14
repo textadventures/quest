@@ -1,6 +1,7 @@
 ﻿Public Class OnlineGames
     Private WithEvents m_client As System.Net.WebClient
     Private m_showSandpit As Boolean
+    Private m_showAdult As Boolean
 
     Public Event DataReady()
     Public Event GotUpdateData(data As UpdatesData)
@@ -27,6 +28,9 @@
         Dim url As String = WebClientFactory.RootURL
         If ShowSandpit Then
             url += "?sandpit=1"
+        End If
+        If Not ShowAdult Then
+            url += If(ShowSandpit, "&", "?") + "maxage=17"
         End If
         Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadStringAsync(New System.Uri(url)))
         newThread.Start()
@@ -111,6 +115,15 @@
         End Get
         Set(value As Boolean)
             m_showSandpit = value
+        End Set
+    End Property
+
+    Public Property ShowAdult As Boolean
+        Get
+            Return m_showAdult
+        End Get
+        Set(value As Boolean)
+            m_showAdult = value
         End Set
     End Property
 End Class
