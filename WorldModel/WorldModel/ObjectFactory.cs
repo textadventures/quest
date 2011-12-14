@@ -372,21 +372,28 @@ namespace AxeSoftware.Quest
 
         public Element CreateExit(string exitName, Element fromRoom, Element toRoom, string initialType)
         {
-            if (string.IsNullOrEmpty(initialType)) initialType = null;
-            string exitID = WorldModel.GetUniqueID("exit");
-            if (WorldModel.ObjectExists(exitID)) exitID = WorldModel.GetUniqueID(exitID);
-            Element newExit = CreateExit(exitID, exitName, fromRoom, toRoom, initialType);
-            newExit.Fields[FieldDefinitions.Anonymous] = true;
-            return newExit;
+            return CreateExit(null, exitName, fromRoom, toRoom, initialType);
         }
 
         public Element CreateExit(string exitID, string exitName, Element fromRoom, Element toRoom, string initialType)
         {
+            bool anonymous = false;
+            if (string.IsNullOrEmpty(exitID))
+            {
+                exitID = WorldModel.GetUniqueID("exit");
+                if (WorldModel.ObjectExists(exitID)) exitID = WorldModel.GetUniqueID(exitID);
+                anonymous = true;
+            }
+            if (string.IsNullOrEmpty(initialType)) initialType = null;
             Element newExit = CreateObject(exitID, ObjectType.Exit, true, initialType == null ? null : new List<string> { initialType });
             newExit.Fields[FieldDefinitions.Alias] = exitName;
             newExit.Parent = fromRoom;
             newExit.Fields[FieldDefinitions.To] = toRoom;
             newExit.Type = ObjectType.Exit;
+            if (anonymous)
+            {
+                newExit.Fields[FieldDefinitions.Anonymous] = true;
+            }
             return newExit;
         }
 

@@ -158,9 +158,9 @@
 
   <editor>
     <appliesto>create exit</appliesto>
-    <display>Create exit #0 from #1 to #2 (type #3)</display>
+    <display>Create exit #0 (#1) from #2 to #3 (type #4)</display>
     <category>Objects</category>
-    <create>create exit ("",,,"")</create>
+    <create>create exit ("","",,,"")</create>
     <add>Create an exit</add>
     <advanced/>
 
@@ -171,25 +171,13 @@
 
     <control>
       <controltype>expression</controltype>
-      <attribute>0</attribute>
+      <attribute>1</attribute>
       <simple>name</simple>
     </control>
 
     <control>
       <controltype>label</controltype>
       <caption>from</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>1</attribute>
-      <simple>room</simple>
-      <simpleeditor>objects</simpleeditor>
-    </control>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>to</caption>
     </control>
 
     <control>
@@ -201,14 +189,39 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, type</caption>
+      <caption>to</caption>
     </control>
 
     <control>
       <controltype>expression</controltype>
       <attribute>3</attribute>
+      <simple>room</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Type (optional):</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>4</attribute>
       <nullable/>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>ID (optional):</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>id</simple>
+    </control>
+
   </editor>
 
   <editor>
