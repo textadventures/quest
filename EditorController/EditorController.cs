@@ -245,7 +245,14 @@ namespace AxeSoftware.Quest
                 }
             }
 
-            if (!ok)
+            if (ok)
+            {
+                if (m_worldModel.Version == WorldModelVersion.v500)
+                {
+                    m_worldModel.Elements.Get("game").Fields.Set("gameid", GetNewGameId());
+                }
+            }
+            else
             {
                 string message = "Failed to load game due to the following errors:" + Environment.NewLine;
                 foreach (string error in m_worldModel.Errors)
