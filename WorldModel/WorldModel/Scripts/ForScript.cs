@@ -89,7 +89,7 @@ namespace AxeSoftware.Quest.Scripts
             int count;
             c.Parameters[m_variable] = 0;
 
-            for (count = from; count <= to; count += step)
+            for (count = from; (step > 0 && count <= to) || (step < 0 && count >= to); count += step)
             {
                 c.Parameters[m_variable] = count;
                 m_loopScript.Execute(c);
