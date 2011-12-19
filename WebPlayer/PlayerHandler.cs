@@ -148,6 +148,7 @@ namespace WebPlayer
 
         public void ShowPicture(string filename)
         {
+            m_buffer.OutputText(ClearBuffer());
             string url = AddResource(filename);
             m_buffer.OutputText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" /><br />", url));
         }
