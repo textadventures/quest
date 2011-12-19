@@ -538,7 +538,7 @@ function setInterfaceString(name, text) {
 }
 
 function updateVerbButtons(list, verbsArray, idprefix) {
-    var selectedIndex = list.attr("selectedIndex");
+    var selectedIndex = list.prop("selectedIndex");
     var verbs = verbsArray[selectedIndex].split("/");
     var count = 1;
     $.each(verbs, function () {
