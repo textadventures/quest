@@ -35,7 +35,7 @@ div#gamePanes
     left: 50%;
     margin-left: 255px;
     padding: 10px;
-    background: #F3F3FF;
+    background: #F9F9FF;
     min-height: 100%;
 }
 div#status
@@ -161,4 +161,11 @@ div#controlButtons .ui-button
 #compassTable .ui-button
 {
     font-family: Arial, Helvetica, sans-serif;
+    border: 2px solid #C5DBEC;
+}
+
+#compassTable .ui-button-disabled
+{
+    border: 1px solid #C5DBEC;
+    background: inherit;
 }
