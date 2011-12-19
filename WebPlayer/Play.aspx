@@ -18,15 +18,16 @@
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
     <% Response.Write(GetBodyHeader()); %>
+    <div id="updating">
+        <asp:UpdateProgress ID="ctlUpdateProgress" runat="server">
+            <ProgressTemplate>
+                <img src="updating.gif" alt="Updating..." />
+            </ProgressTemplate>
+        </asp:UpdateProgress>
+    </div>
+
     <div id="gameBorder">
         <div id="status">
-            <div id="updating">
-                <asp:UpdateProgress ID="ctlUpdateProgress" runat="server">
-                    <ProgressTemplate>
-                        <img src="updating.gif" alt="Updating..." />
-                    </ProgressTemplate>
-                </asp:UpdateProgress>
-            </div>
             <div id="location">
             </div>
         </div>

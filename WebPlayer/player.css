@@ -53,7 +53,10 @@ div#status
 }
 div#updating
 {
-    float: right;
+    position: fixed;
+    top: 34px;
+    left: 50%;
+    margin-left: 205px;
 }
 .hiddenbutton
 {
