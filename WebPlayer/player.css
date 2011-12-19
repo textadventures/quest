@@ -56,7 +56,11 @@ div#updating
     position: fixed;
     top: 34px;
     left: 50%;
-    margin-left: 205px;
+    margin-left: 185px;
+    padding: 10px;
+    filter: alpha(opacity=80);
+    opacity: 0.8;
+    background: white;
 }
 .hiddenbutton
 {
