@@ -154,6 +154,10 @@ div#controlButtons .ui-button
 {
     font-size: 10px;
 }
+.verbButtons .ui-button
+{
+    font-size: 10px;
+}
 #compassTable .ui-button
 {
     font-family: Arial, Helvetica, sans-serif;

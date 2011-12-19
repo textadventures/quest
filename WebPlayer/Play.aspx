@@ -36,29 +36,33 @@
         <div id="gamePanes">
             <div id="gamePanesRunning">
                 <h2 id="inventoryLabel">Inventory</h2>
-                <input id="cmdInventory1" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
-                <input id="cmdInventory2" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
-                <input id="cmdInventory3" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
-                <input id="cmdInventory4" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
-                <input id="cmdInventory5" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
-                <input id="cmdInventory6" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
-                <input id="cmdInventory7" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
-                <input id="cmdInventory8" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
-                <input id="cmdInventory9" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
+                <div class="verbButtons">
+                    <button id="cmdInventory1" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory2" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory3" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory4" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory5" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory6" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory7" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory8" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory9" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                </div>
                 <select id="lstInventory" size="8" class="elementList">
                 </select>
                 <div id="statusVars">
                 </div>
                 <h2 id="placesObjectsLabel">Places &amp; Objects</h2>
-                <input id="cmdPlacesObjects1" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                <input id="cmdPlacesObjects2" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                <input id="cmdPlacesObjects3" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                <input id="cmdPlacesObjects4" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                <input id="cmdPlacesObjects5" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                <input id="cmdPlacesObjects6" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                <input id="cmdPlacesObjects7" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                <input id="cmdPlacesObjects8" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
-                <input id="cmdPlacesObjects9" type="button" value="" onclick="paneButtonClick('#lstPlacesObjects',this.value);" style="display:none" />
+                <div class="verbButtons">
+                    <button id="cmdPlacesObjects1" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects2" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects3" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects4" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects5" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects6" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects7" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects8" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects9" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                </div>
                 <select id="lstPlacesObjects" size="8" class="elementList">
                 </select>
                 <h2 id="compassLabel">Compass</h2>

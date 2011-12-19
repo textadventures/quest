@@ -551,9 +551,10 @@ function updateVerbButtons(list, verbsArray, idprefix) {
     var selectedIndex = list.prop("selectedIndex");
     var verbs = verbsArray[selectedIndex].split("/");
     var count = 1;
-    $.each(verbs, function () {
+    $.each(verbs, function (index, value) {
+        $("#" + idprefix + count + " span").html(value);
         var target = $("#" + idprefix + count);
-        target.attr("value", this);
+        target.data("verb", value);
         target.show();
         count++;
     });
