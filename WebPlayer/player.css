@@ -40,16 +40,20 @@ div#gamePanes
 }
 div#status
 {
-    background: #E0E0FF;
-    height: 20px;
+    height: 30px;
     position: fixed;
     top: 0px;
     z-index: 100;
-    width: 946px;
+    width: 948px;
     margin-left: auto;
     margin-right: auto;
     font-size: 14pt;
-    padding: 2px;
+    padding: 0;
+}
+div#location
+{
+    padding-left: 4px;
+    padding-top: 4px;
 }
 div#updating
 {
@@ -61,6 +65,10 @@ div#updating
     filter: alpha(opacity=80);
     opacity: 0.8;
     background: white;
+}
+div#controlButtons
+{
+    float: right;
 }
 .hiddenbutton
 {
@@ -102,11 +110,11 @@ div#updating
 }
 #cmdSave
 {
-    margin-top: 10px;
+    margin-top: 0px;
 }
 div#gameContent
 {
-    padding: 20px 20px 0px 20px;
+    padding: 30px 20px 0px 20px;
     width: 700px;
     min-height: 100%;
 }
@@ -141,4 +149,8 @@ div#txtCommandDiv
 {
     font-size: 150%;
     font-weight: bold;
+}
+div#controlButtons .ui-button
+{
+    font-size: 10px;
 }

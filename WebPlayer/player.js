@@ -22,6 +22,7 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 });
 
 function init() {
+    $("button").button();
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     showStatusVisible(false);
 
@@ -31,6 +32,10 @@ function init() {
 
     $("#lstPlacesObjects").change(function () {
         updateVerbButtons($("#lstPlacesObjects"), placesObjectsVerbs, "cmdPlacesObjects");
+    });
+
+    $("#cmdSave").click(function () {
+        saveGame();
     });
 }
 

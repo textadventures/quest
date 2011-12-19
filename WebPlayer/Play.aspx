@@ -8,9 +8,9 @@
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/jquery.jplayer.min.js"></script>
     <script type="text/javascript" src="js/jjmenu.js"></script>
+    <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/themes/redmond/jquery-ui.css" />
     <link rel="Stylesheet" type="text/css" href="playercore.css" />
     <link rel="Stylesheet" type="text/css" href="player.css" />
-    <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/themes/redmond/jquery-ui.css" />
     <link rel="Stylesheet" type="text/css" href="js/jjmenu.css" />
     <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
@@ -25,15 +25,16 @@
             </ProgressTemplate>
         </asp:UpdateProgress>
     </div>
-
     <div id="gameBorder">
-        <div id="status">
+        <div id="status" class="ui-widget-header">
+            <div id="controlButtons">
+                <button type="button" id="cmdSave" runat="server">Save</button>
+            </div>
             <div id="location">
             </div>
         </div>
         <div id="gamePanes">
             <div id="gamePanesRunning">
-                <input id="cmdSave" runat="server" type="button" value="Save" onclick="saveGame();" />
                 <h2 id="inventoryLabel">Inventory</h2>
                 <input id="cmdInventory1" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
                 <input id="cmdInventory2" type="button" value="" onclick="paneButtonClick('#lstInventory',this.value);" style="display:none" />
