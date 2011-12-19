@@ -27,10 +27,12 @@ div#gamePanes
     position: fixed;
     float: right;
     width: 200px;
-    top: 30px;
+    top: 24px;
     left: 50%;
     margin-left: 255px;
     padding: 10px;
+    background: white;
+    min-height: 100%;
 }
 div#status
 {
@@ -113,7 +115,7 @@ div#txtCommandDiv
 }
 #txtCommand
 {
-    width: 700px;
+    width: 680px;
     font-size: 20px;
     margin-left: 5px;
     vertical-align: bottom;

@@ -55,7 +55,7 @@ function updateLocation(text) {
 }
 
 function setGameName(text) {
-    $("#gameTitle").html(text);
+    $("#gameTitle").hide();
     document.title = text;
 }
 
@@ -435,7 +435,12 @@ function updateStatus(text) {
 }
 
 function setBackground(col) {
-    $("#divOutput").css("background-color", col);
+    $("#gameBorder").css("background-color", col);
+    $("#txtCommandDiv").css("background-color", col);
+}
+
+function setForeground(col) {
+    $("#txtCommandPrompt").css("color", col);
 }
 
 function ASLEvent(event, parameter) {

@@ -330,6 +330,7 @@ namespace WebPlayer
 
         public void SetForeground(string colour)
         {
+            m_buffer.AddJavaScriptToBuffer("setForeground", new StringParameter(colour));
             m_controller.SetForeground(colour);
         }
 
