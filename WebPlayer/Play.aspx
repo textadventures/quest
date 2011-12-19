@@ -17,14 +17,14 @@
     <% Response.Write(GetHead()); %>
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
-    <% Response.Write(GetBodyHeader()); %>
-    <div id="updating">
-        <asp:UpdateProgress ID="ctlUpdateProgress" runat="server" DisplayAfter="250">
-            <ProgressTemplate>
-                <img src="updating.gif" alt="Updating..." />
-            </ProgressTemplate>
-        </asp:UpdateProgress>
-    </div>
+    <% Response.Write(GetBodyHeader()); %>    
+    <asp:UpdateProgress ID="ctlUpdateProgress" runat="server" DisplayAfter="250">
+        <ProgressTemplate>
+        <div id="updating">
+            <img src="updating.gif" alt="Updating..." />
+            </div>
+        </ProgressTemplate>
+    </asp:UpdateProgress>
     <div id="gameBorder">
         <div id="status" class="ui-widget-header">
             <div id="controlButtons">
