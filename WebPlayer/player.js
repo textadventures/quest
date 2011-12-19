@@ -408,7 +408,12 @@ function updateCompass(listData) {
 }
 
 function updateDir(directions, label, dir) {
-    $("#cmdCompass" + label).attr("disabled", $.inArray(dir, directions) == -1);
+    if ($.inArray(dir, directions) == -1) {
+        $("#cmdCompass" + label).button("disable");
+    }
+    else {
+        $("#cmdCompass" + label).button("enable");
+    }
 }
 
 function paneButtonClick(target, verb) {

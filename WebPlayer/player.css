@@ -10,7 +10,7 @@ body
 }
 h2
 {
-    font-size: 110%;
+    font-size: 100%;
 }
 form#playerform
 {
@@ -35,7 +35,7 @@ div#gamePanes
     left: 50%;
     margin-left: 255px;
     padding: 10px;
-    background: white;
+    background: #F3F3FF;
     min-height: 100%;
 }
 div#status
@@ -92,7 +92,7 @@ div#controlButtons
     height: 35px;
     width: 35px;
     padding: 0px;
-    font-size: 12pt;
+    font-size: 11px;
 }
 #statusVars
 {
@@ -153,4 +153,8 @@ div#txtCommandDiv
 div#controlButtons .ui-button
 {
     font-size: 10px;
+}
+#compassTable .ui-button
+{
+    font-family: Arial, Helvetica, sans-serif;
 }
