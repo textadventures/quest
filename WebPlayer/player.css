@@ -116,6 +116,8 @@ div#txtCommandDiv
     margin-left: -10px;
     height: 40px;
     background: white;
+    filter: alpha(opacity=80);
+    opacity: 0.8;
 }
 #txtCommand
 {

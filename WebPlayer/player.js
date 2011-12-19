@@ -11,6 +11,7 @@ var sendNextGameTickerAfter = 0;
 var inventoryVerbs = null;
 var placesObjectsVerbs = null;
 var verbButtonCount = 9;
+var beginningOfCurrentTurnScrollPosition = 0;
 
 document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     function decode(s) {
@@ -47,7 +48,11 @@ function showStatusVisible(visible) {
 }
 
 function scrollToEnd() {
-    $('html, body').animate({ scrollTop: $(document).height() }, 10);
+    $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 }, 200);
+}
+
+function markScrollPosition() {
+    beginningOfCurrentTurnScrollPosition = $("#gameContent").height();
 }
 
 function updateLocation(text) {
@@ -67,6 +72,7 @@ function beginWait() {
     _waitMode = true;
     $("#endWaitLink").show();
     $("#txtCommand").hide();
+    markScrollPosition();
 }
 
 function endWait() {
@@ -418,6 +424,7 @@ function sendCommand(text) {
         endWait();
         return;
     }
+    markScrollPosition();
     window.setTimeout(function () {
         prepareCommand(text);
         $("#cmdSubmit").click();
