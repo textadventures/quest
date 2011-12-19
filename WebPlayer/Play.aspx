@@ -9,7 +9,7 @@
     <script type="text/javascript" src="js/jquery.jplayer.min.js"></script>
     <script type="text/javascript" src="js/jjmenu.js"></script>
     <link rel="Stylesheet" type="text/css" href="playercore.css" />
-    <link id="styleLink" runat="server" rel="Stylesheet" type="text/css" href="fixed.css" />
+    <link rel="Stylesheet" type="text/css" href="player.css" />
     <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/redmond/jquery-ui.css" />
     <link rel="Stylesheet" type="text/css" href="js/jjmenu.css" />
     <script type="text/javascript" src="playercore.js"></script>
@@ -18,9 +18,6 @@
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
     <% Response.Write(GetBodyHeader()); %>
-    <form id="playerform" runat="server" defaultbutton="cmdSubmit">
-    <asp:ScriptManager ID="ctlScriptManager" runat="server">
-    </asp:ScriptManager>
     <div id="gameBorder">
         <div id="status">
             <div id="updating">
@@ -147,23 +144,27 @@
                 <h1 id="gameTitle">
                     Loading...</h1>
             </div>
-            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-                <ContentTemplate>
-                    <asp:HiddenField ID="fldUIMsg" runat="server" Value="" />
-                    <asp:HiddenField ID="fldUITickCount" runat="server" Value="" />
-                    <asp:Button ID="cmdSubmit" runat="server" Width="20px" OnClick="cmdSubmit_Click"
-                        CssClass="hiddenbutton" />
-                    <asp:Timer ID="tmrInit" runat="server" Interval="50" OnTick="InitTimerTick">
-                    </asp:Timer>
-                </ContentTemplate>
-            </asp:UpdatePanel>
+            <form id="playerform" runat="server" defaultbutton="cmdSubmit">
+                <asp:ScriptManager ID="ctlScriptManager" runat="server">
+                </asp:ScriptManager>
+                <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                    <ContentTemplate>
+                        <asp:HiddenField ID="fldUIMsg" runat="server" Value="" />
+                        <asp:HiddenField ID="fldUITickCount" runat="server" Value="" />
+                        <asp:Button ID="cmdSubmit" runat="server" Width="20px" OnClick="cmdSubmit_Click"
+                            CssClass="hiddenbutton" />
+                        <asp:Timer ID="tmrInit" runat="server" Interval="50" OnTick="InitTimerTick">
+                        </asp:Timer>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </form>
+            <div id="txtCommandSpacer"></div>
             <input type="text" id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
                 autofocus />
             <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Click
                 here or press a key to continue...</a>
         </div>
     </div>
-    </form>
     <div id="dialog" title="Menu">
         <p id="dialogCaption">
         </p>

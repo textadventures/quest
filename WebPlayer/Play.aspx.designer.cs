@@ -13,13 +13,22 @@ namespace WebPlayer {
     public partial class Play {
         
         /// <summary>
-        /// styleLink control.
+        /// ctlUpdateProgress control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlLink styleLink;
+        protected global::System.Web.UI.UpdateProgress ctlUpdateProgress;
+        
+        /// <summary>
+        /// cmdSave control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputButton cmdSave;
         
         /// <summary>
         /// playerform control.
@@ -38,24 +47,6 @@ namespace WebPlayer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.ScriptManager ctlScriptManager;
-        
-        /// <summary>
-        /// ctlUpdateProgress control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdateProgress ctlUpdateProgress;
-        
-        /// <summary>
-        /// cmdSave control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputButton cmdSave;
         
         /// <summary>
         /// UpdatePanel1 control.

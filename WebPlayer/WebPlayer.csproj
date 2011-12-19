@@ -79,8 +79,6 @@
     <Content Include="Examples\twohalves\twohalves.htm" />
     <Content Include="Examples\twohalves\twohalves.js" />
     <Content Include="Examples\demo\YouTube.js" />
-    <Content Include="fixed.css" />
-    <Content Include="fluid.css" />
     <Content Include="Global.asax" />
     <Content Include="js\jjmenu.js" />
     <Content Include="js\Jplayer.swf" />

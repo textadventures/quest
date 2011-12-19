@@ -4,7 +4,6 @@ var selectSizeWithStatus = 6;
 var numCommands = 0;
 var thisCommand = 0;
 var commandsList = new Array();
-var fluid = false;
 var webPlayer = true;
 var tmrTick = null;
 var tickCount = 0;
@@ -24,11 +23,6 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 function init() {
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     showStatusVisible(false);
-
-    fluid = ($_GET["style"] == "fluid");
-    if (fluid) {
-        panesVisible(false);
-    }
 
     $("#lstInventory").change(function () {
         updateVerbButtons($("#lstInventory"), inventoryVerbs, "cmdInventory");
@@ -53,12 +47,7 @@ function showStatusVisible(visible) {
 }
 
 function scrollToEnd() {
-    if (fluid) {
-        $('html, body').animate({ scrollTop: $(document).height() }, 10);
-    }
-    else {
-        $("#divOutput").scrollTop($("#divOutput").attr("scrollHeight"));
-    }
+    $('html, body').animate({ scrollTop: $(document).height() }, 10);
 }
 
 function updateLocation(text) {
