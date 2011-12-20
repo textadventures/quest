@@ -51,6 +51,9 @@
                     </div>
                     <select id="lstInventory" size="8" class="elementList">
                     </select>
+                </div>
+                <h3 id="statusVarsLabel"><a href="#">Status</a></h3>
+                <div id="statusVarsAccordion">
                     <div id="statusVars">
                     </div>
                 </div>

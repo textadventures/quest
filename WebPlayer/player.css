@@ -81,6 +81,8 @@ div#controlButtons
 .elementList
 {
     width: 100%;
+    border: none;
+    background: transparent;
 }
 .compassbutton
 {
@@ -92,13 +94,7 @@ div#controlButtons
 }
 #statusVars
 {
-    display: none;
-    font-size: 80%;
-    width: 212px;
-    min-height: 50px;
-    max-height: 50px;
-    overflow: auto;
-    border: 1px solid silver;
+    padding: 4px;
 }
 #gamePanesFinished
 {

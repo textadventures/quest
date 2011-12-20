@@ -23,7 +23,7 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 
 function init() {
     $("button").button();
-    $("#gamePanesRunning").multiOpenAccordion({ active: [0, 1, 2] });
+    $("#gamePanesRunning").multiOpenAccordion({ active: [0, 1, 2, 3] });
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     showStatusVisible(false);
 
@@ -43,11 +43,15 @@ function init() {
 function showStatusVisible(visible) {
     if (visible) {
         $("#statusVars").show();
+        $("#statusVarsAccordion").show();
+        $("#statusVarsLabel").show();
         $("#lstInventory").attr("size", selectSizeWithStatus);
         $("#lstPlacesObjects").attr("size", selectSizeWithStatus);
     }
     else {
         $("#statusVars").hide();
+        $("#statusVarsAccordion").hide();
+        $("#statusVarsLabel").hide();
         $("#lstInventory").attr("size", selectSizeWithoutStatus);
         $("#lstPlacesObjects").attr("size", selectSizeWithoutStatus);
     }
