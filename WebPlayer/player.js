@@ -343,18 +343,32 @@ function finishSync() {
 function panesVisible(visible) {
     if (visible) {
         $("#gamePanes").show();
+        $("#gameContent").css("width", "700px");
+        $("#txtCommand").css("width", "680px");
     }
     else {
         $("#gamePanes").hide();
+        $("#gameContent").css("width", "910px");
+        $("#txtCommand").css("width", "890px");
     }
 }
 
 function uiShow(element) {
-    $(element).show();
+    if (element == "#gamePanes") {
+        panesVisible(true);
+    }
+    else {
+        $(element).show();
+    }
 }
 
 function uiHide(element) {
-    $(element).hide();
+    if (element == "#gamePanes") {
+        panesVisible(false);
+    }
+    else {
+        $(element).hide();
+    }
 }
 
 var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwest", "south", "southeast", "up", "down", "in", "out"];
