@@ -176,11 +176,13 @@
             </form>
             <div id="txtCommandSpacer"></div>
             <div id="txtCommandDiv">
-                <span id="txtCommandPrompt">&gt;</span>
-                <input type="text" id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
-                    autofocus />
-                <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Click
-                    here or press a key to continue...</a>
+                <nobr>
+                    <span id="txtCommandPrompt">&gt;</span>
+                    <input type="text" id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
+                        autofocus />
+                    <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Click
+                        here or press a key to continue...</a>
+                </nobr>
             </div>
         </div>
     </div>
