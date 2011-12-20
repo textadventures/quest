@@ -83,6 +83,7 @@
     <Content Include="js\jjmenu.js" />
     <Content Include="js\Jplayer.swf" />
     <Content Include="js\jquery.jplayer.min.js" />
+    <Content Include="js\jquery.multi-open-accordion-1.5.3.min.js" />
     <Content Include="Play.aspx" />
     <Content Include="player.css" />
     <Content Include="player.js" />

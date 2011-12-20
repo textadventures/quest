@@ -23,6 +23,7 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 
 function init() {
     $("button").button();
+    $("#gamePanesRunning").multiOpenAccordion({ active: [0, 1, 2] });
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     showStatusVisible(false);
 
@@ -526,13 +527,13 @@ function setCompassDirections(directions) {
 function setInterfaceString(name, text) {
     switch (name) {
         case "InventoryLabel":
-            $("#inventoryLabel").html(text);
+            $("#inventoryLabel a").html(text);
             break;
         case "PlacesObjectsLabel":
-            $("#placesObjectsLabel").html(text);
+            $("#placesObjectsLabel a").html(text);
             break;
         case "CompassLabel":
-            $("#compassLabel").html(text);
+            $("#compassLabel a").html(text);
             break;
         case "InButtonLabel":
             $("#cmdCompassIn").attr("value", text);

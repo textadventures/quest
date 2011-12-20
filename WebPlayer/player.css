@@ -8,10 +8,6 @@ body
     margin: 0px;
     height: 100%;
 }
-h2
-{
-    font-size: 100%;
-}
 form#playerform
 {
     min-height: 100%;
@@ -30,11 +26,11 @@ div#gamePanes
 {
     position: fixed;
     float: right;
-    width: 200px;
+    width: 216px;
     top: 24px;
     left: 50%;
     margin-left: 255px;
-    padding: 10px;
+    padding: 2px;
     background: #F9F9FF;
     min-height: 100%;
 }
@@ -98,7 +94,7 @@ div#controlButtons
 {
     display: none;
     font-size: 80%;
-    width: 100%;
+    width: 212px;
     min-height: 50px;
     max-height: 50px;
     overflow: auto;
@@ -152,20 +148,33 @@ div#txtCommandDiv
 }
 div#controlButtons .ui-button
 {
-    font-size: 10px;
+    font-size: 10px !important;
 }
 .verbButtons .ui-button
 {
-    font-size: 10px;
+    font-size: 10px !important;
 }
 #compassTable .ui-button
 {
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px !important;
     border: 2px solid #C5DBEC;
 }
-
 #compassTable .ui-button-disabled
 {
     border: 1px solid #C5DBEC;
     background: inherit;
+}
+.ui-accordion .ui-accordion-content
+{
+    padding: 0;
+}
+.ui-accordion-header
+{
+    font-size: 12px;
+    margin-top: 10px !important;
+}
+#gamePanes .ui-widget
+{
+    font-size: 12px;
 }
