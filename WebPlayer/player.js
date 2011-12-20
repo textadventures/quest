@@ -345,11 +345,13 @@ function panesVisible(visible) {
         $("#gamePanes").show();
         $("#gameContent").css("width", "700px");
         $("#txtCommand").css("width", "680px");
+        $("#updating").css("margin-left", "185px");
     }
     else {
         $("#gamePanes").hide();
         $("#gameContent").css("width", "910px");
         $("#txtCommand").css("width", "890px");
+        $("#updating").css("margin-left", "405px");
     }
 }
 
