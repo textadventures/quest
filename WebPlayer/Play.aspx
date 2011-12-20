@@ -38,6 +38,8 @@
             <div id="gamePanesRunning">
                 <h3 id="inventoryLabel"><a href="#">Inventory</a></h3>
                 <div>
+                    <select id="lstInventory" size="8" class="elementList">
+                    </select>
                     <div class="verbButtons">
                         <button id="cmdInventory1" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
                         <button id="cmdInventory2" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
@@ -49,8 +51,6 @@
                         <button id="cmdInventory8" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
                         <button id="cmdInventory9" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
                     </div>
-                    <select id="lstInventory" size="8" class="elementList">
-                    </select>
                 </div>
                 <h3 id="statusVarsLabel"><a href="#">Status</a></h3>
                 <div id="statusVarsAccordion">
@@ -59,6 +59,8 @@
                 </div>
                 <h3 id="placesObjectsLabel"><a href="#">Places &amp; Objects</a></h3>
                 <div>
+                    <select id="lstPlacesObjects" size="8" class="elementList">
+                    </select>
                     <div class="verbButtons">
                         <button id="cmdPlacesObjects1" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
                         <button id="cmdPlacesObjects2" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
@@ -70,8 +72,6 @@
                         <button id="cmdPlacesObjects8" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
                         <button id="cmdPlacesObjects9" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
                     </div>
-                    <select id="lstPlacesObjects" size="8" class="elementList">
-                    </select>
                 </div>
                 <h3 id="compassLabel"><a href="#">Compass</a></h3>
                 <div>

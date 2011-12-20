@@ -1,6 +1,4 @@
 ﻿var $_GET = {};
-var selectSizeWithoutStatus = 8;
-var selectSizeWithStatus = 6;
 var numCommands = 0;
 var thisCommand = 0;
 var commandsList = new Array();
@@ -45,15 +43,11 @@ function showStatusVisible(visible) {
         $("#statusVars").show();
         $("#statusVarsAccordion").show();
         $("#statusVarsLabel").show();
-        $("#lstInventory").attr("size", selectSizeWithStatus);
-        $("#lstPlacesObjects").attr("size", selectSizeWithStatus);
     }
     else {
         $("#statusVars").hide();
         $("#statusVarsAccordion").hide();
         $("#statusVarsLabel").hide();
-        $("#lstInventory").attr("size", selectSizeWithoutStatus);
-        $("#lstPlacesObjects").attr("size", selectSizeWithoutStatus);
     }
 }
 
@@ -375,6 +369,7 @@ function updateList(listName, listData) {
     }
 
     $(listElement).empty();
+    var count = 0;
     $.each(listData, function (key, value) {
         var splitString = value.split(":");
         var objectDisplayName = splitString[0];
@@ -392,8 +387,14 @@ function updateList(listName, listData) {
             $(listElement).append(
                 $("<option/>").attr("value", key).text(objectDisplayName)
             );
+            count++;
         }
     });
+
+    var selectSize = count;
+    if (selectSize < 3) selectSize = 3;
+    if (selectSize > 12) selectSize = 12;
+    $(listElement).attr("size", selectSize);
 }
 
 function updateCompass(listData) {

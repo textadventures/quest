@@ -146,9 +146,14 @@ div#controlButtons .ui-button
 {
     font-size: 10px !important;
 }
+.verbButtons
+{
+    text-align: center;
+}
 .verbButtons .ui-button
 {
     font-size: 10px !important;
+    margin: 5px;
 }
 #compassTable .ui-button
 {
