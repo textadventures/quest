@@ -8,7 +8,7 @@
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/jquery.jplayer.min.js"></script>
     <script type="text/javascript" src="js/jjmenu.js"></script>
-    <script type="text/javascript" src="js/jquery.multi-open-accordion-1.5.3.min.js"></script>
+    <script type="text/javascript" src="js/jquery.multi-open-accordion-1.5.3.js"></script>
     <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/themes/redmond/jquery-ui.css" />
     <link rel="Stylesheet" type="text/css" href="playercore.css" />
     <link rel="Stylesheet" type="text/css" href="player.css" />
