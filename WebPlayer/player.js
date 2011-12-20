@@ -117,6 +117,7 @@ function globalKey(e) {
 }
 
 function commandKey(e) {
+    if (_waitMode) return false;
     switch (keyPressCode(e)) {
         case 13:
             runCommand();
