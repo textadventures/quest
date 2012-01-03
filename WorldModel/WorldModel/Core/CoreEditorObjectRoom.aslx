@@ -10,7 +10,6 @@
       <attribute>picture</attribute>
       <source>[EditorImageFormats]</source>
       <filefiltername>Picture Files</filefiltername>
-      <onlydisplayif>game.useframe</onlydisplayif>
     </control>
 
     <control>

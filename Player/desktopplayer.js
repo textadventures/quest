@@ -33,3 +33,16 @@ function gameFinished() {
 function disableMainScrollbar() {
     $("body").css("overflow", "hidden");
 }
+
+function setPanelHeight() {
+    alert("TO DO: setPanelHeight");
+
+//    if (topFrame.is(":visible")) {
+//        textFrame.height($(window).height() - topFrame.position().top - topFrame.height() - 6);
+//    }
+//    else {
+//        textFrame.height($(window).height() - topFrame.position().top - 22);
+//    }
+//    scrollToEnd();
+
+}

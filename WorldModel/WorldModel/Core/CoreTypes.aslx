@@ -16,8 +16,7 @@
     <menuhoverforeground>Black</menuhoverforeground>
     <underlinehyperlinks/>
     <compassdirections type="list">[CompassNW];[CompassN];[CompassNE];[CompassW];[CompassE];[CompassSW];[CompassS];[CompassSE];[CompassUp];[CompassDown];[CompassIn];[CompassOut]</compassdirections>
-    <useframe type="boolean">false</useframe>
-    <clearframe type="boolean">false</clearframe>
+    <clearframe type="boolean">true</clearframe>
     <timeelapsed type="int">0</timeelapsed>
     <appendobjectdescription type="boolean">false</appendobjectdescription>
     <allobjects type="list">[AllObjects]</allobjects>

@@ -64,17 +64,15 @@
       do (player.parent, "beforefirstenter")
     }
     request (UpdateLocation, CapFirst(GetDisplayName(player.parent)))
-    if (game.useframe) {
-      roomFrameExists = false
-      if (HasString(player.parent, "picture")) {
-        if (LengthOf(player.parent.picture) > 0) {
-          roomFrameExists = true
-          SetFramePicture(player.parent.picture)
-        }
+    roomFrameExists = false
+    if (HasString(player.parent, "picture")) {
+      if (LengthOf(player.parent.picture) > 0) {
+        roomFrameExists = true
+        SetFramePicture(player.parent.picture)
       }
-      if (game.clearframe and not roomFrameExists) {
-        ClearFramePicture
-      }
+    }
+    if (game.clearframe and not roomFrameExists) {
+      ClearFramePicture
     }
     if (game.showdescriptiononenter) {
       ShowRoomDescription

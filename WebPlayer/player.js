@@ -52,7 +52,7 @@ function showStatusVisible(visible) {
 }
 
 function scrollToEnd() {
-    $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 }, 200);
+    $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanel").height() }, 200);
 }
 
 function markScrollPosition() {
@@ -480,6 +480,7 @@ function updateStatus(text) {
 function setBackground(col) {
     $("#gameBorder").css("background-color", col);
     $("#txtCommandDiv").css("background-color", col);
+    $("#gamePanel").css("background-color", col);
 }
 
 function setForeground(col) {
@@ -595,4 +596,16 @@ function saveGame() {
         $("#fldUIMsg").val("save");
         $("#cmdSubmit").click();
     }, 100);
+}
+
+function setPanelHeight() {
+    setTimeout(function () {
+    $("#gamePanelSpacer").height($("#gamePanel").height());
+        scrollToEnd();
+    }, 100);
+}
+
+function setPanelContents(html) {
+    $("#gamePanel").html(html);
+    setPanelHeight();
 }

@@ -259,5 +259,9 @@ namespace QuestConsole
         public void SetInterfaceString(string name, string text)
         {
         }
+
+        public void SetPanelContents(string html)
+        {
+        }
     }
 }

@@ -1,16 +1,12 @@
 ﻿<library>
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
-    if (game.useframe) {
-      request (RunScript, "setFramePicture; " + GetFileURL(filename))
-    } else {
-      msg ("<color color=\"red\"><b>ERROR: The static picture frame is not enabled. You can enable this from the Display tab of the Game editor.</b></color>")
-    }
+    request (SetPanelContents, "<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
     ]]>
   </function>
 
   <function name="ClearFramePicture">
-    request (RunScript, "clearFramePicture")
+    request (SetPanelContents, "")
   </function>
 
   <function name="ClearScreen">

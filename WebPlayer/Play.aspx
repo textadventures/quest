@@ -155,7 +155,10 @@
                 <p>This game has finished.</p>
             </div>
         </div>
+        <div id="gamePanel">
+        </div>
         <div id="gameContent">
+            <div id="gamePanelSpacer"></div>
             <div id="divOutput">
                 <h1 id="gameTitle">
                     Loading...</h1>

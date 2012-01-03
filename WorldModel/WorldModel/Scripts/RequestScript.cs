@@ -29,7 +29,8 @@ namespace AxeSoftware.Quest.Scripts
         Pause,
         Wait,
         SetInterfaceString,
-        RequestSave
+        RequestSave,
+        SetPanelContents
     }
 
     public class RequestScriptConstructor : ScriptConstructorBase
@@ -139,6 +140,9 @@ namespace AxeSoftware.Quest.Scripts
                     break;
                 case Request.RequestSave:
                     m_worldModel.PlayerUI.RequestSave();
+                    break;
+                case Request.SetPanelContents:
+                    m_worldModel.PlayerUI.SetPanelContents(data);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");

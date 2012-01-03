@@ -439,5 +439,10 @@ namespace WebPlayer
         {
             m_buffer.AddJavaScriptToBuffer("setInterfaceString", new StringParameter(name), new StringParameter(text));
         }
+
+        public void SetPanelContents(string html)
+        {
+            m_buffer.AddJavaScriptToBuffer("setPanelContents", new StringParameter(html));
+        }
     }
 }

@@ -197,5 +197,9 @@ namespace LegacyASLTests
         public void SetInterfaceString(string name, string text)
         {
         }
+
+        public void SetPanelContents(string html)
+        {
+        }
     }
 }

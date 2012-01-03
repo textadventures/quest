@@ -50,11 +50,6 @@
     if (not game.underlinehyperlinks) {
       request (RunScript, "TurnOffHyperlinksUnderline")
     }
-    if (game.useframe) {
-      request (ClearScreen, "")
-      insert ("Frame.htm")
-      request (RunScript, "beginUsingTextFrame")
-    }
     if (game.showpanes) {
       request (Show, "Panes")
     }

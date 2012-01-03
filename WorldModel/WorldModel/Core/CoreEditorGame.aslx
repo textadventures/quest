@@ -201,16 +201,8 @@
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Use static picture frame above scrolling text</caption>
-        <attribute>useframe</attribute>
-        <advanced/>
-      </control>
-      
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Clear frame if room has no picture</caption>
+        <caption>Clear picture panel if room has no picture</caption>
         <attribute>clearframe</attribute>
-        <onlydisplayif>game.useframe</onlydisplayif>
       </control>
 
       <control>
