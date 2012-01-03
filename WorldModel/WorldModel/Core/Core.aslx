@@ -24,9 +24,6 @@
   <include ref="CoreOutput.aslx"/>
   <include ref="CoreEditor.aslx"/>
 
-  <resource src="Frame.htm"/>
-  <javascript src="Frame.js"/>
-
   <function name="InitInterface">
     request (FontName, game.defaultfont)
     request (FontSize, ToString(game.defaultfontsize))

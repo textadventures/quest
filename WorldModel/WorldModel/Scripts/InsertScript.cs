@@ -43,6 +43,12 @@ namespace AxeSoftware.Quest.Scripts
         public override void Execute(Context c)
         {
             string filename = m_filename.Execute(c);
+            if (m_worldModel.Version == WorldModelVersion.v500)
+            {
+                // v500 games used Frame.htm for static panel feature. This is now implemented natively
+                // in Player and WebPlayer.
+                if (filename.ToLower() == "frame.htm") return;
+            }
             string path = m_worldModel.GetExternalPath(filename);
             m_worldModel.PlayerUI.WriteHTML(System.IO.File.ReadAllText(path));
         }

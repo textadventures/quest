@@ -868,6 +868,13 @@ namespace AxeSoftware.Quest
             var result = new List<string>();
             foreach (Element jsRef in m_elements.GetElements(ElementType.Javascript))
             {
+                if (Version == WorldModelVersion.v500)
+                {
+                    // v500 games used Frame.js functions for static panel feature. This is now implemented natively
+                    // in Player and WebPlayer.
+                    if (jsRef.Fields[FieldDefinitions.Src].ToLower() == "frame.js") continue;
+                }
+
                 result.Add(GetExternalPath(jsRef.Fields[FieldDefinitions.Src]));
             }
             return result;

@@ -98,6 +98,22 @@ namespace AxeSoftware.Quest.Scripts
                     m_worldModel.PlayerUI.SetForeground(data);
                     break;
                 case Request.RunScript:
+                    if (m_worldModel.Version == WorldModelVersion.v500)
+                    {
+                        // v500 games used Frame.js functions for static panel feature. This is now implemented natively
+                        // in Player and WebPlayer.
+                        if (data == "beginUsingTextFrame") return;
+                        if (data.StartsWith("setFramePicture;"))
+                        {
+                            string[] frameArgs = data.Split(';');
+                            m_worldModel.PlayerUI.SetPanelContents("<img src=\"" + frameArgs[1].Trim() + "\" onload=\"setPanelHeight()\"/>");
+                            return;
+                        }
+                        if (data == "clearFramePicture")
+                        {
+                            m_worldModel.PlayerUI.SetPanelContents("");
+                        }
+                    }
                     m_worldModel.PlayerUI.RunScript(data);
                     break;
                 case Request.Quit:
