@@ -19,7 +19,7 @@
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
     <% Response.Write(GetBodyHeader()); %>    
-    <asp:UpdateProgress ID="ctlUpdateProgress" runat="server" DisplayAfter="250">
+    <asp:UpdateProgress ID="ctlUpdateProgress" runat="server" DisplayAfter="500">
         <ProgressTemplate>
         <div id="updating">
             <img src="updating.gif" alt="Updating..." />
