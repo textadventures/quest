@@ -257,6 +257,9 @@
     <Content Include="Blank.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="desktopplayer.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="desktopplayer.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -266,7 +269,7 @@
     <Content Include="jjmenu.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="jquery-1.5.1.js">
+    <Content Include="jquery-1.7.1.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

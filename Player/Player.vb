@@ -1103,6 +1103,6 @@ Public Class Player
     End Property
 
     Public Sub SetPanelContents(html As String) Implements IPlayer.SetPanelContents
-        MsgBox("TO DO: SetPanelContents")
+        BeginInvoke(Sub() ctlPlayerHtml.SetPanelContents(html))
     End Sub
 End Class

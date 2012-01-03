@@ -188,4 +188,8 @@ Public Class PlayerHTML
         text = text.Replace("&nbsp;", " ").Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&")
         JawsApi.JawsApi.JFWSayString(text, False)
     End Sub
+
+    Public Sub SetPanelContents(html As String)
+        InvokeScript("setPanelContents", html)
+    End Sub
 End Class

@@ -24,6 +24,7 @@ function UIEvent(cmd, parameter) {
 
 function SetBackground(color) {
     document.body.style.background = color;
+    $("#gamePanel").css("background-color", color);
 }
 
 function gameFinished() {
@@ -35,14 +36,22 @@ function disableMainScrollbar() {
 }
 
 function setPanelHeight() {
-    alert("TO DO: setPanelHeight");
+    setTimeout(function () {
+        var height = $("#gamePanel").height();
+        if ($("#gamePanel").html() == "") {
+            // workaround for IE weirdness where an empty div has height
+            height = 0;
+            $("#gamePanel").hide();
+        }
+        else {
+            $("#gamePanel").show();
+        }
+        $("#gamePanelSpacer").height(height);
+        scrollToEnd();
+    }, 100);
+}
 
-//    if (topFrame.is(":visible")) {
-//        textFrame.height($(window).height() - topFrame.position().top - topFrame.height() - 6);
-//    }
-//    else {
-//        textFrame.height($(window).height() - topFrame.position().top - 22);
-//    }
-//    scrollToEnd();
-
+function setPanelContents(html) {
+    $("#gamePanel").html(html);
+    setPanelHeight();
 }
