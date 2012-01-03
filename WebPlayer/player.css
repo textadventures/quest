@@ -61,6 +61,7 @@ div#updating
     filter: alpha(opacity=80);
     opacity: 0.8;
     background: white;
+    z-index: 1;
 }
 div#gamePanel
 {
