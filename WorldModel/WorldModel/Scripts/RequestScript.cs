@@ -6,7 +6,7 @@ using AxeSoftware.Quest.Functions;
 
 namespace AxeSoftware.Quest.Scripts
 {
-    // Any changes here should also be reflected in CoreEditorScripts.aslx (validvalues for "request" command)
+    // Any changes here should also be reflected in CoreEditorScriptsOutput.aslx (validvalues for "request" command)
     // and also on the wiki http://quest5.net/wiki/Request
     internal enum Request
     {
