@@ -20,6 +20,20 @@
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
     <% Response.Write(GetBodyHeader()); %>    
+    <div id="dialog" title="Menu">
+    <p id="dialogCaption">
+    </p>
+    <select id="dialogOptions" size="3">
+    </select>
+    </div>
+    <div id="msgbox" title="Question">
+        <p id="msgboxCaption">
+        </p>
+    </div>
+    <div id="jquery_jplayer" style="width: 0; height: 0">
+    </div>
+    <div id="audio_embed">
+    </div>
     <div id="gameBorder">
         <div id="status" class="ui-widget-header">
             <div id="controlButtons">
@@ -175,20 +189,6 @@
                     here or press a key to continue...</a>
             </div>
         </div>
-    </div>
-    <div id="dialog" title="Menu">
-        <p id="dialogCaption">
-        </p>
-        <select id="dialogOptions" size="3">
-        </select>
-    </div>
-    <div id="msgbox" title="Question">
-        <p id="msgboxCaption">
-        </p>
-    </div>
-    <div id="jquery_jplayer" style="width: 0; height: 0">
-    </div>
-    <div id="audio_embed">
     </div>
     <% Response.Write(GetBodyFooter()); %>
 </body>

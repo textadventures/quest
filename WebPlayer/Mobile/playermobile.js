@@ -16,7 +16,7 @@
 }
 
 function scrollToEnd() {
-    var newScrollTop = beginningOfCurrentTurnScrollPosition;
+    var newScrollTop = beginningOfCurrentTurnScrollPosition - 15;
     if ($("#gameBorder").height() > $(window).height()) {
         $('html, body').animate({ scrollTop: newScrollTop }, 200);
     }
