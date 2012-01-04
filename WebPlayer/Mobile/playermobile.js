@@ -33,16 +33,15 @@ function setPanelContents(html) {
 var resizeTimer;
 
 function ui_init() {
-    resizeUI();
-    $(window).resize(function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            resizeUI();
-        }, 100);
-    });
-    document.addEventListener("orientationChanged", setMinHeight);
+//    resizeUI();
+//    $(window).resize(function () {
+//        clearTimeout(resizeTimer);
+//        resizeTimer = setTimeout(function () {
+//            resizeUI();
+//        }, 100);
+//    });
+//    document.addEventListener("orientationChanged", resizeUI);
 }
 
 function resizeUI() {
-    $("#txtCommand").width($(window).width() - 50);
 }
