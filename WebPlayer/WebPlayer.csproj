@@ -53,6 +53,9 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FiftyOne.Foundation">
+      <HintPath>..\packages\51Degrees.mobi.2.0.2.3\lib\NET40\FiftyOne.Foundation.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>.\log4net.dll</HintPath>
     </Reference>
@@ -84,6 +87,8 @@
     <Content Include="js\Jplayer.swf" />
     <Content Include="js\jquery.jplayer.min.js" />
     <Content Include="js\jquery.multi-open-accordion-1.5.3.js" />
+    <Content Include="Mobile\Default.aspx" />
+    <Content Include="Mobile\Play.aspx" />
     <Content Include="Play.aspx" />
     <Content Include="player.css" />
     <Content Include="player.js" />
@@ -111,6 +116,20 @@
     <Compile Include="HTMLManager.cs" />
     <Compile Include="InterfaceListHandler.cs" />
     <Compile Include="Logging.cs" />
+    <Compile Include="Mobile\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Mobile\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Mobile\Play.aspx.cs">
+      <DependentUpon>Play.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Mobile\Play.aspx.designer.cs">
+      <DependentUpon>Play.aspx</DependentUpon>
+    </Compile>
     <Compile Include="OutputBuffer.cs" />
     <Compile Include="Play.aspx.cs">
       <DependentUpon>Play.aspx</DependentUpon>
@@ -149,10 +168,14 @@
     <Content Include="Resource.ashx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\51Degrees.mobi.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Examples\twohalves\twohalves.aslx" />
     <None Include="Examples\demo\demo.aslx">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
