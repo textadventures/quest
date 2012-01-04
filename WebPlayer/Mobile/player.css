@@ -14,11 +14,9 @@ form#playerform
 }
 div#gameBorder
 {
-    width: 99%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
-    border-left: 1px solid silver;
-    border-right: 1px solid silver;
     margin-top: 0;
     min-height: 100%;
 }
@@ -32,7 +30,6 @@ div#gamePanes
 div#status
 {
     height: 30px;
-    width: 99%;
     margin-left: auto;
     margin-right: auto;
     font-size: 14pt;
@@ -88,7 +85,6 @@ div#controlButtons
 div#gameContent
 {
     padding: 30px 20px 0px 20px;
-    width: 96%;
     min-height: 100%;
 }
 div#divOutput
@@ -107,14 +103,9 @@ div#txtCommandDiv
 }
 #txtCommand
 {
-    width: 95%;
     font-size: 20px;
     margin-left: 5px;
     vertical-align: bottom;
-}
-#txtCommandSpacer
-{
-    height: 50px;
 }
 #txtCommandPrompt
 {

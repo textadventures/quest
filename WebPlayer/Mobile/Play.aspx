@@ -168,7 +168,6 @@
                     </ContentTemplate>
                 </asp:UpdatePanel>
             </form>
-            <div id="txtCommandSpacer"></div>
             <div id="txtCommandDiv">
                 <nobr>
                     <span id="txtCommandPrompt">&gt;</span>

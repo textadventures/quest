@@ -33,16 +33,16 @@ function setPanelContents(html) {
 var resizeTimer;
 
 function ui_init() {
-    setMinHeight();
+    resizeUI();
     $(window).resize(function () {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
-            setMinHeight();
+            resizeUI();
         }, 100);
     });
     document.addEventListener("orientationChanged", setMinHeight);
 }
 
-function setMinHeight() {
-    $("#divOutput").css("min-height", $(window).height() - 160);
+function resizeUI() {
+    $("#txtCommand").width($(window).width() - 50);
 }
