@@ -1,27 +1,24 @@
 ﻿body {
   overflow-y: scroll;
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
 body
 {
     margin: 0px;
-    height: 100%;
 }
 form#playerform
 {
-    min-height: 100%;
 }
 div#gameBorder
 {
     margin-top: 0;
-    min-height: 100%;
 }
 div#gamePanes
 {
     padding: 2px;
     background: #F9F9FF;
-    min-height: 100%;
     display: none;
 }
 div#status
@@ -78,8 +75,7 @@ div#controlButtons
 }
 div#gameContent
 {
-    padding: 30px 20px 0px 20px;
-    min-height: 100%;
+    padding: 4px 0px 0px 4px;
 }
 div#divOutput
 {
@@ -97,14 +93,8 @@ div#txtCommandDiv
 #txtCommand
 {
     font-size: 20px;
-    margin-left: 5px;
     vertical-align: bottom;
-    width: 95%;
-}
-#txtCommandPrompt
-{
-    font-size: 150%;
-    font-weight: bold;
+    width: 90%;
 }
 div#controlButtons .ui-button
 {

@@ -16,12 +16,16 @@
 }
 
 function scrollToEnd() {
-    $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 }, 200);
+    var newScrollTop = beginningOfCurrentTurnScrollPosition;
+    if ($("#gameBorder").height() > $(window).height()) {
+        $('html, body').animate({ scrollTop: newScrollTop }, 200);
+    }
 }
 
 function setBackground(col) {
     $("#gameBorder").css("background-color", col);
     $("#txtCommandDiv").css("background-color", col);
+    $("body").css("background-color", col);
 }
 
 function setPanelHeight() {
