@@ -139,3 +139,11 @@ div#controlButtons .ui-button
     background: white;
     padding: 2px 20px;
 }
+#sessionTimeoutDiv
+{
+    display: none;
+    background: white;
+    color: black;
+    padding: 10px;
+    margin: 5px;
+}

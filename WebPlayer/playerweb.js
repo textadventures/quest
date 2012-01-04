@@ -47,3 +47,17 @@ function beginWait() {
     });
     markScrollPosition();
 }
+
+function sessionTimeout() {
+    disableInterface();
+}
+
+function gameFinished() {
+    disableInterface();
+}
+
+function disableInterface() {
+    $("#txtCommandDiv").hide();
+    $("#gamePanesRunning").hide();
+    $("#gamePanesFinished").show();
+}

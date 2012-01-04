@@ -240,7 +240,7 @@ namespace WebPlayer.Mobile
         {
             if (m_player == null)
             {
-                SessionTimeoutMessage("<b>Sorry, your session has expired and the game has finished.</b><br/><br/>Press your browser's Refresh button to start again.");
+                SessionTimeoutMessage();
                 return;
             }
 
@@ -298,10 +298,9 @@ namespace WebPlayer.Mobile
             ClearJavaScriptBuffer();
         }
 
-        void SessionTimeoutMessage(string text)
+        void SessionTimeoutMessage()
         {
             m_buffer = new OutputBuffer();
-            m_buffer.OutputText(text);
             m_buffer.AddJavaScriptToBuffer("sessionTimeout");
             ClearJavaScriptBuffer();
         }

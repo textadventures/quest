@@ -244,20 +244,6 @@ function dialogSendCancel() {
     }, 100);
 }
 
-function sessionTimeout() {
-    disableInterface();
-}
-
-function gameFinished() {
-    disableInterface();
-}
-
-function disableInterface() {
-    $("#txtCommandDiv").hide();
-    $("#gamePanesRunning").hide();
-    $("#gamePanesFinished").show();
-}
-
 var _currentPlayer = "";
 
 function playWav(filename, sync, looped) {

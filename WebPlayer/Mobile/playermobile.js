@@ -57,3 +57,18 @@ function beginWait() {
     });
     markScrollPosition();
 }
+
+function sessionTimeout() {
+    disableInterface();
+    $("#sessionTimeoutDiv").show();
+}
+
+function gameFinished() {
+    disableInterface();
+}
+
+function disableInterface() {
+    $("#txtCommandDiv").hide();
+    $("#gamePanesRunning").hide();
+    $("#gamePanesFinished").show();
+}

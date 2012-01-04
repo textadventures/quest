@@ -182,11 +182,13 @@
                     </ContentTemplate>
                 </asp:UpdatePanel>
             </form>
+            <div id="sessionTimeoutDiv">
+                <b>Sorry, your session has expired and the game has finished.</b>
+            </div>
             <div id="txtCommandDiv">
                 <input type="text" id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
-                    autofocus />
-                <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Click
-                    here or press a key to continue...</a>
+                    autofocus autocorrect="off" autocapitalize="off" />
+                <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Tap here to continue...</a>
             </div>
         </div>
     </div>
