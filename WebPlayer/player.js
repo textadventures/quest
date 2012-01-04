@@ -36,6 +36,8 @@ function init() {
     $("#cmdSave").click(function () {
         saveGame();
     });
+
+    ui_init();
 }
 
 function showStatusVisible(visible) {
@@ -49,10 +51,6 @@ function showStatusVisible(visible) {
         $("#statusVarsAccordion").hide();
         $("#statusVarsLabel").hide();
     }
-}
-
-function scrollToEnd() {
-    $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanel").height() }, 200);
 }
 
 function markScrollPosition() {
@@ -340,23 +338,6 @@ function finishSync() {
     }, 100);
 }
 
-function panesVisible(visible) {
-    if (visible) {
-        $("#gamePanes").show();
-        $("#gameContent").css("width", "700px");
-        $("#txtCommand").css("width", "680px");
-        $("#updating").css("margin-left", "185px");
-        $("#gamePanel").css("width", "700px");
-    }
-    else {
-        $("#gamePanes").hide();
-        $("#gameContent").css("width", "910px");
-        $("#txtCommand").css("width", "890px");
-        $("#updating").css("margin-left", "405px");
-        $("#gamePanel").css("width", "910px");
-    }
-}
-
 function uiShow(element) {
     if (element == "#gamePanes") {
         panesVisible(true);
@@ -479,12 +460,6 @@ function updateStatus(text) {
     }
 }
 
-function setBackground(col) {
-    $("#gameBorder").css("background-color", col);
-    $("#txtCommandDiv").css("background-color", col);
-    $("#gamePanel").css("background-color", col);
-}
-
 function setForeground(col) {
     $("#txtCommandPrompt").css("color", col);
 }
@@ -598,16 +573,4 @@ function saveGame() {
         $("#fldUIMsg").val("save");
         $("#cmdSubmit").click();
     }, 100);
-}
-
-function setPanelHeight() {
-    setTimeout(function () {
-    $("#gamePanelSpacer").height($("#gamePanel").height());
-        scrollToEnd();
-    }, 100);
-}
-
-function setPanelContents(html) {
-    $("#gamePanel").html(html);
-    setPanelHeight();
 }

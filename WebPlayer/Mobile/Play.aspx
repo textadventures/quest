@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head runat="server">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=0.9" />
+    <meta name="viewport" content="width=device-width; maximum-scale=1.0;" />
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../js/jquery.jplayer.min.js"></script>
@@ -11,21 +11,15 @@
     <script type="text/javascript" src="../js/jquery.multi-open-accordion-1.5.3.js"></script>
     <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/themes/redmond/jquery-ui.css" />
     <link rel="Stylesheet" type="text/css" href="../playercore.css" />
-    <link rel="Stylesheet" type="text/css" href="../player.css" />
+    <link rel="Stylesheet" type="text/css" href="player.css" />
     <link rel="Stylesheet" type="text/css" href="../js/jjmenu.css" />
     <script type="text/javascript" src="../playercore.js"></script>
     <script type="text/javascript" src="../player.js"></script>
+    <script type="text/javascript" src="playermobile.js"></script>
     <% Response.Write(GetHead()); %>
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
     <% Response.Write(GetBodyHeader()); %>    
-    <asp:UpdateProgress ID="ctlUpdateProgress" runat="server" DisplayAfter="500">
-        <ProgressTemplate>
-        <div id="updating">
-            <img src="../updating.gif" alt="Updating..." />
-            </div>
-        </ProgressTemplate>
-    </asp:UpdateProgress>
     <div id="gameBorder">
         <div id="status" class="ui-widget-header">
             <div id="controlButtons">
@@ -155,10 +149,7 @@
                 <p>This game has finished.</p>
             </div>
         </div>
-        <div id="gamePanel">
-        </div>
         <div id="gameContent">
-            <div id="gamePanelSpacer"></div>
             <div id="divOutput">
                 <h1 id="gameTitle">
                     Loading...</h1>

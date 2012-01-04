@@ -213,7 +213,7 @@ namespace WebPlayer.Mobile
                 Resources = new SessionResources();
             }
 
-            return Resources.Add(filename);
+            return "../" + Resources.Add(filename);
         }
 
         void m_player_BeginWait()

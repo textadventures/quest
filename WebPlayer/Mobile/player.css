@@ -1,0 +1,170 @@
+﻿body {
+  overflow-y: scroll;
+}
+
+html,
+body
+{
+    margin: 0px;
+    height: 100%;
+}
+form#playerform
+{
+    min-height: 100%;
+}
+div#gameBorder
+{
+    width: 99%;
+    margin-left: auto;
+    margin-right: auto;
+    border-left: 1px solid silver;
+    border-right: 1px solid silver;
+    margin-top: 0;
+    min-height: 100%;
+}
+div#gamePanes
+{
+    padding: 2px;
+    background: #F9F9FF;
+    min-height: 100%;
+    display: none;
+}
+div#status
+{
+    height: 30px;
+    width: 99%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14pt;
+    padding: 0;
+}
+div#location
+{
+    padding-left: 4px;
+    padding-top: 4px;
+}
+div#controlButtons
+{
+    float: right;
+}
+.hiddenbutton
+{
+    display: none;
+}
+#dialog
+{
+    display: none;
+}
+#msgbox
+{
+    display: none;
+}
+.elementList
+{
+    width: 100%;
+    border: none;
+    background: transparent;
+}
+.compassbutton
+{
+    margin-right: 0;
+    height: 35px;
+    width: 35px;
+    padding: 0px;
+    font-size: 11px;
+}
+#statusVars
+{
+    padding: 4px;
+}
+#gamePanesFinished
+{
+    display: none;
+}
+#cmdSave
+{
+    margin-top: 0px;
+}
+div#gameContent
+{
+    padding: 30px 20px 0px 20px;
+    width: 96%;
+    min-height: 100%;
+}
+div#divOutput
+{
+}
+div#txtCommandDiv
+{
+    padding-top: 10px;
+    bottom: 0;
+    margin-left: -10px;
+    height: 40px;
+    background: white;
+    filter: alpha(opacity=80);
+    opacity: 0.8;
+    width: 97%;
+}
+#txtCommand
+{
+    width: 95%;
+    font-size: 20px;
+    margin-left: 5px;
+    vertical-align: bottom;
+}
+#txtCommandSpacer
+{
+    height: 50px;
+}
+#txtCommandPrompt
+{
+    font-size: 150%;
+    font-weight: bold;
+}
+div#controlButtons .ui-button
+{
+    font-size: 10px !important;
+}
+.verbButtons
+{
+    text-align: center;
+}
+.verbButtons .ui-button
+{
+    font-size: 10px !important;
+    margin: 5px;
+}
+#compassTable .ui-button
+{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px !important;
+    border: 2px solid #C5DBEC;
+}
+#compassTable .ui-button-disabled
+{
+    border: 1px solid #C5DBEC;
+    background: inherit;
+}
+.ui-accordion .ui-accordion-content
+{
+    padding: 0;
+}
+.ui-accordion-header
+{
+    font-size: 12px;
+    margin-top: 10px !important;
+}
+#gamePanes .ui-widget
+{
+    font-size: 12px;
+}
+#endWaitLink
+{
+    font-size: 16px;
+    font-weight: bold;
+    position: absolute;
+    top: 17px;
+    left: 25px;
+    background: white;
+    padding: 2px 20px;
+}

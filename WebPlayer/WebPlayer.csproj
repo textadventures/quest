@@ -89,10 +89,13 @@
     <Content Include="js\jquery.multi-open-accordion-1.5.3.js" />
     <Content Include="Mobile\Default.aspx" />
     <Content Include="Mobile\Play.aspx" />
+    <Content Include="Mobile\player.css" />
+    <Content Include="Mobile\playermobile.js" />
     <Content Include="Play.aspx" />
     <Content Include="player.css" />
     <Content Include="player.js" />
     <Content Include="js\jjmenu.css" />
+    <Content Include="playerweb.js" />
     <Content Include="updating.gif" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

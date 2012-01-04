@@ -15,6 +15,7 @@
     <link rel="Stylesheet" type="text/css" href="js/jjmenu.css" />
     <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
+    <script type="text/javascript" src="playerweb.js"></script>
     <% Response.Write(GetHead()); %>
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
