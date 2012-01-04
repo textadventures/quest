@@ -49,3 +49,11 @@ function ui_init() {
 
 function resizeUI() {
 }
+
+function beginWait() {
+    _waitMode = true;
+    $("#txtCommand").fadeOut(400, function () {
+        $("#endWaitLink").fadeTo(400, 1);
+    });
+    markScrollPosition();
+}

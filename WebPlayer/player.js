@@ -70,14 +70,6 @@ var _waitMode = false;
 var _pauseMode = false;
 var _waitingForSoundToFinish = false;
 
-function beginWait() {
-    _waitMode = true;
-    $("#txtCommand").fadeTo(400, 0, function () {
-        $("#endWaitLink").fadeTo(400, 1);
-    });
-    markScrollPosition();
-}
-
 function endWait() {
     if (!_waitMode) return;
     _waitMode = false;

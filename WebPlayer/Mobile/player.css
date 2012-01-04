@@ -136,9 +136,6 @@ div#controlButtons .ui-button
 {
     font-size: 16px;
     font-weight: bold;
-    position: absolute;
-    top: 17px;
-    left: 25px;
     background: white;
     padding: 2px 20px;
 }
