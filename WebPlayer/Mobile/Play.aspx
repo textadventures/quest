@@ -186,8 +186,19 @@
                 <b>Sorry, your session has expired and the game has finished.</b>
             </div>
             <div id="txtCommandDiv">
-                <input type="text" id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
-                    autofocus autocorrect="off" autocapitalize="off" />
+                <table id="inputBar">
+                    <tr>
+                        <td>
+                            <input type="text" id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
+                                autofocus autocorrect="off" autocapitalize="off" />
+                        </td>
+                        <td id="inputBarButtons">
+                            <div id="tabButtonDiv">
+                                <button type="button" id="tabButton">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
                 <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Tap here to continue...</a>
             </div>
         </div>

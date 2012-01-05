@@ -93,7 +93,7 @@ div#txtCommandDiv
 {
     font-size: 20px;
     vertical-align: bottom;
-    width: 90%;
+    width: 100%;
 }
 div#controlButtons .ui-button
 {
@@ -146,4 +146,21 @@ div#controlButtons .ui-button
     color: black;
     padding: 10px;
     margin: 5px;
+}
+div#tabButtonDiv .ui-button
+{
+    font-size: 14px !important;
+}
+table#inputBar
+{
+    width: 100%;
+}
+td#inputBarButtons
+{
+    width: 35px;
+}
+input[type="text"] {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
