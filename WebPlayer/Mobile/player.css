@@ -21,15 +21,6 @@ div#gamePanes
     background: #F9F9FF;
     display: none;
 }
-div#location
-{
-    padding-left: 4px;
-    padding-top: 4px;
-}
-div#controlButtons
-{
-    float: right;
-}
 .hiddenbutton
 {
     display: none;
@@ -122,10 +113,6 @@ div#controlButtons .ui-button
     font-size: 12px;
     margin-top: 10px !important;
 }
-#gamePanes .ui-widget
-{
-    font-size: 12px;
-}
 #endWaitLink
 {
     font-size: 16px;
@@ -157,4 +144,9 @@ input[type="text"] {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+}
+div.pane 
+{
+    display: none;
+    background: white;
 }

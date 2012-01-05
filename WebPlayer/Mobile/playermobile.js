@@ -51,16 +51,14 @@ function ui_init() {
 
     var options = [
         { title: "Inventory", action: { type: "fn", callback: "tabMenu('inventory');"} },
-        { title: "Objects", action: { type: "fn", callback: "tabMenu('objects');"} },
+        { title: "Location", action: { type: "fn", callback: "tabMenu('objects');"} },
         { title: "Exits", action: { type: "fn", callback: "tabMenu('exits');"} },
         { title: "More", action: { type: "fn", callback: "tabMenu('more');"} }
     ];
     $("#tabButton").jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
 
-    $("#gamePanesBack").click(function () { tabMenu('game'); });
-    $("#gameObjectsBack").click(function () { tabMenu('game'); });
-    $("#gameExitsBack").click(function () { tabMenu('game'); });
-    $("#gameMoreBack").click(function () { tabMenu('game'); });
+    $("button.backButton span").html("&lt; Back to game");
+    $("button.backButton").click(function () { tabMenu('game'); });
 }
 
 function tabMenu(id) {
@@ -134,4 +132,32 @@ function divNameForTab(tab) {
         case "more":
             return $("#gameMore");
     }
+}
+
+function setInterfaceString(name, text) {
+    switch (name) {
+        case "InventoryLabel":
+            $("#inventoryLabel").html(text);
+            break;
+        case "PlacesObjectsLabel":
+            // not implemented on mobile WebPlayer
+            break;
+        case "CompassLabel":
+            $("#compassLabel").html(text);
+            break;
+        case "InButtonLabel":
+            $("#cmdCompassIn").attr("value", text);
+            break;
+        case "OutButtonLabel":
+            $("#cmdCompassOut").attr("value", text);
+            break;
+        case "EmptyListLabel":
+            break;
+        case "NothingSelectedLabel":
+            break;
+    }
+}
+
+function updateLocation(text) {
+    $("#placesObjectsLabel").html(text);
 }

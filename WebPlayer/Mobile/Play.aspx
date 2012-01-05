@@ -35,8 +35,8 @@
     <div id="audio_embed">
     </div>
     <div id="gameBorder">
-        <div id="gamePanes" style="display: none">
-            <button type="button" id="gamePanesBack" class="backButton">Back to game</button>
+        <div id="gamePanes" class="pane">
+            <button type="button" class="backButton"></button>
             <h2 id="inventoryLabel">Inventory</h2>
             <div>
                 <select id="lstInventory" size="8" class="elementList">
@@ -59,11 +59,9 @@
                 </div>
             </div>
         </div>
-        <div id="gameObjects" style="display: none">
-            <button type="button" id="gameObjectsBack" class="backButton">Back to game</button>
+        <div id="gameObjects" class="pane">
+            <button type="button" class="backButton"></button>
             <h2 id="placesObjectsLabel">Places &amp; Objects</h2>
-            <div id="location">
-            </div>
             <div>
                 <select id="lstPlacesObjects" size="8" class="elementList">
                 </select>
@@ -80,8 +78,8 @@
                 </div>
             </div>
         </div>
-        <div id="gameExits" style="display: none">
-            <button type="button" id="gameExitsBack" class="backButton">Back to game</button>
+        <div id="gameExits" class="pane">
+            <button type="button" class="backButton"></button>
             <h2 id="compassLabel">Compass</h2>
             <div>
                 <table id="compassTable">
@@ -159,8 +157,8 @@
                 </table>
             </div>
         </div>
-        <div id="gameMore" style="display: none">
-            <button type="button" id="gameMoreBack" class="backButton">Back to game</button>
+        <div id="gameMore" class="pane">
+            <button type="button" class="backButton"></button>
             <h2>More</h2>
             <div>
                 <div id="controlButtons">
