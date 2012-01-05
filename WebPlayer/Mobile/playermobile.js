@@ -161,3 +161,7 @@ function setInterfaceString(name, text) {
 function updateLocation(text) {
     $("#placesObjectsLabel").html(text);
 }
+
+function afterSendCommand() {
+    tabSelected("game");
+}

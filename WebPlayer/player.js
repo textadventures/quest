@@ -422,6 +422,7 @@ function sendCommand(text) {
         prepareCommand(text);
         $("#cmdSubmit").click();
     }, 100);
+    afterSendCommand();
 }
 
 function updateStatus(text) {

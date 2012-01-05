@@ -89,3 +89,6 @@ function setInterfaceString(name, text) {
 function updateLocation(text) {
     $("#location").html(text);
 }
+
+function afterSendCommand() {
+}
