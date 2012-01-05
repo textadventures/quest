@@ -1,4 +1,5 @@
 ﻿var _currentDiv = null;
+var _allowMenuFontSizeChange = true;
 
 function addText(text) {
     if (_currentDiv == null) {
@@ -87,8 +88,10 @@ function SetMenuFontName(font) {
 }
 
 function SetMenuFontSize(size) {
-    var css = getCSSRule("div.jjmenu");
-    css.style.fontSize = size;
+    if (_allowMenuFontSizeChange) {
+        var css = getCSSRule("div.jjmenu");
+        css.style.fontSize = size;
+    }
 }
 
 function TurnOffHyperlinksUnderline() {

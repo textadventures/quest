@@ -37,14 +37,17 @@ function setPanelContents(html) {
 var resizeTimer;
 
 function ui_init() {
-//    resizeUI();
-//    $(window).resize(function () {
-//        clearTimeout(resizeTimer);
-//        resizeTimer = setTimeout(function () {
-//            resizeUI();
-//        }, 100);
-//    });
-//    document.addEventListener("orientationChanged", resizeUI);
+    //    resizeUI();
+    //    $(window).resize(function () {
+    //        clearTimeout(resizeTimer);
+    //        resizeTimer = setTimeout(function () {
+    //            resizeUI();
+    //        }, 100);
+    //    });
+    //    document.addEventListener("orientationChanged", resizeUI);
+
+    SetMenuFontSize("18px");
+    _allowMenuFontSizeChange = false;
 }
 
 function resizeUI() {
