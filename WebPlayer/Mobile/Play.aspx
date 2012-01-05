@@ -195,7 +195,9 @@
                         </td>
                         <td id="inputBarButtons">
                             <div id="tabButtonDiv">
-                                <button type="button" id="tabButton">+</button>
+                                <div id="tabButton" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="width: 30px; height: 30px;">
+                                +
+                                </button>
                             </div>
                         </td>
                     </tr>

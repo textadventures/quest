@@ -46,8 +46,22 @@ function ui_init() {
     //    });
     //    document.addEventListener("orientationChanged", resizeUI);
 
-    SetMenuFontSize("18px");
+    SetMenuFontSize("20px");
     _allowMenuFontSizeChange = false;
+
+    var options = [
+        { title: "Game", action: { type: "fn", callback: "tabMenu('game');"} },
+        { title: "Inventory", action: { type: "fn", callback: "tabMenu('inventory');"} },
+        { title: "Objects", action: { type: "fn", callback: "tabMenu('objects');"} },
+        { title: "Exits", action: { type: "fn", callback: "tabMenu('exits');"} },
+        { title: "More", action: { type: "fn", callback: "tabMenu('more');"} }
+    ];
+    $("#tabButton").jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
+}
+
+function tabMenu(id) {
+    $("div[id^=jjmenu]").remove();
+    alert(id);
 }
 
 function resizeUI() {

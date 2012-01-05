@@ -141,9 +141,9 @@ div#controlButtons .ui-button
     padding: 10px;
     margin: 5px;
 }
-div#tabButtonDiv .ui-button
+div#tabButton
 {
-    font-size: 14px !important;
+    font-size: 25px;
 }
 table#inputBar
 {
