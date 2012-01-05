@@ -21,12 +21,6 @@ div#gamePanes
     background: #F9F9FF;
     display: none;
 }
-div#status
-{
-    height: 30px;
-    font-size: 14pt;
-    padding: 0;
-}
 div#location
 {
     padding-left: 4px;

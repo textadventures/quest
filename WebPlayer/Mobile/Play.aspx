@@ -35,13 +35,6 @@
     <div id="audio_embed">
     </div>
     <div id="gameBorder">
-        <div id="status" class="ui-widget-header">
-            <div id="controlButtons">
-                <button type="button" id="cmdSave" runat="server">Save</button>
-            </div>
-            <div id="location">
-            </div>
-        </div>
         <div id="gamePanes">
             <div id="gamePanesRunning">
                 <h3 id="inventoryLabel"><a href="#">Inventory</a></h3>
@@ -66,6 +59,8 @@
                     </div>
                 </div>
                 <h3 id="placesObjectsLabel"><a href="#">Places &amp; Objects</a></h3>
+                <div id="location">
+                </div>
                 <div>
                     <select id="lstPlacesObjects" size="8" class="elementList">
                     </select>
@@ -156,6 +151,12 @@
                             </td>
                         </tr>
                     </table>
+                </div>
+                <h3>More</h3>
+                <div>
+                    <div id="controlButtons">
+                        <button type="button" id="cmdSave" runat="server">Save</button>
+                    </div>
                 </div>
             </div>
             <div id="gamePanesFinished">
