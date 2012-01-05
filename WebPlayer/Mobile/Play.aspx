@@ -35,135 +35,144 @@
     <div id="audio_embed">
     </div>
     <div id="gameBorder">
-        <div id="gamePanes">
-            <div id="gamePanesRunning">
-                <h3 id="inventoryLabel"><a href="#">Inventory</a></h3>
-                <div>
-                    <select id="lstInventory" size="8" class="elementList">
-                    </select>
-                    <div class="verbButtons">
-                        <button id="cmdInventory1" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdInventory2" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdInventory3" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdInventory4" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdInventory5" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdInventory6" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdInventory7" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdInventory8" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdInventory9" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
-                    </div>
-                </div>
-                <h3 id="statusVarsLabel"><a href="#">Status</a></h3>
-                <div id="statusVarsAccordion">
-                    <div id="statusVars">
-                    </div>
-                </div>
-                <h3 id="placesObjectsLabel"><a href="#">Places &amp; Objects</a></h3>
-                <div id="location">
-                </div>
-                <div>
-                    <select id="lstPlacesObjects" size="8" class="elementList">
-                    </select>
-                    <div class="verbButtons">
-                        <button id="cmdPlacesObjects1" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdPlacesObjects2" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdPlacesObjects3" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdPlacesObjects4" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdPlacesObjects5" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdPlacesObjects6" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdPlacesObjects7" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdPlacesObjects8" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
-                        <button id="cmdPlacesObjects9" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
-                    </div>
-                </div>
-                <h3 id="compassLabel"><a href="#">Compass</a></h3>
-                <div>
-                    <table id="compassTable">
-                        <tr>
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <button id="cmdCompassNW" class="compassbutton" type="button" title="go northwest"
-                                                onclick="compassClick(_compassDirs[0]);">&#8598;</button>
-                                        </td>
-                                        <td>
-                                            <button id="cmdCompassN" class="compassbutton" type="button" title="go north"
-                                                onclick="compassClick(_compassDirs[1]);">&#8593;</button>
-                                        </td>
-                                        <td>
-                                            <button id="cmdCompassNE" class="compassbutton" type="button" title="go northeast"
-                                                onclick="compassClick(_compassDirs[2]);">&#8599;</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button id="cmdCompassW" class="compassbutton" type="button" title="go west"
-                                                onclick="compassClick(_compassDirs[3]);">&#8592;</button>
-                                        </td>
-                                        <td>
-                                            &nbsp;
-                                        </td>
-                                        <td>
-                                            <button id="cmdCompassE" class="compassbutton" type="button" title="go east"
-                                                onclick="compassClick(_compassDirs[4]);">&#8594;</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button id="cmdCompassSW" class="compassbutton" type="button" title="go southwest"
-                                                onclick="compassClick(_compassDirs[5]);">&#8601;</button>
-                                        </td>
-                                        <td>
-                                            <button id="cmdCompassS" class="compassbutton" type="button" title="go south"
-                                                onclick="compassClick(_compassDirs[6]);">&#8595;</button>
-                                        </td>
-                                        <td>
-                                            <button id="cmdCompassSE" class="compassbutton" type="button" title="go southeast"
-                                                onclick="compassClick(_compassDirs[7]);">&#8600;</button>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <button id="cmdCompassU" class="compassbutton" type="button" title="go up"
-                                                onclick="compassClick(_compassDirs[8]);">&#8679;</button>
-                                        </td>
-                                        <td>
-                                            <button id="cmdCompassIn" class="compassbutton" type="button" title="go in"
-                                                onclick="compassClick(_compassDirs[10]);">in</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button id="cmdCompassD" class="compassbutton" type="button" title="go down"
-                                                onclick="compassClick(_compassDirs[9]);">&#8681;</button>
-                                        </td>
-                                        <td>
-                                            <button id="cmdCompassOut" class="compassbutton" type="button" title="go out"
-                                                onclick="compassClick(_compassDirs[11]);">out</button>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <h3>More</h3>
-                <div>
-                    <div id="controlButtons">
-                        <button type="button" id="cmdSave" runat="server">Save</button>
-                    </div>
+        <div id="gamePanes" style="display: none">
+            <button type="button" id="gamePanesBack" class="backButton">Back to game</button>
+            <h2 id="inventoryLabel">Inventory</h2>
+            <div>
+                <select id="lstInventory" size="8" class="elementList">
+                </select>
+                <div class="verbButtons">
+                    <button id="cmdInventory1" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory2" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory3" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory4" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory5" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory6" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory7" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory8" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdInventory9" type="button" onclick="paneButtonClick('#lstInventory',$(this).data('verb'));" style="display:none"></button>
                 </div>
             </div>
-            <div id="gamePanesFinished">
-                <h2>Game Over</h2>
-                <p>This game has finished.</p>
+            <h2 id="statusVarsLabel">Status</h2>
+            <div id="statusVarsAccordion">
+                <div id="statusVars">
+                </div>
             </div>
         </div>
+        <div id="gameObjects" style="display: none">
+            <button type="button" id="gameObjectsBack" class="backButton">Back to game</button>
+            <h2 id="placesObjectsLabel">Places &amp; Objects</h2>
+            <div id="location">
+            </div>
+            <div>
+                <select id="lstPlacesObjects" size="8" class="elementList">
+                </select>
+                <div class="verbButtons">
+                    <button id="cmdPlacesObjects1" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects2" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects3" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects4" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects5" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects6" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects7" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects8" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                    <button id="cmdPlacesObjects9" type="button" onclick="paneButtonClick('#lstPlacesObjects',$(this).data('verb'));" style="display:none"></button>
+                </div>
+            </div>
+        </div>
+        <div id="gameExits" style="display: none">
+            <button type="button" id="gameExitsBack" class="backButton">Back to game</button>
+            <h2 id="compassLabel">Compass</h2>
+            <div>
+                <table id="compassTable">
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <button id="cmdCompassNW" class="compassbutton" type="button" title="go northwest"
+                                            onclick="compassClick(_compassDirs[0]);">&#8598;</button>
+                                    </td>
+                                    <td>
+                                        <button id="cmdCompassN" class="compassbutton" type="button" title="go north"
+                                            onclick="compassClick(_compassDirs[1]);">&#8593;</button>
+                                    </td>
+                                    <td>
+                                        <button id="cmdCompassNE" class="compassbutton" type="button" title="go northeast"
+                                            onclick="compassClick(_compassDirs[2]);">&#8599;</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button id="cmdCompassW" class="compassbutton" type="button" title="go west"
+                                            onclick="compassClick(_compassDirs[3]);">&#8592;</button>
+                                    </td>
+                                    <td>
+                                        &nbsp;
+                                    </td>
+                                    <td>
+                                        <button id="cmdCompassE" class="compassbutton" type="button" title="go east"
+                                            onclick="compassClick(_compassDirs[4]);">&#8594;</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button id="cmdCompassSW" class="compassbutton" type="button" title="go southwest"
+                                            onclick="compassClick(_compassDirs[5]);">&#8601;</button>
+                                    </td>
+                                    <td>
+                                        <button id="cmdCompassS" class="compassbutton" type="button" title="go south"
+                                            onclick="compassClick(_compassDirs[6]);">&#8595;</button>
+                                    </td>
+                                    <td>
+                                        <button id="cmdCompassSE" class="compassbutton" type="button" title="go southeast"
+                                            onclick="compassClick(_compassDirs[7]);">&#8600;</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <button id="cmdCompassU" class="compassbutton" type="button" title="go up"
+                                            onclick="compassClick(_compassDirs[8]);">&#8679;</button>
+                                    </td>
+                                    <td>
+                                        <button id="cmdCompassIn" class="compassbutton" type="button" title="go in"
+                                            onclick="compassClick(_compassDirs[10]);">in</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button id="cmdCompassD" class="compassbutton" type="button" title="go down"
+                                            onclick="compassClick(_compassDirs[9]);">&#8681;</button>
+                                    </td>
+                                    <td>
+                                        <button id="cmdCompassOut" class="compassbutton" type="button" title="go out"
+                                            onclick="compassClick(_compassDirs[11]);">out</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="gameMore" style="display: none">
+            <button type="button" id="gameMoreBack" class="backButton">Back to game</button>
+            <h2>More</h2>
+            <div>
+                <div id="controlButtons">
+                    <button type="button" id="cmdSave" runat="server">Save</button>
+                </div>
+            </div>
+        </div>
+        <div id="gamePanesFinished" style="display: none">
+            <h2>Game Over</h2>
+            <p>This game has finished.</p>
+        </div>
+
         <div id="gameContent">
             <div id="divOutput">
                 <h1 id="gameTitle">
