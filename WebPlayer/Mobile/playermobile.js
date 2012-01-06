@@ -1,18 +1,5 @@
 ﻿function panesVisible(visible) {
-//    if (visible) {
-//        $("#gamePanes").show();
-//        $("#gameContent").css("width", "700px");
-//        $("#txtCommand").css("width", "680px");
-//        $("#updating").css("margin-left", "185px");
-//        $("#gamePanel").css("width", "700px");
-//    }
-//    else {
-//        $("#gamePanes").hide();
-//        $("#gameContent").css("width", "910px");
-//        $("#txtCommand").css("width", "890px");
-//        $("#updating").css("margin-left", "405px");
-//        $("#gamePanel").css("width", "910px");
-//    }
+    initTabMenu(visible);
 }
 
 function scrollToEnd() {
@@ -49,13 +36,7 @@ function ui_init() {
     SetMenuFontSize("20px");
     _allowMenuFontSizeChange = false;
 
-    var options = [
-        { title: "Inventory", action: { type: "fn", callback: "tabMenu('inventory');"} },
-        { title: "Location", action: { type: "fn", callback: "tabMenu('objects');"} },
-        { title: "Exits", action: { type: "fn", callback: "tabMenu('exits');"} },
-        { title: "More", action: { type: "fn", callback: "tabMenu('more');"} }
-    ];
-    $("#tabButton").jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
+    initTabMenu(true);
 
     $("button.backButton span").html("&lt; Back to game");
     $("button.backButton").click(function () { tabMenu('game'); });
@@ -63,6 +44,26 @@ function ui_init() {
     $("#cmdRestart").click(function () { window.location.reload(); });
     $("#cmdUndo").click(function () { sendCommand("undo"); });
     $("#cmdWait").click(function () { sendCommand("wait"); });
+}
+
+function initTabMenu(full) {
+    var options;
+
+    if (full) {
+        options = [
+            { title: "Inventory", action: { type: "fn", callback: "tabMenu('inventory');"} },
+            { title: "Location", action: { type: "fn", callback: "tabMenu('objects');"} },
+            { title: "Exits", action: { type: "fn", callback: "tabMenu('exits');"} },
+            { title: "More", action: { type: "fn", callback: "tabMenu('more');"} }
+        ];
+    }
+    else {
+        options = [
+            { title: "More", action: { type: "fn", callback: "tabMenu('more');"} }
+        ];
+    }
+
+    $("#tabButton").jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
 }
 
 function tabMenu(id) {
