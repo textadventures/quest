@@ -50,10 +50,6 @@ div#gamePanes
 {
     padding: 4px;
 }
-#gamePanesFinished
-{
-    display: none;
-}
 #cmdSave
 {
     margin-top: 0px;
@@ -112,6 +108,14 @@ div#controlButtons .ui-button
     padding: 2px 20px;
 }
 #sessionTimeoutDiv
+{
+    display: none;
+    background: white;
+    color: black;
+    padding: 10px;
+    margin: 5px;
+}
+#gameOverDiv
 {
     display: none;
     background: white;

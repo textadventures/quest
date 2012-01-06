@@ -144,10 +144,6 @@
                 </div>
             </div>
         </div>
-        <div id="gamePanesFinished" style="display: none">
-            <h2>Game Over</h2>
-            <p>This game has finished.</p>
-        </div>
 
         <div id="gameContent">
             <div id="divOutput">
@@ -170,6 +166,9 @@
             </form>
             <div id="sessionTimeoutDiv">
                 <b>Sorry, your session has expired and the game has finished.</b>
+            </div>
+            <div id="gameOverDiv">
+                <b>Game over.</b>
             </div>
             <div id="txtCommandDiv">
                 <table id="inputBar">

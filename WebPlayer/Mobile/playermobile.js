@@ -84,12 +84,12 @@ function sessionTimeout() {
 
 function gameFinished() {
     disableInterface();
+    $("#gameOverDiv").show();
 }
 
 function disableInterface() {
     $("#txtCommandDiv").hide();
     $("#gamePanesRunning").hide();
-    $("#gamePanesFinished").show();
 }
 
 var currentTab = "game";
@@ -205,7 +205,7 @@ function updateList(listName, listData) {
             $("#" + paneLinkId).bind("touchend", function () {
                 $(this).removeClass("elementListHover")
             });
-            bindMenu(paneLinkId, objectVerbs, objectDisplayName, false);
+            bindMenu(paneLinkId, objectVerbs, objectDisplayName);
             anyItem = true;
         }
     });
