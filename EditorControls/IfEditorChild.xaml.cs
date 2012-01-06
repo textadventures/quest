@@ -90,6 +90,11 @@ namespace AxeSoftware.Quest.EditorControls
             cmdDelete.IsEnabled = !m_readOnly;
         }
 
+        public void RefreshExpression(IEditorData data)
+        {
+            ctlExpression.Populate(data);
+        }
+
         public void Save()
         {
             ctlExpression.Save();

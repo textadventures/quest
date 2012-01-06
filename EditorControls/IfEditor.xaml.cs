@@ -66,6 +66,18 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Populate(EditableIfScript data)
         {
+            if (data == m_data)
+            {
+                // If repopulating with the same editable "if" script, we only
+                // need to refresh the conditions, not the "Then", "Else" scripts etc.
+                ctlChild.RefreshExpression(data);
+                foreach (var elseIf in data.ElseIfScripts)
+                {
+                    m_elseIfEditors[elseIf.Id].RefreshExpression(elseIf);
+                }
+                return;
+            }
+
             if (m_data != null)
             {
                 m_data.AddedElse -= AddedElse;
