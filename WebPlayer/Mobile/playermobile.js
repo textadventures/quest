@@ -238,3 +238,30 @@ function updateList(listName, listData) {
         $(emptyListLabel).show();
     }
 }
+
+var _currentPlayer = "";
+
+function playWav(filename, sync, looped) {
+    playAudio(filename, "wav", sync, looped);
+}
+
+function playMp3(filename, sync, looped) {
+    playAudio(filename, "mp3", sync, looped);
+}
+
+function playAudio(filename, format, sync, looped) {
+    if (sync) {
+        finishSync();
+    }
+}
+
+function stopAudio() {
+}
+
+function finishSync() {
+    window.setTimeout(function () {
+        $("#txtCommandDiv").show();
+        $("#fldUIMsg").val("endwait");
+        $("#cmdSubmit").click();
+    }, 100);
+}
