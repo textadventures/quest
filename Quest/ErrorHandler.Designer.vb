@@ -74,6 +74,7 @@ Partial Class ErrorHandler
         '
         'cmdReport
         '
+        Me.cmdReport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdReport.Location = New System.Drawing.Point(197, 259)
         Me.cmdReport.Name = "cmdReport"
         Me.cmdReport.Size = New System.Drawing.Size(152, 23)
