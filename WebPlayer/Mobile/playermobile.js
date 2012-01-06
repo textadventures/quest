@@ -59,6 +59,10 @@ function ui_init() {
 
     $("button.backButton span").html("&lt; Back to game");
     $("button.backButton").click(function () { tabMenu('game'); });
+    $("#cmdLook").click(function () { sendCommand("look"); });
+    $("#cmdRestart").click(function () { window.location.reload(); });
+    $("#cmdUndo").click(function () { sendCommand("undo"); });
+    $("#cmdWait").click(function () { sendCommand("wait"); });
 }
 
 function tabMenu(id) {
@@ -163,6 +167,10 @@ function updateLocation(text) {
 }
 
 function afterSendCommand() {
+    tabSelected("game");
+}
+
+function afterSave() {
     tabSelected("game");
 }
 

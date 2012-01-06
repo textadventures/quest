@@ -158,3 +158,6 @@ function updateVerbButtons(list, verbsArray, idprefix) {
         target.hide();
     }
 }
+
+function afterSave() {
+}

@@ -141,6 +141,10 @@
             <div>
                 <div id="controlButtons">
                     <button type="button" id="cmdSave" runat="server">Save</button>
+                    <button type="button" id="cmdLook">Look</button>
+                    <button type="button" id="cmdRestart">Restart</button>
+                    <button type="button" id="cmdUndo">Undo</button>
+                    <button type="button" id="cmdWait">Wait</button>
                 </div>
             </div>
         </div>

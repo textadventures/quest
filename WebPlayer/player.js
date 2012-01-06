@@ -27,6 +27,7 @@ function init() {
 
     $("#cmdSave").click(function () {
         saveGame();
+        afterSave();
     });
 
     ui_init();
