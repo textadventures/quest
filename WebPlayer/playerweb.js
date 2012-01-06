@@ -38,6 +38,13 @@ function setPanelContents(html) {
 }
 
 function ui_init() {
+    $("#lstInventory").change(function () {
+        updateVerbButtons($("#lstInventory"), inventoryVerbs, "cmdInventory");
+    });
+
+    $("#lstPlacesObjects").change(function () {
+        updateVerbButtons($("#lstPlacesObjects"), placesObjectsVerbs, "cmdPlacesObjects");
+    });
 }
 
 function beginWait() {
@@ -91,4 +98,63 @@ function updateLocation(text) {
 }
 
 function afterSendCommand() {
+}
+
+function updateList(listName, listData) {
+    var listElement = "";
+
+    if (listName == "inventory") {
+        listElement = "#lstInventory";
+        inventoryVerbs = new Array();
+    }
+
+    if (listName == "placesobjects") {
+        listElement = "#lstPlacesObjects";
+        placesObjectsVerbs = new Array();
+    }
+
+    $(listElement).empty();
+    var count = 0;
+    $.each(listData, function (key, value) {
+        var splitString = value.split(":");
+        var objectDisplayName = splitString[0];
+        var objectVerbs = splitString[1];
+
+        if (listName == "inventory") {
+            inventoryVerbs.push(objectVerbs);
+        }
+
+        if (listName == "placesobjects") {
+            placesObjectsVerbs.push(objectVerbs);
+        }
+
+        if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
+            $(listElement).append(
+                $("<option/>").attr("value", key).text(objectDisplayName)
+            );
+            count++;
+        }
+    });
+
+    var selectSize = count;
+    if (selectSize < 3) selectSize = 3;
+    if (selectSize > 12) selectSize = 12;
+    $(listElement).attr("size", selectSize);
+}
+
+function updateVerbButtons(list, verbsArray, idprefix) {
+    var selectedIndex = list.prop("selectedIndex");
+    var verbs = verbsArray[selectedIndex].split("/");
+    var count = 1;
+    $.each(verbs, function (index, value) {
+        $("#" + idprefix + count + " span").html(value);
+        var target = $("#" + idprefix + count);
+        target.data("verb", value);
+        target.show();
+        count++;
+    });
+    for (var i = count; i <= verbButtonCount; i++) {
+        var target = $("#" + idprefix + i);
+        target.hide();
+    }
 }

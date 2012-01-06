@@ -165,3 +165,56 @@ function updateLocation(text) {
 function afterSendCommand() {
     tabSelected("game");
 }
+
+var lastPaneLinkId = 0;
+
+function updateList(listName, listData) {
+    var listElement = "";
+    var emptyListLabel = "";
+
+    if (listName == "inventory") {
+        listElement = "#inventoryList";
+        emptyListLabel = "#inventoryEmpty";
+    }
+
+    if (listName == "placesobjects") {
+        listElement = "#objectsList";
+        emptyListLabel = "#placesObjectsEmpty";
+    }
+
+    $(listElement).empty();
+    $(listElement).show();
+    var listcount = 0;
+    var anyItem = false;
+
+    $.each(listData, function (key, value) {
+        var splitString = value.split(":");
+        var objectDisplayName = splitString[0];
+        var objectVerbs = splitString[1];
+
+        if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
+            listcount++;
+            lastPaneLinkId++;
+            var paneLinkId = "paneLink" + lastPaneLinkId;
+            $(listElement).append(
+                "<li id=\"" + paneLinkId + "\" href=\"#\">" + objectDisplayName + "</li>"
+            );
+            $("#" + paneLinkId).bind("touchstart", function () {
+                $(this).addClass("elementListHover")
+            });
+            $("#" + paneLinkId).bind("touchend", function () {
+                $(this).removeClass("elementListHover")
+            });
+            bindMenu(paneLinkId, objectVerbs, objectDisplayName, false);
+            anyItem = true;
+        }
+    });
+    $(listElement + " li:last-child").addClass('last-child')
+    if (listcount == 0) $(listElement).hide();
+    if (anyItem) {
+        $(emptyListLabel).hide();
+    }
+    else {
+        $(emptyListLabel).show();
+    }
+}

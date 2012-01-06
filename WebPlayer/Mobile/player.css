@@ -84,15 +84,6 @@ div#controlButtons .ui-button
 {
     font-size: 10px !important;
 }
-.verbButtons
-{
-    text-align: center;
-}
-.verbButtons .ui-button
-{
-    font-size: 10px !important;
-    margin: 5px;
-}
 #compassTable .ui-button
 {
     font-family: Arial, Helvetica, sans-serif;
@@ -149,4 +140,29 @@ div.pane
 {
     display: none;
     background: white;
+    padding-bottom: 4px;
+}
+ul.elementList
+{
+    list-style: none;
+    padding: 0;
+    border: 1px solid #ccc;
+    margin: 0px 16px 16px 16px;
+}
+ul.elementList li
+{
+    display: block;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#fdfdfd),to(#eee));
+    border-bottom: 1px solid #ccc;
+    padding: 10px 10px 10px 20px;
+}
+li.elementListHover
+{
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#fdfdff),to(#aaaaff)) !important;
+}
+li.last-child
+{
+    border-bottom: 0 !important;
 }
