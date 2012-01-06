@@ -37,12 +37,12 @@
     <div id="gameBorder">
         <div id="gamePanes" class="pane">
             <button type="button" class="backButton"></button>
-            <h2 id="inventoryLabel">Inventory</h2>
+            <h2 id="inventoryLabel" class="ui-widget-header">Inventory</h2>
             <div>
                 <p id="inventoryEmpty" class="emptyListLabel">Empty</p>
                 <ul class="elementList" id="inventoryList"></ul>
             </div>
-            <h2 id="statusVarsLabel">Status</h2>
+            <h2 id="statusVarsLabel" class="ui-widget-header">Status</h2>
             <div id="statusVarsAccordion">
                 <div id="statusVars">
                 </div>
@@ -50,7 +50,7 @@
         </div>
         <div id="gameObjects" class="pane">
             <button type="button" class="backButton"></button>
-            <h2 id="placesObjectsLabel">Places &amp; Objects</h2>
+            <h2 id="placesObjectsLabel" class="ui-widget-header">Places &amp; Objects</h2>
             <div>
                 <p id="placesObjectsEmpty" class="emptyListLabel">None</p>
                 <ul class="elementList" id="objectsList"></ul>
@@ -58,7 +58,7 @@
         </div>
         <div id="gameExits" class="pane">
             <button type="button" class="backButton"></button>
-            <h2 id="compassLabel">Compass</h2>
+            <h2 id="compassLabel" class="ui-widget-header">Compass</h2>
             <div>
                 <table id="compassTable">
                     <tr>
@@ -137,7 +137,7 @@
         </div>
         <div id="gameMore" class="pane">
             <button type="button" class="backButton"></button>
-            <h2>More</h2>
+            <h2 class="ui-widget-header">More</h2>
             <div>
                 <div id="controlButtons">
                     <button type="button" id="cmdSave" runat="server">Save</button>

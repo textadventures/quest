@@ -17,7 +17,6 @@ div#gameBorder
 }
 div#gamePanes
 {
-    padding: 2px;
     background: #F9F9FF;
     display: none;
 }
@@ -41,14 +40,10 @@ div#gamePanes
 .compassbutton
 {
     margin-right: 0;
-    height: 35px;
-    width: 35px;
+    height: 50px;
+    width: 50px;
     padding: 0px;
-    font-size: 11px;
-}
-#statusVars
-{
-    padding: 4px;
+    font-size: 16px;
 }
 #cmdSave
 {
@@ -78,7 +73,7 @@ div#txtCommandDiv
 }
 div#controlButtons .ui-button
 {
-    font-size: 10px !important;
+    font-size: 14px !important;
 }
 #compassTable .ui-button
 {
@@ -144,14 +139,13 @@ div.pane
 {
     display: none;
     background: white;
-    padding-bottom: 4px;
+    padding: 12px;
 }
 ul.elementList
 {
     list-style: none;
     padding: 0;
     border: 1px solid #ccc;
-    margin: 0px 16px 16px 16px;
 }
 ul.elementList li
 {
@@ -169,4 +163,12 @@ li.elementListHover
 li.last-child
 {
     border-bottom: 0 !important;
+}
+.backButton
+{
+    font-size: 14px !important;
+}
+h2
+{
+    padding-left: 10px;
 }
