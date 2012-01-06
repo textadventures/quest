@@ -75,10 +75,22 @@ function resizeUI() {
 
 function beginWait() {
     _waitMode = true;
-    $("#txtCommand").fadeOut(400, function () {
+    $("#inputBar").fadeOut(400, function () {
         $("#endWaitLink").fadeTo(400, 1);
     });
     markScrollPosition();
+}
+
+function endWait() {
+    if (!_waitMode) return;
+    _waitMode = false;
+    $("#endWaitLink").fadeOut(400, function () {
+        $("#inputBar").fadeTo(400, 1);
+    });
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("endwait");
+        $("#cmdSubmit").click();
+    }, 100);
 }
 
 function sessionTimeout() {

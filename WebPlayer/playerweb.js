@@ -55,6 +55,18 @@ function beginWait() {
     markScrollPosition();
 }
 
+function endWait() {
+    if (!_waitMode) return;
+    _waitMode = false;
+    $("#endWaitLink").fadeOut(400, function () {
+        $("#txtCommand").fadeTo(400, 1);
+    });
+    window.setTimeout(function () {
+        $("#fldUIMsg").val("endwait");
+        $("#cmdSubmit").click();
+    }, 100);
+}
+
 function sessionTimeout() {
     disableInterface();
 }

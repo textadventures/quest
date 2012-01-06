@@ -59,18 +59,6 @@ var _waitMode = false;
 var _pauseMode = false;
 var _waitingForSoundToFinish = false;
 
-function endWait() {
-    if (!_waitMode) return;
-    _waitMode = false;
-    $("#endWaitLink").fadeOut(400, function () {
-        $("#txtCommand").fadeTo(400, 1);
-    });
-    window.setTimeout(function () {
-        $("#fldUIMsg").val("endwait");
-        $("#cmdSubmit").click();
-    }, 100);
-}
-
 function beginPause(ms) {
     _pauseMode = true;
     $("#txtCommandDiv").hide();
@@ -363,11 +351,7 @@ function compassClick(direction) {
 }
 
 function sendCommand(text) {
-    if (_pauseMode || _waitingForSoundToFinish) return;
-    if (_waitMode) {
-        endWait();
-        return;
-    }
+    if (_pauseMode || _waitingForSoundToFinish || _waitMode) return;
     markScrollPosition();
     window.setTimeout(function () {
         prepareCommand(text);
