@@ -172,6 +172,7 @@ Public Class GameListItem
         Else
             Windows.Controls.ToolTipService.SetIsEnabled(textBlock, True)
             textTooltip.Content = text
+            infoTooltip.Content = text
         End If
     End Sub
 

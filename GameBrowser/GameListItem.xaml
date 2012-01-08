@@ -32,6 +32,9 @@
             </TextBlock>
             <TextBlock Name="infoBlock" Padding="3">
                 <Run Name="info">Info</Run>
+                <TextBlock.ToolTip>
+                    <ToolTip Name="infoTooltip"></ToolTip>
+                </TextBlock.ToolTip>
             </TextBlock>
             <TextBlock Name="ratingBlock" Padding="3">
                 <Run Foreground="Goldenrod" Name="stars">★★★★★</Run>
