@@ -145,6 +145,7 @@
     <Compile Include="GameListItem.xaml.vb">
       <DependentUpon>GameListItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helper.vb" />
     <Compile Include="Launcher.xaml.vb">
       <DependentUpon>Launcher.xaml</DependentUpon>
     </Compile>
