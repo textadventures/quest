@@ -142,9 +142,10 @@ Public Class GameList
         RaiseEvent ClearAllItems()
     End Sub
 
-    Public Sub MarkAsFailed()
+    Public Sub MarkAsFailed(message As String)
         loadingPanel.Visibility = Windows.Visibility.Collapsed
         errorBlock.Visibility = Windows.Visibility.Visible
+        errorBlock.Text += Environment.NewLine + message
     End Sub
 
     Public Property IsOnlineList As Boolean

@@ -5,7 +5,7 @@
 
     Public Event DataReady()
     Public Event GotUpdateData(data As UpdatesData)
-    Public Event DownloadFailed()
+    Public Event DownloadFailed(message As String)
 
     Public Class GameData
         Public Name As String
@@ -40,7 +40,7 @@
         If e.Error Is Nothing Then
             ProcessXML(e.Result)
         Else
-            RaiseEvent DownloadFailed()
+            RaiseEvent DownloadFailed(e.Error.Message)
         End If
     End Sub
 
@@ -69,16 +69,21 @@
                                                      .Ref = game.@ref,
                                                      .Filename = game.@filename,
                                                      .Author = game.@author,
-                                                     .Rating = CDbl(game.@rating),
+                                                     .Rating = ParseDouble(game.@rating),
                                                      .GameId = game.@id
                                               }).ToList()
                              }).ToList()
-        Catch
-            RaiseEvent DownloadFailed()
+        Catch ex As Exception
+            RaiseEvent DownloadFailed(ex.Message)
         End Try
 
         RaiseEvent DataReady()
     End Sub
+
+    Private Function ParseDouble(input As String) As Double
+        If String.IsNullOrEmpty(input) Then Return 0
+        Return Double.Parse(input, System.Globalization.CultureInfo.InvariantCulture)
+    End Function
 
     Public ReadOnly Property Categories As IEnumerable(Of GameCategory)
         Get

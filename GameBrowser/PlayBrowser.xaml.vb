@@ -56,8 +56,8 @@
                                End Sub)
     End Sub
 
-    Private Sub m_onlineGames_DownloadFailed() Handles m_onlineGames.DownloadFailed
-        Dispatcher.BeginInvoke(Sub() ctlOnlineGameList.MarkAsFailed())
+    Private Sub m_onlineGames_DownloadFailed(message As String) Handles m_onlineGames.DownloadFailed
+        Dispatcher.BeginInvoke(Sub() ctlOnlineGameList.MarkAsFailed(message))
     End Sub
 
     Private Sub PopulateCategories()
