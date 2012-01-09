@@ -95,7 +95,11 @@ namespace AxeSoftware.Quest.EditorControls
 
         private IEnumerable<string> GetFilesInGamePath()
         {
-            return m_helper.Controller.GetAvailableExternalFiles(m_source);
+            yield return "";
+            foreach (string result in m_helper.Controller.GetAvailableExternalFiles(m_source))
+            {
+                yield return result;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
