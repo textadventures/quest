@@ -364,9 +364,10 @@ namespace AxeSoftware.Quest.EditorControls
 
             foreach (TabItem tab in m_tabs.Values)
             {
-                tabControl.Items.Remove(tab);
                 tab.Content = null;
             }
+
+            tabControl.Items.Clear();
 
             m_tabs.Clear();
             m_controls.Clear();
