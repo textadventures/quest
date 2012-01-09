@@ -272,7 +272,7 @@ namespace AxeSoftware.Quest
             }
             else
             {
-                fontSize = PlayerOverrideFontSize.ToString();
+                fontSize = PlayerOverrideFontSize.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
 
             if (fontSize.Length > 0)
