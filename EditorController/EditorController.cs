@@ -124,6 +124,7 @@ namespace AxeSoftware.Quest
         public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
         public event EventHandler<UpdateUndoListEventArgs> RedoListUpdated;
         public event EventHandler<LoadStatusEventArgs> LoadStatus;
+        public event EventHandler<LibrariesUpdatedEventArgs> LibrariesUpdated;
 
         public class ElementUpdatedEventArgs : EventArgs
         {
@@ -169,6 +170,13 @@ namespace AxeSoftware.Quest
             }
 
             public string Status { get; private set; }
+        }
+
+        public class LibrariesUpdatedEventArgs : EventArgs
+        {
+            public LibrariesUpdatedEventArgs()
+            {
+            }
         }
 
         private class TreeHeader
@@ -322,6 +330,11 @@ namespace AxeSoftware.Quest
             if (e.Element.Type == ObjectType.Command && e.Attribute == "isverb")
             {
                 MoveNove(e.Element.Name, GetDisplayName(e.Element), GetElementTreeParent(e.Element));
+            }
+
+            if (e.Element.ElemType == ElementType.IncludedLibrary && e.Attribute == "filename")
+            {
+                if (LibrariesUpdated != null) LibrariesUpdated(this, new LibrariesUpdatedEventArgs());
             }
         }
 

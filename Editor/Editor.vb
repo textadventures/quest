@@ -1007,4 +1007,11 @@ Public Class Editor
     Private Sub m_controller_LoadStatus(sender As Object, e As EditorController.LoadStatusEventArgs) Handles m_controller.LoadStatus
         BeginInvoke(Sub() ctlLoading.UpdateStatus(e.Status))
     End Sub
+
+    Private Sub m_controller_LibrariesUpdated(sender As Object, e As EditorController.LibrariesUpdatedEventArgs) Handles m_controller.LibrariesUpdated
+        BeginInvoke(Sub()
+                        ctlReloadBanner.AlertText = "Save this game and then click Reload to apply changes from updating Included Libraries."
+                        ctlReloadBanner.Visible = True
+                    End Sub)
+    End Sub
 End Class
