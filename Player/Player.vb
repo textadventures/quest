@@ -666,8 +666,12 @@ Public Class Player
 
                             m_mediaPlayer.Open(New System.Uri(filename))
                             m_mediaPlayer.Play()
+                        End If
 
-                            m_waitingForSoundToFinish = synchronous
+                        m_waitingForSoundToFinish = synchronous
+
+                        If Not PlaySounds Then
+                            PlaybackFinished()
                         End If
                     End Sub
         )
