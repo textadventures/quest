@@ -522,6 +522,7 @@ namespace AxeSoftware.Quest
                     {
                         Print("Loaded saved game");
                     }
+                    SendNextTimerRequest();
                 }
                 catch (Exception ex)
                 {
