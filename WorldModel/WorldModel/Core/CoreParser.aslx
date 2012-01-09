@@ -264,6 +264,7 @@
   </function>
 
   <function name="HandleSingleCommand" parameters="command">
+    <![CDATA[
     candidates = NewObjectList()
     foreach (cmd, ScopeCommands()) {
       if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
@@ -276,10 +277,21 @@
         
     foreach (candidate, candidates) {
       strength = GetMatchStrength(candidate.pattern, command, candidate.name)
-      // favour commands defined later, so an author can override a library command
+      // favour commands defined later, so an author can override a library command...
       if (strength >= maxstrength) {
-        thiscommand = candidate
-        maxstrength = strength
+        // ... except if the command defined later (candidate) has no parent, and the current best
+        // match (thiscommand) does have a parent. We want to favour any commands defined in rooms
+        // over global candidates.
+        skip = false
+        if (thiscommand <> null) {
+          if (thiscommand.parent <> null and candidate.parent = null) {
+            skip = true
+          }
+        }
+        if (not skip) {
+          thiscommand = candidate
+          maxstrength = strength
+        }
       }
     }
     
@@ -291,6 +303,7 @@
       varlist = Populate(thiscommand.pattern, command, thiscommand.name)
       HandleSingleCommandPattern (command, thiscommand, varlist)
     }
+    ]]>
   </function>
 
   <function name="FinishTurn">
