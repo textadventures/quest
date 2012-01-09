@@ -26,6 +26,9 @@
       if (TypeOf(value) = "int" or TypeOf(value) = "double") {
         value = ToString(value)
       }
+      if (TypeOf(value) = "null") {
+        value = ""
+      }
       return (Replace(format, "!", value))
     }
   </function>
