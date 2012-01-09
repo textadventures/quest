@@ -10,9 +10,7 @@
     Partial Friend Class MyApplication
 
         Private Sub MyApplication_UnhandledException(sender As Object, e As Microsoft.VisualBasic.ApplicationServices.UnhandledExceptionEventArgs) Handles Me.UnhandledException
-            Dim frmError As New ErrorHandler
-            frmError.ErrorText = e.Exception.ToString()
-            frmError.ShowDialog()
+            ErrorHandler.ShowError(e.Exception.ToString())
             e.ExitApplication = False
         End Sub
 

@@ -3,6 +3,23 @@ Imports System.Collections.Specialized
 
 Public Class ErrorHandler
 
+    Private Shared s_currentDialog As ErrorHandler
+
+    Private Sub New()
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+    End Sub
+
+    Public Shared Sub ShowError(text As String)
+        If s_currentDialog Is Nothing Then
+            s_currentDialog = New ErrorHandler
+            s_currentDialog.ErrorText = text
+            s_currentDialog.ShowDialog()
+        End If
+    End Sub
+
     Public WriteOnly Property ErrorText() As String
         Set(value As String)
             txtError.Text = value
@@ -39,5 +56,9 @@ Public Class ErrorHandler
             Me.Cursor = Cursors.Default
             Me.Close()
         End Try
+    End Sub
+
+    Private Sub ErrorHandler_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+        s_currentDialog = Nothing
     End Sub
 End Class

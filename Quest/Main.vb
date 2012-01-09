@@ -39,9 +39,7 @@ Public Class Main
     End Sub
 
     Private Sub CurrentDispatcher_UnhandledException(sender As Object, e As System.Windows.Threading.DispatcherUnhandledExceptionEventArgs)
-        Dim frmError As New ErrorHandler
-        frmError.ErrorText = e.Exception.ToString()
-        frmError.ShowDialog()
+        ErrorHandler.ShowError(e.Exception.ToString())
         e.Handled = True
     End Sub
 
