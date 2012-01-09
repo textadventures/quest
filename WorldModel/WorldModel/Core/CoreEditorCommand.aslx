@@ -1,5 +1,5 @@
 ﻿<library>
-  <editor>
+  <editor name="_CommandEditor">
     <appliesto>command</appliesto>
 
     <tab>

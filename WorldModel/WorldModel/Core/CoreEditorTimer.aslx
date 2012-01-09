@@ -1,5 +1,5 @@
 ﻿<library>
-  <editor>
+  <editor name="_TimerEditor">
     <appliesto>timer</appliesto>
     <tab>
       <caption>Timer</caption>
