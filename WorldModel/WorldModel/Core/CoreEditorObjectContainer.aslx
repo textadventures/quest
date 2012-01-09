@@ -22,21 +22,21 @@
       <controltype>checkbox</controltype>
       <caption>Can be opened</caption>
       <attribute>open</attribute>
-      <mustinherit>container_base; openable</mustinherit>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
       <caption>Can be closed</caption>
       <attribute>close</attribute>
-      <mustinherit>container_base; openable</mustinherit>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
       <caption>Is open</caption>
       <attribute>isopen</attribute>
-      <mustinherit>container_base; openable</mustinherit>
+      <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
@@ -57,14 +57,13 @@
       <controltype>checkbox</controltype>
       <caption>Transparent</caption>
       <attribute>transparent</attribute>
-      <mustinherit>container_base</mustinherit>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
       <caption>Hide children until object is looked at</caption>
       <attribute>hidechildren</attribute>
-      <onlydisplayif>not GetBoolean(this, "transparent")</onlydisplayif>
       <mustinherit>container_base</mustinherit>
       <advanced/>
     </control>
@@ -107,7 +106,7 @@
       <attribute>openmsg</attribute>
       <caption>Message to print when opening (leave blank for default)</caption>
       <nullable/>
-      <mustinherit>container_base</mustinherit>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
@@ -115,27 +114,27 @@
       <attribute>closemsg</attribute>
       <caption>Message to print when closing (leave blank for default)</caption>
       <nullable/>
-      <mustinherit>container_base</mustinherit>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>script</controltype>
       <caption>After opening the object</caption>
       <attribute>onopen</attribute>
-      <mustinherit>container_base</mustinherit>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>script</controltype>
       <caption>After closing the object</caption>
       <attribute>onclose</attribute>
-      <mustinherit>container_base</mustinherit>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>title</controltype>
       <caption>Locking</caption>
-      <mustinherit>container_base</mustinherit>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
@@ -143,7 +142,7 @@
       <caption>Lock type</caption>
       <types>*=Not lockable; container_lockable=Lockable</types>
       <width>150</width>
-      <mustinherit>container_base</mustinherit>
+      <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
