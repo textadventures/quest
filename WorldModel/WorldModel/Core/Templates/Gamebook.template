@@ -9,6 +9,7 @@
 
   <object name="Page1">
     <object name="player">
+      <inherit name="defaultplayer"/>
     </object>
   </object>
 

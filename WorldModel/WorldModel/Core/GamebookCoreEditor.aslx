@@ -19,10 +19,18 @@
       <caption>Page</caption>
 
       <control>
+        <controltype>stringdictionary</controltype>
+        <caption>Options</caption>
+        <keyprompt>Please enter the page name</keyprompt>
+        <valueprompt>Please enter the link text</valueprompt>
+        <attribute>options</attribute>
+      </control>
+
+      <control>
         <controltype>richtext</controltype>
         <caption>Description</caption>
         <attribute>description</attribute>
-        <height>300</height>
+        <expand/>
       </control>
 
       <!--
@@ -34,14 +42,6 @@
         <editors>string=richtext</editors>
       </control>
       -->
-      
-      <control>
-        <controltype>stringdictionary</controltype>
-        <caption>Options</caption>
-        <keyprompt>Please enter the page name</keyprompt>
-        <valueprompt>Please enter the link text</valueprompt>
-        <attribute>options</attribute>
-      </control>
       
     </tab>
 

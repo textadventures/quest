@@ -20,6 +20,12 @@
     <description type="string"></description>
   </type>
 
+  <type name="defaultplayer">
+    <changedparent type="script">
+      DoPage(player.parent)
+    </changedparent>
+  </type>
+
   <function name="InitInterface">
     request (FontName, game.defaultfont)
     request (FontSize, ToString(game.defaultfontsize))
@@ -34,6 +40,10 @@
     request (RunScript, "SetMenuFontSize;" + game.menufontsize + "pt")
     request (Hide, "Panes")
     request (Hide, "Command")
+  </function>
+
+  <function name="StartGame">
+    DoPage(player.parent)
   </function>
 
   <function name="ScopeInventory" type="objectlist">
@@ -52,7 +62,38 @@
   </function>
 
   <function name="HandleCommand" parameters="command">
-      msg ("Command: " + SafeXML(command))
+    if (DictionaryContains(player.parent.options, command)) {
+      newpage = GetObject(command)
+      if (newpage = null) {
+        msg ("Error - no page named '" + newpage + "'")
+      }
+      else {
+        player.parent = GetObject(command)
+      }
+    }
+    else {
+      msg ("Error - '" + command + "' is not a valid option for this page")
+    }
   </function>
-  
+
+  <function name="DoPage" parameters="page">
+    msg ("DoPage...")
+    request (ClearScreen, "")
+    msg (player.parent.description)
+    msg ("")
+    msg ("")
+    if (TypeOf(player.parent, "options") = "stringdictionary") {
+      foreach (key, player.parent.options) {
+        msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+        msg ("")
+      }
+    }
+  </function>
+
+  <function name="CommandLink" type="string" parameters="cmd, text">
+    <![CDATA[
+    return ("<command input=\"" + cmd + "\">" + text + "</command>")
+    ]]>
+  </function>
+
 </library>
