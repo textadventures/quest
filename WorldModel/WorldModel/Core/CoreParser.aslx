@@ -228,6 +228,8 @@
   </function>
 
   <function name="HandleCommand" parameters="command">
+    msg ("")
+    msg ("> " + SafeXML(command))
     commands = Split(command, ".")
     if (ListCount(commands) = 1) {
       HandleSingleCommand (Trim(command))

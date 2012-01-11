@@ -1,18 +1,14 @@
 ﻿<asl version="520">
 
-  <include ref="Nederlands.aslx"/>
-  <include ref="Core.aslx"/>
+  <include ref="GamebookCore.aslx"/>
 
   <game name="$NAME$">
     <gameid>$ID$</gameid>
     <version>1.0</version>
   </game>
 
-  <object name="room">
-    <inherit name="editor_room" />
-
+  <object name="Page1">
     <object name="player">
-      <inherit name="defaultplayer" />
     </object>
   </object>
 

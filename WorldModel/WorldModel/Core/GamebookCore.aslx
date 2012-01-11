@@ -1,0 +1,51 @@
+﻿<library>
+
+  <type name="defaultgame">
+    <defaultfont>Arial</defaultfont>
+    <defaultfontsize type="int">9</defaultfontsize>
+    <defaultbackground>White</defaultbackground>
+    <defaultforeground>Black</defaultforeground>
+    <defaultlinkforeground>Blue</defaultlinkforeground>
+    <menufont>Arial</menufont>
+    <menufontsize type="int">9</menufontsize>
+    <menubackground>White</menubackground>
+    <menuforeground>Black</menuforeground>
+    <menuhoverbackground>LightGrey</menuhoverbackground>
+    <menuhoverforeground>Black</menuhoverforeground>
+  </type>
+
+  <function name="InitInterface">
+    request (FontName, game.defaultfont)
+    request (FontSize, ToString(game.defaultfontsize))
+    request (Background, game.defaultbackground)
+    request (Foreground, game.defaultforeground)
+    request (LinkForeground, game.defaultlinkforeground)
+    request (RunScript, "SetMenuBackground;" + game.menubackground)
+    request (RunScript, "SetMenuForeground;" + game.menuforeground)
+    request (RunScript, "SetMenuHoverBackground;" + game.menuhoverbackground)
+    request (RunScript, "SetMenuHoverForeground;" + game.menuhoverforeground)
+    request (RunScript, "SetMenuFontName;" + game.menufont)
+    request (RunScript, "SetMenuFontSize;" + game.menufontsize + "pt")
+    request (Hide, "Panes")
+  </function>
+
+  <function name="ScopeInventory" type="objectlist">
+    result = NewObjectList()
+    return (result)
+  </function>
+
+  <function name="GetPlacesObjectsList" type="objectlist">
+    result = NewObjectList()
+    return (result)
+  </function>
+
+  <function name="ScopeExits" type="objectlist">
+    result = NewObjectList()
+    return (result)
+  </function>
+
+  <function name="HandleCommand" parameters="command">
+      msg ("Command: " + SafeXML(command))
+  </function>
+  
+</library>

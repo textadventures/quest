@@ -31,7 +31,8 @@ namespace AxeSoftware.Quest
     public enum WorldModelVersion
     {
         v500,
-        v510
+        v510,
+        v520
     }
 
     public class WorldModel : IASL, IASLDebug, IASLTimer
@@ -573,8 +574,11 @@ namespace AxeSoftware.Quest
             {
                 if (!m_commandOverride)
                 {
-                    Print("");
-                    Print("> " + Utility.SafeXML(command));
+                    if (Version < WorldModelVersion.v520)
+                    {
+                        Print("");
+                        Print("> " + Utility.SafeXML(command));
+                    }
 
                     try
                     {

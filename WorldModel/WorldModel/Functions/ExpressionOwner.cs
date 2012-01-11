@@ -279,10 +279,10 @@ namespace AxeSoftware.Quest.Functions
             return m_worldModel.RunDelegateScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
         }
 
-        //public string SafeXML(string input)
-        //{
-        //    return Utility.SafeXML(input);
-        //}
+        public string SafeXML(string input)
+        {
+            return Utility.SafeXML(input);
+        }
 
         public bool IsRegexMatch(string regexPattern, string input)
         {
