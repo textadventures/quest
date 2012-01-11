@@ -386,6 +386,10 @@ namespace AxeSoftware.Quest
 
         internal void DisplayMenuAsync(string caption, IList<string> options, bool allowCancel, IScript callback, Context c)
         {
+            if (m_menuCallback != null)
+            {
+                throw new Exception("Only one menu can be shown at a time.");
+            }
             m_menuCallback = callback;
             m_menuCallbackContext = c;
             string result = DisplayMenu(caption, options, allowCancel, true);
@@ -393,6 +397,10 @@ namespace AxeSoftware.Quest
 
         internal void DisplayMenuAsync(string caption, IDictionary<string, string> options, bool allowCancel, IScript callback, Context c)
         {
+            if (m_menuCallback != null)
+            {
+                throw new Exception("Only one menu can be shown at a time.");
+            }
             m_menuCallback = callback;
             m_menuCallbackContext = c;
             string result = DisplayMenu(caption, options, allowCancel, true);
@@ -804,6 +812,10 @@ namespace AxeSoftware.Quest
 
         public void StartWaitAsync(IScript callback, Context c)
         {
+            if (m_waitCallback != null)
+            {
+                throw new Exception("Only one wait can be in progress at a time.");
+            }
             m_waitCallback = callback;
             m_waitCallbackContext = c;
             m_playerUI.DoWait();
