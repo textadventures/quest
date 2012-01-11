@@ -1940,6 +1940,7 @@
 		<row><td>coretimers.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORETI~1.ASL|CoreTimers.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreTimers.aslx</td><td>1</td><td/></row>
 		<row><td>coreturnscripts.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORETU~1.ASL|CoreTurnScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreTurnScripts.aslx</td><td>1</td><td/></row>
 		<row><td>coretypes.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORETY~1.ASL|CoreTypes.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreTypes.aslx</td><td>1</td><td/></row>
+		<row><td>desktopplayer.css</td><td>ISX_DEFAULTCOMPONENT</td><td>DESKTO~1.CSS|desktopplayer.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\desktopplayer.css</td><td>1</td><td/></row>
 		<row><td>desktopplayer.js</td><td>ISX_DEFAULTCOMPONENT</td><td>DESKTO~1.JS|desktopplayer.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\desktopplayer.js</td><td>1</td><td/></row>
 		<row><td>deutsch.aslx2</td><td>ISX_DEFAULTCOMPONENT1</td><td>DEUTSC~1.ASL|Deutsch.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Deutsch.aslx</td><td>1</td><td/></row>
 		<row><td>deutsch.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>DEUTSC~1.TEM|Deutsch.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Deutsch.template</td><td>1</td><td/></row>
@@ -1947,13 +1948,11 @@
 		<row><td>english.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>ENGLIS~1.TEM|English.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\English.template</td><td>1</td><td/></row>
 		<row><td>espanol.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ESPANO~1.ASL|Espanol.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Espanol.aslx</td><td>1</td><td/></row>
 		<row><td>espanol.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>ESPANO~1.TEM|Espanol.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Espanol.template</td><td>1</td><td/></row>
-		<row><td>frame.htm</td><td>ISX_DEFAULTCOMPONENT</td><td>Frame.htm</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Frame.htm</td><td>1</td><td/></row>
-		<row><td>frame.js</td><td>ISX_DEFAULTCOMPONENT</td><td>Frame.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Frame.js</td><td>1</td><td/></row>
 		<row><td>francais.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>FRANCA~1.ASL|Francais.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Francais.aslx</td><td>1</td><td/></row>
 		<row><td>francais.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>FRANCA~1.TEM|Francais.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Francais.template</td><td>1</td><td/></row>
 		<row><td>jjmenu.css</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jjmenu.css</td><td>1</td><td/></row>
 		<row><td>jjmenu.js</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jjmenu.js</td><td>1</td><td/></row>
-		<row><td>jquery_1.5.1.js</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-1.5.1.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery-1.5.1.js</td><td>1</td><td/></row>
+		<row><td>jquery_1.7.1.min.js</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-1.7.1.min.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery-1.7.1.min.js</td><td>1</td><td/></row>
 		<row><td>nederlands.aslx2</td><td>ISX_DEFAULTCOMPONENT1</td><td>NEDERL~1.ASL|Nederlands.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Nederlands.aslx</td><td>1</td><td/></row>
 		<row><td>nederlands.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>NEDERL~1.TEM|Nederlands.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Nederlands.template</td><td>1</td><td/></row>
 		<row><td>playercore.css</td><td>ISX_DEFAULTCOMPONENT</td><td>PLAYER~1.CSS|playercore.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\PlayerController\playercore.css</td><td>1</td><td/></row>
@@ -4579,7 +4578,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{59F6010A-F92E-4566-943D-730C6CB5758D}</td><td/></row>
+		<row><td>ProductCode</td><td>{4290135C-A58A-468B-99EC-AFFABC8E0A09}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
 		<row><td>ProductVersion</td><td>5.10.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
