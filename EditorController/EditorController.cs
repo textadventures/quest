@@ -37,6 +37,12 @@ namespace AxeSoftware.Quest
 
     public class EditorController : IDisposable
     {
+        private enum EditorStyle
+        {
+            TextAdventure,
+            GameBook
+        }
+
         private const string k_commands = "_gameCommands";
         private const string k_verbs = "_gameVerbs";
 
@@ -78,6 +84,7 @@ namespace AxeSoftware.Quest
         private ElementType m_clipboardElementType;
         private List<IScript> m_clipboardScripts;
         private bool m_simpleMode;
+        private EditorStyle m_editorStyle = EditorStyle.TextAdventure;
 
         public delegate void VoidHandler();
         public event VoidHandler ClearTree;
@@ -229,6 +236,11 @@ namespace AxeSoftware.Quest
             m_worldModel.LoadStatus += m_worldModel_LoadStatus;
 
             bool ok = m_worldModel.InitialiseEdit();
+
+            if (m_worldModel.Game.Fields.Get("_editorstyle") as string == "gamebook")
+            {
+                m_editorStyle = EditorStyle.GameBook;
+            }
 
             // need to initialise the EditableScriptFactory after we've loaded the game XML above,
             // as the editor definitions contain the "friendly" templates for script commands.
@@ -426,22 +438,26 @@ namespace AxeSoftware.Quest
         {
             m_treeTitles = new Dictionary<string, string> { { k_commands, "Commands" }, { k_verbs, "Verbs" } };
             m_elementTreeStructure = new Dictionary<ElementType, TreeHeader>();
-            AddTreeHeader(ElementType.Object, "_objects", "Objects", null, false);
-            AddTreeHeader(ElementType.Function, "_functions", "Functions", null, false);
-            AddTreeHeader(ElementType.Timer, "_timers", "Timers", null, false);
-            AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
-            AddTreeHeader(null, "_advanced", "Advanced", null, false);
-            AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
-            // Ignore Implied Types - there's no reason for game authors to edit them
-            //AddTreeHeader(ElementType.ImpliedType, "_implied", "Implied Types", "_advanced");
-            AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced", false);
-            AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced", false);
-            // Ignore Delegate elements - there's no reason for game authors to edit them (I think)
-            //AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
-            AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced", false);
-            // Ignore Editor elements - there's no reason for game authors to edit them
-            //AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
-            AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
+
+            if (m_editorStyle == EditorStyle.TextAdventure)
+            {
+                AddTreeHeader(ElementType.Object, "_objects", "Objects", null, false);
+                AddTreeHeader(ElementType.Function, "_functions", "Functions", null, false);
+                AddTreeHeader(ElementType.Timer, "_timers", "Timers", null, false);
+                AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
+                AddTreeHeader(null, "_advanced", "Advanced", null, false);
+                AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
+                // Ignore Implied Types - there's no reason for game authors to edit them
+                //AddTreeHeader(ElementType.ImpliedType, "_implied", "Implied Types", "_advanced");
+                AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced", false);
+                AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced", false);
+                // Ignore Delegate elements - there's no reason for game authors to edit them (I think)
+                //AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
+                AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced", false);
+                // Ignore Editor elements - there's no reason for game authors to edit them
+                //AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
+                AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
+            }
         }
 
         private void AddTreeHeader(ElementType? type, string key, string title, string parent, bool simple)
@@ -497,7 +513,7 @@ namespace AxeSoftware.Quest
             {
                 AddedNode(o.Name, text, parent, isLibrary, position);
 
-                if (o.Name == "game" && !SimpleMode)
+                if (o.Name == "game" && !SimpleMode && m_editorStyle == EditorStyle.TextAdventure)
                 {
                     AddedNode(k_verbs, "Verbs", "game", false, null);
                     AddedNode(k_commands, "Commands", "game", false, null);
@@ -507,6 +523,11 @@ namespace AxeSoftware.Quest
 
         private bool IsElementVisible(Element e)
         {
+            if (m_editorStyle == EditorStyle.GameBook)
+            {
+                return e.ElemType == ElementType.Object;
+            }
+
             // Don't display implied types, editor elements etc.
             if (m_ignoredTypes.Contains(e.ElemType)) return false;
             if (SimpleMode && m_advancedTypes.Contains(e.ElemType)) return false;
@@ -537,7 +558,7 @@ namespace AxeSoftware.Quest
 
         private string GetElementTreeParent(Element o)
         {
-            if (SimpleMode)
+            if (SimpleMode || m_editorStyle == EditorStyle.GameBook)
             {
                 return o.Parent == null ? null : o.Parent.Name;
             }

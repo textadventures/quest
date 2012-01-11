@@ -3,6 +3,7 @@
   <include ref="GamebookCoreEditor.aslx"/>
 
   <type name="defaultgame">
+    <_editorstyle>gamebook</_editorstyle>
     <defaultfont>Arial</defaultfont>
     <defaultfontsize type="int">9</defaultfontsize>
     <defaultbackground>White</defaultbackground>

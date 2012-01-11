@@ -235,7 +235,10 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void CollapseAdvancedNode()
         {
-            m_nodes["_advanced"].Collapse();
+            if (m_nodes.ContainsKey("_advanced"))
+            {
+                m_nodes["_advanced"].Collapse();
+            }
         }
 
         private void ctlTreeView_AfterSelect(System.Object sender, System.Windows.Forms.TreeViewEventArgs e)
