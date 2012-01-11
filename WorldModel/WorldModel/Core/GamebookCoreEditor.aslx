@@ -19,6 +19,14 @@
       <caption>Page</caption>
 
       <control>
+        <caption>Picture</caption>
+        <controltype>file</controltype>
+        <attribute>picture</attribute>
+        <source>*.jpg;*.jpeg;*.png;*.gif</source>
+        <filefiltername>Picture Files</filefiltername>
+      </control>
+
+      <control>
         <controltype>stringdictionary</controltype>
         <caption>Options</caption>
         <keyprompt>Please enter the page name</keyprompt>

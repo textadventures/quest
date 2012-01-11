@@ -40,6 +40,7 @@
     request (RunScript, "SetMenuFontSize;" + game.menufontsize + "pt")
     request (Hide, "Panes")
     request (Hide, "Command")
+    request (Hide, "Location")
   </function>
 
   <function name="StartGame">
@@ -79,6 +80,10 @@
   <function name="DoPage" parameters="page">
     msg ("DoPage...")
     request (ClearScreen, "")
+    if (HasString(player.parent, "picture")) {
+      request (ShowPicture, GetFileURL(player.parent.picture))
+      msg ("")
+    }
     msg (player.parent.description)
     msg ("")
     msg ("")
