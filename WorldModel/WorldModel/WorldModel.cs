@@ -1360,6 +1360,10 @@ namespace AxeSoftware.Quest
 
         internal void ShowQuestionAsync(string caption, IScript callback, Context c)
         {
+            if (m_questionCallback != null)
+            {
+                throw new Exception("Only one question can be asked at a time.");
+            }
             m_questionCallback = callback;
             m_questionCallbackContext = c;
             m_playerUI.ShowQuestion(caption);
