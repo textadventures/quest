@@ -297,21 +297,9 @@
       }
     }
     
-	if (thiscommand = null) {
-		found=false
-		object=GetObject (command )
-		if (object <> null ){
-			foreach (visibleobject, ScopeVisible()) {
-				if (object=visibleobject) {
-					HandleCommand ("look at " + object.name)
-					found=true
-				}
-			}
-		}      
-		if (found=false){
-			msg (Template("UnrecognisedCommand"))
-			HandleNextCommandQueueItem
-		}      
+    if (thiscommand = null) {
+      msg (Template("UnrecognisedCommand"))
+      HandleNextCommandQueueItem
     }
     else {
       varlist = Populate(thiscommand.pattern, command, thiscommand.name)
