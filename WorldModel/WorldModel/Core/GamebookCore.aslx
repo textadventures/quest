@@ -1,5 +1,7 @@
 ﻿<library>
 
+  <include ref="GamebookCoreEditor.aslx"/>
+
   <type name="defaultgame">
     <defaultfont>Arial</defaultfont>
     <defaultfontsize type="int">9</defaultfontsize>
@@ -12,6 +14,10 @@
     <menuforeground>Black</menuforeground>
     <menuhoverbackground>LightGrey</menuhoverbackground>
     <menuhoverforeground>Black</menuhoverforeground>
+  </type>
+
+  <type name="defaultobject">
+    <description type="string"></description>
   </type>
 
   <function name="InitInterface">
@@ -27,6 +33,7 @@
     request (RunScript, "SetMenuFontName;" + game.menufont)
     request (RunScript, "SetMenuFontSize;" + game.menufontsize + "pt")
     request (Hide, "Panes")
+    request (Hide, "Command")
   </function>
 
   <function name="ScopeInventory" type="objectlist">

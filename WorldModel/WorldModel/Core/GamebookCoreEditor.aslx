@@ -1,0 +1,50 @@
+﻿<library type="editor">
+
+  <implied element="control" property="height" type="int"/>
+  <implied element="control" property="width" type="int"/>
+  <implied element="control" property="types" type="stringdictionary"/>
+  <implied element="control" property="filters" type="stringdictionary"/>
+  <implied element="control" property="editors" type="stringdictionary"/>
+  <implied element="control" property="minimum" type="int"/>
+  <implied element="control" property="mustinherit" type="list"/>
+  <implied element="control" property="mustnotinherit" type="list"/>
+  <implied element="tab" property="mustinherit" type="list"/>
+  <implied element="tab" property="mustnotinherit" type="list"/>
+  <implied element="tab" property="parent" type="object"/>
+
+  <editor>
+    <appliesto>object</appliesto>
+
+    <tab>
+      <caption>Page</caption>
+
+      <control>
+        <controltype>richtext</controltype>
+        <caption>Description</caption>
+        <attribute>description</attribute>
+        <height>300</height>
+      </control>
+
+      <!--
+      <control>
+        <controltype>multi</controltype>
+        <caption>Description</caption>
+        <attribute>description</attribute>
+        <types>string=Text; script=Run script</types>
+        <editors>string=richtext</editors>
+      </control>
+      -->
+      
+      <control>
+        <controltype>stringdictionary</controltype>
+        <caption>Options</caption>
+        <keyprompt>Please enter the page name</keyprompt>
+        <valueprompt>Please enter the link text</valueprompt>
+        <attribute>options</attribute>
+      </control>
+      
+    </tab>
+
+  </editor>
+
+</library>
