@@ -14,6 +14,7 @@ Public Class Editor
     Private m_unsavedChanges As Boolean
     Private WithEvents m_fileWatcher As System.IO.FileSystemWatcher
     Private m_simpleMode As Boolean
+    Private m_editorStyle As EditorStyle = EditorStyle.TextAdventure
     Private m_reloadingFromCodeView As Boolean
     Private m_uiHidden As Boolean
 
@@ -68,6 +69,7 @@ Public Class Editor
                             ctlLoading.UpdateStatus("Loading editors...")
                             SetUpEditors()
                             RaiseEvent AddToRecent(m_filename, m_controller.GameName)
+                            EditorStyle = m_controller.EditorStyle
                             SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
                             m_menu.Visible = True
                             m_uiHidden = False
@@ -112,6 +114,7 @@ Public Class Editor
         menu.AddMenuClickHandler("saveas", AddressOf SaveAs)
         menu.AddMenuClickHandler("undo", AddressOf Undo)
         menu.AddMenuClickHandler("redo", AddressOf Redo)
+        menu.AddMenuClickHandler("addpage", AddressOf AddNewPage)
         menu.AddMenuClickHandler("addobject", AddressOf AddNewObject)
         menu.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
         menu.AddMenuClickHandler("addexit", AddressOf AddNewExit)
@@ -147,6 +150,7 @@ Public Class Editor
         ctlToolbar.AddButtonHandler("save", AddressOf Save)
         ctlToolbar.AddButtonHandler("undo", AddressOf Undo)
         ctlToolbar.AddButtonHandler("redo", AddressOf Redo)
+        ctlToolbar.AddButtonHandler("addpage", AddressOf AddNewPage)
         ctlToolbar.AddButtonHandler("addobject", AddressOf AddNewObject)
         ctlToolbar.AddButtonHandler("addroom", AddressOf AddNewRoom)
         ctlToolbar.AddButtonHandler("play", AddressOf PlayGame)
@@ -166,6 +170,7 @@ Public Class Editor
         ctlTree.CollapseAdvancedNode()
         ctlTree.ScrollToTop()
 
+        ctlTree.AddMenuClickHandler("addpage", AddressOf AddNewPage)
         ctlTree.AddMenuClickHandler("addobject", AddressOf AddNewObject)
         ctlTree.AddMenuClickHandler("addroom", AddressOf AddNewRoom)
         ctlTree.AddMenuClickHandler("addexit", AddressOf AddNewExit)
@@ -593,6 +598,14 @@ Public Class Editor
         Throw New NotImplementedException
     End Sub
 
+    Private Sub AddNewPage()
+        Dim result = PopupEditors.EditString("Please enter a name for the new page", "")
+        If result.Cancelled Then Return
+
+        m_controller.CreateNewObject(result.Result, Nothing)
+        ctlTree.SetSelectedItem(result.Result)
+    End Sub
+
     Private Function GetNameAndParent(prompt As String, possibleParents As IEnumerable(Of String)) As PopupEditors.EditStringResult?
         Const noParent As String = "(none)"
 
@@ -974,26 +987,8 @@ Public Class Editor
                 m_menu.MenuChecked("simplemode") = m_simpleMode
                 ctlToolbar.SimpleMode = value
 
-                m_menu.MenuVisible("addverb") = Not m_simpleMode
-                m_menu.MenuVisible("addcommand") = Not m_simpleMode
-                m_menu.MenuVisible("addfunction") = Not m_simpleMode
-                m_menu.MenuVisible("addtimer") = Not m_simpleMode
-                m_menu.MenuVisible("addturnscript") = Not m_simpleMode
-                m_menu.MenuVisible("addwalkthrough") = Not m_simpleMode
-                m_menu.MenuVisible("advanced") = Not m_simpleMode
-
-                ctlTree.ShowFilterBar = Not m_simpleMode
-                ctlTree.SetMenuVisible("addverb", Not m_simpleMode)
-                ctlTree.SetMenuVisible("addcommand", Not m_simpleMode)
-                ctlTree.SetMenuVisible("addfunction", Not m_simpleMode)
-                ctlTree.SetMenuVisible("addtimer", Not m_simpleMode)
-                ctlTree.SetMenuVisible("addturnscript", Not m_simpleMode)
-                ctlTree.SetMenuVisible("addwalkthrough", Not m_simpleMode)
-                ctlTree.SetMenuVisible("addlibrary", Not m_simpleMode)
-                ctlTree.SetMenuVisible("addtemplate", Not m_simpleMode)
-                ctlTree.SetMenuVisible("adddynamictemplate", Not m_simpleMode)
-                ctlTree.SetMenuVisible("addobjecttype", Not m_simpleMode)
-                ctlTree.SetMenuVisible("addjavascript", Not m_simpleMode)
+                SetMenuVisibility()
+                SetTreeMenuVisibility()
 
                 For Each editor As WPFElementEditor In m_elementEditors.Values
                     editor.SimpleMode = m_simpleMode
@@ -1003,6 +998,53 @@ Public Class Editor
             End If
         End Set
     End Property
+
+    Private Property EditorStyle As EditorStyle
+        Get
+            Return m_editorStyle
+        End Get
+        Set(value As EditorStyle)
+            If (value <> m_editorStyle) Then
+                m_editorStyle = value
+                SetMenuVisibility()
+                SetTreeMenuVisibility()
+                ctlToolbar.EditorStyle = value
+            End If
+        End Set
+    End Property
+
+    Private Sub SetMenuVisibility()
+        m_menu.MenuVisible("addpage") = (EditorStyle = Quest.EditorStyle.GameBook)
+        m_menu.MenuVisible("addobject") = (EditorStyle = Quest.EditorStyle.TextAdventure)
+        m_menu.MenuVisible("addroom") = (EditorStyle = Quest.EditorStyle.TextAdventure)
+        m_menu.MenuVisible("addexit") = (EditorStyle = Quest.EditorStyle.TextAdventure)
+        m_menu.MenuVisible("addverb") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addcommand") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addfunction") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addtimer") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addturnscript") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addwalkthrough") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("advanced") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+    End Sub
+
+    Private Sub SetTreeMenuVisibility()
+        ctlTree.ShowFilterBar = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+        ctlTree.SetMenuVisible("addpage", EditorStyle = Quest.EditorStyle.GameBook)
+        ctlTree.SetMenuVisible("addobject", EditorStyle = Quest.EditorStyle.TextAdventure)
+        ctlTree.SetMenuVisible("addroom", EditorStyle = Quest.EditorStyle.TextAdventure)
+        ctlTree.SetMenuVisible("addexit", EditorStyle = Quest.EditorStyle.TextAdventure)
+        ctlTree.SetMenuVisible("addverb", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addcommand", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addfunction", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addtimer", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addturnscript", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addwalkthrough", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addlibrary", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addtemplate", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("adddynamictemplate", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addobjecttype", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addjavascript", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+    End Sub
 
     Private Sub m_controller_LoadStatus(sender As Object, e As EditorController.LoadStatusEventArgs) Handles m_controller.LoadStatus
         BeginInvoke(Sub() ctlLoading.UpdateStatus(e.Status))

@@ -28,6 +28,12 @@ namespace AxeSoftware.Quest
         CannotRenamePlayerElement
     }
 
+    public enum EditorStyle
+    {
+        TextAdventure,
+        GameBook
+    }
+
     public struct ValidationResult
     {
         public bool Valid;
@@ -37,12 +43,6 @@ namespace AxeSoftware.Quest
 
     public class EditorController : IDisposable
     {
-        private enum EditorStyle
-        {
-            TextAdventure,
-            GameBook
-        }
-
         private const string k_commands = "_gameCommands";
         private const string k_verbs = "_gameVerbs";
 
@@ -1970,6 +1970,11 @@ namespace AxeSoftware.Quest
         public static string GetNewGameId()
         {
             return Guid.NewGuid().ToString();
+        }
+
+        public EditorStyle EditorStyle
+        {
+            get { return m_editorStyle; }
         }
     }
 }

@@ -20,6 +20,7 @@ Public Class MainToolbar
     Private m_buttons As New Dictionary(Of String, ToolStripButton)
     Private m_codeView As Boolean
     Private m_simpleMode As Boolean
+    Private m_editorStyle As EditorStyle = Quest.EditorStyle.TextAdventure
 
     Public Event HistoryClicked(key As String)
     Public Event SaveCurrentEditor()
@@ -409,18 +410,7 @@ Public Class MainToolbar
         End Get
         Set(value As Boolean)
             m_codeView = value
-
-            butUndo.Visible = Not m_codeView
-            butRedo.Visible = Not m_codeView
-            butUndoSimple.Visible = m_codeView
-            butRedoSimple.Visible = m_codeView
-            butBack.Visible = Not m_codeView
-            butForward.Visible = Not m_codeView
-            butDelete.Visible = Not m_codeView
-            butAddObject.Visible = Not m_codeView
-            butAddRoom.Visible = Not m_codeView
-            ToolStripSeparator8.Visible = Not m_codeView
-            ToolStripSeparator2.Visible = Not m_codeView
+            SetButtonVisibility()
         End Set
     End Property
 
@@ -431,7 +421,35 @@ Public Class MainToolbar
         Set(value As Boolean)
             m_simpleMode = value
 
-            butCode.Visible = Not m_simpleMode
+            SetButtonVisibility()
         End Set
     End Property
+
+    Public Property EditorStyle As EditorStyle
+        Get
+            Return m_editorStyle
+        End Get
+        Set(value As EditorStyle)
+            If m_editorStyle <> value Then
+                m_editorStyle = value
+                SetButtonVisibility()
+            End If
+        End Set
+    End Property
+
+    Private Sub SetButtonVisibility()
+        butCode.Visible = Not SimpleMode
+        butAddPage.Visible = (EditorStyle = Quest.EditorStyle.GameBook) And Not CodeView
+        butAddObject.Visible = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not CodeView
+        butAddRoom.Visible = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not CodeView
+        butUndo.Visible = Not CodeView
+        butRedo.Visible = Not CodeView
+        butUndoSimple.Visible = CodeView
+        butRedoSimple.Visible = CodeView
+        butBack.Visible = Not CodeView
+        butForward.Visible = Not CodeView
+        butDelete.Visible = Not CodeView
+        ToolStripSeparator8.Visible = Not CodeView
+        ToolStripSeparator2.Visible = Not CodeView
+    End Sub
 End Class

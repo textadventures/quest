@@ -57,11 +57,12 @@
             this.AddWalkthroughToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlTreeView = new System.Windows.Forms.TreeView();
-            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.addPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlToolStrip.SuspendLayout();
             this.pnlSearchContainer.SuspendLayout();
             this.ctlContextMenu.SuspendLayout();
@@ -223,6 +224,7 @@
             // ctlContextMenu
             // 
             this.ctlContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addPageToolStripMenuItem,
             this.AddObjectToolStripMenuItem,
             this.AddRoomToolStripMenuItem,
             this.AddExitToolStripMenuItem,
@@ -246,7 +248,7 @@
             this.expandAllToolStripMenuItem,
             this.collapseAllToolStripMenuItem});
             this.ctlContextMenu.Name = "ctlContextMenu";
-            this.ctlContextMenu.Size = new System.Drawing.Size(200, 478);
+            this.ctlContextMenu.Size = new System.Drawing.Size(200, 500);
             // 
             // AddExitToolStripMenuItem
             // 
@@ -309,6 +311,19 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
             // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.deleteToolStripMenuItem.Tag = "delete";
+            this.deleteToolStripMenuItem.Text = "Delete";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
+            // 
             // expandAllToolStripMenuItem
             // 
             this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
@@ -334,18 +349,13 @@
             this.ctlTreeView.Size = new System.Drawing.Size(289, 292);
             this.ctlTreeView.TabIndex = 7;
             // 
-            // deleteToolStripMenuItem
+            // addPageToolStripMenuItem
             // 
-            this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.deleteToolStripMenuItem.Tag = "delete";
-            this.deleteToolStripMenuItem.Text = "Delete";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
+            this.addPageToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addPageToolStripMenuItem.Image")));
+            this.addPageToolStripMenuItem.Name = "addPageToolStripMenuItem";
+            this.addPageToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.addPageToolStripMenuItem.Tag = "addpage";
+            this.addPageToolStripMenuItem.Text = "Add Page";
             // 
             // WFEditorTree
             // 
@@ -401,5 +411,6 @@
         private System.Windows.Forms.ToolStripMenuItem collapseAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem addPageToolStripMenuItem;
     }
 }
