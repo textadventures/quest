@@ -126,7 +126,18 @@
     <appliesto>object</appliesto>
 
     <tab>
+      <caption>Player</caption>
+      <mustinherit>defaultplayer</mustinherit>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>You can change where the game starts by dragging "player" to a different page.</caption>
+      </control>
+    </tab>
+
+    <tab>
       <caption>Page</caption>
+      <mustnotinherit>defaultplayer</mustnotinherit>
 
       <control>
         <caption>Picture</caption>

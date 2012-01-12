@@ -171,6 +171,7 @@
     </None>
     <None Include="Core\CoreEditorGame.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorIncludedLibrary.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -270,6 +270,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             // if the currently selected tab gets hidden, switch to the first visible tab
             bool switchToFirstVisibleTab = false;
+            bool anyTabIsSelected = false;
             TabItem firstVisibleTab = null;
 
             foreach (var tab in m_tabs)
@@ -285,10 +286,11 @@ namespace AxeSoftware.Quest.EditorControls
                 }
                 if (visible && firstVisibleTab == null) firstVisibleTab = tab.Value;
                 if (!visible && tab.Value.IsSelected) switchToFirstVisibleTab = true;
+                if (tab.Value.IsSelected) anyTabIsSelected = true;
                 tab.Value.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
             }
 
-            if (switchToFirstVisibleTab)
+            if (switchToFirstVisibleTab || !anyTabIsSelected)
             {
                 firstVisibleTab.IsSelected = true;
             }
