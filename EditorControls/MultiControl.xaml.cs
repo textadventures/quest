@@ -218,7 +218,7 @@ namespace AxeSoftware.Quest.EditorControls
                     {
                         CurrentElementEditor.Helper.DoInitialise(m_controller, m_definition);
                         CurrentElementEditor.Populate(m_data);
-                        if (CurrentElementEditor.Helper.Options.Resizable)
+                        if (CurrentElementEditor.Helper.Options.Resizable || m_definition.Expand)
                         {
                             controlRowGridUnit = GridUnitType.Star;
                         }

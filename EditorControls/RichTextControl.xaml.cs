@@ -24,7 +24,6 @@ namespace AxeSoftware.Quest.EditorControls
         {
             InitializeComponent();
             m_helper = new ControlDataHelper<string>(this);
-            m_helper.Options.Resizable = true;
             m_helper.Initialise += m_helper_Initialise;
             m_helper.Uninitialise += m_helper_Uninitialise;
 

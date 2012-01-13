@@ -148,6 +148,13 @@
       </control>
 
       <control>
+        <controltype>richtext</controltype>
+        <caption>Description</caption>
+        <attribute>description</attribute>
+        <expand/>
+      </control>
+
+      <control>
         <controltype>gamebookoptions</controltype>
         <caption>Options</caption>
         <keyprompt>Please enter the page name</keyprompt>
@@ -157,23 +164,6 @@
         <sourceexclude>player</sourceexclude>
       </control>
 
-      <control>
-        <controltype>richtext</controltype>
-        <caption>Description</caption>
-        <attribute>description</attribute>
-        <expand/>
-      </control>
-
-      <!--
-      <control>
-        <controltype>multi</controltype>
-        <caption>Description</caption>
-        <attribute>description</attribute>
-        <types>string=Text; script=Run script</types>
-        <editors>string=richtext</editors>
-      </control>
-      -->
-      
     </tab>
 
   </editor>
