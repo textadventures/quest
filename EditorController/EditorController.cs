@@ -41,6 +41,13 @@ namespace AxeSoftware.Quest
         public string MessageData;
     }
 
+    public class TemplateData
+    {
+        public string TemplateName { get; set; }
+        public string Filename { get; set; }
+        public EditorStyle Type { get; set; }
+    }
+
     public class EditorController : IDisposable
     {
         private const string k_commands = "_gameCommands";
@@ -1793,9 +1800,9 @@ namespace AxeSoftware.Quest
             return m_worldModel.GetBuiltInFunctionNames();
         }
 
-        public static Dictionary<string, string> GetAvailableTemplates(string folder = null)
+        public static Dictionary<string, TemplateData> GetAvailableTemplates(string folder = null)
         {
-            Dictionary<string, string> templates = new Dictionary<string, string>();
+            Dictionary<string, TemplateData> templates = new Dictionary<string, TemplateData>();
 
             if (folder == null) folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
             folder = AxeSoftware.Utility.Utility.RemoveFileColonPrefix(folder);
@@ -1805,18 +1812,19 @@ namespace AxeSoftware.Quest
                 string key = System.IO.Path.GetFileNameWithoutExtension(file);
                 if (!templates.ContainsKey(key))
                 {
-                    AddTemplateName(templates, key, file);
+                    AddTemplateData(templates, key, file);
                 }
             }
 
             return templates;
         }
 
-        private static void AddTemplateName(Dictionary<string, string> templates, string key, string filename)
+        private static void AddTemplateData(Dictionary<string, TemplateData> templates, string key, string filename)
         {
             try
             {
                 string templateName = key;
+                EditorStyle templateEditorStyle = EditorStyle.TextAdventure;
 
                 System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(filename);
                 xmlReader.Read();
@@ -1824,8 +1832,21 @@ namespace AxeSoftware.Quest
                 {
                     string templateAttr = xmlReader.GetAttribute("template");
                     if (!string.IsNullOrEmpty(templateAttr)) templateName = templateAttr;
+
+                    string templateType = xmlReader.GetAttribute("templatetype");
+                    switch (templateType)
+                    {
+                        case "gamebook":
+                            templateEditorStyle = EditorStyle.GameBook;
+                            break;
+                    }
                 }
-                templates.Add(templateName, filename);
+
+                templates.Add(templateName, new TemplateData {
+                    Filename = filename,
+                    TemplateName = templateName,
+                    Type = templateEditorStyle
+                });
             }
             catch
             {

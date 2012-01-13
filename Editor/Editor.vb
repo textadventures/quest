@@ -649,7 +649,7 @@ Public Class Editor
     End Function
 
     Public Function CreateNewGame() As String
-        Dim templates As Dictionary(Of String, String) = EditorController.GetAvailableTemplates()
+        Dim templates As Dictionary(Of String, TemplateData) = EditorController.GetAvailableTemplates()
         Dim newGameWindow As New NewGameWindow
         newGameWindow.SetAvailableTemplates(templates)
         newGameWindow.ShowDialog()
@@ -662,7 +662,7 @@ Public Class Editor
             System.IO.Directory.CreateDirectory(folder)
         End If
 
-        EditorController.CreateNewGameFile(filename, templates(newGameWindow.lstTemplate.Text), newGameWindow.txtGameName.Text)
+        EditorController.CreateNewGameFile(filename, newGameWindow.GetSelectedTemplate().Filename, newGameWindow.txtGameName.Text)
 
         Return filename
     End Function

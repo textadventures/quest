@@ -1,4 +1,4 @@
-﻿<asl version="520">
+﻿<asl version="520" templatetype="gamebook">
 
   <include ref="GamebookCore.aslx"/>
 

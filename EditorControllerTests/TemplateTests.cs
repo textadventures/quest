@@ -15,13 +15,13 @@ namespace EditorControllerTests
         {
             string folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Substring(6).Replace("/", @"\");
             string templateFolder = System.IO.Path.Combine(folder, @"..\..\..\..\WorldModel\WorldModel\Core");
-            Dictionary<string, string> templates = EditorController.GetAvailableTemplates(templateFolder);
+            Dictionary<string, TemplateData> templates = EditorController.GetAvailableTemplates(templateFolder);
 
-            foreach (string template in templates.Values)
+            foreach (TemplateData template in templates.Values)
             {
                 string tempFile = System.IO.Path.GetTempFileName();
 
-                EditorController.CreateNewGameFile(tempFile, template, "Test");
+                EditorController.CreateNewGameFile(tempFile, template.Filename, "Test");
                 EditorController controller = new EditorController();
                 string errorsRaised = string.Empty;
                 
@@ -32,8 +32,8 @@ namespace EditorControllerTests
 
                 bool result = controller.Initialise(tempFile, templateFolder);
 
-                Assert.IsTrue(result, string.Format("Initialisation failed for template '{0}': {1}", System.IO.Path.GetFileName(template), errorsRaised));
-                Assert.AreEqual(0, errorsRaised.Length, string.Format("Error loading game with template '{0}': {1}", System.IO.Path.GetFileName(template), errorsRaised));
+                Assert.IsTrue(result, string.Format("Initialisation failed for template '{0}': {1}", System.IO.Path.GetFileName(template.Filename), errorsRaised));
+                Assert.AreEqual(0, errorsRaised.Length, string.Format("Error loading game with template '{0}': {1}", System.IO.Path.GetFileName(template.Filename), errorsRaised));
 
                 System.IO.File.Delete(tempFile);
             }

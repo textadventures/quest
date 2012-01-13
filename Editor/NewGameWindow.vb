@@ -6,7 +6,7 @@ Public Class NewGameWindow
     Private Const k_regName As String = "LastTemplate"
 
     Public Cancelled As Boolean
-    Private m_templates As Dictionary(Of String, String)
+    Private m_templates As Dictionary(Of String, TemplateData)
     Private m_manualFilename As Boolean = False
 
     Public Sub New()
@@ -16,6 +16,20 @@ Public Class NewGameWindow
 
         ' Add any initialization after the InitializeComponent() call.
         SetFilename()
+
+        AddHandler picTextAdventure.Click, AddressOf SelectTextAdventure
+        AddHandler picTextAdventureBorder.Click, AddressOf SelectTextAdventure
+        AddHandler lstTemplate.SelectedIndexChanged, AddressOf SelectTextAdventure
+        AddHandler picGamebook.Click, AddressOf SelectGamebook
+        AddHandler picGamebookBorder.Click, AddressOf SelectGamebook
+    End Sub
+
+    Private Sub SelectTextAdventure(sender As Object, e As EventArgs)
+        optTextAdventure.Checked = True
+    End Sub
+
+    Private Sub SelectGamebook(sender As Object, e As EventArgs)
+        optGamebook.Checked = True
     End Sub
 
     Private Sub SetFilename()
@@ -49,11 +63,11 @@ Public Class NewGameWindow
         Me.Hide()
     End Sub
 
-    Public Sub SetAvailableTemplates(templates As Dictionary(Of String, String))
+    Public Sub SetAvailableTemplates(templates As Dictionary(Of String, TemplateData))
         m_templates = templates
 
-        For Each item In m_templates.Keys
-            lstTemplate.Items.Add(item)
+        For Each item In From template In m_templates.Values Where template.Type = EditorStyle.TextAdventure
+            lstTemplate.Items.Add(item.TemplateName)
         Next
 
         If lstTemplate.Items.Count > 0 Then
@@ -84,4 +98,13 @@ Public Class NewGameWindow
             Cancelled = True
         End If
     End Sub
+
+    Public Function GetSelectedTemplate() As TemplateData
+        If optTextAdventure.Checked Then
+            Return m_templates(lstTemplate.Text)
+        Else
+            Return m_templates.Values.First(Function(template) template.Type = EditorStyle.GameBook)
+        End If
+    End Function
+
 End Class
