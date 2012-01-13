@@ -213,7 +213,7 @@ namespace AxeSoftware.Quest.EditorControls
             bool finished = false;
             string result = string.Empty;
 
-            input = input.Replace("&nbsp;", "");
+            input = input.Replace("&nbsp;", " ");
 
             do
             {
