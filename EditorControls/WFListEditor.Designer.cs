@@ -32,11 +32,13 @@
             this.lstList = new System.Windows.Forms.ListView();
             this.ctlToolStrip = new System.Windows.Forms.ToolStrip();
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
+            this.cmdLink = new System.Windows.Forms.ToolStripButton();
+            this.cmdEditKey = new System.Windows.Forms.ToolStripButton();
             this.cmdEdit = new System.Windows.Forms.ToolStripButton();
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveUp = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveDown = new System.Windows.Forms.ToolStripButton();
-            this.cmdEditKey = new System.Windows.Forms.ToolStripButton();
+            this.cmdAddNewPage = new System.Windows.Forms.ToolStripButton();
             this.ctlToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,7 +48,7 @@
             this.lstList.HideSelection = false;
             this.lstList.Location = new System.Drawing.Point(0, 25);
             this.lstList.Name = "lstList";
-            this.lstList.Size = new System.Drawing.Size(424, 246);
+            this.lstList.Size = new System.Drawing.Size(807, 247);
             this.lstList.TabIndex = 5;
             this.lstList.UseCompatibleStateImageBehavior = false;
             this.lstList.View = System.Windows.Forms.View.Details;
@@ -55,6 +57,8 @@
             // 
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdAdd,
+            this.cmdAddNewPage,
+            this.cmdLink,
             this.cmdEditKey,
             this.cmdEdit,
             this.cmdDelete,
@@ -62,7 +66,7 @@
             this.cmdMoveDown});
             this.ctlToolStrip.Location = new System.Drawing.Point(0, 0);
             this.ctlToolStrip.Name = "ctlToolStrip";
-            this.ctlToolStrip.Size = new System.Drawing.Size(424, 25);
+            this.ctlToolStrip.Size = new System.Drawing.Size(807, 25);
             this.ctlToolStrip.TabIndex = 4;
             this.ctlToolStrip.Text = "ToolStrip1";
             // 
@@ -73,6 +77,23 @@
             this.cmdAdd.Name = "cmdAdd";
             this.cmdAdd.Size = new System.Drawing.Size(49, 22);
             this.cmdAdd.Text = "Add";
+            // 
+            // cmdLink
+            // 
+            this.cmdLink.Image = ((System.Drawing.Image)(resources.GetObject("cmdLink.Image")));
+            this.cmdLink.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdLink.Name = "cmdLink";
+            this.cmdLink.Size = new System.Drawing.Size(135, 22);
+            this.cmdLink.Tag = "link";
+            this.cmdLink.Text = "Link to Existing Page";
+            // 
+            // cmdEditKey
+            // 
+            this.cmdEditKey.Image = ((System.Drawing.Image)(resources.GetObject("cmdEditKey.Image")));
+            this.cmdEditKey.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdEditKey.Name = "cmdEditKey";
+            this.cmdEditKey.Size = new System.Drawing.Size(69, 22);
+            this.cmdEditKey.Text = "Edit Key";
             // 
             // cmdEdit
             // 
@@ -108,13 +129,14 @@
             this.cmdMoveDown.Text = "Move Down";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
             // 
-            // cmdEditKey
+            // cmdAddNewPage
             // 
-            this.cmdEditKey.Image = ((System.Drawing.Image)(resources.GetObject("cmdEditKey.Image")));
-            this.cmdEditKey.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdEditKey.Name = "cmdEditKey";
-            this.cmdEditKey.Size = new System.Drawing.Size(69, 22);
-            this.cmdEditKey.Text = "Edit Key";
+            this.cmdAddNewPage.Image = ((System.Drawing.Image)(resources.GetObject("cmdAddNewPage.Image")));
+            this.cmdAddNewPage.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdAddNewPage.Name = "cmdAddNewPage";
+            this.cmdAddNewPage.Size = new System.Drawing.Size(105, 22);
+            this.cmdAddNewPage.Tag = "addpage";
+            this.cmdAddNewPage.Text = "Add New Page";
             // 
             // WFListEditor
             // 
@@ -123,7 +145,7 @@
             this.Controls.Add(this.lstList);
             this.Controls.Add(this.ctlToolStrip);
             this.Name = "WFListEditor";
-            this.Size = new System.Drawing.Size(424, 271);
+            this.Size = new System.Drawing.Size(807, 272);
             this.ctlToolStrip.ResumeLayout(false);
             this.ctlToolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -141,5 +163,7 @@
         private System.Windows.Forms.ToolStripButton cmdMoveUp;
         private System.Windows.Forms.ToolStripButton cmdMoveDown;
         internal System.Windows.Forms.ToolStripButton cmdEditKey;
+        private System.Windows.Forms.ToolStripButton cmdLink;
+        private System.Windows.Forms.ToolStripButton cmdAddNewPage;
     }
 }

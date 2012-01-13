@@ -24,6 +24,9 @@ namespace AxeSoftware.Quest.EditorControls
             m_manager = new WFStringDictionaryEditorManager(ctlListEditor);
             m_manager.Dirty += m_manager_Dirty;
             m_manager.RequestParentElementEditorSave += m_manager_RequestParentElementEditorSave;
+            m_manager.ExtraToolbarItemClicked += m_manager_ExtraToolbarItemClicked;
+            ctlListEditor.ShowExtraToolstripItems(new[] { "addpage", "link" });
+            ctlListEditor.HideAddButton();
         }
 
         private void m_manager_RequestParentElementEditorSave()
@@ -34,6 +37,35 @@ namespace AxeSoftware.Quest.EditorControls
         private void m_manager_Dirty(object sender, DataModifiedEventArgs args)
         {
             if (Dirty != null) Dirty(sender, args);
+        }
+
+        private void m_manager_ExtraToolbarItemClicked(string item)
+        {
+            switch (item)
+            {
+                case "addpage":
+                    AddNewPage();
+                    break;
+                case "link":
+                    LinkExistingPage();
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        private void AddNewPage()
+        {
+            string result = m_manager.DoAddResult();
+            if (result != null)
+            {
+                MessageBox.Show("Add new page... " + result);
+            }
+        }
+
+        private void LinkExistingPage()
+        {
+            m_manager.DoAdd();
         }
 
         public void Initialise(EditorController controller, IEditorControl controlData)

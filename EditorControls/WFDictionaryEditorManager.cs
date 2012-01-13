@@ -136,6 +136,8 @@ namespace AxeSoftware.Quest.EditorControls
         public delegate void DirtyEventHandler(object sender, DataModifiedEventArgs args);
         public event RequestParentElementEditorSaveEventHandler RequestParentElementEditorSave { add { } remove { } }
         public delegate void RequestParentElementEditorSaveEventHandler();
+        public event ExtraToolbarItemClickHandler ExtraToolbarItemClicked;
+        public delegate void ExtraToolbarItemClickHandler(string item);
 
         public void Initialise(EditorController controller, IEditorControl controlData, string valueHeader)
         {
@@ -189,10 +191,16 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoAdd()
         {
+            DoAddResult();
+        }
+
+        public string DoAddResult()
+        {
             var addKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), string.Empty, GetAutoCompleteList());
-            if (addKey.Cancelled) return;
-            if (!ValidateInput(addKey.Result)) return;
+            if (addKey.Cancelled) return null;
+            if (!ValidateInput(addKey.Result)) return null;
             AddNewValue(addKey);
+            return addKey.Result;
         }
 
         protected abstract void AddNewValue(PopupEditors.EditStringResult addKey);
@@ -280,6 +288,14 @@ namespace AxeSoftware.Quest.EditorControls
             if (newKey.Cancelled || newKey.Result == key) return;
             if (!ValidateInput(newKey.Result)) return;
             m_list.ChangeKey(key, newKey.Result);
+        }
+
+        public void DoAction(string action)
+        {
+            if (ExtraToolbarItemClicked != null)
+            {
+                ExtraToolbarItemClicked(action);
+            }
         }
 
         private IEnumerable<string> GetAutoCompleteList()

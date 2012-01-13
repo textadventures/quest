@@ -16,6 +16,7 @@ namespace AxeSoftware.Quest.EditorControls
         void DoEditKey(string key, int index);
         void DoRemove(string[] keys);
         bool CanEditKey { get; }
+        void DoAction(string action);
     }
 
     public interface IRearrangeableListEditorDelegate : IListEditorDelegate
@@ -26,6 +27,8 @@ namespace AxeSoftware.Quest.EditorControls
 
     public partial class WFListEditor : UserControl
     {
+        private Dictionary<string, ToolStripItem> m_extraToolStripItems = new Dictionary<string, ToolStripItem>();
+
         public WFListEditor()
         {
             InitializeComponent();
@@ -35,6 +38,17 @@ namespace AxeSoftware.Quest.EditorControls
             cmdDelete.Click += cmdDelete_Click;
             cmdEdit.Click += cmdEdit_Click;
             cmdEditKey.Click += cmdEditKey_Click;
+            
+            foreach (ToolStripItem item in ctlToolStrip.Items)
+            {
+                if (!string.IsNullOrEmpty(item.Tag as string))
+                {
+                    item.Click += ExtraItemClick;
+                    m_extraToolStripItems.Add(item.Tag as string, item);
+                    item.Visible = false;
+                }
+            }
+
             lstList.DoubleClick += lstList_DoubleClick;
             lstList.ItemSelectionChanged += lstList_ItemSelectionChanged;
             lstList.SelectedIndexChanged += lstList_SelectedIndexChanged;
@@ -337,6 +351,31 @@ namespace AxeSoftware.Quest.EditorControls
             string key1 = lstList.SelectedItems[0].Name;
             string key2 = lstList.Items[lstList.SelectedItems[0].Index + 1].Name;
             m_rearrangeDelegate.DoSwap(key1, key2);
+        }
+
+        public void HideAddButton()
+        {
+            cmdAdd.Available = false;
+        }
+
+        public void ShowExtraToolstripItems(IEnumerable<string> items)
+        {
+            foreach (string item in items)
+            {
+                m_extraToolStripItems[item].Visible = true;
+            }
+        }
+
+        private void ExtraItemClick(object sender, EventArgs e)
+        {
+            if (m_readOnly) return;
+            if (ToolbarClicked != null)
+            {
+                ToolbarClicked();
+            }
+
+            ToolStripItem item = (ToolStripItem)sender;
+            m_delegate.DoAction(item.Tag as string);
         }
     }
 }
