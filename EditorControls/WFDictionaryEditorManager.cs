@@ -134,7 +134,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public event DirtyEventHandler Dirty;
         public delegate void DirtyEventHandler(object sender, DataModifiedEventArgs args);
-        public event RequestParentElementEditorSaveEventHandler RequestParentElementEditorSave;
+        public event RequestParentElementEditorSaveEventHandler RequestParentElementEditorSave { add { } remove { } }
         public delegate void RequestParentElementEditorSaveEventHandler();
 
         public void Initialise(EditorController controller, IEditorControl controlData, string valueHeader)
