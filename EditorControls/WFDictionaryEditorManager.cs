@@ -287,6 +287,11 @@ namespace AxeSoftware.Quest.EditorControls
             string listsource = m_controlData.GetString("source");
             if (listsource == null) return null;
             IEnumerable<string> result = (listsource == "object") ? m_controller.GetObjectNames("object") : m_controller.GetElementNames(listsource);
+            string sourceexclude = m_controlData.GetString("sourceexclude");
+            if (sourceexclude != null)
+            {
+                result = result.Where(s => s != sourceexclude);
+            }
             return result.OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase);
         }
 
