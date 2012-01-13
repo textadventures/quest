@@ -153,6 +153,7 @@
         <keyprompt>Please enter the page name</keyprompt>
         <valueprompt>Please enter the link text</valueprompt>
         <attribute>options</attribute>
+        <source>object</source>
       </control>
 
       <control>
