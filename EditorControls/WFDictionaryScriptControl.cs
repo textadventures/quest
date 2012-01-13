@@ -39,7 +39,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Initialise(EditorController controller, IEditorControl controlData)
         {
-            m_manager.Initialise(controller, controlData, "Script");
+            m_manager.Initialise(controller, controlData, "Key", "Script");
         }
 
         public void Populate(IEditorData data)

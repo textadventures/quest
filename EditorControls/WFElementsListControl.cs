@@ -184,7 +184,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
         }
 
-        public void DoAction(string action)
+        public void DoAction(string action, string key)
         {
         }
     }

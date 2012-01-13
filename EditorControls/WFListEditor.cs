@@ -16,7 +16,7 @@ namespace AxeSoftware.Quest.EditorControls
         void DoEditKey(string key, int index);
         void DoRemove(string[] keys);
         bool CanEditKey { get; }
-        void DoAction(string action);
+        void DoAction(string action, string key);
     }
 
     public interface IRearrangeableListEditorDelegate : IListEditorDelegate
@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest.EditorControls
     public partial class WFListEditor : UserControl
     {
         private Dictionary<string, ToolStripItem> m_extraToolStripItems = new Dictionary<string, ToolStripItem>();
+        private List<string> m_extraToolStripItemsEnabledOnlyWithSelection = new List<string> { "goto" };
 
         public WFListEditor()
         {
@@ -38,7 +39,7 @@ namespace AxeSoftware.Quest.EditorControls
             cmdDelete.Click += cmdDelete_Click;
             cmdEdit.Click += cmdEdit_Click;
             cmdEditKey.Click += cmdEditKey_Click;
-            
+
             foreach (ToolStripItem item in ctlToolStrip.Items)
             {
                 if (!string.IsNullOrEmpty(item.Tag as string))
@@ -260,6 +261,10 @@ namespace AxeSoftware.Quest.EditorControls
             cmdDelete.Enabled = IsDeleteAllowed();
             cmdMoveUp.Enabled = IsMoveUpEnabled();
             cmdMoveDown.Enabled = IsMoveDownEnabled();
+            foreach (string item in m_extraToolStripItemsEnabledOnlyWithSelection)
+            {
+                m_extraToolStripItems[item].Enabled = (lstList.SelectedItems.Count == 1);
+            }
         }
 
         private bool IsEditAllowed()
@@ -358,6 +363,11 @@ namespace AxeSoftware.Quest.EditorControls
             cmdAdd.Available = false;
         }
 
+        public void SetEditButtonText(string text)
+        {
+            cmdEdit.Text = text;
+        }
+
         public void ShowExtraToolstripItems(IEnumerable<string> items)
         {
             foreach (string item in items)
@@ -375,7 +385,7 @@ namespace AxeSoftware.Quest.EditorControls
             }
 
             ToolStripItem item = (ToolStripItem)sender;
-            m_delegate.DoAction(item.Tag as string);
+            m_delegate.DoAction(item.Tag as string, lstList.SelectedItems.Count == 0 ? string.Empty : lstList.SelectedItems[0].Name);
         }
     }
 }

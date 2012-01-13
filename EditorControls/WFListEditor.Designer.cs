@@ -32,13 +32,14 @@
             this.lstList = new System.Windows.Forms.ListView();
             this.ctlToolStrip = new System.Windows.Forms.ToolStrip();
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
+            this.cmdAddNewPage = new System.Windows.Forms.ToolStripButton();
             this.cmdLink = new System.Windows.Forms.ToolStripButton();
             this.cmdEditKey = new System.Windows.Forms.ToolStripButton();
             this.cmdEdit = new System.Windows.Forms.ToolStripButton();
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveUp = new System.Windows.Forms.ToolStripButton();
             this.cmdMoveDown = new System.Windows.Forms.ToolStripButton();
-            this.cmdAddNewPage = new System.Windows.Forms.ToolStripButton();
+            this.cmdGoToPage = new System.Windows.Forms.ToolStripButton();
             this.ctlToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,6 +63,7 @@
             this.cmdEditKey,
             this.cmdEdit,
             this.cmdDelete,
+            this.cmdGoToPage,
             this.cmdMoveUp,
             this.cmdMoveDown});
             this.ctlToolStrip.Location = new System.Drawing.Point(0, 0);
@@ -77,6 +79,15 @@
             this.cmdAdd.Name = "cmdAdd";
             this.cmdAdd.Size = new System.Drawing.Size(49, 22);
             this.cmdAdd.Text = "Add";
+            // 
+            // cmdAddNewPage
+            // 
+            this.cmdAddNewPage.Image = ((System.Drawing.Image)(resources.GetObject("cmdAddNewPage.Image")));
+            this.cmdAddNewPage.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdAddNewPage.Name = "cmdAddNewPage";
+            this.cmdAddNewPage.Size = new System.Drawing.Size(105, 22);
+            this.cmdAddNewPage.Tag = "addpage";
+            this.cmdAddNewPage.Text = "Add New Page";
             // 
             // cmdLink
             // 
@@ -129,14 +140,14 @@
             this.cmdMoveDown.Text = "Move Down";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);
             // 
-            // cmdAddNewPage
+            // cmdGoToPage
             // 
-            this.cmdAddNewPage.Image = ((System.Drawing.Image)(resources.GetObject("cmdAddNewPage.Image")));
-            this.cmdAddNewPage.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdAddNewPage.Name = "cmdAddNewPage";
-            this.cmdAddNewPage.Size = new System.Drawing.Size(105, 22);
-            this.cmdAddNewPage.Tag = "addpage";
-            this.cmdAddNewPage.Text = "Add New Page";
+            this.cmdGoToPage.Image = ((System.Drawing.Image)(resources.GetObject("cmdGoToPage.Image")));
+            this.cmdGoToPage.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdGoToPage.Name = "cmdGoToPage";
+            this.cmdGoToPage.Size = new System.Drawing.Size(85, 22);
+            this.cmdGoToPage.Tag = "goto";
+            this.cmdGoToPage.Text = "Go to Page";
             // 
             // WFListEditor
             // 
@@ -165,5 +176,6 @@
         internal System.Windows.Forms.ToolStripButton cmdEditKey;
         private System.Windows.Forms.ToolStripButton cmdLink;
         private System.Windows.Forms.ToolStripButton cmdAddNewPage;
+        private System.Windows.Forms.ToolStripButton cmdGoToPage;
     }
 }

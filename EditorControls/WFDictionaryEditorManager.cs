@@ -137,14 +137,14 @@ namespace AxeSoftware.Quest.EditorControls
         public event RequestParentElementEditorSaveEventHandler RequestParentElementEditorSave { add { } remove { } }
         public delegate void RequestParentElementEditorSaveEventHandler();
         public event ExtraToolbarItemClickHandler ExtraToolbarItemClicked;
-        public delegate void ExtraToolbarItemClickHandler(string item);
+        public delegate void ExtraToolbarItemClickHandler(string action, string key);
 
-        public void Initialise(EditorController controller, IEditorControl controlData, string valueHeader)
+        public void Initialise(EditorController controller, IEditorControl controlData, string keyHeader, string valueHeader)
         {
             m_controller = controller;
             ctlListEditor.EditorDelegate = this;
             ctlListEditor.Style = WFListEditor.ColumnStyle.TwoColumns;
-            ctlListEditor.SetHeader(1, "Key");
+            ctlListEditor.SetHeader(1, keyHeader);
             ctlListEditor.SetHeader(2, valueHeader);
             ctlListEditor.UpdateList(null);
             m_controller = controller;
@@ -191,16 +191,19 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoAdd()
         {
-            DoAddResult();
+            DoAddKeyAction((ignore) => true);
         }
 
-        public string DoAddResult()
+        public void DoAddKeyAction(Func<string, bool> keyAction)
         {
             var addKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), string.Empty, GetAutoCompleteList());
-            if (addKey.Cancelled) return null;
-            if (!ValidateInput(addKey.Result)) return null;
-            AddNewValue(addKey);
-            return addKey.Result;
+            if (addKey.Cancelled) return;
+            if (!ValidateInput(addKey.Result)) return;
+
+            if (keyAction(addKey.Result))
+            {
+                AddNewValue(addKey);
+            }
         }
 
         protected abstract void AddNewValue(PopupEditors.EditStringResult addKey);
@@ -290,11 +293,11 @@ namespace AxeSoftware.Quest.EditorControls
             m_list.ChangeKey(key, newKey.Result);
         }
 
-        public void DoAction(string action)
+        public void DoAction(string action, string key)
         {
             if (ExtraToolbarItemClicked != null)
             {
-                ExtraToolbarItemClicked(action);
+                ExtraToolbarItemClicked(action, key);
             }
         }
 

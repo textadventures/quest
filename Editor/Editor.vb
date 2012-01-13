@@ -601,6 +601,7 @@ Public Class Editor
     Private Sub AddNewPage()
         Dim result = PopupEditors.EditString("Please enter a name for the new page", "")
         If result.Cancelled Then Return
+        If Not ValidateInput(result.Result) Then Return
 
         m_controller.CreateNewObject(result.Result, Nothing)
         ctlTree.SetSelectedItem(result.Result)

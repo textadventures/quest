@@ -16,6 +16,7 @@ namespace AxeSoftware.Quest.EditorControls
         public event RequestParentElementEditorSaveEventHandler RequestParentElementEditorSave;
         public delegate void RequestParentElementEditorSaveEventHandler();
 
+        private EditorController m_controller;
         private WFStringDictionaryEditorManager m_manager;
 
         public WFGamebookOptions()
@@ -25,8 +26,9 @@ namespace AxeSoftware.Quest.EditorControls
             m_manager.Dirty += m_manager_Dirty;
             m_manager.RequestParentElementEditorSave += m_manager_RequestParentElementEditorSave;
             m_manager.ExtraToolbarItemClicked += m_manager_ExtraToolbarItemClicked;
-            ctlListEditor.ShowExtraToolstripItems(new[] { "addpage", "link" });
+            ctlListEditor.ShowExtraToolstripItems(new[] { "addpage", "link", "goto" });
             ctlListEditor.HideAddButton();
+            ctlListEditor.SetEditButtonText("Edit Link Text");
         }
 
         private void m_manager_RequestParentElementEditorSave()
@@ -39,15 +41,18 @@ namespace AxeSoftware.Quest.EditorControls
             if (Dirty != null) Dirty(sender, args);
         }
 
-        private void m_manager_ExtraToolbarItemClicked(string item)
+        private void m_manager_ExtraToolbarItemClicked(string action, string key)
         {
-            switch (item)
+            switch (action)
             {
                 case "addpage":
                     AddNewPage();
                     break;
                 case "link":
                     LinkExistingPage();
+                    break;
+                case "goto":
+                    GoToPage(key);
                     break;
                 default:
                     throw new ArgumentException();
@@ -56,11 +61,17 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void AddNewPage()
         {
-            string result = m_manager.DoAddResult();
-            if (result != null)
+            m_manager.DoAddKeyAction((newKey) =>
             {
-                MessageBox.Show("Add new page... " + result);
-            }
+                ValidationResult result = m_controller.CanAdd(newKey);
+                if (!result.Valid)
+                {
+                    PopupEditors.DisplayValidationError(result, newKey, "Unable to add page");
+                    return false;
+                }
+                m_controller.CreateNewObject(newKey, null);
+                return true;
+            });
         }
 
         private void LinkExistingPage()
@@ -68,9 +79,15 @@ namespace AxeSoftware.Quest.EditorControls
             m_manager.DoAdd();
         }
 
+        private void GoToPage(string key)
+        {
+            m_controller.UIRequestEditElement(key);
+        }
+
         public void Initialise(EditorController controller, IEditorControl controlData)
         {
-            m_manager.Initialise(controller, controlData, "Value");
+            m_controller = controller;
+            m_manager.Initialise(controller, controlData, "Page", "Link text");
         }
 
         public void Populate(IEditorData data)

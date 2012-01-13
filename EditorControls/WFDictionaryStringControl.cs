@@ -38,7 +38,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Initialise(EditorController controller, IEditorControl controlData)
         {
-            m_manager.Initialise(controller, controlData, "Value");
+            m_manager.Initialise(controller, controlData, "Key", "Value");
         }
 
         public void Populate(IEditorData data)
