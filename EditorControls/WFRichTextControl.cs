@@ -80,7 +80,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Save(IEditorData data)
         {
-            if (IsDirty)
+            if (IsDirty && data != null)
             {
                 string description = string.Format("Set {0} to '{1}'", m_attributeName, Value);
                 m_controller.StartTransaction(description);
