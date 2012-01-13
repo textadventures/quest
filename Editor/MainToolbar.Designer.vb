@@ -39,6 +39,7 @@ Partial Class MainToolbar
         Me.butUndo = New System.Windows.Forms.ToolStripSplitButton()
         Me.butRedo = New System.Windows.Forms.ToolStripSplitButton()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.butAddPage = New System.Windows.Forms.ToolStripButton()
         Me.butAddRoom = New System.Windows.Forms.ToolStripButton()
         Me.butAddObject = New System.Windows.Forms.ToolStripButton()
         Me.butDelete = New System.Windows.Forms.ToolStripButton()
@@ -53,7 +54,6 @@ Partial Class MainToolbar
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.butLogError = New System.Windows.Forms.ToolStripButton()
         Me.tmrUndoTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.butAddPage = New System.Windows.Forms.ToolStripButton()
         Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -63,7 +63,7 @@ Partial Class MainToolbar
         Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butNew, Me.butOpen, Me.butSave, Me.ToolStripSeparator1, Me.butCut, Me.butCopy, Me.butPaste, Me.ToolStripSeparator4, Me.butUndoSimple, Me.butRedoSimple, Me.butUndo, Me.butRedo, Me.ToolStripSeparator3, Me.butAddPage, Me.butAddRoom, Me.butAddObject, Me.butDelete, Me.ToolStripSeparator2, Me.butBack, Me.butForward, Me.ToolStripSeparator8, Me.butPlay, Me.butCode, Me.ToolStripSeparator5, Me.butHelp, Me.ToolStripSeparator6, Me.butLogError})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
-        Me.ctlToolStrip.Size = New System.Drawing.Size(730, 25)
+        Me.ctlToolStrip.Size = New System.Drawing.Size(811, 25)
         Me.ctlToolStrip.TabIndex = 0
         Me.ctlToolStrip.Text = "ToolStrip1"
         '
@@ -182,6 +182,16 @@ Partial Class MainToolbar
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
         Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 25)
         '
+        'butAddPage
+        '
+        Me.butAddPage.Image = CType(resources.GetObject("butAddPage.Image"), System.Drawing.Image)
+        Me.butAddPage.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.butAddPage.Name = "butAddPage"
+        Me.butAddPage.Size = New System.Drawing.Size(78, 22)
+        Me.butAddPage.Tag = "addpage"
+        Me.butAddPage.Text = "Add Page"
+        Me.butAddPage.ToolTipText = "Add Page"
+        '
         'butAddRoom
         '
         Me.butAddRoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -246,11 +256,10 @@ Partial Class MainToolbar
         '
         'butPlay
         '
-        Me.butPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butPlay.Image = CType(resources.GetObject("butPlay.Image"), System.Drawing.Image)
         Me.butPlay.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.butPlay.Name = "butPlay"
-        Me.butPlay.Size = New System.Drawing.Size(23, 22)
+        Me.butPlay.Size = New System.Drawing.Size(49, 22)
         Me.butPlay.Tag = "play"
         Me.butPlay.Text = "Play"
         '
@@ -299,17 +308,6 @@ Partial Class MainToolbar
         'tmrUndoTimer
         '
         Me.tmrUndoTimer.Interval = 20
-        '
-        'butAddPage
-        '
-        Me.butAddPage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.butAddPage.Image = CType(resources.GetObject("butAddPage.Image"), System.Drawing.Image)
-        Me.butAddPage.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.butAddPage.Name = "butAddPage"
-        Me.butAddPage.Size = New System.Drawing.Size(23, 22)
-        Me.butAddPage.Tag = "addpage"
-        Me.butAddPage.Text = "ToolStripButton1"
-        Me.butAddPage.ToolTipText = "Add Page"
         '
         'MainToolbar
         '
