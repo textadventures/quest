@@ -111,6 +111,9 @@
     <Compile Include="FindControl.xaml.cs">
       <DependentUpon>FindControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GamebookOptions.xaml.cs">
+      <DependentUpon>GamebookOptions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameIdControl.xaml.cs">
       <DependentUpon>GameIdControl.xaml</DependentUpon>
     </Compile>
@@ -225,6 +228,12 @@
     <Compile Include="WFElementsListControl.Designer.cs">
       <DependentUpon>WFElementsListControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="WFGamebookOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WFGamebookOptions.Designer.cs">
+      <DependentUpon>WFGamebookOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="WFListEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -273,6 +282,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WFElementsListControl.resx">
       <DependentUpon>WFElementsListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WFGamebookOptions.resx">
+      <DependentUpon>WFGamebookOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WFListEditor.resx">
       <DependentUpon>WFListEditor.cs</DependentUpon>
@@ -362,6 +374,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FindControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GamebookOptions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

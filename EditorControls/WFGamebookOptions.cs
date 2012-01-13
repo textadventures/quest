@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace AxeSoftware.Quest.EditorControls
 {
-    public partial class WFDictionaryStringControl : UserControl
+    public partial class WFGamebookOptions : UserControl
     {
         public event DirtyEventHandler Dirty;
         public delegate void DirtyEventHandler(object sender, DataModifiedEventArgs args);
@@ -18,7 +18,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         private WFStringDictionaryEditorManager m_manager;
 
-        public WFDictionaryStringControl()
+        public WFGamebookOptions()
         {
             InitializeComponent();
             m_manager = new WFStringDictionaryEditorManager(ctlListEditor);

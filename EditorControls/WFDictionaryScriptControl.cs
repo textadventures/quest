@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace AxeSoftware.Quest.EditorControls
 {
-    public partial class WFDictionaryScriptControl : UserControl, IListEditorDelegate
+    public partial class WFDictionaryScriptControl : UserControl
     {
         public event DirtyEventHandler Dirty;
         public delegate void DirtyEventHandler(object sender, DataModifiedEventArgs args);
@@ -60,37 +60,12 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
-        public void DoAdd()
-        {
-            m_manager.DoAdd();
-        }
-
-        public void DoEdit(string key, int index)
-        {
-            m_manager.DoEdit(key, index);
-        }
-
-        public void DoEditKey(string key, int index)
-        {
-            m_manager.DoEditKey(key, index);
-        }
-
-        public void DoRemove(string[] keys)
-        {
-            m_manager.DoRemove(keys);
-        }
-
         private void ctlListEditor_ToolbarClicked()
         {
             if (RequestParentElementEditorSave != null)
             {
                 RequestParentElementEditorSave();
             }
-        }
-
-        public bool CanEditKey
-        {
-            get { return m_manager.CanEditKey; }
         }
     }
 }

@@ -148,7 +148,7 @@
       </control>
 
       <control>
-        <controltype>stringdictionary</controltype>
+        <controltype>gamebookoptions</controltype>
         <caption>Options</caption>
         <keyprompt>Please enter the page name</keyprompt>
         <valueprompt>Please enter the link text</valueprompt>
