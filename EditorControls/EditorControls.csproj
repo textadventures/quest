@@ -200,6 +200,7 @@
     <Compile Include="TextBoxControl.xaml.cs">
       <DependentUpon>TextBoxControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WFDictionaryEditorManager.cs" />
     <Compile Include="WFDictionaryScriptControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
