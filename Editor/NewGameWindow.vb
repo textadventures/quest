@@ -107,4 +107,7 @@ Public Class NewGameWindow
         End If
     End Function
 
+    Private Sub NewGameWindow_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
+        txtGameName.Focus()
+    End Sub
 End Class
