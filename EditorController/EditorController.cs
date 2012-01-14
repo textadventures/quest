@@ -1610,7 +1610,19 @@ namespace AxeSoftware.Quest
 
             foreach (Element e in m_clipboardElements)
             {
-                Element newElement = e.Clone();
+                Element newElement;
+                if (m_editorStyle == Quest.EditorStyle.TextAdventure)
+                {
+                    newElement = e.Clone();
+                }
+                else if (m_editorStyle == Quest.EditorStyle.GameBook)
+                {
+                    newElement = e.Clone(el => el.Name != "player");
+                }
+                else
+                {
+                    throw new NotImplementedException("Paste not implemented for this editor type");
+                }
                 newElement.Parent = parent;
                 lastPastedElement = newElement.Name;
             }
@@ -1642,6 +1654,10 @@ namespace AxeSoftware.Quest
 
         private Element GetPasteParent(string parentName)
         {
+            if (m_editorStyle == Quest.EditorStyle.GameBook)
+            {
+                return null;
+            }
             if (m_worldModel.Elements.ContainsKey(parentName))
             {
                 Element e = m_worldModel.Elements.Get(parentName);
@@ -1662,6 +1678,7 @@ namespace AxeSoftware.Quest
         {
             if (!ElementExists(elementName)) return false;
             if (elementName == "game") return false;
+            if (m_editorStyle == Quest.EditorStyle.GameBook && elementName == "player") return false;
             Element e = m_worldModel.Elements.Get(elementName);
             if (e.ElemType == ElementType.IncludedLibrary) return false;
             if (e.ElemType == ElementType.Javascript) return false;
@@ -1842,7 +1859,8 @@ namespace AxeSoftware.Quest
                     }
                 }
 
-                templates.Add(templateName, new TemplateData {
+                templates.Add(templateName, new TemplateData
+                {
                     Filename = filename,
                     TemplateName = templateName,
                     Type = templateEditorStyle

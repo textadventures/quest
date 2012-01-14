@@ -285,6 +285,11 @@ namespace AxeSoftware.Quest
 
         public Element Clone()
         {
+            return Clone(e => true);
+        }
+
+        public Element Clone(Func<Element, bool> canCloneChild)
+        {
             Element newElement = m_worldModel.GetElementFactory(m_elemType).CloneElement(this, m_worldModel.GetUniqueElementName(Name));
 
             if (this.MetaFields[MetaFieldDefinitions.Library])
@@ -296,7 +301,7 @@ namespace AxeSoftware.Quest
             // Pre-fetch all children of this element
             var children = m_worldModel.Elements.GetDirectChildren(this).ToList();
 
-            foreach (Element child in children)
+            foreach (Element child in children.Where(e => canCloneChild(e)))
             {
                 Element cloneChild = child.Clone();
                 cloneChild.Parent = newElement;
