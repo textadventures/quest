@@ -67,7 +67,7 @@
     if (DictionaryContains(player.parent.options, command)) {
       newpage = GetObject(command)
       if (newpage = null) {
-        msg ("Error - no page named '" + newpage + "'")
+        msg ("Error - no page named '" + command + "'")
       }
       else {
         player.parent = GetObject(command)

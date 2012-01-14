@@ -283,6 +283,7 @@
     </None>
     <None Include="Core\GamebookCore.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\GamebookCoreEditor.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

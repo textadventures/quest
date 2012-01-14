@@ -140,6 +140,13 @@
       <mustnotinherit>defaultplayer</mustnotinherit>
 
       <control>
+        <caption>Name</caption>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
+        <advanced/>
+      </control>
+
+      <control>
         <caption>Picture</caption>
         <controltype>file</controltype>
         <attribute>picture</attribute>
