@@ -137,6 +137,7 @@ namespace AxeSoftware.Quest.EditorControls
 	    };
 
         private EditorController m_controller;
+        private IEditorControl m_controlData;
         private IEditorDataExtendedAttributeInfo m_data;
         private Dictionary<string, IEditorAttributeData> m_inheritedTypeData = new Dictionary<string, IEditorAttributeData>();
         private Dictionary<IDataWrapper, string> m_listeningToAttributes = new Dictionary<IDataWrapper, string>();
@@ -173,6 +174,7 @@ namespace AxeSoftware.Quest.EditorControls
             m_inheritedTypeData.Clear();
             ClearListenedToAttributes();
             cmdDelete.Enabled = false;
+            cmdOnChange.Enabled = false;
             cmdDeleteType.Enabled = false;
             ctlMultiControl.Visible = false;
             m_data = (IEditorDataExtendedAttributeInfo)data;
@@ -320,12 +322,14 @@ namespace AxeSoftware.Quest.EditorControls
         public virtual void Initialise(EditorController controller, IEditorControl controlData)
         {
             m_controller = controller;
+            m_controlData = controlData;
         }
 
         private void lstAttributes_SelectedIndexChanged(System.Object sender, System.EventArgs e)
         {
             string selectedAttribute = GetSelectedAttribute();
             cmdDelete.Enabled = DeleteAllowed(selectedAttribute);
+            cmdOnChange.Enabled = AddChangeScriptAllowed(selectedAttribute);
             EditItem(selectedAttribute);
         }
 
@@ -340,6 +344,13 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_readOnly) return false;
             if (string.IsNullOrEmpty(attribute)) return false;
             return !m_data.GetAttributeData(attribute).IsInherited;
+        }
+
+        private bool AddChangeScriptAllowed(string attribute)
+        {
+            if (m_readOnly) return false;
+            if (string.IsNullOrEmpty(attribute)) return false;
+            return true;
         }
 
         private void EditItem(string attribute)
@@ -425,19 +436,28 @@ namespace AxeSoftware.Quest.EditorControls
 
         protected virtual void Add()
         {
-            PopupEditors.EditStringResult result = PopupEditors.EditString("Please enter a name for the new attribute", string.Empty);
-            if (result.Cancelled) return;
+            Add(string.Empty, () => string.Empty);
+        }
+
+        protected virtual void Add(string attributeName, Func<object> createAttributeValue)
+        {
+            if (attributeName.Length == 0)
+            {
+                PopupEditors.EditStringResult result = PopupEditors.EditString("Please enter a name for the new attribute", string.Empty);
+                if (result.Cancelled) return;
+                attributeName = result.Result;
+            }
 
             bool setSelection = true;
 
-            if (!lstAttributes.Items.ContainsKey(result.Result))
+            if (!lstAttributes.Items.ContainsKey(attributeName))
             {
-                m_controller.StartTransaction(string.Format("Add '{0}' attribute", result.Result));
+                m_controller.StartTransaction(string.Format("Add '{0}' attribute", attributeName));
 
-                ValidationResult setAttrResult = m_data.SetAttribute(result.Result, string.Empty);
+                ValidationResult setAttrResult = m_data.SetAttribute(attributeName, createAttributeValue());
                 if (!setAttrResult.Valid)
                 {
-                    PopupEditors.DisplayValidationError(setAttrResult, result.Result, "Unable to add attribute");
+                    PopupEditors.DisplayValidationError(setAttrResult, attributeName, "Unable to add attribute");
                     setSelection = false;
                 }
 
@@ -446,7 +466,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (setSelection)
             {
-                lstAttributes.Items[result.Result].Selected = true;
+                lstAttributes.Items[attributeName].Selected = true;
                 lstAttributes.SelectedItems[0].EnsureVisible();
             }
         }
@@ -531,6 +551,13 @@ namespace AxeSoftware.Quest.EditorControls
         protected virtual string GetAttributeDisplayName(IEditorAttributeData attr)
         {
             return attr.AttributeName;
+        }
+
+        private void cmdOnChange_Click(object sender, EventArgs e)
+        {
+            if (m_readOnly) return;
+            string selectedAttribute = GetSelectedAttribute();
+            Add("changed" + selectedAttribute, () => m_controller.CreateNewEditableScripts(m_data.Name, m_controlData.Attribute, null, false));
         }
     }
 }

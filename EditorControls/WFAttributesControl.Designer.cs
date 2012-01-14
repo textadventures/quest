@@ -47,6 +47,7 @@
             this.lblAttributesTitle = new System.Windows.Forms.ToolStripLabel();
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
+            this.cmdOnChange = new System.Windows.Forms.ToolStripButton();
             this.ctlMultiControl = new AxeSoftware.Quest.EditorControls.WFMultiControl();
             ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainerMain)).BeginInit();
             this.ctlSplitContainerMain.Panel1.SuspendLayout();
@@ -208,6 +209,7 @@
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblAttributesTitle,
             this.cmdAdd,
+            this.cmdOnChange,
             this.cmdDelete});
             this.ctlToolStrip.Location = new System.Drawing.Point(0, 0);
             this.ctlToolStrip.Name = "ctlToolStrip";
@@ -241,6 +243,15 @@
             this.cmdDelete.Size = new System.Drawing.Size(60, 22);
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            // 
+            // cmdOnChange
+            // 
+            this.cmdOnChange.Image = ((System.Drawing.Image)(resources.GetObject("cmdOnChange.Image")));
+            this.cmdOnChange.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdOnChange.Name = "cmdOnChange";
+            this.cmdOnChange.Size = new System.Drawing.Size(126, 22);
+            this.cmdOnChange.Text = "Add Change Script";
+            this.cmdOnChange.Click += new System.EventHandler(this.cmdOnChange_Click);
             // 
             // ctlMultiControl
             // 
@@ -296,6 +307,7 @@
         internal System.Windows.Forms.ColumnHeader colSource;
         private WFMultiControl ctlMultiControl;
         protected System.Windows.Forms.SplitContainer ctlSplitContainerMain;
+        protected System.Windows.Forms.ToolStripButton cmdOnChange;
 
     }
 }

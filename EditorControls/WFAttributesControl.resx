@@ -167,6 +167,17 @@
         Q9sfQd/3x7BiJeQT9n/yfqVuZ20CUveTqEqqmHwAAAAASUVORK5CYII=
 </value>
   </data>
+  <data name="cmdOnChange.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEaSURBVDhPY2AgEnSvevW/acnL/6WzX/xPm/j8f3j70/9e
+        dY//E6mdgQFkwKJD//9P3fn3f8vqn/+L5n37b5h6ljQDEC549j8M6AKXivvEG7B825n/yODHr3//TT2T
+        /4Odhs9vrsU7uQNKtqbCDNhz/Mb/ZRsP/3/96S/CAGx+S0s7w+pftD4gtHLXP8vg+i9z1xz6/+fvP6DG
+        P/9vPPn1/8iN79hcgPBbeP3Ff1Zh9c9c02dbg0J6+rLdYA3omAGX37zS5tgRFUW4/BaYsVYMZgDecMLl
+        N5eE3n9+BWujQYbgTQO4/OaROcctrHrPP8uw+j+oLiAhDXhET+TzyV/tiTMNEBVIQEU40wCxBuBMA8Qa
+        gDMNEGsAPnUAi2CaiZV+viEAAAAASUVORK5CYII=
+</value>
+  </data>
   <data name="cmdDelete.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8

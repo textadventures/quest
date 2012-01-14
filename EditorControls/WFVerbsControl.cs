@@ -22,6 +22,7 @@ namespace AxeSoftware.Quest.EditorControls
             ctlSplitContainerMain.Panel1Collapsed = true;
             lblAttributesTitle.Text = "Verbs";
             lblAttributesTitle.Width = 60;
+            cmdOnChange.Available = false;
         }
 
         public override void Initialise(EditorController controller, IEditorControl controlData)
