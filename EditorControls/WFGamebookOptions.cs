@@ -71,7 +71,7 @@ namespace AxeSoftware.Quest.EditorControls
                 }
                 m_controller.CreateNewObject(newKey, null);
                 return true;
-            });
+            }, m_controller.GetUniqueElementName("Page1"));
         }
 
         private void LinkExistingPage()

@@ -599,7 +599,7 @@ Public Class Editor
     End Sub
 
     Private Sub AddNewPage()
-        Dim result = PopupEditors.EditString("Please enter a name for the new page", "")
+        Dim result = PopupEditors.EditString("Please enter a name for the new page", m_controller.GetUniqueElementName("Page1"))
         If result.Cancelled Then Return
         If Not ValidateInput(result.Result) Then Return
 

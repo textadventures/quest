@@ -1997,5 +1997,10 @@ namespace AxeSoftware.Quest
         {
             get { return m_editorStyle; }
         }
+
+        public string GetUniqueElementName(string elementName)
+        {
+            return m_worldModel.GetUniqueElementName(elementName);
+        }
     }
 }

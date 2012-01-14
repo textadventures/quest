@@ -191,12 +191,12 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void DoAdd()
         {
-            DoAddKeyAction((ignore) => true);
+            DoAddKeyAction((ignore) => true, string.Empty);
         }
 
-        public void DoAddKeyAction(Func<string, bool> keyAction)
+        public void DoAddKeyAction(Func<string, bool> keyAction, string suggestedNewKey)
         {
-            var addKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), string.Empty, GetAutoCompleteList());
+            var addKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), suggestedNewKey, GetAutoCompleteList());
             if (addKey.Cancelled) return;
             if (!ValidateInput(addKey.Result)) return;
 

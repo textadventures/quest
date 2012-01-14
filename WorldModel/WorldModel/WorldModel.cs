@@ -1264,7 +1264,7 @@ namespace AxeSoftware.Quest
 
         private static System.Text.RegularExpressions.Regex s_removeTrailingDigits = new System.Text.RegularExpressions.Regex(@"\d*$");
 
-        internal string GetUniqueElementName(string elementName)
+        public string GetUniqueElementName(string elementName)
         {
             // If element name doesn't exist (element might have been Cut in the editor),
             // then just return the original name
