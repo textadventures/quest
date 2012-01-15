@@ -25,6 +25,43 @@
   </editor>
 
   <editor>
+    <appliesto>firsttime</appliesto>
+    <!-- <display>The first time, run: #0 - otherwise run: #1</display> -->
+    <display>The first time, run: #0</display>
+    <category>Scripts</category>
+    <add>First time...</add>
+    <create>firsttime</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>The first time,</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>0</attribute>
+      <caption>Run script</caption>
+    </control>
+    
+    <!--
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Otherwise</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>1</attribute>
+      <caption>Run script</caption>
+    </control>
+    
+    -->
+
+  </editor>
+
+  <editor>
     <appliesto>for</appliesto>
     <display>For #0 values #1 to #2, run: #4</display>
     <category>Scripts</category>

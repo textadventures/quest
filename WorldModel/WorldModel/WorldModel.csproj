@@ -127,6 +127,7 @@
     <Compile Include="Scripts\DictionaryAddScript.cs" />
     <Compile Include="Scripts\ErrorScript.cs" />
     <Compile Include="Scripts\FinishScript.cs" />
+    <Compile Include="Scripts\FirstTimeScript.cs" />
     <Compile Include="Scripts\ForEachScript.cs" />
     <Compile Include="Scripts\ForScript.cs" />
     <Compile Include="Scripts\FunctionCallParameters.cs" />
