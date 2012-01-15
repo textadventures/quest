@@ -1,5 +1,25 @@
 ﻿<library>
   <editor>
+    <appliesto>(function)AddToInventory</appliesto>
+    <display>Add #0 to inventory</display>
+    <category>Objects</category>
+    <create>AddToInventory ()</create>
+    <add>Add to inventory</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Add to inventory</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+  
+  <editor>
     <appliesto>(function)MoveObject</appliesto>
     <display>Move #0 to #1</display>
     <category>Objects</category>

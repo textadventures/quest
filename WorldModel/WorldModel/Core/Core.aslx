@@ -86,6 +86,10 @@
     return (GetBoolean(object, "switchedon"))
   </function>
 
+  <function name="AddToInventory" parameters="object">
+    object.parent = player
+  </function>
+
   <function name="MoveObject" parameters="object, parent">
     object.parent = parent
   </function>
