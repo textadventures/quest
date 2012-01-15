@@ -874,16 +874,22 @@ namespace AxeSoftware.Quest
             return newValue;
         }
 
-        public EditableScripts CreateNewEditableScriptsChild(ScriptCommandEditorData parent, string attribute, string keyword)
+        public EditableScripts CreateNewEditableScriptsChild(ScriptCommandEditorData parent, string attribute, string keyword, bool useTransaction)
         {
-            WorldModel.UndoLogger.StartTransaction(string.Format("Add script '{0}'", keyword));
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.StartTransaction(string.Format("Add script '{0}'", keyword));
+            }
             EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript());
             if (keyword != null)
             {
                 newValue.AddNewInternal(keyword);
             }
             parent.SetAttribute(attribute, newValue);
-            WorldModel.UndoLogger.EndTransaction();
+            if (useTransaction)
+            {
+                WorldModel.UndoLogger.EndTransaction();
+            }
 
             return newValue;
         }

@@ -54,7 +54,12 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new FirstTimeScript(m_worldModel, m_scriptFactory, (IScript)m_firstTimeScript.Clone());
+            FirstTimeScript result = new FirstTimeScript(m_worldModel, m_scriptFactory, (IScript)m_firstTimeScript.Clone());
+            if (m_otherwiseScript != null)
+            {
+                result.m_otherwiseScript = (IScript)m_otherwiseScript.Clone();
+            }
+            return result;
         }
 
         protected override void ParentUpdated()

@@ -82,7 +82,7 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 if (m_parentScript != null)
                 {
-                    m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, script);
+                    m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, script, true);
                 }
                 else
                 {
@@ -512,7 +512,16 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_scripts == null)
             {
                 m_controller.StartTransaction("Paste script");
-                m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, null, false);
+
+                if (m_parentScript != null)
+                {
+                    m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, null, false);
+                }
+                else
+                {
+                    m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, null, false);
+                }
+                
                 m_scripts.Paste(index, false);
                 m_controller.EndTransaction();
                 RefreshScriptsList();
