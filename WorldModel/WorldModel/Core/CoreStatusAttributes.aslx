@@ -32,4 +32,22 @@
       return (Replace(format, "!", value))
     }
   </function>
+
+  <function name="InitStatusAttributes">
+    if (game.showscore) {
+      player.score = 0
+      if (player.statusattributes = null) {
+        player.statusattributes = NewStringDictionary()
+      }
+      dictionary add (player.statusattributes, "score", "Score: !")
+    }
+  </function>
+
+  <function name="IncreaseScore" parameters="amount">
+    player.score = player.score + amount
+  </function>
+
+  <function name="DecreaseScore" parameters="amount">
+    player.score = player.score - amount
+  </function>
 </library>

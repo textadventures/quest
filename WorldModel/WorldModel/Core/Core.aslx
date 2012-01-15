@@ -57,6 +57,7 @@
 
   <function name="StartGame">
     <![CDATA[
+    InitStatusAttributes
     UpdateStatusAttributes
     if (HasScript(game, "start")) do (game, "start")
     UpdateStatusAttributes

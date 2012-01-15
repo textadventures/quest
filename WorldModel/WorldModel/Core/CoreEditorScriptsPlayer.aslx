@@ -1,0 +1,43 @@
+﻿<library>
+  <editor>
+    <appliesto>(function)IncreaseScore</appliesto>
+    <display>Increase score by #0</display>
+    <category>Player</category>
+    <create>IncreaseScore (0)</create>
+    <add>Increase score</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Increase score by</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DecreaseScore</appliesto>
+    <display>Decrease score by #0</display>
+    <category>Player</category>
+    <create>DecreaseScore (0)</create>
+    <add>Decrease score</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Decrease score by</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+  </editor>
+</library>

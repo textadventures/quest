@@ -23,6 +23,7 @@
     <parserignoreprefixes type="list">[ParserIgnorePrefixes]</parserignoreprefixes>
     <displayroomdescriptiononstart type="boolean">true</displayroomdescriptiononstart>
     <showpanes/>
+    <showscore type="boolean">false</showscore>
   </type>
 
   <type name="defaultobject">

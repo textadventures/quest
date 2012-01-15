@@ -67,27 +67,42 @@
 
     <tab>
       <caption>Options</caption>
-      <advanced/>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show player score</caption>
+        <attribute>showscore</attribute>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Room descriptions</caption>
+        <advanced/>
+      </control>
 
       <control>
         <controltype>checkbox</controltype>
         <caption>Automatically generate room descriptions</caption>
         <attribute>autodescription</attribute>
+        <advanced/>
       </control>
       <control>
         <controltype>checkbox</controltype>
         <caption>Show room description when entering a room</caption>
         <attribute>showdescriptiononenter</attribute>
+        <advanced/>
       </control>
       <control>
         <controltype>checkbox</controltype>
         <caption>Append room object descriptions to room description</caption>
         <attribute>appendobjectdescription</attribute>
+        <advanced/>
       </control>
       <control>
         <controltype>checkbox</controltype>
         <caption>Enable hyperlinks</caption>
         <attribute>enablehyperlinks</attribute>
+        <advanced/>
       </control>
     </tab>
 
