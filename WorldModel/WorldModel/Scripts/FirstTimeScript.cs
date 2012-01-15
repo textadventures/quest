@@ -23,6 +23,15 @@ namespace AxeSoftware.Quest.Scripts
             return new FirstTimeScript(WorldModel, ScriptFactory, firstTimeScript);
         }
 
+        public static void AddOtherwiseScript(IScript firstTimeScript, string script, IScriptFactory scriptFactory)
+        {
+            // Get script after "otherwise" keyword
+            script = script.Substring(9).Trim();
+            string otherwise = Utility.GetScript(script);
+            IScript otherwiseScript = scriptFactory.CreateScript(otherwise);
+            ((FirstTimeScript)firstTimeScript).SetOtherwiseScript(otherwiseScript);
+        }
+
         public IScriptFactory ScriptFactory { get; set; }
 
         public WorldModel WorldModel { get; set; }
@@ -31,6 +40,7 @@ namespace AxeSoftware.Quest.Scripts
     public class FirstTimeScript : ScriptBase
     {
         private IScript m_firstTimeScript;
+        private IScript m_otherwiseScript;
         private WorldModel m_worldModel;
         private IScriptFactory m_scriptFactory;
         private bool m_hasRun = false;
@@ -59,11 +69,25 @@ namespace AxeSoftware.Quest.Scripts
                 m_hasRun = true;
                 m_firstTimeScript.Execute(c);
             }
+            else
+            {
+                if (m_otherwiseScript != null)
+                {
+                    m_otherwiseScript.Execute(c);
+                }
+            }
         }
 
         public override string Save()
         {
-            return SaveScript("firsttime", m_firstTimeScript);
+            if (m_otherwiseScript == null)
+            {
+                return SaveScript("firsttime", m_firstTimeScript);
+            }
+            else
+            {
+                return SaveScript("firsttime", m_firstTimeScript) + Environment.NewLine + SaveScript("otherwise", m_otherwiseScript);
+            }
         }
 
         public override string Keyword
@@ -80,6 +104,8 @@ namespace AxeSoftware.Quest.Scripts
             {
                 case 0:
                     return m_firstTimeScript;
+                case 1:
+                    return m_otherwiseScript;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -92,9 +118,17 @@ namespace AxeSoftware.Quest.Scripts
                 case 0:
                     // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
                     throw new InvalidOperationException("Attempt to use SetParameter to change the script of a 'firsttime' script");
+                case 1:
+                    m_otherwiseScript = (IScript)value;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        internal void SetOtherwiseScript(IScript script)
+        {
+            m_otherwiseScript = script;
         }
     }
 }

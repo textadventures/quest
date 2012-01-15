@@ -26,8 +26,7 @@
 
   <editor>
     <appliesto>firsttime</appliesto>
-    <!-- <display>The first time, run: #0 - otherwise run: #1</display> -->
-    <display>The first time, run: #0</display>
+    <display>The first time, run: #0 - otherwise run: #1</display>
     <category>Scripts</category>
     <add>First time...</add>
     <create>firsttime</create>
@@ -43,8 +42,6 @@
       <caption>Run script</caption>
     </control>
     
-    <!--
-
     <control>
       <controltype>label</controltype>
       <caption>Otherwise</caption>
@@ -55,10 +52,7 @@
       <controltype>script</controltype>
       <attribute>1</attribute>
       <caption>Run script</caption>
-    </control>
-    
-    -->
-
+    </control>    
   </editor>
 
   <editor>

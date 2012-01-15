@@ -23,6 +23,7 @@ namespace AxeSoftware.Quest.EditorControls
         private List<IElementEditorControl> m_subControls = new List<IElementEditorControl>();
         private IEditableScripts m_scripts;
         private IEditorData m_data;
+        private ScriptCommandEditorData m_parentScript;
         private bool m_readOnly;
         private bool m_saving;
         private bool m_initialised = false;
@@ -79,7 +80,14 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (m_scripts == null)
             {
-                m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, script, true, true);
+                if (m_parentScript != null)
+                {
+                    m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, script);
+                }
+                else
+                {
+                    m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, script, true, true);
+                }
             }
             else
             {
@@ -130,6 +138,7 @@ namespace AxeSoftware.Quest.EditorControls
         public void Populate(IEditorData data)
         {
             m_data = data;
+            m_parentScript = data as ScriptCommandEditorData;
             if (data == null)
             {
                 Populate((IEditableScripts)null);

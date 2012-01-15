@@ -86,6 +86,7 @@ namespace AxeSoftware.Quest
             bool finished = false;
             IScript lastIf = null;
             IScript lastComment = null;
+            IScript lastFirstTime = null;
             bool dontAdd;
             bool addedError;
             IfScriptConstructor ifConstructor = null;
@@ -135,6 +136,18 @@ namespace AxeSoftware.Quest
                         }
                         dontAdd = true;
                     }
+                    else if (line.StartsWith("otherwise"))
+                    {
+                        if (lastFirstTime == null)
+                        {
+                            AddError("Unexpected 'otherwise' (error with parent 'firsttime'?):" + line);
+                        }
+                        else
+                        {
+                            FirstTimeScriptConstructor.AddOtherwiseScript(lastFirstTime, line, this);
+                        }
+                        dontAdd = true;
+                    }
                     else
                     {
                         IScriptConstructor constructor = GetScriptConstructor(line);
@@ -156,6 +169,7 @@ namespace AxeSoftware.Quest
                         {
                             lastIf = null;
                             lastComment = null;
+                            lastFirstTime = null;
 
                             if (constructor != null)
                             {
@@ -166,6 +180,10 @@ namespace AxeSoftware.Quest
                                     {
                                         ifConstructor = (IfScriptConstructor)constructor;
                                         lastIf = newScript;
+                                    }
+                                    if (constructor.Keyword == "firsttime")
+                                    {
+                                        lastFirstTime = newScript;
                                     }
                                 }
                                 catch (Ciloci.Flee.ExpressionCompileException ex)

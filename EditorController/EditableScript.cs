@@ -123,16 +123,23 @@ namespace AxeSoftware.Quest
 
         public override void SetParameter(string index, object value)
         {
+            object valueToSet = value;
+            IDataWrapper wrappedValue = value as IDataWrapper;
+            if (wrappedValue != null)
+            {
+                valueToSet = wrappedValue.GetUnderlyingValue();
+            }
+
             if (EditorName.StartsWith("(function)"))
             {
                 if (index == "script")
                 {
                     throw new NotImplementedException();
                 }
-                FunctionCallScript.SetFunctionCallParameter(int.Parse(index), value);
+                FunctionCallScript.SetFunctionCallParameter(int.Parse(index), valueToSet);
                 return;
             }
-            Script.SetParameter(int.Parse(index), value);
+            Script.SetParameter(int.Parse(index), valueToSet);
         }
 
         public override ScriptType Type

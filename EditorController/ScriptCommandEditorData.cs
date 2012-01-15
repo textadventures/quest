@@ -6,7 +6,7 @@ using AxeSoftware.Quest.Scripts;
 
 namespace AxeSoftware.Quest
 {
-    internal class ScriptCommandEditorData : IEditorData
+    public class ScriptCommandEditorData : IEditorData
     {
         private IEditableScript m_script;
         private EditorController m_controller;
@@ -38,7 +38,7 @@ namespace AxeSoftware.Quest
 
         public ValidationResult SetAttribute(string attribute, object value)
         {
-            m_script.SetParameter(attribute, (string)value);
+            m_script.SetParameter(attribute, value);
 
             return new ValidationResult { Valid = true };
         }
