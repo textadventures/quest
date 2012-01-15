@@ -67,6 +67,7 @@ namespace AxeSoftware.Quest.Scripts
             if (!m_hasRun)
             {
                 m_hasRun = true;
+                m_worldModel.UndoLogger.AddUndoAction(new UndoFirstTime(this));
                 m_firstTimeScript.Execute(c);
             }
             else
@@ -75,6 +76,26 @@ namespace AxeSoftware.Quest.Scripts
                 {
                     m_otherwiseScript.Execute(c);
                 }
+            }
+        }
+
+        private class UndoFirstTime : AxeSoftware.Quest.UndoLogger.IUndoAction
+        {
+            private FirstTimeScript m_parent;
+            
+            public UndoFirstTime(FirstTimeScript parent)
+            {
+                m_parent = parent;
+            }
+
+            public void DoUndo(WorldModel worldModel)
+            {
+                m_parent.m_hasRun = false;
+            }
+
+            public void DoRedo(WorldModel worldModel)
+            {
+                m_parent.m_hasRun = true;
             }
         }
 
