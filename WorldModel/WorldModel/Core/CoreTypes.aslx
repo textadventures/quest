@@ -24,6 +24,7 @@
     <displayroomdescriptiononstart type="boolean">true</displayroomdescriptiononstart>
     <showpanes/>
     <showscore type="boolean">false</showscore>
+    <showhealth type="boolean">false</showhealth>
   </type>
 
   <type name="defaultobject">

@@ -75,6 +75,19 @@
       </control>
 
       <control>
+        <controltype>checkbox</controltype>
+        <caption>Show player health</caption>
+        <attribute>showhealth</attribute>
+      </control>
+
+      <control>
+        <controltype>script</controltype>
+        <attribute>onhealthzero</attribute>
+        <onlydisplayif>game.showhealth</onlydisplayif>
+        <caption>Script to run when health reaches zero</caption>
+      </control>
+
+      <control>
         <controltype>title</controltype>
         <caption>Room descriptions</caption>
         <advanced/>

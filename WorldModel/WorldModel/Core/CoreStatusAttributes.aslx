@@ -34,6 +34,7 @@
   </function>
 
   <function name="InitStatusAttributes">
+    <![CDATA[
     if (game.showscore) {
       player.score = 0
       if (player.statusattributes = null) {
@@ -41,6 +42,26 @@
       }
       dictionary add (player.statusattributes, "score", "Score: !")
     }
+
+    if (game.showhealth) {
+      player.health = 100
+      player.changedhealth => {
+        if (player.health > 100) {
+          player.health = 100
+        }
+        else if (player.health <= 0) {
+          player.health = 0
+          if (HasScript(game, "onhealthzero")) {
+            do (game, "onhealthzero")
+          }
+        }
+      }
+      if (player.statusattributes = null) {
+        player.statusattributes = NewStringDictionary()
+      }
+      dictionary add (player.statusattributes, "health", "Health: !%")
+    }
+    ]]>
   </function>
 
   <function name="IncreaseScore" parameters="amount">
@@ -50,4 +71,13 @@
   <function name="DecreaseScore" parameters="amount">
     player.score = player.score - amount
   </function>
+
+  <function name="IncreaseHealth" parameters="amount">
+    player.health = player.health + amount
+  </function>
+
+  <function name="DecreaseHealth" parameters="amount">
+    player.health = player.health - amount
+  </function>
+
 </library>

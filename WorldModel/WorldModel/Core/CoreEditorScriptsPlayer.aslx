@@ -38,4 +38,44 @@
       <simpleeditor>number</simpleeditor>
     </control>
   </editor>
+
+  <editor>
+    <appliesto>(function)IncreaseHealth</appliesto>
+    <display>Increase health by #0</display>
+    <category>Player</category>
+    <create>IncreaseHealth (0)</create>
+    <add>Increase health</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Increase health by</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DecreaseHealth</appliesto>
+    <display>Decrease health by #0</display>
+    <category>Player</category>
+    <create>DecreaseHealth (0)</create>
+    <add>Decrease health</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Decrease health by</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+  </editor>
 </library>
