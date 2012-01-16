@@ -69,5 +69,31 @@
       <mustinherit>switchable</mustinherit>
     </control>
 
+    <control>
+      <controltype>title</controltype>
+      <caption>Health</caption>
+    </control>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Edible</caption>
+      <types>*=Cannot be eaten; edible=Can be eaten</types>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>eatmsg</attribute>
+      <caption>Message to print when eating (leave blank for default)</caption>
+      <nullable/>
+      <mustinherit>edible</mustinherit>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <attribute>eathealth</attribute>
+      <caption>Change health by</caption>
+      <mustinherit>edible</mustinherit>
+    </control>
+
   </tab>
 </library>
