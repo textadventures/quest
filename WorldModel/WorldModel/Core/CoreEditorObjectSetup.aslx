@@ -23,6 +23,7 @@
       <controltype>textbox</controltype>
       <attribute>alias</attribute>
       <advanced/>
+      <nullable/>
     </control>
 
     <control>
