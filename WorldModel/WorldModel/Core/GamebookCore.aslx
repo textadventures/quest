@@ -82,7 +82,7 @@
     msg ("DoPage...")
     request (ClearScreen, "")
     if (HasString(player.parent, "picture")) {
-      request (ShowPicture, GetFileURL(player.parent.picture))
+      picture (player.parent.picture)
       msg ("")
     }
     msg (player.parent.description)

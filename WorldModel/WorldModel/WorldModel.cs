@@ -539,7 +539,7 @@ namespace AxeSoftware.Quest
                         }
                         else
                         {
-                            Print(output.Fields.GetString("text"));
+                            m_outputLogger.DisplayOutput(output.Fields.GetString("text"));
                         }
                     }
                     SendNextTimerRequest();

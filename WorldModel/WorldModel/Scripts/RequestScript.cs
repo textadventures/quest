@@ -88,6 +88,9 @@ namespace AxeSoftware.Quest.Scripts
                     break;
                 case Request.ShowPicture:
                     m_worldModel.PlayerUI.ShowPicture(data);
+                    // TO DO: Picture should be added to the OutputLogger, but the data we
+                    // get here includes the full path/URL - we want the original filename
+                    // only, so this would be a breaking change.
                     break;
                 case Request.PanesVisible:
                     m_worldModel.PlayerUI.SetPanesVisible(data);

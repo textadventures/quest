@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace AxeSoftware.Quest
 {
@@ -9,6 +10,7 @@ namespace AxeSoftware.Quest
     {
         private WorldModel m_worldModel;
         private StringBuilder m_text = new StringBuilder();
+        bool m_anyText = false;
 
         public OutputLogger(WorldModel worldModel)
         {
@@ -17,20 +19,27 @@ namespace AxeSoftware.Quest
 
         public void AddText(string text)
         {
-            if (m_text.Length > 0)
+            if (m_anyText)
             {
                 m_text.Append("<br/>" + Environment.NewLine + text);
             }
             else
             {
                 m_text.Append(text);
+                m_anyText = true;
             }
 
+        }
+
+        public void AddPicture(string filename)
+        {
+            m_text.Append(string.Format("<output_picture filename=\"{0}\"/>", filename));
         }
 
         public void Clear()
         {
             m_text.Clear();
+            m_anyText = false;
         }
 
         public void Save()
@@ -42,6 +51,77 @@ namespace AxeSoftware.Quest
             }
 
             element.Fields.Set("text", m_text.ToString());
+        }
+
+        public void DisplayOutput(string text)
+        {
+            text = "<output>" + text + "</output>";
+            StringBuilder output = new StringBuilder();
+
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreWhitespace = false;
+            XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
+
+            while (reader.Read())
+            {
+                switch (reader.NodeType)
+                {
+                    case XmlNodeType.Element:
+                        switch (reader.Name)
+                        {
+                            case "output":
+                                break;
+                            case "output_picture":
+                                if (output.Length > 0)
+                                {
+                                    m_worldModel.Print(output.ToString());
+                                    output.Clear();
+                                }
+                                m_worldModel.PlayerUI.ShowPicture(m_worldModel.GetExternalPath(reader.GetAttribute("filename")));
+                                break;
+                            default:
+                                output.Append("<" + reader.Name);
+                                if (reader.HasAttributes)
+                                {
+                                    for (int i = 0; i < reader.AttributeCount; i++)
+                                    {
+                                        reader.MoveToAttribute(i);
+                                        output.Append(string.Format(" {0}=\"{1}\"", reader.Name, reader.Value));
+                                    }
+                                    reader.MoveToElement();
+                                }
+                                if (reader.IsEmptyElement)
+                                {
+                                    output.Append("/>");
+                                }
+                                else
+                                {
+                                    output.Append(">");
+                                }
+                                break;
+                        }
+                        break;
+                    case XmlNodeType.Text:
+                    case XmlNodeType.Whitespace:
+                        output.Append(reader.Value);
+                        break;
+                    case XmlNodeType.EndElement:
+                        switch (reader.Name)
+                        {
+                            case "output":
+                                break;
+                            case "output_picture":
+                                break;
+                            default:
+                                output.Append(string.Format("</{0}>", reader.Name));
+                                break;
+                        }
+                        break;
+                }
+            }
+
+            m_worldModel.Print(output.ToString());
+
         }
     }
 }
