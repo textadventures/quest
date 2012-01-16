@@ -106,13 +106,27 @@ namespace AxeSoftware.Quest.Scripts
 
         public override string Save()
         {
-            if (m_otherwiseScript == null)
+            if (m_worldModel.EditMode || !m_hasRun)
             {
-                return SaveScript("firsttime", m_firstTimeScript);
+                if (m_otherwiseScript == null)
+                {
+                    return SaveScript("firsttime", m_firstTimeScript);
+                }
+                else
+                {
+                    return SaveScript("firsttime", m_firstTimeScript) + Environment.NewLine + SaveScript("otherwise", m_otherwiseScript);
+                }
             }
             else
             {
-                return SaveScript("firsttime", m_firstTimeScript) + Environment.NewLine + SaveScript("otherwise", m_otherwiseScript);
+                if (m_otherwiseScript == null)
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    return m_otherwiseScript.Save();
+                }
             }
         }
 
