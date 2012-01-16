@@ -130,4 +130,12 @@
   <function name="UnlockExit" parameters="exit">
     exit.locked = false
   </function>
+
+  <function name="SwitchOn" parameters="object">
+    object.switchedon = true
+  </function>
+
+  <function name="SwitchOff" parameters="object">
+    object.switchedon = false
+  </function>
 </library>

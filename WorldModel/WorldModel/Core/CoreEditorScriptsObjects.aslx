@@ -115,6 +115,48 @@
   </editor>
 
   <editor>
+    <appliesto>(function)SwitchOn</appliesto>
+    <display>Switch on #0</display>
+    <category>Objects</category>
+    <create>SwitchOn ()</create>
+    <add>Switch on</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Switch on</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SwitchOff</appliesto>
+    <display>Switch off #0</display>
+    <category>Objects</category>
+    <create>SwitchOff ()</create>
+    <add>Switch off</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Switch off</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>(function)LockExit</appliesto>
     <display>Lock #0</display>
     <category>Objects</category>
