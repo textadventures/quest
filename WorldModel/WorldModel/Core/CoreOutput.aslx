@@ -2,6 +2,7 @@
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
     request (SetPanelContents, "<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
+    game.panelcontents = filename
     ]]>
   </function>
 

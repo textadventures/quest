@@ -53,6 +53,9 @@
     else {
       request (Hide, "Panes")
     }
+    if (HasString(game, "panelcontents")) {
+      SetFramePicture (game.panelcontents)
+    }
   </function>
 
   <function name="StartGame">
