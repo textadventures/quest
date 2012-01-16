@@ -954,5 +954,18 @@ namespace AxeSoftware.Quest
                 return resourceRef;
             }
         }
+
+        private class OutputLoader : ElementLoaderBase
+        {
+            public override ElementType CreateElementType
+            {
+                get { return ElementType.Output; }
+            }
+
+            public override string AppliesTo
+            {
+                get { return "output"; }
+            }
+        }
     }
 }

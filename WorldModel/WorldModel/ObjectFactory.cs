@@ -567,4 +567,12 @@ namespace AxeSoftware.Quest
             get { return ElementType.Resource; }
         }
     }
+
+    internal class OutputFactory : ElementFactoryBase
+    {
+        public override ElementType CreateElementType
+        {
+            get { return ElementType.Output; }
+        }
+    }
 }

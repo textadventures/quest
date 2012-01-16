@@ -85,6 +85,7 @@ namespace AxeSoftware.Quest
             if (mode == SaveMode.SavedGame)
             {
                 writer.WriteAttributeString("original", m_worldModel.Filename);
+                m_worldModel.OutputLogger.Save();
             }
 
             foreach (ElementType t in Enum.GetValues(typeof(ElementType)))

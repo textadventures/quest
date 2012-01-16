@@ -426,5 +426,20 @@ namespace AxeSoftware.Quest
                 // (specifying which additional files to include in a .quest file)
             }
         }
+
+        private class OutputSaver : ElementSaverBase
+        {
+            public override ElementType AppliesTo
+            {
+                get { return ElementType.Output; }
+            }
+
+            public override void Save(GameXmlWriter writer, Element e)
+            {
+                writer.WriteStartElement("output");
+                base.SaveFields(writer, e);
+                writer.WriteEndElement();
+            }
+        }
     }
 }

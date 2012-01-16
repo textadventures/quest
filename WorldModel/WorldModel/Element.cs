@@ -48,6 +48,8 @@ namespace AxeSoftware.Quest
         Timer,
         [ElementTypeInfo("resource")]
         Resource,
+        [ElementTypeInfo("output")]
+        Output,
     }
 
     // These are all sub-types of the "Object" element type

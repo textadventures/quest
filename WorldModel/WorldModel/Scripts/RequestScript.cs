@@ -84,6 +84,7 @@ namespace AxeSoftware.Quest.Scripts
                     break;
                 case Request.ClearScreen:
                     m_worldModel.PlayerUI.ClearScreen();
+                    m_worldModel.OutputLogger.Clear();
                     break;
                 case Request.ShowPicture:
                     m_worldModel.PlayerUI.ShowPicture(data);

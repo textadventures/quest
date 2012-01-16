@@ -67,6 +67,7 @@ namespace AxeSoftware.Quest
         private object m_commandOverrideLock = new object();
         private TimerRunner m_timerRunner;
         private RegexCache m_regexCache = new RegexCache();
+        private OutputLogger m_outputLogger;
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -160,6 +161,7 @@ namespace AxeSoftware.Quest
             m_elements = new Elements();
             m_undoLogger = new UndoLogger(this);
             m_saver = new GameSaver(this);
+            m_outputLogger = new OutputLogger(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
         }
 
@@ -289,6 +291,7 @@ namespace AxeSoftware.Quest
             if (PrintText != null)
             {
                 PrintText("<output>" + text + "</output>");
+                m_outputLogger.AddText(text);
             }
         }
 
@@ -529,7 +532,15 @@ namespace AxeSoftware.Quest
                     UpdateLists();
                     if (m_loadedFromSaved)
                     {
-                        Print("Loaded saved game");
+                        Element output = Elements.GetSingle(ElementType.Output);
+                        if (output == null)
+                        {
+                            Print("Loaded saved game");
+                        }
+                        else
+                        {
+                            Print(output.Fields.GetString("text"));
+                        }
                     }
                     SendNextTimerRequest();
                 }
@@ -1517,5 +1528,7 @@ namespace AxeSoftware.Quest
 
         public WorldModelVersion Version { get; internal set; }
         internal string VersionString { get; set; }
+
+        internal OutputLogger OutputLogger { get { return m_outputLogger; } }
     }
 }

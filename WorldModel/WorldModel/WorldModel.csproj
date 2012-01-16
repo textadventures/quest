@@ -116,6 +116,7 @@
     <Compile Include="GameLoader\Packager.cs" />
     <Compile Include="GameLoader\PackageReader.cs" />
     <Compile Include="ObjectFactory.cs" />
+    <Compile Include="OutputLogger.cs" />
     <Compile Include="QuestDictionary.cs" />
     <Compile Include="QuestList.cs" />
     <Compile Include="RegexCache.cs" />
