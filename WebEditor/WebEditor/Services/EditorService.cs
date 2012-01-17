@@ -37,6 +37,8 @@ namespace WebEditor.Services
             }
         }
 
+        public EditorController Controller { get { return m_controller; } }
+
         void m_controller_AddedNode(string key, string text, string parent, bool isLibraryNode, int? position)
         {
             m_elements.Add(key, new TreeItem
@@ -116,10 +118,19 @@ namespace WebEditor.Services
             IEditorData data = m_controller.GetEditorData(key);
             foreach (var kvp in saveData.Values)
             {
-                if (DataChanged(data.GetAttribute(kvp.Key), (kvp.Value)))
+                object currentValue = data.GetAttribute(kvp.Key);
+                IEditableScripts script = currentValue as IEditableScripts;
+                if (script != null)
                 {
-                    System.Diagnostics.Debug.WriteLine("New value for {0}: Was {1}, now {2}", kvp.Key, data.GetAttribute(kvp.Key), kvp.Value);
-                    data.SetAttribute(kvp.Key, kvp.Value);
+                    SaveScript(script, kvp.Value as WebEditor.Models.ElementSaveData.ScriptsSaveData);
+                }
+                else
+                {
+                    if (DataChanged(currentValue, (kvp.Value)))
+                    {
+                        System.Diagnostics.Debug.WriteLine("New value for {0}: Was {1}, now {2}", kvp.Key, data.GetAttribute(kvp.Key), kvp.Value);
+                        data.SetAttribute(kvp.Key, kvp.Value);
+                    }
                 }
             }
             if (!string.IsNullOrEmpty(saveData.AdditionalAction))
@@ -130,6 +141,10 @@ namespace WebEditor.Services
 
         private bool DataChanged(object oldValue, object newValue)
         {
+            if (oldValue == null && newValue == null)
+            {
+                return false;
+            }
             if (oldValue == null && newValue is string)
             {
                 return ((string)newValue).Length > 0;
@@ -147,6 +162,27 @@ namespace WebEditor.Services
                 return (bool)oldValue != (bool)newValue;
             }
             throw new NotImplementedException();
+        }
+
+        private void SaveScript(IEditableScripts scripts, WebEditor.Models.ElementSaveData.ScriptsSaveData saveData)
+        {
+            int count = 0;
+            foreach (IEditableScript script in scripts.Scripts)
+            {
+                WebEditor.Models.ElementSaveData.ScriptSaveData data = saveData.ScriptLines[count];
+                foreach (var attribute in data.Attributes)
+                {
+                    object oldValue = script.GetParameter(attribute.Key);
+                    object newValue = attribute.Value;
+                    if (DataChanged(oldValue, newValue))
+                    {
+                        System.Diagnostics.Debug.WriteLine("New value for script: Was {0}, now {1}", oldValue, newValue);
+                        script.SetParameter(attribute.Key, newValue);
+                    }
+                }
+
+                count++;
+            }
         }
 
         public Models.StringList GetStringList(string key, IEditorControl ctl)

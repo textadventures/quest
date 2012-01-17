@@ -26,6 +26,26 @@ namespace WebEditor.Models
         public string RedirectToElement { get; set; }
         public string AdditionalAction { get; set; }
         public string AdditionalActionTab { get; set; }
+
+        public class ScriptsSaveData
+        {
+            public List<ScriptSaveData> ScriptLines { get; private set; }
+
+            public ScriptsSaveData()
+            {
+                ScriptLines = new List<ScriptSaveData>();
+            }
+        }
+
+        public class ScriptSaveData
+        {
+            public Dictionary<string, object> Attributes { get; set; }
+
+            public ScriptSaveData()
+            {
+                Attributes = new Dictionary<string, object>();
+            }
+        }
     }
 
     public class ElementSaveDataModelBinder : IModelBinder
@@ -72,6 +92,9 @@ namespace WebEditor.Models
                         case "checkbox":
                             saveValue = value.ConvertTo(typeof(bool));
                             break;
+                        case "script":
+                            saveValue = BindScript(bindingContext.ValueProvider, ctl.Attribute, originalElement.EditorData, editorDictionary[gameId].Controller);
+                            break;
                         default:
                             handled = false;    // TO DO: Temporary until all controltypes are handled
                             break;
@@ -82,6 +105,38 @@ namespace WebEditor.Models
                         result.Values.Add(ctl.Attribute, saveValue);
                     }
                 }
+            }
+
+            return result;
+        }
+
+        private object BindScript(IValueProvider provider, string attribute, IEditorData data, EditorController controller)
+        {
+            IEditableScripts originalScript = (IEditableScripts)data.GetAttribute(attribute);
+
+            if (originalScript == null) return null;
+
+            ElementSaveData.ScriptsSaveData result = new ElementSaveData.ScriptsSaveData();
+
+            int count = 0;
+            foreach (IEditableScript script in originalScript.Scripts)
+            {
+                ElementSaveData.ScriptSaveData scriptLine = new ElementSaveData.ScriptSaveData();
+
+                IEditorDefinition definition = controller.GetEditorDefinition(script);
+                foreach (IEditorControl ctl in definition.Controls.Where(c => c.Attribute != null))
+                {
+                    string key = string.Format("{0}-{1}-{2}", attribute, count.ToString(), ctl.Attribute);
+                    ValueProviderResult value = provider.GetValue(key);
+
+                    // TO DO: May need to switch (ctl.ControlType) here - if so need to factor out
+                    // the similar switch block in BindModel above
+
+                    scriptLine.Attributes.Add(ctl.Attribute, value.ConvertTo(typeof(string)));
+                }
+
+                result.ScriptLines.Add(scriptLine);
+                count++;
             }
 
             return result;
