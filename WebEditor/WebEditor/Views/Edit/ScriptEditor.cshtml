@@ -2,10 +2,8 @@
 @using AxeSoftware.Quest
 
 <div class="ui-widget-header ui-corner-all toolbar">
-    @{
-        string addId = "script-" + Model.Attribute + "-add";
-    }
-    <button type="button" class="script-delete">Delete</button>
+    <button type="button" class="script-add" data-key="@Model.Attribute">Add new script</button>
+    <button type="button" class="script-delete" data-key="@Model.Attribute">Delete</button>
 </div>
 
 <div>

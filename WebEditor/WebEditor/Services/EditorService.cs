@@ -67,7 +67,7 @@ namespace WebEditor.Services
         {
             public Dictionary<string, string> attr = new Dictionary<string, string>();
             public string data;
-            public string state;
+            //public string state;
             public IEnumerable<JsonTreeElement> children;
         }
 

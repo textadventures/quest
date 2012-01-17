@@ -35,6 +35,21 @@
                 $(this).data("dialog_ok")();
             }
         });
+        $("#dialog-add-script").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            width: 400,
+            buttons: {
+                "OK": function () {
+                    $(this).dialog("close");
+                    $(this).data("dialog_ok")();
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
             $("#gameTree").jstree({
                 plugins: ["themes", "ui", "json_data"],
@@ -83,4 +98,8 @@
 <div id="dialog-input-text" title="Editor">
     <p id="dialog-input-text-prompt"></p>
     <input type="text" id="dialog-input-text-entry" style="width: 100%" />
+</div>
+
+<div id="dialog-add-script" title="Add New Script">
+    <p>Add new script dialog</p>
 </div>

@@ -53,6 +53,15 @@
             deleteButton.removeAttr("disabled");
         }
     });
+    $(".script-add")
+        .button()
+        .click(function () {
+            var key = $(this).attr("data-key");
+            $("#dialog-add-script").data("dialog_ok", function () {
+                alert(key);
+            });
+            $("#dialog-add-script").dialog("open");
+        });
     $(".script-delete")
         .button()
         .click(function () {
