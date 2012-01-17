@@ -9,46 +9,57 @@
 </div>
 
 <div>
-    <ul>
-        @foreach (IEditableScript script in Model.Scripts.Scripts)
-        {
-            <li>
-                @script.DisplayString()<br />
-                Controls:
-                <ul>
-                    @{
-                        IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
-                        foreach (IEditorControl ctl in definition.Controls)
+    @{
+        if (Model.Scripts != null) {
+            int count = 0;
+            foreach (IEditableScript script in Model.Scripts.Scripts)
+            {
+                IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
+                <div>
+                    @foreach (IEditorControl ctl in definition.Controls)
+                    {
+                        if (ctl.GetBool("breakbefore"))
                         {
-                            object value = ctl.Attribute == null ? null : script.GetParameter(ctl.Attribute);
-                            <li>@RenderEditorControl(ctl, value)</li>
+                            <br /><text>&nbsp;&nbsp;&nbsp;&nbsp;</text>
                         }
+                        else
+                        {
+                            <text> </text>
+                        }
+                        object value = ctl.Attribute == null ? null : script.GetParameter(ctl.Attribute);
+                        @RenderEditorControl(ctl, value, Model.Attribute + "-" + count.ToString());
                     }
-                </ul>
-            </li>
+                </div>
+                count++;
+            }   
         }
-    </ul>
+    }
 </div>
 
-@helper RenderEditorControl(IEditorControl ctl, object value)
+@helper RenderEditorControl(IEditorControl ctl, object value, string attributePrefix)
     {
+    string name = attributePrefix + "-" + ctl.Attribute;
     switch (ctl.ControlType)
     {
         case "checkbox":
-            @Html.CheckBox(ctl.Attribute, value as bool? == true)
-            @Html.Label(ctl.Attribute, ctl.Caption)
-            break;
+            @Html.CheckBox(name, value as bool? == true)
+            @Html.Label(name, ctl.Caption)
+       break;
         case "textbox":
-            @Html.TextBox(ctl.Attribute, (string)value, new { style = "width: 100%" })
-            break;
+            @Html.TextBox(name, (string)value)
+       break;
         case "label":
-            <div class="elementEditorLabel">@ctl.Caption</div>
-            break;
+            @ctl.Caption
+       break;
         case "dropdown":
-            //Code from ElementEditor.cshtml should be shared
-            break;
+       //Code from ElementEditor.cshtml should be shared
+       break;
+        case "expression":
+       // TO DO: Implement simpleeditor
+            @Html.TextBox(name, (string)value, new { style = "width: 350px" })
+       break;
         default:
             <text>[@ctl.ControlType]</text>
-            break;
+              break;
     }
 }
