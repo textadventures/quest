@@ -171,6 +171,18 @@ namespace WebEditor.Services
             };
         }
 
+        public Models.Script GetScript(string key, IEditorControl ctl)
+        {
+            IEditableScripts value = (IEditableScripts)m_controller.GetEditorData(key).GetAttribute(ctl.Attribute);
+
+            return new Models.Script
+            {
+                Attribute = ctl.Attribute,
+                Controller = m_controller,
+                Scripts = value
+            };
+        }
+
         private void ProcessAdditionalAction(string key, string action)
         {
             string[] data = action.Split(new[] { ' ' }, 2);

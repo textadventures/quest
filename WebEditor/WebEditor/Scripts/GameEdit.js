@@ -53,6 +53,10 @@
             deleteButton.removeAttr("disabled");
         }
     });
+    $(".script-delete")
+        .button()
+        .click(function () {
+        });
 }
 
 function stringListEdit(key, prompt) {

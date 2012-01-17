@@ -98,6 +98,9 @@
         case "list":
             @Html.Action("EditStringList", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
+        case @"script":
+            @Html.Action("EditScript", new { id = Model.GameId, key = Model.Key, control = ctl })
+            break;
         case "label":
             <div class="elementEditorLabel">@ctl.Caption</div>
             break;

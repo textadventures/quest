@@ -49,6 +49,11 @@ namespace WebEditor.Controllers
             return PartialView("StringListEditor", EditorDictionary[id].GetStringList(key, control));
         }
 
+        public PartialViewResult EditScript(int id, string key, IEditorControl control)
+        {
+            return PartialView("ScriptEditor", EditorDictionary[id].GetScript(key, control));
+        }
+
         private Dictionary<int, Services.EditorService> EditorDictionary
         {
             get

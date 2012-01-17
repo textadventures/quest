@@ -1,0 +1,54 @@
+﻿@model WebEditor.Models.Script
+@using AxeSoftware.Quest
+
+<div class="ui-widget-header ui-corner-all toolbar">
+    @{
+        string addId = "script-" + Model.Attribute + "-add";
+    }
+    <button type="button" class="script-delete">Delete</button>
+</div>
+
+<div>
+    <ul>
+        @foreach (IEditableScript script in Model.Scripts.Scripts)
+        {
+            <li>
+                @script.DisplayString()<br />
+                Controls:
+                <ul>
+                    @{
+                        IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
+                        foreach (IEditorControl ctl in definition.Controls)
+                        {
+                            object value = ctl.Attribute == null ? null : script.GetParameter(ctl.Attribute);
+                            <li>@RenderEditorControl(ctl, value)</li>
+                        }
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+</div>
+
+@helper RenderEditorControl(IEditorControl ctl, object value)
+    {
+    switch (ctl.ControlType)
+    {
+        case "checkbox":
+            @Html.CheckBox(ctl.Attribute, value as bool? == true)
+            @Html.Label(ctl.Attribute, ctl.Caption)
+            break;
+        case "textbox":
+            @Html.TextBox(ctl.Attribute, (string)value, new { style = "width: 100%" })
+            break;
+        case "label":
+            <div class="elementEditorLabel">@ctl.Caption</div>
+            break;
+        case "dropdown":
+            //Code from ElementEditor.cshtml should be shared
+            break;
+        default:
+            <text>[@ctl.ControlType]</text>
+            break;
+    }
+}
