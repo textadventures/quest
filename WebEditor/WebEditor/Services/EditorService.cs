@@ -246,6 +246,18 @@ namespace WebEditor.Services
                             break;
                     }
                     break;
+                case "script":
+                    data = parameter.Split(new[] { ' ' }, 2);
+                    string scriptCmd = data[0];
+                    string scriptParameter = data[1];
+                    switch (scriptCmd)
+                    {
+                        case "add":
+                            data = scriptParameter.Split(new[] { ';' }, 2);
+                            ScriptAdd(key, data[0], data[1]);
+                            break;
+                    }
+                    break;
             }
         }
 
@@ -297,5 +309,23 @@ namespace WebEditor.Services
             }
         }
 
+        private void ScriptAdd(string element, string attribute, string value)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScripts script = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableScripts;
+
+            // TO DO: For child scripts, use something like this:
+            // m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, script, true);
+
+            if (script == null)
+            {
+                m_controller.CreateNewEditableScripts(element, attribute, value, true, true);
+            }
+            else
+            {
+                script.AddNew(value, element);
+            }
+        }
     }
 }

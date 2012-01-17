@@ -58,7 +58,8 @@
         .click(function () {
             var key = $(this).attr("data-key");
             $("#dialog-add-script").data("dialog_ok", function () {
-                alert(key);
+                // TO DO: Replace "msg (\"\")" with "create" string for selected script
+                sendAdditionalAction("script add " + key + ";msg (\"\")");
             });
             $("#dialog-add-script").dialog("open");
         });
