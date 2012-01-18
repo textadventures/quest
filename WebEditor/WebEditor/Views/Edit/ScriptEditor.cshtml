@@ -82,6 +82,6 @@
     @Html.TextBox(attributePrefix + "-expression", script.GetAttribute("expression"), new { style = "width: 350px" })
     //script.ThenScript is IEditableScripts so render these like everything else....
     <div style="margin-left: 42px">
-    @RenderScripts(script.ThenScript, attributePrefix)
+    @RenderScripts(script.ThenScript, attributePrefix + "-then")
     </div>
 }

@@ -117,30 +117,51 @@ namespace WebEditor.Models
             if (originalScript == null) return null;
 
             ElementSaveData.ScriptsSaveData result = new ElementSaveData.ScriptsSaveData();
+            
+            BindScriptLines(provider, attribute, controller, originalScript, result);
+            
+            return result;
+        }
 
+        private void BindScriptLines(IValueProvider provider, string attribute, EditorController controller, IEditableScripts originalScript, ElementSaveData.ScriptsSaveData result)
+        {
             int count = 0;
             foreach (IEditableScript script in originalScript.Scripts)
             {
                 ElementSaveData.ScriptSaveData scriptLine = new ElementSaveData.ScriptSaveData();
 
-                IEditorDefinition definition = controller.GetEditorDefinition(script);
-                foreach (IEditorControl ctl in definition.Controls.Where(c => c.Attribute != null))
+                if (script.Type != ScriptType.If)
                 {
-                    string key = string.Format("{0}-{1}-{2}", attribute, count.ToString(), ctl.Attribute);
-                    ValueProviderResult value = provider.GetValue(key);
+                    IEditorDefinition definition = controller.GetEditorDefinition(script);
+                    foreach (IEditorControl ctl in definition.Controls.Where(c => c.Attribute != null))
+                    {
+                        string key = string.Format("{0}-{1}-{2}", attribute, count.ToString(), ctl.Attribute);
+                        ValueProviderResult value = provider.GetValue(key);
 
-                    // TO DO: May need to switch (ctl.ControlType) here - if so need to factor out
-                    // the similar switch block in BindModel above
+                        // TO DO: May need to switch (ctl.ControlType) here - if so need to factor out
+                        // the similar switch block in BindModel above
 
-                    scriptLine.Attributes.Add(ctl.Attribute, value.ConvertTo(typeof(string)));
+                        scriptLine.Attributes.Add(ctl.Attribute, value.ConvertTo(typeof(string)));
+                    }
+                }
+                else
+                {
+                    EditableIfScript ifScript = (EditableIfScript)script;
+
+                    string expressionKey = string.Format("{0}-{1}-expression", attribute, count.ToString());
+                    ValueProviderResult expressionValue = provider.GetValue(expressionKey);
+                    scriptLine.Attributes.Add("expression", expressionValue.ConvertTo(typeof(string)));
+
+                    ElementSaveData.ScriptsSaveData thenScriptResult = new ElementSaveData.ScriptsSaveData();
+                    BindScriptLines(provider, string.Format("{0}-{1}-then", attribute, count.ToString()), controller, ifScript.ThenScript, thenScriptResult);
+                    scriptLine.Attributes.Add("then", thenScriptResult);
                 }
 
                 result.ScriptLines.Add(scriptLine);
                 count++;
             }
-
-            return result;
         }
+
     }
 
 }

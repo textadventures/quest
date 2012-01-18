@@ -170,15 +170,23 @@ namespace WebEditor.Services
             foreach (IEditableScript script in scripts.Scripts)
             {
                 WebEditor.Models.ElementSaveData.ScriptSaveData data = saveData.ScriptLines[count];
-                foreach (var attribute in data.Attributes)
+
+                if (script.Type != ScriptType.If)
                 {
-                    object oldValue = script.GetParameter(attribute.Key);
-                    object newValue = attribute.Value;
-                    if (DataChanged(oldValue, newValue))
+                    foreach (var attribute in data.Attributes)
                     {
-                        System.Diagnostics.Debug.WriteLine("New value for script: Was {0}, now {1}", oldValue, newValue);
-                        script.SetParameter(attribute.Key, newValue);
+                        object oldValue = script.GetParameter(attribute.Key);
+                        object newValue = attribute.Value;
+                        if (DataChanged(oldValue, newValue))
+                        {
+                            System.Diagnostics.Debug.WriteLine("New value for script: Was {0}, now {1}", oldValue, newValue);
+                            script.SetParameter(attribute.Key, newValue);
+                        }
                     }
+                }
+                else
+                {
+                    // TO DO: Save "if"
                 }
 
                 count++;
