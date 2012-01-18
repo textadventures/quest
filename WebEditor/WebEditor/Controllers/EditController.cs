@@ -30,6 +30,11 @@ namespace WebEditor.Controllers
             return Json(editor.GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult Scripts(int id)
+        {
+            return Json(EditorDictionary[id].GetScriptAdderJson(), JsonRequestBehavior.AllowGet);
+        }
+
         public PartialViewResult EditElement(int id, string key, string tab)
         {
             Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, tab);

@@ -327,5 +327,36 @@ namespace WebEditor.Services
                 script.AddNew(value, element);
             }
         }
+
+        private class ScriptAdderCategory
+        {
+            public List<ScriptAdderItem> items = new List<ScriptAdderItem>();
+        }
+
+        private class ScriptAdderItem
+        {
+            public string display;
+            public string create;
+        }
+
+        public object GetScriptAdderJson()
+        {
+            Dictionary<string, ScriptAdderCategory> categories = new Dictionary<string, ScriptAdderCategory>();
+            foreach (string cat in m_controller.GetAllScriptEditorCategories())
+            {
+                categories.Add(cat, new ScriptAdderCategory());
+            }
+
+            foreach (EditableScriptData data in m_controller.GetScriptEditorData().Values)
+            {
+                categories[data.Category].items.Add(new ScriptAdderItem
+                {
+                    display = data.AdderDisplayString,
+                    create = data.CreateString
+                });
+            }
+
+            return categories;
+        }
     }
 }

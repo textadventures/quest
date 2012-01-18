@@ -74,6 +74,20 @@
             .bind("loaded.jstree", function (e, data) {
                 data.inst.open_all(-1);
             });
+            $.get('@Url.Action("Scripts", new { id = Model.GameId })', function (data) {
+                var scriptAdderHtml = "";
+                console.log(data);
+                for (var cat in data) {
+                    scriptAdderHtml += "<h3><a href=\"#\">" + cat + "</a></h3><div>"
+                    var scripts = data[cat].items;
+                    for (var idx in scripts) {
+                        var script = scripts[idx];
+                        scriptAdderHtml += script.display + "<br/>";
+                    }
+                    scriptAdderHtml += "</div>";
+                }
+                $("#dialog-add-script-accordion").html(scriptAdderHtml);
+            });
         });
     });
 </script>
@@ -101,5 +115,6 @@
 </div>
 
 <div id="dialog-add-script" title="Add New Script">
-    <p>Add new script dialog</p>
+    <div id="dialog-add-script-accordion">
+    </div>
 </div>

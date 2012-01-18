@@ -62,6 +62,9 @@
                 sendAdditionalAction("script add " + key + ";msg (\"\")");
             });
             $("#dialog-add-script").dialog("open");
+            $("#dialog-add-script-accordion").accordion({
+                autoHeight: false
+            });
         });
     $(".script-delete")
         .button()
