@@ -186,7 +186,15 @@ namespace WebEditor.Services
                 }
                 else
                 {
-                    // TO DO: Save "if"
+                    EditableIfScript ifScript = (EditableIfScript)script;
+                    object oldExpression = ifScript.GetAttribute("expression");
+                    object newExpression = data.Attributes["expression"];
+                    if (DataChanged(oldExpression, newExpression))
+                    {
+                        ifScript.SetAttribute("expression", newExpression);
+                    }
+
+                    SaveScript(ifScript.ThenScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["then"]);
                 }
 
                 count++;
