@@ -69,7 +69,22 @@
     $(".script-delete")
         .button()
         .click(function () {
+            var key = $(this).attr("data-key");
+            sendAdditionalAction("script delete " + key + ";" + getSelectedScripts(key));
         });
+}
+
+function getSelectedScripts(key) {
+    var result = "";
+    $(".script-select").each(function (index, element) {
+        var e = $(element);
+        var id = e.attr("id");
+        if (id.indexOf("selected-" + key + "-") == 0 && e.is(":checked")) {
+            if (result.length > 0) result += ";";
+            result += id.substring(10 + key.length);
+        }
+    });
+    return result;
 }
 
 function stringListEdit(key, prompt) {

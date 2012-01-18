@@ -14,11 +14,12 @@
             {
                 IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
                 <div>
+                    @Html.CheckBox("selected-" + Model.Attribute + "-" + count.ToString(), new { @class = "script-select"} )
                     @foreach (IEditorControl ctl in definition.Controls)
                     {
                         if (ctl.GetBool("breakbefore"))
                         {
-                            <br /><text>&nbsp;&nbsp;&nbsp;&nbsp;</text>
+                            <br /><text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
                         }
                         else
                         {

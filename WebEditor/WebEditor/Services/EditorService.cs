@@ -256,6 +256,13 @@ namespace WebEditor.Services
                             data = scriptParameter.Split(new[] { ';' }, 2);
                             ScriptAdd(key, data[0], data[1]);
                             break;
+                        case "delete":
+                            data = scriptParameter.Split(new[] { ';' }, 2);
+                            if (data[1].Length > 0)
+                            {
+                                ScriptDelete(key, data[0], data[1].Split(';'));
+                            }
+                            break;
                     }
                     break;
             }
@@ -326,6 +333,14 @@ namespace WebEditor.Services
             {
                 script.AddNew(value, element);
             }
+        }
+
+        private void ScriptDelete(string element, string attribute, string[] indexes)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScripts script = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableScripts;
+            script.Remove(indexes.Select(i => int.Parse(i)).ToArray());
         }
 
         private class ScriptAdderCategory
