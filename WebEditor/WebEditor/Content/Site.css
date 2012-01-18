@@ -53,6 +53,10 @@ td.elementEditorCell
 {
     padding-bottom: 8px;
 }
+input.script-select
+{
+    vertical-align: text-top;
+}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/

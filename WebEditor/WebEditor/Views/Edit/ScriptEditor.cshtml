@@ -1,64 +1,87 @@
 ﻿@model WebEditor.Models.Script
 @using AxeSoftware.Quest
 
-<div class="ui-widget-header ui-corner-all toolbar">
-    <button type="button" class="script-add" data-key="@Model.Attribute">Add new script</button>
-    <button type="button" class="script-delete" data-key="@Model.Attribute">Delete</button>
-</div>
+@RenderScripts(Model.Scripts, Model.Attribute)
 
-<div>
-    @{
-        if (Model.Scripts != null) {
-            int count = 0;
-            foreach (IEditableScript script in Model.Scripts.Scripts)
-            {
-                IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
-                <div>
-                    @Html.CheckBox("selected-" + Model.Attribute + "-" + count.ToString(), new { @class = "script-select"} )
-                    @foreach (IEditorControl ctl in definition.Controls)
-                    {
-                        if (ctl.GetBool("breakbefore"))
+@helper RenderScripts(IEditableScripts scripts, string attribute)
+{
+    <div class="ui-widget-header ui-corner-all toolbar">
+        <button type="button" class="script-add" data-key="@attribute">Add new script</button>
+        <button type="button" class="script-delete" data-key="@attribute">Delete</button>
+    </div>
+
+    <div>
+        @{
+            if (scripts != null) {
+                int count = 0;
+                foreach (IEditableScript script in scripts.Scripts)
+                {
+                    IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
+                    <div>
+                        @Html.CheckBox("selected-" + attribute + "-" + count.ToString(), new { @class = "script-select" })
+                        @if (script.Type != ScriptType.If)
                         {
-                            <br /><text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
+                            foreach (IEditorControl ctl in definition.Controls)
+                            {
+                                if (ctl.GetBool("breakbefore"))
+                                {
+                                    <br /><text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
+                                }
+                                else
+                                {
+                                    <text> </text>
+                                }
+                                object value = ctl.Attribute == null ? null : script.GetParameter(ctl.Attribute);
+                                @RenderEditorControl(ctl, value, attribute + "-" + count.ToString())
+                            }
                         }
                         else
                         {
-                            <text> </text>
+                            @RenderIfScript((EditableIfScript)script, attribute + "-" + count.ToString())
                         }
-                        object value = ctl.Attribute == null ? null : script.GetParameter(ctl.Attribute);
-                        @RenderEditorControl(ctl, value, Model.Attribute + "-" + count.ToString());
-                    }
-                </div>
-                count++;
-            }   
+                    </div>
+                    count++;
+                }
+            }
         }
-    }
-</div>
+    </div>
+}
 
 @helper RenderEditorControl(IEditorControl ctl, object value, string attributePrefix)
-    {
+{
     string name = attributePrefix + "-" + ctl.Attribute;
     switch (ctl.ControlType)
     {
         case "checkbox":
             @Html.CheckBox(name, value as bool? == true)
             @Html.Label(name, ctl.Caption)
-       break;
+            break;
         case "textbox":
             @Html.TextBox(name, (string)value)
-       break;
+            break;
         case "label":
             @ctl.Caption
-       break;
+            break;
         case "dropdown":
-       //Code from ElementEditor.cshtml should be shared
-       break;
+            //Code from ElementEditor.cshtml should be shared
+            break;
         case "expression":
-       // TO DO: Implement simpleeditor
+            // TO DO: Implement simpleeditor
             @Html.TextBox(name, (string)value, new { style = "width: 350px" })
-       break;
+            break;
         default:
             <text>[@ctl.ControlType]</text>
-              break;
+            break;
     }
+}
+
+@helper RenderIfScript(EditableIfScript script, string attributePrefix)
+{
+    <text>If: </text>
+    // TO DO: This needs to use the same expression mechanism as RenderEditorControl
+    @Html.TextBox(attributePrefix + "-expression", script.GetAttribute("expression"), new { style = "width: 350px" })
+    //script.ThenScript is IEditableScripts so render these like everything else....
+    <div style="margin-left: 42px">
+    @RenderScripts(script.ThenScript, attributePrefix)
+    </div>
 }
