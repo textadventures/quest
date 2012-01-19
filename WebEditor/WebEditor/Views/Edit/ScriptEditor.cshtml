@@ -67,12 +67,71 @@
             //Code from ElementEditor.cshtml should be shared
             break;
         case "expression":
-            // TO DO: Implement simpleeditor
-            @Html.TextBox(name, (string)value, new { style = "width: 350px" })
+            @RenderExpressionControl(ctl, name, (string)value)
             break;
         default:
             <text>[@ctl.ControlType]</text>
             break;
+    }
+}
+
+@helper RenderExpressionControl(IEditorControl ctl, string name, string value)
+{
+    List<SelectListItem> list = new List<SelectListItem>();
+    
+    bool useTemplates;
+    bool useSimpleEditor;
+
+    string templatesFilter = ctl.GetString("usetemplates");
+    useTemplates = (templatesFilter != null);
+
+    string simpleEditor = ctl.GetString("simpleeditor") ?? "textbox";
+    string simple = ctl.GetString("simple");
+
+    useSimpleEditor = (simpleEditor == "boolean" || simpleEditor != null);
+
+    if (useSimpleEditor)
+    {
+        MvcHtmlString editorHtml = null;
+        
+        switch (simpleEditor)
+        {
+            case "textbox":
+                editorHtml = Html.TextBox(name, value, new { style = "width: 350px" });
+                break;
+            case "file":
+                break;
+            case "boolean":
+                list.Add(new SelectListItem { Text = "yes" });
+                list.Add(new SelectListItem { Text = "no" });
+                break;
+            case "objects":
+                break;
+            case "number":
+                break;
+            case "dropdown":
+                break;
+            default:
+                throw new InvalidOperationException("Invalid control type for expression");
+        }
+        
+        if (editorHtml != null)
+        {
+            list.Add(new SelectListItem { Text = simple });
+        }
+        
+        list.Add(new SelectListItem { Text = "expression" });
+        
+        @Html.DropDownList(name + "-expressioneditor", list)
+
+        if (editorHtml != null)
+        {
+            @editorHtml
+        }
+    }
+
+    if (useTemplates)
+    {
     }
 }
 
