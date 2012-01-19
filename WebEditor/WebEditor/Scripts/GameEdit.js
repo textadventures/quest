@@ -77,20 +77,20 @@
         var key = $(this).attr("data-key");
         var selectedScripts = getSelectedScripts(key);
         if (selectedScripts.length > 0) {
-            $("#script-toolbar-" + key).show();
+            $("#script-toolbar-" + key).show(200);
         }
         else {
-            $("#script-toolbar-" + key).hide();
+            $("#script-toolbar-" + key).hide(200);
         }
     });
     $(".ifsection-select").click(function () {
         var key = $(this).attr("data-key");
         var selectedSections = getSelectedIfSections(key);
         if (selectedSections.length > 0) {
-            $("#ifsection-toolbar-" + key).show();
+            $("#ifsection-toolbar-" + key).show(200);
         }
         else {
-            $("#ifsection-toolbar-" + key).hide();
+            $("#ifsection-toolbar-" + key).hide(200);
         }
     });
     $(".ifsection-delete").button().click(function () {
