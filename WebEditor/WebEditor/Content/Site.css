@@ -57,13 +57,17 @@ input.script-select
 {
     vertical-align: text-top;
 }
+input.ifsection-select
+{
+    vertical-align: text-top;
+}
 div.ifSection
 {
     margin-left: 24px;
 }
 div.childScript
 {
-    margin-left: 54px;
+    margin-left: 60px;
 }
 
 /* Styles for basic forms

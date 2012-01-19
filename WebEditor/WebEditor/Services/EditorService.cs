@@ -304,6 +304,13 @@ namespace WebEditor.Services
                         case "addelseif":
                             ScriptAddElseIf(key, scriptParameter);
                             break;
+                        case "deleteifsection":
+                            data = scriptParameter.Split(new[] { ';' }, 2);
+                            if (data[1].Length > 0)
+                            {
+                                ScriptDeleteIfSection(key, data[0], data[1].Split(';'));
+                            }
+                            break;
                     }
                     break;
             }
@@ -402,6 +409,33 @@ namespace WebEditor.Services
             ifScript.AddElseIf();
         }
 
+        private void ScriptDeleteIfSection(string element, string attribute, string[] sections)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScript scriptLine = GetScriptLine(element, attribute);
+            EditableIfScript ifScript = (EditableIfScript)scriptLine;
+
+            List<EditableIfScript.EditableElseIf> elseIfsToRemove = new List<EditableIfScript.EditableElseIf>();
+
+            foreach (string section in sections)
+            {
+                if (section == "else")
+                {
+                    ifScript.RemoveElse();
+                }
+                else if(section.StartsWith("elseif"))
+                {
+                    elseIfsToRemove.Add(ifScript.ElseIfScripts.ElementAt(int.Parse(section.Substring(6))));
+                }
+            }
+
+            foreach (EditableIfScript.EditableElseIf elseIfToRemove in elseIfsToRemove)
+            {
+                ifScript.RemoveElseIf(elseIfToRemove);
+            }
+        }
+
         private IEditableScripts GetScript(string element, string attribute)
         {
             IEditableScripts script;
@@ -432,7 +466,6 @@ namespace WebEditor.Services
                 }
                 else
                 {
-                    // TO DO: Handle "script-2-elseif1-then"
                     // TO DO: Handle "script-2-then-3-elseif4-then" etc...
                     throw new NotImplementedException();
                 }

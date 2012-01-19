@@ -70,6 +70,20 @@
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelseif " + key);
     });
+    $(".ifsection-select").click(function () {
+        var key = $(this).attr("data-key");
+        var selectedSections = getSelectedIfSections(key);
+        if (selectedSections.length > 0) {
+            $("#ifsection-toolbar-" + key).show();
+        }
+        else {
+            $("#ifsection-toolbar-" + key).hide();
+        }
+    });
+    $(".ifsection-delete").button().click(function () {
+        var key = $(this).attr("data-key");
+        sendAdditionalAction("script deleteifsection " + key + ";" + getSelectedIfSections(key));
+    });
 }
 
 function getSelectedScripts(key) {
@@ -80,6 +94,20 @@ function getSelectedScripts(key) {
         if (id.indexOf("selected-" + key + "-") == 0 && e.is(":checked")) {
             if (result.length > 0) result += ";";
             result += id.substring(10 + key.length);
+        }
+    });
+    return result;
+}
+
+function getSelectedIfSections(key) {
+    var result = "";
+    $(".ifsection-select").each(function (index, element) {
+        var e = $(element);
+        var id = e.attr("id");
+        var checkboxKey = e.attr("data-key");
+        if (checkboxKey == key && e.is(":checked")) {
+            if (result.length > 0) result += ";";
+            result += id.substring(17 + key.length);
         }
     });
     return result;
