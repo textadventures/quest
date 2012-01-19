@@ -336,7 +336,7 @@ namespace WebEditor.Services
         {
             // TO DO: if (m_data.ReadOnly) return;
 
-            IEditableScripts script = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableScripts;
+            IEditableScripts script = GetScript(element, attribute);
 
             // TO DO: For child scripts, use something like this:
             // m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, script, true);
@@ -355,8 +355,38 @@ namespace WebEditor.Services
         {
             // TO DO: if (m_data.ReadOnly) return;
 
-            IEditableScripts script = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableScripts;
+            IEditableScripts script = GetScript(element, attribute);
             script.Remove(indexes.Select(i => int.Parse(i)).ToArray());
+        }
+
+        private IEditableScripts GetScript(string element, string attribute)
+        {
+            IEditableScripts script;
+
+            if (attribute.IndexOf("-") == -1)
+            {
+                script = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableScripts;
+            }
+            else
+            {
+                string[] path = attribute.Split(new[] { '-' }, 4);
+                IEditableScripts parent = m_controller.GetEditorData(element).GetAttribute(path[0]) as IEditableScripts;
+                IEditableScript scriptLine = parent.Scripts.ElementAt(int.Parse(path[1]));
+                if (path[2] == "then")
+                {
+                    EditableIfScript ifScript = (EditableIfScript)scriptLine;
+                    script = ifScript.ThenScript;
+                }
+                else
+                {
+                    // TO DO: Handle "script-2-else"
+                    // TO DO: Handle "script-2-elseif1-then"
+                    // TO DO: Handle "script-2-then-3-elseif4-then" etc...
+                    throw new NotImplementedException();
+                }
+            }
+
+            return script;
         }
 
         private class ScriptAdderCategory

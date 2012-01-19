@@ -141,7 +141,7 @@ namespace WebEditor.Models
                         // TO DO: May need to switch (ctl.ControlType) here - if so need to factor out
                         // the similar switch block in BindModel above
 
-                        scriptLine.Attributes.Add(ctl.Attribute, value.ConvertTo(typeof(string)));
+                        scriptLine.Attributes.Add(ctl.Attribute, value == null ? null : value.ConvertTo(typeof(string)));
                     }
                 }
                 else
