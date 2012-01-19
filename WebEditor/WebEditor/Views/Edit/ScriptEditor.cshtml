@@ -5,8 +5,7 @@
 
 @helper RenderScripts(IEditableScripts scripts, string attribute)
 {
-    <div class="ui-widget-header ui-corner-all toolbar">
-        <button type="button" class="script-add" data-key="@attribute">Add new script</button>
+    <div class="ui-widget-header ui-corner-all toolbar" id="script-toolbar-@attribute" style="display: none">
         <button type="button" class="script-delete" data-key="@attribute">Delete</button>
     </div>
 
@@ -18,7 +17,7 @@
                 {
                     IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
                     <div>
-                        @Html.CheckBox("selected-" + attribute + "-" + count.ToString(), new { @class = "script-select" })
+                        @Html.CheckBox("selected-" + attribute + "-" + count.ToString(), new { @class = "script-select", data_key = attribute })
                         @if (script.Type != ScriptType.If)
                         {
                             foreach (IEditorControl ctl in definition.Controls)
@@ -45,6 +44,8 @@
             }
         }
     </div>
+    
+    <button type="button" class="script-add" data-key="@attribute">Add new script</button>
 }
 
 @helper RenderEditorControl(IEditorControl ctl, object value, string attributePrefix)

@@ -60,7 +60,10 @@
     });
     $(".script-delete").button().click(function () {
         var key = $(this).attr("data-key");
-        sendAdditionalAction("script delete " + key + ";" + getSelectedScripts(key));
+        var selected = getSelectedScripts(key);
+        if (selected.length > 0) {
+            sendAdditionalAction("script delete " + key + ";" + selected);
+        }
     });
     $(".script-if-add-else").button().click(function () {
         var key = $(this).attr("data-key");
@@ -69,6 +72,16 @@
     $(".script-if-add-elseif").button().click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelseif " + key);
+    });
+    $(".script-select").click(function () {
+        var key = $(this).attr("data-key");
+        var selectedScripts = getSelectedScripts(key);
+        if (selectedScripts.length > 0) {
+            $("#script-toolbar-" + key).show();
+        }
+        else {
+            $("#script-toolbar-" + key).hide();
+        }
     });
     $(".ifsection-select").click(function () {
         var key = $(this).attr("data-key");
@@ -91,7 +104,8 @@ function getSelectedScripts(key) {
     $(".script-select").each(function (index, element) {
         var e = $(element);
         var id = e.attr("id");
-        if (id.indexOf("selected-" + key + "-") == 0 && e.is(":checked")) {
+        var checkboxKey = e.attr("data-key");
+        if (checkboxKey == key && e.is(":checked")) {
             if (result.length > 0) result += ";";
             result += id.substring(10 + key.length);
         }
