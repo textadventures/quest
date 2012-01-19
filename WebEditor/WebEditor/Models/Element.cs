@@ -155,6 +155,10 @@ namespace WebEditor.Models
                     ElementSaveData.ScriptsSaveData thenScriptResult = new ElementSaveData.ScriptsSaveData();
                     BindScriptLines(provider, string.Format("{0}-{1}-then", attribute, count.ToString()), controller, ifScript.ThenScript, thenScriptResult);
                     scriptLine.Attributes.Add("then", thenScriptResult);
+
+                    ElementSaveData.ScriptsSaveData elseScriptResult = new ElementSaveData.ScriptsSaveData();
+                    BindScriptLines(provider, string.Format("{0}-{1}-else", attribute, count.ToString()), controller, ifScript.ElseScript, elseScriptResult);
+                    scriptLine.Attributes.Add("else", elseScriptResult);
                 }
 
                 result.ScriptLines.Add(scriptLine);

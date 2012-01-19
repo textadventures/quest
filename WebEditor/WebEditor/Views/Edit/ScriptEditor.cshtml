@@ -80,8 +80,19 @@
     <text>If: </text>
     // TO DO: This needs to use the same expression mechanism as RenderEditorControl
     @Html.TextBox(attributePrefix + "-expression", script.GetAttribute("expression"), new { style = "width: 350px" })
-    //script.ThenScript is IEditableScripts so render these like everything else....
     <div style="margin-left: 42px">
+    Then:<br />
     @RenderScripts(script.ThenScript, attributePrefix + "-then")
     </div>
+    if (script.ElseScript == null) 
+    {
+        <button type="button" class="script-if-add-else" data-key="@attributePrefix">Add Else</button>
+    }
+    else
+    {
+        <div style="margin-left: 42px">
+        Else:<br />
+        @RenderScripts(script.ElseScript, attributePrefix + "-else")
+        </div>
+    }
 }

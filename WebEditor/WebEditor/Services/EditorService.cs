@@ -195,6 +195,7 @@ namespace WebEditor.Services
                     }
 
                     SaveScript(ifScript.ThenScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["then"]);
+                    SaveScript(ifScript.ElseScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["else"]);
                 }
 
                 count++;
@@ -377,9 +378,13 @@ namespace WebEditor.Services
                     EditableIfScript ifScript = (EditableIfScript)scriptLine;
                     script = ifScript.ThenScript;
                 }
+                else if (path[2] == "else")
+                {
+                    EditableIfScript ifScript = (EditableIfScript)scriptLine;
+                    script = ifScript.ElseScript;
+                }
                 else
                 {
-                    // TO DO: Handle "script-2-else"
                     // TO DO: Handle "script-2-elseif1-then"
                     // TO DO: Handle "script-2-then-3-elseif4-then" etc...
                     throw new NotImplementedException();
