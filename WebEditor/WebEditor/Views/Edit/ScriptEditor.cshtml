@@ -80,18 +80,20 @@
     <text>If: </text>
     // TO DO: This needs to use the same expression mechanism as RenderEditorControl
     @Html.TextBox(attributePrefix + "-expression", script.GetAttribute("expression"), new { style = "width: 350px" })
-    <text><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Then:<br /></text>
-    <div style="margin-left: 54px">
+    <div class="ifSection">Then:</div>
+    <div class="childScript">
     @RenderScripts(script.ThenScript, attributePrefix + "-then")
     </div>
     
     int elseIfCount = 0;
     foreach (EditableIfScript.EditableElseIf elseIf in script.ElseIfScripts)
     {
-        <text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Else If: </text>
         // TO DO: This needs to use the same expression mechanism as RenderEditorControl
+        <div class="ifSection">
+        Else If:
         @Html.TextBox(attributePrefix + "-elseif" + elseIfCount.ToString() + "-expression", elseIf.GetAttribute("expression"), new { style = "width: 350px" })
-        <div style="margin-left: 54px">
+        </div>
+        <div class="childScript">
         Then:<br />
         @RenderScripts(elseIf.EditableScripts, attributePrefix + "-elseif" + elseIfCount.ToString())
         </div>
@@ -99,16 +101,18 @@
         elseIfCount++;
     }
     
-    <button type="button" class="script-if-add-elseif" data-key="@attributePrefix">Add Else If</button>
+    <div class="ifSection"><button type="button" class="script-if-add-elseif" data-key="@attributePrefix">Add Else If</button></div>
 
     if (script.ElseScript == null)
     {
+        <div class="ifSection">
         <button type="button" class="script-if-add-else" data-key="@attributePrefix">Add Else</button>
+        </div>
     }
     else
     {
-        <text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Else:<br /></text>
-        <div style="margin-left: 54px">
+        <div class="ifSection">Else:</div>
+        <div class="childScript">
         @RenderScripts(script.ElseScript, attributePrefix + "-else")
         </div>
     }

@@ -301,6 +301,9 @@ namespace WebEditor.Services
                         case "addelse":
                             ScriptAddElse(key, scriptParameter);
                             break;
+                        case "addelseif":
+                            ScriptAddElseIf(key, scriptParameter);
+                            break;
                     }
                     break;
             }
@@ -388,6 +391,15 @@ namespace WebEditor.Services
             IEditableScript scriptLine = GetScriptLine(element, attribute);
             EditableIfScript ifScript = (EditableIfScript)scriptLine;
             ifScript.AddElse();
+        }
+
+        private void ScriptAddElseIf(string element, string attribute)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScript scriptLine = GetScriptLine(element, attribute);
+            EditableIfScript ifScript = (EditableIfScript)scriptLine;
+            ifScript.AddElseIf();
         }
 
         private IEditableScripts GetScript(string element, string attribute)

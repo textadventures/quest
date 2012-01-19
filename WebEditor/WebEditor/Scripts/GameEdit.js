@@ -66,6 +66,10 @@
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelse " + key );
     });
+    $(".script-if-add-elseif").button().click(function () {
+        var key = $(this).attr("data-key");
+        sendAdditionalAction("script addelseif " + key);
+    });
 }
 
 function getSelectedScripts(key) {
