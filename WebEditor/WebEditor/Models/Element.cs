@@ -148,18 +148,31 @@ namespace WebEditor.Models
                 {
                     EditableIfScript ifScript = (EditableIfScript)script;
 
-                    string expressionKey = string.Format("{0}-{1}-expression", attribute, count.ToString());
+                    string expressionKey = string.Format("{0}-{1}-expression", attribute, count);
                     ValueProviderResult expressionValue = provider.GetValue(expressionKey);
                     scriptLine.Attributes.Add("expression", expressionValue.ConvertTo(typeof(string)));
 
                     ElementSaveData.ScriptsSaveData thenScriptResult = new ElementSaveData.ScriptsSaveData();
-                    BindScriptLines(provider, string.Format("{0}-{1}-then", attribute, count.ToString()), controller, ifScript.ThenScript, thenScriptResult);
+                    BindScriptLines(provider, string.Format("{0}-{1}-then", attribute, count), controller, ifScript.ThenScript, thenScriptResult);
                     scriptLine.Attributes.Add("then", thenScriptResult);
+
+                    int elseIfCount = 0;
+                    foreach (EditableIfScript.EditableElseIf elseIf in ifScript.ElseIfScripts)
+                    {
+                        string elseIfExpressionKey = string.Format("{0}-{1}-elseif{2}-expression", attribute, count, elseIfCount);
+                        ValueProviderResult elseIfExpressionValue = provider.GetValue(elseIfExpressionKey);
+                        scriptLine.Attributes.Add(string.Format("elseif{0}-expression", elseIfCount), elseIfExpressionValue.ConvertTo(typeof(string)));
+
+                        ElementSaveData.ScriptsSaveData elseIfScriptResult = new ElementSaveData.ScriptsSaveData();
+                        BindScriptLines(provider, string.Format("{0}-{1}-elseif{2}", attribute, count, elseIfCount), controller, elseIf.EditableScripts, elseIfScriptResult);
+                        scriptLine.Attributes.Add(string.Format("elseif{0}-then", elseIfCount), elseIfScriptResult);
+                        elseIfCount++;
+                    }
 
                     if (ifScript.ElseScript != null)
                     {
                         ElementSaveData.ScriptsSaveData elseScriptResult = new ElementSaveData.ScriptsSaveData();
-                        BindScriptLines(provider, string.Format("{0}-{1}-else", attribute, count.ToString()), controller, ifScript.ElseScript, elseScriptResult);
+                        BindScriptLines(provider, string.Format("{0}-{1}-else", attribute, count), controller, ifScript.ElseScript, elseScriptResult);
                         scriptLine.Attributes.Add("else", elseScriptResult);
                     }
                 }

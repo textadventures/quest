@@ -195,6 +195,21 @@ namespace WebEditor.Services
                     }
 
                     SaveScript(ifScript.ThenScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["then"]);
+
+                    int elseIfCount = 0;
+                    foreach (EditableIfScript.EditableElseIf elseIfScript in ifScript.ElseIfScripts)
+                    {
+                        object oldElseIfExpression = elseIfScript.GetAttribute("expression");
+                        object newElseIfExpression = data.Attributes[string.Format("elseif{0}-expression", elseIfCount)];
+                        if (DataChanged(oldElseIfExpression, newElseIfExpression))
+                        {
+                            elseIfScript.SetAttribute("expression", newElseIfExpression);
+                        }
+
+                        SaveScript(elseIfScript.EditableScripts, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes[string.Format("elseif{0}-then", elseIfCount)]);
+                        elseIfCount++;
+                    }
+
                     if (ifScript.ElseScript != null)
                     {
                         SaveScript(ifScript.ElseScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["else"]);
@@ -396,6 +411,12 @@ namespace WebEditor.Services
                 {
                     EditableIfScript ifScript = (EditableIfScript)scriptLine;
                     script = ifScript.ElseScript;
+                }
+                else if (parameter.StartsWith("elseif"))
+                {
+                    int elseIfIndex = int.Parse(parameter.Substring(6));
+                    EditableIfScript ifScript = (EditableIfScript)scriptLine;
+                    script = ifScript.ElseIfScripts.ElementAt(elseIfIndex).EditableScripts;
                 }
                 else
                 {
