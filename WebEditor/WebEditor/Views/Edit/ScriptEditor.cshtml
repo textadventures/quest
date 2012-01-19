@@ -9,14 +9,14 @@
         <button type="button" class="script-delete" data-key="@attribute">Delete</button>
     </div>
 
-    <div>
+    <div class="ui-corner-all scriptEditor">
         @{
             if (scripts != null) {
                 int count = 0;
                 foreach (IEditableScript script in scripts.Scripts)
                 {
                     IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
-                    <div>
+                    <div class="scriptLine">
                         @Html.CheckBox("selected-" + attribute + "-" + count.ToString(), new { @class = "script-select", data_key = attribute })
                         @if (script.Type != ScriptType.If)
                         {
@@ -43,9 +43,9 @@
                 }
             }
         }
+
+        <button type="button" class="script-add" data-key="@attribute">Add new script</button>
     </div>
-    
-    <button type="button" class="script-add" data-key="@attribute">Add new script</button>
 }
 
 @helper RenderEditorControl(IEditorControl ctl, object value, string attributePrefix)

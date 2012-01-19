@@ -69,6 +69,15 @@ div.childScript
 {
     margin-left: 60px;
 }
+div.scriptEditor
+{
+    border: 1px solid #AAA;
+    padding: 4px;
+}
+div.scriptLine
+{
+    padding-bottom: 4px;
+}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/
