@@ -8,29 +8,23 @@
         }
     });
     $("#centerPane").scrollTop(0);
-    $(".stringlist-add")
-        .button()
-        .click(function () {
-            $("#dialog-input-text-entry").val("");
-            $("#dialog-input-text-prompt").html($(this).attr("data-prompt") + ":");
-            var key = $(this).attr("data-key");
-            $("#dialog-input-text").data("dialog_ok", function () {
-                sendAdditionalAction("stringlist add " + key + ";" + $("#dialog-input-text-entry").val());
-            });
-            $("#dialog-input-text").dialog("open");
+    $(".stringlist-add").button().click(function () {
+        $("#dialog-input-text-entry").val("");
+        $("#dialog-input-text-prompt").html($(this).attr("data-prompt") + ":");
+        var key = $(this).attr("data-key");
+        $("#dialog-input-text").data("dialog_ok", function () {
+            sendAdditionalAction("stringlist add " + key + ";" + $("#dialog-input-text-entry").val());
         });
-    $(".stringlist-edit")
-        .button()
-        .click(function () {
-            stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
-        });
-    $(".stringlist-delete")
-        .button()
-        .click(function () {
-            var key = $(this).attr("data-key");
-            var selectElement = $("#select-" + key + " option:selected");
-            sendAdditionalAction("stringlist delete " + key + ";" + selectElement.val());
-        });
+        $("#dialog-input-text").dialog("open");
+    });
+    $(".stringlist-edit").button().click(function () {
+        stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
+    });
+    $(".stringlist-delete").button().click(function () {
+        var key = $(this).attr("data-key");
+        var selectElement = $("#select-" + key + " option:selected");
+        sendAdditionalAction("stringlist delete " + key + ";" + selectElement.val());
+    });
     $(".stringlist").dblclick(function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
@@ -53,25 +47,25 @@
             deleteButton.removeAttr("disabled");
         }
     });
-    $(".script-add")
-        .button()
-        .click(function () {
-            var key = $(this).attr("data-key");
-            $("#dialog-add-script").data("dialog_ok", function () {
-                var create = $("#dialog-add-script-form input[type='radio']:checked").val();
-                sendAdditionalAction("script add " + key + ";" + create);
-            });
-            $("#dialog-add-script").dialog("open");
-            $("#dialog-add-script-accordion").accordion({
-                autoHeight: false
-            });
+    $(".script-add").button().click(function () {
+        var key = $(this).attr("data-key");
+        $("#dialog-add-script").data("dialog_ok", function () {
+            var create = $("#dialog-add-script-form input[type='radio']:checked").val();
+            sendAdditionalAction("script add " + key + ";" + create);
         });
-    $(".script-delete")
-        .button()
-        .click(function () {
-            var key = $(this).attr("data-key");
-            sendAdditionalAction("script delete " + key + ";" + getSelectedScripts(key));
+        $("#dialog-add-script").dialog("open");
+        $("#dialog-add-script-accordion").accordion({
+            autoHeight: false
         });
+    });
+    $(".script-delete").button().click(function () {
+        var key = $(this).attr("data-key");
+        sendAdditionalAction("script delete " + key + ";" + getSelectedScripts(key));
+    });
+    $(".script-if-add-else").button().click(function () {
+        var key = $(this).attr("data-key");
+        sendAdditionalAction("script addelse " + key );
+    });
 }
 
 function getSelectedScripts(key) {

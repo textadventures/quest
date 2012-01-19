@@ -195,7 +195,10 @@ namespace WebEditor.Services
                     }
 
                     SaveScript(ifScript.ThenScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["then"]);
-                    SaveScript(ifScript.ElseScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["else"]);
+                    if (ifScript.ElseScript != null)
+                    {
+                        SaveScript(ifScript.ElseScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["else"]);
+                    }
                 }
 
                 count++;
@@ -280,6 +283,9 @@ namespace WebEditor.Services
                                 ScriptDelete(key, data[0], data[1].Split(';'));
                             }
                             break;
+                        case "addelse":
+                            ScriptAddElse(key, scriptParameter);
+                            break;
                     }
                     break;
             }
@@ -360,6 +366,15 @@ namespace WebEditor.Services
             script.Remove(indexes.Select(i => int.Parse(i)).ToArray());
         }
 
+        private void ScriptAddElse(string element, string attribute)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScript scriptLine = GetScriptLine(element, attribute);
+            EditableIfScript ifScript = (EditableIfScript)scriptLine;
+            ifScript.AddElse();
+        }
+
         private IEditableScripts GetScript(string element, string attribute)
         {
             IEditableScripts script;
@@ -370,15 +385,14 @@ namespace WebEditor.Services
             }
             else
             {
-                string[] path = attribute.Split(new[] { '-' }, 4);
-                IEditableScripts parent = m_controller.GetEditorData(element).GetAttribute(path[0]) as IEditableScripts;
-                IEditableScript scriptLine = parent.Scripts.ElementAt(int.Parse(path[1]));
-                if (path[2] == "then")
+                string parameter;
+                IEditableScript scriptLine = GetScriptLine(element, attribute, out parameter);
+                if (parameter == "then")
                 {
                     EditableIfScript ifScript = (EditableIfScript)scriptLine;
                     script = ifScript.ThenScript;
                 }
-                else if (path[2] == "else")
+                else if (parameter == "else")
                 {
                     EditableIfScript ifScript = (EditableIfScript)scriptLine;
                     script = ifScript.ElseScript;
@@ -392,6 +406,28 @@ namespace WebEditor.Services
             }
 
             return script;
+        }
+
+        private IEditableScript GetScriptLine(string element, string attribute)
+        {
+            string parameter;
+            return GetScriptLine(element, attribute, out parameter);
+        }
+
+        private IEditableScript GetScriptLine(string element, string attribute, out string parameter)
+        {
+            string[] path = attribute.Split(new[] { '-' }, 4);
+            IEditableScripts parent = m_controller.GetEditorData(element).GetAttribute(path[0]) as IEditableScripts;
+            IEditableScript scriptLine = parent.Scripts.ElementAt(int.Parse(path[1]));
+            if (path.Length == 2)
+            {
+                parameter = null;
+            }
+            else
+            {
+                parameter = path[2];
+            }
+            return scriptLine;
         }
 
         private class ScriptAdderCategory
