@@ -484,14 +484,45 @@ namespace WebEditor.Services
         {
             string[] path = attribute.Split(new[] { '-' }, 4);
             IEditableScripts parent = m_controller.GetEditorData(element).GetAttribute(path[0]) as IEditableScripts;
+            return GetScriptLine(path, parent, out parameter);
+        }
+
+        private static IEditableScript GetScriptLine(string[] path, IEditableScripts parent, out string parameter)
+        {
             IEditableScript scriptLine = parent.Scripts.ElementAt(int.Parse(path[1]));
             if (path.Length == 2)
             {
                 parameter = null;
             }
-            else
+            else if (path.Length == 3)
             {
                 parameter = path[2];
+            }
+            else
+            {
+                EditableIfScript ifScript = (EditableIfScript)scriptLine;
+                IEditableScripts childScript;
+                if (path[2] == "then")
+                {
+                    childScript = ifScript.ThenScript;
+                }
+                else if (path[2].StartsWith("elseif"))
+                {
+                    childScript = ifScript.ElseIfScripts.ElementAt(int.Parse(path[2].Substring(6))).EditableScripts;
+                }
+                else if (path[2] == "else")
+                {
+                    childScript = ifScript.ElseScript;
+                }
+                else
+                {
+                    throw new InvalidOperationException();
+                }
+                List<string> newPath = new List<string>(path);
+                newPath.RemoveRange(0, 2);
+                string newPathString = string.Join("-", newPath);
+                path = newPathString.Split(new[] { '-' }, 4);
+                scriptLine = GetScriptLine(path, childScript, out parameter);
             }
             return scriptLine;
         }
