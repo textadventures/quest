@@ -93,17 +93,21 @@
     if (useSimpleEditor)
     {
         MvcHtmlString editorHtml = null;
+        bool simpleEditorVisible = IsSimpleExpression(simpleEditor, value);
+        string simpleEditorDisplayStyle = simpleEditorVisible ? "inline" : "none";
+        string expressionDisplayStyle = simpleEditorVisible ? "none" : "inline";
+        string simpleValue = simpleEditorVisible ? ConvertToSimpleExpression(simpleEditor, value) : string.Empty;
         
         switch (simpleEditor)
         {
             case "textbox":
-                editorHtml = Html.TextBox(name, value, new { style = "width: 350px" });
+                editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
                 break;
             case "file":
                 break;
             case "boolean":
-                list.Add(new SelectListItem { Text = "yes" });
-                list.Add(new SelectListItem { Text = "no" });
+                list.Add(new SelectListItem { Text = "yes", Selected = (value == "true") });
+                list.Add(new SelectListItem { Text = "no", Selected = (value == "false") });
                 break;
             case "objects":
                 break;
@@ -117,12 +121,14 @@
         
         if (editorHtml != null)
         {
-            list.Add(new SelectListItem { Text = simple });
+            list.Add(new SelectListItem { Text = simple, Selected = simpleEditorVisible });
         }
         
-        list.Add(new SelectListItem { Text = "expression" });
+        list.Add(new SelectListItem { Text = "expression", Selected = !simpleEditorVisible });
         
-        @Html.DropDownList(name + "-expressioneditor", list)
+        @Html.DropDownList(name + "-expressioneditordropdown", list)
+
+        @Html.TextBox(name + "-expressioneditor", value, new { style = "width: 350px; display: " + expressionDisplayStyle });
 
         if (editorHtml != null)
         {
@@ -132,6 +138,7 @@
 
     if (useTemplates)
     {
+        // TO DO
     }
 }
 
@@ -181,5 +188,41 @@
         <div class="childScript">
         @RenderScripts(script.ElseScript, attributePrefix + "-else")
         </div>
+    }
+}
+
+@functions {
+    private bool IsSimpleExpression(string simpleEditor, string expression)
+    {
+        if (simpleEditor == "boolean")
+        {
+            return (expression == "true" || expression == "false");
+        }
+
+        if (simpleEditor == "objects")
+        {
+            return expression.Length == 0;   // TO DO: || ((DropDownObjectsControl)m_simpleEditor).GetValidNames().Contains(expression);
+        }
+
+        if (simpleEditor == "number")
+        {
+            int number;
+            return int.TryParse(expression, out number);
+        }
+
+        return EditorUtility.IsSimpleStringExpression(expression);
+    }
+
+    private string ConvertToSimpleExpression(string simpleEditor, string expression)
+    {
+        switch (simpleEditor)
+        {
+            case "boolean":
+            case "objects":
+            case "number":
+                return expression;
+            default:
+                return EditorUtility.ConvertToSimpleStringExpression(expression);
+        }
     }
 }
