@@ -117,9 +117,9 @@ namespace WebEditor.Models
             if (originalScript == null) return null;
 
             ElementSaveData.ScriptsSaveData result = new ElementSaveData.ScriptsSaveData();
-            
+
             BindScriptLines(provider, attribute, controller, originalScript, result);
-            
+
             return result;
         }
 
@@ -135,7 +135,15 @@ namespace WebEditor.Models
                     IEditorDefinition definition = controller.GetEditorDefinition(script);
                     foreach (IEditorControl ctl in definition.Controls.Where(c => c.Attribute != null))
                     {
-                        object value = GetScriptParameterValue(provider, attribute, count, ctl);
+                        object value = GetScriptParameterValue(
+                            controller,
+                            provider,
+                            string.Format("{0}-{1}-{2}", attribute, count, ctl.Attribute),
+                            ctl.ControlType,
+                            ctl.GetString("simpleeditor") ?? "textbox",
+                            null,
+                            null
+                        );
                         scriptLine.Attributes.Add(ctl.Attribute, value);
                     }
                 }
@@ -143,9 +151,17 @@ namespace WebEditor.Models
                 {
                     EditableIfScript ifScript = (EditableIfScript)script;
 
-                    string expressionKey = string.Format("{0}-{1}-expression", attribute, count);
-                    ValueProviderResult expressionValue = provider.GetValue(expressionKey);
-                    scriptLine.Attributes.Add("expression", expressionValue.ConvertTo(typeof(string)));
+                    object expressionValue = GetScriptParameterValue(
+                        controller,
+                        provider,
+                        string.Format("{0}-{1}-expression", attribute, count),
+                        "expression",
+                        null,
+                        "if",
+                        (string)ifScript.GetAttribute("expression")
+                    );
+
+                    scriptLine.Attributes.Add("expression", expressionValue);
 
                     ElementSaveData.ScriptsSaveData thenScriptResult = new ElementSaveData.ScriptsSaveData();
                     BindScriptLines(provider, string.Format("{0}-{1}-then", attribute, count), controller, ifScript.ThenScript, thenScriptResult);
@@ -154,9 +170,17 @@ namespace WebEditor.Models
                     int elseIfCount = 0;
                     foreach (EditableIfScript.EditableElseIf elseIf in ifScript.ElseIfScripts)
                     {
-                        string elseIfExpressionKey = string.Format("{0}-{1}-elseif{2}-expression", attribute, count, elseIfCount);
-                        ValueProviderResult elseIfExpressionValue = provider.GetValue(elseIfExpressionKey);
-                        scriptLine.Attributes.Add(string.Format("elseif{0}-expression", elseIfCount), elseIfExpressionValue.ConvertTo(typeof(string)));
+                        object elseIfExpressionValue = GetScriptParameterValue(
+                            controller,
+                            provider,
+                            string.Format("{0}-{1}-elseif{2}-expression", attribute, count, elseIfCount),
+                            "expression",
+                            null,
+                            "if",
+                            elseIf.Expression
+                        );
+
+                        scriptLine.Attributes.Add(string.Format("elseif{0}-expression", elseIfCount), elseIfExpressionValue);
 
                         ElementSaveData.ScriptsSaveData elseIfScriptResult = new ElementSaveData.ScriptsSaveData();
                         BindScriptLines(provider, string.Format("{0}-{1}-elseif{2}", attribute, count, elseIfCount), controller, elseIf.EditableScripts, elseIfScriptResult);
@@ -177,45 +201,65 @@ namespace WebEditor.Models
             }
         }
 
-        private object GetScriptParameterValue(IValueProvider provider, string attribute, int count, IEditorControl ctl)
+        private object GetScriptParameterValue(EditorController controller, IValueProvider provider, string attributePrefix, string controlType, string simpleEditor, string templatesFilter, string oldTemplateValue)
         {
-            if (ctl.ControlType == "expression")
+            if (controlType == "expression")
             {
-                string simpleEditor = ctl.GetString("simpleeditor") ?? "textbox";
-                string dropdownKey = string.Format("{0}-{1}-{2}-expressioneditordropdown", attribute, count, ctl.Attribute);
-                string dropdownKeyValue = provider.GetValue(dropdownKey).ConvertTo(typeof(string)) as string;
-                if (dropdownKeyValue == "expression")
+                if (simpleEditor != null)
                 {
-                    string key = string.Format("{0}-{1}-{2}-expressioneditor", attribute, count, ctl.Attribute);
-                    ValueProviderResult value = provider.GetValue(key);
-                    return value == null ? null : value.ConvertTo(typeof(string));
-                }
-                else
-                {
-                    if (simpleEditor == "boolean")
+                    string dropdownKey = string.Format("{0}-expressioneditordropdown", attributePrefix);
+                    string dropdownKeyValue = provider.GetValue(dropdownKey).ConvertTo(typeof(string)) as string;
+                    if (dropdownKeyValue == "expression")
                     {
-                        return dropdownKeyValue == "yes" ? "true" : "false";
+                        string key = string.Format("{0}-expressioneditor", attributePrefix);
+                        ValueProviderResult value = provider.GetValue(key);
+                        return value == null ? null : value.ConvertTo(typeof(string));
                     }
                     else
                     {
-                        string key = string.Format("{0}-{1}-{2}-simpleeditor", attribute, count, ctl.Attribute);
-                        ValueProviderResult value = provider.GetValue(key);
-                        string simpleValue = value.ConvertTo(typeof(string)) as string;
-
-                        switch (simpleEditor)
+                        if (simpleEditor == "boolean")
                         {
-                            case "objects":
-                            case "number":
-                                return simpleValue;
-                            default:
-                                return EditorUtility.ConvertFromSimpleStringExpression(simpleValue);
+                            return dropdownKeyValue == "yes" ? "true" : "false";
+                        }
+                        else
+                        {
+                            string key = string.Format("{0}-simpleeditor", attributePrefix);
+                            ValueProviderResult value = provider.GetValue(key);
+                            string simpleValue = value.ConvertTo(typeof(string)) as string;
+
+                            switch (simpleEditor)
+                            {
+                                case "objects":
+                                case "number":
+                                    return simpleValue;
+                                default:
+                                    return EditorUtility.ConvertFromSimpleStringExpression(simpleValue);
+                            }
                         }
                     }
+                }
+                else
+                {
+                    // TO DO: first, need to check if the drop-down is set to "expression" or not.
+                    //        ONLY if it's not, then do the below:
+
+                    IEditorDefinition editorDefinition = controller.GetExpressionEditorDefinition(oldTemplateValue, templatesFilter);
+                    string templateName = controller.GetExpressionEditorDefinitionName(oldTemplateValue, templatesFilter);
+                    IEditorData data = controller.GetExpressionEditorData(oldTemplateValue, templatesFilter, null);
+
+                    foreach (IEditorControl ctl in editorDefinition.Controls)
+                    {
+                        string key = attributePrefix + "-" + ctl.Attribute;
+                        object value = GetScriptParameterValue(controller, provider, key, ctl.ControlType, ctl.GetString("simpleeditor") ?? "textbox", null, null);
+                        data.SetAttribute(ctl.Attribute, value);
+                    }
+
+                    return controller.GetExpression(data, null, null);
                 }
             }
             else
             {
-                string key = string.Format("{0}-{1}-{2}", attribute, count, ctl.Attribute);
+                string key = attributePrefix;
                 ValueProviderResult value = provider.GetValue(key);
                 return value == null ? null : value.ConvertTo(typeof(string));
             }

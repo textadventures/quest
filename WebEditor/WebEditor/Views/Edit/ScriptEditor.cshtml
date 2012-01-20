@@ -163,7 +163,7 @@
         foreach (IEditorControl ctl in editorDefinition.Controls)
         {
             object editorValue = ctl.Attribute == null ? null : data.GetAttribute(ctl.Attribute);
-            @RenderEditorControl(ctl, editorValue, name + "-" + count.ToString())
+            @RenderEditorControl(ctl, editorValue, name)
             count++;
         }
     }
