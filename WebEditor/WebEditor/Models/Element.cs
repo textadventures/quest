@@ -135,13 +135,8 @@ namespace WebEditor.Models
                     IEditorDefinition definition = controller.GetEditorDefinition(script);
                     foreach (IEditorControl ctl in definition.Controls.Where(c => c.Attribute != null))
                     {
-                        string key = string.Format("{0}-{1}-{2}", attribute, count.ToString(), ctl.Attribute);
-                        ValueProviderResult value = provider.GetValue(key);
-
-                        // TO DO: May need to switch (ctl.ControlType) here - if so need to factor out
-                        // the similar switch block in BindModel above
-
-                        scriptLine.Attributes.Add(ctl.Attribute, value == null ? null : value.ConvertTo(typeof(string)));
+                        object value = GetScriptParameterValue(provider, attribute, count, ctl);
+                        scriptLine.Attributes.Add(ctl.Attribute, value);
                     }
                 }
                 else
@@ -182,6 +177,48 @@ namespace WebEditor.Models
             }
         }
 
-    }
+        private object GetScriptParameterValue(IValueProvider provider, string attribute, int count, IEditorControl ctl)
+        {
+            if (ctl.ControlType == "expression")
+            {
+                string simpleEditor = ctl.GetString("simpleeditor") ?? "textbox";
+                string dropdownKey = string.Format("{0}-{1}-{2}-expressioneditordropdown", attribute, count, ctl.Attribute);
+                string dropdownKeyValue = provider.GetValue(dropdownKey).ConvertTo(typeof(string)) as string;
+                if (dropdownKeyValue == "expression")
+                {
+                    string key = string.Format("{0}-{1}-{2}-expressioneditor", attribute, count, ctl.Attribute);
+                    ValueProviderResult value = provider.GetValue(key);
+                    return value == null ? null : value.ConvertTo(typeof(string));
+                }
+                else
+                {
+                    if (simpleEditor == "boolean")
+                    {
+                        return dropdownKeyValue == "yes" ? "true" : "false";
+                    }
+                    else
+                    {
+                        string key = string.Format("{0}-{1}-{2}-simpleeditor", attribute, count, ctl.Attribute);
+                        ValueProviderResult value = provider.GetValue(key);
+                        string simpleValue = value.ConvertTo(typeof(string)) as string;
 
+                        switch (simpleEditor)
+                        {
+                            case "objects":
+                            case "number":
+                                return simpleValue;
+                            default:
+                                return EditorUtility.ConvertFromSimpleStringExpression(simpleValue);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                string key = string.Format("{0}-{1}-{2}", attribute, count, ctl.Attribute);
+                ValueProviderResult value = provider.GetValue(key);
+                return value == null ? null : value.ConvertTo(typeof(string));
+            }
+        }
+    }
 }
