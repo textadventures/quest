@@ -112,8 +112,14 @@
     $(".template-dropdown").change(function () {
         var key = $(this).attr("data-key");
         var text = $(this).find('option:selected').text();
-        $("#_ignoreExpression").val(key);
-        sendAdditionalAction("script settemplate " + key + ";" + text);
+        if (text == "expression") {
+            $("#" + key + "-templateeditor").hide();
+            $("#" + key).show();
+        }
+        else {
+            $("#_ignoreExpression").val(key);
+            sendAdditionalAction("script settemplate " + key + ";" + text);
+        }
     });
 }
 

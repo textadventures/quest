@@ -156,21 +156,27 @@
     
     @Html.DropDownList(name + "-templatedropdown", list, new { @class = "template-dropdown", data_key = name })
 
+    string expressionVisibility = "inline";
+
     if (useTemplate)
     {
-        int count = 0;
-        IEditorData data = Model.Controller.GetExpressionEditorData(value, templatesFilter, null);
-        foreach (IEditorControl ctl in editorDefinition.Controls)
-        {
-            object editorValue = ctl.Attribute == null ? null : data.GetAttribute(ctl.Attribute);
-            @RenderEditorControl(ctl, editorValue, name)
-            count++;
-        }
+        string templateEditorControlsSpanName = name + "-templateeditor";
+        <span id="@templateEditorControlsSpanName">
+            @{
+                expressionVisibility = "none";
+                int count = 0;
+                IEditorData data = Model.Controller.GetExpressionEditorData(value, templatesFilter, null);
+                foreach (IEditorControl ctl in editorDefinition.Controls)
+                {
+                    object editorValue = ctl.Attribute == null ? null : data.GetAttribute(ctl.Attribute);
+                    @RenderEditorControl(ctl, editorValue, name)
+                    count++;
+                }
+            }
+        </span>
     }
-    else
-    {
-        @Html.TextBox(name, value, new { style = "width: 350px" });
-    }
+    
+    @Html.TextBox(name, value, new { style = "width: 350px; display: " + expressionVisibility });
 }
 
 @helper RenderIfScript(EditableIfScript script, string attributePrefix)
