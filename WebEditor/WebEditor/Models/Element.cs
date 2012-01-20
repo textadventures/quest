@@ -17,6 +17,10 @@ namespace WebEditor.Models
         public string Tab { get; set; }
     }
 
+    public class IgnoredValue
+    {
+    }
+
     [ModelBinder(typeof(ElementSaveDataModelBinder))]
     public class ElementSaveData
     {
@@ -60,6 +64,7 @@ namespace WebEditor.Models
             string redirectToElement = (string)bindingContext.ValueProvider.GetValue("_redirectToElement").ConvertTo(typeof(string));
             string additionalAction = (string)bindingContext.ValueProvider.GetValue("_additionalAction").ConvertTo(typeof(string));
             string additionalActionTab = (string)bindingContext.ValueProvider.GetValue("_additionalActionTab").ConvertTo(typeof(string));
+            string ignoreExpression = (string)bindingContext.ValueProvider.GetValue("_ignoreExpression").ConvertTo(typeof(string));
 
             result.GameId = gameId;
             result.Key = key;
@@ -93,7 +98,7 @@ namespace WebEditor.Models
                             saveValue = value.ConvertTo(typeof(bool));
                             break;
                         case "script":
-                            saveValue = BindScript(bindingContext.ValueProvider, ctl.Attribute, originalElement.EditorData, editorDictionary[gameId].Controller);
+                            saveValue = BindScript(bindingContext.ValueProvider, ctl.Attribute, originalElement.EditorData, editorDictionary[gameId].Controller, ignoreExpression);
                             break;
                         default:
                             handled = false;    // TO DO: Temporary until all controltypes are handled
@@ -110,7 +115,7 @@ namespace WebEditor.Models
             return result;
         }
 
-        private object BindScript(IValueProvider provider, string attribute, IEditorData data, EditorController controller)
+        private object BindScript(IValueProvider provider, string attribute, IEditorData data, EditorController controller, string ignoreExpression)
         {
             IEditableScripts originalScript = (IEditableScripts)data.GetAttribute(attribute);
 
@@ -118,12 +123,12 @@ namespace WebEditor.Models
 
             ElementSaveData.ScriptsSaveData result = new ElementSaveData.ScriptsSaveData();
 
-            BindScriptLines(provider, attribute, controller, originalScript, result);
+            BindScriptLines(provider, attribute, controller, originalScript, result, ignoreExpression);
 
             return result;
         }
 
-        private void BindScriptLines(IValueProvider provider, string attribute, EditorController controller, IEditableScripts originalScript, ElementSaveData.ScriptsSaveData result)
+        private void BindScriptLines(IValueProvider provider, string attribute, EditorController controller, IEditableScripts originalScript, ElementSaveData.ScriptsSaveData result, string ignoreExpression)
         {
             int count = 0;
             foreach (IEditableScript script in originalScript.Scripts)
@@ -142,7 +147,8 @@ namespace WebEditor.Models
                             ctl.ControlType,
                             ctl.GetString("simpleeditor") ?? "textbox",
                             null,
-                            null
+                            null,
+                            ignoreExpression
                         );
                         scriptLine.Attributes.Add(ctl.Attribute, value);
                     }
@@ -158,13 +164,14 @@ namespace WebEditor.Models
                         "expression",
                         null,
                         "if",
-                        (string)ifScript.GetAttribute("expression")
+                        (string)ifScript.GetAttribute("expression"),
+                        ignoreExpression
                     );
 
                     scriptLine.Attributes.Add("expression", expressionValue);
 
                     ElementSaveData.ScriptsSaveData thenScriptResult = new ElementSaveData.ScriptsSaveData();
-                    BindScriptLines(provider, string.Format("{0}-{1}-then", attribute, count), controller, ifScript.ThenScript, thenScriptResult);
+                    BindScriptLines(provider, string.Format("{0}-{1}-then", attribute, count), controller, ifScript.ThenScript, thenScriptResult, ignoreExpression);
                     scriptLine.Attributes.Add("then", thenScriptResult);
 
                     int elseIfCount = 0;
@@ -177,13 +184,14 @@ namespace WebEditor.Models
                             "expression",
                             null,
                             "if",
-                            elseIf.Expression
+                            elseIf.Expression,
+                            ignoreExpression
                         );
 
                         scriptLine.Attributes.Add(string.Format("elseif{0}-expression", elseIfCount), elseIfExpressionValue);
 
                         ElementSaveData.ScriptsSaveData elseIfScriptResult = new ElementSaveData.ScriptsSaveData();
-                        BindScriptLines(provider, string.Format("{0}-{1}-elseif{2}", attribute, count, elseIfCount), controller, elseIf.EditableScripts, elseIfScriptResult);
+                        BindScriptLines(provider, string.Format("{0}-{1}-elseif{2}", attribute, count, elseIfCount), controller, elseIf.EditableScripts, elseIfScriptResult, ignoreExpression);
                         scriptLine.Attributes.Add(string.Format("elseif{0}-then", elseIfCount), elseIfScriptResult);
                         elseIfCount++;
                     }
@@ -191,7 +199,7 @@ namespace WebEditor.Models
                     if (ifScript.ElseScript != null)
                     {
                         ElementSaveData.ScriptsSaveData elseScriptResult = new ElementSaveData.ScriptsSaveData();
-                        BindScriptLines(provider, string.Format("{0}-{1}-else", attribute, count), controller, ifScript.ElseScript, elseScriptResult);
+                        BindScriptLines(provider, string.Format("{0}-{1}-else", attribute, count), controller, ifScript.ElseScript, elseScriptResult, ignoreExpression);
                         scriptLine.Attributes.Add("else", elseScriptResult);
                     }
                 }
@@ -201,8 +209,10 @@ namespace WebEditor.Models
             }
         }
 
-        private object GetScriptParameterValue(EditorController controller, IValueProvider provider, string attributePrefix, string controlType, string simpleEditor, string templatesFilter, string oldTemplateValue)
+        private object GetScriptParameterValue(EditorController controller, IValueProvider provider, string attributePrefix, string controlType, string simpleEditor, string templatesFilter, string oldTemplateValue, string ignoreExpression)
         {
+            if (attributePrefix == ignoreExpression) return new IgnoredValue();
+
             if (controlType == "expression")
             {
                 if (simpleEditor != null)
@@ -256,7 +266,7 @@ namespace WebEditor.Models
                         foreach (IEditorControl ctl in editorDefinition.Controls)
                         {
                             string key = attributePrefix + "-" + ctl.Attribute;
-                            object value = GetScriptParameterValue(controller, provider, key, ctl.ControlType, ctl.GetString("simpleeditor") ?? "textbox", null, null);
+                            object value = GetScriptParameterValue(controller, provider, key, ctl.ControlType, ctl.GetString("simpleeditor") ?? "textbox", null, null, ignoreExpression);
                             data.SetAttribute(ctl.Attribute, value);
                         }
 

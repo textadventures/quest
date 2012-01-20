@@ -161,6 +161,10 @@ namespace WebEditor.Services
             {
                 return (bool)oldValue != (bool)newValue;
             }
+            if (newValue is WebEditor.Models.IgnoredValue)
+            {
+                return false;
+            }
             throw new NotImplementedException();
         }
 
@@ -311,6 +315,10 @@ namespace WebEditor.Services
                                 ScriptDeleteIfSection(key, data[0], data[1].Split(';'));
                             }
                             break;
+                        case "settemplate":
+                            data = scriptParameter.Split(new[] { ';' }, 2);
+                            ScriptSetTemplate(key, data[0], data[1]);
+                            break;
                     }
                     break;
             }
@@ -433,6 +441,37 @@ namespace WebEditor.Services
             foreach (EditableIfScript.EditableElseIf elseIfToRemove in elseIfsToRemove)
             {
                 ifScript.RemoveElseIf(elseIfToRemove);
+            }
+        }
+
+        private void ScriptSetTemplate(string element, string attribute, string template)
+        {
+            string newExpression = m_controller.GetNewExpression(template);
+
+            string[] path = attribute.Split('-');
+
+            // final part of attribute path will be the name of the expression parameter. The one before
+            // that will give us the script line and section (e.g. "then", "else if")
+
+            string scriptLinePath = string.Join("-", path.Take(path.Length - 1));
+            string parameter = path[path.Length - 1];
+
+            string sectionParameter;
+            IEditableScript scriptLine = GetScriptLine(element, scriptLinePath, out sectionParameter);
+            if (sectionParameter == null)
+            {
+                EditableIfScript ifScript = (EditableIfScript)scriptLine;
+                ifScript.SetAttribute(parameter, newExpression);
+            }
+            else if (sectionParameter.StartsWith("elseif"))
+            {
+                int elseIfIndex = int.Parse(sectionParameter.Substring(6));
+                EditableIfScript ifScript = (EditableIfScript)scriptLine;
+                ifScript.ElseIfScripts.ElementAt(elseIfIndex).SetAttribute(parameter, newExpression);
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
 

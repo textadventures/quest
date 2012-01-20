@@ -109,6 +109,12 @@
             $("#" + key + "-simpleeditor").show();
         }
     });
+    $(".template-dropdown").change(function () {
+        var key = $(this).attr("data-key");
+        var text = $(this).find('option:selected').text();
+        $("#_ignoreExpression").val(key);
+        sendAdditionalAction("script settemplate " + key + ";" + text);
+    });
 }
 
 function getSelectedScripts(key) {

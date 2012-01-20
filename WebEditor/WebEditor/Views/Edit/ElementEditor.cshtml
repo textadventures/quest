@@ -11,6 +11,7 @@
         <input type="hidden" name="_redirectToElement" id="_redirectToElement" value="@Model.Key" />
         <input type="hidden" name="_additionalAction" id="_additionalAction" value="" />
         <input type="hidden" name="_additionalActionTab" id="_additionalActionTab" value="@Model.Tab" />
+        <input type="hidden" name="_ignoreExpression" id="_ignoreExpression" value="" />
         <div id="elementEditorTabs">
             @{
                 int count = 0;
@@ -53,12 +54,14 @@
                             {
                                 continue;
                             }
-                            if (IsSelfCaption(ctl)) {
+                            if (IsSelfCaption(ctl))
+                            {
                                 <tr>
                                     <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst)</td>
                                 </tr>
                             }
-                            else if (IsLongCaption(ctl)) {
+                            else if (IsLongCaption(ctl))
+                            {
                                 <tr>
                                     <td colspan="2">@ctl.Caption:</td>
                                 </tr>
@@ -66,7 +69,8 @@
                                     <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst)</td>
                                 </tr>
                             }
-                            else {                            
+                            else
+                            {
                                 <tr>
                                     <td class="elementEditorCaption">@ctl.Caption:</td>
                                     <td class="elementEditorCell">
