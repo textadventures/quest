@@ -240,21 +240,28 @@ namespace WebEditor.Models
                 }
                 else
                 {
-                    // TO DO: first, need to check if the drop-down is set to "expression" or not.
-                    //        ONLY if it's not, then do the below:
-
-                    IEditorDefinition editorDefinition = controller.GetExpressionEditorDefinition(oldTemplateValue, templatesFilter);
-                    string templateName = controller.GetExpressionEditorDefinitionName(oldTemplateValue, templatesFilter);
-                    IEditorData data = controller.GetExpressionEditorData(oldTemplateValue, templatesFilter, null);
-
-                    foreach (IEditorControl ctl in editorDefinition.Controls)
+                    string dropdownKey = string.Format("{0}-templatedropdown", attributePrefix);
+                    string dropdownKeyValue = provider.GetValue(dropdownKey).ConvertTo(typeof(string)) as string;
+                    if (dropdownKeyValue == "expression")
                     {
-                        string key = attributePrefix + "-" + ctl.Attribute;
-                        object value = GetScriptParameterValue(controller, provider, key, ctl.ControlType, ctl.GetString("simpleeditor") ?? "textbox", null, null);
-                        data.SetAttribute(ctl.Attribute, value);
+                        string key = attributePrefix;
+                        ValueProviderResult value = provider.GetValue(key);
+                        return value == null ? null : value.ConvertTo(typeof(string));
                     }
+                    else
+                    {
+                        IEditorDefinition editorDefinition = controller.GetExpressionEditorDefinition(oldTemplateValue, templatesFilter);
+                        IEditorData data = controller.GetExpressionEditorData(oldTemplateValue, templatesFilter, null);
 
-                    return controller.GetExpression(data, null, null);
+                        foreach (IEditorControl ctl in editorDefinition.Controls)
+                        {
+                            string key = attributePrefix + "-" + ctl.Attribute;
+                            object value = GetScriptParameterValue(controller, provider, key, ctl.ControlType, ctl.GetString("simpleeditor") ?? "textbox", null, null);
+                            data.SetAttribute(ctl.Attribute, value);
+                        }
+
+                        return controller.GetExpression(data, null, null);
+                    }
                 }
             }
             else
