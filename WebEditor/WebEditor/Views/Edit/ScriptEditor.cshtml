@@ -77,21 +77,19 @@
 
 @helper RenderExpressionControl(IEditorControl ctl, string name, string value)
 {
-    List<SelectListItem> list = new List<SelectListItem>();
-    
-    bool useTemplates;
-    bool useSimpleEditor;
-
     string templatesFilter = ctl.GetString("usetemplates");
-    useTemplates = (templatesFilter != null);
+
+    if (templatesFilter != null)
+    {
+        @RenderTemplateControl(name, value, templatesFilter);
+    }
 
     string simpleEditor = ctl.GetString("simpleeditor") ?? "textbox";
     string simple = ctl.GetString("simple");
 
-    useSimpleEditor = (simpleEditor == "boolean" || simpleEditor != null);
-
-    if (useSimpleEditor)
+    if (simpleEditor == "boolean" || simpleEditor != null)
     {
+        List<SelectListItem> list = new List<SelectListItem>();
         MvcHtmlString editorHtml = null;
         bool simpleEditorVisible = IsSimpleExpression(simpleEditor, value);
         string simpleEditorDisplayStyle = simpleEditorVisible ? "inline" : "none";
@@ -135,18 +133,50 @@
             @editorHtml
         }
     }
+}
 
-    if (useTemplates)
+@helper RenderTemplateControl(string name, string value, string templatesFilter)
+{
+    IEditorDefinition editorDefinition = Model.Controller.GetExpressionEditorDefinition(value, templatesFilter);
+    bool useTemplate = (editorDefinition != null);
+    string templateName = null;
+    List<SelectListItem> list = new List<SelectListItem>();
+
+    list.Add(new SelectListItem { Text = "expression", Selected = !useTemplate });
+
+    if (useTemplate)
     {
-        // TO DO
+        templateName = Model.Controller.GetExpressionEditorDefinitionName(value, templatesFilter);
+    }
+
+    foreach (string item in Model.Controller.GetExpressionEditorNames(templatesFilter))
+    {
+        list.Add(new SelectListItem { Text = item, Selected = (item == templateName) });
+    }
+    
+    @Html.DropDownList(name + "-templatedropdown", list, new { @class = "template-dropdown", data_key = name })
+
+    if (useTemplate)
+    {
+        int count = 0;
+        IEditorData data = Model.Controller.GetExpressionEditorData(value, templatesFilter, null);
+        foreach (IEditorControl ctl in editorDefinition.Controls)
+        {
+            object editorValue = ctl.Attribute == null ? null : data.GetAttribute(ctl.Attribute);
+            @RenderEditorControl(ctl, editorValue, name + "-" + count.ToString())
+            count++;
+        }
+    }
+    else
+    {
+        @Html.TextBox(name, value, new { style = "width: 350px" });
     }
 }
 
 @helper RenderIfScript(EditableIfScript script, string attributePrefix)
 {
     <text>If: </text>
-    // TO DO: This needs to use the same expression mechanism as RenderEditorControl
-    @Html.TextBox(attributePrefix + "-expression", script.GetAttribute("expression"), new { style = "width: 350px" })
+    @RenderTemplateControl(attributePrefix + "-expression", (string)script.GetAttribute("expression"), "if")
     <div class="childScript">
     @RenderScripts(script.ThenScript, attributePrefix + "-then")
     </div>
@@ -162,7 +192,7 @@
         <div class="ifSection">
         @Html.CheckBox("selectifsection-" + attributePrefix + "-elseif" + elseIfCount.ToString(), new { @class = "ifsection-select", data_key = attributePrefix })
         Else If:
-        @Html.TextBox(attributePrefix + "-elseif" + elseIfCount.ToString() + "-expression", elseIf.GetAttribute("expression"), new { style = "width: 350px" })
+        @RenderTemplateControl(attributePrefix + "-elseif" + elseIfCount.ToString() + "-expression", (string)elseIf.GetAttribute("expression"), "if")
         </div>
         <div class="childScript">
         @RenderScripts(elseIf.EditableScripts, attributePrefix + "-elseif" + elseIfCount.ToString())
