@@ -126,7 +126,7 @@
         
         list.Add(new SelectListItem { Text = "expression", Selected = !simpleEditorVisible });
         
-        @Html.DropDownList(name + "-expressioneditordropdown", list)
+        @Html.DropDownList(name + "-expressioneditordropdown", list, new { @class = "expression-dropdown", data_key = name })
 
         @Html.TextBox(name + "-expressioneditor", value, new { style = "width: 350px; display: " + expressionDisplayStyle });
 

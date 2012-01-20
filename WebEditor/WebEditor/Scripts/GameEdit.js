@@ -97,6 +97,18 @@
         var key = $(this).attr("data-key");
         sendAdditionalAction("script deleteifsection " + key + ";" + getSelectedIfSections(key));
     });
+    $(".expression-dropdown").change(function () {
+        var key = $(this).attr("data-key");
+        var showExpression = ($(this).find('option:selected').text() == "expression");
+        if (showExpression) {
+            $("#" + key + "-simpleeditor").hide();
+            $("#" + key + "-expressioneditor").show();
+        }
+        else {
+            $("#" + key + "-expressioneditor").hide();
+            $("#" + key + "-simpleeditor").show();
+        }
+    });
 }
 
 function getSelectedScripts(key) {
