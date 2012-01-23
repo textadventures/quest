@@ -521,7 +521,7 @@
       dictionary = GetAttribute(object, property)
       foreach (keywords, dictionary) {
         strength = GetKeywordsMatchStrength(LCase(keywords), text)
-        if (strength >= maxstrength) {
+        if (strength >= maxstrength and strength>0) {
           match = ScriptDictionaryItem(dictionary, keywords)
           maxstrength = strength
         }
