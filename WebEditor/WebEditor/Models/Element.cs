@@ -263,7 +263,7 @@ namespace WebEditor.Models
                         IEditorDefinition editorDefinition = controller.GetExpressionEditorDefinition(oldTemplateValue, templatesFilter);
                         IEditorData data = controller.GetExpressionEditorData(oldTemplateValue, templatesFilter, null);
 
-                        foreach (IEditorControl ctl in editorDefinition.Controls)
+                        foreach (IEditorControl ctl in editorDefinition.Controls.Where(c => c.Attribute != null))
                         {
                             string key = attributePrefix + "-" + ctl.Attribute;
                             object value = GetScriptParameterValue(controller, provider, key, ctl.ControlType, ctl.GetString("simpleeditor") ?? "textbox", null, null, ignoreExpression);
