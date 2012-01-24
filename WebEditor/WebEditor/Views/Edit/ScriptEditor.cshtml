@@ -91,7 +91,7 @@
     {
         List<SelectListItem> list = new List<SelectListItem>();
         MvcHtmlString editorHtml = null;
-        bool simpleEditorVisible = IsSimpleExpression(ctl, simpleEditor, value);
+        bool simpleEditorVisible = simple != null && IsSimpleExpression(ctl, simpleEditor, value);
         string simpleEditorDisplayStyle = simpleEditorVisible ? "inline" : "none";
         string expressionDisplayStyle = simpleEditorVisible ? "none" : "inline";
         string simpleValue = simpleEditorVisible ? ConvertToSimpleExpression(simpleEditor, value) : string.Empty;

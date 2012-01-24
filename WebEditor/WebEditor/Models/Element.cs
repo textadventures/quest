@@ -218,8 +218,9 @@ namespace WebEditor.Models
                 if (simpleEditor != null)
                 {
                     string dropdownKey = string.Format("{0}-expressioneditordropdown", attributePrefix);
-                    string dropdownKeyValue = provider.GetValue(dropdownKey).ConvertTo(typeof(string)) as string;
-                    if (dropdownKeyValue == "expression")
+                    ValueProviderResult dropdownKeyValueResult = provider.GetValue(dropdownKey);
+                    string dropdownKeyValue = (dropdownKeyValueResult != null) ? dropdownKeyValueResult.ConvertTo(typeof(string)) as string : null;
+                    if (dropdownKeyValue == "expression" || dropdownKeyValue == null)
                     {
                         string key = string.Format("{0}-expressioneditor", attributePrefix);
                         ValueProviderResult value = provider.GetValue(key);
