@@ -91,7 +91,7 @@
     {
         List<SelectListItem> list = new List<SelectListItem>();
         MvcHtmlString editorHtml = null;
-        bool simpleEditorVisible = simple != null && IsSimpleExpression(ctl, simpleEditor, value);
+        bool simpleEditorVisible = (simple != null || simpleEditor == "boolean") && IsSimpleExpression(ctl, simpleEditor, value);
         string simpleEditorDisplayStyle = simpleEditorVisible ? "inline" : "none";
         string expressionDisplayStyle = simpleEditorVisible ? "none" : "inline";
         string simpleValue = simpleEditorVisible ? ConvertToSimpleExpression(simpleEditor, value) : string.Empty;
@@ -127,7 +127,7 @@
                 throw new InvalidOperationException("Invalid control type for expression");
         }
         
-        if (editorHtml != null && simple != null)
+        if (editorHtml != null && (simple != null || simpleEditor == "boolean"))
         {
             list.Add(new SelectListItem { Text = simple, Selected = simpleEditorVisible });
         }
