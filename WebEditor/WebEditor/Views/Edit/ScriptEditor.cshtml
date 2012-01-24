@@ -117,7 +117,7 @@
                 editorHtml = Html.DropDownList(name + "-simpleeditor", items, new { style = "display: " + simpleEditorDisplayStyle });
                 break;
             case "number":
-                editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"display: " + simpleEditorDisplayStyle + "\" />");
+                editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"width: 50px; display: " + simpleEditorDisplayStyle + "\" />");
                 break;
             case "dropdown":
                 IEnumerable<string> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl);
