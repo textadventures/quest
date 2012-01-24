@@ -83,7 +83,8 @@
                     for (var idx in scripts) {
                         var script = scripts[idx];
                         var create = script.create == null ? null : script.create.replace(/\"/g, "&quot;");
-                        scriptAdderHtml += "<input type=\"radio\" name=\"dialog-add-script-selection\" value=\"" + create + "\" id=\"dialog-add-script-selection-" + count + "\"/> "
+                        var additionalAttributes = (count == 0) ? " checked=\"checked\"" : "";
+                        scriptAdderHtml += "<input type=\"radio\" name=\"dialog-add-script-selection\" value=\"" + create + "\" id=\"dialog-add-script-selection-" + count + "\"" + additionalAttributes + "/> ";
                         scriptAdderHtml += "<label for=\"dialog-add-script-selection-" + count + "\">" + script.display + "</label><br/>";
                         count++;
                     }
