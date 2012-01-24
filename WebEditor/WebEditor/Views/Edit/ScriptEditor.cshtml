@@ -283,7 +283,8 @@
         else
         {
             string objectType = ctl.GetString("objecttype");
-            return Model.Controller.GetObjectNames(objectType ?? "object");
+            IEnumerable<string> objectNames = Model.Controller.GetObjectNames(objectType ?? "object");
+            return new List<string> { "" }.Union(objectNames);
         }
     }
 }
