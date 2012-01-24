@@ -120,8 +120,8 @@
                 editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"display: " + simpleEditorDisplayStyle + "\" />");
                 break;
             case "dropdown":
-                // TO DO
-                editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
+                IEnumerable<string> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl);
+                editorHtml = Html.DropDownList(name + "-simpleeditor", valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == simpleValue) }), new { style = "display: " + simpleEditorDisplayStyle });
                 break;
             default:
                 throw new InvalidOperationException("Invalid control type for expression");

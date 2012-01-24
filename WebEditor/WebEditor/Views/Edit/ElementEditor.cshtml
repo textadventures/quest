@@ -115,7 +115,7 @@
         case "dropdown":
             IEnumerable<string> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl);
             string selectedItem = Model.EditorData.GetAttribute(ctl.Attribute) as string;
-            @Html.DropDownList(ctl.Attribute, valuesList.Select(v => new SelectListItem { Text = v, Selected = (v == selectedItem) }));
+            @Html.DropDownList(ctl.Attribute, valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == selectedItem) }));
             break;
         default:
             <text>[@ctl.ControlType]</text>
