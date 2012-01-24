@@ -91,7 +91,7 @@
     {
         List<SelectListItem> list = new List<SelectListItem>();
         MvcHtmlString editorHtml = null;
-        bool simpleEditorVisible = IsSimpleExpression(simpleEditor, value);
+        bool simpleEditorVisible = IsSimpleExpression(ctl, simpleEditor, value);
         string simpleEditorDisplayStyle = simpleEditorVisible ? "inline" : "none";
         string expressionDisplayStyle = simpleEditorVisible ? "none" : "inline";
         string simpleValue = simpleEditorVisible ? ConvertToSimpleExpression(simpleEditor, value) : string.Empty;
@@ -108,6 +108,11 @@
                 list.Add(new SelectListItem { Text = "no", Selected = (value == "false") });
                 break;
             case "objects":
+                List<SelectListItem> items = new List<SelectListItem>(
+                    GetObjectListNames(ctl).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
+                    .Select(s => new SelectListItem { Text = s, Value = s, Selected = (value == s) })
+                    );
+                editorHtml = Html.DropDownList(name + "-simpleeditor", items, new { style = "display: " + simpleEditorDisplayStyle });
                 break;
             case "number":
                 editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"display: " + simpleEditorDisplayStyle + "\" />");
@@ -195,7 +200,6 @@
     int elseIfCount = 0;
     foreach (EditableIfScript.EditableElseIf elseIf in script.ElseIfScripts)
     {
-        // TO DO: This needs to use the same expression mechanism as RenderEditorControl
         <div class="ifSection">
         @Html.CheckBox("selectifsection-" + attributePrefix + "-elseif" + elseIfCount.ToString(), new { @class = "ifsection-select", data_key = attributePrefix })
         Else If:
@@ -229,7 +233,7 @@
 }
 
 @functions {
-    private bool IsSimpleExpression(string simpleEditor, string expression)
+    private bool IsSimpleExpression(IEditorControl ctl, string simpleEditor, string expression)
     {
         if (simpleEditor == "boolean")
         {
@@ -238,7 +242,7 @@
 
         if (simpleEditor == "objects")
         {
-            return expression.Length == 0;   // TO DO: || ((DropDownObjectsControl)m_simpleEditor).GetValidNames().Contains(expression);
+            return expression.Length == 0  || GetObjectListNames(ctl).Contains(expression);
         }
 
         if (simpleEditor == "number")
@@ -260,6 +264,20 @@
                 return expression;
             default:
                 return EditorUtility.ConvertToSimpleStringExpression(expression);
+        }
+    }
+
+    private IEnumerable<string> GetObjectListNames(IEditorControl ctl)
+    {
+        string source = ctl.GetString("source");
+        if (source != null)
+        {
+            return Model.Controller.GetElementNames(source);
+        }
+        else
+        {
+            string objectType = ctl.GetString("objecttype");
+            return Model.Controller.GetObjectNames(objectType ?? "object");
         }
     }
 }
