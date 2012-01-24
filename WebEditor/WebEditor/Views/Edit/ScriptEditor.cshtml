@@ -102,6 +102,8 @@
                 editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
                 break;
             case "file":
+                // TO DO
+                editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
                 break;
             case "boolean":
                 list.Add(new SelectListItem { Text = "yes", Selected = (value == "true") });
@@ -118,19 +120,23 @@
                 editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"display: " + simpleEditorDisplayStyle + "\" />");
                 break;
             case "dropdown":
+                // TO DO
+                editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
                 break;
             default:
                 throw new InvalidOperationException("Invalid control type for expression");
         }
         
-        if (editorHtml != null)
+        if (editorHtml != null && simple != null)
         {
             list.Add(new SelectListItem { Text = simple, Selected = simpleEditorVisible });
         }
-        
-        list.Add(new SelectListItem { Text = "expression", Selected = !simpleEditorVisible });
-        
-        @Html.DropDownList(name + "-expressioneditordropdown", list, new { @class = "expression-dropdown", data_key = name })
+
+        if (list.Count > 0)
+        {
+            list.Add(new SelectListItem { Text = "expression", Selected = !simpleEditorVisible });
+            @Html.DropDownList(name + "-expressioneditordropdown", list, new { @class = "expression-dropdown", data_key = name })
+        }
 
         @Html.TextBox(name + "-expressioneditor", value, new { style = "width: 350px; display: " + expressionDisplayStyle });
 
