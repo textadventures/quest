@@ -78,6 +78,10 @@ div.scriptLine
 {
     padding-bottom: 4px;
 }
+textarea
+{
+    vertical-align: top;
+}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/

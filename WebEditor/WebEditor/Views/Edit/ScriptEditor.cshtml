@@ -106,7 +106,15 @@
         switch (simpleEditor)
         {
             case "textbox":
-                editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
+                bool multiLine = ctl.GetBool("multiline");
+                if (multiLine)
+                {
+                    editorHtml = Html.TextArea(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
+                }
+                else
+                {
+                    editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
+                }
                 break;
             case "file":
                 // TO DO

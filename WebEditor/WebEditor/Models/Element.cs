@@ -236,8 +236,19 @@ namespace WebEditor.Models
                     if (dropdownKeyValue == "expression" || dropdownKeyValue == null)
                     {
                         string key = string.Format("{0}-expressioneditor", attributePrefix);
-                        ValueProviderResult value = provider.GetValue(key);
-                        return value == null ? null : value.ConvertTo(typeof(string));
+                        try
+                        {
+                            ValueProviderResult value = provider.GetValue(key);
+                            return value == null ? null : value.ConvertTo(typeof(string));
+                        }
+                        catch (HttpRequestValidationException)
+                        {
+                            // Workaround for "potentially dangerous" form values which may contain HTML
+                            Func<System.Collections.Specialized.NameValueCollection> formGetter;
+                            Func<System.Collections.Specialized.NameValueCollection> queryStringGetter;
+                            Microsoft.Web.Infrastructure.DynamicValidationHelper.ValidationUtility.GetUnvalidatedCollections(HttpContext.Current, out formGetter, out queryStringGetter);
+                            return formGetter().Get(key);
+                        }
                     }
                     else
                     {
