@@ -82,6 +82,15 @@ textarea
 {
     vertical-align: top;
 }
+div.scriptDictionarySection
+{
+    margin-left: 24px;
+}
+input.scriptDictionarySection-select
+{
+    vertical-align: text-top;
+}
+
 
 /* Styles for basic forms
 -----------------------------------------------------------*/

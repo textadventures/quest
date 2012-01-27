@@ -86,9 +86,17 @@
             @RenderExpressionControl(ctl, name, (string)value)
             break;
         case "script":
+            string caption = ctl.GetString("caption");
+            if (caption != null)
+            {
+                <text>@caption:</text>
+            }
             <div class="childScript">
             @RenderScripts((IEditableScripts)value, name)
             </div>
+            break;
+        case "scriptdictionary":
+            @RenderScriptDictionary(ctl, (IEditableDictionary<IEditableScripts>)value, name)
             break;
         default:
             <text>[@ctl.ControlType]</text>
@@ -264,6 +272,22 @@
         <div class="childScript">
         @RenderScripts(script.ElseScript, attributePrefix + "-else")
         </div>
+    }
+}
+
+@helper RenderScriptDictionary(IEditorControl ctl, IEditableDictionary<IEditableScripts> value, string attributePrefix)
+{
+    int itemCount = 0;
+    foreach (IEditableListItem<IEditableScripts> item in value.Items.Values)
+    {
+        <div class="scriptDictionarySection">
+        @Html.CheckBox("selectscriptitem-" + attributePrefix + "-" + itemCount.ToString(), new { @class = "scriptDictionarySection-select", data_key = attributePrefix })
+        @Html.TextBox(attributePrefix + "-key" + itemCount.ToString(), item.Key)
+        </div>
+        <div class="childScript">
+        @RenderScripts(item.Value, attributePrefix + "-value" + itemCount.ToString())
+        </div>
+        itemCount++;
     }
 }
 
