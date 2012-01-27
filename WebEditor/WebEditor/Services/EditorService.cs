@@ -165,6 +165,13 @@ namespace WebEditor.Services
             {
                 return false;
             }
+            if (oldValue == null && newValue is WebEditor.Models.ElementSaveData.ScriptsSaveData)
+            {
+                if (((WebEditor.Models.ElementSaveData.ScriptsSaveData)newValue).ScriptLines.Count == 0)
+                {
+                    return false;
+                }
+            }
             throw new NotImplementedException();
         }
 
@@ -385,14 +392,21 @@ namespace WebEditor.Services
         {
             // TO DO: if (m_data.ReadOnly) return;
 
-            IEditableScripts script = GetScript(element, attribute);
-
-            // TO DO: For child scripts, use something like this:
-            // m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, script, true);
+            IEditableScript parent;
+            string parameter;
+            IEditableScripts script = GetScript(element, attribute, out parent, out parameter);
 
             if (script == null)
             {
-                m_controller.CreateNewEditableScripts(element, attribute, value, true, true);
+                if (parent == null)
+                {
+                    m_controller.CreateNewEditableScripts(element, attribute, value, true, true);
+                }
+                else
+                {
+                    ScriptCommandEditorData editorData = (ScriptCommandEditorData)m_controller.GetScriptEditorData(parent);
+                    m_controller.CreateNewEditableScriptsChild(editorData, parameter, value, true);
+                }
             }
             else
             {
@@ -486,7 +500,16 @@ namespace WebEditor.Services
 
         private IEditableScripts GetScript(string element, string attribute)
         {
+            IEditableScript parent;
+            string parameter;
+            return GetScript(element, attribute, out parent, out parameter);
+        }
+
+        private IEditableScripts GetScript(string element, string attribute, out IEditableScript parent, out string parameter)
+        {
             IEditableScripts script;
+            parent = null;
+            parameter = null;
 
             if (attribute.IndexOf("-") == -1)
             {
@@ -494,7 +517,6 @@ namespace WebEditor.Services
             }
             else
             {
-                string parameter;
                 IEditableScript scriptLine = GetScriptLine(element, attribute, out parameter);
                 if (parameter == "then")
                 {
@@ -514,6 +536,7 @@ namespace WebEditor.Services
                 }
                 else
                 {
+                    parent = scriptLine;
                     IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
                     return (IEditableScripts)scriptEditorData.GetAttribute(parameter);
                 }

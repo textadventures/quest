@@ -130,6 +130,7 @@ namespace WebEditor.Models
 
         private void BindScriptLines(IValueProvider provider, string attribute, EditorController controller, IEditableScripts originalScript, ElementSaveData.ScriptsSaveData result, string ignoreExpression)
         {
+            if (originalScript == null) return;
             int count = 0;
             foreach (IEditableScript script in originalScript.Scripts)
             {
