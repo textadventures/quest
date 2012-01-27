@@ -59,7 +59,21 @@
             @Html.Label(name, ctl.Caption)
             break;
         case "textbox":
-            @Html.TextBox(name, (string)value)
+            bool multiLine = ctl.GetBool("multiline");
+            if (multiLine)
+            {
+                string colour = ctl.GetString("colour");
+                string extraStyle = "";
+                if (colour != null)
+                {
+                    extraStyle = "color: " + colour;
+                }
+                @Html.TextArea(name, (string)value, new { style = "width: 350px; " + extraStyle });
+            }
+            else
+            {
+                @Html.TextBox(name, (string)value)
+            }
             break;
         case "label":
             @ctl.Caption
