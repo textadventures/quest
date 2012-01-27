@@ -514,8 +514,8 @@ namespace WebEditor.Services
                 }
                 else
                 {
-                    // TO DO: Handle "script-2-then-3-elseif4-then" etc...
-                    throw new NotImplementedException();
+                    IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
+                    return (IEditableScripts)scriptEditorData.GetAttribute(parameter);
                 }
             }
 
@@ -535,7 +535,7 @@ namespace WebEditor.Services
             return GetScriptLine(path, parent, out parameter);
         }
 
-        private static IEditableScript GetScriptLine(string[] path, IEditableScripts parent, out string parameter)
+        private IEditableScript GetScriptLine(string[] path, IEditableScripts parent, out string parameter)
         {
             IEditableScript scriptLine = parent.Scripts.ElementAt(int.Parse(path[1]));
             if (path.Length == 2)
@@ -548,24 +548,35 @@ namespace WebEditor.Services
             }
             else
             {
-                EditableIfScript ifScript = (EditableIfScript)scriptLine;
                 IEditableScripts childScript;
-                if (path[2] == "then")
+
+                EditableIfScript ifScript = scriptLine as EditableIfScript;
+                if (ifScript != null)
                 {
-                    childScript = ifScript.ThenScript;
-                }
-                else if (path[2].StartsWith("elseif"))
-                {
-                    childScript = ifScript.ElseIfScripts.ElementAt(int.Parse(path[2].Substring(6))).EditableScripts;
-                }
-                else if (path[2] == "else")
-                {
-                    childScript = ifScript.ElseScript;
+                    
+                    if (path[2] == "then")
+                    {
+                        childScript = ifScript.ThenScript;
+                    }
+                    else if (path[2].StartsWith("elseif"))
+                    {
+                        childScript = ifScript.ElseIfScripts.ElementAt(int.Parse(path[2].Substring(6))).EditableScripts;
+                    }
+                    else if (path[2] == "else")
+                    {
+                        childScript = ifScript.ElseScript;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
                 }
                 else
                 {
-                    throw new InvalidOperationException();
+                    IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
+                    childScript = (IEditableScripts)scriptEditorData.GetAttribute(path[2]);
                 }
+
                 List<string> newPath = new List<string>(path);
                 newPath.RemoveRange(0, 2);
                 string newPathString = string.Join("-", newPath);
