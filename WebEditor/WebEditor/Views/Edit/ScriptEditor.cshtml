@@ -65,7 +65,8 @@
             @ctl.Caption
             break;
         case "dropdown":
-            //Code from ElementEditor.cshtml should be shared
+            IEnumerable<string> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl);
+            @Html.DropDownList(name, valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == (string)(value)) }));
             break;
         case "expression":
             @RenderExpressionControl(ctl, name, (string)value)
