@@ -177,14 +177,23 @@ namespace WebEditor.Services
 
                 if (script.Type != ScriptType.If)
                 {
+                    IEditorData scriptEditorData = m_controller.GetScriptEditorData(script);
                     foreach (var attribute in data.Attributes)
                     {
-                        object oldValue = script.GetParameter(attribute.Key);
-                        object newValue = attribute.Value;
-                        if (DataChanged(oldValue, newValue))
+                        object oldValue = scriptEditorData.GetAttribute(attribute.Key);
+
+                        if (oldValue is IEditableScripts)
                         {
-                            System.Diagnostics.Debug.WriteLine("New value for script: Was {0}, now {1}", oldValue, newValue);
-                            script.SetParameter(attribute.Key, newValue);
+                            SaveScript((IEditableScripts)oldValue, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes[attribute.Key]);
+                        }
+                        else
+                        {
+                            object newValue = attribute.Value;
+                            if (DataChanged(oldValue, newValue))
+                            {
+                                System.Diagnostics.Debug.WriteLine("New value for script: Was {0}, now {1}", oldValue, newValue);
+                                script.SetParameter(attribute.Key, newValue);
+                            }
                         }
                     }
                 }

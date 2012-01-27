@@ -140,17 +140,29 @@ namespace WebEditor.Models
                     IEditorDefinition definition = controller.GetEditorDefinition(script);
                     foreach (IEditorControl ctl in definition.Controls.Where(c => c.Attribute != null))
                     {
-                        object value = GetScriptParameterValue(
-                            controller,
-                            provider,
-                            string.Format("{0}-{1}-{2}", attribute, count, ctl.Attribute),
-                            ctl.ControlType,
-                            ctl.GetString("simpleeditor") ?? "textbox",
-                            null,
-                            null,
-                            ignoreExpression
-                        );
-                        scriptLine.Attributes.Add(ctl.Attribute, value);
+                        string key = string.Format("{0}-{1}-{2}", attribute, count, ctl.Attribute);
+                        if (ctl.ControlType == "script")
+                        {
+                            IEditorData scriptEditorData = controller.GetScriptEditorData(script);
+                            IEditableScripts originalSubScript = (IEditableScripts)scriptEditorData.GetAttribute(ctl.Attribute);
+                            ElementSaveData.ScriptsSaveData scriptResult = new ElementSaveData.ScriptsSaveData();
+                            BindScriptLines(provider, key, controller, originalSubScript, scriptResult, ignoreExpression);
+                            scriptLine.Attributes.Add(ctl.Attribute, scriptResult);
+                        }
+                        else
+                        {
+                            object value = GetScriptParameterValue(
+                                controller,
+                                provider,
+                                key,
+                                ctl.ControlType,
+                                ctl.GetString("simpleeditor") ?? "textbox",
+                                null,
+                                null,
+                                ignoreExpression
+                            );
+                            scriptLine.Attributes.Add(ctl.Attribute, value);
+                        }
                     }
                 }
                 else

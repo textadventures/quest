@@ -20,6 +20,7 @@
                         @Html.CheckBox("selected-" + attribute + "-" + count.ToString(), new { @class = "script-select", data_key = attribute })
                         @if (script.Type != ScriptType.If)
                         {
+                            IEditorData scriptEditorData = Model.Controller.GetScriptEditorData(script);
                             foreach (IEditorControl ctl in definition.Controls)
                             {
                                 if (ctl.GetBool("breakbefore"))
@@ -30,7 +31,7 @@
                                 {
                                     <text> </text>
                                 }
-                                object value = ctl.Attribute == null ? null : script.GetParameter(ctl.Attribute);
+                                object value = ctl.Attribute == null ? null : scriptEditorData.GetAttribute(ctl.Attribute);
                                 @RenderEditorControl(ctl, value, attribute + "-" + count.ToString())
                             }
                         }
@@ -68,6 +69,11 @@
             break;
         case "expression":
             @RenderExpressionControl(ctl, name, (string)value)
+            break;
+        case "script":
+            <div class="childScript">
+            @RenderScripts((IEditableScripts)value, name)
+            </div>
             break;
         default:
             <text>[@ctl.ControlType]</text>
