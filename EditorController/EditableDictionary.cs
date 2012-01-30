@@ -231,6 +231,7 @@ namespace AxeSoftware.Quest
         {
             get
             {
+                if (m_source.Owner == null) return null;
                 return m_source.Owner.Name;
             }
         }
