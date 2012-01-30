@@ -49,6 +49,7 @@ namespace AxeSoftware.Quest
 
     public interface IEditableScript
     {
+        string Id { get; }
         string DisplayString();
         string DisplayString(int index, object newValue);
         string EditorName { get; set; }

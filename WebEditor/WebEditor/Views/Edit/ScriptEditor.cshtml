@@ -15,6 +15,7 @@
                 int count = 0;
                 foreach (IEditableScript script in scripts.Scripts)
                 {
+                    @Html.ValidationMessage(script.Id)
                     IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
                     <div class="scriptLine">
                         @Html.CheckBox("selected-" + attribute + "-" + count.ToString(), new { @class = "script-select", data_key = attribute })

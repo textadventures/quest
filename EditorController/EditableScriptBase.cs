@@ -23,6 +23,9 @@ namespace AxeSoftware.Quest
 
         private IScript m_script;
         private EditorController m_controller;
+        private readonly string m_id;
+
+        private static int s_count = 0;
 
         public EditableScriptBase(EditorController controller, IScript script, UndoLogger undoLogger)
         {
@@ -32,7 +35,12 @@ namespace AxeSoftware.Quest
             {
                 ((IMutableField)script).UndoLog = undoLogger;
             }
+
+            s_count++;
+            m_id = "script" + s_count;
         }
+
+        public string Id { get { return m_id; } }
 
         internal IScript Script
         {

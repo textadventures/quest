@@ -56,7 +56,7 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditScript(int id, string key, IEditorControl control)
         {
-            return PartialView("ScriptEditor", EditorDictionary[id].GetScript(key, control));
+            return PartialView("ScriptEditor", EditorDictionary[id].GetScript(key, control, ModelState));
         }
 
         private Dictionary<int, Services.EditorService> EditorDictionary

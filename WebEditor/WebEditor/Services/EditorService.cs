@@ -18,6 +18,25 @@ namespace WebEditor.Services
         private EditorController m_controller;
         private Dictionary<string, TreeItem> m_elements = new Dictionary<string, TreeItem>();
         private int m_id;
+        private Dictionary<string, string> m_scriptErrors = new Dictionary<string, string>();
+
+        private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
+		    {ValidationMessage.OK,"No error"},
+		    {ValidationMessage.ItemAlreadyExists,"Item '{0}' already exists in the list"},
+		    {ValidationMessage.ElementAlreadyExists,"An element called '{0}' already exists in this game"},
+            {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
+            {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
+            {ValidationMessage.InvalidElementName, "Invalid element name"},
+            {ValidationMessage.CircularTypeReference, "Circular type reference"},
+            {ValidationMessage.InvalidElementNameMultipleSpaces, "Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces."},
+            {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
+            {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
+        };
+
+        public static string GetValidationError(ValidationResult result, string input)
+        {
+            return string.Format(s_validationMessages[result.Message], input, result.MessageData);
+        }
 
         public EditorService()
         {
@@ -297,9 +316,21 @@ namespace WebEditor.Services
             };
         }
 
-        public Models.Script GetScript(string key, IEditorControl ctl)
+        public Models.Script GetScript(string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
         {
             IEditableScripts value = (IEditableScripts)m_controller.GetEditorData(key).GetAttribute(ctl.Attribute);
+
+            if (value != null)
+            {
+                foreach (IEditableScript script in value.Scripts)
+                {
+                    if (m_scriptErrors.ContainsKey(script.Id))
+                    {
+                        modelState.AddModelError(script.Id, m_scriptErrors[script.Id]);
+                    }
+                    m_scriptErrors.Remove(script.Id);
+                }
+            }
 
             return new Models.Script
             {
@@ -561,7 +592,15 @@ namespace WebEditor.Services
             IEditableScript scriptLine = GetScriptLine(element, attribute, out parameter);
             IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
             IEditableDictionary<IEditableScripts> dictionary = (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
-            dictionary.Add(value, m_controller.CreateNewEditableScripts(null, null, null, true));
+            ValidationResult result = dictionary.CanAdd(value);
+            if (result.Valid)
+            {
+                dictionary.Add(value, m_controller.CreateNewEditableScripts(null, null, null, true));
+            }
+            else
+            {
+                m_scriptErrors.Add(scriptLine.Id, GetValidationError(result, value));
+            }
         }
 
         private IEditableScripts GetScript(string element, string attribute)
