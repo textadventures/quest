@@ -564,7 +564,23 @@ namespace WebEditor.Services
                 {
                     parent = scriptLine;
                     IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
-                    return (IEditableScripts)scriptEditorData.GetAttribute(parameter);
+                    if (parameter.Contains('-'))
+                    {
+                        string[] path = parameter.Split('-');
+                        IEditableDictionary<IEditableScripts> dictionary = (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(path[0]);
+                        if (path[1].StartsWith("value"))
+                        {
+                            return dictionary.Items.ElementAt(int.Parse(path[1].Substring(5))).Value.Value;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException();
+                        }
+                    }
+                    else
+                    {
+                        return (IEditableScripts)scriptEditorData.GetAttribute(parameter);
+                    }
                 }
             }
 
@@ -579,7 +595,7 @@ namespace WebEditor.Services
 
         private IEditableScript GetScriptLine(string element, string attribute, out string parameter)
         {
-            string[] path = attribute.Split(new[] { '-' }, 4);
+            string[] path = attribute.Split(new[] { '-' });
             IEditableScripts parent = m_controller.GetEditorData(element).GetAttribute(path[0]) as IEditableScripts;
             return GetScriptLine(path, parent, out parameter);
         }
@@ -587,6 +603,7 @@ namespace WebEditor.Services
         private IEditableScript GetScriptLine(string[] path, IEditableScripts parent, out string parameter)
         {
             IEditableScript scriptLine = parent.Scripts.ElementAt(int.Parse(path[1]));
+            int pathSectionsToRemove = 3;
             if (path.Length == 2)
             {
                 parameter = null;
@@ -602,7 +619,6 @@ namespace WebEditor.Services
                 EditableIfScript ifScript = scriptLine as EditableIfScript;
                 if (ifScript != null)
                 {
-                    
                     if (path[2] == "then")
                     {
                         childScript = ifScript.ThenScript;
@@ -623,14 +639,38 @@ namespace WebEditor.Services
                 else
                 {
                     IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
-                    childScript = (IEditableScripts)scriptEditorData.GetAttribute(path[2]);
+                    object attribute = scriptEditorData.GetAttribute(path[2]);
+                    IEditableScripts scriptAttribute = attribute as IEditableScripts;
+                    IEditableDictionary<IEditableScripts> dictionaryAttribute = attribute as IEditableDictionary<IEditableScripts>;
+                    if (scriptAttribute != null)
+                    {
+                        childScript = scriptAttribute;
+                    }
+                    else
+                    {
+                        if (path[3].StartsWith("value"))
+                        {
+                            if (path.Length == 4)
+                            {
+                                parameter = path[2] + "-" + path[3];
+                                return scriptLine;
+                            }
+                            else
+                            {
+                                pathSectionsToRemove = 4;
+                                childScript = dictionaryAttribute.Items.ElementAt(int.Parse(path[3].Substring(5))).Value.Value;
+                            }
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
                 }
 
                 List<string> newPath = new List<string>(path);
-                newPath.RemoveRange(0, 2);
-                string newPathString = string.Join("-", newPath);
-                path = newPathString.Split(new[] { '-' }, 4);
-                scriptLine = GetScriptLine(path, childScript, out parameter);
+                newPath.RemoveRange(0, pathSectionsToRemove - 1);
+                scriptLine = GetScriptLine(newPath.ToArray(), childScript, out parameter);
             }
             return scriptLine;
         }
