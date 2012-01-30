@@ -195,7 +195,29 @@ namespace WebEditor.Services
                         }
                         else if (oldValue is IEditableDictionary<IEditableScripts>)
                         {
-                            // TO DO: Save script dictionary
+                            IEditableDictionary<IEditableScripts> dictionary = (IEditableDictionary<IEditableScripts>)oldValue;
+                            WebEditor.Models.ElementSaveData.ScriptSaveData newData = (WebEditor.Models.ElementSaveData.ScriptSaveData)attribute.Value;
+                            Dictionary<string, string> keysToChange = new Dictionary<string, string>();
+                            int dictionaryCount = 0;
+                            foreach (var item in dictionary.Items)
+                            {
+                                string newKey = (string)newData.Attributes[string.Format("key{0}", dictionaryCount)];
+                                if (item.Key != newKey)
+                                {
+                                    // Can't change dictionary keys while enumerating dictionary items - so
+                                    // change them afterwards
+                                    keysToChange.Add(item.Key, newKey);
+                                }
+
+                                SaveScript(item.Value.Value, (WebEditor.Models.ElementSaveData.ScriptsSaveData)newData.Attributes[string.Format("value{0}", dictionaryCount)]);
+
+                                dictionaryCount++;
+                            }
+
+                            foreach (var item in keysToChange)
+                            {
+                                dictionary.ChangeKey(item.Key, item.Value);
+                            }
                         }
                         else
                         {
