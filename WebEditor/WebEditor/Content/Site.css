@@ -41,6 +41,11 @@ section {
 {
     font-size: 130%;
 }
+.elementEditorError
+{
+    background: Pink;
+    padding: 4px;
+}
 .toolbar
 {
     margin-bottom: 4px;

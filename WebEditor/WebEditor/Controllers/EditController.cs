@@ -35,18 +35,18 @@ namespace WebEditor.Controllers
             return Json(EditorDictionary[id].GetScriptAdderJson(), JsonRequestBehavior.AllowGet);
         }
 
-        public PartialViewResult EditElement(int id, string key, string tab)
+        public PartialViewResult EditElement(int id, string key, string tab, string error)
         {
-            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, tab);
+            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, tab, error);
             return PartialView("ElementEditor", model);
         }
 
         [HttpPost]
         public PartialViewResult SaveElement(Models.ElementSaveData element)
         {
-            EditorDictionary[element.GameId].SaveElement(element.Key, element);
+            string error = EditorDictionary[element.GameId].SaveElement(element.Key, element);
             string tab = !string.IsNullOrEmpty(element.AdditionalAction) ? element.AdditionalActionTab : null;
-            return EditElement(element.GameId, element.RedirectToElement, tab);
+            return EditElement(element.GameId, element.RedirectToElement, tab, error);
         }
 
         public PartialViewResult EditStringList(int id, string key, IEditorControl control)

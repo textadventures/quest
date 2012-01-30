@@ -98,7 +98,7 @@ namespace WebEditor.Services
             return result;
         }
 
-        public Models.Element GetElementModelForView(int gameId, string key, string tab)
+        public Models.Element GetElementModelForView(int gameId, string key, string tab, string error)
         {
             IEditorData data = m_controller.GetEditorData(key);
             IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(key));
@@ -109,33 +109,42 @@ namespace WebEditor.Services
                 Name = m_controller.GetDisplayName(key),
                 EditorData = data,
                 EditorDefinition = def,
-                Tab = tab
+                Tab = tab,
+                Error = error
             };
         }
 
-        public void SaveElement(string key, Models.ElementSaveData saveData)
+        public string SaveElement(string key, Models.ElementSaveData saveData)
         {
-            IEditorData data = m_controller.GetEditorData(key);
-            foreach (var kvp in saveData.Values)
+            try
             {
-                object currentValue = data.GetAttribute(kvp.Key);
-                IEditableScripts script = currentValue as IEditableScripts;
-                if (script != null)
+                IEditorData data = m_controller.GetEditorData(key);
+                foreach (var kvp in saveData.Values)
                 {
-                    SaveScript(script, kvp.Value as WebEditor.Models.ElementSaveData.ScriptsSaveData);
-                }
-                else
-                {
-                    if (DataChanged(currentValue, (kvp.Value)))
+                    object currentValue = data.GetAttribute(kvp.Key);
+                    IEditableScripts script = currentValue as IEditableScripts;
+                    if (script != null)
                     {
-                        System.Diagnostics.Debug.WriteLine("New value for {0}: Was {1}, now {2}", kvp.Key, data.GetAttribute(kvp.Key), kvp.Value);
-                        data.SetAttribute(kvp.Key, kvp.Value);
+                        SaveScript(script, kvp.Value as WebEditor.Models.ElementSaveData.ScriptsSaveData);
+                    }
+                    else
+                    {
+                        if (DataChanged(currentValue, (kvp.Value)))
+                        {
+                            System.Diagnostics.Debug.WriteLine("New value for {0}: Was {1}, now {2}", kvp.Key, data.GetAttribute(kvp.Key), kvp.Value);
+                            data.SetAttribute(kvp.Key, kvp.Value);
+                        }
                     }
                 }
+                if (!string.IsNullOrEmpty(saveData.AdditionalAction))
+                {
+                    ProcessAdditionalAction(key, saveData.AdditionalAction);
+                }
+                return string.Empty;
             }
-            if (!string.IsNullOrEmpty(saveData.AdditionalAction))
+            catch (Exception ex)
             {
-                ProcessAdditionalAction(key, saveData.AdditionalAction);
+                return ex.Message;
             }
         }
 

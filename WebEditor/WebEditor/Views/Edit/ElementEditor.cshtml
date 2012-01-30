@@ -1,6 +1,14 @@
 ﻿@using AxeSoftware.Quest;
 @model WebEditor.Models.Element
 
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="elementEditorError">
+        <b>Sorry, an internal error occurred:</b><br />
+        @Model.Error
+    </div>
+}
+
 <div id="elementEditorForm">
     <div class="elementEditorName">@Model.Name</div>
 
