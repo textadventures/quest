@@ -9,6 +9,22 @@
     </div>
 }
 
+@if (Model.OtherElementErrors.Count > 0)
+{
+    <div class="elementEditorError">
+        @foreach (var data in Model.OtherElementErrors)
+        {
+            <text>"@data.Key" has the following errors:</text>
+            <ul>
+                @foreach (string message in data.Value)
+                {
+                    <li>@message</li>
+                }
+            </ul>
+        }
+    </div>
+}
+
 <div id="elementEditorForm">
     <div class="elementEditorName">@Model.Name</div>
 

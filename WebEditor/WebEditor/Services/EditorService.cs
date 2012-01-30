@@ -15,10 +15,16 @@ namespace WebEditor.Services
             public TreeItem Parent { get; set; }
         }
 
+        private class ErrorData
+        {
+            public string Message { get; set; }
+            public string Element { get; set; }
+        }
+
         private EditorController m_controller;
         private Dictionary<string, TreeItem> m_elements = new Dictionary<string, TreeItem>();
         private int m_id;
-        private Dictionary<string, string> m_scriptErrors = new Dictionary<string, string>();
+        private Dictionary<string, ErrorData> m_scriptErrors = new Dictionary<string, ErrorData>();
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
@@ -121,6 +127,17 @@ namespace WebEditor.Services
         {
             IEditorData data = m_controller.GetEditorData(key);
             IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(key));
+
+            Dictionary<string, List<string>> otherElementErrors = new Dictionary<string, List<string>>();
+            foreach (var scriptError in m_scriptErrors.Values.Where(e => e.Element != key))
+            {
+                if (!otherElementErrors.ContainsKey(scriptError.Element))
+                {
+                    otherElementErrors.Add(scriptError.Element, new List<string>());
+                }
+                otherElementErrors[scriptError.Element].Add(scriptError.Message);
+            }
+
             return new Models.Element
             {
                 GameId = gameId,
@@ -129,7 +146,8 @@ namespace WebEditor.Services
                 EditorData = data,
                 EditorDefinition = def,
                 Tab = tab,
-                Error = error
+                Error = error,
+                OtherElementErrors = otherElementErrors
             };
         }
 
@@ -144,7 +162,7 @@ namespace WebEditor.Services
                     IEditableScripts script = currentValue as IEditableScripts;
                     if (script != null)
                     {
-                        SaveScript(script, kvp.Value as WebEditor.Models.ElementSaveData.ScriptsSaveData);
+                        SaveScript(script, kvp.Value as WebEditor.Models.ElementSaveData.ScriptsSaveData, key);
                     }
                     else
                     {
@@ -203,7 +221,7 @@ namespace WebEditor.Services
             throw new NotImplementedException();
         }
 
-        private void SaveScript(IEditableScripts scripts, WebEditor.Models.ElementSaveData.ScriptsSaveData saveData)
+        private void SaveScript(IEditableScripts scripts, WebEditor.Models.ElementSaveData.ScriptsSaveData saveData, string parentElement)
         {
             int count = 0;
             foreach (IEditableScript script in scripts.Scripts)
@@ -219,7 +237,7 @@ namespace WebEditor.Services
 
                         if (oldValue is IEditableScripts)
                         {
-                            SaveScript((IEditableScripts)oldValue, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes[attribute.Key]);
+                            SaveScript((IEditableScripts)oldValue, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes[attribute.Key], parentElement);
                         }
                         else if (oldValue is IEditableDictionary<IEditableScripts>)
                         {
@@ -237,7 +255,7 @@ namespace WebEditor.Services
                                     keysToChange.Add(item.Key, newKey);
                                 }
 
-                                SaveScript(item.Value.Value, (WebEditor.Models.ElementSaveData.ScriptsSaveData)newData.Attributes[string.Format("value{0}", dictionaryCount)]);
+                                SaveScript(item.Value.Value, (WebEditor.Models.ElementSaveData.ScriptsSaveData)newData.Attributes[string.Format("value{0}", dictionaryCount)], parentElement);
 
                                 dictionaryCount++;
                             }
@@ -251,7 +269,7 @@ namespace WebEditor.Services
                                 }
                                 else
                                 {
-                                    AddScriptError(script, GetValidationError(result, item.Value));
+                                    AddScriptError(parentElement, script, GetValidationError(result, item.Value));
                                 }
                             }
                         }
@@ -276,7 +294,7 @@ namespace WebEditor.Services
                         ifScript.SetAttribute("expression", newExpression);
                     }
 
-                    SaveScript(ifScript.ThenScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["then"]);
+                    SaveScript(ifScript.ThenScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["then"], parentElement);
 
                     int elseIfCount = 0;
                     foreach (EditableIfScript.EditableElseIf elseIfScript in ifScript.ElseIfScripts)
@@ -288,13 +306,13 @@ namespace WebEditor.Services
                             elseIfScript.SetAttribute("expression", newElseIfExpression);
                         }
 
-                        SaveScript(elseIfScript.EditableScripts, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes[string.Format("elseif{0}-then", elseIfCount)]);
+                        SaveScript(elseIfScript.EditableScripts, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes[string.Format("elseif{0}-then", elseIfCount)], parentElement);
                         elseIfCount++;
                     }
 
                     if (ifScript.ElseScript != null)
                     {
-                        SaveScript(ifScript.ElseScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["else"]);
+                        SaveScript(ifScript.ElseScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["else"], parentElement);
                     }
                 }
 
@@ -330,7 +348,7 @@ namespace WebEditor.Services
 
             foreach (var error in m_scriptErrors)
             {
-                modelState.AddModelError(error.Key, error.Value);
+                modelState.AddModelError(error.Key, error.Value.Message);
             }
 
             return new Models.Script
@@ -621,19 +639,19 @@ namespace WebEditor.Services
             }
             else
             {
-                AddScriptError(scriptLine, GetValidationError(result, value));
+                AddScriptError(element, scriptLine, GetValidationError(result, value));
             }
         }
 
-        private void AddScriptError(IEditableScript script, string error)
+        private void AddScriptError(string element, IEditableScript script, string error)
         {
             if (!m_scriptErrors.ContainsKey(script.Id))
             {
-                m_scriptErrors.Add(script.Id, error);
+                m_scriptErrors.Add(script.Id, new ErrorData { Message = error, Element = element });
             }
             else
             {
-                m_scriptErrors[script.Id] = m_scriptErrors[script.Id] + ". " + error;
+                m_scriptErrors[script.Id].Message = m_scriptErrors[script.Id].Message + ". " + error;
             }
         }
 
