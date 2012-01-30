@@ -244,7 +244,15 @@ namespace WebEditor.Services
 
                             foreach (var item in keysToChange)
                             {
-                                dictionary.ChangeKey(item.Key, item.Value);
+                                ValidationResult result = dictionary.CanAdd(item.Value);
+                                if (result.Valid)
+                                {
+                                    dictionary.ChangeKey(item.Key, item.Value);
+                                }
+                                else
+                                {
+                                    AddScriptError(script, GetValidationError(result, item.Value));
+                                }
                             }
                         }
                         else
@@ -320,16 +328,9 @@ namespace WebEditor.Services
         {
             IEditableScripts value = (IEditableScripts)m_controller.GetEditorData(key).GetAttribute(ctl.Attribute);
 
-            if (value != null)
+            foreach (var error in m_scriptErrors)
             {
-                foreach (IEditableScript script in value.Scripts)
-                {
-                    if (m_scriptErrors.ContainsKey(script.Id))
-                    {
-                        modelState.AddModelError(script.Id, m_scriptErrors[script.Id]);
-                    }
-                    m_scriptErrors.Remove(script.Id);
-                }
+                modelState.AddModelError(error.Key, error.Value);
             }
 
             return new Models.Script
@@ -356,6 +357,9 @@ namespace WebEditor.Services
                     break;
                 case "scriptdictionary":
                     ProcessScriptDictionaryAction(key, cmd, parameter);
+                    break;
+                case "error":
+                    ProcessErrorAction(key, cmd, parameter);
                     break;
             }
         }
@@ -425,6 +429,24 @@ namespace WebEditor.Services
                     data = parameter.Split(new[] { ';' }, 2);
                     ScriptDictionaryAdd(key, data[0], data[1]);
                     break;
+            }
+        }
+
+        private void ProcessErrorAction(string key, string cmd, string parameter)
+        {
+            switch (cmd)
+            {
+                case "clear":
+                    ErrorClear(parameter);
+                    break;
+            }
+        }
+
+        private void ErrorClear(string id)
+        {
+            if (m_scriptErrors.ContainsKey(id))
+            {
+                m_scriptErrors.Remove(id);
             }
         }
 
@@ -599,7 +621,19 @@ namespace WebEditor.Services
             }
             else
             {
-                m_scriptErrors.Add(scriptLine.Id, GetValidationError(result, value));
+                AddScriptError(scriptLine, GetValidationError(result, value));
+            }
+        }
+
+        private void AddScriptError(IEditableScript script, string error)
+        {
+            if (!m_scriptErrors.ContainsKey(script.Id))
+            {
+                m_scriptErrors.Add(script.Id, error);
+            }
+            else
+            {
+                m_scriptErrors[script.Id] = m_scriptErrors[script.Id] + ". " + error;
             }
         }
 

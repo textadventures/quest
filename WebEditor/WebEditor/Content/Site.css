@@ -133,7 +133,7 @@ textarea
 -----------------------------------------------------------*/
 .field-validation-error
 {
-    color: #ff0000;
+    color: black;
 }
 
 .field-validation-valid

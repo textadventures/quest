@@ -15,7 +15,13 @@
                 int count = 0;
                 foreach (IEditableScript script in scripts.Scripts)
                 {
-                    @Html.ValidationMessage(script.Id)
+                    if (Html.ViewData.ModelState.ContainsKey(script.Id) && Html.ViewData.ModelState[script.Id].Errors.Count > 0)
+                    {
+                        <div class="elementEditorError">
+                            @Html.ValidationMessage(script.Id)
+                            <button type="button" class="error-clear" data-key="@script.Id">Clear</button>
+                        </div>
+                    }
                     IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
                     <div class="scriptLine">
                         @Html.CheckBox("selected-" + attribute + "-" + count.ToString(), new { @class = "script-select", data_key = attribute })

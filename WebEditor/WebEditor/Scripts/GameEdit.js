@@ -130,6 +130,10 @@
         });
         $("#dialog-input-text").dialog("open");
     });
+    $(".error-clear").button().click(function () {
+        var key = $(this).attr("data-key");
+        sendAdditionalAction("error clear " + key);
+    });
 }
 
 function getSelectedScripts(key) {
