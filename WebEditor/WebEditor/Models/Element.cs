@@ -142,6 +142,7 @@ namespace WebEditor.Models
                     foreach (IEditorControl ctl in definition.Controls.Where(c => c.Attribute != null))
                     {
                         string key = string.Format("{0}-{1}-{2}", attribute, count, ctl.Attribute);
+
                         if (ctl.ControlType == "script")
                         {
                             IEditorData scriptEditorData = controller.GetScriptEditorData(script);
@@ -149,6 +150,25 @@ namespace WebEditor.Models
                             ElementSaveData.ScriptsSaveData scriptResult = new ElementSaveData.ScriptsSaveData();
                             BindScriptLines(provider, key, controller, originalSubScript, scriptResult, ignoreExpression);
                             scriptLine.Attributes.Add(ctl.Attribute, scriptResult);
+                        }
+                        else if (ctl.ControlType == "scriptdictionary")
+                        {
+                            IEditorData dictionaryData = controller.GetScriptEditorData(script);
+                            IEditableDictionary<IEditableScripts> dictionary = (IEditableDictionary<IEditableScripts>)dictionaryData.GetAttribute(ctl.Attribute);
+                            ElementSaveData.ScriptSaveData switchResult = new ElementSaveData.ScriptSaveData();
+                            int dictionaryCount = 0;
+                            foreach (var item in dictionary.Items.Values)
+                            {
+                                object expressionValue = provider.GetValue(string.Format("{0}-key{1}", key, dictionaryCount)).ConvertTo(typeof(string));
+                                switchResult.Attributes.Add(string.Format("key{0}", dictionaryCount), expressionValue);
+
+                                ElementSaveData.ScriptsSaveData caseScriptResult = new ElementSaveData.ScriptsSaveData();
+                                BindScriptLines(provider, string.Format("{0}-value{1}", key, dictionaryCount), controller, item.Value, caseScriptResult, ignoreExpression);
+                                switchResult.Attributes.Add(string.Format("value{0}", dictionaryCount), caseScriptResult);
+
+                                dictionaryCount++;
+                            }
+                            scriptLine.Attributes.Add(ctl.Attribute, switchResult);
                         }
                         else
                         {

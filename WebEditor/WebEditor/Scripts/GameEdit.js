@@ -121,6 +121,10 @@
             sendAdditionalAction("script settemplate " + key + ";" + text);
         }
     });
+    $(".script-dictionary-add").button().click(function () {
+        var key = $(this).attr("data-key");
+        sendAdditionalAction("scriptdictionary add " + key);
+    });
 }
 
 function getSelectedScripts(key) {

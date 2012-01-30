@@ -193,6 +193,10 @@ namespace WebEditor.Services
                         {
                             SaveScript((IEditableScripts)oldValue, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes[attribute.Key]);
                         }
+                        else if (oldValue is IEditableDictionary<IEditableScripts>)
+                        {
+                            // TO DO: Save script dictionary
+                        }
                         else
                         {
                             object newValue = attribute.Value;
