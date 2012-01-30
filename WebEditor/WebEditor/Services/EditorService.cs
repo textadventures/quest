@@ -300,68 +300,90 @@ namespace WebEditor.Services
             };
         }
 
-        private void ProcessAdditionalAction(string key, string action)
+        private void ProcessAdditionalAction(string key, string arguments)
         {
-            string[] data = action.Split(new[] { ' ' }, 2);
-            string cmd = data[0];
-            string parameter = data[1];
-            switch (cmd)
+            string[] data = arguments.Split(new[] { ' ' }, 3);
+            string action = data[0];
+            string cmd = data[1];
+            string parameter = data[2];
+            switch (action)
             {
                 case "stringlist":
-                    data = parameter.Split(new[] { ' ' }, 2);
-                    string stringListCmd = data[0];
-                    string stringListParameter = data[1];
-                    switch (stringListCmd)
-                    {
-                        case "add":
-                            data = stringListParameter.Split(new[] { ';' }, 2);
-                            StringListAdd(key, data[0], data[1]);
-                            break;
-                        case "edit":
-                            data = stringListParameter.Split(new[] { ';' }, 3);
-                            StringListEdit(key, data[0], data[1], data[2]);
-                            break;
-                        case "delete":
-                            data = stringListParameter.Split(new[] { ';' }, 2);
-                            StringListDelete(key, data[0], data[1]);
-                            break;
-                    }
+                    ProcessStringListAction(key, cmd, parameter);
                     break;
                 case "script":
-                    data = parameter.Split(new[] { ' ' }, 2);
-                    string scriptCmd = data[0];
-                    string scriptParameter = data[1];
-                    switch (scriptCmd)
+                    ProcessScriptAction(key, cmd, parameter);
+                    break;
+                case "scriptdictionary":
+                    ProcessScriptDictionaryAction(key, cmd, parameter);
+                    break;
+            }
+        }
+
+        private void ProcessStringListAction(string key, string cmd, string parameter)
+        {
+            string[] data;
+            switch (cmd)
+            {
+                case "add":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    StringListAdd(key, data[0], data[1]);
+                    break;
+                case "edit":
+                    data = parameter.Split(new[] { ';' }, 3);
+                    StringListEdit(key, data[0], data[1], data[2]);
+                    break;
+                case "delete":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    StringListDelete(key, data[0], data[1]);
+                    break;
+            }
+        }
+
+        private void ProcessScriptAction(string key, string cmd, string parameter)
+        {
+            string[] data;
+            switch (cmd)
+            {
+                case "add":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    ScriptAdd(key, data[0], data[1]);
+                    break;
+                case "delete":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    if (data[1].Length > 0)
                     {
-                        case "add":
-                            data = scriptParameter.Split(new[] { ';' }, 2);
-                            ScriptAdd(key, data[0], data[1]);
-                            break;
-                        case "delete":
-                            data = scriptParameter.Split(new[] { ';' }, 2);
-                            if (data[1].Length > 0)
-                            {
-                                ScriptDelete(key, data[0], data[1].Split(';'));
-                            }
-                            break;
-                        case "addelse":
-                            ScriptAddElse(key, scriptParameter);
-                            break;
-                        case "addelseif":
-                            ScriptAddElseIf(key, scriptParameter);
-                            break;
-                        case "deleteifsection":
-                            data = scriptParameter.Split(new[] { ';' }, 2);
-                            if (data[1].Length > 0)
-                            {
-                                ScriptDeleteIfSection(key, data[0], data[1].Split(';'));
-                            }
-                            break;
-                        case "settemplate":
-                            data = scriptParameter.Split(new[] { ';' }, 2);
-                            ScriptSetTemplate(key, data[0], data[1]);
-                            break;
+                        ScriptDelete(key, data[0], data[1].Split(';'));
                     }
+                    break;
+                case "addelse":
+                    ScriptAddElse(key, parameter);
+                    break;
+                case "addelseif":
+                    ScriptAddElseIf(key, parameter);
+                    break;
+                case "deleteifsection":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    if (data[1].Length > 0)
+                    {
+                        ScriptDeleteIfSection(key, data[0], data[1].Split(';'));
+                    }
+                    break;
+                case "settemplate":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    ScriptSetTemplate(key, data[0], data[1]);
+                    break;
+            }
+        }
+
+        private void ProcessScriptDictionaryAction(string key, string cmd, string parameter)
+        {
+            string[] data;
+            switch (cmd)
+            {
+                case "add":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    ScriptDictionaryAdd(key, data[0], data[1]);
                     break;
             }
         }
@@ -522,6 +544,15 @@ namespace WebEditor.Services
             {
                 throw new NotImplementedException();
             }
+        }
+
+        private void ScriptDictionaryAdd(string element, string attribute, string value)
+        {
+            string parameter;
+            IEditableScript scriptLine = GetScriptLine(element, attribute, out parameter);
+            IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
+            IEditableDictionary<IEditableScripts> dictionary = (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
+            dictionary.Add(value, m_controller.CreateNewEditableScripts(null, null, null, true));
         }
 
         private IEditableScripts GetScript(string element, string attribute)

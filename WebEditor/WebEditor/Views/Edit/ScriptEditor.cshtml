@@ -289,7 +289,8 @@
         </div>
         itemCount++;
     }
-    <div class="scriptDictionarySection"><button type="button" class="script-dictionary-add" data-key="@attributePrefix">Add</button></div>
+    string keyPrompt = ctl.GetString("keyprompt");
+    <div class="scriptDictionarySection"><button type="button" class="script-dictionary-add" data-key="@attributePrefix" data-prompt="@keyPrompt">Add</button></div>
 }
 
 @functions {

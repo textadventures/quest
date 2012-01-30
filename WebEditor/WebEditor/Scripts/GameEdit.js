@@ -122,8 +122,13 @@
         }
     });
     $(".script-dictionary-add").button().click(function () {
+        $("#dialog-input-text-entry").val("");
+        $("#dialog-input-text-prompt").html($(this).attr("data-prompt") + ":");
         var key = $(this).attr("data-key");
-        sendAdditionalAction("scriptdictionary add " + key);
+        $("#dialog-input-text").data("dialog_ok", function () {
+            sendAdditionalAction("scriptdictionary add " + key + ";" + $("#dialog-input-text-entry").val());
+        });
+        $("#dialog-input-text").dialog("open");
     });
 }
 
