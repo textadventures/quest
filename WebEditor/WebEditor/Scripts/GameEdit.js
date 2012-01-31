@@ -134,31 +134,43 @@
         var key = $(this).attr("data-key");
         sendAdditionalAction("error clear " + key);
     });
+    $(".scriptDictionarySection-select").click(function () {
+        var key = $(this).attr("data-key");
+        var selectedSections = getSelectedScriptDictionaryItems(key);
+        if (selectedSections.length > 0) {
+            $("#scriptDictionarySection-toolbar-" + key).show(200);
+        }
+        else {
+            $("#scriptDictionarySection-toolbar-" + key).hide(200);
+        }
+    });
+    $(".scriptDictionarySection-delete").button().click(function () {
+        var key = $(this).attr("data-key");
+        sendAdditionalAction("scriptdictionary delete " + key + ";" + getSelectedScriptDictionaryItems(key));
+    });
 }
 
 function getSelectedScripts(key) {
-    var result = "";
-    $(".script-select").each(function (index, element) {
-        var e = $(element);
-        var id = e.attr("id");
-        var checkboxKey = e.attr("data-key");
-        if (checkboxKey == key && e.is(":checked")) {
-            if (result.length > 0) result += ";";
-            result += id.substring(10 + key.length);
-        }
-    });
-    return result;
+    return getSelectedItems(key, ".script-select", 10);
 }
 
 function getSelectedIfSections(key) {
+    return getSelectedItems(key, ".ifsection-select", 17);
+}
+
+function getSelectedScriptDictionaryItems(key) {
+    return getSelectedItems(key, ".scriptDictionarySection-select", 18);
+}
+
+function getSelectedItems(key, checkboxClass, prefixLength) {
     var result = "";
-    $(".ifsection-select").each(function (index, element) {
+    $(checkboxClass).each(function (index, element) {
         var e = $(element);
         var id = e.attr("id");
         var checkboxKey = e.attr("data-key");
         if (checkboxKey == key && e.is(":checked")) {
             if (result.length > 0) result += ";";
-            result += id.substring(17 + key.length);
+            result += id.substring(prefixLength + key.length);
         }
     });
     return result;

@@ -284,6 +284,10 @@
 
 @helper RenderScriptDictionary(IEditorControl ctl, IEditableDictionary<IEditableScripts> value, string attributePrefix)
 {
+    <div class="scriptDictionarySection ui-widget-header ui-corner-all toolbar" id="scriptDictionarySection-toolbar-@attributePrefix" style="display: none">
+        <button type="button" class="scriptDictionarySection-delete" data-key="@attributePrefix">Remove</button>
+    </div>
+    
     int itemCount = 0;
     foreach (IEditableListItem<IEditableScripts> item in value.Items.Values)
     {

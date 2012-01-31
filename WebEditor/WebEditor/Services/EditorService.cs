@@ -447,6 +447,10 @@ namespace WebEditor.Services
                     data = parameter.Split(new[] { ';' }, 2);
                     ScriptDictionaryAdd(key, data[0], data[1]);
                     break;
+                case "delete":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    ScriptDictionaryDelete(key, data[0], data[1]);
+                    break;
             }
         }
 
@@ -628,10 +632,8 @@ namespace WebEditor.Services
 
         private void ScriptDictionaryAdd(string element, string attribute, string value)
         {
-            string parameter;
-            IEditableScript scriptLine = GetScriptLine(element, attribute, out parameter);
-            IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
-            IEditableDictionary<IEditableScripts> dictionary = (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
+            IEditableScript scriptLine;
+            IEditableDictionary<IEditableScripts> dictionary = GetScriptDictionary(element, attribute, out scriptLine);
             ValidationResult result = dictionary.CanAdd(value);
             if (result.Valid)
             {
@@ -641,6 +643,28 @@ namespace WebEditor.Services
             {
                 AddScriptError(element, scriptLine, GetValidationError(result, value));
             }
+        }
+
+        private void ScriptDictionaryDelete(string element, string attribute, string value)
+        {
+            IEditableDictionary<IEditableScripts> dictionary = GetScriptDictionary(element, attribute);
+            // value is a semicolon-separated list of indexes
+            string[] keys = value.Split(';').Select(i => dictionary.Items.ElementAt(int.Parse(i)).Key).ToArray();
+            dictionary.Remove(keys);
+        }
+
+        private IEditableDictionary<IEditableScripts> GetScriptDictionary(string element, string attribute)
+        {
+            IEditableScript scriptLine;
+            return GetScriptDictionary(element, attribute, out scriptLine);
+        }
+
+        private IEditableDictionary<IEditableScripts> GetScriptDictionary(string element, string attribute, out IEditableScript scriptLine)
+        {
+            string parameter;
+            scriptLine = GetScriptLine(element, attribute, out parameter);
+            IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
+            return (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
         }
 
         private void AddScriptError(string element, IEditableScript script, string error)
