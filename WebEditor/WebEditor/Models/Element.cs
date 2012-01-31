@@ -172,6 +172,10 @@ namespace WebEditor.Models
                             }
                             scriptLine.Attributes.Add(ctl.Attribute, switchResult);
                         }
+                        else if (ctl.ControlType == "list")
+                        {
+                            // do nothing
+                        }
                         else
                         {
                             object value = GetScriptParameterValue(

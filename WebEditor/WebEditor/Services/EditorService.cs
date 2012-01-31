@@ -320,10 +320,23 @@ namespace WebEditor.Services
             }
         }
 
-        public Models.StringList GetStringList(string key, IEditorControl ctl)
+        public Models.StringList GetStringListModel(string key, IEditorControl ctl)
         {
-            IEditableList<string> value = (IEditableList<string>)m_controller.GetEditorData(key).GetAttribute(ctl.Attribute);
+            IEditableList<string> value = GetStringList(key, ctl.Attribute, false);
+            return GetStringListModel(value, ctl, ctl.Attribute);
+        }
 
+        public Models.StringList GetScriptStringListModel(string key, string path, IEditorControl ctl)
+        {
+            string parameter;
+            IEditableScript scriptLine = GetScriptLine(key, path, out parameter);
+            IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
+            IEditableList<string> value = (IEditableList<string>)scriptEditorData.GetAttribute(parameter);
+            return GetStringListModel(value, ctl, path);
+        }
+
+        private Models.StringList GetStringListModel(IEditableList<string> value, IEditorControl ctl, string attribute)
+        {
             IDictionary<string, string> items = null;
             if (value != null)
             {
@@ -336,13 +349,13 @@ namespace WebEditor.Services
 
             return new Models.StringList
             {
-                Attribute = ctl.Attribute,
+                Attribute = attribute,
                 EditPrompt = ctl.GetString("editprompt"),
                 Items = items
             };
         }
 
-        public Models.Script GetScript(string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
+        public Models.Script GetScript(int id, string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
         {
             IEditableScripts value = (IEditableScripts)m_controller.GetEditorData(key).GetAttribute(ctl.Attribute);
 
@@ -353,6 +366,8 @@ namespace WebEditor.Services
 
             return new Models.Script
             {
+                GameId = id,
+                Key = key,
                 Attribute = ctl.Attribute,
                 Controller = m_controller,
                 Scripts = value
@@ -477,14 +492,13 @@ namespace WebEditor.Services
             // TO DO: if (m_data.ReadOnly) return;
             // TO DO: Validate input first
 
-            IEditableList<string> list = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableList<string>;
+            IEditableList<string> list = GetStringList(element, attribute, true);
             if (list == null)
             {
                 list = m_controller.CreateNewEditableList(element, attribute, value, true);
             }
             else
             {
-                PrepareStringListForEditing(element, attribute, ref list);
                 list.Add(value);
             }
         }
@@ -494,8 +508,7 @@ namespace WebEditor.Services
             // TO DO: if (m_data.ReadOnly) return;
             // TO DO: Validate input first
 
-            IEditableList<string> list = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableList<string>;
-            PrepareStringListForEditing(element, attribute, ref list);
+            IEditableList<string> list = GetStringList(element, attribute, true);
             list.Update(key, value);
         }
 
@@ -503,8 +516,7 @@ namespace WebEditor.Services
         {
             // TO DO: if (m_data.ReadOnly) return;
 
-            IEditableList<string> list = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableList<string>;
-            PrepareStringListForEditing(element, attribute, ref list);
+            IEditableList<string> list = GetStringList(element, attribute, true);
             list.Remove(key);
         }
 
@@ -665,6 +677,26 @@ namespace WebEditor.Services
             scriptLine = GetScriptLine(element, attribute, out parameter);
             IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
             return (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
+        }
+
+        private IEditableList<string> GetStringList(string element, string attribute, bool prepareForEditing)
+        {
+            if (attribute.Contains('-'))
+            {
+                string parameter;
+                IEditableScript scriptLine = GetScriptLine(element, attribute, out parameter);
+                IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
+                return (IEditableList<string>)scriptEditorData.GetAttribute(parameter);
+            }
+            else
+            {
+                IEditableList<string> result = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableList<string>;
+                if (prepareForEditing)
+                {
+                    PrepareStringListForEditing(element, attribute, ref result);
+                }
+                return result;
+            }
         }
 
         private void AddScriptError(string element, IEditableScript script, string error)

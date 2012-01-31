@@ -8,6 +8,8 @@ namespace WebEditor.Models
 {
     public class Script
     {
+        public int GameId { get; set; }
+        public string Key { get; set; }
         public string Attribute { get; set; }
         public EditorController Controller { get; set; }
         public IEditableScripts Scripts { get; set; }

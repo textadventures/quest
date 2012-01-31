@@ -51,12 +51,17 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditStringList(int id, string key, IEditorControl control)
         {
-            return PartialView("StringListEditor", EditorDictionary[id].GetStringList(key, control));
+            return PartialView("StringListEditor", EditorDictionary[id].GetStringListModel(key, control));
+        }
+
+        public PartialViewResult EditScriptStringList(int id, string key, string path, IEditorControl control)
+        {
+            return PartialView("StringListEditor", EditorDictionary[id].GetScriptStringListModel(key, path, control));
         }
 
         public PartialViewResult EditScript(int id, string key, IEditorControl control)
         {
-            return PartialView("ScriptEditor", EditorDictionary[id].GetScript(key, control, ModelState));
+            return PartialView("ScriptEditor", EditorDictionary[id].GetScript(id, key, control, ModelState));
         }
 
         private Dictionary<int, Services.EditorService> EditorDictionary
