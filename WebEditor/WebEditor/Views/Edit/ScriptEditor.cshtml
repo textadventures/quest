@@ -106,7 +106,9 @@
             @RenderScriptDictionary(ctl, (IEditableDictionary<IEditableScripts>)value, name)
             break;
         case "list":
+            <div class="scriptStringListSection">
             @Html.Action("EditScriptStringList", new { id = Model.GameId, key = Model.Key, path = name, control = ctl })
+            </div>
             break;
         default:
             <text>[@ctl.ControlType]</text>

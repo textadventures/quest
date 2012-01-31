@@ -95,6 +95,10 @@ input.scriptDictionarySection-select
 {
     vertical-align: text-top;
 }
+div.scriptStringListSection
+{
+    margin-left: 24px;
+}
 
 
 /* Styles for basic forms
