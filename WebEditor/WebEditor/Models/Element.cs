@@ -184,8 +184,8 @@ namespace WebEditor.Models
                                 key,
                                 ctl.ControlType,
                                 ctl.GetString("simpleeditor") ?? "textbox",
-                                null,
-                                null,
+                                ctl.GetString("usetemplates"),
+                                (string)script.GetParameter(ctl.Attribute),
                                 ignoreExpression
                             );
                             scriptLine.Attributes.Add(ctl.Attribute, value);
@@ -254,7 +254,7 @@ namespace WebEditor.Models
 
             if (controlType == "expression")
             {
-                if (simpleEditor != null)
+                if (templatesFilter == null)
                 {
                     string dropdownKey = string.Format("{0}-expressioneditordropdown", attributePrefix);
                     ValueProviderResult dropdownKeyValueResult = provider.GetValue(dropdownKey);
@@ -262,6 +262,7 @@ namespace WebEditor.Models
                     if (dropdownKeyValue == "expression" || dropdownKeyValue == null)
                     {
                         string key = string.Format("{0}-expressioneditor", attributePrefix);
+
                         try
                         {
                             ValueProviderResult value = provider.GetValue(key);

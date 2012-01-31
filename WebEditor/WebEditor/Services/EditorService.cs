@@ -627,8 +627,15 @@ namespace WebEditor.Services
             IEditableScript scriptLine = GetScriptLine(element, scriptLinePath, out sectionParameter);
             if (sectionParameter == null)
             {
-                EditableIfScript ifScript = (EditableIfScript)scriptLine;
-                ifScript.SetAttribute(parameter, newExpression);
+                EditableIfScript ifScript = scriptLine as EditableIfScript;
+                if (ifScript != null)
+                {
+                    ifScript.SetAttribute(parameter, newExpression);
+                }
+                else
+                {
+                    scriptLine.SetParameter(parameter, newExpression);
+                }
             }
             else if (sectionParameter.StartsWith("elseif"))
             {

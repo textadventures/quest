@@ -122,7 +122,8 @@
 
     if (templatesFilter != null)
     {
-        @RenderTemplateControl(name, value, templatesFilter, false);
+        @RenderTemplateControl(name, value, templatesFilter);
+        return;
     }
 
     string simpleEditor = ctl.GetString("simpleeditor") ?? "textbox";
@@ -196,7 +197,7 @@
     }
 }
 
-@helper RenderTemplateControl(string name, string value, string templatesFilter, bool renderExpressionBox)
+@helper RenderTemplateControl(string name, string value, string templatesFilter)
 {
     IEditorDefinition editorDefinition = Model.Controller.GetExpressionEditorDefinition(value, templatesFilter);
     bool useTemplate = (editorDefinition != null);
@@ -237,16 +238,13 @@
         </span>
     }
     
-    if (useTemplate || renderExpressionBox)
-    {
-        @Html.TextBox(name, value, new { style = "width: 350px; display: " + expressionVisibility });
-    }
+    @Html.TextBox(name, value, new { style = "width: 350px; display: " + expressionVisibility });
 }
 
 @helper RenderIfScript(EditableIfScript script, string attributePrefix)
 {
     <text>If: </text>
-    @RenderTemplateControl(attributePrefix + "-expression", (string)script.GetAttribute("expression"), "if", true)
+    @RenderTemplateControl(attributePrefix + "-expression", (string)script.GetAttribute("expression"), "if")
     <div class="childScript">
     @RenderScripts(script.ThenScript, attributePrefix + "-then")
     </div>
@@ -261,7 +259,7 @@
         <div class="ifSection">
         @Html.CheckBox("selectifsection-" + attributePrefix + "-elseif" + elseIfCount.ToString(), new { @class = "ifsection-select", data_key = attributePrefix })
         Else If:
-        @RenderTemplateControl(attributePrefix + "-elseif" + elseIfCount.ToString() + "-expression", (string)elseIf.GetAttribute("expression"), "if", true)
+        @RenderTemplateControl(attributePrefix + "-elseif" + elseIfCount.ToString() + "-expression", (string)elseIf.GetAttribute("expression"), "if")
         </div>
         <div class="childScript">
         @RenderScripts(elseIf.EditableScripts, attributePrefix + "-elseif" + elseIfCount.ToString())
