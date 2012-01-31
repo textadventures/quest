@@ -235,9 +235,9 @@
                 }
             }
         </span>
-    }
     
-    @Html.TextBox(name, value, new { style = "width: 350px; display: " + expressionVisibility });
+        @Html.TextBox(name, value, new { style = "width: 350px; display: " + expressionVisibility });
+    }
 }
 
 @helper RenderIfScript(EditableIfScript script, string attributePrefix)
