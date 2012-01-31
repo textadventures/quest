@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest
         bool Locked { get; }
         IEditableList<T> Clone(string parent, string attribute);
         string Owner { get; }
+        IEnumerable<IEditableListItem<T>> ItemsList { get; }
     }
 
     public interface IEditableListItem<T>

@@ -341,9 +341,9 @@ namespace WebEditor.Services
             if (value != null)
             {
                 items = new Dictionary<string, string>();
-                foreach (var item in value.Items)
+                foreach (var item in value.ItemsList)
                 {
-                    items.Add(item.Key, item.Value.Value);
+                    items.Add(item.Key, item.Value);
                 }
             }
 

@@ -264,5 +264,10 @@ namespace AxeSoftware.Quest
                 return m_source.Owner.Name;
             }
         }
+
+        public IEnumerable<IEditableListItem<T>> ItemsList
+        {
+            get { return m_wrappedItemsList; }
+        }
     }
 }
