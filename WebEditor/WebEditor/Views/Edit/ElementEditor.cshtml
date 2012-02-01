@@ -141,6 +141,9 @@
             string selectedItem = Model.EditorData.GetAttribute(ctl.Attribute) as string;
             @Html.DropDownList(ctl.Attribute, valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == selectedItem) }));
             break;
+        case "richtext":
+            @Html.TextArea(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), 10, 80, new { })
+            break;
         default:
             <text>[@ctl.ControlType]</text>
             break;

@@ -88,15 +88,15 @@ namespace WebEditor.Models
                     object saveValue = null;
                     bool handled = true;    // TO DO: Temporary until all controltypes are handled
 
-                    ValueProviderResult value = bindingContext.ValueProvider.GetValue(ctl.Attribute);
-
                     switch (ctl.ControlType)
                     {
                         case "textbox":
                         case "dropdown":
-                            saveValue = value.ConvertTo(typeof(string));
+                        case "richtext":
+                            saveValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
                             break;
                         case "checkbox":
+                            ValueProviderResult value = bindingContext.ValueProvider.GetValue(ctl.Attribute);
                             saveValue = value.ConvertTo(typeof(bool));
                             break;
                         case "script":
@@ -262,20 +262,7 @@ namespace WebEditor.Models
                     if (dropdownKeyValue == "expression" || dropdownKeyValue == null)
                     {
                         string key = string.Format("{0}-expressioneditor", attributePrefix);
-
-                        try
-                        {
-                            ValueProviderResult value = provider.GetValue(key);
-                            return value == null ? null : value.ConvertTo(typeof(string));
-                        }
-                        catch (HttpRequestValidationException)
-                        {
-                            // Workaround for "potentially dangerous" form values which may contain HTML
-                            Func<System.Collections.Specialized.NameValueCollection> formGetter;
-                            Func<System.Collections.Specialized.NameValueCollection> queryStringGetter;
-                            Microsoft.Web.Infrastructure.DynamicValidationHelper.ValidationUtility.GetUnvalidatedCollections(HttpContext.Current, out formGetter, out queryStringGetter);
-                            return formGetter().Get(key);
-                        }
+                        return GetValueProviderString(provider, key);
                     }
                     else
                     {
@@ -331,6 +318,23 @@ namespace WebEditor.Models
                 string key = attributePrefix;
                 ValueProviderResult value = provider.GetValue(key);
                 return value == null ? null : value.ConvertTo(typeof(string));
+            }
+        }
+
+        private static object GetValueProviderString(IValueProvider provider, string key)
+        {
+            try
+            {
+                ValueProviderResult value = provider.GetValue(key);
+                return value == null ? null : value.ConvertTo(typeof(string));
+            }
+            catch (HttpRequestValidationException)
+            {
+                // Workaround for "potentially dangerous" form values which may contain HTML
+                Func<System.Collections.Specialized.NameValueCollection> formGetter;
+                Func<System.Collections.Specialized.NameValueCollection> queryStringGetter;
+                Microsoft.Web.Infrastructure.DynamicValidationHelper.ValidationUtility.GetUnvalidatedCollections(HttpContext.Current, out formGetter, out queryStringGetter);
+                return formGetter().Get(key);
             }
         }
     }
