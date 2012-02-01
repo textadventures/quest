@@ -87,46 +87,10 @@ namespace WebEditor.Views.Edit
 
         public static IEnumerable<SelectListItem> GetDropDownTypesControlItems(IEditorControl ctl, EditorController controller, string element)
         {
-            const string k_noType = "*";
-
             IDictionary<string, string> types = ctl.GetDictionary("types");
-            List<string> inheritedTypes = new List<string>();
-
-            // The inherited types look like:
-            // *=default; typename1=Type 1; typename2=Type2
-
-            // Find out which of the handled types are inherited by the object
-
-            foreach (var item in types.Where(i => i.Key != k_noType))
-            {
-                if (controller.DoesElementInheritType(element, item.Key))
-                {
-                    inheritedTypes.Add(item.Key);
-                }
-            }
 
             // TO DO: If more than one type is inherited by the object, disable the control
-
-            if (inheritedTypes.Count > 1)
-            {
-                return null;
-            }
-
-            string selectedItem;
-
-            switch (inheritedTypes.Count)
-            {
-                case 0:
-                    // Default - no types inherited
-                    selectedItem = k_noType;
-                    break;
-                case 1:
-                    selectedItem = inheritedTypes[0];
-                    break;
-                default:
-                    selectedItem = null;
-                    break;
-            }
+            string selectedItem = controller.GetSelectedDropDownType(ctl, element);
 
             return types.Select(t => new SelectListItem { Value = t.Key, Text = t.Value, Selected = (selectedItem == t.Key) });
         }

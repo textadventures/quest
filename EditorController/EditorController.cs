@@ -2040,5 +2040,37 @@ namespace AxeSoftware.Quest
         {
             return m_worldModel.GetUniqueElementName(elementName);
         }
+
+        public string GetSelectedDropDownType(IEditorControl ctl, string element)
+        {
+            const string k_noType = "*";
+
+            IDictionary<string, string> types = ctl.GetDictionary("types");
+            List<string> inheritedTypes = new List<string>();
+
+            // The inherited types look like:
+            // *=default; typename1=Type 1; typename2=Type2
+
+            // Find out which of the handled types are inherited by the object
+
+            foreach (var item in types.Where(i => i.Key != k_noType))
+            {
+                if (DoesElementInheritType(element, item.Key))
+                {
+                    inheritedTypes.Add(item.Key);
+                }
+            }
+
+            switch (inheritedTypes.Count)
+            {
+                case 0:
+                    // Default - no types inherited
+                    return k_noType;
+                case 1:
+                    return inheritedTypes[0];
+                default:
+                    return null;
+            }
+        }
     }
 }
