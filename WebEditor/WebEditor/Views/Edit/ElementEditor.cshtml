@@ -167,7 +167,7 @@
     }
     IDictionary<string, string> types = ctl.GetDictionary("types");
     string selectedType = WebEditor.Views.Edit.Controls.GetTypeName(value);
-    @Html.DropDownList(ctl.Attribute + "-type", types.Select(t => new SelectListItem { Text = t.Value, Value = t.Key, Selected = (t.Key == selectedType) }))
+    @Html.DropDownList(ctl.Attribute + "-type", types.Select(t => new SelectListItem { Text = t.Value, Value = t.Key, Selected = (t.Key == selectedType) }), new { @class = "multi-dropdown", data_key = ctl.Attribute })
     string controlType = WebEditor.Views.Edit.Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
     @RenderEditorControl(ctl, false, controlType)
 }

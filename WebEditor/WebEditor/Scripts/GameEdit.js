@@ -163,6 +163,11 @@
         force_p_newlines : false,
         gecko_spellcheck: true
     });
+    $(".multi-dropdown").change(function () {
+        var key = $(this).attr("data-key");
+        var value = $(this).find('option:selected').attr("value");
+        sendAdditionalAction("multi set " + key + ";" + value);
+    });
 }
 
 function getSelectedScripts(key) {

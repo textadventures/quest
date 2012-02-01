@@ -398,6 +398,9 @@ namespace WebEditor.Services
                 case "error":
                     ProcessErrorAction(key, cmd, parameter);
                     break;
+                case "multi":
+                    ProcessMultiAction(key, cmd, parameter);
+                    break;
             }
         }
 
@@ -481,6 +484,74 @@ namespace WebEditor.Services
                     ErrorClear(parameter);
                     break;
             }
+        }
+
+        private void ProcessMultiAction(string key, string cmd, string parameter)
+        {
+            string[] data;
+            switch (cmd)
+            {
+                case "set":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    MultiSet(key, data[0], data[1]);
+                    break;
+            }
+        }
+
+        private void MultiSet(string element, string attribute, string value)
+        {
+            m_controller.StartTransaction(string.Format("Change type of '{0}' {1} to '{2}'", element, attribute, value));
+
+            object newValue;
+
+            switch (value)
+            {
+                case "boolean":
+                    newValue = false;
+                    break;
+                case "string":
+                    newValue = "";
+                    break;
+                case "int":
+                    newValue = 0;
+                    break;
+                case "script":
+                    newValue = m_controller.CreateNewEditableScripts(element, attribute, null, false);
+                    break;
+                case "stringlist":
+                    newValue = m_controller.CreateNewEditableList(element, attribute, null, false);
+                    break;
+                case "object":
+                    newValue = m_controller.CreateNewEditableObjectReference(element, attribute, false);
+                    break;
+                case "simplepattern":
+                    newValue = m_controller.CreateNewEditableCommandPattern(element, attribute, "", false);
+                    break;
+                case "stringdictionary":
+                    newValue = m_controller.CreateNewEditableStringDictionary(element, attribute, null, null, false);
+                    break;
+                case "scriptdictionary":
+                    newValue = m_controller.CreateNewEditableScriptDictionary(element, attribute, null, null, false);
+                    break;
+                case "null":
+                    newValue = null;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+
+            IEditorData data = m_controller.GetEditorData(element);
+
+            var result = data.SetAttribute(attribute, newValue);
+
+            if (!result.Valid)
+            {
+                // TO DO: Add error - but when can this happen?
+                //PopupEditors.DisplayValidationError(result, newValue as string, "Unable to set attribute value");
+                throw new NotImplementedException();
+            }
+
+            m_controller.EndTransaction();
         }
 
         private void ErrorClear(string id)
