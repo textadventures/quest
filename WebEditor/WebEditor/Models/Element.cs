@@ -95,7 +95,11 @@ namespace WebEditor.Models
                             saveValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
                             break;
                         case "richtext":
-                            saveValue = HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute));
+                            saveValue = HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute))
+                                .Replace("<strong>", "<b>")
+                                .Replace("</strong>", "</b>")
+                                .Replace("<em>", "<i>")
+                                .Replace("</em>", "</i>");
                             break;
                         case "checkbox":
                             ValueProviderResult value = bindingContext.ValueProvider.GetValue(ctl.Attribute);
