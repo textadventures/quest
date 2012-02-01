@@ -142,8 +142,8 @@
             <div class="@className">@ctl.Caption</div>
             break;
         case "dropdown":
-            IEnumerable<string> valuesList = Controls.GetDropdownValues(ctl);
             string selectedItem = Model.EditorData.GetAttribute(ctl.Attribute) as string;
+            IEnumerable<string> valuesList = Controls.GetDropdownValues(ctl, selectedItem);
             @Html.DropDownList(ctl.Attribute, valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == selectedItem) }));
             break;
         case "richtext":

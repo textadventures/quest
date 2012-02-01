@@ -34,7 +34,7 @@ namespace WebEditor.Views.Edit
             {typeof(IEditableDictionary<IEditableScripts>), "scriptdictionary"}
         };
 
-        public static IEnumerable<string> GetDropdownValues(IEditorControl ctl)
+        public static IEnumerable<string> GetDropdownValues(IEditorControl ctl, string currentValue)
         {
             IEnumerable<string> valuesList = ctl.GetListString("validvalues");
             IDictionary<string, string> valuesDictionary = ctl.GetDictionary("validvalues");
@@ -62,7 +62,14 @@ namespace WebEditor.Views.Edit
                 throw new Exception("Invalid type for validvalues");
             }
 
-            return valuesList;
+            if (string.IsNullOrEmpty(currentValue))
+            {
+                return new List<string> { "" }.Union(valuesList);
+            }
+            else
+            {
+                return valuesList;
+            }
         }
 
         public static string GetTypeName(object value)
