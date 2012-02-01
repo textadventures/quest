@@ -85,48 +85,60 @@ namespace WebEditor.Models
                 foreach (IEditorControl ctl in tab.Controls.Where(c => c.Attribute != null))
                 {
                     if (!ctl.IsControlVisible(originalElement.EditorData)) continue;
-                    object saveValue = null;
-                    bool handled = true;    // TO DO: Temporary until all controltypes are handled
-
-                    switch (ctl.ControlType)
-                    {
-                        case "textbox":
-                        case "dropdown":
-                            saveValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
-                            break;
-                        case "number":
-                            string stringValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
-                            int intValue;
-                            int.TryParse(stringValue, out intValue);
-                            saveValue = intValue;
-                            break;
-                        case "richtext":
-                            saveValue = HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute))
-                                .Replace("<strong>", "<b>")
-                                .Replace("</strong>", "</b>")
-                                .Replace("<em>", "<i>")
-                                .Replace("</em>", "</i>");
-                            break;
-                        case "checkbox":
-                            ValueProviderResult value = bindingContext.ValueProvider.GetValue(ctl.Attribute);
-                            saveValue = value.ConvertTo(typeof(bool));
-                            break;
-                        case "script":
-                            saveValue = BindScript(bindingContext.ValueProvider, ctl.Attribute, originalElement.EditorData, editorDictionary[gameId].Controller, ignoreExpression);
-                            break;
-                        default:
-                            handled = false;    // TO DO: Temporary until all controltypes are handled
-                            break;
-                    }
-
-                    if (handled)
-                    {
-                        result.Values.Add(ctl.Attribute, saveValue);
-                    }
+                    BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, ctl.ControlType);
                 }
             }
 
             return result;
+        }
+
+        private void BindControl(ModelBindingContext bindingContext, ElementSaveData result, int gameId, string ignoreExpression, Dictionary<int, Services.EditorService> editorDictionary, Models.Element originalElement, IEditorControl ctl, string controlType)
+        {
+            object saveValue = null;
+            bool handled = true;    // TO DO: Temporary until all controltypes are handled
+            bool addSaveValueToResult = true;
+
+            switch (controlType)
+            {
+                case "textbox":
+                case "dropdown":
+                    saveValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
+                    break;
+                case "number":
+                    string stringValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
+                    int intValue;
+                    int.TryParse(stringValue, out intValue);
+                    saveValue = intValue;
+                    break;
+                case "richtext":
+                    saveValue = HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute))
+                        .Replace("<strong>", "<b>")
+                        .Replace("</strong>", "</b>")
+                        .Replace("<em>", "<i>")
+                        .Replace("</em>", "</i>");
+                    break;
+                case "checkbox":
+                    ValueProviderResult value = bindingContext.ValueProvider.GetValue(ctl.Attribute);
+                    saveValue = value.ConvertTo(typeof(bool));
+                    break;
+                case "script":
+                    saveValue = BindScript(bindingContext.ValueProvider, ctl.Attribute, originalElement.EditorData, editorDictionary[gameId].Controller, ignoreExpression);
+                    break;
+                case "multi":
+                    string type = WebEditor.Views.Edit.Controls.GetTypeName(originalElement.EditorData.GetAttribute(ctl.Attribute));
+                    string subControlType = WebEditor.Views.Edit.Controls.GetEditorNameForType(type, ctl.GetDictionary("editors"));
+                    BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, subControlType);
+                    addSaveValueToResult = false;
+                    break;
+                default:
+                    handled = false;    // TO DO: Temporary until all controltypes are handled
+                    break;
+            }
+
+            if (handled && addSaveValueToResult)
+            {
+                result.Values.Add(ctl.Attribute, saveValue);
+            }
         }
 
         private object BindScript(IValueProvider provider, string attribute, IEditorData data, EditorController controller, string ignoreExpression)
