@@ -142,7 +142,7 @@
             @Html.DropDownList(ctl.Attribute, valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == selectedItem) }));
             break;
         case "richtext":
-            @Html.TextArea(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), 10, 80, new { @class = "richtext" })
+            @Html.TextArea(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
             break;
         case "number":
             <input type="number" name="@ctl.Attribute" id="@ctl.Attribute"  value="@Model.EditorData.GetAttribute(ctl.Attribute)" style="width: 50px" />
