@@ -18,6 +18,7 @@ namespace WebEditor.Models
         public string Error { get; set; }
         public Dictionary<string, List<string>> OtherElementErrors { get; set; }
         public EditorController Controller { get; set; }
+        public string RefreshTreeSelectElement { get; set; }
     }
 
     public class IgnoredValue
@@ -78,7 +79,7 @@ namespace WebEditor.Models
             var editorDictionary = controllerContext.RequestContext.HttpContext.Session["EditorDictionary"] as Dictionary<int, Services.EditorService>;
 
             // TO DO: This throws exception if session has expired (editorDictionary = null)
-            Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key, null, null);
+            Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key);
 
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
             {

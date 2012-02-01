@@ -7,7 +7,15 @@
 
 <script type="text/javascript">
     $(function () {
-        $("#addroom").button();
+        $("#addroom").button().click(function () {
+            $("#dialog-input-text-entry").val("");
+            $("#dialog-input-text-prompt").html("Please enter a name for the new room:");
+            $("#dialog-input-text").data("dialog_ok", function () {
+                $("#_additionalAction").val("add room " + $("#dialog-input-text-entry").val());
+                $("#elementEditorSave").submit();
+            });
+            $("#dialog-input-text").dialog("open");
+        });
         $("#addobject").button();
         var layout = $('body').layout({
             applyDefaultStyles: true,
@@ -51,50 +59,60 @@
             }
         });
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
-            $("#gameTree").jstree({
-                plugins: ["themes", "ui", "json_data"],
-                json_data: data,
-                animation: 0,
-                themes: {
-                    theme: "default",
-                    icons: false
-                }
-            }).bind("select_node.jstree", function (event, data) {
-                if ($("#elementEditorSave").length > 0) {
-                    // save current element editor first
-                    $("#_redirectToElement").val(data.rslt.obj.attr("data-key"));
-                    $("#elementEditorSave").submit();
-                }
-                else {
-                    $("#elementEditor").load('@Url.Action("EditElement", new { id = Model.GameId, key = "KEY" })'.replace("KEY", data.rslt.obj.attr("data-key")), function () {
-                        initialiseElementEditor();
-                    });
-                }
-            }).delegate("a", "click", function (event, data) { event.preventDefault(); })
-            .bind("loaded.jstree", function (e, data) {
-                data.inst.open_all(-1);
-                $("#gameTree").jstree("select_node", "#tree-game");
-            });
-            $.get('@Url.Action("Scripts", new { id = Model.GameId })', function (data) {
-                var scriptAdderHtml = "";
-                var count = 0;
-                for (var cat in data) {
-                    scriptAdderHtml += "<h3><a href=\"#\">" + cat + "</a></h3><div>"
-                    var scripts = data[cat].items;
-                    for (var idx in scripts) {
-                        var script = scripts[idx];
-                        var create = script.create == null ? null : script.create.replace(/\"/g, "&quot;");
-                        var additionalAttributes = (count == 0) ? " checked=\"checked\"" : "";
-                        scriptAdderHtml += "<input type=\"radio\" name=\"dialog-add-script-selection\" value=\"" + create + "\" id=\"dialog-add-script-selection-" + count + "\"" + additionalAttributes + "/> ";
-                        scriptAdderHtml += "<label for=\"dialog-add-script-selection-" + count + "\">" + script.display + "</label><br/>";
-                        count++;
-                    }
-                    scriptAdderHtml += "</div>";
-                }
-                $("#dialog-add-script-accordion").html(scriptAdderHtml);
-            });
+            initialiseTree(data, "game");
         });
     });
+
+    function initialiseTree(data, selectElement) {
+        $("#gameTree").jstree({
+            plugins: ["themes", "ui", "json_data"],
+            json_data: data,
+            animation: 0,
+            themes: {
+                theme: "default",
+                icons: false
+            }
+        }).bind("select_node.jstree", function (event, data) {
+            if ($("#elementEditorSave").length > 0) {
+                // save current element editor first
+                $("#_redirectToElement").val(data.rslt.obj.attr("data-key"));
+                $("#elementEditorSave").submit();
+            }
+            else {
+                $("#elementEditor").load('@Url.Action("EditElement", new { id = Model.GameId, key = "KEY" })'.replace("KEY", data.rslt.obj.attr("data-key").replace(/ /g, "%20")), function () {
+                    initialiseElementEditor();
+                });
+            }
+        }).delegate("a", "click", function (event, data) { event.preventDefault(); })
+            .bind("loaded.jstree", function (e, data) {
+                data.inst.open_all(-1);
+                $("#gameTree").jstree("select_node", "#tree-" + selectElement.replace(/ /g, "-"));
+            });
+        $.get('@Url.Action("Scripts", new { id = Model.GameId })', function (data) {
+            var scriptAdderHtml = "";
+            var count = 0;
+            for (var cat in data) {
+                scriptAdderHtml += "<h3><a href=\"#\">" + cat + "</a></h3><div>"
+                var scripts = data[cat].items;
+                for (var idx in scripts) {
+                    var script = scripts[idx];
+                    var create = script.create == null ? null : script.create.replace(/\"/g, "&quot;");
+                    var additionalAttributes = (count == 0) ? " checked=\"checked\"" : "";
+                    scriptAdderHtml += "<input type=\"radio\" name=\"dialog-add-script-selection\" value=\"" + create + "\" id=\"dialog-add-script-selection-" + count + "\"" + additionalAttributes + "/> ";
+                    scriptAdderHtml += "<label for=\"dialog-add-script-selection-" + count + "\">" + script.display + "</label><br/>";
+                    count++;
+                }
+                scriptAdderHtml += "</div>";
+            }
+            $("#dialog-add-script-accordion").html(scriptAdderHtml);
+        });
+    }
+
+    function refreshTree(selectElement) {
+        $.get('@Url.Action("RefreshTree", new { id = Model.GameId })', function (data) {
+            initialiseTree(data, selectElement);
+        });
+    }
 </script>
 
 <div class="ui-layout-north">

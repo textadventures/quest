@@ -54,10 +54,11 @@ namespace WebEditor.Services
             m_id = id;
             if (m_controller.Initialise(filename, libFolder))
             {
-                m_controller.ClearTree += new EditorController.VoidHandler(m_controller_ClearTree);
-                m_controller.BeginTreeUpdate += new EditorController.VoidHandler(m_controller_BeginTreeUpdate);
-                m_controller.AddedNode += new EditorController.AddedNodeHandler(m_controller_AddedNode);
-                m_controller.EndTreeUpdate += new EditorController.VoidHandler(m_controller_EndTreeUpdate);
+                m_controller.ClearTree += m_controller_ClearTree;
+                m_controller.BeginTreeUpdate += m_controller_BeginTreeUpdate;
+                m_controller.AddedNode += m_controller_AddedNode;
+                m_controller.RemovedNode += m_controller_RemovedNode;
+                m_controller.EndTreeUpdate += m_controller_EndTreeUpdate;
                 m_controller.UpdateTree();
             }
         }
@@ -66,12 +67,18 @@ namespace WebEditor.Services
 
         void m_controller_AddedNode(string key, string text, string parent, bool isLibraryNode, int? position)
         {
+            if (m_elements.ContainsKey(key)) return;
             m_elements.Add(key, new TreeItem
             {
                 Key = key,
                 Text = text,
                 Parent = (parent == null) ? null : m_elements[parent]
             });
+        }
+
+        void m_controller_RemovedNode(string key)
+        {
+            m_elements.Remove(key);
         }
 
         void m_controller_ClearTree()
@@ -118,25 +125,36 @@ namespace WebEditor.Services
                     children = GetJsonTreeItemsForParent(item.Key)
                 };
                 modelTreeItem.attr.Add("data-key", item.Key);
-                modelTreeItem.attr.Add("id", "tree-" + item.Key);
+                modelTreeItem.attr.Add("id", "tree-" + item.Key.Replace(" ", "-"));
                 result.Add(modelTreeItem);
             }
             return result;
         }
 
-        public Models.Element GetElementModelForView(int gameId, string key, string tab, string error)
+        public Models.Element GetElementModelForView(int gameId, string key)
         {
-            IEditorData data = m_controller.GetEditorData(key);
-            IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(key));
+            return GetElementModelForView(gameId, key, null, null, null);
+        }
 
+        public Models.Element GetElementModelForView(int gameId, string key, string tab, string error, string refreshTreeSelectElement)
+        {
+            IEditorData data = null;
+            IEditorDefinition def = null;
             Dictionary<string, List<string>> otherElementErrors = new Dictionary<string, List<string>>();
-            foreach (var scriptError in m_scriptErrors.Values.Where(e => e.Element != key))
+
+            if (refreshTreeSelectElement == null)
             {
-                if (!otherElementErrors.ContainsKey(scriptError.Element))
+                data = m_controller.GetEditorData(key);
+                def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(key));
+
+                foreach (var scriptError in m_scriptErrors.Values.Where(e => e.Element != key))
                 {
-                    otherElementErrors.Add(scriptError.Element, new List<string>());
+                    if (!otherElementErrors.ContainsKey(scriptError.Element))
+                    {
+                        otherElementErrors.Add(scriptError.Element, new List<string>());
+                    }
+                    otherElementErrors[scriptError.Element].Add(scriptError.Message);
                 }
-                otherElementErrors[scriptError.Element].Add(scriptError.Message);
             }
 
             return new Models.Element
@@ -149,12 +167,20 @@ namespace WebEditor.Services
                 Tab = tab,
                 Error = error,
                 OtherElementErrors = otherElementErrors,
-                Controller = m_controller
+                Controller = m_controller,
+                RefreshTreeSelectElement = refreshTreeSelectElement
             };
         }
 
-        public string SaveElement(string key, Models.ElementSaveData saveData)
+        public struct SaveElementResult
         {
+            public string Error;
+            public string RefreshTreeSelectElement;
+        }
+
+        public SaveElementResult SaveElement(string key, Models.ElementSaveData saveData)
+        {
+            SaveElementResult result = new SaveElementResult();
             try
             {
                 IEditorData data = m_controller.GetEditorData(key);
@@ -177,13 +203,15 @@ namespace WebEditor.Services
                 }
                 if (!string.IsNullOrEmpty(saveData.AdditionalAction))
                 {
-                    ProcessAdditionalAction(key, saveData.AdditionalAction);
+                    var actionResult = ProcessAdditionalAction(key, saveData.AdditionalAction);
+                    result.RefreshTreeSelectElement = actionResult.RefreshTreeSelectElement;
                 }
-                return string.Empty;
+                return result;
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                result.Error = ex.Message;
+                return result;
             }
         }
 
@@ -380,8 +408,14 @@ namespace WebEditor.Services
             };
         }
 
-        private void ProcessAdditionalAction(string key, string arguments)
+        private struct AdditionalActionResult
         {
+            public string RefreshTreeSelectElement;
+        }
+
+        private AdditionalActionResult ProcessAdditionalAction(string key, string arguments)
+        {
+            AdditionalActionResult result = new AdditionalActionResult();
             string[] data = arguments.Split(new[] { ' ' }, 3);
             string action = data[0];
             string cmd = data[1];
@@ -406,7 +440,11 @@ namespace WebEditor.Services
                 case "types":
                     ProcessTypesAction(key, cmd, parameter);
                     break;
+                case "add":
+                    result.RefreshTreeSelectElement = ProcessAddAction(cmd, parameter);
+                    break;
             }
+            return result;
         }
 
         private void ProcessStringListAction(string key, string cmd, string parameter)
@@ -513,6 +551,23 @@ namespace WebEditor.Services
                     TypesSet(key, data[0], data[1]);
                     break;
             }
+        }
+
+        private string ProcessAddAction(string cmd, string parameter)
+        {
+            switch (cmd)
+            {
+                case "room":
+                    return AddNewRoom(parameter);
+            }
+            return null;
+        }
+
+        private string AddNewRoom(string value)
+        {
+            // TO DO: Verify room name
+            m_controller.CreateNewRoom(value, null);
+            return value;
         }
 
         private void TypesSet(string element, string attribute, string value)

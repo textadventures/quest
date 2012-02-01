@@ -35,18 +35,18 @@ namespace WebEditor.Controllers
             return Json(EditorDictionary[id].GetScriptAdderJson(), JsonRequestBehavior.AllowGet);
         }
 
-        public PartialViewResult EditElement(int id, string key, string tab, string error)
+        public PartialViewResult EditElement(int id, string key, string tab, string error, string refreshTreeSelectElement)
         {
-            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, tab, error);
+            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, tab, error, refreshTreeSelectElement);
             return PartialView("ElementEditor", model);
         }
 
         [HttpPost]
         public PartialViewResult SaveElement(Models.ElementSaveData element)
         {
-            string error = EditorDictionary[element.GameId].SaveElement(element.Key, element);
+            var result = EditorDictionary[element.GameId].SaveElement(element.Key, element);
             string tab = !string.IsNullOrEmpty(element.AdditionalAction) ? element.AdditionalActionTab : null;
-            return EditElement(element.GameId, element.RedirectToElement, tab, error);
+            return EditElement(element.GameId, element.RedirectToElement, tab, result.Error, result.RefreshTreeSelectElement);
         }
 
         public PartialViewResult EditStringList(int id, string key, IEditorControl control)
@@ -76,6 +76,11 @@ namespace WebEditor.Controllers
                 }
                 return result;
             }
+        }
+
+        public JsonResult RefreshTree(int id)
+        {
+            return Json(EditorDictionary[id].GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
         }
     }
 }

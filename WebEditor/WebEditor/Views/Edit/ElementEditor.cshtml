@@ -37,11 +37,28 @@
         <input type="hidden" name="_additionalAction" id="_additionalAction" value="" />
         <input type="hidden" name="_additionalActionTab" id="_additionalActionTab" value="@Model.Tab" />
         <input type="hidden" name="_ignoreExpression" id="_ignoreExpression" value="" />
-        <div id="elementEditorTabs">
-            @{
-                int count = 0;
-            }
-            <ul>    
+        <input type="hidden" name="_refreshTreeSelectElement" id="_refreshTreeSelectElement" value="@Model.RefreshTreeSelectElement" />
+        if (Model.EditorDefinition != null)
+        {
+            <div id="elementEditorTabs">
+                @{
+                    int count = 0;
+                }
+                <ul>    
+                    @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
+                    {
+                        if (!def.IsTabVisible(Model.EditorData))
+                        {
+                            continue;
+                        }
+                        count++;
+                        string id = "#elementEditorTab" + count;
+                        <li><a href="@id">@def.Caption</a></li>
+                    }
+                </ul>
+                @{
+                    count = 0;
+                }
                 @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
                 {
                     if (!def.IsTabVisible(Model.EditorData))
@@ -49,67 +66,54 @@
                         continue;
                     }
                     count++;
-                    string id = "#elementEditorTab" + count;
-                    <li><a href="@id">@def.Caption</a></li>
-                }
-            </ul>
-            @{
-                count = 0;
-            }
-            @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
-            {
-                if (!def.IsTabVisible(Model.EditorData))
-                {
-                    continue;
-                }
-                count++;
-                string id = "elementEditorTab" + count;
-                <div id="@id">
-                    @{
-                        bool isFirst = true;
-                    }
-                    <table style="width: 100%">
-                        <colgroup>
-                            <col style="width: 15%" />
-                            <col />
-                        </colgroup>
-                        @foreach (IEditorControl ctl in def.Controls)
-                        {
-                            if (!ctl.IsControlVisible(Model.EditorData))
-                            {
-                                continue;
-                            }
-                            if (IsSelfCaption(ctl))
-                            {
-                                <tr>
-                                    <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst, ctl.ControlType)</td>
-                                </tr>
-                            }
-                            else if (IsLongCaption(ctl))
-                            {
-                                <tr>
-                                    <td colspan="2">@ctl.Caption:</td>
-                                </tr>
-                                <tr>
-                                    <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst, ctl.ControlType)</td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td class="elementEditorCaption">@ctl.Caption:</td>
-                                    <td class="elementEditorCell">
-                                        @RenderEditorControl(ctl, isFirst, ctl.ControlType)
-                                    </td>
-                                </tr>
-                            }
-                            isFirst = false;
+                    string id = "elementEditorTab" + count;
+                    <div id="@id">
+                        @{
+                           bool isFirst = true;
                         }
-                    </table>
-                </div>
-            }
-        </div>
-        <input id="elementEditorSave" type="submit" value="Save" />
+                        <table style="width: 100%">
+                            <colgroup>
+                                <col style="width: 15%" />
+                                <col />
+                            </colgroup>
+                            @foreach (IEditorControl ctl in def.Controls)
+                            {
+                                if (!ctl.IsControlVisible(Model.EditorData))
+                                {
+                                    continue;
+                                }
+                                if (IsSelfCaption(ctl))
+                                {
+                                    <tr>
+                                        <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst, ctl.ControlType)</td>
+                                    </tr>
+                                }
+                                else if (IsLongCaption(ctl))
+                                {
+                                    <tr>
+                                        <td colspan="2">@ctl.Caption:</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst, ctl.ControlType)</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="elementEditorCaption">@ctl.Caption:</td>
+                                        <td class="elementEditorCell">
+                                            @RenderEditorControl(ctl, isFirst, ctl.ControlType)
+                                        </td>
+                                    </tr>
+                                }
+                                isFirst = false;
+                            }
+                        </table>
+                    </div>
+                }
+            </div>
+            <input id="elementEditorSave" type="submit" value="Save" />
+        }
     }
 </div>
 

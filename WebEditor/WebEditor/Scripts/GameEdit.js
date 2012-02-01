@@ -1,5 +1,10 @@
 ﻿function initialiseElementEditor(tab) {
     var selectTab = $("#_additionalActionTab").val();
+    var refreshTreeSelectElement = $("#_refreshTreeSelectElement").val();
+    if (refreshTreeSelectElement.length > 0) {
+        refreshTree(refreshTreeSelectElement);
+        return;
+    }
     $("#elementEditorTabs").tabs({
         create: function () {
             if (selectTab && selectTab.length > 0) {
