@@ -88,7 +88,6 @@ namespace WebEditor.Services
 
         void m_controller_BeginTreeUpdate()
         {
-            m_elements.Clear();
         }
 
         void m_controller_EndTreeUpdate()
@@ -441,7 +440,7 @@ namespace WebEditor.Services
                     ProcessTypesAction(key, cmd, parameter);
                     break;
                 case "add":
-                    result.RefreshTreeSelectElement = ProcessAddAction(cmd, parameter);
+                    result.RefreshTreeSelectElement = ProcessAddAction(key, cmd, parameter);
                     break;
             }
             return result;
@@ -553,12 +552,14 @@ namespace WebEditor.Services
             }
         }
 
-        private string ProcessAddAction(string cmd, string parameter)
+        private string ProcessAddAction(string key, string cmd, string parameter)
         {
             switch (cmd)
             {
                 case "room":
                     return AddNewRoom(parameter);
+                case "object":
+                    return AddNewObject(key, parameter);
             }
             return null;
         }
@@ -567,6 +568,13 @@ namespace WebEditor.Services
         {
             // TO DO: Verify room name
             m_controller.CreateNewRoom(value, null);
+            return value;
+        }
+
+        private string AddNewObject(string parent, string value)
+        {
+            // TO DO: Verify object name
+            m_controller.CreateNewObject(value, parent);
             return value;
         }
 

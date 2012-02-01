@@ -16,7 +16,15 @@
             });
             $("#dialog-input-text").dialog("open");
         });
-        $("#addobject").button();
+        $("#addobject").button().click(function () {
+            $("#dialog-input-text-entry").val("");
+            $("#dialog-input-text-prompt").html("Please enter a name for the new object:");
+            $("#dialog-input-text").data("dialog_ok", function () {
+                $("#_additionalAction").val("add object " + $("#dialog-input-text-entry").val());
+                $("#elementEditorSave").submit();
+            });
+            $("#dialog-input-text").dialog("open");
+        });
         var layout = $('body').layout({
             applyDefaultStyles: true,
             north__resizable: false,
