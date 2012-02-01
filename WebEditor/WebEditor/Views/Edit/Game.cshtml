@@ -73,6 +73,7 @@
             }).delegate("a", "click", function (event, data) { event.preventDefault(); })
             .bind("loaded.jstree", function (e, data) {
                 data.inst.open_all(-1);
+                $("#gameTree").jstree("select_node", "#tree-game");
             });
             $.get('@Url.Action("Scripts", new { id = Model.GameId })', function (data) {
                 var scriptAdderHtml = "";

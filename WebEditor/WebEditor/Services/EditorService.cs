@@ -118,6 +118,7 @@ namespace WebEditor.Services
                     children = GetJsonTreeItemsForParent(item.Key)
                 };
                 modelTreeItem.attr.Add("data-key", item.Key);
+                modelTreeItem.attr.Add("id", "tree-" + item.Key);
                 result.Add(modelTreeItem);
             }
             return result;
