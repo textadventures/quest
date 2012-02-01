@@ -8,6 +8,31 @@ namespace WebEditor.Views.Edit
 {
     public static class Controls
     {
+        private static Dictionary<string, string> s_controlTypesMap = new Dictionary<string, string> {
+            {"boolean", "checkbox"},
+            {"string", "textbox"},
+            {"script", "script"},
+            {"stringlist", "list"},
+            {"int", "number"},
+            {"object", "objects"},
+            {"simplepattern", "pattern"},
+            {"stringdictionary", "stringdictionary"},
+            {"scriptdictionary", "scriptdictionary"},
+            {"null", null}
+        };
+
+        private static Dictionary<Type, string> s_typeNamesMap = new Dictionary<Type, string> {
+            {typeof(bool), "boolean"},
+            {typeof(string), "string"},
+            {typeof(IEditableScripts), "script"},
+            {typeof(IEditableList<string>), "stringlist"},
+            {typeof(int), "int"},
+            {typeof(IEditableObjectReference), "object"},
+            {typeof(IEditableCommandPattern), "simplepattern"},
+            {typeof(IEditableDictionary<string>),"stringdictionary"},
+            {typeof(IEditableDictionary<IEditableScripts>), "scriptdictionary"}
+        };
+
         public static IEnumerable<string> GetDropdownValues(IEditorControl ctl)
         {
             IEnumerable<string> valuesList = ctl.GetListString("validvalues");
@@ -37,6 +62,26 @@ namespace WebEditor.Views.Edit
             }
 
             return valuesList;
+        }
+
+        public static string GetTypeName(object value)
+        {
+            if (value == null) return "null";
+            Type type = value.GetType();
+            return s_typeNamesMap.FirstOrDefault(t => t.Key.IsAssignableFrom(type)).Value;
+        }
+
+        public static string GetEditorNameForType(string typeName, IDictionary<string, string> editorsOverride)
+        {
+            if (string.IsNullOrEmpty(typeName)) return string.Empty;
+            if (editorsOverride != null)
+            {
+                if (editorsOverride.ContainsKey(typeName))
+                {
+                    return editorsOverride[typeName];
+                }
+            }
+            return s_controlTypesMap[typeName];
         }
     }
 }

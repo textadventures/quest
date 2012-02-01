@@ -81,7 +81,7 @@
                             if (IsSelfCaption(ctl))
                             {
                                 <tr>
-                                    <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst)</td>
+                                    <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst, ctl.ControlType)</td>
                                 </tr>
                             }
                             else if (IsLongCaption(ctl))
@@ -90,7 +90,7 @@
                                     <td colspan="2">@ctl.Caption:</td>
                                 </tr>
                                 <tr>
-                                    <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst)</td>
+                                    <td class="elementEditorCell" colspan="2">@RenderEditorControl(ctl, isFirst, ctl.ControlType)</td>
                                 </tr>
                             }
                             else
@@ -98,7 +98,7 @@
                                 <tr>
                                     <td class="elementEditorCaption">@ctl.Caption:</td>
                                     <td class="elementEditorCell">
-                                        @RenderEditorControl(ctl, isFirst)
+                                        @RenderEditorControl(ctl, isFirst, ctl.ControlType)
                                     </td>
                                 </tr>
                             }
@@ -112,9 +112,9 @@
     }
 </div>
 
-@helper RenderEditorControl(IEditorControl ctl, bool isFirst)
-    {
-    switch (ctl.ControlType)
+@helper RenderEditorControl(IEditorControl ctl, bool isFirst, string controlType)
+{
+    switch (controlType)
     {
         case "checkbox":
             @Html.CheckBox(ctl.Attribute, Model.EditorData.GetAttribute(ctl.Attribute) as bool? == true)
@@ -147,10 +147,29 @@
         case "number":
             <input type="number" name="@ctl.Attribute" id="@ctl.Attribute"  value="@Model.EditorData.GetAttribute(ctl.Attribute)" style="width: 50px" />
             break;
+        case "multi":
+            @RenderMultiControl(ctl, Model.EditorData.GetAttribute(ctl.Attribute))
+            break;
+        case null:
+            break;
         default:
             <text>[@ctl.ControlType]</text>
             break;
     }
+}
+
+@helper RenderMultiControl(IEditorControl ctl, object value)
+{
+    string caption = ctl.GetString("selfcaption");
+    if (caption != null)
+    {
+        <text>@caption:</text>
+    }
+    IDictionary<string, string> types = ctl.GetDictionary("types");
+    string selectedType = WebEditor.Views.Edit.Controls.GetTypeName(value);
+    @Html.DropDownList(ctl.Attribute + "-type", types.Select(t => new SelectListItem { Text = t.Value, Value = t.Key, Selected = (t.Key == selectedType) }))
+    string controlType = WebEditor.Views.Edit.Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
+    @RenderEditorControl(ctl, false, controlType)
 }
 
 @functions {
@@ -168,6 +187,8 @@
             case "label":
             case "title":
                 return true;
+            case "multi":
+                return ctl.GetString("selfcaption") != null;
         }
         return false;
     }
