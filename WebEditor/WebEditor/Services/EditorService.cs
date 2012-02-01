@@ -147,7 +147,8 @@ namespace WebEditor.Services
                 EditorDefinition = def,
                 Tab = tab,
                 Error = error,
-                OtherElementErrors = otherElementErrors
+                OtherElementErrors = otherElementErrors,
+                Controller = m_controller
             };
         }
 

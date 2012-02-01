@@ -150,6 +150,9 @@
         case "multi":
             @RenderMultiControl(ctl, Model.EditorData.GetAttribute(ctl.Attribute))
             break;
+        case "dropdowntypes":
+            @Html.DropDownList(Guid.NewGuid().ToString(), WebEditor.Views.Edit.Controls.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key)); 
+            break;
         case null:
             break;
         default:

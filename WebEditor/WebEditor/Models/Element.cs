@@ -17,6 +17,7 @@ namespace WebEditor.Models
         public string Tab { get; set; }
         public string Error { get; set; }
         public Dictionary<string, List<string>> OtherElementErrors { get; set; }
+        public EditorController Controller { get; set; }
     }
 
     public class IgnoredValue
