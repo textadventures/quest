@@ -21,5 +21,6 @@ namespace AxeSoftware.Quest
         bool IsControlVisible(IEditorData data);
         IEditorDefinition Parent { get; }
         bool IsControlVisibleInSimpleMode { get; }
+        string Id { get; }
     }
 }

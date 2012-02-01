@@ -168,6 +168,11 @@
         var value = $(this).find('option:selected').attr("value");
         sendAdditionalAction("multi set " + key + ";" + value);
     });
+    $(".types-dropdown").change(function () {
+        var key = $(this).attr("data-key");
+        var value = $(this).find('option:selected').attr("value");
+        sendAdditionalAction("types set " + key + ";" + value);
+    });
 }
 
 function getSelectedScripts(key) {

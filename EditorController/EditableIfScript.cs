@@ -430,5 +430,10 @@ namespace AxeSoftware.Quest
         {
             get { return true; }
         }
+
+        public string Id
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

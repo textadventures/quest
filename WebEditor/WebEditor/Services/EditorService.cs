@@ -402,6 +402,9 @@ namespace WebEditor.Services
                 case "multi":
                     ProcessMultiAction(key, cmd, parameter);
                     break;
+                case "types":
+                    ProcessTypesAction(key, cmd, parameter);
+                    break;
             }
         }
 
@@ -497,6 +500,54 @@ namespace WebEditor.Services
                     MultiSet(key, data[0], data[1]);
                     break;
             }
+        }
+
+        private void ProcessTypesAction(string key, string cmd, string parameter)
+        {
+            string[] data;
+            switch (cmd)
+            {
+                case "set":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    TypesSet(key, data[0], data[1]);
+                    break;
+            }
+        }
+
+        private void TypesSet(string element, string attribute, string value)
+        {
+            const string k_noType = "*";
+
+            IEditorControl ctl = FindEditorControl(element, attribute);
+            string oldType = m_controller.GetSelectedDropDownType(ctl, element);
+            if (value == oldType) return;
+
+            IDictionary<string, string> types = ctl.GetDictionary("types");
+
+            m_controller.StartTransaction(String.Format("Change type from '{0}' to '{1}'", types[oldType], types[value]));
+
+            if (oldType != k_noType)
+            {
+                m_controller.RemoveInheritedTypeFromElement(element, oldType, false);
+            }
+
+            if (value != k_noType)
+            {
+                m_controller.AddInheritedTypeToElement(element, value, false);
+            }
+
+            m_controller.EndTransaction();
+        }
+
+        private IEditorControl FindEditorControl(string element, string controlId)
+        {
+            IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(element));
+            foreach (IEditorTab tab in def.Tabs.Values)
+            {
+                IEditorControl ctl = tab.Controls.FirstOrDefault(c => c.Id == controlId);
+                if (ctl != null) return ctl;
+            }
+            return null;
         }
 
         private void MultiSet(string element, string attribute, string value)

@@ -17,6 +17,7 @@ namespace AxeSoftware.Quest
         private Element m_source;
         private EditorVisibilityHelper m_visibilityHelper;
         private EditorDefinition m_parent;
+        private string m_id;
 
         public EditorControl(EditorDefinition parent, WorldModel worldModel, Element source)
         {
@@ -31,6 +32,7 @@ namespace AxeSoftware.Quest
             if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");
             m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
             IsControlVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
+            m_id = source.Name;
 
             if (source.Fields.HasString("filtergroup"))
             {
@@ -108,6 +110,11 @@ namespace AxeSoftware.Quest
         {
             get;
             private set;
+        }
+
+        public string Id
+        {
+            get { return m_id; }
         }
     }
 }

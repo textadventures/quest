@@ -1,4 +1,5 @@
 ﻿@using AxeSoftware.Quest;
+@using WebEditor.Views.Edit;
 @model WebEditor.Models.Element
 
 @if (!string.IsNullOrEmpty(Model.Error))
@@ -137,7 +138,7 @@
             <div class="@className">@ctl.Caption</div>
             break;
         case "dropdown":
-            IEnumerable<string> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl);
+            IEnumerable<string> valuesList = Controls.GetDropdownValues(ctl);
             string selectedItem = Model.EditorData.GetAttribute(ctl.Attribute) as string;
             @Html.DropDownList(ctl.Attribute, valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == selectedItem) }));
             break;
@@ -151,7 +152,7 @@
             @RenderMultiControl(ctl, Model.EditorData.GetAttribute(ctl.Attribute))
             break;
         case "dropdowntypes":
-            @Html.DropDownList(Guid.NewGuid().ToString(), WebEditor.Views.Edit.Controls.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key)); 
+            @Html.DropDownList("types-dropdown-" + ctl.Id, Controls.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key), new { @class = "types-dropdown", data_key = ctl.Id }); 
             break;
         case null:
             break;
@@ -169,9 +170,9 @@
         <text>@caption:</text>
     }
     IDictionary<string, string> types = ctl.GetDictionary("types");
-    string selectedType = WebEditor.Views.Edit.Controls.GetTypeName(value);
+    string selectedType = Controls.GetTypeName(value);
     @Html.DropDownList(ctl.Attribute + "-type", types.Select(t => new SelectListItem { Text = t.Value, Value = t.Key, Selected = (t.Key == selectedType) }), new { @class = "multi-dropdown", data_key = ctl.Attribute })
-    string controlType = WebEditor.Views.Edit.Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
+    string controlType = Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
     @RenderEditorControl(ctl, false, controlType)
 }
 

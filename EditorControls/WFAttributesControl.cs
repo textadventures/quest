@@ -113,6 +113,11 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 get { return true; }
             }
+
+            public string Id
+            {
+                get { throw new NotImplementedException(); }
+            }
         }
 
         public WFAttributesControl()
