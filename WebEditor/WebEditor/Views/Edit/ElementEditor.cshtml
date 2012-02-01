@@ -144,6 +144,9 @@
         case "richtext":
             @Html.TextArea(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), 10, 80, new { @class = "richtext" })
             break;
+        case "number":
+            <input type="number" name="@ctl.Attribute" id="@ctl.Attribute"  value="@Model.EditorData.GetAttribute(ctl.Attribute)" style="width: 50px" />
+            break;
         default:
             <text>[@ctl.ControlType]</text>
             break;

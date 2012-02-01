@@ -94,6 +94,12 @@ namespace WebEditor.Models
                         case "dropdown":
                             saveValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
                             break;
+                        case "number":
+                            string stringValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
+                            int intValue;
+                            int.TryParse(stringValue, out intValue);
+                            saveValue = intValue;
+                            break;
                         case "richtext":
                             saveValue = HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute))
                                 .Replace("<strong>", "<b>")

@@ -207,6 +207,10 @@ namespace WebEditor.Services
             {
                 return (bool)oldValue != (bool)newValue;
             }
+            if (oldValue is int && newValue is int)
+            {
+                return (int)oldValue != (int)newValue;
+            }
             if (newValue is WebEditor.Models.IgnoredValue)
             {
                 return false;
