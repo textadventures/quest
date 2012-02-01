@@ -92,8 +92,10 @@ namespace WebEditor.Models
                     {
                         case "textbox":
                         case "dropdown":
-                        case "richtext":
                             saveValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
+                            break;
+                        case "richtext":
+                            saveValue = HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute));
                             break;
                         case "checkbox":
                             ValueProviderResult value = bindingContext.ValueProvider.GetValue(ctl.Attribute);
@@ -321,12 +323,12 @@ namespace WebEditor.Models
             }
         }
 
-        private static object GetValueProviderString(IValueProvider provider, string key)
+        private string GetValueProviderString(IValueProvider provider, string key)
         {
             try
             {
                 ValueProviderResult value = provider.GetValue(key);
-                return value == null ? null : value.ConvertTo(typeof(string));
+                return value == null ? null : (string)value.ConvertTo(typeof(string));
             }
             catch (HttpRequestValidationException)
             {

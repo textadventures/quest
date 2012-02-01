@@ -148,6 +148,21 @@
         var key = $(this).attr("data-key");
         sendAdditionalAction("scriptdictionary delete " + key + ";" + getSelectedScriptDictionaryItems(key));
     });
+    $('textarea.richtext').tinymce({
+        script_url: '../../Scripts/tiny_mce/tiny_mce.js',
+        theme: "advanced",
+        plugins: "inlinepopups,searchreplace,paste,directionality",
+        theme_advanced_buttons1: "bold,italic,underline",
+        theme_advanced_buttons2: "",
+        theme_advanced_buttons3: "",
+        theme_advanced_toolbar_location: "top",
+        theme_advanced_toolbar_align: "left",
+        theme_advanced_statusbar_location: "none",
+        forced_root_block: "",
+        force_br_newlines : true,
+        force_p_newlines : false,
+        gecko_spellcheck: true
+    });
 }
 
 function getSelectedScripts(key) {
