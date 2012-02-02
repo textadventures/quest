@@ -80,19 +80,25 @@ function showDialog(prompt, defaultText, ok, list, listPrompt) {
 }
 
 function initialiseButtons() {
-    $("#addroom").button().click(function () {
+    $("#button-addroom").button().click(function () {
         showDialog("Please enter a name for the new room", "", function (text) {
             toplevelAdditionalAction("main addroom " + text);
         })
     });
-    $("#addobject").button().click(function () {
+    $("#button-addobject").button().click(function () {
         var possibleParents = $("#_newObjectPossibleParents").val().split(";");
         showDialog("Please enter a name for the new object", "", function (text, parent) {
             toplevelAdditionalAction("main addobject " + text + ";" + parent);
         }, possibleParents, "Parent")
     });
-    $("#delete").button().click(function () {
+    $("#button-delete").button().click(function () {
         toplevelAdditionalAction("main delete");
+    });
+    $("#button-undo").button().click(function () {
+        toplevelAdditionalAction("main undo");
+    });
+    $("#button-redo").button().click(function () {
+        toplevelAdditionalAction("main redo");
     });
 }
 

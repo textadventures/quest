@@ -231,6 +231,7 @@ namespace WebEditor.Services
             SaveElementResult result = new SaveElementResult();
             try
             {
+                m_controller.StartTransaction("Edit");
                 IEditorData data = m_controller.GetEditorData(key);
                 foreach (var kvp in saveData.Values)
                 {
@@ -260,6 +261,23 @@ namespace WebEditor.Services
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+                return result;
+            }
+            finally
+            {
+                m_controller.EndTransaction();
+            }
+
+            // Any additional actions (creating new objects etc.) occur under a separate transaction
+            // to the main element saving transaction
+
+            try
+            {
+
                 if (!string.IsNullOrEmpty(saveData.AdditionalAction))
                 {
                     var actionResult = ProcessAdditionalAction(elementName, saveData.AdditionalAction);
@@ -627,6 +645,12 @@ namespace WebEditor.Services
                     {
                         return "game";
                     }
+                    break;
+                case "undo":
+                    m_controller.Undo();
+                    break;
+                case "redo":
+                    m_controller.Redo();
                     break;
             }
             return null;

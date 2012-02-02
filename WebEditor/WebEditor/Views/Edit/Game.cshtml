@@ -7,12 +7,12 @@
 
 <script type="text/javascript">
     $(function () {
+        initialiseButtons();
         var layout = $('body').layout({
             applyDefaultStyles: true,
             north__resizable: false,
             north__closable: false
         });
-        initialiseButtons();
         initialiseDialogBoxes();
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
             initialiseTree(data, "game");
@@ -81,9 +81,11 @@
 </script>
 
 <div class="ui-layout-north">
-    <button type="button" id="addroom">Add room</button>
-    <button type="button" id="addobject">Add object</button>
-    <button type="button" id="delete">Delete</button>
+    <button type="button" id="button-addroom">Add room</button>
+    <button type="button" id="button-addobject">Add object</button>
+    <button type="button" id="button-delete">Delete</button>
+    <button type="button" id="button-undo">Undo</button>
+    <button type="button" id="button-redo">Redo</button>
 </div>
 
 <div class="ui-layout-west" id="treePane">
