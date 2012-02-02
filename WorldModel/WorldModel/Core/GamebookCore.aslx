@@ -64,13 +64,18 @@
   </function>
 
   <function name="HandleCommand" parameters="command">
-    if (DictionaryContains(player.parent.options, command)) {
-      newpage = GetObject(command)
-      if (newpage = null) {
-        msg ("Error - no page named '" + command + "'")
+    if (TypeOf(player.parent, "options") = "stringdictionary") {
+      if (DictionaryContains(player.parent.options, command)) {
+        newpage = GetObject(command)
+        if (newpage = null) {
+          msg ("Error - no page named '" + command + "'")
+        }
+        else {
+          player.parent = GetObject(command)
+        }
       }
       else {
-        player.parent = GetObject(command)
+        msg ("Error - '" + command + "' is not a valid option for this page")
       }
     }
     else {
