@@ -227,6 +227,7 @@ namespace WebEditor.Services
 
         public SaveElementResult SaveElement(string key, Models.ElementSaveData saveData)
         {
+            string elementName = key;
             SaveElementResult result = new SaveElementResult();
             try
             {
@@ -248,6 +249,9 @@ namespace WebEditor.Services
                             if (validationResult.Valid)
                             {
                                 ErrorClear(key, kvp.Key);
+                                // Element has been renamed
+                                if (kvp.Key == "name") elementName = (string)kvp.Value;
+                                if (saveData.RedirectToElement == key) saveData.RedirectToElement = elementName;
                             }
                             else
                             {
@@ -258,7 +262,7 @@ namespace WebEditor.Services
                 }
                 if (!string.IsNullOrEmpty(saveData.AdditionalAction))
                 {
-                    var actionResult = ProcessAdditionalAction(key, saveData.AdditionalAction);
+                    var actionResult = ProcessAdditionalAction(elementName, saveData.AdditionalAction);
                     result.RefreshTreeSelectElement = actionResult.RefreshTreeSelectElement;
                 }
                 return result;
