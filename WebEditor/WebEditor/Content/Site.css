@@ -99,7 +99,10 @@ div.scriptStringListSection
 {
     margin-left: 24px;
 }
-
+div#dialog-input-text-list
+{
+    margin-top: 10px;
+}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/

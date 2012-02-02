@@ -7,24 +7,12 @@
 
 <script type="text/javascript">
     $(function () {
-        $("#addroom").button().click(function () {
-            showDialog("Please enter a name for the new room", "", function (text) {
-                toplevelAdditionalAction("main addroom " + text);
-            })
-        });
-        $("#addobject").button().click(function () {
-            showDialog("Please enter a name for the new object", "", function (text) {
-                toplevelAdditionalAction("main addobject " + text);
-            })
-        });
-        $("#delete").button().click(function () {
-            toplevelAdditionalAction("main delete");
-        });
         var layout = $('body').layout({
             applyDefaultStyles: true,
             north__resizable: false,
             north__closable: false
         });
+        initialiseButtons();
         initialiseDialogBoxes();
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
             initialiseTree(data, "game");
@@ -113,6 +101,11 @@
 <div id="dialog-input-text" title="Editor">
     <p id="dialog-input-text-prompt"></p>
     <input type="text" id="dialog-input-text-entry" style="width: 100%" />
+    <div id="dialog-input-text-list">
+        <span id="dialog-input-text-list-prompt"></span>
+        <select id="dialog-input-text-options">
+        </select>
+    </div>
 </div>
 
 <div id="dialog-add-script" title="Add New Script">

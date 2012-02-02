@@ -199,6 +199,8 @@ namespace WebEditor.Services
             string popupError = m_popupError;
             m_popupError = null;
 
+            IEnumerable<string> newObjectPossibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(key);
+
             return new Models.Element
             {
                 GameId = gameId,
@@ -212,7 +214,8 @@ namespace WebEditor.Services
                 OtherElementErrors = otherElementErrors,
                 Controller = m_controller,
                 RefreshTreeSelectElement = refreshTreeSelectElement,
-                PopupError = popupError
+                PopupError = popupError,
+                NewObjectPossibleParents = (newObjectPossibleParents == null) ? null : string.Join(";", newObjectPossibleParents)
             };
         }
 
@@ -607,12 +610,14 @@ namespace WebEditor.Services
 
         private string ProcessMainAction(string key, string cmd, string parameter)
         {
+            string[] data;
             switch (cmd)
             {
                 case "addroom":
                     return AddNewRoom(parameter);
                 case "addobject":
-                    return AddNewObject(key, parameter);
+                    data = parameter.Split(new[] { ';' }, 2);
+                    return AddNewObject(data[1], data[0]);
                 case "delete":
                     if (DeleteElement(key))
                     {

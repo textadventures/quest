@@ -20,6 +20,7 @@ namespace WebEditor.Models
         public EditorController Controller { get; set; }
         public string RefreshTreeSelectElement { get; set; }
         public string PopupError { get; set; }
+        public string NewObjectPossibleParents { get; set; }
     }
 
     public class IgnoredValue

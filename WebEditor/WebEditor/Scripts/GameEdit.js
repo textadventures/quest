@@ -48,13 +48,52 @@
     });
 }
 
-function showDialog(prompt, defaultText, ok) {
+function showDialog(prompt, defaultText, ok, list, listPrompt) {
     $("#dialog-input-text-entry").val(defaultText);
     $("#dialog-input-text-prompt").html(prompt + ":");
+    var showList = false;
+    var parent = "";
+    if (typeof list != "undefined") {
+        showList = (list.length > 1);
+        if (list.length == 1) {
+            parent = list[0];
+        }
+    }
+    if (showList) {
+        $("#dialog-input-text-list-prompt").html(listPrompt + ":");
+        $("#dialog-input-text-options").empty();
+        $.each(list, function (index, value) {
+            $("#dialog-input-text-options").append($("<option/>").text(value));
+        });
+        $("#dialog-input-text-list").show();
+    }
+    else {
+        $("#dialog-input-text-list").hide();
+    }
     $("#dialog-input-text").data("dialog_ok", function () {
-        ok($("#dialog-input-text-entry").val());
+        if (showList) {
+            parent = $("#dialog-input-text-options option:selected").text();
+        }
+        ok($("#dialog-input-text-entry").val(), parent);
     });
     $("#dialog-input-text").dialog("open");
+}
+
+function initialiseButtons() {
+    $("#addroom").button().click(function () {
+        showDialog("Please enter a name for the new room", "", function (text) {
+            toplevelAdditionalAction("main addroom " + text);
+        })
+    });
+    $("#addobject").button().click(function () {
+        var possibleParents = $("#_newObjectPossibleParents").val().split(";");
+        showDialog("Please enter a name for the new object", "", function (text, parent) {
+            toplevelAdditionalAction("main addobject " + text + ";" + parent);
+        }, possibleParents, "Parent")
+    });
+    $("#delete").button().click(function () {
+        toplevelAdditionalAction("main delete");
+    });
 }
 
 function initialiseElementEditor(tab) {
