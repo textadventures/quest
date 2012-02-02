@@ -8,20 +8,14 @@
 <script type="text/javascript">
     $(function () {
         $("#addroom").button().click(function () {
-            $("#dialog-input-text-entry").val("");
-            $("#dialog-input-text-prompt").html("Please enter a name for the new room:");
-            $("#dialog-input-text").data("dialog_ok", function () {
-                toplevelAdditionalAction("main addroom " + $("#dialog-input-text-entry").val());
-            });
-            $("#dialog-input-text").dialog("open");
+            showDialog("Please enter a name for the new room", "", function (text) {
+                toplevelAdditionalAction("main addroom " + text);
+            })
         });
         $("#addobject").button().click(function () {
-            $("#dialog-input-text-entry").val("");
-            $("#dialog-input-text-prompt").html("Please enter a name for the new object:");
-            $("#dialog-input-text").data("dialog_ok", function () {
-                toplevelAdditionalAction("main addobject " + $("#dialog-input-text-entry").val());
-            });
-            $("#dialog-input-text").dialog("open");
+            showDialog("Please enter a name for the new object", "", function (text) {
+                toplevelAdditionalAction("main addobject " + text);
+            })
         });
         $("#delete").button().click(function () {
             toplevelAdditionalAction("main delete");
@@ -31,53 +25,7 @@
             north__resizable: false,
             north__closable: false
         });
-        $("#dialog-input-text").dialog({
-            autoOpen: false,
-            modal: true,
-            resizable: false,
-            width: 400,
-            buttons: {
-                "OK": function () {
-                    $(this).dialog("close");
-                    $(this).data("dialog_ok")();
-                },
-                "Cancel": function () {
-                    $(this).dialog("close");
-                }
-            }
-        });
-        $("#dialog-input-text").keyup(function (e) {
-            if (e.keyCode == 13) {
-                $(this).dialog("close");
-                $(this).data("dialog_ok")();
-            }
-        });
-        $("#dialog-add-script").dialog({
-            autoOpen: false,
-            modal: true,
-            resizable: false,
-            width: 400,
-            buttons: {
-                "OK": function () {
-                    $(this).dialog("close");
-                    $(this).data("dialog_ok")();
-                },
-                "Cancel": function () {
-                    $(this).dialog("close");
-                }
-            }
-        });
-        $("#dialog-error").dialog({
-            autoOpen: false,
-            modal: true,
-            resizable: false,
-            width: 400,
-            buttons: {
-                "OK": function () {
-                    $(this).dialog("close");
-                }
-            }
-        });
+        initialiseDialogBoxes();
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
             initialiseTree(data, "game");
         });

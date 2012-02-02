@@ -1,4 +1,63 @@
-﻿function initialiseElementEditor(tab) {
+﻿function initialiseDialogBoxes() {
+    $("#dialog-input-text").dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        width: 400,
+        buttons: {
+            "OK": function () {
+                $(this).dialog("close");
+                $(this).data("dialog_ok")();
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    $("#dialog-input-text").keyup(function (e) {
+        if (e.keyCode == 13) {
+            $(this).dialog("close");
+            $(this).data("dialog_ok")();
+        }
+    });
+    $("#dialog-add-script").dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        width: 400,
+        buttons: {
+            "OK": function () {
+                $(this).dialog("close");
+                $(this).data("dialog_ok")();
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    $("#dialog-error").dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        width: 400,
+        buttons: {
+            "OK": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+}
+
+function showDialog(prompt, defaultText, ok) {
+    $("#dialog-input-text-entry").val(defaultText);
+    $("#dialog-input-text-prompt").html(prompt + ":");
+    $("#dialog-input-text").data("dialog_ok", function () {
+        ok($("#dialog-input-text-entry").val());
+    });
+    $("#dialog-input-text").dialog("open");
+}
+
+function initialiseElementEditor(tab) {
     var selectTab = $("#_additionalActionTab").val();
     var refreshTreeSelectElement = $("#_refreshTreeSelectElement").val();
     if (refreshTreeSelectElement.length > 0) {
@@ -14,13 +73,10 @@
     });
     $("#centerPane").scrollTop(0);
     $(".stringlist-add").button().click(function () {
-        $("#dialog-input-text-entry").val("");
-        $("#dialog-input-text-prompt").html($(this).attr("data-prompt") + ":");
         var key = $(this).attr("data-key");
-        $("#dialog-input-text").data("dialog_ok", function () {
-            sendAdditionalAction("stringlist add " + key + ";" + $("#dialog-input-text-entry").val());
+        showDialog($(this).attr("data-prompt"), "", function (text) {
+            sendAdditionalAction("stringlist add " + key + ";" + text);
         });
-        $("#dialog-input-text").dialog("open");
     });
     $(".stringlist-edit").button().click(function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
@@ -127,13 +183,10 @@
         }
     });
     $(".script-dictionary-add").button().click(function () {
-        $("#dialog-input-text-entry").val("");
-        $("#dialog-input-text-prompt").html($(this).attr("data-prompt") + ":");
         var key = $(this).attr("data-key");
-        $("#dialog-input-text").data("dialog_ok", function () {
-            sendAdditionalAction("scriptdictionary add " + key + ";" + $("#dialog-input-text-entry").val());
+        showDialog($(this).attr("data-prompt"), "", function (text) {
+            sendAdditionalAction("scriptdictionary add " + key + ";" + text);
         });
-        $("#dialog-input-text").dialog("open");
     });
     $(".error-clear").button().click(function () {
         var key = $(this).attr("data-key");
@@ -215,15 +268,11 @@ function getSelectedItems(key, checkboxClass, prefixLength) {
 function stringListEdit(key, prompt) {
     var selectElement = $("#select-" + key + " option:selected");
     var oldValue = selectElement.text();
-    $("#dialog-input-text-entry").val(oldValue);
-    $("#dialog-input-text-prompt").html(prompt + ":");
-    $("#dialog-input-text").data("dialog_ok", function () {
-        var newValue = $("#dialog-input-text-entry").val();
+    showDialog(prompt, oldValue, function (newValue) {
         if (oldValue != newValue) {
             sendAdditionalAction("stringlist edit " + key + ";" + selectElement.val() + ";" + newValue);
         }
-    });
-    $("#dialog-input-text").dialog("open");
+    })
 }
 
 function sendAdditionalAction(action) {
