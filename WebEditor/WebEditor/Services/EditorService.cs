@@ -25,6 +25,7 @@ namespace WebEditor.Services
         private Dictionary<string, TreeItem> m_elements = new Dictionary<string, TreeItem>();
         private int m_id;
         private Dictionary<string, ErrorData> m_scriptErrors = new Dictionary<string, ErrorData>();
+        private bool m_mustRefreshTree = false;
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
@@ -58,6 +59,7 @@ namespace WebEditor.Services
                 m_controller.BeginTreeUpdate += m_controller_BeginTreeUpdate;
                 m_controller.AddedNode += m_controller_AddedNode;
                 m_controller.RemovedNode += m_controller_RemovedNode;
+                m_controller.RenamedNode += m_controller_RenamedNode;
                 m_controller.EndTreeUpdate += m_controller_EndTreeUpdate;
                 m_controller.UpdateTree();
             }
@@ -74,11 +76,24 @@ namespace WebEditor.Services
                 Text = text,
                 Parent = (parent == null) ? null : m_elements[parent]
             });
+            m_mustRefreshTree = true;
         }
 
         void m_controller_RemovedNode(string key)
         {
             m_elements.Remove(key);
+            m_mustRefreshTree = true;
+        }
+
+        void m_controller_RenamedNode(string oldName, string newName)
+        {
+            TreeItem item = m_elements[oldName];
+            m_elements.Remove(oldName);
+            item.Key = newName;
+            item.Text = newName;
+            m_elements.Add(newName, item);
+
+            m_mustRefreshTree = true;
         }
 
         void m_controller_ClearTree()
@@ -109,6 +124,7 @@ namespace WebEditor.Services
 
         public object GetElementTreeForJson()
         {
+            m_mustRefreshTree = false;
             return new JsonParentElement { data = GetJsonTreeItemsForParent(null) };
         }
 
@@ -141,7 +157,7 @@ namespace WebEditor.Services
             IEditorDefinition def = null;
             Dictionary<string, List<string>> otherElementErrors = new Dictionary<string, List<string>>();
 
-            if (refreshTreeSelectElement == null)
+            if (refreshTreeSelectElement == null && !m_mustRefreshTree)
             {
                 data = m_controller.GetEditorData(key);
                 def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(key));
@@ -154,6 +170,11 @@ namespace WebEditor.Services
                     }
                     otherElementErrors[scriptError.Element].Add(scriptError.Message);
                 }
+            }
+
+            if (m_mustRefreshTree)
+            {
+                refreshTreeSelectElement = key;
             }
 
             return new Models.Element
