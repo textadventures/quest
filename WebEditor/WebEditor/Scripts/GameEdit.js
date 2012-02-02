@@ -178,6 +178,12 @@
         var value = $(this).find('option:selected').attr("value");
         sendAdditionalAction("types set " + key + ";" + value);
     });
+
+    var popupError = $("#_popupError").val();
+    if (popupError.length > 0) {
+        $("#dialog-error-message").html(popupError);
+        $("#dialog-error").dialog("open");
+    }
 }
 
 function getSelectedScripts(key) {

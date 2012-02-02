@@ -19,6 +19,7 @@ namespace WebEditor.Models
         public Dictionary<string, List<string>> OtherElementErrors { get; set; }
         public EditorController Controller { get; set; }
         public string RefreshTreeSelectElement { get; set; }
+        public string PopupError { get; set; }
     }
 
     public class IgnoredValue

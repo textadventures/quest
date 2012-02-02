@@ -26,6 +26,7 @@ namespace WebEditor.Services
         private int m_id;
         private Dictionary<string, ErrorData> m_scriptErrors = new Dictionary<string, ErrorData>();
         private bool m_mustRefreshTree = false;
+        private string m_popupError = null;
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
@@ -172,10 +173,13 @@ namespace WebEditor.Services
                 }
             }
 
-            if (m_mustRefreshTree)
+            if (m_mustRefreshTree && refreshTreeSelectElement == null)
             {
                 refreshTreeSelectElement = key;
             }
+
+            string popupError = m_popupError;
+            m_popupError = null;
 
             return new Models.Element
             {
@@ -188,7 +192,8 @@ namespace WebEditor.Services
                 Error = error,
                 OtherElementErrors = otherElementErrors,
                 Controller = m_controller,
-                RefreshTreeSelectElement = refreshTreeSelectElement
+                RefreshTreeSelectElement = refreshTreeSelectElement,
+                PopupError = popupError
             };
         }
 
@@ -587,14 +592,26 @@ namespace WebEditor.Services
 
         private string AddNewRoom(string value)
         {
-            // TO DO: Verify room name
+            ValidationResult result = m_controller.CanAdd(value);
+            if (!result.Valid)
+            {
+                m_popupError = GetValidationError(result, value);
+                return null;
+            }
+
             m_controller.CreateNewRoom(value, null);
             return value;
         }
 
         private string AddNewObject(string parent, string value)
         {
-            // TO DO: Verify object name
+            ValidationResult result = m_controller.CanAdd(value);
+            if (!result.Valid)
+            {
+                m_popupError = GetValidationError(result, value);
+                return null;
+            }
+
             m_controller.CreateNewObject(value, parent);
             return value;
         }

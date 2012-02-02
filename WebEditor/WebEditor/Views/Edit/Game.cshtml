@@ -66,6 +66,17 @@
                 }
             }
         });
+        $("#dialog-error").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            width: 400,
+            buttons: {
+                "OK": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
             initialiseTree(data, "game");
         });
@@ -154,4 +165,8 @@
         <div id="dialog-add-script-accordion">
         </div>
     </form>
+</div>
+
+<div id="dialog-error" title="Error">
+    <p id="dialog-error-message"></p>
 </div>
