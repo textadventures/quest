@@ -11,8 +11,7 @@
             $("#dialog-input-text-entry").val("");
             $("#dialog-input-text-prompt").html("Please enter a name for the new room:");
             $("#dialog-input-text").data("dialog_ok", function () {
-                $("#_additionalAction").val("add room " + $("#dialog-input-text-entry").val());
-                $("#elementEditorSave").submit();
+                toplevelAdditionalAction("main addroom " + $("#dialog-input-text-entry").val());
             });
             $("#dialog-input-text").dialog("open");
         });
@@ -20,10 +19,12 @@
             $("#dialog-input-text-entry").val("");
             $("#dialog-input-text-prompt").html("Please enter a name for the new object:");
             $("#dialog-input-text").data("dialog_ok", function () {
-                $("#_additionalAction").val("add object " + $("#dialog-input-text-entry").val());
-                $("#elementEditorSave").submit();
+                toplevelAdditionalAction("main addobject " + $("#dialog-input-text-entry").val());
             });
             $("#dialog-input-text").dialog("open");
+        });
+        $("#delete").button().click(function () {
+            toplevelAdditionalAction("main delete");
         });
         var layout = $('body').layout({
             applyDefaultStyles: true,
@@ -81,6 +82,11 @@
             initialiseTree(data, "game");
         });
     });
+
+    function toplevelAdditionalAction(action) {
+        $("#_additionalAction").val(action);
+        $("#elementEditorSave").submit();
+    }
 
     function initialiseTree(data, selectElement) {
         $("#gameTree").jstree({
@@ -141,6 +147,7 @@
 <div class="ui-layout-north">
     <button type="button" id="addroom">Add room</button>
     <button type="button" id="addobject">Add object</button>
+    <button type="button" id="delete">Delete</button>
 </div>
 
 <div class="ui-layout-west" id="treePane">

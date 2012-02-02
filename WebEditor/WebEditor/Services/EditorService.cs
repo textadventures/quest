@@ -203,7 +203,8 @@ namespace WebEditor.Services
             {
                 GameId = gameId,
                 Key = key,
-                Name = m_controller.GetDisplayName(key),
+                // Element may not exist if we have just deleted it (we should be redirected afterwards)
+                Name = m_controller.ElementExists(key) ? m_controller.GetDisplayName(key) : null,
                 EditorData = data,
                 EditorDefinition = def,
                 Tab = tab,
@@ -470,9 +471,12 @@ namespace WebEditor.Services
             string[] data = arguments.Split(new[] { ' ' }, 3);
             string action = data[0];
             string cmd = data[1];
-            string parameter = data[2];
+            string parameter = (data.Length == 3) ? data[2] : null;
             switch (action)
             {
+                case "main":
+                    result.RefreshTreeSelectElement = ProcessMainAction(key, cmd, parameter);
+                    break;
                 case "stringlist":
                     ProcessStringListAction(key, cmd, parameter);
                     break;
@@ -490,9 +494,6 @@ namespace WebEditor.Services
                     break;
                 case "types":
                     ProcessTypesAction(key, cmd, parameter);
-                    break;
-                case "add":
-                    result.RefreshTreeSelectElement = ProcessAddAction(key, cmd, parameter);
                     break;
             }
             return result;
@@ -604,14 +605,20 @@ namespace WebEditor.Services
             }
         }
 
-        private string ProcessAddAction(string key, string cmd, string parameter)
+        private string ProcessMainAction(string key, string cmd, string parameter)
         {
             switch (cmd)
             {
-                case "room":
+                case "addroom":
                     return AddNewRoom(parameter);
-                case "object":
+                case "addobject":
                     return AddNewObject(key, parameter);
+                case "delete":
+                    if (DeleteElement(key))
+                    {
+                        return "game";
+                    }
+                    break;
             }
             return null;
         }
@@ -640,6 +647,16 @@ namespace WebEditor.Services
 
             m_controller.CreateNewObject(value, parent);
             return value;
+        }
+
+        private bool DeleteElement(string element)
+        {
+            if (m_controller.CanDelete(element))
+            {
+                m_controller.DeleteElement(element, true);
+                return true;
+            }
+            return false;
         }
 
         private void TypesSet(string element, string attribute, string value)
