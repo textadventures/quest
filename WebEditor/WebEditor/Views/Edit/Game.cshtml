@@ -81,6 +81,9 @@
                 icons: false
             }
         }).bind("select_node.jstree", function (event, data) {
+            if ($("#treePane").height() < data.rslt.obj.offset().top) {
+                $("#treePane").animate({ scrollTop: data.rslt.obj.offset().top }, 0);
+            }
             if ($("#elementEditorSave").length > 0) {
                 // save current element editor first
                 $("#_redirectToElement").val(data.rslt.obj.attr("data-key"));
@@ -129,7 +132,7 @@
     <button type="button" id="addobject">Add object</button>
 </div>
 
-<div class="ui-layout-west">
+<div class="ui-layout-west" id="treePane">
     <div id="gameTree">
         <div id="treeContent">
         Loading...
