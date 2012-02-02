@@ -25,6 +25,7 @@ namespace WebEditor.Services
         private Dictionary<string, TreeItem> m_elements = new Dictionary<string, TreeItem>();
         private int m_id;
         private Dictionary<string, ErrorData> m_scriptErrors = new Dictionary<string, ErrorData>();
+        private Dictionary<string, Dictionary<string, string>> m_elementErrors = new Dictionary<string, Dictionary<string, string>>();
         private bool m_mustRefreshTree = false;
         private string m_popupError = null;
 
@@ -41,7 +42,7 @@ namespace WebEditor.Services
             {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
         };
 
-        public static string GetValidationError(ValidationResult result, string input)
+        public static string GetValidationError(ValidationResult result, object input)
         {
             return string.Format(s_validationMessages[result.Message], input, result.MessageData);
         }
@@ -149,10 +150,10 @@ namespace WebEditor.Services
 
         public Models.Element GetElementModelForView(int gameId, string key)
         {
-            return GetElementModelForView(gameId, key, null, null, null);
+            return GetElementModelForView(gameId, key, null, null, null, null);
         }
 
-        public Models.Element GetElementModelForView(int gameId, string key, string tab, string error, string refreshTreeSelectElement)
+        public Models.Element GetElementModelForView(int gameId, string key, string tab, string error, string refreshTreeSelectElement, System.Web.Mvc.ModelStateDictionary modelState)
         {
             IEditorData data = null;
             IEditorDefinition def = null;
@@ -171,11 +172,28 @@ namespace WebEditor.Services
                     }
                     otherElementErrors[scriptError.Element].Add(scriptError.Message);
                 }
+
+                foreach (var elementError in m_elementErrors.Where(e => e.Key != key && e.Value.Count > 0))
+                {
+                    if (!otherElementErrors.ContainsKey(elementError.Key))
+                    {
+                        otherElementErrors.Add(elementError.Key, new List<string>());
+                    }
+                    otherElementErrors[elementError.Key].AddRange(elementError.Value.Values);
+                }
             }
 
             if (m_mustRefreshTree && refreshTreeSelectElement == null)
             {
                 refreshTreeSelectElement = key;
+            }
+
+            if (modelState != null && m_elementErrors.ContainsKey(key))
+            {
+                foreach (var errorData in m_elementErrors[key])
+                {
+                    modelState.AddModelError(errorData.Key, errorData.Value);
+                }
             }
 
             string popupError = m_popupError;
@@ -222,7 +240,15 @@ namespace WebEditor.Services
                         if (DataChanged(currentValue, (kvp.Value)))
                         {
                             System.Diagnostics.Debug.WriteLine("New value for {0}: Was {1}, now {2}", kvp.Key, data.GetAttribute(kvp.Key), kvp.Value);
-                            data.SetAttribute(kvp.Key, kvp.Value);
+                            ValidationResult validationResult = data.SetAttribute(kvp.Key, kvp.Value);
+                            if (validationResult.Valid)
+                            {
+                                ErrorClear(key, kvp.Key);
+                            }
+                            else
+                            {
+                                AddElementError(key, kvp.Key, GetValidationError(validationResult, kvp.Value));
+                            }
                         }
                     }
                 }
@@ -414,7 +440,7 @@ namespace WebEditor.Services
             };
         }
 
-        public Models.Script GetScript(int id, string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
+        public Models.Script GetScriptModel(int id, string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
         {
             IEditableScripts value = (IEditableScripts)m_controller.GetEditorData(key).GetAttribute(ctl.Attribute);
 
@@ -549,7 +575,7 @@ namespace WebEditor.Services
             switch (cmd)
             {
                 case "clear":
-                    ErrorClear(parameter);
+                    ErrorClear(key, parameter);
                     break;
             }
         }
@@ -708,11 +734,18 @@ namespace WebEditor.Services
             m_controller.EndTransaction();
         }
 
-        private void ErrorClear(string id)
+        private void ErrorClear(string element, string id)
         {
             if (m_scriptErrors.ContainsKey(id))
             {
                 m_scriptErrors.Remove(id);
+            }
+            if (m_elementErrors.ContainsKey(element))
+            {
+                if (m_elementErrors[element].ContainsKey(id))
+                {
+                    m_elementErrors[element].Remove(id);
+                }
             }
         }
 
@@ -945,6 +978,15 @@ namespace WebEditor.Services
             {
                 m_scriptErrors[script.Id].Message = m_scriptErrors[script.Id].Message + ". " + error;
             }
+        }
+
+        private void AddElementError(string element, string attribute, string error)
+        {
+            if (!m_elementErrors.ContainsKey(element))
+            {
+                m_elementErrors.Add(element, new Dictionary<string, string>());
+            }
+            m_elementErrors[element][attribute] = error;
         }
 
         private IEditableScripts GetScript(string element, string attribute)

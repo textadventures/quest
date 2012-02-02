@@ -83,6 +83,18 @@
                                 {
                                     continue;
                                 }
+                                if (ctl.Attribute != null && Html.ViewData.ModelState.ContainsKey(ctl.Attribute))
+                                {
+                                    <tr>
+                                        <td class="elementEditorCell" colspan="2">
+                                            <div class="elementEditorError">
+                                                @Html.ValidationMessage(ctl.Attribute)
+                                                <button type="button" class="error-clear" data-key="@ctl.Attribute">Clear</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
                                 if (IsSelfCaption(ctl))
                                 {
                                     <tr>
@@ -120,14 +132,16 @@
 
 @helper RenderEditorControl(IEditorControl ctl, bool isFirst, string controlType)
 {
+    object value;
+    value = (ctl.Attribute == null) ? null :  Model.EditorData.GetAttribute(ctl.Attribute);
     switch (controlType)
     {
         case "checkbox":
-            @Html.CheckBox(ctl.Attribute, Model.EditorData.GetAttribute(ctl.Attribute) as bool? == true)
+            @Html.CheckBox(ctl.Attribute, value as bool? == true)
             @Html.Label(ctl.Attribute, ctl.Caption)
             break;
         case "textbox":
-            @Html.TextBox(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), new { style = "width: 100%" })
+            @Html.TextBox(ctl.Attribute, (string)value, new { style = "width: 100%" })
             break;
         case "list":
             @Html.Action("EditStringList", new { id = Model.GameId, key = Model.Key, control = ctl })
@@ -143,18 +157,18 @@
             <div class="@className">@ctl.Caption</div>
             break;
         case "dropdown":
-            string selectedItem = Model.EditorData.GetAttribute(ctl.Attribute) as string;
+            string selectedItem = value as string;
             IEnumerable<string> valuesList = Controls.GetDropdownValues(ctl, selectedItem);
             @Html.DropDownList(ctl.Attribute, valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == selectedItem) }));
             break;
         case "richtext":
-            @Html.TextArea(ctl.Attribute, (string)Model.EditorData.GetAttribute(ctl.Attribute), 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
+            @Html.TextArea(ctl.Attribute, (string)value, 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
             break;
         case "number":
             <input type="number" name="@ctl.Attribute" id="@ctl.Attribute"  value="@Model.EditorData.GetAttribute(ctl.Attribute)" style="width: 50px" />
             break;
         case "multi":
-            @RenderMultiControl(ctl, Model.EditorData.GetAttribute(ctl.Attribute))
+            @RenderMultiControl(ctl, value)
             break;
         case "dropdowntypes":
             @Html.DropDownList("types-dropdown-" + ctl.Id, Controls.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key), new { @class = "types-dropdown", data_key = ctl.Id }); 

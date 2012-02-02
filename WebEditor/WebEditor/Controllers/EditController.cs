@@ -37,7 +37,7 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditElement(int id, string key, string tab, string error, string refreshTreeSelectElement)
         {
-            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, tab, error, refreshTreeSelectElement);
+            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, tab, error, refreshTreeSelectElement, ModelState);
             return PartialView("ElementEditor", model);
         }
 
@@ -61,7 +61,7 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditScript(int id, string key, IEditorControl control)
         {
-            return PartialView("ScriptEditor", EditorDictionary[id].GetScript(id, key, control, ModelState));
+            return PartialView("ScriptEditor", EditorDictionary[id].GetScriptModel(id, key, control, ModelState));
         }
 
         private Dictionary<int, Services.EditorService> EditorDictionary
