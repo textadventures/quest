@@ -28,6 +28,8 @@ namespace WebEditor.Services
         private Dictionary<string, Dictionary<string, string>> m_elementErrors = new Dictionary<string, Dictionary<string, string>>();
         private bool m_mustRefreshTree = false;
         private string m_popupError = null;
+        private bool m_canUndo = false;
+        private bool m_canRedo = false;
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
@@ -63,6 +65,8 @@ namespace WebEditor.Services
                 m_controller.RemovedNode += m_controller_RemovedNode;
                 m_controller.RenamedNode += m_controller_RenamedNode;
                 m_controller.EndTreeUpdate += m_controller_EndTreeUpdate;
+                m_controller.UndoListUpdated += m_controller_UndoListUpdated;
+                m_controller.RedoListUpdated += m_controller_RedoListUpdated;
                 m_controller.UpdateTree();
             }
         }
@@ -109,6 +113,16 @@ namespace WebEditor.Services
 
         void m_controller_EndTreeUpdate()
         {
+        }
+
+        void m_controller_UndoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
+        {
+            m_canUndo = e.UndoList.Any();
+        }
+
+        void m_controller_RedoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
+        {
+            m_canRedo = e.UndoList.Any();
         }
 
         private class JsonTreeElement
@@ -647,10 +661,16 @@ namespace WebEditor.Services
                     }
                     break;
                 case "undo":
-                    m_controller.Undo();
+                    if (m_canUndo)
+                    {
+                        m_controller.Undo();
+                    }
                     break;
                 case "redo":
-                    m_controller.Redo();
+                    if (m_canRedo)
+                    {
+                        m_controller.Redo();
+                    }
                     break;
             }
             return null;
