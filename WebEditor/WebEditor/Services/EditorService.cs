@@ -674,6 +674,24 @@ namespace WebEditor.Services
                         m_controller.Redo();
                     }
                     break;
+                case "cut":
+                    if (m_controller.CanCopy(key))
+                    {
+                        m_controller.CutElements(new string[] { key });
+                    }
+                    break;
+                case "copy":
+                    if (m_controller.CanCopy(key))
+                    {
+                        m_controller.CopyElements(new string[] { key });
+                    }
+                    break;
+                case "paste":
+                    if (m_controller.CanPaste(key))
+                    {
+                        m_controller.PasteElements(key);
+                    }
+                    break;
             }
             return null;
         }
