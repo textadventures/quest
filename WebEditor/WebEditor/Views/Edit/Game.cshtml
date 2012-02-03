@@ -11,7 +11,8 @@
         var layout = $('body').layout({
             applyDefaultStyles: true,
             north__resizable: false,
-            north__closable: false
+            north__closable: false,
+            north__spacing_open: 0
         });
         initialiseDialogBoxes();
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
@@ -84,7 +85,6 @@
     <span id="buttonset-add">
         <button type="button" id="button-addroom">Room</button>
         <button type="button" id="button-addobject">Object</button>
-        <button type="button" id="button-add">Add...</button>
     </span>
     <button type="button" id="button-delete">Delete</button>
     <span id="buttonset-undoredo">

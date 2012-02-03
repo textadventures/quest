@@ -95,11 +95,6 @@ function initialiseButtons() {
             toplevelAdditionalAction("main addobject " + text + ";" + parent);
         }, possibleParents, "Parent")
     });
-    $("#button-add").button({
-        icons: { primary: "ui-icon-plusthick" }
-    }).click(function () {
-        // TO DO: Show menu of all element types
-    });
     $("#buttonset-add").buttonset();
     $("#button-delete").button({
         icons: { primary: "ui-icon-trash" }
