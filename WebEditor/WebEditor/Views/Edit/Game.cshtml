@@ -81,11 +81,22 @@
 </script>
 
 <div class="ui-layout-north">
-    <button type="button" id="button-addroom">Add room</button>
-    <button type="button" id="button-addobject">Add object</button>
+    <span id="buttonset-add">
+        <button type="button" id="button-addroom">Room</button>
+        <button type="button" id="button-addobject">Object</button>
+        <button type="button" id="button-add">Add...</button>
+    </span>
     <button type="button" id="button-delete">Delete</button>
-    <button type="button" id="button-undo">Undo</button>
-    <button type="button" id="button-redo">Redo</button>
+    <span id="buttonset-undoredo">
+        <button type="button" id="button-undo">Undo</button>
+        <button type="button" id="button-redo">Redo</button>
+    </span>
+    <span id="buttonset-clipboard">
+        <button type="button" id="button-cut">Cut</button>
+        <button type="button" id="button-copy">Copy</button>
+        <button type="button" id="button-paste">Paste</button>
+    </span>
+    <button type="button" id="button-play">Play</button>
 </div>
 
 <div class="ui-layout-west" id="treePane">

@@ -80,25 +80,63 @@ function showDialog(prompt, defaultText, ok, list, listPrompt) {
 }
 
 function initialiseButtons() {
-    $("#button-addroom").button().click(function () {
+    $("#button-addroom").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
         showDialog("Please enter a name for the new room", "", function (text) {
             toplevelAdditionalAction("main addroom " + text);
         })
     });
-    $("#button-addobject").button().click(function () {
+    $("#button-addobject").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
         var possibleParents = $("#_newObjectPossibleParents").val().split(";");
         showDialog("Please enter a name for the new object", "", function (text, parent) {
             toplevelAdditionalAction("main addobject " + text + ";" + parent);
         }, possibleParents, "Parent")
     });
-    $("#button-delete").button().click(function () {
+    $("#button-add").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
+        // TO DO: Show menu of all element types
+    });
+    $("#buttonset-add").buttonset();
+    $("#button-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
         toplevelAdditionalAction("main delete");
     });
-    $("#button-undo").button().click(function () {
+    $("#button-undo").button({
+        icons: { primary: "ui-icon-arrowreturnthick-1-w" }
+    }).click(function () {
         toplevelAdditionalAction("main undo");
     });
-    $("#button-redo").button().click(function () {
+    $("#button-redo").button({
+        icons: { primary: "ui-icon-arrowreturnthick-1-e" }
+    }).click(function () {
         toplevelAdditionalAction("main redo");
+    });
+    $("#buttonset-undoredo").buttonset();
+    $("#button-cut").button({
+        icons: { primary: "ui-icon-scissors" }
+    }).click(function () {
+        toplevelAdditionalAction("main cut");
+    });
+    $("#button-copy").button({
+        icons: { primary: "ui-icon-copy" }
+    }).click(function () {
+        toplevelAdditionalAction("main copy");
+    });
+    $("#button-paste").button({
+        icons: { primary: "ui-icon-clipboard" }
+    }).click(function () {
+        toplevelAdditionalAction("main paste");
+    });
+    $("#buttonset-clipboard").buttonset();
+    $("#button-play").button({
+        icons: { primary: "ui-icon-play" }
+    }).click(function () {
+        toplevelAdditionalAction("main play");
     });
 }
 
