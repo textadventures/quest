@@ -276,6 +276,20 @@ function initialiseElementEditor(tab) {
         var value = $(this).find('option:selected').attr("value");
         sendAdditionalAction("types set " + key + ";" + value);
     });
+    var canUndo = $("#_canUndo").val();
+    if (canUndo == "0") {
+        $("#button-undo").attr("disabled", "disabled");
+    }
+    else {
+        $("#button-undo").removeAttr("disabled");
+    }
+    var canRedo = $("#_canRedo").val();
+    if (canRedo == "0") {
+        $("#button-redo").attr("disabled", "disabled");
+    }
+    else {
+        $("#button-redo").removeAttr("disabled");
+    }
 
     var popupError = $("#_popupError").val();
     if (popupError.length > 0) {

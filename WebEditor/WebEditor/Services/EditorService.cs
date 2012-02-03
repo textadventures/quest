@@ -229,7 +229,9 @@ namespace WebEditor.Services
                 Controller = m_controller,
                 RefreshTreeSelectElement = refreshTreeSelectElement,
                 PopupError = popupError,
-                NewObjectPossibleParents = (newObjectPossibleParents == null) ? null : string.Join(";", newObjectPossibleParents)
+                NewObjectPossibleParents = (newObjectPossibleParents == null) ? null : string.Join(";", newObjectPossibleParents),
+                CanUndo = m_canUndo ? "1" : "0",
+                CanRedo = m_canRedo ? "1" : "0"
             };
         }
 
