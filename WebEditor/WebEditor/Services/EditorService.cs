@@ -530,7 +530,12 @@ namespace WebEditor.Services
                 listItems.Add(element, Controller.GetDisplayName(element));
             }
 
-            return new Models.ElementsList { Items = listItems };
+            return new Models.ElementsList {
+                Items = listItems,
+                ElementType = elementType,
+                ObjectType = objectType,
+                Filter = filter
+            };
         }
 
         private struct AdditionalActionResult
@@ -749,6 +754,8 @@ namespace WebEditor.Services
                 m_popupError = GetValidationError(result, value);
                 return null;
             }
+
+            if (!m_controller.ElementExists(parent)) parent = null;
 
             m_controller.CreateNewObject(value, parent);
             return value;

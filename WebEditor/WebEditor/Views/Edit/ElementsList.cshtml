@@ -1,7 +1,7 @@
 ﻿@model WebEditor.Models.ElementsList
 
 <div class="ui-widget-header ui-corner-all toolbar">
-    <button type="button" class="elementslist-add">Add</button>
+    <button type="button" class="elementslist-add" data-elementtype="@Model.ElementType" data-objecttype="@Model.ObjectType" data-filter="@Model.Filter">Add</button>
     <button type="button" class="elementslist-edit">Edit</button>
     <button type="button" class="elementslist-delete">Delete</button>
     <button type="button" class="elementslist-moveup">Move up</button>

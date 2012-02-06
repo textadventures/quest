@@ -87,17 +87,12 @@ function initialiseButtons() {
     $("#button-addroom").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
-        showDialog("Please enter a name for the new room", "", function (text) {
-            toplevelAdditionalAction("main addroom " + text);
-        })
+        addNewRoom();
     });
     $("#button-addobject").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
-        var possibleParents = $("#_newObjectPossibleParents").val().split(";");
-        showDialog("Please enter a name for the new object", "", function (text, parent) {
-            toplevelAdditionalAction("main addobject " + text + ";" + parent);
-        }, possibleParents, "Parent")
+        addNewObject();
     });
     $("#buttonset-add").buttonset();
     $("#button-delete").button({
@@ -338,6 +333,10 @@ function initialiseElementEditor(tab) {
     $(".elementslist-add").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
+        var elementType = $(this).attr("data-elementtype");
+        var objectType = $(this).attr("data-objecttype");
+        var filter = $(this).attr("data-filter");
+        addNewElement(elementType, objectType, filter);
     });
     $(".elementslist-edit").button({
         icons: { primary: "ui-icon-pencil" }
@@ -439,4 +438,55 @@ function ajaxError() {
     });
     $("#dialog-error-message").html("Sorry, an internal error occurred.");
     $("#dialog-error").dialog("open");
+}
+
+function addNewElement(elementType, objectType, filter) {
+    switch (elementType) {
+        case "object":
+            switch (objectType) {
+                case "object":
+                    addNewObject();
+                case "exit":
+                    alert("To do: exit");
+                    break;
+                case "command":
+                    if (filter == "verb") {
+                        alert("To do: verb");
+                    }
+                    else {
+                        alert("To do: command");
+                    }
+                    break;
+                default:
+                    alert("Unhandled: " + objectType);
+                    break;
+            }
+            break;
+        case "function":
+        case "timer":
+        case "walkthrough":
+        case "include":
+        case "template":
+        case "dynamictemplate":
+        case "type":
+        case "javascript":
+            alert("To do: " + elementType);
+            break;
+        default:
+            alert("Unhandled: " + elementType);
+            break;
+    }
+}
+
+function addNewRoom() {
+    showDialog("Please enter a name for the new room", "", function (text) {
+        toplevelAdditionalAction("main addroom " + text);
+    });
+}
+
+function addNewObject() {
+    var possibleParents = $("#_newObjectPossibleParents").val().split(";");
+    showDialog("Please enter a name for the new object", "", function (text, parent) {
+        toplevelAdditionalAction("main addobject " + text + ";" + parent);
+    }, possibleParents, "Parent");
 }
