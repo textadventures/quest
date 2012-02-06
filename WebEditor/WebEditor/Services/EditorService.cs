@@ -555,7 +555,28 @@ namespace WebEditor.Services
 
         public Models.Exits GetExitsModel(int id, string key, IEditorControl ctl)
         {
-            return new Models.Exits();
+            Models.Exits result = new Models.Exits();
+
+            IEnumerable<string> exits = m_controller.GetObjectNames("exit", key, true);
+            List<string> compassDirections = new List<string>(ctl.GetListString("compass"));
+
+            result.Directions = new List<Models.Exits.CompassDirection>(
+                compassDirections.Select(d => new Models.Exits.CompassDirection { Name = d })
+            );
+
+            foreach (string exit in exits)
+            {
+                IEditorData data = m_controller.GetEditorData(exit);
+                IEditableObjectReference to = data.GetAttribute("to") as IEditableObjectReference;
+                string alias = data.GetAttribute("alias") as string;
+                if (compassDirections.Contains(alias))
+                {
+                    int index = compassDirections.IndexOf(alias);
+                    result.Directions[index].To = to.DisplayString();
+                }
+            }
+
+            return result;
         }
 
         private struct AdditionalActionResult

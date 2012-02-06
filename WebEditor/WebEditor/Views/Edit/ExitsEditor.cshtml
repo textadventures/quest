@@ -3,41 +3,69 @@
 <table>
     <tr>
         <td>
-            @CompassDirection("nw", "North West")
+            <table>
+                <tr>
+                    <td>
+                        @CompassDirection("nw", Model.Directions[0])
+                    </td>
+                    <td>
+                        @CompassDirection("n", Model.Directions[1])
+                    </td>
+                    <td>
+                        @CompassDirection("ne", Model.Directions[2])
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @CompassDirection("w", Model.Directions[3])
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        @CompassDirection("e", Model.Directions[4])
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @CompassDirection("sw", Model.Directions[5])
+                    </td>
+                    <td>
+                        @CompassDirection("s", Model.Directions[6])
+                    </td>
+                    <td>
+                        @CompassDirection("se", Model.Directions[7])
+                    </td>
+                </tr>
+            </table>
         </td>
         <td>
-            @CompassDirection("n", "North")
-        </td>
-        <td>
-            @CompassDirection("ne", "North East")
+            <table>
+                <tr>
+                    <td>
+                        @CompassDirection("up", Model.Directions[8])
+                    </td>
+                    <td>
+                        @CompassDirection("in", Model.Directions[10])
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @CompassDirection("down", Model.Directions[9])
+                    </td>
+                    <td>
+                        @CompassDirection("out", Model.Directions[11])
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
-    <tr>
-        <td>
-            @CompassDirection("w", "West")
-        </td>
-        <td>
-        </td>
-        <td>
-            @CompassDirection("e", "East")
-        </td>
-    </tr>
-    <tr>
-        <td>
-            @CompassDirection("sw", "South West")
-        </td>
-        <td>
-            @CompassDirection("s", "South")
-        </td>
-        <td>
-            @CompassDirection("se", "South East")
-        </td>
-    </tr>
+
 </table>
 
-@helper CompassDirection(string direction, string label)
+@helper CompassDirection(string direction, WebEditor.Models.Exits.CompassDirection data)
 {
     string compassId = "compass" + direction.ToUpper();
     @Html.RadioButton("compass", direction, new { id = compassId })
-    @Html.Label(compassId, label)
+    @Html.Label(compassId, data.Name)<br />
+    <text>@data.To</text>
 }
