@@ -1,0 +1,21 @@
+﻿@model WebEditor.Models.ElementsList
+
+<div class="ui-widget-header ui-corner-all toolbar">
+    <button type="button" class="elementslist-add">Add</button>
+    <button type="button" class="elementslist-edit">Edit</button>
+    <button type="button" class="elementslist-delete">Delete</button>
+    <button type="button" class="elementslist-moveup">Move up</button>
+    <button type="button" class="elementslist-movedown">Move down</button>
+</div>
+
+<div>
+    <select size="40" style="width: 100%" class="elementslist">
+        @if (Model.Items != null)
+        {
+            foreach (var item in Model.Items)
+            {
+                <option value="@item.Key">@item.Value</option>
+            }
+        }
+    </select>
+</div>

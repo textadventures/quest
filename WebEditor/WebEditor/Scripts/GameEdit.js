@@ -335,6 +335,27 @@ function initialiseElementEditor(tab) {
         var value = $(this).find('option:selected').attr("value");
         sendAdditionalAction("types set " + key + ";" + value);
     });
+    $(".elementslist-add").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
+    });
+    $(".elementslist-edit").button({
+        icons: { primary: "ui-icon-pencil" }
+    }).click(function () {
+    });
+    $(".elementslist-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
+    });
+    $(".elementslist-moveup").button({
+        icons: { primary: "ui-icon-arrowthick-1-n" }
+    }).click(function () {
+    });
+    $(".elementslist-movedown").button({
+        icons: { primary: "ui-icon-arrowthick-1-s" }
+    }).click(function () {
+    });
+
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);
 

@@ -501,6 +501,38 @@ namespace WebEditor.Services
             };
         }
 
+        public Models.ElementsList GetElementsListModel(int id, string key, IEditorControl ctl)
+        {
+            IEditorData data = m_controller.GetEditorData(key);
+            string elementType = ctl.GetString("elementtype");
+            string objectType = ctl.GetString("objecttype");
+            string filter = ctl.GetString("listfilter");
+            IEnumerable<string> elements;
+
+            if (elementType == "object")
+            {
+                string parent = data == null ? null : data.Name;
+                elements = Controller.GetObjectNames(objectType, false, parent, true);
+            }
+            else
+            {
+                elements = Controller.GetElementNames(elementType, false);
+            }
+
+            Dictionary<string, string> listItems = new Dictionary<string, string>();
+
+            foreach (var element in elements.Where(e =>
+            {
+                if (filter == null) return true;
+                return Controller.ElementIsVerb(e) == (filter == "verb");
+            }))
+            {
+                listItems.Add(element, Controller.GetDisplayName(element));
+            }
+
+            return new Models.ElementsList { Items = listItems };
+        }
+
         private struct AdditionalActionResult
         {
             public string RefreshTreeSelectElement;

@@ -177,6 +177,9 @@
         case "dropdowntypes":
             @Html.DropDownList("types-dropdown-" + ctl.Id, Controls.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key), new { @class = "types-dropdown", data_key = ctl.Id }); 
             break;
+        case "elementslist":
+            @Html.Action("ElementsList", new { id = Model.GameId, key = Model.Key, control = ctl })
+            break;
         case null:
             break;
         default:
@@ -217,6 +220,7 @@
             case "multi":
                 return ctl.GetString("selfcaption") != null;
         }
+        if (string.IsNullOrEmpty(ctl.Caption)) return true;
         return false;
     }
 }
