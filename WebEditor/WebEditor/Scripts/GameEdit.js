@@ -411,3 +411,11 @@ function updateButton(enabledButtons, label, button) {
         button.button("enable");
     }
 }
+
+function ajaxError() {
+    $("#dialog-error").data("dialog_close", function () {
+        location.reload();
+    });
+    $("#dialog-error-message").html("Sorry, an internal error occurred.");
+    $("#dialog-error").dialog("open");
+}
