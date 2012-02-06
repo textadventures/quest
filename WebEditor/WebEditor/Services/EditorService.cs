@@ -230,7 +230,8 @@ namespace WebEditor.Services
                 RefreshTreeSelectElement = refreshTreeSelectElement,
                 PopupError = popupError,
                 NewObjectPossibleParents = (newObjectPossibleParents == null) ? null : string.Join(";", newObjectPossibleParents),
-                EnabledButtons = GetEnabledButtons(key)
+                EnabledButtons = GetEnabledButtons(key),
+                PageTitle = "Editor - " + m_controller.GameName
             };
         }
 

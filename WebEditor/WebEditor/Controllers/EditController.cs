@@ -17,6 +17,7 @@ namespace WebEditor.Controllers
         {
             Models.Editor model = new Models.Editor();
             model.GameId = id;
+            ViewBag.Title = "Editor";
             return View(model);
         }
 

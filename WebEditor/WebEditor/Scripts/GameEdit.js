@@ -136,6 +136,8 @@ function initialiseButtons() {
 }
 
 function initialiseElementEditor(tab) {
+    var pageTitle = $("#_pageTitle").val();
+    document.title = pageTitle;
     var selectTab = $("#_additionalActionTab").val();
     var refreshTreeSelectElement = $("#_refreshTreeSelectElement").val();
     if (refreshTreeSelectElement.length > 0) {

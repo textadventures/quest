@@ -22,6 +22,7 @@ namespace WebEditor.Models
         public string PopupError { get; set; }
         public string NewObjectPossibleParents { get; set; }
         public string EnabledButtons { get; set; }
+        public string PageTitle { get; set; }
     }
 
     public class IgnoredValue
