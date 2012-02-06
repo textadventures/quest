@@ -12,7 +12,8 @@
             applyDefaultStyles: true,
             north__resizable: false,
             north__closable: false,
-            north__spacing_open: 0
+            north__spacing_open: 0,
+            enableCursorHotkey: false
         });
         initialiseDialogBoxes();
         $.get('@Url.Action("Load", new { id = Model.GameId })', function (data) {
