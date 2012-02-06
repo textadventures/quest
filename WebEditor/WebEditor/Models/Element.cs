@@ -23,6 +23,7 @@ namespace WebEditor.Models
         public string NewObjectPossibleParents { get; set; }
         public string EnabledButtons { get; set; }
         public string PageTitle { get; set; }
+        public string Reload { get; set; }
     }
 
     public class IgnoredValue
@@ -38,6 +39,7 @@ namespace WebEditor.Models
         public string RedirectToElement { get; set; }
         public string AdditionalAction { get; set; }
         public string AdditionalActionTab { get; set; }
+        public bool Success { get; set; }
 
         public class ScriptsSaveData
         {
@@ -82,7 +84,12 @@ namespace WebEditor.Models
 
             var editorDictionary = controllerContext.RequestContext.HttpContext.Session["EditorDictionary"] as Dictionary<int, Services.EditorService>;
 
-            // TO DO: This throws exception if session has expired (editorDictionary = null)
+            if (editorDictionary == null)
+            {
+                result.Success = false;
+                return result;
+            }
+
             Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key);
 
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
@@ -94,6 +101,8 @@ namespace WebEditor.Models
                     BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, ctl.ControlType);
                 }
             }
+
+            result.Success = true;
 
             return result;
         }

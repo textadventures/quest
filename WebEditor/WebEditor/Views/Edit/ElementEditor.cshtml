@@ -10,7 +10,7 @@
     </div>
 }
 
-@if (Model.OtherElementErrors.Count > 0)
+@if (Model.OtherElementErrors != null && Model.OtherElementErrors.Count > 0)
 {
     <div class="elementEditorError">
         @foreach (var data in Model.OtherElementErrors)
@@ -42,6 +42,7 @@
         <input type="hidden" name="_newObjectPossibleParents" id="_newObjectPossibleParents" value="@Model.NewObjectPossibleParents" />
         <input type="hidden" name="_enabledButtons" id="_enabledButtons" value="@Model.EnabledButtons" />
         <input type="hidden" name="_pageTitle" id="_pageTitle" value="@Model.PageTitle" />
+        <input type="hidden" name="_reload" id="_reload" value="@Model.Reload" />
         if (Model.EditorDefinition != null)
         {
             <div id="elementEditorTabs">

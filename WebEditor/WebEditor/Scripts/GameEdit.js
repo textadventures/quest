@@ -44,8 +44,12 @@
             "OK": function () {
                 $(this).dialog("close");
             }
+        },
+        close: function () {
+            $(this).data("dialog_close")();
         }
     });
+    $("#dialog-error").data("dialog_close", function () { });
 }
 
 function showDialog(prompt, defaultText, ok, list, listPrompt) {
@@ -336,6 +340,12 @@ function initialiseElementEditor(tab) {
 
     var popupError = $("#_popupError").val();
     if (popupError.length > 0) {
+        var reload = $("#_reload").val();
+        if (reload == "1") {
+            $("#dialog-error").data("dialog_close", function () {
+                location.reload();
+            });
+        }
         $("#dialog-error-message").html(popupError);
         $("#dialog-error").dialog("open");
     }

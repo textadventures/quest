@@ -38,6 +38,10 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditElement(int id, string key, string tab, string error, string refreshTreeSelectElement)
         {
+            if (Session["EditorDictionary"] == null)
+            {
+                return Timeout();
+            }
             Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, tab, error, refreshTreeSelectElement, ModelState);
             return PartialView("ElementEditor", model);
         }
@@ -45,9 +49,22 @@ namespace WebEditor.Controllers
         [HttpPost]
         public PartialViewResult SaveElement(Models.ElementSaveData element)
         {
+            if (!element.Success)
+            {
+                return Timeout();
+            }
             var result = EditorDictionary[element.GameId].SaveElement(element.Key, element);
             string tab = !string.IsNullOrEmpty(element.AdditionalAction) ? element.AdditionalActionTab : null;
             return EditElement(element.GameId, element.RedirectToElement, tab, result.Error, result.RefreshTreeSelectElement);
+        }
+
+        private PartialViewResult Timeout()
+        {
+            return PartialView("ElementEditor", new Models.Element
+            {
+                PopupError = "Sorry, your session has timed out.",
+                Reload = "1"
+            });
         }
 
         public PartialViewResult EditStringList(int id, string key, IEditorControl control)
