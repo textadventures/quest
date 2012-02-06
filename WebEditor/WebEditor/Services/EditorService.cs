@@ -230,8 +230,7 @@ namespace WebEditor.Services
                 RefreshTreeSelectElement = refreshTreeSelectElement,
                 PopupError = popupError,
                 NewObjectPossibleParents = (newObjectPossibleParents == null) ? null : string.Join(";", newObjectPossibleParents),
-                CanUndo = m_canUndo ? "1" : "0",
-                CanRedo = m_canRedo ? "1" : "0"
+                EnabledButtons = GetEnabledButtons(key)
             };
         }
 
@@ -1259,6 +1258,18 @@ namespace WebEditor.Services
             }
 
             return categories;
+        }
+
+        private string GetEnabledButtons(string element)
+        {
+            List<string> result = new List<string>();
+            if (m_canUndo) result.Add("undo");
+            if (m_canRedo) result.Add("redo");
+            if (m_controller.CanDelete(element)) result.Add("delete");
+            if (m_controller.CanDelete(element) && m_controller.CanCopy(element)) result.Add("cut");
+            if (m_controller.CanCopy(element)) result.Add("copy");
+            if (m_controller.CanPaste(element)) result.Add("paste");
+            return string.Join(";", result);
         }
     }
 }

@@ -174,22 +174,22 @@ function initialiseElementEditor(tab) {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
     $(".stringlist-edit").each(function () {
-        $(this).attr("disabled", "disabled");
+        $(this).button("disable");
     });
     $(".stringlist-delete").each(function () {
-        $(this).attr("disabled", "disabled");
+        $(this).button("disable");
     });
     $(".stringlist").change(function () {
         var editButton = $("#stringlist-" + $(this).attr("data-key") + "-edit");
         var deleteButton = $("#stringlist-" + $(this).attr("data-key") + "-delete");
         var selectElement = $("#" + this.id + " option:selected");
         if (selectElement.val() === undefined) {
-            editButton.attr("disabled", "disabled");
-            deleteButton.attr("disabled", "disabled");
+            editButton.button("disable");
+            deleteButton.button("disable");
         }
         else {
-            editButton.removeAttr("disabled");
-            deleteButton.removeAttr("disabled");
+            editButton.button("enable");
+            deleteButton.button("enable");
         }
     });
     $(".script-add").button({
@@ -329,20 +329,8 @@ function initialiseElementEditor(tab) {
         var value = $(this).find('option:selected').attr("value");
         sendAdditionalAction("types set " + key + ";" + value);
     });
-    var canUndo = $("#_canUndo").val();
-    if (canUndo == "0") {
-        $("#button-undo").attr("disabled", "disabled");
-    }
-    else {
-        $("#button-undo").removeAttr("disabled");
-    }
-    var canRedo = $("#_canRedo").val();
-    if (canRedo == "0") {
-        $("#button-redo").attr("disabled", "disabled");
-    }
-    else {
-        $("#button-redo").removeAttr("disabled");
-    }
+    var enabledButtons = $("#_enabledButtons").val();
+    updateEnabledButtons(enabledButtons);
 
     var popupError = $("#_popupError").val();
     if (popupError.length > 0) {
@@ -391,4 +379,23 @@ function sendAdditionalAction(action) {
     $("#_additionalAction").val(action);
     $("#_additionalActionTab").val($("#elementEditorTabs").tabs('option', 'selected'));
     $("#elementEditorSave").submit();
+}
+
+function updateEnabledButtons(buttons) {
+    var enabledButtons = buttons.split(";");
+    updateButton(enabledButtons, "undo", $("#button-undo"));
+    updateButton(enabledButtons, "redo", $("#button-redo"));
+    updateButton(enabledButtons, "delete", $("#button-delete"));
+    updateButton(enabledButtons, "cut", $("#button-cut"));
+    updateButton(enabledButtons, "copy", $("#button-copy"));
+    updateButton(enabledButtons, "paste", $("#button-paste"));
+}
+
+function updateButton(enabledButtons, label, button) {
+    if ($.inArray(label, enabledButtons) == -1) {
+        button.button("disable");
+    }
+    else {
+        button.button("enable");
+    }
 }

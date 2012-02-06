@@ -21,8 +21,7 @@ namespace WebEditor.Models
         public string RefreshTreeSelectElement { get; set; }
         public string PopupError { get; set; }
         public string NewObjectPossibleParents { get; set; }
-        public string CanUndo { get; set; }
-        public string CanRedo { get; set; }
+        public string EnabledButtons { get; set; }
     }
 
     public class IgnoredValue
