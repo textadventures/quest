@@ -519,7 +519,7 @@ namespace WebEditor.Services
                 elements = Controller.GetElementNames(elementType, false);
             }
 
-            Dictionary<string, string> listItems = new Dictionary<string, string>();
+            Dictionary<string, Models.ElementsListItem> listItems = new Dictionary<string, Models.ElementsListItem>();
 
             foreach (var element in elements.Where(e =>
             {
@@ -527,7 +527,11 @@ namespace WebEditor.Services
                 return Controller.ElementIsVerb(e) == (filter == "verb");
             }))
             {
-                listItems.Add(element, Controller.GetDisplayName(element));
+                listItems.Add(element, new Models.ElementsListItem
+                {
+                    Text = Controller.GetDisplayName(element),
+                    CanDelete = Controller.CanDelete(element) ? "1" : "0"
+                });
             }
 
             return new Models.ElementsList {
@@ -573,6 +577,9 @@ namespace WebEditor.Services
                     break;
                 case "types":
                     ProcessTypesAction(key, cmd, parameter);
+                    break;
+                case "elementslist":
+                    ProcessElementsListAction(key, cmd, parameter);
                     break;
             }
             return result;
@@ -732,6 +739,16 @@ namespace WebEditor.Services
                     break;
             }
             return null;
+        }
+
+        private void ProcessElementsListAction(string key, string cmd, string parameter)
+        {
+            switch (cmd)
+            {
+                case "delete":
+                    DeleteElement(parameter);
+                    break;
+            }
         }
 
         private string AddNewRoom(string value)

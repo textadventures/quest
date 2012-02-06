@@ -1,20 +1,20 @@
 ﻿@model WebEditor.Models.ElementsList
 
 <div class="ui-widget-header ui-corner-all toolbar">
-    <button type="button" class="elementslist-add" data-elementtype="@Model.ElementType" data-objecttype="@Model.ObjectType" data-filter="@Model.Filter">Add</button>
-    <button type="button" class="elementslist-edit" data-key="@Model.Key">Edit</button>
-    <button type="button" class="elementslist-delete" data-key="@Model.Key">Delete</button>
-    <button type="button" class="elementslist-moveup" data-key="@Model.Key">Move up</button>
-    <button type="button" class="elementslist-movedown" data-key="@Model.Key">Move down</button>
+    <button type="button" class="elementslist-add" id="elementslist-add-@Model.Key" data-elementtype="@Model.ElementType" data-objecttype="@Model.ObjectType" data-filter="@Model.Filter">Add</button>
+    <button type="button" class="elementslist-edit" id="elementslist-edit-@Model.Key" data-key="@Model.Key">Edit</button>
+    <button type="button" class="elementslist-delete" id="elementslist-delete-@Model.Key" data-key="@Model.Key">Delete</button>
+    <button type="button" class="elementslist-moveup" id="elementslist-moveup-@Model.Key" data-key="@Model.Key">Move up</button>
+    <button type="button" class="elementslist-movedown" id="elementslist-movedown-@Model.Key" data-key="@Model.Key">Move down</button>
 </div>
 
 <div>
-    <select id="select-@Model.Key" size="40" style="width: 100%" class="elementslist">
+    <select id="select-@Model.Key" data-key="@Model.Key" size="40" style="width: 100%" class="elementslist">
         @if (Model.Items != null)
         {
             foreach (var item in Model.Items)
             {
-                <option value="@item.Key">@item.Value</option>
+                <option value="@item.Key" data-candelete="@item.Value.CanDelete">@item.Value.Text</option>
             }
         }
     </select>

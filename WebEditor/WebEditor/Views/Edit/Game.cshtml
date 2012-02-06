@@ -6,6 +6,8 @@
 }
 
 <script type="text/javascript">
+    var _selectTab = "";
+
     $(function () {
         initialiseButtons();
         var layout = $('body').layout({
@@ -48,7 +50,8 @@
                 $("#elementEditorSave").submit();
             }
             else {
-                $("#elementEditor").load('@Url.Action("EditElement", new { id = Model.GameId, key = "KEY" })'.replace("KEY", data.rslt.obj.attr("data-key").replace(/ /g, "%20")), function () {
+                $("#elementEditor").load('@Html.Raw(@Url.Action("EditElement", new { id = Model.GameId, key = "KEY", tab = "TAB" }))'.replace("KEY", data.rslt.obj.attr("data-key").replace(/ /g, "%20")).replace("TAB", _selectTab), function () {
+                    _selectTab = "";
                     initialiseElementEditor();
                 });
             }
@@ -78,7 +81,8 @@
         });
     }
 
-    function refreshTree(selectElement) {
+    function refreshTree(selectElement, selectTab) {
+        _selectTab = selectTab;
         $.get('@Url.Action("RefreshTree", new { id = Model.GameId })', function (data) {
             initialiseTree(data, selectElement);
         });
