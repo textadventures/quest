@@ -184,6 +184,9 @@
         case "elementslist":
             @Html.Action("ElementsList", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
+        case "exits":
+            @Html.Action("EditExits", new { id = Model.GameId, key = Model.Key, control = ctl })
+            break;
         case null:
             break;
         default:

@@ -553,6 +553,11 @@ namespace WebEditor.Services
             };
         }
 
+        public Models.Exits GetExitsModel(int id, string key, IEditorControl ctl)
+        {
+            return new Models.Exits();
+        }
+
         private struct AdditionalActionResult
         {
             public string RefreshTreeSelectElement;

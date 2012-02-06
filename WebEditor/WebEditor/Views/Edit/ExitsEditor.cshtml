@@ -1,0 +1,43 @@
+﻿@model WebEditor.Models.Exits
+
+<table>
+    <tr>
+        <td>
+            @CompassDirection("nw", "North West")
+        </td>
+        <td>
+            @CompassDirection("n", "North")
+        </td>
+        <td>
+            @CompassDirection("ne", "North East")
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @CompassDirection("w", "West")
+        </td>
+        <td>
+        </td>
+        <td>
+            @CompassDirection("e", "East")
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @CompassDirection("sw", "South West")
+        </td>
+        <td>
+            @CompassDirection("s", "South")
+        </td>
+        <td>
+            @CompassDirection("se", "South East")
+        </td>
+    </tr>
+</table>
+
+@helper CompassDirection(string direction, string label)
+{
+    string compassId = "compass" + direction.ToUpper();
+    @Html.RadioButton("compass", direction, new { id = compassId })
+    @Html.Label(compassId, label)
+}
