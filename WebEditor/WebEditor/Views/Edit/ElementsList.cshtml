@@ -14,7 +14,7 @@
         {
             foreach (var item in Model.Items)
             {
-                <option value="@item.Key" data-candelete="@item.Value.CanDelete">@item.Value.Text</option>
+                <option value="@item.Key" data-candelete="@item.Value.CanDelete" data-previous="@item.Value.Previous" data-next="@item.Value.Next">@item.Value.Text</option>
             }
         }
     </select>

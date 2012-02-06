@@ -352,10 +352,18 @@ function initialiseElementEditor(tab) {
     $(".elementslist-moveup").button({
         icons: { primary: "ui-icon-arrowthick-1-n" }
     }).click(function () {
+        var key = $(this).attr("data-key");
+        var selectElement = $("#select-" + key + " option:selected");
+        var previous = selectElement.attr("data-previous");
+        sendAdditionalAction("elementslist swap " + selectElement.val() + ";" + previous);
     });
     $(".elementslist-movedown").button({
         icons: { primary: "ui-icon-arrowthick-1-s" }
     }).click(function () {
+        var key = $(this).attr("data-key");
+        var selectElement = $("#select-" + key + " option:selected");
+        var next = selectElement.attr("data-next");
+        sendAdditionalAction("elementslist swap " + selectElement.val() + ";" + next);
     });
     $(".elementslist").change(function () {
         var editButton = $("#elementslist-edit-" + $(this).attr("data-key"));
@@ -372,8 +380,22 @@ function initialiseElementEditor(tab) {
         else {
             editButton.button("enable");
             deleteButton.button("enable");
-            moveupButton.button("enable");
-            movedownButton.button("enable");
+
+            var canMoveUp = (selectElement.attr("data-previous").length > 0);
+            if (canMoveUp) {
+                moveupButton.button("enable");
+            }
+            else {
+                moveupButton.button("disable");
+            }
+
+            var canMoveDown = (selectElement.attr("data-next").length > 0);
+            if (canMoveDown) {
+                movedownButton.button("enable");
+            }
+            else {
+                movedownButton.button("disable");
+            }
 
             var canDelete = selectElement.attr("data-candelete") == "1";
             if (canDelete) {

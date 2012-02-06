@@ -9,6 +9,8 @@ namespace WebEditor.Models
     {
         public string Text { get; set; }
         public string CanDelete { get; set; }
+        public string Previous { get; set; }
+        public string Next { get; set; }
     }
 
     public class ElementsList

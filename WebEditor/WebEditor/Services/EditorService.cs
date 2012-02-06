@@ -521,7 +521,9 @@ namespace WebEditor.Services
 
             Dictionary<string, Models.ElementsListItem> listItems = new Dictionary<string, Models.ElementsListItem>();
 
-            foreach (var element in elements.Where(e =>
+            string previousElement = null;
+
+            foreach (string element in elements.Where(e =>
             {
                 if (filter == null) return true;
                 return Controller.ElementIsVerb(e) == (filter == "verb");
@@ -530,8 +532,16 @@ namespace WebEditor.Services
                 listItems.Add(element, new Models.ElementsListItem
                 {
                     Text = Controller.GetDisplayName(element),
-                    CanDelete = Controller.CanDelete(element) ? "1" : "0"
+                    CanDelete = Controller.CanDelete(element) ? "1" : "0",
+                    Previous = previousElement
                 });
+
+                if (previousElement != null)
+                {
+                    listItems[previousElement].Next = element;
+                }
+
+                previousElement = element;
             }
 
             return new Models.ElementsList {
@@ -743,10 +753,15 @@ namespace WebEditor.Services
 
         private void ProcessElementsListAction(string key, string cmd, string parameter)
         {
+            string[] data;
             switch (cmd)
             {
                 case "delete":
                     DeleteElement(parameter);
+                    break;
+                case "swap":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    SwapElements(data[0], data[1]);
                     break;
             }
         }
@@ -787,6 +802,11 @@ namespace WebEditor.Services
                 return true;
             }
             return false;
+        }
+
+        private void SwapElements(string element1, string element2)
+        {
+            m_controller.SwapElements(element1, element2);
         }
 
         private void TypesSet(string element, string attribute, string value)
