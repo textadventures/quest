@@ -87,6 +87,10 @@
                                 {
                                     continue;
                                 }
+                                if (ctl.GetBool("desktop"))
+                                {
+                                    continue;
+                                }
                                 if (ctl.Attribute != null && Html.ViewData.ModelState.ContainsKey(ctl.Attribute))
                                 {
                                     <tr>
