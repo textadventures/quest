@@ -150,16 +150,22 @@ function initialiseElementEditor(tab) {
         }
     });
     $("#centerPane").scrollTop(0);
-    $(".stringlist-add").button().click(function () {
+    $(".stringlist-add").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
         var key = $(this).attr("data-key");
         showDialog($(this).attr("data-prompt"), "", function (text) {
             sendAdditionalAction("stringlist add " + key + ";" + text);
         });
     });
-    $(".stringlist-edit").button().click(function () {
+    $(".stringlist-edit").button({
+        icons: { primary: "ui-icon-pencil" }
+    }).click(function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
-    $(".stringlist-delete").button().click(function () {
+    $(".stringlist-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
         var key = $(this).attr("data-key");
         var selectElement = $("#select-" + key + " option:selected");
         sendAdditionalAction("stringlist delete " + key + ";" + selectElement.val());
@@ -186,7 +192,9 @@ function initialiseElementEditor(tab) {
             deleteButton.removeAttr("disabled");
         }
     });
-    $(".script-add").button().click(function () {
+    $(".script-add").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
         var key = $(this).attr("data-key");
         $("#dialog-add-script").data("dialog_ok", function () {
             var create = $("#dialog-add-script-form input[type='radio']:checked").val();
@@ -197,18 +205,24 @@ function initialiseElementEditor(tab) {
             autoHeight: false
         });
     });
-    $(".script-delete").button().click(function () {
+    $(".script-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
             sendAdditionalAction("script delete " + key + ";" + selected);
         }
     });
-    $(".script-if-add-else").button().click(function () {
+    $(".script-if-add-else").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelse " + key );
     });
-    $(".script-if-add-elseif").button().click(function () {
+    $(".script-if-add-elseif").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelseif " + key);
     });
@@ -232,7 +246,9 @@ function initialiseElementEditor(tab) {
             $("#ifsection-toolbar-" + key).hide(200);
         }
     });
-    $(".ifsection-delete").button().click(function () {
+    $(".ifsection-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script deleteifsection " + key + ";" + getSelectedIfSections(key));
     });
@@ -260,7 +276,9 @@ function initialiseElementEditor(tab) {
             sendAdditionalAction("script settemplate " + key + ";" + text);
         }
     });
-    $(".script-dictionary-add").button().click(function () {
+    $(".script-dictionary-add").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
         var key = $(this).attr("data-key");
         showDialog($(this).attr("data-prompt"), "", function (text) {
             sendAdditionalAction("scriptdictionary add " + key + ";" + text);
@@ -280,7 +298,9 @@ function initialiseElementEditor(tab) {
             $("#scriptDictionarySection-toolbar-" + key).hide(200);
         }
     });
-    $(".scriptDictionarySection-delete").button().click(function () {
+    $(".scriptDictionarySection-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("scriptdictionary delete " + key + ";" + getSelectedScriptDictionaryItems(key));
     });
