@@ -341,6 +341,9 @@ function initialiseElementEditor(tab) {
     $(".elementslist-edit").button({
         icons: { primary: "ui-icon-pencil" }
     }).click(function () {
+        var key = $(this).attr("data-key");
+        var selectElement = $("#select-" + key + " option:selected");
+        selectTreeNode(selectElement.val());
     });
     $(".elementslist-delete").button({
         icons: { primary: "ui-icon-trash" }
@@ -489,4 +492,8 @@ function addNewObject() {
     showDialog("Please enter a name for the new object", "", function (text, parent) {
         toplevelAdditionalAction("main addobject " + text + ";" + parent);
     }, possibleParents, "Parent");
+}
+
+function selectTreeNode(node) {
+    $("#gameTree").jstree("select_node", "#tree-" + node.replace(/ /g, "-"));
 }

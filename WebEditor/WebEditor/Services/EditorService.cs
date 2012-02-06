@@ -531,6 +531,7 @@ namespace WebEditor.Services
             }
 
             return new Models.ElementsList {
+                Key = ctl.Id,
                 Items = listItems,
                 ElementType = elementType,
                 ObjectType = objectType,

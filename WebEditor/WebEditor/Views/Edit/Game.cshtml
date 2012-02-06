@@ -53,7 +53,7 @@
             .bind("loaded.jstree", function (e, data) {
                 data.inst.open_all(-1);
                 data.inst.close_node("#tree-_advanced");
-                $("#gameTree").jstree("select_node", "#tree-" + selectElement.replace(/ /g, "-"));
+                selectTreeNode(selectElement);
             });
         $.get('@Url.Action("Scripts", new { id = Model.GameId })', function (data) {
             var scriptAdderHtml = "";
