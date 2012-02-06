@@ -501,6 +501,7 @@ function addNewElement(elementType, objectType, filter) {
             switch (objectType) {
                 case "object":
                     addNewObject();
+                    break;
                 case "exit":
                     alert("To do: exit");
                     break;
