@@ -59,10 +59,10 @@
             </table>
         </td>
         <td style="vertical-align: top">
-            <div id="@Model.Id-exit-data" style="display: none">
-                <p id="@Model.Id-exit-data-name">Direction</p>
-                <p id="@Model.Id-exit-data-to">To</p>
-                <p><button type="button" class="compass-direction-edit" id="@Model.Id-exit-data-edit">Edit</button></p>
+            <div id="@Model.Id-exit-data" style="display: none" class="compassDirectionEditor ui-corner-all">
+                <b><span id="@Model.Id-exit-data-name"></span></b><br /><br />
+                To: <span id="@Model.Id-exit-data-to"></span><br /><br />
+                <button type="button" class="compass-direction-edit" id="@Model.Id-exit-data-edit">Edit</button>
             </div>
         </td>
     </tr>
@@ -72,15 +72,19 @@
 @helper CompassDirection(string direction, WebEditor.Models.Exits.CompassDirection data)
 {
     string compassId = Model.Id + "-compass" + direction.ToUpper();
-    @Html.RadioButton(Model.Id + "-compass", direction, new
-    {
-        id = compassId,
-        @class = "compass-direction",
-        data_key = Model.Id,
-        data_id = data.ElementId,
-        data_name = data.Name,
-        data_to = data.To
-    })
-    @Html.Label(compassId, data.Name)<br />
-    <text>@data.To</text>
+    <div class="compassDirection ui-corner-all" data-option="@compassId" data-key="@Model.Id">
+        @Html.RadioButton(Model.Id + "-compass", direction, new
+        {
+            id = compassId,
+            @class = "compass-direction",
+            data_key = Model.Id,
+            data_id = data.ElementId,
+            data_name = data.Name,
+            data_to = data.To
+        })
+        @Html.Label(compassId, data.Name)<br /><br />
+        <div class="compassDirectionInfo">
+            <a class="compass-direction-link">@data.To</a>
+        </div>
+    </div>
 }

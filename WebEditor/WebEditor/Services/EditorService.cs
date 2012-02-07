@@ -577,7 +577,7 @@ namespace WebEditor.Services
                     int index = compassDirections.IndexOf(alias);
                     Models.Exits.CompassDirection exitModel = result.Directions[index];
                     exitModel.ElementId = exit;
-                    exitModel.To = to.DisplayString();
+                    exitModel.To = to.Reference;
                 }
             }
 

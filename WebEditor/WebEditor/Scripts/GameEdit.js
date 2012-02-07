@@ -411,22 +411,23 @@ function initialiseElementEditor(tab) {
     });
     $(".compass-direction").change(function () {
         var key = $(this).attr("data-key");
-        var selected = $("input:radio[name=" + key + "-compass]:checked");
-        var value = selected.val();
-        var name = selected.attr("data-name");
-        var to = selected.attr("data-to");
-        var elementId = selected.attr("data-id");
-        $("#" + key + "-exit-data").show();
-        $("#" + key + "-exit-data-name").html(name);
-        $("#" + key + "-exit-data-to").html(to);
-        var editButton = $("#" + key + "-exit-data-edit");
-        if (elementId.length > 0) {
-            editButton.attr("data-key", elementId);
-            editButton.show();
-        }
-        else {
-            editButton.hide();
-        }
+        setSelectedDirection(key);
+    });
+    $(".compass-direction-edit").button({
+        icons: { primary: "ui-icon-pencil" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        selectTreeNode(key);
+    });
+    $(".compass-direction-link").click(function (e) {
+        selectTreeNode($(this).html());
+        e.stopPropagation();
+    });
+    $(".compassDirection").click(function () {
+        var key = $(this).attr("data-key");
+        var option = $(this).attr("data-option");
+        $("#" + option).attr("checked", "checked");
+        setSelectedDirection(key);
     });
 
     var enabledButtons = $("#_enabledButtons").val();
@@ -443,12 +444,25 @@ function initialiseElementEditor(tab) {
         $("#dialog-error-message").html(popupError);
         $("#dialog-error").dialog("open");
     }
-    $(".compass-direction-edit").button({
-        icons: { primary: "ui-icon-pencil" }
-    }).click(function () {
-        var key = $(this).attr("data-key");
-        selectTreeNode(key);
-    });
+}
+
+function setSelectedDirection(key) {
+    var selected = $("input:radio[name=" + key + "-compass]:checked");
+    var value = selected.val();
+    var name = selected.attr("data-name");
+    var to = selected.attr("data-to");
+    var elementId = selected.attr("data-id");
+    $("#" + key + "-exit-data").show();
+    $("#" + key + "-exit-data-name").html(capFirst(name));
+    $("#" + key + "-exit-data-to").html(to);
+    var editButton = $("#" + key + "-exit-data-edit");
+    if (elementId.length > 0) {
+        editButton.attr("data-key", elementId);
+        editButton.show();
+    }
+    else {
+        editButton.hide();
+    }
 }
 
 function getSelectedScripts(key) {
@@ -575,4 +589,8 @@ function addNewObject() {
 function selectTreeNode(node) {
     $("#gameTree").jstree("deselect_all");
     $("#gameTree").jstree("select_node", "#tree-" + node.replace(/ /g, "-"));
+}
+
+function capFirst(text) {
+    return text.substring(0, 1).toUpperCase() + text.substring(1);
 }

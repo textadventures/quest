@@ -103,6 +103,30 @@ div#dialog-input-text-list
 {
     margin-top: 10px;
 }
+a.compass-direction-link
+{
+    text-decoration: underline;
+    color: Blue;
+    cursor: pointer;
+}
+div.compassDirection
+{
+    border: 1px solid #AAA;
+    padding: 4px;
+    width: 90px;
+    height: 60px;
+}
+div.compassDirectionEditor
+{
+    border: 1px solid #AAA;
+    width: 200px;
+    margin-left: 30px;
+    padding: 10px;
+}
+div.compassDirectionInfo
+{
+    text-align: center;
+}
 
 .jstree ul
 {
