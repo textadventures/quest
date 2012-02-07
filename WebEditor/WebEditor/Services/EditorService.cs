@@ -265,9 +265,14 @@ namespace WebEditor.Services
                 {
                     object currentValue = data.GetAttribute(kvp.Key);
                     IEditableScripts script = currentValue as IEditableScripts;
+                    var newObjectRef = kvp.Value as WebEditor.Models.ElementSaveData.ObjectReferenceSaveData;
                     if (script != null)
                     {
                         SaveScript(script, kvp.Value as WebEditor.Models.ElementSaveData.ScriptsSaveData, key);
+                    }
+                    else if (newObjectRef != null)
+                    {
+                        SaveObjectReference(data, kvp.Key, currentValue as IEditableObjectReference, newObjectRef);
                     }
                     else
                     {
@@ -456,6 +461,16 @@ namespace WebEditor.Services
                 }
 
                 count++;
+            }
+        }
+
+        private void SaveObjectReference(IEditorData data, string attribute, IEditableObjectReference currentValue, WebEditor.Models.ElementSaveData.ObjectReferenceSaveData newValue)
+        {
+            if (currentValue == null || currentValue.Reference != newValue.Reference)
+            {
+                IEditableObjectReference newReference = m_controller.CreateNewEditableObjectReference(data.Name, attribute, false);
+                newReference.Reference = newValue.Reference;
+                data.SetAttribute(attribute, newReference);
             }
         }
 

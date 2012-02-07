@@ -1,5 +1,6 @@
 ﻿@model WebEditor.Models.Script
-@using AxeSoftware.Quest
+@using AxeSoftware.Quest;
+@using WebEditor.Views.Edit;
 
 @RenderScripts(Model.Scripts, Model.Attribute)
 
@@ -161,7 +162,7 @@
                 break;
             case "objects":
                 List<SelectListItem> items = new List<SelectListItem>(
-                    GetObjectListNames(ctl).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
+                    Controls.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
                     .Select(s => new SelectListItem { Text = s, Value = s, Selected = (value == s) })
                     );
                 editorHtml = Html.DropDownList(name + "-simpleeditor", items, new { style = "display: " + simpleEditorDisplayStyle });
@@ -320,7 +321,7 @@
 
         if (simpleEditor == "objects")
         {
-            return expression.Length == 0  || GetObjectListNames(ctl).Contains(expression);
+            return expression.Length == 0  || Controls.GetObjectListNames(ctl, Model.Controller).Contains(expression);
         }
 
         if (simpleEditor == "number")
@@ -345,18 +346,5 @@
         }
     }
 
-    private IEnumerable<string> GetObjectListNames(IEditorControl ctl)
-    {
-        string source = ctl.GetString("source");
-        if (source != null)
-        {
-            return Model.Controller.GetElementNames(source);
-        }
-        else
-        {
-            string objectType = ctl.GetString("objecttype");
-            IEnumerable<string> objectNames = Model.Controller.GetObjectNames(objectType ?? "object");
-            return new List<string> { "" }.Union(objectNames);
-        }
-    }
+
 }

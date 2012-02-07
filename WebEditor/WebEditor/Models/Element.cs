@@ -60,6 +60,11 @@ namespace WebEditor.Models
                 Attributes = new Dictionary<string, object>();
             }
         }
+
+        public class ObjectReferenceSaveData
+        {
+            public string Reference { get; set; }
+        }
     }
 
     public class ElementSaveDataModelBinder : IModelBinder
@@ -144,6 +149,12 @@ namespace WebEditor.Models
                     string subControlType = WebEditor.Views.Edit.Controls.GetEditorNameForType(type, ctl.GetDictionary("editors"));
                     BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, subControlType);
                     addSaveValueToResult = false;
+                    break;
+                case "objects":
+                    saveValue = new ElementSaveData.ObjectReferenceSaveData
+                    {
+                        Reference = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute)
+                    };
                     break;
                 default:
                     handled = false;    // TO DO: Temporary until all controltypes are handled

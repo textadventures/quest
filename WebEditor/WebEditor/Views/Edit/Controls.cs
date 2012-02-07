@@ -101,5 +101,20 @@ namespace WebEditor.Views.Edit
 
             return types.Select(t => new SelectListItem { Value = t.Key, Text = t.Value, Selected = (selectedItem == t.Key) });
         }
+
+        public static IEnumerable<string> GetObjectListNames(IEditorControl ctl, EditorController controller)
+        {
+            string source = ctl.GetString("source");
+            if (source != null)
+            {
+                return controller.GetElementNames(source);
+            }
+            else
+            {
+                string objectType = ctl.GetString("objecttype");
+                IEnumerable<string> objectNames = controller.GetObjectNames(objectType ?? "object");
+                return new List<string> { "" }.Union(objectNames);
+            }
+        }
     }
 }
