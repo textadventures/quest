@@ -439,7 +439,7 @@ function initialiseElementEditor(tab) {
         var inverse = direction.attr("data-inverse");
         var type = direction.attr("data-type");
         var inverseType = direction.attr("data-inversetype");
-        var createInverse = $("#" + key + "-exit-date-create-inverse").is(":checked");
+        var createInverse = $("#" + key + "-exit-data-create-inverse").is(":checked");
         if (createInverse) {
             sendAdditionalAction("exits create2 " + to + ";" + directionName + ";" + type + ";" + inverse + ";" + inverseType);
         }

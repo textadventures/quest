@@ -218,8 +218,12 @@ namespace WebEditor.Services
                 }
             }
 
-            string popupError = m_popupError;
-            m_popupError = null;
+            string popupError = null;
+            if (refreshTreeSelectElement == null)
+            {
+                popupError = m_popupError;
+                m_popupError = null;
+            }
 
             IEnumerable<string> newObjectPossibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(key);
 
@@ -871,7 +875,34 @@ namespace WebEditor.Services
 
         private void CreateExitWithInverse(string from, string to, string direction, string type, string inverse, string inverseType)
         {
-            m_controller.CreateNewExit(from, to, direction, inverse, type, inverseType);
+            // does an inverse exit already exist in the "to" room?
+            bool inverseAlreadyExists = false;
+            foreach (string exitName in m_controller.GetObjectNames("exit", to, true))
+            {
+                IEditorData exitData = m_controller.GetEditorData(exitName);
+                bool lookOnly = exitData.GetAttribute("lookonly") as bool? == true;
+                if (!lookOnly)
+                {
+                    string alias = exitData.GetAttribute("alias") as string;
+                    if (alias == inverse)
+                    {
+                        inverseAlreadyExists = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!inverseAlreadyExists)
+            {
+                m_controller.CreateNewExit(from, to, direction, inverse, type, inverseType);
+            }
+            else
+            {
+                m_popupError = string.Format("Unable to create the inverse exit from '{0}' {1} to {2} - an exit in this direction already exists",
+                    to, inverse, from);
+                m_controller.CreateNewExit(from, to, direction, type, false);
+            }
+
             m_createInverse = true;
         }
 
