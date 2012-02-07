@@ -18,9 +18,20 @@ namespace WebEditor.Models
             public bool LookOnly { get; set; }
         }
 
+        public class Exit
+        {
+            public string Name { get; set; }
+            public string To { get; set; }
+            public string Alias { get; set; }
+            public bool LookOnly { get; set; }
+            public string Previous { get; set; }
+            public string Next { get; set; }
+        }
+
         public string Id { get; set; }
         public List<CompassDirection> Directions { get; set; }
         public List<string> Objects { get; set; }
         public bool CreateInverse { get; set; }
+        public Dictionary<string, Exit> AllExits { get; set; }
     }
 }

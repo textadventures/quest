@@ -457,6 +457,77 @@ function initialiseElementEditor(tab) {
         var type = direction.attr("data-type");
         sendAdditionalAction("exits createlook " + directionName + ";" + type);
     });
+    $(".exitslist-add").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
+        addNewElement("object", "exit", null);
+    });
+    $(".exitslist-edit").button({
+        icons: { primary: "ui-icon-pencil" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var selectElement = $("#exitslist-" + key + " option:selected");
+        selectTreeNode(selectElement.val());
+    });
+    $(".exitslist-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var selectElement = $("#exitslist-" + key + " option:selected");
+        sendAdditionalAction("exits delete " + selectElement.val());
+    });
+    $(".exitslist-moveup").button({
+        icons: { primary: "ui-icon-arrowthick-1-n" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var selectElement = $("#exitslist-" + key + " option:selected");
+        var previous = selectElement.attr("data-previous");
+        sendAdditionalAction("exits swap " + selectElement.val() + ";" + previous);
+    });
+    $(".exitslist-movedown").button({
+        icons: { primary: "ui-icon-arrowthick-1-s" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var selectElement = $("#exitslist-" + key + " option:selected");
+        var next = selectElement.attr("data-next");
+        sendAdditionalAction("exits swap " + selectElement.val() + ";" + next);
+    });
+    $(".exitslist").change(function () {
+        var editButton = $("#" + $(this).attr("data-key") + "-exit-edit");
+        var deleteButton = $("#" + $(this).attr("data-key") + "-exit-delete");
+        var moveupButton = $("#" + $(this).attr("data-key") + "-exit-moveup");
+        var movedownButton = $("#" + $(this).attr("data-key") + "-exit-movedown");
+        var selectElement = $("#" + this.id + " option:selected");
+        if (selectElement.val() === undefined) {
+            editButton.button("disable");
+            deleteButton.button("disable");
+            moveupButton.button("disable");
+            movedownButton.button("disable");
+        }
+        else {
+            editButton.button("enable");
+            deleteButton.button("enable");
+
+            var canMoveUp = (selectElement.attr("data-previous").length > 0);
+            if (canMoveUp) {
+                moveupButton.button("enable");
+            }
+            else {
+                moveupButton.button("disable");
+            }
+
+            var canMoveDown = (selectElement.attr("data-next").length > 0);
+            if (canMoveDown) {
+                movedownButton.button("enable");
+            }
+            else {
+                movedownButton.button("disable");
+            }
+        }
+    });
+    $(".exitslist-edit, .exitslist-delete, .exitslist-moveup, .exitslist-movedown").each(function () {
+        $(this).button("disable");
+    });
 
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);
@@ -577,7 +648,7 @@ function addNewElement(elementType, objectType, filter) {
                     addNewObject();
                     break;
                 case "exit":
-                    alert("To do: exit");
+                    addNewExit();
                     break;
                 case "command":
                     if (filter == "verb") {
@@ -619,6 +690,10 @@ function addNewObject() {
     showDialog("Please enter a name for the new object", "", function (text, parent) {
         toplevelAdditionalAction("main addobject " + text + ";" + parent);
     }, possibleParents, "Parent");
+}
+
+function addNewExit() {
+    toplevelAdditionalAction("main addexit");
 }
 
 function selectTreeNode(node) {

@@ -89,6 +89,23 @@
     </tr>
 </table>
 
+<div class="ui-widget-header ui-corner-all toolbar" style="margin-top: 20px">
+    <button type="button" class="exitslist-add" id="@Model.Id-exit-add" data-key="@Model.Id">Add</button>
+    <button type="button" class="exitslist-edit" id="@Model.Id-exit-edit" data-key="@Model.Id">Edit</button>
+    <button type="button" class="exitslist-delete" id="@Model.Id-exit-delete" data-key="@Model.Id">Delete</button>
+    <button type="button" class="exitslist-moveup" id="@Model.Id-exit-moveup" data-key="@Model.Id">Move up</button>
+    <button type="button" class="exitslist-movedown" id="@Model.Id-exit-movedown" data-key="@Model.Id">Move down</button>
+</div>
+
+<div>
+    <select id="exitslist-@Model.Id" data-key="@Model.Id" size="8" style="width: 100%" class="exitslist">
+        @foreach (var item in Model.AllExits.Values)
+        {
+            <option value="@item.Name" data-previous="@item.Previous" data-next="@item.Next">@item.To</option>
+        }
+    </select>
+</div>
+
 @helper CompassDirection(string direction, WebEditor.Models.Exits.CompassDirection data)
 {
     string compassId = Model.Id + "-compass" + direction.ToUpper();

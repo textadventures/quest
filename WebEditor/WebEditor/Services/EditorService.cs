@@ -589,19 +589,37 @@ namespace WebEditor.Services
                 })
             );
 
+            Models.Exits.Exit previous = null;
+            result.AllExits = new Dictionary<string, Models.Exits.Exit>();
+
             foreach (string exit in exits)
             {
                 IEditorData data = m_controller.GetEditorData(exit);
                 IEditableObjectReference to = data.GetAttribute("to") as IEditableObjectReference;
                 string alias = data.GetAttribute("alias") as string;
+                bool lookOnly = m_controller.GetEditorData(exit).GetAttribute("lookonly") as bool? == true;
                 if (compassDirections.Contains(alias))
                 {
                     int index = compassDirections.IndexOf(alias);
                     Models.Exits.CompassDirection exitModel = result.Directions[index];
                     exitModel.ElementId = exit;
-                    exitModel.To = to.Reference;
-                    exitModel.LookOnly = m_controller.GetEditorData(exit).GetAttribute("lookonly") as bool? == true;
+                    exitModel.To = (to == null) ? null : to.Reference;
+                    exitModel.LookOnly = lookOnly;
                 }
+                var thisExit = new Models.Exits.Exit
+                {
+                    Name = exit,
+                    Alias = alias,
+                    To = (to == null) ? null : to.Reference,
+                    LookOnly = lookOnly,
+                    Previous = (previous == null) ? null : previous.Name
+                };
+                result.AllExits.Add(exit, thisExit);
+                if (previous != null)
+                {
+                    result.AllExits[previous.Name].Next = exit;
+                }
+                previous = thisExit;
             }
 
             return result;
@@ -797,6 +815,8 @@ namespace WebEditor.Services
                 case "addobject":
                     data = parameter.Split(new[] { ';' }, 2);
                     return AddNewObject(data[1], data[0]);
+                case "addexit":
+                    return AddNewExit(key);
                 case "delete":
                     if (DeleteElement(key))
                     {
@@ -868,6 +888,13 @@ namespace WebEditor.Services
                 case "createlook":
                     data = parameter.Split(new[] { ';' }, 2);
                     return CreateLookExit(key, data[0], data[1]);
+                case "delete":
+                    DeleteElement(parameter);
+                    break;
+                case "swap":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    SwapElements(data[0], data[1]);
+                    break;
             }
 
             return null;
@@ -943,6 +970,11 @@ namespace WebEditor.Services
 
             m_controller.CreateNewObject(value, parent);
             return value;
+        }
+
+        private string AddNewExit(string parent)
+        {
+            return m_controller.CreateNewExit(parent);
         }
 
         private bool DeleteElement(string element)
