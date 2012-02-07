@@ -409,6 +409,25 @@ function initialiseElementEditor(tab) {
     $(".elementslist-edit, .elementslist-delete, .elementslist-moveup, .elementslist-movedown").each(function () {
         $(this).button("disable");
     });
+    $(".compass-direction").change(function () {
+        var key = $(this).attr("data-key");
+        var selected = $("input:radio[name=" + key + "-compass]:checked");
+        var value = selected.val();
+        var name = selected.attr("data-name");
+        var to = selected.attr("data-to");
+        var elementId = selected.attr("data-id");
+        $("#" + key + "-exit-data").show();
+        $("#" + key + "-exit-data-name").html(name);
+        $("#" + key + "-exit-data-to").html(to);
+        var editButton = $("#" + key + "-exit-data-edit");
+        if (elementId.length > 0) {
+            editButton.attr("data-key", elementId);
+            editButton.show();
+        }
+        else {
+            editButton.hide();
+        }
+    });
 
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);
@@ -424,6 +443,12 @@ function initialiseElementEditor(tab) {
         $("#dialog-error-message").html(popupError);
         $("#dialog-error").dialog("open");
     }
+    $(".compass-direction-edit").button({
+        icons: { primary: "ui-icon-pencil" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        selectTreeNode(key);
+    });
 }
 
 function getSelectedScripts(key) {

@@ -555,7 +555,10 @@ namespace WebEditor.Services
 
         public Models.Exits GetExitsModel(int id, string key, IEditorControl ctl)
         {
-            Models.Exits result = new Models.Exits();
+            Models.Exits result = new Models.Exits
+            {
+                Id = ctl.Id
+            };
 
             IEnumerable<string> exits = m_controller.GetObjectNames("exit", key, true);
             List<string> compassDirections = new List<string>(ctl.GetListString("compass"));
@@ -572,7 +575,9 @@ namespace WebEditor.Services
                 if (compassDirections.Contains(alias))
                 {
                     int index = compassDirections.IndexOf(alias);
-                    result.Directions[index].To = to.DisplayString();
+                    Models.Exits.CompassDirection exitModel = result.Directions[index];
+                    exitModel.ElementId = exit;
+                    exitModel.To = to.DisplayString();
                 }
             }
 

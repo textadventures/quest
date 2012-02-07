@@ -9,10 +9,12 @@ namespace WebEditor.Models
     {
         public class CompassDirection
         {
+            public string ElementId { get; set; }
             public string Name { get; set; }
             public string To { get; set; }
         }
 
+        public string Id { get; set; }
         public List<CompassDirection> Directions { get; set; }
     }
 }
