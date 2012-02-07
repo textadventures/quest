@@ -64,6 +64,7 @@ namespace WebEditor.Services
                 m_controller.AddedNode += m_controller_AddedNode;
                 m_controller.RemovedNode += m_controller_RemovedNode;
                 m_controller.RenamedNode += m_controller_RenamedNode;
+                m_controller.RetitledNode += m_controller_RetitledNode;
                 m_controller.EndTreeUpdate += m_controller_EndTreeUpdate;
                 m_controller.UndoListUpdated += m_controller_UndoListUpdated;
                 m_controller.RedoListUpdated += m_controller_RedoListUpdated;
@@ -99,6 +100,12 @@ namespace WebEditor.Services
             item.Text = newName;
             m_elements.Add(newName, item);
 
+            m_mustRefreshTree = true;
+        }
+
+        void m_controller_RetitledNode(string key, string newTitle)
+        {
+            m_elements[key].Text = newTitle;
             m_mustRefreshTree = true;
         }
 
@@ -557,14 +564,23 @@ namespace WebEditor.Services
         {
             Models.Exits result = new Models.Exits
             {
-                Id = ctl.Id
+                Id = ctl.Id,
+                Objects = new List<string>(m_controller.GetObjectNames("object")
+                    .Where(n => n != "player")
+                    .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase))
             };
 
             IEnumerable<string> exits = m_controller.GetObjectNames("exit", key, true);
             List<string> compassDirections = new List<string>(ctl.GetListString("compass"));
+            IDictionary<string, string> compassTypes = ctl.GetDictionary("compasstypes");
 
             result.Directions = new List<Models.Exits.CompassDirection>(
-                compassDirections.Select(d => new Models.Exits.CompassDirection { Name = d })
+                compassDirections.Select(d => new Models.Exits.CompassDirection {
+                    Name = d,
+                    InverseName = GetInverseDirection(d, compassDirections),
+                    DirectionType = compassTypes[d],
+                    InverseDirectionType = compassTypes[GetInverseDirection(d, compassDirections)]
+                })
             );
 
             foreach (string exit in exits)
@@ -582,6 +598,35 @@ namespace WebEditor.Services
             }
 
             return result;
+        }
+
+        private static List<int> s_oppositeDirs = new List<int> { 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 11, 10 };
+
+        private string GetInverseDirection(string direction, List<string> directionNames)
+        {
+            // 0 = NW, 1 = N, 2 = NE
+            // 3 = W ,        4 = E     8 = U, 10 = In
+            // 5 = SW, 6 = S, 7 = SE    9 = D, 11 = Out
+
+            // So opposites are:
+
+            //   0 <--> 7
+            //   1 <--> 6
+            //   2 <--> 5
+            //   3 <--> 4
+            //   4 <--> 3
+            //   5 <--> 2
+            //   6 <--> 1
+            //   7 <--> 0
+            //   8 <--> 9
+            //   9 <--> 8
+            //  10 <--> 11
+            //  11 <--> 10
+
+            int dirIndex = directionNames.IndexOf(direction);
+            int opposite = s_oppositeDirs[dirIndex];
+            if (opposite == -1) return null;
+            return directionNames[opposite];
         }
 
         private struct AdditionalActionResult
@@ -621,6 +666,9 @@ namespace WebEditor.Services
                     break;
                 case "elementslist":
                     ProcessElementsListAction(key, cmd, parameter);
+                    break;
+                case "exits":
+                    ProcessExitsAction(key, cmd, parameter);
                     break;
             }
             return result;
@@ -795,6 +843,23 @@ namespace WebEditor.Services
                     SwapElements(data[0], data[1]);
                     break;
             }
+        }
+
+        private void ProcessExitsAction(string key, string cmd, string parameter)
+        {
+            string[] data;
+            switch (cmd)
+            {
+                case "create":
+                    data = parameter.Split(new[] { ';' }, 5);
+                    CreateExit(key, data[0], data[1], data[2], data[3], data[4]);
+                    break;
+            }
+        }
+
+        private void CreateExit(string from, string to, string direction, string type, string inverse, string inverseType)
+        {
+            m_controller.CreateNewExit(from, to, direction, inverse, type, inverseType);
         }
 
         private string AddNewRoom(string value)

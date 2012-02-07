@@ -429,6 +429,18 @@ function initialiseElementEditor(tab) {
         $("#" + option).attr("checked", "checked");
         setSelectedDirection(key);
     });
+    $(".compass-direction-create").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var direction = $("input:radio[name=" + key + "-compass]:checked");
+        var to = $("#" + key + "-exit-data-create-to option:selected").val();
+        var directionName = direction.attr("data-name");
+        var inverse = direction.attr("data-inverse");
+        var type = direction.attr("data-type");
+        var inverseType = direction.attr("data-inversetype");
+        sendAdditionalAction("exits create " + to + ";" + directionName + ";" + type + ";" + inverse + ";" + inverseType);
+    });
 
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);
@@ -454,14 +466,15 @@ function setSelectedDirection(key) {
     var elementId = selected.attr("data-id");
     $("#" + key + "-exit-data").show();
     $("#" + key + "-exit-data-name").html(capFirst(name));
-    $("#" + key + "-exit-data-to").html(to);
-    var editButton = $("#" + key + "-exit-data-edit");
     if (elementId.length > 0) {
-        editButton.attr("data-key", elementId);
-        editButton.show();
+        $("#" + key + "-exit-data-to").html(to);
+        $("#" + key + "-exit-data-edit").attr("data-key", elementId);
+        $("#" + key + "-exit-data-create").hide();
+        $("#" + key + "-exit-data-existing").show();
     }
     else {
-        editButton.hide();
+        $("#" + key + "-exit-data-existing").hide();
+        $("#" + key + "-exit-data-create").show();
     }
 }
 
