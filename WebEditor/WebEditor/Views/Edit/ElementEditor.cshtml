@@ -198,7 +198,8 @@
                 Controls.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
                 .Select(s => new SelectListItem { Text = s, Value = s, Selected = (selectedValue == s) })
                 );
-            @Html.DropDownList(ctl.Attribute, items);
+            // if ctl.Attribute is "key" (or any name that exists in the Model), ASP.NET MVC ignores Selected value
+            @Html.DropDownList("dropdown-" + ctl.Attribute, items);
             break;
         case null:
             break;

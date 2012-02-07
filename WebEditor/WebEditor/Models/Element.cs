@@ -153,7 +153,7 @@ namespace WebEditor.Models
                 case "objects":
                     saveValue = new ElementSaveData.ObjectReferenceSaveData
                     {
-                        Reference = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute)
+                        Reference = GetValueProviderString(bindingContext.ValueProvider, "dropdown-" + ctl.Attribute)
                     };
                     break;
                 default:
