@@ -600,6 +600,7 @@ namespace WebEditor.Services
                     Models.Exits.CompassDirection exitModel = result.Directions[index];
                     exitModel.ElementId = exit;
                     exitModel.To = to.Reference;
+                    exitModel.LookOnly = m_controller.GetEditorData(exit).GetAttribute("lookonly") as bool? == true;
                 }
             }
 
@@ -674,7 +675,7 @@ namespace WebEditor.Services
                     ProcessElementsListAction(key, cmd, parameter);
                     break;
                 case "exits":
-                    ProcessExitsAction(key, cmd, parameter);
+                    result.RefreshTreeSelectElement = ProcessExitsAction(key, cmd, parameter);
                     break;
             }
             return result;
@@ -851,7 +852,7 @@ namespace WebEditor.Services
             }
         }
 
-        private void ProcessExitsAction(string key, string cmd, string parameter)
+        private string ProcessExitsAction(string key, string cmd, string parameter)
         {
             string[] data;
             switch (cmd)
@@ -864,7 +865,12 @@ namespace WebEditor.Services
                     data = parameter.Split(new[] { ';' }, 5);
                     CreateExitWithInverse(key, data[0], data[1], data[2], data[3], data[4]);
                     break;
+                case "createlook":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    return CreateLookExit(key, data[0], data[1]);
             }
+
+            return null;
         }
 
         private void CreateExit(string from, string to, string direction, string type)
@@ -904,6 +910,11 @@ namespace WebEditor.Services
             }
 
             m_createInverse = true;
+        }
+
+        private string CreateLookExit(string from, string direction, string type)
+        {
+            return m_controller.CreateNewExit(from, null, direction, type, true);
         }
 
         private string AddNewRoom(string value)

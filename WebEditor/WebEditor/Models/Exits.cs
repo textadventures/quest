@@ -15,6 +15,7 @@ namespace WebEditor.Models
             public string To { get; set; }
             public string DirectionType { get; set; }
             public string InverseDirectionType { get; set; }
+            public bool LookOnly { get; set; }
         }
 
         public string Id { get; set; }

@@ -2,58 +2,64 @@
 
 <table>
     <tr>
-        <td>
+        <td style="vertical-align: top">
             <table>
                 <tr>
                     <td>
-                        @CompassDirection("nw", Model.Directions[0])
+                        <table>
+                            <tr>
+                                <td>
+                                    @CompassDirection("nw", Model.Directions[0])
+                                </td>
+                                <td>
+                                    @CompassDirection("n", Model.Directions[1])
+                                </td>
+                                <td>
+                                    @CompassDirection("ne", Model.Directions[2])
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @CompassDirection("w", Model.Directions[3])
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                    @CompassDirection("e", Model.Directions[4])
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @CompassDirection("sw", Model.Directions[5])
+                                </td>
+                                <td>
+                                    @CompassDirection("s", Model.Directions[6])
+                                </td>
+                                <td>
+                                    @CompassDirection("se", Model.Directions[7])
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                     <td>
-                        @CompassDirection("n", Model.Directions[1])
-                    </td>
-                    <td>
-                        @CompassDirection("ne", Model.Directions[2])
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        @CompassDirection("w", Model.Directions[3])
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        @CompassDirection("e", Model.Directions[4])
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        @CompassDirection("sw", Model.Directions[5])
-                    </td>
-                    <td>
-                        @CompassDirection("s", Model.Directions[6])
-                    </td>
-                    <td>
-                        @CompassDirection("se", Model.Directions[7])
-                    </td>
-                </tr>
-            </table>
-        </td>
-        <td>
-            <table>
-                <tr>
-                    <td>
-                        @CompassDirection("up", Model.Directions[8])
-                    </td>
-                    <td>
-                        @CompassDirection("in", Model.Directions[10])
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        @CompassDirection("down", Model.Directions[9])
-                    </td>
-                    <td>
-                        @CompassDirection("out", Model.Directions[11])
+                        <table>
+                            <tr>
+                                <td>
+                                    @CompassDirection("up", Model.Directions[8])
+                                </td>
+                                <td>
+                                    @CompassDirection("in", Model.Directions[10])
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @CompassDirection("down", Model.Directions[9])
+                                </td>
+                                <td>
+                                    @CompassDirection("out", Model.Directions[11])
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
@@ -66,17 +72,21 @@
                     <button type="button" class="compass-direction-edit" id="@Model.Id-exit-data-edit">Edit</button>
                 </div>
                 <div id="@Model.Id-exit-data-create" style="display: none">
+                    <b>Create an exit:</b><br />
                     To: @Html.DropDownList(Model.Id + "-exit-data-create-to", Model.Objects.Select(o => new SelectListItem { Text = o, Value = o }))
                     <br /><br />
                     <button type="button" class="compass-direction-create" id="@Model.Id-exit-data-create-new" data-key="@Model.Id">Create exit</button>
                     <br /><br />
                     @Html.CheckBox(Model.Id + "-exit-data-create-inverse", Model.CreateInverse)
                     @Html.Label(Model.Id + "-exit-data-create-inverse", "Also create exit in the other direction")
+                    <hr />
+                    <b>Create a "look" direction:</b><br /><br />
+                    Allows players to look in this direction, but not move this way.<br /><br />
+                    <button type="button" class="compass-direction-create-look" id="@Model.Id-exit-data-create-look" data-key="@Model.Id">Create "look" direction</button>
                 </div>
             </div>
         </td>
     </tr>
-
 </table>
 
 @helper CompassDirection(string direction, WebEditor.Models.Exits.CompassDirection data)
@@ -93,11 +103,19 @@
             data_to = data.To,
             data_inverse = data.InverseName,
             data_type = data.DirectionType,
-            data_inversetype = data.InverseDirectionType
+            data_inversetype = data.InverseDirectionType,
+            data_lookonly = data.LookOnly ? "1" : "0"
         })
         @Html.Label(compassId, data.Name)<br /><br />
         <div class="compassDirectionInfo">
-            <a class="compass-direction-link">@data.To</a>
+            @if (data.LookOnly)
+            {
+                <text>(look)</text>
+            }
+            else
+            {
+                <a class="compass-direction-link">@data.To</a>
+            }
         </div>
     </div>
 }

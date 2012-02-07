@@ -119,9 +119,10 @@ div.compassDirection
 div.compassDirectionEditor
 {
     border: 1px solid #AAA;
-    width: 200px;
+    width: 240px;
     margin-left: 30px;
     padding: 10px;
+    float: right;
 }
 div.compassDirectionInfo
 {
