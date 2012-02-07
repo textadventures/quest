@@ -69,6 +69,9 @@
                     To: @Html.DropDownList(Model.Id + "-exit-data-create-to", Model.Objects.Select(o => new SelectListItem { Text = o, Value = o }))
                     <br /><br />
                     <button type="button" class="compass-direction-create" id="@Model.Id-exit-data-create-new" data-key="@Model.Id">Create exit</button>
+                    <br /><br />
+                    @Html.CheckBox(Model.Id + "-exit-date-create-inverse", Model.CreateInverse)
+                    @Html.Label(Model.Id + "-exit-date-create-inverse", "Also create exit in the other direction")
                 </div>
             </div>
         </td>

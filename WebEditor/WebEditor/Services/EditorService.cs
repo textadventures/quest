@@ -30,6 +30,7 @@ namespace WebEditor.Services
         private string m_popupError = null;
         private bool m_canUndo = false;
         private bool m_canRedo = false;
+        private bool m_createInverse = true;
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
@@ -567,7 +568,8 @@ namespace WebEditor.Services
                 Id = ctl.Id,
                 Objects = new List<string>(m_controller.GetObjectNames("object")
                     .Where(n => n != "player")
-                    .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase))
+                    .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)),
+                CreateInverse = m_createInverse
             };
 
             IEnumerable<string> exits = m_controller.GetObjectNames("exit", key, true);
@@ -850,16 +852,27 @@ namespace WebEditor.Services
             string[] data;
             switch (cmd)
             {
-                case "create":
+                case "create1":
+                    data = parameter.Split(new[] { ';' }, 3);
+                    CreateExit(key, data[0], data[1], data[2]);
+                    break;
+                case "create2":
                     data = parameter.Split(new[] { ';' }, 5);
-                    CreateExit(key, data[0], data[1], data[2], data[3], data[4]);
+                    CreateExitWithInverse(key, data[0], data[1], data[2], data[3], data[4]);
                     break;
             }
         }
 
-        private void CreateExit(string from, string to, string direction, string type, string inverse, string inverseType)
+        private void CreateExit(string from, string to, string direction, string type)
+        {
+            m_controller.CreateNewExit(from, to, direction, type, false);
+            m_createInverse = false;
+        }
+
+        private void CreateExitWithInverse(string from, string to, string direction, string type, string inverse, string inverseType)
         {
             m_controller.CreateNewExit(from, to, direction, inverse, type, inverseType);
+            m_createInverse = true;
         }
 
         private string AddNewRoom(string value)

@@ -20,5 +20,6 @@ namespace WebEditor.Models
         public string Id { get; set; }
         public List<CompassDirection> Directions { get; set; }
         public List<string> Objects { get; set; }
+        public bool CreateInverse { get; set; }
     }
 }
