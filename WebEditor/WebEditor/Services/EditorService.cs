@@ -679,6 +679,7 @@ namespace WebEditor.Services
             AdditionalActionResult result = new AdditionalActionResult();
             string[] data = arguments.Split(new[] { ' ' }, 3);
             string action = data[0];
+            if (action == "none") return result;
             string cmd = data[1];
             string parameter = (data.Length == 3) ? data[2] : null;
             switch (action)

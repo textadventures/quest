@@ -138,15 +138,19 @@
     }
 </div>
 
-@helper RenderEditorControl(IEditorControl ctl, bool isFirst, string controlType)
+@helper RenderEditorControl(IEditorControl ctl, bool isFirst, string controlType, string caption = null)
 {
     object value;
     value = (ctl.Attribute == null) ? null :  Model.EditorData.GetAttribute(ctl.Attribute);
+    if (caption == null)
+    {
+        caption = ctl.Caption;
+    }
     switch (controlType)
     {
         case "checkbox":
-            @Html.CheckBox(ctl.Attribute, value as bool? == true)
-            @Html.Label(ctl.Attribute, ctl.Caption)
+            @Html.CheckBox(ctl.Attribute, value as bool? == true, new { @class = "elementEditorCheckbox" })
+            @Html.Label(ctl.Attribute, caption)
             break;
         case "textbox":
             @Html.TextBox(ctl.Attribute, (string)value, new { style = "width: 100%" })
@@ -158,11 +162,11 @@
             @Html.Action("EditScript", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
         case "label":
-            <div class="elementEditorLabel">@ctl.Caption</div>
+            <div class="elementEditorLabel">@caption</div>
             break;
         case "title":
             string className = isFirst ? "elementEditorTitleTop" : "elementEditorTitle";
-            <div class="@className">@ctl.Caption</div>
+            <div class="@className">@caption</div>
             break;
         case "dropdown":
             string selectedItem = value as string;
@@ -219,8 +223,14 @@
     IDictionary<string, string> types = ctl.GetDictionary("types");
     string selectedType = Controls.GetTypeName(value);
     @Html.DropDownList(ctl.Attribute + "-type", types.Select(t => new SelectListItem { Text = t.Value, Value = t.Key, Selected = (t.Key == selectedType) }), new { @class = "multi-dropdown", data_key = ctl.Attribute })
+    <br />
     string controlType = Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
-    @RenderEditorControl(ctl, false, controlType)
+    string ctlCaption = null;
+    if (controlType == "checkbox")
+    {
+        ctlCaption = ctl.GetString("checkbox");
+    }
+    @RenderEditorControl(ctl, false, controlType, ctlCaption)
 }
 
 @functions {

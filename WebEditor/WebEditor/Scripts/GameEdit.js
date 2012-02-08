@@ -528,6 +528,9 @@ function initialiseElementEditor(tab) {
     $(".exitslist-edit, .exitslist-delete, .exitslist-moveup, .exitslist-movedown").each(function () {
         $(this).button("disable");
     });
+    $(".elementEditorCheckbox").change(function () {
+        sendAdditionalAction("none")
+    });
 
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);
