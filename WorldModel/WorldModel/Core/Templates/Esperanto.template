@@ -1,0 +1,19 @@
+<asl version="520">
+
+  <include ref="Esperanto.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="$NAME$">
+    <gameid>$ID$</gameid>
+    <version>1.0</version>
+  </game>
+
+  <object name="room">
+    <inherit name="editor_room" />
+
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+</asl>

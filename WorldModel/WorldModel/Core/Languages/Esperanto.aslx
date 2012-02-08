@@ -1,0 +1,249 @@
+﻿<library>
+
+
+  
+  
+  <include ref="English.aslx"/>
+  <template name="UnresolvedObject">Mi ne vidas tion.</template>
+  <template name="UnresolvedLocation">Vi ne povas iri tien.</template>
+  <template name="DefaultObjectDescription">Nenio eksterordinare.</template>
+  <template name="DefaultSelfDescription">Ŝajne bonaspektas.</template>
+  <dynamictemplate name="TakeSuccessful">"Vi prenas " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="TakeUnsuccessful">"Vi ne povas preni " + object.article + "n."</dynamictemplate>
+  <template name="SeeListHeader">Vi povas vidi</template>
+  <template name="GoListHeader">Vi povas iri</template>
+  <template name="And">kaj</template>
+  <template name="Or">aŭ</template>
+  <template name="NothingToUndo">Ne eblas malfari!</template>
+  <template name="NotCarryingAnything">Vi kunportas nenion.</template>
+  <template name="CarryingListHeader">Vi kunportas</template>
+  <dynamictemplate name="DropSuccessful">"Vi forlasas " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="DropUnsuccessful">"Vi ne povas forlasi " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="AlreadyTaken">"Vi jam kunportas " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="NotCarrying">"Vi ne kunportas " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="CantUse">"Vi ne povas uzi " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">CapFirst(object.gender) + " diras nenion."</dynamictemplate>
+  <template name="UnrecognisedCommand">Mi ne komprenas vian ordonon.</template>
+  <template name="YouAreIn">Vi estas en</template>
+  <template name="LookAt">Rigardi</template>
+  <template name="Take">Preni</template>
+  <template name="SpeakTo">Paroli al</template>
+  <template name="Use">Uzi</template>
+  <template name="Drop">Forlasi</template>
+  <template name="GoTo">Iri al</template>
+  <template name="Go">Iri</template>
+  <template name="SwitchOn">Ŝalti</template>
+  <template name="SwitchOff">Malŝalti</template>
+  <template name="Open">Malfermi</template>
+  <template name="Close">Fermi</template> 
+  <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " ne estas malfermita."</dynamictemplate>
+  <template name="NeutralGender">ĝi</template>
+  <template name="MaleGender">li</template>
+  <template name="FemaleGender">ŝi</template>
+  <template name="SelfGender">vi</template>
+  <template name="NeutralPluralGender">they</template>
+  <template name="MalePluralGender">they</template>
+  <template name="FemalePluralGender">they</template>
+  <template name="NeutralArticle">ĝin</template>
+  <template name="MaleArticle">lin</template>
+  <template name="FemaleArticle">ŝin</template>
+  <template name="SelfArticle">sin</template>
+  <template name="NeutralPluralArticle">ilin</template>
+  <template name="MalePluralArticle">ilin</template>
+  <template name="FemalePluralArticle">ilin</template>
+  <template name="SelfAlias">mi</template>
+  <template name="SelfAlt">mi mem</template>
+  <template name="AllObjects">ĉio</template>
+  <template name="ParserIgnorePrefixes">el; la; los; las; uno; una; unos; unas</template>
+  <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " jam malfermita."</dynamictemplate>
+  <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " jam fermita."</dynamictemplate>
+  <dynamictemplate name="CantOpen">"Vi ne povas malfermi " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="CantClose">"Vi ne povas fermi " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="OpenSuccessful">"Vi malfermas " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="CloseSuccessful">"Vi fermas " + object.article + "n."</dynamictemplate>
+  <template name="CannotDoThat">Vi ne povas fari tion.</template>
+  <dynamictemplate name="AlreadyThere">CapFirst(object.gender) + " jam estas tie."</dynamictemplate>
+  <template name="Done">Farite.</template>
+  <template name="ContainerContentsPrefix">enhavante</template>
+  <template name="SurfaceContentsPrefix">kaj interne estas</template>
+  <dynamictemplate name="ObjectContains">CapFirst(object.gender) + " enhavas"</dynamictemplate>
+  <dynamictemplate name="ContainerFull">CapFirst(object.gender) + " estas plena."</dynamictemplate>
+  <dynamictemplate name="DisambiguateMenu">"Bonvolu elekti kion '" + text + "' vi volas diri:"</dynamictemplate>
+  <dynamictemplate name="UndoTurn">"Malfarite: " + text</dynamictemplate>
+  <template name="LockedExit">Tiu direkto estas blokita.</template>
+  <dynamictemplate name="DefaultAsk">CapFirst(object.gender) + " ne respondas."</dynamictemplate>
+  <dynamictemplate name="DefaultTell">CapFirst(object.gender) + " ne respondas."</dynamictemplate>
+  <template name="NoKey">Vi ne havas la ŝlosilon.</template>
+  <template name="UnlockMessage">Ne ŝlosita.</template>
+  <template name="LockMessage">Ŝlosita.</template>
+  <dynamictemplate name="LockedObject">CapFirst(object.gender) + " estas ŝlosita."</dynamictemplate>
+  <dynamictemplate name="AlreadyLocked">CapFirst(object.gender) + " jam estas ŝlosita."</dynamictemplate>
+  <dynamictemplate name="AlreadyUnlocked">CapFirst(object.gender) + " estas jam malŝlosita."</dynamictemplate>
+  <dynamictemplate name="CannotLockOpen">"Vi ne povas ŝlosi " + object.article + " kiam " + object.gender + " " + Conjugate(object, "be") + " malfermita."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOn">CapFirst(object.gender) + " jam estas ŝaltita."</dynamictemplate>"
+  <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.gender) + " jam estas elŝaltita."</dynamictemplate>"
+  <dynamictemplate name="SwitchedOn">"Vi ŝaltas " + object.article + "n."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">"You elŝaltas " + object.article + "n."</dynamictemplate>
+  <template name="DefaultOops">Estas nenio korektinda.</template>
+  <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " + Conjugate(object1, "do") + " ne enhavas " + GetDisplayAlias(object2) + "."</dynamictemplate>
+  <dynamictemplate name="YouLooking">"Vi rigardas " + text +"."</dynamictemplate>
+
+  <template name="CompassNW">nordokcidente</template>
+  <template name="CompassN">norde</template>
+  <template name="CompassNE">nordoriente</template>
+  <template name="CompassW">okcidente</template>
+  <template name="CompassE">oriente</template>
+  <template name="CompassSW">sudokcidente</template>
+  <template name="CompassS">sude</template>
+  <template name="CompassSE">sudoriente</template>
+  <template name="CompassUp">supren</template>
+  <template name="CompassDown">malsupren</template>
+  <template name="CompassIn">internen</template>
+  <template name="CompassOut">eksteren</template>
+  <template name="CompassDirectionPrefix">al</template>
+  <template name="UpDownDirectionPrefix"></template>
+  <template name="InOutDirectionPrefix"></template>
+  <template name="CompassNWShort">nok</template>
+  <template name="CompassNShort">n</template>
+  <template name="CompassNEShort">nor</template>
+  <template name="CompassWShort">ok</template>
+  <template name="CompassEShort">e</template>
+  <template name="CompassSWShort">sok</template>
+  <template name="CompassSShort">s</template>
+  <template name="CompassSEShort">sor</template>
+  <template name="CompassUpShort">sup</template>
+  <template name="CompassDownShort">malsup</template>
+  <template name="CompassInShort">int</template>
+  <template name="CompassOutShort">eks</template>
+
+  <template name="InventoryLabel">Inventario</template>
+  <template name="PlacesObjectsLabel">Lokoj kaj Objektoj</template>
+  <template name="CompassLabel">Direktoj</template>
+  <template name="InButtonLabel">Ene</template>
+  <template name="OutButtonLabel">Ekstere</template>
+  <template name="EmptyListLabel">(malplena)</template>
+  <template name="NothingSelectedLabel">(nenion elektita)</template>
+
+  <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
+  <template templatetype="command" name="look">^look$</template>
+  <verbtemplate name="lookat">regardi</verbtemplate>
+  <verbtemplate name="lookat">r</verbtemplate>
+  <verbtemplate name="lookat">observi</verbtemplate>
+  <verbtemplate name="lookat">reg</verbtemplate>
+  <verbtemplate name="lookat">re</verbtemplate> 
+  <verbtemplate name="take">preni</verbtemplate>
+  <verbtemplate name="take">pren</verbtemplate>
+  <verbtemplate name="take">pre</verbtemplate>
+  <template templatetype="command" name="undo">^undo$</template>
+  <template templatetype="command" name="inventory">^i$|^inv$|^inventory$</template>
+  <template templatetype="command" name="quit">^quit$</template>
+  <verbtemplate name="drop">forlasi</verbtemplate>
+  <verbtemplate name="use">uzi</verbtemplate>
+  <verbtemplate name="speakto">paroli al</verbtemplate>
+  <verbtemplate name="speakto">diri al</verbtemplate>
+  <verbtemplate name="speakto">paroli</verbtemplate>
+  <verbtemplate name="speakto">diri</verbtemplate>
+  <verbtemplate name="open">malfermi</verbtemplate>
+  <verbtemplate name="close">fermi</verbtemplate>
+  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
+
+  <verbtemplate name="buy">aĉeti</verbtemplate>
+  <dynamictemplate name="DefaultBuy">"Vi ne povas aĉeti " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="climb">grimpi</verbtemplate>
+  <dynamictemplate name="DefaultClimb">"Vi ne povas grimpi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="drink">trinki</verbtemplate>
+  <dynamictemplate name="DefaultDrink">"Vi ne povas trinki " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="eat">manĝi</verbtemplate>
+  <dynamictemplate name="DefaultEat">"Vi ne povas manĝi " + object.article + "n."</dynamictemplate>
+  <template templatetype="command" name="give"><![CDATA[^give (?<object1>.*) to (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " ne volas + object2.article + "."</dynamictemplate>
+  <verbtemplate name="hit">frapi</verbtemplate>
+  <dynamictemplate name="DefaultHit">"Vi ne povas frapi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="kill">mortigi</verbtemplate>
+  <dynamictemplate name="DefaultKill">"Vi ne povas mortigi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="kiss">kisi</verbtemplate>
+  <dynamictemplate name="DefaultKiss">"Vi ne povas kisi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="knock">frapi</verbtemplate>
+  <dynamictemplate name="DefaultKnock">"Vi ne povas frapi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="lick">liki</verbtemplate>
+  <dynamictemplate name="DefaultLick">"Vi ne povas liki " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="lie">kuŝi</verbtemplate>
+  <verbtemplate name="lie">ripozi</verbtemplate>
+  <verbtemplate name="lie">siesti</verbtemplate>
+  <verbtemplate name="lie">ripozi sur</verbtemplate>
+  <dynamictemplate name="DefaultLie">"Vi ne povas kuŝi sur " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="listento">aŭsulti</verbtemplate>
+  <dynamictemplate name="DefaultListenTo">"Vi aŭskultas, sed " + object.article + " ne aŭdigxas."</dynamictemplate>
+  <verbtemplate name="lock">ŝlosi</verbtemplate>
+  <dynamictemplate name="DefaultLock">"Vi ne povas ŝlosi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="move">movi</verbtemplate>
+  <dynamictemplate name="DefaultMove">"Vi ne povas movi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="pull">tiri</verbtemplate>
+  <dynamictemplate name="DefaultPull">"Vi ne povas tiri " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="push">puŝi</verbtemplate>
+  <dynamictemplate name="DefaultPush">"Vi ne povas puŝi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="read">legi</verbtemplate>
+  <dynamictemplate name="DefaultRead">"Vi ne povas legi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="search">serĉi</verbtemplate>
+  <dynamictemplate name="DefaultSearch">"Vi ne povas serĉi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="show">montri</verbtemplate>
+  <dynamictemplate name="DefaultShow">"Vi ne povas montri " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="sit">sidi</verbtemplate>
+  <verbtemplate name="sit">sidiĝi</verbtemplate>
+  <verbtemplate name="sit">sidi sur</verbtemplate>
+  <verbtemplate name="sit">sidiĝi sur</verbtemplate>
+  <dynamictemplate name="DefaultSit">"Vi ne povas sidi sur " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="smell">flari</verbtemplate>
+  <verbtemplate name="smell">nazumi</verbtemplate>
+  <dynamictemplate name="DefaultSmell">"Vi flaras, sed " + object.article + " ne odoras multe."</dynamictemplate>
+  <verbtemplate name="taste">gustumi</verbtemplate>
+  <dynamictemplate name="DefaultTaste">"Vi ne povas gustumi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="throw">lanĉi</verbtemplate>
+  <dynamictemplate name="DefaultThrow">"Vi ne povas lanĉi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="tie">ligi</verbtemplate>
+  <dynamictemplate name="DefaultTie">"Vi ne povas ligi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="touch">tuŝi</verbtemplate>
+  <dynamictemplate name="DefaultTouch">"Vi ne povas tuŝi " + object.article + "n."</dynamictemplate>
+  <template templatetype="command" name="turnon"><![CDATA[^turn on (?<object>.*)$|^turn (?<object>.*) on$|^switch on (?<object>.*)$|^switch (?<object>.*) on$]]></template>
+  <dynamictemplate name="DefaultTurnOn">"Vi ne povas ŝalti " + object.article + "n."</dynamictemplate>
+  <template templatetype="command" name="turnoff"><![CDATA[^turn off (?<object>.*)$|^turn (?<object>.*) off$|^switch off (?<object>.*)$|^switch (?<object>.*) off$]]></template>
+  <dynamictemplate name="DefaultTurnOff">"Vi ne povas malŝalti " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="turn">turni</verbtemplate>
+  <dynamictemplate name="DefaultTurn">"Vi ne povas turni " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="unlock">malŝlosi</verbtemplate>
+  <dynamictemplate name="DefaultUnlock">"Vi ne povas malŝlosi " + object.article + "n."</dynamictemplate>
+  <verbtemplate name="untie">malligi</verbtemplate>
+  <dynamictemplate name="DefaultUntie">"Vi ne povas malligi " + object.article + "n."</dynamictemplate>
+  <template templatetype="command" name="useon"><![CDATA[^use (?<object1>.*) on (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultUseOn">"Vi ne povas probi " + object2.article + "n tiel."</dynamictemplate>
+  <verbtemplate name="wear">vesti</verbtemplate>
+  <dynamictemplate name="DefaultWear">"Vi ne povas vesti " + object.article + "n."</dynamictemplate>
+  <template templatetype="command" name="listen">^listen$</template>
+  <template name="DefaultListen">Vi ne povas aŭskulti multe.</template>
+  <template templatetype="command" name="jump">^jump$</template>
+  <template name="DefaultJump">Vi saltas, sed nenio okazas.</template>
+  <template templatetype="command" name="sitdown">^sit$|^sit down$</template>
+  <template name="DefaultSitDown">Ne estas tempo por sidiĝi nun.</template>
+  <template templatetype="command" name="liedown">^lie$|^lie down$</template>
+  <template name="DefaultLieDown">Ne estas tempo por kuŝi nun.</template>
+  <template templatetype="command" name="sleep">^sleep$|^rest$</template>
+  <template name="DefaultSleep">Ne estas tempo por dormi nun.</template>
+  <template templatetype="command" name="wait">^wait$</template>
+  <template name="DefaultWait">Tempo flugas.</template>
+  <template templatetype="command" name="xyzzy">^xyzzy$</template>
+  <template name="DefaultXyzzy">Surprize, absolute nenio okazas.</template>
+
+  <template templatetype="command" name="help">^help$|^\?$</template>
+  <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
+<b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>
+<b>- Inventory:</b>  See which items you are carrying by typing I, INV or INVENTORY.<br/>
+<b>- Moving around:</b>  Press the compass buttons, or type GO NORTH, SOUTH, E, GO TO...<br/>
+<b>- Shortcuts:</b>  Press the up arrow and down arrow to scroll through commands you have already typed in. Try X... as a shortcut for LOOK AT...]]></template>
+
+
+</library>
