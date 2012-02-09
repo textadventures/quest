@@ -38,9 +38,15 @@ Public Class PlayerHTML
     End Sub
 
     Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
+        AddHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
         AddUIEventElement()
         DeleteTempFile()
         RaiseEvent Ready()
+    End Sub
+
+    Private Sub wbOutput_Error(sender As Object, e As HtmlElementErrorEventArgs)
+        WriteText(String.Format("JavaScript error at line {0}: {1}", e.LineNumber, e.Description))
+        e.Handled = True
     End Sub
 
     ' This is how we support JavaScript calling ASL functions (ASLEvent function) and other code in desktop Player.
@@ -120,10 +126,15 @@ Public Class PlayerHTML
 
     Public Sub ClearBuffer()
         If Not Me.IsHandleCreated Then Return
-        For Each script In m_buffer
-            script.Invoke()
-        Next
-        m_buffer.Clear()
+        ' copy m_buffer to a new list, in case invoking scripts cause new scripts to be added
+        ' to the buffer.
+        Do
+            Dim bufferCopy As List(Of Action) = New List(Of Action)(m_buffer)
+            m_buffer.Clear()
+            For Each script In bufferCopy
+                script.Invoke()
+            Next
+        Loop Until Not m_buffer.Any()
     End Sub
 
     Private Const k_scriptsPlaceholder As String = "<!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->"
@@ -192,4 +203,13 @@ Public Class PlayerHTML
     Public Sub SetPanelContents(html As String)
         InvokeScript("setPanelContents", html)
     End Sub
+
+    Public Property ScriptErrorsSuppressed As Boolean
+        Get
+            Return wbOutput.ScriptErrorsSuppressed
+        End Get
+        Set(value As Boolean)
+            wbOutput.ScriptErrorsSuppressed = value
+        End Set
+    End Property
 End Class

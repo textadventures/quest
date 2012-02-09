@@ -1109,4 +1109,13 @@ Public Class Player
     Public Sub SetPanelContents(html As String) Implements IPlayer.SetPanelContents
         BeginInvoke(Sub() ctlPlayerHtml.SetPanelContents(html))
     End Sub
+
+    Public Property ScriptErrorsSuppressed As Boolean
+        Get
+            Return ctlPlayerHtml.ScriptErrorsSuppressed
+        End Get
+        Set(value As Boolean)
+            ctlPlayerHtml.ScriptErrorsSuppressed = value
+        End Set
+    End Property
 End Class

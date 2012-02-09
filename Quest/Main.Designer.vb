@@ -8,6 +8,7 @@ Partial Class Main
     <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
+            ctlPlayer.ScriptErrorsSuppressed = True
             If disposing AndAlso components IsNot Nothing Then
                 components.Dispose()
             End If
