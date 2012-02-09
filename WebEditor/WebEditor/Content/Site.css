@@ -66,6 +66,10 @@ input.ifsection-select
 {
     vertical-align: text-top;
 }
+input.verbs-select
+{
+    vertical-align: text-top;
+}
 div.ifSection
 {
     margin-left: 24px;
