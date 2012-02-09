@@ -31,6 +31,7 @@ namespace WebEditor.Services
         private bool m_canUndo = false;
         private bool m_canRedo = false;
         private bool m_createInverse = true;
+        private bool m_needsSaving = false;
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
@@ -55,8 +56,9 @@ namespace WebEditor.Services
             m_controller = new EditorController();
         }
 
-        public void Initialise(int id, string filename, string libFolder)
+        public void Initialise(int id, string libFolder)
         {
+            string filename = FileManagerLoader.GetFileManager().GetFile(id);
             m_id = id;
             if (m_controller.Initialise(filename, libFolder))
             {
@@ -137,7 +139,6 @@ namespace WebEditor.Services
         {
             public Dictionary<string, string> attr = new Dictionary<string, string>();
             public string data;
-            //public string state;
             public IEnumerable<JsonTreeElement> children;
         }
 
@@ -279,6 +280,7 @@ namespace WebEditor.Services
                         if (DataChanged(currentValue, (kvp.Value)))
                         {
                             System.Diagnostics.Debug.WriteLine("New value for {0}: Was {1}, now {2}", kvp.Key, data.GetAttribute(kvp.Key), kvp.Value);
+                            m_needsSaving = true;
                             ValidationResult validationResult = data.SetAttribute(kvp.Key, kvp.Value);
                             if (validationResult.Valid)
                             {
@@ -322,6 +324,19 @@ namespace WebEditor.Services
             {
                 result.Error = ex.Message;
                 return result;
+            }
+            finally
+            {
+                // TO DO: Review this. May not be efficient to save the entire file each time - may want
+                // to save every minute etc. But if so, will also need to consider saving on session timeout,
+                // before loading a game (i.e. if user presses browser Refresh button, don't want to lose
+                // changes), and before playing.
+
+                if (m_needsSaving)
+                {
+                    FileManagerLoader.GetFileManager().SaveFile(m_id, m_controller.Save());
+                    m_needsSaving = false;
+                }
             }
         }
 
@@ -397,6 +412,7 @@ namespace WebEditor.Services
                                     // Can't change dictionary keys while enumerating dictionary items - so
                                     // change them afterwards
                                     keysToChange.Add(item.Key, newKey);
+                                    m_needsSaving = true;
                                 }
 
                                 SaveScript(item.Value.Value, (WebEditor.Models.ElementSaveData.ScriptsSaveData)newData.Attributes[string.Format("value{0}", dictionaryCount)], parentElement);
@@ -424,6 +440,7 @@ namespace WebEditor.Services
                             {
                                 System.Diagnostics.Debug.WriteLine("New value for script: Was {0}, now {1}", oldValue, newValue);
                                 script.SetParameter(attribute.Key, newValue);
+                                m_needsSaving = true;
                             }
                         }
                     }
@@ -436,6 +453,7 @@ namespace WebEditor.Services
                     if (DataChanged(oldExpression, newExpression))
                     {
                         ifScript.SetAttribute("expression", newExpression);
+                        m_needsSaving = true;
                     }
 
                     SaveScript(ifScript.ThenScript, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes["then"], parentElement);
@@ -448,6 +466,7 @@ namespace WebEditor.Services
                         if (DataChanged(oldElseIfExpression, newElseIfExpression))
                         {
                             elseIfScript.SetAttribute("expression", newElseIfExpression);
+                            m_needsSaving = true;
                         }
 
                         SaveScript(elseIfScript.EditableScripts, (WebEditor.Models.ElementSaveData.ScriptsSaveData)data.Attributes[string.Format("elseif{0}-then", elseIfCount)], parentElement);
@@ -471,6 +490,7 @@ namespace WebEditor.Services
                 IEditableObjectReference newReference = m_controller.CreateNewEditableObjectReference(data.Name, attribute, false);
                 newReference.Reference = newValue.Reference;
                 data.SetAttribute(attribute, newReference);
+                m_needsSaving = true;
             }
         }
 
@@ -680,6 +700,7 @@ namespace WebEditor.Services
             string[] data = arguments.Split(new[] { ' ' }, 3);
             string action = data[0];
             if (action == "none") return result;
+            m_needsSaving = true;
             string cmd = data[1];
             string parameter = (data.Length == 3) ? data[2] : null;
             switch (action)

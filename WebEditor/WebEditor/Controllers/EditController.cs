@@ -25,9 +25,8 @@ namespace WebEditor.Controllers
         {
             Services.EditorService editor = new Services.EditorService();
             EditorDictionary[id] = editor;
-            string debugFile = ConfigurationManager.AppSettings["DebugFile"];
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
-            editor.Initialise(id, debugFile, libFolder);
+            editor.Initialise(id, libFolder);
             return Json(editor.GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
         }
 

@@ -3,6 +3,17 @@
 <!-- After entering settings, this file should be saved as WebEditorSettings.xml -->
 
 <appSettings>
-  <add key="DebugFile" value="C:\Path\To\gamefile.aslx"/>
   <add key="LibraryFolder" value="C:\Libraries\"/>
+  
+  <!-- PLUGINS -->
+
+  <!-- Specify the type name of a class that implements IFileManager -->
+  <!-- <add key="FileManagerType" value="SomeFileManager.FileManager, SomeFileManager"/> -->
+
+  <!-- DEBUG PLUGINS -->
+
+  <!-- OR, when debugging, use the Debug Plugins -->
+  <!-- <add key="FileManagerType" value="WebEditor.Services.DebugFileManager, WebEditor"/> -->
+  <!-- <add key="DebugFileManagerFile" value="C:\Path\To\some game file.aslx"/> -->
+
 </appSettings>
