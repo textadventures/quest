@@ -205,6 +205,9 @@
             // if ctl.Attribute is "key" (or any name that exists in the Model), ASP.NET MVC ignores Selected value
             @Html.DropDownList("dropdown-" + ctl.Attribute, items);
             break;
+        case "verbs":
+            @Html.Action("EditVerbs", new { id = Model.GameId, key = Model.Key, control = ctl })
+            break;
         case null:
             break;
         default:

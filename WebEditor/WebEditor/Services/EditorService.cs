@@ -689,6 +689,17 @@ namespace WebEditor.Services
             return directionNames[opposite];
         }
 
+        public Models.Verbs GetVerbsModel(int id, string key, IEditorControl ctl)
+        {
+            return new Models.Verbs
+            {
+                GameId = id,
+                Key = key,
+                Controller = m_controller,
+                EditorControl = ctl,
+            };
+        }
+
         private struct AdditionalActionResult
         {
             public string RefreshTreeSelectElement;

@@ -91,6 +91,11 @@ namespace WebEditor.Controllers
             return PartialView("ExitsEditor", EditorDictionary[id].GetExitsModel(id, key, control));
         }
 
+        public PartialViewResult EditVerbs(int id, string key, IEditorControl control)
+        {
+            return PartialView("VerbsEditor", EditorDictionary[id].GetVerbsModel(id, key, control));
+        }
+
         private Dictionary<int, Services.EditorService> EditorDictionary
         {
             get

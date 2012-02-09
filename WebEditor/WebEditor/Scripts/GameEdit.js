@@ -531,6 +531,10 @@ function initialiseElementEditor(tab) {
     $(".elementEditorCheckbox").change(function () {
         sendAdditionalAction("none")
     });
+    $(".verbs-add").button().click(function () {
+    });
+    $(".verbs-delete").button().click(function () {
+    });
 
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);
