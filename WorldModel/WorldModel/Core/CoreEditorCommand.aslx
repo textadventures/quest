@@ -37,6 +37,7 @@
 
     <tab>
       <caption>Attributes</caption>
+      <desktop/>
 
       <control>
         <controltype>attributes</controltype>

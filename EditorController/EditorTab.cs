@@ -10,6 +10,7 @@ namespace AxeSoftware.Quest
         private Dictionary<string, IEditorControl> m_controls = null;
         private string m_caption;
         private EditorVisibilityHelper m_visibilityHelper;
+        private Element m_source;
 
         public EditorTab(EditorDefinition parent, WorldModel worldModel, Element source)
         {
@@ -25,6 +26,7 @@ namespace AxeSoftware.Quest
                 }
             }
             m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
+            m_source = source;
         }
 
         public string Caption
@@ -49,6 +51,11 @@ namespace AxeSoftware.Quest
         {
             get;
             private set;
+        }
+
+        public bool GetBool(string tag)
+        {
+            return m_source.Fields.GetAsType<bool>(tag);
         }
     }
 }

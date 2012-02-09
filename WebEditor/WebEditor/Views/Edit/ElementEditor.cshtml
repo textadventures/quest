@@ -52,7 +52,7 @@
                 <ul>    
                     @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
                     {
-                        if (!def.IsTabVisible(Model.EditorData))
+                        if (!def.IsTabVisible(Model.EditorData) || def.GetBool("desktop"))
                         {
                             continue;
                         }
@@ -66,7 +66,7 @@
                 }
                 @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
                 {
-                    if (!def.IsTabVisible(Model.EditorData))
+                    if (!def.IsTabVisible(Model.EditorData) || def.GetBool("desktop"))
                     {
                         continue;
                     }

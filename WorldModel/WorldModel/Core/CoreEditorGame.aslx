@@ -245,6 +245,7 @@
     <tab>
       <caption>Attributes</caption>
       <advanced/>
+      <desktop/>
 
       <control>
         <controltype>stringdictionary</controltype>

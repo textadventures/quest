@@ -11,5 +11,6 @@ namespace AxeSoftware.Quest
         IEnumerable<IEditorControl> Controls { get; }
         bool IsTabVisible(IEditorData data);
         bool IsTabVisibleInSimpleMode { get; }
+        bool GetBool(string tag);
     }
 }
