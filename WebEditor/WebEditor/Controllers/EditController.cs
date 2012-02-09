@@ -81,6 +81,11 @@ namespace WebEditor.Controllers
             return PartialView("ScriptEditor", EditorDictionary[id].GetScriptModel(id, key, control, ModelState));
         }
 
+        public PartialViewResult EditScriptValue(int id, string key, IEditableScripts script, string attribute)
+        {
+            return PartialView("ScriptEditor", EditorDictionary[id].GetScriptModel(id, key, script, attribute, ModelState));
+        }
+
         public PartialViewResult ElementsList(int id, string key, IEditorControl control)
         {
             return PartialView("ElementsList", EditorDictionary[id].GetElementsListModel(id, key, control));

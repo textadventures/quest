@@ -532,7 +532,11 @@ namespace WebEditor.Services
         public Models.Script GetScriptModel(int id, string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
         {
             IEditableScripts value = (IEditableScripts)m_controller.GetEditorData(key).GetAttribute(ctl.Attribute);
+            return GetScriptModel(id, key, value, ctl.Attribute, modelState);
+        }
 
+        public Models.Script GetScriptModel(int id, string key, IEditableScripts value, string attribute, System.Web.Mvc.ModelStateDictionary modelState)
+        {
             foreach (var error in m_scriptErrors)
             {
                 modelState.AddModelError(error.Key, error.Value.Message);
@@ -542,7 +546,7 @@ namespace WebEditor.Services
             {
                 GameId = id,
                 Key = key,
-                Attribute = ctl.Attribute,
+                Attribute = attribute,
                 Controller = m_controller,
                 Scripts = value
             };
@@ -697,6 +701,7 @@ namespace WebEditor.Services
                 Key = key,
                 Controller = m_controller,
                 EditorControl = ctl,
+                EditorData = (IEditorDataExtendedAttributeInfo)m_controller.GetEditorData(key)
             };
         }
 

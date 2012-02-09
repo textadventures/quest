@@ -12,5 +12,6 @@ namespace WebEditor.Models
         public string Key { get; set; }
         public IEditorControl EditorControl { get; set; }
         public EditorController Controller { get; set; }
+        public IEditorDataExtendedAttributeInfo EditorData { get; set; }
     }
 }

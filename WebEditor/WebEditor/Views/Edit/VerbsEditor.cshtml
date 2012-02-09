@@ -1,8 +1,41 @@
 ﻿@model WebEditor.Models.Verbs
+@using AxeSoftware.Quest;
 
 <div class="ui-widget-header ui-corner-all toolbar">
     <button type="button" class="verbs-add">Add</button>
     <button type="button" class="verbs-delete">Delete</button>
 </div>
 
-Verbs editor...
+@foreach (IEditorAttributeData attr in Model.EditorData.GetAttributeData().Where(a => !a.IsInherited))
+{
+    // Note: for now, we are excluding any inherited attributes. If we want to support these in future,
+    // we will need to mark them as being inherited (e.g. display them in grey like the desktop editor),
+    // and any scripts will need to copied before editing.
+
+    object value = Model.EditorData.GetAttribute(attr.AttributeName);
+    if (CanDisplayAttribute(attr.AttributeName, value))
+    {
+        string stringValue = value as string;
+        IEditableScripts scriptValue = value as IEditableScripts;
+        <div>
+            @attr.AttributeName<br />
+            @if (scriptValue != null)
+            {
+                @Html.Action("EditScriptValue", new { id = Model.GameId, key = Model.Key, script = scriptValue, attribute = attr.AttributeName })
+            }
+            else
+            {
+                @Html.TextBox("verb-" + attr.AttributeName, stringValue, new { style = "width: 100%" })
+            }
+        </div>
+    }
+}
+
+@functions
+{
+    private bool CanDisplayAttribute(string attribute, object value)
+    {
+        if (!Model.Controller.IsVerbAttribute(attribute)) return false;
+        return typeof(string).IsAssignableFrom(value.GetType()) || typeof(IEditableScripts).IsAssignableFrom(value.GetType());
+    }
+}
