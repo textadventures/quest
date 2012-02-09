@@ -14,6 +14,7 @@ Public Class PlayerHTML
 
     Public Sub Setup()
         m_navigationAllowed = True
+        wbOutput.ScriptErrorsSuppressed = True
         wbOutput.Navigate(m_baseHtmlPath)
     End Sub
 
@@ -38,6 +39,7 @@ Public Class PlayerHTML
     End Sub
 
     Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
+        wbOutput.ScriptErrorsSuppressed = False
         AddHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
         AddUIEventElement()
         DeleteTempFile()
