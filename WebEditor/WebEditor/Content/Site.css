@@ -132,6 +132,11 @@ div.compassDirectionInfo
 {
     text-align: center;
 }
+div.verbChild
+{
+    margin-left: 60px;
+    margin-bottom: 10px;
+}
 
 .jstree ul
 {

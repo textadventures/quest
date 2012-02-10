@@ -32,14 +32,14 @@
             <br />
             @if (scriptValue != null)
             {
-                <div class="childScript">
+                <div class="verbChild">
                 @Html.Action("EditScriptValue", new { id = Model.GameId, key = Model.Key, script = scriptValue, attribute = attr.AttributeName })
                 </div>
             }
             else
             {
-                <div class="childScript">
-                @Html.TextBox("verb-" + attr.AttributeName, stringValue, new { style = "width: 100%" })
+                <div class="verbChild">
+                @Html.TextBox(attr.AttributeName, stringValue, new { style = "width: 100%" })
                 </div>
             }
         </div>

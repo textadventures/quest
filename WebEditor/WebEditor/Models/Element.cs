@@ -100,7 +100,7 @@ namespace WebEditor.Models
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
             {
                 if (!tab.IsTabVisible(originalElement.EditorData)) continue;
-                foreach (IEditorControl ctl in tab.Controls.Where(c => c.Attribute != null))
+                foreach (IEditorControl ctl in tab.Controls)
                 {
                     if (!ctl.IsControlVisible(originalElement.EditorData)) continue;
                     BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, ctl.ControlType);
@@ -112,40 +112,41 @@ namespace WebEditor.Models
             return result;
         }
 
-        private void BindControl(ModelBindingContext bindingContext, ElementSaveData result, int gameId, string ignoreExpression, Dictionary<int, Services.EditorService> editorDictionary, Models.Element originalElement, IEditorControl ctl, string controlType)
+        private void BindControl(ModelBindingContext bindingContext, ElementSaveData result, int gameId, string ignoreExpression, Dictionary<int, Services.EditorService> editorDictionary, Models.Element originalElement, IEditorControl ctl, string controlType, string attribute = null)
         {
             object saveValue = null;
             bool handled = true;    // TO DO: Temporary until all controltypes are handled
             bool addSaveValueToResult = true;
+            if (attribute == null) attribute = ctl.Attribute;
 
             switch (controlType)
             {
                 case "textbox":
                 case "dropdown":
-                    saveValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
+                    saveValue = GetValueProviderString(bindingContext.ValueProvider, attribute);
                     break;
                 case "number":
-                    string stringValue = GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute);
+                    string stringValue = GetValueProviderString(bindingContext.ValueProvider, attribute);
                     int intValue;
                     int.TryParse(stringValue, out intValue);
                     saveValue = intValue;
                     break;
                 case "richtext":
-                    saveValue = HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, ctl.Attribute))
+                    saveValue = HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, attribute))
                         .Replace("<strong>", "<b>")
                         .Replace("</strong>", "</b>")
                         .Replace("<em>", "<i>")
                         .Replace("</em>", "</i>");
                     break;
                 case "checkbox":
-                    ValueProviderResult value = bindingContext.ValueProvider.GetValue(ctl.Attribute);
+                    ValueProviderResult value = bindingContext.ValueProvider.GetValue(attribute);
                     saveValue = value.ConvertTo(typeof(bool));
                     break;
                 case "script":
-                    saveValue = BindScript(bindingContext.ValueProvider, ctl.Attribute, originalElement.EditorData, editorDictionary[gameId].Controller, ignoreExpression);
+                    saveValue = BindScript(bindingContext.ValueProvider, attribute, originalElement.EditorData, editorDictionary[gameId].Controller, ignoreExpression);
                     break;
                 case "multi":
-                    string type = WebEditor.Views.Edit.Controls.GetTypeName(originalElement.EditorData.GetAttribute(ctl.Attribute));
+                    string type = WebEditor.Views.Edit.Controls.GetTypeName(originalElement.EditorData.GetAttribute(attribute));
                     string subControlType = WebEditor.Views.Edit.Controls.GetEditorNameForType(type, ctl.GetDictionary("editors"));
                     BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, subControlType);
                     addSaveValueToResult = false;
@@ -153,17 +154,42 @@ namespace WebEditor.Models
                 case "objects":
                     saveValue = new ElementSaveData.ObjectReferenceSaveData
                     {
-                        Reference = GetValueProviderString(bindingContext.ValueProvider, "dropdown-" + ctl.Attribute)
+                        Reference = GetValueProviderString(bindingContext.ValueProvider, "dropdown-" + attribute)
                     };
+                    break;
+                case "verbs":
+                    IEditorDataExtendedAttributeInfo extendedData = (IEditorDataExtendedAttributeInfo)originalElement.EditorData;
+                    foreach (IEditorAttributeData attr in extendedData.GetAttributeData().Where(a => !a.IsInherited))
+                    {
+                        if (editorDictionary[gameId].Controller.IsVerbAttribute(attr.AttributeName))
+                        {
+                            object attrValue = extendedData.GetAttribute(attr.AttributeName);
+                            string attrStringValue = attrValue as string;
+                            IEditableScripts attrScriptValue = attrValue as IEditableScripts;
+                            if (attrStringValue != null)
+                            {
+                                BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, "textbox", attr.AttributeName);
+                            }
+                            else if (attrScriptValue != null)
+                            {
+                                BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, "script", attr.AttributeName);
+                            }
+                        }
+                    }
+                    addSaveValueToResult = false;
                     break;
                 default:
                     handled = false;    // TO DO: Temporary until all controltypes are handled
+                    if (attribute == null)
+                    {
+                        // TO DO: This is fine - otherwise throw an exception
+                    }
                     break;
             }
 
             if (handled && addSaveValueToResult)
             {
-                result.Values.Add(ctl.Attribute, saveValue);
+                result.Values.Add(attribute, saveValue);
             }
         }
 
