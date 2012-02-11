@@ -92,6 +92,7 @@ namespace AxeSoftware.Quest.EditorControls
             scripts = popOut.ctlScriptEditor.Scripts;
             popOut.ctlScriptEditor.Save();
             popOut.ctlScriptEditor.Populate((IEditableScripts)null);
+            popOut.ctlScriptEditor.Helper.DoUninitialise();
             popOut.ctlScriptEditor.Helper.Dirty -= dirtyEventHandler;
         }
 
