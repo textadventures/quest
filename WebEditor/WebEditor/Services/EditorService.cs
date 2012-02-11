@@ -748,6 +748,9 @@ namespace WebEditor.Services
                 case "exits":
                     result.RefreshTreeSelectElement = ProcessExitsAction(key, cmd, parameter);
                     break;
+                case "verbs":
+                    ProcessVerbsAction(key, cmd, parameter);
+                    break;
             }
             return result;
         }
@@ -951,6 +954,27 @@ namespace WebEditor.Services
             }
 
             return null;
+        }
+
+        private void ProcessVerbsAction(string key, string cmd, string parameter)
+        {
+            switch (cmd)
+            {
+                case "delete":
+                    VerbsDelete(key, parameter.Split(';'));
+                    break;
+            }
+        }
+
+        private void VerbsDelete(string element, string[] verbs)
+        {
+            m_controller.StartTransaction("Delete verbs");
+            IEditorDataExtendedAttributeInfo data = (IEditorDataExtendedAttributeInfo)m_controller.GetEditorData(element);
+            foreach (string verb in verbs)
+            {
+                data.RemoveAttribute(verb);
+            }
+            m_controller.EndTransaction();
         }
 
         private void CreateExit(string from, string to, string direction, string type)

@@ -531,9 +531,18 @@ function initialiseElementEditor(tab) {
     $(".elementEditorCheckbox").change(function () {
         sendAdditionalAction("none")
     });
-    $(".verbs-add").button().click(function () {
+    $(".verbs-add").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
     });
-    $(".verbs-delete").button().click(function () {
+    $(".verbs-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var selected = getSelectedVerbs();
+        if (selected.length > 0) {
+            sendAdditionalAction("verbs delete " + selected);
+        }
     });
 
     var enabledButtons = $("#_enabledButtons").val();
@@ -588,6 +597,19 @@ function getSelectedIfSections(key) {
 
 function getSelectedScriptDictionaryItems(key) {
     return getSelectedItems(key, ".scriptDictionarySection-select", 18);
+}
+
+function getSelectedVerbs() {
+    var result = "";
+    $(".verbs-select").each(function (index, element) {
+        var e = $(element);
+        var id = e.attr("id");
+        if (e.is(":checked")) {
+            if (result.length > 0) result += ";";
+            result += id.substring(13);
+        }
+    });
+    return result;
 }
 
 function getSelectedItems(key, checkboxClass, prefixLength) {
