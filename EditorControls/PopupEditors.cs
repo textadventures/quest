@@ -85,11 +85,14 @@ namespace AxeSoftware.Quest.EditorControls
             popOut.ctlScriptEditor.HidePopOutButton();
             popOut.ctlScriptEditor.Helper.DoInitialise(controller, null);
             popOut.ctlScriptEditor.Populate(scripts);
-            popOut.ctlScriptEditor.Helper.Dirty += (object sender, DataModifiedEventArgs e) => dirtyAction.Invoke();
+            System.EventHandler<DataModifiedEventArgs> dirtyEventHandler = (object sender, DataModifiedEventArgs e) => dirtyAction.Invoke();
+            popOut.ctlScriptEditor.Helper.Dirty += dirtyEventHandler;
 
             popOut.ShowDialog();
             scripts = popOut.ctlScriptEditor.Scripts;
             popOut.ctlScriptEditor.Save();
+            popOut.ctlScriptEditor.Populate((IEditableScripts)null);
+            popOut.ctlScriptEditor.Helper.Dirty -= dirtyEventHandler;
         }
 
     }
