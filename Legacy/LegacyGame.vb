@@ -13270,7 +13270,7 @@ ErrorHandler:
         ' Process command, and change state to Ready if the command finished processing
 
         Try
-            If ExecCommand(DirectCast(command, String), NullThread) Then
+            If ExecCommand(DirectCast(command, String), New ThreadData) Then
                 ChangeState(State.Ready)
             End If
         Catch ex As Exception
