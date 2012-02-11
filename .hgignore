@@ -13,3 +13,4 @@ syntax: glob
 WebPlayer/LogConfig.xml
 WebEditor/WebEditor/WebEditorSettings.xml
 WebPlayer/App_Data/Log.txt
+WebEditor/WebEditor/WebEditor.Publish.xml
