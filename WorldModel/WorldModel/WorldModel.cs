@@ -362,13 +362,16 @@ namespace AxeSoftware.Quest
                 Context context = m_menuCallbackContext;
                 m_menuCallback = null;
                 m_menuCallbackContext = null;
-                RunScript(script, context);
-                TryFinishTurn();
-                if (State != GameState.Finished)
+                DoInNewThreadAndWait(() =>
                 {
-                    UpdateLists();
-                }
-                ChangeThreadState(ThreadState.Ready);
+                    RunScript(script, context);
+                    TryFinishTurn();
+                    if (State != GameState.Finished)
+                    {
+                        UpdateLists();
+                    }
+                    ChangeThreadState(ThreadState.Ready);
+                });
             }
             else
             {
@@ -829,14 +832,17 @@ namespace AxeSoftware.Quest
                 Context context = m_waitCallbackContext;
                 m_waitCallback = null;
                 m_waitCallbackContext = null;
-                RunScript(script, context);
-                TryFinishTurn();
-                if (State != GameState.Finished)
+                DoInNewThreadAndWait(() =>
                 {
-                    UpdateLists();
-                }
-                ChangeThreadState(ThreadState.Ready);
-                SendNextTimerRequest();
+                    RunScript(script, context);
+                    TryFinishTurn();
+                    if (State != GameState.Finished)
+                    {
+                        UpdateLists();
+                    }
+                    ChangeThreadState(ThreadState.Ready);
+                    SendNextTimerRequest();
+                });
             }
             else
             {
@@ -1402,13 +1408,16 @@ namespace AxeSoftware.Quest
                 Context context = m_questionCallbackContext;
                 m_questionCallback = null;
                 m_questionCallbackContext = null;
-                RunScript(script, context);
-                TryFinishTurn();
-                if (State != GameState.Finished)
+                DoInNewThreadAndWait(() =>
                 {
-                    UpdateLists();
-                }
-                ChangeThreadState(ThreadState.Ready);
+                    RunScript(script, context);
+                    TryFinishTurn();
+                    if (State != GameState.Finished)
+                    {
+                        UpdateLists();
+                    }
+                    ChangeThreadState(ThreadState.Ready);
+                });
             }
             else
             {
