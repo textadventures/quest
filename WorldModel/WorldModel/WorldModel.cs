@@ -903,7 +903,7 @@ namespace AxeSoftware.Quest
 
         public void RunScript(IScript script)
         {
-            RunScript(script, null, false);
+            RunScript(script, (Parameters)null, false);
         }
 
         /// <summary>
@@ -943,6 +943,16 @@ namespace AxeSoftware.Quest
             if (thisElement != null) parameters.Add("this", thisElement);
             c.Parameters = parameters;
 
+            return RunScript(script, c, expectResult);
+        }
+
+        private void RunScript(IScript script, Context c)
+        {
+            RunScript(script, c, false);
+        }
+
+        private object RunScript(IScript script, Context c, bool expectResult)
+        {
             try
             {
                 script.Execute(c);
@@ -951,21 +961,9 @@ namespace AxeSoftware.Quest
             }
             catch (Exception ex)
             {
-                Print("Error running script: " + ex.Message);
+                Print("Error running script: " + Utility.SafeXML(ex.Message));
             }
             return null;
-        }
-
-        private void RunScript(IScript script, Context c)
-        {
-            try
-            {
-                script.Execute(c);
-            }
-            catch (Exception ex)
-            {
-                Print("Error running script: " + ex.Message);
-            }
         }
 
         public Element AddProcedure(string name)
