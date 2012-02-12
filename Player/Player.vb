@@ -409,11 +409,11 @@ Public Class Player
     End Sub
 
     Public Sub RunWalkthrough(name As String)
-        InitWalthrough(name)
+        InitWalkthrough(name)
         StartWalkthrough()
     End Sub
 
-    Public Sub InitWalthrough(name As String)
+    Public Sub InitWalkthrough(name As String)
         m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, name)
     End Sub
 
