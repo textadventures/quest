@@ -134,7 +134,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             object value = m_data.GetAttribute(m_definition.Attribute);
 
-            bool canEdit = CanEditType(value);
+            bool canEdit = CanEditType(value) && m_definition.Attribute != "type" && m_definition.Attribute != "elementtype";
 
             lstTypes.IsEnabled = canEdit && !data.ReadOnly && m_definition.Attribute != "name";
 
