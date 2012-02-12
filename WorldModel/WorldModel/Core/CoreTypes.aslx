@@ -85,16 +85,19 @@
   <type name="compassdirection">
     <inherit name="direction"/>
     <prefix type="string">[CompassDirectionPrefix]</prefix>
+    <suffix type="string">[CompassDirectionSuffix]</suffix>
   </type>
 
   <type name="updowndirection">
     <inherit name="direction"/>
     <prefix type="string">[UpDownDirectionPrefix]</prefix>
+    <suffix type="string">[UpDownDirectionSuffix]</suffix>
   </type>
 
   <type name="inoutdirection">
     <inherit name="direction"/>
     <prefix type="string">[InOutDirectionPrefix]</prefix>
+    <suffix type="string">[InOutDirectionSuffix]</suffix>
   </type>
 
   <type name="northwestdirection">
