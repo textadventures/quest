@@ -362,7 +362,7 @@ namespace AxeSoftware.Quest
                 Context context = m_menuCallbackContext;
                 m_menuCallback = null;
                 m_menuCallbackContext = null;
-                script.Execute(context);
+                RunScript(script, context);
                 TryFinishTurn();
                 if (State != GameState.Finished)
                 {
@@ -829,7 +829,7 @@ namespace AxeSoftware.Quest
                 Context context = m_waitCallbackContext;
                 m_waitCallback = null;
                 m_waitCallbackContext = null;
-                script.Execute(context);
+                RunScript(script, context);
                 TryFinishTurn();
                 if (State != GameState.Finished)
                 {
@@ -948,6 +948,18 @@ namespace AxeSoftware.Quest
                 Print("Error running script: " + ex.Message);
             }
             return null;
+        }
+
+        private void RunScript(IScript script, Context c)
+        {
+            try
+            {
+                script.Execute(c);
+            }
+            catch (Exception ex)
+            {
+                Print("Error running script: " + ex.Message);
+            }
         }
 
         public Element AddProcedure(string name)
@@ -1390,7 +1402,7 @@ namespace AxeSoftware.Quest
                 Context context = m_questionCallbackContext;
                 m_questionCallback = null;
                 m_questionCallbackContext = null;
-                script.Execute(context);
+                RunScript(script, context);
                 TryFinishTurn();
                 if (State != GameState.Finished)
                 {
