@@ -16,6 +16,7 @@ namespace AxeSoftware.Quest.EditorControls
         void DoEditKey(string key, int index);
         void DoRemove(string[] keys);
         bool CanEditKey { get; }
+        bool CanRemove(string[] keys);
     }
 
     public interface IRearrangeableListEditorDelegate : IListEditorDelegate
@@ -257,7 +258,8 @@ namespace AxeSoftware.Quest.EditorControls
         private bool IsDeleteAllowed()
         {
             if (m_readOnly) return false;
-            return lstList.SelectedItems.Count > 0;
+            if (lstList.SelectedItems.Count == 0) return false;
+            return m_delegate.CanRemove(GetSelectedItems().ToArray());
         }
 
         private bool IsMoveUpEnabled()

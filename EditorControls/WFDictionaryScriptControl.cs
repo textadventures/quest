@@ -217,5 +217,10 @@ namespace AxeSoftware.Quest.EditorControls
         {
             get { return true; }
         }
+
+        public bool CanRemove(string[] keys)
+        {
+            return true;
+        }
     }
 }
