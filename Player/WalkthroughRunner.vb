@@ -115,4 +115,10 @@
     Private Sub WriteLine(text As String)
         RaiseEvent Output(text)
     End Sub
+
+    Public ReadOnly Property Steps As Integer
+        Get
+            Return m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps.Count
+        End Get
+    End Property
 End Class
