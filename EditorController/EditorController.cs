@@ -25,7 +25,8 @@ namespace AxeSoftware.Quest
         CircularTypeReference,
         InvalidElementNameMultipleSpaces,
         InvalidElementNameInvalidWord,
-        CannotRenamePlayerElement
+        CannotRenamePlayerElement,
+        InvalidElementNameStartsWithNumber
     }
 
     public struct ValidationResult
@@ -1443,6 +1444,7 @@ namespace AxeSoftware.Quest
         }
 
         private System.Text.RegularExpressions.Regex s_validNameRegex = new System.Text.RegularExpressions.Regex(@"^[\w ]+$");
+        private System.Text.RegularExpressions.Regex s_startsWithNumberRegex = new System.Text.RegularExpressions.Regex(@"^\d");
 
         private ValidationResult ValidateElementName(string name)
         {
@@ -1454,6 +1456,11 @@ namespace AxeSoftware.Quest
             if (name.StartsWith(" ") || name.EndsWith(" ") || name.Contains("  "))
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidElementNameMultipleSpaces };
+            }
+
+            if (s_startsWithNumberRegex.IsMatch(name))
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.InvalidElementNameStartsWithNumber };
             }
 
             string[] words = name.Split(' ');
