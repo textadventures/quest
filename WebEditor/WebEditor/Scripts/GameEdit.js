@@ -52,12 +52,16 @@
     $("#dialog-error").data("dialog_close", function () { });
 }
 
-function showDialog(prompt, defaultText, ok, list, listPrompt) {
+function showDialog(prompt, defaultText, ok, list, listPrompt, autoCompleteList) {
+    if (typeof list == "undefined") list = null;
+    if (typeof listPrompt == "undefined") listPrompt = null;
+    if (typeof autoCompleteList == "undefined") autoCompleteList = null;
+
     $("#dialog-input-text-entry").val(defaultText);
     $("#dialog-input-text-prompt").html(prompt + ":");
     var showList = false;
     var parent = "";
-    if (typeof list != "undefined") {
+    if (list != null) {
         showList = (list.length > 1);
         if (list.length == 1) {
             parent = list[0];
@@ -74,9 +78,19 @@ function showDialog(prompt, defaultText, ok, list, listPrompt) {
     else {
         $("#dialog-input-text-list").hide();
     }
+    var showAutoComplete = false;
+    if (autoCompleteList != null) {
+        showAutoComplete = true;
+        $("#dialog-input-text-entry").autocomplete({
+            source: autoCompleteList
+        });
+    }
     $("#dialog-input-text").data("dialog_ok", function () {
         if (showList) {
             parent = $("#dialog-input-text-options option:selected").text();
+        }
+        if (showAutoComplete) {
+            $("#dialog-input-text-entry").autocomplete("destroy");
         }
         ok($("#dialog-input-text-entry").val(), parent);
     });
@@ -534,6 +548,11 @@ function initialiseElementEditor(tab) {
     $(".verbs-add").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
+        var key = $(this).attr("data-key");
+        var availableVerbs = $("#_availableVerbs").val().split("~");
+        showDialog("Please enter a name for the new verb", "", function (text) {
+            sendAdditionalAction("verbs add " + key + ";" + text);
+        }, null, null, availableVerbs);
     });
     $(".verbs-delete").button({
         icons: { primary: "ui-icon-trash" }

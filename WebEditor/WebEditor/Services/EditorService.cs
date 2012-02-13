@@ -244,7 +244,8 @@ namespace WebEditor.Services
                 PopupError = popupError,
                 NewObjectPossibleParents = (newObjectPossibleParents == null) ? null : string.Join(";", newObjectPossibleParents),
                 EnabledButtons = GetEnabledButtons(key),
-                PageTitle = "Editor - " + m_controller.GameName
+                PageTitle = "Editor - " + m_controller.GameName,
+                AvailableVerbs = string.Join("~", m_controller.GetVerbProperties().Values)
             };
         }
 
@@ -958,12 +959,66 @@ namespace WebEditor.Services
 
         private void ProcessVerbsAction(string key, string cmd, string parameter)
         {
+            string[] data;
             switch (cmd)
             {
+                case "add":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    VerbsAdd(key, data[0], data[1]);
+                    break;
                 case "delete":
                     VerbsDelete(key, parameter.Split(';'));
                     break;
             }
+        }
+
+        private void VerbsAdd(string element, string editorId, string verbPattern)
+        {
+            IEditorControl ctl = FindEditorControl(element, editorId);
+            IEditorDataExtendedAttributeInfo data = (IEditorDataExtendedAttributeInfo)m_controller.GetEditorData(element);
+            string verbAttribute = m_controller.GetVerbAttributeForPattern(verbPattern);
+
+            if (data.GetAttribute(verbAttribute) != null)
+            {
+                m_popupError = "Verb already exists";
+                return;
+            }
+
+            if (!Controller.IsVerbAttribute(verbAttribute))
+            {
+                AxeSoftware.Quest.EditorController.CanAddVerbResult canAddResult = Controller.CanAddVerb(verbPattern);
+                if (!canAddResult.CanAdd)
+                {
+                    IDictionary<string, string> clashMessages = ctl.GetDictionary("clashmessages");
+                    string clashMessage = "Verb would clash with command: " + canAddResult.ClashingCommandDisplay;
+                    if (clashMessages.ContainsKey(canAddResult.ClashingCommand))
+                    {
+                        clashMessage += "<br /><br />" + clashMessages[canAddResult.ClashingCommand];
+                    }
+                    m_popupError = clashMessage;
+                    return;
+                }
+            }
+
+            Controller.StartTransaction(string.Format("Add '{0}' verb", verbPattern));
+
+            if (!Controller.IsVerbAttribute(verbAttribute))
+            {
+                string newVerbId = Controller.CreateNewVerb(null, false);
+                IEditorData verbData = Controller.GetEditorData(newVerbId);
+                verbData.SetAttribute("property", verbAttribute);
+                EditableCommandPattern pattern = (EditableCommandPattern)verbData.GetAttribute("pattern");
+                pattern.Pattern = verbPattern;
+                string defaultExpression = ctl.GetString("defaultexpression");
+                verbData.SetAttribute("defaultexpression", defaultExpression.Replace("#verb#", verbPattern));
+            }
+
+            ValidationResult setAttrResult = data.SetAttribute(verbAttribute, String.Empty);
+            if (!setAttrResult.Valid)
+            {
+                m_popupError = GetValidationError(setAttrResult, verbAttribute);
+            }
+            Controller.EndTransaction();
         }
 
         private void VerbsDelete(string element, string[] verbs)

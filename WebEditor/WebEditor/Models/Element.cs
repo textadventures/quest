@@ -24,6 +24,7 @@ namespace WebEditor.Models
         public string EnabledButtons { get; set; }
         public string PageTitle { get; set; }
         public string Reload { get; set; }
+        public string AvailableVerbs { get; set; }
     }
 
     public class IgnoredValue
