@@ -4056,13 +4056,13 @@
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
 		<row><td>NewShortcut1_551763055A9D49AE8E08E9D6221C46CC.exe</td><td/><td>C:\VBProjects\Quest (CodePlex)\Quest\q2_48x48c.ico</td><td>0</td></row>
-		<row><td>_0A1AAAA3_0CA3_404F_910C_9154E597BD09</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_199C5D61_F698_4097_9C7D_F69DC4F18F37</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_5A81DCDB_21FE_4146_B440_D321A2335D22</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_6113C5EC_4422_4D3F_9820_94420BE89063</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_652A03BB_EA6F_4B17_A009_80EEBA4ADDC8</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_6CA88A13_4152_4B67_AE17_FB9BA99E02E3</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
-		<row><td>_80B27429_02EA_4B6B_ADAB_F2209DEBD1E3</td><td/><td>D:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_0A1AAAA3_0CA3_404F_910C_9154E597BD09</td><td/><td>E:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_199C5D61_F698_4097_9C7D_F69DC4F18F37</td><td/><td>E:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_5A81DCDB_21FE_4146_B440_D321A2335D22</td><td/><td>E:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_6113C5EC_4422_4D3F_9820_94420BE89063</td><td/><td>E:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_652A03BB_EA6F_4B17_A009_80EEBA4ADDC8</td><td/><td>E:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_6CA88A13_4152_4B67_AE17_FB9BA99E02E3</td><td/><td>E:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
+		<row><td>_80B27429_02EA_4B6B_ADAB_F2209DEBD1E3</td><td/><td>E:\Dropbox\Documents\VS2010ImageLibrary\Objects\ico_format\Office and VS\UtilityText.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4578,7 +4578,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{4290135C-A58A-468B-99EC-AFFABC8E0A09}</td><td/></row>
+		<row><td>ProductCode</td><td>{C68304A2-6F31-4694-9E35-D69510C7A31A}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
 		<row><td>ProductVersion</td><td>5.10.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
