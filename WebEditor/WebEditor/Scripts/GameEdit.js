@@ -50,6 +50,20 @@
         }
     });
     $("#dialog-error").data("dialog_close", function () { });
+    $("#dialog-settings").dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        width: 400,
+        buttons: {
+            "OK": function () {
+                $("#settings-form").submit();
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
 }
 
 function showDialog(prompt, defaultText, ok, list, listPrompt, autoCompleteList) {
@@ -98,6 +112,11 @@ function showDialog(prompt, defaultText, ok, list, listPrompt, autoCompleteList)
 }
 
 function initialiseButtons() {
+    $("#button-settings").button({
+        icons: { primary: "ui-icon-gear" }
+    }).click(function () {
+        $("#dialog-settings").dialog("open");
+    });
     $("#button-addroom").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {

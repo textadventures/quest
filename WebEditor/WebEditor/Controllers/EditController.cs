@@ -18,6 +18,7 @@ namespace WebEditor.Controllers
             Models.Editor model = new Models.Editor();
             model.GameId = id;
             ViewBag.Title = "Editor";
+            model.SimpleMode = GetSettingBool("simplemode", false);
             return View(model);
         }
 
@@ -118,6 +119,40 @@ namespace WebEditor.Controllers
         public JsonResult RefreshTree(int id)
         {
             return Json(EditorDictionary[id].GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public RedirectToRouteResult SaveSettings(Models.Editor settings)
+        {
+            SaveSettingBool("simplemode", settings.SimpleMode);
+            return RedirectToAction("Game", new { id = settings.GameId });
+        }
+
+        private void SaveSetting(string name, string value)
+        {
+            HttpCookie cookie = new HttpCookie("simplemode", value);
+            cookie.Expires = DateTime.Now + new TimeSpan(30, 0, 0, 0);
+            Response.Cookies.Add(cookie);
+        }
+
+        private string GetSetting(string name)
+        {
+            HttpCookie cookie = Request.Cookies.Get(name);
+            if (cookie == null) return string.Empty;
+            return cookie.Value;
+        }
+
+        private void SaveSettingBool(string name, bool value)
+        {
+            SaveSetting(name, value ? "1" : "0");
+        }
+
+        private bool GetSettingBool(string name, bool defaultValue)
+        {
+            string result = GetSetting(name);
+            if (result == "1") return true;
+            if (result == "0") return false;
+            return defaultValue;
         }
     }
 }

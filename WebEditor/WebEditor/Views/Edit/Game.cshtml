@@ -90,6 +90,9 @@
 </script>
 
 <div class="ui-layout-north">
+    <div style="float: right">
+        <button type="button" id="button-settings">Settings</button>
+    </div>
     <span id="buttonset-add">
         <button type="button" id="button-addroom">Room</button>
         <button type="button" id="button-addobject">Object</button>
@@ -138,4 +141,13 @@
 
 <div id="dialog-error" title="Error">
     <p id="dialog-error-message"></p>
+</div>
+
+<div id="dialog-settings" title="Settings">
+    @using (Html.BeginForm("SaveSettings", "Edit", FormMethod.Post, new { id = "settings-form" }))
+    {
+        @Html.HiddenFor(m => m.GameId)
+        @Html.CheckBoxFor(m => m.SimpleMode)
+        @Html.LabelFor(m => m.SimpleMode, "Simple mode")
+    }
 </div>

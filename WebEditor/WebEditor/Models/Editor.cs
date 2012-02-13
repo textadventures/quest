@@ -8,5 +8,6 @@ namespace WebEditor.Models
     public class Editor
     {
         public int GameId { get; set; }
+        public bool SimpleMode { get; set; }
     }
 }
