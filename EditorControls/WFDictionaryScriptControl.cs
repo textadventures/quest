@@ -67,10 +67,5 @@ namespace AxeSoftware.Quest.EditorControls
                 RequestParentElementEditorSave();
             }
         }
-
-        public bool CanRemove(string[] keys)
-        {
-            return true;
-        }
     }
 }
