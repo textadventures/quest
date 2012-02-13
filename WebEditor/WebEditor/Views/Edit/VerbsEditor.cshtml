@@ -27,7 +27,7 @@
 
         <div>
             @Html.CheckBox("verbs-select-" + attr.AttributeName, new { @class = "verbs-select" })
-            @attr.AttributeName
+            @Model.Controller.GetDisplayVerbPatternForAttribute(attr.AttributeName)
             @Html.DropDownList("verbs-type-" + attr.AttributeName, typesList, new { @class = "multi-dropdown", data_key = attr.AttributeName })
             <br />
             @if (scriptValue != null)
