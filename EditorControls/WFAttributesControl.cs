@@ -348,6 +348,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (m_readOnly) return false;
             if (string.IsNullOrEmpty(attribute)) return false;
+            if (attribute == "name" || attribute == "type" || attribute == "elementtype") return false;
             return !m_data.GetAttributeData(attribute).IsInherited;
         }
 

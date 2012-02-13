@@ -188,10 +188,12 @@
     else {
       prefix = GetDefaultPrefix(obj)
     }
-    if (LengthOf(prefix)>0) prefix = prefix + " "
+    if (LengthOf(prefix) > 0) prefix = prefix + " "
     result = prefix + result
     if (not GetBoolean(obj, "usedefaultprefix") and HasString(obj, "suffix")) {
-      result = result + " " + obj.suffix
+      if (LengthOf(obj.suffix) > 0) {
+        result = result + " " + obj.suffix
+      }
     }
     return (result)
   ]]>

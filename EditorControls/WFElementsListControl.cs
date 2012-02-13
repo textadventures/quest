@@ -184,6 +184,11 @@ namespace AxeSoftware.Quest.EditorControls
         {
         }
 
+        public bool CanRemove(string[] keys)
+        {
+            return keys.All(k => m_controller.CanDelete(k));
+        }
+
         public void DoAction(string action, string key)
         {
         }

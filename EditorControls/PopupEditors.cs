@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest.EditorControls
             {ValidationMessage.InvalidElementNameMultipleSpaces, "Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces."},
             {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
             {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
+            {ValidationMessage.InvalidElementNameStartsWithNumber, "Invalid element name. An element name cannot start with a number."}
         };
 
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null, bool allowEmptyString = false)
@@ -85,11 +86,15 @@ namespace AxeSoftware.Quest.EditorControls
             popOut.ctlScriptEditor.HidePopOutButton();
             popOut.ctlScriptEditor.Helper.DoInitialise(controller, null);
             popOut.ctlScriptEditor.Populate(scripts);
-            popOut.ctlScriptEditor.Helper.Dirty += (object sender, DataModifiedEventArgs e) => dirtyAction.Invoke();
+            System.EventHandler<DataModifiedEventArgs> dirtyEventHandler = (object sender, DataModifiedEventArgs e) => dirtyAction.Invoke();
+            popOut.ctlScriptEditor.Helper.Dirty += dirtyEventHandler;
 
             popOut.ShowDialog();
             scripts = popOut.ctlScriptEditor.Scripts;
             popOut.ctlScriptEditor.Save();
+            popOut.ctlScriptEditor.Populate((IEditableScripts)null);
+            popOut.ctlScriptEditor.Helper.DoUninitialise();
+            popOut.ctlScriptEditor.Helper.Dirty -= dirtyEventHandler;
         }
 
     }

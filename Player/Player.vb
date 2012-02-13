@@ -409,12 +409,15 @@ Public Class Player
     End Sub
 
     Public Sub RunWalkthrough(name As String)
-        InitWalthrough(name)
+        InitWalkthrough(name)
         StartWalkthrough()
     End Sub
 
-    Public Sub InitWalthrough(name As String)
+    Public Sub InitWalkthrough(name As String)
         m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, name)
+        If m_walkthroughRunner.Steps = 0 Then
+            m_walkthroughRunner = Nothing
+        End If
     End Sub
 
     Public Sub StartWalkthrough()
@@ -423,6 +426,8 @@ Public Class Player
     End Sub
 
     Private Sub WalkthroughRunner()
+        If m_walkthroughRunner Is Nothing Then Exit Sub
+
         Try
             m_walkthroughRunner.Run()
 

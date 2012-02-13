@@ -37,6 +37,12 @@
       </control>
 
       <control>
+        <caption>Suffix</caption>
+        <controltype>textbox</controltype>
+        <attribute>suffix</attribute>
+      </control>
+
+      <control>
         <controltype>label</controltype>
         <caption>To unlock this exit during the game using a script, you must give it a name below.</caption>
         <onlydisplayif>this.anonymous and this.locked</onlydisplayif>

@@ -54,8 +54,13 @@ Friend Class RecentItems
                     If String.IsNullOrEmpty(name) Then name = "(unknown)"
                     m_recent.Add(New GameListItemData(filename, name))
                 Else
-                    key.DeleteValue(value)
-                    key.DeleteValue("Name" + value.Substring(6))
+                    Try
+                        key.DeleteValue(value)
+                        key.DeleteValue("Name" + value.Substring(6))
+                    Catch
+                        ' Ignore any failure in deleting items from the registry. Not sure how this could
+                        ' possibly happen but I can see from the error reports it has occurred a few times!
+                    End Try
                 End If
             End If
         Next

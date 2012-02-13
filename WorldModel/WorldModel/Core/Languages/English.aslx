@@ -98,8 +98,11 @@
   <template name="CompassIn">in</template>
   <template name="CompassOut">out</template>
   <template name="CompassDirectionPrefix"></template>
+  <template name="CompassDirectionSuffix"></template>
   <template name="UpDownDirectionPrefix"></template>
+  <template name="UpDownDirectionSuffix"></template>
   <template name="InOutDirectionPrefix"></template>
+  <template name="InOutDirectionSuffix"></template>
   <template name="CompassNWShort">nw</template>
   <template name="CompassNShort">n</template>
   <template name="CompassNEShort">ne</template>
