@@ -538,12 +538,21 @@ function initialiseElementEditor(tab) {
     $(".verbs-delete").button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
-        var key = $(this).attr("data-key");
         var selected = getSelectedVerbs();
         if (selected.length > 0) {
             sendAdditionalAction("verbs delete " + selected);
         }
     });
+    $(".verbs-select").click(function () {
+        var selected = getSelectedVerbs();
+        if (selected.length > 0) {
+            $(".verbs-delete").button("enable");
+        }
+        else {
+            $(".verbs-delete").button("disable");
+        }
+    });
+    $(".verbs-delete").button("disable");
 
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);
