@@ -115,7 +115,7 @@ function initialiseButtons() {
     $("#button-settings").button({
         icons: { primary: "ui-icon-gear" }
     }).click(function () {
-        $("#dialog-settings").dialog("open");
+        sendAdditionalAction("main settings");
     });
     $("#button-addroom").button({
         icons: { primary: "ui-icon-plusthick" }
@@ -605,6 +605,16 @@ function initialiseElementEditor(tab) {
         }
         $("#dialog-error-message").html(popupError);
         $("#dialog-error").dialog("open");
+    }
+
+    var uiAction = $("#_uiAction").val();
+    if (uiAction.length > 0) {
+        var data = uiAction.split(" ");
+        switch (data[0]) {
+            case "settings":
+                $("#dialog-settings").dialog("open");
+                break;
+        }
     }
 }
 

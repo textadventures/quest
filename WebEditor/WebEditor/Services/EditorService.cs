@@ -32,6 +32,7 @@ namespace WebEditor.Services
         private bool m_canRedo = false;
         private bool m_createInverse = true;
         private bool m_needsSaving = false;
+        private string m_uiAction = null;
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
@@ -220,10 +221,14 @@ namespace WebEditor.Services
             }
 
             string popupError = null;
+            string uiAction = null;
             if (refreshTreeSelectElement == null)
             {
                 popupError = m_popupError;
                 m_popupError = null;
+
+                uiAction = m_uiAction;
+                m_uiAction = null;
             }
 
             IEnumerable<string> newObjectPossibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(key);
@@ -245,7 +250,8 @@ namespace WebEditor.Services
                 NewObjectPossibleParents = (newObjectPossibleParents == null) ? null : string.Join(";", newObjectPossibleParents),
                 EnabledButtons = GetEnabledButtons(key),
                 PageTitle = "Editor - " + m_controller.GameName,
-                AvailableVerbs = string.Join("~", m_controller.GetVerbProperties().Values)
+                AvailableVerbs = string.Join("~", m_controller.GetVerbProperties().Values),
+                UIAction = uiAction
             };
         }
 
@@ -909,6 +915,9 @@ namespace WebEditor.Services
                     {
                         m_controller.PasteElements(key);
                     }
+                    break;
+                case "settings":
+                    m_uiAction = "settings";
                     break;
             }
             return null;
