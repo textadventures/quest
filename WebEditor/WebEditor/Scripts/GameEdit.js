@@ -163,6 +163,8 @@ function initialiseButtons() {
     $("#button-play").button({
         icons: { primary: "ui-icon-play" }
     }).click(function () {
+        var url = $(this).attr("data-url");
+        window.open(url, "WebEditorPlay");
         toplevelAdditionalAction("main play");
     });
 }

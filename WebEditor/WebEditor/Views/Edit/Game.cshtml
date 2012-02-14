@@ -31,6 +31,7 @@
             }
         });
         setInterval(keepSessionAlive, 60000);
+        $("#button-play").attr("data-url", "@Model.PlayURL");
     });
 
     function keepSessionAlive() {

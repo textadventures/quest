@@ -20,6 +20,7 @@ namespace WebEditor.Controllers
             ViewBag.Title = "Editor";
             model.SimpleMode = GetSettingBool("simplemode", false);
             model.ErrorRedirect = ConfigurationManager.AppSettings["WebsiteHome"] ?? "http://www.textadventures.co.uk/";
+            model.PlayURL = ConfigurationManager.AppSettings["PlayURL"] + "?id=" + id.ToString();
             return View(model);
         }
 
