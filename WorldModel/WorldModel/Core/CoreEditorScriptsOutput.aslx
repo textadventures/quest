@@ -26,6 +26,7 @@
     <category>Output</category>
     <create>picture ("")</create>
     <add>Show a picture</add>
+    <desktop/>
 
     <control>
       <controltype>label</controltype>
@@ -49,6 +50,7 @@
     <create>SetFramePicture ("")</create>
     <add>Set frame picture</add>
     <advanced/>
+    <desktop/>
 
     <control>
       <controltype>label</controltype>
@@ -72,6 +74,7 @@
     <create>ClearFramePicture</create>
     <add>Clear frame picture</add>
     <advanced/>
+    <desktop/>
 
     <control>
       <controltype>label</controltype>
@@ -206,6 +209,7 @@
     <category>Output</category>
     <create>play sound ("", false, false)</create>
     <add>Play a sound</add>
+    <desktop/>
 
     <control>
       <controltype>label</controltype>
@@ -494,6 +498,7 @@
     <create>insert ("")</create>
     <add>Insert HTML from a file</add>
     <advanced/>
+    <desktop/>
 
     <control>
       <controltype>label</controltype>

@@ -15,6 +15,7 @@ namespace AxeSoftware.Quest
             CreateString = editor.Fields.GetString("create");
             AdderDisplayString = editor.Fields.GetString("add");
             IsVisibleInSimpleMode = !editor.Fields.GetAsType<bool>("advanced");
+            IsDesktopOnly = editor.Fields.GetAsType<bool>("desktop");
         }
 
         public string DisplayString { get; private set; }
@@ -22,6 +23,7 @@ namespace AxeSoftware.Quest
         public string CreateString { get; private set; }
         public string AdderDisplayString { get; private set; }
         public bool IsVisibleInSimpleMode { get; private set; }
+        public bool IsDesktopOnly { get; private set; }
     }
 
     internal class EditableScriptFactory
