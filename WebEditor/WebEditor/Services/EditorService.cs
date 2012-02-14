@@ -1653,6 +1653,7 @@ namespace WebEditor.Services
 
             foreach (EditableScriptData data in m_controller.GetScriptEditorData().Values)
             {
+                if (m_controller.SimpleMode && !data.IsVisibleInSimpleMode) continue;
                 categories[data.Category].items.Add(new ScriptAdderItem
                 {
                     display = data.AdderDisplayString,
