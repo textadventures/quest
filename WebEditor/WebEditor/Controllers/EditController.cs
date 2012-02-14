@@ -19,6 +19,7 @@ namespace WebEditor.Controllers
             model.GameId = id;
             ViewBag.Title = "Editor";
             model.SimpleMode = GetSettingBool("simplemode", false);
+            model.ErrorRedirect = ConfigurationManager.AppSettings["WebsiteHome"] ?? "http://www.textadventures.co.uk/";
             return View(model);
         }
 
@@ -27,7 +28,12 @@ namespace WebEditor.Controllers
             Services.EditorService editor = new Services.EditorService();
             EditorDictionary[id] = editor;
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
-            editor.Initialise(id, libFolder, simpleMode);
+            string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
+            if (filename == null)
+            {
+                return Json(new { error = "Invalid ID" }, JsonRequestBehavior.AllowGet);
+            }
+            editor.Initialise(id, filename, libFolder, simpleMode);
             return Json(editor.GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
         }
 

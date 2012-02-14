@@ -19,7 +19,16 @@
         });
         initialiseDialogBoxes();
         $.get('@Url.Action("Load", new { id = Model.GameId, simpleMode = Model.SimpleMode })', function (data) {
-            initialiseTree(data, "game");
+            if (data["error"]) {
+                $("#dialog-error-message").html("<b>Failed to load game</b><br/><br/>" + data["error"]);
+                $("#dialog-error").dialog("open");
+                $("#dialog-error").data("dialog_close", function () {
+                    window.location = "@Model.ErrorRedirect";
+                });
+            }
+            else {
+                initialiseTree(data, "game");
+            }
         });
     });
 

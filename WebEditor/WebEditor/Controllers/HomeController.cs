@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Configuration;
 
 namespace WebEditor.Controllers
 {
@@ -13,8 +14,7 @@ namespace WebEditor.Controllers
 
         public ActionResult Index()
         {
-            // TO DO: This should be set in config
-            return new RedirectResult("http://www.textadventures.co.uk/");
+            return new RedirectResult(ConfigurationManager.AppSettings["WebsiteHome"] ?? "http://www.textadventures.co.uk/");
         }
     }
 }

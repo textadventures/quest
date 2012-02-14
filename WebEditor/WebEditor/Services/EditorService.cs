@@ -58,9 +58,8 @@ namespace WebEditor.Services
             m_controller.EditorMode = EditorMode.Web;
         }
 
-        public void Initialise(int id, string libFolder, bool simpleMode)
+        public void Initialise(int id, string filename, string libFolder, bool simpleMode)
         {
-            string filename = FileManagerLoader.GetFileManager().GetFile(id);
             m_id = id;
             m_controller.SimpleMode = simpleMode;
             if (m_controller.Initialise(filename, libFolder))
