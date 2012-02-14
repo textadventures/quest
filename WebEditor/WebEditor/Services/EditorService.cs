@@ -55,6 +55,7 @@ namespace WebEditor.Services
         public EditorService()
         {
             m_controller = new EditorController();
+            m_controller.EditorMode = EditorMode.Web;
         }
 
         public void Initialise(int id, string libFolder, bool simpleMode)
@@ -82,6 +83,7 @@ namespace WebEditor.Services
         void m_controller_AddedNode(string key, string text, string parent, bool isLibraryNode, int? position)
         {
             if (m_elements.ContainsKey(key)) return;
+            if (parent != null && !m_elements.ContainsKey(parent)) return;
             m_elements.Add(key, new TreeItem
             {
                 Key = key,
@@ -110,6 +112,7 @@ namespace WebEditor.Services
 
         void m_controller_RetitledNode(string key, string newTitle)
         {
+            if (!m_elements.ContainsKey(key)) return;
             m_elements[key].Text = newTitle;
             m_mustRefreshTree = true;
         }

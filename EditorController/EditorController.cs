@@ -35,6 +35,13 @@ namespace AxeSoftware.Quest
         GameBook
     }
 
+    // TO DO: When WebEditor is fully functional, there should be no need for this
+    public enum EditorMode
+    {
+        Desktop,
+        Web
+    }
+
     public struct ValidationResult
     {
         public bool Valid;
@@ -76,6 +83,17 @@ namespace AxeSoftware.Quest
             ElementType.Walkthrough
         };
 
+        // TO DO: When WebEditor is fully functional, there should be no need for this
+        private List<ElementType> m_webEditorIgnoreTypes = new List<ElementType>
+        {
+            ElementType.DynamicTemplate,
+            ElementType.IncludedLibrary,
+            ElementType.Javascript,
+            ElementType.ObjectType,
+            ElementType.Template,
+            ElementType.Walkthrough
+        };
+
         private WorldModel m_worldModel;
         private ScriptFactory m_scriptFactory;
         private AvailableFilters m_availableFilters;
@@ -93,6 +111,7 @@ namespace AxeSoftware.Quest
         private List<IScript> m_clipboardScripts;
         private bool m_simpleMode;
         private EditorStyle m_editorStyle = EditorStyle.TextAdventure;
+        private EditorMode m_editorMode = EditorMode.Desktop;
 
         public delegate void VoidHandler();
         public event VoidHandler ClearTree;
@@ -452,19 +471,22 @@ namespace AxeSoftware.Quest
                 AddTreeHeader(ElementType.Object, "_objects", "Objects", null, false);
                 AddTreeHeader(ElementType.Function, "_functions", "Functions", null, false);
                 AddTreeHeader(ElementType.Timer, "_timers", "Timers", null, false);
-                AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
-                AddTreeHeader(null, "_advanced", "Advanced", null, false);
-                AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
-                // Ignore Implied Types - there's no reason for game authors to edit them
-                //AddTreeHeader(ElementType.ImpliedType, "_implied", "Implied Types", "_advanced");
-                AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced", false);
-                AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced", false);
-                // Ignore Delegate elements - there's no reason for game authors to edit them (I think)
-                //AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
-                AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced", false);
-                // Ignore Editor elements - there's no reason for game authors to edit them
-                //AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
-                AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
+                if (m_editorMode == EditorMode.Desktop)
+                {
+                    AddTreeHeader(ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
+                    AddTreeHeader(null, "_advanced", "Advanced", null, false);
+                    AddTreeHeader(ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
+                    // Ignore Implied Types - there's no reason for game authors to edit them
+                    //AddTreeHeader(ElementType.ImpliedType, "_implied", "Implied Types", "_advanced");
+                    AddTreeHeader(ElementType.Template, "_template", "Templates", "_advanced", false);
+                    AddTreeHeader(ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced", false);
+                    // Ignore Delegate elements - there's no reason for game authors to edit them (I think)
+                    //AddTreeHeader(ElementType.Delegate, "_delegate", "Delegates", "_advanced");
+                    AddTreeHeader(ElementType.ObjectType, "_objecttype", "Object Types", "_advanced", false);
+                    // Ignore Editor elements - there's no reason for game authors to edit them
+                    //AddTreeHeader(ElementType.Editor, "_editor", "Editors", "_advanced");
+                    AddTreeHeader(ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
+                }
             }
         }
 
@@ -523,7 +545,12 @@ namespace AxeSoftware.Quest
 
                 if (o.Name == "game" && !SimpleMode && m_editorStyle == EditorStyle.TextAdventure)
                 {
-                    AddedNode(k_verbs, "Verbs", "game", false, null);
+                    if (m_editorMode == EditorMode.Desktop)
+                    {
+                        // TO DO: When WebEditor is fully functional, there should be no need for this
+                        AddedNode(k_verbs, "Verbs", "game", false, null);
+                        
+                    }
                     AddedNode(k_commands, "Commands", "game", false, null);
                 }
             }
@@ -539,6 +566,17 @@ namespace AxeSoftware.Quest
             // Don't display implied types, editor elements etc.
             if (m_ignoredTypes.Contains(e.ElemType)) return false;
             if (SimpleMode && m_advancedTypes.Contains(e.ElemType)) return false;
+
+            // TO DO: When WebEditor is fully functional, there should be no need for this
+            if (m_editorMode == EditorMode.Web)
+            {
+                if (m_webEditorIgnoreTypes.Contains(e.ElemType)) return false;
+                if (e.ElemType == ElementType.Object && e.Type == ObjectType.Command && e.Fields[FieldDefinitions.IsVerb])
+                {
+                    return false;
+                }
+            }
+
             if (SimpleMode)
             {
                 if (e.ElemType == ElementType.Object && e.Type == ObjectType.Command)
@@ -2126,6 +2164,12 @@ namespace AxeSoftware.Quest
             }
 
             return selectedAttribute;
+        }
+
+        public EditorMode EditorMode
+        {
+            get { return m_editorMode; }
+            set { m_editorMode = value; }
         }
     }
 }
