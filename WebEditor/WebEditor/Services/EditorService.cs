@@ -57,10 +57,11 @@ namespace WebEditor.Services
             m_controller = new EditorController();
         }
 
-        public void Initialise(int id, string libFolder)
+        public void Initialise(int id, string libFolder, bool simpleMode)
         {
             string filename = FileManagerLoader.GetFileManager().GetFile(id);
             m_id = id;
+            m_controller.SimpleMode = simpleMode;
             if (m_controller.Initialise(filename, libFolder))
             {
                 m_controller.ClearTree += m_controller_ClearTree;

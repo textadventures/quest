@@ -58,6 +58,10 @@
                         {
                             continue;
                         }
+                        if (Model.Controller.SimpleMode && !def.IsTabVisibleInSimpleMode)
+                        {
+                            continue;
+                        }
                         count++;
                         string id = "#elementEditorTab" + count;
                         <li><a href="@id">@def.Caption</a></li>
@@ -69,6 +73,10 @@
                 @foreach (IEditorTab def in Model.EditorDefinition.Tabs.Values)
                 {
                     if (!def.IsTabVisible(Model.EditorData) || def.GetBool("desktop"))
+                    {
+                        continue;
+                    }
+                    if (Model.Controller.SimpleMode && !def.IsTabVisibleInSimpleMode)
                     {
                         continue;
                     }
@@ -85,11 +93,11 @@
                             </colgroup>
                             @foreach (IEditorControl ctl in def.Controls)
                             {
-                                if (!ctl.IsControlVisible(Model.EditorData))
+                                if (!ctl.IsControlVisible(Model.EditorData) || ctl.GetBool("desktop"))
                                 {
                                     continue;
                                 }
-                                if (ctl.GetBool("desktop"))
+                                if (Model.Controller.SimpleMode && !ctl.IsControlVisibleInSimpleMode)
                                 {
                                     continue;
                                 }

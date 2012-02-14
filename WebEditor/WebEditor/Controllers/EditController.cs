@@ -22,12 +22,12 @@ namespace WebEditor.Controllers
             return View(model);
         }
 
-        public JsonResult Load(int id)
+        public JsonResult Load(int id, bool simpleMode)
         {
             Services.EditorService editor = new Services.EditorService();
             EditorDictionary[id] = editor;
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
-            editor.Initialise(id, libFolder);
+            editor.Initialise(id, libFolder, simpleMode);
             return Json(editor.GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
         }
 

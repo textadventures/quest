@@ -102,9 +102,13 @@ namespace WebEditor.Models
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
             {
                 if (!tab.IsTabVisible(originalElement.EditorData)) continue;
+                if (tab.GetBool("desktop")) continue;
+                if (editorDictionary[gameId].Controller.SimpleMode && !tab.IsTabVisibleInSimpleMode) continue;
                 foreach (IEditorControl ctl in tab.Controls)
                 {
                     if (!ctl.IsControlVisible(originalElement.EditorData)) continue;
+                    if (ctl.GetBool("desktop")) continue;
+                    if (editorDictionary[gameId].Controller.SimpleMode && !ctl.IsControlVisibleInSimpleMode) continue;
                     BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, ctl.ControlType);
                 }
             }
