@@ -57,7 +57,7 @@
       <HintPath>..\packages\51Degrees.mobi.2.0.2.3\lib\NET40\FiftyOne.Foundation.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>.\log4net.dll</HintPath>
+      <HintPath>..\Dependencies\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />

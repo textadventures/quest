@@ -31,10 +31,23 @@ namespace WebEditor
 
         protected void Application_Start()
         {
+            Logging.Log.Info("Application Start");
             AreaRegistration.RegisterAllAreas();
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+        }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            if (Request.Url.AbsolutePath.Contains("favicon.ico")) return;
+            Exception error = Server.GetLastError().GetBaseException();
+            Logging.Log.ErrorFormat("Error in {0}: {1}\n{2}", Request.Url, error.Message, error.StackTrace);
+        }
+
+        protected void Application_End(object sender, EventArgs e)
+        {
+            Logging.Log.Info("Application End");
         }
     }
 }
