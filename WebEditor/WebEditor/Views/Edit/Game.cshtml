@@ -30,7 +30,12 @@
                 initialiseTree(data, "game");
             }
         });
+        setInterval(keepSessionAlive, 60000);
     });
+
+    function keepSessionAlive() {
+        $.post("/KeepAlive.ashx");
+    }
 
     function toplevelAdditionalAction(action) {
         $("#_additionalAction").val(action);

@@ -71,6 +71,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="KeepAlive.ashx.cs">
+      <DependentUpon>KeepAlive.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Logging.cs" />
     <Compile Include="Models\Editor.cs" />
     <Compile Include="Models\Element.cs" />
@@ -241,6 +244,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Edit\VerbsEditor.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="KeepAlive.ashx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
