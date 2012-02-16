@@ -25,6 +25,7 @@ namespace WebEditor.Controllers
         [HttpPost]
         public ActionResult New(Models.Create createModel)
         {
+            EditorService.PopulateCreateModelLists(createModel);
             if (ModelState.IsValid)
             {
                 // TO DO: Create game

@@ -1682,14 +1682,20 @@ namespace WebEditor.Services
 
         public static Models.Create GetCreateModel()
         {
-            Dictionary<string, TemplateData> templates = EditorController.GetAvailableTemplates(ConfigurationManager.AppSettings["TemplatesFolder"]);
-            return new Models.Create
+            Models.Create model = new Models.Create
             {
-                AllTemplates = templates.Select(t => t.Value.TemplateName),
                 SelectedTemplate = "English",
-                AllTypes = new List<string> { "Text adventure", "Gamebook" },
                 SelectedType = "Text adventure"
             };
+            PopulateCreateModelLists(model);
+            return model;
+        }
+
+        public static void PopulateCreateModelLists(Models.Create model)
+        {
+            Dictionary<string, TemplateData> templates = EditorController.GetAvailableTemplates(ConfigurationManager.AppSettings["TemplatesFolder"]);
+            model.AllTemplates = templates.Select(t => t.Value.TemplateName);
+            model.AllTypes = new List<string> { "Text adventure", "Gamebook" };
         }
     }
 }

@@ -94,6 +94,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\GameEdit.js" />
+    <Content Include="Scripts\GameNew.js" />
     <Content Include="Scripts\jquery.jstree.js" />
     <Content Include="Scripts\jquery.layout.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
