@@ -4,6 +4,6 @@
     ViewBag.Title = "Game Created";
 }
 
-<p>Game "<b>@Model.Name</b>" create successfully!</p>
+<p>Game "<b>@Model.Name</b>" created successfully!</p>
 
-<p><a href="@Url.Action("Game", "Edit", new { id = Model.Id })">Edit</a></p>
+<p><a href="@Url.Action("Game", "Edit", new { id = Model.Id })" target="_blank" style="font-size: 140%">Start editing!</a></p>
