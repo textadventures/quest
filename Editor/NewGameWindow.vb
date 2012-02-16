@@ -40,14 +40,8 @@ Public Class NewGameWindow
         txtFilename.Text = filename
     End Sub
 
-    Private Shared s_invalidChars As New List(Of Char) From
-        {"\"c, "/"c, ":"c, "*"c, "?"c, """"c, "<"c, ">"c, "|"c}
-
     Private Function GenerateFilename(gameName As String) As String
-        Dim result = gameName
-        For Each invalidChar In s_invalidChars
-            result = result.Replace(invalidChar, "")
-        Next
+        Dim result As String = EditorController.GenerateSafeFilename(gameName)
         If result.Length = 0 Then Return String.Empty
         Return System.IO.Path.Combine(result, result + ".aslx")
     End Function

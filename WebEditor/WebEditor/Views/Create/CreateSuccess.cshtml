@@ -1,0 +1,9 @@
+﻿@model WebEditor.Models.CreateSuccess
+
+@{
+    ViewBag.Title = "Game Created";
+}
+
+<p>Game "<b>@Model.Name</b>" create successfully!</p>
+
+<p><a href="@Url.Action("Game", "Edit", new { id = Model.Id })">Edit</a></p>

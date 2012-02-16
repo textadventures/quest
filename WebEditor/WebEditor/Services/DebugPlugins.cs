@@ -17,5 +17,14 @@ namespace WebEditor.Services
         {
             System.Diagnostics.Debug.WriteLine("{0} Saved", DateTime.Now);
         }
+
+        public CreateNewFileData CreateNewFile(string filename)
+        {
+            return new CreateNewFileData
+            {
+                FullPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), filename),
+                Id = 1
+            };
+        }
     }
 }

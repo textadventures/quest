@@ -24,4 +24,10 @@ namespace WebEditor.Models
         public IEnumerable<string> AllTypes { get; set; }
         public IEnumerable<string> AllTemplates { get; set; }
     }
+
+    public class CreateSuccess
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 }

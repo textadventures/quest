@@ -2171,5 +2171,18 @@ namespace AxeSoftware.Quest
             get { return m_editorMode; }
             set { m_editorMode = value; }
         }
+
+        private static List<string> s_invalidChars = new List<string> { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" };
+
+        public static string GenerateSafeFilename(string gameName)
+        {
+            string result = gameName;
+            foreach (string invalidChar in s_invalidChars)
+            {
+                result = result.Replace(invalidChar, "");
+            }
+            if (result.Length == 0) return string.Empty;
+            return result;
+        }
     }
 }

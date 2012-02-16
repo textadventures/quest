@@ -27,9 +27,16 @@ namespace WebEditor.Services
         }
     }
 
+    public struct CreateNewFileData
+    {
+        public string FullPath;
+        public int Id;
+    }
+
     public interface IFileManager
     {
         string GetFile(int id);
         void SaveFile(int id, string data);
+        CreateNewFileData CreateNewFile(string filename);
     }
 }

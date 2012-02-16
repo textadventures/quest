@@ -28,8 +28,8 @@ namespace WebEditor.Controllers
             EditorService.PopulateCreateModelLists(createModel);
             if (ModelState.IsValid)
             {
-                // TO DO: Create game
-                return View(createModel);
+                int newId = EditorService.CreateNewGame(createModel.SelectedTemplate, createModel.GameName);
+                return View("CreateSuccess", new Models.CreateSuccess { Id = newId, Name = createModel.GameName });
             }
             else
             {

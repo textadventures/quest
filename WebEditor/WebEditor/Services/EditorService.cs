@@ -1693,9 +1693,27 @@ namespace WebEditor.Services
 
         public static void PopulateCreateModelLists(Models.Create model)
         {
-            Dictionary<string, TemplateData> templates = EditorController.GetAvailableTemplates(ConfigurationManager.AppSettings["TemplatesFolder"]);
+            Dictionary<string, TemplateData> templates = GetAvailableTemplates();
             model.AllTemplates = templates.Values.Where(t => t.Type == EditorStyle.TextAdventure).Select(t => t.TemplateName);
             model.AllTypes = new List<string> { "Text adventure", "Gamebook" };
+        }
+
+        private static Dictionary<string, TemplateData> GetAvailableTemplates()
+        {
+            return EditorController.GetAvailableTemplates(ConfigurationManager.AppSettings["TemplatesFolder"]);
+        }
+
+        private static string GetTemplateFile(string templateName)
+        {
+            return GetAvailableTemplates().Values.First(t => t.TemplateName == templateName).Filename;
+        }
+
+        public static int CreateNewGame(string templateName, string gameName)
+        {
+            string filename = EditorController.GenerateSafeFilename(gameName);
+            CreateNewFileData fileData = FileManagerLoader.GetFileManager().CreateNewFile(filename);
+            EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(templateName), gameName);
+            return fileData.Id;
         }
     }
 }
