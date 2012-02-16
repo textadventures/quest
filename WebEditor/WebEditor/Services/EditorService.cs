@@ -1694,7 +1694,7 @@ namespace WebEditor.Services
         public static void PopulateCreateModelLists(Models.Create model)
         {
             Dictionary<string, TemplateData> templates = EditorController.GetAvailableTemplates(ConfigurationManager.AppSettings["TemplatesFolder"]);
-            model.AllTemplates = templates.Select(t => t.Value.TemplateName);
+            model.AllTemplates = templates.Values.Where(t => t.Type == EditorStyle.TextAdventure).Select(t => t.TemplateName);
             model.AllTypes = new List<string> { "Text adventure", "Gamebook" };
         }
     }
