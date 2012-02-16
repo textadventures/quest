@@ -70,7 +70,7 @@ namespace AxeSoftware.Quest
 
             UpdateImpliedTypesCache();
 
-            Version ver = new Version(System.Windows.Forms.Application.ProductVersion);
+            string ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             writer.WriteComment(string.Format("Saved by Quest {0}", ver));
             writer.WriteStartElement("asl");
             if (mode == SaveMode.Editor)
