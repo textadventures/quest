@@ -136,7 +136,15 @@ namespace WebPlayer.Mobile
 
             string rootPath = folder ?? ConfigurationManager.AppSettings["GameFolder"];
             string libPath = ConfigurationManager.AppSettings["LibraryFolder"];
-            string filename = System.IO.Path.Combine(rootPath, gameFile);
+            string filename;
+            if (rootPath == null)
+            {
+                filename = gameFile;
+            }
+            else
+            {
+                filename = System.IO.Path.Combine(rootPath, gameFile);
+            }
             List<string> errors;
 
             try
