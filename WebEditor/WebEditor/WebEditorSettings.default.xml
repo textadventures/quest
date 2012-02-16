@@ -4,6 +4,7 @@
 
 <appSettings>
   <add key="LibraryFolder" value="C:\Libraries\"/>
+  <add key="TemplatesFolder" value="C:\Libraries\Templates\"/>
   <add key="PlayURL" value="http://path/to/WebPlayer/Play.aspx"/>
   
   <!-- PLUGINS -->

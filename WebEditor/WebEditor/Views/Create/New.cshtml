@@ -1,0 +1,26 @@
+﻿@model WebEditor.Models.Create
+
+@{
+    ViewBag.Title = "New Game";
+}
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true, "Unable to create game.")
+    <div>
+        <fieldset>
+            <legend>Game info</legend>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.GameName)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(m => m.GameName)
+                @Html.ValidationMessageFor(m => m.GameName)
+            </div>
+
+            <p>
+                <input type="submit" value="Create" />
+            </p>
+        </fieldset>
+    </div>
+}

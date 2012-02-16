@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AxeSoftware.Quest;
+using System.Configuration;
 
 namespace WebEditor.Services
 {
@@ -1677,6 +1678,18 @@ namespace WebEditor.Services
             if (m_controller.CanCopy(element)) result.Add("copy");
             if (m_controller.CanPaste(element)) result.Add("paste");
             return string.Join(";", result);
+        }
+
+        public static Models.Create GetCreateModel()
+        {
+            Dictionary<string, TemplateData> templates = EditorController.GetAvailableTemplates(ConfigurationManager.AppSettings["TemplatesFolder"]);
+            return new Models.Create
+            {
+                AllTemplates = templates.Select(t => t.Value.TemplateName),
+                SelectedTemplate = "English",
+                AllTypes = new List<string> { "Text adventure", "Gamebook" },
+                SelectedType = "Text adventure"
+            };
         }
     }
 }

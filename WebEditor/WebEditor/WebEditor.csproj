@@ -66,6 +66,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CreateController.cs" />
     <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -75,6 +76,7 @@
       <DependentUpon>KeepAlive.ashx</DependentUpon>
     </Compile>
     <Compile Include="Logging.cs" />
+    <Compile Include="Models\Create.cs" />
     <Compile Include="Models\Editor.cs" />
     <Compile Include="Models\Element.cs" />
     <Compile Include="Models\ElementsList.cs" />
@@ -247,6 +249,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="KeepAlive.ashx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Create\New.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
