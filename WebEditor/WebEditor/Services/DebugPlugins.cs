@@ -18,7 +18,7 @@ namespace WebEditor.Services
             System.Diagnostics.Debug.WriteLine("{0} Saved", DateTime.Now);
         }
 
-        public CreateNewFileData CreateNewFile(string filename)
+        public CreateNewFileData CreateNewFile(string filename, string gameName)
         {
             return new CreateNewFileData
             {

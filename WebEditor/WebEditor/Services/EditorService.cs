@@ -1710,8 +1710,8 @@ namespace WebEditor.Services
 
         public static int CreateNewGame(string templateName, string gameName)
         {
-            string filename = EditorController.GenerateSafeFilename(gameName);
-            CreateNewFileData fileData = FileManagerLoader.GetFileManager().CreateNewFile(filename);
+            string filename = EditorController.GenerateSafeFilename(gameName) + ".aslx";
+            CreateNewFileData fileData = FileManagerLoader.GetFileManager().CreateNewFile(filename, gameName);
             EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(templateName), gameName);
             return fileData.Id;
         }
