@@ -12,23 +12,25 @@
     @Html.ValidationSummary(true, "Unable to create game. Please correct the errors below.")
     <div>
         <div class="editor-label">
-            @Html.LabelFor(m => m.GameName)
+            @Html.LabelFor(m => m.GameName):
         </div>
         <div class="editor-field">
             @Html.TextBoxFor(m => m.GameName, new { style = "width: 300px" })
             @Html.ValidationMessageFor(m => m.GameName)
         </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(m => m.SelectedType)
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(m => m.SelectedType, new SelectList(Model.AllTypes, Model.SelectedType))
-            @Html.ValidationMessageFor(m => m.SelectedType)
+        <div style="display: none">
+            <div class="editor-label">
+                @Html.LabelFor(m => m.SelectedType):
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(m => m.SelectedType, new SelectList(Model.AllTypes, Model.SelectedType))
+                @Html.ValidationMessageFor(m => m.SelectedType)
+            </div>
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(m => m.SelectedTemplate)
+            @Html.LabelFor(m => m.SelectedTemplate):
         </div>
         <div class="editor-field">
             @Html.DropDownListFor(m => m.SelectedTemplate, new SelectList(Model.AllTemplates, Model.SelectedTemplate))
