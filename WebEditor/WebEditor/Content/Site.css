@@ -141,8 +141,9 @@ div#file-upload-existing
 {
     margin-bottom: 20px;
 }
-input[type=text]
+input.elementEditorFile
 {
+    width: 200px;
     vertical-align: top;
 }
 

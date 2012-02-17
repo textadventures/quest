@@ -153,8 +153,7 @@
                 }
                 break;
             case "file":
-                // TO DO
-                editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
+                editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 200px", @readonly = "readonly" });
                 break;
             case "boolean":
                 list.Add(new SelectListItem { Text = "yes", Selected = (value == "true") });
@@ -194,6 +193,11 @@
         if (editorHtml != null)
         {
             @editorHtml
+            if (simpleEditor == "file")
+            {
+                string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
+                <button type="button" class="file-upload" data-key="@name-simpleeditor" data-extensions="@source">Choose file</button>
+            }
         }
     }
 }
