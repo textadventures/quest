@@ -162,8 +162,20 @@ namespace WebEditor.Controllers
             return defaultValue;
         }
 
-        public ActionResult FileUpload()
+        public ActionResult FileUpload(int id)
         {
+            return View(new WebEditor.Models.FileUpload
+            {
+                GameId = id
+            });
+        }
+
+        [HttpPost]
+        public ActionResult FileUpload(WebEditor.Models.FileUpload fileModel)
+        {            
+            if (fileModel.File.ContentLength > 0)
+            {
+            }
             return View();
         }
     }

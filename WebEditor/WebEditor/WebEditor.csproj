@@ -81,6 +81,7 @@
     <Compile Include="Models\Element.cs" />
     <Compile Include="Models\ElementsList.cs" />
     <Compile Include="Models\Exits.cs" />
+    <Compile Include="Models\FileUpload.cs" />
     <Compile Include="Models\Script.cs" />
     <Compile Include="Models\StringList.cs" />
     <Compile Include="Models\Verbs.cs" />

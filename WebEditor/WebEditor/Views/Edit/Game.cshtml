@@ -168,6 +168,5 @@
 </div>
 
 <div id="dialog-upload" title="Upload File">
-    <p>Upload dialog</p>
-    <iframe src="@Url.Action("FileUpload")" frameborder="0" allowtransparency="true"></iframe>
+    <iframe src="@Url.Action("FileUpload", new { id = Model.GameId })" frameborder="0" allowtransparency="true"></iframe>
 </div>

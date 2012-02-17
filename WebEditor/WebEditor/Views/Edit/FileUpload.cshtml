@@ -1,4 +1,6 @@
-﻿@section scripts {
+﻿@model WebEditor.Models.FileUpload
+
+@section scripts {
     <script src="@Url.Content("~/Scripts/FileUpload.js")" type="text/javascript"></script>
 }
 
@@ -13,8 +15,11 @@
 </head>
 <body>
     <form action="" method="post" enctype="multipart/form-data">
+        @Html.HiddenFor(m => m.GameId)
+        @Html.HiddenFor(m => m.Key)
+        @Html.HiddenFor(m => m.Attribute)
         <div>
-            <input type="file" name="file" id="file" />
+            <input type="file" name="File" id="File" />
         </div>
         <div>
             <button id="file-upload-submit" type="submit">Upload</button>

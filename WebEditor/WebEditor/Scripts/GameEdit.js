@@ -611,6 +611,9 @@ function initialiseElementEditor(tab) {
     $(".file-upload").button({
         icons: { primary: "ui-icon-folder-open" }
     }).click(function () {
+        var element = $("#_key").val();
+        var key = $(this).attr("data-key");
+        _fileUploadInit(element, key);
         $("#dialog-upload").dialog("open");
     });
 
@@ -811,4 +814,10 @@ function selectTreeNode(node) {
 
 function capFirst(text) {
     return text.substring(0, 1).toUpperCase() + text.substring(1);
+}
+
+var _fileUploadInit = null;
+
+function registerFileUploadInit(initFn) {
+    _fileUploadInit = initFn;
 }
