@@ -93,6 +93,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\FileUpload.js" />
     <Content Include="Scripts\GameEdit.js" />
     <Content Include="Scripts\GameNew.js" />
     <Content Include="Scripts\jquery.jstree.js" />
@@ -256,6 +257,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Create\CreateSuccess.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Edit\FileUpload.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

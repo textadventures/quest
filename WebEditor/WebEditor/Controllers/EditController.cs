@@ -161,5 +161,10 @@ namespace WebEditor.Controllers
             if (result == "0") return false;
             return defaultValue;
         }
+
+        public ActionResult FileUpload()
+        {
+            return View();
+        }
     }
 }
