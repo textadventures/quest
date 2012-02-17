@@ -1173,6 +1173,17 @@ namespace WebEditor.Services
             return null;
         }
 
+        private IEditorControl FindEditorControlByAttribute(string element, string attribute)
+        {
+            IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(element));
+            foreach (IEditorTab tab in def.Tabs.Values)
+            {
+                IEditorControl ctl = tab.Controls.FirstOrDefault(c => c.Attribute == attribute);
+                if (ctl != null) return ctl;
+            }
+            return null;
+        }
+
         private void MultiSet(string element, string attribute, string value)
         {
             m_controller.StartTransaction(string.Format("Change type of '{0}' {1} to '{2}'", element, attribute, value));
@@ -1714,6 +1725,12 @@ namespace WebEditor.Services
             CreateNewFileData fileData = FileManagerLoader.GetFileManager().CreateNewFile(filename, gameName);
             EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(templateName), gameName);
             return fileData.Id;
+        }
+
+        public List<string> GetPermittedExtensions(string element, string attribute)
+        {
+            IEditorControl ctl = FindEditorControlByAttribute(element, attribute);
+            return new List<string>(ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
         }
     }
 }

@@ -171,12 +171,27 @@ namespace WebEditor.Controllers
             });
         }
 
+        private static List<string> s_serverPermittedExtensions = new List<string>
+        {
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".gif",
+            ".wav",
+            ".mp3"
+        };
+
         [HttpPost]
         public ActionResult FileUpload(WebEditor.Models.FileUpload fileModel)
         {
             if (ModelState.IsValid)
             {
-                if (fileModel.File != null && fileModel.File.ContentLength > 0)
+                string ext = System.IO.Path.GetExtension(fileModel.File.FileName);
+                List<string> controlPermittedExtensions = EditorDictionary[fileModel.GameId].GetPermittedExtensions(fileModel.Key, fileModel.Attribute);
+                if (fileModel.File != null
+                    && fileModel.File.ContentLength > 0
+                    && s_serverPermittedExtensions.Contains(ext)
+                    && controlPermittedExtensions.Contains(ext))
                 {
                     string filename = System.IO.Path.GetFileName(fileModel.File.FileName);
                     string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
@@ -185,6 +200,10 @@ namespace WebEditor.Controllers
                     fileModel.AllFiles = GetAllFilesList(fileModel.GameId);
                     ModelState.Remove("PostedFile");
                     fileModel.PostedFile = filename;
+                }
+                else
+                {
+                    ModelState.AddModelError("File", "Invalid file type");
                 }
             }
             return View(fileModel);
