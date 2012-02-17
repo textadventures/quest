@@ -9,7 +9,7 @@
     }
 });
 
-function fileUploadInit(element, key, extensions) {
+function fileUploadInit(element, key, extensions, currentValue) {
     $("#Key").val(element);
     $("#Attribute").val(key);
 
@@ -30,6 +30,8 @@ function fileUploadInit(element, key, extensions) {
     });
 
     if (anyFiles) {
+        if (currentValue == "") currentValue = "<none>";
+        $("#existingFiles").val(currentValue);
         $("#file-upload-existing").show();
         $("#file-upload-new-header").show();
     }
