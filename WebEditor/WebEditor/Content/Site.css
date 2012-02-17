@@ -137,6 +137,14 @@ div.verbChild
     margin-left: 60px;
     margin-bottom: 10px;
 }
+div#file-upload-existing
+{
+    margin-bottom: 20px;
+}
+input[type=text]
+{
+    vertical-align: top;
+}
 
 .jstree ul
 {

@@ -1,7 +1,12 @@
 ﻿$(function () {
-    $("#file-upload-submit").button().click(function () {
-    });
+    $("#file-upload-submit").button();
     window.parent.registerFileUploadInit(fileUploadInit);
+
+    var postedFile = $("#PostedFile").val();
+    if (postedFile.length > 0) {
+        $("#PostedFile").val("");
+        window.parent.filePosted(postedFile);
+    }
 });
 
 function fileUploadInit(element, key, extensions) {
@@ -11,14 +16,21 @@ function fileUploadInit(element, key, extensions) {
     $("#existingFiles").empty();
     var extensionsList = extensions.split(";");
     var filesList = $("#AllFiles").val().split(":");
+    var anyFiles = false;
 
     $.each(filesList, function (index, value) {
         $.each(extensionsList, function (extIdx, extValue) {
             if (endsWith(value.toLowerCase(), extValue.toLowerCase())) {
                 $("#existingFiles").append($("<option/>").attr("value", key).text(value));
+                anyFiles = true;
             }
         });
     });
+
+    if (anyFiles) {
+        $("#file-upload-existing").show();
+        $("#file-upload-new-header").show();
+    }
 }
 
 function endsWith(str, suffix) {

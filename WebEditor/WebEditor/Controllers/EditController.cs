@@ -183,6 +183,8 @@ namespace WebEditor.Controllers
                     fileModel.File.SaveAs(System.IO.Path.Combine(uploadPath, filename));
                     ModelState.Remove("AllFiles");
                     fileModel.AllFiles = GetAllFilesList(fileModel.GameId);
+                    ModelState.Remove("PostedFile");
+                    fileModel.PostedFile = filename;
                 }
             }
             return View(fileModel);

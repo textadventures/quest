@@ -129,6 +129,7 @@ namespace WebEditor.Models
             {
                 case "textbox":
                 case "dropdown":
+                case "file":
                     saveValue = GetValueProviderString(bindingContext.ValueProvider, attribute);
                     break;
                 case "number":

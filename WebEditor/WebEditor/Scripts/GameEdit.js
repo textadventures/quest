@@ -615,6 +615,7 @@ function initialiseElementEditor(tab) {
         var key = $(this).attr("data-key");
         var extensions = $(this).attr("data-extensions");
         _fileUploadInit(element, key, extensions);
+        $("#dialog-upload").attr("data-key", key);
         $("#dialog-upload").dialog("open");
     });
 
@@ -821,4 +822,10 @@ var _fileUploadInit = null;
 
 function registerFileUploadInit(initFn) {
     _fileUploadInit = initFn;
+}
+
+function filePosted(file) {
+    $("#dialog-upload").dialog("close");
+    $("#" + $("#dialog-upload").attr("data-key")).val(file);
+    sendAdditionalAction("none");
 }

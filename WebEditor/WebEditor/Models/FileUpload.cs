@@ -11,9 +11,10 @@ namespace WebEditor.Models
         public int GameId { get; set; }
         public string Key { get; set; }
         public string Attribute { get; set; }
+        public string AllFiles { get; set; }
+        public string PostedFile { get; set; }
+
         [Required]
         public HttpPostedFileBase File { get; set; }
-
-        public string AllFiles { get; set; }
     }
 }

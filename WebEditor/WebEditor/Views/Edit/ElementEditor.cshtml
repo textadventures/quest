@@ -220,8 +220,8 @@
             break;
         case "file":
             string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
-            <text>@value</text>
-            <button type="button" class="file-upload" data-key="@ctl.Attribute" data-extensions="@source">Upload file</button>
+            @Html.TextBox(ctl.Attribute, (string)value, new { style = "width: 200px", @readonly = "readonly" })
+            <button type="button" class="file-upload" data-key="@ctl.Attribute" data-extensions="@source">Choose file</button>
             break;
         case null:
             break;
