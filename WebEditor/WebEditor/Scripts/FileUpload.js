@@ -18,10 +18,12 @@ function fileUploadInit(element, key, extensions) {
     var filesList = $("#AllFiles").val().split(":");
     var anyFiles = false;
 
+    $("#existingFiles").append($("<option/>").attr("value", "<none>").text("None"));
+
     $.each(filesList, function (index, value) {
         $.each(extensionsList, function (extIdx, extValue) {
             if (endsWith(value.toLowerCase(), extValue.toLowerCase())) {
-                $("#existingFiles").append($("<option/>").attr("value", key).text(value));
+                $("#existingFiles").append($("<option/>").attr("value", value).text(value));
                 anyFiles = true;
             }
         });
@@ -38,5 +40,16 @@ function endsWith(str, suffix) {
 }
 
 function fileUploadSubmit() {
-    $("#file-upload-form").submit();
+    if ($("#File").val()) {
+        $("#file-upload-form").submit();
+    }
+    else {
+        var selection = $("#existingFiles").val();
+        if (selection == "<none>") {
+            window.parent.filePosted("")
+        }
+        else {
+            window.parent.filePosted(selection)
+        }
+    }
 }
