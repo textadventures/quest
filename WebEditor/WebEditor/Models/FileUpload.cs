@@ -13,5 +13,7 @@ namespace WebEditor.Models
         public string Attribute { get; set; }
         [Required]
         public HttpPostedFileBase File { get; set; }
+
+        public string AllFiles { get; set; }
     }
 }

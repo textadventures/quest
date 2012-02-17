@@ -166,7 +166,8 @@ namespace WebEditor.Controllers
         {
             return View(new WebEditor.Models.FileUpload
             {
-                GameId = id
+                GameId = id,
+                AllFiles = GetAllFilesList(id)
             });
         }
 
@@ -180,9 +181,18 @@ namespace WebEditor.Controllers
                     string filename = System.IO.Path.GetFileName(fileModel.File.FileName);
                     string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
                     fileModel.File.SaveAs(System.IO.Path.Combine(uploadPath, filename));
+                    ModelState.Remove("AllFiles");
+                    fileModel.AllFiles = GetAllFilesList(fileModel.GameId);
                 }
             }
-            return View();
+            return View(fileModel);
+        }
+
+        private string GetAllFilesList(int id)
+        {
+            string path = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+            IEnumerable<string> files = System.IO.Directory.GetFiles(path).Select(f => System.IO.Path.GetFileName(f)).OrderBy(f => f);
+            return string.Join(":", files);
         }
     }
 }

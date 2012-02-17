@@ -18,6 +18,7 @@
         @Html.HiddenFor(m => m.GameId)
         @Html.HiddenFor(m => m.Key)
         @Html.HiddenFor(m => m.Attribute)
+        @Html.HiddenFor(m => m.AllFiles)
         <div>
             @Html.ValidationMessageFor(m => m.File)
             <input type="file" name="File" id="File" />
