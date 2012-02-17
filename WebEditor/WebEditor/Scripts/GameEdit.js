@@ -613,7 +613,8 @@ function initialiseElementEditor(tab) {
     }).click(function () {
         var element = $("#_key").val();
         var key = $(this).attr("data-key");
-        _fileUploadInit(element, key);
+        var extensions = $(this).attr("data-extensions");
+        _fileUploadInit(element, key, extensions);
         $("#dialog-upload").dialog("open");
     });
 
