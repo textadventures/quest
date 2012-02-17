@@ -172,9 +172,15 @@ namespace WebEditor.Controllers
 
         [HttpPost]
         public ActionResult FileUpload(WebEditor.Models.FileUpload fileModel)
-        {            
-            if (fileModel.File.ContentLength > 0)
+        {
+            if (ModelState.IsValid)
             {
+                if (fileModel.File != null && fileModel.File.ContentLength > 0)
+                {
+                    string filename = System.IO.Path.GetFileName(fileModel.File.FileName);
+                    string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath;
+                    fileModel.File.SaveAs(System.IO.Path.Combine(uploadPath, filename));
+                }
             }
             return View();
         }

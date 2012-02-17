@@ -26,5 +26,15 @@ namespace WebEditor.Services
                 Id = 1
             };
         }
+
+        public string UploadPath
+        {
+            get
+            {
+                string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "WebEditorDebug");
+                System.IO.Directory.CreateDirectory(path);
+                return path;
+            }
+        }
     }
 }

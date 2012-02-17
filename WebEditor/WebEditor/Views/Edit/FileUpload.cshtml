@@ -19,6 +19,7 @@
         @Html.HiddenFor(m => m.Key)
         @Html.HiddenFor(m => m.Attribute)
         <div>
+            @Html.ValidationMessageFor(m => m.File)
             <input type="file" name="File" id="File" />
         </div>
         <div>

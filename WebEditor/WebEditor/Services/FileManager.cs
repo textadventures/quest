@@ -38,5 +38,6 @@ namespace WebEditor.Services
         string GetFile(int id);
         void SaveFile(int id, string data);
         CreateNewFileData CreateNewFile(string filename, string gameName);
+        string UploadPath { get; }
     }
 }
