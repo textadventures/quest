@@ -71,8 +71,7 @@
         width: 400,
         buttons: {
             "OK": function () {
-                // TO DO: Apply selection
-                $(this).dialog("close");
+                _fileUploadSubmit();
             },
             "Cancel": function () {
                 $(this).dialog("close");
@@ -819,9 +818,14 @@ function capFirst(text) {
 }
 
 var _fileUploadInit = null;
+var _fileUploadSubmit = null;
 
 function registerFileUploadInit(initFn) {
     _fileUploadInit = initFn;
+}
+
+function registerFileUploadSubmit(submitFn) {
+    _fileUploadSubmit = submitFn;
 }
 
 function filePosted(file) {

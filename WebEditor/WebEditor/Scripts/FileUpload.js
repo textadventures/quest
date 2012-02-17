@@ -1,6 +1,6 @@
 ﻿$(function () {
-    $("#file-upload-submit").button();
     window.parent.registerFileUploadInit(fileUploadInit);
+    window.parent.registerFileUploadSubmit(fileUploadSubmit);
 
     var postedFile = $("#PostedFile").val();
     if (postedFile.length > 0) {
@@ -35,4 +35,8 @@ function fileUploadInit(element, key, extensions) {
 
 function endsWith(str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+function fileUploadSubmit() {
+    $("#file-upload-form").submit();
 }

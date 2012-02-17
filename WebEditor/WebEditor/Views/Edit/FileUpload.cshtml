@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="" method="post" enctype="multipart/form-data" id="file-upload-form">
         @Html.HiddenFor(m => m.GameId)
         @Html.HiddenFor(m => m.Key)
         @Html.HiddenFor(m => m.Attribute)
@@ -29,9 +29,7 @@
             @Html.ValidationMessageFor(m => m.File)
             <input type="file" name="File" id="File" />
         </div>
-        <div>
-            <button id="file-upload-submit" type="submit">Upload</button>
-        </div>
+        <button id="file-upload-submit" type="submit" style="display: none">Upload</button>
     </form>
 </body>
 </html>
