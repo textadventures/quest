@@ -27,14 +27,11 @@ namespace WebEditor.Services
             };
         }
 
-        public string UploadPath
+        public string UploadPath(int id)
         {
-            get
-            {
-                string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "WebEditorDebug");
-                System.IO.Directory.CreateDirectory(path);
-                return path;
-            }
+            string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "WebEditorDebug");
+            System.IO.Directory.CreateDirectory(path);
+            return path;
         }
     }
 }

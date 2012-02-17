@@ -178,7 +178,7 @@ namespace WebEditor.Controllers
                 if (fileModel.File != null && fileModel.File.ContentLength > 0)
                 {
                     string filename = System.IO.Path.GetFileName(fileModel.File.FileName);
-                    string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath;
+                    string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
                     fileModel.File.SaveAs(System.IO.Path.Combine(uploadPath, filename));
                 }
             }
