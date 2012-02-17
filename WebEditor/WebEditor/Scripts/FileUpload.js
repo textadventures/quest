@@ -1,4 +1,23 @@
 ﻿$(function () {
+    $("#File").change(function () {
+        var value = $("#File").val();
+        if (value.length == 0) return;
+        var extensions = $("#file-upload-new").attr("data-extensions");
+        var extensionsList = extensions.split(";");
+        var ok = false;
+        $.each(extensionsList, function (extIdx, extValue) {
+            if (endsWith(value.toLowerCase(), extValue.toLowerCase())) {
+                ok = true;
+            }
+        });
+        if (ok) {
+            $("#file-upload-new-error").html("");
+        }
+        else {
+            $("#File").val("");
+            $("#file-upload-new-error").html("Only the following file types are permitted: " + extensions);
+        }
+    });
     window.parent.registerFileUploadInit(fileUploadInit);
     window.parent.registerFileUploadSubmit(fileUploadSubmit);
 
@@ -12,6 +31,8 @@
 function fileUploadInit(element, key, extensions, currentValue) {
     $("#Key").val(element);
     $("#Attribute").val(key);
+    $("#file-upload-new").attr("data-extensions", extensions);
+    $("#file-upload-new-error").html("");
 
     $("#existingFiles").empty();
     var extensionsList = extensions.split(";");

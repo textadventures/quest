@@ -27,6 +27,7 @@
         <div id="file-upload-new">
             <p id="file-upload-new-header" class="file-upload-header" style="display:none">Or upload a new file:</p>
             @Html.ValidationMessageFor(m => m.File)
+            <span id="file-upload-new-error"></span>
             <input type="file" name="File" id="File" />
         </div>
         <button id="file-upload-submit" type="submit" style="display: none">Upload</button>
