@@ -64,6 +64,21 @@
             }
         }
     });
+    $("#dialog-upload").dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        width: 400,
+        buttons: {
+            "OK": function () {
+                // TO DO: Apply selection
+                $(this).dialog("close");
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
 }
 
 function showDialog(prompt, defaultText, ok, list, listPrompt, autoCompleteList) {
@@ -593,6 +608,11 @@ function initialiseElementEditor(tab) {
         }
     });
     $(".verbs-delete").button("disable");
+    $(".file-upload").button({
+        icons: { primary: "ui-icon-folder-open" }
+    }).click(function () {
+        $("#dialog-upload").dialog("open");
+    });
 
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);

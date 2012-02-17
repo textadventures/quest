@@ -218,6 +218,10 @@
         case "verbs":
             @Html.Action("EditVerbs", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
+        case "file":
+            <text>@value</text>
+            <button type="button" class="file-upload" data-key="@ctl.Attribute">Upload file</button>
+            break;
         case null:
             break;
         default:
