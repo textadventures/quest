@@ -1729,7 +1729,22 @@ namespace WebEditor.Services
 
         public List<string> GetPermittedExtensions(string element, string attribute)
         {
-            IEditorControl ctl = FindEditorControlByAttribute(element, attribute);
+            IEditorControl ctl;
+
+            if (attribute.Contains('-'))
+            {
+                // attribute will end with "-simpleeditor"
+                attribute = attribute.Substring(0, attribute.Length - 13);
+                string parameter;
+                IEditableScript script = GetScriptLine(element, attribute, out parameter);
+                IEditorDefinition def = m_controller.GetEditorDefinition(script);
+                ctl = def.Controls.First(c => c.Attribute == parameter);
+            }
+            else
+            {
+                ctl = FindEditorControlByAttribute(element, attribute);
+            }
+            
             return new List<string>(ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
         }
     }
