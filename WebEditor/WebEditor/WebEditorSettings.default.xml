@@ -6,7 +6,10 @@
   <add key="LibraryFolder" value="C:\Libraries\"/>
   <add key="TemplatesFolder" value="C:\Libraries\Templates\"/>
   <add key="PlayURL" value="http://path/to/WebPlayer/Play.aspx"/>
-  
+
+  <!-- To enable logging, uncomment this line, and create a log config XML (see WebPlayerSettings.default.xml for example) -->
+  <!-- <add key="LogConfig" value="C:\Path\To\Config\File\logging.xml"/> -->
+
   <!-- PLUGINS -->
 
   <!-- Specify the type name of a class that implements IFileManager -->
