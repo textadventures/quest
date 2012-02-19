@@ -26,6 +26,7 @@ namespace WebEditor.Controllers
 
         public JsonResult Load(int id, bool simpleMode)
         {
+            Logging.Log.DebugFormat("{0}: Load (simpleMode={1})", id, simpleMode);
             Services.EditorService editor = new Services.EditorService();
             EditorDictionary[id] = editor;
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
@@ -40,11 +41,13 @@ namespace WebEditor.Controllers
 
         public JsonResult Scripts(int id)
         {
+            Logging.Log.DebugFormat("{0}: Get scripts JSON", id);
             return Json(EditorDictionary[id].GetScriptAdderJson(), JsonRequestBehavior.AllowGet);
         }
 
         public PartialViewResult EditElement(int id, string key, string tab, string error, string refreshTreeSelectElement)
         {
+            Logging.Log.DebugFormat("{0}: EditElement {1}", id, key);
             if (Session["EditorDictionary"] == null)
             {
                 return Timeout();
@@ -56,8 +59,10 @@ namespace WebEditor.Controllers
         [HttpPost]
         public PartialViewResult SaveElement(Models.ElementSaveData element)
         {
+            Logging.Log.DebugFormat("{0}: SaveElement {1}", element.GameId, element.Key);
             if (!element.Success)
             {
+                Logging.Log.DebugFormat("Element save failed");
                 return Timeout();
             }
             var result = EditorDictionary[element.GameId].SaveElement(element.Key, element);
@@ -194,6 +199,7 @@ namespace WebEditor.Controllers
                     && controlPermittedExtensions.Contains(ext))
                 {
                     string filename = System.IO.Path.GetFileName(fileModel.File.FileName);
+                    Logging.Log.DebugFormat("{0}: Upload file {1}", fileModel.GameId, filename);
                     string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
                     fileModel.File.SaveAs(System.IO.Path.Combine(uploadPath, filename));
                     ModelState.Remove("AllFiles");
