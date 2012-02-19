@@ -14,6 +14,7 @@ namespace WebEditor
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
+            filters.Add(new ExceptionFilter());
             filters.Add(new HandleErrorAttribute());
         }
 
@@ -36,13 +37,6 @@ namespace WebEditor
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
-        }
-
-        protected void Application_Error(object sender, EventArgs e)
-        {
-            if (Request.Url.AbsolutePath.Contains("favicon.ico")) return;
-            Exception error = Server.GetLastError().GetBaseException();
-            Logging.Log.ErrorFormat("Error in {0}: {1}\n{2}", Request.Url, error.Message, error.StackTrace);
         }
 
         protected void Application_End(object sender, EventArgs e)
