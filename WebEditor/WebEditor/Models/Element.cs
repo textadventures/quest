@@ -357,6 +357,7 @@ namespace WebEditor.Models
                         {
                             string key = string.Format("{0}-simpleeditor", attributePrefix);
                             ValueProviderResult value = provider.GetValue(key);
+                            if (value == null) return string.Empty;
                             string simpleValue = value.ConvertTo(typeof(string)) as string;
 
                             switch (simpleEditor)
