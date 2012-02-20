@@ -253,7 +253,7 @@ namespace WebEditor.Services
                 PopupError = popupError,
                 NewObjectPossibleParents = (newObjectPossibleParents == null) ? null : string.Join(";", newObjectPossibleParents),
                 EnabledButtons = GetEnabledButtons(key),
-                PageTitle = "Editor - " + m_controller.GameName,
+                PageTitle = "Quest - " + m_controller.GameName,
                 AvailableVerbs = string.Join("~", m_controller.GetVerbProperties().Values),
                 UIAction = uiAction
             };

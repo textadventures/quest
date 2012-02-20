@@ -17,7 +17,7 @@ namespace WebEditor.Controllers
         {
             Models.Editor model = new Models.Editor();
             model.GameId = id;
-            ViewBag.Title = "Editor";
+            ViewBag.Title = "Quest";
             model.SimpleMode = GetSettingBool("simplemode", false);
             model.ErrorRedirect = ConfigurationManager.AppSettings["WebsiteHome"] ?? "http://www.textadventures.co.uk/";
             model.PlayURL = ConfigurationManager.AppSettings["PlayURL"] + "?id=" + id.ToString();
