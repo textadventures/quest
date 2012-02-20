@@ -93,6 +93,8 @@
     <Compile Include="Views\Edit\Controls.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\favicon.ico" />
+    <Content Include="Content\favicon.png" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\FileUpload.js" />
