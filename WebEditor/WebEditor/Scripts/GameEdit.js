@@ -181,6 +181,16 @@ function initialiseButtons() {
         window.open(url, "WebEditorPlay");
         toplevelAdditionalAction("main play");
     });
+    $("#button-help").button({
+        icons: { primary: "ui-icon-help" }
+    }).click(function () {
+        window.open("http://quest5.net/wiki/WebEditor");
+    });
+    $("#button-bug").button({
+        icons: { primary: "ui-icon-alert" }
+    }).click(function () {
+        window.open("http://www.textadventures.co.uk/help/contact-us/");
+    });
 }
 
 function initialiseElementEditor(tab) {
