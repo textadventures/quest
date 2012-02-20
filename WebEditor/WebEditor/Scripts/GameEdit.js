@@ -303,12 +303,12 @@ function initialiseElementEditor(tab) {
         var key = $(this).attr("data-key");
         var showExpression = ($(this).find('option:selected').text() == "expression");
         if (showExpression) {
-            $("#" + key + "-simpleeditor").hide();
+            $("#" + key + "-simpleeditorspan").hide();
             $("#" + key + "-expressioneditor").show();
         }
         else {
             $("#" + key + "-expressioneditor").hide();
-            $("#" + key + "-simpleeditor").show();
+            $("#" + key + "-simpleeditorspan").show();
         }
     });
     $(".template-dropdown").change(function () {

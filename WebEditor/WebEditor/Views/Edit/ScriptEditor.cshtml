@@ -135,8 +135,6 @@
         List<SelectListItem> list = new List<SelectListItem>();
         MvcHtmlString editorHtml = null;
         bool simpleEditorVisible = (simple != null || simpleEditor == "boolean") && IsSimpleExpression(ctl, simpleEditor, value);
-        string simpleEditorDisplayStyle = simpleEditorVisible ? "inline" : "none";
-        string expressionDisplayStyle = simpleEditorVisible ? "none" : "inline";
         string simpleValue = simpleEditorVisible ? ConvertToSimpleExpression(simpleEditor, value) : string.Empty;
         
         switch (simpleEditor)
@@ -145,11 +143,11 @@
                 bool multiLine = ctl.GetBool("multiline");
                 if (multiLine)
                 {
-                    editorHtml = Html.TextArea(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
+                    editorHtml = Html.TextArea(name + "-simpleeditor", simpleValue, new { style = "width: 350px" });
                 }
                 else
                 {
-                    editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px; display: " + simpleEditorDisplayStyle });
+                    editorHtml = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 350px" });
                 }
                 break;
             case "file":
@@ -167,14 +165,14 @@
                     Controls.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
                     .Select(s => new SelectListItem { Text = s, Value = s, Selected = (value == s) })
                     );
-                editorHtml = Html.DropDownList(name + "-simpleeditor", items, new { style = "display: " + simpleEditorDisplayStyle });
+                editorHtml = Html.DropDownList(name + "-simpleeditor", items);
                 break;
             case "number":
-                editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"width: 50px; display: " + simpleEditorDisplayStyle + "\" />");
+                editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"width: 50px\" />");
                 break;
             case "dropdown":
                 IEnumerable<string> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, simpleValue);
-                editorHtml = Html.DropDownList(name + "-simpleeditor", valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == simpleValue) }), new { style = "display: " + simpleEditorDisplayStyle });
+                editorHtml = Html.DropDownList(name + "-simpleeditor", valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == simpleValue) }));
                 break;
             default:
                 throw new InvalidOperationException("Invalid control type for expression");
@@ -191,11 +189,14 @@
             @Html.DropDownList(name + "-expressioneditordropdown", list, new { @class = "expression-dropdown", data_key = name })
         }
 
+        string simpleEditorDisplayStyle = simpleEditorVisible ? "inline" : "none";
+        string expressionDisplayStyle = simpleEditorVisible ? "none" : "inline";
+
         @Html.TextBox(name + "-expressioneditor", value, new { style = "width: 350px; display: " + expressionDisplayStyle });
 
         if (editorHtml != null)
         {
-            @editorHtml
+            <span id="@name-simpleeditorspan" style="display: @simpleEditorDisplayStyle">@editorHtml</span>
         }
     }
 }
