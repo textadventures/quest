@@ -399,7 +399,7 @@ namespace AxeSoftware.Quest.Functions
         public int GetRandomInt(int min, int max)
         {
             // The .net implementation of Random.Next defines the minValue as the
-            // inclusive lower bound, but maxValue as the EXclusive upper bound.
+            // inclusive lower bound, but maxValue as the Exclusive upper bound.
             // It makes a bit more sense for maxValue to be inclusive, so we add 1.
             return m_random.Next(min, max + 1);
         }
@@ -450,21 +450,24 @@ namespace AxeSoftware.Quest.Functions
             return list1.MergeLists(list2);
         }
 
-        public QuestList<string> ListExclude(QuestList<string> list, string element)
+        public QuestList<string> ListExclude(QuestList<string> list, string str)
         {
-            return ListExclude<string>(list, element);
+            return list.Exclude(str);
         }
 
         public QuestList<Element> ListExclude(QuestList<Element> list, Element element)
         {
-            return ListExclude<Element>(list, element);
+            return list.Exclude(element);
         }
 
-        private QuestList<T> ListExclude<T>(QuestList<T> list, T element)
+        public QuestList<string> ListExclude(QuestList<string> list, QuestList<string> excludeList)
         {
-            QuestList<T> result = new QuestList<T>(list);
-            result.Remove(element);
-            return result;
+            return list.Exclude(excludeList);
+        }
+
+        public QuestList<Element> ListExclude(QuestList<Element> list, QuestList<Element> excludeList)
+        {
+            return list.Exclude(excludeList);
         }
 
         public QuestList<Element> GetAllChildObjects(Element element)

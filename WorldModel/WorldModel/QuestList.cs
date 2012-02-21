@@ -221,9 +221,21 @@ namespace AxeSoftware.Quest
 
         public QuestList<T> MergeLists(QuestList<T> list2)
         {
-            QuestList<T> result = new QuestList<T>(this);
+            var result = new QuestList<T>(this);
             result.AddRange(list2);
             return result;
+        }
+
+        public QuestList<T> Exclude(T element)
+        {
+            var enumerable = this.Where(x => !x.Equals(element));
+            return new QuestList<T>(enumerable);
+        }
+
+        public QuestList<T> Exclude(QuestList<T> excludeList)
+        {
+            var enumerable = this.Where(x => !excludeList.Contains(x));
+            return new QuestList<T>(enumerable);
         }
 
         /// <summary>
