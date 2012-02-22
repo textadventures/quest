@@ -116,21 +116,19 @@ namespace AxeSoftware.Quest
             int bracketCount = 0;
             string curParam = string.Empty;
 
-            for (int i = 0; i < text.Length; i++)
+            foreach (char c in text)
             {
                 processThisCharacter = processNextCharacter;
                 processNextCharacter = true;
 
-                string curChar = text.Substring(i, 1);
-
                 if (processThisCharacter)
                 {
-                    if (curChar == "\\")
+                    if (c == '\\')
                     {
                         // Don't process the character after a backslash
                         processNextCharacter = false;
                     }
-                    else if (curChar == "\"")
+                    else if (c == '"')
                     {
                         inQuote = !inQuote;
                     }
@@ -138,9 +136,9 @@ namespace AxeSoftware.Quest
                     {
                         if (!inQuote)
                         {
-                            if (curChar == "(") bracketCount++;
-                            if (curChar == ")") bracketCount--;
-                            if (bracketCount == 0 && curChar == ",")
+                            if (c == '(') bracketCount++;
+                            if (c == ')') bracketCount--;
+                            if (bracketCount == 0 && c == ',')
                             {
                                 result.Add(curParam.Trim());
                                 curParam = string.Empty;
@@ -150,7 +148,7 @@ namespace AxeSoftware.Quest
                     }
                 }
 
-                curParam += curChar;
+                curParam += c;
             }
             result.Add(curParam.Trim());
 

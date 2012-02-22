@@ -70,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuestListTest.cs" />
     <Compile Include="SaveTests.cs" />
+    <Compile Include="SwitchScriptConstructorTest.cs" />
     <Compile Include="UtilityTests.cs" />
     <Compile Include="Walkthrough.cs" />
   </ItemGroup>
