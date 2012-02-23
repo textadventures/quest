@@ -51,10 +51,12 @@ namespace AxeSoftware.Quest.Scripts
                     if (cases.StartsWith("case"))
                     {
                         string expr = Utility.GetParameter(cases, out afterExpr);
+                        var matchList = Utility.SplitParameter(expr);
                         string caseScript = Utility.GetScript(afterExpr);
                         IScript script = ScriptFactory.CreateScript(caseScript, proc);
 
-                        result.Add(new ExpressionGeneric(expr, WorldModel), script);
+                        foreach (var match in matchList)
+                            result.Add(new ExpressionGeneric(match, WorldModel), script);
                     }
                     else if (cases.StartsWith("default"))
                     {
