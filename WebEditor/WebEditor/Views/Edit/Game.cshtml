@@ -28,25 +28,25 @@
             }
             else {
                 initialiseTree(data, "game");
-            }
-            $.get('@Url.Action("Scripts", new { id = Model.GameId })', function (data) {
-                var scriptAdderHtml = "";
-                var count = 0;
-                for (var cat in data) {
-                    scriptAdderHtml += "<h3><a href=\"#\">" + cat + "</a></h3><div>"
-                    var scripts = data[cat].items;
-                    for (var idx in scripts) {
-                        var script = scripts[idx];
-                        var create = script.create == null ? null : script.create.replace(/\"/g, "&quot;");
-                        var additionalAttributes = (count == 0) ? " checked=\"checked\"" : "";
-                        scriptAdderHtml += "<input type=\"radio\" name=\"dialog-add-script-selection\" value=\"" + create + "\" id=\"dialog-add-script-selection-" + count + "\"" + additionalAttributes + "/> ";
-                        scriptAdderHtml += "<label for=\"dialog-add-script-selection-" + count + "\">" + script.display + "</label><br/>";
-                        count++;
+                $.get('@Url.Action("Scripts", new { id = Model.GameId })', function (data) {
+                    var scriptAdderHtml = "";
+                    var count = 0;
+                    for (var cat in data) {
+                        scriptAdderHtml += "<h3><a href=\"#\">" + cat + "</a></h3><div>"
+                        var scripts = data[cat].items;
+                        for (var idx in scripts) {
+                            var script = scripts[idx];
+                            var create = script.create == null ? null : script.create.replace(/\"/g, "&quot;");
+                            var additionalAttributes = (count == 0) ? " checked=\"checked\"" : "";
+                            scriptAdderHtml += "<input type=\"radio\" name=\"dialog-add-script-selection\" value=\"" + create + "\" id=\"dialog-add-script-selection-" + count + "\"" + additionalAttributes + "/> ";
+                            scriptAdderHtml += "<label for=\"dialog-add-script-selection-" + count + "\">" + script.display + "</label><br/>";
+                            count++;
+                        }
+                        scriptAdderHtml += "</div>";
                     }
-                    scriptAdderHtml += "</div>";
-                }
-                $("#dialog-add-script-accordion").html(scriptAdderHtml);
-            });
+                    $("#dialog-add-script-accordion").html(scriptAdderHtml);
+                });
+            }
         });
         setInterval(keepSessionAlive, 60000);
         $("#button-play").attr("data-url", "@Model.PlayURL");
