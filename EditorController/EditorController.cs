@@ -264,36 +264,36 @@ namespace AxeSoftware.Quest
 
             bool ok = m_worldModel.InitialiseEdit();
 
-            if (m_worldModel.Game.Fields.Get("_editorstyle") as string == "gamebook")
-            {
-                m_editorStyle = EditorStyle.GameBook;
-            }
-
-            // need to initialise the EditableScriptFactory after we've loaded the game XML above,
-            // as the editor definitions contain the "friendly" templates for script commands.
-            m_editableScriptFactory = new EditableScriptFactory(this, m_scriptFactory, m_worldModel);
-
-            m_initialised = true;
-
-            m_worldModel.ObjectsUpdated += m_worldModel_ObjectsUpdated;
-
-            foreach (Element e in m_worldModel.Elements.GetElements(ElementType.Editor))
-            {
-                EditorDefinition def = new EditorDefinition(m_worldModel, e);
-                if (def.AppliesTo != null)
-                {
-                    // Normal editor definition for editing an element or a script command
-                    m_editorDefinitions.Add(def.AppliesTo, def);
-                }
-                else if (def.Pattern != null)
-                {
-                    // Editor definition for an expression template in the "if" editor
-                    m_expressionDefinitions.Add(def.Pattern, def);
-                }
-            }
-
             if (ok)
             {
+                if (m_worldModel.Game.Fields.Get("_editorstyle") as string == "gamebook")
+                {
+                    m_editorStyle = EditorStyle.GameBook;
+                }
+
+                // need to initialise the EditableScriptFactory after we've loaded the game XML above,
+                // as the editor definitions contain the "friendly" templates for script commands.
+                m_editableScriptFactory = new EditableScriptFactory(this, m_scriptFactory, m_worldModel);
+
+                m_initialised = true;
+
+                m_worldModel.ObjectsUpdated += m_worldModel_ObjectsUpdated;
+
+                foreach (Element e in m_worldModel.Elements.GetElements(ElementType.Editor))
+                {
+                    EditorDefinition def = new EditorDefinition(m_worldModel, e);
+                    if (def.AppliesTo != null)
+                    {
+                        // Normal editor definition for editing an element or a script command
+                        m_editorDefinitions.Add(def.AppliesTo, def);
+                    }
+                    else if (def.Pattern != null)
+                    {
+                        // Editor definition for an expression template in the "if" editor
+                        m_expressionDefinitions.Add(def.Pattern, def);
+                    }
+                }
+
                 if (m_worldModel.Version == WorldModelVersion.v500)
                 {
                     m_worldModel.Elements.Get("game").Fields.Set("gameid", GetNewGameId());

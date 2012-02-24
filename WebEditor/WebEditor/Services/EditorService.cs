@@ -22,6 +22,12 @@ namespace WebEditor.Services
             public string Element { get; set; }
         }
 
+        public struct InitialiseResult
+        {
+            public bool Success;
+            public string Error;
+        }
+
         private EditorController m_controller;
         private Dictionary<string, TreeItem> m_elements = new Dictionary<string, TreeItem>();
         private int m_id;
@@ -34,6 +40,7 @@ namespace WebEditor.Services
         private bool m_createInverse = true;
         private bool m_needsSaving = false;
         private string m_uiAction = null;
+        private string m_initMessage = null;
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
@@ -59,10 +66,13 @@ namespace WebEditor.Services
             m_controller.EditorMode = EditorMode.Web;
         }
 
-        public void Initialise(int id, string filename, string libFolder, bool simpleMode)
+        public InitialiseResult Initialise(int id, string filename, string libFolder, bool simpleMode)
         {
+            InitialiseResult result = new InitialiseResult();
             m_id = id;
             m_controller.SimpleMode = simpleMode;
+            m_controller.ShowMessage += m_controller_ShowMessage;
+
             if (m_controller.Initialise(filename, libFolder))
             {
                 m_controller.ClearTree += m_controller_ClearTree;
@@ -75,7 +85,20 @@ namespace WebEditor.Services
                 m_controller.UndoListUpdated += m_controller_UndoListUpdated;
                 m_controller.RedoListUpdated += m_controller_RedoListUpdated;
                 m_controller.UpdateTree();
+                result.Success = true;
             }
+            else
+            {
+                result.Success = false;
+                result.Error = m_initMessage;
+            }
+
+            return result;
+        }
+
+        void m_controller_ShowMessage(string message)
+        {
+            m_initMessage = message;
         }
 
         public EditorController Controller { get { return m_controller; } }

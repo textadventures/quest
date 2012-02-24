@@ -35,7 +35,11 @@ namespace WebEditor.Controllers
             {
                 return Json(new { error = "Invalid ID" }, JsonRequestBehavior.AllowGet);
             }
-            editor.Initialise(id, filename, libFolder, simpleMode);
+            var result = editor.Initialise(id, filename, libFolder, simpleMode);
+            if (!result.Success)
+            {
+                return Json(new { error = result.Error.Replace(Environment.NewLine, "<br/>") }, JsonRequestBehavior.AllowGet);
+            }
             return Json(editor.GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
         }
 
