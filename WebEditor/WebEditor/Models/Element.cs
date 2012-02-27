@@ -196,7 +196,14 @@ namespace WebEditor.Models
 
             if (handled && addSaveValueToResult)
             {
-                result.Values.Add(attribute, saveValue);
+                if (result.Values.ContainsKey(attribute))
+                {
+                    Logging.Log.ErrorFormat("SaveData already contains attribute \"{0}\" - saveValue (\"{1}\") discarded", attribute, saveValue);
+                }
+                else
+                {
+                    result.Values.Add(attribute, saveValue);
+                }
             }
         }
 
