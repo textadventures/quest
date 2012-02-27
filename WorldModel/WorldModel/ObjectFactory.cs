@@ -168,7 +168,13 @@ namespace AxeSoftware.Quest
             }
         }
 
-        protected virtual void RemoveReferences(Element e) { }
+        protected virtual void RemoveReferences(Element destroyedElement)
+        {
+            foreach (Element e in WorldModel.Elements.GetElements())
+            {
+                e.Fields.RemoveReferencesTo(destroyedElement);
+            }
+        }
 
         private void AddDestroyToUndoLog(Element appliesTo, ObjectType type)
         {
@@ -397,6 +403,8 @@ namespace AxeSoftware.Quest
                     e.Fields.RemoveTypeUndoable(destroyedElement);
                 }
             }
+
+            base.RemoveReferences(destroyedElement);
         }
     }
 

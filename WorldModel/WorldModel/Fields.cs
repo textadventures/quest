@@ -762,6 +762,57 @@ namespace AxeSoftware.Quest
 
             return false;
         }
+
+        internal void RemoveReferencesTo(Element e)
+        {
+            List<string> nullifyAttributes = new List<string>();
+
+            foreach (var attribute in m_attributes)
+            {
+                Element elementValue = attribute.Value as Element;
+                if (elementValue != null)
+                {
+                    if (elementValue == e)
+                    {
+                        nullifyAttributes.Add(attribute.Key);
+                    }
+                    continue;
+                }
+
+                QuestList<Element> listValue = attribute.Value as QuestList<Element>;
+                if (listValue != null)
+                {
+                    while (listValue.Contains(e))
+                    {
+                        listValue.Remove(e);
+                    }
+                    continue;
+                }
+
+                QuestDictionary<Element> dictionaryValue = attribute.Value as QuestDictionary<Element>;
+                if (dictionaryValue != null)
+                {
+                    List<string> keysToRemove = new List<string>();
+                    foreach (var item in dictionaryValue)
+                    {
+                        if (item.Value == e)
+                        {
+                            keysToRemove.Add(item.Key);
+                        }
+                    }
+                    foreach (string key in keysToRemove)
+                    {
+                        dictionaryValue.Remove(key);
+                    }
+                    continue;
+                }
+            }
+
+            foreach (string attribute in nullifyAttributes)
+            {
+                Set(attribute, null);
+            }
+        }
     }
 
     public class LazyFields
