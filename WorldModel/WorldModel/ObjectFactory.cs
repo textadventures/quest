@@ -36,15 +36,6 @@ namespace AxeSoftware.Quest
 
         protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null, Element elementToClone = null)
         {
-            if (addToUndoLog)
-            {
-                WorldModel.UndoLogger.AddUndoAction(
-                    new CreateDestroyLogEntry(name, CreateElementType, () =>
-                        {
-                            CreateInternal(name, false, extraInitialisation, initialTypes, initialFields, elementToClone);
-                        }));
-            }
-
             Element newElement;
 
             if (elementToClone == null)
@@ -54,6 +45,11 @@ namespace AxeSoftware.Quest
             else
             {
                 newElement = new Element(WorldModel, elementToClone);
+            }
+
+            if (addToUndoLog)
+            {
+                WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(name, CreateElementType, newElement, true, NotifyAddedElement, NotifyRemovedElement));
             }
 
             try
@@ -176,84 +172,38 @@ namespace AxeSoftware.Quest
 
         private void AddDestroyToUndoLog(Element appliesTo, ObjectType type)
         {
-            Fields fields = appliesTo.Fields;
-
-            Dictionary<string, object> allAttributes = fields.GetAllAttributes();
-
-            foreach (string attr in allAttributes.Keys.Where(key => key != "name"))
-            {
-                WorldModel.UndoLogger.AddUndoAction(new UndoFieldSet(WorldModel, appliesTo.Name, attr, allAttributes[attr], null, false, false));
-            }
-
-            // Get all inherited type names. We reverse this it's a stack and we want to re-add them in the same order.
-            IEnumerable<string> typeNames = appliesTo.Fields.Types.Select(t => t.Name).Reverse();
-
-            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, false, type, CreateElementType, typeNames));
+            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, appliesTo.ElemType, appliesTo, false, NotifyAddedElement, NotifyRemovedElement));
         }
 
         protected class CreateDestroyLogEntry : AxeSoftware.Quest.UndoLogger.IUndoAction
         {
-            private bool m_create;
-            private ObjectType? m_type;
             private string m_name;
-            private ElementType m_elemType;
-            private IEnumerable<string> m_typeNames;
-            private Action m_doCreate;
+            private ElementType m_type;
+            private bool m_create;
+            private Element m_element;
+            private Action<string> m_notifyAdded;
+            private Action<string> m_notifyRemoved;
 
-            public CreateDestroyLogEntry(string name, bool create, ObjectType? type, ElementType elemType)
-                : this(name, create, type, elemType, null)
+            public CreateDestroyLogEntry(string name, ElementType type, Element element, bool create, Action<string> notifyAdded, Action<string> notifyRemoved)
             {
-            }
-
-            public CreateDestroyLogEntry(string name, bool create, ObjectType? type, ElementType elemType, IEnumerable<string> typeNames)
-            {
-                m_create = create;
                 m_name = name;
                 m_type = type;
-                m_elemType = elemType;
-                m_typeNames = typeNames;
-            }
-
-            public CreateDestroyLogEntry(string name, ElementType elemType, Action doCreate)
-            {
-                m_name = name;
-                m_create = true;
-                m_elemType = elemType;
-                m_doCreate = doCreate;
+                m_create = create;
+                m_element = element;
+                m_notifyAdded = notifyAdded;
+                m_notifyRemoved = notifyRemoved;
             }
 
             private void CreateElement(WorldModel worldModel)
             {
-                if (m_doCreate != null)
-                {
-                    m_doCreate.Invoke();
-                }
-                else
-                {
-                    Element newElement;
-
-                    if (m_elemType == ElementType.Object)
-                    {
-                        newElement = worldModel.ObjectFactory.CreateObject(m_name, m_type.Value, false);
-                    }
-                    else
-                    {
-                        newElement = worldModel.GetElementFactory(m_elemType).Create(m_name, false);
-                    }
-
-                    if (m_typeNames != null)
-                    {
-                        foreach (string typeName in m_typeNames)
-                        {
-                            newElement.AddType(worldModel.Elements.Get(ElementType.ObjectType, typeName));
-                        }
-                    }
-                }
+                worldModel.Elements.Add(m_type, m_name, m_element);
+                m_notifyAdded(m_name);
             }
 
             private void DestroyElement(WorldModel worldModel)
             {
-                worldModel.GetElementFactory(m_elemType).DestroyElementSilent(m_name);
+                worldModel.Elements.Remove(m_type, m_name);
+                m_notifyRemoved(m_name);
             }
 
             public void DoUndo(WorldModel worldModel)
@@ -309,8 +259,6 @@ namespace AxeSoftware.Quest
 
         internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null)
         {
-            WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(objectName, true, type, ElementType.Object));
-
             string defaultType = WorldModel.DefaultTypeNames[type];
 
             if (WorldModel.State == GameState.Running)
@@ -322,7 +270,7 @@ namespace AxeSoftware.Quest
                 }
             }
 
-            Element newObject = base.CreateInternal(objectName, false, newElement => newElement.Type = type, initialTypes, initialFields);
+            Element newObject = base.CreateInternal(objectName, true, newElement => newElement.Type = type, initialTypes, initialFields);
 
             if (WorldModel.State != GameState.Running)
             {
