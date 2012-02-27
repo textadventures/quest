@@ -124,9 +124,9 @@
   <template name="EmptyListLabel">(vacio)</template>
   <template name="NothingSelectedLabel">(nada seleccionado)</template>
 
-  <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
-  <template templatetype="command" name="look">^look$</template>
+  <template templatetype="command" name="go"><![CDATA[^ir a (?<exit>.*)$|^ir (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^mirar (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
+  <template templatetype="command" name="look">^mirar$</template>
   <verbtemplate name="lookat">examinar</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
   <verbtemplate name="lookat">examinar</verbtemplate>
@@ -135,9 +135,9 @@
   <verbtemplate name="take">coger</verbtemplate>
   <verbtemplate name="take">coge</verbtemplate>
   <verbtemplate name="take">toma</verbtemplate>
-  <template templatetype="command" name="undo">^undo$</template>
-  <template templatetype="command" name="inventory">^i$|^inv$|^inventory$</template>
-  <template templatetype="command" name="quit">^quit$</template>
+  <template templatetype="command" name="undo">^malfari$</template>
+  <template templatetype="command" name="inventory">^i$|^inv$|^inventario$</template>
+  <template templatetype="command" name="quit">^fini$</template>
   <verbtemplate name="drop">dejar</verbtemplate>
   <verbtemplate name="use">usar</verbtemplate>
   <verbtemplate name="speakto">hablar a</verbtemplate>
@@ -146,11 +146,11 @@
   <verbtemplate name="speakto">habla</verbtemplate>
   <verbtemplate name="open">abrir</verbtemplate>
   <verbtemplate name="close">cerrar</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
-  <template templatetype="command" name="removefrom"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
-  <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
-  <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
-  <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
+  <template templatetype="command" name="put"><![CDATA[^dejar (?<object1>.*) (sobre|en) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^quitar (?<object1>.*) de (?<object2>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^preguntar (?<object>.*) sobre (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^hablar (?<object>.*) sobre (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">comprar</verbtemplate>
   <dynamictemplate name="DefaultBuy">"No puedes comprar" + object.article + "."</dynamictemplate>
@@ -160,7 +160,7 @@
   <dynamictemplate name="DefaultDrink">"No puedes beberte" + object.article + "."</dynamictemplate>
   <verbtemplate name="eat">comer</verbtemplate>
   <dynamictemplate name="DefaultEat">"No puedes comerte" + object.article + "."</dynamictemplate>
-  <template templatetype="command" name="give"><![CDATA[^give (?<object1>.*) to (?<object2>.*)$]]></template>
+  <template templatetype="command" name="give"><![CDATA[^dar (?<object1>.*) a (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " no quiere " + object2.article + "."</dynamictemplate>
   <verbtemplate name="hit">golpea</verbtemplate>
   <dynamictemplate name="DefaultHit">"No puedes golpear" + object.article + "."</dynamictemplate>
@@ -209,17 +209,17 @@
   <dynamictemplate name="DefaultTie">"No puedes atar" + object.article + "."</dynamictemplate>
   <verbtemplate name="touch">tocar</verbtemplate>
   <dynamictemplate name="DefaultTouch">"No puedes tocar" + object.article + "."</dynamictemplate>
-  <template templatetype="command" name="turnon"><![CDATA[^turn on (?<object>.*)$|^turn (?<object>.*) on$|^switch on (?<object>.*)$|^switch (?<object>.*) on$]]></template>
-  <dynamictemplate name="DefaultTurnOn">"No puedes encender" + object.article + "."</dynamictemplate>
-  <template templatetype="command" name="turnoff"><![CDATA[^turn off (?<object>.*)$|^turn (?<object>.*) off$|^switch off (?<object>.*)$|^switch (?<object>.*) off$]]></template>
-  <dynamictemplate name="DefaultTurnOff">"No puedes apagar" + object.article + " off."</dynamictemplate>
+  <verbtemplate name="turnon">encender</verbtemplate>
+  <dynamictemplate name="DefaultTurnOn">"No puedes encender " + object.article + "."</dynamictemplate>
+  <verbtemplate name="turnoff">apager</verbtemplate>
+  <dynamictemplate name="DefaultTurnOff">"No puedes apagar " + object.article + "."</dynamictemplate>
   <verbtemplate name="turn">girar</verbtemplate>
   <dynamictemplate name="DefaultTurn">"No puedes girar" + object.article + "."</dynamictemplate>
   <verbtemplate name="unlock">abrir con llave</verbtemplate>
   <dynamictemplate name="DefaultUnlock">"No puedes abrir" + object.article + " con llave."</dynamictemplate>
   <verbtemplate name="untie">desatar</verbtemplate>
   <dynamictemplate name="DefaultUntie">"No puedes desatar" + object.article + "."</dynamictemplate>
-  <template templatetype="command" name="useon"><![CDATA[^use (?<object1>.*) on (?<object2>.*)$]]></template>
+  <template templatetype="command" name="useon"><![CDATA[^usar (?<object1>.*) (sobre|en|con) (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultUseOn">"No puedes usar" + object2.article + " así."</dynamictemplate>
   <verbtemplate name="wear">vestir</verbtemplate>
   <dynamictemplate name="DefaultWear">"No te " + object.article + " puedes poner."</dynamictemplate>
@@ -237,13 +237,13 @@
   <template name="DefaultWait">El tiempo pasa.</template>
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">Sorprendentemente, no pasa absolutamente nada.</template>
-
-  <template templatetype="command" name="help">^help$|^\?$</template>
-  <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
-<b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>
-<b>- Inventory:</b>  See which items you are carrying by typing I, INV or INVENTORY.<br/>
-<b>- Moving around:</b>  Press the compass buttons, or type GO NORTH, SOUTH, E, GO TO...<br/>
-<b>- Shortcuts:</b>  Press the up arrow and down arrow to scroll through commands you have already typed in. Try X... as a shortcut for LOOK AT...]]></template>
+  <template templatetype="command" name="help">^ayuda$|^\?$</template>
+  <template templatetype="command" name="save">^grabar$</template>
+  <template name="DefaultHelp"><![CDATA[<u>Ayuda rápida</u><br/><br/>
+<b>- Objects:</b>  Intenta MIRAR, EXAMINAR..., HABLAR CON..., COGER..., DEJAR..., ABRIR...., DAR ... A ..., USAR ... EN ...<br/>
+<b>- Inventario:</b>  Para ver qué objetos llevas contigo, escribe:  I, INV o INVENTARIO.<br/>
+<b>- Para moverte:</b>  Pulsa en la rosa de los vientos o escribe IR [AL] NORTE, SUR, E, ...<br/>
+<b>- Atajos de teclado:</b>  Pulsa arriba/abajo para localizar comandos tecleados previamente. X... es una abreviatura para EXAMINAR ...]]></template>
 
 
 </library>

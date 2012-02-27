@@ -123,21 +123,21 @@
   <template name="OutButtonLabel">Ekstere</template>
   <template name="EmptyListLabel">(malplena)</template>
   <template name="NothingSelectedLabel">(nenion elektita)</template>
-
-  <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
-  <template templatetype="command" name="look">^look$</template>
-  <verbtemplate name="lookat">regardi</verbtemplate>
+ 
+  <template templatetype="command" name="go"><![CDATA[^iri al (?<exit>.*)$|^iri (?<exit>.*)$|^(?<exit>nordokcidente|norde|nordoriente|okcidente|oriente|sudokcidente|sude|sudoriente|supren|malsupren|internen|eksteren|nok|n|nor|ok|or|sok|s|sor|sup|malsup|int|eks)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^rigardi (?<exit>nordokcidente|norde|nordoriente|okcidente|oriente|sudokcidente|sude|sudoriente|supren|malsupren|internen|eksteren|nok|n|nor|ok|or|sok|s|sor|sup|malsup|int|eks)$]]></template>
+  <template templatetype="command" name="look">^rigardi$</template>
+  <verbtemplate name="lookat">rigardi</verbtemplate>
   <verbtemplate name="lookat">r</verbtemplate>
   <verbtemplate name="lookat">observi</verbtemplate>
-  <verbtemplate name="lookat">reg</verbtemplate>
-  <verbtemplate name="lookat">re</verbtemplate> 
+  <verbtemplate name="lookat">rig</verbtemplate>
+  <verbtemplate name="lookat">ri</verbtemplate> 
   <verbtemplate name="take">preni</verbtemplate>
   <verbtemplate name="take">pren</verbtemplate>
   <verbtemplate name="take">pre</verbtemplate>
-  <template templatetype="command" name="undo">^undo$</template>
-  <template templatetype="command" name="inventory">^i$|^inv$|^inventory$</template>
-  <template templatetype="command" name="quit">^quit$</template>
+  <template templatetype="command" name="undo">^deshacer$</template>
+  <template templatetype="command" name="inventory">^i$|^inv$|^inventario$</template>
+  <template templatetype="command" name="quit">^fin$</template>
   <verbtemplate name="drop">forlasi</verbtemplate>
   <verbtemplate name="use">uzi</verbtemplate>
   <verbtemplate name="speakto">paroli al</verbtemplate>
@@ -146,11 +146,11 @@
   <verbtemplate name="speakto">diri</verbtemplate>
   <verbtemplate name="open">malfermi</verbtemplate>
   <verbtemplate name="close">fermi</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
-  <template templatetype="command" name="removefrom"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
-  <template templatetype="command" name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
-  <template templatetype="command" name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
-  <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
+  <template templatetype="command" name="put"><![CDATA[^lasi (?<object1>.*) (sur) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^preni (?<object1>.*) el (?<object2>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^demandi (?<object>.*) pri (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^diri (?<object>.*) pri (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^fuŝi (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">aĉeti</verbtemplate>
   <dynamictemplate name="DefaultBuy">"Vi ne povas aĉeti " + object.article + "n."</dynamictemplate>
@@ -160,7 +160,7 @@
   <dynamictemplate name="DefaultDrink">"Vi ne povas trinki " + object.article + "n."</dynamictemplate>
   <verbtemplate name="eat">manĝi</verbtemplate>
   <dynamictemplate name="DefaultEat">"Vi ne povas manĝi " + object.article + "n."</dynamictemplate>
-  <template templatetype="command" name="give"><![CDATA[^give (?<object1>.*) to (?<object2>.*)$]]></template>
+  <template templatetype="command" name="give"><![CDATA[^doni (?<object1>.*) al (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " ne volas + object2.article + "."</dynamictemplate>
   <verbtemplate name="hit">frapi</verbtemplate>
   <dynamictemplate name="DefaultHit">"Vi ne povas frapi " + object.article + "n."</dynamictemplate>
@@ -209,9 +209,9 @@
   <dynamictemplate name="DefaultTie">"Vi ne povas ligi " + object.article + "n."</dynamictemplate>
   <verbtemplate name="touch">tuŝi</verbtemplate>
   <dynamictemplate name="DefaultTouch">"Vi ne povas tuŝi " + object.article + "n."</dynamictemplate>
-  <template templatetype="command" name="turnon"><![CDATA[^turn on (?<object>.*)$|^turn (?<object>.*) on$|^switch on (?<object>.*)$|^switch (?<object>.*) on$]]></template>
+  <verbtemplate name="turnon">ŝalti</verbtemplate>
   <dynamictemplate name="DefaultTurnOn">"Vi ne povas ŝalti " + object.article + "n."</dynamictemplate>
-  <template templatetype="command" name="turnoff"><![CDATA[^turn off (?<object>.*)$|^turn (?<object>.*) off$|^switch off (?<object>.*)$|^switch (?<object>.*) off$]]></template>
+  <verbtemplate name="turnoff">malŝalti</verbtemplate>
   <dynamictemplate name="DefaultTurnOff">"Vi ne povas malŝalti " + object.article + "n."</dynamictemplate>
   <verbtemplate name="turn">turni</verbtemplate>
   <dynamictemplate name="DefaultTurn">"Vi ne povas turni " + object.article + "n."</dynamictemplate>
@@ -219,7 +219,7 @@
   <dynamictemplate name="DefaultUnlock">"Vi ne povas malŝlosi " + object.article + "n."</dynamictemplate>
   <verbtemplate name="untie">malligi</verbtemplate>
   <dynamictemplate name="DefaultUntie">"Vi ne povas malligi " + object.article + "n."</dynamictemplate>
-  <template templatetype="command" name="useon"><![CDATA[^use (?<object1>.*) on (?<object2>.*)$]]></template>
+  <template templatetype="command" name="useon"><![CDATA[^uzi (?<object1>.*) (sur|en|kun) (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultUseOn">"Vi ne povas probi " + object2.article + "n tiel."</dynamictemplate>
   <verbtemplate name="wear">vesti</verbtemplate>
   <dynamictemplate name="DefaultWear">"Vi ne povas vesti " + object.article + "n."</dynamictemplate>
@@ -237,13 +237,14 @@
   <template name="DefaultWait">Tempo flugas.</template>
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">Surprize, absolute nenio okazas.</template>
-
   <template templatetype="command" name="help">^help$|^\?$</template>
-  <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
-<b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>
-<b>- Inventory:</b>  See which items you are carrying by typing I, INV or INVENTORY.<br/>
-<b>- Moving around:</b>  Press the compass buttons, or type GO NORTH, SOUTH, E, GO TO...<br/>
-<b>- Shortcuts:</b>  Press the up arrow and down arrow to scroll through commands you have already typed in. Try X... as a shortcut for LOOK AT...]]></template>
+  <template templatetype="command" name="help">^helpon$|^\?$</template>
+  <template templatetype="command" name="save">^savi$</template>
+  <template name="DefaultHelp"><![CDATA[<u>Rapida helpo</u><br/><br/>
+<b>- Objectoj:</b>  Provu RIGARDI..., PAROLI KUN..., PRENI..., LASI..., MALFERMI..., MALFERMI..., DONI... AL..., UZI... KUN...<br/>
+<b>- Inventario:</b> Por scii kiujn objektojn vi kunportas, tajpu I, INV aux INVENTARIO.<br/>
+<b>- Moving around:</b>  Klaku sur la direkt-butonojn, aux tajpu IRU NORDE, SUDE, OR, IRU [AL]...<br/>
+<b>- Rapidiloj:</b> Presu supren/malsupren por rehavi viajn atauxajn komandojn. Probu X... kiel mallongigo por RIGARDU ....]]></template>
 
 
 </library>
