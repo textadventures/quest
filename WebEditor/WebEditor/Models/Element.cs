@@ -251,7 +251,7 @@ namespace WebEditor.Models
                             int dictionaryCount = 0;
                             foreach (var item in dictionary.Items.Values)
                             {
-                                object expressionValue = provider.GetValue(string.Format("{0}-key{1}", key, dictionaryCount)).ConvertTo(typeof(string));
+                                string expressionValue = GetValueProviderString(provider, string.Format("{0}-key{1}", key, dictionaryCount));
                                 switchResult.Attributes.Add(string.Format("key{0}", dictionaryCount), expressionValue);
 
                                 ElementSaveData.ScriptsSaveData caseScriptResult = new ElementSaveData.ScriptsSaveData();
@@ -363,9 +363,8 @@ namespace WebEditor.Models
                         else
                         {
                             string key = string.Format("{0}-simpleeditor", attributePrefix);
-                            ValueProviderResult value = provider.GetValue(key);
-                            if (value == null) return string.Empty;
-                            string simpleValue = value.ConvertTo(typeof(string)) as string;
+                            string simpleValue = GetValueProviderString(provider, key);
+                            if (simpleValue == null) return string.Empty;
 
                             switch (simpleEditor)
                             {
@@ -385,8 +384,7 @@ namespace WebEditor.Models
                     if (dropdownKeyValue == "expression")
                     {
                         string key = attributePrefix;
-                        ValueProviderResult value = provider.GetValue(key);
-                        return value == null ? null : value.ConvertTo(typeof(string));
+                        return GetValueProviderString(provider, key);
                     }
                     else
                     {
@@ -407,8 +405,7 @@ namespace WebEditor.Models
             else
             {
                 string key = attributePrefix;
-                ValueProviderResult value = provider.GetValue(key);
-                return value == null ? null : value.ConvertTo(typeof(string));
+                return GetValueProviderString(provider, key);
             }
         }
 
