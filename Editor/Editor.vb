@@ -141,6 +141,7 @@ Public Class Editor
         menu.AddMenuClickHandler("publish", AddressOf Publish)
         menu.AddMenuClickHandler("find", AddressOf Find)
         menu.AddMenuClickHandler("simplemode", AddressOf ToggleSimpleMode)
+        menu.AddMenuClickHandler("wordwrap", AddressOf WordWrap)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -785,6 +786,7 @@ Public Class Editor
         ctlToolbar.CodeView = codeView
         m_menu.MenuVisible("add") = Not codeView
         m_menu.MenuVisible("find") = codeView
+        m_menu.MenuVisible("wordwrap") = codeView
         m_menu.MenuEnabled("simplemode") = Not codeView
     End Sub
 
@@ -1056,5 +1058,10 @@ Public Class Editor
                         ctlReloadBanner.AlertText = "Save this game and then click Reload to apply changes from updating Included Libraries."
                         ctlReloadBanner.Visible = True
                     End Sub)
+    End Sub
+
+    Private Sub WordWrap()
+        m_menu.MenuChecked("wordwrap") = Not m_menu.MenuChecked("wordwrap")
+        ctlTextEditor.WordWrap = m_menu.MenuChecked("wordwrap")
     End Sub
 End Class

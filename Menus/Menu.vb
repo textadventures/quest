@@ -57,6 +57,7 @@
         AddMenuData("find", MenuMode.Editor)
         AddMenuData("options", MenuMode.GameBrowser, MenuMode.Player)
         AddMenuData("simplemode", MenuMode.Editor)
+        AddMenuData("wordwrap", MenuMode.Editor)
     End Sub
 
     Private Sub AddMenuData(key As String, ParamArray modes() As MenuMode)

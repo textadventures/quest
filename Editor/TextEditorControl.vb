@@ -81,4 +81,13 @@
     Public Sub Find()
         wpfTextEditor.Find()
     End Sub
+
+    Public Property WordWrap As Boolean
+        Get
+            Return wpfTextEditor.WordWrap
+        End Get
+        Set(value As Boolean)
+            wpfTextEditor.WordWrap = value
+        End Set
+    End Property
 End Class

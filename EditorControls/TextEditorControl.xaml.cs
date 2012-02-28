@@ -334,5 +334,11 @@ namespace AxeSoftware.Quest.EditorControls
         {
             ctlFind.Visibility = Visibility.Collapsed;
         }
+
+        public bool WordWrap
+        {
+            get { return textEditor.WordWrap; }
+            set { textEditor.WordWrap = value; }
+        }
     }
 }
