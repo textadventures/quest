@@ -13523,7 +13523,7 @@ ErrorHandler:
         Return GameFileName
     End Function
 
-    Public Delegate Function UnzipFunctionDelegate(filename As String, ByRef tempDir As String) As String
+    Public Delegate Function UnzipFunctionDelegate(filename As String, <Runtime.InteropServices.Out()> ByRef tempDir As String) As String
     Private m_unzipFunction As UnzipFunctionDelegate
 
     Public Sub SetUnzipFunction(unzipFunction As UnzipFunctionDelegate)

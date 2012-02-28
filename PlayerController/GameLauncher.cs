@@ -39,8 +39,7 @@ namespace AxeSoftware.Quest
 
         private static IASL GetGameFromZip(string filename, string libraryFolder, out string tempDir)
         {
-            tempDir = null;
-            string gameFile = UnzipAndGetGameFile(filename, ref tempDir);
+            string gameFile = UnzipAndGetGameFile(filename, out tempDir);
             if (gameFile == null) return null;
             IASL result = GetGame(gameFile, libraryFolder, filename);
             if (result != null)
@@ -50,7 +49,7 @@ namespace AxeSoftware.Quest
             return result;
         }
 
-        private static string UnzipAndGetGameFile(string zipFile, ref string tempDir)
+        private static string UnzipAndGetGameFile(string zipFile, out string tempDir)
         {
             // Unzips a file to a temp directory and returns the path of the ASL/CAS/ASLX file contained within it.
 
