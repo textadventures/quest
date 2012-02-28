@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head runat="server">
+    <!-- <% Response.Write(GetVersionHeader()); %> -->
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=0.9" />
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/jquery-ui.min.js"></script>

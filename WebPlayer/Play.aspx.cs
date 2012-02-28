@@ -389,5 +389,9 @@ namespace WebPlayer
             return null;
         }
 
+        protected string GetVersionHeader()
+        {
+            return "WebPlayer " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        }
     }
 }

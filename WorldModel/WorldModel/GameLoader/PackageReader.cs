@@ -18,7 +18,7 @@ namespace AxeSoftware.Quest
         public ReadResult LoadPackage(string filename)
         {
             ReadResult result = new ReadResult();
-            string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString(), Path.GetFileNameWithoutExtension(filename));
+            string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDir);
             ZipFile zip = ZipFile.Read(filename);
             zip.ExtractAll(tempDir);

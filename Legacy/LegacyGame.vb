@@ -376,6 +376,7 @@ Public Class LegacyGame
     Private m_readyForCommand As Boolean = True
     Private m_gameLoading As Boolean
     Private m_random As New Random()
+    Private m_tempFolder As String
 
     Private Const NUMBER_PLAYER_ERROR_MESSAGES As Integer = 38
     Private PlayerErrorMessageString(NUMBER_PLAYER_ERROR_MESSAGES) As String
@@ -466,6 +467,7 @@ Public Class LegacyGame
 
     Public Sub New(filename As String, originalFilename As String)
         QuestVersion = My.Application.Info.Version.ToString()
+        m_tempFolder = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString())
         InitialiseQuest()
         GetQuestSettings()
         GameLoadMethod = "normal"
@@ -3508,7 +3510,7 @@ ErrorHandler:
             Exit Function
         End If
 
-        sFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest", Guid.NewGuid().ToString(), FileToExtract)
+        sFileName = System.IO.Path.Combine(m_tempFolder, FileToExtract)
         System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(sFileName))
 
         If Not Extracted Then
@@ -13324,17 +13326,16 @@ ErrorHandler:
     End Function
 
     Private Sub Cleanup()
-#If Not Debug Then
-        DeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath, "Quest"))
-#End If
+        DeleteDirectory(m_tempFolder)
     End Sub
 
     Private Sub DeleteDirectory(dir As String)
-
-        Try
-            System.IO.Directory.Delete(dir, True)
-        Catch
-        End Try
+        If System.IO.Directory.Exists(dir) Then
+            Try
+                System.IO.Directory.Delete(dir, True)
+            Catch
+            End Try
+        End If
     End Sub
 
     Protected Overrides Sub Finalize()
@@ -13522,14 +13523,26 @@ ErrorHandler:
         Return GameFileName
     End Function
 
-    Private m_unzipFunction As Func(Of String, String)
+    Public Delegate Function UnzipFunctionDelegate(filename As String, <Runtime.InteropServices.Out()> ByRef tempDir As String) As String
+    Private m_unzipFunction As UnzipFunctionDelegate
 
-    Public Sub SetUnzipFunction(unzipFunction As Func(Of String, String))
+    Public Sub SetUnzipFunction(unzipFunction As UnzipFunctionDelegate)
         m_unzipFunction = unzipFunction
     End Sub
 
     Private Function GetUnzippedFile(filename As String) As String
-        Return m_unzipFunction.Invoke(filename)
+        Dim tempDir As String = Nothing
+        Dim result As String = m_unzipFunction.Invoke(filename, tempDir)
+        m_tempFolder = tempDir
+        Return result
     End Function
 
+    Public Property TempFolder As String Implements IASL.TempFolder
+        Get
+            Return m_tempFolder
+        End Get
+        Set
+            m_tempFolder = Value
+        End Set
+    End Property
 End Class

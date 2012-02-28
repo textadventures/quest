@@ -1536,17 +1536,19 @@ namespace AxeSoftware.Quest
 
         ~WorldModel()
         {
-#if (!DEBUG)
-            try
+            if (ResourcesFolder != null && System.IO.Directory.Exists(ResourcesFolder))
             {
-                System.IO.Directory.Delete(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Quest"), true);
+                try
+                {
+                    System.IO.Directory.Delete(ResourcesFolder, true);
+                }
+                catch { }
             }
-            catch { }
-#endif
         }
 
         public WorldModelVersion Version { get; internal set; }
         internal string VersionString { get; set; }
+        public string TempFolder { get; set; }
 
         internal OutputLogger OutputLogger { get { return m_outputLogger; } }
     }
