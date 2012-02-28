@@ -17,6 +17,7 @@ namespace AxeSoftware.Quest
 
         private static IASL GetGame(string filename, string libraryFolder, string originalFilename)
         {
+            string tempDir;
             switch (System.IO.Path.GetExtension(filename).ToLower())
             {
                 case ".aslx":
@@ -30,24 +31,30 @@ namespace AxeSoftware.Quest
                     game.SetUnzipFunction(UnzipAndGetGameFile);
                     return game;
                 case ".zip":
-                    return GetGameFromZip(filename, libraryFolder);
+                    return GetGameFromZip(filename, libraryFolder, out tempDir);
                 default:
                     return null;
             }
         }
 
-        private static IASL GetGameFromZip(string filename, string libraryFolder)
+        private static IASL GetGameFromZip(string filename, string libraryFolder, out string tempDir)
         {
-            string gameFile = UnzipAndGetGameFile(filename);
+            tempDir = null;
+            string gameFile = UnzipAndGetGameFile(filename, ref tempDir);
             if (gameFile == null) return null;
-            return GetGame(gameFile, libraryFolder, filename);
+            IASL result = GetGame(gameFile, libraryFolder, filename);
+            if (result != null)
+            {
+                result.TempFolder = tempDir;
+            }
+            return result;
         }
 
-        private static string UnzipAndGetGameFile(string zipFile)
+        private static string UnzipAndGetGameFile(string zipFile, ref string tempDir)
         {
             // Unzips a file to a temp directory and returns the path of the ASL/CAS/ASLX file contained within it.
 
-            string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString(), Path.GetFileNameWithoutExtension(zipFile));
+            tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDir);
             ZipFile zip = ZipFile.Read(zipFile);
             zip.ExtractAll(tempDir);

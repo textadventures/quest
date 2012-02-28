@@ -13523,14 +13523,26 @@ ErrorHandler:
         Return GameFileName
     End Function
 
-    Private m_unzipFunction As Func(Of String, String)
+    Public Delegate Function UnzipFunctionDelegate(filename As String, ByRef tempDir As String) As String
+    Private m_unzipFunction As UnzipFunctionDelegate
 
-    Public Sub SetUnzipFunction(unzipFunction As Func(Of String, String))
+    Public Sub SetUnzipFunction(unzipFunction As UnzipFunctionDelegate)
         m_unzipFunction = unzipFunction
     End Sub
 
     Private Function GetUnzippedFile(filename As String) As String
-        Return m_unzipFunction.Invoke(filename)
+        Dim tempDir As String = Nothing
+        Dim result As String = m_unzipFunction.Invoke(filename, tempDir)
+        m_tempFolder = tempDir
+        Return result
     End Function
 
+    Public Property TempFolder As String Implements IASL.TempFolder
+        Get
+            Return m_tempFolder
+        End Get
+        Set
+            m_tempFolder = Value
+        End Set
+    End Property
 End Class
