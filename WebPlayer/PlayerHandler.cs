@@ -320,7 +320,7 @@ namespace WebPlayer
 
         public void SetStatusText(string text)
         {
-            m_buffer.AddJavaScriptToBuffer("updateStatus", new StringParameter(text));
+            m_buffer.AddJavaScriptToBuffer("updateStatus", new StringParameter(text.Replace(Environment.NewLine, "<br />")));
         }
 
         public void OutputText(string text)
