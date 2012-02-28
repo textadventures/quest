@@ -333,6 +333,7 @@ namespace WebEditor.Services
             }
             catch (Exception ex)
             {
+                Logging.Log.ErrorFormat("Error in SaveElement: {0}", ex);
                 result.Error = ex.Message;
                 return result;
             }
