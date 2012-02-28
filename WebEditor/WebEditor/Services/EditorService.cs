@@ -1012,15 +1012,10 @@ namespace WebEditor.Services
 
         private void VerbsAdd(string element, string editorId, string verbPattern)
         {
+            verbPattern = verbPattern.ToLower();
             IEditorControl ctl = FindEditorControl(element, editorId);
             IEditorDataExtendedAttributeInfo data = (IEditorDataExtendedAttributeInfo)m_controller.GetEditorData(element);
             string verbAttribute = m_controller.GetVerbAttributeForPattern(verbPattern);
-
-            if (data.GetAttribute(verbAttribute) != null)
-            {
-                m_popupError = "Verb already exists";
-                return;
-            }
 
             if (!Controller.IsVerbAttribute(verbAttribute))
             {
@@ -1036,6 +1031,12 @@ namespace WebEditor.Services
                     m_popupError = clashMessage;
                     return;
                 }
+            }
+
+            if (data.GetAttribute(verbAttribute) != null)
+            {
+                m_popupError = "Verb already exists";
+                return;
             }
 
             Controller.StartTransaction(string.Format("Add '{0}' verb", verbPattern));

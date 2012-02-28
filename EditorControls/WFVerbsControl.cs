@@ -57,7 +57,7 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (result.Cancelled) return;
 
-            string selectedPattern = result.Result;
+            string selectedPattern = result.Result.ToLower();
             string selectedAttribute = Controller.GetVerbAttributeForPattern(selectedPattern);
 
             AddVerb(selectedPattern, selectedAttribute);
