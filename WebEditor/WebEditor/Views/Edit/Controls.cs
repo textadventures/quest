@@ -34,7 +34,7 @@ namespace WebEditor.Views.Edit
             {typeof(IEditableDictionary<IEditableScripts>), "scriptdictionary"}
         };
 
-        public static IEnumerable<string> GetDropdownValues(IEditorControl ctl, string currentValue)
+        public static IEnumerable<SelectListItem> GetDropdownValues(IEditorControl ctl, string currentValue)
         {
             IEnumerable<string> valuesList = ctl.GetListString("validvalues");
             IDictionary<string, string> valuesDictionary = ctl.GetDictionary("validvalues");
@@ -42,11 +42,7 @@ namespace WebEditor.Views.Edit
 
             // TO DO: Need a way of allowing free text entry
 
-            if (valuesDictionary != null)
-            {
-                valuesList = valuesDictionary.Values.ToArray();
-            }
-            else if (fontsList)
+            if (fontsList)
             {
                 // TO DO: Fonts list should be a standard list of web-safe fonts, not the list of fonts on the server
                 List<string> fonts = new List<string>();
@@ -57,18 +53,22 @@ namespace WebEditor.Views.Edit
                 valuesList = fonts;
             }
 
-            if (valuesList == null)
+            if (valuesList != null)
             {
-                throw new Exception("Invalid type for validvalues");
-            }
+                if (string.IsNullOrEmpty(currentValue))
+                {
+                    valuesList = new List<string> { "" }.Union(valuesList);
+                }
 
-            if (string.IsNullOrEmpty(currentValue))
+                return valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == currentValue) });
+            }
+            else if (valuesDictionary != null)
             {
-                return new List<string> { "" }.Union(valuesList);
+                return valuesDictionary.Select(kvp => new SelectListItem { Text = kvp.Value, Value = kvp.Key, Selected = (kvp.Key == currentValue) });
             }
             else
             {
-                return valuesList;
+                throw new Exception("Invalid type for validvalues");
             }
         }
 

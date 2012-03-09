@@ -87,8 +87,8 @@
             @ctl.Caption
             break;
         case "dropdown":
-            IEnumerable<string> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, (string)value);
-            @Html.DropDownList(name, valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == (string)(value)) }));
+            IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, (string)value);
+            @Html.DropDownList(name, valuesList);
             break;
         case "expression":
             @RenderExpressionControl(ctl, name, (string)value)
@@ -171,8 +171,8 @@
                 editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"width: 50px\" />");
                 break;
             case "dropdown":
-                IEnumerable<string> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, simpleValue);
-                editorHtml = Html.DropDownList(name + "-simpleeditor", valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == simpleValue) }));
+                IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, simpleValue);
+                editorHtml = Html.DropDownList(name + "-simpleeditor", valuesList);
                 break;
             default:
                 throw new InvalidOperationException("Invalid control type for expression");

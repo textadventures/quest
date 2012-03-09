@@ -180,8 +180,8 @@
             break;
         case "dropdown":
             string selectedItem = value as string;
-            IEnumerable<string> valuesList = Controls.GetDropdownValues(ctl, selectedItem);
-            @Html.DropDownList(ctl.Attribute, valuesList.Select(v => new SelectListItem { Text = v, Value = v, Selected = (v == selectedItem) }));
+            IEnumerable<SelectListItem> valuesList = Controls.GetDropdownValues(ctl, selectedItem);
+            @Html.DropDownList(ctl.Attribute, valuesList);
             break;
         case "richtext":
             @Html.TextArea(ctl.Attribute, (string)value, 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
