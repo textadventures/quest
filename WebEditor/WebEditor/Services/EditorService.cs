@@ -911,6 +911,10 @@ namespace WebEditor.Services
                     return AddNewObject(data[1], data[0]);
                 case "addexit":
                     return AddNewExit(key);
+                case "addfunction":
+                    return AddNewFunction(parameter);
+                case "addtimer":
+                    return AddNewTimer(parameter);
                 case "delete":
                     if (DeleteElement(key))
                     {
@@ -1151,6 +1155,32 @@ namespace WebEditor.Services
         private string AddNewExit(string parent)
         {
             return m_controller.CreateNewExit(parent);
+        }
+
+        private string AddNewFunction(string value)
+        {
+            ValidationResult result = m_controller.CanAdd(value);
+            if (!result.Valid)
+            {
+                m_popupError = GetValidationError(result, value);
+                return null;
+            }
+
+            m_controller.CreateNewFunction(value);
+            return value;
+        }
+
+        private string AddNewTimer(string value)
+        {
+            ValidationResult result = m_controller.CanAdd(value);
+            if (!result.Valid)
+            {
+                m_popupError = GetValidationError(result, value);
+                return null;
+            }
+
+            m_controller.CreateNewTimer(value);
+            return value;
         }
 
         private bool DeleteElement(string element)

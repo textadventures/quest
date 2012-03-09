@@ -808,7 +808,11 @@ function addNewElement(elementType, objectType, filter) {
             }
             break;
         case "function":
+            addNewFunction();
+            break;
         case "timer":
+            addNewTimer();
+            break;
         case "walkthrough":
         case "include":
         case "template":
@@ -847,6 +851,18 @@ function addNewObject() {
 
 function addNewExit() {
     toplevelAdditionalAction("main addexit");
+}
+
+function addNewFunction() {
+    showDialog("Please enter a name for the new function", "", function (text) {
+        toplevelAdditionalAction("main addfunction " + text);
+    });
+}
+
+function addNewTimer() {
+    showDialog("Please enter a name for the new timer", "", function (text) {
+        toplevelAdditionalAction("main addtimer " + text);
+    });
 }
 
 function selectTreeNode(node) {
