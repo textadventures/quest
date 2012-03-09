@@ -203,6 +203,7 @@ function initialiseButtons() {
 }
 
 function initialiseElementEditor(tab) {
+    finishFormSubmit();
     var pageTitle = $("#_pageTitle").val();
     document.title = pageTitle;
     var selectTab = $("#_additionalActionTab").val();
@@ -777,6 +778,7 @@ function updateButton(enabledButtons, label, button) {
 }
 
 function ajaxError() {
+    finishFormSubmit();
     $("#dialog-error").data("dialog_close", function () {
         location.reload();
     });
@@ -896,4 +898,19 @@ function filePosted(file) {
     $("#dialog-upload").dialog("close");
     $("#" + $("#dialog-upload").attr("data-key")).val(file);
     sendAdditionalAction("none");
+}
+
+var delayWorkingDisplay = null;
+
+function beginFormSubmit() {
+    $("body").addClass("waiting");
+    delayWorkingDisplay = setTimeout(function () {
+        $("#form-loading").show();
+    }, 250);
+}
+
+function finishFormSubmit() {
+    $("body").removeClass("waiting");
+    clearTimeout(delayWorkingDisplay);
+    $("#form-loading").hide();
 }

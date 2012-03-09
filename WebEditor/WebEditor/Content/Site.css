@@ -158,6 +158,25 @@ input.elementEditorFile
 {
     float: right;
 }
+#form-loading
+{
+    display: none;
+    position: absolute;
+    left: 50%;
+    margin-left: -70px;
+    background: yellowGreen;
+    width: 130px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    opacity: 0.7;
+    font-weight: bold;
+    font-size: 12px;
+}
+.waiting
+{
+    cursor: wait;
+}
 
 .jstree ul
 {

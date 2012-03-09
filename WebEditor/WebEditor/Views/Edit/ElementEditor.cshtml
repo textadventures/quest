@@ -1,6 +1,10 @@
 ﻿@using AxeSoftware.Quest;
 @using WebEditor.Views.Edit;
 @model WebEditor.Models.Element
+           
+<div id="form-loading">
+Working...
+</div>
 
 @if (!string.IsNullOrEmpty(Model.Error))
 {
@@ -41,7 +45,7 @@
     </div>
     }
 
-    @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm", OnComplete = "initialiseElementEditor", OnFailure = "ajaxError" }))
+    @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm", OnComplete = "initialiseElementEditor", OnFailure = "ajaxError", OnBegin = "beginFormSubmit" }))
     {
         <input type="hidden" name="_game_id" value="@Model.GameId" />
         <input type="hidden" name="_key" id="_key" value="@Model.Key" />
