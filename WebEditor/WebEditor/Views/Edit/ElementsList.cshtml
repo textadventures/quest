@@ -4,8 +4,11 @@
     <button type="button" class="elementslist-add" id="elementslist-add-@Model.Key" data-elementtype="@Model.ElementType" data-objecttype="@Model.ObjectType" data-filter="@Model.Filter">Add</button>
     <button type="button" class="elementslist-edit" id="elementslist-edit-@Model.Key" data-key="@Model.Key">Edit</button>
     <button type="button" class="elementslist-delete" id="elementslist-delete-@Model.Key" data-key="@Model.Key">Delete</button>
+    @if (Model.ElementType == "object")
+    {
     <button type="button" class="elementslist-moveup" id="elementslist-moveup-@Model.Key" data-key="@Model.Key">Move up</button>
     <button type="button" class="elementslist-movedown" id="elementslist-movedown-@Model.Key" data-key="@Model.Key">Move down</button>
+    }
 </div>
 
 <div>
