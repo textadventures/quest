@@ -806,7 +806,16 @@ function addNewRoom() {
 }
 
 function addNewObject() {
-    var possibleParents = $("#_newObjectPossibleParents").val().split(";");
+    var possibleParentsSource = $("#_newObjectPossibleParents").val().split(";");
+    var key = $("#_key").val();
+    var possibleParents = new Array();
+    for (idx in possibleParentsSource) {
+        var value = possibleParentsSource[idx];
+        if (value == key) {
+            value = $("#name").val();
+        }
+        possibleParents.push(value);
+    }
     showDialog("Please enter a name for the new object", "", function (text, parent) {
         toplevelAdditionalAction("main addobject " + text + ";" + parent);
     }, possibleParents, "Parent");
