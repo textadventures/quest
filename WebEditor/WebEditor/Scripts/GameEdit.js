@@ -372,7 +372,14 @@ function initialiseElementEditor(tab) {
         forced_root_block: "",
         force_br_newlines : true,
         force_p_newlines : false,
-        gecko_spellcheck: true
+        gecko_spellcheck: true,
+        inline_styles: false,
+        formats: {
+            bold : {inline : 'b' },  
+            italic : {inline : 'i' },
+            underline: { inline: 'u' }
+        },
+        valid_elements: "b,i,u,br"
     });
     $(".multi-dropdown").change(function () {
         var key = $(this).attr("data-key");
