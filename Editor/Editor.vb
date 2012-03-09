@@ -815,6 +815,8 @@ Public Class Editor
                         Else
                             AddNewCommand()
                         End If
+                    Case "turnscript"
+                        AddNewTurnScript()
                     Case Else
                         Throw New ArgumentOutOfRangeException
                 End Select

@@ -27,5 +27,12 @@
       <caption>After entering the room for the first time</caption>
       <attribute>firstenter</attribute>
     </control>
+
+    <control>
+      <caption>Turn scripts - run after every turn the player takes in this room</caption>
+      <controltype>elementslist</controltype>
+      <elementtype>object</elementtype>
+      <objecttype>turnscript</objecttype>
+    </control>
   </tab>
 </library>

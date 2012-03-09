@@ -80,6 +80,7 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_elementType == "object")
             {
                 string parent = m_data == null ? null : m_data.Name;
+                if (parent == "game") parent = null;
                 elements = Controller.GetObjectNames(m_objectType, false, parent, true);
             }
             else
