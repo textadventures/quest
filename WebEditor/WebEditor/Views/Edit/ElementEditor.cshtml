@@ -27,7 +27,19 @@
 }
 
 <div id="elementEditorForm">
-    <div class="elementEditorName">@Model.Name</div>
+    @if (!string.IsNullOrEmpty(Model.Name))
+    {
+    <div class="elementEditorHeader">
+        <div class="elementEditorButtons">
+            @if (Model.CanMove)
+            {
+            <button type="button" id="button-move">Move</button>
+            }
+        </div>
+
+        <div class="elementEditorName">@Model.Name</div>
+    </div>
+    }
 
     @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm", OnComplete = "initialiseElementEditor", OnFailure = "ajaxError" }))
     {

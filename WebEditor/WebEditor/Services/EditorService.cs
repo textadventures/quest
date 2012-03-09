@@ -264,8 +264,7 @@ namespace WebEditor.Services
             {
                 GameId = gameId,
                 Key = key,
-                // Element may not exist if we have just deleted it (we should be redirected afterwards)
-                Name = m_controller.ElementExists(key) ? m_controller.GetDisplayName(key) : null,
+                Name = m_controller.GetDisplayName(key),
                 EditorData = data,
                 EditorDefinition = def,
                 Tab = tab,
@@ -278,7 +277,8 @@ namespace WebEditor.Services
                 EnabledButtons = GetEnabledButtons(key),
                 PageTitle = "Quest - " + m_controller.GameName,
                 AvailableVerbs = string.Join("~", m_controller.GetVerbProperties().Values),
-                UIAction = uiAction
+                UIAction = uiAction,
+                CanMove = m_controller.CanMoveElement(key)
             };
         }
 

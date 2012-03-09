@@ -24,7 +24,7 @@ header, footer, nav, section
 .elementEditorName
 {
     font-size: 130%;
-    padding-bottom: 6px;
+    padding-top: 6px;
 }
 .elementEditorLabel
 {
@@ -143,6 +143,20 @@ input.elementEditorFile
 {
     width: 200px;
     vertical-align: top;
+}
+#elementEditor
+{
+    margin-top: -5px;
+}
+.elementEditorHeader
+{
+    margin-bottom: 4px;
+    overflow: auto;
+    height: 34px;
+}
+.elementEditorButtons
+{
+    float: right;
 }
 
 .jstree ul

@@ -670,6 +670,7 @@ namespace AxeSoftware.Quest
             {
                 return m_treeTitles[element];
             }
+            if (!m_worldModel.Elements.ContainsKey(element)) return null;
             return GetDisplayName(m_worldModel.Elements.Get(element));
         }
 
@@ -1426,6 +1427,13 @@ namespace AxeSoftware.Quest
         public string CreateNewJavascript()
         {
             return CreateNewElement(ElementType.Javascript, "javascript", null);
+        }
+
+        public bool CanMoveElement(string elementKey)
+        {
+            if (!m_worldModel.Elements.ContainsKey(elementKey)) return false;
+            Element element = m_worldModel.Elements.Get(elementKey);
+            return (element.ElemType == ElementType.Object && element.Type != ObjectType.Game);
         }
 
         public bool CanMoveElement(string elementKey, string newParentKey)

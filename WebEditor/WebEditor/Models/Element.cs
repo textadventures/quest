@@ -26,6 +26,7 @@ namespace WebEditor.Models
         public string Reload { get; set; }
         public string AvailableVerbs { get; set; }
         public string UIAction { get; set; }
+        public bool CanMove { get; set; }
     }
 
     public class IgnoredValue

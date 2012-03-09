@@ -632,6 +632,10 @@ function initialiseElementEditor(tab) {
         $("#dialog-upload").attr("data-key", key);
         $("#dialog-upload").dialog("open");
     });
+    $("#button-move").button({
+        icons: { primary: "ui-icon-extlink" }
+    }).click(function () {
+    });
 
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);
