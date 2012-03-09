@@ -20,5 +20,6 @@ namespace WebEditor.Models
         public string ElementType { get; set; }
         public string ObjectType { get; set; }
         public string Filter { get; set; }
+        public bool FillScreen { get; set; }
     }
 }

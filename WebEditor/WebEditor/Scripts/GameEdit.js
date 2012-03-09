@@ -802,6 +802,9 @@ function addNewElement(elementType, objectType, filter) {
                         alert("To do: command");
                     }
                     break;
+                case "turnscript":
+                    addNewTurnScript();
+                    break;
                 default:
                     alert("Unhandled: " + objectType);
                     break;
@@ -863,6 +866,10 @@ function addNewTimer() {
     showDialog("Please enter a name for the new timer", "", function (text) {
         toplevelAdditionalAction("main addtimer " + text);
     });
+}
+
+function addNewTurnScript() {
+    toplevelAdditionalAction("main addturnscript");
 }
 
 function selectTreeNode(node) {

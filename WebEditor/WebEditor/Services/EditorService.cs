@@ -600,6 +600,7 @@ namespace WebEditor.Services
             if (elementType == "object")
             {
                 string parent = data == null ? null : data.Name;
+                if (parent == "game") parent = null;
                 elements = Controller.GetObjectNames(objectType, false, parent, true);
             }
             else
@@ -637,7 +638,8 @@ namespace WebEditor.Services
                 Items = listItems,
                 ElementType = elementType,
                 ObjectType = objectType,
-                Filter = filter
+                Filter = filter,
+                FillScreen = ctl.GetBool("expand")
             };
         }
 
@@ -915,6 +917,9 @@ namespace WebEditor.Services
                     return AddNewFunction(parameter);
                 case "addtimer":
                     return AddNewTimer(parameter);
+                case "addturnscript":
+                    if (key == "game") key = null;
+                    return AddNewTurnScript(key);
                 case "delete":
                     if (DeleteElement(key))
                     {
@@ -1181,6 +1186,11 @@ namespace WebEditor.Services
 
             m_controller.CreateNewTimer(value);
             return value;
+        }
+
+        private string AddNewTurnScript(string parent)
+        {
+            return m_controller.CreateNewTurnScript(parent);
         }
 
         private bool DeleteElement(string element)

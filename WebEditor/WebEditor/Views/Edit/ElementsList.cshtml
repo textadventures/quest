@@ -12,7 +12,10 @@
 </div>
 
 <div>
-    <select id="select-@Model.Key" data-key="@Model.Key" size="40" style="width: 100%" class="elementslist">
+    @{
+        int size = Model.FillScreen ? 40 : 6;
+    }
+    <select id="select-@Model.Key" data-key="@Model.Key" size="@size" style="width: 100%" class="elementslist">
         @if (Model.Items != null)
         {
             foreach (var item in Model.Items)
