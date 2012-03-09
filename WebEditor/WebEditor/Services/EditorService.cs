@@ -259,6 +259,7 @@ namespace WebEditor.Services
             }
 
             IEnumerable<string> newObjectPossibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(key);
+            IEnumerable<string> movePossibleParents = m_controller.GetMovePossibleParents(key);
 
             return new Models.Element
             {
@@ -278,7 +279,8 @@ namespace WebEditor.Services
                 PageTitle = "Quest - " + m_controller.GameName,
                 AvailableVerbs = string.Join("~", m_controller.GetVerbProperties().Values),
                 UIAction = uiAction,
-                CanMove = m_controller.CanMoveElement(key)
+                CanMove = m_controller.CanMoveElement(key),
+                MovePossibleParents = (movePossibleParents == null) ? null : string.Join(";", movePossibleParents)
             };
         }
 
@@ -915,6 +917,9 @@ namespace WebEditor.Services
                         return "game";
                     }
                     break;
+                case "move":
+                    MoveElement(key, parameter);
+                    break;
                 case "undo":
                     if (m_canUndo)
                     {
@@ -1156,6 +1161,14 @@ namespace WebEditor.Services
                 return true;
             }
             return false;
+        }
+
+        private void MoveElement(string element, string newParent)
+        {
+            if (m_controller.CanMoveElement(element, newParent))
+            {
+                m_controller.MoveElement(element, newParent);
+            }
         }
 
         private void SwapElements(string element1, string element2)

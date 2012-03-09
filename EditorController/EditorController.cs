@@ -1515,6 +1515,21 @@ namespace AxeSoftware.Quest
             }
         }
 
+        public IEnumerable<string> GetMovePossibleParents(string elementKey)
+        {
+            if (!CanMoveElement(elementKey)) return null;
+
+            Element element = m_worldModel.Elements.Get(elementKey);
+
+            return from possibleParent in m_worldModel.Elements.GetElements(ElementType.Object)
+                   where possibleParent != element
+                   && possibleParent != element.Parent
+                   && possibleParent.Type == ObjectType.Object
+                   && !m_worldModel.ObjectContains(element, possibleParent)
+                   orderby possibleParent.Name
+                   select possibleParent.Name;
+        }
+
         public ValidationResult CanAdd(string name)
         {
             if (m_worldModel.Elements.ContainsKey(name))

@@ -85,8 +85,17 @@ function showDialog(prompt, defaultText, ok, list, listPrompt, autoCompleteList)
     if (typeof listPrompt == "undefined") listPrompt = null;
     if (typeof autoCompleteList == "undefined") autoCompleteList = null;
 
-    $("#dialog-input-text-entry").val(defaultText);
-    $("#dialog-input-text-prompt").html(prompt + ":");
+    if (prompt.length > 0) {
+        $("#dialog-input-text-entry").val(defaultText);
+        $("#dialog-input-text-prompt").html(prompt + ":");
+        $("#dialog-input-text-entry").show();
+        $("#dialog-input-text-prompt").show();
+    }
+    else {
+        $("#dialog-input-text-entry").hide();
+        $("#dialog-input-text-prompt").hide();
+    }
+
     var showList = false;
     var parent = "";
     if (list != null) {
@@ -635,6 +644,10 @@ function initialiseElementEditor(tab) {
     $("#button-move").button({
         icons: { primary: "ui-icon-extlink" }
     }).click(function () {
+        var possibleParents = $("#_movePossibleParents").val().split(";");
+        showDialog("", "", function (text, parent) {
+            toplevelAdditionalAction("main move " + parent);
+        }, possibleParents, "Move to");
     });
 
     var enabledButtons = $("#_enabledButtons").val();
