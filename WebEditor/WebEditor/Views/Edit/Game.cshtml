@@ -29,10 +29,13 @@
             else {
                 initialiseTree(data, "game");
                 $.get('@Url.Action("Scripts", new { id = Model.GameId })', function (data) {
+                    var tabHeaderHtml = "<ul>";
                     var scriptAdderHtml = "";
                     var count = 0;
                     for (var cat in data) {
-                        scriptAdderHtml += "<h3><a href=\"#\">" + cat + "</a></h3><div>"
+                        var divId = "cat-" + cat.replace(/ /g, "");
+                        tabHeaderHtml += "<li><a href=\"#" + divId + "\">" + cat + "</a></li>";
+                        scriptAdderHtml += "<div id=\"" + divId + "\">";
                         var scripts = data[cat].items;
                         for (var idx in scripts) {
                             var script = scripts[idx];
@@ -44,7 +47,8 @@
                         }
                         scriptAdderHtml += "</div>";
                     }
-                    $("#dialog-add-script-accordion").html(scriptAdderHtml);
+                    tabHeaderHtml += "</ul>";
+                    $("#dialog-add-script-accordion").html(tabHeaderHtml + scriptAdderHtml);
                 });
             }
         });

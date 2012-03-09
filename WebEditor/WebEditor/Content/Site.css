@@ -1,4 +1,4 @@
-html 
+html
 {
     height: 100%;
 }
@@ -16,10 +16,8 @@ body
     border: 0;
 }
 
-header,
-footer,
-nav,
-section {
+header, footer, nav, section
+{
     display: block;
 }
 
@@ -28,11 +26,11 @@ section {
     font-size: 130%;
     padding-bottom: 6px;
 }
-.elementEditorLabel 
+.elementEditorLabel
 {
     font-size: 80%;
 }
-.elementEditorTitle 
+.elementEditorTitle
 {
     font-size: 130%;
     padding-top: 14px;
@@ -50,7 +48,7 @@ section {
 {
     margin-bottom: 4px;
 }
-.elementEditorCaption 
+.elementEditorCaption
 {
     vertical-align: top;
 }
@@ -146,10 +144,6 @@ input.elementEditorFile
     width: 200px;
     vertical-align: top;
 }
-form#dialog-add-script-form
-{
-    max-height: 500px;
-}
 
 .jstree ul
 {
@@ -165,32 +159,32 @@ form#dialog-add-script-form
 /* Styles for basic forms
 -----------------------------------------------------------*/
 
-fieldset 
+fieldset
 {
-    border:1px solid #ddd;
-    padding:0 1.4em 1.4em 1.4em;
-    margin:0 0 1.5em 0;
+    border: 1px solid #ddd;
+    padding: 0 1.4em 1.4em 1.4em;
+    margin: 0 0 1.5em 0;
 }
 
-legend 
+legend
 {
-    font-size:1.2em;
+    font-size: 1.2em;
     font-weight: bold;
 }
 
-textarea 
+textarea
 {
     min-height: 75px;
 }
 
-.editor-label 
+.editor-label
 {
     margin: 1em 0 0 0;
 }
 
-.editor-field 
+.editor-field
 {
-    margin:0.5em 0 0 0;
+    margin: 0.5em 0 0 0;
 }
 
 
@@ -221,4 +215,46 @@ textarea
 .validation-summary-valid
 {
     display: none;
+}
+
+/* Left-aligned tabs based on http://keith-wood.name/uiTabs.html#tabs-left */
+
+#dialog-add-script-accordion
+{
+    position: relative;
+    padding-left: 8.5em;
+}
+#dialog-add-script-accordion .ui-tabs-nav
+{
+    position: absolute;
+    left: 0.25em;
+    top: 0.25em;
+    bottom: 0.25em;
+    width: 8em;
+    padding: 0.2em 0 0.2em 0.2em;
+}
+#dialog-add-script-accordion .ui-tabs-nav li
+{
+    right: 1px;
+    width: 100%;
+    border-right: none;
+    border-bottom-width: 1px !important;
+    border-radius: 4px 0px 0px 4px;
+    -moz-border-radius: 4px 0px 0px 4px;
+    -webkit-border-radius: 4px 0px 0px 4px;
+    overflow: hidden;
+}
+#dialog-add-script-accordion .ui-tabs-nav li.ui-tabs-selected
+{
+    border-right: 1px solid transparent;
+}
+#dialog-add-script-accordion .ui-tabs-nav li a
+{
+    float: right;
+    width: 100%;
+    text-align: right;
+}
+#dialog-add-script-accordion > div
+{
+    height: 400px;
 }

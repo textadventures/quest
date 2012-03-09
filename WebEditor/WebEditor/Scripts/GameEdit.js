@@ -24,7 +24,7 @@
         autoOpen: false,
         modal: true,
         resizable: false,
-        width: 400,
+        width: 500,
         buttons: {
             "OK": function () {
                 $(this).dialog("close");
@@ -258,9 +258,7 @@ function initialiseElementEditor(tab) {
             sendAdditionalAction("script add " + key + ";" + create);
         });
         $("#dialog-add-script").dialog("open");
-        $("#dialog-add-script-accordion").accordion({
-            autoHeight: false
-        });
+        $("#dialog-add-script-accordion").tabs();
     });
     $(".script-delete").button({
         icons: { primary: "ui-icon-trash" }
