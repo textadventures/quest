@@ -146,6 +146,10 @@ input.elementEditorFile
     width: 200px;
     vertical-align: top;
 }
+form#dialog-add-script-form
+{
+    max-height: 500px;
+}
 
 .jstree ul
 {
