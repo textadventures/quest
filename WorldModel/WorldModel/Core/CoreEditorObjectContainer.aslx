@@ -7,7 +7,7 @@
     <control>
       <controltype>dropdowntypes</controltype>
       <caption>Container type</caption>
-      <types>*=Not a container; container_open=Container; container_closed=Closed container; surface=Surface; container_limited=Limited container; openable=Openable/Closable</types>
+      <types>*=Not a container; container_open=Container; container_closed=Closed container; surface=Surface; container_limited=Limited container; container_volumelimited=Volumelimited container;openable=Openable/Closable</types>
       <width>150</width>
     </control>
 
@@ -101,6 +101,23 @@
       <nullable/>
     </control>
 
+	<control>
+      <controltype>number</controltype>
+      <caption>Maximum volume of objects</caption>
+      <attribute>maxvolume</attribute>
+      <width>100</width>
+      <mustinherit>container_volumelimited</mustinherit>
+      <minimum>0</minimum>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Full container message (leave blank for default)</caption>
+      <attribute>containerfullmessage</attribute>
+      <mustinherit>container_volumelimited</mustinherit>
+      <nullable/>
+    </control>
+	
     <control>
       <controltype>textbox</controltype>
       <attribute>openmsg</attribute>

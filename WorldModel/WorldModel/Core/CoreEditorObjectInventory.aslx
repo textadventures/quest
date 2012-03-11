@@ -2,8 +2,39 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>Inventory</caption>
-    <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+    <mustnotinherit>editor_room</mustnotinherit>
 
+	<control>
+      <controltype>title</controltype>
+      <caption>Volume</caption>
+    </control>
+	
+	<control>
+      <controltype>number</controltype>
+      <caption>Volume</caption>
+      <attribute>volume</attribute>
+      <width>100</width>
+      <mustinherit>defaultobject</mustinherit>
+      <minimum>0</minimum>
+    </control>
+	
+	<control>
+      <controltype>number</controltype>
+      <caption>Maximum volume of inventory</caption>
+      <attribute>maxvolume</attribute>
+      <width>100</width>
+      <mustinherit>defaultplayer</mustinherit>
+      <minimum>0</minimum>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Full container message (leave blank for default)</caption>
+      <attribute>containerfullmessage</attribute>
+      <mustinherit>defaultplayer</mustinherit>
+      <nullable/>
+    </control>	
+	
     <control>
       <controltype>title</controltype>
       <caption>Take</caption>

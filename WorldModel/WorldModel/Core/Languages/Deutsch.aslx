@@ -10,6 +10,7 @@
   <template name="DefaultSelfDescription">Du siehst aber gut aus.</template>
   <dynamictemplate name="TakeSuccessful">"Du nimmst " + GetPrefix (object,"ihn")+ " an dich."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Das kannst du nicht nehmen."</dynamictemplate>
+  <dynamictemplate name="FullInventory">"Du kannst nicht noch mehr tragen."</dynamictemplate>
   <template name="SeeListHeader">Du siehst</template>
   <template name="GoListHeader">Mögliche Ausgänge:</template>
   <template name="And">und</template>
@@ -86,6 +87,7 @@
   <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits ausgeschaltet."</dynamictemplate>"
   <dynamictemplate name="SwitchedOn">"Du schaltest " + object.article + " an."</dynamictemplate>
   <dynamictemplate name="SwitchedOff">"Du schaltest " + object.article + " aus."</dynamictemplate>  
+  <dynamictemplate name="Eaten">"Du isst " + object.article + "."</dynamictemplate>
   <template name="DefaultOops">Da gibt es nichts zu korrigieren.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " enthält " + " " + GetPrefix (object2,"kein")  + " " + GetDisplayAlias(object2) + "."</dynamictemplate>
 

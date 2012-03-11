@@ -61,7 +61,7 @@
     </multiple>
     <script>
       foreach (obj, object) {
-        DoTake(obj, multiple)
+		DoTake(obj, multiple)
       }
     </script>
   </command>
@@ -79,47 +79,66 @@
       msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
     }
     else {
-      found = true
-      takemsg = object.takemsg
-      
-      switch (TypeOf(object, "take")) {
-        case ("script") {
-          if (ismultiple) {
-            msg (prefix)
-          }
-          do (object, "take")
-          takemsg = ""
-        }
-        case ("boolean") {
-          if (object.take = true) {
-            object.parent = player
-            if (takemsg = null) {
-              takemsg = DynamicTemplate("TakeSuccessful", object)
-            }
-          }
-          else {
-            found = false
-          }
-        }
-        case ("string") {
-          object.parent = player
-          takemsg = object.take
-        }
-        default {
-          found = false
-        }
-      }
-      
-      if (not found and takemsg = null) takemsg = DynamicTemplate("TakeUnsuccessful", object)
-      
-      if (LengthOf(takemsg) > 0) {
-        msg (prefix + takemsg)
-      }
-      
-      if (HasScript(object, "ontake")) {
-        do (object, "ontake")
-      }
-    }
+		volume=0
+		foreach (obj,GetAllChildObjects(player)) {
+			if (HasInt(obj, "volume")) {
+				volume = volume + obj.volume
+			}		
+		}
+		if (not Contains(player, object)) {
+			volume = volume + GetVolume(object,true)
+		}
+		if (volume>player.maxvolume) {
+			if (HasString(player, "containerfullmessage")) {
+				msg(prefix + player.containerfullmessage)
+			}
+			else {
+				msg(prefix + DynamicTemplate("FullInventory", object))
+			}	
+		} else {
+	
+		  found = true
+		  takemsg = object.takemsg
+		  
+		  switch (TypeOf(object, "take")) {
+			case ("script") {
+			  if (ismultiple) {
+				msg (prefix)
+			  }
+			  do (object, "take")
+			  takemsg = ""
+			}
+			case ("boolean") {
+			  if (object.take = true) {
+				object.parent = player
+				if (takemsg = null) {
+				  takemsg = DynamicTemplate("TakeSuccessful", object)
+				}
+			  }
+			  else {
+				found = false
+			  }
+			}
+			case ("string") {
+			  object.parent = player
+			  takemsg = object.take
+			}
+			default {
+			  found = false
+			}
+		  }
+		  
+		  if (not found and takemsg = null) takemsg = DynamicTemplate("TakeUnsuccessful", object)
+		  
+		  if (LengthOf(takemsg) > 0) {
+			msg (prefix + takemsg)
+		  }
+		  
+		  if (HasScript(object, "ontake")) {
+			do (object, "ontake")
+		  }
+		}
+	}	
   </function>
 
   <command name="drop" template="drop">
