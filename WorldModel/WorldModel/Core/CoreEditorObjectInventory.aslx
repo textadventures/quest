@@ -36,11 +36,13 @@
     </control>	
 	
     <control>
+	  <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>title</controltype>
       <caption>Take</caption>
     </control>
 
     <control>
+	  <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>multi</controltype>
       <caption>Take</caption>
       <attribute>take</attribute>
@@ -51,6 +53,7 @@
     </control>
 
     <control>
+	  <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>textbox</controltype>
       <caption>Take message (leave blank for default)</caption>
       <attribute>takemsg</attribute>
@@ -62,6 +65,7 @@
     </control>
 
     <control>
+	  <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>script</controltype>
       <caption>After taking the object</caption>
       <attribute>ontake</attribute>
@@ -69,11 +73,13 @@
     </control>
 
     <control>
+	  <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>title</controltype>
       <caption>Drop</caption>
     </control>
 
     <control>
+	  <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>multi</controltype>
       <caption>Drop</caption>
       <attribute>drop</attribute>
@@ -84,6 +90,7 @@
     </control>
 
     <control>
+	  <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>textbox</controltype>
       <caption>Drop message (leave blank for default)</caption>
       <attribute>dropmsg</attribute>
@@ -95,7 +102,8 @@
     </control>
 
     <control>
-      <controltype>script</controltype>
+	  <mustnotinherit>defaultplayer</mustnotinherit>
+	  <controltype>script</controltype>
       <caption>After dropping the object</caption>
       <attribute>ondrop</attribute>
       <onlydisplayif>GetBoolean(this, "drop")</onlydisplayif>
