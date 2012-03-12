@@ -84,6 +84,7 @@
     <Compile Include="Models\Exits.cs" />
     <Compile Include="Models\FileUpload.cs" />
     <Compile Include="Models\Script.cs" />
+    <Compile Include="Models\ScriptDictionary.cs" />
     <Compile Include="Models\StringList.cs" />
     <Compile Include="Models\Verbs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -264,6 +265,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Edit\FileUpload.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Edit\ScriptDictionaryEditor.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

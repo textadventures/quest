@@ -590,6 +590,26 @@ namespace WebEditor.Services
             };
         }
 
+        public Models.ScriptDictionary GetScriptScriptDictionaryModel(int id, string key, string path, IEditorControl ctl)
+        {
+            string parameter;
+            IEditableScript scriptLine = GetScriptLine(key, path, out parameter);
+            IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
+            IEditableDictionary<IEditableScripts> value = (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
+            return GetScriptDictionaryModel(id, value, ctl, path);
+        }
+
+        public Models.ScriptDictionary GetScriptDictionaryModel(int id, IEditableDictionary<IEditableScripts> value, IEditorControl ctl, string attribute)
+        {
+            return new Models.ScriptDictionary
+            {
+                GameId = id,
+                Attribute = attribute,
+                KeyPrompt = ctl.GetString("keyprompt"),
+                Value = value
+            };
+        }
+
         public Models.ElementsList GetElementsListModel(int id, string key, IEditorControl ctl)
         {
             IEditorData data = m_controller.GetEditorData(key);

@@ -104,7 +104,7 @@
             </div>
             break;
         case "scriptdictionary":
-            @RenderScriptDictionary(ctl, (IEditableDictionary<IEditableScripts>)value, name)
+            @Html.Action("EditScriptScriptDictionary", new { id = Model.GameId, key = Model.Key, path = name, control = ctl })
             break;
         case "list":
             <div class="scriptStringListSection">
@@ -290,28 +290,6 @@
         @RenderScripts(script.ElseScript, attributePrefix + "-else")
         </div>
     }
-}
-
-@helper RenderScriptDictionary(IEditorControl ctl, IEditableDictionary<IEditableScripts> value, string attributePrefix)
-{
-    <div class="scriptDictionarySection ui-widget-header ui-corner-all toolbar" id="scriptDictionarySection-toolbar-@attributePrefix" style="display: none">
-        <button type="button" class="scriptDictionarySection-delete" data-key="@attributePrefix">Remove</button>
-    </div>
-    
-    int itemCount = 0;
-    foreach (IEditableListItem<IEditableScripts> item in value.Items.Values)
-    {
-        <div class="scriptDictionarySection">
-        @Html.CheckBox("selectscriptitem-" + attributePrefix + "-" + itemCount.ToString(), new { @class = "scriptDictionarySection-select", data_key = attributePrefix })
-        @Html.TextBox(attributePrefix + "-key" + itemCount.ToString(), item.Key)
-        </div>
-        <div class="childScript">
-        @RenderScripts(item.Value, attributePrefix + "-value" + itemCount.ToString())
-        </div>
-        itemCount++;
-    }
-    string keyPrompt = ctl.GetString("keyprompt");
-    <div class="scriptDictionarySection"><button type="button" class="script-dictionary-add" data-key="@attributePrefix" data-prompt="@keyPrompt">Add</button></div>
 }
 
 @functions {

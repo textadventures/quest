@@ -1,0 +1,21 @@
+﻿@model WebEditor.Models.ScriptDictionary
+
+<div class="scriptDictionarySection ui-widget-header ui-corner-all toolbar" id="scriptDictionarySection-toolbar-@Model.Attribute" style="display: none">
+    <button type="button" class="scriptDictionarySection-delete" data-key="@Model.Attribute">Remove</button>
+</div>
+
+@{
+    int itemCount = 0;
+    foreach (var item in Model.Value.Items.Values)
+    {
+        <div class="scriptDictionarySection">
+        @Html.CheckBox("selectscriptitem-" + Model.Attribute + "-" + itemCount.ToString(), new { @class = "scriptDictionarySection-select", data_key = Model.Attribute })
+        @Html.TextBox(Model.Attribute + "-key" + itemCount.ToString(), item.Key)
+        </div>
+        <div class="childScript">
+        @Html.Action("EditScriptValue", new { id = Model.GameId, key = Model.Attribute, script = item.Value, attribute = Model.Attribute + "-value" + itemCount.ToString() })
+        </div>
+        itemCount++;
+    }
+    <div class="scriptDictionarySection"><button type="button" class="script-dictionary-add" data-key="@Model.Attribute" data-prompt="@Model.KeyPrompt">Add</button></div>
+}
