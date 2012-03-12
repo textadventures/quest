@@ -124,7 +124,6 @@ namespace WebEditor.Models
         private void BindControl(ModelBindingContext bindingContext, ElementSaveData result, int gameId, string ignoreExpression, Dictionary<int, Services.EditorService> editorDictionary, Models.Element originalElement, IEditorControl ctl, string controlType, string attribute = null)
         {
             object saveValue = null;
-            bool handled = true;    // TO DO: Temporary until all controltypes are handled
             bool addSaveValueToResult = true;
             if (attribute == null) attribute = ctl.Attribute;
 
@@ -184,16 +183,26 @@ namespace WebEditor.Models
                     }
                     addSaveValueToResult = false;
                     break;
+                case "list":
+                    addSaveValueToResult = false;
+                    break;
+                case "pattern":
+                    // TO DO
+                    addSaveValueToResult = false;
+                    break;
                 default:
-                    handled = false;    // TO DO: Temporary until all controltypes are handled
-                    if (attribute == null)
+                    if (attribute == null || controlType == null)
                     {
-                        // TO DO: This is fine - otherwise throw an exception
+                        addSaveValueToResult = false;
+                    }
+                    else
+                    {
+                        throw new ArgumentException(string.Format("Save data model binder not implemented for control type {0}", controlType));
                     }
                     break;
             }
 
-            if (handled && addSaveValueToResult)
+            if (addSaveValueToResult)
             {
                 if (result.Values.ContainsKey(attribute))
                 {
