@@ -190,6 +190,10 @@ namespace WebEditor.Models
                     // TO DO
                     addSaveValueToResult = false;
                     break;
+                case "scriptdictionary":
+                    var originalDictionary = originalElement.EditorData.GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;
+                    saveValue = BindScriptDictionary(bindingContext.ValueProvider, editorDictionary[gameId].Controller, ignoreExpression, originalDictionary, attribute);
+                    break;
                 default:
                     if (attribute == null || controlType == null)
                     {
@@ -255,19 +259,7 @@ namespace WebEditor.Models
                         {
                             IEditorData dictionaryData = controller.GetScriptEditorData(script);
                             IEditableDictionary<IEditableScripts> dictionary = (IEditableDictionary<IEditableScripts>)dictionaryData.GetAttribute(ctl.Attribute);
-                            ElementSaveData.ScriptSaveData switchResult = new ElementSaveData.ScriptSaveData();
-                            int dictionaryCount = 0;
-                            foreach (var item in dictionary.Items.Values)
-                            {
-                                string expressionValue = GetValueProviderString(provider, string.Format("{0}-key{1}", key, dictionaryCount));
-                                switchResult.Attributes.Add(string.Format("key{0}", dictionaryCount), expressionValue);
-
-                                ElementSaveData.ScriptsSaveData caseScriptResult = new ElementSaveData.ScriptsSaveData();
-                                BindScriptLines(provider, string.Format("{0}-value{1}", key, dictionaryCount), controller, item.Value, caseScriptResult, ignoreExpression);
-                                switchResult.Attributes.Add(string.Format("value{0}", dictionaryCount), caseScriptResult);
-
-                                dictionaryCount++;
-                            }
+                            ElementSaveData.ScriptSaveData switchResult = BindScriptDictionary(provider, controller, ignoreExpression, dictionary, key);
                             scriptLine.Attributes.Add(ctl.Attribute, switchResult);
                         }
                         else if (ctl.ControlType == "list")
@@ -344,6 +336,27 @@ namespace WebEditor.Models
                 result.ScriptLines.Add(scriptLine);
                 count++;
             }
+        }
+
+        private ElementSaveData.ScriptSaveData BindScriptDictionary(IValueProvider provider, EditorController controller, string ignoreExpression, IEditableDictionary<IEditableScripts> dictionary, string key)
+        {
+            ElementSaveData.ScriptSaveData result = new ElementSaveData.ScriptSaveData();
+            if (dictionary != null)
+            {
+                int dictionaryCount = 0;
+                foreach (var item in dictionary.Items.Values)
+                {
+                    string expressionValue = GetValueProviderString(provider, string.Format("{0}-key{1}", key, dictionaryCount));
+                    result.Attributes.Add(string.Format("key{0}", dictionaryCount), expressionValue);
+
+                    ElementSaveData.ScriptsSaveData scriptResult = new ElementSaveData.ScriptsSaveData();
+                    BindScriptLines(provider, string.Format("{0}-value{1}", key, dictionaryCount), controller, item.Value, scriptResult, ignoreExpression);
+                    result.Attributes.Add(string.Format("value{0}", dictionaryCount), scriptResult);
+
+                    dictionaryCount++;
+                }
+            }
+            return result;
         }
 
         private object GetScriptParameterValue(EditorController controller, IValueProvider provider, string attributePrefix, string controlType, string simpleEditor, string templatesFilter, string oldTemplateValue, string ignoreExpression)

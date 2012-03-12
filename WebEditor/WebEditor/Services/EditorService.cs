@@ -303,10 +303,15 @@ namespace WebEditor.Services
                 {
                     object currentValue = data.GetAttribute(kvp.Key);
                     IEditableScripts script = currentValue as IEditableScripts;
+                    var dictionary = currentValue as IEditableDictionary<IEditableScripts>;
                     var newObjectRef = kvp.Value as WebEditor.Models.ElementSaveData.ObjectReferenceSaveData;
                     if (script != null)
                     {
                         SaveScript(script, kvp.Value as WebEditor.Models.ElementSaveData.ScriptsSaveData, key);
+                    }
+                    else if (dictionary != null)
+                    {
+                        SaveScriptDictionary(key, null, dictionary, kvp.Value as WebEditor.Models.ElementSaveData.ScriptSaveData);
                     }
                     else if (newObjectRef != null)
                     {
@@ -415,6 +420,10 @@ namespace WebEditor.Services
                     return false;
                 }
             }
+            if (oldValue == null && newValue is WebEditor.Models.ElementSaveData.ScriptSaveData)
+            {
+                return false;
+            }
             throw new NotImplementedException();
         }
 
@@ -440,36 +449,7 @@ namespace WebEditor.Services
                         {
                             IEditableDictionary<IEditableScripts> dictionary = (IEditableDictionary<IEditableScripts>)oldValue;
                             WebEditor.Models.ElementSaveData.ScriptSaveData newData = (WebEditor.Models.ElementSaveData.ScriptSaveData)attribute.Value;
-                            Dictionary<string, string> keysToChange = new Dictionary<string, string>();
-                            int dictionaryCount = 0;
-                            foreach (var item in dictionary.Items)
-                            {
-                                string newKey = (string)newData.Attributes[string.Format("key{0}", dictionaryCount)];
-                                if (item.Key != newKey)
-                                {
-                                    // Can't change dictionary keys while enumerating dictionary items - so
-                                    // change them afterwards
-                                    keysToChange.Add(item.Key, newKey);
-                                    m_needsSaving = true;
-                                }
-
-                                SaveScript(item.Value.Value, (WebEditor.Models.ElementSaveData.ScriptsSaveData)newData.Attributes[string.Format("value{0}", dictionaryCount)], parentElement);
-
-                                dictionaryCount++;
-                            }
-
-                            foreach (var item in keysToChange)
-                            {
-                                ValidationResult result = dictionary.CanAdd(item.Value);
-                                if (result.Valid)
-                                {
-                                    dictionary.ChangeKey(item.Key, item.Value);
-                                }
-                                else
-                                {
-                                    AddScriptError(parentElement, script, GetValidationError(result, item.Value));
-                                }
-                            }
+                            SaveScriptDictionary(parentElement, script, dictionary, newData);
                         }
                         else
                         {
@@ -518,6 +498,47 @@ namespace WebEditor.Services
                 }
 
                 count++;
+            }
+        }
+
+        private void SaveScriptDictionary(string parentElement, IEditableScript script, IEditableDictionary<IEditableScripts> dictionary, WebEditor.Models.ElementSaveData.ScriptSaveData newData)
+        {
+            Dictionary<string, string> keysToChange = new Dictionary<string, string>();
+            int dictionaryCount = 0;
+            foreach (var item in dictionary.Items)
+            {
+                string newKey = (string)newData.Attributes[string.Format("key{0}", dictionaryCount)];
+                if (item.Key != newKey)
+                {
+                    // Can't change dictionary keys while enumerating dictionary items - so
+                    // change them afterwards
+                    keysToChange.Add(item.Key, newKey);
+                    m_needsSaving = true;
+                }
+
+                SaveScript(item.Value.Value, (WebEditor.Models.ElementSaveData.ScriptsSaveData)newData.Attributes[string.Format("value{0}", dictionaryCount)], parentElement);
+
+                dictionaryCount++;
+            }
+
+            foreach (var item in keysToChange)
+            {
+                ValidationResult result = dictionary.CanAdd(item.Value);
+                if (result.Valid)
+                {
+                    dictionary.ChangeKey(item.Key, item.Value);
+                }
+                else
+                {
+                    if (script != null)
+                    {
+                        AddScriptError(parentElement, script, GetValidationError(result, item.Value));
+                    }
+                    else
+                    {
+                        // TO DO: Add ScriptDictionary error
+                    }
+                }
             }
         }
 
