@@ -1503,16 +1503,18 @@ namespace WebEditor.Services
 
             if (script == null)
             {
-                // TO DO
-                //if (parent == null)
-                //{
-                //    m_controller.CreateNewEditableScripts(element, attribute, value, true, true);
-                //}
-                //else
-                //{
-                //    ScriptCommandEditorData editorData = (ScriptCommandEditorData)m_controller.GetScriptEditorData(parent);
-                //    m_controller.CreateNewEditableScriptsChild(editorData, parameter, value, true);
-                //}
+                m_controller.StartTransaction("Paste script");
+                if (parent == null)
+                {
+                    script = m_controller.CreateNewEditableScripts(element, attribute, null, false);
+                }
+                else
+                {
+                    ScriptCommandEditorData editorData = (ScriptCommandEditorData)m_controller.GetScriptEditorData(parent);
+                    script = m_controller.CreateNewEditableScriptsChild(editorData, parameter, null, false);
+                }
+                script.Paste(0, false);
+                m_controller.EndTransaction();
             }
             else
             {
