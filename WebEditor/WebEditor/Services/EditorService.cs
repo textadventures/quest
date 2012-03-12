@@ -280,7 +280,8 @@ namespace WebEditor.Services
                 AvailableVerbs = string.Join("~", m_controller.GetVerbProperties().Values),
                 UIAction = uiAction,
                 CanMove = m_controller.CanMoveElement(key),
-                MovePossibleParents = (movePossibleParents == null) ? null : string.Join(";", movePossibleParents)
+                MovePossibleParents = (movePossibleParents == null) ? null : string.Join(";", movePossibleParents),
+                IsElement = m_controller.ElementExists(key)
             };
         }
 

@@ -39,6 +39,10 @@ Working...
             {
             <button type="button" id="button-move">Move</button>
             }
+            @if (Model.IsElement && Model.Name != "game")
+            {
+            <button type="button" id="button-delete">Delete</button>
+            }
         </div>
 
         <div class="elementEditorName">@Model.Name</div>

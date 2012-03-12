@@ -28,6 +28,7 @@ namespace WebEditor.Models
         public string UIAction { get; set; }
         public bool CanMove { get; set; }
         public string MovePossibleParents { get; set; }
+        public bool IsElement { get; set; }
     }
 
     public class IgnoredValue

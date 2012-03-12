@@ -151,11 +151,6 @@ function initialiseButtons() {
         addNewObject();
     });
     $("#buttonset-add").buttonset();
-    $("#button-delete").button({
-        icons: { primary: "ui-icon-trash" }
-    }).click(function () {
-        toplevelAdditionalAction("main delete");
-    });
     $("#button-undo").button({
         icons: { primary: "ui-icon-arrowreturnthick-1-w" }
     }).click(function () {
@@ -649,6 +644,11 @@ function initialiseElementEditor(tab) {
         showDialog("", "", function (text, parent) {
             toplevelAdditionalAction("main move " + parent);
         }, possibleParents, "Move to");
+    });
+    $("#button-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
+        toplevelAdditionalAction("main delete");
     });
 
     var enabledButtons = $("#_enabledButtons").val();
