@@ -1635,12 +1635,33 @@ namespace WebEditor.Services
             parent = null;
             parameter = null;
 
+            // Is it simply an attribute?
+
             if (attribute.IndexOf("-") == -1)
             {
                 script = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableScripts;
             }
             else
             {
+                string[] path;
+
+                // Is it a script dictionary?
+                
+                path = attribute.Split(new[] { '-' });
+                object value = m_controller.GetEditorData(element).GetAttribute(path[0]);
+                IEditableDictionary<IEditableScripts> dict = value as IEditableDictionary<IEditableScripts>;
+                if (dict != null)
+                {
+                    if (!path[1].StartsWith("value"))
+                    {
+                        throw new ArgumentException("Invalid path format");
+                    }
+                    int index = int.Parse(path[1].Substring(5));
+                    return dict.Items.ElementAt(index).Value.Value;
+                }
+
+                // Is it a nested script?
+
                 IEditableScript scriptLine = GetScriptLine(element, attribute, out parameter);
                 if (parameter == "then")
                 {
@@ -1664,7 +1685,7 @@ namespace WebEditor.Services
                     IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
                     if (parameter.Contains('-'))
                     {
-                        string[] path = parameter.Split('-');
+                        path = parameter.Split('-');
                         IEditableDictionary<IEditableScripts> dictionary = (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(path[0]);
                         if (path[1].StartsWith("value"))
                         {
@@ -1694,8 +1715,30 @@ namespace WebEditor.Services
         private IEditableScript GetScriptLine(string element, string attribute, out string parameter)
         {
             string[] path = attribute.Split(new[] { '-' });
-            IEditableScripts parent = m_controller.GetEditorData(element).GetAttribute(path[0]) as IEditableScripts;
-            return GetScriptLine(path, parent, out parameter);
+            object value = m_controller.GetEditorData(element).GetAttribute(path[0]);
+            
+            IEditableScripts parent = value as IEditableScripts;
+            if (parent != null)
+            {
+                return GetScriptLine(path, parent, out parameter);
+            }
+
+            IEditableDictionary<IEditableScripts> dict = value as IEditableDictionary<IEditableScripts>;
+            if (dict != null)
+            {
+                if (!path[1].StartsWith("value"))
+                {
+                    throw new ArgumentException("Invalid path format");
+                }
+                int index = int.Parse(path[1].Substring(5));
+                IEditableScripts script = dict.Items.ElementAt(index).Value.Value;
+
+                List<string> newPath = new List<string>(path);
+                newPath.RemoveRange(0, 1);
+                return GetScriptLine(newPath.ToArray(), script, out parameter);
+            }
+
+            throw new ArgumentException("Unknown script type");
         }
 
         private IEditableScript GetScriptLine(string[] path, IEditableScripts parent, out string parameter)
