@@ -48,7 +48,8 @@
                         scriptAdderHtml += "</div>";
                     }
                     tabHeaderHtml += "</ul>";
-                    $("#dialog-add-script-accordion").html(tabHeaderHtml + scriptAdderHtml);
+                    $("#dialog-add-script-tabs").html(tabHeaderHtml + scriptAdderHtml);
+                    $("#dialog-add-script-tabs").tabs();
                 });
             }
         });
@@ -154,7 +155,7 @@
 
 <div id="dialog-add-script" title="Add New Script">
     <form id="dialog-add-script-form" action="">
-        <div id="dialog-add-script-accordion">
+        <div id="dialog-add-script-tabs">
         </div>
     </form>
 </div>

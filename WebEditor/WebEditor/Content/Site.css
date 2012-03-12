@@ -252,12 +252,12 @@ textarea
 
 /* Left-aligned tabs based on http://keith-wood.name/uiTabs.html#tabs-left */
 
-#dialog-add-script-accordion
+#dialog-add-script-tabs
 {
     position: relative;
     padding-left: 8.5em;
 }
-#dialog-add-script-accordion .ui-tabs-nav
+#dialog-add-script-tabs .ui-tabs-nav
 {
     position: absolute;
     left: 0.25em;
@@ -266,7 +266,7 @@ textarea
     width: 8em;
     padding: 0.2em 0 0.2em 0.2em;
 }
-#dialog-add-script-accordion .ui-tabs-nav li
+#dialog-add-script-tabs .ui-tabs-nav li
 {
     right: 1px;
     width: 100%;
@@ -277,17 +277,17 @@ textarea
     -webkit-border-radius: 4px 0px 0px 4px;
     overflow: hidden;
 }
-#dialog-add-script-accordion .ui-tabs-nav li.ui-tabs-selected
+#dialog-add-script-tabs .ui-tabs-nav li.ui-tabs-selected
 {
     border-right: 1px solid transparent;
 }
-#dialog-add-script-accordion .ui-tabs-nav li a
+#dialog-add-script-tabs .ui-tabs-nav li a
 {
     float: right;
     width: 100%;
     text-align: right;
 }
-#dialog-add-script-accordion > div
+#dialog-add-script-tabs > div
 {
     height: 400px;
 }

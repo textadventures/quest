@@ -263,7 +263,6 @@ function initialiseElementEditor(tab) {
             sendAdditionalAction("script add " + key + ";" + create);
         });
         $("#dialog-add-script").dialog("open");
-        $("#dialog-add-script-accordion").tabs();
     });
     $(".script-delete").button({
         icons: { primary: "ui-icon-trash" }
