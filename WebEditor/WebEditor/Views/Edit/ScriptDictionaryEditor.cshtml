@@ -4,7 +4,8 @@
     <button type="button" class="scriptDictionarySection-delete" data-key="@Model.Attribute">Remove</button>
 </div>
 
-@{
+@if (Model.Value != null)
+{
     int itemCount = 0;
     foreach (var item in Model.Value.Items.Values)
     {
@@ -17,5 +18,6 @@
         </div>
         itemCount++;
     }
-    <div class="scriptDictionarySection"><button type="button" class="script-dictionary-add" data-key="@Model.Attribute" data-prompt="@Model.KeyPrompt">Add</button></div>
 }
+
+<div class="scriptDictionarySection"><button type="button" class="script-dictionary-add" data-key="@Model.Attribute" data-prompt="@Model.KeyPrompt">Add</button></div>

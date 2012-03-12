@@ -118,6 +118,11 @@ namespace WebEditor.Controllers
             return PartialView("VerbsEditor", EditorDictionary[id].GetVerbsModel(id, key, control));
         }
 
+        public PartialViewResult EditScriptDictionary(int id, string key, IEditorControl control)
+        {
+            return PartialView("ScriptDictionaryEditor", EditorDictionary[id].GetScriptDictionaryModel(id, key, control));
+        }
+
         public PartialViewResult EditScriptScriptDictionary(int id, string key, string path, IEditorControl control)
         {
             return PartialView("ScriptDictionaryEditor", EditorDictionary[id].GetScriptScriptDictionaryModel(id, key, path, control));

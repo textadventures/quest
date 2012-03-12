@@ -244,11 +244,13 @@ Working...
             @Html.TextBox(ctl.Attribute, (string)value, new { @readonly = "readonly", @class = "elementEditorFile" })
             <button type="button" class="file-upload" data-key="@ctl.Attribute" data-extensions="@source">Choose file</button>
             break;
+        case "scriptdictionary":
+            @Html.Action("EditScriptDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
+            break;
         case null:
             break;
         default:
-            <text>[@controlType]</text>
-            break;
+            throw new ArgumentException(string.Format("Invalid control type: {0}", controlType));
     }
 }
 

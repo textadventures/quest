@@ -590,6 +590,12 @@ namespace WebEditor.Services
             };
         }
 
+        public Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditorControl ctl)
+        {
+            IEditableDictionary<IEditableScripts> value = GetScriptDictionary(key, ctl.Attribute);
+            return GetScriptDictionaryModel(id, value, ctl, ctl.Attribute);
+        }
+
         public Models.ScriptDictionary GetScriptScriptDictionaryModel(int id, string key, string path, IEditorControl ctl)
         {
             string parameter;
@@ -599,7 +605,7 @@ namespace WebEditor.Services
             return GetScriptDictionaryModel(id, value, ctl, path);
         }
 
-        public Models.ScriptDictionary GetScriptDictionaryModel(int id, IEditableDictionary<IEditableScripts> value, IEditorControl ctl, string attribute)
+        private Models.ScriptDictionary GetScriptDictionaryModel(int id, IEditableDictionary<IEditableScripts> value, IEditorControl ctl, string attribute)
         {
             return new Models.ScriptDictionary
             {
@@ -1521,14 +1527,27 @@ namespace WebEditor.Services
         {
             IEditableScript scriptLine;
             IEditableDictionary<IEditableScripts> dictionary = GetScriptDictionary(element, attribute, out scriptLine);
-            ValidationResult result = dictionary.CanAdd(value);
-            if (result.Valid)
+            if (dictionary == null)
             {
-                dictionary.Add(value, m_controller.CreateNewEditableScripts(null, null, null, true));
+                m_controller.CreateNewEditableScriptDictionary(
+                    element,
+                    attribute,
+                    value,
+                    m_controller.CreateNewEditableScripts(null, null, null, true),
+                    true
+                );
             }
             else
             {
-                AddScriptError(element, scriptLine, GetValidationError(result, value));
+                ValidationResult result = dictionary.CanAdd(value);
+                if (result.Valid)
+                {
+                    dictionary.Add(value, m_controller.CreateNewEditableScripts(null, null, null, true));
+                }
+                else
+                {
+                    AddScriptError(element, scriptLine, GetValidationError(result, value));
+                }
             }
         }
 
@@ -1548,10 +1567,18 @@ namespace WebEditor.Services
 
         private IEditableDictionary<IEditableScripts> GetScriptDictionary(string element, string attribute, out IEditableScript scriptLine)
         {
-            string parameter;
-            scriptLine = GetScriptLine(element, attribute, out parameter);
-            IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
-            return (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
+            if (attribute.Contains('-'))
+            {
+                string parameter;
+                scriptLine = GetScriptLine(element, attribute, out parameter);
+                IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
+                return (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
+            }
+            else
+            {
+                scriptLine = null;
+                return m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;
+            }
         }
 
         private IEditableList<string> GetStringList(string element, string attribute, bool prepareForEditing)
