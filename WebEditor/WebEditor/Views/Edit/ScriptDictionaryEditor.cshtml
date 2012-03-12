@@ -14,7 +14,7 @@
         @Html.TextBox(Model.Attribute + "-key" + itemCount.ToString(), item.Key)
         </div>
         <div class="childScript">
-        @Html.Action("EditScriptValue", new { id = Model.GameId, key = Model.Attribute, script = item.Value, attribute = Model.Attribute + "-value" + itemCount.ToString() })
+        @Html.Action("EditScriptValue", new { id = Model.GameId, key = Model.Key, script = item.Value, attribute = Model.Attribute + "-value" + itemCount.ToString() })
         </div>
         itemCount++;
     }

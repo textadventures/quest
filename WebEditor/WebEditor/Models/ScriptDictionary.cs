@@ -9,6 +9,7 @@ namespace WebEditor.Models
     public class ScriptDictionary
     {
         public int GameId { get; set; }
+        public string Key { get; set; }
         public string Attribute { get; set; }
         public string KeyPrompt { get; set; }
         public IEditableDictionary<IEditableScripts> Value { get; set; }

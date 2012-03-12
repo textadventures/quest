@@ -614,7 +614,7 @@ namespace WebEditor.Services
         public Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditorControl ctl)
         {
             IEditableDictionary<IEditableScripts> value = GetScriptDictionary(key, ctl.Attribute);
-            return GetScriptDictionaryModel(id, value, ctl, ctl.Attribute);
+            return GetScriptDictionaryModel(id, key, value, ctl, ctl.Attribute);
         }
 
         public Models.ScriptDictionary GetScriptScriptDictionaryModel(int id, string key, string path, IEditorControl ctl)
@@ -623,14 +623,15 @@ namespace WebEditor.Services
             IEditableScript scriptLine = GetScriptLine(key, path, out parameter);
             IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
             IEditableDictionary<IEditableScripts> value = (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
-            return GetScriptDictionaryModel(id, value, ctl, path);
+            return GetScriptDictionaryModel(id, key, value, ctl, path);
         }
 
-        private Models.ScriptDictionary GetScriptDictionaryModel(int id, IEditableDictionary<IEditableScripts> value, IEditorControl ctl, string attribute)
+        private Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, IEditorControl ctl, string attribute)
         {
             return new Models.ScriptDictionary
             {
                 GameId = id,
+                Key = key,
                 Attribute = attribute,
                 KeyPrompt = ctl.GetString("keyprompt"),
                 Value = value
