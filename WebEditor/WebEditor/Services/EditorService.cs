@@ -1678,7 +1678,11 @@ namespace WebEditor.Services
                         throw new ArgumentException("Invalid path format");
                     }
                     int index = int.Parse(path[1].Substring(5));
-                    return dict.Items.ElementAt(index).Value.Value;
+
+                    if (path.Length == 2)
+                    {
+                        return dict.Items.ElementAt(index).Value.Value;
+                    }
                 }
 
                 // Is it a nested script?
