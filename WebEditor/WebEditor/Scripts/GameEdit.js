@@ -273,6 +273,31 @@ function initialiseElementEditor(tab) {
             sendAdditionalAction("script delete " + key + ";" + selected);
         }
     });
+    $(".script-cut").button({
+        icons: { primary: "ui-icon-scissors" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var selected = getSelectedScripts(key);
+        if (selected.length > 0) {
+            sendAdditionalAction("script cut " + key + ";" + selected);
+        }
+    });
+    $(".script-copy").button({
+        icons: { primary: "ui-icon-copy" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var selected = getSelectedScripts(key);
+        if (selected.length > 0) {
+            sendAdditionalAction("script copy " + key + ";" + selected);
+        }
+    });
+    $(".script-paste").button({
+        icons: { primary: "ui-icon-clipboard" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        sendAdditionalAction("script paste " + key);
+    });
+    $(".script-clipboard").buttonset();
     $(".script-if-add-else").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {

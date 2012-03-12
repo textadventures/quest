@@ -880,6 +880,23 @@ namespace WebEditor.Services
                         ScriptDelete(key, data[0], data[1].Split(';'));
                     }
                     break;
+                case "cut":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    if (data[1].Length > 0)
+                    {
+                        ScriptCut(key, data[0], data[1].Split(';'));
+                    }
+                    break;
+                case "copy":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    if (data[1].Length > 0)
+                    {
+                        ScriptCopy(key, data[0], data[1].Split(';'));
+                    }
+                    break;
+                case "paste":
+                    ScriptPaste(key, parameter);
+                    break;
                 case "addelse":
                     ScriptAddElse(key, parameter);
                     break;
@@ -1460,6 +1477,47 @@ namespace WebEditor.Services
 
             IEditableScripts script = GetScript(element, attribute);
             script.Remove(indexes.Select(i => int.Parse(i)).ToArray());
+        }
+
+        private void ScriptCut(string element, string attribute, string[] indexes)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScripts script = GetScript(element, attribute);
+            script.Cut(indexes.Select(i => int.Parse(i)).ToArray());
+        }
+
+        private void ScriptCopy(string element, string attribute, string[] indexes)
+        {
+            IEditableScripts script = GetScript(element, attribute);
+            script.Copy(indexes.Select(i => int.Parse(i)).ToArray());
+        }
+
+        private void ScriptPaste(string element, string attribute)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScript parent;
+            string parameter;
+            IEditableScripts script = GetScript(element, attribute, out parent, out parameter);
+
+            if (script == null)
+            {
+                // TO DO
+                //if (parent == null)
+                //{
+                //    m_controller.CreateNewEditableScripts(element, attribute, value, true, true);
+                //}
+                //else
+                //{
+                //    ScriptCommandEditorData editorData = (ScriptCommandEditorData)m_controller.GetScriptEditorData(parent);
+                //    m_controller.CreateNewEditableScriptsChild(editorData, parameter, value, true);
+                //}
+            }
+            else
+            {
+                script.Paste(script.Count, true);
+            }
         }
 
         private void ScriptAddElse(string element, string attribute)
