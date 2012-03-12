@@ -290,7 +290,9 @@ namespace AxeSoftware.Quest.EditorControls
             var newKey = PopupEditors.EditString(m_controlData.GetString("keyprompt"), key, GetAutoCompleteList());
             if (newKey.Cancelled || newKey.Result == key) return;
             if (!ValidateInput(newKey.Result)) return;
+            m_controller.StartTransaction(string.Format("Update key '{0}' to '{1}'", key, newKey.Result));
             m_list.ChangeKey(key, newKey.Result);
+            m_controller.EndTransaction();
         }
 
         public void DoAction(string action, string key)

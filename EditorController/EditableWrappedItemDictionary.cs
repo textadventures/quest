@@ -154,6 +154,8 @@ namespace AxeSoftware.Quest
             }
         }
 
+        // TO DO: Public methods shouldn't be starting/ending transactions here - that should be up to the caller
+
         public void Add(string key, TWrapped value)
         {
             string undoEntry = null;
@@ -214,14 +216,17 @@ namespace AxeSoftware.Quest
             m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
+        // it is up to the caller of this method to start/end a transaction (this should also be the case eventually
+        // for the other public methods)
+
         public void ChangeKey(string oldKey, string newKey)
         {
-            m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Update key '{0}' to '{1}'", oldKey, newKey));
+            //m_controller.WorldModel.UndoLogger.StartTransaction(string.Format("Update key '{0}' to '{1}'", oldKey, newKey));
             int index = m_source.IndexOfKey(oldKey);
             TSource value = m_source[oldKey];
             m_source.Remove(oldKey, UpdateSource.User);
             m_source.Add(newKey, value, UpdateSource.User, index);
-            m_controller.WorldModel.UndoLogger.EndTransaction();
+            //m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
         public string DisplayString()
