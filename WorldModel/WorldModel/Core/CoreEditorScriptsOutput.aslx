@@ -495,6 +495,7 @@
     <create>insert ("")</create>
     <add>Insert HTML from a file</add>
     <advanced/>
+    <desktop/>
 
     <control>
       <controltype>label</controltype>
