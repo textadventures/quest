@@ -13,5 +13,6 @@ namespace WebEditor.Models
         public string Attribute { get; set; }
         public EditorController Controller { get; set; }
         public IEditableScripts Scripts { get; set; }
+        public List<IEditableScript> SelectedScripts { get; set; }
     }
 }

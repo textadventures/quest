@@ -329,6 +329,13 @@ function initialiseElementEditor(tab) {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelseif " + key);
     });
+    $(".script-toolbar").each(function () {
+        var key = $(this).attr("data-key");
+        var selectedScripts = getSelectedScripts(key);
+        if (selectedScripts.length > 0) {
+            $(this).show();
+        }
+    });
     $(".script-select").click(function () {
         var key = $(this).attr("data-key");
         var selectedScripts = getSelectedScripts(key);

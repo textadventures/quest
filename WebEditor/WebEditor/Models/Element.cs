@@ -58,6 +58,7 @@ namespace WebEditor.Models
 
         public class ScriptSaveData
         {
+            public bool IsSelected { get; set; }
             public Dictionary<string, object> Attributes { get; set; }
 
             public ScriptSaveData()
@@ -239,6 +240,7 @@ namespace WebEditor.Models
             foreach (IEditableScript script in originalScript.Scripts)
             {
                 ElementSaveData.ScriptSaveData scriptLine = new ElementSaveData.ScriptSaveData();
+                scriptLine.IsSelected = (bool)provider.GetValue(string.Format("selected-{0}-{1}", attribute, count)).ConvertTo(typeof(bool));
 
                 if (script.Type != ScriptType.If)
                 {

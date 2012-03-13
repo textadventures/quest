@@ -6,7 +6,7 @@
 
 @helper RenderScripts(IEditableScripts scripts, string attribute)
 {
-    <div class="ui-widget-header ui-corner-all toolbar" id="script-toolbar-@attribute" style="display: none">
+    <div class="ui-widget-header ui-corner-all toolbar script-toolbar" id="script-toolbar-@attribute" data-key="@attribute" style="display: none">
         <button type="button" class="script-delete" data-key="@attribute">Delete</button>
         <span class="script-clipboard">
             <button type="button" class="script-cut" data-key="@attribute">Cut</button>
@@ -31,9 +31,10 @@
                             <button type="button" class="error-clear" data-key="@script.Id">Clear</button>
                         </div>
                     }
+                    bool isSelected = Model.SelectedScripts.Contains(script);
                     IEditorDefinition definition = Model.Controller.GetEditorDefinition(script);
                     <div class="scriptLine">
-                        @Html.CheckBox("selected-" + attribute + "-" + count.ToString(), new { @class = "script-select", data_key = attribute })
+                        @Html.CheckBox("selected-" + attribute + "-" + count.ToString(), isSelected, new { @class = "script-select", data_key = attribute })
                         @if (script.Type != ScriptType.If)
                         {
                             IEditorData scriptEditorData = Model.Controller.GetScriptEditorData(script);

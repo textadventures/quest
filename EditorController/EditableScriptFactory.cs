@@ -32,6 +32,7 @@ namespace AxeSoftware.Quest
         private ScriptFactory m_scriptFactory;
         private WorldModel m_worldModel;
         private Dictionary<string, EditableScriptData> m_scriptData = new Dictionary<string, EditableScriptData>();
+        private Dictionary<IScript, EditableScriptBase> m_cache = new Dictionary<IScript, EditableScriptBase>();
 
         internal EditableScriptFactory(EditorController controller, ScriptFactory factory, WorldModel worldModel)
         {
@@ -60,6 +61,12 @@ namespace AxeSoftware.Quest
         internal EditableScriptBase CreateEditableScript(IScript script)
         {
             EditableScriptBase newScript;
+
+            if (m_cache.TryGetValue(script, out newScript))
+            {
+                return newScript;
+            }
+
             IfScript ifScript = script as IfScript;
             if (ifScript != null)
             {
@@ -71,6 +78,7 @@ namespace AxeSoftware.Quest
                 if (script != null && m_scriptData.ContainsKey(script.Keyword)) newEditableScript.DisplayTemplate = m_scriptData[script.Keyword].DisplayString;
                 newScript = newEditableScript;
             }
+            m_cache.Add(script, newScript);
             return newScript;
         }
 

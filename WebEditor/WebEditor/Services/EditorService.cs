@@ -41,6 +41,7 @@ namespace WebEditor.Services
         private bool m_needsSaving = false;
         private string m_uiAction = null;
         private string m_initMessage = null;
+        private List<IEditableScript> m_selectedScripts = new List<IEditableScript>();
 
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
 		    {ValidationMessage.OK,"No error"},
@@ -434,6 +435,21 @@ namespace WebEditor.Services
             {
                 WebEditor.Models.ElementSaveData.ScriptSaveData data = saveData.ScriptLines[count];
 
+                if (data.IsSelected)
+                {
+                    if (!m_selectedScripts.Contains(script))
+                    {
+                        m_selectedScripts.Add(script);
+                    }
+                }
+                else
+                {
+                    if (m_selectedScripts.Contains(script))
+                    {
+                        m_selectedScripts.Remove(script);
+                    }
+                }
+
                 if (script.Type != ScriptType.If)
                 {
                     IEditorData scriptEditorData = m_controller.GetScriptEditorData(script);
@@ -607,7 +623,8 @@ namespace WebEditor.Services
                 Key = key,
                 Attribute = attribute,
                 Controller = m_controller,
-                Scripts = value
+                Scripts = value,
+                SelectedScripts = m_selectedScripts
             };
         }
 
