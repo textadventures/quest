@@ -11,6 +11,8 @@
   <dynamictemplate name="TakeSuccessful">"Du nimmst " + GetPrefix (object,"ihn")+ " an dich."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Das kannst du nicht nehmen."</dynamictemplate>
   <dynamictemplate name="FullInventory">"Du kannst nicht noch mehr tragen."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInInventory">"Du kannst keine weiteren Gegenstände tragen."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInContainer">"Du kannst keine weiteren Gegenstände dazutun."</dynamictemplate>
   <template name="SeeListHeader">Du siehst</template>
   <template name="GoListHeader">Mögliche Ausgänge:</template>
   <template name="And">und</template>
