@@ -80,6 +80,8 @@
     }
     else {
 		volume=0
+		continue=true
+			
 		foreach (obj,GetAllChildObjects(player)) {
 			if (HasInt(obj, "volume")) {
 				volume = volume + obj.volume
@@ -88,13 +90,34 @@
 		if (not Contains(player, object)) {
 			volume = volume + GetVolume(object,true)
 		}
-		if (volume>player.maxvolume) {
-			if (HasString(player, "containerfullmessage")) {
-				msg(prefix + player.containerfullmessage)
+		
+		if (HasInt(player, "maxvolume")){
+			if (volume>player.maxvolume) {
+				continue=false
+				if (HasString(player, "containerfullmessage")) {
+					message=prefix + player.containerfullmessage
+				}
+				else {
+					message=prefix + DynamicTemplate("FullInventory", object)
+				}	
 			}
-			else {
-				msg(prefix + DynamicTemplate("FullInventory", object))
-			}	
+		}	
+		
+		children = GetDirectChildren(player)
+		if (HasInt(player, "maxobjects")){
+			if (listcount(children) >= player.maxobjects) {
+				continue=false
+				if (HasString(player, "containermaxobjects")) {
+					message=prefix + player.containermaxobjects
+				}
+				else {
+					message=prefix + DynamicTemplate("MaxObjectsInInventory", object)
+				}				
+			}
+		}
+		
+		if (continue=false) {
+			msg(message)
 		} else {
 	
 		  found = true

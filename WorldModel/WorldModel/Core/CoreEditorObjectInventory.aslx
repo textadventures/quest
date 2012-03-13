@@ -5,6 +5,29 @@
     <mustnotinherit>editor_room</mustnotinherit>
 
 	<control>
+      <mustinherit>defaultplayer</mustinherit>	
+      <controltype>title</controltype>
+      <caption>Inventory limitation</caption>
+    </control>
+	
+	<control>
+      <controltype>number</controltype>
+      <caption>Maximum objects</caption>
+      <attribute>maxobjects</attribute>
+      <width>100</width>
+      <mustinherit>defaultplayer</mustinherit>
+      <minimum>0</minimum>
+    </control>
+
+   <control>
+      <controltype>textbox</controltype>
+      <caption>Full container message (leave blank for default)</caption>
+      <attribute>containermaxobjects</attribute>
+      <mustinherit>defaultplayer</mustinherit>
+      <nullable/>
+    </control>	
+	
+	<control>
       <controltype>title</controltype>
       <caption>Volume</caption>
     </control>

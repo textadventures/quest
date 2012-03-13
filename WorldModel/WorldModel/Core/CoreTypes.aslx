@@ -247,26 +247,7 @@
   <type name="container_limited">
     <inherit name="container"/>
     <maxobjects type="int">1</maxobjects>
-    <addscript type="AddScript">
-      children = GetDirectChildren(this)
-      if (listcount(children) >= this.maxobjects) {
-        if (HasString(this, "containerfullmessage")) {
-          msg (this.containerfullmessage)
-        }
-        else {
-          msg (DynamicTemplate("ContainerFull", this))
-        }
-      }
-      else {
-        object.parent = this
-        msg (Template("Done"))
-      }
-    </addscript>
-  </type>
-
-  <type name="container_volumelimited">
-    <inherit name="container"/>
-    <maxvolume type="int">100</maxvolume>
+	<maxvolume type="int">100</maxvolume>
     <addscript type="AddScript">
 	  activecontainer=this
 	  correct=true
@@ -274,23 +255,34 @@
 		if (HasInt(activecontainer, "maxvolume") ) {
 			if ( GetVolume(object, true)+GetVolume(activecontainer,false)>activecontainer.maxvolume) {
 				correct=false
+				if (HasString(this, "containerfullmessage")) {
+				  message=this.containerfullmessage
+				}
+				else {
+				  message=DynamicTemplate("ContainerFull", this)
+				}
 			}	
 		}	
 		activecontainer=activecontainer.parent
 	  }
-
-	  if (correct=false){
+	  
+      children = GetDirectChildren(this)
+      if (listcount(children) >= this.maxobjects) {
+        correct=false
 		if (HasString(this, "containerfullmessage")) {
-		  msg (this.containerfullmessage)
-		}
-		else {
-		  msg (DynamicTemplate("ContainerFull", this))
-		}
+          message=this.containerfullmessage
+        }
+        else {
+          message=DynamicTemplate("MaxObjectsInContainer", this)
+        }
+      }
+	  
+	  if (correct=false){
+			msg (message)
 	  } else {
 		object.parent = this
 		msg (Template("Done"))	  
 	  }
-	  
     </addscript>
   </type>
   
