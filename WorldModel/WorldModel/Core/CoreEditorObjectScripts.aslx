@@ -34,5 +34,12 @@
       <elementtype>object</elementtype>
       <objecttype>turnscript</objecttype>
     </control>
+
+    <control>
+      <caption>Commands</caption>
+      <controltype>elementslist</controltype>
+      <elementtype>object</elementtype>
+      <objecttype>command</objecttype>
+    </control>
   </tab>
 </library>
