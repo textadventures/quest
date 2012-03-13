@@ -250,7 +250,7 @@ Working...
         case "pattern":
             IEditableCommandPattern commandPattern = value as IEditableCommandPattern;
             string text = (commandPattern != null) ? commandPattern.Pattern : string.Empty;
-            @Html.TextBox(ctl.Attribute, text, new { style = "width: 100%" })
+            @Html.TextBox(ctl.Attribute, text, new { style = "width: 100%", @class = "elementEditorTextbox" })
             break;
         case null:
             break;
