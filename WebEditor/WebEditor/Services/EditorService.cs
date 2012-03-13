@@ -306,6 +306,7 @@ namespace WebEditor.Services
                     IEditableScripts script = currentValue as IEditableScripts;
                     var dictionary = currentValue as IEditableDictionary<IEditableScripts>;
                     var newObjectRef = kvp.Value as WebEditor.Models.ElementSaveData.ObjectReferenceSaveData;
+                    var newCommandPattern = kvp.Value as WebEditor.Models.ElementSaveData.PatternSaveData;
                     if (script != null)
                     {
                         SaveScript(script, kvp.Value as WebEditor.Models.ElementSaveData.ScriptsSaveData, key);
@@ -317,6 +318,10 @@ namespace WebEditor.Services
                     else if (newObjectRef != null)
                     {
                         SaveObjectReference(data, kvp.Key, currentValue as IEditableObjectReference, newObjectRef);
+                    }
+                    else if (newCommandPattern != null)
+                    {
+                        SaveCommandPattern(data, kvp.Key, currentValue as IEditableCommandPattern, newCommandPattern);
                     }
                     else
                     {
@@ -565,6 +570,15 @@ namespace WebEditor.Services
                 IEditableObjectReference newReference = m_controller.CreateNewEditableObjectReference(data.Name, attribute, false);
                 newReference.Reference = newValue.Reference;
                 data.SetAttribute(attribute, newReference);
+                m_needsSaving = true;
+            }
+        }
+
+        private void SaveCommandPattern(IEditorData data, string attribute, IEditableCommandPattern currentValue, WebEditor.Models.ElementSaveData.PatternSaveData newValue)
+        {
+            if (currentValue == null || currentValue.Pattern != newValue.Pattern)
+            {
+                IEditableCommandPattern newPattern = m_controller.CreateNewEditableCommandPattern(data.Name, attribute, newValue.Pattern, false);
                 m_needsSaving = true;
             }
         }

@@ -71,6 +71,11 @@ namespace WebEditor.Models
         {
             public string Reference { get; set; }
         }
+
+        public class PatternSaveData
+        {
+            public string Pattern { get; set; }
+        }
     }
 
     public class ElementSaveDataModelBinder : IModelBinder
@@ -188,8 +193,10 @@ namespace WebEditor.Models
                     addSaveValueToResult = false;
                     break;
                 case "pattern":
-                    // TO DO
-                    addSaveValueToResult = false;
+                    saveValue = new ElementSaveData.PatternSaveData
+                    {
+                        Pattern = GetValueProviderString(bindingContext.ValueProvider, attribute)
+                    };
                     break;
                 case "scriptdictionary":
                     var originalDictionary = originalElement.EditorData.GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;

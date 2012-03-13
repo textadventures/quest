@@ -248,7 +248,9 @@ Working...
             @Html.Action("EditScriptDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
         case "pattern":
-            <text>Not implemented</text>
+            IEditableCommandPattern commandPattern = value as IEditableCommandPattern;
+            string text = (commandPattern != null) ? commandPattern.Pattern : string.Empty;
+            @Html.TextBox(ctl.Attribute, text, new { style = "width: 100%" })
             break;
         case null:
             break;
