@@ -1310,7 +1310,9 @@ namespace WebEditor.Services
 
         private void SwapElements(string element1, string element2)
         {
+            m_controller.StartTransaction("Reorder elements");
             m_controller.SwapElements(element1, element2);
+            m_controller.EndTransaction();
         }
 
         private void TypesSet(string element, string attribute, string value)
@@ -1642,6 +1644,7 @@ namespace WebEditor.Services
 
         private void ScriptSetTemplate(string element, string attribute, string template)
         {
+            m_controller.StartTransaction("Set script template");
             string newExpression = m_controller.GetNewExpression(template);
 
             string[] path = attribute.Split('-');
@@ -1676,6 +1679,7 @@ namespace WebEditor.Services
             {
                 throw new NotImplementedException();
             }
+            m_controller.EndTransaction();
         }
 
         private void ScriptDictionaryAdd(string element, string attribute, string value)
