@@ -190,10 +190,10 @@ function initialiseButtons() {
     }).click(function () {
         window.open("http://quest5.net/wiki/WebEditor");
     });
-    $("#button-bug").button({
-        icons: { primary: "ui-icon-alert" }
+    $("#button-save").button({
+        icons: { primary: "ui-icon-disk" }
     }).click(function () {
-        window.open("http://www.textadventures.co.uk/help/contact-us/");
+        sendAdditionalAction("none");
     });
 }
 
@@ -989,12 +989,16 @@ function finishFormSubmit() {
 
 function setUnsavedChanges() {
     _unsavedChanges = true;
-    //$("#unsaved-changes").show();
+    $("#button-save").button("enable");
+    $("#button-save").button("option", "icons", { primary: "ui-icon-disk" });
+    $("#button-save").button("option", "label", "Save");
 }
 
 function clearUnsavedChanges() {
     _unsavedChanges = false;
-    //$("#unsaved-changes").hide();
+    $("#button-save").button("disable");
+    $("#button-save").button("option", "icons", { primary: "ui-icon-check" });
+    $("#button-save").button("option", "label", "Saved");
 }
 
 function isCharKey(keyCode) {
