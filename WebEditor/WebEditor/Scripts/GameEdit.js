@@ -199,6 +199,7 @@ function initialiseButtons() {
 
 function initialiseElementEditor(tab) {
     finishFormSubmit();
+    clearUnsavedChanges();
     var pageTitle = $("#_pageTitle").val();
     document.title = pageTitle;
     var selectTab = $("#_additionalActionTab").val();
@@ -425,16 +426,26 @@ function initialiseElementEditor(tab) {
         theme_advanced_toolbar_align: "left",
         theme_advanced_statusbar_location: "none",
         forced_root_block: "",
-        force_br_newlines : true,
-        force_p_newlines : false,
+        force_br_newlines: true,
+        force_p_newlines: false,
         gecko_spellcheck: true,
         inline_styles: false,
         formats: {
-            bold : {inline : 'b' },  
-            italic : {inline : 'i' },
+            bold: { inline: 'b' },
+            italic: { inline: 'i' },
             underline: { inline: 'u' }
         },
-        valid_elements: "b,i,u,br"
+        valid_elements: "b,i,u,br",
+        onchange_callback: function () {
+            setUnsavedChanges();
+        },
+        setup: function (ed) {
+            ed.onKeyUp.add(function (ed, e) {
+                if (isCharKey(e.keyCode)) {
+                    setUnsavedChanges();
+                }
+            });
+        }
     });
     $(".multi-dropdown").change(function () {
         var key = $(this).attr("data-key");
@@ -649,6 +660,17 @@ function initialiseElementEditor(tab) {
     });
     $(".elementEditorCheckbox").change(function () {
         sendAdditionalAction("none")
+    });
+    $(".elementEditorTextbox").change(function () {
+        setUnsavedChanges();
+    });
+    $(".elementEditorTextbox").keydown(function (e) {
+        if (isCharKey(e.keyCode)) {
+            setUnsavedChanges();
+        }
+    });
+    $(".elementEditorDropdown").change(function () {
+        setUnsavedChanges();
     });
     $(".verbs-add").button({
         icons: { primary: "ui-icon-plusthick" }
@@ -963,4 +985,26 @@ function finishFormSubmit() {
     $("body").removeClass("waiting");
     clearTimeout(delayWorkingDisplay);
     $("#form-loading").hide();
+}
+
+function setUnsavedChanges() {
+    _unsavedChanges = true;
+    //$("#unsaved-changes").show();
+}
+
+function clearUnsavedChanges() {
+    _unsavedChanges = false;
+    //$("#unsaved-changes").hide();
+}
+
+function isCharKey(keyCode) {
+    if (keyCode == 8 /*backspace */
+            || keyCode == 13 /* enter */
+            || (keyCode >= 46 && keyCode <= 90) /* delete, 0-9, a-z */
+            || (keyCode >= 96 && keyCode <= 111) /* numpad */
+            || (keyCode >= 186 && keyCode <= 222) /* punctuation */
+        ) {
+        return true;
+    }
+    return false;
 }

@@ -184,7 +184,7 @@ Working...
             @Html.Label(ctl.Attribute, caption)
             break;
         case "textbox":
-            @Html.TextBox(ctl.Attribute, (string)value, new { style = "width: 100%" })
+            @Html.TextBox(ctl.Attribute, (string)value, new { style = "width: 100%", @class = "elementEditorTextbox" })
             break;
         case "list":
             @Html.Action("EditStringList", new { id = Model.GameId, key = Model.Key, control = ctl })
@@ -202,7 +202,7 @@ Working...
         case "dropdown":
             string selectedItem = value as string;
             IEnumerable<SelectListItem> valuesList = Controls.GetDropdownValues(ctl, selectedItem);
-            @Html.DropDownList(ctl.Attribute, valuesList);
+            @Html.DropDownList(ctl.Attribute, valuesList, new { @class = "elementEditorDropdown" });
             break;
         case "richtext":
             @Html.TextArea(ctl.Attribute, (string)value, 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })

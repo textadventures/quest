@@ -7,6 +7,7 @@
 
 <script type="text/javascript">
     var _selectTab = "";
+    var _unsavedChanges = false;
 
     $(function () {
         initialiseButtons();
@@ -18,6 +19,11 @@
             enableCursorHotkey: false
         });
         initialiseDialogBoxes();
+        window.onbeforeunload = function () {
+            if (_unsavedChanges) {
+                return "You have unsaved changes.";
+            }
+        };
         $.get('@Url.Action("Load", new { id = Model.GameId, simpleMode = Model.SimpleMode })', function (data) {
             if (data["error"]) {
                 $("#dialog-error-message").html("<b>Failed to load game</b><br/><br/>" + data["error"]);
