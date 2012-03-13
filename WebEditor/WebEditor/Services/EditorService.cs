@@ -1031,6 +1031,9 @@ namespace WebEditor.Services
                 case "addturnscript":
                     if (key == "game") key = null;
                     return AddNewTurnScript(key);
+                case "addcommand":
+                    if (key == "game" || !m_controller.ElementExists(key)) key = null;
+                    return AddNewCommand(key);
                 case "delete":
                     if (DeleteElement(key))
                     {
@@ -1302,6 +1305,11 @@ namespace WebEditor.Services
         private string AddNewTurnScript(string parent)
         {
             return m_controller.CreateNewTurnScript(parent);
+        }
+
+        private string AddNewCommand(string parent)
+        {
+            return m_controller.CreateNewCommand(parent);
         }
 
         private bool DeleteElement(string element)

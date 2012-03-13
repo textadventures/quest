@@ -873,7 +873,7 @@ function addNewElement(elementType, objectType, filter) {
                         alert("To do: verb");
                     }
                     else {
-                        alert("To do: command");
+                        addNewCommand();
                     }
                     break;
                 case "turnscript":
@@ -944,6 +944,10 @@ function addNewTimer() {
 
 function addNewTurnScript() {
     toplevelAdditionalAction("main addturnscript");
+}
+
+function addNewCommand() {
+    toplevelAdditionalAction("main addcommand");
 }
 
 function selectTreeNode(node) {
