@@ -109,10 +109,18 @@
     }
 </script>
 
+<script type="text/javascript">
+    var uvOptions = {};
+    (function () {
+        var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+        uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/ZTHBr1Zl6MlbxdyH5fFKGw.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+    })();
+</script>
+
 <div class="ui-layout-north">
     <div style="float: right">
         <button type="button" id="button-help">Help</button>
-        <button type="button" id="button-bug">Report a bug</button>
         <button type="button" id="button-settings">Settings</button>
     </div>
     <span id="buttonset-add">
