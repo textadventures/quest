@@ -914,6 +914,20 @@ namespace WebEditor.Services
                     data = parameter.Split(new[] { ';' }, 2);
                     ScriptSetTemplate(key, data[0], data[1]);
                     break;
+                case "moveup":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    if (data[1].Length > 0)
+                    {
+                        ScriptMoveUp(key, data[0], data[1].Split(';'));
+                    }
+                    break;
+                case "movedown":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    if (data[1].Length > 0)
+                    {
+                        ScriptMoveDown(key, data[0], data[1].Split(';'));
+                    }
+                    break;
             }
         }
 
@@ -1522,6 +1536,48 @@ namespace WebEditor.Services
             }
         }
 
+        private void ScriptMoveUp(string element, string attribute, string[] indexes)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScripts script = GetScript(element, attribute);
+            m_controller.StartTransaction("Script move up");
+
+            var indexNumbers = from i in indexes
+                               let number = int.Parse(i)
+                               orderby number
+                               select number;
+
+            foreach (int index in indexNumbers)
+            {
+                if (index == 0) continue;
+                script.Swap(index - 1, index);
+            }
+
+            m_controller.EndTransaction();
+        }
+
+        private void ScriptMoveDown(string element, string attribute, string[] indexes)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScripts script = GetScript(element, attribute);
+            m_controller.StartTransaction("Script move down");
+
+            var indexNumbers = from i in indexes
+                               let number = int.Parse(i)
+                               orderby number descending
+                               select number;
+
+            foreach (int index in indexNumbers)
+            {
+                if (index == script.Count - 1) continue;
+                script.Swap(index, index + 1);
+            }
+
+            m_controller.EndTransaction();
+        }
+        
         private void ScriptAddElse(string element, string attribute)
         {
             // TO DO: if (m_data.ReadOnly) return;

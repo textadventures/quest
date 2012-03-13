@@ -297,7 +297,26 @@ function initialiseElementEditor(tab) {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script paste " + key);
     });
+    $(".script-moveup").button({
+        icons: { primary: "ui-icon-arrowthick-1-n" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var selected = getSelectedScripts(key);
+        if (selected.length > 0) {
+            sendAdditionalAction("script moveup " + key + ";" + selected);
+        }
+    });
+    $(".script-movedown").button({
+        icons: { primary: "ui-icon-arrowthick-1-s" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        var selected = getSelectedScripts(key);
+        if (selected.length > 0) {
+            sendAdditionalAction("script movedown " + key + ";" + selected);
+        }
+    });
     $(".script-clipboard").buttonset();
+    $(".script-move").buttonset();
     $(".script-if-add-else").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
