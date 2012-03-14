@@ -71,6 +71,7 @@
         do (this, "onswitchoff")
       }      
     </changedswitchedon>
+	<volume type="int">0</volume>
   </type>
 
   <type name="defaultexit">
@@ -246,23 +247,45 @@
   <type name="container_limited">
     <inherit name="container"/>
     <maxobjects type="int">1</maxobjects>
+	<maxvolume type="int">100</maxvolume>
     <addscript type="AddScript">
+	  activecontainer=this
+	  correct=true
+	  while (DoesInherit ( activecontainer, "container_base" ) ) {
+		if (HasInt(activecontainer, "maxvolume") ) {
+			if ( GetVolume(object, true)+GetVolume(activecontainer,false)>activecontainer.maxvolume) {
+				correct=false
+				if (HasString(this, "containerfullmessage")) {
+				  message=this.containerfullmessage
+				}
+				else {
+				  message=DynamicTemplate("ContainerFull", this)
+				}
+			}	
+		}	
+		activecontainer=activecontainer.parent
+	  }
+	  
       children = GetDirectChildren(this)
       if (listcount(children) >= this.maxobjects) {
-        if (HasString(this, "containerfullmessage")) {
-          msg (this.containerfullmessage)
+        correct=false
+		if (HasString(this, "containerfullmessage")) {
+          message=this.containerfullmessage
         }
         else {
-          msg (DynamicTemplate("ContainerFull", this))
+          message=DynamicTemplate("MaxObjectsInContainer", this)
         }
       }
-      else {
-        object.parent = this
-        msg (Template("Done"))
-      }
+	  
+	  if (correct=false){
+			msg (message)
+	  } else {
+		object.parent = this
+		msg (Template("Done"))	  
+	  }
     </addscript>
   </type>
-
+  
   <type name="container_lockable">
     <openscript type="script">
       if (this.locked) {
@@ -338,6 +361,7 @@
     <look>[DefaultSelfDescription]</look>
     <gender>[SelfGender]</gender>
     <article>[SelfArticle]</article>
+	<maxvolume type="int">100</maxvolume>	
     <changedparent type="script">
       if (IsDefined("oldvalue")) {
         OnEnterRoom(oldvalue)

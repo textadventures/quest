@@ -86,7 +86,7 @@
 
     <control>
       <controltype>number</controltype>
-      <caption>Maximum objects</caption>
+      <caption>Maximum number of objects</caption>
       <attribute>maxobjects</attribute>
       <width>100</width>
       <mustinherit>container_limited</mustinherit>
@@ -96,11 +96,28 @@
     <control>
       <controltype>textbox</controltype>
       <caption>Full container message (leave blank for default)</caption>
-      <attribute>containerfullmessage</attribute>
+      <attribute>containermaxobjects</attribute>
       <mustinherit>container_limited</mustinherit>
       <nullable/>
     </control>
 
+	<control>
+      <controltype>number</controltype>
+      <caption>Maximum volume of objects</caption>
+      <attribute>maxvolume</attribute>
+      <width>100</width>
+      <minimum>0</minimum>
+	  <mustinherit>container_limited</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Full container message (leave blank for default)</caption>
+      <attribute>containerfullmessage</attribute>
+	  <mustinherit>container_limited</mustinherit>
+      <nullable/>
+    </control>
+	
     <control>
       <controltype>textbox</controltype>
       <attribute>openmsg</attribute>

@@ -63,6 +63,11 @@
     if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "beforefirstenter")) {
       do (player.parent, "beforefirstenter")
     }
+	
+    if (HasScript(player.parent, "beforeenter")) {
+      do (player.parent, "beforeenter")
+    }	
+	
     request (UpdateLocation, CapFirst(GetDisplayName(player.parent)))
     roomFrameExists = false
     if (HasString(player.parent, "picture")) {
