@@ -337,6 +337,7 @@
     <None Include="Core\Templates\Nederlands.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Examples-Internal\volume.aslx" />
     <None Include="Examples-Public\template.aslx">
       <SubType>Designer</SubType>
     </None>

@@ -61,7 +61,7 @@
     </multiple>
     <script>
       foreach (obj, object) {
-		DoTake(obj, multiple)
+        DoTake(obj, multiple)
       }
     </script>
   </command>
@@ -79,89 +79,90 @@
       msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
     }
     else {
-		volume=0
-		continue=true
-			
-		foreach (obj,GetAllChildObjects(player)) {
-			if (HasInt(obj, "volume")) {
-				volume = volume + obj.volume
-			}		
-		}
-		if (not Contains(player, object)) {
-			volume = volume + GetVolume(object,true)
-		}
-		
-		if (HasInt(player, "maxvolume")){
-			if (volume>player.maxvolume) {
-				continue=false
-				if (HasString(player, "containerfullmessage")) {
-					message=prefix + player.containerfullmessage
-				}
-				else {
-					message=prefix + DynamicTemplate("FullInventory", object)
-				}	
-			}
-		}	
-		
-		children = GetDirectChildren(player)
-		if (HasInt(player, "maxobjects")){
-			if (listcount(children) >= player.maxobjects) {
-				continue=false
-				if (HasString(player, "containermaxobjects")) {
-					message=prefix + player.containermaxobjects
-				}
-				else {
-					message=prefix + DynamicTemplate("MaxObjectsInInventory", object)
-				}				
-			}
-		}
-		
-		if (continue=false) {
-			msg(message)
-		} else {
-	
-		  found = true
-		  takemsg = object.takemsg
-		  
-		  switch (TypeOf(object, "take")) {
-			case ("script") {
-			  if (ismultiple) {
-				msg (prefix)
-			  }
-			  do (object, "take")
-			  takemsg = ""
-			}
-			case ("boolean") {
-			  if (object.take = true) {
-				object.parent = player
-				if (takemsg = null) {
-				  takemsg = DynamicTemplate("TakeSuccessful", object)
-				}
-			  }
-			  else {
-				found = false
-			  }
-			}
-			case ("string") {
-			  object.parent = player
-			  takemsg = object.take
-			}
-			default {
-			  found = false
-			}
-		  }
-		  
-		  if (not found and takemsg = null) takemsg = DynamicTemplate("TakeUnsuccessful", object)
-		  
-		  if (LengthOf(takemsg) > 0) {
-			msg (prefix + takemsg)
-		  }
-		  
-		  if (HasScript(object, "ontake")) {
-			do (object, "ontake")
-		  }
-		}
-	}	
+      volume = 0
+      continue = true
+      
+      foreach (obj, GetAllChildObjects(player)) {
+        if (HasInt(obj, "volume")) {
+          volume = volume + obj.volume
+        }
+      }
+    
+      if (not Contains(player, object)) {
+        volume = volume + GetVolume(object,true)
+      }
+    
+      if (HasInt(player, "maxvolume")) {
+        if (volume > player.maxvolume) {
+          continue = false
+          if (HasString(player, "containerfullmessage")) {
+            message = prefix + player.containerfullmessage
+          }
+          else {
+            message = prefix + DynamicTemplate("FullInventory", object)
+          }
+        }
+      }
+    
+      children = GetDirectChildren(player)
+      if (HasInt(player, "maxobjects")) {
+        if (ListCount(children) >= player.maxobjects) {
+          continue = false
+          if (HasString(player, "containermaxobjects")) {
+            message = prefix + player.containermaxobjects
+          }
+          else {
+            message = prefix + DynamicTemplate("MaxObjectsInInventory", object)
+          }
+        }
+      }
+    
+      if (continue = false) {
+        msg (message)
+      }
+      else {
+        found = true
+        takemsg = object.takemsg
+      
+        switch (TypeOf(object, "take")) {
+          case ("script") {
+            if (ismultiple) {
+              msg (prefix)
+            }
+            do (object, "take")
+            takemsg = ""
+          }
+          case ("boolean") {
+            if (object.take = true) {
+              object.parent = player
+              if (takemsg = null) {
+                takemsg = DynamicTemplate("TakeSuccessful", object)
+              }
+            }
+            else {
+              found = false
+            }
+          }
+          case ("string") {
+            object.parent = player
+            takemsg = object.take
+          }
+          default {
+            found = false
+          }
+        }
+      
+        if (not found and takemsg = null) takemsg = DynamicTemplate("TakeUnsuccessful", object)
+      
+        if (LengthOf(takemsg) > 0) {
+          msg (prefix + takemsg)
+        }
+      
+        if (HasScript(object, "ontake")) {
+          do (object, "ontake")
+        }
+      }
+    }
   </function>
 
   <command name="drop" template="drop">

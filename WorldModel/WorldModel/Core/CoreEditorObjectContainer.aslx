@@ -101,23 +101,23 @@
       <nullable/>
     </control>
 
-	<control>
+    <control>
       <controltype>number</controltype>
       <caption>Maximum volume of objects</caption>
       <attribute>maxvolume</attribute>
       <width>100</width>
       <minimum>0</minimum>
-	  <mustinherit>container_limited</mustinherit>
+      <mustinherit>container_limited</mustinherit>
     </control>
 
     <control>
       <controltype>textbox</controltype>
       <caption>Full container message (leave blank for default)</caption>
       <attribute>containerfullmessage</attribute>
-	  <mustinherit>container_limited</mustinherit>
+      <mustinherit>container_limited</mustinherit>
       <nullable/>
     </control>
-	
+  
     <control>
       <controltype>textbox</controltype>
       <attribute>openmsg</attribute>

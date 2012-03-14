@@ -213,16 +213,16 @@
     }
   </function>
 
-    <function name="GetVolume" type="int" parameters="obj, allinclusive">
+  <function name="GetVolume" type="int" parameters="obj, allinclusive">
     result = 0
     foreach (object, GetAllChildObjects ( obj )) {
-        if (HasInt(object, "volume")) {
-			result = result + object.volume
-		}
+      if (HasInt(object, "volume")) {
+        result = result + object.volume
+      }
     }
     if (allinclusive and HasInt(obj, "volume")) {
-		result = result + obj.volume
-	}	
+      result = result + obj.volume
+    }
     return (result)
   </function>
   

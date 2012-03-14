@@ -26,26 +26,26 @@
         }
       }
       
-	    fulldesc = ""
+      fulldesc = ""
       if (HasString(player.parent, "description")) {
         if (LengthOf(player.parent.description) > 0) {
            fulldesc = player.parent.description
         }
       }
       
-  	  if (game.appendobjectdescription) {
-	  	  foreach (val, ScopeVisibleNotHeld()) {
-		    	if (HasString(val, "description")) {
-				    if (LengthOf(val.description) > 0 and val <> player) {
-					    fulldesc = fulldesc + " " + val.description
-				    }
-			    }
-		    }
-	    }
-	   
-	    if (LengthOf(fulldesc) > 0) {
+      if (game.appendobjectdescription) {
+        foreach (val, ScopeVisibleNotHeld()) {
+          if (HasString(val, "description")) {
+            if (LengthOf(val.description) > 0 and val <> player) {
+              fulldesc = fulldesc + " " + val.description
+            }
+          }
+        }
+      }
+     
+      if (LengthOf(fulldesc) > 0) {
         msg (fulldesc)
-      }	  
+      }    
     }
     ]]>
   </function>
@@ -63,11 +63,11 @@
     if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "beforefirstenter")) {
       do (player.parent, "beforefirstenter")
     }
-	
+  
     if (HasScript(player.parent, "beforeenter")) {
       do (player.parent, "beforeenter")
-    }	
-	
+    }
+  
     request (UpdateLocation, CapFirst(GetDisplayName(player.parent)))
     roomFrameExists = false
     if (HasString(player.parent, "picture")) {

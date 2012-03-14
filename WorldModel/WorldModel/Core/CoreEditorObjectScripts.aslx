@@ -6,6 +6,12 @@
 
     <control>
       <controltype>script</controltype>
+      <caption>Before entering the room</caption>
+      <attribute>beforeenter</attribute>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
       <caption>After entering the room</caption>
       <attribute>enter</attribute>
     </control>

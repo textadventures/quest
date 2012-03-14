@@ -4,13 +4,87 @@
     <caption>Inventory</caption>
     <mustnotinherit>editor_room</mustnotinherit>
 
-	<control>
-      <mustinherit>defaultplayer</mustinherit>	
+    <control>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+      <controltype>title</controltype>
+      <caption>Take</caption>
+    </control>
+
+    <control>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+      <controltype>multi</controltype>
+      <caption>Take</caption>
+      <attribute>take</attribute>
+      <types>
+        boolean=Default behaviour; script=Run script
+      </types>
+      <checkbox>Object can be taken</checkbox>
+    </control>
+
+    <control>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+      <controltype>textbox</controltype>
+      <caption>Take message (leave blank for default)</caption>
+      <attribute>takemsg</attribute>
+      <nullable/>
+
+      <!-- show only if take type is boolean -->
+      <relatedattribute>take</relatedattribute>
+      <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
+    </control>
+
+    <control>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+      <controltype>script</controltype>
+      <caption>After taking the object</caption>
+      <attribute>ontake</attribute>
+      <onlydisplayif>GetBoolean(this, "take")</onlydisplayif>
+    </control>
+
+    <control>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+      <controltype>title</controltype>
+      <caption>Drop</caption>
+    </control>
+
+    <control>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+      <controltype>multi</controltype>
+      <caption>Drop</caption>
+      <attribute>drop</attribute>
+      <types>
+        boolean=Default behaviour; script=Run script
+      </types>
+      <checkbox>Object can be dropped</checkbox>
+    </control>
+
+    <control>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+      <controltype>textbox</controltype>
+      <caption>Drop message (leave blank for default)</caption>
+      <attribute>dropmsg</attribute>
+      <nullable/>
+
+      <!-- show only if drop type is boolean -->
+      <relatedattribute>drop</relatedattribute>
+      <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
+    </control>
+
+    <control>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+      <controltype>script</controltype>
+      <caption>After dropping the object</caption>
+      <attribute>ondrop</attribute>
+      <onlydisplayif>GetBoolean(this, "drop")</onlydisplayif>
+    </control>
+
+    <control>
+      <mustinherit>defaultplayer</mustinherit>
       <controltype>title</controltype>
       <caption>Inventory limitation</caption>
     </control>
-	
-	<control>
+
+    <control>
       <controltype>number</controltype>
       <caption>Maximum objects</caption>
       <attribute>maxobjects</attribute>
@@ -19,20 +93,20 @@
       <minimum>0</minimum>
     </control>
 
-   <control>
+    <control>
       <controltype>textbox</controltype>
       <caption>Full container message (leave blank for default)</caption>
       <attribute>containermaxobjects</attribute>
       <mustinherit>defaultplayer</mustinherit>
       <nullable/>
-    </control>	
-	
-	<control>
+    </control>
+
+    <control>
       <controltype>title</controltype>
       <caption>Volume</caption>
     </control>
-	
-	<control>
+
+    <control>
       <controltype>number</controltype>
       <caption>Volume</caption>
       <attribute>volume</attribute>
@@ -40,8 +114,8 @@
       <mustinherit>defaultobject</mustinherit>
       <minimum>0</minimum>
     </control>
-	
-	<control>
+
+    <control>
       <controltype>number</controltype>
       <caption>Maximum volume of inventory</caption>
       <attribute>maxvolume</attribute>
@@ -56,80 +130,6 @@
       <attribute>containerfullmessage</attribute>
       <mustinherit>defaultplayer</mustinherit>
       <nullable/>
-    </control>	
-	
-    <control>
-	  <mustnotinherit>defaultplayer</mustnotinherit>
-      <controltype>title</controltype>
-      <caption>Take</caption>
-    </control>
-
-    <control>
-	  <mustnotinherit>defaultplayer</mustnotinherit>
-      <controltype>multi</controltype>
-      <caption>Take</caption>
-      <attribute>take</attribute>
-      <types>
-        boolean=Default behaviour; script=Run script
-      </types>
-      <checkbox>Object can be taken</checkbox>
-    </control>
-
-    <control>
-	  <mustnotinherit>defaultplayer</mustnotinherit>
-      <controltype>textbox</controltype>
-      <caption>Take message (leave blank for default)</caption>
-      <attribute>takemsg</attribute>
-      <nullable/>
-
-      <!-- show only if take type is boolean -->
-      <relatedattribute>take</relatedattribute>
-      <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
-    </control>
-
-    <control>
-	  <mustnotinherit>defaultplayer</mustnotinherit>
-      <controltype>script</controltype>
-      <caption>After taking the object</caption>
-      <attribute>ontake</attribute>
-      <onlydisplayif>GetBoolean(this, "take")</onlydisplayif>
-    </control>
-
-    <control>
-	  <mustnotinherit>defaultplayer</mustnotinherit>
-      <controltype>title</controltype>
-      <caption>Drop</caption>
-    </control>
-
-    <control>
-	  <mustnotinherit>defaultplayer</mustnotinherit>
-      <controltype>multi</controltype>
-      <caption>Drop</caption>
-      <attribute>drop</attribute>
-      <types>
-        boolean=Default behaviour; script=Run script
-      </types>
-      <checkbox>Object can be dropped</checkbox>
-    </control>
-
-    <control>
-	  <mustnotinherit>defaultplayer</mustnotinherit>
-      <controltype>textbox</controltype>
-      <caption>Drop message (leave blank for default)</caption>
-      <attribute>dropmsg</attribute>
-      <nullable/>
-
-      <!-- show only if drop type is boolean -->
-      <relatedattribute>drop</relatedattribute>
-      <relatedattributedisplaytype>boolean</relatedattributedisplaytype>
-    </control>
-
-    <control>
-	  <mustnotinherit>defaultplayer</mustnotinherit>
-	  <controltype>script</controltype>
-      <caption>After dropping the object</caption>
-      <attribute>ondrop</attribute>
-      <onlydisplayif>GetBoolean(this, "drop")</onlydisplayif>
     </control>
 
   </tab>
