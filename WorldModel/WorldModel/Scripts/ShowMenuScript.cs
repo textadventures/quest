@@ -26,7 +26,7 @@ namespace AxeSoftware.Quest.Scripts
             }
             IScript callbackScript = ScriptFactory.CreateScript(callback);
 
-            return new ShowMenuScript(WorldModel, ScriptFactory, new Expression<string>(parameters[0], WorldModel), new ExpressionGeneric(parameters[1], WorldModel), new Expression<bool>(parameters[2], WorldModel), callbackScript);
+            return new ShowMenuScript(scriptContext, ScriptFactory, new Expression<string>(parameters[0], scriptContext), new ExpressionGeneric(parameters[1], scriptContext), new Expression<bool>(parameters[2], scriptContext), callbackScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -36,6 +36,7 @@ namespace AxeSoftware.Quest.Scripts
 
     public class ShowMenuScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_caption;
         private IFunctionGeneric m_options;
@@ -43,9 +44,10 @@ namespace AxeSoftware.Quest.Scripts
         private IScript m_callbackScript;
         private IScriptFactory m_scriptFactory;
 
-        public ShowMenuScript(WorldModel worldModel, IScriptFactory scriptFactory, IFunction<string> caption, IFunctionGeneric options, IFunction<bool> allowCancel, IScript callbackScript)
+        public ShowMenuScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<string> caption, IFunctionGeneric options, IFunction<bool> allowCancel, IScript callbackScript)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_scriptFactory = scriptFactory;
             m_caption = caption;
             m_options = options;
@@ -55,7 +57,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new ShowMenuScript(m_worldModel, m_scriptFactory, m_caption.Clone(), m_options.Clone(), m_allowCancel.Clone(), (IScript)m_callbackScript.Clone());
+            return new ShowMenuScript(m_scriptContext, m_scriptFactory, m_caption.Clone(), m_options.Clone(), m_allowCancel.Clone(), (IScript)m_callbackScript.Clone());
         }
 
         public override void Execute(Context c)
@@ -105,13 +107,13 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_caption = new Expression<string>((string)value, m_worldModel);
+                    m_caption = new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_options = new ExpressionGeneric((string)value, m_worldModel);
+                    m_options = new ExpressionGeneric((string)value, m_scriptContext);
                     break;
                 case 2:
-                    m_allowCancel = new Expression<bool>((string)value, m_worldModel);
+                    m_allowCancel = new Expression<bool>((string)value, m_scriptContext);
                     break;
                 case 3:
                     // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.

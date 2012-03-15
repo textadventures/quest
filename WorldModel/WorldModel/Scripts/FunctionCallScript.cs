@@ -43,7 +43,7 @@ namespace AxeSoftware.Quest.Scripts
                     {
                         foreach (string s in parameters)
                         {
-                            paramExpressions.Add(new Expression<object>(s, WorldModel));
+                            paramExpressions.Add(new Expression<object>(s, scriptContext));
                         }
                     }
                 }

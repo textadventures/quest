@@ -13,7 +13,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "undo"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             return new UndoScript(WorldModel);
         }
@@ -74,9 +74,9 @@ namespace AxeSoftware.Quest.Scripts
             get { return "start transaction"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new StartTransactionScript(WorldModel, new Expression<string>(parameters[0], WorldModel));
+            return new StartTransactionScript(scriptContext, new Expression<string>(parameters[0], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -87,18 +87,20 @@ namespace AxeSoftware.Quest.Scripts
 
     public class StartTransactionScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_command;
 
-        public StartTransactionScript(WorldModel worldModel, IFunction<string> command)
+        public StartTransactionScript(ScriptContext scriptContext, IFunction<string> command)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_command = command;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new StartTransactionScript(m_worldModel, m_command.Clone());
+            return new StartTransactionScript(m_scriptContext, m_command.Clone());
         }
 
         public override void Execute(Context c)
@@ -126,7 +128,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-            m_command = new Expression<string>((string)value, m_worldModel);
+            m_command = new Expression<string>((string)value, m_scriptContext);
         }
     }
 }

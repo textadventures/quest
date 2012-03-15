@@ -48,27 +48,27 @@ namespace AxeSoftware.Quest.Scripts
                 string value = script.Substring(eqPos + 1 + offset).Trim();
 
                 string variable;
-                IFunction<Element> expr = GetAppliesTo(appliesTo, out variable);
+                IFunction<Element> expr = GetAppliesTo(scriptContext, appliesTo, out variable);
 
                 if (!isScript)
                 {
-                    return new SetExpressionScript(this, expr, variable, new Expression<object>(value, WorldModel));
+                    return new SetExpressionScript(this, scriptContext, expr, variable, new Expression<object>(value, scriptContext));
                 }
                 else
                 {
-                    return new SetScriptScript(this, expr, variable, ScriptFactory.CreateScript(value));
+                    return new SetScriptScript(this, scriptContext, expr, variable, ScriptFactory.CreateScript(value));
                 }
             }
 
             return null;
         }
 
-        internal IFunction<Element> GetAppliesTo(string value, out string variable)
+        internal IFunction<Element> GetAppliesTo(ScriptContext scriptContext, string value, out string variable)
         {
             string var = Utility.ConvertVariablesToFleeFormat(value).Trim();
             string obj;
             Utility.ResolveVariableName(ref var, out obj, out variable);
-            return (obj == null) ? null : new Expression<Element>(obj, WorldModel);
+            return (obj == null) ? null : new Expression<Element>(obj, scriptContext);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -78,15 +78,17 @@ namespace AxeSoftware.Quest.Scripts
 
     public abstract class SetScriptBase : ScriptBase
     {
+        protected ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<Element> m_appliesTo;
         private string m_property;
         private SetScriptConstructor m_constructor;
 
-        internal SetScriptBase(SetScriptConstructor constructor, IFunction<Element> appliesTo, string property)
+        internal SetScriptBase(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo, string property)
         {
             m_constructor = constructor;
             m_worldModel = constructor.WorldModel;
+            m_scriptContext = scriptContext;
             AppliesTo = appliesTo;
             Property = property;
         }
@@ -173,7 +175,7 @@ namespace AxeSoftware.Quest.Scripts
             {
                 case 0:
                     string variable;
-                    AppliesTo = m_constructor.GetAppliesTo((string)value, out variable);
+                    AppliesTo = m_constructor.GetAppliesTo(m_scriptContext, (string)value, out variable);
                     Property = variable;
                     break;
                 case 1:
@@ -207,15 +209,15 @@ namespace AxeSoftware.Quest.Scripts
     {
         private Expression<object> m_expr;
 
-        public SetExpressionScript(SetScriptConstructor constructor, IFunction<Element> appliesTo, string property, Expression<object> expr)
-            : base(constructor, appliesTo, property)
+        public SetExpressionScript(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo, string property, Expression<object> expr)
+            : base(constructor, scriptContext, appliesTo, property)
         {
             m_expr = expr;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new SetExpressionScript(Constructor, AppliesTo == null ? null : AppliesTo.Clone(), Property, (Expression<object>)m_expr.Clone());
+            return new SetExpressionScript(Constructor, m_scriptContext, AppliesTo == null ? null : AppliesTo.Clone(), Property, (Expression<object>)m_expr.Clone());
         }
 
         protected override object GetResult(Context c)
@@ -235,7 +237,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override void SetValue(string newValue)
         {
-            m_expr = new Expression<object>(newValue, WorldModel);
+            m_expr = new Expression<object>(newValue, m_scriptContext);
         }
 
         public override string Keyword { get { return "="; } }
@@ -251,8 +253,8 @@ namespace AxeSoftware.Quest.Scripts
         private IScript m_script;
         private IScriptFactory m_scriptFactory;
 
-        public SetScriptScript(SetScriptConstructor constructor, IFunction<Element> appliesTo, string property, IScript script)
-            : base(constructor, appliesTo, property)
+        public SetScriptScript(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo, string property, IScript script)
+            : base(constructor, scriptContext, appliesTo, property)
         {
             m_script = script;
             m_scriptFactory = constructor.ScriptFactory;
@@ -260,7 +262,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new SetScriptScript(Constructor, AppliesTo == null ? null : AppliesTo.Clone(), Property, (IScript)m_script.Clone());
+            return new SetScriptScript(Constructor, m_scriptContext, AppliesTo == null ? null : AppliesTo.Clone(), Property, (IScript)m_script.Clone());
         }
 
         protected override object GetResult(Context c)

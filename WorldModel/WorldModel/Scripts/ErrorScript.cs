@@ -15,9 +15,9 @@ namespace AxeSoftware.Quest.Scripts
             get { return "error"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new ErrorScript(WorldModel, new ExpressionGeneric(parameters[0], WorldModel));
+            return new ErrorScript(scriptContext, new ExpressionGeneric(parameters[0], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -29,18 +29,20 @@ namespace AxeSoftware.Quest.Scripts
 
     public class ErrorScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private IFunctionGeneric m_function;
         private WorldModel m_worldModel;
 
-        public ErrorScript(WorldModel worldModel, IFunctionGeneric function)
+        public ErrorScript(ScriptContext scriptContext, IFunctionGeneric function)
         {
+            m_scriptContext = scriptContext;
             m_function = function;
-            m_worldModel = worldModel;
+            m_worldModel = scriptContext.WorldModel;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new ErrorScript(m_worldModel, m_function.Clone());
+            return new ErrorScript(m_scriptContext, m_function.Clone());
         }
 
         public override void Execute(Context c)
@@ -69,7 +71,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-            m_function = new ExpressionGeneric((string)value, m_worldModel);
+            m_function = new ExpressionGeneric((string)value, m_scriptContext);
         }
     }
 }

@@ -13,9 +13,9 @@ namespace AxeSoftware.Quest.Scripts
             get { return "return"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new ReturnScript(WorldModel, new ExpressionGeneric(parameters[0], WorldModel));
+            return new ReturnScript(scriptContext, new ExpressionGeneric(parameters[0], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -26,18 +26,20 @@ namespace AxeSoftware.Quest.Scripts
 
     public class ReturnScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunctionGeneric m_returnValue;
 
-        public ReturnScript(WorldModel worldModel, IFunctionGeneric returnValue)
+        public ReturnScript(ScriptContext scriptContext, IFunctionGeneric returnValue)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_returnValue = returnValue;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new ReturnScript(m_worldModel, m_returnValue.Clone());
+            return new ReturnScript(m_scriptContext, m_returnValue.Clone());
         }
 
         public override void Execute(Context c)
@@ -65,7 +67,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-            m_returnValue = new ExpressionGeneric((string)value, m_worldModel);
+            m_returnValue = new ExpressionGeneric((string)value, m_scriptContext);
         }
     }
 }

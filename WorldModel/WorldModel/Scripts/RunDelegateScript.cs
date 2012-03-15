@@ -13,7 +13,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "rundelegate"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             if (parameters.Count < 2)
             {
@@ -31,18 +31,18 @@ namespace AxeSoftware.Quest.Scripts
                 switch (cnt)
                 {
                     case 1:
-                        obj = new Expression<Element>(param, WorldModel);
+                        obj = new Expression<Element>(param, scriptContext);
                         break;
                     case 2:
-                        delegateName = new Expression<string>(param, WorldModel);
+                        delegateName = new Expression<string>(param, scriptContext);
                         break;
                     default:
-                        paramExpressions.Add(new Expression<object>(param, WorldModel));
+                        paramExpressions.Add(new Expression<object>(param, scriptContext));
                         break;
                 }
             }
 
-            return new RunDelegateScript(WorldModel, obj, delegateName, paramExpressions);
+            return new RunDelegateScript(scriptContext, obj, delegateName, paramExpressions);
         }
 
         protected override int[] ExpectedParameters
@@ -53,22 +53,24 @@ namespace AxeSoftware.Quest.Scripts
 
     public class RunDelegateScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_delegate;
         private FunctionCallParameters m_parameters;
         private IFunction<Element> m_appliesTo = null;
 
-        public RunDelegateScript(WorldModel worldModel, IFunction<Element> obj, IFunction<string> del, IList<IFunction<object>> parameters)
+        public RunDelegateScript(ScriptContext scriptContext, IFunction<Element> obj, IFunction<string> del, IList<IFunction<object>> parameters)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_delegate = del;
-            m_parameters = new FunctionCallParameters(worldModel, parameters);
+            m_parameters = new FunctionCallParameters(m_worldModel, parameters);
             m_appliesTo = obj;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new RunDelegateScript(m_worldModel, m_appliesTo.Clone(), m_delegate.Clone(), m_parameters.Parameters);
+            return new RunDelegateScript(m_scriptContext, m_appliesTo.Clone(), m_delegate.Clone(), m_parameters.Parameters);
         }
 
         public override void Execute(Context c)
@@ -142,10 +144,10 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_appliesTo = new Expression<Element>((string)value, m_worldModel);
+                    m_appliesTo = new Expression<Element>((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_delegate = new Expression<string>((string)value, m_worldModel);
+                    m_delegate = new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 2:
                     // any updates to the parameters should change the list itself - nothing should cause SetParameter to be triggered.

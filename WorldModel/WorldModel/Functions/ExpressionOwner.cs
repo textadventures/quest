@@ -416,7 +416,7 @@ namespace AxeSoftware.Quest.Functions
 
         public object Eval(string expression, IDictionary parameters)
         {
-            ExpressionGeneric expr = new ExpressionGeneric(expression, m_worldModel);
+            ExpressionGeneric expr = new ExpressionGeneric(expression, new ScriptContext(m_worldModel));
             Context context = new Context();
             if (parameters != null) context.Parameters = new Parameters(parameters);
             return expr.Execute(context);

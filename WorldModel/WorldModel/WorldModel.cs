@@ -1527,7 +1527,7 @@ namespace AxeSoftware.Quest
 
         public bool Assert(string expr)
         {
-            Expression<bool> expression = new Expression<bool>(expr, this);
+            Expression<bool> expression = new Expression<bool>(expr, new ScriptContext(this));
             Context c = new Context();
             return expression.Execute(c);
         }

@@ -26,7 +26,7 @@ namespace AxeSoftware.Quest.Scripts
             }
             IScript callbackScript = ScriptFactory.CreateScript(callback);
 
-            return new AskScript(WorldModel, ScriptFactory, new Expression<string>(parameters[0], WorldModel), callbackScript);
+            return new AskScript(scriptContext, ScriptFactory, new Expression<string>(parameters[0], scriptContext), callbackScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -36,14 +36,16 @@ namespace AxeSoftware.Quest.Scripts
 
     public class AskScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_caption;
         private IScript m_callbackScript;
         private IScriptFactory m_scriptFactory;
 
-        public AskScript(WorldModel worldModel, IScriptFactory scriptFactory, IFunction<string> caption, IScript callbackScript)
+        public AskScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<string> caption, IScript callbackScript)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_scriptFactory = scriptFactory;
             m_caption = caption;
             m_callbackScript = callbackScript;
@@ -51,7 +53,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new AskScript(m_worldModel, m_scriptFactory, m_caption.Clone(), (IScript)m_callbackScript.Clone());
+            return new AskScript(m_scriptContext, m_scriptFactory, m_caption.Clone(), (IScript)m_callbackScript.Clone());
         }
 
         public override void Execute(Context c)
@@ -82,7 +84,7 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_caption = new Expression<string>((string)value, m_worldModel);
+                    m_caption = new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 1:
                     // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.

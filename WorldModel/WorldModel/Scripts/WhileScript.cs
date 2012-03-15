@@ -20,7 +20,7 @@ namespace AxeSoftware.Quest.Scripts
             string loop = Utility.GetScript(afterExpr);
             IScript loopScript = ScriptFactory.CreateScript(loop);
 
-            return new WhileScript(WorldModel, ScriptFactory, new Expression<bool>(param, WorldModel), loopScript);
+            return new WhileScript(scriptContext, ScriptFactory, new Expression<bool>(param, scriptContext), loopScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -30,14 +30,16 @@ namespace AxeSoftware.Quest.Scripts
 
     public class WhileScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private IFunction<bool> m_expression;
         private IScript m_loopScript;
         private WorldModel m_worldModel;
         private IScriptFactory m_scriptFactory;
 
-        public WhileScript(WorldModel worldModel, IScriptFactory scriptFactory, IFunction<bool> expression, IScript loopScript)
+        public WhileScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<bool> expression, IScript loopScript)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_scriptFactory = scriptFactory;
             m_expression = expression;
             m_loopScript = loopScript;
@@ -45,7 +47,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new WhileScript(m_worldModel, m_scriptFactory, m_expression.Clone(), (IScript)m_loopScript.Clone());
+            return new WhileScript(m_scriptContext, m_scriptFactory, m_expression.Clone(), (IScript)m_loopScript.Clone());
         }
 
         protected override void ParentUpdated()
@@ -92,7 +94,7 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_expression = new Expression<bool>((string)value, m_worldModel);
+                    m_expression = new Expression<bool>((string)value, m_scriptContext);
                     break;
                 case 1:
                     // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.

@@ -40,9 +40,9 @@ namespace AxeSoftware.Quest.Scripts
             get { return "request"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new RequestScript(WorldModel, parameters[0], new Expression<string>(parameters[1], WorldModel));
+            return new RequestScript(scriptContext, parameters[0], new Expression<string>(parameters[1], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -53,20 +53,22 @@ namespace AxeSoftware.Quest.Scripts
 
     public class RequestScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private Request m_request;
         private IFunction<string> m_data;
 
-        public RequestScript(WorldModel worldModel, string request, IFunction<string> data)
+        public RequestScript(ScriptContext scriptContext, string request, IFunction<string> data)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_data = data;
             m_request = (Request)(Enum.Parse(typeof(Request), request));
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new RequestScript(m_worldModel, m_request.ToString(), m_data.Clone());
+            return new RequestScript(m_scriptContext, m_request.ToString(), m_data.Clone());
         }
 
         public override void Execute(Context c)
@@ -203,7 +205,7 @@ namespace AxeSoftware.Quest.Scripts
                     m_request = (Request)(Enum.Parse(typeof(Request), (string)value));
                     break;
                 case 1:
-                    m_data = new Expression<string>((string)value, m_worldModel);
+                    m_data = new Expression<string>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

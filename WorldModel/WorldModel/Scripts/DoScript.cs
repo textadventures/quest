@@ -16,14 +16,14 @@ namespace AxeSoftware.Quest.Scripts
             get { return "do"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             switch (parameters.Count)
             {
                 case 2:
-                    return new DoActionScript(WorldModel, new Expression<Element>(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel));
+                    return new DoActionScript(scriptContext, new Expression<Element>(parameters[0], scriptContext), new Expression<string>(parameters[1], scriptContext));
                 case 3:
-                    return new DoActionScript(WorldModel, new Expression<Element>(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel), new Expression<IDictionary>(parameters[2], WorldModel));
+                    return new DoActionScript(scriptContext, new Expression<Element>(parameters[0], scriptContext), new Expression<string>(parameters[1], scriptContext), new Expression<IDictionary>(parameters[2], scriptContext));
             }
             return null;
         }
@@ -37,27 +37,29 @@ namespace AxeSoftware.Quest.Scripts
 
     public class DoActionScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<Element> m_obj;
         private IFunction<string> m_action;
         private IFunction<IDictionary> m_parameters = null;
 
-        public DoActionScript(WorldModel worldModel, IFunction<Element> obj, IFunction<string> action)
+        public DoActionScript(ScriptContext scriptContext, IFunction<Element> obj, IFunction<string> action)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_obj = obj;
             m_action = action;
         }
 
-        public DoActionScript(WorldModel worldModel, IFunction<Element> obj, IFunction<string> action, IFunction<IDictionary> parameters)
-            : this(worldModel, obj, action)
+        public DoActionScript(ScriptContext scriptContext, IFunction<Element> obj, IFunction<string> action, IFunction<IDictionary> parameters)
+            : this(scriptContext, obj, action)
         {
             m_parameters = parameters;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new DoActionScript(m_worldModel, m_obj.Clone(), m_action.Clone(), m_parameters == null ? null : m_parameters.Clone());
+            return new DoActionScript(m_scriptContext, m_obj.Clone(), m_action.Clone(), m_parameters == null ? null : m_parameters.Clone());
         }
 
         public override void Execute(Context c)
@@ -115,13 +117,13 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_obj = new Expression<Element>((string)value, m_worldModel);
+                    m_obj = new Expression<Element>((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_action = new Expression<string>((string)value, m_worldModel);
+                    m_action = new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 2:
-                    m_parameters = new Expression<IDictionary>((string)value, m_worldModel);
+                    m_parameters = new Expression<IDictionary>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -75,7 +75,7 @@ namespace AxeSoftware.Quest
 
         public IScript CreateScript(string line)
         {
-            return CreateScript(line, new ScriptContext());
+            return CreateScript(line, new ScriptContext(m_worldModel));
         }
 
         public IScript CreateScript(string line, ScriptContext scriptContext)

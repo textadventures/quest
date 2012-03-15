@@ -35,7 +35,7 @@ namespace AxeSoftware.Quest.Scripts
                 }
             }
 
-            return CreateInt(parameters);
+            return CreateInt(parameters, scriptContext);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -44,7 +44,7 @@ namespace AxeSoftware.Quest.Scripts
 
         #endregion
 
-        protected abstract IScript CreateInt(List<string> parameters);
+        protected abstract IScript CreateInt(List<string> parameters, ScriptContext scriptContext);
 
         protected abstract int[] ExpectedParameters { get; }
 

@@ -24,7 +24,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "sort"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             return new SortScript(new ExpressionGeneric(parameters[0]), parameters[1]);
         }

@@ -14,14 +14,14 @@ namespace AxeSoftware.Quest.Scripts
             get { return "invoke"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             switch (parameters.Count)
             {
                 case 1:
-                    return new InvokeScript(WorldModel, new Expression<IScript>(parameters[0], WorldModel));
+                    return new InvokeScript(scriptContext, new Expression<IScript>(parameters[0], scriptContext));
                 case 2:
-                    return new InvokeScript(WorldModel, new Expression<IScript>(parameters[0], WorldModel), new Expression<IDictionary>(parameters[1], WorldModel));
+                    return new InvokeScript(scriptContext, new Expression<IScript>(parameters[0], scriptContext), new Expression<IDictionary>(parameters[1], scriptContext));
             }
             return null;
         }
@@ -34,25 +34,27 @@ namespace AxeSoftware.Quest.Scripts
 
     public class InvokeScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<IScript> m_script;
         private IFunction<IDictionary> m_parameters = null;
 
-        public InvokeScript(WorldModel worldModel, IFunction<IScript> script)
+        public InvokeScript(ScriptContext scriptContext, IFunction<IScript> script)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_script = script;
         }
 
-        public InvokeScript(WorldModel worldModel, IFunction<IScript> script, IFunction<IDictionary> parameters)
-            : this(worldModel, script)
+        public InvokeScript(ScriptContext scriptContext, IFunction<IScript> script, IFunction<IDictionary> parameters)
+            : this(scriptContext, script)
         {
             m_parameters = parameters;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new InvokeScript(m_worldModel, m_script.Clone(), m_parameters == null ? null : m_parameters.Clone());
+            return new InvokeScript(m_scriptContext, m_script.Clone(), m_parameters == null ? null : m_parameters.Clone());
         }
 
         public override void Execute(Context c)
@@ -107,10 +109,10 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_script = new Expression<IScript>((string)value, m_worldModel);
+                    m_script = new Expression<IScript>((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_parameters = new Expression<IDictionary>((string)value, m_worldModel);
+                    m_parameters = new Expression<IDictionary>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

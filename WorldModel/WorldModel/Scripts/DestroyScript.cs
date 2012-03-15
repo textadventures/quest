@@ -8,39 +8,38 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class DestroyScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "destroy"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new DestroyScript(WorldModel, new Expression<string>(parameters[0], WorldModel));
+            return new DestroyScript(scriptContext, new Expression<string>(parameters[0], scriptContext));
         }
 
         protected override int[] ExpectedParameters
         {
             get { return new int[] { 1 }; }
         }
-        #endregion
     }
 
     public class DestroyScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_expr;
 
-        public DestroyScript(WorldModel worldModel, IFunction<string> expr)
+        public DestroyScript(ScriptContext scriptContext, IFunction<string> expr)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_expr = expr;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new DestroyScript(m_worldModel, m_expr.Clone());
+            return new DestroyScript(m_scriptContext, m_expr.Clone());
         }
 
         public override void Execute(Context c)
@@ -68,7 +67,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-            m_expr = new Expression<string>((string)value, m_worldModel);
+            m_expr = new Expression<string>((string)value, m_scriptContext);
         }
     }
 }

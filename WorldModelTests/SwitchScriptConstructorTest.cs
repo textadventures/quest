@@ -27,7 +27,7 @@ namespace WorldModelTests
             m_constructor.WorldModel = m_worldModel;            
             m_constructor.ScriptFactory = m_scriptFactory;
 
-            scriptContext = new ScriptContext();
+            scriptContext = new ScriptContext(m_worldModel);
         }
 
         [TestMethod()]

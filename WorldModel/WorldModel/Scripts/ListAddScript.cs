@@ -14,11 +14,11 @@ namespace AxeSoftware.Quest.Scripts
             get { return "list add"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new ListAddScript(WorldModel,
-                new ExpressionGeneric(parameters[0], WorldModel),
-                new Expression<object>(parameters[1], WorldModel));
+            return new ListAddScript(scriptContext,
+                new ExpressionGeneric(parameters[0], scriptContext),
+                new Expression<object>(parameters[1], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -29,20 +29,22 @@ namespace AxeSoftware.Quest.Scripts
 
     public class ListAddScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private IFunctionGeneric m_list;
         private IFunction<object> m_value;
         private WorldModel m_worldModel;
 
-        public ListAddScript(WorldModel worldModel, IFunctionGeneric list, IFunction<object> value)
+        public ListAddScript(ScriptContext scriptContext, IFunctionGeneric list, IFunction<object> value)
         {
+            m_scriptContext = scriptContext;
             m_list = list;
             m_value = value;
-            m_worldModel = worldModel;
+            m_worldModel = scriptContext.WorldModel;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new ListAddScript(m_worldModel, m_list.Clone(), m_value.Clone());
+            return new ListAddScript(m_scriptContext, m_list.Clone(), m_value.Clone());
         }
 
         public override void Execute(Context c)
@@ -90,10 +92,10 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_list = new ExpressionGeneric((string)value, m_worldModel);
+                    m_list = new ExpressionGeneric((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_value = new Expression<object>((string)value, m_worldModel);
+                    m_value = new Expression<object>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -108,11 +110,11 @@ namespace AxeSoftware.Quest.Scripts
             get { return "list remove"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new ListRemoveScript(WorldModel,
-                new ExpressionGeneric(parameters[0], WorldModel),
-                new Expression<object>(parameters[1], WorldModel));
+            return new ListRemoveScript(scriptContext,
+                new ExpressionGeneric(parameters[0], scriptContext),
+                new Expression<object>(parameters[1], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -123,20 +125,22 @@ namespace AxeSoftware.Quest.Scripts
 
     public class ListRemoveScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private IFunctionGeneric m_list;
         private IFunction<object> m_value;
         private WorldModel m_worldModel;
 
-        public ListRemoveScript(WorldModel worldModel, IFunctionGeneric list, IFunction<object> value)
+        public ListRemoveScript(ScriptContext scriptContext, IFunctionGeneric list, IFunction<object> value)
         {
+            m_scriptContext = scriptContext;
             m_list = list;
             m_value = value;
-            m_worldModel = worldModel;
+            m_worldModel = scriptContext.WorldModel;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new ListRemoveScript(m_worldModel, m_list.Clone(), m_value.Clone());
+            return new ListRemoveScript(m_scriptContext, m_list.Clone(), m_value.Clone());
         }
 
         public override void Execute(Context c)
@@ -184,10 +188,10 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_list = new ExpressionGeneric((string)value, m_worldModel);
+                    m_list = new ExpressionGeneric((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_value = new Expression<object>((string)value, m_worldModel);
+                    m_value = new Expression<object>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

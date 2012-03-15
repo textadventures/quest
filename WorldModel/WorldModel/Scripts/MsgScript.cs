@@ -15,9 +15,9 @@ namespace AxeSoftware.Quest.Scripts
             get { return "msg"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new MsgScript(WorldModel, new ExpressionGeneric(parameters[0], WorldModel));
+            return new MsgScript(scriptContext, new ExpressionGeneric(parameters[0], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -29,29 +29,27 @@ namespace AxeSoftware.Quest.Scripts
 
     public class MsgScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunctionGeneric m_function;
 
-        public MsgScript(WorldModel worldModel, IFunctionGeneric function)
+        public MsgScript(ScriptContext scriptContext, IFunctionGeneric function)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_function = function;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new MsgScript(m_worldModel, m_function.Clone());
+            return new MsgScript(m_scriptContext, m_function.Clone());
         }
-
-        #region IScript Members
 
         public override void Execute(Context c)
         {
             object result = m_function.Execute(c);
             m_worldModel.Print(result.ToString());
         }
-
-        #endregion
 
         public override string Save()
         {
@@ -65,7 +63,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-            m_function = new ExpressionGeneric((string)value, m_worldModel);
+            m_function = new ExpressionGeneric((string)value, m_scriptContext);
         }
 
         public override string Keyword

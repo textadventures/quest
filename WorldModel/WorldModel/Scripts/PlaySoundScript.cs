@@ -13,12 +13,12 @@ namespace AxeSoftware.Quest.Scripts
             get { return "play sound"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new PlaySoundScript(WorldModel,
-                new Expression<string>(parameters[0], WorldModel),
-                new Expression<bool>(parameters[1], WorldModel),
-                new Expression<bool>(parameters[2], WorldModel));
+            return new PlaySoundScript(scriptContext,
+                new Expression<string>(parameters[0], scriptContext),
+                new Expression<bool>(parameters[1], scriptContext),
+                new Expression<bool>(parameters[2], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -29,14 +29,16 @@ namespace AxeSoftware.Quest.Scripts
 
     public class PlaySoundScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_filename;
         private IFunction<bool> m_synchronous;
         private IFunction<bool> m_loop;
 
-        public PlaySoundScript(WorldModel worldModel, IFunction<string> function, IFunction<bool> synchronous, IFunction<bool> loop)
+        public PlaySoundScript(ScriptContext scriptContext, IFunction<string> function, IFunction<bool> synchronous, IFunction<bool> loop)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_filename = function;
             m_synchronous = synchronous;
             m_loop = loop;
@@ -44,7 +46,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new PlaySoundScript(m_worldModel, m_filename.Clone(), m_synchronous.Clone(), m_loop.Clone());
+            return new PlaySoundScript(m_scriptContext, m_filename.Clone(), m_synchronous.Clone(), m_loop.Clone());
         }
 
         public override void Execute(Context c)
@@ -79,13 +81,13 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_filename = new Expression<string>((string)value, m_worldModel);
+                    m_filename = new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_synchronous = new Expression<bool>((string)value, m_worldModel);
+                    m_synchronous = new Expression<bool>((string)value, m_scriptContext);
                     break;
                 case 2:
-                    m_loop = new Expression<bool>((string)value, m_worldModel);
+                    m_loop = new Expression<bool>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -108,7 +110,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "stop sound"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             return new StopSoundScript(WorldModel);
         }

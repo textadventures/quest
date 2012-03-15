@@ -30,7 +30,7 @@ namespace AxeSoftware.Quest.Scripts
 
             IScript thenScript = ScriptFactory.CreateScript(then, scriptContext);
 
-            return new IfScript(new Expression<bool>(expr, WorldModel), thenScript, WorldModel);
+            return new IfScript(new Expression<bool>(expr, scriptContext), thenScript, scriptContext);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -100,7 +100,7 @@ namespace AxeSoftware.Quest.Scripts
 
             internal void SetExpressionSilent(string newValue)
             {
-                Expression = new Expression<bool>(newValue, m_parent.m_worldModel);
+                Expression = new Expression<bool>(newValue, m_parent.m_scriptContext);
                 m_parent.NotifyUpdate(Id, newValue);
             }
         }
@@ -110,26 +110,28 @@ namespace AxeSoftware.Quest.Scripts
         private IScript m_elseScript;
         private List<ElseIfScript> m_elseIfScript = new List<ElseIfScript>();
         private bool m_hasElse = false;
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
 
         public event EventHandler<IfScriptUpdatedEventArgs> IfScriptUpdated;
 
-        public IfScript(IFunction<bool> expression, IScript thenScript, WorldModel worldModel)
-            : this(expression, thenScript, null, worldModel)
+        public IfScript(IFunction<bool> expression, IScript thenScript, ScriptContext scriptContext)
+            : this(expression, thenScript, null, scriptContext)
         {
         }
 
-        public IfScript(IFunction<bool> expression, IScript thenScript, IScript elseScript, WorldModel worldModel)
+        public IfScript(IFunction<bool> expression, IScript thenScript, IScript elseScript, ScriptContext scriptContext)
         {
             m_expression = expression;
             m_thenScript = thenScript;
             m_elseScript = elseScript;
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
         }
 
         protected override ScriptBase CloneScript()
         {
-            IfScript clone = new IfScript(m_expression.Clone(), (IScript)m_thenScript.Clone(), m_elseScript == null ? null : (IScript)m_elseScript.Clone(), m_worldModel);
+            IfScript clone = new IfScript(m_expression.Clone(), (IScript)m_thenScript.Clone(), m_elseScript == null ? null : (IScript)m_elseScript.Clone(), m_scriptContext);
             clone.m_hasElse = m_hasElse;
             foreach (ElseIfScript elseif in m_elseIfScript)
             {
@@ -181,7 +183,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public ElseIfScript AddElseIf(string expression, IScript script)
         {
-            IFunction<bool> expr = new Expression<bool>(expression, m_worldModel);
+            IFunction<bool> expr = new Expression<bool>(expression, m_scriptContext);
             return AddElseIf(expr, script);
         }
 
@@ -332,7 +334,7 @@ namespace AxeSoftware.Quest.Scripts
 
         private void SetExpressionSilent(string newValue)
         {
-            m_expression = new Expression<bool>(newValue, m_worldModel);
+            m_expression = new Expression<bool>(newValue, m_scriptContext);
             NotifyUpdate(0, newValue);
         }
 

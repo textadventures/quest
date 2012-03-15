@@ -13,9 +13,9 @@ namespace AxeSoftware.Quest.Scripts
             get { return "insert"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new InsertScript(WorldModel, new Expression<string>(parameters[0], WorldModel));
+            return new InsertScript(scriptContext, new Expression<string>(parameters[0], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -26,18 +26,20 @@ namespace AxeSoftware.Quest.Scripts
 
     public class InsertScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_filename;
 
-        public InsertScript(WorldModel worldModel, IFunction<string> filename)
+        public InsertScript(ScriptContext scriptContext, IFunction<string> filename)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_filename = filename;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new InsertScript(m_worldModel, m_filename.Clone());
+            return new InsertScript(m_scriptContext, m_filename.Clone());
         }
 
         public override void Execute(Context c)
@@ -65,7 +67,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-            m_filename = new Expression<string>((string)value, m_worldModel);
+            m_filename = new Expression<string>((string)value, m_scriptContext);
         }
 
         public override string Keyword

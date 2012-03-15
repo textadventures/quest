@@ -14,12 +14,12 @@ namespace AxeSoftware.Quest.Scripts
             get { return "dictionary add"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new DictionaryAddScript(WorldModel,
-                new ExpressionGeneric(parameters[0], WorldModel),
-                new Expression<string>(parameters[1], WorldModel),
-                new Expression<object>(parameters[2], WorldModel));
+            return new DictionaryAddScript(scriptContext,
+                new ExpressionGeneric(parameters[0], scriptContext),
+                new Expression<string>(parameters[1], scriptContext),
+                new Expression<object>(parameters[2], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -30,22 +30,24 @@ namespace AxeSoftware.Quest.Scripts
 
     public class DictionaryAddScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private IFunctionGeneric m_dictionary;
         private IFunction<string> m_key;
         private IFunction<object> m_value;
         private WorldModel m_worldModel;
 
-        public DictionaryAddScript(WorldModel worldModel, IFunctionGeneric dictionary, IFunction<string> key, IFunction<object> value)
+        public DictionaryAddScript(ScriptContext scriptContext, IFunctionGeneric dictionary, IFunction<string> key, IFunction<object> value)
         {
+            m_scriptContext = scriptContext;
             m_dictionary = dictionary;
             m_key = key;
             m_value = value;
-            m_worldModel = worldModel;
+            m_worldModel = scriptContext.WorldModel;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new DictionaryAddScript(m_worldModel, m_dictionary.Clone(), m_key.Clone(), m_value.Clone());
+            return new DictionaryAddScript(m_scriptContext, m_dictionary.Clone(), m_key.Clone(), m_value.Clone());
         }
 
         public override void Execute(Context c)
@@ -95,13 +97,13 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_dictionary = new ExpressionGeneric((string)value, m_worldModel);
+                    m_dictionary = new ExpressionGeneric((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_key = new Expression<string>((string)value, m_worldModel);
+                    m_key = new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 2:
-                    m_value = new Expression<object>((string)value, m_worldModel);
+                    m_value = new Expression<object>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -116,11 +118,11 @@ namespace AxeSoftware.Quest.Scripts
             get { return "dictionary remove"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new DictionaryRemoveScript(WorldModel,
-                new ExpressionGeneric(parameters[0], WorldModel),
-                new Expression<string>(parameters[1], WorldModel));
+            return new DictionaryRemoveScript(scriptContext,
+                new ExpressionGeneric(parameters[0], scriptContext),
+                new Expression<string>(parameters[1], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -131,20 +133,22 @@ namespace AxeSoftware.Quest.Scripts
 
     public class DictionaryRemoveScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private IFunctionGeneric m_dictionary;
         private IFunction<string> m_key;
         private WorldModel m_worldModel;
 
-        public DictionaryRemoveScript(WorldModel worldModel, IFunctionGeneric dictionary, IFunction<string> key)
+        public DictionaryRemoveScript(ScriptContext scriptContext, IFunctionGeneric dictionary, IFunction<string> key)
         {
+            m_scriptContext = scriptContext;
             m_dictionary = dictionary;
             m_key = key;
-            m_worldModel = worldModel;
+            m_worldModel = scriptContext.WorldModel;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new DictionaryRemoveScript(m_worldModel, m_dictionary.Clone(), m_key.Clone());
+            return new DictionaryRemoveScript(m_scriptContext, m_dictionary.Clone(), m_key.Clone());
         }
 
         public override void Execute(Context c)
@@ -192,10 +196,10 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_dictionary = new ExpressionGeneric((string)value, m_worldModel);
+                    m_dictionary = new ExpressionGeneric((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_key = new Expression<string>((string)value, m_worldModel);
+                    m_key = new Expression<string>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

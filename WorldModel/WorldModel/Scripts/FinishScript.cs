@@ -13,7 +13,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "finish"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
             return new FinishScript(WorldModel);
         }

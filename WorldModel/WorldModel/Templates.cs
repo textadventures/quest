@@ -107,7 +107,7 @@ namespace AxeSoftware.Quest
 
             if (!m_worldModel.EditMode)
             {
-                template.Fields[FieldDefinitions.Function] = new Expression<string>(expression, m_worldModel);
+                template.Fields[FieldDefinitions.Function] = new Expression<string>(expression, new ScriptContext(m_worldModel));
             }
             else
             {

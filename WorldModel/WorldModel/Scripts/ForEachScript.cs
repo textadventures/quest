@@ -29,7 +29,7 @@ namespace AxeSoftware.Quest.Scripts
 
             string type = parameters[0];
 
-            return new ForEachScript(WorldModel, parameters[0], new ExpressionGeneric(parameters[1], WorldModel), loopScript);
+            return new ForEachScript(scriptContext, parameters[0], new ExpressionGeneric(parameters[1], scriptContext), loopScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -39,14 +39,16 @@ namespace AxeSoftware.Quest.Scripts
 
     public class ForEachScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private IFunctionGeneric m_list;
         private IScript m_loopScript;
         private string m_variable;
         private WorldModel m_worldModel;
 
-        public ForEachScript(WorldModel worldModel, string variable, IFunctionGeneric list, IScript loopScript)
+        public ForEachScript(ScriptContext scriptContext, string variable, IFunctionGeneric list, IScript loopScript)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_variable = variable;
             m_list = list;
             m_loopScript = loopScript;
@@ -54,7 +56,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new ForEachScript(m_worldModel, m_variable, m_list.Clone(), (IScript)m_loopScript.Clone());
+            return new ForEachScript(m_scriptContext, m_variable, m_list.Clone(), (IScript)m_loopScript.Clone());
         }
 
         public override void Execute(Context c)
@@ -110,14 +112,13 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-
             switch (index)
             {
                 case 0:
                     m_variable = (string)value;
                     break;
                 case 1:
-                    m_list = new ExpressionGeneric((string)value, m_worldModel);
+                    m_list = new ExpressionGeneric((string)value, m_scriptContext);
                     break;
                 case 2:
                     throw new InvalidOperationException("Attempt to use SetParameter to change the script of a 'foreach' loop");

@@ -13,9 +13,9 @@ namespace AxeSoftware.Quest.Scripts
             get { return "picture"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new PictureScript(WorldModel, new Expression<string>(parameters[0], WorldModel));
+            return new PictureScript(scriptContext, new Expression<string>(parameters[0], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -26,18 +26,20 @@ namespace AxeSoftware.Quest.Scripts
 
     public class PictureScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_filename;
 
-        public PictureScript(WorldModel worldModel, IFunction<string> function)
+        public PictureScript(ScriptContext scriptContext, IFunction<string> function)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_filename = function;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new PictureScript(m_worldModel, m_filename.Clone());
+            return new PictureScript(m_scriptContext, m_filename.Clone());
         }
 
         public override void Execute(Context c)
@@ -60,7 +62,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void SetParameterInternal(int index, object value)
         {
-            m_filename = new Expression<string>((string)value, m_worldModel);
+            m_filename = new Expression<string>((string)value, m_scriptContext);
         }
 
         public override string Keyword

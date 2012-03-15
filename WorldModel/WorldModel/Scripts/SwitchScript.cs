@@ -20,7 +20,7 @@ namespace AxeSoftware.Quest.Scripts
             IScript defaultScript;
             Dictionary<IFunctionGeneric, IScript> cases = ProcessCases(Utility.GetScript(afterExpr), out defaultScript, scriptContext);
 
-            return new SwitchScript(WorldModel, new ExpressionGeneric(param, WorldModel), cases, defaultScript);
+            return new SwitchScript(scriptContext, new ExpressionGeneric(param, scriptContext), cases, defaultScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -52,7 +52,7 @@ namespace AxeSoftware.Quest.Scripts
                         IScript script = ScriptFactory.CreateScript(caseScript, scriptContext);
 
                         foreach (var match in matchList)
-                            result.Add(new ExpressionGeneric(match, WorldModel), script);
+                            result.Add(new ExpressionGeneric(match, scriptContext), script);
                     }
                     else if (cases.StartsWith("default"))
                     {
@@ -74,27 +74,29 @@ namespace AxeSoftware.Quest.Scripts
 
     public class SwitchScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private IFunctionGeneric m_expr;
         private SwitchCases m_cases;
         private IScript m_default;
         private WorldModel m_worldModel;
 
-        public SwitchScript(WorldModel worldModel, IFunctionGeneric expression, Dictionary<IFunctionGeneric, IScript> cases, IScript defaultScript)
-            : this(worldModel, expression, defaultScript)
+        public SwitchScript(ScriptContext scriptContext, IFunctionGeneric expression, Dictionary<IFunctionGeneric, IScript> cases, IScript defaultScript)
+            : this(scriptContext, expression, defaultScript)
         {
             m_cases = new SwitchCases(this, cases);
         }
 
-        private SwitchScript(WorldModel worldModel, IFunctionGeneric expression, IScript defaultScript)
+        private SwitchScript(ScriptContext scriptContext, IFunctionGeneric expression, IScript defaultScript)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_expr = expression;
             m_default = defaultScript ?? new MultiScript();
         }
 
         protected override ScriptBase CloneScript()
         {
-            SwitchScript clone = new SwitchScript(m_worldModel, m_expr.Clone(), (IScript)m_default.Clone());
+            SwitchScript clone = new SwitchScript(m_scriptContext, m_expr.Clone(), (IScript)m_default.Clone());
             clone.m_cases = m_cases.Clone(clone);
             return clone;
         }
@@ -150,7 +152,7 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_expr = new ExpressionGeneric((string)value, m_worldModel);
+                    m_expr = new ExpressionGeneric((string)value, m_scriptContext);
                     break;
                 case 1:
                     // any updates to the cases should change the scriptdictionary itself - nothing should cause SetParameter to be triggered.

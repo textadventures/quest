@@ -13,9 +13,9 @@ namespace AxeSoftware.Quest.Scripts
             get { return "set"; }
         }
 
-        protected override IScript CreateInt(List<string> parameters)
+        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new SetFieldScript(WorldModel, new Expression<Element>(parameters[0], WorldModel), new Expression<string>(parameters[1], WorldModel), new Expression<object>(parameters[2], WorldModel));
+            return new SetFieldScript(scriptContext, new Expression<Element>(parameters[0], scriptContext), new Expression<string>(parameters[1], scriptContext), new Expression<object>(parameters[2], scriptContext));
         }
 
         protected override int[] ExpectedParameters
@@ -26,14 +26,16 @@ namespace AxeSoftware.Quest.Scripts
 
     public class SetFieldScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<Element> m_obj;
         private IFunction<string> m_field;
         private IFunction<object> m_value;
 
-        public SetFieldScript(WorldModel worldModel, IFunction<Element> obj, IFunction<string> field, IFunction<object> value)
+        public SetFieldScript(ScriptContext scriptContext, IFunction<Element> obj, IFunction<string> field, IFunction<object> value)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_obj = obj;
             m_field = field;
             m_value = value;
@@ -41,7 +43,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            return new SetFieldScript(m_worldModel, m_obj.Clone(), m_field.Clone(), m_value.Clone());
+            return new SetFieldScript(m_scriptContext, m_obj.Clone(), m_field.Clone(), m_value.Clone());
         }
 
         public override void Execute(Context c)
@@ -83,13 +85,13 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_obj = new Expression<Element>((string)value, m_worldModel);
+                    m_obj = new Expression<Element>((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_field = new Expression<string>((string)value, m_worldModel);
+                    m_field = new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 2:
-                    m_value = new Expression<object>((string)value, m_worldModel);
+                    m_value = new Expression<object>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

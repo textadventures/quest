@@ -26,11 +26,11 @@ namespace AxeSoftware.Quest.Scripts
 
             if (parameters.Count() == 3)
             {
-                return new ForScript(WorldModel, ScriptFactory, parameters[0], new Expression<int>(parameters[1], WorldModel), new Expression<int>(parameters[2], WorldModel), loopScript);
+                return new ForScript(scriptContext, ScriptFactory, parameters[0], new Expression<int>(parameters[1], scriptContext), new Expression<int>(parameters[2], scriptContext), loopScript);
             }
             else if (parameters.Count() == 4)
             {
-                return new ForScript(WorldModel, ScriptFactory, parameters[0], new Expression<int>(parameters[1], WorldModel), new Expression<int>(parameters[2], WorldModel), new Expression<int>(parameters[3], WorldModel), loopScript);
+                return new ForScript(scriptContext, ScriptFactory, parameters[0], new Expression<int>(parameters[1], scriptContext), new Expression<int>(parameters[2], scriptContext), new Expression<int>(parameters[3], scriptContext), loopScript);
             }
             else
             {
@@ -47,6 +47,7 @@ namespace AxeSoftware.Quest.Scripts
 
     public class ForScript : ScriptBase
     {
+        private ScriptContext m_scriptContext;
         private IFunction<int> m_from;
         private IFunction<int> m_to;
         private IFunction<int> m_step;
@@ -55,9 +56,10 @@ namespace AxeSoftware.Quest.Scripts
         private WorldModel m_worldModel;
         private IScriptFactory m_scriptFactory;
 
-        public ForScript(WorldModel worldModel, IScriptFactory scriptFactory, string variable, IFunction<int> from, IFunction<int> to, IScript loopScript)
+        public ForScript(ScriptContext scriptContext, IScriptFactory scriptFactory, string variable, IFunction<int> from, IFunction<int> to, IScript loopScript)
         {
-            m_worldModel = worldModel;
+            m_scriptContext = scriptContext;
+            m_worldModel = scriptContext.WorldModel;
             m_scriptFactory = scriptFactory;
             m_variable = variable;
             m_from = from;
@@ -65,15 +67,15 @@ namespace AxeSoftware.Quest.Scripts
             m_loopScript = loopScript;
         }
 
-        public ForScript(WorldModel worldModel, IScriptFactory scriptFactory, string variable, IFunction<int> from, IFunction<int> to, IFunction<int> step, IScript loopScript)
-            : this(worldModel, scriptFactory, variable, from, to, loopScript)
+        public ForScript(ScriptContext scriptContext, IScriptFactory scriptFactory, string variable, IFunction<int> from, IFunction<int> to, IFunction<int> step, IScript loopScript)
+            : this(scriptContext, scriptFactory, variable, from, to, loopScript)
         {
             m_step = step;
         }
 
         protected override ScriptBase CloneScript()
         {
-            return new ForScript(m_worldModel, m_scriptFactory, m_variable, m_from.Clone(), m_to.Clone(), m_step == null ? null : m_step.Clone(), (IScript)m_loopScript.Clone());
+            return new ForScript(m_scriptContext, m_scriptFactory, m_variable, m_from.Clone(), m_to.Clone(), m_step == null ? null : m_step.Clone(), (IScript)m_loopScript.Clone());
         }
 
         protected override void ParentUpdated()
@@ -154,13 +156,13 @@ namespace AxeSoftware.Quest.Scripts
                     m_variable = (string)value;
                     break;
                 case 1:
-                    m_from = new Expression<int>((string)value, m_worldModel);
+                    m_from = new Expression<int>((string)value, m_scriptContext);
                     break;
                 case 2:
-                    m_to = new Expression<int>((string)value, m_worldModel);
+                    m_to = new Expression<int>((string)value, m_scriptContext);
                     break;
                 case 3:
-                    m_step = new Expression<int>((string)value, m_worldModel);
+                    m_step = new Expression<int>((string)value, m_scriptContext);
                     break;
                 case 4:
                     // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.

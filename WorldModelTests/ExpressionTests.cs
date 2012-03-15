@@ -38,7 +38,7 @@ namespace WorldModelTests
 
         private T RunExpression<T>(string expression)
         {
-            Expression<T> expr = new Expression<T>(expression, m_worldModel);
+            Expression<T> expr = new Expression<T>(expression, new ScriptContext(m_worldModel));
             Context c = new Context();
             return expr.Execute(c);
         }
