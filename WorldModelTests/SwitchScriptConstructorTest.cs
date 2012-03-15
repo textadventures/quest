@@ -15,7 +15,7 @@ namespace WorldModelTests
         ScriptFactory m_scriptFactory;
         SwitchScriptConstructor m_constructor;
 
-        Element a;
+        ScriptContext scriptContext;
 
         [TestInitialize]
         public void Setup()
@@ -27,7 +27,7 @@ namespace WorldModelTests
             m_constructor.WorldModel = m_worldModel;            
             m_constructor.ScriptFactory = m_scriptFactory;
 
-            a = m_worldModel.GetElementFactory(ElementType.Object).Create("a");
+            scriptContext = new ScriptContext();
         }
 
         [TestMethod()]
@@ -38,7 +38,7 @@ namespace WorldModelTests
                 msg (""!"")
             }
             }";
-            var script = m_constructor.Create(text, a);
+            var script = m_constructor.Create(text, scriptContext);
             QuestDictionary<IScript> actualCases = (QuestDictionary<IScript>) script.GetParameter(1);
             
             Assert.AreEqual(1, actualCases.Count);
@@ -49,7 +49,7 @@ namespace WorldModelTests
                 msg (""!"")
             }
             }";
-            script = m_constructor.Create(text, a);
+            script = m_constructor.Create(text, scriptContext);
             actualCases = (QuestDictionary<IScript>)script.GetParameter(1);
             
             Assert.AreEqual(2, actualCases.Count);

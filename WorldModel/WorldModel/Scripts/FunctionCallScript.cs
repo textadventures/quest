@@ -8,7 +8,7 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class FunctionCallScriptConstructor : IScriptConstructor
     {
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             List<IFunction<object>> paramExpressions = null;
             string procName, afterParameter;

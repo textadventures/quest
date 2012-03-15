@@ -13,7 +13,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "//"; }
         }
 
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             return new CommentScript(script.Substring(2).Trim());
         }

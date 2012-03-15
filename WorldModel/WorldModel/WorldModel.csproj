@@ -368,6 +368,7 @@
     <Compile Include="Scripts\ReturnScript.cs" />
     <Compile Include="Scripts\RunDelegateScript.cs" />
     <Compile Include="Scripts\ScriptConstructorBase.cs" />
+    <Compile Include="Scripts\ScriptContext.cs" />
     <Compile Include="Scripts\SetFieldScript.cs" />
     <Compile Include="Scripts\SetScript.cs" />
     <Compile Include="Scripts\ShowMenuScript.cs" />

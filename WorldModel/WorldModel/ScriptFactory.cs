@@ -9,7 +9,7 @@ namespace AxeSoftware.Quest
 {
     public interface IScriptFactory
     {
-        IScript CreateScript(string line, Element proc);
+        IScript CreateScript(string line, ScriptContext scriptContext);
         IScript CreateScript(string line);
     }
 
@@ -75,10 +75,10 @@ namespace AxeSoftware.Quest
 
         public IScript CreateScript(string line)
         {
-            return CreateScript(line, null);
+            return CreateScript(line, new ScriptContext());
         }
 
-        public IScript CreateScript(string line, Element proc)
+        public IScript CreateScript(string line, ScriptContext scriptContext)
         {
             string remainingScript;
             IScript newScript;
@@ -127,11 +127,11 @@ namespace AxeSoftware.Quest
                         {
                             if (line.StartsWith("else if"))
                             {
-                                ifConstructor.AddElseIf(lastIf, line, proc);
+                                ifConstructor.AddElseIf(lastIf, line, scriptContext);
                             }
                             else
                             {
-                                ifConstructor.AddElse(lastIf, line, proc);
+                                ifConstructor.AddElse(lastIf, line, scriptContext);
                             }
                         }
                         dontAdd = true;
@@ -161,7 +161,7 @@ namespace AxeSoftware.Quest
                             }
                             else
                             {
-                                newScript = constructor.Create(line, proc);
+                                newScript = constructor.Create(line, scriptContext);
                                 lastComment = newScript;
                             }
                         }
@@ -175,7 +175,7 @@ namespace AxeSoftware.Quest
                             {
                                 try
                                 {
-                                    newScript = constructor.Create(line, proc);
+                                    newScript = constructor.Create(line, scriptContext);
                                     if (constructor.Keyword == "if")
                                     {
                                         ifConstructor = (IfScriptConstructor)constructor;
@@ -203,13 +203,13 @@ namespace AxeSoftware.Quest
                                 if (newScript == null)
                                 {
                                     // See if the script is like "myvar = 2". newScript will be null otherwise.
-                                    newScript = m_setConstructor.Create(line, proc);
+                                    newScript = m_setConstructor.Create(line, scriptContext);
                                 }
 
                                 if (newScript == null)
                                 {
                                     // See if the script calls a procedure defined by the game
-                                    newScript = m_procConstructor.Create(line, proc);
+                                    newScript = m_procConstructor.Create(line, scriptContext);
                                 }
                             }
                         }

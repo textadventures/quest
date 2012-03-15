@@ -13,7 +13,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "firsttime"; }
         }
 
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             // Get script after "firsttime" keyword
             script = script.Substring(9).Trim();

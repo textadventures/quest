@@ -13,7 +13,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "="; }
         }
 
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             bool isScript = false;
             int offset = 0;

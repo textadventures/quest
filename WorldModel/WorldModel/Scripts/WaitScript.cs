@@ -13,7 +13,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "wait"; }
         }
 
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             string callback = Utility.GetScript(script.Substring(4).Trim());
 

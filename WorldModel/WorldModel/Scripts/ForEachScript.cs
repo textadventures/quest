@@ -9,14 +9,12 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class ForEachScriptConstructor : IScriptConstructor
     {
-        #region IScriptConstructor Members
-
         public string Keyword
         {
             get { return "foreach"; }
         }
 
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             string afterExpr;
             string param = Utility.GetParameter(script, out afterExpr);
@@ -37,8 +35,6 @@ namespace AxeSoftware.Quest.Scripts
         public IScriptFactory ScriptFactory { get; set; }
 
         public WorldModel WorldModel { get; set; }
-
-        #endregion
     }
 
     public class ForEachScript : ScriptBase

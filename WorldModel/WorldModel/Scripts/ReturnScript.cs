@@ -8,19 +8,12 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class ReturnScriptConstructor : ScriptConstructorBase
     {
-        #region ScriptConstructorBase Members
-
         public override string Keyword
         {
             get { return "return"; }
         }
 
         protected override IScript CreateInt(List<string> parameters)
-        {
-            throw new Exception("Invalid constructor for 'return' script");
-        }
-
-        protected override IScript CreateInt(List<string> parameters, Element proc)
         {
             return new ReturnScript(WorldModel, new ExpressionGeneric(parameters[0], WorldModel));
         }
@@ -29,15 +22,6 @@ namespace AxeSoftware.Quest.Scripts
         {
             get { return new int[] { 1 }; }
         }
-
-        protected override bool RequireProcedure
-        {
-            get
-            {
-                return true;
-            }
-        }
-        #endregion
     }
 
     public class ReturnScript : ScriptBase

@@ -15,7 +15,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "if"; }
         }
 
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             string afterExpr;
             string expr = Utility.GetParameter(script, out afterExpr);
@@ -28,7 +28,7 @@ namespace AxeSoftware.Quest.Scripts
 
             string then = Utility.GetScript(afterExpr);
 
-            IScript thenScript = ScriptFactory.CreateScript(then, proc);
+            IScript thenScript = ScriptFactory.CreateScript(then, scriptContext);
 
             return new IfScript(new Expression<bool>(expr, WorldModel), thenScript, WorldModel);
         }
@@ -39,15 +39,15 @@ namespace AxeSoftware.Quest.Scripts
 
         #endregion
 
-        public void AddElse(IScript script, string elseScript, Element proc)
+        public void AddElse(IScript script, string elseScript, ScriptContext scriptContext)
         {
-            IScript add = GetElse(elseScript, proc);
+            IScript add = GetElse(elseScript, scriptContext);
             ((IfScript)script).SetElse(add);
         }
 
-        public void AddElseIf(IScript script, string elseIfScript, Element proc)
+        public void AddElseIf(IScript script, string elseIfScript, ScriptContext scriptContext)
         {
-            IScript add = GetElse(elseIfScript, proc);
+            IScript add = GetElse(elseIfScript, scriptContext);
             if (add.Line == "") return;
 
             // GetElse uses the ScriptFactory to parse the "else if" block, so it will return
@@ -58,10 +58,10 @@ namespace AxeSoftware.Quest.Scripts
             ((IfScript)script).AddElseIf(elseIf.Expression, elseIf.ThenScript);
         }
 
-        private IScript GetElse(string elseScript, Element proc)
+        private IScript GetElse(string elseScript, ScriptContext scriptContext)
         {
             elseScript = Utility.GetTextAfter(elseScript, "else");
-            return ScriptFactory.CreateScript(elseScript, proc);
+            return ScriptFactory.CreateScript(elseScript, scriptContext);
         }
     }
 

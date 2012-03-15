@@ -8,19 +8,17 @@ namespace AxeSoftware.Quest.Scripts
 {
     public class SwitchScriptConstructor : IScriptConstructor
     {
-        #region IScriptConstructor Members
-
         public string Keyword
         {
             get { return "switch"; }
         }
 
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             string afterExpr;
             string param = Utility.GetParameter(script, out afterExpr);
             IScript defaultScript;
-            Dictionary<IFunctionGeneric, IScript> cases = ProcessCases(Utility.GetScript(afterExpr), out defaultScript, proc);
+            Dictionary<IFunctionGeneric, IScript> cases = ProcessCases(Utility.GetScript(afterExpr), out defaultScript, scriptContext);
 
             return new SwitchScript(WorldModel, new ExpressionGeneric(param, WorldModel), cases, defaultScript);
         }
@@ -29,9 +27,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public WorldModel WorldModel { get; set; }
 
-        #endregion
-
-        private Dictionary<IFunctionGeneric, IScript> ProcessCases(string cases, out IScript defaultScript, Element proc)
+        private Dictionary<IFunctionGeneric, IScript> ProcessCases(string cases, out IScript defaultScript, ScriptContext scriptContext)
         {
             bool finished = false;
             string remainingCases;
@@ -53,7 +49,7 @@ namespace AxeSoftware.Quest.Scripts
                         string expr = Utility.GetParameter(cases, out afterExpr);
                         var matchList = Utility.SplitParameter(expr);
                         string caseScript = Utility.GetScript(afterExpr);
-                        IScript script = ScriptFactory.CreateScript(caseScript, proc);
+                        IScript script = ScriptFactory.CreateScript(caseScript, scriptContext);
 
                         foreach (var match in matchList)
                             result.Add(new ExpressionGeneric(match, WorldModel), script);

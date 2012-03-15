@@ -11,7 +11,7 @@ namespace AxeSoftware.Quest.Scripts
 
         public abstract string Keyword { get; }
 
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             List<string> parameters = null;
             string param = Utility.GetParameter(script);
@@ -35,14 +35,7 @@ namespace AxeSoftware.Quest.Scripts
                 }
             }
 
-            if (!RequireProcedure)
-            {
-                return CreateInt(parameters);
-            }
-            else
-            {
-                return CreateInt(parameters, proc);
-            }
+            return CreateInt(parameters);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -52,17 +45,6 @@ namespace AxeSoftware.Quest.Scripts
         #endregion
 
         protected abstract IScript CreateInt(List<string> parameters);
-
-        protected virtual IScript CreateInt(List<string> parameters, Element proc)
-        {
-            // only overridden for "return" script
-            return null;
-        }
-
-        protected virtual bool RequireProcedure
-        {
-            get { return false; }
-        }
 
         protected abstract int[] ExpectedParameters { get; }
 

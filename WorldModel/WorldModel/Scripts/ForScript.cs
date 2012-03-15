@@ -15,7 +15,7 @@ namespace AxeSoftware.Quest.Scripts
             get { return "for"; }
         }
 
-        public IScript Create(string script, Element proc)
+        public IScript Create(string script, ScriptContext scriptContext)
         {
             string afterExpr;
             string param = Utility.GetParameter(script, out afterExpr);
