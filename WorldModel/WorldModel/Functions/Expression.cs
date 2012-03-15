@@ -17,16 +17,25 @@ namespace AxeSoftware.Quest.Functions
         protected WorldModel m_worldModel;
 
         public ExpressionBase(string expression, WorldModel worldModel)
+            : this(expression, worldModel, false)
+        {
+        }
+
+        public ExpressionBase(string expression, WorldModel worldModel, bool editorExpression)
         {
             m_worldModel = worldModel;
-            m_expressionContext = new ExpressionContext(worldModel.ExpressionOwner);
-            m_expressionContext.Imports.AddType(typeof(StringFunctions));
 
-            m_expressionContext.Variables.ResolveVariableType += new EventHandler<ResolveVariableTypeEventArgs>(Variables_ResolveVariableType);
-            m_expressionContext.Variables.ResolveVariableValue += new EventHandler<ResolveVariableValueEventArgs>(Variables_ResolveVariableValue);
-            m_expressionContext.Variables.ResolveFunction += new EventHandler<ResolveFunctionEventArgs>(Variables_ResolveFunction);
-            m_expressionContext.Variables.InvokeFunction += new EventHandler<InvokeFunctionEventArgs>(Variables_InvokeFunction);
-            m_expressionContext.Options.ParseCulture = System.Globalization.CultureInfo.InvariantCulture;
+            if (editorExpression || !m_worldModel.EditMode)
+            {
+                m_expressionContext = new ExpressionContext(worldModel.ExpressionOwner);
+                m_expressionContext.Imports.AddType(typeof(StringFunctions));
+
+                m_expressionContext.Variables.ResolveVariableType += new EventHandler<ResolveVariableTypeEventArgs>(Variables_ResolveVariableType);
+                m_expressionContext.Variables.ResolveVariableValue += new EventHandler<ResolveVariableValueEventArgs>(Variables_ResolveVariableValue);
+                m_expressionContext.Variables.ResolveFunction += new EventHandler<ResolveFunctionEventArgs>(Variables_ResolveFunction);
+                m_expressionContext.Variables.InvokeFunction += new EventHandler<InvokeFunctionEventArgs>(Variables_InvokeFunction);
+                m_expressionContext.Options.ParseCulture = System.Globalization.CultureInfo.InvariantCulture;
+            }
 
             m_originalExpression = expression;
             if (!m_worldModel.EditMode)
@@ -179,6 +188,11 @@ namespace AxeSoftware.Quest.Functions
 
         public Expression(string expression, WorldModel worldModel)
             : base(expression, worldModel)
+        {
+        }
+
+        public Expression(string expression, WorldModel worldModel, bool editorExpression)
+            : base(expression, worldModel, editorExpression)
         {
         }
 
