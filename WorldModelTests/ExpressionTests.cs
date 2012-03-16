@@ -83,5 +83,24 @@ namespace WorldModelTests
             int result = RunExpression<int>("object.intattribute + 3");
             Assert.AreEqual(intAttributeValue + 3, result);
         }
+
+        [TestMethod]
+        public void TestChangingTypes()
+        {
+            ScriptContext scriptContext = new ScriptContext(m_worldModel);
+            string expression = "a + b";
+            ExpressionGeneric expr = new ExpressionGeneric(expression, scriptContext);
+            Context c = new Context();
+            c.Parameters = new Parameters();
+            c.Parameters.Add("a", 1);
+            c.Parameters.Add("b", 2);
+
+            Assert.AreEqual(3, (int)expr.Execute(c));
+
+            c.Parameters["a"] = "A";
+            c.Parameters["b"] = "B";
+
+            Assert.AreEqual("AB", (string)expr.Execute(c));
+        }
     }
 }

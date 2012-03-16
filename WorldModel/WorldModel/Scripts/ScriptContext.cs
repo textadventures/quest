@@ -15,16 +15,25 @@ namespace AxeSoftware.Quest.Scripts
         protected Context m_context;
 
         public ScriptContext(WorldModel worldModel)
+            : this(worldModel, false)
+        {
+        }
+
+        public ScriptContext(WorldModel worldModel, bool createEditorExpressionContext)
         {
             m_worldModel = worldModel;
-            m_expressionContext = new ExpressionContext(worldModel.ExpressionOwner);
-            m_expressionContext.Imports.AddType(typeof(StringFunctions));
 
-            m_expressionContext.Variables.ResolveVariableType += new EventHandler<ResolveVariableTypeEventArgs>(Variables_ResolveVariableType);
-            m_expressionContext.Variables.ResolveVariableValue += new EventHandler<ResolveVariableValueEventArgs>(Variables_ResolveVariableValue);
-            m_expressionContext.Variables.ResolveFunction += new EventHandler<ResolveFunctionEventArgs>(Variables_ResolveFunction);
-            m_expressionContext.Variables.InvokeFunction += new EventHandler<InvokeFunctionEventArgs>(Variables_InvokeFunction);
-            m_expressionContext.Options.ParseCulture = System.Globalization.CultureInfo.InvariantCulture;
+            if (!worldModel.EditMode || createEditorExpressionContext)
+            {
+                m_expressionContext = new ExpressionContext(worldModel.ExpressionOwner);
+                m_expressionContext.Imports.AddType(typeof(StringFunctions));
+
+                m_expressionContext.Variables.ResolveVariableType += new EventHandler<ResolveVariableTypeEventArgs>(Variables_ResolveVariableType);
+                m_expressionContext.Variables.ResolveVariableValue += new EventHandler<ResolveVariableValueEventArgs>(Variables_ResolveVariableValue);
+                m_expressionContext.Variables.ResolveFunction += new EventHandler<ResolveFunctionEventArgs>(Variables_ResolveFunction);
+                m_expressionContext.Variables.InvokeFunction += new EventHandler<InvokeFunctionEventArgs>(Variables_InvokeFunction);
+                m_expressionContext.Options.ParseCulture = System.Globalization.CultureInfo.InvariantCulture;
+            }
         }
 
         void Variables_ResolveFunction(object sender, ResolveFunctionEventArgs e)
@@ -79,17 +88,13 @@ namespace AxeSoftware.Quest.Scripts
             return (value == null) ? typeof(object) : value.GetType();
         }
 
-        public bool HaveVariableTypesChanged()
+        public bool HaveVariableTypesChanged(string[] variables)
         {
-            // ** TO DO: Fix! **
-
-
-            //foreach (string variable in m_types.Keys)
-            //{
-            //    if (GetVariableType(variable) != m_types[variable]) return true;
-            //}
-            //return false;
-            return true;
+            foreach (string variable in variables)
+            {
+                if (GetVariableType(variable) != m_types[variable]) return true;
+            }
+            return false;
         }
 
         private object ResolveVariable(string name)

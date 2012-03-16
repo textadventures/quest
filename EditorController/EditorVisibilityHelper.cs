@@ -38,7 +38,7 @@ namespace AxeSoftware.Quest
             string expression = source.Fields.GetString("onlydisplayif");
             if (expression != null)
             {
-                m_visibilityExpression = new Expression<bool>(Utility.ConvertVariablesToFleeFormat(expression), worldModel, true);
+                m_visibilityExpression = new Expression<bool>(Utility.ConvertVariablesToFleeFormat(expression), new AxeSoftware.Quest.Scripts.ScriptContext(worldModel, true));
                 m_alwaysVisible = false;
             }
         }
