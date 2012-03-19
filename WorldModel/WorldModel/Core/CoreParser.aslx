@@ -485,6 +485,8 @@
   
   <type name="defaultverb">
     <separator>[VerbObjectSeparator]</separator>
+    <multiobjectmenu>[MultiObjectVerbMenu]</multiobjectmenu>
+    <multiobjectdefault>[DefaultMultiObjectVerb]</multiobjectdefault>
     <script type="script">
       <![CDATA[
       if (not IsDefined("object2")) {
@@ -497,7 +499,7 @@
             do (object, this.property)
           }
           else {
-            msg (Template("DefaultMultiObjectVerb"))
+            msg (this.multiobjectdefault)
           }
         }
         case ("string") {
@@ -505,12 +507,12 @@
             msg (GetString(object, this.property))
           }
           else {
-            msg (Template("DefaultMultiObjectVerb"))
+            msg (this.multiobjectdefault)
           }
         }
         case ("scriptdictionary") {
           if (object2 <> null) {
-            HandleMultiVerb (object, this.property, object2)
+            HandleMultiVerb (object, this.property, object2, this.multiobjectdefault)
           }
           else {
             menu = NewStringDictionary()
@@ -521,9 +523,9 @@
             GenerateMenuChoices(menu, candidates)
             player.multiverb = this.property
             player.multiverbobject = object
-            show menu (Template("MultiObjectVerbMenu"), menu, true) {
+            show menu (this.multiobjectmenu, menu, true) {
               if (result <> null) {
-                HandleMultiVerb (player.multiverbobject, player.multiverb, GetObject(result))
+                HandleMultiVerb (player.multiverbobject, player.multiverb, GetObject(result), this.multiobjectdefault)
                 player.multiverb = null
                 player.multiverbobject = null
               }
@@ -554,7 +556,7 @@
     </script>
   </type>
 
-  <function name="HandleMultiVerb" parameters="object, property, object2">
+  <function name="HandleMultiVerb" parameters="object, property, object2, default">
     dictionary = GetAttribute(object, property)
     if (DictionaryContains(dictionary, object2.name)) {
       invoke (ScriptDictionaryItem(dictionary, object2.name))
@@ -566,7 +568,7 @@
         invoke (ScriptDictionaryItem(dictionary, "default"), parameters)
       }
       else {
-        msg (Template("DefaultMultiObjectVerb"))
+        msg (default)
       }
     }
   </function>

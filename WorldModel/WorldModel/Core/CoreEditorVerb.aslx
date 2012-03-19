@@ -60,6 +60,30 @@
         <attribute>name</attribute>
         <nullable/>
       </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Multiple objects</caption>
+      </control>
+
+      <control>
+        <caption>Object separator</caption>
+        <controltype>textbox</controltype>
+        <attribute>separator</attribute>
+      </control>
+
+      <control>
+        <caption>Menu caption</caption>
+        <controltype>textbox</controltype>
+        <attribute>multiobjectmenu</attribute>
+      </control>
+
+      <control>
+        <caption>Default text</caption>
+        <controltype>textbox</controltype>
+        <attribute>multiobjectdefault</attribute>
+      </control>
+
     </tab>
 
     <tab>
