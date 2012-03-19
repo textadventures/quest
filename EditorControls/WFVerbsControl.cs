@@ -11,7 +11,14 @@ namespace AxeSoftware.Quest.EditorControls
     {
         private static Dictionary<string, string> s_allowedTypes = new Dictionary<string, string> {
             {"string", "Print a message"},
-            {"script", "Run a script"}
+            {"script", "Run a script"},
+            {"scriptdictionary", "Require another object"},
+        };
+
+        private static List<Type> s_validTypes = new List<Type> {
+            typeof(string),
+            typeof(IEditableScripts),
+            typeof(IEditableDictionary<IEditableScripts>)
         };
 
         private IDictionary<string, string> m_clashMessages;
@@ -35,7 +42,8 @@ namespace AxeSoftware.Quest.EditorControls
         protected override bool CanDisplayAttribute(string attribute, object value)
         {
             if (!Controller.IsVerbAttribute(attribute)) return false;
-            return typeof(string).IsAssignableFrom(value.GetType()) || typeof(IEditableScripts).IsAssignableFrom(value.GetType());
+            Type valueType = value.GetType();
+            return s_validTypes.Any(t => t.IsAssignableFrom(valueType));
         }
 
         protected override Dictionary<string, string> AllowedTypes
