@@ -47,12 +47,24 @@ namespace AxeSoftware.Quest.Scripts
                     if (cases.StartsWith("case"))
                     {
                         string expr = Utility.GetParameter(cases, out afterExpr);
-                        var matchList = Utility.SplitParameter(expr);
                         string caseScript = Utility.GetScript(afterExpr);
                         IScript script = ScriptFactory.CreateScript(caseScript, scriptContext);
 
-                        foreach (var match in matchList)
-                            result.Add(new ExpressionGeneric(match, scriptContext), script);
+                        // Case expression can have multiple values separated by commas. In Edit mode,
+                        // just load this as one expression for editing.
+
+                        if (!scriptContext.WorldModel.EditMode)
+                        {
+                            var matchList = Utility.SplitParameter(expr);
+                            foreach (var match in matchList)
+                            {
+                                result.Add(new ExpressionGeneric(match, scriptContext), script);
+                            }
+                        }
+                        else
+                        {
+                            result.Add(new ExpressionGeneric(expr, scriptContext), script);
+                        }
                     }
                     else if (cases.StartsWith("default"))
                     {
