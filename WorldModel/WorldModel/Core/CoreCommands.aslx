@@ -232,14 +232,32 @@
     }
   </function>
   
-  <command name="use" template="use">
+  <command name="use" template="use"><![CDATA[
     if (HasScript(object, "use")) {
       do (object, "use")
     }
     else {
-      msg (DynamicTemplate("CantUse", object))
+      menu = NewStringDictionary()
+      excludelist = NewObjectList()
+      list add (excludelist, player)
+      list add (excludelist, object)
+      candidates = ListExclude(ScopeVisible(), excludelist)
+      GenerateMenuChoices(menu, candidates)
+      player.usemenuobject = object
+      if (HasString(object, "usemenuprompt")) {
+        menucaption = object.usemenuprompt
+      }
+      else {
+        menucaption = Template("UseOnMenu")
+      }
+      show menu (menucaption, menu, true) {
+        if (result <> null) {
+          HandleUseOn (player.usemenuobject, GetObject(result))
+          player.usemenuobject = null
+        }
+      }
     }
-  </command>
+  ]]></command>
   
   <command name="undo">
     <pattern type="string">[undo]</pattern>
@@ -495,6 +513,10 @@
   </command>
   
   <command name="useon" pattern="[useon]">
+    HandleUseOn (object1, object2)
+  </command>
+
+  <function name="HandleUseOn" parameters="object1, object2">
     handled = false
     if (HasString(object2, "useon")) {
       msg (object2.useon)
@@ -541,7 +563,7 @@
     if (not handled) {
       msg (DynamicTemplate("DefaultUseOn", object2, object1))
     }
-  </command>
+  </function>
 
   <command name="ask" pattern="[ask]">
     DoAskTell (object, text, "ask", "askdefault", "DefaultAsk")
