@@ -89,6 +89,7 @@
   <dynamictemplate name="YouLooking">"You are looking " + text +"."</dynamictemplate>
   <template name="VerbObjectSeparator">with</template>
   <template name="DefaultMultiObjectVerb">That doesn't work.</template>
+  <template name="MultiObjectVerbMenu">With which object?</template>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>

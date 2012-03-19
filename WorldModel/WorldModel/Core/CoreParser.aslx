@@ -500,25 +500,26 @@
           handled = false
           if (IsDefined("object2")) {
             if (object2 <> null) {
-              dictionary = GetAttribute(object, this.property)
-              if (DictionaryContains(dictionary, object2.name)) {
-                invoke (ScriptDictionaryItem(dictionary, object2.name))
-              }
-              else {
-                parameters = NewDictionary()
-                dictionary add (parameters, "object", object2)
-                if (DictionaryContains(dictionary, "default")) {
-                  invoke (ScriptDictionaryItem(dictionary, "default"), parameters)
-                }
-                else {
-                  msg (Template("DefaultMultiObjectVerb"))
-                }
-              }
+              HandleMultiVerb (object, this.property, object2)
               handled = true
             }
           }
           if (not handled) {
-            msg ("TO DO: Handle single object")
+            menu = NewStringDictionary()
+            excludelist = NewObjectList()
+            list add (excludelist, player)
+            list add (excludelist, object)
+            candidates = ListExclude(ScopeVisible(), excludelist)
+            GenerateMenuChoices(menu, candidates)
+            player.multiverb = this.property
+            player.multiverbobject = object
+            show menu (Template("MultiObjectVerbMenu"), menu, true) {
+              if (result <> null) {
+                HandleMultiVerb (player.multiverbobject, player.multiverb, GetObject(result))
+                player.multiverb = null
+                player.multiverbobject = null
+              }
+            }
           }
         }
         case ("null") {
@@ -544,4 +545,21 @@
       ]]>
     </script>
   </type>
+
+  <function name="HandleMultiVerb" parameters="object, property, object2">
+    dictionary = GetAttribute(object, property)
+    if (DictionaryContains(dictionary, object2.name)) {
+      invoke (ScriptDictionaryItem(dictionary, object2.name))
+    }
+    else {
+      parameters = NewDictionary()
+      dictionary add (parameters, "object", object2)
+      if (DictionaryContains(dictionary, "default")) {
+        invoke (ScriptDictionaryItem(dictionary, "default"), parameters)
+      }
+      else {
+        msg (Template("DefaultMultiObjectVerb"))
+      }
+    }
+  </function>
 </library>
