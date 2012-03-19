@@ -484,9 +484,11 @@
   </function>
   
   <type name="defaultverb">
-    <separator>with</separator>
+    <separator>[VerbObjectSeparator]</separator>
     <script type="script">
       <![CDATA[
+      // TO DO: If two objects are specified and type is not a scriptdictionary, display an error message
+      
       switch (TypeOf(object, this.property)) {
         case ("script") {
           do (object, this.property)
@@ -498,12 +500,25 @@
           handled = false
           if (IsDefined("object2")) {
             if (object2 <> null) {
-              // TO DO: Two-object verb with two objects supplied
+              dictionary = GetAttribute(object, this.property)
+              if (DictionaryContains(dictionary, object2.name)) {
+                invoke (ScriptDictionaryItem(dictionary, object2.name))
+              }
+              else {
+                parameters = NewDictionary()
+                dictionary add (parameters, "object", object2)
+                if (DictionaryContains(dictionary, "default")) {
+                  invoke (ScriptDictionaryItem(dictionary, "default"), parameters)
+                }
+                else {
+                  msg (Template("DefaultMultiObjectVerb"))
+                }
+              }
               handled = true
             }
           }
           if (not handled) {
-            // TO DO: Two-object verb with one objects supplied
+            msg ("TO DO: Handle single object")
           }
         }
         case ("null") {
