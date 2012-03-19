@@ -11,7 +11,6 @@ namespace AxeSoftware.Quest.Scripts
     {
         private ExpressionContext m_expressionContext;
         private WorldModel m_worldModel;
-        private Dictionary<string, Type> m_types = new Dictionary<string, Type>();
         protected Context m_context;
 
         public ScriptContext(WorldModel worldModel)
@@ -78,7 +77,6 @@ namespace AxeSoftware.Quest.Scripts
         void Variables_ResolveVariableType(object sender, ResolveVariableTypeEventArgs e)
         {
             Type type = GetVariableType(e.VariableName);
-            m_types[e.VariableName] = type;
             e.VariableType = type;
         }
 
@@ -88,13 +86,21 @@ namespace AxeSoftware.Quest.Scripts
             return (value == null) ? typeof(object) : value.GetType();
         }
 
-        public bool HaveVariableTypesChanged(string[] variables)
+        public bool HaveVariableTypesChanged(string[] variables, Dictionary<string, Type> typesCache)
         {
             foreach (string variable in variables)
             {
-                if (GetVariableType(variable) != m_types[variable]) return true;
+                if (GetVariableType(variable) != typesCache[variable]) return true;
             }
             return false;
+        }
+
+        public void PopulateVariableTypesCache(string[] variables, Dictionary<string, Type> typesCache)
+        {
+            foreach (string variable in variables)
+            {
+                typesCache[variable] = GetVariableType(variable);
+            }
         }
 
         private object ResolveVariable(string name)

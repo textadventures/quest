@@ -13,6 +13,7 @@ namespace AxeSoftware.Quest.Functions
         protected string m_originalExpression;
         protected string m_expression;
         protected WorldModel m_worldModel;
+        protected Dictionary<string, Type> m_types = new Dictionary<string, Type>();
 
         public ExpressionBase(string expression, ScriptContext scriptContext)
         {
@@ -51,13 +52,14 @@ namespace AxeSoftware.Quest.Functions
         public T Execute(Context c)
         {
             m_scriptContext.ExecutionContext = c;
-            if (m_compiledExpression == null || m_scriptContext.HaveVariableTypesChanged(m_compiledExpression.Info.GetReferencedVariables()))
+            if (m_compiledExpression == null || m_scriptContext.HaveVariableTypesChanged(m_compiledExpression.Info.GetReferencedVariables(), m_types))
             {
                 // Lazy compilation since when the game is loaded, we don't know what types of
                 // variables we have.
                 try
                 {
                     m_compiledExpression = m_scriptContext.ExpressionContext.CompileGeneric<T>(m_expression);
+                    m_scriptContext.PopulateVariableTypesCache(m_compiledExpression.Info.GetReferencedVariables(), m_types);
                 }
                 catch (Exception ex)
                 {
@@ -90,11 +92,12 @@ namespace AxeSoftware.Quest.Functions
         public object Execute(Context c)
         {
             m_scriptContext.ExecutionContext = c;
-            if (m_compiledExpression == null || m_scriptContext.HaveVariableTypesChanged(m_compiledExpression.Info.GetReferencedVariables()))
+            if (m_compiledExpression == null || m_scriptContext.HaveVariableTypesChanged(m_compiledExpression.Info.GetReferencedVariables(), m_types))
             {
                 // Lazy compilation since when the game is loaded, we don't know what types of
                 // variables we have.
                 m_compiledExpression = m_scriptContext.ExpressionContext.CompileDynamic(m_expression);
+                m_scriptContext.PopulateVariableTypesCache(m_compiledExpression.Info.GetReferencedVariables(), m_types);
             }
             return m_compiledExpression.Evaluate();
         }
