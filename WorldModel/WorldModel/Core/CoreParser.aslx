@@ -487,24 +487,32 @@
     <separator>[VerbObjectSeparator]</separator>
     <script type="script">
       <![CDATA[
-      // TO DO: If two objects are specified and type is not a scriptdictionary, display an error message
+      if (not IsDefined("object2")) {
+        object2 = null
+      }
       
       switch (TypeOf(object, this.property)) {
         case ("script") {
-          do (object, this.property)
+          if (object2 = null) {
+            do (object, this.property)
+          }
+          else {
+            msg (Template("DefaultMultiObjectVerb"))
+          }
         }
         case ("string") {
-          msg (GetString(object, this.property))
+          if (object2 = null) {
+            msg (GetString(object, this.property))
+          }
+          else {
+            msg (Template("DefaultMultiObjectVerb"))
+          }
         }
         case ("scriptdictionary") {
-          handled = false
-          if (IsDefined("object2")) {
-            if (object2 <> null) {
-              HandleMultiVerb (object, this.property, object2)
-              handled = true
-            }
+          if (object2 <> null) {
+            HandleMultiVerb (object, this.property, object2)
           }
-          if (not handled) {
+          else {
             menu = NewStringDictionary()
             excludelist = NewObjectList()
             list add (excludelist, player)
