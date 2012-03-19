@@ -29,6 +29,7 @@
       <types>
         null=None;scriptdictionary=Handle objects individually;string=Print a message
       </types>
+      <keyname>Object</keyname>
       <keyprompt>Please enter the object name</keyprompt>
       <source>object</source>
     </control>
@@ -55,6 +56,7 @@
       <types>
         null=None;scriptdictionary=Handle objects individually;string=Print a message
       </types>
+      <keyname>Object</keyname>
       <keyprompt>Please enter the object name</keyprompt>
       <source>object</source>
       <advanced/>
@@ -83,6 +85,7 @@
       <types>
         null=None;scriptdictionary=Handle objects individually;string=Print a message
       </types>
+      <keyname>Object</keyname>
       <keyprompt>Please enter the object name</keyprompt>
       <source>object</source>
       <mustnotinherit>defaultplayer</mustnotinherit>
@@ -111,6 +114,7 @@
       <types>
         null=None;scriptdictionary=Handle objects individually;string=Print a message
       </types>
+      <keyname>Object</keyname>
       <keyprompt>Please enter the object name</keyprompt>
       <source>object</source>
       <advanced/>

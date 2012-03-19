@@ -11,15 +11,31 @@ namespace AxeSoftware.Quest.EditorControls
 {
     public partial class WFAttributesControl : UserControl
     {
-        private class SubEditorControlData : IEditorControl
+        protected class SubEditorControlData : IEditorControl
         {
+            private static Dictionary<string, string> s_allTypes = new Dictionary<string, string> {
+		        {"string","String"},
+		        {"boolean","Boolean"},
+		        {"int","Integer"},
+		        {"script","Script"},
+		        {"stringlist","String List"},
+		        {"object","Object"},
+		        {"simplepattern","Command pattern"},
+                {"stringdictionary","String dictionary"},
+		        {"scriptdictionary","Script dictionary"},
+		        {"null","Null"}
+	        };
+
             private string m_attribute;
 
-            private Dictionary<string, string> m_allowedTypes;
-            public SubEditorControlData(string attribute, Dictionary<string, string> allowedTypes)
+            public SubEditorControlData(string attribute)
             {
                 m_attribute = attribute;
-                m_allowedTypes = allowedTypes;
+            }
+
+            protected virtual Dictionary<string, string> AllowedTypes
+            {
+                get { return s_allTypes; }
             }
 
             public string Attribute
@@ -51,7 +67,7 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 if (tag == "types")
                 {
-                    return m_allowedTypes;
+                    return AllowedTypes;
                 }
                 else if (tag == "editors")
                 {
@@ -73,7 +89,7 @@ namespace AxeSoftware.Quest.EditorControls
                 throw new NotImplementedException();
             }
 
-            public string GetString(string tag)
+            public virtual string GetString(string tag)
             {
                 switch (tag)
                 {
@@ -127,19 +143,6 @@ namespace AxeSoftware.Quest.EditorControls
             ctlMultiControl.Dirty += ctlMultiControl_Dirty;
             ctlMultiControl.RequestParentElementEditorSave += ctlMultiControl_RequestParentElementEditorSave;
         }
-
-        private static Dictionary<string, string> s_allTypes = new Dictionary<string, string> {
-		    {"string","String"},
-		    {"boolean","Boolean"},
-		    {"int","Integer"},
-		    {"script","Script"},
-		    {"stringlist","String List"},
-		    {"object","Object"},
-		    {"simplepattern","Command pattern"},
-            {"stringdictionary","String dictionary"},
-		    {"scriptdictionary","Script dictionary"},
-		    {"null","Null"}
-	    };
 
         private EditorController m_controller;
         private IEditorControl m_controlData;
@@ -369,10 +372,15 @@ namespace AxeSoftware.Quest.EditorControls
             else
             {
                 ctlMultiControl.Visible = true;
-                SubEditorControlData controlData = new SubEditorControlData(attribute, AllowedTypes);
+                IEditorControl controlData = GetControlData(attribute);
                 ctlMultiControl.DoInitialise(m_controller, controlData);
                 ctlMultiControl.Populate(m_data);
             }
+        }
+
+        protected virtual IEditorControl GetControlData(string attribute)
+        {
+            return new SubEditorControlData(attribute);
         }
 
         public void AttributeChanged(string attribute, object value)
@@ -542,11 +550,6 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_readOnly) return;
             string selectedType = GetSelectedType();
             m_controller.RemoveInheritedTypeFromElement(m_data.Name, selectedType, true);
-        }
-
-        protected virtual Dictionary<string, string> AllowedTypes
-        {
-            get { return s_allTypes; }
         }
 
         protected IEditorData Data

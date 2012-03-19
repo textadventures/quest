@@ -39,7 +39,11 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Initialise(EditorController controller, IEditorControl controlData)
         {
-            m_manager.Initialise(controller, controlData, "Key", "Script");
+            string keyName = "Key";
+            if (controlData != null) keyName = controlData.GetString("keyname") ?? keyName;
+            m_manager.Initialise(controller, controlData, keyName, "Script");
+            ctlListEditor.SetEditKeyButtonText("Edit " + keyName);
+            ctlListEditor.SetEditButtonText("Edit Script");
         }
 
         public void Populate(IEditorData data)

@@ -9,11 +9,39 @@ namespace AxeSoftware.Quest.EditorControls
     [ControlType("verbs")]
     class WFVerbsControl : WFAttributesControl
     {
-        private static Dictionary<string, string> s_allowedTypes = new Dictionary<string, string> {
-            {"string", "Print a message"},
-            {"script", "Run a script"},
-            {"scriptdictionary", "Require another object"},
-        };
+        private class VerbsSubEditorControlData : SubEditorControlData
+        {
+            private static Dictionary<string, string> s_allowedTypes = new Dictionary<string, string> {
+                {"string", "Print a message"},
+                {"script", "Run a script"},
+                {"scriptdictionary", "Require another object"},
+            };
+
+            public VerbsSubEditorControlData(string attribute)
+                : base(attribute)
+            {
+            }
+
+            protected override Dictionary<string, string> AllowedTypes
+            {
+                get { return s_allowedTypes; }
+            }
+
+            public override string GetString(string tag)
+            {
+                switch (tag)
+                {
+                    case "keyname":
+                        return "Object";
+                    case "keyprompt":
+                        return "Please enter the object name";
+                    case "source":
+                        return "object";
+                }
+
+                return base.GetString(tag);
+            }
+        }
 
         private static List<Type> s_validTypes = new List<Type> {
             typeof(string),
@@ -46,9 +74,9 @@ namespace AxeSoftware.Quest.EditorControls
             return s_validTypes.Any(t => t.IsAssignableFrom(valueType));
         }
 
-        protected override Dictionary<string, string> AllowedTypes
+        protected override IEditorControl GetControlData(string attribute)
         {
-            get { return s_allowedTypes; }
+            return new VerbsSubEditorControlData(attribute);
         }
 
         protected override void Add()

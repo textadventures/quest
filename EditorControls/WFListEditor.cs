@@ -370,6 +370,11 @@ namespace AxeSoftware.Quest.EditorControls
             cmdEdit.Text = text;
         }
 
+        public void SetEditKeyButtonText(string text)
+        {
+            cmdEditKey.Text = text;
+        }
+
         public void ShowExtraToolstripItems(IEnumerable<string> items)
         {
             foreach (string item in items)
