@@ -1015,7 +1015,19 @@ namespace AxeSoftware.Quest
         {
             if (m_elements.ContainsKey(ElementType.Function, name))
             {
-                return RunScript(m_elements.Get(ElementType.Function, name).Fields[FieldDefinitions.Script], parameters, expectResult);
+                Element function = m_elements.Get(ElementType.Function, name);
+
+                if (Version >= WorldModelVersion.v520 && parameters == null && function.Fields[FieldDefinitions.ParamNames].Count > 0)
+                {
+                    // Only check for too few parameters for games for Quest 5.2 or later, as previous Quest versions
+                    // would ignore this (but would usually still fail when the function was run, as the required
+                    // variable wouldn't exist)
+                    throw new Exception(string.Format("No parameters passed to {0} function - expected {1} parameters",
+                            name,
+                            function.Fields[FieldDefinitions.ParamNames].Count));
+                }
+
+                return RunScript(function.Fields[FieldDefinitions.Script], parameters, expectResult);
             }
             else
             {
