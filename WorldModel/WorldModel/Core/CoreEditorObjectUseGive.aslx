@@ -11,10 +11,20 @@
     </control>
 
     <control>
-      <controltype>script</controltype>
+      <controltype>multi</controltype>
       <caption>Action</caption>
       <attribute>use</attribute>
       <mustnotinherit>defaultplayer</mustnotinherit>
+      <types>
+        null=Display menu of objects this can be used on;script=Run a script
+      </types>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>usemenuprompt</attribute>
+      <caption>Menu caption (leave blank for default)</caption>
+      <onlydisplayif>this.use = null</onlydisplayif>
     </control>
 
     <control>
