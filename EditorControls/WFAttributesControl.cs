@@ -258,6 +258,7 @@ namespace AxeSoftware.Quest.EditorControls
             IEditableScripts scriptValue = value as IEditableScripts;
             IEditableList<string> listStringValue = value as IEditableList<string>;
             IEditableDictionary<string> dictionaryStringValue = value as IEditableDictionary<string>;
+            IEditableDictionary<IEditableScripts> dictionaryScriptValue = value as IEditableDictionary<IEditableScripts>;
             IDataWrapper wrappedValue = value as IDataWrapper;
             string result = null;
 
@@ -272,6 +273,10 @@ namespace AxeSoftware.Quest.EditorControls
             else if (dictionaryStringValue != null)
             {
                 result = GetDictionaryDisplayString(dictionaryStringValue.DisplayItems);
+            }
+            else if (dictionaryScriptValue != null)
+            {
+                result = GetDictionaryDisplayString(dictionaryScriptValue.DisplayItems);
             }
             else if (wrappedValue != null)
             {
