@@ -87,7 +87,7 @@
   <template name="DefaultOops">There is nothing to correct.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " + Conjugate(object1, "do") + " not contain " + GetDisplayAlias(object2) + "."</dynamictemplate>
   <dynamictemplate name="YouLooking">"You are looking " + text +"."</dynamictemplate>
-  <template name="VerbObjectSeparator">with</template>
+  <template name="VerbObjectSeparator">with; using</template>
   <template name="DefaultMultiObjectVerb">That doesn't work.</template>
   <template name="MultiObjectVerbMenu">With which object?</template>
 

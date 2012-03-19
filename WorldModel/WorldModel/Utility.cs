@@ -496,6 +496,13 @@ namespace AxeSoftware.Quest
 
             string[] verbs = Utility.ListSplit(pattern);
             string result = string.Empty;
+            string separatorRegex = null;
+
+            if (!string.IsNullOrEmpty(separator))
+            {
+                separatorRegex = "(" + string.Join("|", separator.Split(';').Select(s => s.Trim())) + ")";
+            }
+
             foreach (string verb in verbs)
             {
                 if (result.Length > 0) result += "|";
@@ -511,9 +518,9 @@ namespace AxeSoftware.Quest
                     textToAdd = "^" + verb + " " + objectRegex;
                 }
 
-                if (!string.IsNullOrEmpty(separator))
+                if (separatorRegex != null)
                 {
-                    textToAdd += "( " + separator + " (?<object2>.*))?";
+                    textToAdd += "( " + separatorRegex + " (?<object2>.*))?";
                 }
 
                 textToAdd += "$";
