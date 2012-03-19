@@ -486,7 +486,7 @@ namespace AxeSoftware.Quest
             return result;
         }
 
-        public static string ConvertVerbSimplePattern(string pattern)
+        public static string ConvertVerbSimplePattern(string pattern, string separator)
         {
             // For verbs, we replace "eat; consume; munch" with
             // "^eat (?<object>.*)$|^consume (?<object>.*)$|^munch (?<object>.*)$"
@@ -499,17 +499,25 @@ namespace AxeSoftware.Quest
             foreach (string verb in verbs)
             {
                 if (result.Length > 0) result += "|";
-                const string objectRegex = "(?<object>.*)";
+                const string objectRegex = "(?<object>.*?)";
 
                 string textToAdd;
                 if (verb.Contains("#object#"))
                 {
-                    textToAdd = "^" + verb.Replace("#object#", objectRegex) + "$";
+                    textToAdd = "^" + verb.Replace("#object#", objectRegex);
                 }
                 else
                 {
-                    textToAdd = "^" + verb + " " + objectRegex + "$";
+                    textToAdd = "^" + verb + " " + objectRegex;
                 }
+
+                if (!string.IsNullOrEmpty(separator))
+                {
+                    textToAdd += "( " + separator + " (?<object2>.*))?";
+                }
+
+                textToAdd += "$";
+
                 result += textToAdd;
             }
 

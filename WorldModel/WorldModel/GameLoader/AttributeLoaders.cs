@@ -234,7 +234,12 @@ namespace AxeSoftware.Quest
             {
                 if (element.Fields.GetAsType<bool>("isverb"))
                 {
-                    LoadVerb(element, attribute, value);
+                    element.Fields.LazyFields.AddAction(() =>
+                    {
+                        // use LazyField as we need the separator attribute to exist to create
+                        // the correct regex
+                        LoadVerb(element, attribute, value);
+                    });
                 }
                 else
                 {
@@ -272,7 +277,7 @@ namespace AxeSoftware.Quest
 
             private void LoadVerb(Element element, string attribute, string value)
             {
-                element.Fields.Set(attribute, Utility.ConvertVerbSimplePattern(value));
+                element.Fields.Set(attribute, Utility.ConvertVerbSimplePattern(value, element.Fields[FieldDefinitions.Separator]));
             }
 
             public override bool SupportsMode(LoadMode mode)

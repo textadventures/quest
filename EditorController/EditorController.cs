@@ -1997,7 +1997,7 @@ namespace AxeSoftware.Quest
 
                 if (editorCommandPattern != null)
                 {
-                    regexPattern = Utility.ConvertVerbSimplePattern(editorCommandPattern.Pattern);
+                    regexPattern = Utility.ConvertVerbSimplePattern(editorCommandPattern.Pattern, null);
                 }
                 else
                 {

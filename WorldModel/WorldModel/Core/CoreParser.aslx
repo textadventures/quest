@@ -363,40 +363,45 @@
         
         // Resolve variable
         value = LCase(StringDictionaryItem(player.currentcommandvarlist, var))
-        result = null
-        resolvinglist = false
+        
+        if (value <> "") {
+          result = null
+          resolvinglist = false
           
-        if (StartsWith(var, "object")) {
-          if (HasDelegateImplementation(player.currentcommandpattern, "multiple")) {
-            player.currentcommandpendingobjectlist = NewObjectList()
-            player.currentcommandpendingvariable = var
-            ResolveNameList(value, RunDelegateFunction(player.currentcommandpattern, "multiple"), "object")
-            resolvinglist = true
+          if (StartsWith(var, "object")) {
+            if (HasDelegateImplementation(player.currentcommandpattern, "multiple")) {
+              player.currentcommandpendingobjectlist = NewObjectList()
+              player.currentcommandpendingvariable = var
+              ResolveNameList(value, RunDelegateFunction(player.currentcommandpattern, "multiple"), "object")
+              resolvinglist = true
+            }
+            else {
+              result = ResolveName(var, value, "object")
+            }
+          }
+          else if (StartsWith(var, "exit")) {
+            result = ResolveName(var, value, "exit")
+          }
+          else if (StartsWith(var, "text")) {
+            result = StringDictionaryItem(player.currentcommandvarlist, var)
           }
           else {
-            result = ResolveName(var, value, "object")
+            error ("Unhandled command variable '" + var + "'")
           }
-        }
-        else if (StartsWith(var, "exit")) {
-          result = ResolveName(var, value, "exit")
-        }
-        else if (StartsWith(var, "text")) {
-          result = StringDictionaryItem(player.currentcommandvarlist, var)
-        }
-        else {
-          error ("Unhandled command variable '" + var + "'")
-        }
         
-        // at this point, ResolveName has returned - either an object name, unresolved, or pending
+          // at this point, ResolveName has returned - either an object name, unresolved, or pending
             
-        if (result = null) {
-        
-          if ((not resolvinglist) and LengthOf(GetString(player, "currentcommandpendingvariable")) = 0) {
-            UnresolvedCommand(value, var)
+          if (result = null) {
+            if ((not resolvinglist) and LengthOf(GetString(player, "currentcommandpendingvariable")) = 0) {
+              UnresolvedCommand(value, var)
+            }
+          }
+          else {
+            AddToResolvedNames(var, result)
           }
         }
         else {
-          AddToResolvedNames(var, result)
+          ResolveNextName
         }
       }
       else {
@@ -477,102 +482,9 @@
     game.unresolvedcommandvarlist = player.currentcommandvarlist
     game.unresolvedcommandkey = unresolvedkey
   </function>
-
-  <!--
-  <function name="HandleSingleCommandPatternOld" parameters="command, thiscommand, varlist">
-    <![CDATA[
-    resolved = true
-    resolvedelements = NewDictionary()
-    resolvedobjects = NewObjectList()
-    unresolvedobject = null
-    
-    foreach (var, varlist) {
-      if (resolved) {
-        value = LCase(StringDictionaryItem(varlist, var))
-        result = null
-          
-        if (StartsWith(var, "object")) {
-          if (HasDelegateImplementation(thiscommand, "multiple")) {
-            result = ResolveNameList(value, RunDelegateFunction(thiscommand, "multiple"), "object", resolvedelements)
-            if (result <> null) {
-              foreach (obj, result) {
-                list add (resolvedobjects, obj)
-              }
-            }
-          }
-          else {
-            result = ResolveName(value, "object")
-            if (result <> null) {
-              list add (resolvedobjects, result)
-            }
-          }
-        }
-        else if (StartsWith(var, "exit")) {
-          result = ResolveName(value, "exit")
-        }
-        else if (StartsWith(var, "text")) {
-          result = StringDictionaryItem(varlist, var)
-        }
-        else {
-          error ("Unhandled command variable '" + var + "'")
-        }
-            
-        if (result = null) {
-          resolved = false
-          unresolvedobject = value
-          unresolvedkey = var
-        }
-        else {
-          dictionary add(resolvedelements, var, result)
-        }
-      }
-    }
-    
-    game.lastobjects = resolvedobjects
-      
-    if (not DictionaryContains(resolvedelements, "multiple")) {
-      dictionary add (resolvedelements, "multiple", false)
-    }
-      
-    if (resolved) {
-      if (not GetBoolean(thiscommand, "isundo")) {
-        if (LengthOf(command) > 0) {
-          start transaction (command)
-        }
-      }
-      if (not GetBoolean(thiscommand, "isoops")) {
-        game.unresolvedcommand = null
-        game.unresolvedcommandvarlist = null
-        game.unresolvedcommandkey = null
-      }
-      do (thiscommand, "script", resolvedelements)
-    }
-    else {
-      if (HasString(thiscommand, "unresolved")) {
-        if (ListCount(varlist) > 1) {
-          msg (thiscommand.unresolved + " (" + unresolvedobject + ")")
-        }
-        else {
-          msg (thiscommand.unresolved)
-        }
-      }
-      else {
-        if (ListCount(varlist) > 1) {
-          msg (Template("UnresolvedObject") + " (" + unresolvedobject + ")")
-        }
-        else {
-          msg (Template("UnresolvedObject"))
-        }
-      }
-      game.unresolvedcommand = thiscommand
-      game.unresolvedcommandvarlist = varlist
-      game.unresolvedcommandkey = unresolvedkey
-    }
-    ]]>
-  </function>
-  -->
   
   <type name="defaultverb">
+    <separator>with</separator>
     <script type="script">
       <![CDATA[
       switch (TypeOf(object, this.property)) {
@@ -581,6 +493,18 @@
         }
         case ("string") {
           msg (GetString(object, this.property))
+        }
+        case ("scriptdictionary") {
+          handled = false
+          if (IsDefined("object2")) {
+            if (object2 <> null) {
+              // TO DO: Two-object verb with two objects supplied
+              handled = true
+            }
+          }
+          if (not handled) {
+            // TO DO: Two-object verb with one objects supplied
+          }
         }
         case ("null") {
           if (this.defaulttext <> null) {

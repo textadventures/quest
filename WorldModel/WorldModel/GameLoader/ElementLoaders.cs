@@ -229,8 +229,13 @@ namespace AxeSoftware.Quest
                 }
                 else
                 {
-                    newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern);
+                    LoadPattern(newCommand, pattern);
                 }
+            }
+
+            protected virtual void LoadPattern(Element newCommand, string pattern)
+            {
+                newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern, null);
             }
 
             public override void SetText(string text, ref Element current)
@@ -288,6 +293,14 @@ namespace AxeSoftware.Quest
             {
                 string contents = GameLoader.GetTemplate(text);
                 current.Fields[FieldDefinitions.DefaultText] = contents;
+            }
+
+            protected override void LoadPattern(Element newCommand, string pattern)
+            {
+                newCommand.Fields.LazyFields.AddAction(() =>
+                {
+                    newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern, newCommand.Fields[FieldDefinitions.Separator]);
+                });
             }
         }
 

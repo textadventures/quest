@@ -107,6 +107,7 @@ namespace AxeSoftware.Quest
         public static IField<int> Trigger = new FieldDef<int>("trigger");
         public static IField<int> Interval = new FieldDef<int>("interval");
         public static IField<bool> Enabled = new FieldDef<bool>("enabled");
+        public static IField<string> Separator = new FieldDef<string>("separator");
     }
 
     public static class MetaFieldDefinitions
@@ -825,6 +826,7 @@ namespace AxeSoftware.Quest
         private Dictionary<string, IDictionary<string, string>> m_scriptDictionaries = new Dictionary<string, IDictionary<string, string>>();
         private Dictionary<string, IEnumerable<string>> m_objectLists = new Dictionary<string, IEnumerable<string>>();
         private Dictionary<string, IDictionary<string, string>> m_objectDictionaries = new Dictionary<string, IDictionary<string, string>>();
+        private List<Action> m_actions = new List<Action>();
         private WorldModel m_worldModel;
         private bool m_resolved = false;
 
@@ -912,6 +914,10 @@ namespace AxeSoftware.Quest
                     throw new Exception(string.Format("Error adding object dictionary '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
                 }
             }
+            foreach (Action action in m_actions)
+            {
+                action();
+            }
             m_resolved = true;
         }
 
@@ -977,6 +983,12 @@ namespace AxeSoftware.Quest
         {
             CheckNotResolved();
             m_objectDictionaries.Add(property, value);
+        }
+
+        public void AddAction(Action action)
+        {
+            CheckNotResolved();
+            m_actions.Add(action);
         }
 
         private void CheckNotResolved()
