@@ -145,6 +145,10 @@ namespace WebEditor.Models
                     string stringValue = GetValueProviderString(bindingContext.ValueProvider, attribute);
                     int intValue;
                     int.TryParse(stringValue, out intValue);
+                    int? min = ctl.GetInt("minimum");
+                    int? max = ctl.GetInt("maximum");
+                    if (min.HasValue && intValue < min) intValue = min.Value;
+                    if (max.HasValue && intValue > max) intValue = max.Value;
                     saveValue = intValue;
                     break;
                 case "richtext":
