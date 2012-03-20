@@ -10,8 +10,13 @@
         
         for (i, 1, 4) {
           if (i = game.autodescription_youarein) {
-            youarein = player.parent.descprefix
-            desc = AddDescriptionLine (desc, youarein + " " + GetDisplayName(player.parent) + ".")
+            if (game.autodescription_youarein_useprefix) {
+              youarein = player.parent.descprefix
+              desc = AddDescriptionLine (desc, youarein + " " + GetDisplayName(player.parent) + ".")
+            }
+            else {
+              desc = AddDescriptionLine (desc, "<b>" + CapFirst(GetDisplayName(player.parent)) + "</b>")
+            }
           }
           if (i = game.autodescription_youcansee) {
             objects = FormatObjectList(player.parent.objectslistprefix, GetNonTransparentParent(player.parent), Template("And"), ".", false)

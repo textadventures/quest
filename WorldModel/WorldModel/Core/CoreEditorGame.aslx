@@ -130,6 +130,13 @@
         <controltype>title</controltype>
         <caption>Room description layout</caption>
         <advanced/>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>Use the numbers 1 to 4 to control the order in which lines of the automatic room description are displayed. Use 0 to hide a line.</caption>
+        <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
 
       <control>
@@ -138,6 +145,7 @@
         <caption>Room name</caption>
         <minimum>0</minimum>
         <maximum>4</maximum>
+        <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
 
       <control>
@@ -146,6 +154,7 @@
         <caption>Objects list</caption>
         <minimum>0</minimum>
         <maximum>4</maximum>
+        <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
 
       <control>
@@ -154,6 +163,7 @@
         <caption>Exits list</caption>
         <minimum>0</minimum>
         <maximum>4</maximum>
+        <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
 
       <control>
@@ -162,8 +172,15 @@
         <caption>Description</caption>
         <minimum>0</minimum>
         <maximum>4</maximum>
+        <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
 
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>autodescription_youarein_useprefix</attribute>
+        <caption>Use "[YouAreIn]" prefix (turn off to display room name in bold instead)</caption>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
     </tab>
 
     <tab>

@@ -16,6 +16,7 @@
       <controltype>textbox</controltype>
       <caption>Description prefix</caption>
       <attribute>descprefix</attribute>
+      <onlydisplayif>game.autodescription_youarein_useprefix</onlydisplayif>
     </control>
 
     <control>

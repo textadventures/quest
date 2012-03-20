@@ -29,6 +29,7 @@
     <autodescription_youcansee type="int">2</autodescription_youcansee>
     <autodescription_youcango type="int">3</autodescription_youcango>
     <autodescription_description type="int">4</autodescription_description>
+    <autodescription_youarein_useprefix/>
   </type>
 
   <type name="defaultobject">
