@@ -29,6 +29,7 @@ namespace WebEditor.Models
         public bool CanMove { get; set; }
         public string MovePossibleParents { get; set; }
         public bool IsElement { get; set; }
+        public string AllObjects { get; set; }
     }
 
     public class IgnoredValue

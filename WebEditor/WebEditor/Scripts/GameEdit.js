@@ -391,9 +391,17 @@ function initialiseElementEditor(tab) {
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
-        showDialog($(this).attr("data-prompt"), "", function (text) {
-            sendAdditionalAction("scriptdictionary add " + key + ";" + text);
-        });
+        if ($(this).attr("data-source") == "object") {
+            var possibleParents = $("#_allObjects").val().split(";");
+            showDialog("", "", function (text, object) {
+                sendAdditionalAction("scriptdictionary add " + key + ";" + object);
+            }, possibleParents, "Add");
+        }
+        else {
+            showDialog($(this).attr("data-prompt"), "", function (text) {
+                sendAdditionalAction("scriptdictionary add " + key + ";" + text);
+            });
+        }
     });
     $(".error-clear").button().click(function () {
         var key = $(this).attr("data-key");

@@ -43,7 +43,7 @@
             }
             else if (dictionaryValue != null)
             {
-                @Html.Action("EditScriptDictionaryValue", new { id = Model.GameId, key = Model.Key, value = dictionaryValue, keyPrompt = "Please enter the object name", attribute = attr.AttributeName })
+                @Html.Action("EditScriptDictionaryValue", new { id = Model.GameId, key = Model.Key, value = dictionaryValue, keyPrompt = "Please enter the object name", source = "object", attribute = attr.AttributeName })
             }
             </div>
         </div>

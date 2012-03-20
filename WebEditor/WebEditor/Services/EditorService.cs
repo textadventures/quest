@@ -261,6 +261,7 @@ namespace WebEditor.Services
 
             IEnumerable<string> newObjectPossibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(key);
             IEnumerable<string> movePossibleParents = m_controller.GetMovePossibleParents(key);
+            IEnumerable<string> allObjects = m_controller.GetObjectNames("object");
 
             return new Models.Element
             {
@@ -282,7 +283,8 @@ namespace WebEditor.Services
                 UIAction = uiAction,
                 CanMove = m_controller.CanMoveElement(key),
                 MovePossibleParents = (movePossibleParents == null) ? null : string.Join(";", movePossibleParents),
-                IsElement = m_controller.ElementExists(key)
+                IsElement = m_controller.ElementExists(key),
+                AllObjects = (allObjects == null) ? null : string.Join(";", allObjects)
             };
         }
 
@@ -659,10 +661,10 @@ namespace WebEditor.Services
 
         private Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, IEditorControl ctl, string attribute)
         {
-            return GetScriptDictionaryModel(id, key, value, ctl.GetString("keyprompt"), attribute);
+            return GetScriptDictionaryModel(id, key, value, ctl.GetString("keyprompt"), ctl.GetString("source"), attribute);
         }
 
-        public Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, string keyPrompt, string attribute)
+        public Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, string keyPrompt, string source, string attribute)
         {
             return new Models.ScriptDictionary
             {
@@ -670,6 +672,7 @@ namespace WebEditor.Services
                 Key = key,
                 Attribute = attribute,
                 KeyPrompt = keyPrompt,
+                Source = source,
                 Value = value
             };
         }
