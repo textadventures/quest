@@ -463,7 +463,40 @@
     }
   </command>
 
+  <command name="givesingle" template="givesingle">
+    <![CDATA[
+    if (HasScript(object, "givesingle")) {
+      do (object, "givesingle")
+    }
+    else {
+      menu = NewStringDictionary()
+      excludelist = NewObjectList()
+      list add (excludelist, player)
+      list add (excludelist, object)
+      candidates = ListExclude(ScopeVisible(), excludelist)
+      GenerateMenuChoices(menu, candidates)
+      player.givemenuobject = object
+      if (HasString(object, "givemenuprompt")) {
+        menucaption = object.givemenuprompt
+      }
+      else {
+        menucaption = Template("GiveToMenu")
+      }
+      show menu (menucaption, menu, true) {
+        if (result <> null) {
+          HandleGiveTo (player.givemenuobject, GetObject(result))
+          player.givemenuobject = null
+        }
+      }
+    }
+  ]]>
+  </command>
+
   <command name="give" pattern="[give]">
+    HandleGiveTo (object1, object2)
+  </command>
+
+  <function name="HandleGiveTo" parameters="object1, object2">
     handled = false
     if (HasString(object2, "give")) {
       msg (object2.give)
@@ -510,7 +543,7 @@
     if (not handled) {
       msg (DynamicTemplate("DefaultGive", object2, object1))
     }
-  </command>
+  </function>
   
   <command name="useon" pattern="[useon]">
     HandleUseOn (object1, object2)

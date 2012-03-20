@@ -90,6 +90,7 @@
   <template name="DefaultMultiObjectVerb">That doesn't work.</template>
   <template name="MultiObjectVerbMenu">With which object?</template>
   <template name="UseOnMenu">On which object?</template>
+  <template name="GiveToMenu">To which object?</template>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>
@@ -166,6 +167,7 @@
   <dynamictemplate name="DefaultDrink">"You can't drink " + object.article + "."</dynamictemplate>
   <verbtemplate name="eat">eat</verbtemplate>
   <dynamictemplate name="DefaultEat">"You can't eat " + object.article + "."</dynamictemplate>
+  <verbtemplate name="givesingle">give</verbtemplate>
   <template templatetype="command" name="give"><![CDATA[^give (?<object1>.*) to (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultGive">WriteVerb(object1, "do") + " not want " + object2.article + "."</dynamictemplate>
   <verbtemplate name="hit">hit</verbtemplate>

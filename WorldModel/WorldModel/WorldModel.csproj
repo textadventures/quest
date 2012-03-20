@@ -203,6 +203,7 @@
     </None>
     <None Include="Core\CoreEditorObjectUseGive.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorObjectInventory.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

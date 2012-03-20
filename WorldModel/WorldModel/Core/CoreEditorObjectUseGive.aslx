@@ -84,6 +84,29 @@
 
     <control>
       <controltype>title</controltype>
+      <caption>Give (on its own)</caption>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+    </control>
+
+    <control>
+      <controltype>multi</controltype>
+      <caption>Action</caption>
+      <attribute>givesingle</attribute>
+      <mustnotinherit>defaultplayer</mustnotinherit>
+      <types>
+        null=Display menu of objects this can be given to;script=Run a script
+      </types>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>givemenuprompt</attribute>
+      <caption>Menu caption (leave blank for default)</caption>
+      <onlydisplayif>this.givesingle = null</onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
       <caption>Give (other object) to this</caption>
       <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
