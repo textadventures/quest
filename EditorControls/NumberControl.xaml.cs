@@ -34,6 +34,12 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 ctlNumber.Minimum = minimum;
             }
+
+            int? maximum = m_helper.ControlDefinition.GetInt("maximum");
+            if (maximum.HasValue)
+            {
+                ctlNumber.Maximum = maximum;
+            }
         }
 
         public IControlDataHelper Helper

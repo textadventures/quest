@@ -209,7 +209,20 @@ Working...
             @Html.TextArea(ctl.Attribute, (string)value, 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
             break;
         case "number":
-            <input type="number" name="@ctl.Attribute" id="@ctl.Attribute"  value="@Model.EditorData.GetAttribute(ctl.Attribute)" style="width: 50px" />
+            string minMax = string.Empty;
+            int? min = ctl.GetInt("minimum");
+            int? max = ctl.GetInt("maximum");
+            if (min.HasValue) {
+                minMax += string.Format("min={0}", min);
+            }
+            if (max.HasValue)
+            {
+                if (minMax.Length > 0) {
+                    minMax += " ";
+                }
+                minMax += string.Format("max={0}", max);
+            }
+            <input type="number" name="@ctl.Attribute" id="@ctl.Attribute" value="@Model.EditorData.GetAttribute(ctl.Attribute)" @minMax style="width: 50px" />
             break;
         case "multi":
             @RenderMultiControl(ctl, value)

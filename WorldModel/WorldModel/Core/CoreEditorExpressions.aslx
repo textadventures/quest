@@ -367,6 +367,8 @@
       <simple>percentage</simple>
       <simpleeditor>number</simpleeditor>
       <attribute>percentile</attribute>
+      <minimum>0</minimum>
+      <maximum>100</maximum>
     </control>
 
     <control>
