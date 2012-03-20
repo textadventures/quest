@@ -13,16 +13,18 @@
     // and any scripts will need to copied before editing.
 
     object value = Model.EditorData.GetAttribute(attr.AttributeName);
-    
+
     if (CanDisplayAttribute(attr.AttributeName, value))
     {
         string stringValue = value as string;
         IEditableScripts scriptValue = value as IEditableScripts;
-        
+        IEditableDictionary<IEditableScripts> dictionaryValue = value as IEditableDictionary<IEditableScripts>;
+
         List<SelectListItem> typesList = new List<SelectListItem>
         {
             new SelectListItem { Text = "Print a message", Value = "string", Selected = (stringValue != null) },
-            new SelectListItem { Text = "Run a script", Value = "script", Selected = (scriptValue != null) }
+            new SelectListItem { Text = "Run a script", Value = "script", Selected = (scriptValue != null) },
+            new SelectListItem { Text = "Require another object", Value="scriptdictionary", Selected = ( dictionaryValue != null) }
         };
 
         <div>
@@ -30,27 +32,36 @@
             @Model.Controller.GetDisplayVerbPatternForAttribute(attr.AttributeName)
             @Html.DropDownList("verbs-type-" + attr.AttributeName, typesList, new { @class = "multi-dropdown", data_key = attr.AttributeName })
             <br />
+            <div class="verbChild">
             @if (scriptValue != null)
             {
-                <div class="verbChild">
                 @Html.Action("EditScriptValue", new { id = Model.GameId, key = Model.Key, script = scriptValue, attribute = attr.AttributeName })
-                </div>
             }
-            else
+            else if (stringValue != null)
             {
-                <div class="verbChild">
                 @Html.TextBox(attr.AttributeName, stringValue, new { style = "width: 100%" })
-                </div>
             }
+            else if (dictionaryValue != null)
+            {
+                @Html.Action("EditScriptDictionaryValue", new { id = Model.GameId, key = Model.Key, value = dictionaryValue, keyPrompt = "Please enter the object name", attribute = attr.AttributeName })
+            }
+            </div>
         </div>
     }
 }
 
 @functions
 {
+    private static List<Type> s_validTypes = new List<Type> {
+        typeof(string),
+        typeof(IEditableScripts),
+        typeof(IEditableDictionary<IEditableScripts>)
+    };
+
     private bool CanDisplayAttribute(string attribute, object value)
     {
         if (!Model.Controller.IsVerbAttribute(attribute)) return false;
-        return typeof(string).IsAssignableFrom(value.GetType()) || typeof(IEditableScripts).IsAssignableFrom(value.GetType());
+        Type valueType = value.GetType();
+        return s_validTypes.Any(t => t.IsAssignableFrom(valueType));
     }
 }

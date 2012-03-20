@@ -177,6 +177,7 @@ namespace WebEditor.Models
                             object attrValue = extendedData.GetAttribute(attr.AttributeName);
                             string attrStringValue = attrValue as string;
                             IEditableScripts attrScriptValue = attrValue as IEditableScripts;
+                            IEditableDictionary<IEditableScripts> attrDictionaryValue = attrValue as IEditableDictionary<IEditableScripts>;
                             if (attrStringValue != null)
                             {
                                 BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, "textbox", attr.AttributeName);
@@ -184,6 +185,10 @@ namespace WebEditor.Models
                             else if (attrScriptValue != null)
                             {
                                 BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, "script", attr.AttributeName);
+                            }
+                            else if (attrDictionaryValue != null)
+                            {
+                                BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, "scriptdictionary", attr.AttributeName);
                             }
                         }
                     }

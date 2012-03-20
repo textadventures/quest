@@ -659,12 +659,17 @@ namespace WebEditor.Services
 
         private Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, IEditorControl ctl, string attribute)
         {
+            return GetScriptDictionaryModel(id, key, value, ctl.GetString("keyprompt"), attribute);
+        }
+
+        public Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, string keyPrompt, string attribute)
+        {
             return new Models.ScriptDictionary
             {
                 GameId = id,
                 Key = key,
                 Attribute = attribute,
-                KeyPrompt = ctl.GetString("keyprompt"),
+                KeyPrompt = keyPrompt,
                 Value = value
             };
         }
