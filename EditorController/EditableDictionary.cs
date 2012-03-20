@@ -52,9 +52,15 @@ namespace AxeSoftware.Quest
         private QuestDictionary<T> m_source;
         private Dictionary<string, IEditableListItem<T>> m_wrappedItems = new Dictionary<string, IEditableListItem<T>>();
         private EditorController m_controller;
+        private readonly string m_id;
+
+        private static int s_count = 0;
 
         public EditableDictionary(EditorController controller, QuestDictionary<T> source)
         {
+            s_count++;
+            m_id = "dictionary" + s_count;
+
             m_controller = controller;
             m_source = source;
             m_source.Added += m_source_Added;
@@ -240,5 +246,7 @@ namespace AxeSoftware.Quest
         {
             throw new NotImplementedException();
         }
+
+        public string Id { get { return m_id; } }
     }
 }

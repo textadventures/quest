@@ -53,9 +53,15 @@ namespace AxeSoftware.Quest
         private Dictionary<string, IEditableListItem<TWrapped>> m_wrappedItems = new Dictionary<string, IEditableListItem<TWrapped>>();
         private Dictionary<TWrapped, IEditableListItem<TWrapped>> m_wrappedItemsLookup = new Dictionary<TWrapped, IEditableListItem<TWrapped>>();
         private EditorController m_controller;
+        private readonly string m_id;
+
+        private static int s_count = 0;
 
         public EditableWrappedItemDictionary(EditorController controller, QuestDictionary<TSource> source)
         {
+            s_count++;
+            m_id = "wrapdictionary" + s_count;
+
             m_controller = controller;
             m_source = source;
             m_source.Added += m_source_Added;
@@ -268,5 +274,7 @@ namespace AxeSoftware.Quest
                 return m_source.Owner.Name;
             }
         }
+
+        public string Id { get { return m_id; } }
     }
 }

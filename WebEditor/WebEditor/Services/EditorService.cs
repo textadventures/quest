@@ -33,6 +33,7 @@ namespace WebEditor.Services
         private int m_id;
         private Dictionary<string, ErrorData> m_scriptErrors = new Dictionary<string, ErrorData>();
         private Dictionary<string, Dictionary<string, string>> m_elementErrors = new Dictionary<string, Dictionary<string, string>>();
+        private Dictionary<string, ErrorData> m_dictionaryErrors = new Dictionary<string, ErrorData>();
         private bool m_mustRefreshTree = false;
         private string m_popupError = null;
         private bool m_canUndo = false;
@@ -232,6 +233,15 @@ namespace WebEditor.Services
                         otherElementErrors.Add(elementError.Key, new List<string>());
                     }
                     otherElementErrors[elementError.Key].AddRange(elementError.Value.Values);
+                }
+
+                foreach (var dictionaryError in m_dictionaryErrors.Values.Where(e => e.Element != key))
+                {
+                    if (!otherElementErrors.ContainsKey(dictionaryError.Element))
+                    {
+                        otherElementErrors.Add(dictionaryError.Element, new List<string>());
+                    }
+                    otherElementErrors[dictionaryError.Element].Add(dictionaryError.Message);
                 }
             }
 
@@ -644,28 +654,33 @@ namespace WebEditor.Services
             };
         }
 
-        public Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditorControl ctl)
+        public Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
         {
             IEditableDictionary<IEditableScripts> value = GetScriptDictionary(key, ctl.Attribute);
-            return GetScriptDictionaryModel(id, key, value, ctl, ctl.Attribute);
+            return GetScriptDictionaryModel(id, key, value, ctl, ctl.Attribute, modelState);
         }
 
-        public Models.ScriptDictionary GetScriptScriptDictionaryModel(int id, string key, string path, IEditorControl ctl)
+        public Models.ScriptDictionary GetScriptScriptDictionaryModel(int id, string key, string path, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
         {
             string parameter;
             IEditableScript scriptLine = GetScriptLine(key, path, out parameter);
             IEditorData scriptEditorData = m_controller.GetScriptEditorData(scriptLine);
             IEditableDictionary<IEditableScripts> value = (IEditableDictionary<IEditableScripts>)scriptEditorData.GetAttribute(parameter);
-            return GetScriptDictionaryModel(id, key, value, ctl, path);
+            return GetScriptDictionaryModel(id, key, value, ctl, path, modelState);
         }
 
-        private Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, IEditorControl ctl, string attribute)
+        private Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, IEditorControl ctl, string attribute, System.Web.Mvc.ModelStateDictionary modelState)
         {
-            return GetScriptDictionaryModel(id, key, value, ctl.GetString("keyprompt"), ctl.GetString("source"), attribute);
+            return GetScriptDictionaryModel(id, key, value, ctl.GetString("keyprompt"), ctl.GetString("source"), attribute, modelState);
         }
 
-        public Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, string keyPrompt, string source, string attribute)
+        public Models.ScriptDictionary GetScriptDictionaryModel(int id, string key, IEditableDictionary<IEditableScripts> value, string keyPrompt, string source, string attribute, System.Web.Mvc.ModelStateDictionary modelState)
         {
+            foreach (var error in m_dictionaryErrors)
+            {
+                modelState.AddModelError(error.Key, error.Value.Message);
+            }
+
             return new Models.ScriptDictionary
             {
                 GameId = id,
@@ -1461,6 +1476,10 @@ namespace WebEditor.Services
                     m_elementErrors[element].Remove(id);
                 }
             }
+            if (m_dictionaryErrors.ContainsKey(id))
+            {
+                m_dictionaryErrors.Remove(id);
+            }
         }
 
         private void StringListAdd(string element, string attribute, string value)
@@ -1735,7 +1754,14 @@ namespace WebEditor.Services
                 }
                 else
                 {
-                    AddScriptError(element, scriptLine, GetValidationError(result, value));
+                    if (scriptLine != null)
+                    {
+                        AddScriptError(element, scriptLine, GetValidationError(result, value));
+                    }
+                    else
+                    {
+                        AddDictionaryError(element, dictionary, GetValidationError(result, value));
+                    }
                 }
             }
         }
@@ -1809,6 +1835,18 @@ namespace WebEditor.Services
                 m_elementErrors.Add(element, new Dictionary<string, string>());
             }
             m_elementErrors[element][attribute] = error;
+        }
+
+        private void AddDictionaryError(string element, IEditableDictionary<IEditableScripts> dictionary, string error)
+        {
+            if (!m_dictionaryErrors.ContainsKey(dictionary.Id))
+            {
+                m_dictionaryErrors.Add(dictionary.Id, new ErrorData { Message = error, Element = element });
+            }
+            else
+            {
+                m_dictionaryErrors[dictionary.Id].Message = m_dictionaryErrors[dictionary.Id].Message + ". " + error;
+            }
         }
 
         private IEditableScripts GetScript(string element, string attribute)

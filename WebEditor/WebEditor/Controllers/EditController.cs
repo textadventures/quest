@@ -120,17 +120,17 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditScriptDictionary(int id, string key, IEditorControl control)
         {
-            return PartialView("ScriptDictionaryEditor", EditorDictionary[id].GetScriptDictionaryModel(id, key, control));
+            return PartialView("ScriptDictionaryEditor", EditorDictionary[id].GetScriptDictionaryModel(id, key, control, ModelState));
         }
 
         public PartialViewResult EditScriptScriptDictionary(int id, string key, string path, IEditorControl control)
         {
-            return PartialView("ScriptDictionaryEditor", EditorDictionary[id].GetScriptScriptDictionaryModel(id, key, path, control));
+            return PartialView("ScriptDictionaryEditor", EditorDictionary[id].GetScriptScriptDictionaryModel(id, key, path, control, ModelState));
         }
 
         public PartialViewResult EditScriptDictionaryValue(int id, string key, IEditableDictionary<IEditableScripts> value, string keyPrompt, string source, string attribute)
         {
-            return PartialView("ScriptDictionaryEditor", EditorDictionary[id].GetScriptDictionaryModel(id, key, value, keyPrompt, source, attribute));
+            return PartialView("ScriptDictionaryEditor", EditorDictionary[id].GetScriptDictionaryModel(id, key, value, keyPrompt, source, attribute, ModelState));
         }
 
         private Dictionary<int, Services.EditorService> EditorDictionary

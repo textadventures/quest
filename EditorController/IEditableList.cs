@@ -43,6 +43,7 @@ namespace AxeSoftware.Quest
         event EventHandler<EditableListUpdatedEventArgs<T>> Removed;
         event EventHandler<EditableListUpdatedEventArgs<T>> Updated;
 
+        string Id { get; }
         IDictionary<string, IEditableListItem<T>> Items { get; }
         IEnumerable<KeyValuePair<string, string>> DisplayItems { get; }
         void Add(string key, T value);
