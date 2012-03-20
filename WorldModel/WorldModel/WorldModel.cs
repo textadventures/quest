@@ -320,10 +320,14 @@ namespace AxeSoftware.Quest
         private string m_menuResponse = null;
         private IScript m_menuCallback = null;
         private Context m_menuCallbackContext = null;
+        private IDictionary<string, string> m_menuOptions = null;
 
         internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
         {
+            Print(caption);
+
             MenuData menuData = new MenuData(caption, options, allowCancel);
+            m_menuOptions = options;
 
             m_playerUI.ShowMenu(menuData);
 
@@ -334,6 +338,7 @@ namespace AxeSoftware.Quest
 
             m_menuCallback = null;
             m_menuCallbackContext = null;
+            m_menuOptions = null;
 
             ChangeThreadState(ThreadState.Waiting);
 
@@ -361,11 +366,13 @@ namespace AxeSoftware.Quest
         {
             if (m_menuCallback != null)
             {
+                Print(" - " + m_menuOptions[response]);
                 m_menuCallbackContext.Parameters["result"] = response;
                 IScript script = m_menuCallback;
                 Context context = m_menuCallbackContext;
                 m_menuCallback = null;
                 m_menuCallbackContext = null;
+                m_menuOptions = null;
                 DoInNewThreadAndWait(() =>
                 {
                     RunScript(script, context);
