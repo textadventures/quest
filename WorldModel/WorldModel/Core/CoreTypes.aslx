@@ -25,6 +25,10 @@
     <showpanes/>
     <showscore type="boolean">false</showscore>
     <showhealth type="boolean">false</showhealth>
+    <autodescription_youarein type="int">1</autodescription_youarein>
+    <autodescription_youcansee type="int">2</autodescription_youcansee>
+    <autodescription_youcango type="int">3</autodescription_youcango>
+    <autodescription_description type="int">4</autodescription_description>
   </type>
 
   <type name="defaultobject">

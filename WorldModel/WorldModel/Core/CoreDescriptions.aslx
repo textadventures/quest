@@ -7,17 +7,24 @@
     else {
       if (game.autodescription) {
         desc = ""
-      
-        youarein = player.parent.descprefix
-        desc = AddDescriptionLine (desc, youarein + " " + GetDisplayName(player.parent) + ".")
-
-        objects = FormatObjectList(player.parent.objectslistprefix, GetNonTransparentParent(player.parent), Template("And"), ".", false)
-        desc = AddDescriptionLine(desc, objects)
         
-        exits = FormatExitList(player.parent.exitslistprefix, ScopeExits(), Template("Or"), ".")
-        desc = AddDescriptionLine(desc, exits)
-        
-        desc = AddDescriptionLine(desc, GetRoomDescription())
+        for (i, 1, 4) {
+          if (i = game.autodescription_youarein) {
+            youarein = player.parent.descprefix
+            desc = AddDescriptionLine (desc, youarein + " " + GetDisplayName(player.parent) + ".")
+          }
+          if (i = game.autodescription_youcansee) {
+            objects = FormatObjectList(player.parent.objectslistprefix, GetNonTransparentParent(player.parent), Template("And"), ".", false)
+            desc = AddDescriptionLine(desc, objects)
+          }
+          if (i = game.autodescription_youcango) {
+            exits = FormatExitList(player.parent.exitslistprefix, ScopeExits(), Template("Or"), ".")
+            desc = AddDescriptionLine(desc, exits)
+          }
+          if (i = game.autodescription_description) {
+            desc = AddDescriptionLine(desc, GetRoomDescription())
+          }
+        }
         
         if (LengthOf(desc) > 0) {
           msg (desc)

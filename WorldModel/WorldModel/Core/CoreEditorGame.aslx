@@ -125,6 +125,45 @@
         <attribute>enablehyperlinks</attribute>
         <advanced/>
       </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Room description layout</caption>
+        <advanced/>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>autodescription_youarein</attribute>
+        <caption>Room name</caption>
+        <minimum>0</minimum>
+        <maximum>4</maximum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>autodescription_youcansee</attribute>
+        <caption>Objects list</caption>
+        <minimum>0</minimum>
+        <maximum>4</maximum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>autodescription_youcango</attribute>
+        <caption>Exits list</caption>
+        <minimum>0</minimum>
+        <maximum>4</maximum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>autodescription_description</attribute>
+        <caption>Description</caption>
+        <minimum>0</minimum>
+        <maximum>4</maximum>
+      </control>
+
     </tab>
 
     <tab>
