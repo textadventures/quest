@@ -271,7 +271,7 @@ namespace WebEditor.Services
 
             IEnumerable<string> newObjectPossibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(key);
             IEnumerable<string> movePossibleParents = m_controller.GetMovePossibleParents(key);
-            IEnumerable<string> allObjects = m_controller.GetObjectNames("object");
+            IEnumerable<string> allObjects = m_controller.GetObjectNames("object").OrderBy(n => n);
 
             return new Models.Element
             {
