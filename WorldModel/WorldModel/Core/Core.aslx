@@ -64,10 +64,12 @@
     UpdateStatusAttributes
     if (HasScript(game, "start")) do (game, "start")
     UpdateStatusAttributes
-    if (game.displayroomdescriptiononstart) {
-      OnEnterRoom (null)
+    on ready {
+      if (game.displayroomdescriptiononstart) {
+        OnEnterRoom (null)
+      }
+      UpdateStatusAttributes
     }
-    UpdateStatusAttributes
     ]]>
   </function>
 

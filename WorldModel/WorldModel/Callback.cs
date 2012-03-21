@@ -29,6 +29,7 @@ namespace AxeSoftware.Quest
         }
 
         private Dictionary<CallbackTypes, Callback> m_callbacks = new Dictionary<CallbackTypes, Callback>();
+        private List<Callback> m_onReadyCallbacks = new List<Callback>();
 
         public void Push(CallbackTypes type, Callback callback, string exception = "Callback already exists")
         {
@@ -51,6 +52,18 @@ namespace AxeSoftware.Quest
         public bool AnyOutstanding()
         {
             return m_callbacks.Count > 0;
+        }
+
+        public void AddOnReadyCallback(Callback callback)
+        {
+            m_onReadyCallbacks.Add(callback);
+        }
+
+        public IEnumerable<Callback> FlushOnReadyCallbacks()
+        {
+            List<Callback> currentList = m_onReadyCallbacks;
+            m_onReadyCallbacks = new List<Callback>();
+            return currentList;
         }
     }
 }

@@ -517,6 +517,7 @@ namespace AxeSoftware.Quest
                     {
                         if (m_elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
                     }
+                    TryRunOnFinallyScripts();
                     if (m_player.Parent == null) throw new Exception("No start location specified for player");
                     UpdateLists();
                     if (m_loadedFromSaved)
@@ -1444,6 +1445,7 @@ namespace AxeSoftware.Quest
 
         private void TryFinishTurn()
         {
+            TryRunOnFinallyScripts();
             if (!m_callbacks.AnyOutstanding())
             {
                 if (m_elements.ContainsKey(ElementType.Function, "FinishTurn"))
@@ -1457,6 +1459,16 @@ namespace AxeSoftware.Quest
                         LogException(ex);
                     }
                 }
+            }
+        }
+
+        private void TryRunOnFinallyScripts()
+        {
+            if (m_callbacks.AnyOutstanding()) return;
+            IEnumerable<Callback> onReadyScripts = m_callbacks.FlushOnReadyCallbacks();
+            foreach (var callback in onReadyScripts)
+            {
+                RunScript(callback.Script, callback.Context);
             }
         }
 
@@ -1524,6 +1536,11 @@ namespace AxeSoftware.Quest
             Expression<bool> expression = new Expression<bool>(expr, new ScriptContext(this));
             Context c = new Context();
             return expression.Execute(c);
+        }
+
+        internal void AddOnReady(IScript callback, Context c)
+        {
+            m_callbacks.AddOnReadyCallback(new Callback(callback, c));
         }
 
         internal RegexCache RegexCache { get { return m_regexCache; } }

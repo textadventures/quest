@@ -420,4 +420,20 @@
       <editprompt>Please enter the parameter</editprompt>
     </control>
   </editor>
+
+  <editor>
+    <appliesto>on ready</appliesto>
+    <display>When ready, run: #0</display>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>When ready,</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>0</attribute>
+      <caption>Run script</caption>
+    </control>
+  </editor>
 </library>
