@@ -331,7 +331,11 @@ Public Class Main
         ctlLauncher.MainWindowShown()
 
         If m_cmdLineLaunch IsNot Nothing Then
-            Launch(m_cmdLineLaunch)
+            If (System.IO.Path.GetExtension(m_cmdLineLaunch) = ".aslx") Then
+                LaunchEdit(m_cmdLineLaunch)
+            Else
+                Launch(m_cmdLineLaunch)
+            End If
         End If
     End Sub
 
