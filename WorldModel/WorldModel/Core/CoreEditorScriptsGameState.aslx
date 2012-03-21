@@ -29,9 +29,6 @@
   <editor>
     <appliesto>start transaction</appliesto>
     <display>Start transaction for command #0</display>
-    <category>Game State</category>
-    <add>Start transaction</add>
-    <create>start transaction ("")</create>
     <advanced/>
 
     <control>

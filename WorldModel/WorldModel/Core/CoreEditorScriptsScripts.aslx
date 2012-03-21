@@ -376,9 +376,6 @@
   <editor>
     <appliesto>rundelegate</appliesto>
     <display>Run #0's #1 delegate implementation (#2 parameters)</display>
-    <category>Scripts</category>
-    <create>rundelegate (,"","")</create>
-    <add>Run an object's delegate implementation</add>
     <advanced/>
 
     <control>

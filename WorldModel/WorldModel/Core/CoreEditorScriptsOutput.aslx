@@ -535,9 +535,6 @@
   <editor>
     <appliesto>request</appliesto>
     <display>Raise UI request "#0" (parameter #1)</display>
-    <category>Output</category>
-    <create>request (ClearScreen,)</create>
-    <add>Raise a UI request</add>
     <advanced/>
 
     <control>

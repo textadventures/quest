@@ -343,9 +343,6 @@
   <editor>
     <appliesto>destroy</appliesto>
     <display>Destroy #0</display>
-    <category>Objects</category>
-    <create>destroy ("")</create>
-    <add>Destroy an object</add>
     <advanced/>
 
     <control>
