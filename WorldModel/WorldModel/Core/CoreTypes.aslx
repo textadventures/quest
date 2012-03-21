@@ -30,6 +30,7 @@
     <autodescription_youcango type="int">3</autodescription_youcango>
     <autodescription_description type="int">4</autodescription_description>
     <autodescription_youarein_useprefix/>
+    <description type="string"></description>
   </type>
 
   <type name="defaultobject">
