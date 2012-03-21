@@ -68,6 +68,7 @@ namespace AxeSoftware.Quest
         private TimerRunner m_timerRunner;
         private RegexCache m_regexCache = new RegexCache();
         private OutputLogger m_outputLogger;
+        private CallbackManager m_callbacks = new CallbackManager();
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -318,8 +319,6 @@ namespace AxeSoftware.Quest
 
         private object m_waitForResponseLock = new object();
         private string m_menuResponse = null;
-        private IScript m_menuCallback = null;
-        private Context m_menuCallbackContext = null;
         private IDictionary<string, string> m_menuOptions = null;
 
         internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
@@ -336,8 +335,7 @@ namespace AxeSoftware.Quest
                 return string.Empty;
             }
 
-            m_menuCallback = null;
-            m_menuCallbackContext = null;
+            m_callbacks.Pop(CallbackManager.CallbackTypes.Menu);
             m_menuOptions = null;
 
             ChangeThreadState(ThreadState.Waiting);
@@ -364,18 +362,15 @@ namespace AxeSoftware.Quest
 
         public void SetMenuResponse(string response)
         {
-            if (m_menuCallback != null)
+            Callback menuCallback = m_callbacks.Pop(CallbackManager.CallbackTypes.Menu);
+            if (menuCallback != null)
             {
                 Print(" - " + m_menuOptions[response]);
-                m_menuCallbackContext.Parameters["result"] = response;
-                IScript script = m_menuCallback;
-                Context context = m_menuCallbackContext;
-                m_menuCallback = null;
-                m_menuCallbackContext = null;
+                menuCallback.Context.Parameters["result"] = response;
                 m_menuOptions = null;
                 DoInNewThreadAndWait(() =>
                 {
-                    RunScript(script, context);
+                    RunScript(menuCallback.Script, menuCallback.Context);
                     TryFinishTurn();
                     if (State != GameState.Finished)
                     {
@@ -400,24 +395,14 @@ namespace AxeSoftware.Quest
 
         internal void DisplayMenuAsync(string caption, IList<string> options, bool allowCancel, IScript callback, Context c)
         {
-            if (m_menuCallback != null)
-            {
-                throw new Exception("Only one menu can be shown at a time.");
-            }
-            m_menuCallback = callback;
-            m_menuCallbackContext = c;
-            string result = DisplayMenu(caption, options, allowCancel, true);
+            m_callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c), "Only one menu can be shown at a time.");
+            DisplayMenu(caption, options, allowCancel, true);
         }
 
         internal void DisplayMenuAsync(string caption, IDictionary<string, string> options, bool allowCancel, IScript callback, Context c)
         {
-            if (m_menuCallback != null)
-            {
-                throw new Exception("Only one menu can be shown at a time.");
-            }
-            m_menuCallback = callback;
-            m_menuCallbackContext = c;
-            string result = DisplayMenu(caption, options, allowCancel, true);
+            m_callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c), "Only one menu can be shown at a time.");
+            DisplayMenu(caption, options, allowCancel, true);
         }
 
         public IEnumerable<Element> Objects
@@ -818,8 +803,7 @@ namespace AxeSoftware.Quest
 
         public void StartWait()
         {
-            m_waitCallback = null;
-            m_waitCallbackContext = null;
+            m_callbacks.Pop(CallbackManager.CallbackTypes.Wait);
             m_playerUI.DoWait();
 
             ChangeThreadState(ThreadState.Waiting);
@@ -832,31 +816,20 @@ namespace AxeSoftware.Quest
             ChangeThreadState(ThreadState.Working);
         }
 
-        private IScript m_waitCallback = null;
-        private Context m_waitCallbackContext = null;
-
         public void StartWaitAsync(IScript callback, Context c)
         {
-            if (m_waitCallback != null)
-            {
-                throw new Exception("Only one wait can be in progress at a time.");
-            }
-            m_waitCallback = callback;
-            m_waitCallbackContext = c;
+            m_callbacks.Push(CallbackManager.CallbackTypes.Wait, new Callback(callback, c), "Only one wait can be in progress at a time.");
             m_playerUI.DoWait();
         }
 
         public void FinishWait()
         {
-            if (m_waitCallback != null)
+            Callback waitCallback = m_callbacks.Pop(CallbackManager.CallbackTypes.Wait);
+            if (waitCallback != null)
             {
-                IScript script = m_waitCallback;
-                Context context = m_waitCallbackContext;
-                m_waitCallback = null;
-                m_waitCallbackContext = null;
                 DoInNewThreadAndWait(() =>
                 {
-                    RunScript(script, context);
+                    RunScript(waitCallback.Script, waitCallback.Context);
                     TryFinishTurn();
                     if (State != GameState.Finished)
                     {
@@ -1401,8 +1374,7 @@ namespace AxeSoftware.Quest
 
         internal bool ShowQuestion(string caption)
         {
-            m_questionCallback = null;
-            m_questionCallbackContext = null;
+            m_callbacks.Pop(CallbackManager.CallbackTypes.Question);
             m_playerUI.ShowQuestion(caption);
 
             ChangeThreadState(ThreadState.Waiting);
@@ -1417,32 +1389,21 @@ namespace AxeSoftware.Quest
             return m_questionResponse;
         }
 
-        private IScript m_questionCallback = null;
-        private Context m_questionCallbackContext = null;
-
         internal void ShowQuestionAsync(string caption, IScript callback, Context c)
         {
-            if (m_questionCallback != null)
-            {
-                throw new Exception("Only one question can be asked at a time.");
-            }
-            m_questionCallback = callback;
-            m_questionCallbackContext = c;
+            m_callbacks.Push(CallbackManager.CallbackTypes.Question, new Callback(callback, c), "Only one question can be asked at a time.");
             m_playerUI.ShowQuestion(caption);
         }
 
         public void SetQuestionResponse(bool response)
         {
-            if (m_questionCallback != null)
+            Callback questionCallback = m_callbacks.Pop(CallbackManager.CallbackTypes.Question);
+            if (questionCallback != null)
             {
-                m_questionCallbackContext.Parameters["result"] = response;
-                IScript script = m_questionCallback;
-                Context context = m_questionCallbackContext;
-                m_questionCallback = null;
-                m_questionCallbackContext = null;
+                questionCallback.Context.Parameters["result"] = response;
                 DoInNewThreadAndWait(() =>
                 {
-                    RunScript(script, context);
+                    RunScript(questionCallback.Script, questionCallback.Context);
                     TryFinishTurn();
                     if (State != GameState.Finished)
                     {
@@ -1467,9 +1428,7 @@ namespace AxeSoftware.Quest
 
         private void TryFinishTurn()
         {
-            if (m_menuCallback == null
-                && m_questionCallback == null
-                && m_waitCallback == null)
+            if (m_callbacks.AnyOutstanding())
             {
                 if (m_elements.ContainsKey(ElementType.Function, "FinishTurn"))
                 {
