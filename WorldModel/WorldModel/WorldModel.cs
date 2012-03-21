@@ -370,13 +370,7 @@ namespace AxeSoftware.Quest
                 m_menuOptions = null;
                 DoInNewThreadAndWait(() =>
                 {
-                    RunScript(menuCallback.Script, menuCallback.Context);
-                    TryFinishTurn();
-                    if (State != GameState.Finished)
-                    {
-                        UpdateLists();
-                    }
-                    ChangeThreadState(ThreadState.Ready);
+                    RunCallbackAndFinishTurn(menuCallback);
                 });
             }
             else
@@ -610,13 +604,7 @@ namespace AxeSoftware.Quest
                     {
                         m_commandOverride = false;
                         getinputCallback.Context.Parameters["result"] = command;
-                        RunScript(getinputCallback.Script, getinputCallback.Context);
-                        TryFinishTurn();
-                        if (State != GameState.Finished)
-                        {
-                            UpdateLists();
-                        }
-                        ChangeThreadState(ThreadState.Ready);
+                        RunCallbackAndFinishTurn(getinputCallback);
                     }
                     else
                     {
@@ -845,14 +833,7 @@ namespace AxeSoftware.Quest
             {
                 DoInNewThreadAndWait(() =>
                 {
-                    RunScript(waitCallback.Script, waitCallback.Context);
-                    TryFinishTurn();
-                    if (State != GameState.Finished)
-                    {
-                        UpdateLists();
-                    }
-                    ChangeThreadState(ThreadState.Ready);
-                    SendNextTimerRequest();
+                    RunCallbackAndFinishTurn(waitCallback);
                 });
             }
             else
@@ -1432,13 +1413,7 @@ namespace AxeSoftware.Quest
                 questionCallback.Context.Parameters["result"] = response;
                 DoInNewThreadAndWait(() =>
                 {
-                    RunScript(questionCallback.Script, questionCallback.Context);
-                    TryFinishTurn();
-                    if (State != GameState.Finished)
-                    {
-                        UpdateLists();
-                    }
-                    ChangeThreadState(ThreadState.Ready);
+                    RunCallbackAndFinishTurn(questionCallback);
                 });
             }
             else
@@ -1453,6 +1428,18 @@ namespace AxeSoftware.Quest
                     }
                 });
             }
+        }
+
+        private void RunCallbackAndFinishTurn(Callback callback)
+        {
+            RunScript(callback.Script, callback.Context);
+            TryFinishTurn();
+            if (State != GameState.Finished)
+            {
+                UpdateLists();
+            }
+            ChangeThreadState(ThreadState.Ready);
+            SendNextTimerRequest();
         }
 
         private void TryFinishTurn()
