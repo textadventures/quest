@@ -64,6 +64,29 @@ namespace AxeSoftware.Quest
                 if (!result) return false;
             }
 
+            if (m_notVisibleIfElementInheritsType != null)
+            {
+                if (m_notVisibleIfElementInheritsTypeElement == null)
+                {
+                    // convert "mustnotinherit" type names list into a list of type elements
+                    m_notVisibleIfElementInheritsTypeElement = new List<Element>(
+                        m_notVisibleIfElementInheritsType.Select(t => m_worldModel.Elements.Get(ElementType.ObjectType, t))
+                    );
+                }
+
+                // if the element does inherit any of the "forbidden" types, then this control is not visible
+
+                Element element = m_worldModel.Elements.Get(data.Name);
+
+                foreach (Element forbiddenType in m_notVisibleIfElementInheritsTypeElement)
+                {
+                    if (element.Fields.InheritsTypeRecursive(forbiddenType))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             if (m_relatedAttribute != null)
             {
                 object relatedAttributeValue = data.GetAttribute(m_relatedAttribute);
@@ -96,31 +119,6 @@ namespace AxeSoftware.Quest
                 }
 
                 return false;
-            }
-
-            if (m_notVisibleIfElementInheritsType != null)
-            {
-                if (m_notVisibleIfElementInheritsTypeElement == null)
-                {
-                    // convert "mustnotinherit" type names list into a list of type elements
-                    m_notVisibleIfElementInheritsTypeElement = new List<Element>(
-                        m_notVisibleIfElementInheritsType.Select(t => m_worldModel.Elements.Get(ElementType.ObjectType, t))
-                    );
-                }
-
-                // if the element does inherit any of the "forbidden" types, then this control is not visible
-
-                Element element = m_worldModel.Elements.Get(data.Name);
-
-                foreach (Element forbiddenType in m_notVisibleIfElementInheritsTypeElement)
-                {
-                    if (element.Fields.InheritsTypeRecursive(forbiddenType))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
             }
 
             if (m_filterGroup != null)
