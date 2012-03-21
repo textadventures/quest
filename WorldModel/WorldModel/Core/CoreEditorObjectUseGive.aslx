@@ -23,6 +23,7 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>usemenuprompt</attribute>
+      <mustnotinherit>defaultplayer</mustnotinherit>
       <caption>Menu caption (leave blank for default)</caption>
       <onlydisplayif>this.use = null</onlydisplayif>
     </control>
@@ -101,6 +102,7 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>givemenuprompt</attribute>
+      <mustnotinherit>defaultplayer</mustnotinherit>
       <caption>Menu caption (leave blank for default)</caption>
       <onlydisplayif>this.givesingle = null</onlydisplayif>
     </control>
