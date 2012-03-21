@@ -27,6 +27,8 @@
     </changedparent>
   </type>
 
+  <template name="NothingToUndo">Nothing to undo!</template>
+
   <function name="InitInterface">
     request (FontName, game.defaultfont)
     request (FontSize, ToString(game.defaultfontsize))
@@ -64,22 +66,29 @@
   </function>
 
   <function name="HandleCommand" parameters="command">
-    if (TypeOf(player.parent, "options") = "stringdictionary") {
-      if (DictionaryContains(player.parent.options, command)) {
-        newpage = GetObject(command)
-        if (newpage = null) {
-          msg ("Error - no page named '" + command + "'")
+    if (command = "undo") {
+      undo
+      DoPage(player.parent)
+    }
+    else {
+      start transaction (command)
+      if (TypeOf(player.parent, "options") = "stringdictionary") {
+        if (DictionaryContains(player.parent.options, command)) {
+          newpage = GetObject(command)
+          if (newpage = null) {
+            msg ("Error - no page named '" + command + "'")
+          }
+          else {
+            player.parent = GetObject(command)
+          }
         }
         else {
-          player.parent = GetObject(command)
+          msg ("Error - '" + command + "' is not a valid option for this page")
         }
       }
       else {
         msg ("Error - '" + command + "' is not a valid option for this page")
       }
-    }
-    else {
-      msg ("Error - '" + command + "' is not a valid option for this page")
     }
   </function>
 
