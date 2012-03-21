@@ -412,6 +412,26 @@
   </editor>
 
   <editor>
+    <appliesto>get input</appliesto>
+    <display>Get input</display>
+    <category>Output</category>
+    <create>get input { }</create>
+    <add>Get input</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Get input, then</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>0</attribute>
+      <caption>run script:</caption>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>show menu</appliesto>
     <display>Show a menu</display>
     <category>Output</category>

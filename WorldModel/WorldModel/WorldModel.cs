@@ -605,11 +605,27 @@ namespace AxeSoftware.Quest
                 }
                 else
                 {
-                    m_commandOverrideInput = command;
-
-                    lock (m_commandOverrideLock)
+                    Callback getinputCallback = m_callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
+                    if (getinputCallback != null)
                     {
-                        Monitor.Pulse(m_commandOverrideLock);
+                        m_commandOverride = false;
+                        getinputCallback.Context.Parameters["result"] = command;
+                        RunScript(getinputCallback.Script, getinputCallback.Context);
+                        TryFinishTurn();
+                        if (State != GameState.Finished)
+                        {
+                            UpdateLists();
+                        }
+                        ChangeThreadState(ThreadState.Ready);
+                    }
+                    else
+                    {
+                        m_commandOverrideInput = command;
+
+                        lock (m_commandOverrideLock)
+                        {
+                            Monitor.Pulse(m_commandOverrideLock);
+                        }
                     }
                 }
             });
@@ -1318,9 +1334,16 @@ namespace AxeSoftware.Quest
             get { return m_attributeNames.AsReadOnly(); }
         }
 
-        internal string GetNextCommandInput()
+        internal string GetNextCommandInput(bool async)
         {
             m_commandOverride = true;
+
+            if (async)
+            {
+                return string.Empty;
+            }
+
+            m_callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
 
             ChangeThreadState(ThreadState.Waiting);
 
@@ -1333,6 +1356,12 @@ namespace AxeSoftware.Quest
 
             m_commandOverride = false;
             return m_commandOverrideInput;
+        }
+
+        internal void GetNextCommandInputAsync(IScript callback, Context c)
+        {
+            m_callbacks.Push(CallbackManager.CallbackTypes.GetInput, new Callback(callback, c), "Only one 'get input' can be in progress at a time");
+            GetNextCommandInput(true);
         }
 
         public void Tick(int elapsedTime)
@@ -1428,7 +1457,7 @@ namespace AxeSoftware.Quest
 
         private void TryFinishTurn()
         {
-            if (m_callbacks.AnyOutstanding())
+            if (!m_callbacks.AnyOutstanding())
             {
                 if (m_elements.ContainsKey(ElementType.Function, "FinishTurn"))
                 {

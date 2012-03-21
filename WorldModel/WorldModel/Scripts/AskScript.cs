@@ -88,7 +88,7 @@ namespace AxeSoftware.Quest.Scripts
                     break;
                 case 1:
                     // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
-                    throw new InvalidOperationException("Attempt to use SetParameter to change the script of a 'show menu' command");
+                    throw new InvalidOperationException("Attempt to use SetParameter to change the script of an 'ask' command");
                 default:
                     throw new ArgumentOutOfRangeException();
             }

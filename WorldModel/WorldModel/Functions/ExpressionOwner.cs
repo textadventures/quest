@@ -377,7 +377,7 @@ namespace AxeSoftware.Quest.Functions
 
         public string GetInput()
         {
-            return m_worldModel.GetNextCommandInput();
+            return m_worldModel.GetNextCommandInput(false);
         }
 
         public string GetFileURL(string filename)
