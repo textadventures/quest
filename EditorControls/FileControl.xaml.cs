@@ -115,19 +115,54 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 string gameFolder = Path.GetDirectoryName(m_helper.Controller.Filename);
                 string filename = Path.GetFileName(dlgOpenFile.FileName);
+                string destFile = Path.Combine(gameFolder, filename);
+                bool copyRequired = true;
+                bool allowOverwrite = false;
 
-                try
+                if (System.IO.File.Exists(destFile))
                 {
-                    File.Copy(dlgOpenFile.FileName, Path.Combine(gameFolder, filename));
+                    if (Utility.Utility.AreFilesEqual(dlgOpenFile.FileName, destFile))
+                    {
+                        copyRequired = false;
+                    }
+                    else
+                    {
+                        var result = MessageBox.Show(string.Format("A different file called {0} already exists in the game folder.\n\nWould you like to overwrite it?",
+                                              filename),
+                                              "Overwrite file?",
+                                              MessageBoxButton.YesNoCancel,
+                                              MessageBoxImage.Exclamation);
+
+                        switch (result)
+                        {
+                            case MessageBoxResult.Yes:
+                                allowOverwrite = true;
+                                break;
+                            case MessageBoxResult.No:
+                                destFile = GetUniqueFilename(destFile);
+                                filename = Path.GetFileName(destFile);
+                                break;
+                            case MessageBoxResult.Cancel:
+                                return;
+                        }
+                    }
                 }
-                catch (Exception ex)
+
+                if (copyRequired)
                 {
-                    MessageBox.Show(string.Format("Unable to copy file. The following error occurred:{0}",
-                                          Environment.NewLine + Environment.NewLine + ex.Message),
-                                          "Error copying file",
-                                          MessageBoxButton.OK,
-                                          MessageBoxImage.Error);
-                    return;
+                    try
+                    {
+                        File.Copy(dlgOpenFile.FileName, destFile, allowOverwrite);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format("Unable to copy file. The following error occurred:{0}",
+                                              Environment.NewLine + Environment.NewLine + ex.Message),
+                                              "Error copying file",
+                                              MessageBoxButton.OK,
+                                              MessageBoxImage.Error);
+                        return;
+                    }
                 }
 
                 if (m_data != null)
@@ -145,6 +180,22 @@ namespace AxeSoftware.Quest.EditorControls
                     lstFiles.Text = filename;
                 }
             }
+        }
+
+        private string GetUniqueFilename(string filename)
+        {
+            int i = 1;
+            string directory = System.IO.Path.GetDirectoryName(filename);
+            string baseFilename = System.IO.Path.GetFileNameWithoutExtension(filename);
+            string extension = System.IO.Path.GetExtension(filename);
+            string newFilename;
+            do
+            {
+                i++;
+                newFilename = System.IO.Path.Combine(directory, baseFilename + " " + i.ToString() + extension);
+            }
+            while (System.IO.File.Exists(newFilename));
+            return newFilename;
         }
 
         public string Filename
