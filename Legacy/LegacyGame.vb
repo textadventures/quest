@@ -474,10 +474,6 @@ Public Class LegacyGame
         m_filename = filename
         m_originalFilename = originalFilename
 
-        m_listVerbs.Add(ListType.ExitsList, New List(Of String)(New String() {"Go to"}))
-        m_listVerbs.Add(ListType.ObjectsList, New List(Of String)(New String() {"Look at", "Take", "Speak to"}))
-        m_listVerbs.Add(ListType.InventoryList, New List(Of String)(New String() {"Look at", "Use", "Drop"}))
-
         ' Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
         ' for compatibility with games which have non-fatal errors in them.
         NumSkipCheckFiles = 3
@@ -11811,6 +11807,16 @@ ErrorHandler:
             If InStr(RecognisedVersions, "/" & ASLVersion & "/") = 0 Then
                 LogASLError("Unrecognised ASL version number.", LOGTYPE_WARNINGERROR)
             End If
+        End If
+
+        m_listVerbs.Add(ListType.ExitsList, New List(Of String)(New String() {"Go to"}))
+
+        If GameASLVersion >= 280 And GameASLVersion < 390 Then
+            m_listVerbs.Add(ListType.ObjectsList, New List(Of String)(New String() {"Look at", "Examine", "Take", "Speak to"}))
+            m_listVerbs.Add(ListType.InventoryList, New List(Of String)(New String() {"Look at", "Examine", "Use", "Drop"}))
+        Else
+            m_listVerbs.Add(ListType.ObjectsList, New List(Of String)(New String() {"Look at", "Take", "Speak to"}))
+            m_listVerbs.Add(ListType.InventoryList, New List(Of String)(New String() {"Look at", "Use", "Drop"}))
         End If
 
         ' Get the name of the game:
