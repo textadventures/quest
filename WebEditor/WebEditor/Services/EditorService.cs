@@ -316,16 +316,21 @@ namespace WebEditor.Services
                 {
                     object currentValue = data.GetAttribute(kvp.Key);
                     IEditableScripts script = currentValue as IEditableScripts;
-                    var dictionary = currentValue as IEditableDictionary<IEditableScripts>;
+                    var scriptDictionary = currentValue as IEditableDictionary<IEditableScripts>;
+                    var stringDictionary = currentValue as IEditableDictionary<string>;
                     var newObjectRef = kvp.Value as WebEditor.Models.ElementSaveData.ObjectReferenceSaveData;
                     var newCommandPattern = kvp.Value as WebEditor.Models.ElementSaveData.PatternSaveData;
                     if (script != null)
                     {
                         SaveScript(script, kvp.Value as WebEditor.Models.ElementSaveData.ScriptsSaveData, key);
                     }
-                    else if (dictionary != null)
+                    else if (scriptDictionary != null)
                     {
-                        SaveScriptDictionary(key, null, dictionary, kvp.Value as WebEditor.Models.ElementSaveData.ScriptSaveData);
+                        SaveScriptDictionary(key, null, scriptDictionary, kvp.Value as WebEditor.Models.ElementSaveData.ScriptSaveData);
+                    }
+                    else if (stringDictionary != null)
+                    {
+                        SaveStringDictionary(key, stringDictionary, kvp.Value as WebEditor.Models.ElementSaveData.ScriptSaveData);
                     }
                     else if (newObjectRef != null)
                     {
@@ -572,6 +577,50 @@ namespace WebEditor.Services
                         // TO DO: Add ScriptDictionary error
                     }
                 }
+            }
+        }
+
+        private void SaveStringDictionary(string parentElement, IEditableDictionary<string> dictionary, WebEditor.Models.ElementSaveData.ScriptSaveData newData)
+        {
+            Dictionary<string, string> keysToChange = new Dictionary<string, string>();
+            Dictionary<string, string> valuesToChange = new Dictionary<string, string>();
+            int dictionaryCount = 0;
+            foreach (var item in dictionary.Items)
+            {
+                string newKey = (string)newData.Attributes[string.Format("key{0}", dictionaryCount)];
+                if (item.Key != newKey)
+                {
+                    // Can't change dictionary keys while enumerating dictionary items - so
+                    // change them afterwards
+                    keysToChange.Add(item.Key, newKey);
+                    m_needsSaving = true;
+                }
+
+                string newValue = (string)newData.Attributes[string.Format("value{0}", dictionaryCount)];
+                if (item.Value.Value != newValue)
+                {
+                    valuesToChange.Add(item.Key, newValue);
+                }
+
+                dictionaryCount++;
+            }
+
+            foreach (var item in keysToChange)
+            {
+                ValidationResult result = dictionary.CanAdd(item.Value);
+                if (result.Valid)
+                {
+                    dictionary.ChangeKey(item.Key, item.Value);
+                }
+                else
+                {
+                    // TO DO: Add StringDictionary error
+                }
+            }
+
+            foreach (var item in valuesToChange)
+            {
+                dictionary.Update(item.Key, item.Value);
             }
         }
 

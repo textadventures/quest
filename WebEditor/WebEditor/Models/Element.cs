@@ -212,6 +212,10 @@ namespace WebEditor.Models
                     var originalDictionary = originalElement.EditorData.GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;
                     saveValue = BindScriptDictionary(bindingContext.ValueProvider, editorDictionary[gameId].Controller, ignoreExpression, originalDictionary, attribute);
                     break;
+                case "stringdictionary":
+                    var originalStringDictionary = originalElement.EditorData.GetAttribute(attribute) as IEditableDictionary<string>;
+                    saveValue = BindStringDictionary(bindingContext.ValueProvider, editorDictionary[gameId].Controller, ignoreExpression, originalStringDictionary, attribute);
+                    break;
                 default:
                     if (attribute == null || controlType == null)
                     {
@@ -371,6 +375,26 @@ namespace WebEditor.Models
                     ElementSaveData.ScriptsSaveData scriptResult = new ElementSaveData.ScriptsSaveData();
                     BindScriptLines(provider, string.Format("{0}-value{1}", key, dictionaryCount), controller, item.Value, scriptResult, ignoreExpression);
                     result.Attributes.Add(string.Format("value{0}", dictionaryCount), scriptResult);
+
+                    dictionaryCount++;
+                }
+            }
+            return result;
+        }
+
+        private ElementSaveData.ScriptSaveData BindStringDictionary(IValueProvider provider, EditorController controller, string ignoreExpression, IEditableDictionary<string> dictionary, string key)
+        {
+            ElementSaveData.ScriptSaveData result = new ElementSaveData.ScriptSaveData();
+            if (dictionary != null)
+            {
+                int dictionaryCount = 0;
+                foreach (var item in dictionary.Items.Values)
+                {
+                    string keyValue = GetValueProviderString(provider, string.Format("{0}-key{1}", key, dictionaryCount));
+                    result.Attributes.Add(string.Format("key{0}", dictionaryCount), keyValue);
+
+                    string valueValue = GetValueProviderString(provider, string.Format("{0}-value{1}", key, dictionaryCount));
+                    result.Attributes.Add(string.Format("value{0}", dictionaryCount), valueValue);
 
                     dictionaryCount++;
                 }

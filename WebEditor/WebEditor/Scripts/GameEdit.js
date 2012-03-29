@@ -423,6 +423,30 @@ function initialiseElementEditor(tab) {
         var key = $(this).attr("data-key");
         sendAdditionalAction("scriptdictionary delete " + key + ";" + getSelectedScriptDictionaryItems(key));
     });
+    $(".string-dictionary-add").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        showDialog($(this).attr("data-prompt"), "", function (text) {
+            sendAdditionalAction("stringdictionary add " + key + ";" + text);
+        });
+    });
+    $(".stringDictionarySection-select").click(function () {
+        var key = $(this).attr("data-key");
+        var selectedSections = getSelectedStringDictionaryItems(key);
+        if (selectedSections.length > 0) {
+            $("#stringDictionarySection-toolbar-" + key).show(200);
+        }
+        else {
+            $("#stringDictionarySection-toolbar-" + key).hide(200);
+        }
+    });
+    $(".stringDictionarySection-delete").button({
+        icons: { primary: "ui-icon-trash" }
+    }).click(function () {
+        var key = $(this).attr("data-key");
+        sendAdditionalAction("stringdictionary delete " + key + ";" + getSelectedStringDictionaryItems(key));
+    });
     $('textarea.richtext').tinymce({
         script_url: '../../Scripts/tiny_mce/tiny_mce.js',
         theme: "advanced",
@@ -793,6 +817,10 @@ function getSelectedIfSections(key) {
 
 function getSelectedScriptDictionaryItems(key) {
     return getSelectedItems(key, ".scriptDictionarySection-select", 18);
+}
+
+function getSelectedStringDictionaryItems(key) {
+    return getSelectedItems(key, ".stringDictionarySection-select", 18);
 }
 
 function getSelectedVerbs() {

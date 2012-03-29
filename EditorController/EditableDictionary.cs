@@ -231,7 +231,10 @@ namespace AxeSoftware.Quest
 
         public void ChangeKey(string oldKey, string newKey)
         {
-            throw new NotImplementedException();
+            int index = m_source.IndexOfKey(oldKey);
+            T value = m_source[oldKey];
+            m_source.Remove(oldKey, UpdateSource.User);
+            m_source.Add(newKey, value, UpdateSource.User, index);
         }
 
         public string Id { get { return m_id; } }
