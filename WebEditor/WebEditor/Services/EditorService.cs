@@ -760,6 +760,16 @@ namespace WebEditor.Services
             };
         }
 
+        public Models.StringDictionary GetStringDictionaryModel(int id, string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState, bool gameBook)
+        {
+            Models.StringDictionary result = GetStringDictionaryModel(id, key, ctl, modelState);
+            if (gameBook)
+            {
+                result.GameBook = true;
+            }
+            return result;
+        }
+
         public Models.ElementsList GetElementsListModel(int id, string key, IEditorControl ctl)
         {
             IEditorData data = m_controller.GetEditorData(key);
@@ -1866,16 +1876,13 @@ namespace WebEditor.Services
             var dictionary = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableDictionary<string>;
             if (dictionary == null)
             {
-                // do we need to create new dictionaries???
-                throw new NotImplementedException();
-
-                //m_controller.CreateNewEditableScriptDictionary(
-                //    element,
-                //    attribute,
-                //    value,
-                //    m_controller.CreateNewEditableScripts(null, null, null, true),
-                //    true
-                //);
+                m_controller.CreateNewEditableStringDictionary(
+                    element,
+                    attribute,
+                    value,
+                    "",
+                    true
+                );
             }
             else
             {

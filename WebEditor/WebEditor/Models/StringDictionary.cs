@@ -13,5 +13,6 @@ namespace WebEditor.Models
         public string Attribute { get; set; }
         public string KeyPrompt { get; set; }
         public IEditableDictionary<string> Value { get; set; }
+        public bool GameBook { get; set; }
     }
 }

@@ -213,6 +213,7 @@ namespace WebEditor.Models
                     saveValue = BindScriptDictionary(bindingContext.ValueProvider, editorDictionary[gameId].Controller, ignoreExpression, originalDictionary, attribute);
                     break;
                 case "stringdictionary":
+                case "gamebookoptions":
                     var originalStringDictionary = originalElement.EditorData.GetAttribute(attribute) as IEditableDictionary<string>;
                     saveValue = BindStringDictionary(bindingContext.ValueProvider, editorDictionary[gameId].Controller, ignoreExpression, originalStringDictionary, attribute);
                     break;

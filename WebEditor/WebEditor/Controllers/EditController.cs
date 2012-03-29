@@ -138,6 +138,11 @@ namespace WebEditor.Controllers
             return PartialView("StringDictionaryEditor", EditorDictionary[id].GetStringDictionaryModel(id, key, control, ModelState));
         }
 
+        public PartialViewResult EditGameBookOptions(int id, string key, IEditorControl control)
+        {
+            return PartialView("StringDictionaryEditor", EditorDictionary[id].GetStringDictionaryModel(id, key, control, ModelState));
+        }
+
         private Dictionary<int, Services.EditorService> EditorDictionary
         {
             get
