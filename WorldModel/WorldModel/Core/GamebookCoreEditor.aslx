@@ -29,6 +29,7 @@
         <controltype>label</controltype>
         <caption>The Game ID below is used to uniquely identify your game. You should only generate a new ID if you have copied a game to create a new one.</caption>
         <advanced/>
+        <desktop/>
       </control>
 
       <control>
@@ -36,6 +37,7 @@
         <caption>Game ID</caption>
         <attribute>gameid</attribute>
         <advanced/>
+        <desktop/>
       </control>
 
       <control>
