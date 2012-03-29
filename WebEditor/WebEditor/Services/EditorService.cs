@@ -756,6 +756,8 @@ namespace WebEditor.Services
                 Key = key,
                 Attribute = ctl.Attribute,
                 KeyPrompt = ctl.GetString("keyprompt"),
+                Source = ctl.GetString("source"),
+                SourceExclude = ctl.GetString("sourceexclude"),
                 Value = value
             };
         }

@@ -427,9 +427,21 @@ function initialiseElementEditor(tab) {
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
-        showDialog($(this).attr("data-prompt"), "", function (text) {
-            sendAdditionalAction("stringdictionary add " + key + ";" + text);
-        });
+        if ($(this).attr("data-source") == "object") {
+            var possibleParents = $("#_allObjects").val().split(";");
+            var exclude = $(this).attr("data-source-exclude");
+            possibleParents = $.grep(possibleParents, function (value) {
+                return (value != exclude);
+            });
+            showDialog("", "", function (text, object) {
+                sendAdditionalAction("stringdictionary add " + key + ";" + object);
+            }, possibleParents, "Add");
+        }
+        else {
+            showDialog($(this).attr("data-prompt"), "", function (text) {
+                sendAdditionalAction("stringdictionary add " + key + ";" + text);
+            });
+        }
     });
     $(".stringDictionarySection-select").click(function () {
         var key = $(this).attr("data-key");
