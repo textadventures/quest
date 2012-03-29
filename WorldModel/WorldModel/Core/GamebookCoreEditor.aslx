@@ -154,7 +154,6 @@
         <attribute>picture</attribute>
         <source>*.jpg;*.jpeg;*.png;*.gif</source>
         <filefiltername>Picture Files</filefiltername>
-        <desktop/>
       </control>
 
       <control>
