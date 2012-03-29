@@ -692,6 +692,26 @@ namespace WebEditor.Services
             };
         }
 
+        public Models.StringDictionary GetStringDictionaryModel(int id, string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
+        {
+            IEditableDictionary<string> value = m_controller.GetEditorData(key).GetAttribute(ctl.Attribute) as IEditableDictionary<string>;
+            
+            // TO DO: Add string dictionary errors
+            //foreach (var error in m_dictionaryErrors)
+            //{
+            //    modelState.AddModelError(error.Key, error.Value.Message);
+            //}
+
+            return new Models.StringDictionary
+            {
+                GameId = id,
+                Key = key,
+                Attribute = ctl.Attribute,
+                KeyPrompt = ctl.GetString("keyprompt"),
+                Value = value
+            };
+        }
+
         public Models.ElementsList GetElementsListModel(int id, string key, IEditorControl ctl)
         {
             IEditorData data = m_controller.GetEditorData(key);

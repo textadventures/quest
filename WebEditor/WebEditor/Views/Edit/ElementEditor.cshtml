@@ -261,6 +261,9 @@ Working...
         case "scriptdictionary":
             @Html.Action("EditScriptDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
+        case "stringdictionary":
+            @Html.Action("EditStringDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
+            break;
         case "pattern":
             IEditableCommandPattern commandPattern = value as IEditableCommandPattern;
             string text = (commandPattern != null) ? commandPattern.Pattern : string.Empty;

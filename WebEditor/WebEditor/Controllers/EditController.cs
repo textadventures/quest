@@ -133,6 +133,11 @@ namespace WebEditor.Controllers
             return PartialView("ScriptDictionaryEditor", EditorDictionary[id].GetScriptDictionaryModel(id, key, value, keyPrompt, source, attribute, ModelState));
         }
 
+        public PartialViewResult EditStringDictionary(int id, string key, IEditorControl control)
+        {
+            return PartialView("StringDictionaryEditor", EditorDictionary[id].GetStringDictionaryModel(id, key, control, ModelState));
+        }
+
         private Dictionary<int, Services.EditorService> EditorDictionary
         {
             get

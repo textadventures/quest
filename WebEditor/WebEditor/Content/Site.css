@@ -97,6 +97,17 @@ input.scriptDictionarySection-select
 {
     vertical-align: text-top;
 }
+div.stringDictionarySection
+{
+    margin-left: 24px;
+}
+div.stringDictionarySection table th
+{
+    font-weight: normal;
+    text-align: left;
+    font-size: 90%;
+    padding-left: 3px;
+}
 div.scriptStringListSection
 {
     margin-left: 24px;

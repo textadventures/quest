@@ -1,0 +1,45 @@
+﻿@model WebEditor.Models.StringDictionary
+
+@*@if (Model.Value != null && Html.ViewData.ModelState.ContainsKey(Model.Value.Id) && Html.ViewData.ModelState[Model.Value.Id].Errors.Count > 0)
+{
+    <div class="elementEditorError">
+        @Html.ValidationMessage(Model.Value.Id)
+        <button type="button" class="error-clear" data-key="@Model.Value.Id">Clear</button>
+    </div>
+}
+*@
+
+<div class="stringDictionarySection ui-widget-header ui-corner-all toolbar" id="stringDictionarySection-toolbar-@Model.Attribute" style="display: none">
+    <button type="button" class="stringDictionarySection-delete" data-key="@Model.Attribute">Remove</button>
+</div>
+
+@if (Model.Value != null)
+{
+    <div class="stringDictionarySection">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                @{
+                    int itemCount = 0;
+                    foreach (var item in Model.Value.Items.Values)
+                    {
+                        <td>@Html.CheckBox("selectstringitem-" + Model.Attribute + "-" + itemCount.ToString(), new { @class = "stringDictionarySection-select", data_key = Model.Attribute })</td>
+                        <td>@Html.TextBox(Model.Attribute + "-key" + itemCount.ToString(), item.Key)</td>
+                        <td>@Html.TextBox(Model.Attribute + "-value" + itemCount.ToString(), item.Value)</td>
+                        itemCount++;
+                    }
+                }
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+
+<div class="stringDictionarySection"><button type="button" class="string-dictionary-add" data-key="@Model.Attribute" data-prompt="@Model.KeyPrompt">Add</button></div>
