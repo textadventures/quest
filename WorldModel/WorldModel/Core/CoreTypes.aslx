@@ -368,6 +368,7 @@
     <look>[DefaultSelfDescription]</look>
     <gender>[SelfGender]</gender>
     <article>[SelfArticle]</article>
+    <maxobjects type="int">0</maxobjects>
     <maxvolume type="int">100</maxvolume>
     <changedparent type="script">
       if (IsDefined("oldvalue")) {

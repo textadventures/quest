@@ -106,13 +106,15 @@
     
       children = GetDirectChildren(player)
       if (HasInt(player, "maxobjects")) {
-        if (ListCount(children) >= player.maxobjects) {
-          continue = false
-          if (HasString(player, "containermaxobjects")) {
-            message = prefix + player.containermaxobjects
-          }
-          else {
-            message = prefix + DynamicTemplate("MaxObjectsInInventory", object)
+        if (player.maxobjects > 0) {
+          if (ListCount(children) >= player.maxobjects) {
+            continue = false
+            if (HasString(player, "containermaxobjects")) {
+              message = prefix + player.containermaxobjects
+            }
+            else {
+              message = prefix + DynamicTemplate("MaxObjectsInInventory", object)
+            }
           }
         }
       }
