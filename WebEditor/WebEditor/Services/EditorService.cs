@@ -1141,6 +1141,8 @@ namespace WebEditor.Services
                 case "addobject":
                     data = parameter.Split(new[] { ';' }, 2);
                     return AddNewObject(data[1], data[0]);
+                case "addpage":
+                    return AddNewObject(null, parameter);
                 case "addexit":
                     return AddNewExit(key);
                 case "addfunction":
@@ -1384,7 +1386,7 @@ namespace WebEditor.Services
                 return null;
             }
 
-            if (!m_controller.ElementExists(parent)) parent = null;
+            if (parent != null && !m_controller.ElementExists(parent)) parent = null;
 
             m_controller.CreateNewObject(value, parent);
             return value;
