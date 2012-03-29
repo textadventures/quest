@@ -1,13 +1,12 @@
 ﻿@model WebEditor.Models.StringDictionary
 
-@*@if (Model.Value != null && Html.ViewData.ModelState.ContainsKey(Model.Value.Id) && Html.ViewData.ModelState[Model.Value.Id].Errors.Count > 0)
+@if (Model.Value != null && Html.ViewData.ModelState.ContainsKey(Model.Value.Id) && Html.ViewData.ModelState[Model.Value.Id].Errors.Count > 0)
 {
     <div class="elementEditorError">
         @Html.ValidationMessage(Model.Value.Id)
         <button type="button" class="error-clear" data-key="@Model.Value.Id">Clear</button>
     </div>
 }
-*@
 
 <div class="stringDictionarySection ui-widget-header ui-corner-all toolbar" id="stringDictionarySection-toolbar-@Model.Attribute" style="display: none">
     <button type="button" class="stringDictionarySection-delete" data-key="@Model.Attribute">Remove</button>

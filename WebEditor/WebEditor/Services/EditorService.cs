@@ -745,11 +745,10 @@ namespace WebEditor.Services
         {
             IEditableDictionary<string> value = m_controller.GetEditorData(key).GetAttribute(ctl.Attribute) as IEditableDictionary<string>;
             
-            // TO DO: Add string dictionary errors
-            //foreach (var error in m_dictionaryErrors)
-            //{
-            //    modelState.AddModelError(error.Key, error.Value.Message);
-            //}
+            foreach (var error in m_dictionaryErrors)
+            {
+                modelState.AddModelError(error.Key, error.Value.Message);
+            }
 
             return new Models.StringDictionary
             {
@@ -1887,7 +1886,7 @@ namespace WebEditor.Services
                 }
                 else
                 {
-                    // TO DO: Add string dictionary error
+                    AddDictionaryError(element, dictionary, GetValidationError(result, value));
                 }
             }
         }
@@ -1963,7 +1962,7 @@ namespace WebEditor.Services
             m_elementErrors[element][attribute] = error;
         }
 
-        private void AddDictionaryError(string element, IEditableDictionary<IEditableScripts> dictionary, string error)
+        private void AddDictionaryError<T>(string element, IEditableDictionary<T> dictionary, string error)
         {
             if (!m_dictionaryErrors.ContainsKey(dictionary.Id))
             {
