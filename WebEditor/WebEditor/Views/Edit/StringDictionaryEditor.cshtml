@@ -30,7 +30,13 @@
                     {
                         <tr>
                             <td>@Html.CheckBox("selectstringitem-" + Model.Attribute + "-" + itemCount.ToString(), new { @class = "stringDictionarySection-select", data_key = Model.Attribute })</td>
-                            <td>@Html.TextBox(Model.Attribute + "-key" + itemCount.ToString(), item.Key)</td>
+                            @if (string.IsNullOrEmpty(Model.Source))
+                            {
+                                <td>@Html.TextBox(Model.Attribute + "-key" + itemCount.ToString(), item.Key)</td>
+                            }
+                            else {
+                                <td><a href="#" class="elementLink">@item.Key</a></td>
+                            }
                             <td>@Html.TextBox(Model.Attribute + "-value" + itemCount.ToString(), item.Value)</td>
                         </tr>
                         itemCount++;

@@ -766,6 +766,10 @@ function initialiseElementEditor(tab) {
     }).click(function () {
         toplevelAdditionalAction("main delete");
     });
+    $(".elementLink").click(function () {
+        var element = $(this).text();
+        selectTreeNode(element);
+    });
 
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);

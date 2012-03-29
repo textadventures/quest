@@ -215,7 +215,7 @@ namespace WebEditor.Models
                 case "stringdictionary":
                 case "gamebookoptions":
                     var originalStringDictionary = originalElement.EditorData.GetAttribute(attribute) as IEditableDictionary<string>;
-                    saveValue = BindStringDictionary(bindingContext.ValueProvider, editorDictionary[gameId].Controller, ignoreExpression, originalStringDictionary, attribute);
+                    saveValue = BindStringDictionary(bindingContext.ValueProvider, editorDictionary[gameId].Controller, ignoreExpression, originalStringDictionary, attribute, ctl);
                     break;
                 default:
                     if (attribute == null || controlType == null)
@@ -383,15 +383,24 @@ namespace WebEditor.Models
             return result;
         }
 
-        private ElementSaveData.ScriptSaveData BindStringDictionary(IValueProvider provider, EditorController controller, string ignoreExpression, IEditableDictionary<string> dictionary, string key)
+        private ElementSaveData.ScriptSaveData BindStringDictionary(IValueProvider provider, EditorController controller, string ignoreExpression, IEditableDictionary<string> dictionary, string key, IEditorControl ctl)
         {
             ElementSaveData.ScriptSaveData result = new ElementSaveData.ScriptSaveData();
             if (dictionary != null)
             {
                 int dictionaryCount = 0;
-                foreach (var item in dictionary.Items.Values)
+                foreach (var item in dictionary.Items)
                 {
-                    string keyValue = GetValueProviderString(provider, string.Format("{0}-key{1}", key, dictionaryCount));
+                    string keyValue;
+                    if (string.IsNullOrEmpty(ctl.GetString("source")))
+                    {
+                        keyValue = GetValueProviderString(provider, string.Format("{0}-key{1}", key, dictionaryCount));
+                    }
+                    else
+                    {
+                        // key is not editable when a source is specified
+                        keyValue = item.Key;
+                    }
                     result.Attributes.Add(string.Format("key{0}", dictionaryCount), keyValue);
 
                     string valueValue = GetValueProviderString(provider, string.Format("{0}-value{1}", key, dictionaryCount));
