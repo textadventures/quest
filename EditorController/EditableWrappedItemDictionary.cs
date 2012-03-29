@@ -204,22 +204,9 @@ namespace AxeSoftware.Quest
 
         public void Update(string key, TWrapped value)
         {
-            string undoEntry = null;
-            if (typeof(TWrapped) == typeof(string))
-            {
-                undoEntry = string.Format("Update '{0}='{1}'", key, value as string);
-            }
-
-            if (undoEntry == null)
-            {
-                throw new InvalidOperationException("Unknown list type");
-            }
-
-            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
             int index = m_source.IndexOfKey(key);
             m_source.Remove(key, UpdateSource.User);
             m_source.Add(key, UnwrapValue(value), UpdateSource.User, index);
-            m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
         // it is up to the caller of this method to start/end a transaction (this should also be the case eventually

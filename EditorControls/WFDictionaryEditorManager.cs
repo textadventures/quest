@@ -41,7 +41,10 @@ namespace AxeSoftware.Quest.EditorControls
             if (result.Result == List[key]) return;
 
             PrepareForEditing();
+
+            Controller.StartTransaction(string.Format("Update '{0}='{1}'", key, result.Result));
             List.Update(key, result.Result);
+            Controller.EndTransaction();
         }
     }
 

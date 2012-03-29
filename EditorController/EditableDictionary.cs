@@ -188,22 +188,9 @@ namespace AxeSoftware.Quest
 
         public void Update(string key, T value)
         {
-            string undoEntry = null;
-            if (typeof(T) == typeof(string))
-            {
-                undoEntry = string.Format("Update '{0}='{1}'", key, value as string);
-            }
-
-            if (undoEntry == null)
-            {
-                throw new InvalidOperationException("Unknown list type");
-            }
-
-            m_controller.WorldModel.UndoLogger.StartTransaction(undoEntry);
             int index = m_source.IndexOfKey(key);
             m_source.Remove(key, UpdateSource.User);
             m_source.Add(key, value, UpdateSource.User, index);
-            m_controller.WorldModel.UndoLogger.EndTransaction();
         }
 
         public string DisplayString()
