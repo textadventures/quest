@@ -140,7 +140,7 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditGameBookOptions(int id, string key, IEditorControl control)
         {
-            return PartialView("StringDictionaryEditor", EditorDictionary[id].GetStringDictionaryModel(id, key, control, ModelState));
+            return PartialView("StringDictionaryEditor", EditorDictionary[id].GetStringDictionaryModel(id, key, control, ModelState, true));
         }
 
         private Dictionary<int, Services.EditorService> EditorDictionary

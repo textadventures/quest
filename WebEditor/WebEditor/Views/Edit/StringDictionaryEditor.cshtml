@@ -19,8 +19,16 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>Key</th>
-                    <th>Value</th>
+                    @if (!Model.GameBook)
+                    {
+                        <th>Key</th>
+                        <th>Value</th>
+                    }
+                    else
+                    {
+                        <th>Page</th>
+                        <th>Link text</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -34,12 +42,13 @@
                             {
                                 <td>@Html.TextBox(Model.Attribute + "-key" + itemCount.ToString(), item.Key)</td>
                             }
-                            else {
+                            else
+                            {
                                 <td><a href="#" class="elementLink">@item.Key</a></td>
                             }
-                            <td>@Html.TextBox(Model.Attribute + "-value" + itemCount.ToString(), item.Value)</td>
+                            <td>@Html.TextBox(Model.Attribute + "-value" + itemCount.ToString(), item.Value, new { @class = "stringDictionaryValue" })</td>
                         </tr>
-                        itemCount++;
+                            itemCount++;
                     }
                 }
             </tbody>

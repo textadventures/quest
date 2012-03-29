@@ -765,10 +765,7 @@ namespace WebEditor.Services
         public Models.StringDictionary GetStringDictionaryModel(int id, string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState, bool gameBook)
         {
             Models.StringDictionary result = GetStringDictionaryModel(id, key, ctl, modelState);
-            if (gameBook)
-            {
-                result.GameBook = true;
-            }
+            result.GameBook = gameBook;
             return result;
         }
 

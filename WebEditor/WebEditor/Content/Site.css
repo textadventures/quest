@@ -193,6 +193,10 @@ a.elementLink
     color: Blue;
     cursor: pointer;
 }
+input.stringDictionaryValue
+{
+    width: 300px;
+}
 
 .jstree ul
 {
