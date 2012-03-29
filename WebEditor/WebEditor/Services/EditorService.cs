@@ -614,7 +614,7 @@ namespace WebEditor.Services
                 }
                 else
                 {
-                    // TO DO: Add StringDictionary error
+                    AddDictionaryError(parentElement, dictionary, GetValidationError(result, item.Value));
                 }
             }
 
