@@ -2279,5 +2279,13 @@ namespace WebEditor.Services
             
             return new List<string>(ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
         }
+
+        public string Style
+        {
+            get
+            {
+                return m_controller.EditorStyle == AxeSoftware.Quest.EditorStyle.GameBook ? "gamebook" : "textadventure";
+            }
+        }
     }
 }

@@ -40,7 +40,11 @@ namespace WebEditor.Controllers
             {
                 return Json(new { error = result.Error.Replace(Environment.NewLine, "<br/>") }, JsonRequestBehavior.AllowGet);
             }
-            return Json(editor.GetElementTreeForJson(), JsonRequestBehavior.AllowGet);
+            
+            return Json(new {
+                tree = editor.GetElementTreeForJson(),
+                editorstyle = editor.Style
+            }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult Scripts(int id)

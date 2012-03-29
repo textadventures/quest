@@ -33,7 +33,13 @@
                 });
             }
             else {
-                initialiseTree(data, "game");
+                if (data["editorstyle"] == "textadventure") {
+                    $("#button-addpage").hide();
+                }
+                else if (data["editorstyle"] == "gamebook") {
+                    $("#buttonset-add").hide();
+                }
+                initialiseTree(data["tree"], "game");
                 $.get('@Url.Action("Scripts", new { id = Model.GameId })', function (data) {
                     var tabHeaderHtml = "<ul>";
                     var scriptAdderHtml = "";
@@ -133,7 +139,8 @@
     <span id="buttonset-add">
         <button type="button" id="button-addroom">Room</button>
         <button type="button" id="button-addobject">Object</button>
-    </span>    
+    </span>
+    <button type="button" id="button-addpage">Page</button>
     <span id="buttonset-undoredo">
         <button type="button" id="button-undo">Undo</button>
         <button type="button" id="button-redo">Redo</button>

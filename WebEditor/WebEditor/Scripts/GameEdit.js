@@ -150,6 +150,11 @@ function initialiseButtons() {
     }).click(function () {
         addNewObject();
     });
+    $("#button-addpage").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
+        addNewPage();
+    });
     $("#buttonset-add").buttonset();
     $("#button-undo").button({
         icons: { primary: "ui-icon-arrowreturnthick-1-w" }
@@ -976,6 +981,13 @@ function addNewObject() {
     showDialog("Please enter a name for the new object", "", function (text, parent) {
         toplevelAdditionalAction("main addobject " + text + ";" + parent);
     }, possibleParents, "Parent");
+}
+
+function addNewPage() {
+    // TO DO: Default page name Page4, Page5 etc.
+    showDialog("Please enter a name for the new page", "", function (text) {
+        toplevelAdditionalAction("main addpage " + text);
+    });
 }
 
 function addNewExit() {
