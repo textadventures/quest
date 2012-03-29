@@ -945,6 +945,9 @@ namespace WebEditor.Services
                 case "scriptdictionary":
                     ProcessScriptDictionaryAction(key, cmd, parameter);
                     break;
+                case "stringdictionary":
+                    ProcessStringDictionaryAction(key, cmd, parameter);
+                    break;
                 case "error":
                     ProcessErrorAction(key, cmd, parameter);
                     break;
@@ -1066,6 +1069,22 @@ namespace WebEditor.Services
                 case "delete":
                     data = parameter.Split(new[] { ';' }, 2);
                     ScriptDictionaryDelete(key, data[0], data[1]);
+                    break;
+            }
+        }
+
+        private void ProcessStringDictionaryAction(string key, string cmd, string parameter)
+        {
+            string[] data;
+            switch (cmd)
+            {
+                case "add":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    StringDictionaryAdd(key, data[0], data[1]);
+                    break;
+                case "delete":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    StringDictionaryDelete(key, data[0], data[1]);
                     break;
             }
         }
@@ -1838,6 +1857,44 @@ namespace WebEditor.Services
         private void ScriptDictionaryDelete(string element, string attribute, string value)
         {
             IEditableDictionary<IEditableScripts> dictionary = GetScriptDictionary(element, attribute);
+            // value is a semicolon-separated list of indexes
+            string[] keys = value.Split(';').Select(i => dictionary.Items.ElementAt(int.Parse(i)).Key).ToArray();
+            dictionary.Remove(keys);
+        }
+
+        private void StringDictionaryAdd(string element, string attribute, string value)
+        {
+            var dictionary = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableDictionary<string>;
+            if (dictionary == null)
+            {
+                // do we need to create new dictionaries???
+                throw new NotImplementedException();
+
+                //m_controller.CreateNewEditableScriptDictionary(
+                //    element,
+                //    attribute,
+                //    value,
+                //    m_controller.CreateNewEditableScripts(null, null, null, true),
+                //    true
+                //);
+            }
+            else
+            {
+                ValidationResult result = dictionary.CanAdd(value);
+                if (result.Valid)
+                {
+                    dictionary.Add(value, "");
+                }
+                else
+                {
+                    // TO DO: Add string dictionary error
+                }
+            }
+        }
+
+        private void StringDictionaryDelete(string element, string attribute, string value)
+        {
+            var dictionary = m_controller.GetEditorData(element).GetAttribute(attribute) as IEditableDictionary<string>;
             // value is a semicolon-separated list of indexes
             string[] keys = value.Split(';').Select(i => dictionary.Items.ElementAt(int.Parse(i)).Key).ToArray();
             dictionary.Remove(keys);

@@ -25,18 +25,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
                 @{
                     int itemCount = 0;
                     foreach (var item in Model.Value.Items.Values)
                     {
-                        <td>@Html.CheckBox("selectstringitem-" + Model.Attribute + "-" + itemCount.ToString(), new { @class = "stringDictionarySection-select", data_key = Model.Attribute })</td>
-                        <td>@Html.TextBox(Model.Attribute + "-key" + itemCount.ToString(), item.Key)</td>
-                        <td>@Html.TextBox(Model.Attribute + "-value" + itemCount.ToString(), item.Value)</td>
+                        <tr>
+                            <td>@Html.CheckBox("selectstringitem-" + Model.Attribute + "-" + itemCount.ToString(), new { @class = "stringDictionarySection-select", data_key = Model.Attribute })</td>
+                            <td>@Html.TextBox(Model.Attribute + "-key" + itemCount.ToString(), item.Key)</td>
+                            <td>@Html.TextBox(Model.Attribute + "-value" + itemCount.ToString(), item.Value)</td>
+                        </tr>
                         itemCount++;
                     }
                 }
-                </tr>
             </tbody>
         </table>
     </div>
