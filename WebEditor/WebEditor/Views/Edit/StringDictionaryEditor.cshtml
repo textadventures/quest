@@ -44,7 +44,7 @@
                             }
                             else
                             {
-                                <td><a href="#" class="elementLink">@item.Key</a></td>
+                                <td><a class="elementLink">@item.Key</a></td>
                             }
                             <td>@Html.TextBox(Model.Attribute + "-value" + itemCount.ToString(), item.Value, new { @class = "stringDictionaryValue" })</td>
                         </tr>
@@ -56,4 +56,14 @@
     </div>
 }
 
-<div class="stringDictionarySection"><button type="button" class="string-dictionary-add" data-key="@Model.Attribute" data-prompt="@Model.KeyPrompt" data-source="@Model.Source" data-source-exclude="@Model.SourceExclude">Add</button></div>
+<div class="stringDictionarySection">
+    @if (Model.GameBook)
+    {
+        <button type="button" class="gamebookoptions-addnew" data-key="@Model.Attribute" data-prompt="@Model.KeyPrompt">Add New Page</button>
+    }
+    @{
+        string buttonClass = Model.GameBook ? "gamebookoptions-link" : "string-dictionary-add";
+        string buttonText = Model.GameBook ? "Add Link to Existing Page" : "Add";
+    }
+    <button type="button" class="@buttonClass" data-key="@Model.Attribute" data-prompt="@Model.KeyPrompt" data-source="@Model.Source" data-source-exclude="@Model.SourceExclude">@buttonText</button>
+</div>

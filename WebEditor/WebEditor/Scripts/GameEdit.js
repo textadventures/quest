@@ -153,7 +153,9 @@ function initialiseButtons() {
     $("#button-addpage").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
-        addNewPage();
+        addNewPage(function (text) {
+            toplevelAdditionalAction("main addpage " + text);
+        });
     });
     $("#buttonset-add").buttonset();
     $("#button-undo").button({
@@ -431,22 +433,21 @@ function initialiseElementEditor(tab) {
     $(".string-dictionary-add").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
+        stringDictionaryAdd($(this), "Add");
+    });
+    $(".gamebookoptions-addnew").button({
+        icons: { primary: "ui-icon-plusthick" }
+    }).click(function () {
         var key = $(this).attr("data-key");
-        if ($(this).attr("data-source") == "object") {
-            var possibleParents = $("#_allObjects").val().split(";");
-            var exclude = $(this).attr("data-source-exclude");
-            possibleParents = $.grep(possibleParents, function (value) {
-                return (value != exclude);
-            });
-            showDialog("", "", function (text, object) {
-                sendAdditionalAction("stringdictionary add " + key + ";" + object);
-            }, possibleParents, "Add");
-        }
-        else {
-            showDialog($(this).attr("data-prompt"), "", function (text) {
-                sendAdditionalAction("stringdictionary add " + key + ";" + text);
-            });
-        }
+        // addNewPage - but also need to add link on current page to new one
+        addNewPage(function (text) {
+            toplevelAdditionalAction("stringdictionary gamebookaddpage " + key + ";" + text);
+        });
+    });
+    $(".gamebookoptions-link").button({
+        icons: { primary: "ui-icon-link" }
+    }).click(function () {
+        stringDictionaryAdd($(this), "Add link to");
     });
     $(".stringDictionarySection-select").click(function () {
         var key = $(this).attr("data-key");
@@ -802,6 +803,25 @@ function initialiseElementEditor(tab) {
     }
 }
 
+function stringDictionaryAdd(button, prompt) {
+    var key = button.attr("data-key");
+    if (button.attr("data-source") == "object") {
+        var possibleParents = $("#_allObjects").val().split(";");
+        var exclude = button.attr("data-source-exclude");
+        possibleParents = $.grep(possibleParents, function (value) {
+            return (value != exclude);
+        });
+        showDialog("", "", function (text, object) {
+            sendAdditionalAction("stringdictionary add " + key + ";" + object);
+        }, possibleParents, prompt);
+    }
+    else {
+        showDialog(button.attr("data-prompt"), "", function (text) {
+            sendAdditionalAction("stringdictionary add " + key + ";" + text);
+        });
+    }
+}
+
 function setSelectedDirection(key) {
     var selected = $("input:radio[name=" + key + "-compass]:checked");
     var value = selected.val();
@@ -983,11 +1003,9 @@ function addNewObject() {
     }, possibleParents, "Parent");
 }
 
-function addNewPage() {
+function addNewPage(action) {
     // TO DO: Default page name Page4, Page5 etc.
-    showDialog("Please enter a name for the new page", "", function (text) {
-        toplevelAdditionalAction("main addpage " + text);
-    });
+    showDialog("Please enter a name for the new page", "", action);
 }
 
 function addNewExit() {

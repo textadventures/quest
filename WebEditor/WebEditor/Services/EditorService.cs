@@ -1094,6 +1094,14 @@ namespace WebEditor.Services
                     data = parameter.Split(new[] { ';' }, 2);
                     StringDictionaryDelete(key, data[0], data[1]);
                     break;
+                case "gamebookaddpage":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    string result = AddNewObject(null, data[1]);
+                    if (result != null)
+                    {
+                        StringDictionaryAdd(key, data[0], data[1]);
+                    }
+                    break;
             }
         }
 
