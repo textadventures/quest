@@ -39,6 +39,7 @@ Public Class Player
     Private m_allowColourChange As Boolean = True
     Private m_allowFontChange As Boolean = True
     Private m_playSounds As Boolean = True
+    Private m_fromEditor As Boolean = False
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -81,7 +82,8 @@ Public Class Player
         ShowDebugger(Not m_menu.MenuChecked("debugger"))
     End Sub
 
-    Public Sub Initialise(ByRef game As IASL)
+    Public Sub Initialise(ByRef game As IASL, Optional fromEditor As Boolean = False)
+        m_fromEditor = fromEditor
         SetPanesVisible(True)
         SetCommandVisible(True)
         SetLocationVisible(True)
@@ -903,6 +905,9 @@ Public Class Player
     End Sub
 
     Private Sub ctlPlayerHtml_ShortcutKeyPressed(keys As System.Windows.Forms.Keys) Handles ctlPlayerHtml.ShortcutKeyPressed
+        If keys = Windows.Forms.Keys.Escape Then
+            EscPressed()
+        End If
         m_waiting = False
         txtCommand.Focus()
         RaiseEvent ShortcutKeyPressed(keys)
@@ -1123,4 +1128,10 @@ Public Class Player
             ctlPlayerHtml.ScriptErrorsSuppressed = value
         End Set
     End Property
+
+    Public Sub EscPressed()
+        If m_fromEditor And m_initialised Then
+            DoQuit()
+        End If
+    End Sub
 End Class
