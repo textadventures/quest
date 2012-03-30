@@ -19,14 +19,12 @@
             @Html.ValidationMessageFor(m => m.GameName)
         </div>
 
-        <div style="display: none">
-            <div class="editor-label">
-                @Html.LabelFor(m => m.SelectedType):
-            </div>
-            <div class="editor-field">
-                @Html.DropDownListFor(m => m.SelectedType, new SelectList(Model.AllTypes, Model.SelectedType))
-                @Html.ValidationMessageFor(m => m.SelectedType)
-            </div>
+        <div class="editor-label">
+            @Html.LabelFor(m => m.SelectedType):
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(m => m.SelectedType, new SelectList(Model.AllTypes, Model.SelectedType))
+            @Html.ValidationMessageFor(m => m.SelectedType)
         </div>
 
         <div class="editor-label">
