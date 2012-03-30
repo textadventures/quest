@@ -8,6 +8,11 @@ Public Class GameListItem
         Downloading
     End Enum
 
+    Public Enum ContextMenuTypes
+        Recent
+        Download
+    End Enum
+
     Public Event Launch(filename As String)
     Public Event ClearAllItems()
     Public Event RemoveItem(sender As GameListItem, filename As String)
@@ -30,6 +35,7 @@ Public Class GameListItem
     Private m_background As Brush
     Private m_selectedBackground As Brush
     Private m_isSelected As Boolean
+    Private m_contextMenuType As ContextMenuTypes
 
     Public Sub New()
 
@@ -38,6 +44,7 @@ Public Class GameListItem
 
         ' Add any initialization after the InitializeComponent() call.
         SetToolTipText("")
+        ContextMenuType = ContextMenuTypes.Recent
         ratingBlock.Visibility = Windows.Visibility.Collapsed
         notRatedBlock.Visibility = Windows.Visibility.Collapsed
 
@@ -72,12 +79,15 @@ Public Class GameListItem
                 Case State.ReadyToPlay
                     cmdLaunch.Content = "Play"
                     info.Text = "Download complete"
+                    mnuDelete.IsEnabled = True
                 Case State.NotDownloaded
                     cmdLaunch.Content = "Download"
                     info.Text = "Not downloaded"
+                    mnuDelete.IsEnabled = False
                 Case State.Downloading
                     cmdLaunch.Content = "Cancel"
                     info.Text = "Downloading..."
+                    mnuDelete.IsEnabled = False
             End Select
 
             progressBar.Visibility = If(m_state = State.Downloading, Windows.Visibility.Visible, Windows.Visibility.Collapsed)
@@ -238,9 +248,23 @@ Public Class GameListItem
         End If
     End Sub
 
-    Public Sub DisableContextMenu()
-        grid.ContextMenu = Nothing
-    End Sub
+    Public Property ContextMenuType As ContextMenuTypes
+        Get
+            Return m_contextMenuType
+        End Get
+        Set(value As ContextMenuTypes)
+            m_contextMenuType = value
+            If value = ContextMenuTypes.Download Then
+                mnuDelete.Visibility = Windows.Visibility.Visible
+                mnuRemove.Visibility = Windows.Visibility.Collapsed
+                mnuClear.Visibility = Windows.Visibility.Collapsed
+            Else
+                mnuDelete.Visibility = Windows.Visibility.Collapsed
+                mnuRemove.Visibility = Windows.Visibility.Visible
+                mnuClear.Visibility = Windows.Visibility.Visible
+            End If
+        End Set
+    End Property
 
     Private Sub mnuClear_Click(sender As System.Object, e As System.Windows.RoutedEventArgs)
         RaiseEvent ClearAllItems()
@@ -324,4 +348,11 @@ Public Class GameListItem
             End If
         End Set
     End Property
+
+    Private Sub mnuDelete_Click(sender As System.Object, e As System.Windows.RoutedEventArgs)
+        If System.IO.File.Exists(Filename) Then
+            System.IO.File.Delete(Filename)
+        End If
+        CurrentState = State.NotDownloaded
+    End Sub
 End Class

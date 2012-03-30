@@ -56,7 +56,7 @@ Public Class GameList
                 End If
 
                 If IsOnlineList Then
-                    newItem.DisableContextMenu()
+                    newItem.ContextMenuType = GameListItem.ContextMenuTypes.Download
                     newItem.ratingBlock.Visibility = Windows.Visibility.Visible
                     newItem.infoBlock.Visibility = Windows.Visibility.Collapsed
                     newItem.Rating = data.Rating

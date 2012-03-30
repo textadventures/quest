@@ -10,6 +10,7 @@
             <ContextMenu>
                 <MenuItem Header="Clear all items" Name="mnuClear" Click="mnuClear_Click"></MenuItem>
                 <MenuItem Header="Remove this item" Name="mnuRemove" Click="mnuRemove_Click"></MenuItem>
+                <MenuItem Header="Delete downloaded file" Name="mnuDelete" Click="mnuDelete_Click"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
         <Grid.ColumnDefinitions>
