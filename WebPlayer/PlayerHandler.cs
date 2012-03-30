@@ -415,7 +415,7 @@ namespace WebPlayer
         {
             { "Panes", "#gamePanes" },
             { "Location", "#location" },
-            { "Command", "#txtCommand" }
+            { "Command", "#txtCommandDiv" }
         };
 
         private string GetElementId(string code)
