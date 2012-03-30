@@ -27,10 +27,10 @@
         m_client = WebClientFactory.GetNewWebClient
         Dim url As String = WebClientFactory.RootURL
         If ShowSandpit Then
-            url += "?sandpit=1"
+            url += "&sandpit=1"
         End If
         If Not ShowAdult Then
-            url += If(ShowSandpit, "&", "?") + "maxage=17"
+            url += "&maxage=17"
         End If
         Dim newThread As New System.Threading.Thread(Sub() m_client.DownloadStringAsync(New System.Uri(url)))
         newThread.Start()

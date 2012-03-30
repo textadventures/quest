@@ -16,6 +16,7 @@ Public Class Main
 
         ' Add any initialization after the InitializeComponent() call.
         ctlLauncher.QuestVersion = My.Application.Info.Version
+        ctlLauncher.MaxASLVersion = Constants.MaxASLVersion
         ctlLauncher.DownloadFolder = Options.Instance.GetStringValue(OptionNames.GamesFolder)
         ctlLauncher.ShowSandpit = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
         ctlLauncher.ShowAdult = Options.Instance.GetBooleanValue(OptionNames.ShowAdult)

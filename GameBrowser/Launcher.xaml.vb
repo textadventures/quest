@@ -74,6 +74,15 @@
         End Set
     End Property
 
+    Public Property MaxASLVersion As Integer
+        Get
+            Return WebClientFactory.MaxASLVersion
+        End Get
+        Set(value As Integer)
+            WebClientFactory.MaxASLVersion = value
+        End Set
+    End Property
+
     Private Sub ctlPlayBrowser_GotUpdateData(data As UpdatesData)
         ctlVersionInfo.UpdateInfo = data
         If IsNewVersion(data) Then

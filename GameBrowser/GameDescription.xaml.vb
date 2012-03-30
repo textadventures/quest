@@ -55,7 +55,7 @@ Public Class GameDescription
         If m_cache.ContainsKey(id) Then
             PopulateRequestData(m_cache(id))
         Else
-            Dim URL As String = WebClientFactory.RootURL + "?id=" + id
+            Dim URL As String = WebClientFactory.RootURL + "&id=" + id
 
             m_client.CancelAsync()
 
@@ -138,7 +138,7 @@ Public Class GameDescription
             End If
 
             If m_cache(m_data.GameId).Reviews Is Nothing Then
-                Dim URL As String = WebClientFactory.RootURL + "?id=" + m_data.GameId + "&reviews=1"
+                Dim URL As String = WebClientFactory.RootURL + "&id=" + m_data.GameId + "&reviews=1"
 
                 m_reviewsClient.CancelAsync()
                 Dim newThread As New System.Threading.Thread(Sub() m_reviewsClient.DownloadStringAsync(New System.Uri(URL)))
