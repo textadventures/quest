@@ -28,7 +28,7 @@ namespace WebEditor.Controllers
             EditorService.PopulateCreateModelLists(createModel);
             if (ModelState.IsValid)
             {
-                int newId = EditorService.CreateNewGame(createModel.SelectedTemplate, createModel.GameName);
+                int newId = EditorService.CreateNewGame(createModel.SelectedType, createModel.SelectedTemplate, createModel.GameName);
                 return View("CreateSuccess", new Models.CreateSuccess { Id = newId, Name = createModel.GameName });
             }
             else

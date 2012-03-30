@@ -27,12 +27,14 @@
             @Html.ValidationMessageFor(m => m.SelectedType)
         </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(m => m.SelectedTemplate):
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(m => m.SelectedTemplate, new SelectList(Model.AllTemplates, Model.SelectedTemplate))
-            @Html.ValidationMessageFor(m => m.SelectedTemplate)
+        <div id="templateSection">
+            <div class="editor-label">
+                @Html.LabelFor(m => m.SelectedTemplate):
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(m => m.SelectedTemplate, new SelectList(Model.AllTemplates, Model.SelectedTemplate))
+                @Html.ValidationMessageFor(m => m.SelectedTemplate)
+            </div>
         </div>
 
         <p>

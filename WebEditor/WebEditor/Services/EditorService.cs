@@ -2257,16 +2257,20 @@ namespace WebEditor.Services
             return EditorController.GetAvailableTemplates(ConfigurationManager.AppSettings["TemplatesFolder"]);
         }
 
-        private static string GetTemplateFile(string templateName)
+        private static string GetTemplateFile(string gameType, string templateName)
         {
+            if (gameType == "Gamebook")
+            {
+                return GetAvailableTemplates().Values.First(t => t.Type == EditorStyle.GameBook).Filename;
+            }
             return GetAvailableTemplates().Values.First(t => t.TemplateName == templateName).Filename;
         }
 
-        public static int CreateNewGame(string templateName, string gameName)
+        public static int CreateNewGame(string gameType, string templateName, string gameName)
         {
             string filename = EditorController.GenerateSafeFilename(gameName) + ".aslx";
             CreateNewFileData fileData = FileManagerLoader.GetFileManager().CreateNewFile(filename, gameName);
-            EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(templateName), gameName);
+            EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(gameType, templateName), gameName);
             return fileData.Id;
         }
 
