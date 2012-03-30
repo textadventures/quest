@@ -137,4 +137,12 @@
             m_onlineGames.StartDownloadGameData()
         End If
     End Sub
+
+    Public Function DownloadingCount() As Integer
+        Return ctlOnlineGameList.DownloadingCount()
+    End Function
+
+    Public Sub CancelDownloads()
+        ctlOnlineGameList.CancelDownloads()
+    End Sub
 End Class

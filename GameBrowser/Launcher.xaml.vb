@@ -127,4 +127,16 @@
         End Set
     End Property
 
+    Public Function CloseLauncher() As Boolean
+        If ctlPlayBrowser.DownloadingCount = 0 Then
+            Return True
+        Else
+            Dim result = MsgBox(String.Format("{0} games are still downloading. Are you sure you wish to exit?", ctlPlayBrowser.DownloadingCount), MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNo)
+            If result = MsgBoxResult.Yes Then
+                ctlPlayBrowser.CancelDownloads()
+                Return True
+            End If
+        End If
+    End Function
+
 End Class

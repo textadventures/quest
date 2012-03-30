@@ -198,7 +198,7 @@ Public Class GameListItem
         newThread.Start()
     End Sub
 
-    Private Sub CancelDownload()
+    Public Sub CancelDownload()
         CurrentState = State.NotDownloaded
         m_client.CancelAsync()
     End Sub

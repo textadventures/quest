@@ -265,6 +265,8 @@ Public Class Main
         ctlPlayer.WindowClosing()
         If Not ctlEditor.CloseEditor(False, True) Then
             e.Cancel = True
+        ElseIf Not ctlLauncher.CloseLauncher() Then
+            e.Cancel = True
         End If
     End Sub
 

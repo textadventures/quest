@@ -176,4 +176,13 @@ Public Class GameList
         End Set
     End Property
 
+    Public Function DownloadingCount() As Integer
+        Return m_gameListItems.Values.Where(Function(g) g.CurrentState = GameListItem.State.Downloading).Count()
+    End Function
+
+    Public Sub CancelDownloads()
+        For Each item As GameListItem In m_gameListItems.Values.Where(Function(g) g.CurrentState = GameListItem.State.Downloading)
+            item.CancelDownload()
+        Next
+    End Sub
 End Class
