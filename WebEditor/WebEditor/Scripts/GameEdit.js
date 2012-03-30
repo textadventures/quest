@@ -439,7 +439,6 @@ function initialiseElementEditor(tab) {
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
-        // addNewPage - but also need to add link on current page to new one
         addNewPage(function (text) {
             toplevelAdditionalAction("stringdictionary gamebookaddpage " + key + ";" + text);
         });
@@ -1004,8 +1003,7 @@ function addNewObject() {
 }
 
 function addNewPage(action) {
-    // TO DO: Default page name Page4, Page5 etc.
-    showDialog("Please enter a name for the new page", "", action);
+    showDialog("Please enter a name for the new page", $("#_nextPage").val(), action);
 }
 
 function addNewExit() {

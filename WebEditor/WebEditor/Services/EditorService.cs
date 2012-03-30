@@ -294,7 +294,8 @@ namespace WebEditor.Services
                 CanMove = m_controller.CanMoveElement(key),
                 MovePossibleParents = (movePossibleParents == null) ? null : string.Join(";", movePossibleParents),
                 IsElement = m_controller.ElementExists(key),
-                AllObjects = (allObjects == null) ? null : string.Join(";", allObjects)
+                AllObjects = (allObjects == null) ? null : string.Join(";", allObjects),
+                NextPage = (m_controller.EditorStyle == EditorStyle.GameBook) ? m_controller.GetUniqueElementName("Page1") : null
             };
         }
 
