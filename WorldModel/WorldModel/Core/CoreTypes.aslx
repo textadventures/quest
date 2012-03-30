@@ -4,7 +4,7 @@
     <showdescriptiononenter/>
     <autodescription/>
     <defaultfont>Arial</defaultfont>
-    <defaultfontsize type="int">9</defaultfontsize>
+    <defaultfontsize type="int">12</defaultfontsize>
     <defaultbackground>White</defaultbackground>
     <defaultforeground>Black</defaultforeground>
     <defaultlinkforeground>Blue</defaultlinkforeground>
