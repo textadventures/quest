@@ -70,14 +70,16 @@
     
     if (game.appendobjectdescription) {
       foreach (val, ScopeVisibleNotHeld()) {
-        if (HasString(val, "description")) {
-          if (LengthOf(val.description) > 0 and val <> player) {
-            fulldesc = fulldesc + " " + val.description
+        if (HasString(val, "inroomdescription")) {
+          if (LengthOf(val.inroomdescription) > 0 and val <> player) {
+            fulldesc = fulldesc + " " + val.inroomdescription
           }
         }
       }
     }
     
+	fulldesc = Trim (fulldesc)
+	
     return (fulldesc)
     ]]>
   </function>
