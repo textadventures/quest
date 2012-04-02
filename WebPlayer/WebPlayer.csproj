@@ -77,11 +77,6 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Examples\examples.css" />
-    <Content Include="Examples\index.htm" />
-    <Content Include="Examples\twohalves\twohalves.htm" />
-    <Content Include="Examples\twohalves\twohalves.js" />
-    <Content Include="Examples\demo\YouTube.js" />
     <Content Include="Global.asax" />
     <Content Include="js\jjmenu.js" />
     <Content Include="js\Jplayer.swf" />
@@ -174,10 +169,6 @@
     <Content Include="App_Data\51Degrees.mobi.config">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Examples\twohalves\twohalves.aslx" />
-    <None Include="Examples\demo\demo.aslx">
-      <SubType>Designer</SubType>
-    </None>
     <Content Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

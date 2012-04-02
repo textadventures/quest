@@ -342,6 +342,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Examples-Internal\volume.aslx" />
+    <None Include="Examples-Public\demo\demo.aslx" />
     <None Include="Examples-Public\template.aslx">
       <SubType>Designer</SubType>
     </None>
@@ -356,6 +357,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Examples-Public\containers.aslx" />
+    <None Include="Examples-Public\twohalves\twohalves.aslx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -436,7 +438,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Examples-Public\demo\YouTube.js" />
+    <Content Include="Examples-Public\twohalves\twohalves.htm" />
+    <Content Include="Examples-Public\twohalves\twohalves.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
