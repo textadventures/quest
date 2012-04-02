@@ -6177,12 +6177,14 @@ ErrorHandler:
                 NewThread.NumParameters = 0
             End If
 
+            Dim result As String = ""
+
             For i = procblock.StartLine + 1 To procblock.EndLine - 1
                 ExecuteScript(Lines(i), NewThread)
-                Return NewThread.FunctionReturnValue
+                result = NewThread.FunctionReturnValue
             Next i
 
-            Return ""
+            Return result
         End If
 
     End Function
