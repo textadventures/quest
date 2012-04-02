@@ -71,7 +71,9 @@ function endWait() {
     if (!_waitMode) return;
     _waitMode = false;
     $("#endWaitLink").fadeOut(400, function () {
-        $("#txtCommand").fadeTo(400, 1);
+        if (!_waitMode) {
+            $("#txtCommand").fadeTo(400, 1);
+        }
     });
     window.setTimeout(function () {
         $("#fldUIMsg").val("endwait");

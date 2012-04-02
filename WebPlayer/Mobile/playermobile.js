@@ -77,7 +77,9 @@ function resizeUI() {
 function beginWait() {
     _waitMode = true;
     $("#inputBar").fadeOut(400, function () {
-        $("#endWaitLink").fadeTo(400, 1);
+        if (_waitMode) {
+            $("#endWaitLink").fadeTo(400, 1);
+        }
     });
     markScrollPosition();
 }
@@ -85,13 +87,19 @@ function beginWait() {
 function endWait() {
     if (!_waitMode) return;
     _waitMode = false;
-    $("#endWaitLink").fadeOut(400, function () {
-        $("#inputBar").fadeTo(400, 1);
-    });
     window.setTimeout(function () {
         $("#fldUIMsg").val("endwait");
         $("#cmdSubmit").click();
     }, 100);
+    window.setTimeout(function () {
+        if (!_waitMode) {
+            $("#endWaitLink").fadeOut(400, function () {
+                if (!_waitMode) {
+                    $("#inputBar").fadeTo(400, 1);
+                }
+            });
+        }
+    }, 200);
 }
 
 function sessionTimeout() {
