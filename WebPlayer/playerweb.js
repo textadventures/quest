@@ -1,17 +1,29 @@
-﻿function panesVisible(visible) {
-    if (visible) {
+﻿$(function () {
+    var width = $_GET["w"];
+    if (width) {
+        $("#gameBorder").width(width);
+        $("#status").width(width - 2);
+        $("#gamePanel").css("margin-left", "-" + (width / 2 - 19) + "px");
+        $("#gamePanes").css("margin-left", (width / 2 - 220) + "px");
+    }
+});
+
+function panesVisible(visible) {
+    var screenWidth = $("#gameBorder").width();
+
+    if (visible) {    
         $("#gamePanes").show();
-        $("#gameContent").css("width", "700px");
-        $("#txtCommand").css("width", "680px");
-        $("#updating").css("margin-left", "185px");
-        $("#gamePanel").css("width", "700px");
+        $("#gameContent").width(screenWidth - 250);
+        $("#txtCommand").width(screenWidth - 270);
+        $("#updating").css("margin-left", (screenWidth / 2 - 290) + "px");
+        $("#gamePanel").width(screenWidth - 250);
     }
     else {
         $("#gamePanes").hide();
-        $("#gameContent").css("width", "910px");
-        $("#txtCommand").css("width", "890px");
-        $("#updating").css("margin-left", "405px");
-        $("#gamePanel").css("width", "910px");
+        $("#gameContent").width(screenWidth - 40);
+        $("#txtCommand").width(screenWidth - 60);
+        $("#updating").css("margin-left", (screenWidth / 2 - 70) + "px");
+        $("#gamePanel").width(screenWidth - 40);
     }
 }
 
