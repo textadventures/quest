@@ -78,9 +78,7 @@
       }
     }
     
-	fulldesc = Trim (fulldesc)
-	
-    return (fulldesc)
+    return (Trim(fulldesc))
     ]]>
   </function>
 
