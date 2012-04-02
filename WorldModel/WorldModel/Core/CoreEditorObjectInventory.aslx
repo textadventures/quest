@@ -85,6 +85,7 @@
     </control>
 
     <control>
+	  <mustinherit>defaultplayer</mustinherit>
       <controltype>label</controltype>
       <caption>Set "maximum objects" to 0 to allow unlimited inventory items.</caption>
     </control>

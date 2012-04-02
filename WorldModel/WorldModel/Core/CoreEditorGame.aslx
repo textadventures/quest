@@ -115,7 +115,7 @@
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>Append room object descriptions to room description</caption>
+        <caption>Append in-room descriptions to room description</caption>
         <attribute>appendobjectdescription</attribute>
         <advanced/>
       </control>

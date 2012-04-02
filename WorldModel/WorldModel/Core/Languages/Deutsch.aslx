@@ -24,7 +24,6 @@
   <dynamictemplate name="DropUnsuccessful">"Du kannst das nicht ablegen."</dynamictemplate>
   <dynamictemplate name="AlreadyTaken">"Das trägst du bereits."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"Das trägst du nicht bei dir."</dynamictemplate>
-  <dynamictemplate name="CantUse">"Das kannst du nicht benutzen."</dynamictemplate>
   <dynamictemplate name="DefaultSpeakTo">CapFirst(object.gender) + " antwortet dir nicht."</dynamictemplate>
   <template name="UnrecognisedCommand">Ich verstehe nicht, was du meinst.</template>
   <template name="YouAreIn">Du bist hier:</template>
@@ -94,7 +93,12 @@
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " enthält " + " " + GetPrefix (object2,"kein")  + " " + GetDisplayAlias(object2) + "."</dynamictemplate>
 
   <dynamictemplate name="YouLooking">"Du schaust nach " + text +"."</dynamictemplate>
-
+  <template name="VerbObjectSeparator">mit;auf</template>
+  <template name="DefaultMultiObjectVerb">Das funktioniert so nicht.</template>
+  <template name="MultiObjectVerbMenu">Mit welchem Gegenstand?</template>
+  <template name="UseOnMenu">Mit welchem Gegenstand?</template>
+  <template name="GiveToMenu">An wen?</template>
+  
   <template name="CompassNW">Nordwesten</template>
   <template name="CompassN">Norden</template>
   <template name="CompassNE">Nordosten</template>
@@ -171,6 +175,7 @@
   <dynamictemplate name="DefaultDrink">"Du kannst " + object.article + " nicht drinken."</dynamictemplate>
   <verbtemplate name="eat">iss</verbtemplate>
   <verbtemplate name="eat">esse</verbtemplate>
+  <verbtemplate name="givesingle">gib</verbtemplate>
   <template templatetype="command" name="give"><![CDATA[^(gib|gebe) (?<object1>.*) an (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " möchte " + object2.article + " nicht."</dynamictemplate>
   <dynamictemplate name="DefaultEat">"Du kannst " + object.article + " nicht essen."</dynamictemplate>

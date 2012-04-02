@@ -85,10 +85,10 @@
     </control>
 
     <control>
-      <mustnotinherit>editor_room</mustnotinherit>
-      <caption>Room object description</caption>
+      <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+      <caption>In-room description</caption>
       <controltype>textbox</controltype>
-      <attribute>description</attribute>
+      <attribute>inroomdescription</attribute>
       <onlydisplayif>game.appendobjectdescription</onlydisplayif>
     </control>
 
