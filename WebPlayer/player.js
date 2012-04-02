@@ -31,6 +31,12 @@ function init() {
     });
 
     ui_init();
+
+    setInterval(keepSessionAlive, 60000);
+}
+
+function keepSessionAlive() {
+    $.post("/KeepAlive.ashx");
 }
 
 function showStatusVisible(visible) {
