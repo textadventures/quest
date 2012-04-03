@@ -34,6 +34,7 @@
   </type>
 
   <type name="defaultobject">
+    <visible/>
     <displayverbs type="list">[LookAt];[Take]</displayverbs>
     <inventoryverbs type="list">[LookAt];[Use];[Drop]</inventoryverbs>
     <take type="boolean">false</take>

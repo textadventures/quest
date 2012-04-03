@@ -103,6 +103,14 @@
     object.parent = null
   </function>
 
+  <function name="MakeObjectVisible" parameters="object">
+    object.visible = true
+  </function>
+
+  <function name="MakeObjectInvisible" parameters="object">
+    object.visible = false
+  </function>
+
   <function name="HelperOpenObject" parameters="object">
     object.isopen = true
   </function>

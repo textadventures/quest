@@ -52,6 +52,46 @@
   </editor>
 
   <editor>
+    <appliesto>(function)MakeObjectVisible</appliesto>
+    <display>Make #0 visible</display>
+    <category>Objects</category>
+    <create>MakeObjectVisible ()</create>
+    <add>Make object visible</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Make visible</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)MakeObjectInvisible</appliesto>
+    <display>Make #0 invisible</display>
+    <category>Objects</category>
+    <create>MakeObjectInvisible ()</create>
+    <add>Make object invisible</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Make invisible</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>(function)RemoveObject</appliesto>
     <display>Remove #0</display>
     <category>Objects</category>

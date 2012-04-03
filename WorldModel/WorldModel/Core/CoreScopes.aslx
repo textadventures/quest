@@ -190,6 +190,9 @@
     if (not HasObject(searchObj, "parent")) {
       return (false)
     }
+    else if (not searchObj.visible) {
+      return (false)
+    }
     else {
       if (searchObj.parent = null) {
         return (false)

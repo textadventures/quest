@@ -161,7 +161,7 @@
     <![CDATA[
     result = NewObjectList()
     foreach (obj, list) {
-      if (not obj.scenery and obj <> player) {
+      if (not obj.scenery and obj <> player and obj.visible) {
         list add (result, obj)
       }
     }

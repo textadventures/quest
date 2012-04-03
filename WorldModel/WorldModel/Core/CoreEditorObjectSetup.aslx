@@ -27,6 +27,13 @@
     </control>
 
     <control>
+      <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+      <caption>Visible</caption>
+      <controltype>checkbox</controltype>
+      <attribute>visible</attribute>
+    </control>
+
+    <control>
       <mustnotinherit>editor_room</mustnotinherit>
       <caption>Scenery (do not display in room description)</caption>
       <controltype>checkbox</controltype>
