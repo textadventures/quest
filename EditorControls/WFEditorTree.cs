@@ -120,8 +120,26 @@ namespace AxeSoftware.Quest.EditorControls
         public void RemoveNode(string key)
         {
             if (!m_nodes.ContainsKey(key)) return;
+            List<string> keysToRemove = new List<string>();
+            RemoveChildNodesFromCache(m_nodes[key], keysToRemove);
+            foreach (string nodeKey in keysToRemove)
+            {
+                m_nodes.Remove(nodeKey);
+            }
             ctlTreeView.Nodes.Remove(m_nodes[key]);
             m_nodes.Remove(key);
+        }
+
+        private void RemoveChildNodesFromCache(TreeNode node, List<string> keysToRemove)
+        {
+            foreach (TreeNode childNode in m_nodes.Values)
+            {
+                if (childNode.Parent == node)
+                {
+                    keysToRemove.Add(childNode.Name);
+                    RemoveChildNodesFromCache(childNode, keysToRemove);
+                }
+            }
         }
 
         public void RenameNode(string oldKey, string newKey)
