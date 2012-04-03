@@ -67,7 +67,7 @@ namespace AxeSoftware.Quest.Scripts
         {
             string var = Utility.ConvertVariablesToFleeFormat(value).Trim();
             string obj;
-            Utility.ResolveVariableName(ref var, out obj, out variable);
+            Utility.ResolveObjectDotAttribute(var, out obj, out variable);
             return (obj == null) ? null : new Expression<Element>(obj, scriptContext);
         }
 

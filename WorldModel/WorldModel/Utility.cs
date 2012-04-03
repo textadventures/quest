@@ -170,6 +170,34 @@ namespace AxeSoftware.Quest
             variable = name.Substring(eqPos + k_dotReplacementString.Length);
         }
 
+        public static void ResolveObjectDotAttribute(string name, out string obj, out string variable)
+        {
+            variable = ConvertVariablesToFleeFormat(ResolveElementName(name));
+            obj = null;
+            do
+            {
+                if (Utility.ContainsUnresolvedDotNotation(variable))
+                {
+                    // We may have been passed in something like someobj.parent.someproperty
+                    string nestedObj;
+                    Utility.ResolveVariableName(ref variable, out nestedObj, out variable);
+
+                    if (nestedObj != null)
+                    {
+                        if (obj == null)
+                        {
+                            obj = string.Empty;
+                        }
+                        else
+                        {
+                            obj += ".";
+                        }
+                        obj += nestedObj;
+                    }
+                }
+            } while (Utility.ContainsUnresolvedDotNotation(variable));
+        }
+
         public static string ResolveElementName(string name)
         {
             return name.Replace(k_spaceReplacementString, " ");

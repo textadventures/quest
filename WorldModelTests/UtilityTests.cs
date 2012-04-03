@@ -130,5 +130,60 @@ namespace WorldModelTests
             Assert.AreEqual("\"parameter 1\", \"parameter 2\"", Utility.GetParameter("msg (\"parameter 1\", \"parameter 2\")"));
             Assert.AreEqual("\"parameter with a bracket ) in a string\"", Utility.GetParameter("msg (\"parameter with a bracket ) in a string\")"));
         }
+
+        [TestMethod]
+        public void TestResolveObjectDotAttribute_Variable()
+        {
+            string name = "somevar";
+            string obj;
+            string variable;
+            Utility.ResolveObjectDotAttribute(name, out obj, out variable);
+            Assert.AreEqual(null, obj);
+            Assert.AreEqual("somevar", variable);
+        }
+
+        [TestMethod]
+        public void TestResolveObjectDotAttribute_OneObject()
+        {
+            string name = "someobject.somevar";
+            string obj;
+            string variable;
+            Utility.ResolveObjectDotAttribute(name, out obj, out variable);
+            Assert.AreEqual("someobject", obj);
+            Assert.AreEqual("somevar", variable);
+        }
+
+        [TestMethod]
+        public void TestResolveObjectDotAttribute_TwoObjects()
+        {
+            string name = "someobject.anotherobject.somevar";
+            string obj;
+            string variable;
+            Utility.ResolveObjectDotAttribute(name, out obj, out variable);
+            Assert.AreEqual("someobject.anotherobject", obj);
+            Assert.AreEqual("somevar", variable);
+        }
+
+        [TestMethod]
+        public void TestResolveObjectDotAttribute_ThreeObjects()
+        {
+            string name = "someobject.anotherobject.thirdobject.somevar";
+            string obj;
+            string variable;
+            Utility.ResolveObjectDotAttribute(name, out obj, out variable);
+            Assert.AreEqual("someobject.anotherobject.thirdobject", obj);
+            Assert.AreEqual("somevar", variable);
+        }
+
+        [TestMethod]
+        public void TestResolveObjectDotAttribute_ThreeObjectsAndSpaces()
+        {
+            string name = "some object.another object.thirdobject.some var";
+            string obj;
+            string variable;
+            Utility.ResolveObjectDotAttribute(name, out obj, out variable);
+            Assert.AreEqual("some object.another object.thirdobject", obj);
+            Assert.AreEqual("some var", variable);
+        }
     }
 }

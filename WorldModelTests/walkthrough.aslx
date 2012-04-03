@@ -6,6 +6,7 @@
     <list type="list">value1; value2; value3</list>
   </game>
   <object name="start">
+    <alias>oldalias</alias>
     <object name="player">
       <inherit name="defaultplayer" />
     </object>
@@ -63,6 +64,12 @@
     <pattern>destroy</pattern>
     <script>
       destroy ("lamp")
+    </script>
+  </command>
+  <command>
+    <pattern>set_player_dot_parent_dot_alias</pattern>
+    <script>
+      player.parent.alias = "newalias"
     </script>
   </command>
   <walkthrough name="debug">
@@ -139,6 +146,9 @@
       assert:GetObject("lamp") = null
       undo
       assert:GetObject("lamp") <> null
+      assert:player.parent.alias = "oldalias"
+      set_player_dot_parent_dot_alias
+      assert:player.parent.alias = "newalias"
       ]]>
     </steps>
   </walkthrough>
