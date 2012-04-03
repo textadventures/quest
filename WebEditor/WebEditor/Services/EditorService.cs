@@ -120,8 +120,24 @@ namespace WebEditor.Services
 
         void m_controller_RemovedNode(string key)
         {
-            m_elements.Remove(key);
+            List<string> keysToRemove = new List<string>();
+            PopulateTreeChildrenList(key, keysToRemove);
+            foreach (string removeKey in keysToRemove)
+            {
+                m_elements.Remove(removeKey);
+            }
             m_mustRefreshTree = true;
+        }
+
+        private void PopulateTreeChildrenList(string key, List<string> keys)
+        {
+            keys.Add(key);
+            foreach (string childKey in from treeItem in m_elements
+                                        where treeItem.Value.Parent != null && treeItem.Value.Parent.Key == key
+                                        select treeItem.Key)
+            {
+                PopulateTreeChildrenList(childKey, keys);
+            }
         }
 
         void m_controller_RenamedNode(string oldName, string newName)
