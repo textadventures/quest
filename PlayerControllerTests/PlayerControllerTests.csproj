@@ -3,16 +3,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
+    <ProductVersion>
+    </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5E626E4F-BB7A-4262-9EB3-B37069A1C844}</ProjectGuid>
+    <ProjectGuid>{B3C706FC-CC0B-4AC7-B233-90B552873787}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PlayerController</RootNamespace>
-    <AssemblyName>PlayerController</AssemblyName>
+    <RootNamespace>PlayerControllerTests</RootNamespace>
+    <AssemblyName>PlayerControllerTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,46 +33,38 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip.Reduced">
-      <HintPath>..\Dependencies\Ionic.Zip.Reduced.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameLauncher.cs" />
-    <Compile Include="GameQuery.cs" />
-    <Compile Include="PlayerHelper.cs" />
+    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
+      <Visible>False</Visible>
+    </CodeAnalysisDependentAssemblyPaths>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GameQueryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IASL\IASL.csproj">
       <Project>{BE34CB28-317F-4732-AA32-9D715B4F2C7E}</Project>
       <Name>IASL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Legacy\LegacyASL.vbproj">
-      <Project>{42EEDC11-C395-4CE8-80E3-057AF4100DDE}</Project>
-      <Name>LegacyASL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WorldModel\WorldModel\WorldModel.csproj">
-      <Project>{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}</Project>
-      <Name>WorldModel</Name>
+    <ProjectReference Include="..\PlayerController\PlayerController.csproj">
+      <Project>{5E626E4F-BB7A-4262-9EB3-B37069A1C844}</Project>
+      <Name>PlayerController</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="playercore.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="playercore.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="test1.quest" />
+    <None Include="test2.asl" />
+    <None Include="test1.asl" />
+    <None Include="test2.quest" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
