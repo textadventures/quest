@@ -80,6 +80,38 @@ namespace AxeSoftware.Quest
             }
         }
 
+        public string Category
+        {
+            get
+            {
+                if (m_v4Game != null)
+                {
+                    return null;
+                }
+                if (m_v5Game != null)
+                {
+                    return m_v5Game.Category;
+                }
+                throw new InvalidOperationException();
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                if (m_v4Game != null)
+                {
+                    return null;
+                }
+                if (m_v5Game != null)
+                {
+                    return m_v5Game.Description;
+                }
+                throw new InvalidOperationException();
+            }
+        }
+
         private class GameQueryUI : IPlayerHelperUI
         {
             public string GameName { get; private set; }

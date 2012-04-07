@@ -1562,20 +1562,9 @@ namespace AxeSoftware.Quest
         public string TempFolder { get; set; }
         internal OutputLogger OutputLogger { get { return m_outputLogger; } }
 
-        public int ASLVersion
-        {
-            get
-            {
-                return int.Parse(VersionString);
-            }
-        }
-
-        public string GameID
-        {
-            get
-            {
-                return m_game.Fields[FieldDefinitions.GameID];
-            }
-        }
+        public int ASLVersion { get { return int.Parse(VersionString); } }
+        public string GameID { get { return m_game.Fields[FieldDefinitions.GameID]; } }
+        public string Category { get { return m_game.Fields[FieldDefinitions.Category]; } }
+        public string Description { get { return m_game.Fields[FieldDefinitions.Description]; } }
     }
 }

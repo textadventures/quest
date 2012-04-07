@@ -24,6 +24,8 @@ namespace PlayerControllerTests
             Assert.AreEqual("Test ASL Game", query.GameName);
             Assert.AreEqual(410, query.ASLVersion);
             Assert.AreEqual(null, query.GameID);
+            Assert.AreEqual(null, query.Category);
+            Assert.AreEqual(null, query.Description);
         }
 
         [TestMethod]
@@ -41,6 +43,8 @@ namespace PlayerControllerTests
             Assert.AreEqual("Test ASLX Game", query.GameName);
             Assert.AreEqual(520, query.ASLVersion);
             Assert.AreEqual("33cb328d-bf80-42f7-a136-e916e7b45ed8", query.GameID);
+            Assert.AreEqual("Test Category", query.Category);
+            Assert.AreEqual("Test Description", query.Description);
         }
 
         [TestMethod]
