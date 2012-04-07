@@ -1569,5 +1569,13 @@ namespace AxeSoftware.Quest
                 return int.Parse(VersionString);
             }
         }
+
+        public string GameID
+        {
+            get
+            {
+                return m_game.Fields[FieldDefinitions.GameID];
+            }
+        }
     }
 }

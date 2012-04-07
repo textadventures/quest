@@ -108,6 +108,7 @@ namespace AxeSoftware.Quest
         public static IField<int> Interval = new FieldDef<int>("interval");
         public static IField<bool> Enabled = new FieldDef<bool>("enabled");
         public static IField<string> Separator = new FieldDef<string>("separator");
+        public static IField<string> GameID = new FieldDef<string>("gameid");
     }
 
     public static class MetaFieldDefinitions

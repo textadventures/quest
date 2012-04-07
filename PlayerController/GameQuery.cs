@@ -64,6 +64,22 @@ namespace AxeSoftware.Quest
             }
         }
 
+        public string GameID
+        {
+            get
+            {
+                if (m_v4Game != null)
+                {
+                    return null;
+                }
+                if (m_v5Game != null)
+                {
+                    return m_v5Game.GameID;
+                }
+                throw new InvalidOperationException();
+            }
+        }
+
         private class GameQueryUI : IPlayerHelperUI
         {
             public string GameName { get; private set; }

@@ -23,6 +23,7 @@ namespace PlayerControllerTests
             Assert.IsTrue(query.Initialise());
             Assert.AreEqual("Test ASL Game", query.GameName);
             Assert.AreEqual(410, query.ASLVersion);
+            Assert.AreEqual(null, query.GameID);
         }
 
         [TestMethod]
@@ -39,6 +40,7 @@ namespace PlayerControllerTests
             Assert.IsTrue(query.Initialise());
             Assert.AreEqual("Test ASLX Game", query.GameName);
             Assert.AreEqual(520, query.ASLVersion);
+            Assert.AreEqual("33cb328d-bf80-42f7-a136-e916e7b45ed8", query.GameID);
         }
 
         [TestMethod]
