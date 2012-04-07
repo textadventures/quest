@@ -11,6 +11,9 @@ namespace AxeSoftware.Quest
         private PlayerHelper m_helper;
         private GameQueryUI m_dummyUI = new GameQueryUI();
         private List<string> m_errors = new List<string>();
+        private IASL m_game;
+        private LegacyASL.LegacyGame m_v4Game;
+        private WorldModel m_v5Game;
 
         public GameQuery(string filename)
         {
@@ -19,8 +22,10 @@ namespace AxeSoftware.Quest
 
         public bool Initialise()
         {
-            IASL game = GameLauncher.GetGame(m_filename, null);
-            m_helper = new PlayerHelper(game, m_dummyUI);
+            m_game = GameLauncher.GetGame(m_filename, null);
+            m_v4Game = m_game as LegacyASL.LegacyGame;
+            m_v5Game = m_game as WorldModel;
+            m_helper = new PlayerHelper(m_game, m_dummyUI);
 
             try
             {
@@ -41,6 +46,22 @@ namespace AxeSoftware.Quest
         public string GameName
         {
             get { return m_dummyUI.GameName; }
+        }
+
+        public int ASLVersion
+        {
+            get
+            {
+                if (m_v4Game != null)
+                {
+                    return m_v4Game.ASLVersion;
+                }
+                if (m_v5Game != null)
+                {
+                    return m_v5Game.ASLVersion;
+                }
+                throw new InvalidOperationException();
+            }
         }
 
         private class GameQueryUI : IPlayerHelperUI

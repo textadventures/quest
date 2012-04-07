@@ -1560,7 +1560,14 @@ namespace AxeSoftware.Quest
         public WorldModelVersion Version { get; internal set; }
         internal string VersionString { get; set; }
         public string TempFolder { get; set; }
-
         internal OutputLogger OutputLogger { get { return m_outputLogger; } }
+
+        public int ASLVersion
+        {
+            get
+            {
+                return int.Parse(VersionString);
+            }
+        }
     }
 }

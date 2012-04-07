@@ -13553,4 +13553,10 @@ ErrorHandler:
             m_tempFolder = Value
         End Set
     End Property
+
+    Public ReadOnly Property ASLVersion As Integer
+        Get
+            Return GameASLVersion
+        End Get
+    End Property
 End Class

@@ -22,6 +22,7 @@ namespace PlayerControllerTests
             GameQuery query = new GameQuery(GetPath("test1.asl"));
             Assert.IsTrue(query.Initialise());
             Assert.AreEqual("Test ASL Game", query.GameName);
+            Assert.AreEqual(410, query.ASLVersion);
         }
 
         [TestMethod]
@@ -37,6 +38,7 @@ namespace PlayerControllerTests
             GameQuery query = new GameQuery(GetPath("test1.quest"));
             Assert.IsTrue(query.Initialise());
             Assert.AreEqual("Test ASLX Game", query.GameName);
+            Assert.AreEqual(520, query.ASLVersion);
         }
 
         [TestMethod]
@@ -45,6 +47,5 @@ namespace PlayerControllerTests
             GameQuery query = new GameQuery(GetPath("test2.quest"));
             Assert.IsFalse(query.Initialise());
         }
-
     }
 }
