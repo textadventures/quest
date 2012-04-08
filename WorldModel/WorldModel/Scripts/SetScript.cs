@@ -272,7 +272,7 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override string GetSaveString()
         {
-            return m_script.Save();
+            return SaveScript("", m_script).Trim();
         }
 
         protected override string GetEqualsString
