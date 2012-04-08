@@ -112,6 +112,14 @@ namespace AxeSoftware.Quest
             }
         }
 
+        public IEnumerable<string> Errors
+        {
+            get
+            {
+                return m_errors.AsReadOnly();
+            }
+        }
+
         private class GameQueryUI : IPlayerHelperUI
         {
             public string GameName { get; private set; }
