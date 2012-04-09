@@ -136,11 +136,14 @@ namespace AxeSoftware.Quest.Scripts
 
                 QuestList<string> paramNames = proc.Fields[FieldDefinitions.ParamNames];
 
-                if (m_parameters.Parameters.Count > paramNames.Count)
+                int paramCount = m_parameters.Parameters.Count;
+                if (m_paramFunction != null) paramCount++;
+
+                if (paramCount > paramNames.Count)
                 {
                     throw new Exception(string.Format("Too many parameters passed to {0} function - {1} passed, but only {2} expected",
                         m_procedure,
-                        m_parameters.Parameters.Count,
+                        paramCount,
                         paramNames.Count));
                 }
 
@@ -149,11 +152,12 @@ namespace AxeSoftware.Quest.Scripts
                     // Only check for too few parameters for games for Quest 5.2 or later, as previous Quest versions
                     // would ignore this (but would usually still fail when the function was run, as the required
                     // variable wouldn't exist)
-                    if (m_parameters.Parameters.Count < paramNames.Count)
+
+                    if (paramCount < paramNames.Count)
                     {
                         throw new Exception(string.Format("Too few parameters passed to {0} function - only {1} passed, but {2} expected",
                             m_procedure,
-                            m_parameters.Parameters.Count,
+                            paramCount,
                             paramNames.Count));
                     }
                 }
