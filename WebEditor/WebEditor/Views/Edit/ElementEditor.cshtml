@@ -43,6 +43,10 @@ Working...
             {
             <button type="button" id="button-delete">Delete</button>
             }
+            @if (Model.Name == "game")
+            {
+                <button type="button" id="button-publish">Publish</button>
+            }
         </div>
 
         <div class="elementEditorName">@Model.Name</div>
@@ -51,7 +55,7 @@ Working...
 
     @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm", OnComplete = "initialiseElementEditor", OnFailure = "ajaxError", OnBegin = "beginFormSubmit" }))
     {
-        <input type="hidden" name="_game_id" value="@Model.GameId" />
+        <input type="hidden" name="_game_id" id="_game_id" value="@Model.GameId" />
         <input type="hidden" name="_key" id="_key" value="@Model.Key" />
         <input type="hidden" name="_redirectToElement" id="_redirectToElement" value="@Model.Key" />
         <input type="hidden" name="_additionalAction" id="_additionalAction" value="" />

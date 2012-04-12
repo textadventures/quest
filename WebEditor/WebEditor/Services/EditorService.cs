@@ -2318,5 +2318,10 @@ namespace WebEditor.Services
                 return m_controller.EditorStyle == AxeSoftware.Quest.EditorStyle.GameBook ? "gamebook" : "textadventure";
             }
         }
+
+        public void Publish(string filename)
+        {
+            m_controller.Publish(filename, false);
+        }
     }
 }

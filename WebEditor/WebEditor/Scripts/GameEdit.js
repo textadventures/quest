@@ -771,6 +771,13 @@ function initialiseElementEditor(tab) {
     }).click(function () {
         toplevelAdditionalAction("main delete");
     });
+    $("#button-publish").button({
+        icons: { primary: "ui-icon-circle-arrow-n" }
+    }).click(function () {
+        var url = "/Edit/Publish/" + $("#_game_id").val();
+        window.open(url, "WebEditorPublish");
+        toplevelAdditionalAction("main publish");
+    });
     $(".elementLink").click(function () {
         var element = $(this).text();
         selectTreeNode(element);

@@ -6,6 +6,7 @@
   <add key="LibraryFolder" value="C:\Libraries\"/>
   <add key="TemplatesFolder" value="C:\Libraries\Templates\"/>
   <add key="PlayURL" value="http://path/to/WebPlayer/Play.aspx"/>
+  <add key="PublishURL" value="http://path/to/publish/app/"/>
 
   <!-- To enable logging, uncomment this line, and create a log config XML (see WebPlayerSettings.default.xml for example) -->
   <!-- <add key="LogConfig" value="C:\Path\To\Config\File\logging.xml"/> -->

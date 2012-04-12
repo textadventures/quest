@@ -254,5 +254,42 @@ namespace WebEditor.Controllers
             IEnumerable<string> files = System.IO.Directory.GetFiles(path).Select(f => System.IO.Path.GetFileName(f)).OrderBy(f => f);
             return string.Join(":", files);
         }
+
+        public ActionResult Publish(int id)
+        {
+            Services.EditorService editor = new Services.EditorService();
+            string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
+            string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
+            if (filename == null)
+            {
+                return View("Error");
+            }
+            var result = editor.Initialise(id, filename, libFolder, false);
+            if (!result.Success)
+            {
+                return View("Error");
+            }
+            
+            string outputFolder = System.IO.Path.Combine(
+                System.IO.Path.GetDirectoryName(filename),
+                "Output");
+            
+            System.IO.Directory.CreateDirectory(outputFolder);
+            
+            string outputFilename = System.IO.Path.Combine(
+                outputFolder,
+                System.IO.Path.GetFileNameWithoutExtension(filename) + ".quest");
+
+            if (System.IO.File.Exists(outputFilename))
+            {
+                System.IO.File.Delete(outputFilename);
+            }
+            
+            editor.Publish(outputFilename);
+
+            string url = ConfigurationManager.AppSettings["PublishURL"] + id;
+
+            return Redirect(url);
+        }
     }
 }
