@@ -28,6 +28,16 @@
     </changedparent>
   </type>
 
+  <type name="picture">
+  </type>
+
+  <type name="youtube">
+  </type>
+
+  <type name="link">
+    <address>http://</address>
+  </type>
+
   <template name="NothingToUndo">Nothing to undo!</template>
 
   <function name="InitInterface">
@@ -94,10 +104,15 @@
   </function>
 
   <function name="DoPage" parameters="page">
-    msg ("DoPage...")
+    <![CDATA[
     request (ClearScreen, "")
     if (HasString(player.parent, "picture")) {
       picture (player.parent.picture)
+      msg ("")
+    }
+    if (HasString(player.parent, "youtube")) {
+      request (RunScript, "AddYouTube; " + player.parent.youtube)
+      msg ("")
       msg ("")
     }
     msg (player.parent.description)
@@ -105,10 +120,22 @@
     msg ("")
     if (TypeOf(player.parent, "options") = "stringdictionary") {
       foreach (key, player.parent.options) {
-        msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+        destination = GetObject(key)
+        if (destination = null) {
+          msg (StringDictionaryItem(player.parent.options, key) + " (broken link)")
+        }
+        else {
+          if (DoesInherit(destination, "link")) {
+            msg ("<a href=\"" + destination.address + "\">" + StringDictionaryItem(player.parent.options, key) + "</a>")
+          }
+          else {
+            msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+          }
+        }
         msg ("")
       }
     }
+    ]]>
   </function>
 
   <function name="CommandLink" type="string" parameters="cmd, text">
