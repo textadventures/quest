@@ -107,7 +107,19 @@ namespace AxeSoftware.Quest
             {
                 value = wrapper.GetUnderlyingValue();
             }
+
+            string oldName = null;
+            if (attribute == "name")
+            {
+                oldName = m_element.Name;
+            }
+
             m_element.Fields.Set(attribute, value);
+
+            if (attribute == "name")
+            {
+                m_controller.UpdateDictionariesReferencingRenamedObject(oldName, (string)value);
+            }
 
             return new ValidationResult { Valid = true };
         }

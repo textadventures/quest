@@ -2207,5 +2207,44 @@ namespace AxeSoftware.Quest
             if (result.Length == 0) return string.Empty;
             return result;
         }
+
+        internal void UpdateDictionariesReferencingRenamedObject(string oldName, string newName)
+        {
+            // This function is used so we can safely rename gamebook pages and have the corresponding links
+            // be updated. Because these are stored as dictionary keys, they won't be updated automatically
+            // as they don't point directly to the object. So we need to scan all objects with any "affectable"
+            // string/script dictionaries (determined by their corresponding control having a source of "object",
+            // and update keys if necessary
+
+            EditorDefinition objectEditor = m_editorDefinitions["object"];
+            foreach (IEditorTab tab in objectEditor.Tabs.Values)
+            {
+                foreach (IEditorControl ctl in tab.Controls.Where(c => c.GetString("source") == "object"))
+                {
+                    // So now we know that we need to scan all objects in the game which have a dictionary for
+                    // ctl.Attribute, because the keys to this dictionary are object names.
+
+                    foreach (Element element in m_worldModel.Elements.GetElements(ElementType.Object))
+                    {
+                        object value = element.Fields.Get(ctl.Attribute);
+                        System.Collections.IDictionary dictionary = value as System.Collections.IDictionary;
+                        if (dictionary != null && dictionary.Contains(oldName))
+                        {
+                            object wrappedValue = WrapValue(value);
+                            IEditableDictionary<string> editableStringDictionary = wrappedValue as IEditableDictionary<string>;
+                            IEditableDictionary<IEditableScripts> editableScriptDictionary = wrappedValue as IEditableDictionary<IEditableScripts>;
+                            if (editableStringDictionary != null)
+                            {
+                                editableStringDictionary.ChangeKey(oldName, newName);
+                            }
+                            if (editableScriptDictionary != null)
+                            {
+                                editableScriptDictionary.ChangeKey(oldName, newName);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
