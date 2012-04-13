@@ -15,6 +15,7 @@
     <menuforeground>Black</menuforeground>
     <menuhoverbackground>LightGrey</menuhoverbackground>
     <menuhoverforeground>Black</menuhoverforeground>
+    <description type="string"></description>
   </type>
 
   <type name="defaultobject">
