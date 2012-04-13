@@ -46,8 +46,8 @@
             this.ctlToolStrip = new System.Windows.Forms.ToolStrip();
             this.lblAttributesTitle = new System.Windows.Forms.ToolStripLabel();
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
-            this.cmdDelete = new System.Windows.Forms.ToolStripButton();
             this.cmdOnChange = new System.Windows.Forms.ToolStripButton();
+            this.cmdDelete = new System.Windows.Forms.ToolStripButton();
             this.ctlMultiControl = new AxeSoftware.Quest.EditorControls.WFMultiControl();
             ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainerMain)).BeginInit();
             this.ctlSplitContainerMain.Panel1.SuspendLayout();
@@ -235,15 +235,6 @@
             this.cmdAdd.Text = "Add";
             this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
             // 
-            // cmdDelete
-            // 
-            this.cmdDelete.Image = ((System.Drawing.Image)(resources.GetObject("cmdDelete.Image")));
-            this.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(60, 22);
-            this.cmdDelete.Text = "Delete";
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
-            // 
             // cmdOnChange
             // 
             this.cmdOnChange.Image = ((System.Drawing.Image)(resources.GetObject("cmdOnChange.Image")));
@@ -252,6 +243,15 @@
             this.cmdOnChange.Size = new System.Drawing.Size(126, 22);
             this.cmdOnChange.Text = "Add Change Script";
             this.cmdOnChange.Click += new System.EventHandler(this.cmdOnChange_Click);
+            // 
+            // cmdDelete
+            // 
+            this.cmdDelete.Image = ((System.Drawing.Image)(resources.GetObject("cmdDelete.Image")));
+            this.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(60, 22);
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // ctlMultiControl
             // 
@@ -288,7 +288,6 @@
 
         #endregion
 
-        private System.Windows.Forms.SplitContainer ctlSplitContainer;
         internal System.Windows.Forms.ToolStrip ctlTypesToolStrip;
         internal System.Windows.Forms.ToolStripLabel ToolStripLabel2;
         internal System.Windows.Forms.ToolStripDropDownButton cmdAddType;
@@ -308,6 +307,7 @@
         private WFMultiControl ctlMultiControl;
         protected System.Windows.Forms.SplitContainer ctlSplitContainerMain;
         protected System.Windows.Forms.ToolStripButton cmdOnChange;
+        protected System.Windows.Forms.SplitContainer ctlSplitContainer;
 
     }
 }

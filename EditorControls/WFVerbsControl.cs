@@ -55,6 +55,7 @@ namespace AxeSoftware.Quest.EditorControls
         public WFVerbsControl()
         {
             ctlSplitContainerMain.Panel1Collapsed = true;
+            ctlSplitContainer.SplitterDistance = 125;
             lblAttributesTitle.Text = "Verbs";
             lblAttributesTitle.Width = 60;
             cmdOnChange.Available = false;
