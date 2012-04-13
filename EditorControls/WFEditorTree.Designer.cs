@@ -48,6 +48,7 @@
             this.AddRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddVerbToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,7 +63,6 @@
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlTreeView = new System.Windows.Forms.TreeView();
-            this.addPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctlToolStrip.SuspendLayout();
             this.pnlSearchContainer.SuspendLayout();
             this.ctlContextMenu.SuspendLayout();
@@ -250,6 +250,15 @@
             this.ctlContextMenu.Name = "ctlContextMenu";
             this.ctlContextMenu.Size = new System.Drawing.Size(200, 500);
             // 
+            // addPageToolStripMenuItem
+            // 
+            this.addPageToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addPageToolStripMenuItem.Image")));
+            this.addPageToolStripMenuItem.Name = "addPageToolStripMenuItem";
+            this.addPageToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.addPageToolStripMenuItem.Tag = "addpage";
+            this.addPageToolStripMenuItem.Text = "Add Page";
+            this.addPageToolStripMenuItem.Visible = false;
+            // 
             // AddExitToolStripMenuItem
             // 
             this.AddExitToolStripMenuItem.Name = "AddExitToolStripMenuItem";
@@ -348,14 +357,6 @@
             this.ctlTreeView.Name = "ctlTreeView";
             this.ctlTreeView.Size = new System.Drawing.Size(289, 292);
             this.ctlTreeView.TabIndex = 7;
-            // 
-            // addPageToolStripMenuItem
-            // 
-            this.addPageToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addPageToolStripMenuItem.Image")));
-            this.addPageToolStripMenuItem.Name = "addPageToolStripMenuItem";
-            this.addPageToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.addPageToolStripMenuItem.Tag = "addpage";
-            this.addPageToolStripMenuItem.Text = "Add Page";
             // 
             // WFEditorTree
             // 
