@@ -27,6 +27,7 @@ namespace AxeSoftware.Quest.EditorControls
             toolbar.IsItemSelected = false;
             m_helper = new ControlDataHelper<IEditableList<string>>(this);
             m_helper.Options.Resizable = true;
+            m_helper.Options.Scrollable = true;
             m_helper.Initialise += m_helper_Initialise;
         }
 
