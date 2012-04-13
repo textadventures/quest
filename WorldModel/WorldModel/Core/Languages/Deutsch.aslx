@@ -158,7 +158,7 @@
   <verbtemplate name="speakto">rede mit</verbtemplate>
   <verbtemplate name="open">öffne</verbtemplate>
   <verbtemplate name="close">schließe</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^lege (?<object>.*) (auf|in) (?<object2>.*)$]]></template>  
+  <template templatetype="command" name="put"><![CDATA[^lege (?<object1>.*) (auf|in) (?<object2>.*)$]]></template>  
   <template templatetype="command" name="removefrom"><![CDATA[^entferne (?<object1>.*) (von|aus) (?<object2>.*)$|^nimm (?<object1>.*) (von|aus) (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^frage (?<object>.*) nach (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^erzähle (?<object>.*) von (?<text>.*)$|^rede mit (?<object>.*) über (?<text>.*)$]]></template>
