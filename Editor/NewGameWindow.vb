@@ -47,6 +47,18 @@ Public Class NewGameWindow
     End Function
 
     Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
+        If System.IO.File.Exists(txtFilename.Text) Then
+            Dim result = MsgBox(String.Format("The file {0} already exists.{1}Would you like to overwrite it?", txtFilename.Text, Environment.NewLine + Environment.NewLine),
+                                MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNoCancel)
+            If result = MsgBoxResult.Yes Then
+                ' do nothing, file will be overwritten
+            ElseIf result = MsgBoxResult.No Then
+                ' browse for new file, and if user cancels Browse dialog then return
+                If Not BrowseForFile() Then Return
+            Else
+                Return
+            End If
+        End If
         Dim key As RegistryKey = Registry.CurrentUser.CreateSubKey(k_regPath)
         key.SetValue(k_regName, lstTemplate.Text)
         Me.Hide()
@@ -80,12 +92,19 @@ Public Class NewGameWindow
     End Sub
 
     Private Sub cmdBrowse_Click(sender As System.Object, e As System.EventArgs) Handles cmdBrowse.Click
+        BrowseForFile()
+    End Sub
+
+    Private Function BrowseForFile() As Boolean
         ctlSaveDialog.FileName = txtFilename.Text
         If ctlSaveDialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
             txtFilename.Text = ctlSaveDialog.FileName
             m_manualFilename = True
+            Return True
+        Else
+            Return False
         End If
-    End Sub
+    End Function
 
     Private Sub NewGameWindow_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
