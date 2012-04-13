@@ -365,7 +365,7 @@ namespace AxeSoftware.Quest
             Callback menuCallback = m_callbacks.Pop(CallbackManager.CallbackTypes.Menu);
             if (menuCallback != null)
             {
-                Print(" - " + m_menuOptions[response]);
+                if (response != null) Print(" - " + m_menuOptions[response]);
                 menuCallback.Context.Parameters["result"] = response;
                 m_menuOptions = null;
                 DoInNewThreadAndWait(() =>
