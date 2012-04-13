@@ -2006,8 +2006,29 @@ namespace AxeSoftware.Quest
 
                 if (regexPattern != null)
                 {
+                    bool isClash = false;
                     System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(regexPattern);
                     if (regex.IsMatch(verbPattern))
+                    {
+                        isClash = true;
+                        IDictionary<string, string> parseResult = Utility.Populate(regexPattern, verbPattern);
+
+                        // if verbPattern is "get in object", then it will match the regex for the "get" command -
+                        // but we still want to allow this to be added, as it's not "really" a clash. So, if the
+                        // potential clash only has one object group in its pattern, it's only a clash if the
+                        // match is the entire string "object". In the case of "get in", we will have object="in object",
+                        // so this can be allowed.
+
+                        if (parseResult.Count == 1)
+                        {
+                            var kvp = parseResult.First();
+                            if (kvp.Key.StartsWith("object") && kvp.Value != "object")
+                            {
+                                isClash = false;
+                            }
+                        }
+                    }
+                    if (isClash)
                     {
                         result.ClashingCommand = cmd.Name;
                         result.ClashingCommandDisplay = cmd.Name;
