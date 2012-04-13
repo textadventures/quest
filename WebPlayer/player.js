@@ -332,12 +332,16 @@ function stopTimer() {
     clearInterval(tmrTick);
 }
 
+var _submittingTimerTick = false;
+
 function timerTick() {
     tickCount++;
     if (sendNextGameTickerAfter > 0 && tickCount >= sendNextGameTickerAfter) {
         $("#fldUITickCount").val(getTickCountAndStopTimer());
         $("#fldUIMsg").val("tick");
+        _submittingTimerTick = true;
         $("#cmdSubmit").click();
+        _submittingTimerTick = false;
     }
 }
 

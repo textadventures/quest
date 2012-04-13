@@ -56,7 +56,11 @@
 	           		});
 		}
 
-		$(document).click(function(event) { if (event.button!=2) $("div[id^=jjmenu]").remove(); });
+        $(document).click(function (event) {
+            if (event.button != 2 && !_submittingTimerTick) {
+                $("div[id^=jjmenu]").remove();
+            }
+        });
 
         /* Menu obeject */
 		function menu(id,param,myReplaces,el,effect) {
