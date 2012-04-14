@@ -877,15 +877,18 @@ Public Class Editor
         m_menu.MenuEnabled("paste") = canPaste
         ctlToolbar.CanPaste = canPaste
 
-        Dim canCutCopy As Boolean = m_codeView OrElse m_controller.CanCopy(ctlTree.SelectedItem)
-        m_menu.MenuEnabled("cut") = canCutCopy
-        m_menu.MenuEnabled("copy") = canCutCopy
-        ctlToolbar.CanCutCopy = canCutCopy
+        Dim canCopy As Boolean = m_codeView OrElse m_controller.CanCopy(ctlTree.SelectedItem)
+        m_menu.MenuEnabled("copy") = canCopy
+        ctlToolbar.CanCopy = canCopy
 
         Dim canDelete As Boolean = (Not m_codeView) AndAlso m_controller.CanDelete(ctlTree.SelectedItem)
         m_menu.MenuEnabled("delete") = canDelete
         ctlTree.SetMenuEnabled("delete", canDelete)
         ctlToolbar.CanDelete = canDelete
+
+        Dim canCut As Boolean = canCopy And canDelete
+        m_menu.MenuEnabled("cut") = canCut
+        ctlToolbar.CanCut = canCut
     End Sub
 
     Public Sub SetWindowTitle()

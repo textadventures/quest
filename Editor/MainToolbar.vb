@@ -39,10 +39,15 @@ Public Class MainToolbar
         Me.Height = ctlToolStrip.Height
     End Sub
 
-    Public WriteOnly Property CanCutCopy() As Boolean
+    Public WriteOnly Property CanCut() As Boolean
+        Set(value As Boolean)
+            butCut.Enabled = value
+        End Set
+    End Property
+
+    Public WriteOnly Property CanCopy() As Boolean
         Set(value As Boolean)
             butCopy.Enabled = value
-            butCut.Enabled = value
         End Set
     End Property
 
