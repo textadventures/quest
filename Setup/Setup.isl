@@ -1949,6 +1949,8 @@
 		<row><td>english.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>ENGLIS~1.TEM|English.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\English.template</td><td>1</td><td/></row>
 		<row><td>espanol.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ESPANO~1.ASL|Espanol.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Espanol.aslx</td><td>1</td><td/></row>
 		<row><td>espanol.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>ESPANO~1.TEM|Espanol.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Espanol.template</td><td>1</td><td/></row>
+		<row><td>esperanto.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ESPERA~1.ASL|Esperanto.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Esperanto.aslx</td><td>1</td><td/></row>
+		<row><td>esperanto.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>ESPERA~1.TEM|Esperanto.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Esperanto.template</td><td>1</td><td/></row>
 		<row><td>francais.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>FRANCA~1.ASL|Francais.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Francais.aslx</td><td>1</td><td/></row>
 		<row><td>francais.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>FRANCA~1.TEM|Francais.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Francais.template</td><td>1</td><td/></row>
 		<row><td>gamebook.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>GAMEBO~1.TEM|Gamebook.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Gamebook.template</td><td>1</td><td/></row>
@@ -4583,7 +4585,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{DD07E184-F74C-4858-9A5A-458BDD703FD7}</td><td/></row>
+		<row><td>ProductCode</td><td>{FDC95E1A-27D2-4F20-9985-7B956AB4BD42}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
 		<row><td>ProductVersion</td><td>5.20.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
