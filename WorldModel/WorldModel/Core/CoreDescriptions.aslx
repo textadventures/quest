@@ -92,35 +92,44 @@
         }
       }
     }
-    if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "beforefirstenter")) {
-      do (player.parent, "beforefirstenter")
-    }
+    
+    on ready {
+      if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "beforefirstenter")) {
+        do (player.parent, "beforefirstenter")
+      }
   
-    if (HasScript(player.parent, "beforeenter")) {
-      do (player.parent, "beforeenter")
-    }
-  
-    request (UpdateLocation, CapFirst(GetDisplayName(player.parent)))
-    roomFrameExists = false
-    if (HasString(player.parent, "picture")) {
-      if (LengthOf(player.parent.picture) > 0) {
-        roomFrameExists = true
-        SetFramePicture(player.parent.picture)
+      on ready {
+        if (HasScript(player.parent, "beforeenter")) {
+          do (player.parent, "beforeenter")
+        }
+    
+        on ready {
+          request (UpdateLocation, CapFirst(GetDisplayName(player.parent)))
+          roomFrameExists = false
+          if (HasString(player.parent, "picture")) {
+            if (LengthOf(player.parent.picture) > 0) {
+              roomFrameExists = true
+              SetFramePicture(player.parent.picture)
+            }
+          }
+          if (game.clearframe and not roomFrameExists) {
+            ClearFramePicture
+          }
+          if (game.showdescriptiononenter) {
+            ShowRoomDescription
+          }
+          if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "firstenter")) {
+            do (player.parent, "firstenter")
+          }
+          on ready {
+            if (HasScript(player.parent, "enter")) {
+              do (player.parent, "enter")
+            }
+          }
+          set (player.parent, "visited", true)
+        }
       }
     }
-    if (game.clearframe and not roomFrameExists) {
-      ClearFramePicture
-    }
-    if (game.showdescriptiononenter) {
-      ShowRoomDescription
-    }
-    if ((not GetBoolean(player.parent, "visited")) and HasScript(player.parent, "firstenter")) {
-      do (player.parent, "firstenter")
-    }
-    if (HasScript(player.parent, "enter")) {
-      do (player.parent, "enter")
-    }
-    set (player.parent, "visited", true)
     ]]>
   </function>
 

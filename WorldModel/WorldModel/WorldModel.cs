@@ -1540,7 +1540,14 @@ namespace AxeSoftware.Quest
 
         internal void AddOnReady(IScript callback, Context c)
         {
-            m_callbacks.AddOnReadyCallback(new Callback(callback, c));
+            if (!m_callbacks.AnyOutstanding())
+            {
+                RunScript(callback, c);
+            }
+            else
+            {
+                m_callbacks.AddOnReadyCallback(new Callback(callback, c));
+            }
         }
 
         internal RegexCache RegexCache { get { return m_regexCache; } }
