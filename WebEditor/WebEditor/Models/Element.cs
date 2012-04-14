@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using AxeSoftware.Quest;
 using System.Web.Mvc;
+using System.Text.RegularExpressions;
 
 namespace WebEditor.Models
 {
@@ -153,7 +154,7 @@ namespace WebEditor.Models
                     saveValue = intValue;
                     break;
                 case "richtext":
-                    saveValue = HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, attribute));
+                    saveValue = StripHTMLComments(HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, attribute)));
                     break;
                 case "checkbox":
                     ValueProviderResult value = bindingContext.ValueProvider.GetValue(attribute);
@@ -499,6 +500,11 @@ namespace WebEditor.Models
                 Microsoft.Web.Infrastructure.DynamicValidationHelper.ValidationUtility.GetUnvalidatedCollections(HttpContext.Current, out formGetter, out queryStringGetter);
                 return formGetter().Get(key);
             }
+        }
+
+        private string StripHTMLComments(string input)
+        {
+            return Regex.Replace(input, "<!--.*?-->", string.Empty, RegexOptions.Singleline);
         }
     }
 }
