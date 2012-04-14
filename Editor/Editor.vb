@@ -717,12 +717,13 @@ Public Class Editor
     End Sub
 
     Private Sub Cut()
-        If m_codeView Then
-            ctlTextEditor.Cut()
-        Else
-            m_controller.CutElements({ctlTree.SelectedItem})
-            UpdateClipboardButtons()
-        End If
+        ' Disabled. See Issue Tracker #1062
+        'If m_codeView Then
+        '    ctlTextEditor.Cut()
+        'Else
+        '    m_controller.CutElements({ctlTree.SelectedItem})
+        '    UpdateClipboardButtons()
+        'End If
     End Sub
 
     Private Sub Copy()
@@ -886,9 +887,12 @@ Public Class Editor
         ctlTree.SetMenuEnabled("delete", canDelete)
         ctlToolbar.CanDelete = canDelete
 
-        Dim canCut As Boolean = canCopy And canDelete
-        m_menu.MenuEnabled("cut") = canCut
-        ctlToolbar.CanCut = canCut
+        ' "Cut" is disabled - see Issue Tracker #1062
+        'Dim canCut As Boolean = canCopy And canDelete
+        'm_menu.MenuEnabled("cut") = canCut
+        'ctlToolbar.CanCut = canCut
+
+        m_menu.MenuVisible("cut") = False
     End Sub
 
     Public Sub SetWindowTitle()

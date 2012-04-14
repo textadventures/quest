@@ -169,11 +169,11 @@ function initialiseButtons() {
         toplevelAdditionalAction("main redo");
     });
     $("#buttonset-undoredo").buttonset();
-    $("#button-cut").button({
-        icons: { primary: "ui-icon-scissors" }
-    }).click(function () {
-        toplevelAdditionalAction("main cut");
-    });
+//    $("#button-cut").button({
+//        icons: { primary: "ui-icon-scissors" }
+//    }).click(function () {
+//        toplevelAdditionalAction("main cut");
+//    });
     $("#button-copy").button({
         icons: { primary: "ui-icon-copy" }
     }).click(function () {
@@ -918,7 +918,7 @@ function updateEnabledButtons(buttons) {
     updateButton(enabledButtons, "undo", $("#button-undo"));
     updateButton(enabledButtons, "redo", $("#button-redo"));
     updateButton(enabledButtons, "delete", $("#button-delete"));
-    updateButton(enabledButtons, "cut", $("#button-cut"));
+    //updateButton(enabledButtons, "cut", $("#button-cut"));
     updateButton(enabledButtons, "copy", $("#button-copy"));
     updateButton(enabledButtons, "paste", $("#button-paste"));
 }

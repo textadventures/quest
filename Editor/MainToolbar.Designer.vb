@@ -111,6 +111,7 @@ Partial Class MainToolbar
         Me.butCut.Size = New System.Drawing.Size(23, 22)
         Me.butCut.Tag = "cut"
         Me.butCut.Text = "C&ut"
+        Me.butCut.Visible = False
         '
         'butCopy
         '

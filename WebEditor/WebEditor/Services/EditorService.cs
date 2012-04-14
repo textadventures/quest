@@ -1201,12 +1201,12 @@ namespace WebEditor.Services
                         m_controller.Redo();
                     }
                     break;
-                case "cut":
-                    if (m_controller.CanCopy(key))
-                    {
-                        m_controller.CutElements(new string[] { key });
-                    }
-                    break;
+                //case "cut":
+                //    if (m_controller.CanCopy(key))
+                //    {
+                //        m_controller.CutElements(new string[] { key });
+                //    }
+                //    break;
                 case "copy":
                     if (m_controller.CanCopy(key))
                     {
