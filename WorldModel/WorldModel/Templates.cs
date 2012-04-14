@@ -36,7 +36,17 @@ namespace AxeSoftware.Quest
 
         public string GetText(string t)
         {
-            if (!m_templateLookup.ContainsKey(t)) throw new Exception(string.Format("No template named '{0}'", t));
+            if (!m_templateLookup.ContainsKey(t))
+            {
+                if (m_worldModel.EditMode)
+                {
+                    return string.Format("{{UNKNOWN TEMPLATE: {0}}}", t);
+                }
+                else
+                {
+                    throw new Exception(string.Format("No template named '{0}'", t));
+                }
+            }
             return m_templateLookup[t].Fields[FieldDefinitions.Text];
         }
 
