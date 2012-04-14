@@ -4,6 +4,8 @@
   <!-- Get any undefined templates from the English library -->
 
   <include ref="English.aslx"/>
+  <template name="LanguageId">es</template>
+
   <template name="UnresolvedObject">No veo eso.</template>
   <template name="UnresolvedLocation">No puedes ir por ahí.</template>
   <template name="DefaultObjectDescription">Nada fuera de lo común.</template>

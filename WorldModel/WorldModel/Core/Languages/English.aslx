@@ -1,4 +1,5 @@
 <library>
+  <template name="LanguageId">en</template>
   <template name="UnresolvedObject">I can't see that.</template>
   <template name="UnresolvedLocation">You can't go there.</template>
   <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>

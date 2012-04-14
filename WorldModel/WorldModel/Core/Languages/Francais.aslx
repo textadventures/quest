@@ -1,5 +1,7 @@
 <library>
   <include ref="English.aslx"/>
+  <template name="LanguageId">fr</template>
+
   <template name="UnresolvedObject">[Objet introuvable. Vérifiez l'article de l'élément, et sa présence dans le lieu où vous vous trouvez. Si vous n'êtes pas sûr d'une commande, tapez "aide".]</template>
   <template name="UnresolvedLocation">Vous ne pouvez pas y aller.</template>
   <template name="DefaultObjectDescription">Vous ne voyez rien d'extraordinaire.</template>

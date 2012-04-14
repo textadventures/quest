@@ -3,6 +3,8 @@
 <!-- Esperanto.aslx version  0.003 -->
     
   <include ref="English.aslx"/>
+  <template name="LanguageId">eo</template>
+
   <template name="UnresolvedObject">Mi ne vidas tion.</template>
   <template name="UnresolvedLocation">Vi ne povas iri tien.</template>
   <template name="DefaultObjectDescription">Nenio eksterordinare.</template>

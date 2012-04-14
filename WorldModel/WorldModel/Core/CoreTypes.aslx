@@ -31,6 +31,7 @@
     <autodescription_description type="int">4</autodescription_description>
     <autodescription_youarein_useprefix/>
     <description type="string"></description>
+    <languageid>[LanguageId]</languageid>
   </type>
 
   <type name="defaultobject">

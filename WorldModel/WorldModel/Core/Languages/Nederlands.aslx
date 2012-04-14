@@ -1,6 +1,7 @@
 ﻿<library>
   <!-- Get any undefined templates from the English library -->
   <include ref="English.aslx"/>
+  <template name="LanguageId">nl</template>
   
   <!-- Contributed by Lina Anna -->
   <template name="UnresolvedObject">Ik zie dat hier niet.</template>
