@@ -170,14 +170,19 @@ window.gridApi = {};
 window.gridApi.onLoad = function () {
 };
 
+_canvasSupported = (window.HTMLCanvasElement);
+
 function DrawGrid(minX, minY, maxX, maxY) {
+    if (!_canvasSupported) return;
     gridApi.drawGrid(parseInt(minX), parseInt(minY), parseInt(maxX), parseInt(maxY));
 }
 
 function Grid_SetScale(scale) {
+    if (!_canvasSupported) return;
     gridApi.setScale(parseInt(scale));
 }
 
 function Grid_DrawBox(x, y, width, height, border, borderWidth, fill) {
+    if (!_canvasSupported) return;
     gridApi.drawBox(parseInt(x), parseInt(y), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill);
 }
