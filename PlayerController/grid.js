@@ -1,5 +1,6 @@
 var scale, gridX, gridY, offset, player
 var playerVector, playerDestination;
+var offsetVector, offsetDestination;
 var offsetX = 5;
 var offsetY = 5;
 var allPaths = new Array();
@@ -12,12 +13,16 @@ gridApi.setScale = function (newScale) {
 }
 
 function onMouseDrag(event) {
-    offset += event.delta;
-	for (var i = 0; i < allPaths.length; i++) {
-		allPaths[i].position += event.delta;
-	}
+    updateOffset(event.delta);
+}
+
+function updateOffset(delta) {
+    offset += delta;
+    for (var i = 0; i < allPaths.length; i++) {
+        allPaths[i].position += delta;
+    }
     if (playerDestination) {
-        playerDestination += event.delta;
+        playerDestination += delta;
     }
 }
 
@@ -31,6 +36,24 @@ function onFrame(event) {
             player.position = playerDestination;
             playerVector = null;
             playerDestination = null;
+
+            playerPositionAbsolute = player.position - offset;
+            offsetDestinationX = ($("#gridPanel").width() / 2) - playerPositionAbsolute.x;
+            offsetDestinationY = ($("#gridPanel").height() / 2) - playerPositionAbsolute.y;
+
+            offsetDestination = new Point(offsetDestinationX, offsetDestinationY);
+            offsetVector = (offsetDestination-offset) / 10;
+        }
+    }
+    if (offsetVector) {
+        var distance = offset - offsetDestination;
+        if (distance.length > offsetVector.length) {
+            updateOffset(offsetVector);
+        }
+        else {
+            updateOffset(offsetDestination-offset);
+            offsetVector = null;
+            offsetDestination = null;
         }
     }
 }
