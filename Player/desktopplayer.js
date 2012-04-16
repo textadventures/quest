@@ -25,6 +25,7 @@ function UIEvent(cmd, parameter) {
 function SetBackground(color) {
     document.body.style.background = color;
     $("#gamePanel").css("background-color", color);
+    $("#gridPanel").css("background-color", color);
 }
 
 function gameFinished() {

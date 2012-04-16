@@ -38,6 +38,7 @@ function setBackground(col) {
     $("#gameBorder").css("background-color", col);
     $("#txtCommandDiv").css("background-color", col);
     $("#gamePanel").css("background-color", col);
+    $("#gridPanel").css("background-color", col);
 }
 
 function setPanelHeight() {
