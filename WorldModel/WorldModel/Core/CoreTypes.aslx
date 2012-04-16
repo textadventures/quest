@@ -82,6 +82,8 @@
       }      
     </changedswitchedon>
     <volume type="int">0</volume>
+    <grid_width type="int">1</grid_width>
+    <grid_length type="int">1</grid_length>
   </type>
 
   <type name="defaultexit">

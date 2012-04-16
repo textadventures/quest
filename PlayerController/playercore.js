@@ -177,3 +177,7 @@ function DrawGrid(minX, minY, maxX, maxY) {
 function Grid_SetScale(scale) {
     gridApi.setScale(parseInt(scale));
 }
+
+function Grid_DrawBox(x, y, width, height, border, borderWidth, fill) {
+    gridApi.drawBox(parseInt(x), parseInt(y), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill);
+}

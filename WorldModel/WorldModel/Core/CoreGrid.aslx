@@ -6,4 +6,13 @@
   <function name="Grid_SetScale" parameters="scale">
     request (RunScript, "Grid_SetScale; " + scale)
   </function>
+
+  <function name="Grid_CalculateExitCoordinates" parameters="room">
+    // go through all exits in room, set x,y co-ordinates for the rooms they point to
+  </function>
+
+  <function name="Grid_DrawRoom" parameters="room">
+    // Grid_DrawBox(x, y, width, height, border, borderWidth, fill)
+    request (RunScript, "Grid_DrawBox;" + room.grid_x + ";" + room.grid_y + ";" + room.grid_width + ";" + room.grid_length + ";black;2;red")
+  </function>
 </library>

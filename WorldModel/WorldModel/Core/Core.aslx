@@ -71,6 +71,12 @@
     if (HasScript(game, "start")) do (game, "start")
     UpdateStatusAttributes
     on ready {
+      if (game.gridmap) {
+        player.parent.grid_x = 0
+        player.parent.grid_y = 0
+        Grid_CalculateExitCoordinates (player.parent)
+        Grid_DrawRoom (player.parent)
+      }
       if (game.displayroomdescriptiononstart) {
         OnEnterRoom (null)
       }
