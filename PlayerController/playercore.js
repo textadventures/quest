@@ -186,3 +186,8 @@ function Grid_DrawBox(x, y, width, height, border, borderWidth, fill) {
     if (!_canvasSupported) return;
     gridApi.drawBox(parseInt(x), parseInt(y), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill);
 }
+
+function Grid_DrawPlayer(x, y, radius, border, borderWidth, fill) {
+    if (!_canvasSupported) return;
+    gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseInt(radius), border, parseInt(borderWidth), fill);
+}

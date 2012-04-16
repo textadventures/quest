@@ -1,4 +1,4 @@
-var scale, gridX, gridY, offset;
+var scale, gridX, gridY, offset, player;
 var offsetX = 5;
 var offsetY = 5;
 var allPaths = new Array();
@@ -59,6 +59,22 @@ gridApi.drawBox = function(x, y, width, height, border, borderWidth, fill) {
 	path.add(gridPoint(x, y + height));
 	path.closed = true;
 	allPaths.push(path);
+}
+
+gridApi.drawPlayer = function (x, y, radius, border, borderWidth, fill) {
+    if (!player) {
+        player = new Path.Circle(gridPoint(x, y), radius);
+        player.strokeColor = border;
+        player.strokeWidth = borderWidth;
+        player.fillColor = fill;
+        player.fillColor = fill;
+        allPaths.push(player);
+    }
+    else {
+        player.position = gridPoint(x, y);
+        // move player to the end of the activeLayer so it gets drawn on top
+        project.activeLayer.addChild(player);
+    }
 }
 
 gridApi.onLoad();
