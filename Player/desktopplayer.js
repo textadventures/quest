@@ -36,6 +36,7 @@ function disableMainScrollbar() {
 }
 
 function setPanelHeight() {
+    if (_showGrid) return;
     setTimeout(function () {
         var height = $("#gamePanel").height();
         if ($("#gamePanel").html() == "") {

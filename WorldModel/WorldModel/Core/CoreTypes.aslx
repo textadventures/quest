@@ -32,6 +32,7 @@
     <autodescription_youarein_useprefix/>
     <description type="string"></description>
     <languageid>[LanguageId]</languageid>
+    <gridmap type="boolean">false</gridmap>
   </type>
 
   <type name="defaultobject">

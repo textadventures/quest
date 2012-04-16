@@ -299,6 +299,12 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>Show map</caption>
+        <attribute>gridmap</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>Clear picture panel if room has no picture</caption>
         <attribute>clearframe</attribute>
       </control>

@@ -56,6 +56,9 @@
     if (HasString(game, "panelcontents")) {
       SetFramePicture (game.panelcontents)
     }
+    if (game.gridmap) {
+      request (RunScript, "ShowGrid; 300")
+    }
   </function>
 
   <function name="StartGame">

@@ -1,5 +1,6 @@
 ﻿var _currentDiv = null;
 var _allowMenuFontSizeChange = true;
+var _showGrid = false;
 
 function addText(text) {
     if (_currentDiv == null) {
@@ -151,4 +152,11 @@ function addCSSRule(ruleName) {
         }
     }
     return getCSSRule(ruleName);
+}
+
+function ShowGrid(height) {
+    _showGrid = (height > 0);
+    $("#gridPanel").show();
+    $("#gridPanel").height(height);
+    $("#gamePanelSpacer").height(height);
 }
