@@ -442,6 +442,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Core\CoreEditorObjectMap.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="Examples-Public\demo\YouTube.js" />
     <Content Include="Examples-Public\twohalves\twohalves.htm" />
     <Content Include="Examples-Public\twohalves\twohalves.js" />

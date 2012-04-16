@@ -308,6 +308,7 @@
         <onlydisplayif>game.gridmap</onlydisplayif>
         <attribute>mapscale</attribute>
         <caption>Scale</caption>
+        <minimum>1</minimum>
       </control>
 
       <control>

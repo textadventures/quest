@@ -1,0 +1,22 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Map</caption>
+    <mustnotinherit>editor_object; defaultplayer</mustnotinherit>
+
+    <control>
+      <controltype>number</controltype>
+      <minimum>1</minimum>
+      <attribute>grid_width</attribute>
+      <caption>Width</caption>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <minimum>1</minimum>
+      <attribute>grid_length</attribute>
+      <caption>Length</caption>
+    </control>
+
+  </tab>
+</library>
