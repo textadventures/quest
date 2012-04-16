@@ -1,4 +1,5 @@
-var scale, gridX, gridY, offset, player;
+var scale, gridX, gridY, offset, player
+var playerVector, playerDestination;
 var offsetX = 5;
 var offsetY = 5;
 var allPaths = new Array();
@@ -14,11 +15,24 @@ function onMouseDrag(event) {
     offset += event.delta;
 	for (var i = 0; i < allPaths.length; i++) {
 		allPaths[i].position += event.delta;
-	};
+	}
+    if (playerDestination) {
+        playerDestination += event.delta;
+    }
 }
 
-// dummy onFrame function ensures that canvas is redrawn immediately, not just when the mouse moves
 function onFrame(event) {
+    if (playerVector) {
+        var distance = player.position - playerDestination;
+        if (distance.length > playerVector.length) {
+            player.position += playerVector;
+        }
+        else {
+            player.position = playerDestination;
+            playerVector = null;
+            playerDestination = null;
+        }
+    }
 }
 
 gridApi.drawGrid = function (minX, minY, maxX, maxY) {
@@ -71,7 +85,8 @@ gridApi.drawPlayer = function (x, y, radius, border, borderWidth, fill) {
         allPaths.push(player);
     }
     else {
-        player.position = gridPoint(x, y);
+        playerDestination = gridPoint(x, y);
+        playerVector = (playerDestination - player.position) / 10;
         // move player to the end of the activeLayer so it gets drawn on top
         project.activeLayer.addChild(player);
     }
