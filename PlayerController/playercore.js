@@ -187,6 +187,11 @@ function Grid_DrawBox(x, y, width, height, border, borderWidth, fill) {
     gridApi.drawBox(parseFloat(x), parseFloat(y), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill);
 }
 
+function Grid_DrawLine(x1, y1, x2, y2, border, borderWidth) {
+    if (!_canvasSupported) return;
+    gridApi.drawLine(parseFloat(x1), parseFloat(y1), parseFloat(x2), parseFloat(y2), border, parseInt(borderWidth));
+}
+
 function Grid_DrawPlayer(x, y, radius, border, borderWidth, fill) {
     if (!_canvasSupported) return;
     gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseInt(radius), border, parseInt(borderWidth), fill);

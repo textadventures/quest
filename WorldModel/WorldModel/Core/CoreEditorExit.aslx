@@ -102,6 +102,17 @@
     </tab>
 
     <tab>
+      <caption>Map</caption>
+
+      <control>
+        <controltype>number</controltype>
+        <minimum>0</minimum>
+        <attribute>grid_length</attribute>
+        <caption>Length</caption>
+      </control>
+    </tab>
+
+    <tab>
       <caption>Attributes</caption>
       <desktop/>
 

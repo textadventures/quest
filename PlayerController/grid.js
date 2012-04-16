@@ -108,6 +108,15 @@ gridApi.drawBox = function (x, y, width, height, border, borderWidth, fill) {
     allPaths.push(path);
 }
 
+gridApi.drawLine = function (x1, y1, x2, y2, border, borderWidth) {
+    var path = new Path;
+    path.strokeColor = border;
+    path.strokeWidth = borderWidth;
+    path.add(gridPoint(x1, y1));
+    path.add(gridPoint(x2, y2));
+    allPaths.push(path);
+}
+
 gridApi.drawPlayer = function (x, y, radius, border, borderWidth, fill) {
     if (!player) {
         player = new Path.Circle(gridPoint(x, y), radius);

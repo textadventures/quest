@@ -94,6 +94,7 @@
     <locked type="boolean">false</locked>
     <lockmessage>[LockedExit]</lockmessage>
     <lookonly type="boolean">false</lookonly>
+    <grid_length type="int">1</grid_length>
   </type>
 
   <type name="direction">
