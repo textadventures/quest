@@ -184,7 +184,7 @@ function Grid_SetScale(scale) {
 
 function Grid_DrawBox(x, y, width, height, border, borderWidth, fill) {
     if (!_canvasSupported) return;
-    gridApi.drawBox(parseInt(x), parseInt(y), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill);
+    gridApi.drawBox(parseFloat(x), parseFloat(y), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill);
 }
 
 function Grid_DrawPlayer(x, y, radius, border, borderWidth, fill) {
