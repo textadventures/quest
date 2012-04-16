@@ -33,6 +33,7 @@
     <description type="string"></description>
     <languageid>[LanguageId]</languageid>
     <gridmap type="boolean">false</gridmap>
+    <mapscale type="int">30</mapscale>
   </type>
 
   <type name="defaultobject">

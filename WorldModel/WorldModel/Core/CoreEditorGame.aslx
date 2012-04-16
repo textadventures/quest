@@ -304,6 +304,13 @@
       </control>
 
       <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <attribute>mapscale</attribute>
+        <caption>Scale</caption>
+      </control>
+
+      <control>
         <controltype>checkbox</controltype>
         <caption>Clear picture panel if room has no picture</caption>
         <attribute>clearframe</attribute>

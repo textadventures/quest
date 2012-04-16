@@ -59,6 +59,7 @@
     }
     if (game.gridmap) {
       request (RunScript, "ShowGrid; 300")
+      Grid_SetScale (game.mapscale)
       DrawMap
     }
   </function>

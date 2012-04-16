@@ -1,11 +1,14 @@
-var scale = 50;
+var scale, gridX, gridY, offset;
 var offsetX = 5;
 var offsetY = 5;
-
-var gridX = new Point(scale, 0);
-var gridY = new Point(0, scale);
-var offset = new Point(offsetX * scale, offsetY * scale)
 var allPaths = new Array();
+
+gridApi.setScale = function (newScale) {
+    scale = newScale;
+    gridX = new Point(scale, 0);
+    gridY = new Point(0, scale);
+    offset = new Point(offsetX * scale, offsetY * scale);
+}
 
 function onMouseDrag(event) {
 	for (var i = 0; i < allPaths.length; i++) {

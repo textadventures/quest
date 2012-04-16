@@ -173,3 +173,7 @@ window.gridApi.onLoad = function () {
 function DrawGrid(minX, minY, maxX, maxY) {
     gridApi.drawGrid(parseInt(minX), parseInt(minY), parseInt(maxX), parseInt(maxY));
 }
+
+function Grid_SetScale(scale) {
+    gridApi.setScale(parseInt(scale));
+}

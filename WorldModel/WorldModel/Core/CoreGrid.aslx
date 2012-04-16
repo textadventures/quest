@@ -2,4 +2,8 @@
   <function name="DrawMap">
     request (RunScript, "DrawGrid; -4; -4; 10; 10")
   </function>
+
+  <function name="Grid_SetScale" parameters="scale">
+    request (RunScript, "Grid_SetScale; " + scale)
+  </function>
 </library>
