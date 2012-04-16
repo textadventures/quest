@@ -11,6 +11,7 @@ gridApi.setScale = function (newScale) {
 }
 
 function onMouseDrag(event) {
+    offset += event.delta;
 	for (var i = 0; i < allPaths.length; i++) {
 		allPaths[i].position += event.delta;
 	};
