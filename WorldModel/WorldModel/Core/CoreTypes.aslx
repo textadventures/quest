@@ -84,6 +84,9 @@
     <volume type="int">0</volume>
     <grid_width type="int">1</grid_width>
     <grid_length type="int">1</grid_length>
+    <grid_fill>White</grid_fill>
+    <grid_border>Black</grid_border>
+    <grid_borderwidth type="int">1</grid_borderwidth>
   </type>
 
   <type name="defaultexit">

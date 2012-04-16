@@ -18,5 +18,27 @@
       <caption>Length</caption>
     </control>
 
+    <control>
+      <controltype>dropdown</controltype>
+      <caption>Fill colour</caption>
+      <attribute>grid_fill</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <caption>Border colour</caption>
+      <attribute>grid_border</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <minimum>1</minimum>
+      <attribute>grid_borderwidth</attribute>
+      <caption>Border width</caption>
+    </control>
   </tab>
 </library>

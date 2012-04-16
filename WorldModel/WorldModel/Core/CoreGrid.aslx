@@ -47,7 +47,7 @@
   <function name="Grid_DrawRoom" parameters="room">
     // Grid_DrawBox(x, y, width, height, border, borderWidth, fill)
     if (not GetBoolean(room, "grid_isdrawn")) {
-      request (RunScript, "Grid_DrawBox;" + room.grid_x + ";" + room.grid_y + ";" + room.grid_width + ";" + room.grid_length + ";black;2;red")
+      request (RunScript, "Grid_DrawBox;" + room.grid_x + ";" + room.grid_y + ";" + room.grid_width + ";" + room.grid_length + ";" + room.grid_border + ";" + room.grid_borderwidth + ";" + room.grid_fill)
       room.grid_isdrawn = true
     }
     // Grid_DrawPlayer(x, y, radius, border, borderWidth, fill)
