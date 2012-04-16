@@ -85,17 +85,27 @@ function gridPoint(x, y) {
 	return (gridX * x) + (gridY * y) + offset;
 }
 
-gridApi.drawBox = function(x, y, width, height, border, borderWidth, fill) {
-	var path = new Path();
-	path.strokeColor = border;
-	path.strokeWidth = borderWidth;
-	path.fillColor = fill;
-	path.add(gridPoint(x, y));
-	path.add(gridPoint(x + width, y));
-	path.add(gridPoint(x + width, y + height));
-	path.add(gridPoint(x, y + height));
-	path.closed = true;
-	allPaths.push(path);
+var firstBox = true;
+
+gridApi.drawBox = function (x, y, width, height, border, borderWidth, fill) {
+    // if this is the very first room, centre the canvas by updating the offset
+    if (firstBox) {
+        var centrePoint = gridPoint(x + width / 2, y + height / 2);
+        var offsetX = ($("#gridPanel").width() / 2) - centrePoint.x;
+        var offsetY = ($("#gridPanel").height() / 2) - centrePoint.y;
+        updateOffset(new Point(offsetX, offsetY));
+        firstBox = false;
+    }
+    var path = new Path();
+    path.strokeColor = border;
+    path.strokeWidth = borderWidth;
+    path.fillColor = fill;
+    path.add(gridPoint(x, y));
+    path.add(gridPoint(x + width, y));
+    path.add(gridPoint(x + width, y + height));
+    path.add(gridPoint(x, y + height));
+    path.closed = true;
+    allPaths.push(path);
 }
 
 gridApi.drawPlayer = function (x, y, radius, border, borderWidth, fill) {
