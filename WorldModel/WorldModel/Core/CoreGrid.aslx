@@ -9,6 +9,39 @@
 
   <function name="Grid_CalculateExitCoordinates" parameters="room">
     // go through all exits in room, set x,y co-ordinates for the rooms they point to
+    foreach (exit, AllExits()) {
+      if (exit.parent = room) {
+        render = false
+        if (DoesInherit(exit, "northdirection")) {
+          exit_x = room.grid_x + room.grid_width/2
+          exit_y = room.grid_y
+          exit.to.grid_x = exit_x - exit.to.grid_width/2
+          exit.to.grid_y = exit_y - exit.to.grid_length
+          render = true
+        }
+        else if (DoesInherit(exit, "eastdirection")) {
+          exit_x = room.grid_x + room.grid_width
+          exit_y = room.grid_y + room.grid_length/2
+          exit.to.grid_x = exit_x
+          exit.to.grid_y = exit_y - exit.to.grid_length/2
+          render = true
+        }
+        if (DoesInherit(exit, "southdirection")) {
+          exit_x = room.grid_x + room.grid_width/2
+          exit_y = room.grid_y + room.grid_length
+          exit.to.grid_x = exit_x - exit.to.grid_width/2
+          exit.to.grid_y = exit_y
+          render = true
+        }
+        if (DoesInherit(exit, "westdirection")) {
+          exit_x = room.grid_x
+          exit_y = room.grid_y + room.grid_length/2
+          exit.to.grid_x = exit_x - exit.to.grid_width
+          exit.to.grid_y = exit_y - exit.to.grid_length/2
+          render = true
+        }
+      }
+    }
   </function>
 
   <function name="Grid_DrawRoom" parameters="room">

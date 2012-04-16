@@ -104,6 +104,11 @@
         }
     
         on ready {
+          if (game.gridmap) {
+            Grid_DrawRoom (player.parent)
+            Grid_CalculateExitCoordinates (player.parent)
+          }
+        
           request (UpdateLocation, CapFirst(GetDisplayName(player.parent)))
           roomFrameExists = false
           if (HasString(player.parent, "picture")) {
