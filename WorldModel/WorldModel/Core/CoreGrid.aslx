@@ -1,0 +1,5 @@
+﻿<library>
+  <function name="DrawMap">
+    request (RunScript, "DrawGrid; -4; -4; 10; 10")
+  </function>
+</library>

@@ -22,6 +22,7 @@
   <include ref="CoreTurnScripts.aslx"/>
   <include ref="CoreStatusAttributes.aslx"/>
   <include ref="CoreOutput.aslx"/>
+  <include ref="CoreGrid.aslx"/>
   <include ref="CoreEditor.aslx"/>
 
   <function name="InitInterface">
@@ -58,6 +59,7 @@
     }
     if (game.gridmap) {
       request (RunScript, "ShowGrid; 300")
+      DrawMap
     }
   </function>
 

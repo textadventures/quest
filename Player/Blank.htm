@@ -8,15 +8,6 @@
     <script type="text/javascript" src="jjmenu.js"></script>
 	<script type="text/javascript" src="paper.js"></script>
 	<script type="text/paperscript" src="grid.js" canvas="gridCanvas"></script>
-	<script type="text/javascript">
-		// gridApi is global for interop between PaperScript and JavaScript - a workaround until
-		// this tutorial exists: http://paperjs.org/tutorials/getting-started/paperscript-interoperability/
-		window.gridApi = {};
-		window.gridApi.onLoad = function () {
-		    gridApi.drawGrid(-4, -4, 10, 10);
-		    gridApi.drawBox(0, 0, 2, 2, "black", 2, "red");
-		};
-	</script>
     <!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->
     <link rel="Stylesheet" type="text/css" href="playercore.css" />
     <link rel="Stylesheet" type="text/css" href="jjmenu.css" />

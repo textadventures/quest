@@ -160,3 +160,16 @@ function ShowGrid(height) {
     $("#gridPanel").height(height);
     $("#gamePanelSpacer").height(height);
 }
+
+// GRID FUNCTIONS ***********************************************************************************************************************
+
+// gridApi is global for interop between PaperScript and JavaScript - a workaround until
+// this tutorial exists: http://paperjs.org/tutorials/getting-started/paperscript-interoperability/
+
+window.gridApi = {};
+window.gridApi.onLoad = function () {
+};
+
+function DrawGrid(minX, minY, maxX, maxY) {
+    gridApi.drawGrid(parseInt(minX), parseInt(minY), parseInt(maxX), parseInt(maxY));
+}

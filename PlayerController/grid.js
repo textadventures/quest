@@ -13,27 +13,27 @@ function onMouseDrag(event) {
 	};
 }
 
-gridApi.drawGrid = function(minX, minY, maxX, maxY) {
-	function gridLine(start, end) {
-		var path = new Path();
-		path.strokeColor = "#D0D0D0";
-		path.add(start, end);
-		allPaths.push(path);
-	}
+gridApi.drawGrid = function (minX, minY, maxX, maxY) {
+    function gridLine(start, end) {
+        var path = new Path();
+        path.strokeColor = "#D0D0D0";
+        path.add(start, end);
+        allPaths.push(path);
+    }
 
-	// draw the vertical lines
-	for (var x = minX; x <= maxX; x++) {
-		var start = gridPoint(x, minY)
-		var end = gridPoint(x, maxY);
-		gridLine(start, end);
-	};
+    // draw the vertical lines
+    for (var x = minX; x <= maxX; x++) {
+        var start = gridPoint(x, minY)
+        var end = gridPoint(x, maxY);
+        gridLine(start, end);
+    };
 
-	// draw the horizontal lines
-	for (var y = minY; y <= maxY; y++) {
-		var start = gridPoint(minX, y)
-		var end = gridPoint(maxX, y);
-		gridLine(start, end);
-	};
+    // draw the horizontal lines
+    for (var y = minY; y <= maxY; y++) {
+        var start = gridPoint(minX, y)
+        var end = gridPoint(maxX, y);
+        gridLine(start, end);
+    };
 }
 
 function gridPoint(x, y) {
