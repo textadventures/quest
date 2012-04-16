@@ -17,6 +17,8 @@
     <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
     <script type="text/javascript" src="playerweb.js"></script>
+    <script type="text/javascript" src="paper.js"></script>
+    <script type="text/paperscript" src="grid.js" canvas="gridCanvas"></script>
     <% Response.Write(GetHead()); %>
 </head>
 <body onkeydown="globalKey(event);" onload="init();">
@@ -157,8 +159,8 @@
                 <p>This game has finished.</p>
             </div>
         </div>
-        <div id="gamePanel">
-        </div>
+        <div id="gamePanel"></div>
+        <div id="gridPanel"><canvas id="gridCanvas" resize></canvas></div>
         <div id="gameContent">
             <div id="gamePanelSpacer"></div>
             <div id="divOutput">

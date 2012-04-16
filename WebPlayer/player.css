@@ -73,6 +73,17 @@ div#gamePanel
     width: 700px;
     text-align: center;
 }
+div#gridPanel
+{
+    position: fixed;
+    top: 32px;
+    padding: 0;
+    left: 50%;
+    margin-left: -456px;
+    width: 700px;
+    overflow: hidden;
+    display: none;
+}
 div#controlButtons
 {
     float: right;
