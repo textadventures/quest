@@ -16,6 +16,10 @@ function onMouseDrag(event) {
 	};
 }
 
+// dummy onFrame function ensures that canvas is redrawn immediately, not just when the mouse moves
+function onFrame(event) {
+}
+
 gridApi.drawGrid = function (minX, minY, maxX, maxY) {
     function gridLine(start, end) {
         var path = new Path();

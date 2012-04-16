@@ -160,7 +160,7 @@
             </div>
         </div>
         <div id="gamePanel"></div>
-        <div id="gridPanel"><canvas id="gridCanvas" resize></canvas></div>
+        <div id="gridPanel"><canvas id="gridCanvas" resize keepalive="true"></canvas></div>
         <div id="gameContent">
             <div id="gamePanelSpacer"></div>
             <div id="divOutput">
