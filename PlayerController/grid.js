@@ -124,35 +124,25 @@ gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill, s
         updateOffset(new Point(offsetX, offsetY));
         firstBox = false;
     }
-    var path = new Path();
-    path.strokeColor = border;
-    path.strokeWidth = borderWidth;
+    var path = null;
     var points = [gridPoint(x, y), gridPoint(x + width, y), gridPoint(x + width, y + height), gridPoint(x, y + height)];
     // sides is encoded with bits to represent NESW
     var draw = [sides & 8, sides & 4, sides & 2, sides & 1];
-    var drewLast = false;
-    var drewAny = false;
     for (var i = 0; i < 4; i++) {
         var next = (i + 1) % 4;
         if (draw[i]) {
-            if (!drewLast) path.add(points[i]);
-            path.add(points[next]);
-            drewLast = true;
-            drewAny = true;
-        }
-        else {
-            if (drewAny) {
-                allPaths.push(path);
+            if (path == null) {
                 path = new Path();
+                allPaths.push(path);
                 path.strokeColor = border;
                 path.strokeWidth = borderWidth;
-                drewAny = false;
+                path.add(points[i]);
             }
-            drewLast = false;
+            path.add(points[next]);
         }
-    }
-    if (drewAny) {
-        allPaths.push(path);
+        else {
+            path = null;
+        }
     }
     var fillPath;
     if (sides == 15) {
