@@ -17,13 +17,13 @@ function activateLayer(index) {
     layers[getLayerIndex(index)].activate();
     layers[getLayerIndex(index)].opacity = 1;
     if (currentLayer != index) {
-        // array represents z-indexes from -maxLayer to maxLayer
         layers[getLayerIndex(currentLayer)].opacity = 0.2;
         currentLayer = index;
     }
 }
 
 function getLayerIndex(index) {
+    // layers array represents z-indexes from -maxLayer to maxLayer
     return index + maxLayer;
 }
 

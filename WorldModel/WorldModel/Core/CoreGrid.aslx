@@ -12,8 +12,8 @@
     foreach (exit, AllExits()) {
       if (exit.parent = room) {
         if (DoesInherit(exit, "northdirection")) {
-          exit.grid_x = room.grid_x + room.grid_width/2.0
-          exit.grid_y = room.grid_y
+          exit.grid_x = room.grid_x + room.grid_width/2.0 + exit.grid_offset_x
+          exit.grid_y = room.grid_y + exit.grid_offset_y
           exit.to.grid_x = exit.grid_x - exit.to.grid_width/2.0
           exit.to.grid_y = (exit.grid_y - exit.to.grid_length) - exit.grid_length
           exit.to.grid_z = room.grid_z
@@ -23,8 +23,8 @@
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "eastdirection")) {
-          exit.grid_x = room.grid_x + room.grid_width
-          exit.grid_y = room.grid_y + room.grid_length/2.0
+          exit.grid_x = room.grid_x + room.grid_width + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length/2.0 + exit.grid_offset_y
           exit.to.grid_x = exit.grid_x + exit.grid_length
           exit.to.grid_y = exit.grid_y - exit.to.grid_length/2.0
           exit.to.grid_z = room.grid_z
@@ -34,8 +34,8 @@
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "southdirection")) {
-          exit.grid_x = room.grid_x + room.grid_width/2.0
-          exit.grid_y = room.grid_y + room.grid_length
+          exit.grid_x = room.grid_x + room.grid_width/2.0 + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length + exit.grid_offset_y
           exit.to.grid_x = exit.grid_x - exit.to.grid_width/2.0
           exit.to.grid_y = exit.grid_y + exit.grid_length
           exit.to.grid_z = room.grid_z
@@ -45,8 +45,8 @@
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "westdirection")) {
-          exit.grid_x = room.grid_x
-          exit.grid_y = room.grid_y + room.grid_length/2.0
+          exit.grid_x = room.grid_x + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length/2.0 + exit.grid_offset_y
           exit.to.grid_x = (exit.grid_x - exit.to.grid_width) - exit.grid_length
           exit.to.grid_y = exit.grid_y - exit.to.grid_length/2.0
           exit.to.grid_z = room.grid_z
@@ -56,8 +56,8 @@
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "northwestdirection")) {
-          exit.grid_x = room.grid_x
-          exit.grid_y = room.grid_y
+          exit.grid_x = room.grid_x + exit.grid_offset_x
+          exit.grid_y = room.grid_y + exit.grid_offset_y
           exit.to.grid_x = (exit.grid_x - exit.to.grid_width) - exit.grid_length
           exit.to.grid_y = (exit.grid_y - exit.to.grid_length) - exit.grid_length
           exit.to.grid_z = room.grid_z
@@ -67,8 +67,8 @@
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "northeastdirection")) {
-          exit.grid_x = room.grid_x + room.grid_width
-          exit.grid_y = room.grid_y
+          exit.grid_x = room.grid_x + room.grid_width + exit.grid_offset_x
+          exit.grid_y = room.grid_y + exit.grid_offset_y
           exit.to.grid_x = exit.grid_x + exit.grid_length
           exit.to.grid_y = (exit.grid_y - exit.to.grid_length) - exit.grid_length
           exit.to.grid_z = room.grid_z
@@ -78,8 +78,8 @@
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "southwestdirection")) {
-          exit.grid_x = room.grid_x
-          exit.grid_y = room.grid_y + room.grid_length
+          exit.grid_x = room.grid_x + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length + exit.grid_offset_y
           exit.to.grid_x = (exit.grid_x - exit.to.grid_width) - exit.grid_length
           exit.to.grid_y = exit.grid_y + exit.grid_length
           exit.to.grid_z = room.grid_z
@@ -89,8 +89,8 @@
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "southeastdirection")) {
-          exit.grid_x = room.grid_x + room.grid_width
-          exit.grid_y = room.grid_y + room.grid_length
+          exit.grid_x = room.grid_x + room.grid_width + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length + exit.grid_offset_y
           exit.to.grid_x = exit.grid_x + exit.grid_length
           exit.to.grid_y = exit.grid_y + exit.grid_length
           exit.to.grid_z = room.grid_z
@@ -100,15 +100,15 @@
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "updirection")) {
-          exit.to.grid_x = room.grid_x + room.grid_width/2.0 - exit.to.grid_width/2.0
-          exit.to.grid_y = room.grid_y + room.grid_length/2.0 - exit.to.grid_length/2.0
+          exit.to.grid_x = room.grid_x + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x
+          exit.to.grid_y = room.grid_y + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y
           exit.to.grid_z = room.grid_z + exit.grid_length
           exit.grid_render = false
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "downdirection")) {
-          exit.to.grid_x = room.grid_x + room.grid_width/2.0 - exit.to.grid_width/2.0
-          exit.to.grid_y = room.grid_y + room.grid_length/2.0 - exit.to.grid_length/2.0
+          exit.to.grid_x = room.grid_x + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x
+          exit.to.grid_y = room.grid_y + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y
           exit.to.grid_z = room.grid_z - exit.grid_length
           exit.grid_render = false
           exit.to.grid_render = true

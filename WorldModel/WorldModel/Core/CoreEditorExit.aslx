@@ -110,6 +110,21 @@
         <attribute>grid_length</attribute>
         <caption>Length</caption>
       </control>
+
+      <!--
+      <control>
+        <controltype>number</controltype>
+        <attribute>grid_offset_x</attribute>
+        <caption>Offset X</caption>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>grid_offset_y</attribute>
+        <caption>Offset Y</caption>
+      </control>
+      -->
+      
     </tab>
 
     <tab>
