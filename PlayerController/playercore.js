@@ -182,9 +182,9 @@ function Grid_SetScale(scale) {
     gridApi.setScale(parseInt(scale));
 }
 
-function Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill) {
+function Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill, sides) {
     if (!_canvasSupported) return;
-    gridApi.drawBox(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill);
+    gridApi.drawBox(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill, parseInt(sides));
 }
 
 function Grid_DrawLine(x1, y1, x2, y2, border, borderWidth) {

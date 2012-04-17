@@ -111,7 +111,7 @@ function gridPoint(x, y) {
 
 var firstBox = true;
 
-gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill) {
+gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill, sides) {
     activateLayer(z);
     // if this is the very first room, centre the canvas by updating the offset
     if (firstBox) {
@@ -124,13 +124,44 @@ gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill) {
     var path = new Path();
     path.strokeColor = border;
     path.strokeWidth = borderWidth;
-    path.fillColor = fill;
-    path.add(gridPoint(x, y));
-    path.add(gridPoint(x + width, y));
-    path.add(gridPoint(x + width, y + height));
-    path.add(gridPoint(x, y + height));
-    path.closed = true;
-    allPaths.push(path);
+    var points = [gridPoint(x, y), gridPoint(x + width, y), gridPoint(x + width, y + height), gridPoint(x, y + height)];
+    // sides is encoded with bits to represent NESW
+    var draw = [sides & 8, sides & 4, sides & 2, sides & 1];
+    var drewLast = false;
+    var drewAny = false;
+    for (var i = 0; i < 4; i++) {
+        var next = (i + 1) % 4;
+        if (draw[i]) {
+            if (!drewLast) path.add(points[i]);
+            path.add(points[next]);
+            drewLast = true;
+            drewAny = true;
+        }
+        else {
+            if (drewAny) {
+                allPaths.push(path);
+                path = new Path();
+                path.strokeColor = border;
+                path.strokeWidth = borderWidth;
+                drewAny = false;
+            }
+            drewLast = false;
+        }
+    }
+    if (drewAny) {
+        allPaths.push(path);
+    }
+    var fillPath;
+    if (sides == 15) {
+        fillPath = path
+    }
+    else {
+        fillPath = new Path();
+        fillPath.add(points[0], points[1], points[2], points[3]);
+        allPaths.push(fillPath);
+    }
+    fillPath.fillColor = fill;
+    fillPath.closed = true;
 }
 
 gridApi.drawLine = function (x1, y1, x2, y2, border, borderWidth) {
