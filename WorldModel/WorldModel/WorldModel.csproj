@@ -279,6 +279,7 @@
     </None>
     <None Include="Core\CoreGrid.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreOutput.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
