@@ -122,6 +122,13 @@
       if (not GetBoolean(room, "grid_isdrawn")) {
         // Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill, sides)
         request (RunScript, "Grid_DrawBox;" + room.grid_x + ";" + room.grid_y + ";" + room.grid_z + ";" + room.grid_width + ";" + room.grid_length + ";" + room.grid_border + ";" + room.grid_borderwidth + ";" + room.grid_fill + ";" + room.grid_bordersides)
+        
+        if (LengthOf(room.grid_label) > 0) {
+          label_x = room.grid_x + room.grid_width/2.0
+          label_y = (room.grid_y + room.grid_length/2.0) - 0.5
+          // Grid_DrawLabel(x, y, z, text)
+          request (RunScript, "Grid_DrawLabel;" + label_x + ";" + label_y + ";" + room.grid_z + ";" + room.grid_label)
+        }
       
         foreach (exit, AllExits()) {
           if (exit.grid_render and exit.parent = room and exit.grid_length > 0) {

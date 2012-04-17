@@ -196,3 +196,8 @@ function Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill) {
     if (!_canvasSupported) return;
     gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(radius), border, parseInt(borderWidth), fill);
 }
+
+function Grid_DrawLabel(x, y, z, text) {
+    if (!_canvasSupported) return;
+    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text);
+}

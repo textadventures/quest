@@ -23,6 +23,9 @@ function activateLayer(index) {
 }
 
 function getLayerIndex(index) {
+    if (index < -maxLayer || index > maxLayer) {
+        alert("Layer out of bounds. Current layer range: -" + maxLayer + " to " + maxLayer);
+    }
     // layers array represents z-indexes from -maxLayer to maxLayer
     return index + maxLayer;
 }
@@ -190,6 +193,15 @@ gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
         project.activeLayer.addChild(player);
     }
     player.opactity = 0.5;
+}
+
+gridApi.drawLabel = function (x, y, z, text) {
+    activateLayer(z);
+    var pointText = new PointText(gridPoint(x, y));
+    pointText.justification = "center";
+    pointText.fillColor = "black";
+    pointText.content = text;
+    allPaths.push(pointText);
 }
 
 gridApi.onLoad();
