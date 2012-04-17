@@ -6,6 +6,7 @@ var offsetY = 5;
 var allPaths = new Array();
 var layers = new Array();
 var maxLayer = 3;
+var currentLayer = 0;
 
 for (var i = -maxLayer; i <= maxLayer; i++) {
     var layer = new Layer();
@@ -13,12 +14,20 @@ for (var i = -maxLayer; i <= maxLayer; i++) {
 }
 
 function activateLayer(index) {
-    // array represents z-indexes from -maxLayer to maxLayer
-    var arrayIndex = index + maxLayer;
-    layers[arrayIndex].activate();
+    layers[getLayerIndex(index)].activate();
+    layers[getLayerIndex(index)].opacity = 1;
+    if (currentLayer != index) {
+        // array represents z-indexes from -maxLayer to maxLayer
+        layers[getLayerIndex(currentLayer)].opacity = 0.2;
+        currentLayer = index;
+    }
 }
 
-activateLayer(0);
+function getLayerIndex(index) {
+    return index + maxLayer;
+}
+
+activateLayer(currentLayer);
 
 gridApi.setScale = function (newScale) {
     scale = newScale;
@@ -149,6 +158,7 @@ gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
         // move player to the end of the activeLayer so it gets drawn on top
         project.activeLayer.addChild(player);
     }
+    player.opactity = 0.5;
 }
 
 gridApi.onLoad();
