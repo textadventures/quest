@@ -40,5 +40,12 @@
       <attribute>grid_borderwidth</attribute>
       <caption>Border width</caption>
     </control>
+
+    <control>
+      <caption>Border type</caption>
+      <controltype>dropdowntypes</controltype>
+      <types>*=Normal;gridborder_path_ew=Path East-West;gridborder_path_e=Path East;gridborder_path_w=Path West;gridborder_path_ns=Path North-South;gridborder_path_n=Path North;gridborder_path_s=Path South</types>
+    </control>
+
   </tab>
 </library>

@@ -88,6 +88,7 @@
     <grid_fill>White</grid_fill>
     <grid_border>Black</grid_border>
     <grid_borderwidth type="int">1</grid_borderwidth>
+    <grid_bordersides type="int">15</grid_bordersides>
     <grid_render type="boolean">false</grid_render>
   </type>
 
@@ -443,6 +444,30 @@
       destroy (this.name)
     </eat>
     <eathealth type="int">0</eathealth>
+  </type>
+
+  <type name="gridborder_path_ew">
+    <grid_bordersides type="int">10</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_e">
+    <grid_bordersides type="int">11</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_w">
+    <grid_bordersides type="int">14</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_ns">
+    <grid_bordersides type="int">5</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_n">
+    <grid_bordersides type="int">7</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_s">
+    <grid_bordersides type="int">13</grid_bordersides>
   </type>
 
 </library>
