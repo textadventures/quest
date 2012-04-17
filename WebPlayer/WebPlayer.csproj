@@ -187,7 +187,7 @@
   </PropertyGroup>
   <Target Name="CustomCollectFiles">
     <ItemGroup>
-      <_CustomFiles Include=".\playercore.*" />
+      <_CustomFiles Include=".\playercore.*; grid.js; paper.js" />
       <FilesForPackagingFromProject Include="%(_CustomFiles.Identity)">
         <DestinationRelativePath>.\%(Filename)%(Extension)</DestinationRelativePath>
       </FilesForPackagingFromProject>
