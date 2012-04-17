@@ -11,7 +11,6 @@
     // go through all exits in room, set x,y co-ordinates for the rooms they point to
     foreach (exit, AllExits()) {
       if (exit.parent = room) {
-        render = false
         if (DoesInherit(exit, "northdirection")) {
           exit.grid_x = room.grid_x + room.grid_width/2.0
           exit.grid_y = room.grid_y
@@ -19,7 +18,7 @@
           exit.to.grid_y = (exit.grid_y - exit.to.grid_length) - exit.grid_length
           exit.end_x = exit.grid_x
           exit.end_y = exit.grid_y - exit.grid_length
-          render = true
+          exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "eastdirection")) {
           exit.grid_x = room.grid_x + room.grid_width
@@ -28,7 +27,7 @@
           exit.to.grid_y = exit.grid_y - exit.to.grid_length/2.0
           exit.end_x = exit.grid_x + exit.grid_length
           exit.end_y = exit.grid_y
-          render = true
+          exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "southdirection")) {
           exit.grid_x = room.grid_x + room.grid_width/2.0
@@ -37,7 +36,7 @@
           exit.to.grid_y = exit.grid_y + exit.grid_length
           exit.end_x = exit.grid_x
           exit.end_y = exit.grid_y + exit.grid_length
-          render = true
+          exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "westdirection")) {
           exit.grid_x = room.grid_x
@@ -46,7 +45,7 @@
           exit.to.grid_y = exit.grid_y - exit.to.grid_length/2.0
           exit.end_x = exit.grid_x - exit.grid_length
           exit.end_y = exit.grid_y
-          render = true
+          exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "northwestdirection")) {
           exit.grid_x = room.grid_x
@@ -55,7 +54,7 @@
           exit.to.grid_y = (exit.grid_y - exit.to.grid_length) - exit.grid_length
           exit.end_x = exit.grid_x - exit.grid_length
           exit.end_y = exit.grid_y - exit.grid_length
-          render = true
+          exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "northeastdirection")) {
           exit.grid_x = room.grid_x + room.grid_width
@@ -64,7 +63,7 @@
           exit.to.grid_y = (exit.grid_y - exit.to.grid_length) - exit.grid_length
           exit.end_x = exit.grid_x + exit.grid_length
           exit.end_y = exit.grid_y - exit.grid_length
-          render = true
+          exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "southwestdirection")) {
           exit.grid_x = room.grid_x
@@ -73,7 +72,7 @@
           exit.to.grid_y = exit.grid_y + exit.grid_length
           exit.end_x = exit.grid_x - exit.grid_length
           exit.end_y = exit.grid_y + exit.grid_length
-          render = true
+          exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "southeastdirection")) {
           exit.grid_x = room.grid_x + room.grid_width
@@ -82,7 +81,7 @@
           exit.to.grid_y = exit.grid_y + exit.grid_length
           exit.end_x = exit.grid_x + exit.grid_length
           exit.end_y = exit.grid_y + exit.grid_length
-          render = true
+          exit.to.grid_render = true
         }
       }
     }
@@ -102,9 +101,11 @@
       
       room.grid_isdrawn = true
     }
-    // Grid_DrawPlayer(x, y, radius, border, borderWidth, fill)
-    player_x = room.grid_x + room.grid_width/2.0
-    player_y = room.grid_y + room.grid_length/2.0
-    request (RunScript, "Grid_DrawPlayer;" + player_x + ";" + player_y + ";5;black;2;yellow")
+    if (room.grid_render) {
+      // Grid_DrawPlayer(x, y, radius, border, borderWidth, fill)
+      player_x = room.grid_x + room.grid_width/2.0
+      player_y = room.grid_y + room.grid_length/2.0
+      request (RunScript, "Grid_DrawPlayer;" + player_x + ";" + player_y + ";5;black;2;yellow")
+    }
   </function>
 </library>

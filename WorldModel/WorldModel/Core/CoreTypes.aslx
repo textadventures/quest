@@ -87,6 +87,7 @@
     <grid_fill>White</grid_fill>
     <grid_border>Black</grid_border>
     <grid_borderwidth type="int">1</grid_borderwidth>
+    <grid_render type="boolean">false</grid_render>
   </type>
 
   <type name="defaultexit">
