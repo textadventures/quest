@@ -58,7 +58,7 @@
       SetFramePicture (game.panelcontents)
     }
     if (game.gridmap) {
-      request (RunScript, "ShowGrid; 300")
+      request (RunScript, "ShowGrid; " + game.mapsize)
       Grid_SetScale (game.mapscale)
       DrawMap
     }

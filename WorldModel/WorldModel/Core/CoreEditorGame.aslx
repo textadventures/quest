@@ -312,6 +312,14 @@
       </control>
 
       <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <attribute>mapsize</attribute>
+        <caption>Height (pixels)</caption>
+        <minimum>1</minimum>
+      </control>
+
+      <control>
         <controltype>checkbox</controltype>
         <caption>Clear picture panel if room has no picture</caption>
         <attribute>clearframe</attribute>
