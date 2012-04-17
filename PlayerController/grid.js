@@ -4,6 +4,21 @@ var offsetVector, offsetDestination;
 var offsetX = 5;
 var offsetY = 5;
 var allPaths = new Array();
+var layers = new Array();
+var maxLayer = 3;
+
+for (var i = -maxLayer; i <= maxLayer; i++) {
+    var layer = new Layer();
+    layers.push(project.activeLayer);
+}
+
+function activateLayer(index) {
+    // array represents z-indexes from -maxLayer to maxLayer
+    var arrayIndex = index + maxLayer;
+    layers[arrayIndex].activate();
+}
+
+activateLayer(0);
 
 gridApi.setScale = function (newScale) {
     scale = newScale;
@@ -87,7 +102,8 @@ function gridPoint(x, y) {
 
 var firstBox = true;
 
-gridApi.drawBox = function (x, y, width, height, border, borderWidth, fill) {
+gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill) {
+    activateLayer(z);
     // if this is the very first room, centre the canvas by updating the offset
     if (firstBox) {
         var centrePoint = gridPoint(x + width / 2, y + height / 2);
@@ -117,7 +133,8 @@ gridApi.drawLine = function (x1, y1, x2, y2, border, borderWidth) {
     allPaths.push(path);
 }
 
-gridApi.drawPlayer = function (x, y, radius, border, borderWidth, fill) {
+gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
+    activateLayer(z);
     if (!player) {
         player = new Path.Circle(gridPoint(x, y), radius);
         player.strokeColor = border;

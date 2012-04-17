@@ -74,6 +74,7 @@
       if (game.gridmap) {
         player.parent.grid_x = 0
         player.parent.grid_y = 0
+        player.parent.grid_z = 0
         player.parent.grid_render = true
         Grid_CalculateExitCoordinates (player.parent)
         Grid_DrawRoom (player.parent)

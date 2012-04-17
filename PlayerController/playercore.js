@@ -182,9 +182,9 @@ function Grid_SetScale(scale) {
     gridApi.setScale(parseInt(scale));
 }
 
-function Grid_DrawBox(x, y, width, height, border, borderWidth, fill) {
+function Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill) {
     if (!_canvasSupported) return;
-    gridApi.drawBox(parseFloat(x), parseFloat(y), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill);
+    gridApi.drawBox(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill);
 }
 
 function Grid_DrawLine(x1, y1, x2, y2, border, borderWidth) {
@@ -192,7 +192,7 @@ function Grid_DrawLine(x1, y1, x2, y2, border, borderWidth) {
     gridApi.drawLine(parseFloat(x1), parseFloat(y1), parseFloat(x2), parseFloat(y2), border, parseInt(borderWidth));
 }
 
-function Grid_DrawPlayer(x, y, radius, border, borderWidth, fill) {
+function Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill) {
     if (!_canvasSupported) return;
-    gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseInt(radius), border, parseInt(borderWidth), fill);
+    gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(radius), border, parseInt(borderWidth), fill);
 }
