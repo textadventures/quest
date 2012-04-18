@@ -36,7 +36,7 @@
 
     <control>
       <controltype>number</controltype>
-      <minimum>1</minimum>
+      <minimum>0</minimum>
       <attribute>grid_borderwidth</attribute>
       <caption>Border width</caption>
     </control>
@@ -51,6 +51,33 @@
       <caption>Label</caption>
       <controltype>textbox</controltype>
       <attribute>grid_label</attribute>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Position inside parent room</caption>
+      <onlydisplayif><![CDATA[this.parent <> null]]></onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <attribute>grid_parent_offset_auto</attribute>
+      <caption>Automatic position</caption>
+      <onlydisplayif><![CDATA[this.parent <> null]]></onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <attribute>grid_parent_offset_x</attribute>
+      <caption>Offset X</caption>
+      <onlydisplayif><![CDATA[this.parent <> null and not this.grid_parent_offset_auto]]></onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <attribute>grid_parent_offset_y</attribute>
+      <caption>Offset Y</caption>
+      <onlydisplayif><![CDATA[this.parent <> null and not this.grid_parent_offset_auto]]></onlydisplayif>
     </control>
 
   </tab>

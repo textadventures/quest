@@ -134,8 +134,10 @@ gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill, s
             if (path == null) {
                 path = new Path();
                 allPaths.push(path);
-                path.strokeColor = border;
-                path.strokeWidth = borderWidth;
+                if (borderWidth > 0) {
+                    path.strokeColor = border;
+                    path.strokeWidth = borderWidth;
+                }
                 path.add(points[i]);
             }
             path.add(points[next]);

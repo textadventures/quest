@@ -91,6 +91,9 @@
     <grid_bordersides type="int">15</grid_bordersides>
     <grid_render type="boolean">false</grid_render>
     <grid_label type="string"></grid_label>
+    <grid_parent_offset_auto/>
+    <grid_parent_offset_x type="int">0</grid_parent_offset_x>
+    <grid_parent_offset_y type="int">0</grid_parent_offset_y>
   </type>
 
   <type name="defaultexit">

@@ -105,8 +105,8 @@
     
         on ready {
           if (game.gridmap) {
-            Grid_CalculateExitCoordinates (player.parent)
-            Grid_DrawRoom (player.parent)
+            Grid_CalculateMapCoordinates (player.parent)
+            Grid_DrawPlayerInRoom (player.parent)
           }
         
           request (UpdateLocation, CapFirst(GetDisplayName(player.parent)))

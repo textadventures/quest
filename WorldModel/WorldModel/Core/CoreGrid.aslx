@@ -7,7 +7,23 @@
     request (RunScript, "Grid_SetScale; " + scale)
   </function>
 
-  <function name="Grid_CalculateExitCoordinates" parameters="room">
+  <function name="Grid_CalculateMapCoordinates" parameters="room">
+    <![CDATA[
+    if (room.parent <> null) {
+      if (room.grid_parent_offset_auto) {
+        room.grid_parent_offset_x = (room.parent.grid_width - room.grid_width) /2.0
+        room.grid_parent_offset_y = (room.parent.grid_length - room.grid_length) /2.0
+      }
+      
+      room.parent.grid_x = room.grid_x - room.grid_parent_offset_x
+      room.parent.grid_y = room.grid_y - room.grid_parent_offset_y
+      room.parent.grid_z = room.grid_z
+      
+      room.parent.grid_render = true
+      
+      Grid_CalculateMapCoordinates (room.parent)
+    }
+    
     // go through all exits in room, set x,y co-ordinates for the rooms they point to
     foreach (exit, AllExits()) {
       if (exit.parent = room) {
@@ -115,11 +131,31 @@
         }
       }
     }
+    ]]>
+  </function>
+
+  <function name="Grid_DrawPlayerInRoom" parameters="room">
+    if (room.grid_render) {
+      Grid_DrawRoom (room)
+    
+      player_x = room.grid_x + room.grid_width/2.0
+      player_y = room.grid_y + room.grid_length/2.0
+      player_z = room.grid_z
+      
+      // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
+      request (RunScript, "Grid_DrawPlayer;" + player_x + ";" + player_y + ";" + player_z + ";5;black;2;yellow")
+    }
   </function>
 
   <function name="Grid_DrawRoom" parameters="room">
+    <![CDATA[
     if (room.grid_render) {
       if (not GetBoolean(room, "grid_isdrawn")) {
+      
+        if (room.parent <> null) {
+          Grid_DrawRoom (room.parent)
+        }
+      
         // Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill, sides)
         request (RunScript, "Grid_DrawBox;" + room.grid_x + ";" + room.grid_y + ";" + room.grid_z + ";" + room.grid_width + ";" + room.grid_length + ";" + room.grid_border + ";" + room.grid_borderwidth + ";" + room.grid_fill + ";" + room.grid_bordersides)
         
@@ -135,17 +171,11 @@
             // Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
             request (RunScript, "Grid_DrawLine;" + exit.grid_x + ";" + exit.grid_y + ";" + exit.end_x + ";" + exit.end_y + ";1;black")
           }
-        }      
+        }
       
         room.grid_isdrawn = true
       }
-    
-      player_x = room.grid_x + room.grid_width/2.0
-      player_y = room.grid_y + room.grid_length/2.0
-      player_z = room.grid_z
-      
-      // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
-      request (RunScript, "Grid_DrawPlayer;" + player_x + ";" + player_y + ";" + player_z + ";5;black;2;yellow")
     }
+    ]]>
   </function>
 </library>
