@@ -201,3 +201,8 @@ function Grid_DrawLabel(x, y, z, text) {
     if (!_canvasSupported) return;
     gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text);
 }
+
+function Grid_ShowCustomLayer(visible) {
+    if (!_canvasSupported) return;
+    gridApi.showCustomLayer(visible == "true");
+}

@@ -13,6 +13,9 @@ for (var i = -maxLayer; i <= maxLayer; i++) {
     layers.push(project.activeLayer);
 }
 
+var customLayer = new Layer();
+customLayer.visible = false;
+
 function activateLayer(index) {
     layers[getLayerIndex(index)].activate();
     layers[getLayerIndex(index)].opacity = 1;
@@ -194,6 +197,13 @@ gridApi.drawLabel = function (x, y, z, text) {
     pointText.fillColor = "black";
     pointText.content = text;
     allPaths.push(pointText);
+}
+
+gridApi.showCustomLayer = function (visible) {
+    customLayer.visible = visible;
+    for (var idx = 0; idx < layers.length; idx++) {
+        layers[idx].visible = !visible;
+    }
 }
 
 gridApi.onLoad();

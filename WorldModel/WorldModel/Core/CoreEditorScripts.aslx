@@ -8,5 +8,6 @@
   <include ref="CoreEditorScriptsGameState.aslx"/>
   <include ref="CoreEditorScriptsTimers.aslx"/>
   <include ref="CoreEditorScriptsTurnScripts.aslx"/>
+  <include ref="CoreEditorScriptsDrawing.aslx"/>
 
 </library>

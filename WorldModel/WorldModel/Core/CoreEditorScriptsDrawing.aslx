@@ -1,0 +1,20 @@
+﻿<library>
+  <editor>
+    <appliesto>(function)Grid_ShowCustomLayer</appliesto>
+    <display>Toggle custom drawing layer</display>
+    <category>Drawing</category>
+    <create>Grid_ShowCustomLayer (true)</create>
+    <add>Toggle custom drawing layer</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Toggle custom drawing layer</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+</library>

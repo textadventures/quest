@@ -231,6 +231,9 @@
     <None Include="Core\CoreEditorObjectVerbs.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Core\CoreEditorScriptsDrawing.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\CoreEditorScriptsGameState.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

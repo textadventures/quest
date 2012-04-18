@@ -178,4 +178,13 @@
     }
     ]]>
   </function>
+
+  <function name="Grid_ShowCustomLayer" parameters="visible">
+    if (visible) {
+      request (RunScript, "Grid_ShowCustomLayer;true")
+    }
+    else {
+      request (RunScript, "Grid_ShowCustomLayer;false")
+    }
+  </function>
 </library>
