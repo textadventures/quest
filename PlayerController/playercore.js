@@ -206,3 +206,8 @@ function Grid_ShowCustomLayer(visible) {
     if (!_canvasSupported) return;
     gridApi.showCustomLayer(visible == "true");
 }
+
+function Grid_ClearCustomLayer() {
+    if (!_canvasSupported) return;
+    gridApi.clearCustomLayer();
+}

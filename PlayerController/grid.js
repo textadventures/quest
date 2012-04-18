@@ -17,6 +17,7 @@ var customLayer = new Layer();
 customLayer.visible = false;
 
 function activateLayer(index) {
+    showCustomLayer(false);
     layers[getLayerIndex(index)].activate();
     layers[getLayerIndex(index)].opacity = 1;
     if (currentLayer != index) {
@@ -199,11 +200,21 @@ gridApi.drawLabel = function (x, y, z, text) {
     allPaths.push(pointText);
 }
 
-gridApi.showCustomLayer = function (visible) {
-    customLayer.visible = visible;
-    for (var idx = 0; idx < layers.length; idx++) {
-        layers[idx].visible = !visible;
+function showCustomLayer(visible) {
+    if (visible != customLayer.visible) {
+        customLayer.visible = visible;
+        for (var idx = 0; idx < layers.length; idx++) {
+            layers[idx].visible = !visible;
+        }
     }
+}
+
+gridApi.showCustomLayer = function (visible) {
+    showCustomLayer(visible);
+}
+
+gridApi.clearCustomLayer = function () {
+    customLayer.removeChildren();
 }
 
 gridApi.onLoad();

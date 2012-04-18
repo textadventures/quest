@@ -17,4 +17,12 @@
       <simpleeditor>boolean</simpleeditor>
     </control>
   </editor>
+
+  <editor>
+    <appliesto>(function)Grid_ClearCustomLayer</appliesto>
+    <display>Clear custom drawing layer</display>
+    <category>Drawing</category>
+    <create>Grid_ClearCustomLayer</create>
+    <add>Clear custom drawing layer</add>
+  </editor>
 </library>
