@@ -3,6 +3,7 @@ var playerVector, playerDestination;
 var offsetVector, offsetDestination;
 var allPaths = new Array();
 var customLayerPaths = new Array();
+var customLayerObjects = {};
 var layers = new Array();
 var maxLayer = 3;
 var currentLayer = 0;
@@ -139,6 +140,13 @@ function gridPoint(x, y) {
 	return (gridX * x) + (gridY * y) + getOffset();
 }
 
+function gridPointNudge(x, y, nudgeX, nudgeY) {
+    var result = gridPoint(x, y);
+    result.x += nudgeX;
+    result.y += nudgeY;
+    return result;
+}
+
 var firstBox = true;
 
 gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill, sides) {
@@ -261,6 +269,34 @@ gridApi.setCentre = function (x, y) {
     var offsetY = ($("#gridPanel").height() / 2) - centrePoint.y;
     var curOffset = getOffset();
     updateOffset(new Point(offsetX, offsetY));
+}
+
+gridApi.drawCustomLayerSquare = function (id, x, y, text, fill) {
+    var existing = customLayerObjects[id];
+    if (existing) {
+        for (var idx in existing) {
+            var path = existing[idx];
+            // TO DO: Should remove path from layer and layerlist array
+            path.visible = false;
+        }
+    }
+
+    var paths = new Array();
+    path = new Path();
+    path.add(gridPointNudge(x, y, 1, 1), gridPointNudge(x + 1, y, -1, 1), gridPointNudge(x + 1, y + 1, -1, -1), gridPointNudge(x, y + 1, 1, -1));
+    path.fillColor = fill;
+    path.closed = true;
+    addPathToCurrentLayerList(path);
+    paths.push(path);
+
+    var pointText = new PointText(gridPoint(x + 0.5, y + 0.5));
+    pointText.justification = "center";
+    pointText.fillColor = "black";
+    pointText.content = text;
+    addPathToCurrentLayerList(pointText);
+    paths.push(pointText);
+
+    customLayerObjects[id] = paths;
 }
 
 gridApi.onLoad();

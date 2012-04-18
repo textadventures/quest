@@ -216,3 +216,8 @@ function Grid_SetCentre(x, y) {
     if (!_canvasSupported) return;
     gridApi.setCentre(parseFloat(x), parseFloat(y));
 }
+
+function Grid_DrawSquare(id, x, y, text, fill) {
+    if (!_canvasSupported) return;
+    gridApi.drawCustomLayerSquare(id, parseInt(x), parseInt(y), text, fill);
+}

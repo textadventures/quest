@@ -203,4 +203,11 @@
   <function name="Grid_SetCentre" parameters="x, y">
     request (RunScript, "Grid_SetCentre;" + x + ";" + y)
   </function>
+
+  <function name="Grid_DrawSquare" parameters="id, x, y, text, fill">
+    // Grid_DrawSquare(id, x, y, text, fill)
+    request (RunScript, "Grid_DrawSquare;" + id + ";" + x + ";" + y + ";" + text + ";" + fill)
+  </function>
+
+  
 </library>
