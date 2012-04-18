@@ -1,12 +1,12 @@
-var scale, gridX, gridY, offset, player
+var scale, gridX, gridY, player
 var playerVector, playerDestination;
 var offsetVector, offsetDestination;
-var offsetX = 5;
-var offsetY = 5;
 var allPaths = new Array();
+var customLayerPaths = new Array();
 var layers = new Array();
 var maxLayer = 3;
 var currentLayer = 0;
+var offset = new Point(0, 0);
 
 for (var i = -maxLayer; i <= maxLayer; i++) {
     var layer = new Layer();
@@ -14,6 +14,7 @@ for (var i = -maxLayer; i <= maxLayer; i++) {
 }
 
 var customLayer = new Layer();
+var customLayerOffset = new Point(0, 0);
 customLayer.visible = false;
 
 function activateLayer(index) {
@@ -40,7 +41,6 @@ gridApi.setScale = function (newScale) {
     scale = newScale;
     gridX = new Point(scale, 0);
     gridY = new Point(0, scale);
-    offset = new Point(offsetX * scale, offsetY * scale);
 }
 
 function onMouseDrag(event) {
@@ -48,12 +48,35 @@ function onMouseDrag(event) {
 }
 
 function updateOffset(delta) {
-    offset += delta;
-    for (var i = 0; i < allPaths.length; i++) {
-        allPaths[i].position += delta;
+    setOffset(getOffset() + delta);
+    var paths;
+    if (project.activeLayer == customLayer) {
+        paths = customLayerPaths;
     }
-    if (playerDestination) {
+    else {
+        paths = allPaths;
+    }
+    for (var i = 0; i < paths.length; i++) {
+        paths[i].position += delta;
+    }
+    if (playerDestination && project.activeLayer != customLayer) {
         playerDestination += delta;
+    }
+}
+
+function getOffset() {
+    if (project.activeLayer == customLayer) {
+        return customLayerOffset;
+    }
+    return offset;
+}
+
+function setOffset(value) {
+    if (project.activeLayer == customLayer) {
+        customLayerOffset = value;
+    }
+    else {
+        offset = value;
     }
 }
 
@@ -113,7 +136,7 @@ gridApi.drawGrid = function (minX, minY, maxX, maxY) {
 }
 
 function gridPoint(x, y) {
-	return (gridX * x) + (gridY * y) + offset;
+	return (gridX * x) + (gridY * y) + getOffset();
 }
 
 var firstBox = true;
@@ -169,7 +192,16 @@ gridApi.drawLine = function (x1, y1, x2, y2, border, borderWidth) {
     path.strokeWidth = borderWidth;
     path.add(gridPoint(x1, y1));
     path.add(gridPoint(x2, y2));
-    allPaths.push(path);
+    addPathToCurrentLayerList(path);
+}
+
+function addPathToCurrentLayerList(path) {
+    if (project.activeLayer == customLayer) {
+        customLayerPaths.push(path);
+    }
+    else {
+        allPaths.push(path);
+    }
 }
 
 gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
