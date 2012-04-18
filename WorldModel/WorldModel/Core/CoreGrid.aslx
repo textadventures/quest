@@ -168,8 +168,7 @@
       
         foreach (exit, AllExits()) {
           if (exit.grid_render and exit.parent = room and exit.grid_length > 0) {
-            // Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
-            request (RunScript, "Grid_DrawLine;" + exit.grid_x + ";" + exit.grid_y + ";" + exit.end_x + ";" + exit.end_y + ";1;black")
+            Grid_DrawLine (exit.grid_x, exit.grid_y, exit.end_x, exit.end_y, "black", 1)
           }
         }
       
@@ -190,5 +189,10 @@
 
   <function name="Grid_ClearCustomLayer" parameters="visible">
     request (RunScript, "Grid_ClearCustomLayer")
+  </function>
+
+  <function name="Grid_DrawLine" parameters="x1, y1, x2, y2, border, borderWidth">
+    // Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
+    request (RunScript, "Grid_DrawLine;" + x1 + ";" + y1 + ";" + x2 + ";" + y2 + ";" + border + ";" + borderWidth)
   </function>
 </library>

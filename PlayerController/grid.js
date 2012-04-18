@@ -206,6 +206,12 @@ function showCustomLayer(visible) {
         for (var idx = 0; idx < layers.length; idx++) {
             layers[idx].visible = !visible;
         }
+        if (visible) {
+            customLayer.activate();
+        }
+        else {
+            layers[getLayerIndex(currentLayer)].activate();
+        }
     }
 }
 
