@@ -112,12 +112,12 @@ function onFrame(event) {
     }
 }
 
-gridApi.drawGrid = function (minX, minY, maxX, maxY) {
+gridApi.drawGrid = function (minX, minY, maxX, maxY, border) {
     function gridLine(start, end) {
         var path = new Path();
-        path.strokeColor = "#D0D0D0";
+        path.strokeColor = border;
         path.add(start, end);
-        allPaths.push(path);
+        addPathToCurrentLayerList(path);
     }
 
     // draw the vertical lines
@@ -253,6 +253,14 @@ gridApi.showCustomLayer = function (visible) {
 
 gridApi.clearCustomLayer = function () {
     customLayer.removeChildren();
+}
+
+gridApi.setCentre = function (x, y) {
+    var centrePoint = gridPoint(x, y);
+    var offsetX = ($("#gridPanel").width() / 2) - centrePoint.x;
+    var offsetY = ($("#gridPanel").height() / 2) - centrePoint.y;
+    var curOffset = getOffset();
+    updateOffset(new Point(offsetX, offsetY));
 }
 
 gridApi.onLoad();

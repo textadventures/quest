@@ -195,4 +195,12 @@
     // Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
     request (RunScript, "Grid_DrawLine;" + x1 + ";" + y1 + ";" + x2 + ";" + y2 + ";" + border + ";" + borderWidth)
   </function>
+
+  <function name="Grid_DrawGridLines" parameters="x1, y1, x2, y2, border">
+    request (RunScript, "Grid_DrawGridLines;" + x1 + ";" + y1 + ";" + x2 + ";" + y2 + ";" + border)
+  </function>
+
+  <function name="Grid_SetCentre" parameters="x, y">
+    request (RunScript, "Grid_SetCentre;" + x + ";" + y)
+  </function>
 </library>

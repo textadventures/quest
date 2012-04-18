@@ -172,9 +172,9 @@ window.gridApi.onLoad = function () {
 
 _canvasSupported = (window.HTMLCanvasElement);
 
-function DrawGrid(minX, minY, maxX, maxY) {
+function Grid_DrawGridLines(minX, minY, maxX, maxY, border) {
     if (!_canvasSupported) return;
-    gridApi.drawGrid(parseInt(minX), parseInt(minY), parseInt(maxX), parseInt(maxY));
+    gridApi.drawGrid(parseInt(minX), parseInt(minY), parseInt(maxX), parseInt(maxY), border);
 }
 
 function Grid_SetScale(scale) {
@@ -210,4 +210,9 @@ function Grid_ShowCustomLayer(visible) {
 function Grid_ClearCustomLayer() {
     if (!_canvasSupported) return;
     gridApi.clearCustomLayer();
+}
+
+function Grid_SetCentre(x, y) {
+    if (!_canvasSupported) return;
+    gridApi.setCentre(parseFloat(x), parseFloat(y));
 }
