@@ -31,8 +31,9 @@ namespace AxeSoftware.Quest
         public static string GetScript(string script, out string afterScript)
         {
             afterScript = null;
-            int bracePos = script.IndexOf('{');
-            int crlfPos = script.IndexOf("\n");
+            string obscuredScript = ObscureStrings(script);
+            int bracePos = obscuredScript.IndexOf('{');
+            int crlfPos = obscuredScript.IndexOf("\n");
             if (crlfPos == -1) return script;
 
             if (bracePos == -1 || crlfPos < bracePos)
