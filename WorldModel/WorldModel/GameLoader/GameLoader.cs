@@ -69,7 +69,11 @@ namespace AxeSoftware.Quest
 
             try
             {
-                reader = XmlReader.Create(filename);
+                System.IO.FileStream stream = new System.IO.FileStream(filename,
+                    System.IO.FileMode.Open,
+                    System.IO.FileAccess.Read,
+                    System.IO.FileShare.ReadWrite);
+                reader = new XmlTextReader(stream);
 
                 do
                 {
