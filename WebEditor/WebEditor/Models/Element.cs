@@ -109,6 +109,13 @@ namespace WebEditor.Models
                 return result;
             }
 
+            if (!editorDictionary.ContainsKey(gameId))
+            {
+                Logging.Log.ErrorFormat("Current Session does not contain a game id of {0}", gameId);
+                result.Success = false;
+                return result;
+            }
+
             Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key);
 
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
