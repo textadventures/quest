@@ -511,6 +511,7 @@ namespace WebEditor.Models
 
         private string StripHTMLComments(string input)
         {
+            if (input == null) return null;
             return Regex.Replace(input, "<!--.*?-->", string.Empty, RegexOptions.Singleline);
         }
     }
