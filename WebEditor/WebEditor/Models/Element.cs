@@ -165,7 +165,15 @@ namespace WebEditor.Models
                     break;
                 case "checkbox":
                     ValueProviderResult value = bindingContext.ValueProvider.GetValue(attribute);
-                    saveValue = value.ConvertTo(typeof(bool));
+                    if (value == null)
+                    {
+                        Logging.Log.ErrorFormat("Expected true/false value for '{0}', but got null", attribute);
+                        saveValue = false;
+                    }
+                    else
+                    {
+                        saveValue = value.ConvertTo(typeof(bool));
+                    }
                     break;
                 case "script":
                     saveValue = BindScript(bindingContext.ValueProvider, attribute, originalElement.EditorData, editorDictionary[gameId].Controller, ignoreExpression);
