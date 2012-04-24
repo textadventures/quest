@@ -36,6 +36,9 @@
     <mapscale type="int">30</mapscale>
     <mapsize type="int">300</mapsize>
     <pov type="object">player</pov>
+    <changedpov type="script">
+      InitPOV (oldvalue, game.pov)
+    </changedpov>
   </type>
 
   <type name="defaultobject">
@@ -105,6 +108,11 @@
     <grid_parent_offset_auto/>
     <grid_parent_offset_x type="int">0</grid_parent_offset_x>
     <grid_parent_offset_y type="int">0</grid_parent_offset_y>
+    <pov_alias>[SelfAlias]</pov_alias>
+    <pov_alt type="list">[SelfAlt]</pov_alt>
+    <pov_look>[DefaultSelfDescription]</pov_look>
+    <pov_gender>[SelfGender]</pov_gender>
+    <pov_article>[SelfArticle]</pov_article>
   </type>
 
   <type name="defaultexit">
@@ -393,13 +401,6 @@
   </type>
 
   <type name="defaultplayer">
-    <alias>[SelfAlias]</alias>
-    <alt type="list">[SelfAlt]</alt>
-    <look>[DefaultSelfDescription]</look>
-    <gender>[SelfGender]</gender>
-    <article>[SelfArticle]</article>
-    <maxobjects type="int">0</maxobjects>
-    <maxvolume type="int">100</maxvolume>
   </type>
 
   <type name="switchable">

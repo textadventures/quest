@@ -67,6 +67,7 @@
 
   <function name="StartGame">
     <![CDATA[
+    InitPOV (null, game.pov)
     InitStatusAttributes
     UpdateStatusAttributes
     if (HasScript(game, "start")) do (game, "start")
@@ -170,6 +171,41 @@
       game.pov = object
       OnEnterRoom (null)
     }
+    ]]>
+  </function>
+
+  <function name="InitPOV" parameters="oldPOV, newPOV">
+    <![CDATA[
+    if (oldPOV <> null) {
+      oldPOV.alias = oldPOV.external_alias
+      oldPOV.alt = oldPOV.external_alt
+      oldPOV.look = oldPOV.external_look
+      oldPOV.gender = oldPOV.external_gender
+      oldPOV.article = oldPOV.external_article
+    }
+
+    newPOV.external_alias = newPOV.alias
+    newPOV.external_alt = newPOV.alt
+    newPOV.external_look = newPOV.look
+    newPOV.external_gender = newPOV.gender
+    newPOV.external_article = newPOV.article
+    
+    if (not GetBoolean(newPOV, "pov_used")) {
+      if (newPOV.alt = null) {
+        newPOV.pov_alt = newPOV.pov_alt  // ensure we have our own copy of the list
+      }
+      else {
+        newPOV.pov_alt = ListCombine(newPOV.alt, newPOV.pov_alt)
+      }
+      list add (newPOV.pov_alt, newPOV.alias)
+      newPOV.pov_used = true
+    }
+
+    newPOV.alias = newPOV.pov_alias
+    newPOV.alt = newPOV.pov_alt
+    newPOV.look = newPOV.pov_look
+    newPOV.gender = newPOV.pov_gender
+    newPOV.article = newPOV.pov_article
     ]]>
   </function>
 </library>
