@@ -13,11 +13,15 @@
   <function name="AddStatusAttributesForElement" parameters="status, element" type="string">
     <![CDATA[
     if (element.statusattributes <> null) {
+      elementToRead = element
+      if (element = player) {
+        elementToRead = game.pov
+      }
       foreach (attr, element.statusattributes) {
         if (LengthOf(status) > 0) {
           status = status + "\n"
         }
-        status = status + FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(element.statusattributes, attr))
+        status = status + FormatStatusAttribute(attr, GetAttribute(elementToRead, attr), StringDictionaryItem(element.statusattributes, attr))
       }
     }
     return (status)
