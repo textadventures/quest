@@ -163,4 +163,13 @@
   <function name="SwitchOff" parameters="object">
     object.switchedon = false
   </function>
+
+  <function name="ChangePOV" parameters="object">
+    <![CDATA[
+    if (game.pov <> object) {
+      game.pov = object
+      OnEnterRoom (null)
+    }
+    ]]>
+  </function>
 </library>
