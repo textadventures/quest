@@ -216,4 +216,73 @@
     </control> 
   </editor>
 
+  <editor>
+    <appliesto>(function)Grid_DrawSquare</appliesto>
+    <display>Draw custom layer grid square</display>
+    <category>Drawing</category>
+    <create>Grid_DrawSquare ("", 0, 0, "", "White")</create>
+    <add>Draw custom layer grid square</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Draw custom layer grid square with ID</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>at X</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>2</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Label</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>text</simple>
+      <attribute>3</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Colour</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>4</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+  </editor>
+
 </library>

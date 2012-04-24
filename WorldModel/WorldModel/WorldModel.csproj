@@ -233,6 +233,7 @@
     </None>
     <None Include="Core\CoreEditorScriptsDrawing.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorScriptsGameState.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
