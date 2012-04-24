@@ -181,21 +181,29 @@
   <function name="FormatExitList" type="string" parameters="preList, list, preFinal, postList">
     <![CDATA[
     result = ""
-    count = 0
     listLength = ListCount(list)
-    foreach (item, list) {
-      if (LengthOf(result) = 0) result = preList + " "
-      result = result + GetDisplayNameLink(item, "exit", item.displayverbs)
-      count = count + 1
-      if (count = listLength - 1) {
-        result = result + " " + preFinal + " "
+    
+    if (listLength > 0) {
+      count = 0
+      result = preList + " "
+      foreach (item, list) {
+        verbCount = ListCount(item.displayverbs)
+        if (verbCount = 1) {
+          alias = GetDisplayAlias(item)
+          result = result + CommandLink("go " + alias, alias)
+        }
+        else {
+          result = result + GetDisplayNameLink(item, "exit", item.displayverbs)
+        }
+        count = count + 1
+        if (count = listLength - 1) {
+          result = result + " " + preFinal + " "
+        }
+        else if (count < listLength) {
+          result = result + ", "
+        }
       }
-      else if (count < listLength) {
-        result = result + ", "
-      }
-      else {
-        result = result + postList
-      }
+      result = result + postList
     }
     return (result)
   ]]>
