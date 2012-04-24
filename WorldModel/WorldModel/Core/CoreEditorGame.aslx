@@ -77,6 +77,18 @@
       <caption>Options</caption>
 
       <control>
+        <controltype>title</controltype>
+        <caption>Player</caption>
+      </control>
+
+      <control>
+        <caption>Player object</caption>
+        <attribute>pov</attribute>
+        <controltype>objects</controltype>
+        <advanced/>
+      </control>
+
+      <control>
         <controltype>checkbox</controltype>
         <caption>Show player score</caption>
         <attribute>showscore</attribute>
