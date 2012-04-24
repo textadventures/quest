@@ -190,7 +190,7 @@
         verbCount = ListCount(item.displayverbs)
         if (verbCount = 1) {
           alias = GetDisplayAlias(item)
-          result = result + CommandLink("go " + alias, alias)
+          result = result + CommandLink(alias, alias)
         }
         else {
           result = result + GetDisplayNameLink(item, "exit", item.displayverbs)
