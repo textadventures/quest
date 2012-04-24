@@ -35,6 +35,7 @@
     <gridmap type="boolean">false</gridmap>
     <mapscale type="int">30</mapscale>
     <mapsize type="int">300</mapsize>
+    <pov type="object">player</pov>
   </type>
 
   <type name="defaultobject">
@@ -58,6 +59,16 @@
     <hidechildren type="boolean">false</hidechildren>
     <listchildren type="boolean">false</listchildren>
     <usedefaultprefix/>
+    <changedparent type="script">
+      if (game.pov = this) {
+        if (IsDefined("oldvalue")) {
+          OnEnterRoom(oldvalue)
+        }
+        else {
+          OnEnterRoom(null)
+        }
+      }
+    </changedparent>
     <changedisopen type="script">
       if (this.isopen and HasScript(this, "onopen")) {
         do (this, "onopen")
@@ -384,20 +395,11 @@
   <type name="defaultplayer">
     <alias>[SelfAlias]</alias>
     <alt type="list">[SelfAlt]</alt>
-    <scenery/>
     <look>[DefaultSelfDescription]</look>
     <gender>[SelfGender]</gender>
     <article>[SelfArticle]</article>
     <maxobjects type="int">0</maxobjects>
     <maxvolume type="int">100</maxvolume>
-    <changedparent type="script">
-      if (IsDefined("oldvalue")) {
-        OnEnterRoom(oldvalue)
-      }
-      else {
-        OnEnterRoom(null)
-      }
-    </changedparent>
   </type>
 
   <type name="switchable">

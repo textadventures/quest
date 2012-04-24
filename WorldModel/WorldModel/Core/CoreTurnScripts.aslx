@@ -7,7 +7,7 @@
           if (turnscript.parent = game or turnscript.parent = null) {
             inscope = true
           } else {
-            if (Contains(turnscript.parent, player)) {
+            if (Contains(turnscript.parent, game.pov)) {
               inscope = true
             }
           }

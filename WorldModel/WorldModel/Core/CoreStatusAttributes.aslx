@@ -1,8 +1,13 @@
 ﻿<library>
   <function name="UpdateStatusAttributes">
+    <![CDATA[
     status = AddStatusAttributesForElement("", game)
     status = AddStatusAttributesForElement(status, player)
+    if (game.pov <> player) {
+      status = AddStatusAttributesForElement(status, game.pov)
+    }
     request (SetStatus, status)
+    ]]>
   </function>
 
   <function name="AddStatusAttributesForElement" parameters="status, element" type="string">

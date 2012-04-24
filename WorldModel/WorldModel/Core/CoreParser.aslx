@@ -517,7 +517,7 @@
           else {
             menu = NewStringDictionary()
             excludelist = NewObjectList()
-            list add (excludelist, player)
+            list add (excludelist, game.pov)
             list add (excludelist, object)
             candidates = ListExclude(ScopeVisible(), excludelist)
             GenerateMenuChoices(menu, candidates)

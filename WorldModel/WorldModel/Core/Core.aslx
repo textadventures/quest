@@ -73,12 +73,12 @@
     UpdateStatusAttributes
     on ready {
       if (game.gridmap) {
-        player.parent.grid_x = 0
-        player.parent.grid_y = 0
-        player.parent.grid_z = 0
-        player.parent.grid_render = true
-        Grid_CalculateMapCoordinates (player.parent)
-        Grid_DrawPlayerInRoom (player.parent)
+        game.pov.parent.grid_x = 0
+        game.pov.parent.grid_y = 0
+        game.pov.parent.grid_z = 0
+        game.pov.parent.grid_render = true
+        Grid_CalculateMapCoordinates (game.pov.parent)
+        Grid_DrawPlayerInRoom (game.pov.parent)
       }
       if (game.displayroomdescriptiononstart) {
         OnEnterRoom (null)
@@ -107,7 +107,7 @@
   </function>
 
   <function name="AddToInventory" parameters="object">
-    object.parent = player
+    object.parent = game.pov
   </function>
 
   <function name="MoveObject" parameters="object, parent">
