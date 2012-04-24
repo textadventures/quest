@@ -23,6 +23,7 @@
   <include ref="CoreStatusAttributes.aslx"/>
   <include ref="CoreOutput.aslx"/>
   <include ref="CoreGrid.aslx"/>
+  <include ref="CoreCombat.aslx"/>
   <include ref="CoreEditor.aslx"/>
 
   <function name="InitInterface">
