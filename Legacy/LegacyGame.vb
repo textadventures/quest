@@ -464,6 +464,7 @@ Public Class LegacyGame
     Private m_player As IPlayer
     Private m_gameFinished As Boolean
     Private m_gameIsRestoring As Boolean
+    Private m_useStaticFrameForPictures As Boolean
 
     Public Sub New(filename As String, originalFilename As String)
         QuestVersion = My.Application.Info.Version.ToString()
@@ -1806,6 +1807,10 @@ Public Class LegacyGame
                 i = NumSkipCheckFiles
             End If
         Next i
+
+        If FilenameNoPath = "musicvf1.cas" Then
+            m_useStaticFrameForPictures = True
+        End If
 
         'RemoveComments called within ConvertMultiLines
         ConvertMultiLines()
@@ -8116,7 +8121,14 @@ errhandle:
     End Sub
 
     Private Sub ShowPictureInText(ByRef sFileName As String)
-        m_player.ShowPicture(GetResourcePath(sFileName))
+        Dim path As String = GetResourcePath(sFileName)
+        If Not m_useStaticFrameForPictures Then
+            m_player.ShowPicture(path)
+        Else
+            ' Workaround for a particular game which expects pictures to be in a popup window -
+            ' use the static picture frame feature so that image is not cleared
+            m_player.SetPanelContents("<img src=""" + path + """ onload=""setPanelHeight()""/>")
+        End If
     End Sub
 
     Private Sub ShowRoomInfoV2(ByRef Room As String)
