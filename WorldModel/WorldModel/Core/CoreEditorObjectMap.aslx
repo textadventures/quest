@@ -2,7 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>Map</caption>
-    <mustnotinherit>editor_object; defaultplayer</mustnotinherit>
+    <mustnotinherit>editor_object</mustnotinherit>
 
     <control>
       <controltype>number</controltype>

@@ -7,14 +7,12 @@
     <control>
       <controltype>title</controltype>
       <caption>Use (on its own)</caption>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
       <controltype>multi</controltype>
       <caption>Action</caption>
       <attribute>use</attribute>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <types>
         null=Display menu of objects this can be used on;script=Run a script
       </types>
@@ -23,7 +21,6 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>usemenuprompt</attribute>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <caption>Menu caption (leave blank for default)</caption>
       <onlydisplayif>this.use = null</onlydisplayif>
     </control>
@@ -57,7 +54,6 @@
       <controltype>title</controltype>
       <caption>Use this on (other object)</caption>
       <advanced/>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
@@ -71,7 +67,6 @@
       <keyprompt>Please enter the object name</keyprompt>
       <source>object</source>
       <advanced/>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
@@ -80,20 +75,17 @@
       <attribute>selfuseanything</attribute>
       <onlydisplayif>TypeOf(this, "selfuseon") = "scriptdictionary"</onlydisplayif>
       <advanced/>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
       <controltype>title</controltype>
       <caption>Give (on its own)</caption>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
       <controltype>multi</controltype>
       <caption>Action</caption>
       <attribute>givesingle</attribute>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <types>
         null=Display menu of objects this can be given to;script=Run a script
       </types>
@@ -102,7 +94,6 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>givemenuprompt</attribute>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <caption>Menu caption (leave blank for default)</caption>
       <onlydisplayif>this.givesingle = null</onlydisplayif>
     </control>
@@ -110,7 +101,6 @@
     <control>
       <controltype>title</controltype>
       <caption>Give (other object) to this</caption>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
@@ -123,7 +113,6 @@
       <keyname>Object</keyname>
       <keyprompt>Please enter the object name</keyprompt>
       <source>object</source>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
@@ -132,14 +121,12 @@
       <attribute>giveanything</attribute>
       <onlydisplayif>TypeOf(this, "give") = "scriptdictionary"</onlydisplayif>
       <advanced/>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
       <controltype>title</controltype>
       <caption>Give this to (other object)</caption>
       <advanced/>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
@@ -153,7 +140,6 @@
       <keyprompt>Please enter the object name</keyprompt>
       <source>object</source>
       <advanced/>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
@@ -162,7 +148,6 @@
       <attribute>givetoanything</attribute>
       <onlydisplayif>TypeOf(this, "giveto") = "scriptdictionary"</onlydisplayif>
       <advanced/>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
   </tab>
 </library>

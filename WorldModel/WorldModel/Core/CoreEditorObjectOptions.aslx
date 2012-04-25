@@ -2,7 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>Options</caption>
-    <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+    <mustnotinherit>editor_room</mustnotinherit>
 
     <control>
       <controltype>title</controltype>

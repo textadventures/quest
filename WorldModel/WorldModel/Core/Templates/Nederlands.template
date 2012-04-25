@@ -12,7 +12,7 @@
     <inherit name="editor_room" />
 
     <object name="player">
-      <inherit name="defaultplayer" />
+      <inherit name="editor_player" />
     </object>
   </object>
 
