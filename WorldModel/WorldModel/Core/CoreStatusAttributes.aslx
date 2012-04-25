@@ -1,20 +1,21 @@
 ﻿<library>
   <function name="UpdateStatusAttributes">
     <![CDATA[
-    status = AddStatusAttributesForElement("", game)
-    status = AddStatusAttributesForElement(status, game.pov)
+    status = AddStatusAttributesForElement("", game, game.statusattributes)
+    status = AddStatusAttributesForElement(status, game.pov, game.povstatusattributes)
+    status = AddStatusAttributesForElement(status, game.pov, game.pov.statusattributes)
     request (SetStatus, status)
     ]]>
   </function>
 
-  <function name="AddStatusAttributesForElement" parameters="status, element" type="string">
+  <function name="AddStatusAttributesForElement" parameters="status, element, statusAttributes" type="string">
     <![CDATA[
-    if (element.statusattributes <> null) {
-      foreach (attr, element.statusattributes) {
+    if (statusAttributes <> null) {
+      foreach (attr, statusAttributes) {
         if (LengthOf(status) > 0) {
           status = status + "\n"
         }
-        status = status + FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(element.statusattributes, attr))
+        status = status + FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(statusAttributes, attr))
       }
     }
     return (status)
