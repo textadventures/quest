@@ -67,6 +67,21 @@
 
   <function name="StartGame">
     <![CDATA[
+    if (game.pov = null) {
+      playerObject = GetObject("player")
+      if (playerObject = null) {
+        if (ListCount(AllObjects()) > 0) {
+          firstRoom = ObjectListItem(AllObjects(), 0)
+        }
+        else {
+          create ("room")
+          firstRoom = room
+        }
+        create ("player")
+        player.parent = firstRoom
+      }
+      game.pov = player
+    }
     InitPOV (null, game.pov)
     InitStatusAttributes
     UpdateStatusAttributes
