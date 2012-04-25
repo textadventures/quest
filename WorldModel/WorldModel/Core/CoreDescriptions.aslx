@@ -187,14 +187,7 @@
       count = 0
       result = preList + " "
       foreach (item, list) {
-        verbCount = ListCount(item.displayverbs)
-        if (verbCount = 1) {
-          alias = GetDisplayAlias(item)
-          result = result + CommandLink(alias, alias)
-        }
-        else {
-          result = result + GetDisplayNameLink(item, "exit", item.displayverbs)
-        }
+        result = result + GetDisplayNameLink(item, "exit", item.displayverbs)
         count = count + 1
         if (count = listLength - 1) {
           result = result + " " + preFinal + " "
@@ -227,7 +220,21 @@
 
   <function name="GetDisplayNameLink" type="string" parameters="obj, type, verbs">
   <![CDATA[
-    result = GetTaggedName(obj, type, verbs)
+    if (verbs <> null) {
+      verbCount = ListCount(verbs)
+    }
+    else {      
+      verbCount = 0
+    }
+    
+    if (type = "exit" and verbCount = 1) {
+      alias = GetDisplayAlias(obj)
+      result = CommandLink(StringListItem(verbs, 0) + " " + alias, alias)
+    }
+    else {
+      result = GetTaggedName(obj, type, verbs)
+    }
+    
     if (not GetBoolean(obj, "usedefaultprefix")) {
       if (obj.prefix = null) {
         prefix = ""
