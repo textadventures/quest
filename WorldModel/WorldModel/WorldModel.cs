@@ -503,7 +503,6 @@ namespace AxeSoftware.Quest
             {
                 try
                 {
-                    if (!m_elements.ContainsKey(ElementType.Object, "player")) throw new Exception("No player object found in game");
                     m_timerRunner = new TimerRunner(this, !m_loadedFromSaved);
                     if (m_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
                     if (!m_loadedFromSaved)

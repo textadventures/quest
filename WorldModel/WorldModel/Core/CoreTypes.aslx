@@ -35,7 +35,6 @@
     <gridmap type="boolean">false</gridmap>
     <mapscale type="int">30</mapscale>
     <mapsize type="int">300</mapsize>
-    <pov type="object">player</pov>
     <changedpov type="script">
       InitPOV (oldvalue, game.pov)
     </changedpov>
