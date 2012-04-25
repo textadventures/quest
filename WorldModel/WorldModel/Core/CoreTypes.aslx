@@ -401,6 +401,7 @@
   </type>
 
   <type name="defaultplayer">
+    <inherit name="editor_player"/>
   </type>
 
   <type name="switchable">

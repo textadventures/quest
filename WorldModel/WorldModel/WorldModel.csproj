@@ -162,6 +162,7 @@
     </None>
     <None Include="Core\CoreCombat.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorCommand.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -295,6 +296,7 @@
     </None>
     <None Include="Core\CoreStatusAttributes.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreTimers.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

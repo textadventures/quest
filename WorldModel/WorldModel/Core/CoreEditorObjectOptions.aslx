@@ -95,5 +95,68 @@
       <mustinherit>edible</mustinherit>
     </control>
 
+    <control>
+      <controltype>title</controltype>
+      <caption>Player</caption>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Player</caption>
+      <types>*=Cannot be a player; editor_player=Can be a player</types>
+      <advanced/>
+    </control>
+
+    <control>
+      <mustinherit>editor_player</mustinherit>
+      <controltype>label</controltype>
+      <caption>When this object is the player, the settings below will override the settings specified on other tabs.</caption>
+    </control>
+
+    <control>
+      <mustinherit>editor_player</mustinherit>
+      <caption>Alias</caption>
+      <controltype>textbox</controltype>
+      <attribute>pov_alias</attribute>
+      <nullable/>
+    </control>
+
+    <control>
+      <mustinherit>editor_player</mustinherit>
+      <caption>Gender</caption>
+      <controltype>textbox</controltype>
+      <attribute>pov_gender</attribute>
+    </control>
+
+    <control>
+      <mustinherit>editor_player</mustinherit>
+      <caption>Article</caption>
+      <controltype>textbox</controltype>
+      <attribute>pov_article</attribute>
+    </control>
+
+    <control>
+      <mustinherit>editor_player</mustinherit>
+      <caption>Other names</caption>
+      <controltype>list</controltype>
+      <attribute>pov_alt</attribute>
+      <editprompt>Please enter an additional name for this object</editprompt>
+    </control>
+
+    <control>
+      <mustinherit>editor_player</mustinherit>
+      <selfcaption>"Look at" object description</selfcaption>
+      <controltype>multi</controltype>
+      <attribute>pov_look</attribute>
+      <types>
+        null=No description; string=Text; script=Run script
+      </types>
+      <editors>
+        string=richtext
+      </editors>
+      <expand/>
+    </control>
+
   </tab>
 </library>
