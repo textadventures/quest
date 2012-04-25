@@ -60,13 +60,13 @@ function CheckFlashAndShowMsg() {
         if (fo)
             hasFlash = true;
     } catch (e) {
-        //IE 8+
+        //IE 8+, and all other modern browsers
         if (navigator.mimeTypes["application/x-shockwave-flash"] != undefined)
             hasFlash = true;
     }
 
     if (!hasFlash)
-        addText("<b><i>You must install <a href=\"http://get.adobe.com/flashplayer/\" target=\"_blank\">Adobe Flash Player</a> for Internet Explorer for videos to work.</b></i>");
+        addText("<b><i>You must install <a href=\"http://get.adobe.com/flashplayer/\" target=\"_blank\">Adobe Flash Player</a> for Internet Explorer for videos to work.</i></b>");
 
     return hasFlash;
 }
