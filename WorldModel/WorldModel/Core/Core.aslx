@@ -197,7 +197,9 @@
       else {
         newPOV.pov_alt = ListCombine(newPOV.alt, newPOV.pov_alt)
       }
-      list add (newPOV.pov_alt, newPOV.alias)
+      if (newPOV.alias <> null) {
+        list add (newPOV.pov_alt, newPOV.alias)
+      }
       newPOV.pov_used = true
     }
 
