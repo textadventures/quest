@@ -215,6 +215,22 @@
       if (newPOV.alias <> null) {
         list add (newPOV.pov_alt, newPOV.alias)
       }
+      
+      if (game.showhealth) {
+        newPOV.health = 100
+        newPOV.changedhealth => {
+          if (this.health > 100) {
+            this.health = 100
+          }
+          else if (this.health <= 0) {
+            this.health = 0
+            if (HasScript(game, "onhealthzero")) {
+              do (game, "onhealthzero")
+            }
+          }
+        }
+      }
+
       newPOV.pov_used = true
     }
 

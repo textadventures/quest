@@ -446,8 +446,8 @@
       else {
         msg (DynamicTemplate("Eaten", this))
       }
-      if (HasInt(player, "health")) {
-        player.health = player.health + this.eathealth
+      if (HasInt(game.pov, "health")) {
+        game.pov.health = game.pov.health + this.eathealth
       }
       destroy (this.name)
     </eat>
