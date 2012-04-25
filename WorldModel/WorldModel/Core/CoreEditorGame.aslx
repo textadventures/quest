@@ -74,12 +74,88 @@
     </tab>
 
     <tab>
-      <caption>Options</caption>
+      <caption>Room descriptions</caption>
+      <advanced/>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Automatically generate room descriptions</caption>
+        <attribute>autodescription</attribute>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show room description when entering a room</caption>
+        <attribute>showdescriptiononenter</attribute>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Append in-room descriptions to room description</caption>
+        <attribute>appendobjectdescription</attribute>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Enable hyperlinks</caption>
+        <attribute>enablehyperlinks</attribute>
+      </control>
 
       <control>
         <controltype>title</controltype>
-        <caption>Player</caption>
+        <caption>Room description layout</caption>
+        <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>Use the numbers 1 to 4 to control the order in which lines of the automatic room description are displayed. Use 0 to hide a line.</caption>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>autodescription_youarein</attribute>
+        <caption>Room name</caption>
+        <minimum>0</minimum>
+        <maximum>4</maximum>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>autodescription_youcansee</attribute>
+        <caption>Objects list</caption>
+        <minimum>0</minimum>
+        <maximum>4</maximum>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>autodescription_youcango</attribute>
+        <caption>Exits list</caption>
+        <minimum>0</minimum>
+        <maximum>4</maximum>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <attribute>autodescription_description</attribute>
+        <caption>Description</caption>
+        <minimum>0</minimum>
+        <maximum>4</maximum>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>autodescription_youarein_useprefix</attribute>
+        <caption>Use "[YouAreIn]" prefix (turn off to display room name in bold instead)</caption>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+    </tab>
+
+    <tab>
+      <caption>Player</caption>
 
       <control>
         <caption>Player object</caption>
@@ -89,14 +165,21 @@
       </control>
 
       <control>
+        <onlydisplayif>game.pov = null</onlydisplayif>
+        <advanced/>
+        <controltype>label</controltype>
+        <caption>If no player object is specified, Quest will use the object named "player" (and create one in the first room if it doesn't exist)</caption>
+      </control>
+
+      <control>
         <controltype>checkbox</controltype>
-        <caption>Show player score</caption>
+        <caption>Show score</caption>
         <attribute>showscore</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Show player health</caption>
+        <caption>Show health</caption>
         <attribute>showhealth</attribute>
       </control>
 
@@ -108,96 +191,12 @@
       </control>
 
       <control>
-        <controltype>title</controltype>
-        <caption>Room descriptions</caption>
+        <controltype>stringdictionary</controltype>
+        <caption>Player object status attributes (values read from the current player object)</caption>
+        <keyprompt>Please enter the attribute name</keyprompt>
+        <valueprompt>Please enter the format string (blank for default)</valueprompt>
+        <attribute>povstatusattributes</attribute>
         <advanced/>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Automatically generate room descriptions</caption>
-        <attribute>autodescription</attribute>
-        <advanced/>
-      </control>
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Show room description when entering a room</caption>
-        <attribute>showdescriptiononenter</attribute>
-        <advanced/>
-      </control>
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Append in-room descriptions to room description</caption>
-        <attribute>appendobjectdescription</attribute>
-        <advanced/>
-      </control>
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Enable hyperlinks</caption>
-        <attribute>enablehyperlinks</attribute>
-        <advanced/>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>Room description layout</caption>
-        <advanced/>
-        <onlydisplayif>game.autodescription</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>Use the numbers 1 to 4 to control the order in which lines of the automatic room description are displayed. Use 0 to hide a line.</caption>
-        <advanced/>
-        <onlydisplayif>game.autodescription</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <attribute>autodescription_youarein</attribute>
-        <caption>Room name</caption>
-        <minimum>0</minimum>
-        <maximum>4</maximum>
-        <advanced/>
-        <onlydisplayif>game.autodescription</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <attribute>autodescription_youcansee</attribute>
-        <caption>Objects list</caption>
-        <minimum>0</minimum>
-        <maximum>4</maximum>
-        <advanced/>
-        <onlydisplayif>game.autodescription</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <attribute>autodescription_youcango</attribute>
-        <caption>Exits list</caption>
-        <minimum>0</minimum>
-        <maximum>4</maximum>
-        <advanced/>
-        <onlydisplayif>game.autodescription</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <attribute>autodescription_description</attribute>
-        <caption>Description</caption>
-        <minimum>0</minimum>
-        <maximum>4</maximum>
-        <advanced/>
-        <onlydisplayif>game.autodescription</onlydisplayif>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <attribute>autodescription_youarein_useprefix</attribute>
-        <caption>Use "[YouAreIn]" prefix (turn off to display room name in bold instead)</caption>
-        <advanced/>
-        <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
     </tab>
 
