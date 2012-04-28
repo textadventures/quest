@@ -229,7 +229,7 @@
     
     if (type = "exit" and verbCount = 1) {
       alias = GetDisplayAlias(obj)
-      result = CommandLink(StringListItem(verbs, 0) + " " + alias, alias)
+      result = CommandLink(LCase(StringListItem(verbs, 0)) + " " + alias, alias)
     }
     else {
       result = GetTaggedName(obj, type, verbs)
