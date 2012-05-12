@@ -312,6 +312,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Save()
         {
+            bool save = true;
             if (!m_helper.IsDirty) return;
             m_saving = true;
             string saveValue = null;
@@ -327,8 +328,21 @@ namespace AxeSoftware.Quest.EditorControls
             {
                 saveValue = txtExpression.Text;
             }
-            m_helper.Save(saveValue);
+            ValidationResult result = m_helper.Controller.ValidateExpression(saveValue);
+            save = result.Valid;
+            if (!result.Valid)
+            {
+                PopupEditors.DisplayValidationError(result, saveValue, "Invalid expression");
+            }
+            if (save)
+            {
+                m_helper.Save(saveValue);
+            }
             m_saving = false;
+            if (!save)
+            {
+                Populate(m_data);
+            }
         }
 
         private void txtExpression_TextChanged(object sender, TextChangedEventArgs e)

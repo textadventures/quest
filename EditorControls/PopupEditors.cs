@@ -28,7 +28,8 @@ namespace AxeSoftware.Quest.EditorControls
             {ValidationMessage.InvalidElementNameMultipleSpaces, "Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces."},
             {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
             {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
-            {ValidationMessage.InvalidElementNameStartsWithNumber, "Invalid element name. An element name cannot start with a number."}
+            {ValidationMessage.InvalidElementNameStartsWithNumber, "Invalid element name. An element name cannot start with a number."},
+            {ValidationMessage.MismatchingBrackets, "The number of opening brackets \"(\" does not match the number of closing brackets \")\"."},
         };
 
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null, bool allowEmptyString = false)

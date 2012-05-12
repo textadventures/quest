@@ -39,5 +39,33 @@ namespace EditorControllerTests
             var result = Controller.CanAdd(name);
             Assert.IsFalse(result.Valid, string.Format("Expected adding '{0}' to fail", name));
         }
+
+        [TestMethod]
+        public void TestValidExpressions()
+        {
+            AssertValidExpression("");
+            AssertValidExpression("some expression");
+            AssertValidExpression("(some expression)");
+            AssertValidExpression("some (valid (expression))");
+        }
+
+        [TestMethod]
+        public void TestInvalidExpressions()
+        {
+            AssertInvalidExpression("invalid (expression");
+            AssertInvalidExpression("(invald) expression(");
+        }
+
+        private void AssertValidExpression(string expression)
+        {
+            var result = Controller.ValidateExpression(expression);
+            Assert.IsTrue(result.Valid, string.Format("Expected expression '{0}' to be evaluated as valid: {1}", expression, result.Message.ToString()));
+        }
+
+        private void AssertInvalidExpression(string expression)
+        {
+            var result = Controller.ValidateExpression(expression);
+            Assert.IsFalse(result.Valid, string.Format("Expected expression '{0}' to be evaluated as invalid", expression));
+        }
     }
 }

@@ -26,7 +26,8 @@ namespace AxeSoftware.Quest
         InvalidElementNameMultipleSpaces,
         InvalidElementNameInvalidWord,
         CannotRenamePlayerElement,
-        InvalidElementNameStartsWithNumber
+        InvalidElementNameStartsWithNumber,
+        MismatchingBrackets,
     }
 
     public enum EditorStyle
@@ -2266,6 +2267,23 @@ namespace AxeSoftware.Quest
                     }
                 }
             }
+        }
+
+        public ValidationResult ValidateExpression(string expression)
+        {
+            string obscured = Utility.ObscureStrings(expression);
+            int braceCount = 0;
+            foreach (char c in obscured)
+            {
+                if (c == '(') braceCount++;
+                if (c == ')') braceCount--;
+            }
+
+            if (braceCount != 0)
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.MismatchingBrackets };
+            }
+            return new ValidationResult { Valid = true };
         }
     }
 }
