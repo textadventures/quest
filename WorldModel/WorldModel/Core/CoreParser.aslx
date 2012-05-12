@@ -487,6 +487,7 @@
     <separator>[VerbObjectSeparator]</separator>
     <multiobjectmenu>[MultiObjectVerbMenu]</multiobjectmenu>
     <multiobjectdefault>[DefaultMultiObjectVerb]</multiobjectdefault>
+    <multiobjectmenuempty>[NoObjectsAvailable]</multiobjectmenuempty>
     <script type="script">
       <![CDATA[
       if (not IsDefined("object2")) {
@@ -520,14 +521,19 @@
             list add (excludelist, player)
             list add (excludelist, object)
             candidates = ListExclude(RemoveSceneryObjects(ScopeVisible()), excludelist)
-            GenerateMenuChoices(menu, candidates)
-            player.multiverb = this.property
-            player.multiverbobject = object
-            show menu (this.multiobjectmenu, menu, true) {
-              if (result <> null) {
-                HandleMultiVerb (player.multiverbobject, player.multiverb, GetObject(result), this.multiobjectdefault)
-                player.multiverb = null
-                player.multiverbobject = null
+            if (ListCount(candidates) = 0) {
+              msg (this.multiobjectmenuempty)
+            }
+            else {
+              GenerateMenuChoices(menu, candidates)
+              player.multiverb = this.property
+              player.multiverbobject = object
+              show menu (this.multiobjectmenu, menu, true) {
+                if (result <> null) {
+                  HandleMultiVerb (player.multiverbobject, player.multiverb, GetObject(result), this.multiobjectdefault)
+                  player.multiverb = null
+                  player.multiverbobject = null
+                }
               }
             }
           }
