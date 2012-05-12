@@ -44,24 +44,9 @@ namespace WebEditor.Services
         private string m_initMessage = null;
         private List<IEditableScript> m_selectedScripts = new List<IEditableScript>();
 
-        private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
-		    {ValidationMessage.OK,"No error"},
-		    {ValidationMessage.ItemAlreadyExists,"Item '{0}' already exists in the list"},
-		    {ValidationMessage.ElementAlreadyExists,"An element called '{0}' already exists in this game"},
-            {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
-            {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
-            {ValidationMessage.InvalidElementName, "Invalid element name"},
-            {ValidationMessage.CircularTypeReference, "Circular type reference"},
-            {ValidationMessage.InvalidElementNameMultipleSpaces, "Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces."},
-            {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
-            {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
-            {ValidationMessage.InvalidElementNameStartsWithNumber, "Invalid element name. An element name cannot start with a number."},
-            {ValidationMessage.MismatchingBrackets, "The number of opening brackets \"(\" does not match the number of closing brackets \")\"."},
-        };
-
         public static string GetValidationError(ValidationResult result, object input)
         {
-            return string.Format(s_validationMessages[result.Message], input, result.MessageData);
+            return EditorController.GetValidationError(result, input);
         }
 
         public EditorService()
