@@ -41,19 +41,34 @@ namespace EditorControllerTests
         }
 
         [TestMethod]
-        public void TestValidExpressions()
+        public void TestValidExpressionsWithBrackets()
         {
             AssertValidExpression("");
             AssertValidExpression("some expression");
             AssertValidExpression("(some expression)");
             AssertValidExpression("some (valid (expression))");
+            AssertValidExpression("this is valid because \"the bracket ( is in quotes\"");
         }
 
         [TestMethod]
-        public void TestInvalidExpressions()
+        public void TestInvalidExpressionsWithBrackets()
         {
             AssertInvalidExpression("invalid (expression");
-            AssertInvalidExpression("(invald) expression(");
+            AssertInvalidExpression("(invalid) expression(");
+        }
+
+        [TestMethod]
+        public void TestValidExpressionsWithQuotes()
+        {
+            AssertValidExpression("\"this is in quotes\"");
+            AssertValidExpression("\"this is in quotes\" + \"also this is in quotes\"");
+        }
+
+        [TestMethod]
+        public void TestInvalidExpressionsWithQuotes()
+        {
+            AssertInvalidExpression("\"no end quote");
+            AssertInvalidExpression("\"this is in quotes\" + \"but this doesn't have an end quote");
         }
 
         private void AssertValidExpression(string expression)

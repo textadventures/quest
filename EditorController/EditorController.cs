@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest
         CannotRenamePlayerElement,
         InvalidElementNameStartsWithNumber,
         MismatchingBrackets,
+        MismatchingQuotes,
     }
 
     public enum EditorStyle
@@ -108,6 +109,7 @@ namespace AxeSoftware.Quest
             {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
             {ValidationMessage.InvalidElementNameStartsWithNumber, "Invalid element name. An element name cannot start with a number."},
             {ValidationMessage.MismatchingBrackets, "The number of opening brackets \"(\" does not match the number of closing brackets \")\"."},
+            {ValidationMessage.MismatchingQuotes, "Missing quote character (\")"},
         };
 
         private WorldModel m_worldModel;
@@ -2288,15 +2290,21 @@ namespace AxeSoftware.Quest
         {
             string obscured = Utility.ObscureStrings(expression);
             int braceCount = 0;
+            bool inQuote = false;
             foreach (char c in obscured)
             {
                 if (c == '(') braceCount++;
                 if (c == ')') braceCount--;
+                if (c == '\"') inQuote = !inQuote;
             }
 
             if (braceCount != 0)
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.MismatchingBrackets };
+            }
+            if (inQuote)
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.MismatchingQuotes };
             }
             return new ValidationResult { Valid = true };
         }
