@@ -519,7 +519,7 @@
             excludelist = NewObjectList()
             list add (excludelist, player)
             list add (excludelist, object)
-            candidates = ListExclude(ScopeVisible(), excludelist)
+            candidates = ListExclude(RemoveSceneryObjects(ScopeVisible()), excludelist)
             GenerateMenuChoices(menu, candidates)
             player.multiverb = this.property
             player.multiverbobject = object
