@@ -71,6 +71,7 @@ Public Class Editor
                             RaiseEvent AddToRecent(m_filename, m_controller.GameName)
                             EditorStyle = m_controller.EditorStyle
                             SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
+                            SetWordWrap(CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorWordWrap", 0)) = 1)
                             m_menu.Visible = True
                             m_uiHidden = False
                             DisplayCodeView(False)
@@ -141,7 +142,7 @@ Public Class Editor
         menu.AddMenuClickHandler("publish", AddressOf Publish)
         menu.AddMenuClickHandler("find", AddressOf Find)
         menu.AddMenuClickHandler("simplemode", AddressOf ToggleSimpleMode)
-        menu.AddMenuClickHandler("wordwrap", AddressOf WordWrap)
+        menu.AddMenuClickHandler("wordwrap", AddressOf ToggleWordWrap)
     End Sub
 
     Private Sub SetUpToolbar()
@@ -1069,8 +1070,13 @@ Public Class Editor
                     End Sub)
     End Sub
 
-    Private Sub WordWrap()
-        m_menu.MenuChecked("wordwrap") = Not m_menu.MenuChecked("wordwrap")
-        ctlTextEditor.WordWrap = m_menu.MenuChecked("wordwrap")
+    Private Sub SetWordWrap(turnOn As Boolean)
+        m_menu.MenuChecked("wordwrap") = turnOn
+        ctlTextEditor.WordWrap = turnOn
+        AxeSoftware.Utility.Registry.SaveSetting("Quest", "Settings", "EditorWordWrap", If(ctlTextEditor.WordWrap, 1, 0))
+    End Sub
+
+    Private Sub ToggleWordWrap()
+        SetWordWrap(Not m_menu.MenuChecked("wordwrap"))
     End Sub
 End Class
