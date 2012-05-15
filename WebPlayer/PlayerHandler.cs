@@ -444,5 +444,9 @@ namespace WebPlayer
         {
             m_buffer.AddJavaScriptToBuffer("setPanelContents", new StringParameter(html));
         }
+
+        public void Log(string text)
+        {
+        }
     }
 }

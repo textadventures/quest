@@ -69,6 +69,7 @@ namespace AxeSoftware.Quest
         void SetCompassDirections(IEnumerable<string> dirs);
         void SetInterfaceString(string name, string text);
         void SetPanelContents(string html);
+        void Log(string text);
     }
 
     public enum ListType

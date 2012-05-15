@@ -273,6 +273,10 @@ namespace AxeSoftware.Quest
             public void SetPanelContents(string html)
             {
             }
+
+            public void Log(string text)
+            {
+            }
         }
     }
 }

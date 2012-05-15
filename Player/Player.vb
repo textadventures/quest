@@ -40,6 +40,7 @@ Public Class Player
     Private m_allowFontChange As Boolean = True
     Private m_playSounds As Boolean = True
     Private m_fromEditor As Boolean = False
+    Private WithEvents m_log As Log
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -67,6 +68,7 @@ Public Class Player
         m_menu = menu
 
         menu.AddMenuClickHandler("debugger", AddressOf DebuggerMenuClick)
+        menu.AddMenuClickHandler("log", AddressOf LogMenuClick)
         menu.AddMenuClickHandler("walkthrough", AddressOf RunWalkthrough)
         menu.AddMenuClickHandler("undo", AddressOf Undo)
         menu.AddMenuClickHandler("selectall", AddressOf SelectAll)
@@ -80,6 +82,10 @@ Public Class Player
 
     Private Sub DebuggerMenuClick()
         ShowDebugger(Not m_menu.MenuChecked("debugger"))
+    End Sub
+
+    Private Sub LogMenuClick()
+        ShowLog(Not m_menu.MenuChecked("log"))
     End Sub
 
     Public Sub Initialise(ByRef game As IASL, Optional fromEditor As Boolean = False)
@@ -176,7 +182,9 @@ Public Class Player
         m_gameReady = False
         m_gameName = ""
         ShowDebugger(False)
+        ShowLog(False)
         m_debugger = Nothing
+        m_log = Nothing
         lstInventory.Clear()
         lstPlacesObjects.Clear()
         If Not m_menu Is Nothing Then
@@ -396,8 +404,23 @@ Public Class Player
         End If
     End Sub
 
+    Public Sub ShowLog(show As Boolean)
+        If m_log Is Nothing Then
+            m_log = New Log
+        End If
+        If show Then
+            m_log.Show()
+        Else
+            m_log.Hide()
+        End If
+    End Sub
+
     Private Sub m_debugger_VisibleChanged(sender As Object, e As System.EventArgs) Handles m_debugger.VisibleChanged
         m_menu.MenuChecked("debugger") = m_debugger.Visible
+    End Sub
+
+    Private Sub m_log_VisibleChanged(sender As Object, e As System.EventArgs) Handles m_log.VisibleChanged
+        m_menu.MenuChecked("log") = m_log.Visible
     End Sub
 
     Private Sub RunWalkthrough()
@@ -1134,4 +1157,20 @@ Public Class Player
             DoQuit()
         End If
     End Sub
+
+    Public Sub Log(text As String) Implements IPlayer.Log
+        BeginInvoke(Sub()
+                        If m_log Is Nothing Then
+                            m_log = New Log
+                        End If
+                        If m_log.txtLog.TextLength > 0 Then
+                            m_log.txtLog.AppendText(Environment.NewLine)
+                        End If
+                        m_log.txtLog.AppendText(DateTime.Now.ToString() + " " + text)
+                        m_log.txtLog.Select(m_log.txtLog.Text.Length, 0)
+                        m_log.txtLog.ScrollToCaret()
+                    End Sub)
+
+    End Sub
+
 End Class
