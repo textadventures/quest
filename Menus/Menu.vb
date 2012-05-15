@@ -43,6 +43,7 @@
         AddMenuData("delete", MenuMode.Editor)
         AddMenuData("walkthrough", MenuMode.Player)
         AddMenuData("debugger", MenuMode.Player)
+        AddMenuData("log", MenuMode.Player)
         AddMenuData("windowmenu", MenuMode.Player)
         AddMenuData("add", MenuMode.Editor)
         AddMenuData("open", MenuMode.GameBrowser, MenuMode.Player)

@@ -83,4 +83,8 @@
     ]]>
   </function>
 
+  <function name="Log" parameters="text">
+    request (Log, text)
+  </function>
+
 </library>

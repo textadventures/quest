@@ -533,6 +533,27 @@
   </editor>
 
   <editor>
+    <appliesto>(function)Log</appliesto>
+    <display>Log #0</display>
+    <category>Output</category>
+    <create>Log ("")</create>
+    <add>Log</add>
+    <advanced/>
+    <desktop/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Log</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>request</appliesto>
     <display>Raise UI request "#0" (parameter #1)</display>
     <advanced/>
