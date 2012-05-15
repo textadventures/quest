@@ -526,13 +526,13 @@
             }
             else {
               GenerateMenuChoices(menu, candidates)
-            game.pov.multiverb = this.property
-            game.pov.multiverbobject = object
+              game.pov.multiverb = this.property
+              game.pov.multiverbobject = object
               show menu (this.multiobjectmenu, menu, true) {
                 if (result <> null) {
-                HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), this.multiobjectdefault)
-                game.pov.multiverb = null
-                game.pov.multiverbobject = null
+                  HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), this.multiobjectdefault)
+                  game.pov.multiverb = null
+                  game.pov.multiverbobject = null
                 }
               }
             }
