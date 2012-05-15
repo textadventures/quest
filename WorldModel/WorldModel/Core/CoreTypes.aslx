@@ -32,6 +32,12 @@
     <autodescription_youarein_useprefix/>
     <description type="string"></description>
     <languageid>[LanguageId]</languageid>
+    <gridmap type="boolean">false</gridmap>
+    <mapscale type="int">30</mapscale>
+    <mapsize type="int">300</mapsize>
+    <changedpov type="script">
+      InitPOV (oldvalue, game.pov)
+    </changedpov>
   </type>
 
   <type name="defaultobject">
@@ -55,6 +61,16 @@
     <hidechildren type="boolean">false</hidechildren>
     <listchildren type="boolean">false</listchildren>
     <usedefaultprefix/>
+    <changedparent type="script">
+      if (game.pov = this) {
+        if (IsDefined("oldvalue")) {
+          OnEnterRoom(oldvalue)
+        }
+        else {
+          OnEnterRoom(null)
+        }
+      }
+    </changedparent>
     <changedisopen type="script">
       if (this.isopen and HasScript(this, "onopen")) {
         do (this, "onopen")
@@ -80,6 +96,22 @@
       }      
     </changedswitchedon>
     <volume type="int">0</volume>
+    <grid_width type="int">1</grid_width>
+    <grid_length type="int">1</grid_length>
+    <grid_fill>White</grid_fill>
+    <grid_border>Black</grid_border>
+    <grid_borderwidth type="int">1</grid_borderwidth>
+    <grid_bordersides type="int">15</grid_bordersides>
+    <grid_render type="boolean">false</grid_render>
+    <grid_label type="string"></grid_label>
+    <grid_parent_offset_auto/>
+    <grid_parent_offset_x type="int">0</grid_parent_offset_x>
+    <grid_parent_offset_y type="int">0</grid_parent_offset_y>
+    <pov_alias>[SelfAlias]</pov_alias>
+    <pov_alt type="list">[SelfAlt]</pov_alt>
+    <pov_look>[DefaultSelfDescription]</pov_look>
+    <pov_gender>[SelfGender]</pov_gender>
+    <pov_article>[SelfArticle]</pov_article>
   </type>
 
   <type name="defaultexit">
@@ -87,6 +119,10 @@
     <locked type="boolean">false</locked>
     <lockmessage>[LockedExit]</lockmessage>
     <lookonly type="boolean">false</lookonly>
+    <grid_length type="int">1</grid_length>
+    <grid_render type="boolean">false</grid_render>
+    <grid_offset_x type="int">0</grid_offset_x>
+    <grid_offset_y type="int">0</grid_offset_y>
   </type>
 
   <type name="direction">
@@ -364,22 +400,8 @@
   </type>
 
   <type name="defaultplayer">
-    <alias>[SelfAlias]</alias>
-    <alt type="list">[SelfAlt]</alt>
-    <scenery/>
-    <look>[DefaultSelfDescription]</look>
-    <gender>[SelfGender]</gender>
-    <article>[SelfArticle]</article>
-    <maxobjects type="int">0</maxobjects>
-    <maxvolume type="int">100</maxvolume>
-    <changedparent type="script">
-      if (IsDefined("oldvalue")) {
-        OnEnterRoom(oldvalue)
-      }
-      else {
-        OnEnterRoom(null)
-      }
-    </changedparent>
+    <inherit name="editor_player"/>
+    <inherit name="editor_object"/>
   </type>
 
   <type name="switchable">
@@ -424,12 +446,36 @@
       else {
         msg (DynamicTemplate("Eaten", this))
       }
-      if (HasInt(player, "health")) {
-        player.health = player.health + this.eathealth
+      if (HasInt(game.pov, "health")) {
+        game.pov.health = game.pov.health + this.eathealth
       }
       destroy (this.name)
     </eat>
     <eathealth type="int">0</eathealth>
+  </type>
+
+  <type name="gridborder_path_ew">
+    <grid_bordersides type="int">10</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_e">
+    <grid_bordersides type="int">11</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_w">
+    <grid_bordersides type="int">14</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_ns">
+    <grid_bordersides type="int">5</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_n">
+    <grid_bordersides type="int">7</grid_bordersides>
+  </type>
+
+  <type name="gridborder_path_s">
+    <grid_bordersides type="int">13</grid_bordersides>
   </type>
 
 </library>

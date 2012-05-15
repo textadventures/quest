@@ -1,0 +1,213 @@
+﻿<library>
+  <function name="DrawMap">
+    //request (RunScript, "DrawGrid; -4; -4; 10; 10")
+  </function>
+
+  <function name="Grid_SetScale" parameters="scale">
+    request (RunScript, "Grid_SetScale; " + scale)
+  </function>
+
+  <function name="Grid_CalculateMapCoordinates" parameters="room">
+    <![CDATA[
+    if (room.parent <> null) {
+      if (room.grid_parent_offset_auto) {
+        room.grid_parent_offset_x = (room.parent.grid_width - room.grid_width) /2.0
+        room.grid_parent_offset_y = (room.parent.grid_length - room.grid_length) /2.0
+      }
+      
+      room.parent.grid_x = room.grid_x - room.grid_parent_offset_x
+      room.parent.grid_y = room.grid_y - room.grid_parent_offset_y
+      room.parent.grid_z = room.grid_z
+      
+      room.parent.grid_render = true
+      
+      Grid_CalculateMapCoordinates (room.parent)
+    }
+    
+    // go through all exits in room, set x,y co-ordinates for the rooms they point to
+    foreach (exit, AllExits()) {
+      if (exit.parent = room) {
+        if (DoesInherit(exit, "northdirection")) {
+          exit.grid_x = room.grid_x + room.grid_width/2.0 + exit.grid_offset_x
+          exit.grid_y = room.grid_y + exit.grid_offset_y
+          exit.to.grid_x = exit.grid_x - exit.to.grid_width/2.0
+          exit.to.grid_y = (exit.grid_y - exit.to.grid_length) - exit.grid_length
+          exit.to.grid_z = room.grid_z
+          exit.end_x = exit.grid_x
+          exit.end_y = exit.grid_y - exit.grid_length
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "eastdirection")) {
+          exit.grid_x = room.grid_x + room.grid_width + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length/2.0 + exit.grid_offset_y
+          exit.to.grid_x = exit.grid_x + exit.grid_length
+          exit.to.grid_y = exit.grid_y - exit.to.grid_length/2.0
+          exit.to.grid_z = room.grid_z
+          exit.end_x = exit.grid_x + exit.grid_length
+          exit.end_y = exit.grid_y
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "southdirection")) {
+          exit.grid_x = room.grid_x + room.grid_width/2.0 + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length + exit.grid_offset_y
+          exit.to.grid_x = exit.grid_x - exit.to.grid_width/2.0
+          exit.to.grid_y = exit.grid_y + exit.grid_length
+          exit.to.grid_z = room.grid_z
+          exit.end_x = exit.grid_x
+          exit.end_y = exit.grid_y + exit.grid_length
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "westdirection")) {
+          exit.grid_x = room.grid_x + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length/2.0 + exit.grid_offset_y
+          exit.to.grid_x = (exit.grid_x - exit.to.grid_width) - exit.grid_length
+          exit.to.grid_y = exit.grid_y - exit.to.grid_length/2.0
+          exit.to.grid_z = room.grid_z
+          exit.end_x = exit.grid_x - exit.grid_length
+          exit.end_y = exit.grid_y
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "northwestdirection")) {
+          exit.grid_x = room.grid_x + exit.grid_offset_x
+          exit.grid_y = room.grid_y + exit.grid_offset_y
+          exit.to.grid_x = (exit.grid_x - exit.to.grid_width) - exit.grid_length
+          exit.to.grid_y = (exit.grid_y - exit.to.grid_length) - exit.grid_length
+          exit.to.grid_z = room.grid_z
+          exit.end_x = exit.grid_x - exit.grid_length
+          exit.end_y = exit.grid_y - exit.grid_length
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "northeastdirection")) {
+          exit.grid_x = room.grid_x + room.grid_width + exit.grid_offset_x
+          exit.grid_y = room.grid_y + exit.grid_offset_y
+          exit.to.grid_x = exit.grid_x + exit.grid_length
+          exit.to.grid_y = (exit.grid_y - exit.to.grid_length) - exit.grid_length
+          exit.to.grid_z = room.grid_z
+          exit.end_x = exit.grid_x + exit.grid_length
+          exit.end_y = exit.grid_y - exit.grid_length
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "southwestdirection")) {
+          exit.grid_x = room.grid_x + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length + exit.grid_offset_y
+          exit.to.grid_x = (exit.grid_x - exit.to.grid_width) - exit.grid_length
+          exit.to.grid_y = exit.grid_y + exit.grid_length
+          exit.to.grid_z = room.grid_z
+          exit.end_x = exit.grid_x - exit.grid_length
+          exit.end_y = exit.grid_y + exit.grid_length
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "southeastdirection")) {
+          exit.grid_x = room.grid_x + room.grid_width + exit.grid_offset_x
+          exit.grid_y = room.grid_y + room.grid_length + exit.grid_offset_y
+          exit.to.grid_x = exit.grid_x + exit.grid_length
+          exit.to.grid_y = exit.grid_y + exit.grid_length
+          exit.to.grid_z = room.grid_z
+          exit.end_x = exit.grid_x + exit.grid_length
+          exit.end_y = exit.grid_y + exit.grid_length
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "updirection")) {
+          exit.to.grid_x = room.grid_x + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x
+          exit.to.grid_y = room.grid_y + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y
+          exit.to.grid_z = room.grid_z + exit.grid_length
+          exit.grid_render = false
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "downdirection")) {
+          exit.to.grid_x = room.grid_x + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x
+          exit.to.grid_y = room.grid_y + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y
+          exit.to.grid_z = room.grid_z - exit.grid_length
+          exit.grid_render = false
+          exit.to.grid_render = true
+        }
+      }
+    }
+    ]]>
+  </function>
+
+  <function name="Grid_DrawPlayerInRoom" parameters="room">
+    if (room.grid_render) {
+      Grid_DrawRoom (room)
+    
+      player_x = room.grid_x + room.grid_width/2.0
+      player_y = room.grid_y + room.grid_length/2.0
+      player_z = room.grid_z
+      
+      // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
+      request (RunScript, "Grid_DrawPlayer;" + player_x + ";" + player_y + ";" + player_z + ";5;black;2;yellow")
+    }
+  </function>
+
+  <function name="Grid_DrawRoom" parameters="room">
+    <![CDATA[
+    if (room.grid_render) {
+      if (not GetBoolean(room, "grid_isdrawn")) {
+      
+        if (room.parent <> null) {
+          Grid_DrawRoom (room.parent)
+        }
+      
+        // Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill, sides)
+        request (RunScript, "Grid_DrawBox;" + room.grid_x + ";" + room.grid_y + ";" + room.grid_z + ";" + room.grid_width + ";" + room.grid_length + ";" + room.grid_border + ";" + room.grid_borderwidth + ";" + room.grid_fill + ";" + room.grid_bordersides)
+        
+        if (LengthOf(room.grid_label) > 0) {
+          label_x = room.grid_x + room.grid_width/2.0
+          label_y = (room.grid_y + room.grid_length/2.0) - 0.5
+          // Grid_DrawLabel(x, y, z, text)
+          request (RunScript, "Grid_DrawLabel;" + label_x + ";" + label_y + ";" + room.grid_z + ";" + room.grid_label)
+        }
+      
+        foreach (exit, AllExits()) {
+          if (exit.grid_render and exit.parent = room and exit.grid_length > 0) {
+            Grid_DrawLine (exit.grid_x, exit.grid_y, exit.end_x, exit.end_y, "black", 1)
+          }
+        }
+      
+        room.grid_isdrawn = true
+      }
+    }
+    ]]>
+  </function>
+
+  <function name="Grid_ShowCustomLayer" parameters="visible">
+    if (visible) {
+      request (RunScript, "Grid_ShowCustomLayer;true")
+    }
+    else {
+      request (RunScript, "Grid_ShowCustomLayer;false")
+    }
+  </function>
+
+  <function name="Grid_ClearCustomLayer">
+    request (RunScript, "Grid_ClearCustomLayer")
+  </function>
+
+  <function name="Grid_DrawLine" parameters="x1, y1, x2, y2, border, borderWidth">
+    // Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
+    request (RunScript, "Grid_DrawLine;" + x1 + ";" + y1 + ";" + x2 + ";" + y2 + ";" + border + ";" + borderWidth)
+  </function>
+
+  <function name="Grid_DrawGridLines" parameters="x1, y1, x2, y2, border">
+    request (RunScript, "Grid_DrawGridLines;" + x1 + ";" + y1 + ";" + x2 + ";" + y2 + ";" + border)
+  </function>
+
+  <function name="Grid_SetCentre" parameters="x, y">
+    request (RunScript, "Grid_SetCentre;" + x + ";" + y)
+  </function>
+
+  <function name="Grid_DrawSquare" parameters="id, x, y, text, fill">
+    // Grid_DrawSquare(id, x, y, text, fill)
+    request (RunScript, "Grid_DrawSquare;" + id + ";" + x + ";" + y + ";" + text + ";" + fill)
+  </function>
+
+  
+</library>

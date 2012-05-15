@@ -11,7 +11,7 @@
       <keyprompt>Please enter the attribute name</keyprompt>
       <valueprompt>Please enter the format string (blank for default)</valueprompt>
       <attribute>statusattributes</attribute>
-      <mustinherit>defaultplayer</mustinherit>
+      <mustinherit>editor_player</mustinherit>
     </control>
 
     <control>

@@ -26,6 +26,7 @@ namespace AxeSoftware.Quest.Scripts
             {
                 m_expressionContext = new ExpressionContext(worldModel.ExpressionOwner);
                 m_expressionContext.Imports.AddType(typeof(StringFunctions));
+                m_expressionContext.Imports.AddType(typeof(System.Math));
 
                 m_expressionContext.Variables.ResolveVariableType += new EventHandler<ResolveVariableTypeEventArgs>(Variables_ResolveVariableType);
                 m_expressionContext.Variables.ResolveVariableValue += new EventHandler<ResolveVariableValueEventArgs>(Variables_ResolveVariableValue);

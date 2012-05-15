@@ -30,8 +30,8 @@
   
   <!--
   ResolveName function
-  Parameters: variable    - for single object commands. If we show a menu, key to populate in player.currentcommandresolvedelements.
-                            Leave blank for multi-object commands. In this case, we add the object to player.currentcommandpendingobjectlist
+  Parameters: variable    - for single object commands. If we show a menu, key to populate in game.pov.currentcommandresolvedelements.
+                            Leave blank for multi-object commands. In this case, we add the object to game.pov.currentcommandpendingobjectlist
               value       - string to resolve to an object e.g. "book", "south"
               objtype     - object type, must be "object" or "exit"
   -->
@@ -50,8 +50,8 @@
         }
       }
       
-      if (result = null and LengthOf(variable) = 0 and not GetBoolean(player, "currentcommandmultiobjectpending")) {
-        UnresolvedCommand (value, player.currentcommandpendingvariable)
+      if (result = null and LengthOf(variable) = 0 and not GetBoolean(game.pov, "currentcommandmultiobjectpending")) {
+        UnresolvedCommand (value, game.pov.currentcommandpendingvariable)
       }
       
       return (result)
@@ -63,7 +63,7 @@
     <![CDATA[
     fullmatches = NewObjectList()
     partialmatches = NewObjectList()
-    player.currentcommandmultiobjectpending = false
+    game.pov.currentcommandmultiobjectpending = false
     
     if (objtype = "object") {
       scope = ScopeVisible()
@@ -106,12 +106,12 @@
       GenerateMenuChoices(menu, partialmatches)
       
       if (LengthOf(variable) > 0) {
-        // single object command, so after showing the menu, add the object to player.currentcommandresolvedelements
-        player.currentcommandpendingvariable = variable
+        // single object command, so after showing the menu, add the object to game.pov.currentcommandresolvedelements
+        game.pov.currentcommandpendingvariable = variable
       
         show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
-          varname = player.currentcommandpendingvariable
-          player.currentcommandpendingvariable = null
+          varname = game.pov.currentcommandpendingvariable
+          game.pov.currentcommandpendingvariable = null
           if (result <> null) {
             AddToResolvedNames(varname, GetObject(result))
           }
@@ -120,11 +120,11 @@
       else {
         // multi-object command, so after showing the menu, add the object to the list
         
-        player.currentcommandmultiobjectpending = true
+        game.pov.currentcommandmultiobjectpending = true
         
         show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
           if (result <> null) {
-            list add (player.currentcommandpendingobjectlist, GetObject(result))
+            list add (game.pov.currentcommandpendingobjectlist, GetObject(result))
             ResolveNextNameListItem
           }
         }        
@@ -141,22 +141,22 @@
               scope     - objectlist to use if value is "all"
               objtype   - object type, must be "object" or "exit"
               
-  Populates player.currentcommandpendingobjectlist with the object names.
-  Adds "multiple" entry to player.currentcommandresolvedelements if there is more than one element.
+  Populates game.pov.currentcommandpendingobjectlist with the object names.
+  Adds "multiple" entry to game.pov.currentcommandresolvedelements if there is more than one element.
   -->
 
   <function name="ResolveNameList" parameters="value, scope, objtype">
     <![CDATA[
-    player.currentcommandpendingobjectlist = NewObjectList()
-    player.currentcommandpendingobjectlistunresolved = NewStringList()
-    player.currentcommandpendingobjectscope = scope
-    player.currentcommandpendingobjecttype = objtype
+    game.pov.currentcommandpendingobjectlist = NewObjectList()
+    game.pov.currentcommandpendingobjectlistunresolved = NewStringList()
+    game.pov.currentcommandpendingobjectscope = scope
+    game.pov.currentcommandpendingobjecttype = objtype
     
     inputlist = Split(value, ",")
     foreach (inputbase, inputlist) {
       inputlist2 = Split(inputbase, " " + Template("And") + " ")
       foreach (input, inputlist2) {
-        list add (player.currentcommandpendingobjectlistunresolved, input)
+        list add (game.pov.currentcommandpendingobjectlistunresolved, input)
       }
     }
     ResolveNextNameListItem
@@ -165,19 +165,19 @@
 
   <function name="ResolveNextNameListItem">
     resolvedall = false
-    if (TypeOf(player, "currentcommandpendingobjectlistunresolved") = "stringlist") {
-      queuelength = ListCount(player.currentcommandpendingobjectlistunresolved)
+    if (TypeOf(game.pov, "currentcommandpendingobjectlistunresolved") = "stringlist") {
+      queuelength = ListCount(game.pov.currentcommandpendingobjectlistunresolved)
       if (queuelength > 0) {
-        thisitem = Trim(StringListItem(player.currentcommandpendingobjectlistunresolved, 0))
+        thisitem = Trim(StringListItem(game.pov.currentcommandpendingobjectlistunresolved, 0))
         if (queuelength = 1) {
-          player.currentcommandpendingobjectlistunresolved = null
+          game.pov.currentcommandpendingobjectlistunresolved = null
         }
         else {
           newqueue = NewStringList()
           for (i, 1, queuelength - 1) {
-            list add (newqueue, StringListItem(player.currentcommandpendingobjectlistunresolved, i))
+            list add (newqueue, StringListItem(game.pov.currentcommandpendingobjectlistunresolved, i))
           }
-          player.currentcommandpendingobjectlistunresolved = newqueue
+          game.pov.currentcommandpendingobjectlistunresolved = newqueue
         }
         
         ResolveNameListItem(Trim(thisitem))
@@ -191,7 +191,7 @@
     }
     
     if (resolvedall) {
-      ResolveNameListItemFinished(player.currentcommandpendingobjectlist)
+      ResolveNameListItemFinished(game.pov.currentcommandpendingobjectlist)
     }
   </function>
 
@@ -200,15 +200,15 @@
     if (ListContains(game.allobjects, value)) {
       // value is "all"
       
-      if (not DictionaryContains(player.currentcommandresolvedelements, "multiple")) {
-        dictionary add (player.currentcommandresolvedelements, "multiple", true)
+      if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
+        dictionary add (game.pov.currentcommandresolvedelements, "multiple", true)
       }
-      ResolveNameListItemFinished (player.currentcommandpendingobjectscope)
+      ResolveNameListItemFinished (game.pov.currentcommandpendingobjectscope)
     }
     else {
-      object = ResolveName("", value, player.currentcommandpendingobjecttype)
+      object = ResolveName("", value, game.pov.currentcommandpendingobjecttype)
       if (object <> null) {
-        list add (player.currentcommandpendingobjectlist, object)
+        list add (game.pov.currentcommandpendingobjectlist, object)
         ResolveNextNameListItem
       }
     }
@@ -218,12 +218,12 @@
   <function name="ResolveNameListItemFinished" parameters="result">
     <![CDATA[
     if (ListCount(result) > 1) {
-      if (not DictionaryContains(player.currentcommandresolvedelements, "multiple")) {
-        dictionary add (player.currentcommandresolvedelements, "multiple", true)
+      if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
+        dictionary add (game.pov.currentcommandresolvedelements, "multiple", true)
       }
     }
     
-    AddToResolvedNames(player.currentcommandpendingvariable, result)
+    AddToResolvedNames(game.pov.currentcommandpendingvariable, result)
     ]]>
   </function>
 
@@ -235,25 +235,25 @@
       HandleSingleCommand (Trim(command))
     }
     else {
-      player.commandqueue = commands
+      game.pov.commandqueue = commands
       HandleNextCommandQueueItem
     }
   </function>
 
   <function name="HandleNextCommandQueueItem">
-    if (TypeOf(player, "commandqueue") = "stringlist") {
-      queuelength = ListCount(player.commandqueue)
+    if (TypeOf(game.pov, "commandqueue") = "stringlist") {
+      queuelength = ListCount(game.pov.commandqueue)
       if (queuelength > 0) {
-        thiscommand = Trim(StringListItem(player.commandqueue, 0))
+        thiscommand = Trim(StringListItem(game.pov.commandqueue, 0))
         if (queuelength = 1) {
-          player.commandqueue = null
+          game.pov.commandqueue = null
         }
         else {
           newqueue = NewStringList()
           for (i, 1, queuelength - 1) {
-            list add (newqueue, StringListItem(player.commandqueue, i))
+            list add (newqueue, StringListItem(game.pov.commandqueue, i))
           }
-          player.commandqueue = newqueue
+          game.pov.commandqueue = newqueue
         }
         if (LengthOf(thiscommand) > 0) {
           HandleSingleCommand (thiscommand)
@@ -315,64 +315,64 @@
 
   <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
     // current command string
-    player.currentcommand = command
+    game.pov.currentcommand = command
     
     // current command object
-    player.currentcommandpattern = thiscommand
+    game.pov.currentcommandpattern = thiscommand
     
     // string dictionary of variables, e.g. object1="book"; object2="table"
-    player.currentcommandvarlist = varlist
+    game.pov.currentcommandvarlist = varlist
     
     // string list of variables left to resolve
-    player.currentcommandvarlistqueue = NewStringList()
+    game.pov.currentcommandvarlistqueue = NewStringList()
     foreach (key, varlist) {
-      list add (player.currentcommandvarlistqueue, key)
+      list add (game.pov.currentcommandvarlistqueue, key)
     }
     
     // dictionary of resolved elements, e.g. object1=book_object; object2=table_object
-    player.currentcommandresolvedelements = NewDictionary()
+    game.pov.currentcommandresolvedelements = NewDictionary()
     
     // list of resolved elements, e.g. book_object; table_object
-    player.currentcommandresolvedobjects = NewObjectList()
+    game.pov.currentcommandresolvedobjects = NewObjectList()
     
-    player.currentcommandunresolvedobject = null
-    player.currentcommandpendingvariable = null
+    game.pov.currentcommandunresolvedobject = null
+    game.pov.currentcommandpendingvariable = null
     ResolveNextName
   </function>
 
   <function name="ResolveNextName">
     <![CDATA[
     resolvedall = false
-    queuetype = TypeOf(player, "currentcommandvarlistqueue")
+    queuetype = TypeOf(game.pov, "currentcommandvarlistqueue")
     if (queuetype = "stringlist") {
-      queuelength = ListCount(player.currentcommandvarlistqueue)
+      queuelength = ListCount(game.pov.currentcommandvarlistqueue)
       if (queuelength > 0) {
       
         // Pop next variable off the queue
-        var = StringListItem(player.currentcommandvarlistqueue, 0)
+        var = StringListItem(game.pov.currentcommandvarlistqueue, 0)
         if (queuelength = 1) {
-          player.currentcommandvarlistqueue = null
+          game.pov.currentcommandvarlistqueue = null
         }
         else {
           newqueue = NewStringList()
           for (i, 1, queuelength - 1) {
-            list add (newqueue, StringListItem(player.currentcommandvarlistqueue, i))
+            list add (newqueue, StringListItem(game.pov.currentcommandvarlistqueue, i))
           }
-          player.currentcommandvarlistqueue = newqueue
+          game.pov.currentcommandvarlistqueue = newqueue
         }
         
         // Resolve variable
-        value = LCase(StringDictionaryItem(player.currentcommandvarlist, var))
+        value = LCase(StringDictionaryItem(game.pov.currentcommandvarlist, var))
         
         if (value <> "") {
           result = null
           resolvinglist = false
           
           if (StartsWith(var, "object")) {
-            if (HasDelegateImplementation(player.currentcommandpattern, "multiple")) {
-              player.currentcommandpendingobjectlist = NewObjectList()
-              player.currentcommandpendingvariable = var
-              ResolveNameList(value, RunDelegateFunction(player.currentcommandpattern, "multiple"), "object")
+            if (HasDelegateImplementation(game.pov.currentcommandpattern, "multiple")) {
+              game.pov.currentcommandpendingobjectlist = NewObjectList()
+              game.pov.currentcommandpendingvariable = var
+              ResolveNameList(value, RunDelegateFunction(game.pov.currentcommandpattern, "multiple"), "object")
               resolvinglist = true
             }
             else {
@@ -383,7 +383,7 @@
             result = ResolveName(var, value, "exit")
           }
           else if (StartsWith(var, "text")) {
-            result = StringDictionaryItem(player.currentcommandvarlist, var)
+            result = StringDictionaryItem(game.pov.currentcommandvarlist, var)
           }
           else {
             error ("Unhandled command variable '" + var + "'")
@@ -392,7 +392,7 @@
           // at this point, ResolveName has returned - either an object name, unresolved, or pending
             
           if (result = null) {
-            if ((not resolvinglist) and LengthOf(GetString(player, "currentcommandpendingvariable")) = 0) {
+            if ((not resolvinglist) and LengthOf(GetString(game.pov, "currentcommandpendingvariable")) = 0) {
               UnresolvedCommand(value, var)
             }
           }
@@ -416,25 +416,25 @@
     }
     
     if (resolvedall) {
-      // TO DO: game.lastobjects should be player.lastobjects
-      game.lastobjects = player.currentcommandresolvedobjects
+      // TO DO: game.lastobjects should be game.pov.lastobjects
+      game.lastobjects = game.pov.currentcommandresolvedobjects
       
-      if (not DictionaryContains(player.currentcommandresolvedelements, "multiple")) {
-        dictionary add (player.currentcommandresolvedelements, "multiple", false)
+      if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
+        dictionary add (game.pov.currentcommandresolvedelements, "multiple", false)
       }
       
-      if (not GetBoolean(player.currentcommandpattern, "isundo")) {
-        if (LengthOf(player.currentcommand) > 0) {
-          start transaction (player.currentcommand)
+      if (not GetBoolean(game.pov.currentcommandpattern, "isundo")) {
+        if (LengthOf(game.pov.currentcommand) > 0) {
+          start transaction (game.pov.currentcommand)
         }
       }
-      if (not GetBoolean(player.currentcommandpattern, "isoops")) {
-        // TO DO: game.unresolved* should be player.unresolved*
+      if (not GetBoolean(game.pov.currentcommandpattern, "isoops")) {
+        // TO DO: game.unresolved* should be game.pov.unresolved*
         game.unresolvedcommand = null
         game.unresolvedcommandvarlist = null
         game.unresolvedcommandkey = null
       }
-      do (player.currentcommandpattern, "script", player.currentcommandresolvedelements)
+      do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
       HandleNextCommandQueueItem
     }
     ]]>
@@ -443,17 +443,17 @@
   <function name="AddToResolvedNames" parameters="var, result">
     if (TypeOf(result) = "object") {
       if (result.type = "object") {
-        list add (player.currentcommandresolvedobjects, result)
+        list add (game.pov.currentcommandresolvedobjects, result)
       }
     }
     else if (TypeOf(result) = "objectlist") {
       foreach (obj, result) {
         if (obj.type = "object") {
-          list add (player.currentcommandresolvedobjects, obj)
+          list add (game.pov.currentcommandresolvedobjects, obj)
         }
       }
     }
-    dictionary add(player.currentcommandresolvedelements, var, result)
+    dictionary add(game.pov.currentcommandresolvedelements, var, result)
     ResolveNextName
   </function>
 
@@ -462,24 +462,24 @@
     unresolvedobject = objectname
     unresolvedkey = varname
     
-    if (HasString(player.currentcommandpattern, "unresolved")) {
-      if (ListCount(player.currentcommandvarlist) > 1) {
-        msg (player.currentcommandpattern.unresolved + " (" + unresolvedobject + ")")
+    if (HasString(game.pov.currentcommandpattern, "unresolved")) {
+      if (ListCount(game.pov.currentcommandvarlist) > 1) {
+        msg (game.pov.currentcommandpattern.unresolved + " (" + unresolvedobject + ")")
       }
       else {
-        msg (player.currentcommandpattern.unresolved)
+        msg (game.pov.currentcommandpattern.unresolved)
       }
     }
     else {
-      if (ListCount(player.currentcommandvarlist) > 1) {
+      if (ListCount(game.pov.currentcommandvarlist) > 1) {
         msg (Template("UnresolvedObject") + " (" + unresolvedobject + ")")
       }
       else {
         msg (Template("UnresolvedObject"))
       }
     }
-    game.unresolvedcommand = player.currentcommandpattern
-    game.unresolvedcommandvarlist = player.currentcommandvarlist
+    game.unresolvedcommand = game.pov.currentcommandpattern
+    game.unresolvedcommandvarlist = game.pov.currentcommandvarlist
     game.unresolvedcommandkey = unresolvedkey
   </function>
   
@@ -518,7 +518,7 @@
           else {
             menu = NewStringDictionary()
             excludelist = NewObjectList()
-            list add (excludelist, player)
+            list add (excludelist, game.pov)
             list add (excludelist, object)
             candidates = ListExclude(RemoveSceneryObjects(ScopeVisible()), excludelist)
             if (ListCount(candidates) = 0) {
@@ -526,13 +526,13 @@
             }
             else {
               GenerateMenuChoices(menu, candidates)
-              player.multiverb = this.property
-              player.multiverbobject = object
+            game.pov.multiverb = this.property
+            game.pov.multiverbobject = object
               show menu (this.multiobjectmenu, menu, true) {
                 if (result <> null) {
-                  HandleMultiVerb (player.multiverbobject, player.multiverb, GetObject(result), this.multiobjectdefault)
-                  player.multiverb = null
-                  player.multiverbobject = null
+                HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), this.multiobjectdefault)
+                game.pov.multiverb = null
+                game.pov.multiverbobject = null
                 }
               }
             }

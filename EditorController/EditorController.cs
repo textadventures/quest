@@ -1559,7 +1559,7 @@ namespace AxeSoftware.Quest
 
         internal ValidationResult CanRename(Element element, string newName)
         {
-            if (element.Name == "player")
+            if (m_editorStyle == Quest.EditorStyle.GameBook && element.Name == "player")
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.CannotRenamePlayerElement };
             }
@@ -1796,8 +1796,8 @@ namespace AxeSoftware.Quest
         {
             if (!ElementExists(elementName)) return false;
             if (elementName == "game") return false;
-            if (elementName == "player") return false;
-            if (m_worldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
+            if (m_editorStyle == Quest.EditorStyle.GameBook && elementName == "player") return false;
+            if (m_editorStyle == Quest.EditorStyle.GameBook && m_worldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
             return true;
         }
 

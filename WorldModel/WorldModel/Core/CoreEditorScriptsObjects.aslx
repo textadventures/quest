@@ -239,6 +239,27 @@
   </editor>
 
   <editor>
+    <appliesto>(function)ChangePOV</appliesto>
+    <display>Change player object to #0</display>
+    <category>Objects</category>
+    <create>ChangePOV ()</create>
+    <add>Change player object</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change player object to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>create</appliesto>
     <display>Create object named #0</display>
     <category>Objects</category>

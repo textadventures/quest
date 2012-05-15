@@ -838,7 +838,6 @@ namespace WebEditor.Services
             {
                 Id = ctl.Id,
                 Objects = new List<string>(m_controller.GetObjectNames("object")
-                    .Where(n => n != "player")
                     .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)),
                 CreateInverse = m_createInverse
             };

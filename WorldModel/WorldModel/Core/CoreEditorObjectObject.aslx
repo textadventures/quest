@@ -17,7 +17,6 @@
       <controltype>list</controltype>
       <attribute>displayverbs</attribute>
       <editprompt>Please enter a verb</editprompt>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
     <control>
@@ -25,7 +24,6 @@
       <controltype>list</controltype>
       <attribute>inventoryverbs</attribute>
       <editprompt>Please enter a verb</editprompt>
-      <mustnotinherit>defaultplayer</mustnotinherit>
     </control>
 
   </tab>

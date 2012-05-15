@@ -1,0 +1,288 @@
+﻿<library>
+  <editor>
+    <appliesto>(function)Grid_ShowCustomLayer</appliesto>
+    <display>Show/hide custom drawing layer</display>
+    <category>Drawing</category>
+    <create>Grid_ShowCustomLayer (true)</create>
+    <add>Show/hide custom drawing layer</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Show custom drawing layer</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)Grid_ClearCustomLayer</appliesto>
+    <display>Clear custom drawing layer</display>
+    <category>Drawing</category>
+    <create>Grid_ClearCustomLayer</create>
+    <add>Clear custom drawing layer</add>
+  </editor>
+
+  <editor>
+    <appliesto>(function)Grid_DrawLine</appliesto>
+    <display>Draw line</display>
+    <category>Drawing</category>
+    <create>Grid_DrawLine (0,0,1,1,"black",1)</create>
+    <add>Draw line</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Draw line from X1</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y1</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>to X2</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>2</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y2</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>3</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Colour</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>4</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Border width</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>pixels</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>5</attribute>
+    </control>
+
+  </editor>
+
+  <editor>
+    <appliesto>(function)Grid_DrawGridLines</appliesto>
+    <display>Draw grid lines</display>
+    <category>Drawing</category>
+    <create>Grid_DrawGridLines (0,0,10,10,"black")</create>
+    <add>Draw grid lines</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Draw grid lines from X1</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y1</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>to X2</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>2</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y2</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>3</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Colour</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>4</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+  </editor>
+
+  <editor>
+    <appliesto>(function)Grid_SetCentre</appliesto>
+    <display>Center custom layer</display>
+    <category>Drawing</category>
+    <create>Grid_SetCentre (0,0)</create>
+    <add>Center custom layer</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Center custom layer at X</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>1</attribute>
+    </control> 
+  </editor>
+
+  <editor>
+    <appliesto>(function)Grid_DrawSquare</appliesto>
+    <display>Draw custom layer grid square</display>
+    <category>Drawing</category>
+    <create>Grid_DrawSquare ("", 0, 0, "", "White")</create>
+    <add>Draw custom layer grid square</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Draw custom layer grid square with ID</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>at X</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>2</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Label</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>text</simple>
+      <attribute>3</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Colour</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>4</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+  </editor>
+
+</library>
