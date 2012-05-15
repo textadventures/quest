@@ -22,6 +22,8 @@
   <include ref="CoreTurnScripts.aslx"/>
   <include ref="CoreStatusAttributes.aslx"/>
   <include ref="CoreOutput.aslx"/>
+  <include ref="CoreGrid.aslx"/>
+  <include ref="CoreCombat.aslx"/>
   <include ref="CoreEditor.aslx"/>
 
   <function name="InitInterface">
@@ -56,15 +58,44 @@
     if (HasString(game, "panelcontents")) {
       SetFramePicture (game.panelcontents)
     }
+    if (game.gridmap) {
+      request (RunScript, "ShowGrid; " + game.mapsize)
+      Grid_SetScale (game.mapscale)
+      DrawMap
+    }
   </function>
 
   <function name="StartGame">
     <![CDATA[
+    if (game.pov = null) {
+      playerObject = GetObject("player")
+      if (playerObject = null) {
+        if (ListCount(AllObjects()) > 0) {
+          firstRoom = ObjectListItem(AllObjects(), 0)
+        }
+        else {
+          create ("room")
+          firstRoom = room
+        }
+        create ("player")
+        player.parent = firstRoom
+      }
+      game.pov = player
+    }
+    InitPOV (null, game.pov)
     InitStatusAttributes
     UpdateStatusAttributes
     if (HasScript(game, "start")) do (game, "start")
     UpdateStatusAttributes
     on ready {
+      if (game.gridmap) {
+        game.pov.parent.grid_x = 0
+        game.pov.parent.grid_y = 0
+        game.pov.parent.grid_z = 0
+        game.pov.parent.grid_render = true
+        Grid_CalculateMapCoordinates (game.pov.parent)
+        Grid_DrawPlayerInRoom (game.pov.parent)
+      }
       if (game.displayroomdescriptiononstart) {
         OnEnterRoom (null)
       }
@@ -92,7 +123,7 @@
   </function>
 
   <function name="AddToInventory" parameters="object">
-    object.parent = player
+    object.parent = game.pov
   </function>
 
   <function name="MoveObject" parameters="object, parent">
@@ -147,5 +178,67 @@
 
   <function name="SwitchOff" parameters="object">
     object.switchedon = false
+  </function>
+
+  <function name="ChangePOV" parameters="object">
+    <![CDATA[
+    if (game.pov <> object) {
+      game.pov = object
+      OnEnterRoom (null)
+    }
+    ]]>
+  </function>
+
+  <function name="InitPOV" parameters="oldPOV, newPOV">
+    <![CDATA[
+    if (oldPOV <> null) {
+      oldPOV.alias = oldPOV.external_alias
+      oldPOV.alt = oldPOV.external_alt
+      oldPOV.look = oldPOV.external_look
+      oldPOV.gender = oldPOV.external_gender
+      oldPOV.article = oldPOV.external_article
+    }
+
+    newPOV.external_alias = newPOV.alias
+    newPOV.external_alt = newPOV.alt
+    newPOV.external_look = newPOV.look
+    newPOV.external_gender = newPOV.gender
+    newPOV.external_article = newPOV.article
+    
+    if (not GetBoolean(newPOV, "pov_used")) {
+      if (newPOV.alt = null) {
+        newPOV.pov_alt = newPOV.pov_alt  // ensure we have our own copy of the list
+      }
+      else {
+        newPOV.pov_alt = ListCombine(newPOV.alt, newPOV.pov_alt)
+      }
+      if (newPOV.alias <> null) {
+        list add (newPOV.pov_alt, newPOV.alias)
+      }
+      
+      if (game.showhealth) {
+        newPOV.health = 100
+        newPOV.changedhealth => {
+          if (this.health > 100) {
+            this.health = 100
+          }
+          else if (this.health <= 0) {
+            this.health = 0
+            if (HasScript(game, "onhealthzero")) {
+              do (game, "onhealthzero")
+            }
+          }
+        }
+      }
+
+      newPOV.pov_used = true
+    }
+
+    newPOV.alias = newPOV.pov_alias
+    newPOV.alt = newPOV.pov_alt
+    newPOV.look = newPOV.pov_look
+    newPOV.gender = newPOV.pov_gender
+    newPOV.article = newPOV.pov_article
+    ]]>
   </function>
 </library>

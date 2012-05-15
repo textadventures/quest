@@ -18,6 +18,7 @@
 
   <type name="editor_room"/>
   <type name="editor_object"/>
+  <type name="editor_player"/>
 
   <include ref="CoreEditorGame.aslx"/>
   <include ref="CoreEditorObject.aslx"/>

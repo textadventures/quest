@@ -1,0 +1,84 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Map</caption>
+    <mustnotinherit>editor_object</mustnotinherit>
+
+    <control>
+      <controltype>number</controltype>
+      <minimum>1</minimum>
+      <attribute>grid_width</attribute>
+      <caption>Width</caption>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <minimum>1</minimum>
+      <attribute>grid_length</attribute>
+      <caption>Length</caption>
+    </control>
+    
+    <control>
+      <controltype>dropdown</controltype>
+      <caption>Fill colour</caption>
+      <attribute>grid_fill</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <caption>Border colour</caption>
+      <attribute>grid_border</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <minimum>0</minimum>
+      <attribute>grid_borderwidth</attribute>
+      <caption>Border width</caption>
+    </control>
+
+    <control>
+      <caption>Border type</caption>
+      <controltype>dropdowntypes</controltype>
+      <types>*=Normal;gridborder_path_ew=Path East-West;gridborder_path_e=Path East;gridborder_path_w=Path West;gridborder_path_ns=Path North-South;gridborder_path_n=Path North;gridborder_path_s=Path South</types>
+    </control>
+
+    <control>
+      <caption>Label</caption>
+      <controltype>textbox</controltype>
+      <attribute>grid_label</attribute>
+    </control>
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Position inside parent room</caption>
+      <onlydisplayif><![CDATA[this.parent <> null]]></onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <attribute>grid_parent_offset_auto</attribute>
+      <caption>Automatic position</caption>
+      <onlydisplayif><![CDATA[this.parent <> null]]></onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <attribute>grid_parent_offset_x</attribute>
+      <caption>Offset X</caption>
+      <onlydisplayif><![CDATA[this.parent <> null and not this.grid_parent_offset_auto]]></onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <attribute>grid_parent_offset_y</attribute>
+      <caption>Offset Y</caption>
+      <onlydisplayif><![CDATA[this.parent <> null and not this.grid_parent_offset_auto]]></onlydisplayif>
+    </control>
+
+  </tab>
+</library>

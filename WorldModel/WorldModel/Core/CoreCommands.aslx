@@ -57,7 +57,7 @@
 
   <command name="take" template="take">
     <multiple>
-      return (ListExclude(ScopeVisibleNotHeldNotScenery(), player))
+      return (ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov))
     </multiple>
     <script>
       foreach (obj, object) {
@@ -72,7 +72,7 @@
       prefix = GetDisplayAlias(object) + ": "
     }
     
-    if (object.parent = player) {
+    if (object.parent = game.pov) {
       msg (prefix + DynamicTemplate("AlreadyTaken", object))
     }
     else if (not ListContains(ScopeReachable(), object)) {
@@ -82,21 +82,21 @@
       volume = 0
       continue = true
       
-      foreach (obj, GetAllChildObjects(player)) {
+      foreach (obj, GetAllChildObjects(game.pov)) {
         if (HasInt(obj, "volume")) {
           volume = volume + obj.volume
         }
       }
     
-      if (not Contains(player, object)) {
+      if (not Contains(game.pov, object)) {
         volume = volume + GetVolume(object,true)
       }
     
-      if (HasInt(player, "maxvolume")) {
-        if (volume > player.maxvolume) {
+      if (HasInt(game.pov, "maxvolume")) {
+        if (volume > game.pov.maxvolume) {
           continue = false
-          if (HasString(player, "containerfullmessage")) {
-            message = prefix + player.containerfullmessage
+          if (HasString(game.pov, "containerfullmessage")) {
+            message = prefix + game.pov.containerfullmessage
           }
           else {
             message = prefix + DynamicTemplate("FullInventory", object)
@@ -104,13 +104,13 @@
         }
       }
     
-      children = GetDirectChildren(player)
-      if (HasInt(player, "maxobjects")) {
-        if (player.maxobjects > 0) {
-          if (ListCount(children) >= player.maxobjects) {
+      children = GetDirectChildren(game.pov)
+      if (HasInt(game.pov, "maxobjects")) {
+        if (game.pov.maxobjects > 0) {
+          if (ListCount(children) >= game.pov.maxobjects) {
             continue = false
-            if (HasString(player, "containermaxobjects")) {
-              message = prefix + player.containermaxobjects
+            if (HasString(game.pov, "containermaxobjects")) {
+              message = prefix + game.pov.containermaxobjects
             }
             else {
               message = prefix + DynamicTemplate("MaxObjectsInInventory", object)
@@ -136,7 +136,7 @@
           }
           case ("boolean") {
             if (object.take = true) {
-              object.parent = player
+              object.parent = game.pov
               if (takemsg = null) {
                 takemsg = DynamicTemplate("TakeSuccessful", object)
               }
@@ -146,7 +146,7 @@
             }
           }
           case ("string") {
-            object.parent = player
+            object.parent = game.pov
             takemsg = object.take
           }
           default {
@@ -204,7 +204,7 @@
         }
         case ("boolean") {
           if (object.drop = true) {
-            object.parent = player.parent
+            object.parent = game.pov.parent
             if (dropmsg = null) {
               dropmsg = DynamicTemplate("DropSuccessful", object)
             }
@@ -214,7 +214,7 @@
           }
         }
         case ("string") {
-          object.parent = player.parent
+          object.parent = game.pov.parent
           dropmsg = object.drop
         }
         default {
@@ -241,11 +241,11 @@
     else {
       menu = NewStringDictionary()
       excludelist = NewObjectList()
-      list add (excludelist, player)
+      list add (excludelist, game.pov)
       list add (excludelist, object)
       candidates = ListExclude(ScopeVisible(), excludelist)
       GenerateMenuChoices(menu, candidates)
-      player.usemenuobject = object
+      game.pov.usemenuobject = object
       if (HasString(object, "usemenuprompt")) {
         menucaption = object.usemenuprompt
       }
@@ -254,8 +254,8 @@
       }
       show menu (menucaption, menu, true) {
         if (result <> null) {
-          HandleUseOn (player.usemenuobject, GetObject(result))
-          player.usemenuobject = null
+          HandleUseOn (game.pov.usemenuobject, GetObject(result))
+          game.pov.usemenuobject = null
         }
       }
     }
@@ -268,7 +268,7 @@
   </command>
   
   <command name="inventory" pattern="[inventory]">
-    list = FormatObjectList(Template("CarryingListHeader"), player, Template("And"), ".", true)
+    list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".", true)
     if (list = "") {
       msg (Template("NotCarryingAnything"))
     }
@@ -323,7 +323,7 @@
          msg ("[UnresolvedLocation]")
       } 
       else {
-        player.parent = exit.to
+        game.pov.parent = exit.to
       }
     }
   </command>
@@ -473,11 +473,11 @@
     else {
       menu = NewStringDictionary()
       excludelist = NewObjectList()
-      list add (excludelist, player)
+      list add (excludelist, game.pov)
       list add (excludelist, object)
       candidates = ListExclude(ScopeVisible(), excludelist)
       GenerateMenuChoices(menu, candidates)
-      player.givemenuobject = object
+      game.pov.givemenuobject = object
       if (HasString(object, "givemenuprompt")) {
         menucaption = object.givemenuprompt
       }
@@ -486,8 +486,8 @@
       }
       show menu (menucaption, menu, true) {
         if (result <> null) {
-          HandleGiveTo (player.givemenuobject, GetObject(result))
-          player.givemenuobject = null
+          HandleGiveTo (game.pov.givemenuobject, GetObject(result))
+          game.pov.givemenuobject = null
         }
       }
     }

@@ -8,7 +8,6 @@
       <controltype>dropdowntypes</controltype>
       <types>editor_room=Room; editor_object=Object; *=Object and/or room</types>
       <width>150</width>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <advanced/>
     </control>
 
@@ -27,7 +26,7 @@
     </control>
 
     <control>
-      <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+      <mustnotinherit>editor_room</mustnotinherit>
       <caption>Visible</caption>
       <controltype>checkbox</controltype>
       <attribute>visible</attribute>
@@ -62,7 +61,7 @@
     </control>
 
     <control>
-      <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+      <mustnotinherit>editor_room</mustnotinherit>
       <controltype>dropdowntypes</controltype>
       <caption>Type</caption>
       <types>*=Inanimate object; [LanguageSpecificObjectTypes]male=Male character; female=Female character; plural=Inanimate objects (plural); maleplural=Male characters (plural); femaleplural=Female characters (plural)</types>
@@ -92,7 +91,7 @@
     </control>
 
     <control>
-      <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+      <mustnotinherit>editor_room</mustnotinherit>
       <caption>In-room description</caption>
       <controltype>textbox</controltype>
       <attribute>inroomdescription</attribute>

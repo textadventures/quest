@@ -74,8 +74,8 @@
   </editor>
 
   <editor>
-    <pattern>player.parent = #parent#</pattern>
-    <create>player.parent = </create>
+    <pattern>game.pov.parent = #parent#</pattern>
+    <create>game.pov.parent = </create>
     <description>player is in room</description>
     <expressiontype>if</expressiontype>
 
@@ -88,8 +88,8 @@
   </editor>
 
   <editor>
-    <pattern>not player.parent = #parent#</pattern>
-    <create>not player.parent = </create>
+    <pattern>not game.pov.parent = #parent#</pattern>
+    <create>not game.pov.parent = </create>
     <description>player is not in room</description>
     <expressiontype>if</expressiontype>
 
@@ -98,6 +98,20 @@
       <simple>object</simple>
       <simpleeditor>objects</simpleeditor>
       <attribute>parent</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>game.pov = #object#</pattern>
+    <create>game.pov = </create>
+    <description>player object is</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
     </control>
   </editor>
 

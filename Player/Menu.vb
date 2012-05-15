@@ -7,7 +7,9 @@
             For Each key As String In value.Keys
                 lstOptions.Items.Add(key, value(key), "")
             Next
-            lstOptions.Items(0).Selected = True
+            If lstOptions.Items.Count > 0 Then
+                lstOptions.Items(0).Selected = True
+            End If
         End Set
     End Property
 

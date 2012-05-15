@@ -1,18 +1,21 @@
 ﻿<library>
   <function name="UpdateStatusAttributes">
-    status = AddStatusAttributesForElement("", game)
-    status = AddStatusAttributesForElement(status, player)
+    <![CDATA[
+    status = AddStatusAttributesForElement("", game, game.statusattributes)
+    status = AddStatusAttributesForElement(status, game.pov, game.povstatusattributes)
+    status = AddStatusAttributesForElement(status, game.pov, game.pov.statusattributes)
     request (SetStatus, status)
+    ]]>
   </function>
 
-  <function name="AddStatusAttributesForElement" parameters="status, element" type="string">
+  <function name="AddStatusAttributesForElement" parameters="status, element, statusAttributes" type="string">
     <![CDATA[
-    if (element.statusattributes <> null) {
-      foreach (attr, element.statusattributes) {
+    if (statusAttributes <> null) {
+      foreach (attr, statusAttributes) {
         if (LengthOf(status) > 0) {
           status = status + "\n"
         }
-        status = status + FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(element.statusattributes, attr))
+        status = status + FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(statusAttributes, attr))
       }
     }
     return (status)
@@ -36,48 +39,36 @@
   <function name="InitStatusAttributes">
     <![CDATA[
     if (game.showscore) {
-      player.score = 0
-      if (player.statusattributes = null) {
-        player.statusattributes = NewStringDictionary()
+      game.score = 0
+      if (game.statusattributes = null) {
+        game.statusattributes = NewStringDictionary()
       }
-      dictionary add (player.statusattributes, "score", "Score: !")
+      dictionary add (game.statusattributes, "score", "Score: !")
     }
 
     if (game.showhealth) {
-      player.health = 100
-      player.changedhealth => {
-        if (player.health > 100) {
-          player.health = 100
-        }
-        else if (player.health <= 0) {
-          player.health = 0
-          if (HasScript(game, "onhealthzero")) {
-            do (game, "onhealthzero")
-          }
-        }
+      if (game.povstatusattributes = null) {
+        game.povstatusattributes = NewStringDictionary()
       }
-      if (player.statusattributes = null) {
-        player.statusattributes = NewStringDictionary()
-      }
-      dictionary add (player.statusattributes, "health", "Health: !%")
+      dictionary add (game.povstatusattributes, "health", "Health: !%")
     }
     ]]>
   </function>
 
   <function name="IncreaseScore" parameters="amount">
-    player.score = player.score + amount
+    game.score = game.score + amount
   </function>
 
   <function name="DecreaseScore" parameters="amount">
-    player.score = player.score - amount
+    game.score = game.score - amount
   </function>
 
   <function name="IncreaseHealth" parameters="amount">
-    player.health = player.health + amount
+    game.pov.health = game.pov.health + amount
   </function>
 
   <function name="DecreaseHealth" parameters="amount">
-    player.health = player.health - amount
+    game.pov.health = game.pov.health - amount
   </function>
 
 </library>

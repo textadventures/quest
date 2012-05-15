@@ -4,6 +4,7 @@
         $("#gameBorder").width(width);
         $("#status").width(width - 2);
         $("#gamePanel").css("margin-left", "-" + (width / 2 - 19) + "px");
+        $("#gridPanel").css("margin-left", "-" + (width / 2 - 19) + "px");
         $("#gamePanes").css("margin-left", (width / 2 - 220) + "px");
     }
 });
@@ -17,6 +18,7 @@ function panesVisible(visible) {
         $("#txtCommand").width(screenWidth - 270);
         $("#updating").css("margin-left", (screenWidth / 2 - 290) + "px");
         $("#gamePanel").width(screenWidth - 250);
+        $("#gridPanel").width(screenWidth - 250);
     }
     else {
         $("#gamePanes").hide();
@@ -24,20 +26,23 @@ function panesVisible(visible) {
         $("#txtCommand").width(screenWidth - 60);
         $("#updating").css("margin-left", (screenWidth / 2 - 70) + "px");
         $("#gamePanel").width(screenWidth - 40);
+        $("#gridPanel").width(screenWidth - 40);
     }
 }
 
 function scrollToEnd() {
-    $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanel").height() }, 200);
+    $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height() }, 200);
 }
 
 function setBackground(col) {
     $("#gameBorder").css("background-color", col);
     $("#txtCommandDiv").css("background-color", col);
     $("#gamePanel").css("background-color", col);
+    $("#gridPanel").css("background-color", col);
 }
 
 function setPanelHeight() {
+    if (_showGrid) return;
     setTimeout(function () {
         $("#gamePanelSpacer").height($("#gamePanel").height());
         scrollToEnd();

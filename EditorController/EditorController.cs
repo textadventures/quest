@@ -26,7 +26,9 @@ namespace AxeSoftware.Quest
         InvalidElementNameMultipleSpaces,
         InvalidElementNameInvalidWord,
         CannotRenamePlayerElement,
-        InvalidElementNameStartsWithNumber
+        InvalidElementNameStartsWithNumber,
+        MismatchingBrackets,
+        MismatchingQuotes,
     }
 
     public enum EditorStyle
@@ -92,6 +94,22 @@ namespace AxeSoftware.Quest
             ElementType.ObjectType,
             ElementType.Template,
             ElementType.Walkthrough
+        };
+
+        private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
+            {ValidationMessage.OK, "No error"},
+            {ValidationMessage.ItemAlreadyExists, "Item '{0}' already exists in the list"},
+            {ValidationMessage.ElementAlreadyExists,"An element called '{0}' already exists in this game"},
+            {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
+            {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
+            {ValidationMessage.InvalidElementName, "Invalid element name"},
+            {ValidationMessage.CircularTypeReference, "Circular type reference"},
+            {ValidationMessage.InvalidElementNameMultipleSpaces, "Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces."},
+            {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
+            {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
+            {ValidationMessage.InvalidElementNameStartsWithNumber, "Invalid element name. An element name cannot start with a number."},
+            {ValidationMessage.MismatchingBrackets, "The number of opening brackets \"(\" does not match the number of closing brackets \")\"."},
+            {ValidationMessage.MismatchingQuotes, "Missing quote character (\")"},
         };
 
         private WorldModel m_worldModel;
@@ -1541,7 +1559,7 @@ namespace AxeSoftware.Quest
 
         internal ValidationResult CanRename(Element element, string newName)
         {
-            if (element.Name == "player")
+            if (m_editorStyle == Quest.EditorStyle.GameBook && element.Name == "player")
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.CannotRenamePlayerElement };
             }
@@ -1778,8 +1796,8 @@ namespace AxeSoftware.Quest
         {
             if (!ElementExists(elementName)) return false;
             if (elementName == "game") return false;
-            if (elementName == "player") return false;
-            if (m_worldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
+            if (m_editorStyle == Quest.EditorStyle.GameBook && elementName == "player") return false;
+            if (m_editorStyle == Quest.EditorStyle.GameBook && m_worldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
             return true;
         }
 
@@ -2266,6 +2284,34 @@ namespace AxeSoftware.Quest
                     }
                 }
             }
+        }
+
+        public ValidationResult ValidateExpression(string expression)
+        {
+            string obscured = Utility.ObscureStrings(expression);
+            int braceCount = 0;
+            bool inQuote = false;
+            foreach (char c in obscured)
+            {
+                if (c == '(') braceCount++;
+                if (c == ')') braceCount--;
+                if (c == '\"') inQuote = !inQuote;
+            }
+
+            if (braceCount != 0)
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.MismatchingBrackets };
+            }
+            if (inQuote)
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.MismatchingQuotes };
+            }
+            return new ValidationResult { Valid = true };
+        }
+
+        public static string GetValidationError(ValidationResult result, object input)
+        {
+            return string.Format(s_validationMessages[result.Message], input, result.MessageData);
         }
     }
 }

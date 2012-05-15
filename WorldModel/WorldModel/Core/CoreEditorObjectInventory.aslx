@@ -5,13 +5,11 @@
     <mustnotinherit>editor_room</mustnotinherit>
 
     <control>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>title</controltype>
       <caption>Take</caption>
     </control>
 
     <control>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>multi</controltype>
       <caption>Take</caption>
       <attribute>take</attribute>
@@ -22,7 +20,6 @@
     </control>
 
     <control>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>textbox</controltype>
       <caption>Take message (leave blank for default)</caption>
       <attribute>takemsg</attribute>
@@ -34,7 +31,6 @@
     </control>
 
     <control>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>script</controltype>
       <caption>After taking the object</caption>
       <attribute>ontake</attribute>
@@ -42,13 +38,11 @@
     </control>
 
     <control>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>title</controltype>
       <caption>Drop</caption>
     </control>
 
     <control>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>multi</controltype>
       <caption>Drop</caption>
       <attribute>drop</attribute>
@@ -59,7 +53,6 @@
     </control>
 
     <control>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>textbox</controltype>
       <caption>Drop message (leave blank for default)</caption>
       <attribute>dropmsg</attribute>
@@ -71,7 +64,6 @@
     </control>
 
     <control>
-      <mustnotinherit>defaultplayer</mustnotinherit>
       <controltype>script</controltype>
       <caption>After dropping the object</caption>
       <attribute>ondrop</attribute>
@@ -79,13 +71,13 @@
     </control>
 
     <control>
-      <mustinherit>defaultplayer</mustinherit>
+      <mustinherit>editor_player</mustinherit>
       <controltype>title</controltype>
       <caption>Inventory limitation</caption>
     </control>
 
     <control>
-      <mustinherit>defaultplayer</mustinherit>
+      <mustinherit>editor_player</mustinherit>
       <controltype>label</controltype>
       <caption>Set "maximum objects" to 0 to allow unlimited inventory items.</caption>
     </control>
@@ -95,7 +87,7 @@
       <caption>Maximum objects</caption>
       <attribute>maxobjects</attribute>
       <width>100</width>
-      <mustinherit>defaultplayer</mustinherit>
+      <mustinherit>editor_player</mustinherit>
       <minimum>0</minimum>
     </control>
 
@@ -103,7 +95,7 @@
       <controltype>textbox</controltype>
       <caption>Full container message (leave blank for default)</caption>
       <attribute>containermaxobjects</attribute>
-      <mustinherit>defaultplayer</mustinherit>
+      <mustinherit>editor_player</mustinherit>
       <nullable/>
     </control>
 
@@ -117,7 +109,6 @@
       <caption>Volume</caption>
       <attribute>volume</attribute>
       <width>100</width>
-      <mustinherit>defaultobject</mustinherit>
       <minimum>0</minimum>
     </control>
 
@@ -126,7 +117,7 @@
       <caption>Maximum volume of inventory</caption>
       <attribute>maxvolume</attribute>
       <width>100</width>
-      <mustinherit>defaultplayer</mustinherit>
+      <mustinherit>editor_player</mustinherit>
       <minimum>0</minimum>
     </control>
 
@@ -134,7 +125,7 @@
       <controltype>textbox</controltype>
       <caption>Full container message (leave blank for default)</caption>
       <attribute>containerfullmessage</attribute>
-      <mustinherit>defaultplayer</mustinherit>
+      <mustinherit>editor_player</mustinherit>
       <nullable/>
     </control>
 

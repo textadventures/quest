@@ -17,20 +17,6 @@ namespace AxeSoftware.Quest.EditorControls
             public string ListResult;
         }
 
-        private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
-		    {ValidationMessage.OK,"No error"},
-		    {ValidationMessage.ItemAlreadyExists,"Item '{0}' already exists in the list"},
-		    {ValidationMessage.ElementAlreadyExists,"An element called '{0}' already exists in this game"},
-            {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
-            {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
-            {ValidationMessage.InvalidElementName, "Invalid element name"},
-            {ValidationMessage.CircularTypeReference, "Circular type reference"},
-            {ValidationMessage.InvalidElementNameMultipleSpaces, "Invalid element name. An element name cannot start or end with a space, and cannot contain multiple consecutive spaces."},
-            {ValidationMessage.InvalidElementNameInvalidWord, "Invalid element name. Elements cannot contain these words: " + string.Join(", ", EditorController.ExpressionKeywords)},
-            {ValidationMessage.CannotRenamePlayerElement, "The player object cannot be renamed"},
-            {ValidationMessage.InvalidElementNameStartsWithNumber, "Invalid element name. An element name cannot start with a number."}
-        };
-
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null, bool allowEmptyString = false)
         {
             return EditStringWithDropdown(prompt, defaultResult, null, null, null, autoCompleteList, allowEmptyString);
@@ -69,14 +55,10 @@ namespace AxeSoftware.Quest.EditorControls
             return result;
         }
 
-        private static string GetError(ValidationMessage validationMessage, string item, string data)
-        {
-            return string.Format(s_validationMessages[validationMessage], item, data);
-        }
-
         public static void DisplayValidationError(ValidationResult result, string input, string title)
         {
-            MessageBox.Show(GetError(result.Message, input, result.MessageData), title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            string message = EditorController.GetValidationError(result, input);
+            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         public static void EditScript(EditorController controller, ref IEditableScripts scripts, string attribute, string element, bool isReadOnly, Action dirtyAction)

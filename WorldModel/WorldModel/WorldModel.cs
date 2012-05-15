@@ -38,7 +38,6 @@ namespace AxeSoftware.Quest
     public class WorldModel : IASL, IASLDebug, IASLTimer
     {
         private Element m_game;
-        private Element m_player;
         private Elements m_elements;
         private Dictionary<string, int> m_nextUniqueID = new Dictionary<string, int>();
         private Template m_template;
@@ -260,11 +259,6 @@ namespace AxeSoftware.Quest
         public Element Game
         {
             get { return m_game; }
-        }
-
-        public Element Player
-        {
-            get { return m_player; }
         }
 
         public Element Object(string name)
@@ -509,8 +503,6 @@ namespace AxeSoftware.Quest
             {
                 try
                 {
-                    if (!m_elements.ContainsKey(ElementType.Object, "player")) throw new Exception("No player object found in game");
-                    m_player = Object("player");
                     m_timerRunner = new TimerRunner(this, !m_loadedFromSaved);
                     if (m_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
                     if (!m_loadedFromSaved)
@@ -518,7 +510,6 @@ namespace AxeSoftware.Quest
                         if (m_elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
                     }
                     TryRunOnFinallyScripts();
-                    if (m_player.Parent == null) throw new Exception("No start location specified for player");
                     UpdateLists();
                     if (m_loadedFromSaved)
                     {

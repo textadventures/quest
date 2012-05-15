@@ -251,6 +251,7 @@ namespace WebEditor.Controllers
         private string GetAllFilesList(int id)
         {
             string path = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+            if (path == null) return null;  // this will be the case if there was no logged-in user
             IEnumerable<string> files = System.IO.Directory.GetFiles(path).Select(f => System.IO.Path.GetFileName(f)).OrderBy(f => f);
             return string.Join(":", files);
         }

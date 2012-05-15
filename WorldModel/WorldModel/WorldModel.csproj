@@ -160,12 +160,17 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Core\CoreCombat.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Core\CoreEditorCommand.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorExit.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorExpressions.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -230,6 +235,10 @@
     <None Include="Core\CoreEditorObjectVerbs.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Core\CoreEditorScriptsDrawing.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Core\CoreEditorScriptsGameState.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -277,12 +286,17 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Core\CoreGrid.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Core\CoreOutput.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreStatusAttributes.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreTimers.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -439,6 +453,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Core\CoreEditorObjectMap.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Examples-Public\demo\YouTube.js" />
     <Content Include="Examples-Public\twohalves\twohalves.htm" />
     <Content Include="Examples-Public\twohalves\twohalves.js" />

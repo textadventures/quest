@@ -318,10 +318,7 @@ namespace AxeSoftware.Quest.EditorControls
                 CompassEditor.to.Items.Clear();
                 foreach (string objectName in m_controller.GetObjectNames("object").OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase))
                 {
-                    if (objectName != "player")
-                    {
-                        CompassEditor.to.Items.Add(objectName);
-                    }
+                    CompassEditor.to.Items.Add(objectName);
                 }
                 CompassEditor.create.IsEnabled = false;
                 CompassEditor.to.IsEnabled = true;

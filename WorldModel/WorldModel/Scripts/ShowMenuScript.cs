@@ -68,15 +68,23 @@ namespace AxeSoftware.Quest.Scripts
 
             if (stringListOptions != null)
             {
+                if (stringListOptions.Count == 0)
+                {
+                    throw new Exception("No menu options specified");
+                }
                 m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringListOptions, m_allowCancel.Execute(c), m_callbackScript, c);
             }
             else if (stringDictionaryOptions != null)
             {
+                if (stringDictionaryOptions.Count == 0)
+                {
+                    throw new Exception("No menu options specified");
+                }
                 m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringDictionaryOptions, m_allowCancel.Execute(c), m_callbackScript, c);
             }
             else
             {
-                throw new ArgumentOutOfRangeException("Unknown menu options type");
+                throw new Exception("Unknown menu options type");
             }
         }
 

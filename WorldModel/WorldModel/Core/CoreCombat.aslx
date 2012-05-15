@@ -1,0 +1,24 @@
+﻿<library>
+  <function name="DiceRoll" parameters="dicetype" type="int">
+    dpos = Instr(dicetype, "d")
+    if (dpos = 0) {
+      error ("Invalid dice type: " + dicetype)
+    }
+    else {
+      number_string = Left(dicetype, dpos - 1)
+      sides_string = Mid(dicetype, dpos + 1)
+      if (not (IsNumeric(number_string) and IsNumeric(sides_string))) {
+        error ("Invalid dice type: " + dicetype)
+      }
+      else {
+        number = ToInt(number_string)
+        sides = ToInt(sides_string)
+        total = 0
+        for (i, 1, number) {
+          total = total + GetRandomInt(1, sides)
+        }
+        return (total)
+      }
+    }
+  </function>
+</library>

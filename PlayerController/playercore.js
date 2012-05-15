@@ -1,5 +1,6 @@
 ﻿var _currentDiv = null;
 var _allowMenuFontSizeChange = true;
+var _showGrid = false;
 
 function addText(text) {
     if (_currentDiv == null) {
@@ -176,4 +177,72 @@ function addCSSRule(ruleName) {
         }
     }
     return getCSSRule(ruleName);
+}
+
+function ShowGrid(height) {
+    _showGrid = (height > 0);
+    $("#gridPanel").show();
+    $("#gridPanel").height(height);
+    $("#gamePanelSpacer").height(height);
+}
+
+// GRID FUNCTIONS ***********************************************************************************************************************
+
+// gridApi is global for interop between PaperScript and JavaScript - a workaround until
+// this tutorial exists: http://paperjs.org/tutorials/getting-started/paperscript-interoperability/
+
+window.gridApi = {};
+window.gridApi.onLoad = function () {
+};
+
+_canvasSupported = (window.HTMLCanvasElement);
+
+function Grid_DrawGridLines(minX, minY, maxX, maxY, border) {
+    if (!_canvasSupported) return;
+    gridApi.drawGrid(parseInt(minX), parseInt(minY), parseInt(maxX), parseInt(maxY), border);
+}
+
+function Grid_SetScale(scale) {
+    if (!_canvasSupported) return;
+    gridApi.setScale(parseInt(scale));
+}
+
+function Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill, sides) {
+    if (!_canvasSupported) return;
+    gridApi.drawBox(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill, parseInt(sides));
+}
+
+function Grid_DrawLine(x1, y1, x2, y2, border, borderWidth) {
+    if (!_canvasSupported) return;
+    gridApi.drawLine(parseFloat(x1), parseFloat(y1), parseFloat(x2), parseFloat(y2), border, parseInt(borderWidth));
+}
+
+function Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill) {
+    if (!_canvasSupported) return;
+    gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(radius), border, parseInt(borderWidth), fill);
+}
+
+function Grid_DrawLabel(x, y, z, text) {
+    if (!_canvasSupported) return;
+    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text);
+}
+
+function Grid_ShowCustomLayer(visible) {
+    if (!_canvasSupported) return;
+    gridApi.showCustomLayer(visible == "true");
+}
+
+function Grid_ClearCustomLayer() {
+    if (!_canvasSupported) return;
+    gridApi.clearCustomLayer();
+}
+
+function Grid_SetCentre(x, y) {
+    if (!_canvasSupported) return;
+    gridApi.setCentre(parseFloat(x), parseFloat(y));
+}
+
+function Grid_DrawSquare(id, x, y, text, fill) {
+    if (!_canvasSupported) return;
+    gridApi.drawCustomLayerSquare(id, parseInt(x), parseInt(y), text, fill);
 }

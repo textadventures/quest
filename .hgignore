@@ -15,3 +15,5 @@ WebEditor/WebEditor/WebEditorSettings.xml
 WebPlayer/App_Data/Log.txt
 WebEditor/WebEditor/WebEditor.Publish.xml
 WebEditor/WebEditor/LogConfig.xml
+WebPlayer/paper.js
+WebPlayer/grid.js

@@ -1,4 +1,5 @@
 ﻿Imports System.Xml
+Imports Microsoft.Win32
 
 Public Class PlayerHTML
 
@@ -11,11 +12,21 @@ Public Class PlayerHTML
     Private m_deleteFile As String = Nothing
     Private m_navigationAllowed As Boolean = True
     Private m_buffer As New List(Of Action)
+    Private m_internetExplorerVersion As Single = 0.0
 
     Public Sub Setup()
         m_navigationAllowed = True
         wbOutput.ScriptErrorsSuppressed = True
         wbOutput.Navigate(m_baseHtmlPath)
+        Dim key As RegistryKey = Registry.LocalMachine.OpenSubKey("Software\Microsoft\Internet Explorer")
+        If key IsNot Nothing Then
+            Dim version As String = DirectCast(key.GetValue("Version", ""), String)
+            Dim versionRegex As New System.Text.RegularExpressions.Regex("^\d*\.\d*")
+            If versionRegex.IsMatch(version) Then
+                Dim versionNumber As String = versionRegex.Match(version).Value
+                m_internetExplorerVersion = CSng(versionNumber)
+            End If
+        End If
     End Sub
 
     Public Sub WriteText(text As String)
@@ -47,7 +58,13 @@ Public Class PlayerHTML
     End Sub
 
     Private Sub wbOutput_Error(sender As Object, e As HtmlElementErrorEventArgs)
-        WriteText(String.Format("JavaScript error at line {0}: {1}", e.LineNumber, e.Description))
+        Dim displayError As Boolean = True
+        If m_internetExplorerVersion < 9 AndAlso e.Description.Contains("HTMLCanvasElement") Then
+            displayError = False
+        End If
+        If displayError Then
+            WriteText(String.Format("JavaScript error at line {0}: {1}", e.LineNumber, e.Description))
+        End If
         e.Handled = True
     End Sub
 

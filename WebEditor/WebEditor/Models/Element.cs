@@ -63,6 +63,7 @@ namespace WebEditor.Models
         {
             public bool IsSelected { get; set; }
             public Dictionary<string, object> Attributes { get; set; }
+            public string Error { get; set; }
 
             public ScriptSaveData()
             {
@@ -105,6 +106,13 @@ namespace WebEditor.Models
 
             if (editorDictionary == null)
             {
+                result.Success = false;
+                return result;
+            }
+
+            if (!editorDictionary.ContainsKey(gameId))
+            {
+                Logging.Log.ErrorFormat("Current Session does not contain a game id of {0}", gameId);
                 result.Success = false;
                 return result;
             }
@@ -158,7 +166,15 @@ namespace WebEditor.Models
                     break;
                 case "checkbox":
                     ValueProviderResult value = bindingContext.ValueProvider.GetValue(attribute);
-                    saveValue = value.ConvertTo(typeof(bool));
+                    if (value == null)
+                    {
+                        Logging.Log.ErrorFormat("Expected true/false value for '{0}', but got null", attribute);
+                        saveValue = false;
+                    }
+                    else
+                    {
+                        saveValue = value.ConvertTo(typeof(bool));
+                    }
                     break;
                 case "script":
                     saveValue = BindScript(bindingContext.ValueProvider, attribute, originalElement.EditorData, editorDictionary[gameId].Controller, ignoreExpression);
@@ -295,6 +311,7 @@ namespace WebEditor.Models
                         else
                         {
                             object value = GetScriptParameterValue(
+                                scriptLine,
                                 controller,
                                 provider,
                                 key,
@@ -313,6 +330,7 @@ namespace WebEditor.Models
                     EditableIfScript ifScript = (EditableIfScript)script;
 
                     object expressionValue = GetScriptParameterValue(
+                        scriptLine,
                         controller,
                         provider,
                         string.Format("{0}-{1}-expression", attribute, count),
@@ -333,6 +351,7 @@ namespace WebEditor.Models
                     foreach (EditableIfScript.EditableElseIf elseIf in ifScript.ElseIfScripts)
                     {
                         object elseIfExpressionValue = GetScriptParameterValue(
+                            scriptLine,
                             controller,
                             provider,
                             string.Format("{0}-{1}-elseif{2}-expression", attribute, count, elseIfCount),
@@ -414,7 +433,7 @@ namespace WebEditor.Models
             return result;
         }
 
-        private object GetScriptParameterValue(EditorController controller, IValueProvider provider, string attributePrefix, string controlType, string simpleEditor, string templatesFilter, string oldTemplateValue, string ignoreExpression)
+        private object GetScriptParameterValue(ElementSaveData.ScriptSaveData scriptLine, EditorController controller, IValueProvider provider, string attributePrefix, string controlType, string simpleEditor, string templatesFilter, string oldValue, string ignoreExpression)
         {
             if (attributePrefix == ignoreExpression) return new IgnoredValue();
 
@@ -428,7 +447,7 @@ namespace WebEditor.Models
                     if (dropdownKeyValue == "expression" || dropdownKeyValue == null)
                     {
                         string key = string.Format("{0}-expressioneditor", attributePrefix);
-                        return GetValueProviderString(provider, key);
+                        return GetAndValidateValueProviderString(provider, key, oldValue, scriptLine, controller);
                     }
                     else
                     {
@@ -460,17 +479,17 @@ namespace WebEditor.Models
                     if (dropdownKeyValue == "expression")
                     {
                         string key = attributePrefix;
-                        return GetValueProviderString(provider, key);
+                        return GetAndValidateValueProviderString(provider, key, oldValue, scriptLine, controller);
                     }
                     else
                     {
-                        IEditorDefinition editorDefinition = controller.GetExpressionEditorDefinition(oldTemplateValue, templatesFilter);
-                        IEditorData data = controller.GetExpressionEditorData(oldTemplateValue, templatesFilter, null);
+                        IEditorDefinition editorDefinition = controller.GetExpressionEditorDefinition(oldValue, templatesFilter);
+                        IEditorData data = controller.GetExpressionEditorData(oldValue, templatesFilter, null);
 
                         foreach (IEditorControl ctl in editorDefinition.Controls.Where(c => c.Attribute != null))
                         {
                             string key = attributePrefix + "-" + ctl.Attribute;
-                            object value = GetScriptParameterValue(controller, provider, key, ctl.ControlType, ctl.GetString("simpleeditor") ?? "textbox", null, null, ignoreExpression);
+                            object value = GetScriptParameterValue(scriptLine, controller, provider, key, ctl.ControlType, ctl.GetString("simpleeditor") ?? "textbox", null, null, ignoreExpression);
                             data.SetAttribute(ctl.Attribute, value);
                         }
 
@@ -483,6 +502,20 @@ namespace WebEditor.Models
                 string key = attributePrefix;
                 return GetValueProviderString(provider, key);
             }
+        }
+
+        private string GetAndValidateValueProviderString(IValueProvider provider, string key, string oldValue, ElementSaveData.ScriptSaveData scriptLine, EditorController controller)
+        {
+            string result = GetValueProviderString(provider, key);
+            ValidationResult validationResult = controller.ValidateExpression(result);
+            if (!validationResult.Valid)
+            {
+                scriptLine.Error = string.Format("Could not set value '{0}' - {1}",
+                    result,
+                    Services.EditorService.GetValidationError(validationResult, result));
+                result = oldValue;
+            }
+            return result;
         }
 
         private string GetValueProviderString(IValueProvider provider, string key)
@@ -504,6 +537,7 @@ namespace WebEditor.Models
 
         private string StripHTMLComments(string input)
         {
+            if (input == null) return null;
             return Regex.Replace(input, "<!--.*?-->", string.Empty, RegexOptions.Singleline);
         }
     }

@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
     <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="desktopplayer.js"></script>
     <script type="text/javascript" src="jjmenu.js"></script>
+	<script type="text/javascript" src="paper.js"></script>
+	<script type="text/paperscript" src="grid.js" canvas="gridCanvas"></script>
     <!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->
     <link rel="Stylesheet" type="text/css" href="playercore.css" />
     <link rel="Stylesheet" type="text/css" href="jjmenu.css" />
@@ -17,6 +20,12 @@
         <p>JavaScript is disabled in your Internet Explorer settings. Quest will not work until you enable JavaScript.</p>
     </noscript>
     <div id="gamePanel"></div>
+    <div id="gridPanel">
+        <canvas id="gridCanvas" resize keepalive="true">
+            <p><b>The graphical map cannot be displayed</b></p>
+            <p>To use the graphical map, your computer must be running Internet Explorer 9 or later.</p>
+        </canvas>
+    </div>
     <div id="gamePanelSpacer"></div>
     <div id="divOutput"></div>
 </body>

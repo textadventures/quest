@@ -64,6 +64,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="grid.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="paper.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="playercore.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

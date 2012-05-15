@@ -15,7 +15,8 @@ namespace WebEditor.Services
 
         public void SaveFile(int id, string data)
         {
-            System.Diagnostics.Debug.WriteLine("{0} Saved", DateTime.Now);
+            string file = GetFile(id);
+            System.IO.File.WriteAllText(file, data);
         }
 
         public CreateNewFileData CreateNewFile(string filename, string gameName)

@@ -84,6 +84,12 @@
         <attribute>multiobjectdefault</attribute>
       </control>
 
+      <control>
+        <caption>If no objects available, show this message</caption>
+        <controltype>textbox</controltype>
+        <attribute>multiobjectmenuempty</attribute>
+      </control>
+
     </tab>
 
     <tab>
