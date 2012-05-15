@@ -544,7 +544,7 @@
 
     <control>
       <controltype>dropdown</controltype>
-      <validvalues type="list">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause;Wait;SetInterfaceString;RequestSave;SetPanelContents</validvalues>
+      <validvalues type="list">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause;Wait;SetInterfaceString;RequestSave;SetPanelContents;Log</validvalues>
       <caption>Request</caption>
       <attribute>0</attribute>
     </control>

@@ -1134,4 +1134,8 @@ Public Class Player
             DoQuit()
         End If
     End Sub
+
+    Public Sub Log(text As String) Implements IPlayer.Log
+
+    End Sub
 End Class
