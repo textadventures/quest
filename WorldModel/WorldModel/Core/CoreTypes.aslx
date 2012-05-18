@@ -241,7 +241,7 @@
   </type>
   
   <type name="namedfemale">
-    <inherit name="femal " />
+    <inherit name="female" />
     <usedefaultprefix type="boolean">false</usedefaultprefix>
   </type>
 
