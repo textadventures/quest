@@ -228,11 +228,21 @@
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
   </type>
+  
+  <type name="namedmale">
+    <inherit name="male" />
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
+  </type>
 
   <type name="female">
     <displayverbs type="list">[LookAt];[SpeakTo]</displayverbs>
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>
+  </type>
+  
+  <type name="namedfemale">
+    <inherit name="female" />
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
   </type>
 
   <type name="plural">
