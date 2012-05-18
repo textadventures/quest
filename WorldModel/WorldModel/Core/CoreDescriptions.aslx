@@ -1,10 +1,6 @@
 ﻿<library>
   <function name="ShowRoomDescription">
     <![CDATA[
-    if (HasScript(game.pov.parent, "description")) {
-      do (game.pov.parent, "description")
-    }
-    else {
       if (game.autodescription) {
         desc = ""
         
@@ -27,7 +23,16 @@
             desc = AddDescriptionLine(desc, exits)
           }
           if (i = game.autodescription_description) {
-            desc = AddDescriptionLine(desc, GetRoomDescription())
+            if (HasScript(game.pov.parent, "description")) {
+				if (LengthOf(desc) > 0) {
+                    msg (desc)
+                    desc=""
+                }
+				do (game.pov.parent, "description")
+			} 
+			else  {
+				desc = AddDescriptionLine(desc, GetRoomDescription())
+			}	
           }
         }
         
@@ -42,7 +47,6 @@
           msg (fulldesc)
         }
       }
-    }
     ]]>
   </function>
 

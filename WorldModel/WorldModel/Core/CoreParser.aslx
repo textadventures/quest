@@ -517,10 +517,13 @@
           }
           else {
             menu = NewStringDictionary()
+            objectlist = NewObjectList()
+            objectlist = ScopeReachableInventory()
+            objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
             excludelist = NewObjectList()
             list add (excludelist, game.pov)
             list add (excludelist, object)
-            candidates = ListExclude(RemoveSceneryObjects(ScopeVisible()), excludelist)
+            candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
             if (ListCount(candidates) = 0) {
               msg (this.multiobjectmenuempty)
             }
