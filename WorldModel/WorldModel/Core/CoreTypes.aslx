@@ -30,6 +30,9 @@
     <autodescription_youcango type="int">3</autodescription_youcango>
     <autodescription_description type="int">4</autodescription_description>
     <autodescription_youarein_useprefix/>
+    <autodescription_youarein_newline type="boolean">false</autodescription_youarein_newline>
+    <autodescription_youcango_newline type="boolean">false</autodescription_youcango_newline>
+    <autodescription_description_newline type="boolean">false</autodescription_description_newline>
     <description type="string"></description>
     <languageid>[LanguageId]</languageid>
     <gridmap type="boolean">false</gridmap>

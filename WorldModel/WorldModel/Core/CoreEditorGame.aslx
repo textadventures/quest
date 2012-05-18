@@ -152,6 +152,27 @@
         <caption>Use "[YouAreIn]" prefix (turn off to display room name in bold instead)</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>autodescription_youarein_newline</attribute>
+        <caption>Put a newline after the room name</caption>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>autodescription_youcango_newline</attribute>
+        <caption>Put a newline after the exits list</caption>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>autodescription_description_newline</attribute>
+        <caption>Put a newline after the description</caption>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
     </tab>
 
     <tab>
