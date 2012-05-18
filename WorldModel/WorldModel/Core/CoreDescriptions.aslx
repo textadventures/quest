@@ -6,6 +6,9 @@
         
         for (i, 1, 4) {
           if (i = game.autodescription_youarein) {
+            if (game.autodescription_youarein_prenewline) {
+               desc = desc + "<br/>"
+            }
             if (game.autodescription_youarein_useprefix) {
               youarein = game.pov.parent.descprefix
               desc = AddDescriptionLine (desc, youarein + " " + GetDisplayName(game.pov.parent) + ".")
@@ -13,7 +16,7 @@
             else {
               desc = AddDescriptionLine (desc, "<b>" + CapFirst(GetDisplayName(game.pov.parent)) + "</b>")
             }
-            if (game.autodescription_youarein_newline) {
+            if (game.autodescription_youarein_postnewline) {
               desc = desc + "<br/>"
             }
           }

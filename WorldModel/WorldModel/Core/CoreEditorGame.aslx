@@ -155,7 +155,14 @@
       
       <control>
         <controltype>checkbox</controltype>
-        <attribute>autodescription_youarein_newline</attribute>
+        <attribute>autodescription_youarein_prenewline</attribute>
+        <caption>Put a newline before the room name</caption>
+        <onlydisplayif>game.autodescription</onlydisplayif>
+      </control>
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>autodescription_youarein_postnewline</attribute>
         <caption>Put a newline after the room name</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
