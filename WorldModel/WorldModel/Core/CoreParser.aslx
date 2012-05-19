@@ -517,9 +517,7 @@
           }
           else {
             menu = NewStringDictionary()
-            objectlist = NewObjectList()
-            objectlist = ScopeReachableInventory()
-            objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
+            objectlist = ListCombine (ScopeReachableInventory(), ScopeReachableNotHeld())
             excludelist = NewObjectList()
             list add (excludelist, game.pov)
             list add (excludelist, object)
