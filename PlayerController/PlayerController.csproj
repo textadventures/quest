@@ -73,6 +73,7 @@
     <Content Include="playercore.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="playercore.htm" />
     <Content Include="playercore.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

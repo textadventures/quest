@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using AxeSoftware.Quest;
 using System.Xml;
+using System.IO;
 
 namespace AxeSoftware.Quest
 {
@@ -389,5 +390,16 @@ namespace AxeSoftware.Quest
         public string PlayerOverrideForeground { get; set; }
         public string PlayerOverrideFontFamily { get; set; }
         public float PlayerOverrideFontSize { get; set; }
+
+        public static string GetUIHTML()
+        {
+            using (Stream stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("PlayerController.playercore.htm"))
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
     }
 }

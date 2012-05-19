@@ -77,6 +77,11 @@ namespace WebPlayer
             return success;
         }
 
+        internal static string GetUI()
+        {
+            return PlayerHelper.GetUIHTML();
+        }
+
         void RequestNextTimerTick(int seconds)
         {
             m_buffer.AddJavaScriptToBuffer("requestNextTimerTick", new IntParameter(seconds));
