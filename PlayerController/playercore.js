@@ -249,9 +249,9 @@ function Grid_SetCentre(x, y) {
     gridApi.setCentre(parseFloat(x), parseFloat(y));
 }
 
-function Grid_DrawSquare(id, x, y, text, fill) {
+function Grid_DrawSquare(id, x, y, width, height, text, fill) {
     if (!_canvasSupported) return;
-    gridApi.drawCustomLayerSquare(id, parseInt(x), parseInt(y), text, fill);
+    gridApi.drawCustomLayerSquare(id, parseInt(x), parseInt(y), parseInt(width), parseInt(height), text, fill);
 }
 
 // JQUERY.MOUSEWEHEEL.JS ****************************************************************************************************************

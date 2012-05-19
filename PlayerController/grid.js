@@ -280,7 +280,7 @@ gridApi.setCentre = function (x, y) {
     updateOffset(new Point(offsetX, offsetY));
 }
 
-gridApi.drawCustomLayerSquare = function (id, x, y, text, fill) {
+gridApi.drawCustomLayerSquare = function (id, x, y, width, height, text, fill) {
     var existing = customLayerObjects[id];
     if (existing) {
         for (var idx in existing) {
@@ -292,13 +292,13 @@ gridApi.drawCustomLayerSquare = function (id, x, y, text, fill) {
 
     var paths = new Array();
     path = new Path();
-    path.add(gridPointNudge(x, y, 1, 1), gridPointNudge(x + 1, y, -1, 1), gridPointNudge(x + 1, y + 1, -1, -1), gridPointNudge(x, y + 1, 1, -1));
+    path.add(gridPointNudge(x, y, 1, 1), gridPointNudge(x + width, y, -1, 1), gridPointNudge(x + width, y + height, -1, -1), gridPointNudge(x, y + height, 1, -1));
     path.fillColor = fill;
     path.closed = true;
     addPathToCurrentLayerList(path);
     paths.push(path);
 
-    var pointText = new PointText(gridPoint(x + 0.5, y + 0.5));
+    var pointText = new PointText(gridPoint(x + width/2, y + height/2));
     pointText.justification = "center";
     pointText.fillColor = "black";
     pointText.content = text;

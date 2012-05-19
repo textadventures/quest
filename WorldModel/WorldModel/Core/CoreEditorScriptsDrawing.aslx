@@ -220,7 +220,7 @@
     <appliesto>(function)Grid_DrawSquare</appliesto>
     <display>Draw custom layer grid square</display>
     <category>Drawing</category>
-    <create>Grid_DrawSquare ("", 0, 0, "", "White")</create>
+    <create>Grid_DrawSquare ("", 0, 0, 1, 1, "", "White")</create>
     <add>Draw custom layer grid square</add>
 
     <control>
@@ -260,6 +260,30 @@
 
     <control>
       <controltype>label</controltype>
+      <caption>width</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>3</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>height</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>4</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
       <caption>Label</caption>
       <breakbefore/>
     </control>
@@ -267,7 +291,7 @@
     <control>
       <controltype>expression</controltype>
       <simple>text</simple>
-      <attribute>3</attribute>
+      <attribute>5</attribute>
     </control>
 
     <control>
@@ -279,7 +303,7 @@
       <controltype>expression</controltype>
       <simple>colour</simple>
       <simpleeditor>dropdown</simpleeditor>
-      <attribute>4</attribute>
+      <attribute>6</attribute>
       <validvalues type="list">[HTMLColorNames]</validvalues>
       <freetext/>
     </control>
