@@ -37,13 +37,13 @@
             if (HasScript(game.pov.parent, "description")) {
               if (LengthOf(desc) > 0) {
                     msg (desc)
-                    desc=""
+                    desc = ""
                 }
               do (game.pov.parent, "description")
               if (game.autodescription_description_newline) {
                 msg("")
               }
-            } 
+            }
             else  {
               desc = AddDescriptionLine(desc, GetRoomDescription())
               if (game.autodescription_description_newline) {

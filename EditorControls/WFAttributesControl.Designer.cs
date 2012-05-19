@@ -187,6 +187,7 @@
             this.lstAttributes.TabIndex = 5;
             this.lstAttributes.UseCompatibleStateImageBehavior = false;
             this.lstAttributes.View = System.Windows.Forms.View.Details;
+            this.lstAttributes.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstAttributes_ColumnClick);
             this.lstAttributes.SelectedIndexChanged += new System.EventHandler(this.lstAttributes_SelectedIndexChanged);
             // 
             // colName
