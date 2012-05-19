@@ -64,7 +64,7 @@
       <mustnotinherit>editor_room</mustnotinherit>
       <controltype>dropdowntypes</controltype>
       <caption>Type</caption>
-      <types>*=Inanimate object; [LanguageSpecificObjectTypes]male=Male character; namedmale=Named male character; female=Female character; namedfemale=Named female character; plural=Inanimate objects (plural); maleplural=Male characters (plural); femaleplural=Female characters (plural)</types>
+      <types>*=Inanimate object; [LanguageSpecificObjectTypes]male=Male character; namedmale=Male character (named); female=Female character; namedfemale=Female character (named); plural=Inanimate objects (plural); maleplural=Male characters (plural); femaleplural=Female characters (plural)</types>
       <width>150</width>
     </control>
 
