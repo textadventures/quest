@@ -44,6 +44,14 @@ gridApi.setScale = function (newScale) {
     gridY = new Point(0, scale);
 }
 
+gridApi.setZoom = function (zoom) {
+    paper.view.zoom = zoom;
+}
+
+gridApi.zoomIn = function (amount) {
+    paper.view.zoom = paper.view.zoom * (Math.pow(1.1, amount));
+}
+
 function onMouseDrag(event) {
     updateOffset(event.delta);
 }
@@ -225,6 +233,7 @@ gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
     else {
         playerDestination = gridPoint(x, y);
         playerVector = (playerDestination - player.position) / 10;
+        paper.view.zoom = 1;
         // move player to the end of the activeLayer so it gets drawn on top
         project.activeLayer.addChild(player);
     }
