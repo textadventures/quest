@@ -142,6 +142,8 @@ namespace AxeSoftware.Quest.EditorControls
 
             ctlMultiControl.Dirty += ctlMultiControl_Dirty;
             ctlMultiControl.RequestParentElementEditorSave += ctlMultiControl_RequestParentElementEditorSave;
+
+            lstAttributes.ListViewItemSorter = m_attributesListSorter;
         }
 
         private EditorController m_controller;
@@ -155,6 +157,8 @@ namespace AxeSoftware.Quest.EditorControls
         public event DirtyEventHandler Dirty;
         public delegate void RequestParentElementEditorSaveEventHandler();
         public event RequestParentElementEditorSaveEventHandler RequestParentElementEditorSave;
+
+        private Utility.ListViewColumnSorter m_attributesListSorter = new Utility.ListViewColumnSorter();
 
         public EditorController Controller
         {
@@ -572,6 +576,11 @@ namespace AxeSoftware.Quest.EditorControls
             if (m_readOnly) return;
             string selectedAttribute = GetSelectedAttribute();
             Add("changed" + selectedAttribute, () => m_controller.CreateNewEditableScripts(m_data.Name, m_controlData.Attribute, null, false));
+        }
+
+        private void lstAttributes_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            Utility.ListViewColumnSorter.SortList(lstAttributes, m_attributesListSorter, e.Column);
         }
     }
 }
