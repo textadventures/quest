@@ -87,6 +87,11 @@ namespace AxeSoftware.Quest.Functions
             return obj.Fields.Exists(property);
         }
 
+        public QuestList<string> GetAttributeNames(Element obj, bool includeInheritedAttributes)
+        {
+            return new QuestList<string>(obj.Fields.GetAttributeNames(includeInheritedAttributes));
+        }
+
         public string GetExitByLink(Element from, Element to)
         {
             foreach (Element e in m_worldModel.Objects)

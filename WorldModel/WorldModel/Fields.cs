@@ -817,6 +817,19 @@ namespace AxeSoftware.Quest
                 Set(attribute, null);
             }
         }
+
+        public IEnumerable<string> GetAttributeNames(bool includeInheritedAttributes)
+        {
+            List<string> result = new List<string>(m_attributes.Select(a => a.Key));
+            if (includeInheritedAttributes)
+            {
+                foreach (Element type in m_types)
+                {
+                    result.AddRange(type.Fields.GetAttributeNames(true).Where(a => !result.Contains(a)));
+                }
+            }
+            return result;
+        }
     }
 
     public class LazyFields
