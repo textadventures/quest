@@ -6,9 +6,6 @@
         
         for (i, 1, 4) {
           if (i = game.autodescription_youarein) {
-            if (game.autodescription_youarein_prenewline) {
-               desc = desc + "<br/>"
-            }
             if (game.autodescription_youarein_useprefix) {
               youarein = game.pov.parent.descprefix
               desc = AddDescriptionLine (desc, youarein + " " + GetDisplayName(game.pov.parent) + ".")
@@ -16,17 +13,22 @@
             else {
               desc = AddDescriptionLine (desc, "<b>" + CapFirst(GetDisplayName(game.pov.parent)) + "</b>")
             }
-            if (game.autodescription_youarein_postnewline) {
+            if (game.autodescription_youarein_newline) {
               desc = desc + "<br/>"
             }
           }
           if (i = game.autodescription_youcansee) {
             objects = FormatObjectList(game.pov.parent.objectslistprefix, GetNonTransparentParent(game.pov.parent), Template("And"), ".", false)
             desc = AddDescriptionLine(desc, objects)
+            
+            if (game.autodescription_youcansee_newline) {
+              desc = desc + "<br/>"
+            }
           }
           if (i = game.autodescription_youcango) {
             exits = FormatExitList(game.pov.parent.exitslistprefix, ScopeExits(), Template("Or"), ".")
             desc = AddDescriptionLine(desc, exits)
+            
             if (game.autodescription_youcango_newline) {
               desc = desc + "<br/>"
             }
