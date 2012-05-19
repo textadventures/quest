@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace AxeSoftware.Utility
 {
@@ -82,6 +83,55 @@ namespace AxeSoftware.Utility
         {
             if (m_splitter.Visible)
                 m_key.SetValue(m_regValue, m_splitter.SplitterDistance);
+        }
+    }
+
+    public class ListViewColumnSorter : System.Collections.IComparer
+    {
+        public int SortColumn { get; set; }
+        public SortOrder Order { get; set; }
+        private System.Collections.CaseInsensitiveComparer ObjectCompare = new System.Collections.CaseInsensitiveComparer();
+
+        public int Compare(object x, object y)
+        {
+            ListViewItem listviewX = (ListViewItem)x;
+            ListViewItem listviewY = (ListViewItem)y;
+            int compareResult = ObjectCompare.Compare(listviewX.SubItems[SortColumn].Text, listviewY.SubItems[SortColumn].Text);
+
+            if (Order == SortOrder.Ascending)
+            {
+                return compareResult;
+            }
+            else if (Order == SortOrder.Descending)
+            {
+                return -compareResult;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static void SortList(ListView listView, ListViewColumnSorter columnSorter, int column)
+        {
+            if (column == columnSorter.SortColumn)
+            {
+                if (columnSorter.Order == SortOrder.Ascending)
+                {
+                    columnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    columnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                columnSorter.SortColumn = column;
+                columnSorter.Order = SortOrder.Ascending;
+            }
+
+            listView.Sort();
         }
     }
 }
