@@ -27,7 +27,6 @@ Public Class Player
     Private m_soundPlaying As Boolean = False
     Private m_destroyed As Boolean = False
     Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
-    Private m_htmlPlayerReadyFunction As Action
     Private m_tickCount As Integer
     Private m_sendNextTickEventAfter As Integer
     Private m_pausing As Boolean
@@ -108,15 +107,8 @@ Public Class Player
         SetEnabledState(True)
         m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlHelper.UseGameColours = UseGameColours
-        m_htmlPlayerReadyFunction = AddressOf FinishInitialise
-
-        ' we don't finish initialising the game until the webbrowser's DocumentCompleted fires
-        ' - it's not in a ready state before then.
         ctlPlayerHtml.Setup()
-    End Sub
-
-    Private Sub FinishInitialise()
-
+ 
         Me.Cursor = Cursors.WaitCursor
 
         Dim success As Boolean = m_game.Initialise(Me)
@@ -128,19 +120,10 @@ Public Class Player
             m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing AndAlso m_gameDebug.Walkthroughs.Walkthroughs.Count > 0
             m_menu.MenuEnabled("debugger") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.DebugEnabled
 
-            ' If we have external JavaScript files, we need to rebuild the HTML page source and
-            ' reload it. Then, only when the page has finished loading, begin the game.
-
             Dim scripts As IEnumerable(Of String) = m_game.GetExternalScripts
-            If scripts IsNot Nothing AndAlso scripts.Count > 0 Then
-                ' Generate the new HTML and wait for Ready event
 
-                m_htmlPlayerReadyFunction = AddressOf BeginGame
-                ctlPlayerHtml.InitialiseScripts(scripts)
-            Else
-                BeginGame()
-            End If
-
+            ' Generate the new HTML and wait for Ready event
+            ctlPlayerHtml.InitialiseHTMLUI(scripts)
         Else
             WriteLine("<b>Failed to load game.</b>")
             If (m_game.Errors.Count > 0) Then
@@ -862,13 +845,11 @@ Public Class Player
 
     Private Sub ctlPlayerHtml_Ready() Handles ctlPlayerHtml.Ready
         ' We need this DocumentCompleted event to have finished before trying to output text to the webbrowser control.
-        'Dim runnerThread As New Thread(New ThreadStart(AddressOf TryInitialise))
-        'runnerThread.Start()
 
         ResetPlayerOverrideColours()
         ResetPlayerOverrideFont()
         BeginInvoke(Sub()
-                        m_htmlPlayerReadyFunction.Invoke()
+                        BeginGame()
                     End Sub)
     End Sub
 

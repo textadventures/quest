@@ -128,7 +128,13 @@
         </div>
     </div>
     <div id="gamePanel"></div>
-    <div id="gridPanel"><canvas id="gridCanvas" resize keepalive="true"></canvas></div>
+    <div id="gridPanel">
+        <canvas id="gridCanvas" resize keepalive="true">
+            <p><b>The graphical map cannot be displayed</b></p>
+            <!-- TO DO: Conditional text here, needs to be specifically IE only for desktop version -->
+            <p>To use the graphical map, your computer must be running Internet Explorer 9 or later.</p>
+        </canvas>
+    </div>
     <div id="gameContent">
         <div id="gamePanelSpacer"></div>
         <div id="divOutput">

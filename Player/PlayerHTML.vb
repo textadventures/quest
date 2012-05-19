@@ -17,7 +17,6 @@ Public Class PlayerHTML
     Public Sub Setup()
         m_navigationAllowed = True
         wbOutput.ScriptErrorsSuppressed = True
-        wbOutput.Navigate(m_baseHtmlPath)
         Dim key As RegistryKey = Registry.LocalMachine.OpenSubKey("Software\Microsoft\Internet Explorer")
         If key IsNot Nothing Then
             Dim version As String = DirectCast(key.GetValue("Version", ""), String)
@@ -157,17 +156,20 @@ Public Class PlayerHTML
     End Sub
 
     Private Const k_scriptsPlaceholder As String = "<!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->"
+    Private Const k_htmlUIPlaceholder As String = "<!-- HTML_UI_PLACEHOLDER -->"
 
-    Public Sub InitialiseScripts(scripts As IEnumerable(Of String))
+    Public Sub InitialiseHTMLUI(scripts As IEnumerable(Of String))
         ' Construct an HTML page based on the default Blank.htm, but with additional <script> tags
         ' for each external Javascript file this game wants to use.
 
         Dim htmlPath As String = System.IO.Path.GetTempFileName
 
         Dim scriptsHtml As String = String.Empty
-        For Each script As String In scripts
-            scriptsHtml += String.Format("<script type=""text/javascript"" src=""{0}""></script>", script)
-        Next
+        If scripts IsNot Nothing Then
+            For Each script As String In scripts
+                scriptsHtml += String.Format("<script type=""text/javascript"" src=""{0}""></script>", script)
+            Next
+        End If
 
         Dim htmlContent As String = System.IO.File.ReadAllText(m_baseHtmlPath)
 
@@ -178,6 +180,8 @@ Public Class PlayerHTML
 
         ' Now we can insert the custom <script> elements
         htmlContent = htmlContent.Replace(k_scriptsPlaceholder, scriptsHtml)
+
+        htmlContent = htmlContent.Replace(k_htmlUIPlaceholder, PlayerHelper.GetUIHTML())
 
         ' Write our customised html file to the temp folder
         System.IO.File.WriteAllText(htmlPath, htmlContent)
