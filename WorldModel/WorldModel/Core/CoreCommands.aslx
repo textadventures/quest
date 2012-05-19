@@ -234,7 +234,8 @@
     }
   </function>
   
-  <command name="use" template="use"><![CDATA[
+  <command name="use" template="use">
+        <![CDATA[
     if (HasScript(object, "use")) {
       do (object, "use")
     }
@@ -244,18 +245,23 @@
       list add (excludelist, player)
       list add (excludelist, object)
       candidates = ListExclude(ScopeVisible(), excludelist)
-      GenerateMenuChoices(menu, candidates)
-      player.usemenuobject = object
-      if (HasString(object, "usemenuprompt")) {
-        menucaption = object.usemenuprompt
+      if (ListCount(candidates) = 0) {
+        msg (Template("NoObjectsAvailable"))
       }
       else {
-        menucaption = Template("UseOnMenu")
-      }
-      show menu (menucaption, menu, true) {
-        if (result <> null) {
-          HandleUseOn (player.usemenuobject, GetObject(result))
-          player.usemenuobject = null
+        GenerateMenuChoices(menu, candidates)
+        player.usemenuobject = object
+        if (HasString(object, "usemenuprompt")) {
+          menucaption = object.usemenuprompt
+        }
+        else {
+          menucaption = Template("UseOnMenu")
+        }
+        show menu (menucaption, menu, true) {
+          if (result <> null) {
+            HandleUseOn (player.usemenuobject, GetObject(result))
+            player.usemenuobject = null
+          }
         }
       }
     }
@@ -476,18 +482,23 @@
       list add (excludelist, player)
       list add (excludelist, object)
       candidates = ListExclude(ScopeVisible(), excludelist)
-      GenerateMenuChoices(menu, candidates)
-      player.givemenuobject = object
-      if (HasString(object, "givemenuprompt")) {
-        menucaption = object.givemenuprompt
+      if (ListCount(candidates) = 0) {
+        msg (Template("NoObjectsAvailable"))
       }
       else {
-        menucaption = Template("GiveToMenu")
-      }
-      show menu (menucaption, menu, true) {
-        if (result <> null) {
-          HandleGiveTo (player.givemenuobject, GetObject(result))
-          player.givemenuobject = null
+        GenerateMenuChoices(menu, candidates)
+        player.givemenuobject = object
+        if (HasString(object, "givemenuprompt")) {
+          menucaption = object.givemenuprompt
+        }
+        else {
+          menucaption = Template("GiveToMenu")
+        }
+        show menu (menucaption, menu, true) {
+          if (result <> null) {
+            HandleGiveTo (player.givemenuobject, GetObject(result))
+            player.givemenuobject = null
+          }
         }
       }
     }
