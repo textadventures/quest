@@ -43,6 +43,7 @@ function disableMainScrollbar() {
 
 function ui_init() {
     $("#gameTitle").hide();
+    $("#cmdSave").hide();
 }
 
 function updateListEval(listName, listData) {
