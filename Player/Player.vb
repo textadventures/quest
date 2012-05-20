@@ -94,7 +94,6 @@ Public Class Player
         SetLocationVisible(True)
         SetStatusText("")
         LocationUpdated("")
-        cmdFullScreen.Visible = False
         m_menu.ClearWindowMenu()
         m_menu.MenuEnabled("copy") = True
         m_game = game
@@ -182,12 +181,7 @@ Public Class Player
         End Get
         Set(value As Boolean)
             m_panesVisible = value
-            splitMain.Panel2Collapsed = Not m_panesVisible
-            If m_panesVisible Then
-                cmdPanes.Text = ">"
-            Else
-                cmdPanes.Text = "<"
-            End If
+            ' TO DO: Call JS function
         End Set
     End Property
 
@@ -238,9 +232,10 @@ Public Class Player
         EnterText()
     End Sub
 
-    Private Sub cmdPanes_Click(sender As System.Object, e As System.EventArgs) Handles cmdPanes.Click
-        PanesVisible = Not PanesVisible
-    End Sub
+    ' TO DO: Call JS function
+    'Private Sub cmdPanes_Click(sender As System.Object, e As System.EventArgs)
+    '    PanesVisible = Not PanesVisible
+    'End Sub
 
     Private Sub EnterText()
         If m_pausing Or m_waitingForSoundToFinish Then Return
@@ -641,20 +636,17 @@ Public Class Player
                         Select Case data
                             Case "on"
                                 PanesVisible = True
-                                cmdPanes.Visible = True
+                                ' TO DO: Call JS function
+                                'cmdPanes.Visible = True
                             Case "off"
                                 PanesVisible = False
-                                cmdPanes.Visible = True
+                                ' TO DO: Call JS function
+                                'cmdPanes.Visible = True
                             Case "disabled"
                                 PanesVisible = False
-                                cmdPanes.Visible = False
+                                ' TO DO: Call JS function
+                                'cmdPanes.Visible = False
                         End Select
-
-                        If cmdPanes.Visible Then
-                            lblBanner.Width = cmdPanes.Left - 1
-                        Else
-                            lblBanner.Width = ctlPlayerHtml.Width
-                        End If
                     End Sub)
     End Sub
 
@@ -775,7 +767,7 @@ Public Class Player
     End Sub
 
     Public Sub LocationUpdated(location As String) Implements IPlayer.LocationUpdated
-        BeginInvoke(Sub() lblBanner.Text = location)
+        BeginInvoke(Sub() ctlPlayerHtml.UpdateLocation(location))
     End Sub
 
     Public Sub UpdateGameName(name As String) Implements IPlayer.UpdateGameName
@@ -872,36 +864,23 @@ Public Class Player
     End Sub
 
     Public Sub DoHide(element As String) Implements IPlayer.Hide
-        BeginInvoke(Sub() GetInterfaceVisibilitySetter(element).Invoke(False))
+        BeginInvoke(Sub() ctlPlayerHtml.DoHide(element))
     End Sub
 
     Public Sub DoShow(element As String) Implements IPlayer.Show
-        BeginInvoke(Sub() GetInterfaceVisibilitySetter(element).Invoke(True))
+        BeginInvoke(Sub() ctlPlayerHtml.DoShow(element))
     End Sub
-
-    Private Function GetInterfaceVisibilitySetter(element As String) As Action(Of Boolean)
-        Select Case element
-            Case "Panes"
-                Return AddressOf SetPanesVisible
-            Case "Location"
-                Return AddressOf SetLocationVisible
-            Case "Command"
-                Return AddressOf SetCommandVisible
-            Case Else
-                Throw New ArgumentException("Invalid element")
-        End Select
-    End Function
 
     Private Sub SetPanesVisible(visible As Boolean)
         SetPanesVisible(If(visible, "on", "disabled"))
     End Sub
 
     Private Sub SetLocationVisible(visible As Boolean)
-        pnlLocation.Visible = visible
+        If visible Then DoShow("Location") Else DoHide("Location")
     End Sub
 
     Private Sub SetCommandVisible(visible As Boolean)
-        pnlCommand.Visible = visible
+        If visible Then DoShow("Command") Else DoHide("Command")
     End Sub
 
     Private Sub StopGame()
@@ -969,14 +948,16 @@ Public Class Player
         ClearBuffer()
     End Sub
 
-    Private Sub cmdFullScreen_Click(sender As System.Object, e As System.EventArgs) Handles cmdFullScreen.Click
-        RaiseEvent ExitFullScreen()
-        cmdFullScreen.Visible = False
-    End Sub
+    ' TO DO: Add FullScreen button to HTML UI
 
-    Public Sub ShowExitFullScreenButton()
-        cmdFullScreen.Visible = True
-    End Sub
+    'Private Sub cmdFullScreen_Click(sender As System.Object, e As System.EventArgs)
+    '    RaiseEvent ExitFullScreen()
+    '    cmdFullScreen.Visible = False
+    'End Sub
+
+    'Public Sub ShowExitFullScreenButton()
+    '    cmdFullScreen.Visible = True
+    'End Sub
 
     Public Sub DoPause(ms As Integer) Implements IPlayer.DoPause
         If m_walkthroughRunner IsNot Nothing Then

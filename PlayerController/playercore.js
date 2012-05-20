@@ -147,6 +147,16 @@ function uiHide(element) {
     }
 }
 
+function panesVisible(visible) {
+    // this is overridden by playerweb.js for WebPlayer
+    if (visible) {
+        $("#gamePanes").show();
+    }
+    else {
+        $("#gamePanes").hide();
+    }
+}
+
 var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwest", "south", "southeast", "up", "down", "in", "out"];
 
 function updateCompass(listData) {
@@ -214,6 +224,10 @@ function setCompassDirections(directions) {
     $("#cmdCompassD").attr("title", _compassDirs[9]);
     $("#cmdCompassIn").attr("title", _compassDirs[10]);
     $("#cmdCompassOut").attr("title", _compassDirs[11]);
+}
+
+function updateLocation(text) {
+    $("#location").html(text);
 }
 
 function addText(text) {

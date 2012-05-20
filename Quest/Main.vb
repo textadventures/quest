@@ -380,7 +380,8 @@ Public Class Main
 
     Private Sub GoFullScreen()
         FullScreen = True
-        ctlPlayer.ShowExitFullScreenButton()
+        ' TO DO: Call JS function
+        'ctlPlayer.ShowExitFullScreenButton()
     End Sub
 
     Private m_fullScreen As Boolean

@@ -235,4 +235,23 @@ Public Class PlayerHTML
             wbOutput.ScriptErrorsSuppressed = value
         End Set
     End Property
+
+    Public Sub UpdateLocation(location As String)
+        InvokeScript("updateLocation", location)
+    End Sub
+
+    Private Shared s_elementMap As New Dictionary(Of String, String) From
+    {
+        {"Panes", "#gamePanes"},
+        {"Location", "#location"},
+        {"Command", "#txtCommandDiv"}
+    }
+
+    Public Sub DoShow(element As String)
+        InvokeScript("uiShow", s_elementMap(element))
+    End Sub
+
+    Public Sub DoHide(element As String)
+        InvokeScript("uiHide", s_elementMap(element))
+    End Sub
 End Class
