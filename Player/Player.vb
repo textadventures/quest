@@ -850,7 +850,7 @@ Public Class Player
     End Sub
 
     Public Function GetURL(file As String) As String Implements IPlayer.GetURL
-        Return file
+        Return "file:///" + file.Replace("\", "/").Replace(" ", "%20")
     End Function
 
     Private Sub m_gameTimer_RequestNextTimerTick(nextTick As Integer) Handles m_gameTimer.RequestNextTimerTick

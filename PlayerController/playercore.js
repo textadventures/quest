@@ -491,6 +491,10 @@ function TurnOffHyperlinksUnderline() {
     css.style.textDecoration = "none";
 }
 
+function SetBackgroundImage(url) {
+    $("body").css("background-image", "url(" + url + ")");
+}
+
 function getCSSRule(ruleName, deleteFlag) {
     ruleName = ruleName.toLowerCase();
     if (document.styleSheets) {

@@ -87,4 +87,9 @@
     request (Log, text)
   </function>
 
+  <function name="SetBackgroundImage" parameters="filename">
+    request (RunScript, "SetBackgroundImage;" + GetFileURL(filename))
+    //game.backgroundimage = filename // TO DO: Save to attribute so appears on reload
+  </function>
+
 </library>
