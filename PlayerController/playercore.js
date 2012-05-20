@@ -156,14 +156,50 @@ function uiHide(element) {
 }
 
 function panesVisible(visible) {
-    // this is overridden by playerweb.js for WebPlayer
+    var screenWidth = $("#gameBorder").width();
+
     if (visible) {
         $("#gamePanes").show();
+        $("#gameContent").width(screenWidth - 250);
+        $("#txtCommand").width(screenWidth - 270);
+        $("#updating").css("margin-left", (screenWidth / 2 - 290) + "px");
+        $("#gamePanel").width(screenWidth - 250);
+        $("#gridPanel").width(screenWidth - 250);
     }
     else {
         $("#gamePanes").hide();
+        $("#gameContent").width(screenWidth - 40);
+        $("#txtCommand").width(screenWidth - 60);
+        $("#updating").css("margin-left", (screenWidth / 2 - 70) + "px");
+        $("#gamePanel").width(screenWidth - 40);
+        $("#gridPanel").width(screenWidth - 40);
     }
 }
+
+function scrollToEnd() {
+    $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height() }, 200);
+}
+
+function setBackground(col) {
+    $("#gameBorder").css("background-color", col);
+    $("#txtCommandDiv").css("background-color", col);
+    $("#gamePanel").css("background-color", col);
+    $("#gridPanel").css("background-color", col);
+}
+
+function setPanelHeight() {
+    if (_showGrid) return;
+    setTimeout(function () {
+        $("#gamePanelSpacer").height($("#gamePanel").height());
+        scrollToEnd();
+    }, 100);
+}
+
+function setPanelContents(html) {
+    $("#gamePanel").html(html);
+    setPanelHeight();
+}
+
 
 var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwest", "south", "southeast", "up", "down", "in", "out"];
 

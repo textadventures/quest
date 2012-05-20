@@ -36,28 +36,6 @@ function disableMainScrollbar() {
     $("body").css("overflow", "hidden");
 }
 
-function setPanelHeight() {
-    if (_showGrid) return;
-    setTimeout(function () {
-        var height = $("#gamePanel").height();
-        if ($("#gamePanel").html() == "") {
-            // workaround for IE weirdness where an empty div has height
-            height = 0;
-            $("#gamePanel").hide();
-        }
-        else {
-            $("#gamePanel").show();
-        }
-        $("#gamePanelSpacer").height(height);
-        scrollToEnd();
-    }, 100);
-}
-
-function setPanelContents(html) {
-    $("#gamePanel").html(html);
-    setPanelHeight();
-}
-
 function ui_init() {
     $("#gameTitle").hide();
 }
