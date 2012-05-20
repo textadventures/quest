@@ -17,6 +17,7 @@ function sendEndWait() {
         $("#fldUIMsg").val("endwait");
         $("#cmdSubmit").click();
     }, 100);
+    waitEnded();
 }
 
 function sessionTimeout() {
