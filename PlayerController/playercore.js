@@ -333,6 +333,28 @@ function updateVerbButtons(list, verbsArray, idprefix) {
     }
 }
 
+function beginWait() {
+    _waitMode = true;
+    $("#txtCommand").fadeTo(400, 0, function () {
+        $("#endWaitLink").fadeTo(400, 1);
+    });
+    markScrollPosition();
+}
+
+function endWait() {
+    if (!_waitMode) return;
+    sendEndWait();
+}
+
+function waitEnded() {
+    _waitMode = false;
+    $("#endWaitLink").fadeOut(400, function () {
+        if (!_waitMode) {
+            $("#txtCommand").fadeTo(400, 1);
+        }
+    });
+}
+
 function addText(text) {
     if (_currentDiv == null) {
         createNewDiv("left");

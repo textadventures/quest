@@ -486,10 +486,12 @@ Public Class Player
 
     Private Sub BeginWait()
         m_waiting = True
+        ctlPlayerHtml.BeginWait()
         Do
             Threading.Thread.Sleep(100)
             Application.DoEvents()
         Loop Until Not m_waiting Or Not m_initialised Or Not Me.IsHandleCreated
+        ctlPlayerHtml.WaitEnded()
         m_game.FinishWait()
         ClearBuffer()
     End Sub
@@ -729,6 +731,10 @@ Public Class Player
 
     Private Sub ctlPlayerHtml_CommandRequested(command As String) Handles ctlPlayerHtml.CommandRequested
         RunCommand(command)
+    End Sub
+
+    Private Sub ctlPlayerHtml_EndWait() Handles ctlPlayerHtml.EndWait
+        m_waiting = False
     End Sub
 
     Private Sub ctlPlayerHtml_Ready() Handles ctlPlayerHtml.Ready

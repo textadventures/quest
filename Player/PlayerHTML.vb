@@ -7,6 +7,7 @@ Public Class PlayerHTML
     Public Event CommandRequested(command As String)
     Public Event SendEvent(eventName As String, param As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
+    Public Event EndWait()
 
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
     Private m_deleteFile As String = Nothing
@@ -99,6 +100,8 @@ Public Class PlayerHTML
                 RunASLEvent(args)
             Case "GoURL"
                 GoURL(args)
+            Case "EndWait"
+                RaiseEvent EndWait()
         End Select
 
     End Sub
@@ -265,5 +268,13 @@ Public Class PlayerHTML
 
     Public Sub UpdateInventoryList(list As List(Of ListData))
         InvokeScript("updateListEval", "inventory", PlayerHelper.ListDataParameter(list).GetParameter())
+    End Sub
+
+    Public Sub BeginWait()
+        InvokeScript("beginWait")
+    End Sub
+
+    Public Sub WaitEnded()
+        InvokeScript("waitEnded")
     End Sub
 End Class

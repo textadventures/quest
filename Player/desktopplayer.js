@@ -16,6 +16,10 @@ function goUrl(href) {
     UIEvent("GoURL", href);
 }
 
+function sendEndWait() {
+    UIEvent("EndWait", "");
+}
+
 function UIEvent(cmd, parameter) {
     var elem = $("#_UIEvent");
     elem.html(cmd + " " + parameter);
