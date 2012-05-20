@@ -26,6 +26,8 @@ $(function () {
     $("#lstPlacesObjects").change(function () {
         updateVerbButtons($("#lstPlacesObjects"), placesObjectsVerbs, "cmdPlacesObjects");
     });
+
+    ui_init();
 });
 
 function showStatusVisible(visible) {

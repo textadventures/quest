@@ -59,6 +59,7 @@ function setPanelContents(html) {
 }
 
 function ui_init() {
+    $("#gameTitle").hide();
 }
 
 function updateListEval(listName, listData) {
