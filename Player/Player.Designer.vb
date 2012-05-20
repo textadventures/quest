@@ -24,9 +24,6 @@ Partial Class Player
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.splitMain = New System.Windows.Forms.SplitContainer()
-        Me.pnlCommand = New System.Windows.Forms.Panel()
-        Me.cmdGo = New System.Windows.Forms.Button()
-        Me.txtCommand = New System.Windows.Forms.TextBox()
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
         Me.tmrInitialise = New System.Windows.Forms.Timer(Me.components)
@@ -37,7 +34,6 @@ Partial Class Player
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.SuspendLayout()
-        Me.pnlCommand.SuspendLayout()
         Me.SuspendLayout()
         '
         'splitMain
@@ -50,42 +46,11 @@ Partial Class Player
         'splitMain.Panel1
         '
         Me.splitMain.Panel1.Controls.Add(Me.ctlPlayerHtml)
-        Me.splitMain.Panel1.Controls.Add(Me.pnlCommand)
         Me.splitMain.Panel2Collapsed = True
         Me.splitMain.Panel2MinSize = 175
         Me.splitMain.Size = New System.Drawing.Size(695, 482)
-        Me.splitMain.SplitterDistance = 510
+        Me.splitMain.SplitterDistance = 25
         Me.splitMain.TabIndex = 1
-        '
-        'pnlCommand
-        '
-        Me.pnlCommand.Controls.Add(Me.cmdGo)
-        Me.pnlCommand.Controls.Add(Me.txtCommand)
-        Me.pnlCommand.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.pnlCommand.Location = New System.Drawing.Point(0, 462)
-        Me.pnlCommand.Name = "pnlCommand"
-        Me.pnlCommand.Size = New System.Drawing.Size(695, 20)
-        Me.pnlCommand.TabIndex = 9
-        '
-        'cmdGo
-        '
-        Me.cmdGo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdGo.Location = New System.Drawing.Point(671, 0)
-        Me.cmdGo.Margin = New System.Windows.Forms.Padding(0)
-        Me.cmdGo.Name = "cmdGo"
-        Me.cmdGo.Size = New System.Drawing.Size(24, 21)
-        Me.cmdGo.TabIndex = 5
-        Me.cmdGo.UseVisualStyleBackColor = True
-        '
-        'txtCommand
-        '
-        Me.txtCommand.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtCommand.Location = New System.Drawing.Point(0, 0)
-        Me.txtCommand.Margin = New System.Windows.Forms.Padding(1)
-        Me.txtCommand.Name = "txtCommand"
-        Me.txtCommand.Size = New System.Drawing.Size(670, 20)
-        Me.txtCommand.TabIndex = 4
         '
         'tmrTimer
         '
@@ -109,7 +74,7 @@ Partial Class Player
         Me.ctlPlayerHtml.Margin = New System.Windows.Forms.Padding(0)
         Me.ctlPlayerHtml.Name = "ctlPlayerHtml"
         Me.ctlPlayerHtml.ScriptErrorsSuppressed = False
-        Me.ctlPlayerHtml.Size = New System.Drawing.Size(695, 462)
+        Me.ctlPlayerHtml.Size = New System.Drawing.Size(695, 482)
         Me.ctlPlayerHtml.TabIndex = 7
         '
         'Player
@@ -122,8 +87,6 @@ Partial Class Player
         Me.splitMain.Panel1.ResumeLayout(False)
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitMain.ResumeLayout(False)
-        Me.pnlCommand.ResumeLayout(False)
-        Me.pnlCommand.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -134,9 +97,6 @@ Partial Class Player
     Friend WithEvents ctlOpenFile As System.Windows.Forms.OpenFileDialog
     Friend WithEvents tmrTick As System.Windows.Forms.Timer
     Friend WithEvents ctlPlayerHtml As AxeSoftware.Quest.PlayerHTML
-    Friend WithEvents pnlCommand As System.Windows.Forms.Panel
-    Friend WithEvents cmdGo As System.Windows.Forms.Button
-    Friend WithEvents txtCommand As System.Windows.Forms.TextBox
     Friend WithEvents tmrPause As System.Windows.Forms.Timer
 
 End Class

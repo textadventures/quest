@@ -12,8 +12,6 @@ Public Class Player
     Private m_gameDebug As IASLDebug
     Private m_initialised As Boolean
     Private m_gameReady As Boolean
-    Private m_history As New List(Of String)
-    Private m_historyPoint As Integer
     Private m_gameName As String
     Private WithEvents m_debugger As Debugger
     Private m_loaded As Boolean = False
@@ -98,9 +96,7 @@ Public Class Player
         m_gameDebug = TryCast(game, IASLDebug)
         m_gameTimer = TryCast(m_game, IASLTimer)
         m_gameReady = True
-        txtCommand.Text = ""
         ResetInterfaceStrings()
-        SetEnabledState(True)
         m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlHelper.UseGameColours = UseGameColours
         ctlPlayerHtml.Setup()
@@ -141,7 +137,7 @@ Public Class Player
         End If
         m_game.Begin()
         ClearBuffer()
-        txtCommand.Focus()
+        ctlPlayerHtml.Focus()
         ctlPlayerHtml.DisableNavigation()
         If m_postLaunchAction IsNot Nothing Then
             m_postLaunchAction.Invoke()
@@ -180,66 +176,10 @@ Public Class Player
         End Set
     End Property
 
-    Private Sub txtCommand_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles txtCommand.KeyDown
-        Select Case e.KeyCode
-            Case Keys.Up
-                SetHistoryPoint(-1)
-                e.Handled = True
-            Case Keys.Down
-                SetHistoryPoint(1)
-                e.Handled = True
-            Case Keys.Escape
-                txtCommand.Text = ""
-                SetHistoryPoint(0)
-                e.SuppressKeyPress = True
-                e.Handled = True
-            Case Keys.Enter
-                e.SuppressKeyPress = True
-                e.Handled = True
-                ' Use a timer to trigger the call to EnterText, otherwise if we handle an event
-                ' which shows the Menu form, we get a "ding" as this sub hasn't returned yet.
-                tmrTimer.Tag = Nothing
-                tmrTimer.Enabled = True
-        End Select
-    End Sub
-
-    Private Sub SetHistoryPoint(offset As Integer)
-        If offset = 0 Then
-            m_historyPoint = m_history.Count
-        Else
-            If m_history.Count > 0 Then
-                m_historyPoint = m_historyPoint + offset
-
-                If m_historyPoint < 0 Then m_historyPoint = m_history.Count - 1
-                If m_historyPoint >= m_history.Count Then m_historyPoint = 0
-
-                txtCommand.Text = m_history.Item(m_historyPoint)
-                txtCommand.SelectionStart = txtCommand.Text.Length
-            End If
-        End If
-    End Sub
-
-    Private Sub cmdGo_Click(sender As System.Object, e As System.EventArgs) Handles cmdGo.Click
-        If m_waiting Then
-            m_waiting = False
-            Exit Sub
-        End If
-        EnterText()
-    End Sub
-
     ' TO DO: Call JS function
     'Private Sub cmdPanes_Click(sender As System.Object, e As System.EventArgs)
     '    PanesVisible = Not PanesVisible
     'End Sub
-
-    Private Sub EnterText()
-        If m_pausing Or m_waitingForSoundToFinish Then Return
-        If txtCommand.Text.Length > 0 Then
-            m_history.Add(txtCommand.Text)
-            SetHistoryPoint(0)
-            RunCommand(txtCommand.Text)
-        End If
-    End Sub
 
     Private Sub RunCommand(command As String)
 
@@ -256,8 +196,6 @@ Public Class Player
             m_recordedWalkthrough.Add(command)
         End If
 
-        txtCommand.Text = ""
-
         Try
             If m_gameTimer IsNot Nothing Then
                 m_gameTimer.SendCommand(command, GetTickCountAndStopTimer())
@@ -268,8 +206,6 @@ Public Class Player
         Catch ex As Exception
             WriteLine(String.Format("Error running command '{0}':<br>{1}", command, ex.Message))
         End Try
-
-        txtCommand.Focus()
 
     End Sub
 
@@ -282,7 +218,6 @@ Public Class Player
         If Not m_initialised Then Return
         m_initialised = False
         tmrTick.Enabled = False
-        SetEnabledState(False)
         StopSound()
         If Me.IsHandleCreated Then
             BeginInvoke(Sub() ctlPlayerHtml.Finished())
@@ -312,11 +247,6 @@ Public Class Player
         ElseIf Not m_game.Filename Is Nothing Then
             RaiseEvent AddToRecent(m_game.Filename, m_gameName)
         End If
-    End Sub
-
-    Private Sub tmrTimer_Tick(sender As Object, e As System.EventArgs) Handles tmrTimer.Tick
-        tmrTimer.Enabled = False
-        EnterText()
     End Sub
 
     Private Sub SetGameName(name As String)
@@ -488,11 +418,6 @@ Public Class Player
 
     Private Sub SelectAll()
         ctlPlayerHtml.SelectAll()
-    End Sub
-
-    Private Sub SetEnabledState(enabled As Boolean)
-        txtCommand.Enabled = enabled
-        cmdGo.Enabled = enabled
     End Sub
 
     Public Sub RestoreSplitterPositions()
@@ -873,7 +798,6 @@ Public Class Player
             EscPressed()
         End If
         m_waiting = False
-        txtCommand.Focus()
         RaiseEvent ShortcutKeyPressed(keys)
     End Sub
 
