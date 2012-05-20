@@ -298,6 +298,7 @@ Public Class PlayerHTML
     Public Sub Reset()
         m_navigationAllowed = True
         m_resetting = True
+        RemoveHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
         wbOutput.Navigate("about:blank")
     End Sub
 End Class

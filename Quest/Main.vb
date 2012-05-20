@@ -3,7 +3,6 @@
 Public Class Main
 
     Private m_currentFile As String
-    Private m_loaded As Boolean = False
     Private m_playingEditorGame As Boolean = False
     Private m_cmdLineLaunch As String = Nothing
     Private Delegate Sub MenuHandler()
@@ -63,6 +62,7 @@ Public Class Main
     End Sub
 
     Private Sub ctlPlayer_Quit() Handles ctlPlayer.Quit
+        If Not ctlPlayer.Visible Then Return
         FullScreen = False
         If m_playingEditorGame Then
             ctlPlayer.Visible = False

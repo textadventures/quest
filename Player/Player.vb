@@ -1044,6 +1044,7 @@ Public Class Player
     End Sub
 
     Public Sub ResetAfterGameFinished()
+        m_initialised = False
         ctlPlayerHtml.Reset()
     End Sub
 End Class
