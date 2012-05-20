@@ -56,8 +56,6 @@ Public Class Player
         PanesVisible = True
         Reset()
 
-        lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
-
         m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitMain, "Quest", "MainSplitter"))
         m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitPane, "Quest", "PaneSplitter"))
 
@@ -101,7 +99,6 @@ Public Class Player
         m_gameTimer = TryCast(m_game, IASLTimer)
         m_gameReady = True
         txtCommand.Text = ""
-        ctlCompass.ResetCompassDirections()
         ResetInterfaceStrings()
         SetEnabledState(True)
         m_htmlHelper = New PlayerHelper(m_game, Me)
@@ -278,10 +275,6 @@ Public Class Player
 
     End Sub
 
-    Private Sub ctlCompass_RunCommand(command As String) Handles ctlCompass.RunCommand
-        RunCommand(command)
-    End Sub
-
     Private Sub m_game_Finished() Handles m_game.Finished
         If Not Me.IsHandleCreated Then Return
         BeginInvoke(Sub() GameFinished())
@@ -349,7 +342,7 @@ Public Class Player
             Case AxeSoftware.Quest.ListType.InventoryList
                 lstInventory.Items = items
             Case AxeSoftware.Quest.ListType.ExitsList
-                ctlCompass.SetAvailableExits(items)
+                ctlPlayerHtml.UpdateCompass(items)
         End Select
     End Sub
 
@@ -509,7 +502,6 @@ Public Class Player
 
     Private Sub SetEnabledState(enabled As Boolean)
         txtCommand.Enabled = enabled
-        ctlCompass.Enabled = enabled
         cmdGo.Enabled = enabled
         lstInventory.Enabled = enabled
         lstPlacesObjects.Enabled = enabled
@@ -897,8 +889,9 @@ Public Class Player
     End Sub
 
     Public Sub SetCompassDirections(dirs As IEnumerable(Of String)) Implements IPlayer.SetCompassDirections
-        ctlCompass.CompassDirections = New List(Of String)(dirs)
-        lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
+        ' TO DO: Call JS function to set compass direction names
+        'ctlCompass.CompassDirections = New List(Of String)(dirs)
+        'lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
     End Sub
 
     Private Sub ResetInterfaceStrings()
@@ -919,11 +912,14 @@ Public Class Player
                             Case "PlacesObjectsLabel"
                                 lstPlacesObjects.Title = text
                             Case "CompassLabel"
-                                lblCompass.Text = text
+                                ' TO DO: Call JS function
+                                'lblCompass.Text = text
                             Case "InButtonLabel"
-                                ctlCompass.InLabel = text
+                                ' TO DO: Call JS function
+                                'ctlCompass.InLabel = text
                             Case "OutButtonLabel"
-                                ctlCompass.OutLabel = text
+                                ' TO DO: Call JS function
+                                'ctlCompass.OutLabel = text
                             Case "EmptyListLabel"
                                 lstInventory.EmptyListLabel = text
                                 lstPlacesObjects.EmptyListLabel = text

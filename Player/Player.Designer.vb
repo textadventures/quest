@@ -24,21 +24,19 @@ Partial Class Player
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.splitMain = New System.Windows.Forms.SplitContainer()
-        Me.ctlPlayerHtml = New AxeSoftware.Quest.PlayerHTML()
         Me.pnlCommand = New System.Windows.Forms.Panel()
         Me.cmdGo = New System.Windows.Forms.Button()
         Me.txtCommand = New System.Windows.Forms.TextBox()
-        Me.lblCompass = New System.Windows.Forms.Label()
-        Me.ctlCompass = New AxeSoftware.Quest.Compass()
         Me.splitPane = New System.Windows.Forms.SplitContainer()
-        Me.lstInventory = New AxeSoftware.Quest.ElementList()
-        Me.lstPlacesObjects = New AxeSoftware.Quest.ElementList()
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
         Me.tmrInitialise = New System.Windows.Forms.Timer(Me.components)
         Me.ctlOpenFile = New System.Windows.Forms.OpenFileDialog()
         Me.tmrTick = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPause = New System.Windows.Forms.Timer(Me.components)
+        Me.ctlPlayerHtml = New AxeSoftware.Quest.PlayerHTML()
+        Me.lstInventory = New AxeSoftware.Quest.ElementList()
+        Me.lstPlacesObjects = New AxeSoftware.Quest.ElementList()
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.Panel2.SuspendLayout()
@@ -64,23 +62,11 @@ Partial Class Player
         '
         'splitMain.Panel2
         '
-        Me.splitMain.Panel2.Controls.Add(Me.lblCompass)
-        Me.splitMain.Panel2.Controls.Add(Me.ctlCompass)
         Me.splitMain.Panel2.Controls.Add(Me.splitPane)
         Me.splitMain.Panel2MinSize = 175
         Me.splitMain.Size = New System.Drawing.Size(695, 482)
         Me.splitMain.SplitterDistance = 510
         Me.splitMain.TabIndex = 1
-        '
-        'ctlPlayerHtml
-        '
-        Me.ctlPlayerHtml.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ctlPlayerHtml.Location = New System.Drawing.Point(0, 0)
-        Me.ctlPlayerHtml.Margin = New System.Windows.Forms.Padding(0)
-        Me.ctlPlayerHtml.Name = "ctlPlayerHtml"
-        Me.ctlPlayerHtml.ScriptErrorsSuppressed = False
-        Me.ctlPlayerHtml.Size = New System.Drawing.Size(510, 462)
-        Me.ctlPlayerHtml.TabIndex = 7
         '
         'pnlCommand
         '
@@ -112,31 +98,6 @@ Partial Class Player
         Me.txtCommand.Size = New System.Drawing.Size(485, 20)
         Me.txtCommand.TabIndex = 4
         '
-        'lblCompass
-        '
-        Me.lblCompass.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblCompass.BackColor = System.Drawing.SystemColors.InactiveCaption
-        Me.lblCompass.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCompass.ForeColor = System.Drawing.SystemColors.InactiveCaptionText
-        Me.lblCompass.Location = New System.Drawing.Point(0, 364)
-        Me.lblCompass.Margin = New System.Windows.Forms.Padding(0, 0, 0, 4)
-        Me.lblCompass.Name = "lblCompass"
-        Me.lblCompass.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
-        Me.lblCompass.Size = New System.Drawing.Size(181, 20)
-        Me.lblCompass.TabIndex = 11
-        Me.lblCompass.Text = "Compass"
-        '
-        'ctlCompass
-        '
-        Me.ctlCompass.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ctlCompass.Location = New System.Drawing.Point(0, 388)
-        Me.ctlCompass.Margin = New System.Windows.Forms.Padding(0)
-        Me.ctlCompass.Name = "ctlCompass"
-        Me.ctlCompass.Size = New System.Drawing.Size(181, 94)
-        Me.ctlCompass.TabIndex = 10
-        '
         'splitPane
         '
         Me.splitPane.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -156,6 +117,31 @@ Partial Class Player
         Me.splitPane.Size = New System.Drawing.Size(181, 360)
         Me.splitPane.SplitterDistance = 128
         Me.splitPane.TabIndex = 0
+        '
+        'tmrTimer
+        '
+        Me.tmrTimer.Interval = 50
+        '
+        'tmrInitialise
+        '
+        Me.tmrInitialise.Interval = 50
+        '
+        'tmrTick
+        '
+        Me.tmrTick.Interval = 1000
+        '
+        'tmrPause
+        '
+        '
+        'ctlPlayerHtml
+        '
+        Me.ctlPlayerHtml.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ctlPlayerHtml.Location = New System.Drawing.Point(0, 0)
+        Me.ctlPlayerHtml.Margin = New System.Windows.Forms.Padding(0)
+        Me.ctlPlayerHtml.Name = "ctlPlayerHtml"
+        Me.ctlPlayerHtml.ScriptErrorsSuppressed = False
+        Me.ctlPlayerHtml.Size = New System.Drawing.Size(510, 462)
+        Me.ctlPlayerHtml.TabIndex = 7
         '
         'lstInventory
         '
@@ -179,21 +165,6 @@ Partial Class Player
         Me.lstPlacesObjects.TabIndex = 0
         Me.lstPlacesObjects.Title = "Places and Objects"
         '
-        'tmrTimer
-        '
-        Me.tmrTimer.Interval = 50
-        '
-        'tmrInitialise
-        '
-        Me.tmrInitialise.Interval = 50
-        '
-        'tmrTick
-        '
-        Me.tmrTick.Interval = 1000
-        '
-        'tmrPause
-        '
-        '
         'Player
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -216,8 +187,6 @@ Partial Class Player
     End Sub
     Friend WithEvents splitMain As System.Windows.Forms.SplitContainer
     Friend WithEvents splitPane As System.Windows.Forms.SplitContainer
-    Friend WithEvents lblCompass As System.Windows.Forms.Label
-    Friend WithEvents ctlCompass As Quest.Compass
     Friend WithEvents lstInventory As Quest.ElementList
     Friend WithEvents lstPlacesObjects As Quest.ElementList
     Friend WithEvents tmrTimer As System.Windows.Forms.Timer

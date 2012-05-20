@@ -254,4 +254,8 @@ Public Class PlayerHTML
     Public Sub DoHide(element As String)
         InvokeScript("uiHide", s_elementMap(element))
     End Sub
+
+    Public Sub UpdateCompass(exits As List(Of ListData))
+        InvokeScript("updateCompass", String.Join("/", From e In exits Select e.Text))
+    End Sub
 End Class
