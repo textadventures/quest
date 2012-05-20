@@ -677,8 +677,7 @@ Public Class Player
     End Sub
 
     Public Sub SetStatusText(text As String) Implements IPlayer.SetStatusText
-        ' TO DO: Call JS function
-        'BeginInvoke(Sub() lstInventory.Status = text)
+        BeginInvoke(Sub() ctlPlayerHtml.UpdateStatus(text))
     End Sub
 
     Public Sub DoQuit() Implements IPlayer.Quit

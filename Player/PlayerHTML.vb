@@ -277,4 +277,8 @@ Public Class PlayerHTML
     Public Sub WaitEnded()
         InvokeScript("waitEnded")
     End Sub
+
+    Public Sub UpdateStatus(status As String)
+        InvokeScript("updateStatus", status)
+    End Sub
 End Class
