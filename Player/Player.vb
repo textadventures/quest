@@ -88,6 +88,8 @@ Public Class Player
         LocationUpdated("")
         m_menu.ClearWindowMenu()
         m_menu.MenuEnabled("copy") = True
+        m_gameBackground = Nothing
+        m_gameForeground = Nothing
         m_game = game
         m_gameDebug = TryCast(game, IASLDebug)
         m_gameTimer = TryCast(m_game, IASLTimer)
