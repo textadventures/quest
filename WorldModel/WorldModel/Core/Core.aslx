@@ -32,6 +32,9 @@
     request (Background, game.defaultbackground)
     request (Foreground, game.defaultforeground)
     request (LinkForeground, game.defaultlinkforeground)
+    if (LengthOf(game.backgroundimage) > 0) {
+      SetBackgroundImage (game.backgroundimage)
+    }
     request (SetCompassDirections, Join(game.compassdirections, ";"))
     request (SetInterfaceString, "InventoryLabel=[InventoryLabel]")
     request (SetInterfaceString, "PlacesObjectsLabel=[PlacesObjectsLabel]")

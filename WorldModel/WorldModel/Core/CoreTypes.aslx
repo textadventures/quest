@@ -8,6 +8,7 @@
     <defaultbackground>White</defaultbackground>
     <defaultforeground>Black</defaultforeground>
     <defaultlinkforeground>Blue</defaultlinkforeground>
+    <backgroundimage type="string"></backgroundimage>
     <menufont>Arial</menufont>
     <menufontsize type="int">9</menufontsize>
     <menubackground>White</menubackground>

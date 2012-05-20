@@ -260,11 +260,20 @@
       </control>
       <control>
         <controltype>dropdown</controltype>
-        <caption>Background</caption>
+        <caption>Background colour</caption>
         <attribute>defaultbackground</attribute>
         <validvalues type="list">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
+
+      <control>
+        <controltype>file</controltype>
+        <caption>Background image</caption>
+        <attribute>backgroundimage</attribute>
+        <source>[EditorImageFormats]</source>
+        <filefiltername>Picture Files</filefiltername>
+      </control>
+
       <control>
         <controltype>dropdown</controltype>
         <caption>Foreground</caption>
