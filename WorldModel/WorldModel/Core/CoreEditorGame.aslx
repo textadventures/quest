@@ -275,6 +275,19 @@
       </control>
 
       <control>
+        <controltype>checkbox</controltype>
+        <attribute>setbackgroundopacity</attribute>
+        <caption>Set background opacity</caption>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <attribute>backgroundopacity</attribute>
+        <caption>Opacity</caption>
+        <onlydisplayif>game.setbackgroundopacity</onlydisplayif>
+      </control>
+
+      <control>
         <controltype>dropdown</controltype>
         <caption>Foreground</caption>
         <attribute>defaultforeground</attribute>

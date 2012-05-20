@@ -29,6 +29,9 @@
   <function name="InitInterface">
     request (FontName, game.defaultfont)
     request (FontSize, ToString(game.defaultfontsize))
+    if (game.setbackgroundopacity) {
+      SetBackgroundOpacity (game.backgroundopacity)
+    }
     request (Background, game.defaultbackground)
     request (Foreground, game.defaultforeground)
     request (LinkForeground, game.defaultlinkforeground)

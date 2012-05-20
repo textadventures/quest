@@ -182,12 +182,17 @@ function scrollToEnd() {
     $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height() }, 200);
 }
 
+var _backgroundOpacity = 1;
+
+function setBackgroundOpacity(opacity) {
+    _backgroundOpacity = opacity;
+}
+
 function setBackground(col) {
     colNameToHex = colourNameToHex(col);
     if (colNameToHex) col = colNameToHex;
     rgbCol = hexToRgb(col);
-    var opacity = 0.5;
-    var cssBackground = "rgba(" + rgbCol.r + "," + rgbCol.g + "," + rgbCol.b + "," + opacity + ")";
+    var cssBackground = "rgba(" + rgbCol.r + "," + rgbCol.g + "," + rgbCol.b + "," + _backgroundOpacity + ")";
     $("#gameBorder").css("background-color", cssBackground);
 
     $("#txtCommandDiv").css("background-color", col);
