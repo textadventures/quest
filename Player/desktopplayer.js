@@ -2,6 +2,7 @@
 
 function scrollToEnd() {
     $('html, body').animate({ scrollTop: $(document).height() }, 0);
+    $("#txtCommand").focus();
 }
 
 function sendCommand(text) {

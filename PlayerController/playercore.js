@@ -28,6 +28,8 @@ $(function () {
     });
 
     ui_init();
+
+    $("#txtCommand").focus();
 });
 
 function showStatusVisible(visible) {
