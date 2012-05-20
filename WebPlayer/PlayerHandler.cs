@@ -5,6 +5,7 @@ using System.Web;
 using AxeSoftware.Quest;
 using System.Xml;
 using System.Configuration;
+using AxeSoftware.Utility.JSInterop;
 
 namespace WebPlayer
 {

@@ -60,3 +60,7 @@ function setPanelContents(html) {
 
 function ui_init() {
 }
+
+function updateListEval(listName, listData) {
+    updateList(listName, eval("(" + listData + ")"));
+}

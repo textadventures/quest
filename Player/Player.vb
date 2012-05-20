@@ -57,7 +57,7 @@ Public Class Player
         Reset()
 
         m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitMain, "Quest", "MainSplitter"))
-        m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitPane, "Quest", "PaneSplitter"))
+        'm_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitPane, "Quest", "PaneSplitter"))
 
     End Sub
 
@@ -164,8 +164,6 @@ Public Class Player
         ShowLog(False)
         m_debugger = Nothing
         m_log = Nothing
-        lstInventory.Clear()
-        lstPlacesObjects.Clear()
         If Not m_menu Is Nothing Then
             m_menu.MenuEnabled("walkthrough") = False
             m_menu.MenuEnabled("debugger") = False
@@ -338,20 +336,12 @@ Public Class Player
 
         Select Case listType
             Case AxeSoftware.Quest.ListType.ObjectsList
-                lstPlacesObjects.Items = items
+                ctlPlayerHtml.UpdatePlacesObjectsList(items)
             Case AxeSoftware.Quest.ListType.InventoryList
-                lstInventory.Items = items
+                ctlPlayerHtml.UpdateInventoryList(items)
             Case AxeSoftware.Quest.ListType.ExitsList
                 ctlPlayerHtml.UpdateCompass(items)
         End Select
-    End Sub
-
-    Private Sub lstPlacesObjects_SendCommand(command As String) Handles lstPlacesObjects.SendCommand
-        RunCommand(command)
-    End Sub
-
-    Private Sub lstInventory_SendCommand(command As String) Handles lstInventory.SendCommand
-        RunCommand(command)
     End Sub
 
     Public ReadOnly Property IsGameInProgress() As Boolean
@@ -503,8 +493,6 @@ Public Class Player
     Private Sub SetEnabledState(enabled As Boolean)
         txtCommand.Enabled = enabled
         cmdGo.Enabled = enabled
-        lstInventory.Enabled = enabled
-        lstPlacesObjects.Enabled = enabled
     End Sub
 
     Public Sub RestoreSplitterPositions()
@@ -772,7 +760,8 @@ Public Class Player
     End Sub
 
     Public Sub SetStatusText(text As String) Implements IPlayer.SetStatusText
-        BeginInvoke(Sub() lstInventory.Status = text)
+        ' TO DO: Call JS function
+        'BeginInvoke(Sub() lstInventory.Status = text)
     End Sub
 
     Public Sub DoQuit() Implements IPlayer.Quit
@@ -908,9 +897,11 @@ Public Class Player
         BeginInvoke(Sub()
                         Select Case name
                             Case "InventoryLabel"
-                                lstInventory.Title = text
+                                ' TO DO: Call JS function
+                                'lstInventory.Title = text
                             Case "PlacesObjectsLabel"
-                                lstPlacesObjects.Title = text
+                                ' TO DO: Call JS function
+                                'lstPlacesObjects.Title = text
                             Case "CompassLabel"
                                 ' TO DO: Call JS function
                                 'lblCompass.Text = text
@@ -921,11 +912,13 @@ Public Class Player
                                 ' TO DO: Call JS function
                                 'ctlCompass.OutLabel = text
                             Case "EmptyListLabel"
-                                lstInventory.EmptyListLabel = text
-                                lstPlacesObjects.EmptyListLabel = text
+                                ' TO DO: Call JS function - or is this label is obsolete?
+                                'lstInventory.EmptyListLabel = text
+                                'lstPlacesObjects.EmptyListLabel = text
                             Case "NothingSelectedLabel"
-                                lstInventory.NothingSelectedLabel = text
-                                lstPlacesObjects.NothingSelectedLabel = text
+                                ' TO DO: Call JS function - or is this label is obsolete?
+                                'lstInventory.NothingSelectedLabel = text
+                                'lstPlacesObjects.NothingSelectedLabel = text
                         End Select
                     End Sub)
     End Sub

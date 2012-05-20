@@ -27,7 +27,6 @@ Partial Class Player
         Me.pnlCommand = New System.Windows.Forms.Panel()
         Me.cmdGo = New System.Windows.Forms.Button()
         Me.txtCommand = New System.Windows.Forms.TextBox()
-        Me.splitPane = New System.Windows.Forms.SplitContainer()
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
         Me.tmrInitialise = New System.Windows.Forms.Timer(Me.components)
@@ -35,17 +34,10 @@ Partial Class Player
         Me.tmrTick = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPause = New System.Windows.Forms.Timer(Me.components)
         Me.ctlPlayerHtml = New AxeSoftware.Quest.PlayerHTML()
-        Me.lstInventory = New AxeSoftware.Quest.ElementList()
-        Me.lstPlacesObjects = New AxeSoftware.Quest.ElementList()
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
-        Me.splitMain.Panel2.SuspendLayout()
         Me.splitMain.SuspendLayout()
         Me.pnlCommand.SuspendLayout()
-        CType(Me.splitPane, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.splitPane.Panel1.SuspendLayout()
-        Me.splitPane.Panel2.SuspendLayout()
-        Me.splitPane.SuspendLayout()
         Me.SuspendLayout()
         '
         'splitMain
@@ -59,10 +51,7 @@ Partial Class Player
         '
         Me.splitMain.Panel1.Controls.Add(Me.ctlPlayerHtml)
         Me.splitMain.Panel1.Controls.Add(Me.pnlCommand)
-        '
-        'splitMain.Panel2
-        '
-        Me.splitMain.Panel2.Controls.Add(Me.splitPane)
+        Me.splitMain.Panel2Collapsed = True
         Me.splitMain.Panel2MinSize = 175
         Me.splitMain.Size = New System.Drawing.Size(695, 482)
         Me.splitMain.SplitterDistance = 510
@@ -75,13 +64,13 @@ Partial Class Player
         Me.pnlCommand.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.pnlCommand.Location = New System.Drawing.Point(0, 462)
         Me.pnlCommand.Name = "pnlCommand"
-        Me.pnlCommand.Size = New System.Drawing.Size(510, 20)
+        Me.pnlCommand.Size = New System.Drawing.Size(695, 20)
         Me.pnlCommand.TabIndex = 9
         '
         'cmdGo
         '
         Me.cmdGo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdGo.Location = New System.Drawing.Point(486, 0)
+        Me.cmdGo.Location = New System.Drawing.Point(671, 0)
         Me.cmdGo.Margin = New System.Windows.Forms.Padding(0)
         Me.cmdGo.Name = "cmdGo"
         Me.cmdGo.Size = New System.Drawing.Size(24, 21)
@@ -95,28 +84,8 @@ Partial Class Player
         Me.txtCommand.Location = New System.Drawing.Point(0, 0)
         Me.txtCommand.Margin = New System.Windows.Forms.Padding(1)
         Me.txtCommand.Name = "txtCommand"
-        Me.txtCommand.Size = New System.Drawing.Size(485, 20)
+        Me.txtCommand.Size = New System.Drawing.Size(670, 20)
         Me.txtCommand.TabIndex = 4
-        '
-        'splitPane
-        '
-        Me.splitPane.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.splitPane.Location = New System.Drawing.Point(0, 0)
-        Me.splitPane.Name = "splitPane"
-        Me.splitPane.Orientation = System.Windows.Forms.Orientation.Horizontal
-        '
-        'splitPane.Panel1
-        '
-        Me.splitPane.Panel1.Controls.Add(Me.lstInventory)
-        '
-        'splitPane.Panel2
-        '
-        Me.splitPane.Panel2.Controls.Add(Me.lstPlacesObjects)
-        Me.splitPane.Size = New System.Drawing.Size(181, 360)
-        Me.splitPane.SplitterDistance = 128
-        Me.splitPane.TabIndex = 0
         '
         'tmrTimer
         '
@@ -140,30 +109,8 @@ Partial Class Player
         Me.ctlPlayerHtml.Margin = New System.Windows.Forms.Padding(0)
         Me.ctlPlayerHtml.Name = "ctlPlayerHtml"
         Me.ctlPlayerHtml.ScriptErrorsSuppressed = False
-        Me.ctlPlayerHtml.Size = New System.Drawing.Size(510, 462)
+        Me.ctlPlayerHtml.Size = New System.Drawing.Size(695, 462)
         Me.ctlPlayerHtml.TabIndex = 7
-        '
-        'lstInventory
-        '
-        Me.lstInventory.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lstInventory.EmptyListLabel = "(empty)"
-        Me.lstInventory.Location = New System.Drawing.Point(0, 0)
-        Me.lstInventory.Name = "lstInventory"
-        Me.lstInventory.NothingSelectedLabel = "(nothing selected)"
-        Me.lstInventory.Size = New System.Drawing.Size(181, 128)
-        Me.lstInventory.TabIndex = 0
-        Me.lstInventory.Title = "Inventory"
-        '
-        'lstPlacesObjects
-        '
-        Me.lstPlacesObjects.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lstPlacesObjects.EmptyListLabel = "(empty)"
-        Me.lstPlacesObjects.Location = New System.Drawing.Point(0, 0)
-        Me.lstPlacesObjects.Name = "lstPlacesObjects"
-        Me.lstPlacesObjects.NothingSelectedLabel = "(nothing selected)"
-        Me.lstPlacesObjects.Size = New System.Drawing.Size(181, 228)
-        Me.lstPlacesObjects.TabIndex = 0
-        Me.lstPlacesObjects.Title = "Places and Objects"
         '
         'Player
         '
@@ -173,22 +120,14 @@ Partial Class Player
         Me.Name = "Player"
         Me.Size = New System.Drawing.Size(695, 482)
         Me.splitMain.Panel1.ResumeLayout(False)
-        Me.splitMain.Panel2.ResumeLayout(False)
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitMain.ResumeLayout(False)
         Me.pnlCommand.ResumeLayout(False)
         Me.pnlCommand.PerformLayout()
-        Me.splitPane.Panel1.ResumeLayout(False)
-        Me.splitPane.Panel2.ResumeLayout(False)
-        CType(Me.splitPane, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.splitPane.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents splitMain As System.Windows.Forms.SplitContainer
-    Friend WithEvents splitPane As System.Windows.Forms.SplitContainer
-    Friend WithEvents lstInventory As Quest.ElementList
-    Friend WithEvents lstPlacesObjects As Quest.ElementList
     Friend WithEvents tmrTimer As System.Windows.Forms.Timer
     Friend WithEvents ctlSaveFile As System.Windows.Forms.SaveFileDialog
     Friend WithEvents tmrInitialise As System.Windows.Forms.Timer

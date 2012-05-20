@@ -5,6 +5,7 @@ using System.Text;
 using AxeSoftware.Quest;
 using System.Xml;
 using System.IO;
+using AxeSoftware.Utility.JSInterop;
 
 namespace AxeSoftware.Quest
 {
@@ -400,6 +401,26 @@ namespace AxeSoftware.Quest
                     return reader.ReadToEnd();
                 }
             }
+        }
+
+        public static IJavaScriptParameter ListDataParameter(List<ListData> list)
+        {
+            var convertedList = new Dictionary<string, string>();
+            int count = 1;
+            foreach (ListData data in list)
+            {
+                convertedList.Add(
+                    string.Format("k{0}", count),
+                    string.Format("{0}:{1}", data.Text, VerbString(data.Verbs))
+                );
+                count++;
+            }
+            return new JSONParameter(convertedList);
+        }
+
+        public static string VerbString(IEnumerable<string> verbs)
+        {
+            return string.Join("/", verbs);
         }
     }
 }

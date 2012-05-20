@@ -58,6 +58,10 @@
       <Project>{42EEDC11-C395-4CE8-80E3-057AF4100DDE}</Project>
       <Name>LegacyASL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{0E926905-F750-49F9-AEBD-CE14B2B231D8}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WorldModel\WorldModel\WorldModel.csproj">
       <Project>{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}</Project>
       <Name>WorldModel</Name>

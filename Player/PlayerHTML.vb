@@ -258,4 +258,12 @@ Public Class PlayerHTML
     Public Sub UpdateCompass(exits As List(Of ListData))
         InvokeScript("updateCompass", String.Join("/", From e In exits Select e.Text))
     End Sub
+
+    Public Sub UpdatePlacesObjectsList(list As List(Of ListData))
+        InvokeScript("updateListEval", "placesobjects", PlayerHelper.ListDataParameter(list).GetParameter())
+    End Sub
+
+    Public Sub UpdateInventoryList(list As List(Of ListData))
+        InvokeScript("updateListEval", "inventory", PlayerHelper.ListDataParameter(list).GetParameter())
+    End Sub
 End Class

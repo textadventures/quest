@@ -149,12 +149,6 @@
     <Compile Include="DebuggerPane.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ElementList.Designer.vb">
-      <DependentUpon>ElementList.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ElementList.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Log.Designer.vb">
       <DependentUpon>Log.vb</DependentUpon>
     </Compile>
@@ -205,9 +199,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DebuggerPane.resx">
       <DependentUpon>DebuggerPane.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ElementList.resx">
-      <DependentUpon>ElementList.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Log.resx">
       <DependentUpon>Log.vb</DependentUpon>
