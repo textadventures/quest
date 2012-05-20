@@ -357,6 +357,16 @@ function waitEnded() {
     });
 }
 
+function gameFinished() {
+    disableInterface();
+}
+
+function disableInterface() {
+    $("#txtCommandDiv").hide();
+    $("#gamePanesRunning").hide();
+    $("#gamePanesFinished").show();
+}
+
 function addText(text) {
     if (_currentDiv == null) {
         createNewDiv("left");

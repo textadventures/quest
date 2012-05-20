@@ -33,10 +33,6 @@ function SetBackground(color) {
     $("#gridPanel").css("background-color", color);
 }
 
-function gameFinished() {
-    // we don't need to do anything - this function is just required for compatibility with WebPlayer
-}
-
 function disableMainScrollbar() {
     $("body").css("overflow", "hidden");
 }
