@@ -1043,4 +1043,7 @@ Public Class Player
 
     End Sub
 
+    Public Sub ResetAfterGameFinished()
+        ctlPlayerHtml.Reset()
+    End Sub
 End Class

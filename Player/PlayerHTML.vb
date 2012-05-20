@@ -15,6 +15,7 @@ Public Class PlayerHTML
     Private m_navigationAllowed As Boolean = True
     Private m_buffer As New List(Of Action)
     Private m_internetExplorerVersion As Single = 0.0
+    Private m_resetting As Boolean = False
 
     Public Sub Setup()
         m_navigationAllowed = True
@@ -51,6 +52,10 @@ Public Class PlayerHTML
     End Sub
 
     Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
+        If m_resetting Then
+            m_resetting = False
+            Return
+        End If
         wbOutput.ScriptErrorsSuppressed = False
         AddHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
         AddUIEventElement()
@@ -288,5 +293,11 @@ Public Class PlayerHTML
     Public Sub ShowExitFullScreenButton(show As Boolean)
         InvokeScript("showExitFullScreenButton", If(show, "true", "false"))
         ClearBuffer()
+    End Sub
+
+    Public Sub Reset()
+        m_navigationAllowed = True
+        m_resetting = True
+        wbOutput.Navigate("about:blank")
     End Sub
 End Class

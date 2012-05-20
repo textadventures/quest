@@ -66,6 +66,7 @@ Public Class Main
         FullScreen = False
         If m_playingEditorGame Then
             ctlPlayer.Visible = False
+            ctlPlayer.ResetAfterGameFinished()
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Editor
             ctlEditor.Visible = True
             m_playingEditorGame = False
@@ -76,6 +77,7 @@ Public Class Main
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
             ctlLauncher.RefreshLists()
             ctlPlayer.Visible = False
+            ctlPlayer.ResetAfterGameFinished()
             ctlLauncherHost.Visible = True
             SetWindowTitle()
         End If
@@ -140,7 +142,6 @@ Public Class Main
                 ctlPlayer.Visible = True
                 ctlPlayer.SetMenu(ctlMenu)
                 Me.ResumeLayout()
-                'ctlPlayer.RestoreSplitterPositions()
                 Application.DoEvents()
                 ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
                 ctlPlayer.SetPlayerOverrideColours(
