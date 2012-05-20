@@ -189,9 +189,10 @@ function setBackground(col) {
     var opacity = 0.5;
     var cssBackground = "rgba(" + rgbCol.r + "," + rgbCol.g + "," + rgbCol.b + "," + opacity + ")";
     $("#gameBorder").css("background-color", cssBackground);
-    $("#txtCommandDiv").css("background-color", cssBackground);
-    $("#gamePanel").css("background-color", cssBackground);
-    $("#gridPanel").css("background-color", cssBackground);
+
+    $("#txtCommandDiv").css("background-color", col);
+    $("#gamePanel").css("background-color", col);
+    $("#gridPanel").css("background-color", col);
 }
 
 function setPanelHeight() {
