@@ -203,10 +203,15 @@ function setPanelHeight() {
 }
 
 function setPanelContents(html) {
+    if (html.length > 0) {
+        $("#gamePanel").show()
+    }
+    else {
+        $("#gamePanel").hide()
+    }
     $("#gamePanel").html(html);
     setPanelHeight();
 }
-
 
 var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwest", "south", "southeast", "up", "down", "in", "out"];
 
