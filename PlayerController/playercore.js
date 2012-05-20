@@ -27,6 +27,39 @@ $(function () {
         updateVerbButtons($("#lstPlacesObjects"), placesObjectsVerbs, "cmdPlacesObjects");
     });
 
+    $("#cmdCompassNW").button({
+        icons: { primary: "ui-icon-arrowthick-1-nw" }
+    });
+    $("#cmdCompassN").button({
+        icons: { primary: "ui-icon-arrowthick-1-n" }
+    });
+    $("#cmdCompassNE").button({
+        icons: { primary: "ui-icon-arrowthick-1-ne" }
+    });
+    $("#cmdCompassW").button({
+        icons: { primary: "ui-icon-arrowthick-1-w" }
+    });
+    $("#cmdCompassE").button({
+        icons: { primary: "ui-icon-arrowthick-1-e" }
+    });
+    $("#cmdCompassSW").button({
+        icons: { primary: "ui-icon-arrowthick-1-sw" }
+    });
+    $("#cmdCompassS").button({
+        icons: { primary: "ui-icon-arrowthick-1-s" }
+    });
+    $("#cmdCompassSE").button({
+        icons: { primary: "ui-icon-arrowthick-1-se" }
+    });
+    $("#cmdCompassU").button({
+        icons: { primary: "ui-icon-triangle-1-n" }
+    });
+    $("#cmdCompassD").button({
+        icons: { primary: "ui-icon-triangle-1-s" }
+    });
+    // fix to make compass button icons centred
+    $(".compassbutton span").css("left", "0.8em");
+
     ui_init();
 
     $("#txtCommand").focus();
