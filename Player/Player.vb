@@ -15,7 +15,6 @@ Public Class Player
     Private m_gameName As String
     Private WithEvents m_debugger As Debugger
     Private m_loaded As Boolean = False
-    Private m_splitHelpers As New List(Of AxeSoftware.Utility.SplitterHelper)
     Private m_menu As AxeSoftware.Quest.Controls.Menu = Nothing
     Private m_saveFile As String
     Private m_waiting As Boolean = False
@@ -53,9 +52,6 @@ Public Class Player
         ' Add any initialization after the InitializeComponent() call.
         PanesVisible = True
         Reset()
-
-        m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitMain, "Quest", "MainSplitter"))
-        'm_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitPane, "Quest", "PaneSplitter"))
 
     End Sub
 
@@ -418,12 +414,6 @@ Public Class Player
 
     Private Sub SelectAll()
         ctlPlayerHtml.SelectAll()
-    End Sub
-
-    Public Sub RestoreSplitterPositions()
-        For Each splitHelper As AxeSoftware.Utility.SplitterHelper In m_splitHelpers
-            splitHelper.LoadSplitterPositions()
-        Next
     End Sub
 
     Private Sub Save()
