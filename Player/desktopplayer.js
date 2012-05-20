@@ -57,3 +57,6 @@ function setPanelContents(html) {
     $("#gamePanel").html(html);
     setPanelHeight();
 }
+
+function ui_init() {
+}
