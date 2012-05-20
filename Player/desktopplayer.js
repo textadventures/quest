@@ -44,8 +44,20 @@ function disableMainScrollbar() {
 function ui_init() {
     $("#gameTitle").hide();
     $("#cmdSave").hide();
+    $("#cmdExitFullScreen").click(function () {
+        UIEvent("ExitFullScreen", "");
+    });
 }
 
 function updateListEval(listName, listData) {
     updateList(listName, eval("(" + listData + ")"));
+}
+
+function showExitFullScreenButton(show) {
+    if (eval(show)) {
+        $("#cmdExitFullScreen").show();
+    }
+    else {
+        $("#cmdExitFullScreen").hide();
+    }
 }

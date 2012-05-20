@@ -8,6 +8,7 @@ Public Class PlayerHTML
     Public Event SendEvent(eventName As String, param As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
     Public Event EndWait()
+    Public Event ExitFullScreen()
 
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
     Private m_deleteFile As String = Nothing
@@ -102,6 +103,8 @@ Public Class PlayerHTML
                 GoURL(args)
             Case "EndWait"
                 RaiseEvent EndWait()
+            Case "ExitFullScreen"
+                RaiseEvent ExitFullScreen()
         End Select
 
     End Sub
@@ -280,5 +283,10 @@ Public Class PlayerHTML
 
     Public Sub UpdateStatus(status As String)
         InvokeScript("updateStatus", status)
+    End Sub
+
+    Public Sub ShowExitFullScreenButton(show As Boolean)
+        InvokeScript("showExitFullScreenButton", If(show, "true", "false"))
+        ClearBuffer()
     End Sub
 End Class

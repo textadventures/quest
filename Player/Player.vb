@@ -736,6 +736,11 @@ Public Class Player
         m_waiting = False
     End Sub
 
+    Private Sub ctlPlayerHtml_ExitFullScreen() Handles ctlPlayerHtml.ExitFullScreen
+        ctlPlayerHtml.ShowExitFullScreenButton(False)
+        RaiseEvent ExitFullScreen()
+    End Sub
+
     Private Sub ctlPlayerHtml_Ready() Handles ctlPlayerHtml.Ready
         ' We need this DocumentCompleted event to have finished before trying to output text to the webbrowser control.
 
@@ -856,16 +861,9 @@ Public Class Player
         ClearBuffer()
     End Sub
 
-    ' TO DO: Add FullScreen button to HTML UI
-
-    'Private Sub cmdFullScreen_Click(sender As System.Object, e As System.EventArgs)
-    '    RaiseEvent ExitFullScreen()
-    '    cmdFullScreen.Visible = False
-    'End Sub
-
-    'Public Sub ShowExitFullScreenButton()
-    '    cmdFullScreen.Visible = True
-    'End Sub
+    Public Sub ShowExitFullScreenButton()
+        ctlPlayerHtml.ShowExitFullScreenButton(True)
+    End Sub
 
     Public Sub DoPause(ms As Integer) Implements IPlayer.DoPause
         If m_walkthroughRunner IsNot Nothing Then
