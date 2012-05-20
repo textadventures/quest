@@ -1,12 +1,56 @@
 ﻿body
 {
     font-family: Arial, Helvetica, sans-serif;
+    overflow-y: scroll;
+}
+html,
+body
+{
+    margin: 0px;
+    height: 100%;
 }
 a.cmdlink
 {
     text-decoration: underline;
     color: Blue;
     cursor: pointer;
+}
+div#gameBorder
+{
+    width: 950px;
+    margin-left: auto;
+    margin-right: auto;
+    border-left: 1px solid silver;
+    border-right: 1px solid silver;
+    margin-top: 0;
+    min-height: 100%;
+}
+div#gamePanel
+{
+    position: fixed;
+    top: 32px;
+    padding-top: 2px;
+    left: 50%;
+    margin-left: -456px;
+    width: 700px;
+    text-align: center;
+}
+div#gridPanel
+{
+    position: fixed;
+    top: 32px;
+    padding: 0;
+    left: 50%;
+    margin-left: -456px;
+    width: 700px;
+    overflow: hidden;
+    display: none;
+}
+div#gameContent
+{
+    padding: 30px 20px 0px 20px;
+    width: 700px;
+    min-height: 100%;
 }
 div#gamePanes
 {
