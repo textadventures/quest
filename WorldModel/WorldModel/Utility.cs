@@ -318,26 +318,26 @@ namespace AxeSoftware.Quest
             bool processThisCharacter;
             bool processNextCharacter = true;
             string curParam = string.Empty;
+            bool gotCloseQuote = true;
 
-            for (int i = 0; i < text.Length; i++)
+            foreach (var curChar in text)
             {
                 processThisCharacter = processNextCharacter;
                 processNextCharacter = true;
 
-                string curChar = text.Substring(i, 1);
-
                 if (processThisCharacter)
                 {
-                    if (curChar == "\\")
+                    if (curChar == '\\')
                     {
                         // Don't process the character after a backslash
                         processNextCharacter = false;
                     }
                     else
                     {
-                        if (curChar == "\"")
+                        if (curChar == '\"')
                         {
                             result.Add(curParam);
+                            gotCloseQuote = !gotCloseQuote;
                             curParam = string.Empty;
                             continue;
                         }
@@ -346,6 +346,10 @@ namespace AxeSoftware.Quest
 
                 curParam += curChar;
             }
+            
+            if (!gotCloseQuote)
+                throw new Exception("Missing '\"'");
+                
             result.Add(curParam);
 
             return result.ToArray();

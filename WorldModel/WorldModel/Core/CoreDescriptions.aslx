@@ -115,6 +115,7 @@
     }
     
     on ready {
+      msg("")
       if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")) {
         do (game.pov.parent, "beforefirstenter")
       }
@@ -128,6 +129,10 @@
           if (game.gridmap) {
             Grid_CalculateMapCoordinates (game.pov.parent)
             Grid_DrawPlayerInRoom (game.pov.parent)
+          }
+          
+          if (IsDefined("oldRoom")) {
+            // msg("")
           }
         
           request (UpdateLocation, CapFirst(GetDisplayName(game.pov.parent)))
