@@ -47,6 +47,17 @@ namespace WorldModelTests
             Assert.IsTrue(result.StartsWith("This is \""));
             Assert.IsTrue(result.EndsWith("\" of obscuring strings"));
             Assert.IsFalse(result.Contains("a test"));
+
+            //missing end quote
+            try
+            {
+                Utility.ObscureStrings("\"foo");
+                Assert.Fail();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Missing '\"'", e.Message);
+            }
         }
 
         [TestMethod]
