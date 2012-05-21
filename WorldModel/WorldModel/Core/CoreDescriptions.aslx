@@ -131,9 +131,6 @@
             Grid_DrawPlayerInRoom (game.pov.parent)
           }
           
-          if (IsDefined("oldRoom")) {
-            // msg("")
-          }
         
           request (UpdateLocation, CapFirst(GetDisplayName(game.pov.parent)))
           roomFrameExists = false
