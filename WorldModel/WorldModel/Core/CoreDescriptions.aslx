@@ -115,7 +115,6 @@
     }
     
     on ready {
-      msg("")
       if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")) {
         do (game.pov.parent, "beforefirstenter")
       }
