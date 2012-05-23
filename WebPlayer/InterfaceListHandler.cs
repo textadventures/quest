@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AxeSoftware.Quest;
+using AxeSoftware.Utility.JSInterop;
 
 namespace WebPlayer
 {
@@ -22,7 +23,7 @@ namespace WebPlayer
             public bool Equals(ListData x, ListData y)
             {
                 if (x.Text != y.Text) return false;
-                return VerbString(x.Verbs) == VerbString(y.Verbs);
+                return PlayerHelper.VerbString(x.Verbs) == PlayerHelper.VerbString(y.Verbs);
             }
 
             public int GetHashCode(ListData obj)
@@ -64,7 +65,7 @@ namespace WebPlayer
 
             if (listName != null)
             {
-                m_buffer.AddJavaScriptToBuffer("updateList", new StringParameter(listName), ListDataParameter(m_lists[listType]));
+                m_buffer.AddJavaScriptToBuffer("updateList", new StringParameter(listName), PlayerHelper.ListDataParameter(m_lists[listType]));
             }
         }
 
@@ -72,26 +73,6 @@ namespace WebPlayer
         {
             string data = string.Join("/", list.Select(l => l.Text));
             m_buffer.AddJavaScriptToBuffer("updateCompass", new StringParameter(data));
-        }
-
-        private IJavaScriptParameter ListDataParameter(List<ListData> list)
-        {
-            var convertedList = new Dictionary<string, string>();
-            int count = 1;
-            foreach (ListData data in list)
-            {
-                convertedList.Add(
-                    string.Format("k{0}", count),
-                    string.Format("{0}:{1}", data.Text, VerbString(data.Verbs))
-                );
-                count++;
-            }
-            return new JSONParameter(convertedList);
-        }
-
-        private static string VerbString(IEnumerable<string> verbs)
-        {
-            return string.Join("/", verbs);
         }
     }
 }

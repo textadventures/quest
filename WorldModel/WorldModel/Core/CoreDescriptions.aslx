@@ -303,6 +303,9 @@
       if (verbs <> null) {
         result = result + " verbs='" + Join(verbs, "/") + "'"
       }
+      if (HasString(obj, "linkcolour")) {
+        result = result + " color='" + obj.linkcolour + "'"
+      }
       result = result + ">" + alias + "</object>"
     }
     else {

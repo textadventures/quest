@@ -87,4 +87,15 @@
     request (Log, text)
   </function>
 
+  <function name="SetBackgroundImage" parameters="filename">
+    request (RunScript, "SetBackgroundImage;" + GetFileURL(filename))
+    game.backgroundimage = filename
+  </function>
+
+  <function name="SetBackgroundOpacity" parameters="opacity">
+    request (RunScript, "SetBackgroundOpacity;" + opacity)
+    game.backgroundopacity = opacity
+    game.setbackgroundopacity = true
+  </function>
+
 </library>

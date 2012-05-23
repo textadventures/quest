@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
+using AxeSoftware.Utility.JSInterop;
 
 namespace WebPlayer
 {
@@ -18,7 +19,8 @@ namespace WebPlayer
         {
             if (!Page.IsPostBack)
             {
-                cmdSave.Visible = IsLoggedIn && (!string.IsNullOrEmpty(Request["id"]) || !string.IsNullOrEmpty(Request["load"]));
+                // TO DO: cmdSave has been moved to playercore.htm - needs to be shown/hidden via JS
+                // cmdSave.Visible = IsLoggedIn && (!string.IsNullOrEmpty(Request["id"]) || !string.IsNullOrEmpty(Request["load"]));
             }
 
             // We store the game in the Session, but use a dictionary keyed by GUIDs which
@@ -387,6 +389,11 @@ namespace WebPlayer
                 return htmlManager.GetBodyFooter();
             }
             return null;
+        }
+
+        protected string GetUI()
+        {
+            return PlayerHandler.GetUI();
         }
 
         protected string GetVersionHeader()

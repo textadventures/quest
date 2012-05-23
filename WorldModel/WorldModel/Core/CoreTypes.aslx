@@ -8,6 +8,9 @@
     <defaultbackground>White</defaultbackground>
     <defaultforeground>Black</defaultforeground>
     <defaultlinkforeground>Blue</defaultlinkforeground>
+    <backgroundimage type="string"></backgroundimage>
+    <setbackgroundopacity type="boolean">false</setbackgroundopacity>
+    <backgroundopacity type="double">0.5</backgroundopacity>
     <menufont>Arial</menufont>
     <menufontsize type="int">9</menufontsize>
     <menubackground>White</menubackground>

@@ -13,24 +13,6 @@ namespace WebPlayer {
     public partial class Play {
         
         /// <summary>
-        /// ctlUpdateProgress control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdateProgress ctlUpdateProgress;
-        
-        /// <summary>
-        /// cmdSave control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlButton cmdSave;
-        
-        /// <summary>
         /// playerform control.
         /// </summary>
         /// <remarks>
@@ -92,5 +74,14 @@ namespace WebPlayer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.Timer tmrInit;
+        
+        /// <summary>
+        /// ctlUpdateProgress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdateProgress ctlUpdateProgress;
     }
 }

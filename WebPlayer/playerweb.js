@@ -9,95 +9,19 @@
     }
 });
 
-function panesVisible(visible) {
-    var screenWidth = $("#gameBorder").width();
-
-    if (visible) {    
-        $("#gamePanes").show();
-        $("#gameContent").width(screenWidth - 250);
-        $("#txtCommand").width(screenWidth - 270);
-        $("#updating").css("margin-left", (screenWidth / 2 - 290) + "px");
-        $("#gamePanel").width(screenWidth - 250);
-        $("#gridPanel").width(screenWidth - 250);
-    }
-    else {
-        $("#gamePanes").hide();
-        $("#gameContent").width(screenWidth - 40);
-        $("#txtCommand").width(screenWidth - 60);
-        $("#updating").css("margin-left", (screenWidth / 2 - 70) + "px");
-        $("#gamePanel").width(screenWidth - 40);
-        $("#gridPanel").width(screenWidth - 40);
-    }
-}
-
-function scrollToEnd() {
-    $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height() }, 200);
-}
-
-function setBackground(col) {
-    $("#gameBorder").css("background-color", col);
-    $("#txtCommandDiv").css("background-color", col);
-    $("#gamePanel").css("background-color", col);
-    $("#gridPanel").css("background-color", col);
-}
-
-function setPanelHeight() {
-    if (_showGrid) return;
-    setTimeout(function () {
-        $("#gamePanelSpacer").height($("#gamePanel").height());
-        scrollToEnd();
-    }, 100);
-}
-
-function setPanelContents(html) {
-    $("#gamePanel").html(html);
-    setPanelHeight();
-}
-
 function ui_init() {
-    $("#lstInventory").change(function () {
-        updateVerbButtons($("#lstInventory"), inventoryVerbs, "cmdInventory");
-    });
-
-    $("#lstPlacesObjects").change(function () {
-        updateVerbButtons($("#lstPlacesObjects"), placesObjectsVerbs, "cmdPlacesObjects");
-    });
 }
 
-function beginWait() {
-    _waitMode = true;
-    $("#txtCommand").fadeTo(400, 0, function () {
-        $("#endWaitLink").fadeTo(400, 1);
-    });
-    markScrollPosition();
-}
-
-function endWait() {
-    if (!_waitMode) return;
-    _waitMode = false;
-    $("#endWaitLink").fadeOut(400, function () {
-        if (!_waitMode) {
-            $("#txtCommand").fadeTo(400, 1);
-        }
-    });
+function sendEndWait() {
     window.setTimeout(function () {
         $("#fldUIMsg").val("endwait");
         $("#cmdSubmit").click();
     }, 100);
+    waitEnded();
 }
 
 function sessionTimeout() {
     disableInterface();
-}
-
-function gameFinished() {
-    disableInterface();
-}
-
-function disableInterface() {
-    $("#txtCommandDiv").hide();
-    $("#gamePanesRunning").hide();
-    $("#gamePanesFinished").show();
 }
 
 function setInterfaceString(name, text) {
@@ -124,70 +48,7 @@ function setInterfaceString(name, text) {
     }
 }
 
-function updateLocation(text) {
-    $("#location").html(text);
-}
-
 function afterSendCommand() {
-}
-
-function updateList(listName, listData) {
-    var listElement = "";
-
-    if (listName == "inventory") {
-        listElement = "#lstInventory";
-        inventoryVerbs = new Array();
-    }
-
-    if (listName == "placesobjects") {
-        listElement = "#lstPlacesObjects";
-        placesObjectsVerbs = new Array();
-    }
-
-    $(listElement).empty();
-    var count = 0;
-    $.each(listData, function (key, value) {
-        var splitString = value.split(":");
-        var objectDisplayName = splitString[0];
-        var objectVerbs = splitString[1];
-
-        if (listName == "inventory") {
-            inventoryVerbs.push(objectVerbs);
-        }
-
-        if (listName == "placesobjects") {
-            placesObjectsVerbs.push(objectVerbs);
-        }
-
-        if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
-            $(listElement).append(
-                $("<option/>").attr("value", key).text(objectDisplayName)
-            );
-            count++;
-        }
-    });
-
-    var selectSize = count;
-    if (selectSize < 3) selectSize = 3;
-    if (selectSize > 12) selectSize = 12;
-    $(listElement).attr("size", selectSize);
-}
-
-function updateVerbButtons(list, verbsArray, idprefix) {
-    var selectedIndex = list.prop("selectedIndex");
-    var verbs = verbsArray[selectedIndex].split("/");
-    var count = 1;
-    $.each(verbs, function (index, value) {
-        $("#" + idprefix + count + " span").html(value);
-        var target = $("#" + idprefix + count);
-        target.data("verb", value);
-        target.show();
-        count++;
-    });
-    for (var i = count; i <= verbButtonCount; i++) {
-        var target = $("#" + idprefix + i);
-        target.hide();
-    }
 }
 
 function afterSave() {

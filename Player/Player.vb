@@ -12,12 +12,9 @@ Public Class Player
     Private m_gameDebug As IASLDebug
     Private m_initialised As Boolean
     Private m_gameReady As Boolean
-    Private m_history As New List(Of String)
-    Private m_historyPoint As Integer
     Private m_gameName As String
     Private WithEvents m_debugger As Debugger
     Private m_loaded As Boolean = False
-    Private m_splitHelpers As New List(Of AxeSoftware.Utility.SplitterHelper)
     Private m_menu As AxeSoftware.Quest.Controls.Menu = Nothing
     Private m_saveFile As String
     Private m_waiting As Boolean = False
@@ -27,7 +24,6 @@ Public Class Player
     Private m_soundPlaying As Boolean = False
     Private m_destroyed As Boolean = False
     Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
-    Private m_htmlPlayerReadyFunction As Action
     Private m_tickCount As Integer
     Private m_sendNextTickEventAfter As Integer
     Private m_pausing As Boolean
@@ -56,11 +52,6 @@ Public Class Player
         ' Add any initialization after the InitializeComponent() call.
         PanesVisible = True
         Reset()
-
-        lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
-
-        m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitMain, "Quest", "MainSplitter"))
-        m_splitHelpers.Add(New AxeSoftware.Utility.SplitterHelper(splitPane, "Quest", "PaneSplitter"))
 
     End Sub
 
@@ -95,28 +86,19 @@ Public Class Player
         SetLocationVisible(True)
         SetStatusText("")
         LocationUpdated("")
-        cmdFullScreen.Visible = False
         m_menu.ClearWindowMenu()
         m_menu.MenuEnabled("copy") = True
+        m_gameBackground = Nothing
+        m_gameForeground = Nothing
         m_game = game
         m_gameDebug = TryCast(game, IASLDebug)
         m_gameTimer = TryCast(m_game, IASLTimer)
         m_gameReady = True
-        txtCommand.Text = ""
-        ctlCompass.ResetCompassDirections()
         ResetInterfaceStrings()
-        SetEnabledState(True)
         m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlHelper.UseGameColours = UseGameColours
-        m_htmlPlayerReadyFunction = AddressOf FinishInitialise
-
-        ' we don't finish initialising the game until the webbrowser's DocumentCompleted fires
-        ' - it's not in a ready state before then.
         ctlPlayerHtml.Setup()
-    End Sub
-
-    Private Sub FinishInitialise()
-
+ 
         Me.Cursor = Cursors.WaitCursor
 
         Dim success As Boolean = m_game.Initialise(Me)
@@ -128,19 +110,10 @@ Public Class Player
             m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing AndAlso m_gameDebug.Walkthroughs.Walkthroughs.Count > 0
             m_menu.MenuEnabled("debugger") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.DebugEnabled
 
-            ' If we have external JavaScript files, we need to rebuild the HTML page source and
-            ' reload it. Then, only when the page has finished loading, begin the game.
-
             Dim scripts As IEnumerable(Of String) = m_game.GetExternalScripts
-            If scripts IsNot Nothing AndAlso scripts.Count > 0 Then
-                ' Generate the new HTML and wait for Ready event
 
-                m_htmlPlayerReadyFunction = AddressOf BeginGame
-                ctlPlayerHtml.InitialiseScripts(scripts)
-            Else
-                BeginGame()
-            End If
-
+            ' Generate the new HTML and wait for Ready event
+            ctlPlayerHtml.InitialiseHTMLUI(scripts)
         Else
             WriteLine("<b>Failed to load game.</b>")
             If (m_game.Errors.Count > 0) Then
@@ -162,7 +135,7 @@ Public Class Player
         End If
         m_game.Begin()
         ClearBuffer()
-        txtCommand.Focus()
+        ctlPlayerHtml.Focus()
         ctlPlayerHtml.DisableNavigation()
         If m_postLaunchAction IsNot Nothing Then
             m_postLaunchAction.Invoke()
@@ -185,8 +158,6 @@ Public Class Player
         ShowLog(False)
         m_debugger = Nothing
         m_log = Nothing
-        lstInventory.Clear()
-        lstPlacesObjects.Clear()
         If Not m_menu Is Nothing Then
             m_menu.MenuEnabled("walkthrough") = False
             m_menu.MenuEnabled("debugger") = False
@@ -199,74 +170,14 @@ Public Class Player
         End Get
         Set(value As Boolean)
             m_panesVisible = value
-            splitMain.Panel2Collapsed = Not m_panesVisible
-            If m_panesVisible Then
-                cmdPanes.Text = ">"
-            Else
-                cmdPanes.Text = "<"
-            End If
+            ' TO DO: Call JS function
         End Set
     End Property
 
-    Private Sub txtCommand_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles txtCommand.KeyDown
-        Select Case e.KeyCode
-            Case Keys.Up
-                SetHistoryPoint(-1)
-                e.Handled = True
-            Case Keys.Down
-                SetHistoryPoint(1)
-                e.Handled = True
-            Case Keys.Escape
-                txtCommand.Text = ""
-                SetHistoryPoint(0)
-                e.SuppressKeyPress = True
-                e.Handled = True
-            Case Keys.Enter
-                e.SuppressKeyPress = True
-                e.Handled = True
-                ' Use a timer to trigger the call to EnterText, otherwise if we handle an event
-                ' which shows the Menu form, we get a "ding" as this sub hasn't returned yet.
-                tmrTimer.Tag = Nothing
-                tmrTimer.Enabled = True
-        End Select
-    End Sub
-
-    Private Sub SetHistoryPoint(offset As Integer)
-        If offset = 0 Then
-            m_historyPoint = m_history.Count
-        Else
-            If m_history.Count > 0 Then
-                m_historyPoint = m_historyPoint + offset
-
-                If m_historyPoint < 0 Then m_historyPoint = m_history.Count - 1
-                If m_historyPoint >= m_history.Count Then m_historyPoint = 0
-
-                txtCommand.Text = m_history.Item(m_historyPoint)
-                txtCommand.SelectionStart = txtCommand.Text.Length
-            End If
-        End If
-    End Sub
-
-    Private Sub cmdGo_Click(sender As System.Object, e As System.EventArgs) Handles cmdGo.Click
-        If m_waiting Then
-            m_waiting = False
-            Exit Sub
-        End If
-        EnterText()
-    End Sub
-
-    Private Sub cmdPanes_Click(sender As System.Object, e As System.EventArgs) Handles cmdPanes.Click
-        PanesVisible = Not PanesVisible
-    End Sub
-
-    Private Sub EnterText()
-        If m_pausing Or m_waitingForSoundToFinish Then Return
-        If txtCommand.Text.Length > 0 Then
-            m_history.Add(txtCommand.Text)
-            SetHistoryPoint(0)
-            RunCommand(txtCommand.Text)
-        End If
-    End Sub
+    ' TO DO: Call JS function
+    'Private Sub cmdPanes_Click(sender As System.Object, e As System.EventArgs)
+    '    PanesVisible = Not PanesVisible
+    'End Sub
 
     Private Sub RunCommand(command As String)
 
@@ -283,8 +194,6 @@ Public Class Player
             m_recordedWalkthrough.Add(command)
         End If
 
-        txtCommand.Text = ""
-
         Try
             If m_gameTimer IsNot Nothing Then
                 m_gameTimer.SendCommand(command, GetTickCountAndStopTimer())
@@ -296,12 +205,6 @@ Public Class Player
             WriteLine(String.Format("Error running command '{0}':<br>{1}", command, ex.Message))
         End Try
 
-        txtCommand.Focus()
-
-    End Sub
-
-    Private Sub ctlCompass_RunCommand(command As String) Handles ctlCompass.RunCommand
-        RunCommand(command)
     End Sub
 
     Private Sub m_game_Finished() Handles m_game.Finished
@@ -313,7 +216,6 @@ Public Class Player
         If Not m_initialised Then Return
         m_initialised = False
         tmrTick.Enabled = False
-        SetEnabledState(False)
         StopSound()
         If Me.IsHandleCreated Then
             BeginInvoke(Sub() ctlPlayerHtml.Finished())
@@ -345,11 +247,6 @@ Public Class Player
         End If
     End Sub
 
-    Private Sub tmrTimer_Tick(sender As Object, e As System.EventArgs) Handles tmrTimer.Tick
-        tmrTimer.Enabled = False
-        EnterText()
-    End Sub
-
     Private Sub SetGameName(name As String)
         m_gameName = name
         AddToRecentList()
@@ -367,20 +264,12 @@ Public Class Player
 
         Select Case listType
             Case AxeSoftware.Quest.ListType.ObjectsList
-                lstPlacesObjects.Items = items
+                ctlPlayerHtml.UpdatePlacesObjectsList(items)
             Case AxeSoftware.Quest.ListType.InventoryList
-                lstInventory.Items = items
+                ctlPlayerHtml.UpdateInventoryList(items)
             Case AxeSoftware.Quest.ListType.ExitsList
-                ctlCompass.SetAvailableExits(items)
+                ctlPlayerHtml.UpdateCompass(items)
         End Select
-    End Sub
-
-    Private Sub lstPlacesObjects_SendCommand(command As String) Handles lstPlacesObjects.SendCommand
-        RunCommand(command)
-    End Sub
-
-    Private Sub lstInventory_SendCommand(command As String) Handles lstInventory.SendCommand
-        RunCommand(command)
     End Sub
 
     Public ReadOnly Property IsGameInProgress() As Boolean
@@ -529,20 +418,6 @@ Public Class Player
         ctlPlayerHtml.SelectAll()
     End Sub
 
-    Private Sub SetEnabledState(enabled As Boolean)
-        txtCommand.Enabled = enabled
-        ctlCompass.Enabled = enabled
-        cmdGo.Enabled = enabled
-        lstInventory.Enabled = enabled
-        lstPlacesObjects.Enabled = enabled
-    End Sub
-
-    Public Sub RestoreSplitterPositions()
-        For Each splitHelper As AxeSoftware.Utility.SplitterHelper In m_splitHelpers
-            splitHelper.LoadSplitterPositions()
-        Next
-    End Sub
-
     Private Sub Save()
         If Len(m_saveFile) = 0 Then
             SaveAs()
@@ -613,10 +488,12 @@ Public Class Player
 
     Private Sub BeginWait()
         m_waiting = True
+        ctlPlayerHtml.BeginWait()
         Do
             Threading.Thread.Sleep(100)
             Application.DoEvents()
         Loop Until Not m_waiting Or Not m_initialised Or Not Me.IsHandleCreated
+        ctlPlayerHtml.WaitEnded()
         m_game.FinishWait()
         ClearBuffer()
     End Sub
@@ -658,20 +535,17 @@ Public Class Player
                         Select Case data
                             Case "on"
                                 PanesVisible = True
-                                cmdPanes.Visible = True
+                                ' TO DO: Call JS function
+                                'cmdPanes.Visible = True
                             Case "off"
                                 PanesVisible = False
-                                cmdPanes.Visible = True
+                                ' TO DO: Call JS function
+                                'cmdPanes.Visible = True
                             Case "disabled"
                                 PanesVisible = False
-                                cmdPanes.Visible = False
+                                ' TO DO: Call JS function
+                                'cmdPanes.Visible = False
                         End Select
-
-                        If cmdPanes.Visible Then
-                            lblBanner.Width = cmdPanes.Left - 1
-                        Else
-                            lblBanner.Width = ctlPlayerHtml.Width
-                        End If
                     End Sub)
     End Sub
 
@@ -792,7 +666,7 @@ Public Class Player
     End Sub
 
     Public Sub LocationUpdated(location As String) Implements IPlayer.LocationUpdated
-        BeginInvoke(Sub() lblBanner.Text = location)
+        BeginInvoke(Sub() ctlPlayerHtml.UpdateLocation(location))
     End Sub
 
     Public Sub UpdateGameName(name As String) Implements IPlayer.UpdateGameName
@@ -805,7 +679,7 @@ Public Class Player
     End Sub
 
     Public Sub SetStatusText(text As String) Implements IPlayer.SetStatusText
-        BeginInvoke(Sub() lstInventory.Status = text)
+        BeginInvoke(Sub() ctlPlayerHtml.UpdateStatus(text))
     End Sub
 
     Public Sub DoQuit() Implements IPlayer.Quit
@@ -860,15 +734,22 @@ Public Class Player
         RunCommand(command)
     End Sub
 
+    Private Sub ctlPlayerHtml_EndWait() Handles ctlPlayerHtml.EndWait
+        m_waiting = False
+    End Sub
+
+    Private Sub ctlPlayerHtml_ExitFullScreen() Handles ctlPlayerHtml.ExitFullScreen
+        ctlPlayerHtml.ShowExitFullScreenButton(False)
+        RaiseEvent ExitFullScreen()
+    End Sub
+
     Private Sub ctlPlayerHtml_Ready() Handles ctlPlayerHtml.Ready
         ' We need this DocumentCompleted event to have finished before trying to output text to the webbrowser control.
-        'Dim runnerThread As New Thread(New ThreadStart(AddressOf TryInitialise))
-        'runnerThread.Start()
 
         ResetPlayerOverrideColours()
         ResetPlayerOverrideFont()
         BeginInvoke(Sub()
-                        m_htmlPlayerReadyFunction.Invoke()
+                        BeginGame()
                     End Sub)
     End Sub
 
@@ -891,36 +772,23 @@ Public Class Player
     End Sub
 
     Public Sub DoHide(element As String) Implements IPlayer.Hide
-        BeginInvoke(Sub() GetInterfaceVisibilitySetter(element).Invoke(False))
+        BeginInvoke(Sub() ctlPlayerHtml.DoHide(element))
     End Sub
 
     Public Sub DoShow(element As String) Implements IPlayer.Show
-        BeginInvoke(Sub() GetInterfaceVisibilitySetter(element).Invoke(True))
+        BeginInvoke(Sub() ctlPlayerHtml.DoShow(element))
     End Sub
-
-    Private Function GetInterfaceVisibilitySetter(element As String) As Action(Of Boolean)
-        Select Case element
-            Case "Panes"
-                Return AddressOf SetPanesVisible
-            Case "Location"
-                Return AddressOf SetLocationVisible
-            Case "Command"
-                Return AddressOf SetCommandVisible
-            Case Else
-                Throw New ArgumentException("Invalid element")
-        End Select
-    End Function
 
     Private Sub SetPanesVisible(visible As Boolean)
         SetPanesVisible(If(visible, "on", "disabled"))
     End Sub
 
     Private Sub SetLocationVisible(visible As Boolean)
-        pnlLocation.Visible = visible
+        If visible Then DoShow("Location") Else DoHide("Location")
     End Sub
 
     Private Sub SetCommandVisible(visible As Boolean)
-        pnlCommand.Visible = visible
+        If visible Then DoShow("Command") Else DoHide("Command")
     End Sub
 
     Private Sub StopGame()
@@ -932,13 +800,13 @@ Public Class Player
             EscPressed()
         End If
         m_waiting = False
-        txtCommand.Focus()
         RaiseEvent ShortcutKeyPressed(keys)
     End Sub
 
     Public Sub SetCompassDirections(dirs As IEnumerable(Of String)) Implements IPlayer.SetCompassDirections
-        ctlCompass.CompassDirections = New List(Of String)(dirs)
-        lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
+        ' TO DO: Call JS function to set compass direction names
+        'ctlCompass.CompassDirections = New List(Of String)(dirs)
+        'lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
     End Sub
 
     Private Sub ResetInterfaceStrings()
@@ -955,27 +823,34 @@ Public Class Player
         BeginInvoke(Sub()
                         Select Case name
                             Case "InventoryLabel"
-                                lstInventory.Title = text
+                                ' TO DO: Call JS function
+                                'lstInventory.Title = text
                             Case "PlacesObjectsLabel"
-                                lstPlacesObjects.Title = text
+                                ' TO DO: Call JS function
+                                'lstPlacesObjects.Title = text
                             Case "CompassLabel"
-                                lblCompass.Text = text
+                                ' TO DO: Call JS function
+                                'lblCompass.Text = text
                             Case "InButtonLabel"
-                                ctlCompass.InLabel = text
+                                ' TO DO: Call JS function
+                                'ctlCompass.InLabel = text
                             Case "OutButtonLabel"
-                                ctlCompass.OutLabel = text
+                                ' TO DO: Call JS function
+                                'ctlCompass.OutLabel = text
                             Case "EmptyListLabel"
-                                lstInventory.EmptyListLabel = text
-                                lstPlacesObjects.EmptyListLabel = text
+                                ' TO DO: Call JS function - or is this label is obsolete?
+                                'lstInventory.EmptyListLabel = text
+                                'lstPlacesObjects.EmptyListLabel = text
                             Case "NothingSelectedLabel"
-                                lstInventory.NothingSelectedLabel = text
-                                lstPlacesObjects.NothingSelectedLabel = text
+                                ' TO DO: Call JS function - or is this label is obsolete?
+                                'lstInventory.NothingSelectedLabel = text
+                                'lstPlacesObjects.NothingSelectedLabel = text
                         End Select
                     End Sub)
     End Sub
 
     Public Function GetURL(file As String) As String Implements IPlayer.GetURL
-        Return file
+        Return "file:///" + file.Replace("\", "/").Replace(" ", "%20")
     End Function
 
     Private Sub m_gameTimer_RequestNextTimerTick(nextTick As Integer) Handles m_gameTimer.RequestNextTimerTick
@@ -988,13 +863,8 @@ Public Class Player
         ClearBuffer()
     End Sub
 
-    Private Sub cmdFullScreen_Click(sender As System.Object, e As System.EventArgs) Handles cmdFullScreen.Click
-        RaiseEvent ExitFullScreen()
-        cmdFullScreen.Visible = False
-    End Sub
-
     Public Sub ShowExitFullScreenButton()
-        cmdFullScreen.Visible = True
+        ctlPlayerHtml.ShowExitFullScreenButton(True)
     End Sub
 
     Public Sub DoPause(ms As Integer) Implements IPlayer.DoPause
@@ -1173,4 +1043,8 @@ Public Class Player
 
     End Sub
 
+    Public Sub ResetAfterGameFinished()
+        m_initialised = False
+        ctlPlayerHtml.Reset()
+    End Sub
 End Class

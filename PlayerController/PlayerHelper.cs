@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using AxeSoftware.Quest;
 using System.Xml;
+using System.IO;
+using AxeSoftware.Utility.JSInterop;
 
 namespace AxeSoftware.Quest
 {
@@ -70,6 +72,7 @@ namespace AxeSoftware.Quest
             string currentVerbs = "";
             string currentCommand = "";
             string currentHref = "";
+            string currentLinkColour = "";
             bool generatingLink = false;
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
@@ -96,10 +99,12 @@ namespace AxeSoftware.Quest
                             case "object":
                                 generatingLink = true;
                                 currentVerbs = reader.GetAttribute("verbs");
+                                currentLinkColour = reader.GetAttribute("color");
                                 break;
                             case "command":
                                 generatingLink = true;
                                 currentCommand = reader.GetAttribute("input");
+                                currentLinkColour = reader.GetAttribute("color");
                                 break;
                             case "br":
                                 WriteText(FormatText("<br />"));
@@ -125,6 +130,7 @@ namespace AxeSoftware.Quest
                             case "a":
                                 generatingLink = true;
                                 currentHref = reader.GetAttribute("href");
+                                currentLinkColour = reader.GetAttribute("color");
                                 break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
@@ -150,11 +156,11 @@ namespace AxeSoftware.Quest
                                 // do nothing
                                 break;
                             case "object":
-                                AddLink(currentTagValue, null, currentVerbs);
+                                AddLink(currentTagValue, null, currentVerbs, currentLinkColour);
                                 generatingLink = false;
                                 break;
                             case "command":
-                                AddLink(currentTagValue, currentCommand, null);
+                                AddLink(currentTagValue, currentCommand, null, currentLinkColour);
                                 generatingLink = false;
                                 break;
                             case "b":
@@ -177,7 +183,7 @@ namespace AxeSoftware.Quest
                                 alignmentSet = true;
                                 break;
                             case "a":
-                                AddExternalLink(currentTagValue, currentHref);
+                                AddExternalLink(currentTagValue, currentHref, currentLinkColour);
                                 generatingLink = false;
                                 break;
                             default:
@@ -285,7 +291,7 @@ namespace AxeSoftware.Quest
 
         private int m_linkCount = 0;
 
-        private void AddLink(string text, string command, string verbs)
+        private void AddLink(string text, string command, string verbs, string colour)
         {
             string onclick = string.Empty;
             m_linkCount++;
@@ -298,7 +304,7 @@ namespace AxeSoftware.Quest
 
             WriteText(string.Format("<a id=\"{0}\" style=\"{1}\" class=\"cmdlink\"{2}>{3}</a>",
                 linkid,
-                GetCurrentFormat(m_linkForeground),
+                GetCurrentFormat(colour ?? m_linkForeground),
                 onclick,
                 text
                 ));
@@ -312,10 +318,10 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private void AddExternalLink(string text, string href)
+        private void AddExternalLink(string text, string href, string colour)
         {
             WriteText(string.Format("<a style=\"{0}\" class=\"cmdlink\" onclick=\"goUrl('{1}')\">{2}</a>",
-                GetCurrentFormat(m_linkForeground),
+                GetCurrentFormat(colour ?? m_linkForeground),
                 href,
                 text));
         }
@@ -385,5 +391,36 @@ namespace AxeSoftware.Quest
         public string PlayerOverrideForeground { get; set; }
         public string PlayerOverrideFontFamily { get; set; }
         public float PlayerOverrideFontSize { get; set; }
+
+        public static string GetUIHTML()
+        {
+            using (Stream stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("PlayerController.playercore.htm"))
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        public static IJavaScriptParameter ListDataParameter(List<ListData> list)
+        {
+            var convertedList = new Dictionary<string, string>();
+            int count = 1;
+            foreach (ListData data in list)
+            {
+                convertedList.Add(
+                    string.Format("k{0}", count),
+                    string.Format("{0}:{1}", data.Text, VerbString(data.Verbs))
+                );
+                count++;
+            }
+            return new JSONParameter(convertedList);
+        }
+
+        public static string VerbString(IEnumerable<string> verbs)
+        {
+            return string.Join("/", verbs);
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 function scrollToEnd() {
     $('html, body').animate({ scrollTop: $(document).height() }, 0);
+    $("#txtCommand").focus();
 }
 
 function sendCommand(text) {
@@ -16,6 +17,10 @@ function goUrl(href) {
     UIEvent("GoURL", href);
 }
 
+function sendEndWait() {
+    UIEvent("EndWait", "");
+}
+
 function UIEvent(cmd, parameter) {
     var elem = $("#_UIEvent");
     elem.html(cmd + " " + parameter);
@@ -28,32 +33,27 @@ function SetBackground(color) {
     $("#gridPanel").css("background-color", color);
 }
 
-function gameFinished() {
-    // we don't need to do anything - this function is just required for compatibility with WebPlayer
-}
-
 function disableMainScrollbar() {
     $("body").css("overflow", "hidden");
 }
 
-function setPanelHeight() {
-    if (_showGrid) return;
-    setTimeout(function () {
-        var height = $("#gamePanel").height();
-        if ($("#gamePanel").html() == "") {
-            // workaround for IE weirdness where an empty div has height
-            height = 0;
-            $("#gamePanel").hide();
-        }
-        else {
-            $("#gamePanel").show();
-        }
-        $("#gamePanelSpacer").height(height);
-        scrollToEnd();
-    }, 100);
+function ui_init() {
+    $("#gameTitle").hide();
+    $("#cmdSave").hide();
+    $("#cmdExitFullScreen").click(function () {
+        UIEvent("ExitFullScreen", "");
+    });
 }
 
-function setPanelContents(html) {
-    $("#gamePanel").html(html);
-    setPanelHeight();
+function updateListEval(listName, listData) {
+    updateList(listName, eval("(" + listData + ")"));
+}
+
+function showExitFullScreenButton(show) {
+    if (eval(show)) {
+        $("#cmdExitFullScreen").show();
+    }
+    else {
+        $("#cmdExitFullScreen").hide();
+    }
 }

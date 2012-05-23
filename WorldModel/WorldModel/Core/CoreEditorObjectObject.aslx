@@ -13,10 +13,38 @@
     </control>
 
     <control>
+      <caption>Hyperlink options</caption>
+      <controltype>title</controltype>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>If you specify a link colour here, it will override the default colour specified on the game Display tab.</caption>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <caption>Link colour</caption>
+      <attribute>linkcolour</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Display verbs appear when the object hyperlink is clicked, and also as buttons in the "Places and Objects" list.</caption>
+    </control>
+
+    <control>
       <caption>Display verbs</caption>
       <controltype>list</controltype>
       <attribute>displayverbs</attribute>
       <editprompt>Please enter a verb</editprompt>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Inventory verbs appear when the object hyperlink is clicked from an "inventory" command, and also as buttons in the "Inventory" list.</caption>
     </control>
 
     <control>

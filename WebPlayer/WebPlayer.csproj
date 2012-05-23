@@ -160,6 +160,10 @@
       <Project>{5E626E4F-BB7A-4262-9EB3-B37069A1C844}</Project>
       <Name>PlayerController</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{0E926905-F750-49F9-AEBD-CE14B2B231D8}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WorldModel\WorldModel\WorldModel.csproj">
       <Project>{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}</Project>
       <Name>WorldModel</Name>

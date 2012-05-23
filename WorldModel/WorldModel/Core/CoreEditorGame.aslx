@@ -260,11 +260,33 @@
       </control>
       <control>
         <controltype>dropdown</controltype>
-        <caption>Background</caption>
+        <caption>Background colour</caption>
         <attribute>defaultbackground</attribute>
         <validvalues type="list">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
+
+      <control>
+        <controltype>file</controltype>
+        <caption>Background image</caption>
+        <attribute>backgroundimage</attribute>
+        <source>[EditorImageFormats]</source>
+        <filefiltername>Picture Files</filefiltername>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>setbackgroundopacity</attribute>
+        <caption>Set background opacity</caption>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <attribute>backgroundopacity</attribute>
+        <caption>Opacity</caption>
+        <onlydisplayif>game.setbackgroundopacity</onlydisplayif>
+      </control>
+
       <control>
         <controltype>dropdown</controltype>
         <caption>Foreground</caption>

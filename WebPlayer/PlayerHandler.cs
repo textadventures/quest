@@ -5,6 +5,7 @@ using System.Web;
 using AxeSoftware.Quest;
 using System.Xml;
 using System.Configuration;
+using AxeSoftware.Utility.JSInterop;
 
 namespace WebPlayer
 {
@@ -75,6 +76,11 @@ namespace WebPlayer
             }
 
             return success;
+        }
+
+        internal static string GetUI()
+        {
+            return PlayerHelper.GetUIHTML();
         }
 
         void RequestNextTimerTick(int seconds)

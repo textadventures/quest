@@ -7,17 +7,19 @@ Public Class PlayerHTML
     Public Event CommandRequested(command As String)
     Public Event SendEvent(eventName As String, param As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
+    Public Event EndWait()
+    Public Event ExitFullScreen()
 
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
     Private m_deleteFile As String = Nothing
     Private m_navigationAllowed As Boolean = True
     Private m_buffer As New List(Of Action)
     Private m_internetExplorerVersion As Single = 0.0
+    Private m_resetting As Boolean = False
 
     Public Sub Setup()
         m_navigationAllowed = True
         wbOutput.ScriptErrorsSuppressed = True
-        wbOutput.Navigate(m_baseHtmlPath)
         Dim key As RegistryKey = Registry.LocalMachine.OpenSubKey("Software\Microsoft\Internet Explorer")
         If key IsNot Nothing Then
             Dim version As String = DirectCast(key.GetValue("Version", ""), String)
@@ -50,6 +52,10 @@ Public Class PlayerHTML
     End Sub
 
     Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
+        If m_resetting Then
+            m_resetting = False
+            Return
+        End If
         wbOutput.ScriptErrorsSuppressed = False
         AddHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
         AddUIEventElement()
@@ -100,6 +106,10 @@ Public Class PlayerHTML
                 RunASLEvent(args)
             Case "GoURL"
                 GoURL(args)
+            Case "EndWait"
+                RaiseEvent EndWait()
+            Case "ExitFullScreen"
+                RaiseEvent ExitFullScreen()
         End Select
 
     End Sub
@@ -157,17 +167,20 @@ Public Class PlayerHTML
     End Sub
 
     Private Const k_scriptsPlaceholder As String = "<!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->"
+    Private Const k_htmlUIPlaceholder As String = "<!-- HTML_UI_PLACEHOLDER -->"
 
-    Public Sub InitialiseScripts(scripts As IEnumerable(Of String))
+    Public Sub InitialiseHTMLUI(scripts As IEnumerable(Of String))
         ' Construct an HTML page based on the default Blank.htm, but with additional <script> tags
         ' for each external Javascript file this game wants to use.
 
         Dim htmlPath As String = System.IO.Path.GetTempFileName
 
         Dim scriptsHtml As String = String.Empty
-        For Each script As String In scripts
-            scriptsHtml += String.Format("<script type=""text/javascript"" src=""{0}""></script>", script)
-        Next
+        If scripts IsNot Nothing Then
+            For Each script As String In scripts
+                scriptsHtml += String.Format("<script type=""text/javascript"" src=""{0}""></script>", script)
+            Next
+        End If
 
         Dim htmlContent As String = System.IO.File.ReadAllText(m_baseHtmlPath)
 
@@ -178,6 +191,8 @@ Public Class PlayerHTML
 
         ' Now we can insert the custom <script> elements
         htmlContent = htmlContent.Replace(k_scriptsPlaceholder, scriptsHtml)
+
+        htmlContent = htmlContent.Replace(k_htmlUIPlaceholder, PlayerHelper.GetUIHTML())
 
         ' Write our customised html file to the temp folder
         System.IO.File.WriteAllText(htmlPath, htmlContent)
@@ -231,4 +246,59 @@ Public Class PlayerHTML
             wbOutput.ScriptErrorsSuppressed = value
         End Set
     End Property
+
+    Public Sub UpdateLocation(location As String)
+        InvokeScript("updateLocation", location)
+    End Sub
+
+    Private Shared s_elementMap As New Dictionary(Of String, String) From
+    {
+        {"Panes", "#gamePanes"},
+        {"Location", "#location"},
+        {"Command", "#txtCommandDiv"}
+    }
+
+    Public Sub DoShow(element As String)
+        InvokeScript("uiShow", s_elementMap(element))
+    End Sub
+
+    Public Sub DoHide(element As String)
+        InvokeScript("uiHide", s_elementMap(element))
+    End Sub
+
+    Public Sub UpdateCompass(exits As List(Of ListData))
+        InvokeScript("updateCompass", String.Join("/", From e In exits Select e.Text))
+    End Sub
+
+    Public Sub UpdatePlacesObjectsList(list As List(Of ListData))
+        InvokeScript("updateListEval", "placesobjects", PlayerHelper.ListDataParameter(list).GetParameter())
+    End Sub
+
+    Public Sub UpdateInventoryList(list As List(Of ListData))
+        InvokeScript("updateListEval", "inventory", PlayerHelper.ListDataParameter(list).GetParameter())
+    End Sub
+
+    Public Sub BeginWait()
+        InvokeScript("beginWait")
+    End Sub
+
+    Public Sub WaitEnded()
+        InvokeScript("waitEnded")
+    End Sub
+
+    Public Sub UpdateStatus(status As String)
+        InvokeScript("updateStatus", status)
+    End Sub
+
+    Public Sub ShowExitFullScreenButton(show As Boolean)
+        InvokeScript("showExitFullScreenButton", If(show, "true", "false"))
+        ClearBuffer()
+    End Sub
+
+    Public Sub Reset()
+        m_navigationAllowed = True
+        m_resetting = True
+        RemoveHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
+        wbOutput.Navigate("about:blank")
+    End Sub
 End Class

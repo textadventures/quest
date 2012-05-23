@@ -3,7 +3,6 @@
 Public Class Main
 
     Private m_currentFile As String
-    Private m_loaded As Boolean = False
     Private m_playingEditorGame As Boolean = False
     Private m_cmdLineLaunch As String = Nothing
     Private Delegate Sub MenuHandler()
@@ -63,9 +62,11 @@ Public Class Main
     End Sub
 
     Private Sub ctlPlayer_Quit() Handles ctlPlayer.Quit
+        If Not ctlPlayer.Visible Then Return
         FullScreen = False
         If m_playingEditorGame Then
             ctlPlayer.Visible = False
+            ctlPlayer.ResetAfterGameFinished()
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.Editor
             ctlEditor.Visible = True
             m_playingEditorGame = False
@@ -76,6 +77,7 @@ Public Class Main
             ctlMenu.Mode = Quest.Controls.Menu.MenuMode.GameBrowser
             ctlLauncher.RefreshLists()
             ctlPlayer.Visible = False
+            ctlPlayer.ResetAfterGameFinished()
             ctlLauncherHost.Visible = True
             SetWindowTitle()
         End If
@@ -140,7 +142,6 @@ Public Class Main
                 ctlPlayer.Visible = True
                 ctlPlayer.SetMenu(ctlMenu)
                 Me.ResumeLayout()
-                'ctlPlayer.RestoreSplitterPositions()
                 Application.DoEvents()
                 ctlPlayer.UseGameColours = Options.Instance.GetBooleanValue(OptionNames.UseGameColours)
                 ctlPlayer.SetPlayerOverrideColours(
