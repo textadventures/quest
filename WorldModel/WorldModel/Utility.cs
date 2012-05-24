@@ -6,6 +6,12 @@ using System.Text.RegularExpressions;
 
 namespace AxeSoftware.Quest
 {
+    public class MismatchingQuotesException : Exception
+    {
+        public MismatchingQuotesException() : base("Missing quote character (\")") { }
+        public MismatchingQuotesException(string message, System.Exception inner) : base(message, inner) { }
+    }
+
     public static class Utility
     {
         private const string k_dotReplacementString = "___DOT___";
@@ -348,7 +354,7 @@ namespace AxeSoftware.Quest
             }
             
             if (!gotCloseQuote)
-                throw new Exception("Missing '\"'");
+                throw new MismatchingQuotesException();
                 
             result.Add(curParam);
 

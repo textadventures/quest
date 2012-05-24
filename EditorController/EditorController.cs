@@ -2288,24 +2288,28 @@ namespace AxeSoftware.Quest
 
         public ValidationResult ValidateExpression(string expression)
         {
-            string obscured = Utility.ObscureStrings(expression);
+            string obscured = String.Empty;
+            try
+            {
+                obscured = Utility.ObscureStrings(expression);
+            }
+            catch (MismatchingQuotesException e)
+            {
+                return new ValidationResult { Valid = false, Message = ValidationMessage.MismatchingQuotes };
+            }
+
             int braceCount = 0;
-            bool inQuote = false;
             foreach (char c in obscured)
             {
                 if (c == '(') braceCount++;
                 if (c == ')') braceCount--;
-                if (c == '\"') inQuote = !inQuote;
             }
 
             if (braceCount != 0)
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.MismatchingBrackets };
             }
-            if (inQuote)
-            {
-                return new ValidationResult { Valid = false, Message = ValidationMessage.MismatchingQuotes };
-            }
+            
             return new ValidationResult { Valid = true };
         }
 

@@ -51,12 +51,11 @@ namespace WorldModelTests
             //missing end quote
             try
             {
-                Utility.ObscureStrings("\"foo");
+                Utility.ObscureStrings("\"missing end quote");
                 Assert.Fail();
             }
-            catch (Exception e)
+            catch (MismatchingQuotesException e)
             {
-                Assert.AreEqual("Missing '\"'", e.Message);
             }
         }
 
