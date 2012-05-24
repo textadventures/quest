@@ -9,7 +9,6 @@ namespace AxeSoftware.Quest
     public class MismatchingQuotesException : Exception
     {
         public MismatchingQuotesException() : base("Missing quote character (\")") { }
-        public MismatchingQuotesException(string message, System.Exception inner) : base(message, inner) { }
     }
 
     public static class Utility
