@@ -502,5 +502,16 @@ namespace AxeSoftware.Quest.Functions
         {
             return m_worldModel.State != GameState.Finished;
         }
+
+        public QuestList<Element> ObjectListSort(QuestList<Element> list, params string[] attribute)
+        {
+            IOrderedEnumerable<Element> result = list.OrderBy(e => e.Fields.Get(attribute[0]));
+            for (int i = 1; i < attribute.Length; i++)
+            {
+                int idx = i;    // need a local copy of i for the lambda
+                result = result.ThenBy(e => e.Fields.Get(attribute[idx]));
+            }
+            return new QuestList<Element>(result);
+        }
     }
 }
