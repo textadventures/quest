@@ -204,7 +204,7 @@ function initialiseButtons() {
     });
 }
 
-function initialiseElementEditor(tab) {
+function initialiseElementEditor() {
     finishFormSubmit();
     clearUnsavedChanges();
     var pageTitle = $("#_pageTitle").val();

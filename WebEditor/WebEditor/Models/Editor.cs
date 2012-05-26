@@ -11,5 +11,6 @@ namespace WebEditor.Models
         public bool SimpleMode { get; set; }
         public string ErrorRedirect { get; set; }
         public string PlayURL { get; set; }
+        public int CacheBuster { get; set; }
     }
 }
