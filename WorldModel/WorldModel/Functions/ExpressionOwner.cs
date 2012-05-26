@@ -513,5 +513,10 @@ namespace AxeSoftware.Quest.Functions
             }
             return new QuestList<Element>(result);
         }
+
+        public QuestList<Element> ObjectListSortDescending(QuestList<Element> list, params string[] attribute)
+        {
+            return new QuestList<Element>(ObjectListSort(list, attribute).Reverse());
+        }
     }
 }
