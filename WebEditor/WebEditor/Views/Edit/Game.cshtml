@@ -107,9 +107,7 @@
                 $("#elementEditor").load('@Html.Raw(@Url.Action("EditElement", new { id = Model.GameId, key = "KEY", tab = "TAB" }))'.replace("KEY", data.rslt.obj.attr("data-key").replace(/ /g, "%20")).replace("TAB", _selectTab), function () {
                     _selectTab = "";
                     initialiseElementEditor();
-                    setTimeout(function () {
-                        $("#loading").hide();
-                    }, 1000);
+                    $("#loading").hide();
                 });
             }
         }).delegate("a", "click", function (event, data) { event.preventDefault(); })
