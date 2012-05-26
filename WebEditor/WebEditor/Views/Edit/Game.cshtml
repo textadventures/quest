@@ -100,7 +100,7 @@
             }
             if ($("#elementEditorSave").length > 0) {
                 // save current element editor first
-                $("#_redirectToElement").val(data.rslt.obj.attr("data-key"));
+                $("#_redirectToElement").val(data.rslt.obj.data("key"));
                 $("#elementEditorSave").submit();
             }
             else {
