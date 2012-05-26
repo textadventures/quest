@@ -79,6 +79,11 @@
 
     function toplevelAdditionalAction(action) {
         $("#_additionalAction").val(action);
+        submitForm();
+    }
+
+    function submitForm() {
+        //deinitialiseElementEditor();
         $("#elementEditorSave").submit();
     }
 
@@ -101,7 +106,7 @@
             if ($("#elementEditorSave").length > 0) {
                 // save current element editor first
                 $("#_redirectToElement").val(data.rslt.obj.data("key"));
-                $("#elementEditorSave").submit();
+                submitForm();
             }
             else {
                 $("#elementEditor").load('@Html.Raw(@Url.Action("EditElement", new { id = Model.GameId, key = "KEY", tab = "TAB" }))'.replace("KEY", data.rslt.obj.attr("data-key").replace(/ /g, "%20")).replace("TAB", _selectTab), function () {

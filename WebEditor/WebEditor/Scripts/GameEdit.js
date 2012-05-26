@@ -809,6 +809,71 @@ function initialiseElementEditor() {
     }
 }
 
+//function deinitialiseElementEditor() {
+//    $("#elementEditorTabs").tabs("destroy");
+//    $(".stringlist-add").button("destroy");
+//    $(".stringlist-edit").button("destroy");
+//    $(".stringlist-delete").button("destroy");
+//    $(".stringlist").unbind("dblclick");
+//    $(".stringlist").unbind("change");
+//    $(".script-add").button("destroy");
+//    $(".script-delete").button("destroy");
+//    $(".script-cut").button("destroy");
+//    $(".script-copy").button("destroy");
+//    $(".script-paste").button("destroy");
+//    $(".script-moveup").button("destroy");
+//    $(".script-movedown").button("destroy");
+//    $(".script-if-add-else").button("destroy");
+//    $(".script-if-add-elseif").button("destroy");
+//    $(".script-select").unbind("click");
+//    $(".ifsection-select").unbind("click");
+//    $(".ifsection-delete").button("destroy");
+//    $(".expression-dropdown").unbind("change");
+//    $(".template-dropdown").unbind("change");
+//    $(".script-dictionary-add").button("destroy");
+//    $(".error-clear").button("destroy");
+//    $(".scriptDictionarySection-select").unbind("click");
+//    $(".scriptDictionarySection-delete").button("destroy");
+//    $(".string-dictionary-add").button("destroy");
+//    $(".gamebookoptions-addnew").button("destroy");
+//    $(".gamebookoptions-link").button("destroy");
+//    $(".stringDictionarySection-select").unbind("click");
+//    $(".stringDictionarySection-delete").button("destroy");
+//    // TO DO: Unbind   $('textarea.richtext').tinymce({
+//    $(".multi-dropdown").unbind("change");
+//    $(".types-dropdown").unbind("change");
+//    $(".elementslist-add").button("destroy");
+//    $(".elementslist-edit").button("destroy");
+//    $(".elementslist-delete").button("destroy");
+//    $(".elementslist-moveup").button("destroy");
+//    $(".elementslist-movedown").button("destroy");
+//    $(".elementslist").unbind("change");
+//    $(".compass-direction").unbind("change");
+//    $(".compass-direction-edit").button("destroy");
+//    $(".compass-direction-link").unbind("click");
+//    $(".compassDirection").unbind("click");
+//    $(".compass-direction-create").button("destroy");
+//    $(".compass-direction-create-look").button("destroy");
+//    $(".exitslist-add").button("destroy");
+//    $(".exitslist-edit").button("destroy");
+//    $(".exitslist-delete").button("destroy");
+//    $(".exitslist-moveup").button("destroy");
+//    $(".exitslist-movedown").button("destroy");
+//    $(".exitslist").unbind("change");
+//    $(".elementEditorCheckbox").unbind("change");
+//    $(".elementEditorTextbox").unbind("change");
+//    $(".elementEditorTextbox").unbind("keydown");
+//    $(".elementEditorDropdown").unbind("change");
+//    $(".verbs-add").button("destroy");
+//    $(".verbs-delete").button("destroy");
+//    $(".verbs-select").unbind("click");
+//    $(".file-upload").button("destroy");
+//    $("#button-move").button("destroy");
+//    $("#button-delete").button("destroy");
+//    $("#button-publish").button("destroy");
+//    $(".elementLink").unbind("click");
+//}
+
 function stringDictionaryAdd(button, prompt) {
     var key = button.attr("data-key");
     if (button.attr("data-source") == "object") {
@@ -910,7 +975,7 @@ function stringListEdit(key, prompt) {
 function sendAdditionalAction(action) {
     $("#_additionalAction").val(action);
     $("#_additionalActionTab").val($("#elementEditorTabs").tabs('option', 'selected'));
-    $("#elementEditorSave").submit();
+    submitForm();
 }
 
 function updateEnabledButtons(buttons) {
