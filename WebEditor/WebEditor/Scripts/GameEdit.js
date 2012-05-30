@@ -1038,8 +1038,7 @@ function addNewCommand() {
 }
 
 function selectTreeNode(node) {
-    $("#gameTree").jstree("deselect_all");
-    $("#gameTree").jstree("select_node", "#tree-" + node.replace(/ /g, "-"));
+    $("#gameTree").jstree("select_node", "#tree-" + node.replace(/ /g, "-"), true);
 }
 
 function capFirst(text) {

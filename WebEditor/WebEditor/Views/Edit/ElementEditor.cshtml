@@ -53,7 +53,7 @@ Working...
     </div>
     }
 
-    @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm", OnComplete = "initialiseElementEditor", OnFailure = "ajaxError", OnBegin = "beginFormSubmit" }))
+    @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditor", OnComplete = "initialiseElementEditor", OnFailure = "ajaxError", OnBegin = "beginFormSubmit" }))
     {
         <input type="hidden" name="_game_id" id="_game_id" value="@Model.GameId" />
         <input type="hidden" name="_key" id="_key" value="@Model.Key" />
