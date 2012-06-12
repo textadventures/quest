@@ -15,12 +15,19 @@ namespace AxeSoftware.Quest.Scripts
 
         protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
         {
-            return new CreateScript(scriptContext, new Expression<string>(parameters[0], scriptContext));
+            switch (parameters.Count)
+            {
+                case 1:
+                    return new CreateScript(scriptContext, new Expression<string>(parameters[0], scriptContext));
+                case 2:
+                    return new CreateScript(scriptContext, new Expression<string>(parameters[0], scriptContext), new Expression<string>(parameters[1], scriptContext));
+            }
+            return null;
         }
 
         protected override int[] ExpectedParameters
         {
-            get { return new int[] { 1 }; }
+            get { return new int[] { 1, 2 }; }
         }
     }
 
@@ -29,6 +36,7 @@ namespace AxeSoftware.Quest.Scripts
         private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
         private IFunction<string> m_expr;
+        private IFunction<string> m_type;
 
         public CreateScript(ScriptContext scriptContext, IFunction<string> expr)
         {
@@ -37,19 +45,46 @@ namespace AxeSoftware.Quest.Scripts
             m_expr = expr;
         }
 
+        public CreateScript(ScriptContext scriptContext, IFunction<string> expr, IFunction<string> type)
+            : this(scriptContext, expr)
+        {
+            m_type = type;
+        }
+
         protected override ScriptBase CloneScript()
         {
-            return new CreateScript(m_scriptContext, m_expr.Clone());
+            if (m_type == null)
+            {
+                return new CreateScript(m_scriptContext, m_expr.Clone());
+            }
+            else
+            {
+                return new CreateScript(m_scriptContext, m_expr.Clone(), m_type.Clone());
+            }
         }
 
         public override void Execute(Context c)
         {
-            m_worldModel.ObjectFactory.CreateObject(m_expr.Execute(c));
+            if (m_type == null)
+            {
+                m_worldModel.ObjectFactory.CreateObject(m_expr.Execute(c));
+            }
+            else
+            {
+                m_worldModel.ObjectFactory.CreateObject(m_expr.Execute(c), ObjectType.Object, true, new List<string> { m_type.Execute(c) }, null);
+            }
         }
 
         public override string Save()
         {
-            return SaveScript("create", m_expr.Save());
+            if (m_type == null)
+            {
+                return SaveScript("create", m_expr.Save());
+            }
+            else
+            {
+                return SaveScript("create", m_expr.Save(), m_type.Save());
+            }
         }
 
         public override string Keyword
@@ -62,12 +97,30 @@ namespace AxeSoftware.Quest.Scripts
 
         public override object GetParameter(int index)
         {
-            return m_expr.Save();
+            switch (index)
+            {
+                case 0:
+                    return m_expr.Save();
+                case 1:
+                    return m_type == null ? null : m_type.Save();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public override void SetParameterInternal(int index, object value)
         {
-            m_expr = new Expression<string>((string)value, m_scriptContext);
+            switch (index)
+            {
+                case 0:
+                    m_expr = new Expression<string>((string)value, m_scriptContext);
+                    break;
+                case 1:
+                    m_type = new Expression<string>((string)value, m_scriptContext);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 

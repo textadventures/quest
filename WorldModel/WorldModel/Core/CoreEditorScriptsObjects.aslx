@@ -277,6 +277,19 @@
       <attribute>0</attribute>
       <simple>name</simple>
     </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Type (optional):</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>name</simple>
+      <nullable/>
+    </control>
   </editor>
 
   <editor>
