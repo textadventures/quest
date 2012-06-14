@@ -272,7 +272,7 @@ namespace AxeSoftware.Quest
                 if (WorldModel.Elements.ContainsKey(ElementType.ObjectType, defaultType))
                 {
                     if (initialTypes == null) initialTypes = new List<string>();
-                    initialTypes.Add(defaultType);
+                    initialTypes.Insert(0, defaultType);
                 }
             }
 
