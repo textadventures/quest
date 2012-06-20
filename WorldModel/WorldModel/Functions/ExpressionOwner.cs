@@ -62,6 +62,16 @@ namespace AxeSoftware.Quest.Functions
             return obj.Fields.GetAsType<int>(property);
         }
 
+        public bool HasDouble(Element obj, string property)
+        {
+            return obj.Fields.HasType<double>(property);
+        }
+
+        public double GetDouble(Element obj, string property)
+        {
+            return obj.Fields.GetAsType<double>(property);
+        }
+
         public bool HasScript(Element obj, string property)
         {
             return obj.Fields.HasType<IScript>(property);
@@ -362,6 +372,11 @@ namespace AxeSoftware.Quest.Functions
         public int ToInt(string number)
         {
             return int.Parse(number);
+        }
+
+        public double ToDouble(string number)
+        {
+            return double.Parse(number);
         }
 
         public string ToString(int number)

@@ -326,6 +326,7 @@
     </None>
     <None Include="Core\Languages\Italiano.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\Templates\English.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
