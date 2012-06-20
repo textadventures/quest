@@ -204,7 +204,7 @@ function initialiseButtons() {
     });
 }
 
-function initialiseElementEditor(tab) {
+function initialiseElementEditor() {
     finishFormSubmit();
     clearUnsavedChanges();
     var pageTitle = $("#_pageTitle").val();
@@ -464,38 +464,38 @@ function initialiseElementEditor(tab) {
         var key = $(this).attr("data-key");
         sendAdditionalAction("stringdictionary delete " + key + ";" + getSelectedStringDictionaryItems(key));
     });
-    $('textarea.richtext').tinymce({
-        script_url: '../../Scripts/tiny_mce/tiny_mce.js',
-        theme: "advanced",
-        plugins: "inlinepopups,searchreplace,paste,directionality",
-        theme_advanced_buttons1: "bold,italic,underline",
-        theme_advanced_buttons2: "",
-        theme_advanced_buttons3: "",
-        theme_advanced_toolbar_location: "top",
-        theme_advanced_toolbar_align: "left",
-        theme_advanced_statusbar_location: "none",
-        forced_root_block: "",
-        force_br_newlines: true,
-        force_p_newlines: false,
-        gecko_spellcheck: true,
-        inline_styles: false,
-        formats: {
-            bold: { inline: 'b' },
-            italic: { inline: 'i' },
-            underline: { inline: 'u' }
-        },
-        valid_elements: "b,i,u,br",
-        onchange_callback: function () {
-            setUnsavedChanges();
-        },
-        setup: function (ed) {
-            ed.onKeyUp.add(function (ed, e) {
-                if (isCharKey(e.keyCode)) {
-                    setUnsavedChanges();
-                }
-            });
-        }
-    });
+//    $('textarea.richtext').tinymce({
+//        script_url: '../../Scripts/tiny_mce/tiny_mce.js',
+//        theme: "advanced",
+//        plugins: "inlinepopups,searchreplace,paste,directionality",
+//        theme_advanced_buttons1: "bold,italic,underline",
+//        theme_advanced_buttons2: "",
+//        theme_advanced_buttons3: "",
+//        theme_advanced_toolbar_location: "top",
+//        theme_advanced_toolbar_align: "left",
+//        theme_advanced_statusbar_location: "none",
+//        forced_root_block: "",
+//        force_br_newlines: true,
+//        force_p_newlines: false,
+//        gecko_spellcheck: true,
+//        inline_styles: false,
+//        formats: {
+//            bold: { inline: 'b' },
+//            italic: { inline: 'i' },
+//            underline: { inline: 'u' }
+//        },
+//        valid_elements: "b,i,u,br",
+//        onchange_callback: function () {
+//            setUnsavedChanges();
+//        },
+//        setup: function (ed) {
+//            ed.onKeyUp.add(function (ed, e) {
+//                if (isCharKey(e.keyCode)) {
+//                    setUnsavedChanges();
+//                }
+//            });
+//        }
+//    });
     $(".multi-dropdown").change(function () {
         var key = $(this).attr("data-key");
         var value = $(this).find('option:selected').attr("value");
@@ -809,6 +809,71 @@ function initialiseElementEditor(tab) {
     }
 }
 
+//function deinitialiseElementEditor() {
+//    $("#elementEditorTabs").tabs("destroy");
+//    $(".stringlist-add").button("destroy");
+//    $(".stringlist-edit").button("destroy");
+//    $(".stringlist-delete").button("destroy");
+//    $(".stringlist").unbind("dblclick");
+//    $(".stringlist").unbind("change");
+//    $(".script-add").button("destroy");
+//    $(".script-delete").button("destroy");
+//    $(".script-cut").button("destroy");
+//    $(".script-copy").button("destroy");
+//    $(".script-paste").button("destroy");
+//    $(".script-moveup").button("destroy");
+//    $(".script-movedown").button("destroy");
+//    $(".script-if-add-else").button("destroy");
+//    $(".script-if-add-elseif").button("destroy");
+//    $(".script-select").unbind("click");
+//    $(".ifsection-select").unbind("click");
+//    $(".ifsection-delete").button("destroy");
+//    $(".expression-dropdown").unbind("change");
+//    $(".template-dropdown").unbind("change");
+//    $(".script-dictionary-add").button("destroy");
+//    $(".error-clear").button("destroy");
+//    $(".scriptDictionarySection-select").unbind("click");
+//    $(".scriptDictionarySection-delete").button("destroy");
+//    $(".string-dictionary-add").button("destroy");
+//    $(".gamebookoptions-addnew").button("destroy");
+//    $(".gamebookoptions-link").button("destroy");
+//    $(".stringDictionarySection-select").unbind("click");
+//    $(".stringDictionarySection-delete").button("destroy");
+//    // TO DO: Unbind   $('textarea.richtext').tinymce({
+//    $(".multi-dropdown").unbind("change");
+//    $(".types-dropdown").unbind("change");
+//    $(".elementslist-add").button("destroy");
+//    $(".elementslist-edit").button("destroy");
+//    $(".elementslist-delete").button("destroy");
+//    $(".elementslist-moveup").button("destroy");
+//    $(".elementslist-movedown").button("destroy");
+//    $(".elementslist").unbind("change");
+//    $(".compass-direction").unbind("change");
+//    $(".compass-direction-edit").button("destroy");
+//    $(".compass-direction-link").unbind("click");
+//    $(".compassDirection").unbind("click");
+//    $(".compass-direction-create").button("destroy");
+//    $(".compass-direction-create-look").button("destroy");
+//    $(".exitslist-add").button("destroy");
+//    $(".exitslist-edit").button("destroy");
+//    $(".exitslist-delete").button("destroy");
+//    $(".exitslist-moveup").button("destroy");
+//    $(".exitslist-movedown").button("destroy");
+//    $(".exitslist").unbind("change");
+//    $(".elementEditorCheckbox").unbind("change");
+//    $(".elementEditorTextbox").unbind("change");
+//    $(".elementEditorTextbox").unbind("keydown");
+//    $(".elementEditorDropdown").unbind("change");
+//    $(".verbs-add").button("destroy");
+//    $(".verbs-delete").button("destroy");
+//    $(".verbs-select").unbind("click");
+//    $(".file-upload").button("destroy");
+//    $("#button-move").button("destroy");
+//    $("#button-delete").button("destroy");
+//    $("#button-publish").button("destroy");
+//    $(".elementLink").unbind("click");
+//}
+
 function stringDictionaryAdd(button, prompt) {
     var key = button.attr("data-key");
     if (button.attr("data-source") == "object") {
@@ -910,7 +975,7 @@ function stringListEdit(key, prompt) {
 function sendAdditionalAction(action) {
     $("#_additionalAction").val(action);
     $("#_additionalActionTab").val($("#elementEditorTabs").tabs('option', 'selected'));
-    $("#elementEditorSave").submit();
+    submitForm();
 }
 
 function updateEnabledButtons(buttons) {
