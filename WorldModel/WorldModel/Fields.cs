@@ -431,7 +431,7 @@ namespace AxeSoftware.Quest
 
             foreach (Element type in m_types)
             {
-                if (type.Fields.Exists(attribute))
+                if (type.Fields.Exists(attribute, false))
                 {
                     result = type.Fields.Get(attribute);
                     break;
@@ -512,7 +512,7 @@ namespace AxeSoftware.Quest
             {
                 foreach (Element type in m_types)
                 {
-                    if (type.Fields.Exists(attribute))
+                    if (type.Fields.Exists(attribute, true))
                     {
                         source = type.Name;
                         isInherited = true;
@@ -526,14 +526,17 @@ namespace AxeSoftware.Quest
             return result;
         }
 
-        internal bool Exists(string attribute)
+        internal bool Exists(string attribute, bool includeExtendableFields)
         {
             if (m_attributes.ContainsKey(attribute)) return true;
 
             foreach (Element type in m_types)
             {
-                if (type.Fields.Exists(attribute)) return true;
+                if (type.Fields.Exists(attribute, includeExtendableFields)) return true;
             }
+
+            if (includeExtendableFields && HasExtendableField(attribute)) return true;
+
             return false;
         }
 
@@ -577,6 +580,13 @@ namespace AxeSoftware.Quest
             foreach (string attribute in m_attributes.Keys)
             {
                 DebugDataItem newItem = new DebugDataItem(FormatDebugData(m_attributes[attribute]));
+                newItem.Source = m_element.Name;
+                result.Data.Add(attribute, newItem);
+            }
+
+            foreach (string attribute in m_extendableFields.Keys)
+            {
+                DebugDataItem newItem = new DebugDataItem(FormatDebugData(Get(attribute)));
                 newItem.Source = m_element.Name;
                 result.Data.Add(attribute, newItem);
             }

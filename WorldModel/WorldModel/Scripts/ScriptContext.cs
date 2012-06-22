@@ -134,7 +134,7 @@ namespace AxeSoftware.Quest.Scripts
                         }
                     } while (Utility.ContainsUnresolvedDotNotation(variable));
 
-                    if (!fields.Exists(variable))
+                    if (!fields.Exists(variable, true))
                     {
                         return null;
                     }

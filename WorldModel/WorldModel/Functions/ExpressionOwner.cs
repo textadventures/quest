@@ -94,7 +94,7 @@ namespace AxeSoftware.Quest.Functions
 
         public bool HasAttribute(Element obj, string property)
         {
-            return obj.Fields.Exists(property);
+            return obj.Fields.Exists(property, true);
         }
 
         public QuestList<string> GetAttributeNames(Element obj, bool includeInheritedAttributes)
