@@ -452,9 +452,10 @@ namespace AxeSoftware.Quest
         private object GetMergedResult(string attribute, object baseField)
         {
             IExtendableField extendableBaseField = baseField as IExtendableField;
-            if (extendableBaseField == null) return baseField;
-
             IExtendableField mergedResult = GetExtendableField(attribute);
+
+            if (extendableBaseField == null) return mergedResult;
+            if (mergedResult == null) return extendableBaseField;
 
             return mergedResult.Merge(extendableBaseField);
         }

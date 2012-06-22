@@ -15,9 +15,6 @@ namespace WorldModelTests
         {
             WorldModel worldModel = new WorldModel();
 
-            Element defaultType = worldModel.GetElementFactory(ElementType.ObjectType).Create("defaultobject");
-            defaultType.Fields.Set("listfield", new QuestList<string>());
-
             Element type1 = worldModel.GetElementFactory(ElementType.ObjectType).Create("type1");
             type1.Fields.AddFieldExtension("listfield", new QuestList<string>(new[] { "a" }, true));
 
