@@ -114,6 +114,7 @@ div#controlButtons
 #statusVars
 {
     padding: 4px;
+    max-height: 140px;
 }
 #gamePanesFinished
 {
