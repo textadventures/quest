@@ -249,7 +249,7 @@ namespace AxeSoftware.Quest
 
             private void LoadCommand(Element element, string attribute, string value)
             {
-                value = value.Replace("(", @"\(").Replace(")", @"\)").Replace(".", @"\.");
+                value = value.Replace("(", @"\(").Replace(")", @"\)").Replace(".", @"\.").Replace("?", @"\?");
                 value = m_regex.Replace(value, MatchReplace);
 
                 if (value.Contains("#"))
