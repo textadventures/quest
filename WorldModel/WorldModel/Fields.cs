@@ -377,7 +377,12 @@ namespace AxeSoftware.Quest
 
             if (name == "name" && !(value is string))
             {
-                throw new ArgumentOutOfRangeException("Invalid data type for 'name'");
+                throw new ArgumentException("Invalid data type for 'name'");
+            }
+
+            if (name == "parent" && value == m_element)
+            {
+                throw new ArgumentException(string.Format("Parent of element '{0}' cannot be set to itself", m_element.Name));
             }
 
             m_attributes[name] = value;
