@@ -395,6 +395,12 @@ namespace AxeSoftware.Quest.Functions
             return int.TryParse(number, out result);
         }
 
+        public bool IsDouble(string number)
+        {
+            double result;
+            return double.TryParse(number, out result);
+        }
+
         public string GetInput()
         {
             return m_worldModel.GetNextCommandInput(false);
