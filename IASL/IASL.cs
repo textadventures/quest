@@ -113,11 +113,18 @@ namespace AxeSoftware.Quest
     {
         private string m_text;
         private IEnumerable<string> m_verbs;
+        private string m_elementId;
 
         public ListData(string text, IEnumerable<string> verbs)
+            : this(text, verbs, null)
+        {
+        }
+
+        public ListData(string text, IEnumerable<string> verbs, string elementId)
         {
             m_text = text;
             m_verbs = verbs;
+            m_elementId = elementId;
         }
 
         public string Text
@@ -128,6 +135,11 @@ namespace AxeSoftware.Quest
         public IEnumerable<string> Verbs
         {
             get { return m_verbs; }
+        }
+
+        public string ElementId
+        {
+            get { return m_elementId; }
         }
     }
 }

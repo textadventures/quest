@@ -413,7 +413,7 @@ namespace AxeSoftware.Quest
             {
                 convertedList.Add(
                     string.Format("k{0}", count),
-                    string.Format("{0}:{1}", data.Text, VerbString(data.Verbs))
+                    Newtonsoft.Json.JsonConvert.SerializeObject(data)
                 );
                 count++;
             }

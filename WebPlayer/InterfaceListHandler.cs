@@ -22,6 +22,7 @@ namespace WebPlayer
         {
             public bool Equals(ListData x, ListData y)
             {
+                if (x.ElementId != y.ElementId) return false;
                 if (x.Text != y.Text) return false;
                 return PlayerHelper.VerbString(x.Verbs) == PlayerHelper.VerbString(y.Verbs);
             }

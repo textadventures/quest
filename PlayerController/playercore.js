@@ -279,11 +279,18 @@ function updateDir(directions, label, dir) {
     }
 }
 
-function paneButtonClick(target, verb) {
-    var selectedObject = $(target + " option:selected").text();
+function paneButtonClick(target, button) {
+    var selectedListItem = $(target + " option:selected");
+    var selectedObject = selectedListItem.text();
+    var selectedElementId = selectedListItem.data("elementid");
+    var verb = button.data("verb");
+    var metadata = new Object();
+    metadata[selectedObject] = selectedElementId;
+    var metadataString = JSON.stringify(metadata);
+
     if (selectedObject.length > 0) {
         var cmd = verb + " " + selectedObject;
-        sendCommand(cmd.toLowerCase());
+        sendCommand(cmd.toLowerCase(), metadataString);
     }
 }
 
@@ -341,21 +348,20 @@ function updateList(listName, listData) {
     $(listElement).empty();
     var count = 0;
     $.each(listData, function (key, value) {
-        var splitString = value.split(":");
-        var objectDisplayName = splitString[0];
-        var objectVerbs = splitString[1];
+        var data = JSON.parse(value);
+        var objectDisplayName = data["Text"];
 
         if (listName == "inventory") {
-            inventoryVerbs.push(objectVerbs);
+            inventoryVerbs.push(data);
         }
 
         if (listName == "placesobjects") {
-            placesObjectsVerbs.push(objectVerbs);
+            placesObjectsVerbs.push(data);
         }
 
         if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
             $(listElement).append(
-                $("<option/>").attr("value", key).text(objectDisplayName)
+                $("<option/>").attr("value", key).data("elementid", data["ElementId"]).text(objectDisplayName)
             );
             count++;
         }
@@ -369,7 +375,7 @@ function updateList(listName, listData) {
 
 function updateVerbButtons(list, verbsArray, idprefix) {
     var selectedIndex = list.prop("selectedIndex");
-    var verbs = verbsArray[selectedIndex].split("/");
+    var verbs = verbsArray[selectedIndex]["Verbs"];
     var count = 1;
     $.each(verbs, function (index, value) {
         $("#" + idprefix + count + " span").html(value);
