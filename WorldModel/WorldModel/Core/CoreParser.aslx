@@ -38,23 +38,34 @@
 
   <function name="ResolveName" parameters="variable, value, objtype" type="object">
     <![CDATA[
-    result = ResolveNameInternal(variable, value, objtype)
-    if (result <> null) {
-      return (result)
+    found = false
+    
+    if (game.pov.commandmetadata <> null) {
+      if (DictionaryContains(game.pov.commandmetadata, value)) {
+        found = true
+        return (GetObject(StringDictionaryItem(game.pov.commandmetadata, value)))
+      }
     }
-    else {
-      // TO DO: Check this behaviour. We only want to try ignoring prefixes if we have definitely got an unresolved name.
-      foreach (prefix, game.parserignoreprefixes) {
-        if (StartsWith(value, prefix + " ")) {
-          result = ResolveNameInternal(variable, Mid(value, LengthOf(prefix) + 1), objtype)
+    
+    if (not found) {
+      result = ResolveNameInternal(variable, value, objtype)
+      if (result <> null) {
+        return (result)
+      }
+      else {
+        // TO DO: Check this behaviour. We only want to try ignoring prefixes if we have definitely got an unresolved name.
+        foreach (prefix, game.parserignoreprefixes) {
+          if (StartsWith(value, prefix + " ")) {
+            result = ResolveNameInternal(variable, Mid(value, LengthOf(prefix) + 1), objtype)
+          }
         }
-      }
       
-      if (result = null and LengthOf(variable) = 0 and not GetBoolean(game.pov, "currentcommandmultiobjectpending")) {
-        UnresolvedCommand (value, game.pov.currentcommandpendingvariable)
-      }
+        if (result = null and LengthOf(variable) = 0 and not GetBoolean(game.pov, "currentcommandmultiobjectpending")) {
+          UnresolvedCommand (value, game.pov.currentcommandpendingvariable)
+        }
       
-      return (result)
+        return (result)
+      }
     }
     ]]>
   </function>
@@ -227,10 +238,11 @@
     ]]>
   </function>
 
-  <function name="HandleCommand" parameters="command">
+  <function name="HandleCommand" parameters="command, metadata">
     msg ("")
     msg ("> " + SafeXML(command))
     commands = Split(command, ".")
+    game.pov.commandmetadata = metadata
     if (ListCount(commands) = 1) {
       HandleSingleCommand (Trim(command))
     }

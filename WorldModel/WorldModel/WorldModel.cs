@@ -574,7 +574,10 @@ namespace AxeSoftware.Quest
 
                     try
                     {
-                        RunProcedure("HandleCommand", new Parameters("command", command), false);
+                        RunProcedure("HandleCommand", new Parameters(new Dictionary<string, object>{
+                            {"command", command},
+                            {"metadata", metadata}
+                        }), false);
                         TryFinishTurn();
                     }
                     catch (Exception ex)
@@ -622,19 +625,14 @@ namespace AxeSoftware.Quest
             }
         }
 
-        public void SendCommand(string command, int elapsedTime)
-        {
-            SendCommand(command, elapsedTime, null);
-        }
-
         public void SendCommand(string command, IDictionary<string, string> metadata)
         {
-            SendCommand(command, metadata);
+            SendCommand(command, 0, metadata);
         }
 
         public void SendCommand(string command)
         {
-            SendCommand(command, 0);
+            SendCommand(command, 0, null);
         }
 
         public void SendEvent(string eventName, string param)

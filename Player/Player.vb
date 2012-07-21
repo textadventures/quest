@@ -196,9 +196,9 @@ Public Class Player
 
         Try
             If m_gameTimer IsNot Nothing Then
-                m_gameTimer.SendCommand(command, GetTickCountAndStopTimer(), Nothing)
+                m_gameTimer.SendCommand(command, GetTickCountAndStopTimer(), metadata)
             Else
-                m_game.SendCommand(command)
+                m_game.SendCommand(command, metadata)
             End If
             ClearBuffer()
         Catch ex As Exception
