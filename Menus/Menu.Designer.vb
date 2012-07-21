@@ -52,6 +52,9 @@ Partial Class Menu
         Me.FindToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FullScreenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
+        Me.DebuggerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ObjectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -87,9 +90,6 @@ Partial Class Menu
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WindowMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DebuggerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
         Me.ctlMenuStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -319,6 +319,29 @@ Partial Class Menu
         Me.FullScreenToolStripMenuItem.Tag = "fullscreen"
         Me.FullScreenToolStripMenuItem.Text = "&Full Screen"
         '
+        'ToolStripSeparator9
+        '
+        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
+        Me.ToolStripSeparator9.Size = New System.Drawing.Size(191, 6)
+        '
+        'DebuggerToolStripMenuItem
+        '
+        Me.DebuggerToolStripMenuItem.Image = CType(resources.GetObject("DebuggerToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.DebuggerToolStripMenuItem.Name = "DebuggerToolStripMenuItem"
+        Me.DebuggerToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F12
+        Me.DebuggerToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
+        Me.DebuggerToolStripMenuItem.Tag = "debugger"
+        Me.DebuggerToolStripMenuItem.Text = "&Debugger"
+        '
+        'LogToolStripMenuItem
+        '
+        Me.LogToolStripMenuItem.Image = CType(resources.GetObject("LogToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.LogToolStripMenuItem.Name = "LogToolStripMenuItem"
+        Me.LogToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F11
+        Me.LogToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
+        Me.LogToolStripMenuItem.Tag = "log"
+        Me.LogToolStripMenuItem.Text = "&Log"
+        '
         'AddMenuItem
         '
         Me.AddMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PageToolStripMenuItem, Me.ObjectToolStripMenuItem, Me.RoomToolStripMenuItem, Me.ExitToolStripMenuItem1, Me.VerbToolStripMenuItem, Me.CommandToolStripMenuItem, Me.FunctionToolStripMenuItem, Me.TimerToolStripMenuItem, Me.TurnScriptToolStripMenuItem, Me.WalkthroughToolStripMenuItem1, Me.AdvancedToolStripMenuItem})
@@ -484,40 +507,41 @@ Partial Class Menu
         '
         Me.PublishToolStripMenuItem.Image = CType(resources.GetObject("PublishToolStripMenuItem.Image"), System.Drawing.Image)
         Me.PublishToolStripMenuItem.Name = "PublishToolStripMenuItem"
-        Me.PublishToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.PublishToolStripMenuItem.Size = New System.Drawing.Size(168, 22)
         Me.PublishToolStripMenuItem.Tag = "publish"
         Me.PublishToolStripMenuItem.Text = "&Publish..."
         '
         'WalkthroughToolStripMenuItem
         '
         Me.WalkthroughToolStripMenuItem.Name = "WalkthroughToolStripMenuItem"
-        Me.WalkthroughToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.WalkthroughToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F10
+        Me.WalkthroughToolStripMenuItem.Size = New System.Drawing.Size(168, 22)
         Me.WalkthroughToolStripMenuItem.Tag = "walkthrough"
         Me.WalkthroughToolStripMenuItem.Text = "&Walkthrough"
         '
         'ToolStripSeparator8
         '
         Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
-        Me.ToolStripSeparator8.Size = New System.Drawing.Size(149, 6)
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(165, 6)
         '
         'SimpleModeToolStripMenuItem
         '
         Me.SimpleModeToolStripMenuItem.Name = "SimpleModeToolStripMenuItem"
-        Me.SimpleModeToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.SimpleModeToolStripMenuItem.Size = New System.Drawing.Size(168, 22)
         Me.SimpleModeToolStripMenuItem.Tag = "simplemode"
         Me.SimpleModeToolStripMenuItem.Text = "&Simple Mode"
         '
         'WordWrapToolStripMenuItem
         '
         Me.WordWrapToolStripMenuItem.Name = "WordWrapToolStripMenuItem"
-        Me.WordWrapToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.WordWrapToolStripMenuItem.Size = New System.Drawing.Size(168, 22)
         Me.WordWrapToolStripMenuItem.Tag = "wordwrap"
         Me.WordWrapToolStripMenuItem.Text = "&Word Wrap"
         '
         'OptionsToolStripMenuItem
         '
         Me.OptionsToolStripMenuItem.Name = "OptionsToolStripMenuItem"
-        Me.OptionsToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.OptionsToolStripMenuItem.Size = New System.Drawing.Size(168, 22)
         Me.OptionsToolStripMenuItem.Tag = "options"
         Me.OptionsToolStripMenuItem.Text = "&Options..."
         Me.OptionsToolStripMenuItem.Visible = False
@@ -575,27 +599,6 @@ Partial Class Menu
         Me.WindowMenuToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.WindowMenuToolStripMenuItem.Tag = "windowmenu"
         Me.WindowMenuToolStripMenuItem.Text = "WindowMenu"
-        '
-        'LogToolStripMenuItem
-        '
-        Me.LogToolStripMenuItem.Image = CType(resources.GetObject("LogToolStripMenuItem.Image"), System.Drawing.Image)
-        Me.LogToolStripMenuItem.Name = "LogToolStripMenuItem"
-        Me.LogToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
-        Me.LogToolStripMenuItem.Tag = "log"
-        Me.LogToolStripMenuItem.Text = "&Log"
-        '
-        'DebuggerToolStripMenuItem
-        '
-        Me.DebuggerToolStripMenuItem.Image = CType(resources.GetObject("DebuggerToolStripMenuItem.Image"), System.Drawing.Image)
-        Me.DebuggerToolStripMenuItem.Name = "DebuggerToolStripMenuItem"
-        Me.DebuggerToolStripMenuItem.Size = New System.Drawing.Size(194, 22)
-        Me.DebuggerToolStripMenuItem.Tag = "debugger"
-        Me.DebuggerToolStripMenuItem.Text = "&Debugger"
-        '
-        'ToolStripSeparator9
-        '
-        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
-        Me.ToolStripSeparator9.Size = New System.Drawing.Size(191, 6)
         '
         'Menu
         '
