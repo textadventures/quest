@@ -2293,7 +2293,7 @@ namespace AxeSoftware.Quest
             {
                 obscured = Utility.ObscureStrings(expression);
             }
-            catch (MismatchingQuotesException e)
+            catch (MismatchingQuotesException)
             {
                 return new ValidationResult { Valid = false, Message = ValidationMessage.MismatchingQuotes };
             }

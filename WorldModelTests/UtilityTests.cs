@@ -54,7 +54,7 @@ namespace WorldModelTests
                 Utility.ObscureStrings("\"missing end quote");
                 Assert.Fail();
             }
-            catch (MismatchingQuotesException e)
+            catch (MismatchingQuotesException)
             {
             }
         }
