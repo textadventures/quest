@@ -15,6 +15,7 @@ namespace AxeSoftware.Quest
         bool Initialise(IPlayer player);
         void Begin();
         void SendCommand(string command);
+        void SendCommand(string command, IDictionary<string, string> metadata);
         void SendEvent(string eventName, string param);
         event PrintTextHandler PrintText;
         event UpdateListHandler UpdateList;

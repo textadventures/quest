@@ -299,7 +299,7 @@
       type = ""
     }
     if (not type = "") {
-      result = "<object"
+      result = "<object id='" + obj.name + "'"
       if (verbs <> null) {
         result = result + " verbs='" + Join(verbs, "/") + "'"
       }

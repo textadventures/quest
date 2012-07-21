@@ -98,9 +98,9 @@ namespace WebPlayer
             Finished = true;
         }
 
-        public void BindMenu(string linkid, string verbs, string text)
+        public void BindMenu(string linkid, string verbs, string text, string elementId)
         {
-            m_buffer.AddJavaScriptToBuffer("bindMenu", new StringParameter(linkid), new StringParameter(verbs), new StringParameter(text));
+            m_buffer.AddJavaScriptToBuffer("bindMenu", new StringParameter(linkid), new StringParameter(verbs), new StringParameter(text), new StringParameter(elementId));
         }
 
         private void UpdateList(ListType listType, List<ListData> items)

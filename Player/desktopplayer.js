@@ -5,8 +5,13 @@ function scrollToEnd() {
     $("#txtCommand").focus();
 }
 
-function sendCommand(text) {
-    UIEvent("RunCommand", text);
+function sendCommand(text, metadata) {
+    var data = new Object();
+    data["command"] = text;
+    if (typeof metadata != "undefined") {
+        data["metadata"] = metadata;
+    }
+    UIEvent("RunCommand", JSON.stringify(data));
 }
 
 function ASLEvent(event, parameter) {

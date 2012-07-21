@@ -436,20 +436,29 @@ function createNewDiv(alignment) {
     _currentDiv = $("#divOutputAlign" + _divCount);
 }
 
-function bindMenu(linkid, verbs, text) {
+function bindMenu(linkid, verbs, text, elementId) {
     var verbsList = verbs.split("/");
     var options = [];
+    var metadata = new Object();
+    metadata[text] = elementId;
+    var metadataString = JSON.stringify(metadata);
 
     $.each(verbsList, function (key, value) {
-        options = options.concat({ title: value, action: { type: "fn", callback: "doMenuClick('" + value.toLowerCase() + " " + text.replace("'", "\\'") + "');"} });
+        options = options.concat({
+            title: value,
+            action: {
+                type: "fn",
+                callback: "doMenuClick('" + value.toLowerCase() + " " + text.replace("'", "\\'") + "','" + metadataString + "');"
+            }
+        });
     });
 
     $("#" + linkid).jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
 }
 
-function doMenuClick(command) {
+function doMenuClick(command, metadata) {
     $("div[id^=jjmenu]").remove();
-    sendCommand(command);
+    sendCommand(command, metadata);
 }
 
 function clearScreen() {

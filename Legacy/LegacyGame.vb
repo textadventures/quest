@@ -13253,10 +13253,14 @@ ErrorHandler:
     End Property
 
     Public Sub SendCommand(command As String) Implements IASL.SendCommand
-        SendCommand(command, 0)
+        SendCommand(command, 0, Nothing)
     End Sub
 
-    Public Sub SendCommand(command As String, elapsedTime As Integer) Implements IASLTimer.SendCommand
+    Public Sub SendCommand(command As String, metadata As IDictionary(Of String, String)) Implements IASL.SendCommand
+        SendCommand(command, 0, metadata)
+    End Sub
+
+    Public Sub SendCommand(command As String, elapsedTime As Integer, metadata As IDictionary(Of String, String)) Implements IASLTimer.SendCommand
         ' The processing of commands is done in a separate thread, so things like the "enter" command can
         ' lock the thread while waiting for further input. After starting to process the command, we wait
         ' for something to happen before returning from the SendCommand call - either the command will have
@@ -13571,4 +13575,5 @@ ErrorHandler:
             Return GameASLVersion
         End Get
     End Property
+
 End Class

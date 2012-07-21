@@ -132,7 +132,7 @@ namespace AxeSoftware.Quest
             {
             }
 
-            public void BindMenu(string linkid, string verbs, string text)
+            public void BindMenu(string linkid, string verbs, string text, string elementId)
             {
             }
 

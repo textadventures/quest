@@ -555,7 +555,7 @@ namespace AxeSoftware.Quest
             get { return new List<string>(m_debuggerObjectTypes.Keys.Union(m_debuggerElementTypes.Keys)); }
         }
 
-        public void SendCommand(string command, int elapsedTime)
+        public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
         {
             if (elapsedTime > 0)
             {
@@ -620,6 +620,16 @@ namespace AxeSoftware.Quest
             {
                 SendNextTimerRequest();
             }
+        }
+
+        public void SendCommand(string command, int elapsedTime)
+        {
+            SendCommand(command, elapsedTime, null);
+        }
+
+        public void SendCommand(string command, IDictionary<string, string> metadata)
+        {
+            SendCommand(command, metadata);
         }
 
         public void SendCommand(string command)

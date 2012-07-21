@@ -13,7 +13,7 @@ namespace AxeSoftware.Quest
     {
         void OutputText(string text);
         void SetAlignment(string alignment);
-        void BindMenu(string linkid, string verbs, string text);
+        void BindMenu(string linkid, string verbs, string text, string elementId);
     }
 
     /// <summary>
@@ -68,6 +68,7 @@ namespace AxeSoftware.Quest
 
         public void PrintText(string text)
         {
+            string currentElementId = "";
             string currentTagValue = "";
             string currentVerbs = "";
             string currentCommand = "";
@@ -98,6 +99,7 @@ namespace AxeSoftware.Quest
                                 break;
                             case "object":
                                 generatingLink = true;
+                                currentElementId = reader.GetAttribute("id");
                                 currentVerbs = reader.GetAttribute("verbs");
                                 currentLinkColour = reader.GetAttribute("color");
                                 break;
@@ -156,11 +158,11 @@ namespace AxeSoftware.Quest
                                 // do nothing
                                 break;
                             case "object":
-                                AddLink(currentTagValue, null, currentVerbs, currentLinkColour);
+                                AddLink(currentTagValue, null, currentVerbs, currentLinkColour, currentElementId);
                                 generatingLink = false;
                                 break;
                             case "command":
-                                AddLink(currentTagValue, currentCommand, null, currentLinkColour);
+                                AddLink(currentTagValue, currentCommand, null, currentLinkColour, null);
                                 generatingLink = false;
                                 break;
                             case "b":
@@ -291,7 +293,7 @@ namespace AxeSoftware.Quest
 
         private int m_linkCount = 0;
 
-        private void AddLink(string text, string command, string verbs, string colour)
+        private void AddLink(string text, string command, string verbs, string colour, string elementId)
         {
             string onclick = string.Empty;
             m_linkCount++;
@@ -314,7 +316,7 @@ namespace AxeSoftware.Quest
             if (!string.IsNullOrEmpty(verbs))
             {
                 m_playerUI.OutputText(ClearBuffer());
-                m_playerUI.BindMenu(linkid, verbs, text);
+                m_playerUI.BindMenu(linkid, verbs, text, elementId);
             }
         }
 
@@ -352,7 +354,7 @@ namespace AxeSoftware.Quest
         {
             if (m_gameTimer != null)
             {
-                m_gameTimer.SendCommand(command, tickCount);
+                m_gameTimer.SendCommand(command, tickCount, null);
             }
             else
             {
@@ -421,6 +423,34 @@ namespace AxeSoftware.Quest
         public static string VerbString(IEnumerable<string> verbs)
         {
             return string.Join("/", verbs);
+        }
+
+        public class CommandData
+        {
+            public string Command { get; set; }
+            public IDictionary<string, string> Metadata { get; set; }
+        }
+
+        public static CommandData GetCommandData(string data)
+        {
+            CommandData result = new CommandData();
+
+            Dictionary<string, object> values = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(data);
+            if (values.ContainsKey("command"))
+            {
+                result.Command = values["command"] as string;
+            }
+
+            if (values.ContainsKey("metadata"))
+            {
+                string metadataString = values["metadata"] as string;
+                if (metadataString != null)
+                {
+                    result.Metadata = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(metadataString);
+                }
+            }
+
+            return result;
         }
     }
 }

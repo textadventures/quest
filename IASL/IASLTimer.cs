@@ -9,6 +9,6 @@ namespace AxeSoftware.Quest
     {
         event Action<int> RequestNextTimerTick;
         void Tick(int elapsedTime);
-        void SendCommand(string command, int elapsedTime);
+        void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata);
     }
 }

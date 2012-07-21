@@ -24,11 +24,6 @@ function keepSessionAlive() {
 
 var _waitingForSoundToFinish = false;
 
-function prepareCommand(command) {
-    $("#fldUITickCount").val(getTickCountAndStopTimer());
-    $("#fldUIMsg").val("command " + command);
-}
-
 function msgboxSubmit(text) {
     $("#msgbox").dialog("close");
     window.setTimeout(function () {
@@ -104,11 +99,17 @@ function dialogSendCancel() {
     }, 100);
 }
 
-function sendCommand(text) {
+function sendCommand(text, metadata) {
     if (_pauseMode || _waitingForSoundToFinish || _waitMode) return;
     markScrollPosition();
     window.setTimeout(function () {
-        prepareCommand(text);
+        $("#fldUITickCount").val(getTickCountAndStopTimer());
+        var data = new Object();
+        data["command"] = text;
+        if (typeof metadata != "undefined") {
+            data["metadata"] = metadata;
+        }
+        $("#fldUIMsg").val("command " + JSON.stringify(data));
         $("#cmdSubmit").click();
     }, 100);
     afterSendCommand();

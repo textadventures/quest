@@ -43,8 +43,8 @@ Public Class PlayerHTML
         InvokeScript("createNewDiv", align)
     End Sub
 
-    Public Sub BindMenu(linkid As String, verbs As String, text As String)
-        InvokeScript("bindMenu", linkid, verbs, text)
+    Public Sub BindMenu(linkid As String, verbs As String, text As String, elementId As String)
+        InvokeScript("bindMenu", linkid, verbs, text, elementId)
     End Sub
 
     Public Sub WriteLine(text As String)

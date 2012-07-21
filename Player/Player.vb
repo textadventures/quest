@@ -179,7 +179,7 @@ Public Class Player
     '    PanesVisible = Not PanesVisible
     'End Sub
 
-    Private Sub RunCommand(command As String)
+    Private Sub RunCommand(command As String, Optional metadata As IDictionary(Of String, String) = Nothing)
 
         If Not m_initialised Then Exit Sub
 
@@ -196,7 +196,7 @@ Public Class Player
 
         Try
             If m_gameTimer IsNot Nothing Then
-                m_gameTimer.SendCommand(command, GetTickCountAndStopTimer())
+                m_gameTimer.SendCommand(command, GetTickCountAndStopTimer(), Nothing)
             Else
                 m_game.SendCommand(command)
             End If
@@ -731,7 +731,8 @@ Public Class Player
     End Sub
 
     Private Sub ctlPlayerHtml_CommandRequested(command As String) Handles ctlPlayerHtml.CommandRequested
-        RunCommand(command)
+        Dim data = PlayerHelper.GetCommandData(command)
+        RunCommand(data.Command, data.Metadata)
     End Sub
 
     Private Sub ctlPlayerHtml_EndWait() Handles ctlPlayerHtml.EndWait
@@ -758,8 +759,8 @@ Public Class Player
         ClearBuffer()
     End Sub
 
-    Public Sub BindMenu(linkid As String, verbs As String, text As String) Implements IPlayerHelperUI.BindMenu
-        BeginInvoke(Sub() ctlPlayerHtml.BindMenu(linkid, verbs, text))
+    Public Sub BindMenu(linkid As String, verbs As String, text As String, elementId As String) Implements IPlayerHelperUI.BindMenu
+        BeginInvoke(Sub() ctlPlayerHtml.BindMenu(linkid, verbs, text, elementId))
     End Sub
 
     Public Sub OutputText(text As String) Implements IPlayerHelperUI.OutputText
