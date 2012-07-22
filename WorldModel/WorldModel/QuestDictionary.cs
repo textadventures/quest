@@ -34,9 +34,12 @@ namespace AxeSoftware.Quest
 
         public QuestDictionary(IDictionary<string, T> dictionary)
         {
-            foreach (var kvp in dictionary)
+            if (dictionary != null)
             {
-                m_dictionary.Add(kvp.Key, kvp.Value);
+                foreach (var kvp in dictionary)
+                {
+                    m_dictionary.Add(kvp.Key, kvp.Value);
+                }
             }
         }
 
