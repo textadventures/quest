@@ -576,7 +576,7 @@ namespace AxeSoftware.Quest
                     {
                         RunProcedure("HandleCommand", new Parameters(new Dictionary<string, object>{
                             {"command", command},
-                            {"metadata", metadata}
+                            {"metadata", new QuestDictionary<string>(metadata)}
                         }), false);
                         TryFinishTurn();
                     }

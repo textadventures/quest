@@ -28,6 +28,18 @@ namespace AxeSoftware.Quest
 
         private OrderedDictionary<string, T> m_dictionary = new OrderedDictionary<string, T>();
 
+        public QuestDictionary()
+        {
+        }
+
+        public QuestDictionary(IDictionary<string, T> dictionary)
+        {
+            foreach (var kvp in dictionary)
+            {
+                m_dictionary.Add(kvp.Key, kvp.Value);
+            }
+        }
+
         private void UndoLogAdd(object key)
         {
             if (UndoLog != null)

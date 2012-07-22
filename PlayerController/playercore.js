@@ -289,8 +289,8 @@ function paneButtonClick(target, button) {
     var metadataString = JSON.stringify(metadata);
 
     if (selectedObject.length > 0) {
-        var cmd = verb + " " + selectedObject;
-        sendCommand(cmd.toLowerCase(), metadataString);
+        var cmd = verb.toLowerCase() + " " + selectedObject;
+        sendCommand(cmd, metadataString);
     }
 }
 
