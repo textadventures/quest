@@ -117,6 +117,13 @@ namespace WebEditor.Models
                 return result;
             }
 
+            if (editorDictionary[gameId] == null)
+            {
+                Logging.Log.ErrorFormat("Current Session has game id {0} = null", gameId);
+                result.Success = false;
+                return false;
+            }
+
             Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key);
 
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
