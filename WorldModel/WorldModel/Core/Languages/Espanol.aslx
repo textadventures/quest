@@ -10,7 +10,7 @@
   <template name="UnresolvedLocation">No puedes ir por ahí.</template>
   <template name="DefaultObjectDescription">Nada fuera de lo común.</template>
   <template name="DefaultSelfDescription">Parece bien.</template>
-  <dynamictemplate name="TakeSuccessful">"object.article + " coges."</dynamictemplate>
+  <dynamictemplate name="TakeSuccessful">object.article + " coges."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"No puedes coger" + object.article + "."</dynamictemplate>
   <template name="SeeListHeader">Puedes ver</template>
   <template name="GoListHeader">Puedes ir</template>
@@ -61,8 +61,8 @@
   <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " ya está cerrado."</dynamictemplate>
   <dynamictemplate name="CantOpen">"No puedes abrir " + object.article + "."</dynamictemplate>
   <dynamictemplate name="CantClose">"No puedes cerrar " + object.article + "."</dynamictemplate>
-  <dynamictemplate name="OpenSuccessful">"object.article + " abres."</dynamictemplate>
-  <dynamictemplate name="CloseSuccessful">"object.article + " cierras."</dynamictemplate>
+  <dynamictemplate name="OpenSuccessful">object.article + " abres."</dynamictemplate>
+  <dynamictemplate name="CloseSuccessful">object.article + " cierras."</dynamictemplate>
   <template name="CannotDoThat">No puedes hacer eso.</template>
   <dynamictemplate name="AlreadyThere">CapFirst(object.gender) + " ya está ahí."</dynamictemplate>
   <template name="Done">Hecho.</template>
@@ -84,8 +84,8 @@
   <dynamictemplate name="CannotLockOpen">"No puedes cerrar con llave " + object.article + " cuando " + object.gender + " " + Conjugate(object, "be") + " abierto."</dynamictemplate>
   <dynamictemplate name="AlreadySwitchedOn">CapFirst(object.gender) + " ya está encendido."</dynamictemplate>"
   <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.gender) + " está ya encendido."</dynamictemplate>"
-  <dynamictemplate name="SwitchedOn"> object.article + " enciendes."</dynamictemplate>
-  <dynamictemplate name="SwitchedOff"> object.article + " apagas."</dynamictemplate>
+  <dynamictemplate name="SwitchedOn">object.article + " enciendes."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">object.article + " apagas."</dynamictemplate>
   <template name="DefaultOops">No hay nada que corregir.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " no contiene " + GetDisplayAlias(object2) + "."</dynamictemplate>
   <dynamictemplate name="YouLooking">"Miras " + text +"."</dynamictemplate>
