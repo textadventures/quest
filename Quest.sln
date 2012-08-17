@@ -1,5 +1,12 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE40EC95-3D0D-4289-B71B-3CF204C4C050}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		Quest.vsmdi = Quest.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Quest", "Quest\Quest.vbproj", "{C7367F28-22F8-4111-A434-26D497EF0FBA}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Player", "Player\Player.vbproj", "{F383D1E8-2883-420D-9CAB-223A2B72B1DE}"
@@ -20,13 +27,6 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Menus", "Menus\Menus.vbproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorControllerTests", "EditorControllerTests\EditorControllerTests.csproj", "{647ED8C3-08D0-4E68-817E-AA4714AB1448}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE40EC95-3D0D-4289-B71B-3CF204C4C050}"
-	ProjectSection(SolutionItems) = preProject
-		Local.testsettings = Local.testsettings
-		Quest.vsmdi = Quest.vsmdi
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
-EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LegacyASL", "Legacy\LegacyASL.vbproj", "{42EEDC11-C395-4CE8-80E3-057AF4100DDE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPlayer", "WebPlayer\WebPlayer.csproj", "{803A5B78-3FBA-4836-80EF-9BA104FC1D3E}"
@@ -39,7 +39,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerController", "PlayerC
 EndProject
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Setup", "Setup\Setup.isproj", "{51D99479-B857-40B4-9292-14BE1E7C2803}"
 	ProjectSection(ProjectDependencies) = postProject
-		{C7367F28-22F8-4111-A434-26D497EF0FBA} = {C7367F28-22F8-4111-A434-26D497EF0FBA}
 		{C7367F28-22F8-4111-A434-26D497EF0FBA} = {C7367F28-22F8-4111-A434-26D497EF0FBA}
 	EndProjectSection
 EndProject
