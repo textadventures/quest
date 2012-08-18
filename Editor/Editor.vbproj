@@ -230,7 +230,7 @@
       <Name>EditorController</Name>
     </ProjectReference>
     <ProjectReference Include="..\EditorControls\EditorControls.csproj">
-      <Project>{4FE4228C-502B-47B7-A79B-79BEE6221C25}</Project>
+      <Project>{4fe4228c-502b-47b7-a79b-79bee6221c25}</Project>
       <Name>EditorControls</Name>
     </ProjectReference>
     <ProjectReference Include="..\Menus\Menus.vbproj">

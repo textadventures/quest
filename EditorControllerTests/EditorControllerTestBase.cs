@@ -40,8 +40,20 @@ namespace EditorControllerTests
             m_controller.AddedNode += new EditorController.AddedNodeHandler(m_controller_AddedNode);
             m_controller.UndoListUpdated += new EventHandler<EditorController.UpdateUndoListEventArgs>(m_controller_UndoListUpdated);
             m_controller.RedoListUpdated += new EventHandler<EditorController.UpdateUndoListEventArgs>(m_controller_RedoListUpdated);
-            m_controller.Initialise(@"..\..\..\EditorControllerTests\test.aslx");
+            string tempFile = System.IO.Path.GetTempFileName();
+            ExtractResource("EditorControllerTests.test.aslx", tempFile);
+            m_controller.Initialise(tempFile);
             DoExtraInitialisation();
+            System.IO.File.Delete(tempFile);
+        }
+
+        private void ExtractResource(string resource, string location)
+        {
+            var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+            using (var streamReader = new System.IO.StreamReader(stream))
+            {
+                System.IO.File.WriteAllText(location, streamReader.ReadToEnd());
+            }
         }
 
         public virtual void DoExtraInitialisation()
