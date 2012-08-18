@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AxeSoftware.Quest
 {
-    public class Walkthroughs : IWalkthroughs
+    public sealed class Walkthroughs : IWalkthroughs
     {
         private Dictionary<string, IWalkthrough> m_walkthroughs = new Dictionary<string, IWalkthrough>();
 

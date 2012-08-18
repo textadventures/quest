@@ -296,6 +296,11 @@ namespace AxeSoftware.Quest
             //}
         }
 
+        private void AddError(object sender, AxeSoftware.Quest.ScriptFactory.AddErrorEventArgs e)
+        {
+            AddError(e.Error);
+        }
+
         private void AddError(string error)
         {
             m_errors.Add(error);

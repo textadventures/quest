@@ -31,7 +31,7 @@ namespace AxeSoftware.Quest.Scripts
             {
                 if (!ExpectedParameters.Contains(numParams))
                 {
-                    throw new Exception(string.Format("Expected {0} parameter(s)", FormatExpectedParameters(), script));
+                    throw new Exception(string.Format("Expected {0} parameter(s) in script '{1}'", FormatExpectedParameters(), script));
                 }
             }
 

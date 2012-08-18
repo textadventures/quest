@@ -25,7 +25,7 @@ namespace AxeSoftware.Quest
         public UpdateSource Source { get; set; }
     }
 
-    public class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollection, IExtendableField
+    public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollection, IExtendableField
     {
         public event EventHandler<QuestListUpdatedEventArgs<T>> Added;
         public event EventHandler<QuestListUpdatedEventArgs<T>> Removed;

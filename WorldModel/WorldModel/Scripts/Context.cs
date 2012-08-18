@@ -32,6 +32,7 @@ namespace AxeSoftware.Quest.Scripts
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
     public class Parameters : Dictionary<string, object>
     {
         public Parameters()

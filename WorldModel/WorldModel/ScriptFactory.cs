@@ -15,10 +15,14 @@ namespace AxeSoftware.Quest
 
     public class ScriptFactory : IScriptFactory
     {
+        public class AddErrorEventArgs : EventArgs
+        {
+            public string Error { get; set; }
+        }
+
         private Dictionary<string, IScriptConstructor> m_scriptConstructors = new Dictionary<string, IScriptConstructor>();
 
-        public delegate void AddErrorHandler(string error);
-        public event AddErrorHandler ErrorHandler;
+        public event EventHandler<AddErrorEventArgs> ErrorHandler;
         private WorldModel m_worldModel;
         private SetScriptConstructor m_setConstructor;
         private FunctionCallScriptConstructor m_procConstructor;
@@ -265,7 +269,7 @@ namespace AxeSoftware.Quest
 
         private void AddError(string error)
         {
-            if (ErrorHandler != null) ErrorHandler(error);
+            if (ErrorHandler != null) ErrorHandler(this, new AddErrorEventArgs { Error = error });
         }
     }
 }

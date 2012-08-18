@@ -172,13 +172,7 @@ namespace AxeSoftware.Quest.Scripts
         public abstract void SetParameterInternal(int index, object value);
         public abstract object GetParameter(int index);
 
-        public virtual string Keyword
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public abstract string Keyword { get; }
 
         public event EventHandler<ScriptUpdatedEventArgs> ScriptUpdated;
 

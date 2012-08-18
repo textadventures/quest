@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace AxeSoftware.Quest
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
     public class MismatchingQuotesException : Exception
     {
         public MismatchingQuotesException() : base("Missing quote character (\")") { }

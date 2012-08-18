@@ -468,7 +468,7 @@ namespace AxeSoftware.Quest
         }
     }
 
-    public class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, TValue>
+    public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, TValue>
     {
         private const int DefaultInitialCapacity = 0;
 

@@ -14,6 +14,11 @@ namespace AxeSoftware.Quest.Scripts
             m_scripts = new List<IScript>(scripts);
         }
 
+        public override string Keyword
+        {
+            get { return null; }
+        }
+
         protected override ScriptBase CloneScript()
         {
             MultiScript clone = new MultiScript();
