@@ -322,7 +322,7 @@ namespace AxeSoftware.Quest
             List<string> result = new List<string>();
             bool processThisCharacter;
             bool processNextCharacter = true;
-            string curParam = string.Empty;
+            StringBuilder curParam = new StringBuilder();
             bool gotCloseQuote = true;
 
             foreach (var curChar in text)
@@ -341,21 +341,21 @@ namespace AxeSoftware.Quest
                     {
                         if (curChar == '\"')
                         {
-                            result.Add(curParam);
+                            result.Add(curParam.ToString());
                             gotCloseQuote = !gotCloseQuote;
-                            curParam = string.Empty;
+                            curParam.Clear();
                             continue;
                         }
                     }
                 }
 
-                curParam += curChar;
+                curParam.Append(curChar);
             }
             
             if (!gotCloseQuote)
                 throw new MismatchingQuotesException();
                 
-            result.Add(curParam);
+            result.Add(curParam.ToString());
 
             return result.ToArray();
         }
