@@ -25,9 +25,9 @@ namespace EditorControllerTests
                 EditorController controller = new EditorController();
                 string errorsRaised = string.Empty;
                 
-                controller.ShowMessage += (string message) =>
+                controller.ShowMessage += (object sender, AxeSoftware.Quest.EditorController.ShowMessageEventArgs e) =>
                 {
-                    errorsRaised += message;
+                    errorsRaised += e.Message;
                 };
 
                 bool result = controller.Initialise(tempFile, templateFolder);

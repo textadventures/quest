@@ -85,30 +85,30 @@ namespace WebEditor.Services
             return result;
         }
 
-        void m_controller_ShowMessage(string message)
+        void m_controller_ShowMessage(object sender, AxeSoftware.Quest.EditorController.ShowMessageEventArgs e)
         {
-            m_initMessage = message;
+            m_initMessage = e.Message;
         }
 
         public EditorController Controller { get { return m_controller; } }
 
-        void m_controller_AddedNode(string key, string text, string parent, bool isLibraryNode, int? position)
+        void m_controller_AddedNode(object sender, AxeSoftware.Quest.EditorController.AddedNodeEventArgs e)
         {
-            if (m_elements.ContainsKey(key)) return;
-            if (parent != null && !m_elements.ContainsKey(parent)) return;
-            m_elements.Add(key, new TreeItem
+            if (m_elements.ContainsKey(e.Key)) return;
+            if (e.Parent != null && !m_elements.ContainsKey(e.Parent)) return;
+            m_elements.Add(e.Key, new TreeItem
             {
-                Key = key,
-                Text = text,
-                Parent = (parent == null) ? null : m_elements[parent]
+                Key = e.Key,
+                Text = e.Text,
+                Parent = (e.Parent == null) ? null : m_elements[e.Parent]
             });
             m_mustRefreshTree = true;
         }
 
-        void m_controller_RemovedNode(string key)
+        void m_controller_RemovedNode(object sender, AxeSoftware.Quest.EditorController.RemovedNodeEventArgs e)
         {
             List<string> keysToRemove = new List<string>();
-            PopulateTreeChildrenList(key, keysToRemove);
+            PopulateTreeChildrenList(e.Key, keysToRemove);
             foreach (string removeKey in keysToRemove)
             {
                 m_elements.Remove(removeKey);
@@ -127,34 +127,34 @@ namespace WebEditor.Services
             }
         }
 
-        void m_controller_RenamedNode(string oldName, string newName)
+        void m_controller_RenamedNode(object sender, AxeSoftware.Quest.EditorController.RenamedNodeEventArgs e)
         {
-            TreeItem item = m_elements[oldName];
-            m_elements.Remove(oldName);
-            item.Key = newName;
-            item.Text = newName;
-            m_elements.Add(newName, item);
+            TreeItem item = m_elements[e.OldName];
+            m_elements.Remove(e.OldName);
+            item.Key = e.NewName;
+            item.Text = e.NewName;
+            m_elements.Add(e.NewName, item);
 
             m_mustRefreshTree = true;
         }
 
-        void m_controller_RetitledNode(string key, string newTitle)
+        void m_controller_RetitledNode(object sender, AxeSoftware.Quest.EditorController.RetitledNodeEventArgs e)
         {
-            if (!m_elements.ContainsKey(key)) return;
-            m_elements[key].Text = newTitle;
+            if (!m_elements.ContainsKey(e.Key)) return;
+            m_elements[e.Key].Text = e.NewTitle;
             m_mustRefreshTree = true;
         }
 
-        void m_controller_ClearTree()
+        void m_controller_ClearTree(object sender, EventArgs e)
         {
             m_elements.Clear();
         }
 
-        void m_controller_BeginTreeUpdate()
+        void m_controller_BeginTreeUpdate(object sender, EventArgs e)
         {
         }
 
-        void m_controller_EndTreeUpdate()
+        void m_controller_EndTreeUpdate(object sender, EventArgs e)
         {
         }
 

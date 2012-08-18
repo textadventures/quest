@@ -1,4 +1,5 @@
 ﻿Imports AxeSoftware.Quest.EditorControls
+Imports AxeSoftware.Quest.EditorController
 
 Public Class Editor
 
@@ -235,30 +236,30 @@ Public Class Editor
         m_elementEditors.Clear()
     End Sub
 
-    Private Sub m_controller_AddedNode(key As String, text As String, parent As String, isLibraryNode As Boolean, position As Integer?) Handles m_controller.AddedNode
-        Dim foreColor As Color = If(isLibraryNode, SystemColors.ControlDarkDark, SystemColors.ControlText)
-        ctlTree.AddNode(key, text, parent, foreColor, Nothing, position)
+    Private Sub m_controller_AddedNode(sender As Object, e As AddedNodeEventArgs) Handles m_controller.AddedNode
+        Dim foreColor As Color = If(e.IsLibraryNode, SystemColors.ControlDarkDark, SystemColors.ControlText)
+        ctlTree.AddNode(e.Key, e.Text, e.Parent, foreColor, Nothing, e.Position)
     End Sub
 
-    Private Sub m_controller_RemovedNode(key As String) Handles m_controller.RemovedNode
-        ctlTree.RemoveNode(key)
+    Private Sub m_controller_RemovedNode(sender As Object, e As RemovedNodeEventArgs) Handles m_controller.RemovedNode
+        ctlTree.RemoveNode(e.Key)
     End Sub
 
-    Private Sub m_controller_RenamedNode(oldName As String, newName As String) Handles m_controller.RenamedNode
-        If m_currentElement = oldName Then
-            m_currentElement = newName
+    Private Sub m_controller_RenamedNode(sender As Object, e As RenamedNodeEventArgs) Handles m_controller.RenamedNode
+        If m_currentElement = e.OldName Then
+            m_currentElement = e.NewName
             RefreshCurrentElement()
         End If
-        ctlTree.RenameNode(oldName, newName)
-        ctlToolbar.RenameHistory(oldName, newName)
+        ctlTree.RenameNode(e.OldName, e.NewName)
+        ctlToolbar.RenameHistory(e.OldName, e.NewName)
     End Sub
 
-    Private Sub m_controller_RetitledNode(key As String, newTitle As String) Handles m_controller.RetitledNode
-        If (m_currentElement = key) Then
-            lblHeader.Text = newTitle
+    Private Sub m_controller_RetitledNode(sender As Object, e As RetitledNodeEventArgs) Handles m_controller.RetitledNode
+        If (m_currentElement = e.Key) Then
+            lblHeader.Text = e.NewTitle
         End If
-        ctlTree.RetitleNode(key, newTitle)
-        ctlToolbar.RetitleHistory(key, newTitle)
+        ctlTree.RetitleNode(e.Key, e.NewTitle)
+        ctlToolbar.RetitleHistory(e.Key, e.NewTitle)
     End Sub
 
     Private Sub m_controller_BeginTreeUpdate() Handles m_controller.BeginTreeUpdate
@@ -299,8 +300,8 @@ Public Class Editor
         If e.UndoList.Count > 0 Then m_unsavedChanges = True
     End Sub
 
-    Private Sub m_controller_ShowMessage(message As String) Handles m_controller.ShowMessage
-        System.Windows.Forms.MessageBox.Show(message)
+    Private Sub m_controller_ShowMessage(sender As Object, e As ShowMessageEventArgs) Handles m_controller.ShowMessage
+        System.Windows.Forms.MessageBox.Show(e.Message)
     End Sub
 
     Private Sub ctlTree_FiltersUpdated() Handles ctlTree.FiltersUpdated
@@ -803,16 +804,16 @@ Public Class Editor
         If undoEnabled Or redoEnabled Then m_unsavedChanges = True
     End Sub
 
-    Private Sub m_controller_RequestAddElement(elementType As String, objectType As String, filter As String) Handles m_controller.RequestAddElement
-        Select Case elementType
+    Private Sub m_controller_RequestAddElement(sender As Object, e As RequestAddElementEventArgs) Handles m_controller.RequestAddElement
+        Select Case e.ElementType
             Case "object"
-                Select Case objectType
+                Select Case e.ObjectType
                     Case "object"
                         AddNewObject()
                     Case "exit"
                         AddNewExit()
                     Case "command"
-                        If filter = "verb" Then
+                        If e.Filter = "verb" Then
                             AddNewVerb()
                         Else
                             AddNewCommand()
@@ -849,8 +850,8 @@ Public Class Editor
         End Select
     End Sub
 
-    Private Sub m_controller_RequestEdit(key As String) Handles m_controller.RequestEdit
-        ctlTree.SetSelectedItem(key)
+    Private Sub m_controller_RequestEdit(sender As Object, e As RequestEditEventArgs) Handles m_controller.RequestEdit
+        ctlTree.SetSelectedItem(e.Key)
     End Sub
 
     Private Property BannerVisible As Boolean
@@ -976,9 +977,9 @@ Public Class Editor
         ctlTextEditor.Find()
     End Sub
 
-    Private Sub m_controller_RequestRunWalkthrough(name As String, record As Boolean) Handles m_controller.RequestRunWalkthrough
+    Private Sub m_controller_RequestRunWalkthrough(sender As Object, e As RequestRunWalkthroughEventArgs) Handles m_controller.RequestRunWalkthrough
         If Not CheckGameIsSaved("Do you wish to save your changes before playing this game?") Then Return
-        RaiseEvent PlayWalkthrough(m_filename, name, record)
+        RaiseEvent PlayWalkthrough(m_filename, e.Name, e.Record)
     End Sub
 
     Public Sub SetRecordedWalkthrough(name As String, steps As List(Of String))

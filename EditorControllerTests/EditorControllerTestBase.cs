@@ -34,10 +34,10 @@ namespace EditorControllerTests
         public void Init()
         {
             m_controller = new EditorController();
-            m_controller.ClearTree += new EditorController.VoidHandler(m_controller_ClearTree);
-            m_controller.BeginTreeUpdate += new EditorController.VoidHandler(m_controller_BeginTreeUpdate);
-            m_controller.EndTreeUpdate += new EditorController.VoidHandler(m_controller_EndTreeUpdate);
-            m_controller.AddedNode += new EditorController.AddedNodeHandler(m_controller_AddedNode);
+            m_controller.ClearTree += m_controller_ClearTree;
+            m_controller.BeginTreeUpdate += m_controller_BeginTreeUpdate;
+            m_controller.EndTreeUpdate += m_controller_EndTreeUpdate;
+            m_controller.AddedNode += m_controller_AddedNode;
             m_controller.UndoListUpdated += new EventHandler<EditorController.UpdateUndoListEventArgs>(m_controller_UndoListUpdated);
             m_controller.RedoListUpdated += new EventHandler<EditorController.UpdateUndoListEventArgs>(m_controller_RedoListUpdated);
             string tempFile = System.IO.Path.GetTempFileName();
@@ -66,24 +66,24 @@ namespace EditorControllerTests
             m_controller.Dispose();
         }
 
-        void m_controller_ClearTree()
+        void m_controller_ClearTree(object sender, EventArgs e)
         {
             m_tree.Clear();
         }
 
-        void m_controller_BeginTreeUpdate()
+        void m_controller_BeginTreeUpdate(object sender, EventArgs e)
         {
             m_tree.BeginUpdate();
         }
 
-        void m_controller_EndTreeUpdate()
+        void m_controller_EndTreeUpdate(object sender, EventArgs e)
         {
             m_tree.EndUpdate();
         }
 
-        void m_controller_AddedNode(string key, string text, string parent, bool isLibraryNode, int? position)
+        void m_controller_AddedNode(object sender, AxeSoftware.Quest.EditorController.AddedNodeEventArgs e)
         {
-            m_tree.Add(key, text, parent);
+            m_tree.Add(e.Key, e.Text, e.Parent);
         }
 
         void m_controller_UndoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)

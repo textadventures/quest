@@ -627,9 +627,9 @@ namespace AxeSoftware.Quest.EditorControls
             return (m_scripts.Owner != m_data.Name);
         }
 
-        void m_controller_ScriptClipboardUpdated(bool hasScript)
+        void m_controller_ScriptClipboardUpdated(object sender, AxeSoftware.Quest.EditorController.ScriptClipboardUpdateEventArgs e)
         {
-            ctlToolbar.CanPaste = hasScript && !m_readOnly;
+            ctlToolbar.CanPaste = e.HasScript && !m_readOnly;
         }
     }
 }

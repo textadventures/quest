@@ -58,7 +58,7 @@ namespace AxeSoftware.Quest
         public EditorStyle Type { get; set; }
     }
 
-    public class EditorController : IDisposable
+    public sealed class EditorController : IDisposable
     {
         private const string k_commands = "_gameCommands";
         private const string k_verbs = "_gameVerbs";
@@ -131,43 +131,90 @@ namespace AxeSoftware.Quest
         private EditorStyle m_editorStyle = EditorStyle.TextAdventure;
         private EditorMode m_editorMode = EditorMode.Desktop;
 
-        public delegate void VoidHandler();
-        public event VoidHandler ClearTree;
-        public event VoidHandler BeginTreeUpdate;
-        public event VoidHandler EndTreeUpdate;
+        public event EventHandler ClearTree;
+        public event EventHandler BeginTreeUpdate;
+        public event EventHandler EndTreeUpdate;
 
-        public delegate void AddedNodeHandler(string key, string text, string parent, bool isLibraryNode, int? position);
-        public event AddedNodeHandler AddedNode;
+        public class AddedNodeEventArgs : EventArgs
+        {
+            public string Key { get; set; }
+            public string Text { get; set; }
+            public string Parent { get; set; }
+            public bool IsLibraryNode { get; set; }
+            public int? Position { get; set; }
+        }
 
-        public delegate void RemovedNodeHandler(string key);
-        public event RemovedNodeHandler RemovedNode;
+        public event EventHandler<AddedNodeEventArgs> AddedNode;
 
-        public delegate void RenamedNodeHandler(string oldName, string newName);
-        public event RenamedNodeHandler RenamedNode;
+        public class RemovedNodeEventArgs : EventArgs
+        {
+            public string Key { get; set; }
+        }
 
-        public delegate void RetitledNodeHandler(string key, string newTitle);
-        public event RetitledNodeHandler RetitledNode;
+        public event EventHandler<RemovedNodeEventArgs> RemovedNode;
 
-        public delegate void ShowMessageHandler(string message);
-        public event ShowMessageHandler ShowMessage;
+        public class RenamedNodeEventArgs : EventArgs
+        {
+            public string OldName { get; set; }
+            public string NewName { get; set; }
+        }
 
-        public delegate void RequestAddElementHandler(string elementType, string objectType, string filter);
-        public event RequestAddElementHandler RequestAddElement;
+        public event EventHandler<RenamedNodeEventArgs> RenamedNode;
 
-        public delegate void RequestEditHandler(string key);
-        public event RequestEditHandler RequestEdit;
+        public class RetitledNodeEventArgs : EventArgs
+        {
+            public string Key { get; set; }
+            public string NewTitle { get; set; }
+        }
 
-        public delegate void ElementsUpdatedHandler();
-        public event ElementsUpdatedHandler ElementsUpdated;
+        public event EventHandler<RetitledNodeEventArgs> RetitledNode;
 
-        public delegate void ElementMovedHandler(string key);
-        public event ElementMovedHandler ElementMoved;
+        public class ShowMessageEventArgs : EventArgs
+        {
+            public string Message { get; set; }
+        }
 
-        public delegate void ScriptClipboardUpdateHandler(bool hasScript);
-        public event ScriptClipboardUpdateHandler ScriptClipboardUpdated;
+        public event EventHandler<ShowMessageEventArgs> ShowMessage;
 
-        public delegate void RequestRunWalkthroughHandler(string name, bool record);
-        public event RequestRunWalkthroughHandler RequestRunWalkthrough;
+        public class RequestAddElementEventArgs : EventArgs
+        {
+            public string ElementType { get; set; }
+            public string ObjectType { get; set; }
+            public string Filter { get; set; }
+        }
+
+        public event EventHandler<RequestAddElementEventArgs> RequestAddElement;
+
+        public class RequestEditEventArgs : EventArgs
+        {
+            public string Key { get; set; }
+        }
+
+        public event EventHandler<RequestEditEventArgs> RequestEdit;
+
+        public event EventHandler ElementsUpdated;
+
+        public class ElementMovedEventArgs : EventArgs
+        {
+            public string Key { get; set; }
+        }
+
+        public event EventHandler<ElementMovedEventArgs> ElementMoved;
+
+        public class ScriptClipboardUpdateEventArgs : EventArgs
+        {
+            public bool HasScript { get; set; }
+        }
+
+        public event EventHandler<ScriptClipboardUpdateEventArgs> ScriptClipboardUpdated;
+
+        public class RequestRunWalkthroughEventArgs : EventArgs
+        {
+            public string Name { get; set; }
+            public bool Record { get; set; }
+        }
+
+        public event EventHandler<RequestRunWalkthroughEventArgs> RequestRunWalkthrough;
 
         public event EventHandler SimpleModeChanged;
 
@@ -324,7 +371,7 @@ namespace AxeSoftware.Quest
                 {
                     message += "* " + error + Environment.NewLine;
                 }
-                ShowMessage(message);
+                ShowMessage(this, new ShowMessageEventArgs { Message = message });
             }
 
             return ok;
@@ -343,8 +390,8 @@ namespace AxeSoftware.Quest
             string oldName = e.OldName;
             string newName = e.Element.Name;
 
-            RenamedNode(oldName, newName);
-            if (ElementsUpdated != null) ElementsUpdated();
+            RenamedNode(this, new RenamedNodeEventArgs { OldName = oldName, NewName = newName });
+            if (ElementsUpdated != null) ElementsUpdated(this, new EventArgs());
         }
 
         void UndoLogger_TransactionsUpdated(object sender, EventArgs e)
@@ -361,11 +408,11 @@ namespace AxeSoftware.Quest
 
             if (e.Attribute == "parent")
             {
-                BeginTreeUpdate();
+                BeginTreeUpdate(this, new EventArgs());
                 RemoveElementAndSubElementsFromTree(e.Element);
                 AddElementAndSubElementsToTree(e.Element);
-                EndTreeUpdate();
-                if (ElementsUpdated != null) ElementsUpdated();
+                EndTreeUpdate(this, new EventArgs());
+                if (ElementsUpdated != null) ElementsUpdated(this, new EventArgs());
             }
 
             if (e.Attribute == "anonymous" || e.Attribute == "alias"
@@ -379,8 +426,8 @@ namespace AxeSoftware.Quest
                 if (e.Element.Name != null)
                 {
                     // element name might be null if we're undoing an element add
-                    RetitledNode(e.Element.Name, GetDisplayName(e.Element));
-                    if (ElementsUpdated != null) ElementsUpdated();
+                    RetitledNode(this, new RetitledNodeEventArgs { Key = e.Element.Name, NewTitle = GetDisplayName(e.Element) });
+                    if (ElementsUpdated != null) ElementsUpdated(this, new EventArgs());
                 }
             }
 
@@ -403,15 +450,15 @@ namespace AxeSoftware.Quest
 
             if (e.Attribute == "sortindex")
             {
-                RemovedNode(e.Element.Name);
+                RemovedNode(this, new RemovedNodeEventArgs { Key = e.Element.Name });
                 AddElementAndSubElementsToTree(e.Element, GetElementPosition(e.Element));
-                if (ElementMoved != null) ElementMoved(e.Element.Name);
+                if (ElementMoved != null) ElementMoved(this, new ElementMovedEventArgs { Key = e.Element.Name });
             }
 
             if (e.Attribute == "library")
             {
                 // Refresh the element in the tree by deleting and readding it
-                RemovedNode(e.Element.Name);
+                RemovedNode(this, new RemovedNodeEventArgs { Key = e.Element.Name });
                 AddElementAndSubElementsToTree(e.Element);
             }
         }
@@ -426,8 +473,8 @@ namespace AxeSoftware.Quest
 
         private void MoveNove(string key, string text, string newParent)
         {
-            RemovedNode(key);
-            AddedNode(key, text, newParent, false, null);
+            RemovedNode(this, new RemovedNodeEventArgs { Key = key });
+            AddedNode(this, new AddedNodeEventArgs { Key = key, Text = text, Parent = newParent, IsLibraryNode = false, Position = null });
         }
 
         private void AddElementAndSubElementsToTree(Element e, int? position = null)
@@ -448,11 +495,11 @@ namespace AxeSoftware.Quest
 
             foreach (string key in nodesToRemove)
             {
-                RemovedNode(key);
+                RemovedNode(this, new RemovedNodeEventArgs { Key = key });
             }
 
             // finally remove the parent
-            RemovedNode(e.Name);
+            RemovedNode(this, new RemovedNodeEventArgs { Key = e.Name });
         }
 
         void m_worldModel_ElementRefreshed(object sender, WorldModel.ElementRefreshEventArgs e)
@@ -473,10 +520,10 @@ namespace AxeSoftware.Quest
 
             if (args.Removed != null)
             {
-                RemovedNode(args.Removed);
+                RemovedNode(this, new RemovedNodeEventArgs { Key = args.Removed });
             }
 
-            if (ElementsUpdated != null) ElementsUpdated();
+            if (ElementsUpdated != null) ElementsUpdated(this, new EventArgs());
         }
 
         private void InitialiseTreeStructure()
@@ -520,7 +567,7 @@ namespace AxeSoftware.Quest
                 {
                     m_elementTreeStructure.Add(type.Value, header);
                 }
-                AddedNode(key, title, parent, false, null);
+                AddedNode(this, new AddedNodeEventArgs { Key = key, Text = title, Parent = parent, IsLibraryNode = false, Position = null });
             }
         }
 
@@ -528,8 +575,8 @@ namespace AxeSoftware.Quest
         {
             if (BeginTreeUpdate == null) return;
 
-            BeginTreeUpdate();
-            ClearTree();
+            BeginTreeUpdate(this, new EventArgs());
+            ClearTree(this, new EventArgs());
             InitialiseTreeStructure();
 
             foreach (ElementType type in Enum.GetValues(typeof(ElementType)))
@@ -539,7 +586,7 @@ namespace AxeSoftware.Quest
                     AddElementToTree(o);
                 }
             }
-            EndTreeUpdate();
+            EndTreeUpdate(this, new EventArgs());
         }
 
         private void AddElementToTree(Element o, int? position = null)
@@ -559,17 +606,17 @@ namespace AxeSoftware.Quest
 
             if (display)
             {
-                AddedNode(o.Name, text, parent, isLibrary, position);
+                AddedNode(this, new AddedNodeEventArgs { Key = o.Name, Text = text, Parent = parent, IsLibraryNode = isLibrary, Position = position });
 
                 if (o.Name == "game" && !SimpleMode && m_editorStyle == EditorStyle.TextAdventure)
                 {
                     if (m_editorMode == EditorMode.Desktop)
                     {
                         // TO DO: When WebEditor is fully functional, there should be no need for this
-                        AddedNode(k_verbs, "Verbs", "game", false, null);
+                        AddedNode(this, new AddedNodeEventArgs { Key = k_verbs, Text = "Verbs", Parent = "game", IsLibraryNode = false, Position = null });
                         
                     }
-                    AddedNode(k_commands, "Commands", "game", false, null);
+                    AddedNode(this, new AddedNodeEventArgs { Key = k_commands, Text = "Commands", Parent = "game", IsLibraryNode = false, Position = null });
                 }
             }
         }
@@ -1647,12 +1694,12 @@ namespace AxeSoftware.Quest
 
         public void UIRequestAddElement(string elementType, string objectType, string filter)
         {
-            RequestAddElement(elementType, objectType, filter);
+            RequestAddElement(this, new RequestAddElementEventArgs { ElementType = elementType, ObjectType = objectType, Filter = filter });
         }
 
         public void UIRequestEditElement(string key)
         {
-            RequestEdit(key);
+            RequestEdit(this, new RequestEditEventArgs { Key = key });
         }
 
         public bool ElementExists(string elementKey)
@@ -1811,7 +1858,7 @@ namespace AxeSoftware.Quest
             m_clipboardScripts = new List<IScript>(script);
             if (ScriptClipboardUpdated != null)
             {
-                ScriptClipboardUpdated(m_clipboardScripts.Count > 0);
+                ScriptClipboardUpdated(this, new ScriptClipboardUpdateEventArgs { HasScript = m_clipboardScripts.Count > 0 });
             }
         }
 
@@ -2083,7 +2130,7 @@ namespace AxeSoftware.Quest
 
         public void BeginWalkthrough(string name, bool record)
         {
-            RequestRunWalkthrough(name, record);
+            RequestRunWalkthrough(this, new RequestRunWalkthroughEventArgs { Name = name, Record = record });
         }
 
         public void RecordWalkthrough(string name, IEnumerable<string> steps)

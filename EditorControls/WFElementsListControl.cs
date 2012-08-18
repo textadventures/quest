@@ -158,12 +158,12 @@ namespace AxeSoftware.Quest.EditorControls
             get { return null; }
         }
 
-        private void m_controller_ElementsUpdated()
+        private void m_controller_ElementsUpdated(object sender, EventArgs e)
         {
             Populate(m_data);
         }
 
-        private void m_controller_ElementMoved(string key)
+        private void m_controller_ElementMoved(object sender, AxeSoftware.Quest.EditorController.ElementMovedEventArgs e)
         {
             Populate(m_data);
         }

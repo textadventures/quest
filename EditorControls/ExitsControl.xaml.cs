@@ -66,12 +66,12 @@ namespace AxeSoftware.Quest.EditorControls
             m_compassTypes = null;
         }
 
-        void m_controller_ElementsUpdated()
+        void m_controller_ElementsUpdated(object sender, EventArgs e)
         {
             Populate(m_data);
         }
 
-        void m_controller_ElementMoved(string key)
+        void m_controller_ElementMoved(object sender, AxeSoftware.Quest.EditorController.ElementMovedEventArgs e)
         {
             Populate(m_data);
         }

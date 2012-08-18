@@ -42,7 +42,7 @@ namespace AxeSoftware.Quest
 
             public string Name
             {
-                get { throw new NotImplementedException(); }
+                get { return null; }
             }
 
             public object GetAttribute(string attribute)
@@ -281,7 +281,7 @@ namespace AxeSoftware.Quest
 
         public string Name
         {
-            get { throw new NotImplementedException(); }
+            get { return null; }
         }
 
         public object GetAttribute(string attribute)
@@ -423,7 +423,7 @@ namespace AxeSoftware.Quest
 
         public IEditorDefinition Parent
         {
-            get { throw new NotImplementedException(); }
+            get { return null; }
         }
 
         public bool IsControlVisibleInSimpleMode
@@ -433,7 +433,7 @@ namespace AxeSoftware.Quest
 
         public string Id
         {
-            get { throw new NotImplementedException(); }
+            get { return null; }
         }
     }
 }
