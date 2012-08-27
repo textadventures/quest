@@ -47,10 +47,6 @@ Public Class PlayerHTML
         InvokeScript("bindMenu", linkid, verbs, text, elementId)
     End Sub
 
-    Public Sub WriteLine(text As String)
-        WriteText(text + "<br />")
-    End Sub
-
     Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
         If m_resetting Then
             m_resetting = False
