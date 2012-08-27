@@ -56,6 +56,12 @@ function onMouseDrag(event) {
     updateOffset(event.delta);
 }
 
+function onMouseUp(event) {
+    var x = getGridSquareX(event.point);
+    var y = getGridSquareY(event.point);
+    ASLEvent("JS_GridSquareClick", x + ";" + y);
+}
+
 function updateOffset(delta) {
     setOffset(getOffset() + delta);
     var paths;
@@ -146,6 +152,14 @@ gridApi.drawGrid = function (minX, minY, maxX, maxY, border) {
 
 function gridPoint(x, y) {
 	return (gridX * x) + (gridY * y) + getOffset();
+}
+
+function getGridSquareX(point) {
+    return Math.floor(((point - getOffset()) / gridX).x);
+}
+
+function getGridSquareY(point) {
+    return Math.floor(((point - getOffset()) / gridY).y);
 }
 
 function gridPointNudge(x, y, nudgeX, nudgeY) {

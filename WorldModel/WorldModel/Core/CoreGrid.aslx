@@ -208,5 +208,14 @@
     request (RunScript, "Grid_DrawSquare;" + id + ";" + x + ";" + y + ";" + width + ";" + height + ";" + text + ";" + fill)
   </function>
 
-  
+  <function name="JS_GridSquareClick" parameters="parameterstring">
+    parameters = Split(parameterstring, ";")
+    x = ToInt(StringListItem(parameters, 0))
+    y = ToInt(StringListItem(parameters, 1))
+    GridSquareClick(x, y)
+  </function>
+
+  <function name="GridSquareClick" parameters="x, y">
+    // Copy this function into your game to handle grid square clicks
+  </function>
 </library>
