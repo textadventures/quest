@@ -335,8 +335,12 @@ namespace AxeSoftware.Quest
 
         public string ClearBuffer()
         {
-            string output = m_textBuffer;
-            m_textBuffer = "";
+            string output;
+            lock (m_textBuffer)
+            {
+                output = m_textBuffer;
+                m_textBuffer = "";
+            }
             return output;
         }
 
