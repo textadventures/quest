@@ -318,4 +318,16 @@
   <function name="ObjectLink" type="string" parameters="obj">
     return (GetTaggedName(obj, "object", obj.displayverbs))
   </function>
+
+  <function name="GetListDisplayAlias" type="string" parameters="obj">
+    <![CDATA[
+    if (HasString(obj, "listalias")) {
+      result = obj.listalias
+    }
+    else {
+      result = GetDisplayAlias(obj)
+    }
+    return (result)
+  ]]>
+  </function>
 </library>

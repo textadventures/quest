@@ -283,13 +283,14 @@ function paneButtonClick(target, button) {
     var selectedListItem = $(target + " option:selected");
     var selectedObject = selectedListItem.text();
     var selectedElementId = selectedListItem.data("elementid");
+    var selectedElementName = selectedListItem.data("elementname");
     var verb = button.data("verb");
     var metadata = new Object();
     metadata[selectedObject] = selectedElementId;
     var metadataString = JSON.stringify(metadata);
 
     if (selectedObject.length > 0) {
-        var cmd = verb.toLowerCase() + " " + selectedObject;
+        var cmd = verb.toLowerCase() + " " + selectedElementName;
         sendCommand(cmd, metadataString);
     }
 }
@@ -361,7 +362,7 @@ function updateList(listName, listData) {
 
         if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
             $(listElement).append(
-                $("<option/>").attr("value", key).data("elementid", data["ElementId"]).text(objectDisplayName)
+                $("<option/>").attr("value", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).text(objectDisplayName)
             );
             count++;
         }

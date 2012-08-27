@@ -13,6 +13,12 @@
     </control>
 
     <control>
+      <caption>Alias to display in "Inventory" or "Places and Objects" pane</caption>
+      <controltype>textbox</controltype>
+      <attribute>listalias</attribute>
+    </control>
+
+    <control>
       <caption>Hyperlink options</caption>
       <controltype>title</controltype>
     </control>

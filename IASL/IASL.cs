@@ -114,17 +114,19 @@ namespace AxeSoftware.Quest
         private string m_text;
         private IEnumerable<string> m_verbs;
         private string m_elementId;
+        private string m_elementName;
 
         public ListData(string text, IEnumerable<string> verbs)
-            : this(text, verbs, null)
+            : this(text, verbs, null, null)
         {
         }
 
-        public ListData(string text, IEnumerable<string> verbs, string elementId)
+        public ListData(string text, IEnumerable<string> verbs, string elementId, string elementName)
         {
             m_text = text;
             m_verbs = verbs;
             m_elementId = elementId;
+            m_elementName = elementName;
         }
 
         public string Text
@@ -140,6 +142,11 @@ namespace AxeSoftware.Quest
         public string ElementId
         {
             get { return m_elementId; }
+        }
+
+        public string ElementName
+        {
+            get { return m_elementName; }
         }
     }
 }
