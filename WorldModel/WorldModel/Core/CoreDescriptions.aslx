@@ -261,7 +261,11 @@
     
     if (type = "exit" and verbCount = 1) {
       alias = GetDisplayAlias(obj)
-      result = CommandLink(LCase(StringListItem(verbs, 0)) + " " + alias, alias)
+      if (not game.enablehyperlinks) {
+        result =alias
+	  } else {
+        result = CommandLink(LCase(StringListItem(verbs, 0)) + " " + alias, alias)
+      }		
     }
     else {
       result = GetTaggedName(obj, type, verbs)
