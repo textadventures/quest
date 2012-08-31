@@ -32,20 +32,35 @@
   </function>
 
   <function name="SetTurnTimeout" parameters="turncount, script">
-    turnscriptname = GetUniqueElementName("turnscript")
-    create turnscript (turnscriptname)
-    turnscript = GetObject(turnscriptname)
-    turnscript.turncount = 0
-    turnscript.triggerturncount = turncount
-    turnscript.timeoutscript = script
-    SetTurnScript(turnscript) {
-      this.turncount = this.turncount + 1
-      if (this.turncount >= this.triggerturncount) {
-        this.enabled = false
-        invoke (this.timeoutscript)
-        destroy (this.name)
-      }
-    }
-    EnableTurnScript(turnscript)
+	SetTurnTimeoutID (turncount, "", script)
+  </function>
+  
+    <function name="SetTurnTimeoutID" parameters="turncount, name, script">
+	turnscriptname=""
+	if (name="") {
+		turnscriptname = GetUniqueElementName("turnscript")
+	} else {
+		if (GetObject(name)=null and GetTimer(name)=null) {
+			turnscriptname = name
+		} else {
+			Log ("Error creating turnscript: There is already existing an object named "+ name)
+		}	
+	}
+	if (not turnscriptname=""){
+		create turnscript (turnscriptname)
+		turnscript = GetObject(turnscriptname)
+		turnscript.turncount = 0
+		turnscript.triggerturncount = turncount
+		turnscript.timeoutscript = script
+		SetTurnScript(turnscript) {
+		  this.turncount = this.turncount + 1
+		  if (this.turncount >= this.triggerturncount) {
+			this.enabled = false
+			invoke (this.timeoutscript)
+			destroy (this.name)
+		  }
+		}
+		EnableTurnScript(turnscript)
+	}
   </function>
 </library>

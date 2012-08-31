@@ -197,48 +197,6 @@
   </editor>
 
   <editor>
-    <appliesto>(function)LockExit</appliesto>
-    <display>Lock #0</display>
-    <category>Objects</category>
-    <create>LockExit ()</create>
-    <add>Lock exit</add>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>Lock exit</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>0</attribute>
-      <simple>exit</simple>
-      <simpleeditor>objects</simpleeditor>
-      <objecttype>exit</objecttype>
-    </control>
-  </editor>
-
-  <editor>
-    <appliesto>(function)UnlockExit</appliesto>
-    <display>Unlock #0</display>
-    <category>Objects</category>
-    <create>UnlockExit ()</create>
-    <add>Unlock exit</add>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>Unlock exit</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>0</attribute>
-      <simple>exit</simple>
-      <simpleeditor>objects</simpleeditor>
-      <objecttype>exit</objecttype>
-    </control>
-  </editor>
-
-  <editor>
     <appliesto>(function)ChangePOV</appliesto>
     <display>Change player object to #0</display>
     <category>Objects</category>
@@ -357,9 +315,92 @@
       <attribute>0</attribute>
       <simple>id</simple>
     </control>
+  </editor>
+  <editor>
+    <appliesto>(function)LockExit</appliesto>
+    <display>Lock #0</display>
+    <category>Objects</category>
+    <create>LockExit ()</create>
+    <add>Lock exit</add>
 
+    <control>
+      <controltype>label</controltype>
+      <caption>Lock exit</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>exit</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>exit</objecttype>
+    </control>
+  </editor>
+  
+  <editor>
+    <appliesto>(function)UnlockExit</appliesto>
+    <display>Unlock #0</display>
+    <category>Objects</category>
+    <create>UnlockExit ()</create>
+    <add>Unlock exit</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Unlock exit</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>exit</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>exit</objecttype>
+    </control>
+  </editor> 
+  
+  <editor>
+    <appliesto>(function)MakeExitVisible</appliesto>
+    <display>Make #0 visible</display>
+    <category>Objects</category>
+    <create>MakeExitVisible ()</create>
+    <add>Make exit visible</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Make visible</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>exit</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>exit</objecttype>
+    </control>
   </editor>
 
+  <editor>
+    <appliesto>(function)MakeExitInvisible</appliesto>
+    <display>Make #0 invisible</display>
+    <category>Objects</category>
+    <create>MakeExitInvisible ()</create>
+    <add>Make exit invisible</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Make invisible</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>exit</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>exit</objecttype>
+    </control>
+
+  </editor>  
+  
   <editor>
     <appliesto>(function)CloneObject</appliesto>
     <display>Clone #0</display>

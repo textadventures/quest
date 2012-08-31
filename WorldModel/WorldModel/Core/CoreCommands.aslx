@@ -320,19 +320,22 @@
     request (Quit, "")
   </command>
   <command name="go" pattern="[go]" unresolved="[UnresolvedLocation]">
-    if (exit.locked) {
-      msg (exit.lockmessage)
-    }
-    else if (HasScript(exit, "script")) {
-      do (exit, "script")
-    }
-    else {
-      if (exit.lookonly) {
+    if (exit.visible) {
+		if (exit.locked) {
+		  msg (exit.lockmessage)
+		}
+		else if (HasScript(exit, "script")) {
+		  do (exit, "script")
+		}
+		else if (exit.lookonly) {
          msg ("[UnresolvedLocation]")
-      } 
-      else {
-        game.pov.parent = exit.to
-      }
+        } 
+		else {
+			 game.pov.parent = exit.to
+		}	 
+	} 
+	else {	 
+         msg ("[UnresolvedLocation]")
     }
   </command>
 

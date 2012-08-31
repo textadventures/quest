@@ -44,8 +44,8 @@
 
       <control>
         <controltype>label</controltype>
-        <caption>To unlock this exit during the game using a script, you must give it a name below.</caption>
-        <onlydisplayif>this.anonymous and this.locked</onlydisplayif>
+        <caption>To unlock this exit during the game or to change the visiblity using a script, you must give it a name below.</caption>
+        <onlydisplayif>this.anonymous and (this.locked or this.visible)</onlydisplayif>
         <bold/>
       </control>
 
@@ -55,13 +55,27 @@
         <attribute>name</attribute>
       </control>
 
+	  <control>
+        <caption>Visible</caption>
+        <controltype>checkbox</controltype>
+        <attribute>visible</attribute>
+        <onlydisplayif>not this.lookonly</onlydisplayif>
+      </control>
+
+      <control>
+        <caption>Scenery</caption>
+        <controltype>checkbox</controltype>
+        <attribute>scenery</attribute>
+        <onlydisplayif>not this.lookonly</onlydisplayif>
+      </control>
+	  
       <control>
         <caption>Locked</caption>
         <controltype>checkbox</controltype>
         <attribute>locked</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
-
+	  
       <control>
         <caption>Print message when locked</caption>
         <controltype>textbox</controltype>

@@ -148,6 +148,14 @@
     object.visible = false
   </function>
 
+  <function name="MakeExitVisible" parameters="object">
+    object.visible = true
+  </function>
+
+  <function name="MakeExitInvisible" parameters="object">
+    object.visible = false
+  </function>
+  
   <function name="HelperOpenObject" parameters="object">
     object.isopen = true
   </function>

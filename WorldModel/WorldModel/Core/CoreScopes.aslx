@@ -126,7 +126,9 @@
     result = NewObjectList()
     foreach (exit, AllExits()) {
       if (exit.parent = room and not GetBoolean(exit, "lookonly")) {
-        list add(result, exit)
+        if (exit.visible and not exit.scenery) {
+			list add(result, exit)
+		}	
       }
     }
     return (result)
@@ -240,6 +242,5 @@
 
   <function name="Got" type="boolean" parameters="obj">
     return (ListContains(ScopeInventory(), obj))
-  </function>
-  
+  </function> 
 </library>

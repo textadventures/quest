@@ -117,10 +117,10 @@
   </editor>
 
   <editor>
-    <appliesto>(function)SetTimeout</appliesto>
+    <appliesto>(function)SetTimeoutID</appliesto>
     <display>Run script after #0 seconds</display>
     <category>Timers</category>
-    <create>SetTimeout (1) { }</create>
+    <create>SetTimeoutID (1,"") { }</create>
     <add>Run script after a number of seconds</add>
 
     <control>
@@ -143,6 +143,18 @@
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
+    </control>
+  
+  	<control>
+      <controltype>label</controltype>
+      <caption>name (optional):</caption>
+	  <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>id</simple>
     </control>
   </editor>
 
