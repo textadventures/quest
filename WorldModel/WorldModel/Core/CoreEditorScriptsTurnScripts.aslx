@@ -74,10 +74,10 @@
   </editor>
 
   <editor>
-    <appliesto>(function)SetTurnTimeoutID</appliesto>
+    <appliesto>(function)SetTurnTimeout</appliesto>
     <display>Run script after #0 turns</display>
     <category>Turn Scripts</category>
-    <create>SetTurnTimeoutID (1,"") { }</create>
+    <create>SetTurnTimeout (1) { }</create>
     <add>Run script after a number of turns</add>
 
     <control>
@@ -101,11 +101,42 @@
       <controltype>script</controltype>
       <attribute>script</attribute>
     </control>
-	
-	<control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetTurnTimeoutID</appliesto>
+    <display>Run script after #0 turns (name #1)</display>
+    <category>Turn Scripts</category>
+    <create>SetTurnTimeoutID (1, "") { }</create>
+    <add>Run script after a number of turns (with name)</add>
+    <advanced/>
+
+    <control>
       <controltype>label</controltype>
-      <caption>name (optional):</caption>
-	  <breakbefore/>
+      <caption>After</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>turns, run</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>script</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Name:</caption>
+      <breakbefore/>
     </control>
 
     <control>

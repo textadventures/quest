@@ -21,28 +21,28 @@
   </function>
   
   <function name="SetTimeoutID" parameters="interval, name, script">
-	timername=""
-	if (name="") {
-		timername = GetUniqueElementName("timeout")
-	} else {
-		if (GetTimer(name)=null and GetObject(name)=null) {
-			timername = name
-		} else {
-			Log ("Error creating timer: There is already existing an object named "+ name)
-		}	
-	}
-	if (not timername="") {
-		create timer (timername)
-		timer = GetTimer(timername)
-		SetTimerInterval(timer, interval)
-		timer.timeoutscript = script
-		SetTimerScript(timer) {
-		  this.enabled = false
-		  invoke (this.timeoutscript)
-		  destroy (this.name)
-		}
-		EnableTimer(timer)
-	}	
+    timername = ""
+    if (name = "") {
+      timername = GetUniqueElementName("timeout")
+    } else {
+      if (GetTimer(name) = null and GetObject(name) = null) {
+        timername = name
+      } else {
+        error ("Error creating timer: There is already an existing object named " + name)
+      }
+    }
+    if (not timername = "") {
+      create timer (timername)
+      timer = GetTimer(timername)
+      SetTimerInterval(timer, interval)
+      timer.timeoutscript = script
+      SetTimerScript(timer) {
+        this.enabled = false
+        invoke (this.timeoutscript)
+        destroy (this.name)
+      }
+      EnableTimer(timer)
+    }
   </function>
 
   <function name="Pause" parameters="interval">

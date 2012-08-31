@@ -123,8 +123,8 @@
 
   <type name="defaultexit">
     <displayverbs type="list">[GoTo]</displayverbs>
-	<visible type="boolean">true</visible>
-	<scenery type="boolean">false</scenery>	
+    <visible type="boolean">true</visible>
+    <scenery type="boolean">false</scenery>
     <locked type="boolean">false</locked>
     <lockmessage>[LockedExit]</lockmessage>
     <lookonly type="boolean">false</lookonly>

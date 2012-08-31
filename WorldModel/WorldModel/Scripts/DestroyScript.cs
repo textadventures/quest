@@ -44,7 +44,16 @@ namespace AxeSoftware.Quest.Scripts
 
         public override void Execute(Context c)
         {
-            m_worldModel.ObjectFactory.DestroyElement(m_expr.Execute(c));
+            string elementName = m_expr.Execute(c);
+            Element element = m_worldModel.Elements.Get(elementName);
+            if (element.ElemType == ElementType.Object || element.ElemType == ElementType.Timer)
+            {
+                m_worldModel.GetElementFactory(element.ElemType).DestroyElement(elementName);
+            }
+            else
+            {
+                throw new InvalidOperationException(string.Format("Unable to destroy element of type {0}", element.ElemType));
+            }
         }
 
         public override string Save()
