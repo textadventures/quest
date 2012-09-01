@@ -29,6 +29,8 @@ namespace AxeSoftware.Quest.EditorControls
         private bool m_redoEnabled;
         private bool m_textWasSaved;
         private bool m_useFolding = true;
+        private bool _findShownAlready;
+        private bool _shouldShowFind;
         public event UndoRedoEnabledUpdatedEventHandler UndoRedoEnabledUpdated;
         public delegate void UndoRedoEnabledUpdatedEventHandler(bool undoEnabled, bool redoEnabled);
         private ControlDataHelper<string> m_helper;
@@ -303,7 +305,51 @@ namespace AxeSoftware.Quest.EditorControls
         public void Find()
         {
             ctlFind.Visibility = Visibility.Visible;
-            ctlFind.txtFind.Focus();
+
+            /* About focusing the ctlFind.txtFind:
+             * 
+             * Calling the FocusFindTB should be enough. And it is, except for the first time the find bar is shown. Then for some reason the focus stays in the text editor control.
+             * When debugging I found that this works even the first time, after the focus returns from the debugger to the app window. So, I simulated this with invoking the invalidate visual.
+             * To see this behavior comment out the if block.
+             *
+             *  Usually, I would handle this differently with:
+             *   var win = Window.GetWindow(this);
+             *   FocusManager.SetFocusedElement(win, ctlFind.txtFind);
+             * 
+             * This really should be enough for focus to work in a WPF app, but I get null for win here. I think it's related to this control being hosted in a WinForms app.
+             * I've also tried going down the call stack and calling focus on the different controls this control is hosted in, but it had no effect.
+             * */
+
+            if (!_findShownAlready)
+            {
+                _shouldShowFind = true;
+                this.InvalidateVisual();
+                return;
+            }
+
+            FocusFindTB();
+        }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+
+            //This is called when the control is rendered after invalidate visual is completed.
+            if (!_shouldShowFind || _findShownAlready)
+                return;
+
+            _findShownAlready = true;
+            _shouldShowFind = false;
+
+            FocusFindTB();
+        }
+
+        private void FocusFindTB()
+        {
+            var parent = this.Parent;
+            var fsParent = FocusManager.GetFocusScope(parent);
+
+            FocusManager.SetFocusedElement(fsParent, ctlFind.txtFind);
         }
 
         private void ctlFind_Find(string findText)
