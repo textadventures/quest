@@ -50,6 +50,7 @@ Partial Class Menu
         Me.DeleteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.FindToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ReplaceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FullScreenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
@@ -90,7 +91,6 @@ Partial Class Menu
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.WindowMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ReplaceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ctlMenuStrip.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -301,6 +301,15 @@ Partial Class Menu
         Me.FindToolStripMenuItem.Size = New System.Drawing.Size(167, 22)
         Me.FindToolStripMenuItem.Tag = "find"
         Me.FindToolStripMenuItem.Text = "&Find..."
+        '
+        'ReplaceToolStripMenuItem
+        '
+        Me.ReplaceToolStripMenuItem.Image = CType(resources.GetObject("ReplaceToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.ReplaceToolStripMenuItem.Name = "ReplaceToolStripMenuItem"
+        Me.ReplaceToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.H), System.Windows.Forms.Keys)
+        Me.ReplaceToolStripMenuItem.Size = New System.Drawing.Size(167, 22)
+        Me.ReplaceToolStripMenuItem.Tag = "replace"
+        Me.ReplaceToolStripMenuItem.Text = "Replace..."
         '
         'ViewToolStripMenuItem
         '
@@ -600,14 +609,6 @@ Partial Class Menu
         Me.WindowMenuToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.WindowMenuToolStripMenuItem.Tag = "windowmenu"
         Me.WindowMenuToolStripMenuItem.Text = "WindowMenu"
-        '
-        'ReplaceToolStripMenuItem
-        '
-        Me.ReplaceToolStripMenuItem.Name = "ReplaceToolStripMenuItem"
-        Me.ReplaceToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.H), System.Windows.Forms.Keys)
-        Me.ReplaceToolStripMenuItem.Size = New System.Drawing.Size(167, 22)
-        Me.ReplaceToolStripMenuItem.Tag = "replace"
-        Me.ReplaceToolStripMenuItem.Text = "Replace..."
         '
         'Menu
         '
