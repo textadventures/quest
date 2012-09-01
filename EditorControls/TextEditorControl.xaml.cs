@@ -16,6 +16,7 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Document;
+using System.Text.RegularExpressions;
 
 namespace AxeSoftware.Quest.EditorControls
 {
@@ -304,6 +305,17 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Find()
         {
+            FindOrReplace(FindControlMode.Find);
+        }
+
+        public void Replace()
+        {
+            FindOrReplace(FindControlMode.Find | FindControlMode.Replace);
+        }
+
+        private void FindOrReplace(FindControlMode mode)
+        {
+            ctlFind.Mode = mode;
             ctlFind.Visibility = Visibility.Visible;
 
             /* About focusing the ctlFind.txtFind:
@@ -354,31 +366,60 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void ctlFind_Find(string findText)
         {
-            int start = textEditor.SelectionStart;
-            int findIndex = -1;
-            if (start < textEditor.Text.Length)
+            int start = textEditor.SelectionStart + textEditor.SelectionLength;
+            Regex search = GetRegexFor(findText);
+            Match match = search.Match(textEditor.Text, start);
+            
+            if (!match.Success && start > 0)
             {
-                findIndex = textEditor.Text.IndexOf(findText, start + 1, StringComparison.CurrentCultureIgnoreCase);
+                match = search.Match(textEditor.Text, 0, textEditor.SelectionStart);
             }
-            if (findIndex == -1)
-            {
-                findIndex = textEditor.Text.IndexOf(findText, 0, StringComparison.CurrentCultureIgnoreCase);
-            }
-            if (findIndex > -1)
-            {
-                textEditor.SelectionStart = findIndex;
-                textEditor.SelectionLength = findText.Length;
-                textEditor.ScrollToLine(textEditor.TextArea.Document.GetLineByOffset(findIndex).LineNumber);
-            }
-            else
+            if (!match.Success)
             {
                 MessageBox.Show(string.Format("Text not found: {0}", findText));
             }
+            else
+            {
+                textEditor.SelectionStart = match.Index;
+                textEditor.SelectionLength = match.Value.Length;
+                textEditor.ScrollToLine(textEditor.TextArea.Document.GetLineByOffset(match.Index).LineNumber);
+            }
+        }
+
+        private void ctlFind_Replace(string findText, string replaceText)
+        {
+            if (textEditor.SelectedText.ToLower() == findText.ToLower())
+                textEditor.Document.Replace(textEditor.SelectionStart, textEditor.SelectionLength, replaceText);
+
+            ctlFind_Find(findText);
+        }
+
+        private void ctlFind_ReplaceAll(string findText, string replaceText)
+        {
+            //concidered replacing all 'name' with 'namename'..
+            Regex search = GetRegexFor(findText);
+            MatchCollection matches = search.Matches(textEditor.Text);
+            int offset = 0;
+            foreach (Match match in matches)
+            {
+                textEditor.Document.Replace(match.Index + offset, match.Value.Length, replaceText);
+                offset += replaceText.Length - match.Value.Length;
+            }
+            
+            if (matches.Count <= 0)
+                MessageBox.Show(string.Format("Text not found: {0}", findText));
+            else
+                MessageBox.Show(string.Format("Replaced {0} occurrences.", matches.Count));
         }
 
         private void ctlFind_Close()
         {
             ctlFind.Visibility = Visibility.Collapsed;
+        }
+
+        private Regex GetRegexFor(string text)
+        {
+            return new Regex(text, RegexOptions.IgnoreCase);
         }
 
         public bool WordWrap

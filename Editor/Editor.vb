@@ -142,6 +142,7 @@ Public Class Editor
         menu.AddMenuClickHandler("delete", AddressOf Delete)
         menu.AddMenuClickHandler("publish", AddressOf Publish)
         menu.AddMenuClickHandler("find", AddressOf Find)
+        menu.AddMenuClickHandler("replace", AddressOf Replace)
         menu.AddMenuClickHandler("simplemode", AddressOf ToggleSimpleMode)
         menu.AddMenuClickHandler("wordwrap", AddressOf ToggleWordWrap)
     End Sub
@@ -789,6 +790,7 @@ Public Class Editor
         ctlToolbar.CodeView = codeView
         m_menu.MenuVisible("add") = Not codeView
         m_menu.MenuVisible("find") = codeView
+        m_menu.MenuVisible("replace") = codeView
         m_menu.MenuVisible("wordwrap") = codeView
         m_menu.MenuEnabled("simplemode") = Not codeView
     End Sub
@@ -975,6 +977,10 @@ Public Class Editor
 
     Private Sub Find()
         ctlTextEditor.Find()
+    End Sub
+
+    Private Sub Replace()
+        ctlTextEditor.Replace()
     End Sub
 
     Private Sub m_controller_RequestRunWalkthrough(sender As Object, e As RequestRunWalkthroughEventArgs) Handles m_controller.RequestRunWalkthrough

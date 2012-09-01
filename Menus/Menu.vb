@@ -56,6 +56,7 @@
         AddMenuData("fullscreen", MenuMode.Player)
         AddMenuData("publish", MenuMode.Editor)
         AddMenuData("find", MenuMode.Editor)
+        AddMenuData("replace", MenuMode.Editor)
         AddMenuData("options", MenuMode.GameBrowser, MenuMode.Player)
         AddMenuData("simplemode", MenuMode.Editor)
         AddMenuData("wordwrap", MenuMode.Editor)
