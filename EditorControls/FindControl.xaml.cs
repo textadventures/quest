@@ -18,9 +18,9 @@ namespace AxeSoftware.Quest.EditorControls
     {
         public static readonly DependencyProperty ModeProperty = DependencyProperty.Register("Mode", typeof(FindControlMode), typeof(FindControl), new PropertyMetadata(FindControlMode.Find, new PropertyChangedCallback(ModeChanged)));
 
-        public event Action<string> Find;
-        public event Action<string, string> Replace;
-        public event Action<string, string> ReplaceAll;
+        public event Action<string, bool> Find;
+        public event Action<string, bool, string> Replace;
+        public event Action<string, bool, string> ReplaceAll;
         public event Action Close;
 
         public FindControlMode Mode
@@ -62,6 +62,18 @@ namespace AxeSoftware.Quest.EditorControls
             Close();
         }
 
+        private void txtReplace_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                DoReplace();
+            }
+            else if (e.Key == Key.Escape)
+            {
+                Close();
+            }
+        }
+
         private void txtFind_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -77,19 +89,19 @@ namespace AxeSoftware.Quest.EditorControls
         private void DoFind()
         {
             if (Find != null)
-                Find(txtFind.Text);
+                Find(txtFind.Text, chkBoxRegex.IsChecked.Value);
         }
 
         private void DoReplace()
         {
             if (Replace != null)
-                Replace(txtFind.Text, txtReplace.Text);
+                Replace(txtFind.Text, chkBoxRegex.IsChecked.Value, txtReplace.Text);
         }
 
         private void DoReplaceAll()
         {
             if (ReplaceAll != null)
-                ReplaceAll(txtFind.Text, txtReplace.Text);
+                ReplaceAll(txtFind.Text, chkBoxRegex.IsChecked.Value, txtReplace.Text);
         }
 
         private static void ModeChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)

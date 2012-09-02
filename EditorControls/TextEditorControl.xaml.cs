@@ -32,10 +32,17 @@ namespace AxeSoftware.Quest.EditorControls
         private bool m_useFolding = true;
         private bool _findShownAlready;
         private bool _shouldShowFind;
+        private bool _isUndoing;
+        private bool _isReplacing;
         public event UndoRedoEnabledUpdatedEventHandler UndoRedoEnabledUpdated;
         public delegate void UndoRedoEnabledUpdatedEventHandler(bool undoEnabled, bool redoEnabled);
         private ControlDataHelper<string> m_helper;
         private string m_filename;
+
+        /// <summary>Specifies how many times a text editor undo will be invoked for the current undo action. This helps with undoing replace all.</summary>
+        private Stack<int> UndoActionStepCounts;
+        /// <summary>Specifies how many times a text editor redo will be invoked for the current redo action.</summary>
+        private Stack<int> RedoActionStepCounts;
 
         public TextEditorControl()
         {
@@ -54,7 +61,11 @@ namespace AxeSoftware.Quest.EditorControls
             textEditor.TextArea.TextEntering += TextEntering;
             textEditor.TextArea.TextEntered += TextEntered;
             textEditor.TextArea.KeyUp += KeyPressed;
+            textEditor.TextChanged += TextChanged;
 
+            UndoActionStepCounts = new Stack<int>();
+            RedoActionStepCounts = new Stack<int>();
+            
             UpdateUndoRedoEnabled(true);
         }
 
@@ -100,9 +111,18 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
+        private void TextChanged(object sender, EventArgs e)
+        {
+            if (_isUndoing || _isReplacing)
+                return;
+
+            UndoActionStepCounts.Push(1);
+        }
+
         private void TextEntered(object sender, TextCompositionEventArgs e)
         {
             UpdateUndoRedoEnabled();
+
             if (e.Text == "<")
             {
                 m_completionWindow = new CompletionWindow(textEditor.TextArea);
@@ -213,14 +233,34 @@ namespace AxeSoftware.Quest.EditorControls
 
         public void Undo()
         {
-            textEditor.Undo();
+            _isUndoing = true;
+
+            int iterations = UndoActionStepCounts.Pop();
+            
+            for (int i = 0; i < iterations; i++)
+                textEditor.Undo();
+
+            RedoActionStepCounts.Push(iterations);
+
             UpdateUndoRedoEnabled();
+
+            _isUndoing = false;
         }
 
         public void Redo()
         {
-            textEditor.Redo();
+            _isUndoing = true;
+
+            int iterations = RedoActionStepCounts.Pop();
+
+            for (int i = 0; i < iterations; i++ )
+                textEditor.Redo();
+
+            UndoActionStepCounts.Push(iterations);
+
             UpdateUndoRedoEnabled();
+
+            _isUndoing = false;
         }
 
         public bool CanUndo
@@ -257,6 +297,12 @@ namespace AxeSoftware.Quest.EditorControls
 
             if (force || oldUndoEnabled != m_undoEnabled || oldRedoEnabled != m_redoEnabled)
             {
+                if (!m_undoEnabled)
+                    UndoActionStepCounts.Clear();
+
+                if (!m_redoEnabled)
+                    RedoActionStepCounts.Clear();
+
                 if (UndoRedoEnabledUpdated != null)
                 {
                     UndoRedoEnabledUpdated(m_undoEnabled, m_redoEnabled);
@@ -358,16 +404,15 @@ namespace AxeSoftware.Quest.EditorControls
 
         private void FocusFindTB()
         {
-            var parent = this.Parent;
-            var fsParent = FocusManager.GetFocusScope(parent);
+            ctlFind.txtFind.SelectAll();
 
-            FocusManager.SetFocusedElement(fsParent, ctlFind.txtFind);
+            Keyboard.Focus(ctlFind.txtFind);
         }
 
-        private void ctlFind_Find(string findText)
+        private void ctlFind_Find(string findText, bool useRegex)
         {
             int start = textEditor.SelectionStart + textEditor.SelectionLength;
-            Regex search = GetRegexFor(findText);
+            Regex search = GetRegexFor(findText, useRegex);
             Match match = search.Match(textEditor.Text, start);
             
             if (!match.Success && start > 0)
@@ -386,18 +431,27 @@ namespace AxeSoftware.Quest.EditorControls
             }
         }
 
-        private void ctlFind_Replace(string findText, string replaceText)
+        private void ctlFind_Replace(string findText, bool useRegex, string replaceText)
         {
-            if (textEditor.SelectedText.ToLower() == findText.ToLower())
-                textEditor.Document.Replace(textEditor.SelectionStart, textEditor.SelectionLength, replaceText);
+            _isReplacing = true;
 
-            ctlFind_Find(findText);
+            if (textEditor.SelectedText.ToLower() == findText.ToLower())
+            {
+                textEditor.Document.Replace(textEditor.SelectionStart, textEditor.SelectionLength, replaceText);
+                UndoActionStepCounts.Push(1);
+                UpdateUndoRedoEnabled();
+            }
+
+            ctlFind_Find(findText, useRegex);
+
+            _isReplacing = false;
         }
 
-        private void ctlFind_ReplaceAll(string findText, string replaceText)
+        private void ctlFind_ReplaceAll(string findText, bool useRegex, string replaceText)
         {
             //concidered replacing all 'name' with 'namename'..
-            Regex search = GetRegexFor(findText);
+            _isReplacing = true;
+            Regex search = GetRegexFor(findText, useRegex);
             MatchCollection matches = search.Matches(textEditor.Text);
             int offset = 0;
             foreach (Match match in matches)
@@ -405,11 +459,18 @@ namespace AxeSoftware.Quest.EditorControls
                 textEditor.Document.Replace(match.Index + offset, match.Value.Length, replaceText);
                 offset += replaceText.Length - match.Value.Length;
             }
-            
+
             if (matches.Count <= 0)
+            {
                 MessageBox.Show(string.Format("Text not found: {0}", findText));
+            }
             else
+            {
+                UndoActionStepCounts.Push(matches.Count);
+                UpdateUndoRedoEnabled();
                 MessageBox.Show(string.Format("Replaced {0} occurrences.", matches.Count));
+            }
+            _isReplacing = false;
         }
 
         private void ctlFind_Close()
@@ -417,8 +478,11 @@ namespace AxeSoftware.Quest.EditorControls
             ctlFind.Visibility = Visibility.Collapsed;
         }
 
-        private Regex GetRegexFor(string text)
+        private Regex GetRegexFor(string text, bool useRegex)
         {
+            if (!useRegex)
+                text = Regex.Escape(text);
+
             return new Regex(text, RegexOptions.IgnoreCase);
         }
 
