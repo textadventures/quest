@@ -226,7 +226,7 @@ namespace AxeSoftware.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    return m_id.Save();
+                    return m_id == null ? null : m_id.Save();
                 case 1:
                     return m_name.Save();
                 case 2:
