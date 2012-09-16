@@ -16,7 +16,6 @@
       <attribute>0</attribute>
       <simple>room</simple>
       <simpleeditor>objects</simpleeditor>
-	  <objecttype>room</objecttype>
     </control>
     
 	<control>

@@ -195,11 +195,11 @@
   </function>
 
   <function name="SetDark" parameters="object">
-    object.darkness = true
+    object.dark = true
   </function>  
 
   <function name="SetLight" parameters="object">
-    object.darkness = false
+    object.dark = false
   </function>
 
   <function name="SetObjectLightstrength" parameters="object,strength">
