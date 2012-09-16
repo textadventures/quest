@@ -207,7 +207,7 @@
   </function>
 
   <function name="SetExitLightstrength" parameters="exit,strength">
-    object.exit = strength
+    exit.lightstrength = strength
   </function>
   
   <function name="ChangePOV" parameters="object">
