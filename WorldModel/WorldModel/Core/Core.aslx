@@ -194,6 +194,22 @@
     object.switchedon = false
   </function>
 
+  <function name="SetDark" parameters="object">
+    object.darkness = true
+  </function>  
+
+  <function name="SetLight" parameters="object">
+    object.darkness = false
+  </function>
+
+  <function name="SetObjectLightstrength" parameters="object,strength">
+    object.lightstrength = strength
+  </function>
+
+  <function name="SetExitLightstrength" parameters="exit,strength">
+    object.exit = strength
+  </function>
+  
   <function name="ChangePOV" parameters="object">
     <![CDATA[
     if (game.pov <> object) {

@@ -9,5 +9,6 @@
   <include ref="CoreEditorScriptsTimers.aslx"/>
   <include ref="CoreEditorScriptsTurnScripts.aslx"/>
   <include ref="CoreEditorScriptsDrawing.aslx"/>
+  <include ref="CoreEditorScriptsDarkness.aslx"/>
 
 </library>

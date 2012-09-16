@@ -84,6 +84,13 @@
       </control>
 
       <control>
+        <caption>Lightstrength</caption>
+		<controltype>dropdown</controltype>    
+        <attribute>lightstrength</attribute>
+        <validvalues type="list">weak;strong;</validvalues>
+      </control>
+	
+      <control>
         <caption>Script to run (leave blank to automatically go to the specified location)</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>

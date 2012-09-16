@@ -1,0 +1,118 @@
+﻿<library>
+  <editor>
+    <appliesto>(function)SetDark</appliesto>
+    <display>Set room (#1) dark</display>
+    <category>Darkness</category>
+    <create>SetDark()</create>
+    <add>Set room to dark</add>
+	
+    <control>
+      <controltype>label</controltype>
+      <caption>Set</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>room</simple>
+      <simpleeditor>objects</simpleeditor>
+	  <objecttype>room</objecttype>
+    </control>
+    
+	<control>
+      <controltype>label</controltype>
+      <caption>to dark</caption>
+    </control>
+  </editor>
+ 
+  <editor>
+    <appliesto>(function)SetLight</appliesto>
+    <display>Set room (#1) light</display>
+    <category>Darkness</category>
+    <create>SetLight()</create>
+    <add>Set room to enlightened</add>
+	
+    <control>
+      <controltype>label</controltype>
+      <caption>Set</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>room</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+    
+	<control>
+      <controltype>label</controltype>
+      <caption>to enlightened</caption>
+    </control> 
+  </editor> 
+
+  <editor>
+    <appliesto>(function)SetObjectLightstrength</appliesto>
+    <display>Set lightstrength of #0 to #1</display>
+    <category>Darkness</category>
+    <create>SetObjectLightstrength (,"")</create>
+    <add>Set objects lightstrength</add>
+	
+    <control>
+      <controltype>label</controltype>
+      <caption>Set lightstrength of</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+    
+	<control>
+      <controltype>label</controltype>
+      <caption>to</caption>
+    </control>	
+
+    <control>
+      <controltype>dropdown</controltype>
+      <attribute>1</attribute>	  
+      <validvalues type="list">"weak";"strong";</validvalues>
+    </control>	
+	
+  </editor>   
+
+   <editor>
+    <appliesto>(function)SetExitLightstrength</appliesto>
+    <display>Set lightstrength of #0 to #1</display>
+    <category>Darkness</category>
+    <create>SetExitLightstrength (,"")</create>
+    <add>Set exits lightstrength</add>
+	
+    <control>
+      <controltype>label</controltype>
+      <caption>Set lightstrength of</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>exit</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>exit</objecttype>
+    </control>
+    
+	<control>
+      <controltype>label</controltype>
+      <caption>to</caption>
+    </control>	
+
+    <control>
+      <controltype>dropdown</controltype>
+      <attribute>1</attribute>	  
+      <validvalues type="list">"weak";"strong";</validvalues>
+    </control>	
+	
+  </editor>  
+  
+</library>

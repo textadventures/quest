@@ -93,6 +93,24 @@
   <function name="ScopeReachableNotHeld" type="objectlist">    
     return (ScopeReachableNotHeldForRoom(game.pov.parent))
   </function>
+
+  <function name="ScopeReachableLightsource" type="objectlist" parameters="lightstrength">    
+    result = ScopeReachable()
+	lightobjects = NewObjectList()
+	foreach (obj, result) {
+		if (GetString(obj,"lightstrength")=lightstrength) {
+			list add(lightobjects, obj)
+		}	
+	}
+	exits = ScopeExits()
+	foreach (obj, exits) {
+		if (GetString(obj,"lightstrength")=lightstrength) {
+			list add(lightobjects, obj)
+		}	
+	}
+	
+	return (lightobjects)
+  </function>
   
   <function name="ScopeReachableNotHeldForRoom" type="objectlist" parameters="room">    
   <![CDATA[
@@ -123,15 +141,24 @@
   </function>
   
   <function name="ScopeExitsForRoom" type="objectlist" parameters="room">
-    result = NewObjectList()
+    <![CDATA[
+	result = NewObjectList()
     foreach (exit, AllExits()) {
       if (exit.parent = room and not GetBoolean(exit, "lookonly")) {
-        if (exit.visible and not exit.scenery) {
-          list add(result, exit)
-        }
+        if (exit.visible and not exit.scenery){ 
+			if (GetBoolean(room, "darklevel")) {
+				if (Lengthof(GetString(exit,"lightstrength"))>0) {
+					list add(result, exit)
+				}	
+			} else {
+				list add(result, exit)
+			}
+		}	
+
       }
     }
     return (result)
+    ]]>	
   </function>
 
   <function name="ScopeExitsAll" type="objectlist">
@@ -194,6 +221,9 @@
     }
     else if (not searchObj.visible) {
       return (false)
+    }
+	else if (GetBoolean(parentObj, "darklevel") and Lengthof(GetString(searchObj,"lightstrength"))=0) {
+	  return (false)	  
     }
     else {
       if (searchObj.parent = null) {

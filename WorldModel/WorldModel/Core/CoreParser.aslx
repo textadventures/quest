@@ -324,6 +324,7 @@
   <function name="FinishTurn">
     RunTurnScripts
     UpdateStatusAttributes
+    CheckDarkness
   </function>
 
   <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
