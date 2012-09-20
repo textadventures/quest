@@ -2,12 +2,8 @@
   <function name="ShowRoomDescription">
     <![CDATA[
       if (game.autodescription) {
-        isDark=false
-		if ( CheckDarkness()) {
-			isDark=true
-		}
-		
-		desc = ""
+        isDark = CheckDarkness()
+        desc = ""
         
         for (i, 1, 4) {
           if (i = game.autodescription_youarein) {
@@ -40,11 +36,12 @@
           }
           if (i = game.autodescription_description) {
             if (isDark) {
-                descriptionfield="darkroomdescription"
-		    } else {
-                descriptionfield="description"
+              descriptionfield = "darkroomdescription"
             }
-			if (HasScript(game.pov.parent, descriptionfield)) {
+            else {
+              descriptionfield = "description"
+            }
+            if (HasScript(game.pov.parent, descriptionfield)) {
               if (LengthOf(desc) > 0) {
                     msg (desc)
                     desc = ""
@@ -93,19 +90,20 @@
     <![CDATA[
     fulldesc = ""
     
-	if ( CheckDarkness()) {
-       if (HasString(game.pov.parent, "darkroomdescription")) {
-         if (LengthOf(game.pov.parent.darkroomdescription) > 0) {
-             fulldesc = game.pov.parent.darkroomdescription
-         }
-       }
-	} else {
+    if (CheckDarkness()) {
+      if (HasString(game.pov.parent, "darkroomdescription")) {
+        if (LengthOf(game.pov.parent.darkroomdescription) > 0) {
+          fulldesc = game.pov.parent.darkroomdescription
+        }
+      }
+    }
+    else {
        if (HasString(game.pov.parent, "description")) {
          if (LengthOf(game.pov.parent.description) > 0) {
              fulldesc = game.pov.parent.description
          }
        }
-	}   
+    }
     
     if (game.appendobjectdescription) {
       foreach (val, ScopeVisibleNotHeld()) {
@@ -188,9 +186,9 @@
     result = ""
     count = 0
     list = RemoveSceneryObjects(GetDirectChildren(parent))
-	if (CheckDarkness()){
-		list = RemoveDarkObjects(list)
-	}
+    if (CheckDarkness()) {
+      list = RemoveDarkObjects(list)
+    }
     listLength = ListCount(list)
     foreach (item, list) {
       if (LengthOf(result) = 0) result = preList + " "
@@ -235,9 +233,9 @@
     <![CDATA[
     result = NewObjectList()
     foreach (obj, list) {
-		if (LengthOf(GetString(obj, "lightstrength")) > 0) {
-			list add(result,obj)
-		}	
+      if (LengthOf(GetString(obj, "lightstrength")) > 0) {
+        list add(result, obj)
+      }
     }
     return (result)
     ]]>
@@ -369,18 +367,14 @@
   </function>
   
   <function name="CheckDarkness" type="boolean">
-	roomCheckDarkness=false
-	if (GetBoolean(player.parent, "dark")) {
-	    roomCheckDarkness=true
-		if (ListCount(ScopeReachableLightsource("strong"))>0 ) {
-			roomCheckDarkness=false
-		}
-		if (roomCheckDarkness) {
-			player.parent.darklevel=true
-		} else {
-			player.parent.darklevel=false
-		}			
-	}	
-	return (roomCheckDarkness)	
- </function>  
+    roomCheckDarkness = false
+    if (GetBoolean(player.parent, "dark")) {
+      roomCheckDarkness = true
+      if (ListCount(ScopeReachableLightsource("strong")) > 0) {
+        roomCheckDarkness = false
+      }
+      player.parent.darklevel = roomCheckDarkness
+    }
+    return (roomCheckDarkness)
+ </function>
 </library>

@@ -100,13 +100,12 @@
       }
       if (not this.switchedon and HasScript(this, "onswitchoff")) {
         do (this, "onswitchoff")
-      }      
+      }
     </changedswitchedon>
     <volume type="int">0</volume>
-	<dark type="boolean">false</dark>
-	<lightstrength type="string"></lightstrength>
-	<darklevel type="boolean">false</darklevel>
-	
+    <dark type="boolean">false</dark>
+    <lightstrength type="string"></lightstrength>
+    <darklevel type="boolean">false</darklevel>
     <grid_width type="int">1</grid_width>
     <grid_length type="int">1</grid_length>
     <grid_fill>White</grid_fill>
@@ -132,7 +131,7 @@
     <locked type="boolean">false</locked>
     <lockmessage>[LockedExit]</lockmessage>
     <lookonly type="boolean">false</lookonly>
-	<lightstrength type="string"></lightstrength>	
+  <lightstrength type="string"></lightstrength>  
     <grid_length type="int">1</grid_length>
     <grid_render type="boolean">false</grid_render>
     <grid_offset_x type="int">0</grid_offset_x>

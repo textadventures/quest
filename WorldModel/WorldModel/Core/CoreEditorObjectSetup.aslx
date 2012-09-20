@@ -61,13 +61,13 @@
     </control>
 
     <control>
-		<mustnotinherit>editor_room;defaultplayer</mustnotinherit>
-        <controltype>dropdown</controltype>
-        <caption>lightstrength</caption>
-        <attribute>lightstrength</attribute>
-        <validvalues type="list">weak;strong;</validvalues>
-    </control>	
-	
+      <mustnotinherit>editor_room;defaultplayer</mustnotinherit>
+      <controltype>dropdown</controltype>
+      <caption>lightstrength</caption>
+      <attribute>lightstrength</attribute>
+      <validvalues type="list">weak;strong;</validvalues>
+    </control>
+  
     <control>
       <mustnotinherit>editor_room</mustnotinherit>
       <controltype>dropdowntypes</controltype>
@@ -119,6 +119,7 @@
       </editors>
       <expand/>
     </control>
+    
     <control>
       <mustnotinherit>defaultplayer;editor_object</mustnotinherit>
       <caption>Dark room</caption>
@@ -138,9 +139,9 @@
         string=richtext
       </editors>
       <expand/>
-	  <onlydisplayif>this.dark</onlydisplayif>
-    </control>	
-	
+    <onlydisplayif>this.dark</onlydisplayif>
+    </control>
+  
   </tab>
 
 </library>

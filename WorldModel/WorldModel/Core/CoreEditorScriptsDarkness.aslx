@@ -5,7 +5,7 @@
     <category>Darkness</category>
     <create>SetDark()</create>
     <add>Set room to dark</add>
-	
+  
     <control>
       <controltype>label</controltype>
       <caption>Set</caption>
@@ -18,7 +18,7 @@
       <simpleeditor>objects</simpleeditor>
     </control>
     
-	<control>
+  <control>
       <controltype>label</controltype>
       <caption>to dark</caption>
     </control>
@@ -30,7 +30,7 @@
     <category>Darkness</category>
     <create>SetLight()</create>
     <add>Set room to enlightened</add>
-	
+  
     <control>
       <controltype>label</controltype>
       <caption>Set</caption>
@@ -43,11 +43,11 @@
       <simpleeditor>objects</simpleeditor>
     </control>
     
-	<control>
+  <control>
       <controltype>label</controltype>
       <caption>to enlightened</caption>
-    </control> 
-  </editor> 
+    </control>
+  </editor>
 
   <editor>
     <appliesto>(function)SetObjectLightstrength</appliesto>
@@ -55,7 +55,7 @@
     <category>Darkness</category>
     <create>SetObjectLightstrength (,"")</create>
     <add>Set objects lightstrength</add>
-	
+  
     <control>
       <controltype>label</controltype>
       <caption>Set lightstrength of</caption>
@@ -68,18 +68,18 @@
       <simpleeditor>objects</simpleeditor>
     </control>
     
-	<control>
+  <control>
       <controltype>label</controltype>
       <caption>to</caption>
-    </control>	
+    </control>
 
     <control>
       <controltype>dropdown</controltype>
-      <attribute>1</attribute>	  
+      <attribute>1</attribute>    
       <validvalues type="list">"weak";"strong";</validvalues>
-    </control>	
-	
-  </editor>   
+    </control>
+  
+  </editor>
 
    <editor>
     <appliesto>(function)SetExitLightstrength</appliesto>
@@ -87,7 +87,7 @@
     <category>Darkness</category>
     <create>SetExitLightstrength (,"")</create>
     <add>Set exits lightstrength</add>
-	
+  
     <control>
       <controltype>label</controltype>
       <caption>Set lightstrength of</caption>
@@ -101,17 +101,17 @@
       <objecttype>exit</objecttype>
     </control>
     
-	<control>
+  <control>
       <controltype>label</controltype>
       <caption>to</caption>
-    </control>	
+    </control>
 
     <control>
       <controltype>dropdown</controltype>
-      <attribute>1</attribute>	  
+      <attribute>1</attribute>
       <validvalues type="list">"weak";"strong";</validvalues>
-    </control>	
-	
-  </editor>  
+    </control>
+  
+  </editor>
   
 </library>
