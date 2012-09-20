@@ -119,29 +119,6 @@
       </editors>
       <expand/>
     </control>
-    
-    <control>
-      <mustnotinherit>defaultplayer;editor_object</mustnotinherit>
-      <caption>Dark room</caption>
-      <controltype>checkbox</controltype>
-      <attribute>dark</attribute>
-    </control>
-
-    <control>
-      <mustnotinherit>defaultplayer;editor_object</mustnotinherit>
-      <selfcaption>Dark room description</selfcaption>
-      <controltype>multi</controltype>
-      <attribute>darkroomdescription</attribute>
-      <types>
-        null=No description; string=Text; script=Run script
-      </types>
-      <editors>
-        string=richtext
-      </editors>
-      <expand/>
-    <onlydisplayif>this.dark</onlydisplayif>
-    </control>
-  
   </tab>
 
 </library>

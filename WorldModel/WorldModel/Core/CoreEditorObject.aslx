@@ -6,6 +6,7 @@
   <include ref="CoreEditorObjectSetup.aslx"/>
   <include ref="CoreEditorObjectObject.aslx"/>
   <include ref="CoreEditorObjectRoom.aslx"/>
+  <include ref="CoreEditorObjectLightDark.aslx"/>
   <include ref="CoreEditorObjectMap.aslx"/>
   <include ref="CoreEditorObjectExits.aslx"/>
   <include ref="CoreEditorObjectScripts.aslx"/>

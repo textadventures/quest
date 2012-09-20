@@ -1,0 +1,27 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Light/Dark</caption>
+    <mustnotinherit>editor_object</mustnotinherit>
+
+    <control>
+      <caption>Room is initially dark</caption>
+      <controltype>checkbox</controltype>
+      <attribute>dark</attribute>
+    </control>
+
+    <control>
+      <selfcaption>Description to display when the room is dark</selfcaption>
+      <controltype>multi</controltype>
+      <attribute>darkroomdescription</attribute>
+      <types>
+        null=Use default room description; string=Text; script=Run script
+      </types>
+      <editors>
+        string=richtext
+      </editors>
+      <expand/>
+    </control>
+
+  </tab>
+</library>
