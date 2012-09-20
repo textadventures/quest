@@ -37,6 +37,7 @@ Public Class Player
     Private m_playSounds As Boolean = True
     Private m_fromEditor As Boolean = False
     Private WithEvents m_log As Log
+    Private m_gameLoadedSuccessfully As Boolean = False
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -101,11 +102,11 @@ Public Class Player
  
         Me.Cursor = Cursors.WaitCursor
 
-        Dim success As Boolean = m_game.Initialise(Me)
+        m_gameLoadedSuccessfully = m_game.Initialise(Me)
 
         Me.Cursor = Cursors.Default
 
-        If success Then
+        If m_gameLoadedSuccessfully Then
             AddToRecentList()
             m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing AndAlso m_gameDebug.Walkthroughs.Walkthroughs.Count > 0
             m_menu.MenuEnabled("debugger") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.DebugEnabled
@@ -115,14 +116,7 @@ Public Class Player
             ' Generate the new HTML and wait for Ready event
             ctlPlayerHtml.InitialiseHTMLUI(scripts)
         Else
-            WriteLine("<b>Failed to load game.</b>")
-            If (m_game.Errors.Count > 0) Then
-                WriteLine("The following errors occurred:")
-                For Each loadError As String In m_game.Errors
-                    WriteLine(loadError.Replace(Chr(10), "<br/>"))
-                Next
-            End If
-            GameFinished()
+            ctlPlayerHtml.InitialiseHTMLUI(Nothing)
         End If
 
     End Sub
@@ -749,9 +743,21 @@ Public Class Player
 
         ResetPlayerOverrideColours()
         ResetPlayerOverrideFont()
-        BeginInvoke(Sub()
-                        BeginGame()
-                    End Sub)
+
+        If m_gameLoadedSuccessfully Then
+            BeginInvoke(Sub()
+                            BeginGame()
+                        End Sub)
+        Else
+            WriteLine("<b>Failed to load game.</b>")
+            If (m_game.Errors.Count > 0) Then
+                WriteLine("The following errors occurred:")
+                For Each loadError As String In m_game.Errors
+                    WriteLine(loadError.Replace(Chr(10), "<br/>"))
+                Next
+            End If
+            GameFinished()
+        End If
     End Sub
 
     Private Sub ctlPlayerHtml_SendEvent(eventName As String, param As String) Handles ctlPlayerHtml.SendEvent
