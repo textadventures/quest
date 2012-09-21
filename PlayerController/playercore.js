@@ -286,7 +286,7 @@ function paneButtonClick(target, button) {
     var selectedElementName = selectedListItem.data("elementname");
     var verb = button.data("verb");
     var metadata = new Object();
-    metadata[selectedObject] = selectedElementId;
+    metadata[selectedElementName] = selectedElementId;
     var metadataString = JSON.stringify(metadata);
 
     if (selectedObject.length > 0) {
