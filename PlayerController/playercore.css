@@ -99,12 +99,6 @@ div#controlButtons
 {
     display: none;
 }
-.elementList
-{
-    width: 100%;
-    border: none;
-    background: transparent;
-}
 .compassbutton
 {
     margin-right: 0;
@@ -202,4 +196,25 @@ div#controlButtons .ui-button
     left: 25px;
     background: white;
     padding: 2px 20px;
+}
+.ui-selecting
+{
+    background: #FECA40;
+}
+.ui-selected
+{
+    background: #F39814;
+    color: white;
+}
+.elementList
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.elementList li
+{
+    margin: 3px;
+    padding: 3px;
+    cursor: default;
 }

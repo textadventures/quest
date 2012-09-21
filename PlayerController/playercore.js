@@ -19,12 +19,18 @@ $(function () {
         afterSave();
     });
 
-    $("#lstInventory").change(function () {
-        updateVerbButtons($("#lstInventory"), inventoryVerbs, "cmdInventory");
+    $("#lstInventory").selectable({
+        selected: function (event, ui) {
+            $(ui.selected).siblings().removeClass("ui-selected");
+            updateVerbButtons($(ui.selected), inventoryVerbs, "cmdInventory");
+        }
     });
 
-    $("#lstPlacesObjects").change(function () {
-        updateVerbButtons($("#lstPlacesObjects"), placesObjectsVerbs, "cmdPlacesObjects");
+    $("#lstPlacesObjects").selectable({
+        selected: function (event, ui) {
+            $(ui.selected).siblings().removeClass("ui-selected");
+            updateVerbButtons($(ui.selected), placesObjectsVerbs, "cmdPlacesObjects");
+        }
     });
 
     $("#cmdCompassNW").button({
@@ -280,7 +286,7 @@ function updateDir(directions, label, dir) {
 }
 
 function paneButtonClick(target, button) {
-    var selectedListItem = $(target + " option:selected");
+    var selectedListItem = $(target + " .ui-selected");
     var selectedObject = selectedListItem.text();
     var selectedElementId = selectedListItem.data("elementid");
     var selectedElementName = selectedListItem.data("elementname");
@@ -362,7 +368,7 @@ function updateList(listName, listData) {
 
         if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
             $(listElement).append(
-                $("<option/>").attr("value", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).text(objectDisplayName)
+                $("<li/>").attr("value", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).text(objectDisplayName)
             );
             count++;
         }
@@ -374,8 +380,8 @@ function updateList(listName, listData) {
     $(listElement).attr("size", selectSize);
 }
 
-function updateVerbButtons(list, verbsArray, idprefix) {
-    var selectedIndex = list.prop("selectedIndex");
+function updateVerbButtons(selectedItem, verbsArray, idprefix) {
+    var selectedIndex = selectedItem.data("index");
     var verbs = verbsArray[selectedIndex]["Verbs"];
     var count = 1;
     $.each(verbs, function (index, value) {
