@@ -301,7 +301,7 @@ namespace AxeSoftware.Quest
 
             if (string.IsNullOrEmpty(verbs))
             {
-                onclick = string.Format(" onclick=\"sendCommand('{0}')\"", command);
+                onclick = string.Format(" onclick=\"sendCommand('{0}')\"", command.Replace("'", @"\'"));
             }
 
             WriteText(string.Format("<a id=\"{0}\" style=\"{1}\" class=\"cmdlink\"{2}>{3}</a>",
