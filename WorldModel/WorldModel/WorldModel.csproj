@@ -211,6 +211,7 @@
     </None>
     <None Include="Core\CoreEditorObjectLightDark.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorObjectUseGive.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -240,6 +241,7 @@
     </None>
     <None Include="Core\CoreEditorScriptsDarkness.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\CoreEditorScriptsDrawing.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

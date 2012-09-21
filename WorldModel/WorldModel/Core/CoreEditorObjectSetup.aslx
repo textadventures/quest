@@ -61,14 +61,6 @@
     </control>
 
     <control>
-      <mustnotinherit>editor_room;defaultplayer</mustnotinherit>
-      <controltype>dropdown</controltype>
-      <caption>lightstrength</caption>
-      <attribute>lightstrength</attribute>
-      <validvalues type="list">weak;strong;</validvalues>
-    </control>
-  
-    <control>
       <mustnotinherit>editor_room</mustnotinherit>
       <controltype>dropdowntypes</controltype>
       <caption>Type</caption>
@@ -89,6 +81,15 @@
       <caption>Article</caption>
       <controltype>textbox</controltype>
       <attribute>article</attribute>
+      <advanced/>
+    </control>
+
+    <control>
+      <mustnotinherit>editor_room</mustnotinherit>
+      <controltype>dropdown</controltype>
+      <caption>Brightness</caption>
+      <attribute>lightstrength</attribute>
+      <validvalues type="stringdictionary">=Not a light source; weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
       <advanced/>
     </control>
 

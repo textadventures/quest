@@ -3,6 +3,7 @@
     <parent>_ObjectEditor</parent>
     <caption>Light/Dark</caption>
     <mustnotinherit>editor_object</mustnotinherit>
+    <advanced/>
 
     <control>
       <caption>Room is initially dark</caption>

@@ -84,10 +84,11 @@
       </control>
 
       <control>
-        <caption>Lightstrength</caption>
         <controltype>dropdown</controltype>
+        <caption>Brightness</caption>
         <attribute>lightstrength</attribute>
-        <validvalues type="list">weak;strong;</validvalues>
+        <validvalues type="stringdictionary">=Not a light source; weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
+        <advanced/>
       </control>
   
       <control>

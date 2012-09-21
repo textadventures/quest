@@ -1,14 +1,15 @@
 ﻿<library>
   <editor>
     <appliesto>(function)SetDark</appliesto>
-    <display>Set room (#1) dark</display>
+    <display>Make room (#1) dark</display>
     <category>Darkness</category>
     <create>SetDark()</create>
-    <add>Set room to dark</add>
+    <add>Make room dark</add>
+    <advanced/>
   
     <control>
       <controltype>label</controltype>
-      <caption>Set</caption>
+      <caption>Make dark</caption>
     </control>
 
     <control>
@@ -16,24 +17,20 @@
       <attribute>0</attribute>
       <simple>room</simple>
       <simpleeditor>objects</simpleeditor>
-    </control>
-    
-  <control>
-      <controltype>label</controltype>
-      <caption>to dark</caption>
-    </control>
+    </control>    
   </editor>
  
   <editor>
     <appliesto>(function)SetLight</appliesto>
-    <display>Set room (#1) light</display>
+    <display>Make room (#1) light</display>
     <category>Darkness</category>
     <create>SetLight()</create>
-    <add>Set room to enlightened</add>
+    <add>Make room light</add>
+    <advanced/>
   
     <control>
       <controltype>label</controltype>
-      <caption>Set</caption>
+      <caption>Make light</caption>
     </control>
 
     <control>
@@ -42,23 +39,19 @@
       <simple>room</simple>
       <simpleeditor>objects</simpleeditor>
     </control>
-    
-  <control>
-      <controltype>label</controltype>
-      <caption>to enlightened</caption>
-    </control>
-  </editor>
+</editor>
 
   <editor>
     <appliesto>(function)SetObjectLightstrength</appliesto>
-    <display>Set lightstrength of #0 to #1</display>
+    <display>Set brightness of object #0 to #1</display>
     <category>Darkness</category>
     <create>SetObjectLightstrength (,"")</create>
-    <add>Set objects lightstrength</add>
+    <add>Set object brightness</add>
+    <advanced/>
   
     <control>
       <controltype>label</controltype>
-      <caption>Set lightstrength of</caption>
+      <caption>Set brightness of</caption>
     </control>
 
     <control>
@@ -68,29 +61,33 @@
       <simpleeditor>objects</simpleeditor>
     </control>
     
-  <control>
+    <control>
       <controltype>label</controltype>
       <caption>to</caption>
     </control>
 
     <control>
-      <controltype>dropdown</controltype>
-      <attribute>1</attribute>    
-      <validvalues type="list">"weak";"strong";</validvalues>
+      <controltype>expression</controltype>
+      <simple>brightness</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>1</attribute>
+      <!-- TO DO: Would be more user-friendly if we could use a dictionary type here (as in CoreEditorObjectSetup), but
+      this doesn't currently work in an expression control -->
+      <validvalues type="list">weak;strong;</validvalues>
     </control>
-  
   </editor>
 
    <editor>
     <appliesto>(function)SetExitLightstrength</appliesto>
-    <display>Set lightstrength of #0 to #1</display>
+    <display>Set brightness of exit #0 to #1</display>
     <category>Darkness</category>
     <create>SetExitLightstrength (,"")</create>
-    <add>Set exits lightstrength</add>
+    <add>Set exit brightness</add>
+    <advanced/>
   
     <control>
       <controltype>label</controltype>
-      <caption>Set lightstrength of</caption>
+      <caption>Set brightness of</caption>
     </control>
 
     <control>
@@ -101,17 +98,20 @@
       <objecttype>exit</objecttype>
     </control>
     
-  <control>
+    <control>
       <controltype>label</controltype>
       <caption>to</caption>
     </control>
 
-    <control>
-      <controltype>dropdown</controltype>
-      <attribute>1</attribute>
-      <validvalues type="list">"weak";"strong";</validvalues>
-    </control>
-  
+     <control>
+       <controltype>expression</controltype>
+       <simple>brightness level</simple>
+       <simpleeditor>dropdown</simpleeditor>
+       <attribute>1</attribute>
+       <!-- TO DO: Would be more user-friendly if we could use a dictionary type here (as in CoreEditorObjectSetup), but
+       this doesn't currently work in an expression control -->
+       <validvalues type="list">weak;strong;</validvalues>
+     </control>
   </editor>
   
 </library>
