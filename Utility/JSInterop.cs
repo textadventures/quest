@@ -44,23 +44,7 @@ namespace AxeSoftware.Utility.JSInterop
 
         public string GetParameter()
         {
-            string result = "{";
-
-            foreach (KeyValuePair<string, string> item in m_param)
-            {
-                if (result.Length > 1)
-                {
-                    result += ",";
-                }
-
-                result += string.Format("{0}:{1}",
-                    JavaScriptParameterHelpers.StringParameter(item.Key),
-                    JavaScriptParameterHelpers.StringParameter(item.Value));
-            }
-
-            result += "}";
-
-            return result;
+            return Newtonsoft.Json.JsonConvert.SerializeObject(m_param);
         }
     }
 
