@@ -17,23 +17,32 @@ namespace AxeSoftware.Quest
             m_worldModel = worldModel;
         }
 
-        public void AddText(string text)
+        public void AddText(string text, bool linebreak = true)
         {
             if (m_anyText)
             {
-                m_text.Append("<br/>" + Environment.NewLine + text);
+                m_text.Append((linebreak ? "<br/>" : string.Empty) + Environment.NewLine + text);
             }
             else
             {
                 m_text.Append(text);
                 m_anyText = true;
             }
-
         }
 
         public void AddPicture(string filename)
         {
             m_text.Append(string.Format("<output_picture filename=\"{0}\"/>", filename));
+        }
+
+        public void SetFontName(string fontName)
+        {
+            m_text.Append(string.Format("<output_setfontname name=\"{0}\"/>", fontName));
+        }
+
+        public void SetFontSize(string fontSize)
+        {
+            m_text.Append(string.Format("<output_setfontsize size=\"{0}\"/>", fontSize));
         }
 
         public void Clear()
@@ -78,6 +87,26 @@ namespace AxeSoftware.Quest
                                     output.Clear();
                                 }
                                 m_worldModel.PlayerUI.ShowPicture(m_worldModel.GetExternalPath(reader.GetAttribute("filename")));
+                                break;
+                            case "output_setfontsize":
+                                if (output.Length > 0)
+                                {
+                                    m_worldModel.Print(output.ToString(), false);
+                                    output.Clear();
+                                }
+                                string size = reader.GetAttribute("size");
+                                m_worldModel.OutputLogger.SetFontSize(size);
+                                m_worldModel.PlayerUI.SetFontSize(size);
+                                break;
+                            case "output_setfontname":
+                                if (output.Length > 0)
+                                {
+                                    m_worldModel.Print(output.ToString(), false);
+                                    output.Clear();
+                                }
+                                string name = reader.GetAttribute("name");
+                                m_worldModel.OutputLogger.SetFontName(name);
+                                m_worldModel.PlayerUI.SetFont(name);
                                 break;
                             default:
                                 output.Append("<" + reader.Name);

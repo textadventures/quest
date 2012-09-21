@@ -281,12 +281,19 @@ namespace AxeSoftware.Quest
             Print(m_template.GetText(t));
         }
 
-        public void Print(string text)
+        public void Print(string text, bool linebreak = true)
         {
             if (PrintText != null)
             {
-                PrintText("<output>" + text + "</output>");
-                m_outputLogger.AddText(text);
+                if (linebreak)
+                {
+                    PrintText("<output>" + text + "</output>");
+                }
+                else
+                {
+                    PrintText("<output nobr=\"true\">" + text + "</output>");
+                }
+                m_outputLogger.AddText(text, linebreak);
             }
         }
 

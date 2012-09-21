@@ -129,9 +129,11 @@ namespace AxeSoftware.Quest.Scripts
                     break;
                 case Request.FontName:
                     m_worldModel.PlayerUI.SetFont(data);
+                    m_worldModel.OutputLogger.SetFontName(data);
                     break;
                 case Request.FontSize:
                     m_worldModel.PlayerUI.SetFontSize(data);
+                    m_worldModel.OutputLogger.SetFontSize(data);
                     break;
                 case Request.LinkForeground:
                     m_worldModel.PlayerUI.SetLinkForeground(data);
