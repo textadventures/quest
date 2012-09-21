@@ -368,7 +368,7 @@ function updateList(listName, listData) {
 
         if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
             $(listElement).append(
-                $("<li/>").attr("value", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).text(objectDisplayName)
+                $("<li/>").attr("value", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).html(objectDisplayName)
             );
             count++;
         }
