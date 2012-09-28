@@ -44,7 +44,9 @@ namespace AxeSoftware.Utility.JSInterop
 
         public string GetParameter()
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(m_param);
+            // Copy dictionary to work around an InvalidCastException when serializing
+            Dictionary<string, string> dictionary = new Dictionary<string, string>(m_param);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(dictionary);
         }
     }
 
