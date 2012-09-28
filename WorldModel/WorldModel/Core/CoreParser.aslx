@@ -42,8 +42,13 @@
     
     if (game.pov.commandmetadata <> null) {
       if (DictionaryContains(game.pov.commandmetadata, value)) {
-        found = true
-        return (GetObject(StringDictionaryItem(game.pov.commandmetadata, value)))
+        result = GetObject(StringDictionaryItem(game.pov.commandmetadata, value))
+        if (result <> null) {
+          if (ListContains(ScopeVisible(), result)) {
+            found = true
+            return (result)
+          }
+        }
       }
     }
     
