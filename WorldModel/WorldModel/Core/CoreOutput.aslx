@@ -98,4 +98,25 @@
     game.setbackgroundopacity = true
   </function>
 
+  <function name="DisplayList" parameters="list, numbers">
+    <![CDATA[
+    if (numbers) {
+      result = "<ol>"
+    }
+    else {
+      result = "<ul>"
+    }
+    foreach (item, list) {
+      result = result + "<li>" + item + "</li>"
+    }
+    if (numbers) {
+      result = result + "</ol>"
+    }
+    else {
+      result = result + "</ul>"
+    }
+    msg (result)
+    ]]>
+  </function>
+
 </library>

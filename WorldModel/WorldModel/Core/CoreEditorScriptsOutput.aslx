@@ -380,6 +380,36 @@
     </control>
   </editor>
 
+  <editor>
+    <appliesto>(function)DisplayList</appliesto>
+    <display>Print list #0</display>
+    <category>Output</category>
+    <create>DisplayList ()</create>
+    <add>Print a list</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Print list</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Numbered:</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+  
   <!-- synchronous wait function is deprecated, so can no longer be added, but still needs a friendly display for older games -->
   <editor>
     <appliesto>(function)WaitForKeyPress</appliesto>

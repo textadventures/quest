@@ -134,6 +134,15 @@ namespace AxeSoftware.Quest
                                 currentHref = reader.GetAttribute("href");
                                 currentLinkColour = reader.GetAttribute("color");
                                 break;
+                            case "ul":
+                                WriteText("<ul>");
+                                break;
+                            case "ol":
+                                WriteText("<ol>");
+                                break;
+                            case "li":
+                                WriteText("<li>");
+                                break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
                         }
@@ -188,12 +197,23 @@ namespace AxeSoftware.Quest
                                 AddExternalLink(currentTagValue, currentHref, currentLinkColour);
                                 generatingLink = false;
                                 break;
+                            case "ul":
+                                WriteText("</ul>");
+                                break;
+                            case "ol":
+                                WriteText("</ol>");
+                                break;
+                            case "li":
+                                WriteText("</li>");
+                                break;
                             default:
                                 throw new Exception(String.Format("Unrecognised element '{0}'", reader.Name));
                         }
                         break;
                 }
             }
+
+            if (m_textBuffer.EndsWith("</ul>") || m_textBuffer.EndsWith("</ol>")) nobr = true;
 
             if (!nobr)
             {
