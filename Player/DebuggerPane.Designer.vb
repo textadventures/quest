@@ -22,12 +22,14 @@ Partial Class DebuggerPane
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.splitMain = New System.Windows.Forms.SplitContainer
-        Me.lstObjects = New System.Windows.Forms.ListView
-        Me.ColumnHeader1 = New System.Windows.Forms.ColumnHeader
-        Me.lstAttributes = New System.Windows.Forms.ListView
-        Me.ColumnHeader2 = New System.Windows.Forms.ColumnHeader
-        Me.ColumnHeader3 = New System.Windows.Forms.ColumnHeader
+        Me.splitMain = New System.Windows.Forms.SplitContainer()
+        Me.lstObjects = New System.Windows.Forms.ListView()
+        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.lstAttributes = New System.Windows.Forms.ListView()
+        Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.Panel2.SuspendLayout()
         Me.splitMain.SuspendLayout()
@@ -47,7 +49,7 @@ Partial Class DebuggerPane
         'splitMain.Panel2
         '
         Me.splitMain.Panel2.Controls.Add(Me.lstAttributes)
-        Me.splitMain.Size = New System.Drawing.Size(434, 289)
+        Me.splitMain.Size = New System.Drawing.Size(683, 299)
         Me.splitMain.SplitterDistance = 144
         Me.splitMain.TabIndex = 2
         '
@@ -59,7 +61,7 @@ Partial Class DebuggerPane
         Me.lstObjects.HideSelection = False
         Me.lstObjects.Location = New System.Drawing.Point(0, 0)
         Me.lstObjects.Name = "lstObjects"
-        Me.lstObjects.Size = New System.Drawing.Size(144, 289)
+        Me.lstObjects.Size = New System.Drawing.Size(144, 299)
         Me.lstObjects.TabIndex = 0
         Me.lstObjects.UseCompatibleStateImageBehavior = False
         Me.lstObjects.View = System.Windows.Forms.View.Details
@@ -71,12 +73,12 @@ Partial Class DebuggerPane
         '
         'lstAttributes
         '
-        Me.lstAttributes.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader2, Me.ColumnHeader3})
+        Me.lstAttributes.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4})
         Me.lstAttributes.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lstAttributes.FullRowSelect = True
         Me.lstAttributes.Location = New System.Drawing.Point(0, 0)
         Me.lstAttributes.Name = "lstAttributes"
-        Me.lstAttributes.Size = New System.Drawing.Size(286, 289)
+        Me.lstAttributes.Size = New System.Drawing.Size(535, 299)
         Me.lstAttributes.TabIndex = 0
         Me.lstAttributes.UseCompatibleStateImageBehavior = False
         Me.lstAttributes.View = System.Windows.Forms.View.Details
@@ -91,15 +93,21 @@ Partial Class DebuggerPane
         Me.ColumnHeader3.Text = "Value"
         Me.ColumnHeader3.Width = 164
         '
+        'ColumnHeader4
+        '
+        Me.ColumnHeader4.Text = "Source"
+        Me.ColumnHeader4.Width = 130
+        '
         'DebuggerPane
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.Controls.Add(Me.splitMain)
         Me.Name = "DebuggerPane"
-        Me.Size = New System.Drawing.Size(434, 289)
+        Me.Size = New System.Drawing.Size(683, 299)
         Me.splitMain.Panel1.ResumeLayout(False)
         Me.splitMain.Panel2.ResumeLayout(False)
+        CType(Me.splitMain, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitMain.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -110,5 +118,6 @@ Partial Class DebuggerPane
     Friend WithEvents lstAttributes As System.Windows.Forms.ListView
     Friend WithEvents ColumnHeader2 As System.Windows.Forms.ColumnHeader
     Friend WithEvents ColumnHeader3 As System.Windows.Forms.ColumnHeader
+    Friend WithEvents ColumnHeader4 As System.Windows.Forms.ColumnHeader
 
 End Class

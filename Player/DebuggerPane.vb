@@ -51,6 +51,7 @@ Public Class DebuggerPane
                 Dim lvItem As ListViewItem
                 lvItem = lstAttributes.Items.Add(attr)
                 lvItem.SubItems.Add(data.Data(attr).Value)
+                lvItem.SubItems.Add(data.Data(attr).Source)
                 If data.Data(attr).IsInherited Then
                     lvItem.ForeColor = Color.DarkGray
                 End If

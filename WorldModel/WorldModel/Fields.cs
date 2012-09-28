@@ -427,18 +427,41 @@ namespace AxeSoftware.Quest
 
         public object Get(string attribute)
         {
+            return Get(attribute, false).Value;
+        }
+
+        private struct AttributeData
+        {
+            public object Value;
+            public string Source;
+            public bool IsInherited;
+        }
+
+        private AttributeData Get(string attribute, bool withSource)
+        {
+            AttributeData result = new AttributeData();
+
             if (m_attributes.ContainsKey(attribute))
             {
-                return m_attributes[attribute];
+                result.Value = m_attributes[attribute];
+                if (withSource)
+                {
+                    result.Source = m_element.Name;
+                    result.IsInherited = false;
+                }
+                return result;
             }
-
-            object result = null;
 
             foreach (Element type in m_types)
             {
                 if (type.Fields.Exists(attribute, false))
                 {
-                    result = type.Fields.Get(attribute);
+                    result.Value = type.Fields.Get(attribute);
+                    if (withSource)
+                    {
+                        result.Source = type.Name;
+                        result.IsInherited = true;
+                    }
                     break;
                 }
             }
@@ -454,15 +477,26 @@ namespace AxeSoftware.Quest
             return result;
         }
 
-        private object GetMergedResult(string attribute, object baseField)
+        private AttributeData GetMergedResult(string attribute, AttributeData baseField)
         {
-            IExtendableField extendableBaseField = baseField as IExtendableField;
-            IExtendableField mergedResult = GetExtendableField(attribute);
+            List<string> source = new List<string>();
+            IExtendableField extendableBaseField = baseField.Value as IExtendableField;
+            IExtendableField mergedResult = GetExtendableField(attribute, source);
 
-            if (extendableBaseField == null) return mergedResult;
-            if (mergedResult == null) return extendableBaseField;
+            if (extendableBaseField == null) return new AttributeData
+            {
+                Value = mergedResult,
+                Source = string.Join(",", source)
+            };
 
-            return mergedResult.Merge(extendableBaseField);
+            if (mergedResult == null) return baseField;
+
+            return new AttributeData
+            {
+                Value = mergedResult.Merge(extendableBaseField),
+                Source = baseField.Source + "," + string.Join(",", source),
+                IsInherited = true
+            };
         }
 
         private bool HasExtendableField(string attribute)
@@ -476,20 +510,22 @@ namespace AxeSoftware.Quest
             return false;
         }
 
-        private IExtendableField GetExtendableField(string attribute)
+        private IExtendableField GetExtendableField(string attribute, List<string> source)
         {
             IExtendableField result = null;
 
             if (m_extendableFields.ContainsKey(attribute))
             {
                 result = MergeExtendableFields(result, m_extendableFields[attribute]);
+                source.Add(m_element.Name);
             }
 
             foreach (Element type in m_types)
             {
                 if (type.Fields.HasExtendableField(attribute))
                 {
-                    result = MergeExtendableFields(result, type.Fields.GetExtendableField(attribute));
+                    result = MergeExtendableFields(result, type.Fields.GetExtendableField(attribute, source));
+                    // Don't need to add to source here as the call to GetExtendableField will do that automatically
                 }
             }
 
@@ -582,33 +618,14 @@ namespace AxeSoftware.Quest
         {
             DebugData result = new DebugData();
 
-            foreach (string attribute in m_attributes.Keys)
+            foreach (string attribute in GetAttributeNames(true))
             {
-                DebugDataItem newItem = new DebugDataItem(FormatDebugData(m_attributes[attribute]));
-                newItem.Source = m_element.Name;
-                result.Data.Add(attribute, newItem);
-            }
+                var attributeData = Get(attribute, true);
+                var debugDataItem = new DebugDataItem(FormatDebugData(attributeData.Value));
+                debugDataItem.Source = attributeData.Source;
+                debugDataItem.IsInherited = attributeData.IsInherited;
 
-            foreach (string attribute in m_extendableFields.Keys)
-            {
-                DebugDataItem newItem = new DebugDataItem(FormatDebugData(Get(attribute)));
-                newItem.Source = m_element.Name;
-                result.Data.Add(attribute, newItem);
-            }
-
-            foreach (Element type in m_types)
-            {
-                DebugData inheritedData = type.Fields.GetDebugData();
-
-                foreach (string attribute in inheritedData.Data.Keys)
-                {
-                    if (!result.Data.ContainsKey(attribute))
-                    {
-                        DebugDataItem item = inheritedData.Data[attribute];
-                        item.IsInherited = true;
-                        result.Data.Add(attribute, item);
-                    }
-                }
+                result.Data.Add(attribute, debugDataItem);
             }
 
             return result;
