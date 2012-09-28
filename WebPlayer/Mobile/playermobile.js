@@ -44,6 +44,9 @@ function ui_init() {
     $("#cmdRestart").click(function () { window.location.reload(); });
     $("#cmdUndo").click(function () { sendCommand("undo"); });
     $("#cmdWait").click(function () { sendCommand("wait"); });
+
+    // fix to make compass button icons centred
+    $(".compassbutton span").css("left", "1.5em");
 }
 
 function initTabMenu(full) {
@@ -217,9 +220,9 @@ function updateList(listName, listData) {
     var anyItem = false;
 
     $.each(listData, function (key, value) {
-        var splitString = value.split(":");
-        var objectDisplayName = splitString[0];
-        var objectVerbs = splitString[1];
+        var data = JSON.parse(value);
+        var objectDisplayName = data["Text"];
+        var objectVerbs = data["Verbs"].join("/");
 
         if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
             listcount++;
@@ -234,7 +237,7 @@ function updateList(listName, listData) {
             $("#" + paneLinkId).bind("touchend", function () {
                 $(this).removeClass("elementListHover")
             });
-            bindMenu(paneLinkId, objectVerbs, objectDisplayName);
+            bindMenu(paneLinkId, objectVerbs, data["ElementName"], data["ElementId"]);
             anyItem = true;
         }
     });
