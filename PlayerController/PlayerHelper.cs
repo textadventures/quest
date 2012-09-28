@@ -354,11 +354,11 @@ namespace AxeSoftware.Quest
             get { return m_gameTimer; }
         }
 
-        public void SendCommand(string command, int tickCount)
+        public void SendCommand(string command, int tickCount, IDictionary<string, string> metadata)
         {
             if (m_gameTimer != null)
             {
-                m_gameTimer.SendCommand(command, tickCount, null);
+                m_gameTimer.SendCommand(command, tickCount, metadata);
             }
             else
             {

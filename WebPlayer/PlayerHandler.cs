@@ -162,8 +162,9 @@ namespace WebPlayer
         public void SendCommand(string command, int tickCount)
         {
             if (m_finished) return;
+            var data = PlayerHelper.GetCommandData(command);
             Logging.Log.DebugFormat("{0} Command entered: {1}", GameId, command);
-            m_controller.SendCommand(command, tickCount);
+            m_controller.SendCommand(data.Command, tickCount, data.Metadata);
         }
 
         public Action<string, IDictionary<string, string>, bool> ShowMenuDelegate { get; set; }

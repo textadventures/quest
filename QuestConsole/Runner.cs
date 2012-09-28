@@ -62,7 +62,7 @@ namespace QuestConsole
                 ClearBuffer();
                 string input = Console.ReadLine();
 
-                m_helper.SendCommand(input, m_player.GetTickCountAndStopTimer());
+                m_helper.SendCommand(input, m_player.GetTickCountAndStopTimer(), null);
             } while (m_running);
         }
     }
