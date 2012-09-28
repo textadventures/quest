@@ -117,7 +117,7 @@ namespace AxeSoftware.Quest
         private string m_elementName;
 
         public ListData(string text, IEnumerable<string> verbs)
-            : this(text, verbs, null, null)
+            : this(text, verbs, null, text)
         {
         }
 
