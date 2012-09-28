@@ -77,9 +77,12 @@ namespace AxeSoftware.Quest
             bool generatingLink = false;
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
-            XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
             bool nobr = false;
             bool alignmentSet = false;
+
+            settings.DtdProcessing = DtdProcessing.Parse;
+            text = "<!DOCTYPE output [ <!ENTITY nbsp \"&#x00A0;\"> ]>" + text;
+            XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
 
             // TO DO: Throw an exception if an <a> tag tries to embed another <a> tag.
             // Should also apply for many of the other tags too.
