@@ -159,8 +159,6 @@ Public Class PlayerHTML
 
         m_schemeHandler.HTML = htmlContent
         ctlWebView.Load("quest://local")
-
-        'ctlWebView.ShowDevTools()
     End Sub
 
     Public Sub Finished()
@@ -249,5 +247,9 @@ Public Class PlayerHTML
 
     Private Sub m_interop_UIEventTriggered(command As String, parameter As String) Handles m_interop.UIEventTriggered
         UIEvent(command, parameter)
+    End Sub
+
+    Public Sub ShowDevTools()
+        ctlWebView.ShowDevTools()
     End Sub
 End Class

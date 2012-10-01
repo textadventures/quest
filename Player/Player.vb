@@ -70,6 +70,7 @@ Public Class Player
         menu.AddMenuClickHandler("save", AddressOf Save)
         menu.AddMenuClickHandler("saveas", AddressOf SaveAs)
         menu.AddMenuClickHandler("stop", AddressOf StopGame)
+        menu.AddMenuClickHandler("htmldevtools", AddressOf HTMLDevToolsClick)
     End Sub
 
     Private Sub DebuggerMenuClick()
@@ -78,6 +79,10 @@ Public Class Player
 
     Private Sub LogMenuClick()
         ShowLog(Not m_menu.MenuChecked("log"))
+    End Sub
+
+    Private Sub HTMLDevToolsClick()
+        ctlPlayerHtml.ShowDevTools()
     End Sub
 
     Public Sub Initialise(ByRef game As IASL, Optional fromEditor As Boolean = False)
