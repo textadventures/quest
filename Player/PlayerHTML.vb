@@ -1,5 +1,7 @@
 ﻿Imports System.Xml
 Imports Microsoft.Win32
+Imports CefSharp.WinForms
+Imports CefSharp
 
 Public Class PlayerHTML
 
@@ -11,24 +13,27 @@ Public Class PlayerHTML
     Public Event ExitFullScreen()
 
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
-    Private m_deleteFile As String = Nothing
     Private m_navigationAllowed As Boolean = True
     Private m_buffer As New List(Of Action)
-    Private m_internetExplorerVersion As Single = 0.0
     Private m_resetting As Boolean = False
+    Private ctlWebView As WebView
+    Private m_schemeHandler As CefSchemeHandlerFactory
+
+    Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
+        ctlWebView = New WebView()
+        ctlWebView.Dock = DockStyle.Fill
+        Controls.Add(ctlWebView)
+        ctlWebView.CreateControl()
+
+        m_schemeHandler = New CefSchemeHandlerFactory()
+
+        CEF.Initialize(New Settings)
+        CEF.RegisterScheme("quest", m_schemeHandler)
+        CEF.RegisterScheme("res", New CefResourceSchemeHandlerFactory())
+    End Sub
 
     Public Sub Setup()
         m_navigationAllowed = True
-        wbOutput.ScriptErrorsSuppressed = True
-        Dim key As RegistryKey = Registry.LocalMachine.OpenSubKey("Software\Microsoft\Internet Explorer")
-        If key IsNot Nothing Then
-            Dim version As String = DirectCast(key.GetValue("Version", ""), String)
-            Dim versionRegex As New System.Text.RegularExpressions.Regex("^\d*\.\d*")
-            If versionRegex.IsMatch(version) Then
-                Dim versionNumber As String = versionRegex.Match(version).Value
-                m_internetExplorerVersion = CSng(versionNumber)
-            End If
-        End If
     End Sub
 
     Public Sub WriteText(text As String)
@@ -47,47 +52,41 @@ Public Class PlayerHTML
         InvokeScript("bindMenu", linkid, verbs, text, elementId)
     End Sub
 
-    Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles wbOutput.DocumentCompleted
-        If m_resetting Then
-            m_resetting = False
-            Return
-        End If
-        wbOutput.ScriptErrorsSuppressed = False
-        AddHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
-        AddUIEventElement()
-        DeleteTempFile()
-        RaiseEvent Ready()
-    End Sub
+    'Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs)
+    '    If m_resetting Then
+    '        m_resetting = False
+    '        Return
+    '    End If
+    '    wbOutput.ScriptErrorsSuppressed = False
+    '    AddHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
+    '    AddUIEventElement()
+    '    DeleteTempFile()
+    '    RaiseEvent Ready()
+    'End Sub
 
-    Private Sub wbOutput_Error(sender As Object, e As HtmlElementErrorEventArgs)
-        Dim displayError As Boolean = True
-        If m_internetExplorerVersion < 9 AndAlso e.Description.Contains("HTMLCanvasElement") Then
-            displayError = False
-        End If
-        If displayError Then
-            WriteText(String.Format("JavaScript error at line {0}: {1}", e.LineNumber, e.Description))
-        End If
-        e.Handled = True
-    End Sub
+    'Private Sub wbOutput_Error(sender As Object, e As HtmlElementErrorEventArgs)
+    '    Dim displayError As Boolean = True
+    '    If m_internetExplorerVersion < 9 AndAlso e.Description.Contains("HTMLCanvasElement") Then
+    '        displayError = False
+    '    End If
+    '    If displayError Then
+    '        WriteText(String.Format("JavaScript error at line {0}: {1}", e.LineNumber, e.Description))
+    '    End If
+    '    e.Handled = True
+    'End Sub
 
-    ' This is how we support JavaScript calling ASL functions (ASLEvent function) and other code in desktop Player.
-    ' We have a hidden _UIEvent div, and simply handle the click event on it here. In desktopplayer.js
-    ' we set the InnerText of our div with the data we want to pass in, and trigger the click event using
-    ' jQuery. This may be slightly clunky but it works, and it's better than using window.external in our
-    ' JavaScript as that won't work under Mono.
-    Private Sub AddUIEventElement()
-        Dim newLink As HtmlElement = wbOutput.Document.CreateElement("div")
-        newLink.Id = "_UIEvent"
-        newLink.Style = "display:none"
-        wbOutput.Document.Body.AppendChild(newLink)
-        AddHandler newLink.Click, AddressOf HiddenCmdLinkClicked
-    End Sub
-
-    Private Sub DeleteTempFile()
-        If m_deleteFile Is Nothing Then Exit Sub
-        System.IO.File.Delete(m_deleteFile)
-        m_deleteFile = Nothing
-    End Sub
+    '' This is how we support JavaScript calling ASL functions (ASLEvent function) and other code in desktop Player.
+    '' We have a hidden _UIEvent div, and simply handle the click event on it here. In desktopplayer.js
+    '' we set the InnerText of our div with the data we want to pass in, and trigger the click event using
+    '' jQuery. This may be slightly clunky but it works, and it's better than using window.external in our
+    '' JavaScript as that won't work under Mono.
+    'Private Sub AddUIEventElement()
+    '    Dim newLink As HtmlElement = wbOutput.Document.CreateElement("div")
+    '    newLink.Id = "_UIEvent"
+    '    newLink.Style = "display:none"
+    '    wbOutput.Document.Body.AppendChild(newLink)
+    '    AddHandler newLink.Click, AddressOf HiddenCmdLinkClicked
+    'End Sub
 
     Private Sub HiddenCmdLinkClicked(sender As Object, e As EventArgs)
         Dim element As HtmlElement = DirectCast(sender, HtmlElement)
@@ -134,15 +133,15 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub Copy()
-        wbOutput.Document.ExecCommand("Copy", True, Nothing)
+        'wbOutput.Document.ExecCommand("Copy", True, Nothing)
     End Sub
 
     Public Sub SelectAll()
-        wbOutput.Document.ExecCommand("SelectAll", True, Nothing)
+        'wbOutput.Document.ExecCommand("SelectAll", True, Nothing)
     End Sub
 
     Public Sub InvokeScript(functionName As String, ParamArray args() As String)
-        m_buffer.Add(Sub() wbOutput.Document.InvokeScript(functionName, args))
+        'm_buffer.Add(Sub() wbOutput.Document.InvokeScript(functionName, args))
     End Sub
 
     Public Sub SetBackground(colour As String)
@@ -169,8 +168,6 @@ Public Class PlayerHTML
         ' Construct an HTML page based on the default Blank.htm, but with additional <script> tags
         ' for each external Javascript file this game wants to use.
 
-        Dim htmlPath As String = System.IO.Path.GetTempFileName
-
         Dim scriptsHtml As String = String.Empty
         If scripts IsNot Nothing Then
             For Each script As String In scripts
@@ -180,33 +177,22 @@ Public Class PlayerHTML
 
         Dim htmlContent As String = System.IO.File.ReadAllText(m_baseHtmlPath)
 
-        ' The <script> src for the default scripts in Blank.htm need to be remapped so they are picked up
-        ' from the Quest app path, not the temp folder. The same applies for stylesheet hrefs.
-        InsertFolderName(htmlContent, "src")
-        InsertFolderName(htmlContent, "href")
-
         ' Now we can insert the custom <script> elements
         htmlContent = htmlContent.Replace(k_scriptsPlaceholder, scriptsHtml)
 
         htmlContent = htmlContent.Replace(k_htmlUIPlaceholder, PlayerHelper.GetUIHTML())
 
-        ' Write our customised html file to the temp folder
-        System.IO.File.WriteAllText(htmlPath, htmlContent)
+        m_schemeHandler.HTML = htmlContent
+        ctlWebView.Load("quest://local")
 
-        wbOutput.Navigate(htmlPath)
-
-        m_deleteFile = htmlPath
-    End Sub
-
-    Private Sub InsertFolderName(ByRef content As String, attribute As String)
-        content = content.Replace(attribute + "=""", attribute + "=""" + My.Application.Info.DirectoryPath() + "\")
+        'ctlWebView.ShowDevTools()
     End Sub
 
     Public Sub Finished()
         InvokeScript("gameFinished")
     End Sub
 
-    Private Sub wbOutput_Navigating(sender As Object, e As System.Windows.Forms.WebBrowserNavigatingEventArgs) Handles wbOutput.Navigating
+    Private Sub wbOutput_Navigating(sender As Object, e As System.Windows.Forms.WebBrowserNavigatingEventArgs)
         If Not m_navigationAllowed Then
             e.Cancel = True
         End If
@@ -216,11 +202,11 @@ Public Class PlayerHTML
         m_navigationAllowed = False
     End Sub
 
-    Private Sub wbOutput_PreviewKeyDown(sender As Object, e As System.Windows.Forms.PreviewKeyDownEventArgs) Handles wbOutput.PreviewKeyDown
-        ' With WebBrowserShortcutsEnabled = False, *all* shortcut keys are suppressed, not just webbrowser ones.
-        ' So to enable Quest menu shortcut keys to work, we handle them here.
-        RaiseEvent ShortcutKeyPressed(e.KeyData)
-    End Sub
+    'Private Sub wbOutput_PreviewKeyDown(sender As Object, e As System.Windows.Forms.PreviewKeyDownEventArgs)
+    '    ' With WebBrowserShortcutsEnabled = False, *all* shortcut keys are suppressed, not just webbrowser ones.
+    '    ' So to enable Quest menu shortcut keys to work, we handle them here.
+    '    RaiseEvent ShortcutKeyPressed(e.KeyData)
+    'End Sub
 
     Private Shared s_regexHtml As New System.Text.RegularExpressions.Regex("\<.+?\>")
 
@@ -233,15 +219,6 @@ Public Class PlayerHTML
     Public Sub SetPanelContents(html As String)
         InvokeScript("setPanelContents", html)
     End Sub
-
-    Public Property ScriptErrorsSuppressed As Boolean
-        Get
-            Return wbOutput.ScriptErrorsSuppressed
-        End Get
-        Set(value As Boolean)
-            wbOutput.ScriptErrorsSuppressed = value
-        End Set
-    End Property
 
     Public Sub UpdateLocation(location As String)
         InvokeScript("updateLocation", location)
@@ -294,7 +271,7 @@ Public Class PlayerHTML
     Public Sub Reset()
         m_navigationAllowed = True
         m_resetting = True
-        RemoveHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
-        wbOutput.Navigate("about:blank")
+        'wbOutput.Navigate("about:blank")
     End Sub
+
 End Class

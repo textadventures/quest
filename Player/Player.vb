@@ -1020,15 +1020,6 @@ Public Class Player
         BeginInvoke(Sub() ctlPlayerHtml.SetPanelContents(html))
     End Sub
 
-    Public Property ScriptErrorsSuppressed As Boolean
-        Get
-            Return ctlPlayerHtml.ScriptErrorsSuppressed
-        End Get
-        Set(value As Boolean)
-            ctlPlayerHtml.ScriptErrorsSuppressed = value
-        End Set
-    End Property
-
     Public Sub EscPressed()
         If m_fromEditor And m_initialised Then
             DoQuit()

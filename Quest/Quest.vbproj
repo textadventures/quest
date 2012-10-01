@@ -315,6 +315,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy .\Core\*.* .\</PostBuildEvent>
+    <PostBuildEvent>copy .\Core\*.* .\
+copy ..\..\..\..\Dependencies\Chromium\*.* .\
+md .\locales
+copy ..\..\..\..\Dependencies\Chromium\locales\*.* .\locales\</PostBuildEvent>
   </PropertyGroup>
 </Project>

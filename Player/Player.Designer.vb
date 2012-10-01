@@ -53,7 +53,6 @@ Partial Class Player
         Me.ctlPlayerHtml.Location = New System.Drawing.Point(0, 0)
         Me.ctlPlayerHtml.Margin = New System.Windows.Forms.Padding(0)
         Me.ctlPlayerHtml.Name = "ctlPlayerHtml"
-        Me.ctlPlayerHtml.ScriptErrorsSuppressed = False
         Me.ctlPlayerHtml.Size = New System.Drawing.Size(695, 482)
         Me.ctlPlayerHtml.TabIndex = 8
         '
