@@ -14,7 +14,7 @@ Public Class PlayerHTML
 
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
     Private m_buffer As New List(Of Action)
-    'Private m_resetting As Boolean = False
+    Private m_resetting As Boolean = False
     Private WithEvents ctlWebView As WebView
     Private m_schemeHandler As CefSchemeHandlerFactory
     Private WithEvents m_interop As QuestCefInterop
@@ -51,6 +51,10 @@ Public Class PlayerHTML
     End Sub
 
     Private Sub OnDocumentLoad()
+        If m_resetting Then
+            m_resetting = False
+            Return
+        End If
         RaiseEvent Ready()
     End Sub
 
@@ -232,8 +236,8 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub Reset()
-        'm_resetting = True
-        'wbOutput.Navigate("about:blank")
+        m_resetting = True
+        ctlWebView.Load("about:blank")
     End Sub
 
     Private Sub ctlWebView_PropertyChanged(sender As Object, e As System.ComponentModel.PropertyChangedEventArgs) Handles ctlWebView.PropertyChanged
