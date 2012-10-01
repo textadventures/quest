@@ -13,10 +13,9 @@ Public Class PlayerHTML
     Public Event ExitFullScreen()
 
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
-    Private m_navigationAllowed As Boolean = True
     Private m_buffer As New List(Of Action)
-    Private m_resetting As Boolean = False
-    Private ctlWebView As WebView
+    'Private m_resetting As Boolean = False
+    Private WithEvents ctlWebView As WebView
     Private m_schemeHandler As CefSchemeHandlerFactory
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -30,10 +29,6 @@ Public Class PlayerHTML
         CEF.Initialize(New Settings)
         CEF.RegisterScheme("quest", m_schemeHandler)
         CEF.RegisterScheme("res", New CefResourceSchemeHandlerFactory())
-    End Sub
-
-    Public Sub Setup()
-        m_navigationAllowed = True
     End Sub
 
     Public Sub WriteText(text As String)
@@ -52,17 +47,9 @@ Public Class PlayerHTML
         InvokeScript("bindMenu", linkid, verbs, text, elementId)
     End Sub
 
-    'Private Sub wbOutput_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs)
-    '    If m_resetting Then
-    '        m_resetting = False
-    '        Return
-    '    End If
-    '    wbOutput.ScriptErrorsSuppressed = False
-    '    AddHandler wbOutput.Document.Window.Error, AddressOf wbOutput_Error
-    '    AddUIEventElement()
-    '    DeleteTempFile()
-    '    RaiseEvent Ready()
-    'End Sub
+    Private Sub OnDocumentLoad()
+        RaiseEvent Ready()
+    End Sub
 
     'Private Sub wbOutput_Error(sender As Object, e As HtmlElementErrorEventArgs)
     '    Dim displayError As Boolean = True
@@ -141,7 +128,11 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub InvokeScript(functionName As String, ParamArray args() As String)
-        'm_buffer.Add(Sub() wbOutput.Document.InvokeScript(functionName, args))
+        Dim quotedArgs = From arg In args
+                         Select """" + arg.Replace("\", "\\").Replace("""", "\""") + """"
+        Dim script As String = String.Format("{0}({1})", functionName, String.Join(",", quotedArgs))
+        Debug.WriteLine(script)
+        m_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
     End Sub
 
     Public Sub SetBackground(colour As String)
@@ -190,16 +181,6 @@ Public Class PlayerHTML
 
     Public Sub Finished()
         InvokeScript("gameFinished")
-    End Sub
-
-    Private Sub wbOutput_Navigating(sender As Object, e As System.Windows.Forms.WebBrowserNavigatingEventArgs)
-        If Not m_navigationAllowed Then
-            e.Cancel = True
-        End If
-    End Sub
-
-    Public Sub DisableNavigation()
-        m_navigationAllowed = False
     End Sub
 
     'Private Sub wbOutput_PreviewKeyDown(sender As Object, e As System.Windows.Forms.PreviewKeyDownEventArgs)
@@ -269,9 +250,17 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub Reset()
-        m_navigationAllowed = True
-        m_resetting = True
+        'm_resetting = True
         'wbOutput.Navigate("about:blank")
+    End Sub
+
+    Private Sub ctlWebView_PropertyChanged(sender As Object, e As System.ComponentModel.PropertyChangedEventArgs) Handles ctlWebView.PropertyChanged
+        Select Case e.PropertyName
+            Case "IsLoading"
+                If Not ctlWebView.IsLoading Then
+                    OnDocumentLoad()
+                End If
+        End Select
     End Sub
 
 End Class

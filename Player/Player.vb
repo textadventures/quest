@@ -98,7 +98,6 @@ Public Class Player
         ResetInterfaceStrings()
         m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlHelper.UseGameColours = UseGameColours
-        ctlPlayerHtml.Setup()
  
         Me.Cursor = Cursors.WaitCursor
 
@@ -130,7 +129,6 @@ Public Class Player
         m_game.Begin()
         ClearBuffer()
         ctlPlayerHtml.Focus()
-        ctlPlayerHtml.DisableNavigation()
         If m_postLaunchAction IsNot Nothing Then
             m_postLaunchAction.Invoke()
             m_postLaunchAction = Nothing
