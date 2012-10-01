@@ -195,6 +195,7 @@
     <Compile Include="PlayerHTML.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="QuestCefInterop.vb" />
     <Compile Include="WalkthroughRunner.vb" />
   </ItemGroup>
   <ItemGroup>

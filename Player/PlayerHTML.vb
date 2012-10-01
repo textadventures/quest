@@ -17,6 +17,7 @@ Public Class PlayerHTML
     'Private m_resetting As Boolean = False
     Private WithEvents ctlWebView As WebView
     Private m_schemeHandler As CefSchemeHandlerFactory
+    Private WithEvents m_interop As QuestCefInterop
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
         ctlWebView = New WebView()
@@ -25,10 +26,12 @@ Public Class PlayerHTML
         ctlWebView.CreateControl()
 
         m_schemeHandler = New CefSchemeHandlerFactory()
+        m_interop = New QuestCefInterop()
 
         CEF.Initialize(New Settings)
         CEF.RegisterScheme("quest", m_schemeHandler)
         CEF.RegisterScheme("res", New CefResourceSchemeHandlerFactory())
+        CEF.RegisterJsObject("questCefInterop", m_interop)
     End Sub
 
     Public Sub WriteText(text As String)
@@ -62,25 +65,7 @@ Public Class PlayerHTML
     '    e.Handled = True
     'End Sub
 
-    '' This is how we support JavaScript calling ASL functions (ASLEvent function) and other code in desktop Player.
-    '' We have a hidden _UIEvent div, and simply handle the click event on it here. In desktopplayer.js
-    '' we set the InnerText of our div with the data we want to pass in, and trigger the click event using
-    '' jQuery. This may be slightly clunky but it works, and it's better than using window.external in our
-    '' JavaScript as that won't work under Mono.
-    'Private Sub AddUIEventElement()
-    '    Dim newLink As HtmlElement = wbOutput.Document.CreateElement("div")
-    '    newLink.Id = "_UIEvent"
-    '    newLink.Style = "display:none"
-    '    wbOutput.Document.Body.AppendChild(newLink)
-    '    AddHandler newLink.Click, AddressOf HiddenCmdLinkClicked
-    'End Sub
-
-    Private Sub HiddenCmdLinkClicked(sender As Object, e As EventArgs)
-        Dim element As HtmlElement = DirectCast(sender, HtmlElement)
-        Dim data() As String = element.InnerText.Split({" "c}, 2)
-        Dim cmd As String = data(0)
-        Dim args As String = data(1)
-
+    Private Sub UIEvent(cmd As String, args As String)
         Select Case cmd
             Case "RunCommand"
                 RunCommand(args)
@@ -93,7 +78,6 @@ Public Class PlayerHTML
             Case "ExitFullScreen"
                 RaiseEvent ExitFullScreen()
         End Select
-
     End Sub
 
     Private Sub RunASLEvent(data As String)
@@ -129,7 +113,7 @@ Public Class PlayerHTML
 
     Public Sub InvokeScript(functionName As String, ParamArray args() As String)
         Dim quotedArgs = From arg In args
-                         Select """" + arg.Replace("\", "\\").Replace("""", "\""") + """"
+                         Select """" + arg.Replace("\", "\\").Replace("""", "\""").Replace(Chr(13), "").Replace(Chr(10), "") + """"
         Dim script As String = String.Format("{0}({1})", functionName, String.Join(",", quotedArgs))
         Debug.WriteLine(script)
         m_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
@@ -263,4 +247,7 @@ Public Class PlayerHTML
         End Select
     End Sub
 
+    Private Sub m_interop_UIEventTriggered(command As String, parameter As String) Handles m_interop.UIEventTriggered
+        UIEvent(command, parameter)
+    End Sub
 End Class

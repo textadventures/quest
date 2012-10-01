@@ -27,9 +27,7 @@ function sendEndWait() {
 }
 
 function UIEvent(cmd, parameter) {
-    var elem = $("#_UIEvent");
-    elem.html(cmd + " " + parameter);
-    elem.click();
+    questCefInterop.UIEvent(cmd, parameter);
 }
 
 function SetBackground(color) {
