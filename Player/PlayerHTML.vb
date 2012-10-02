@@ -12,7 +12,10 @@ Public Class PlayerHTML
     Public Event EndWait()
     Public Event ExitFullScreen()
 
+    ' TO DO: Both Blank.htm and grid.js should be loaded from embedded resource
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
+    Private m_gridJsPath As String = My.Application.Info.DirectoryPath() & "\grid.js"
+
     Private m_buffer As New List(Of Action)
     Private m_resetting As Boolean = False
     Private WithEvents ctlWebView As WebView
@@ -143,6 +146,7 @@ Public Class PlayerHTML
 
     Private Const k_scriptsPlaceholder As String = "<!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->"
     Private Const k_htmlUIPlaceholder As String = "<!-- HTML_UI_PLACEHOLDER -->"
+    Private Const k_gridJSPlaceholder As String = "// GRID_JS_PLACEHOLDER"
 
     Public Sub InitialiseHTMLUI(scripts As IEnumerable(Of String))
         ' Construct an HTML page based on the default Blank.htm, but with additional <script> tags
@@ -156,11 +160,12 @@ Public Class PlayerHTML
         End If
 
         Dim htmlContent As String = System.IO.File.ReadAllText(m_baseHtmlPath)
+        Dim gridJsContent As String = System.IO.File.ReadAllText(m_gridJsPath)
 
         ' Now we can insert the custom <script> elements
         htmlContent = htmlContent.Replace(k_scriptsPlaceholder, scriptsHtml)
-
         htmlContent = htmlContent.Replace(k_htmlUIPlaceholder, PlayerHelper.GetUIHTML())
+        htmlContent = htmlContent.Replace(k_gridJSPlaceholder, gridJsContent)
 
         m_schemeHandler.HTML = htmlContent
         ctlWebView.Load("quest://local/ui")
