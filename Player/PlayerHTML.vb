@@ -104,7 +104,8 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub ShowPicture(filename As String)
-        WriteText(String.Format("<img src=""{0}"" onload=""scrollToEnd();"" /><br />", filename))
+        Dim id = m_schemeHandler.AddImage(filename)
+        WriteText(String.Format("<img src=""quest://local/{0}"" onload=""scrollToEnd();"" /><br />", id))
     End Sub
 
     Public Sub Copy()
@@ -162,7 +163,7 @@ Public Class PlayerHTML
         htmlContent = htmlContent.Replace(k_htmlUIPlaceholder, PlayerHelper.GetUIHTML())
 
         m_schemeHandler.HTML = htmlContent
-        ctlWebView.Load("quest://local")
+        ctlWebView.Load("quest://local/ui")
     End Sub
 
     Public Sub Finished()
