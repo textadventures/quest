@@ -21,12 +21,15 @@ Public Class PlayerHTML
     Private WithEvents ctlWebView As WebView
     Private m_schemeHandler As CefSchemeHandlerFactory
     Private WithEvents m_interop As QuestCefInterop
+    Private WithEvents m_keyHandler As CefKeyboardHandler
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
         ctlWebView = New WebView()
         ctlWebView.Dock = DockStyle.Fill
         Controls.Add(ctlWebView)
         ctlWebView.CreateControl()
+        m_keyHandler = New CefKeyboardHandler()
+        ctlWebView.KeyboardHandler = m_keyHandler
 
         m_schemeHandler = New CefSchemeHandlerFactory()
         m_interop = New QuestCefInterop()
@@ -175,12 +178,6 @@ Public Class PlayerHTML
         InvokeScript("gameFinished")
     End Sub
 
-    'Private Sub wbOutput_PreviewKeyDown(sender As Object, e As System.Windows.Forms.PreviewKeyDownEventArgs)
-    '    ' With WebBrowserShortcutsEnabled = False, *all* shortcut keys are suppressed, not just webbrowser ones.
-    '    ' So to enable Quest menu shortcut keys to work, we handle them here.
-    '    RaiseEvent ShortcutKeyPressed(e.KeyData)
-    'End Sub
-
     Private Shared s_regexHtml As New System.Text.RegularExpressions.Regex("\<.+?\>")
 
     Private Sub StripTagsAndSendToJaws(text As String)
@@ -261,5 +258,9 @@ Public Class PlayerHTML
 
     Public Sub ShowDevTools()
         ctlWebView.ShowDevTools()
+    End Sub
+
+    Private Sub m_keyHandler_KeyPressed(code As Integer) Handles m_keyHandler.KeyPressed
+        BeginInvoke(Sub() RaiseEvent ShortcutKeyPressed(CType(code, Keys)))
     End Sub
 End Class

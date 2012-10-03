@@ -137,6 +137,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CefKeyboardHandler.vb" />
     <Compile Include="CefSchemeHandler.vb" />
     <Compile Include="Compass.Designer.vb">
       <DependentUpon>Compass.vb</DependentUpon>
