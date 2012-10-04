@@ -94,12 +94,14 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>turns, run</caption>
+      <caption>turns</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
+      <caption>Run script</caption>
+      <breakbefore/>
     </control>
   </editor>
 
@@ -125,12 +127,14 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>turns, run</caption>
+      <caption>turns</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
+      <caption>Run script</caption>
+      <breakbefore/>
     </control>
 
     <control>

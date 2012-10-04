@@ -437,7 +437,8 @@
     <control>
       <controltype>script</controltype>
       <attribute>0</attribute>
-      <caption>run script:</caption>
+      <caption>Run script</caption>
+      <breakbefore/>
     </control>
   </editor>
 
