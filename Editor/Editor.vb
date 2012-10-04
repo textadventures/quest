@@ -672,7 +672,7 @@ Public Class Editor
     End Function
 
     Private Sub PlayGame()
-        If Not CheckGameIsSaved("Do you wish to save your changes before playing this game?") Then Return
+        If Not CheckGameIsSaved(Nothing) Then Return
         RaiseEvent Play(m_filename)
     End Sub
 
@@ -917,7 +917,13 @@ Public Class Editor
 
     Public Function CheckGameIsSaved(prompt As String) As Boolean
         If (Not m_codeView And m_unsavedChanges) Or (m_codeView And ctlTextEditor.IsModified) Then
-            Dim result = MsgBox("You have unsaved changes." + Environment.NewLine + Environment.NewLine + prompt, MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Exclamation, "Unsaved Changes")
+            Dim result As MsgBoxResult
+            If prompt Is Nothing Then
+                result = MsgBoxResult.Yes
+            Else
+                result = MsgBox("You have unsaved changes." + Environment.NewLine + Environment.NewLine + prompt, MsgBoxStyle.YesNoCancel Or MsgBoxStyle.Exclamation, "Unsaved Changes")
+            End If
+
             If result = MsgBoxResult.Yes Then
                 Dim saveOk As Boolean = Save()
                 If Not saveOk Then Return False
@@ -984,7 +990,7 @@ Public Class Editor
     End Sub
 
     Private Sub m_controller_RequestRunWalkthrough(sender As Object, e As RequestRunWalkthroughEventArgs) Handles m_controller.RequestRunWalkthrough
-        If Not CheckGameIsSaved("Do you wish to save your changes before playing this game?") Then Return
+        If Not CheckGameIsSaved(Nothing) Then Return
         RaiseEvent PlayWalkthrough(m_filename, e.Name, e.Record)
     End Sub
 
