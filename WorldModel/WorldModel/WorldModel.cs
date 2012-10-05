@@ -909,6 +909,8 @@ namespace AxeSoftware.Quest
             return result;
         }
 
+        // TO DO: This could actually be removed now, as we can dynamically load stylesheets. Core.aslx InitInterface
+        // should simply be able to use the SetWebFontName function to load game.defaultwebfont
         public IEnumerable<string> GetExternalStylesheets()
         {
             if (Version < WorldModelVersion.v530) return null;
@@ -920,9 +922,6 @@ namespace AxeSoftware.Quest
                 webFontsInUse.Add(defaultWebFont);
             }
             
-            // TO DO: When a command is added to change the current web font, will need to
-            // scan for all of those and add to the list of web fonts in use.
-
             var result = webFontsInUse.Select(f => "http://fonts.googleapis.com/css?family=" + f.Replace(' ', '+'));
             
             return result;
