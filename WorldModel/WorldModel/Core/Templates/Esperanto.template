@@ -6,6 +6,7 @@
   <game name="$NAME$">
     <gameid>$ID$</gameid>
     <version>1.0</version>
+    <firstpublished>$YEAR$</firstpublished>
   </game>
 
   <object name="room">

@@ -11,6 +11,24 @@
       </control>
 
       <control>
+        <controltype>textbox</controltype>
+        <caption>Subtitle</caption>
+        <attribute>subtitle</attribute>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Author</caption>
+        <attribute>author</attribute>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Version</caption>
+        <attribute>version</attribute>
+      </control>
+
+      <control>
         <controltype>label</controltype>
         <caption>The Game ID below is used to uniquely identify your game. You should only generate a new ID if you have copied a game to create a new one.</caption>
         <advanced/>
@@ -26,23 +44,17 @@
       </control>
 
       <control>
-        <controltype>textbox</controltype>
-        <caption>Version</caption>
-        <attribute>version</attribute>
-      </control>
-
-      <control>
-        <controltype>textbox</controltype>
-        <caption>Author</caption>
-        <attribute>author</attribute>
-      </control>
-
-      <control>
         <controltype>dropdown</controltype>
         <caption>Category</caption>
         <attribute>category</attribute>
         <validvalues type="list">Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
         <freetext/>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <caption>Year of release</caption>
+        <attribute>firstpublished</attribute>
       </control>
 
       <control>

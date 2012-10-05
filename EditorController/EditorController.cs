@@ -2033,7 +2033,8 @@ namespace TextAdventures.Quest
             string templateText = System.IO.File.ReadAllText(template);
             string initialFileText = templateText
                 .Replace("$NAME$", gameName)
-                .Replace("$ID$", GetNewGameId());
+                .Replace("$ID$", GetNewGameId())
+                .Replace("$YEAR$", DateTime.Now.Year.ToString());
             System.IO.File.WriteAllText(filename, initialFileText);
         }
 
