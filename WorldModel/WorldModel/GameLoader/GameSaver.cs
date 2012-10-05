@@ -75,7 +75,7 @@ namespace AxeSoftware.Quest
             writer.WriteStartElement("asl");
             if (mode == SaveMode.Editor)
             {
-                writer.WriteAttributeString("version", "520");
+                writer.WriteAttributeString("version", "530");
             }
             else
             {

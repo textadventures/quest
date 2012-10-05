@@ -115,10 +115,8 @@ Public Class Player
             m_menu.MenuEnabled("walkthrough") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.Walkthroughs IsNot Nothing AndAlso m_gameDebug.Walkthroughs.Walkthroughs.Count > 0
             m_menu.MenuEnabled("debugger") = m_gameDebug IsNot Nothing AndAlso m_gameDebug.DebugEnabled
 
-            Dim scripts As IEnumerable(Of String) = m_game.GetExternalScripts
-
             ' Generate the new HTML and wait for Ready event
-            ctlPlayerHtml.InitialiseHTMLUI(scripts)
+            ctlPlayerHtml.InitialiseHTMLUI(m_game)
         Else
             ctlPlayerHtml.InitialiseHTMLUI(Nothing)
         End If

@@ -13534,6 +13534,10 @@ ErrorHandler:
         Return Nothing
     End Function
 
+    Public Function GetExternalStylesheets() As IEnumerable(Of String) Implements IASL.GetExternalStylesheets
+        Return Nothing
+    End Function
+
     Public Event RequestNextTimerTick(nextTick As Integer) Implements IASLTimer.RequestNextTimerTick
 
     Public ReadOnly Property OriginalFilename As String Implements IASL.OriginalFilename

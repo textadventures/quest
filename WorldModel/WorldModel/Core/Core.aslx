@@ -27,7 +27,12 @@
   <include ref="CoreEditor.aslx"/>
 
   <function name="InitInterface">
-    request (FontName, game.defaultfont)
+    if (game.defaultwebfont = null) {
+      request (FontName, game.defaultfont)
+    }
+    else {
+      request (FontName, "'" + game.defaultwebfont + "', " + game.defaultfont)
+    }
     request (FontSize, ToString(game.defaultfontsize))
     if (game.setbackgroundopacity) {
       SetBackgroundOpacity (game.backgroundopacity)

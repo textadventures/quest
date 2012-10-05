@@ -68,7 +68,7 @@ namespace WebEditor.Views.Edit
             }
             else
             {
-                throw new Exception("Invalid type for validvalues");
+                throw new Exception("Unknown source list for dropdown");
             }
         }
 

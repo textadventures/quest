@@ -111,6 +111,7 @@ namespace AxeSoftware.Quest
         public static IField<string> GameID = new FieldDef<string>("gameid");
         public static IField<string> Category = new FieldDef<string>("category");
         public static IField<string> Description = new FieldDef<string>("description");
+        public static IField<string> DefaultWebFont = new FieldDef<string>("defaultwebfont");
     }
 
     public static class MetaFieldDefinitions

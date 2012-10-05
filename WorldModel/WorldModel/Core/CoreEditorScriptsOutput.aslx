@@ -154,7 +154,7 @@
       <simple>name</simple>
       <simpleeditor>dropdown</simpleeditor>
       <attribute>0</attribute>
-      <fontslist/>
+      <source>basefonts</source>
       <freetext/>
     </control>
   </editor>

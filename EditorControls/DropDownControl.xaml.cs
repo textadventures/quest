@@ -43,7 +43,7 @@ namespace AxeSoftware.Quest.EditorControls
             // validvalues may be a simple string list, or a dictionary
             IEnumerable<string> valuesList = m_helper.ControlDefinition.GetListString("validvalues");
             IDictionary<string, string> valuesDictionary = m_helper.ControlDefinition.GetDictionary("validvalues");
-            bool fontsList = m_helper.ControlDefinition.GetBool("fontslist");
+            string source = m_helper.ControlDefinition.GetString("source");
 
             if (valuesList != null)
             {
@@ -54,18 +54,17 @@ namespace AxeSoftware.Quest.EditorControls
                 SetListItems(valuesDictionary.Values.ToArray());
                 InitialiseDictionary(valuesDictionary);
             }
-            else if (fontsList)
+            else if (source == "basefonts")
             {
-                List<string> fonts = new List<string>();
-                foreach (var family in System.Drawing.FontFamily.Families)
-                {
-                    fonts.Add(family.Name);
-                }
-                SetListItems(fonts);
+                SetListItems(m_helper.Controller.AvailableBaseFonts());
+            }
+            else if (source == "webfonts")
+            {
+                SetListItems(m_helper.Controller.AvailableWebFonts());
             }
             else
             {
-                throw new Exception("Invalid type for validvalues");
+                throw new Exception("Unknown source list for dropdown");
             }
         }
 

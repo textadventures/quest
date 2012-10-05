@@ -32,7 +32,8 @@ namespace AxeSoftware.Quest
     {
         v500,
         v510,
-        v520
+        v520,
+        v530
     }
 
     public class WorldModel : IASL, IASLDebug, IASLTimer
@@ -449,8 +450,6 @@ namespace AxeSoftware.Quest
         {
             if (m_playerUI != null) m_playerUI.UpdateGameName(name);
         }
-
-        #region IASL Members
 
         public bool Initialise(IPlayer player)
         {
@@ -910,7 +909,24 @@ namespace AxeSoftware.Quest
             return result;
         }
 
-        #endregion
+        public IEnumerable<string> GetExternalStylesheets()
+        {
+            if (Version < WorldModelVersion.v530) return null;
+
+            var webFontsInUse = new List<string>();
+            var defaultWebFont = m_game.Fields[FieldDefinitions.DefaultWebFont];
+            if (!string.IsNullOrEmpty(defaultWebFont))
+            {
+                webFontsInUse.Add(defaultWebFont);
+            }
+            
+            // TO DO: When a command is added to change the current web font, will need to
+            // scan for all of those and add to the list of web fonts in use.
+
+            var result = webFontsInUse.Select(f => "http://fonts.googleapis.com/css?family=" + f.Replace(' ', '+'));
+            
+            return result;
+        }
 
         public void RunScript(IScript script)
         {

@@ -148,12 +148,12 @@ Public Class PlayerHTML
     End Sub
 
     Private Const k_scriptsPlaceholder As String = "<!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->"
+    Private Const k_stylesheetsPlaceholder As String = "<!-- EXTERNAL_STYLESHEETS_PLACEHOLDER -->"
     Private Const k_htmlUIPlaceholder As String = "<!-- HTML_UI_PLACEHOLDER -->"
     Private Const k_gridJSPlaceholder As String = "// GRID_JS_PLACEHOLDER"
 
-    Public Sub InitialiseHTMLUI(scripts As IEnumerable(Of String))
-        ' Construct an HTML page based on the default Blank.htm, but with additional <script> tags
-        ' for each external Javascript file this game wants to use.
+    Public Sub InitialiseHTMLUI(game As IASL)
+        Dim scripts As IEnumerable(Of String) = game.GetExternalScripts()
 
         Dim scriptsHtml As String = String.Empty
         If scripts IsNot Nothing Then
@@ -162,11 +162,20 @@ Public Class PlayerHTML
             Next
         End If
 
+        Dim stylesheets As IEnumerable(Of String) = game.GetExternalStylesheets()
+
+        Dim stylesheetsHtml As String = String.Empty
+        If stylesheets IsNot Nothing Then
+            For Each stylesheet As String In stylesheets
+                stylesheetsHtml += String.Format("<link href=""{0}"" rel=""stylesheet"" type=""text/css"" />", stylesheet)
+            Next
+        End If
+
         Dim htmlContent As String = System.IO.File.ReadAllText(m_baseHtmlPath)
         Dim gridJsContent As String = System.IO.File.ReadAllText(m_gridJsPath)
 
-        ' Now we can insert the custom <script> elements
         htmlContent = htmlContent.Replace(k_scriptsPlaceholder, scriptsHtml)
+        htmlContent = htmlContent.Replace(k_stylesheetsPlaceholder, stylesheetsHtml)
         htmlContent = htmlContent.Replace(k_htmlUIPlaceholder, PlayerHelper.GetUIHTML())
         htmlContent = htmlContent.Replace(k_gridJSPlaceholder, gridJsContent)
 

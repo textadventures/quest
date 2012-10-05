@@ -43,7 +43,8 @@ namespace AxeSoftware.Quest
         private static Dictionary<string, WorldModelVersion> s_versions = new Dictionary<string, WorldModelVersion> {
             {"500", WorldModelVersion.v500},
             {"510", WorldModelVersion.v510},
-            {"520", WorldModelVersion.v520}
+            {"520", WorldModelVersion.v520},
+            {"530", WorldModelVersion.v530},
         };
 
         public GameLoader(WorldModel worldModel, LoadMode mode)

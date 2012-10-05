@@ -74,7 +74,7 @@
     </tab>
 
     <tab>
-      <caption>Room descriptions</caption>
+      <caption>Room Descriptions</caption>
       <advanced/>
 
       <control>
@@ -238,11 +238,20 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Font</caption>
+        <caption>Base font</caption>
         <attribute>defaultfont</attribute>
-        <fontslist/>
+        <source>basefonts</source>
         <freetext/>
       </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Web font</caption>
+        <attribute>defaultwebfont</attribute>
+        <source>webfonts</source>
+        <freetext/>
+      </control>
+      
       <control>
         <controltype>number</controltype>
         <caption>Font size</caption>
@@ -294,6 +303,7 @@
         <validvalues type="list">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
+      
       <control>
         <controltype>dropdown</controltype>
         <caption>Link foreground</caption>
@@ -312,18 +322,21 @@
         <caption>Underline hyperlinks</caption>
         <attribute>underlinehyperlinks</attribute>
       </control>
+      
       <control>
         <controltype>dropdown</controltype>
         <caption>Font</caption>
         <attribute>menufont</attribute>
-        <fontslist/>
+        <source>basefonts</source>
         <freetext/>
       </control>
+      
       <control>
         <controltype>number</controltype>
         <caption>Font size</caption>
         <attribute>menufontsize</attribute>
       </control>
+      
       <control>
         <controltype>dropdown</controltype>
         <caption>Background</caption>
@@ -331,6 +344,7 @@
         <validvalues type="list">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
+      
       <control>
         <controltype>dropdown</controltype>
         <caption>Foreground</caption>
@@ -338,6 +352,7 @@
         <validvalues type="list">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
+      
       <control>
         <controltype>dropdown</controltype>
         <caption>Hover background</caption>
@@ -345,6 +360,7 @@
         <validvalues type="list">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
+      
       <control>
         <controltype>dropdown</controltype>
         <caption>Hover foreground</caption>

@@ -33,6 +33,7 @@ namespace AxeSoftware.Quest
         void SetMenuResponse(string response);
         void SetQuestionResponse(bool response);
         IEnumerable<string> GetExternalScripts();
+        IEnumerable<string> GetExternalStylesheets();
         string TempFolder { get; set; }
     }
 

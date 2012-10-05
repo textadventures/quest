@@ -3,7 +3,7 @@
     <enablehyperlinks/>
     <showdescriptiononenter/>
     <autodescription/>
-    <defaultfont>Arial</defaultfont>
+    <defaultfont>Georgia, serif</defaultfont>
     <defaultfontsize type="int">12</defaultfontsize>
     <defaultbackground>White</defaultbackground>
     <defaultforeground>Black</defaultforeground>

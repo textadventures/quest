@@ -81,9 +81,10 @@
         <controltype>dropdown</controltype>
         <caption>Font</caption>
         <attribute>defaultfont</attribute>
-        <fontslist/>
+        <source>basefonts</source>
         <freetext/>
       </control>
+      
       <control>
         <controltype>number</controltype>
         <caption>Font size</caption>
