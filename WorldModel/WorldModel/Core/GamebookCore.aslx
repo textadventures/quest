@@ -4,7 +4,7 @@
 
   <type name="defaultgame">
     <_editorstyle>gamebook</_editorstyle>
-    <defaultfont>Arial</defaultfont>
+    <defaultfont>Georgia, serif</defaultfont>
     <defaultfontsize type="int">12</defaultfontsize>
     <defaultbackground>White</defaultbackground>
     <defaultforeground>Black</defaultforeground>
@@ -41,7 +41,12 @@
   <template name="NothingToUndo">Nothing to undo!</template>
 
   <function name="InitInterface">
-    request (FontName, game.defaultfont)
+    if (game.defaultwebfont = null) {
+      request (FontName, game.defaultfont)
+    }
+    else {
+      request (FontName, "'" + game.defaultwebfont + "', " + game.defaultfont)
+    }
     request (FontSize, ToString(game.defaultfontsize))
     request (Background, game.defaultbackground)
     request (Foreground, game.defaultforeground)

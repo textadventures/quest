@@ -79,12 +79,20 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Font</caption>
+        <caption>Base font</caption>
         <attribute>defaultfont</attribute>
         <source>basefonts</source>
         <freetext/>
       </control>
-      
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Web font</caption>
+        <attribute>defaultwebfont</attribute>
+        <source>webfonts</source>
+        <freetext/>
+      </control>
+
       <control>
         <controltype>number</controltype>
         <caption>Font size</caption>
