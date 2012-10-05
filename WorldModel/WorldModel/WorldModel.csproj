@@ -372,22 +372,6 @@
     <None Include="Core\Templates\Nederlands.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Examples-Internal\volume.aslx" />
-    <None Include="Examples-Public\demo\demo.aslx" />
-    <None Include="Examples-Public\template.aslx">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Examples-Internal\test.aslx">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Examples-Internal\test2.aslx">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Examples-Public\forest.aslx" />
-    <None Include="Examples-Public\test.aslx">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Examples-Public\containers.aslx" />
     <None Include="Examples-Public\twohalves\twohalves.aslx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -474,7 +458,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Examples-Public\demo\YouTube.js" />
     <Content Include="Examples-Public\twohalves\twohalves.htm" />
     <Content Include="Examples-Public\twohalves\twohalves.js" />
   </ItemGroup>
