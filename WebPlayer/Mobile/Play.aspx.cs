@@ -80,6 +80,7 @@ namespace WebPlayer.Mobile
                     else
                     {
                         RegisterExternalScripts();
+                        RegisterExternalStylesheets();
                     }
 
                     OutputTextNow(initialText);
@@ -190,6 +191,17 @@ namespace WebPlayer.Mobile
             {
                 count++;
                 ScriptManager.RegisterClientScriptInclude(this, this.GetType(), "scriptResource" + count.ToString(), url);
+            }
+        }
+
+        private void RegisterExternalStylesheets()
+        {
+            var stylesheets = m_player.GetExternalStylesheets();
+            if (stylesheets == null) return;
+
+            foreach (var stylesheet in stylesheets)
+            {
+                m_buffer.AddJavaScriptToBuffer("addExternalStylesheet", new StringParameter(stylesheet));
             }
         }
 

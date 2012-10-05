@@ -278,6 +278,11 @@ namespace WebPlayer
             return result;
         }
 
+        public IEnumerable<string> GetExternalStylesheets()
+        {
+            return m_controller.Game.GetExternalStylesheets();
+        }
+
         public void WriteHTML(string html)
         {
             m_buffer.OutputText(html);

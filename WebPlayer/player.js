@@ -172,3 +172,13 @@ function saveGame() {
         $("#cmdSubmit").click();
     }, 100);
 }
+
+function addExternalStylesheet(source) {
+    var link = $("<link>");
+    link.attr({
+        type: "text/css",
+        rel: "stylesheet",
+        href: source
+    });
+    $("head").append(link); 
+}
