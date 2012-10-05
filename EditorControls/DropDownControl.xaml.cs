@@ -20,6 +20,8 @@ namespace AxeSoftware.Quest.EditorControls
         private ControlDataHelper<string> m_helper;
         private IDictionary<string, string> m_dictionary;
         private Dictionary<string, string> m_dictionaryValuesToKeys;
+        private string m_source;
+        private bool m_initialised = false;
 
         public DropDownControl()
         {
@@ -43,24 +45,27 @@ namespace AxeSoftware.Quest.EditorControls
             // validvalues may be a simple string list, or a dictionary
             IEnumerable<string> valuesList = m_helper.ControlDefinition.GetListString("validvalues");
             IDictionary<string, string> valuesDictionary = m_helper.ControlDefinition.GetDictionary("validvalues");
-            string source = m_helper.ControlDefinition.GetString("source");
+            m_source = m_helper.ControlDefinition.GetString("source");
 
             if (valuesList != null)
             {
                 SetListItems(valuesList.ToArray());
+                m_initialised = true;
             }
             else if (valuesDictionary != null)
             {
                 SetListItems(valuesDictionary.Values.ToArray());
                 InitialiseDictionary(valuesDictionary);
+                m_initialised = true;
             }
-            else if (source == "basefonts")
+            else if (m_source == "basefonts")
             {
                 SetListItems(m_helper.Controller.AvailableBaseFonts());
+                m_initialised = true;
             }
-            else if (source == "webfonts")
+            else if (m_source == "webfonts")
             {
-                SetListItems(m_helper.Controller.AvailableWebFonts());
+                InitialiseWebFonts();
             }
             else
             {
@@ -81,6 +86,16 @@ namespace AxeSoftware.Quest.EditorControls
             foreach (var item in dictionary)
             {
                 m_dictionaryValuesToKeys.Add(item.Value, item.Key);
+            }
+        }
+
+        private void InitialiseWebFonts()
+        {
+            var fonts = m_helper.Controller.AvailableWebFonts();
+            if (fonts.Any())
+            {
+                SetListItems(fonts);
+                m_initialised = true;
             }
         }
 
@@ -177,6 +192,14 @@ namespace AxeSoftware.Quest.EditorControls
         public bool IsUpdatingList
         {
             get { return m_helper.IsPopulating; }
+        }
+
+        private void lstDropdown_DropDownOpened(object sender, EventArgs e)
+        {
+            if (m_source == "webfonts" && !m_initialised)
+            {
+                InitialiseWebFonts();
+            }
         }
     }
 }
