@@ -45,7 +45,12 @@
       request (FontName, game.defaultfont)
     }
     else {
-      request (FontName, "'" + game.defaultwebfont + "', " + game.defaultfont)
+      if (game.defaultwebfont = "") {
+        request (FontName, game.defaultfont)
+      }
+      else {
+        request (FontName, "'" + game.defaultwebfont + "', " + game.defaultfont)
+      }
     }
     request (FontSize, ToString(game.defaultfontsize))
     request (Background, game.defaultbackground)

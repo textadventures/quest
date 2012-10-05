@@ -28,6 +28,7 @@ namespace AxeSoftware.Quest
 
         private List<string> m_webFonts = new List<string>
         {
+            string.Empty
         };
 
         public FontsManager()
@@ -58,6 +59,7 @@ namespace AxeSoftware.Quest
             {
                 var result = Newtonsoft.Json.JsonConvert.DeserializeObject<WebFontsResult>(e.Result);
                 m_webFonts = new List<string>(result.items.Select(i => i.family));
+                m_webFonts.Insert(0, string.Empty);
             }
         }
 
