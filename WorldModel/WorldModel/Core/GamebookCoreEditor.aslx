@@ -62,7 +62,7 @@
         <controltype>dropdown</controltype>
         <caption>Category</caption>
         <attribute>category</attribute>
-        <validvalues type="list">Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
+        <validvalues type="list">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
         <freetext/>
       </control>
 

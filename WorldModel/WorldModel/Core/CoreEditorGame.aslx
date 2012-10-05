@@ -47,7 +47,7 @@
         <controltype>dropdown</controltype>
         <caption>Category</caption>
         <attribute>category</attribute>
-        <validvalues type="list">Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
+        <validvalues type="list">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
         <freetext/>
       </control>
 
@@ -55,6 +55,19 @@
         <controltype>textbox</controltype>
         <caption>Year of release</caption>
         <attribute>firstpublished</attribute>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Difficulty</caption>
+        <attribute>difficulty</attribute>
+        <validvalues type="list">;Merciful;Polite;Tough;Nasty;Cruel</validvalues>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>What do the difficulty levels mean?</caption>
+        <href>http://www.ifwiki.org/index.php/Cruelty_scale</href>
       </control>
 
       <control>
