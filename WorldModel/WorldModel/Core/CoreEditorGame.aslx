@@ -71,6 +71,14 @@
       </control>
 
       <control>
+        <controltype>file</controltype>
+        <caption>Cover art</caption>
+        <attribute>cover</attribute>
+        <source>[EditorImageFormats]</source>
+        <filefiltername>Picture Files</filefiltername>
+      </control>
+
+      <control>
         <controltype>richtext</controltype>
         <caption>Description</caption>
         <attribute>description</attribute>
