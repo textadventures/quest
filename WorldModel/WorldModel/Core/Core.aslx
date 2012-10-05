@@ -27,6 +27,12 @@
   <include ref="CoreEditor.aslx"/>
 
   <function name="InitInterface">
+    <![CDATA[
+    if (game.externalstylesheets <> null) {
+      foreach (stylesheet, game.externalstylesheets) {
+        request (RunScript, "addExternalStylesheet; " + stylesheet)
+      }
+    }
     if (game.defaultwebfont = null) {
       request (FontName, game.defaultfont)
     }
@@ -79,6 +85,7 @@
       Grid_SetScale (game.mapscale)
       DrawMap
     }
+    ]]>
   </function>
 
   <function name="StartGame">

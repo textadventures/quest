@@ -27,6 +27,23 @@
   <function name="SetFontName" parameters="font">
     request (FontName, font)
     game.defaultfont = font
+    game.defaultwebfont = ""
+  </function>
+
+  <function name="SetWebFontName" parameters="font">
+    AddExternalStylesheet ("http://fonts.googleapis.com/css?family=" + Replace(font, " ", "+"))
+    request (FontName, "'" + font + "', " + game.defaultfont)
+    game.defaultwebfont = font
+  </function>
+
+  <function name="AddExternalStylesheet" parameters="stylesheet">
+    if (game.externalstylesheets = null) {
+      game.externalstylesheets = NewStringList()
+    }
+    if (not ListContains(game.externalstylesheets, stylesheet)) {
+      list add (game.externalstylesheets, stylesheet)
+      request (RunScript, "addExternalStylesheet; " + stylesheet)
+    }
   </function>
 
   <function name="SetFontSize" parameters="size">

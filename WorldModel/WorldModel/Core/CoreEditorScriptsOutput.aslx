@@ -141,7 +141,7 @@
     <appliesto>(function)SetFontName</appliesto>
     <display>Change font to #0</display>
     <category>Output</category>
-    <create>SetFontName ("Arial")</create>
+    <create>SetFontName ("Georgia, serif")</create>
     <add>Change font</add>
 
     <control>
@@ -155,6 +155,28 @@
       <simpleeditor>dropdown</simpleeditor>
       <attribute>0</attribute>
       <source>basefonts</source>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetWebFontName</appliesto>
+    <display>Change font to #0</display>
+    <category>Output</category>
+    <create>SetWebFontName ("")</create>
+    <add>Change font (using web fonts)</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the font to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <source>webfonts</source>
       <freetext/>
     </control>
   </editor>

@@ -489,6 +489,16 @@ function keyPressCode(e) {
     return keynum;
 }
 
+function addExternalStylesheet(source) {
+    var link = $("<link>");
+    link.attr({
+        type: "text/css",
+        rel: "stylesheet",
+        href: source
+    });
+    $("head").append(link);
+}
+
 function CheckFlashAndShowMsg() {
     var hasFlash = false;
     try {
