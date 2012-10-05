@@ -8,7 +8,7 @@
     <ProjectGuid>{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AxeSoftware.Quest</RootNamespace>
+    <RootNamespace>TextAdventures.Quest</RootNamespace>
     <AssemblyName>WorldModel</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AxeSoftware.Quest.Scripts
+namespace TextAdventures.Quest.Scripts
 {
     public class ScriptUpdatedEventArgs : EventArgs
     {
@@ -217,7 +217,7 @@ namespace AxeSoftware.Quest.Scripts
 
         #endregion
 
-        private class UndoScriptChange : AxeSoftware.Quest.UndoLogger.IUndoAction
+        private class UndoScriptChange : TextAdventures.Quest.UndoLogger.IUndoAction
         {
             private IScript m_appliesTo;
             private int m_index;

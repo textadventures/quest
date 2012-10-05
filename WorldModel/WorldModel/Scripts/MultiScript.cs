@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AxeSoftware.Quest.Scripts
+namespace TextAdventures.Quest.Scripts
 {
     public class MultiScript : ScriptBase, IScriptParent
     {
@@ -197,7 +197,7 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
-        private class UndoMultiScriptAddRemove : AxeSoftware.Quest.UndoLogger.IUndoAction
+        private class UndoMultiScriptAddRemove : TextAdventures.Quest.UndoLogger.IUndoAction
         {
             private MultiScript m_appliesTo;
             private IScript m_script;

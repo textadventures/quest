@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     // This class is used to create an IEditableDictionary wrapper where the values in the dictionary are
     // themselves wrapped.

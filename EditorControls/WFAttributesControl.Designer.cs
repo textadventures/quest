@@ -1,4 +1,4 @@
-﻿namespace AxeSoftware.Quest.EditorControls
+﻿namespace TextAdventures.Quest.EditorControls
 {
     partial class WFAttributesControl
     {
@@ -48,7 +48,7 @@
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
             this.cmdOnChange = new System.Windows.Forms.ToolStripButton();
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
-            this.ctlMultiControl = new AxeSoftware.Quest.EditorControls.WFMultiControl();
+            this.ctlMultiControl = new TextAdventures.Quest.EditorControls.WFMultiControl();
             ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainerMain)).BeginInit();
             this.ctlSplitContainerMain.Panel1.SuspendLayout();
             this.ctlSplitContainerMain.Panel2.SuspendLayout();

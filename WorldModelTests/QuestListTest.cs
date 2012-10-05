@@ -1,4 +1,4 @@
-﻿using AxeSoftware.Quest;
+﻿using TextAdventures.Quest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;

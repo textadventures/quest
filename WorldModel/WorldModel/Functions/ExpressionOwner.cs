@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 using System.Collections;
 
-namespace AxeSoftware.Quest.Functions
+namespace TextAdventures.Quest.Functions
 {
     internal class ExpressionOwner
     {

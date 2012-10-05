@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AxeSoftware.Quest;
-using AxeSoftware.Quest.Functions;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest;
+using TextAdventures.Quest.Functions;
+using TextAdventures.Quest.Scripts;
 
 namespace WorldModelTests
 {

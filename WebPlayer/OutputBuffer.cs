@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using AxeSoftware.Utility.JSInterop;
+using TextAdventures.Utility.JSInterop;
 
 namespace WebPlayer
 {

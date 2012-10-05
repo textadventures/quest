@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ciloci.Flee;
-using AxeSoftware.Quest.Functions;
+using TextAdventures.Quest.Functions;
 
-namespace AxeSoftware.Quest.Scripts
+namespace TextAdventures.Quest.Scripts
 {
     public class ScriptContext
     {

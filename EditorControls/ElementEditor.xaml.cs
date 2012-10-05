@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     public partial class ElementEditor : UserControl
     {
@@ -30,7 +30,7 @@ namespace AxeSoftware.Quest.EditorControls
 
         public static void InitialiseEditorControls(EditorController controller)
         {
-            foreach (Type t in AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(), typeof(IElementEditorControl)))
+            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(), typeof(IElementEditorControl)))
             {
                 ControlTypeAttribute controlType = (ControlTypeAttribute)Attribute.GetCustomAttribute(t, typeof(ControlTypeAttribute));
                 if (controlType != null)

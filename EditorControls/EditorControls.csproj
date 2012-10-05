@@ -8,7 +8,7 @@
     <ProjectGuid>{4FE4228C-502B-47B7-A79B-79BEE6221C25}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AxeSoftware.Quest.EditorControls</RootNamespace>
+    <RootNamespace>TextAdventures.Quest.EditorControls</RootNamespace>
     <AssemblyName>EditorControls</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

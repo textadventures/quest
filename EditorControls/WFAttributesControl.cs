@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     public partial class WFAttributesControl : UserControl
     {

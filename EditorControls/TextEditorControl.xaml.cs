@@ -18,7 +18,7 @@ using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     [ControlType("texteditor")]
     public partial class TextEditorControl : UserControl, IElementEditorControl

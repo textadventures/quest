@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public class EditableScripts : IEditableScripts, IDataWrapper
     {

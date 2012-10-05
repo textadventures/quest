@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 
-namespace AxeSoftware.Quest.Scripts
+namespace TextAdventures.Quest.Scripts
 {
     public class NoReturnValue
     {

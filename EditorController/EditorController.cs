@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public enum EditorUpdateSource
     {
@@ -1978,7 +1978,7 @@ namespace AxeSoftware.Quest
             Dictionary<string, TemplateData> templates = new Dictionary<string, TemplateData>();
 
             if (folder == null) folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase);
-            folder = AxeSoftware.Utility.Utility.RemoveFileColonPrefix(folder);
+            folder = TextAdventures.Utility.Utility.RemoveFileColonPrefix(folder);
 
             foreach (string file in System.IO.Directory.GetFiles(folder, "*.template", System.IO.SearchOption.AllDirectories))
             {

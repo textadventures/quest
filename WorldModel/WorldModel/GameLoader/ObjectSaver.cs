@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     internal partial class GameSaver
     {
@@ -64,7 +64,7 @@ namespace AxeSoftware.Quest
             protected override void Initialise()
             {
                 // Use Reflection to create instances of all IObjectSavers
-                foreach (Type t in AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+                foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                     typeof(IObjectSaver)))
                 {
                     AddSaver((IObjectSaver)Activator.CreateInstance(t));

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public interface IQuestList
     {
@@ -415,7 +415,7 @@ namespace AxeSoftware.Quest
 
         #endregion
 
-        private class UndoListAdd : AxeSoftware.Quest.UndoLogger.IUndoAction
+        private class UndoListAdd : TextAdventures.Quest.UndoLogger.IUndoAction
         {
             private IQuestList m_appliesTo;
             private object m_addedItem;
@@ -443,7 +443,7 @@ namespace AxeSoftware.Quest
             #endregion
         }
 
-        private class UndoListRemove : AxeSoftware.Quest.UndoLogger.IUndoAction
+        private class UndoListRemove : TextAdventures.Quest.UndoLogger.IUndoAction
         {
             private IQuestList m_appliesTo;
             private object m_removedItem;

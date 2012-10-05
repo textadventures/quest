@@ -1,4 +1,4 @@
-﻿Imports AxeSoftware.Utility
+﻿Imports TextAdventures.Utility
 
 Public Class Main
 
@@ -22,7 +22,7 @@ Public Class Main
         ctlPlayer.Visible = False
         InitialiseMenuHandlers()
 
-        Dim helper As New AxeSoftware.Utility.WindowHelper(Me, "Quest", "Main")
+        Dim helper As New TextAdventures.Utility.WindowHelper(Me, "Quest", "Main")
 
         Dim args As New List(Of String)(Environment.GetCommandLineArgs())
         If args.Count > 1 Then
@@ -124,7 +124,7 @@ Public Class Main
     End Sub
 
     Private Sub Launch(filename As String, Optional fromEditor As Boolean = False)
-        Dim game As AxeSoftware.Quest.IASL = Nothing
+        Dim game As TextAdventures.Quest.IASL = Nothing
 
         Try
             m_currentFile = filename
@@ -165,7 +165,7 @@ Public Class Main
     End Sub
 
     Private Sub LaunchEdit(filename As String)
-        Dim game As AxeSoftware.Quest.IASL = Nothing
+        Dim game As TextAdventures.Quest.IASL = Nothing
         Dim ext As String
 
         Try

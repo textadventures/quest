@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     internal class WFStringDictionaryEditorManager : WFDictionaryEditorManager<string>
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 using System.Linq;
-using AxeSoftware.Quest.Functions;
+using TextAdventures.Quest.Functions;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public enum GameState
     {
@@ -174,7 +174,7 @@ namespace AxeSoftware.Quest
 
         private void InitialiseElementFactories()
         {
-            foreach (Type t in AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IElementFactory)))
             {
                 AddElementFactory((IElementFactory)Activator.CreateInstance(t));
@@ -1161,7 +1161,7 @@ namespace AxeSoftware.Quest
 
         private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
         {
-            path = AxeSoftware.Utility.Utility.RemoveFileColonPrefix(path);
+            path = TextAdventures.Utility.Utility.RemoveFileColonPrefix(path);
             System.IO.SearchOption option = recurse ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
             foreach (var result in System.IO.Directory.GetFiles(path, searchPattern, option))
             {
@@ -1184,7 +1184,7 @@ namespace AxeSoftware.Quest
 
         private bool TryPath(string path, string file, out string fullPath, bool recurse)
         {
-            path = AxeSoftware.Utility.Utility.RemoveFileColonPrefix(path);
+            path = TextAdventures.Utility.Utility.RemoveFileColonPrefix(path);
             fullPath = System.IO.Path.Combine(path, file);
             if (System.IO.File.Exists(fullPath))
             {
@@ -1520,10 +1520,10 @@ namespace AxeSoftware.Quest
         {
             if (s_functionNames == null)
             {
-                System.Reflection.MethodInfo[] methods = typeof(AxeSoftware.Quest.Functions.ExpressionOwner)
+                System.Reflection.MethodInfo[] methods = typeof(TextAdventures.Quest.Functions.ExpressionOwner)
                                                             .GetMethods();
 
-                System.Reflection.MethodInfo[] stringMethods = typeof(AxeSoftware.Quest.Functions.StringFunctions)
+                System.Reflection.MethodInfo[] stringMethods = typeof(TextAdventures.Quest.Functions.StringFunctions)
                                                             .GetMethods();
 
                 IEnumerable<System.Reflection.MethodInfo> allMethods = methods.Union(stringMethods);

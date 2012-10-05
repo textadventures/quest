@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     [ControlType("verbs")]
     public partial class VerbsControl : UserControl, IMultiAttributeElementEditorControl, IControlDataHelper

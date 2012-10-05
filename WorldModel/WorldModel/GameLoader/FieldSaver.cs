@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     internal class FieldSaver
     {
@@ -17,7 +17,7 @@ namespace AxeSoftware.Quest
             m_saver = saver;
 
             // Use Reflection to create instances of all IFieldSavers
-            foreach (Type t in AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IFieldSaver)))
             {
                 AddSaver((IFieldSaver)Activator.CreateInstance(t));

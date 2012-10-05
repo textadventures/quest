@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Xml;
 using System.Linq;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     partial class GameLoader
     {
@@ -17,7 +17,7 @@ namespace AxeSoftware.Quest
         private void AddXMLLoaders(LoadMode mode)
         {
             // Use Reflection to create instances of all IXMLLoaders
-            foreach (Type t in AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IXMLLoader)))
             {
                 AddXMLLoader((IXMLLoader)Activator.CreateInstance(t), mode);

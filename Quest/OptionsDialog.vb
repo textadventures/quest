@@ -1,4 +1,4 @@
-﻿Imports AxeSoftware.Utility
+﻿Imports TextAdventures.Utility
 
 Public Class OptionsDialog
 

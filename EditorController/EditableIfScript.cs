@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public class EditableIfScript : EditableScriptBase, IEditableScript, IEditorData
     {
@@ -29,7 +29,7 @@ namespace AxeSoftware.Quest
             {
                 m_elseIfScript = elseIfScript;
                 m_parent = parent;
-                EditableScripts = AxeSoftware.Quest.EditableScripts.GetInstance(parent.Controller, elseIfScript.Script);
+                EditableScripts = TextAdventures.Quest.EditableScripts.GetInstance(parent.Controller, elseIfScript.Script);
             }
 
             public IEditableScripts EditableScripts { get; private set; }

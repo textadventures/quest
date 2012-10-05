@@ -23,7 +23,7 @@ Partial Class TextEditorControl
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.ctlElementHost = New System.Windows.Forms.Integration.ElementHost()
-        Me.wpfTextEditor = New AxeSoftware.Quest.EditorControls.TextEditorControl()
+        Me.wpfTextEditor = New TextAdventures.Quest.EditorControls.TextEditorControl()
         Me.SuspendLayout()
         '
         'ctlElementHost
@@ -46,6 +46,6 @@ Partial Class TextEditorControl
 
     End Sub
     Private WithEvents ctlElementHost As System.Windows.Forms.Integration.ElementHost
-    Private wpfTextEditor As AxeSoftware.Quest.EditorControls.TextEditorControl
+    Private wpfTextEditor As TextAdventures.Quest.EditorControls.TextEditorControl
 
 End Class

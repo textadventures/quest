@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Functions;
+using TextAdventures.Quest.Functions;
 
-namespace AxeSoftware.Quest.Scripts
+namespace TextAdventures.Quest.Scripts
 {
     public class FirstTimeScriptConstructor : IScriptConstructor
     {
@@ -84,7 +84,7 @@ namespace AxeSoftware.Quest.Scripts
             }
         }
 
-        private class UndoFirstTime : AxeSoftware.Quest.UndoLogger.IUndoAction
+        private class UndoFirstTime : TextAdventures.Quest.UndoLogger.IUndoAction
         {
             private FirstTimeScript m_parent;
             

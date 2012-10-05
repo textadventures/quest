@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public delegate void PrintTextHandler(string text);
     public delegate void UpdateListHandler(ListType listType, List<ListData> items);

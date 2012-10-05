@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using AxeSoftware.Quest;
+using TextAdventures.Quest;
 using System.Xml;
 using System.Configuration;
-using AxeSoftware.Utility.JSInterop;
+using TextAdventures.Utility.JSInterop;
 
 namespace WebPlayer
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Text.RegularExpressions;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     partial class GameLoader
     {
@@ -297,7 +297,7 @@ namespace AxeSoftware.Quest
             //}
         }
 
-        private void AddError(object sender, AxeSoftware.Quest.ScriptFactory.AddErrorEventArgs e)
+        private void AddError(object sender, TextAdventures.Quest.ScriptFactory.AddErrorEventArgs e)
         {
             AddError(e.Error);
         }

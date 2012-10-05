@@ -13,7 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     [ControlType("exits")]
     public partial class ExitsControl : UserControl, IElementEditorControl, IControlDataHelper
@@ -71,7 +71,7 @@ namespace AxeSoftware.Quest.EditorControls
             Populate(m_data);
         }
 
-        void m_controller_ElementMoved(object sender, AxeSoftware.Quest.EditorController.ElementMovedEventArgs e)
+        void m_controller_ElementMoved(object sender, TextAdventures.Quest.EditorController.ElementMovedEventArgs e)
         {
             Populate(m_data);
         }
@@ -326,7 +326,7 @@ namespace AxeSoftware.Quest.EditorControls
                 CompassEditor.AllowCreateInverseExit = true;
             }
 
-            CompassEditor.direction.Text = AxeSoftware.Utility.Strings.CapFirst(direction);
+            CompassEditor.direction.Text = TextAdventures.Utility.Strings.CapFirst(direction);
             CompassEditor.chkCorresponding.IsChecked = DefaultCreateInverseSetting;
         }
 

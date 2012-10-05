@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AxeSoftware.Quest.Functions
+namespace TextAdventures.Quest.Functions
 {
     public static class StringFunctions
     {
@@ -44,7 +44,7 @@ namespace AxeSoftware.Quest.Functions
 
         public static string CapFirst(string input)
         {
-            return AxeSoftware.Utility.Strings.CapFirst(input);
+            return TextAdventures.Utility.Strings.CapFirst(input);
         }
 
         public static int Instr(string input, string search)
@@ -89,7 +89,7 @@ namespace AxeSoftware.Quest.Functions
 
         public static bool IsNumeric(string input)
         {
-            return AxeSoftware.Utility.Strings.IsNumeric(input);
+            return TextAdventures.Utility.Strings.IsNumeric(input);
         }
 
         public static string Replace(string input, string oldString, string newString)

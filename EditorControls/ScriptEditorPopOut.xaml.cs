@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     /// <summary>
     /// Interaction logic for ScriptEditorPopOut.xaml

@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1DC28CC8-1B2D-4A42-A64E-0AC82D789939}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>AxeSoftware.Quest</RootNamespace>
+    <RootNamespace>TextAdventures.Quest</RootNamespace>
     <AssemblyName>Editor</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>

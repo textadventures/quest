@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Functions;
+using TextAdventures.Quest.Functions;
 
-namespace AxeSoftware.Quest.Scripts
+namespace TextAdventures.Quest.Scripts
 {
     // Any changes here should also be reflected in CoreEditorScriptsOutput.aslx (validvalues for "request" command)
     // and also on the wiki http://quest5.net/wiki/Request

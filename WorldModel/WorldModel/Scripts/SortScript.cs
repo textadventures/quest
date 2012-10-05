@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Functions;
+using TextAdventures.Quest.Functions;
 using System.Collections;
 
-namespace AxeSoftware.Quest.Scripts
+namespace TextAdventures.Quest.Scripts
 {
     public class SortScriptConstructor : ScriptConstructorBase
     {

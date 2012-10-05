@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{953BFCE3-6F8A-42CF-8E57-592AA7AAC3D3}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>AxeSoftware.Quest.Controls</RootNamespace>
+    <RootNamespace>TextAdventures.Quest.Controls</RootNamespace>
     <AssemblyName>Menus</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>

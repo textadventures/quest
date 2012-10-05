@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using AxeSoftware.Quest;
+using TextAdventures.Quest;
 using System.Windows.Forms;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     public class PopupEditors
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Ionic.Zip;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     internal class Packager
     {
@@ -52,7 +52,7 @@ namespace AxeSoftware.Quest
                 if (e.MetaFields[MetaFieldDefinitions.Library])
                 {
                     string libFolder = System.IO.Path.GetDirectoryName(e.MetaFields[MetaFieldDefinitions.Filename]);
-                    libFolder = AxeSoftware.Utility.Utility.RemoveFileColonPrefix(libFolder);
+                    libFolder = TextAdventures.Utility.Utility.RemoveFileColonPrefix(libFolder);
                     if (libFolder != baseFolder)
                     {
                         zip.AddFile(System.IO.Path.Combine(libFolder, e.Fields[FieldDefinitions.Src]), "");

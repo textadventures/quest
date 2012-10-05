@@ -1,7 +1,7 @@
 Option Strict On
 Option Explicit On
 
-Imports AxeSoftware.Quest.LegacyASL.LegacyGame
+Imports TextAdventures.Quest.LegacyASL.LegacyGame
 Imports System.Collections.Generic
 
 Friend Class RoomExits

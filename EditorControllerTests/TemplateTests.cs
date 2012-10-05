@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AxeSoftware.Quest;
+using TextAdventures.Quest;
 
 namespace EditorControllerTests
 {
@@ -25,7 +25,7 @@ namespace EditorControllerTests
                 EditorController controller = new EditorController();
                 string errorsRaised = string.Empty;
                 
-                controller.ShowMessage += (object sender, AxeSoftware.Quest.EditorController.ShowMessageEventArgs e) =>
+                controller.ShowMessage += (object sender, TextAdventures.Quest.EditorController.ShowMessageEventArgs e) =>
                 {
                     errorsRaised += e.Message;
                 };

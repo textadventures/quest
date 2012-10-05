@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 
 // AttributeLoaders load properties which are stored in the XML as simple values.
 // ExtendedAttributeLoaders load properties which are stored with nested XML.
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     partial class GameLoader
     {
@@ -24,7 +24,7 @@ namespace AxeSoftware.Quest
 
         private void AddExtendedAttributeLoaders(LoadMode mode)
         {
-            foreach (Type t in AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IExtendedAttributeLoader)))
             {
                 AddExtendedAttributeLoader((IExtendedAttributeLoader)Activator.CreateInstance(t), mode);

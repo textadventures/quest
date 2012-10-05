@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
-    <RootNamespace>AxeSoftware.Quest</RootNamespace>
+    <RootNamespace>TextAdventures.Quest</RootNamespace>
     <AssemblyName>Player</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>

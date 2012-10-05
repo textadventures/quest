@@ -15,7 +15,7 @@ Public Class Player
     Private m_gameName As String
     Private WithEvents m_debugger As Debugger
     Private m_loaded As Boolean = False
-    Private m_menu As AxeSoftware.Quest.Controls.Menu = Nothing
+    Private m_menu As TextAdventures.Quest.Controls.Menu = Nothing
     Private m_saveFile As String
     Private m_waiting As Boolean = False
     Private m_speech As New System.Speech.Synthesis.SpeechSynthesizer
@@ -56,7 +56,7 @@ Public Class Player
 
     End Sub
 
-    Public Sub SetMenu(menu As AxeSoftware.Quest.Controls.Menu)
+    Public Sub SetMenu(menu As TextAdventures.Quest.Controls.Menu)
         m_menu = menu
 
         menu.AddMenuClickHandler("debugger", AddressOf DebuggerMenuClick)
@@ -248,21 +248,21 @@ Public Class Player
         RaiseEvent GameNameSet(name)
     End Sub
 
-    Private Sub m_game_UpdateList(listType As AxeSoftware.Quest.ListType, items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData)) Handles m_game.UpdateList
+    Private Sub m_game_UpdateList(listType As TextAdventures.Quest.ListType, items As System.Collections.Generic.List(Of TextAdventures.Quest.ListData)) Handles m_game.UpdateList
         BeginInvoke(Sub() UpdateList(listType, items))
     End Sub
 
-    Private Sub UpdateList(listType As AxeSoftware.Quest.ListType, items As System.Collections.Generic.List(Of AxeSoftware.Quest.ListData))
+    Private Sub UpdateList(listType As TextAdventures.Quest.ListType, items As System.Collections.Generic.List(Of TextAdventures.Quest.ListData))
         ' Keep the IASL interface atomic, so we transmit lists of places separately to lists of objects.
         ' We can merge them when we receive them here, and then pass the merged list to the ElementList with some
         ' kind of flag so it knows what's a place and what's an object.
 
         Select Case listType
-            Case AxeSoftware.Quest.ListType.ObjectsList
+            Case TextAdventures.Quest.ListType.ObjectsList
                 ctlPlayerHtml.UpdatePlacesObjectsList(items)
-            Case AxeSoftware.Quest.ListType.InventoryList
+            Case TextAdventures.Quest.ListType.InventoryList
                 ctlPlayerHtml.UpdateInventoryList(items)
-            Case AxeSoftware.Quest.ListType.ExitsList
+            Case TextAdventures.Quest.ListType.ExitsList
                 ctlPlayerHtml.UpdateCompass(items)
         End Select
     End Sub

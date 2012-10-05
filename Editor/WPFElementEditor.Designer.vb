@@ -23,7 +23,7 @@ Partial Class WPFElementEditor
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.ctlElementHost = New System.Windows.Forms.Integration.ElementHost()
-        Me.ctlElementEditor = New AxeSoftware.Quest.EditorControls.ElementEditor()
+        Me.ctlElementEditor = New TextAdventures.Quest.EditorControls.ElementEditor()
         Me.SuspendLayout()
         '
         'ctlElementHost
@@ -47,6 +47,6 @@ Partial Class WPFElementEditor
 
     End Sub
     Friend WithEvents ctlElementHost As System.Windows.Forms.Integration.ElementHost
-    Friend ctlElementEditor As AxeSoftware.Quest.EditorControls.ElementEditor
+    Friend ctlElementEditor As TextAdventures.Quest.EditorControls.ElementEditor
 
 End Class

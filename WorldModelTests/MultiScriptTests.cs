@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AxeSoftware.Quest;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest;
+using TextAdventures.Quest.Scripts;
 using Moq;
 
 namespace WorldModelTests

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class ElementTypeInfo : Attribute
@@ -230,7 +230,7 @@ namespace AxeSoftware.Quest
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}", AxeSoftware.Utility.Strings.CapFirst(TypeString), Name);
+            return string.Format("{0}: {1}", TextAdventures.Utility.Strings.CapFirst(TypeString), Name);
         }
 
         public ObjectType Type

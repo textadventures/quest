@@ -1,4 +1,4 @@
-﻿namespace AxeSoftware.Quest.EditorControls
+﻿namespace TextAdventures.Quest.EditorControls
 {
     partial class InputWindow
     {

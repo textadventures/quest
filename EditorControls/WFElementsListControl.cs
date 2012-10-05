@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     public partial class WFElementsListControl : UserControl, IRearrangeableListEditorDelegate
     {
@@ -163,7 +163,7 @@ namespace AxeSoftware.Quest.EditorControls
             Populate(m_data);
         }
 
-        private void m_controller_ElementMoved(object sender, AxeSoftware.Quest.EditorController.ElementMovedEventArgs e)
+        private void m_controller_ElementMoved(object sender, TextAdventures.Quest.EditorController.ElementMovedEventArgs e)
         {
             Populate(m_data);
         }

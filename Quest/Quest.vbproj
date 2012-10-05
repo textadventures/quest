@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C7367F28-22F8-4111-A434-26D497EF0FBA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>AxeSoftware.Quest.My.MyApplication</StartupObject>
-    <RootNamespace>AxeSoftware.Quest</RootNamespace>
+    <StartupObject>TextAdventures.Quest.My.MyApplication</StartupObject>
+    <RootNamespace>TextAdventures.Quest</RootNamespace>
     <AssemblyName>Quest</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>

@@ -1,4 +1,4 @@
-﻿namespace AxeSoftware.Quest.EditorControls
+﻿namespace TextAdventures.Quest.EditorControls
 {
     partial class WFDictionaryStringControl
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ctlListEditor = new AxeSoftware.Quest.EditorControls.WFListEditor();
+            this.ctlListEditor = new TextAdventures.Quest.EditorControls.WFListEditor();
             this.SuspendLayout();
             // 
             // ctlListEditor
@@ -39,7 +39,7 @@
             this.ctlListEditor.Location = new System.Drawing.Point(0, 0);
             this.ctlListEditor.Name = "ctlListEditor";
             this.ctlListEditor.Size = new System.Drawing.Size(383, 256);
-            this.ctlListEditor.Style = AxeSoftware.Quest.EditorControls.WFListEditor.ColumnStyle.OneColumn;
+            this.ctlListEditor.Style = TextAdventures.Quest.EditorControls.WFListEditor.ColumnStyle.OneColumn;
             this.ctlListEditor.TabIndex = 0;
             // 
             // WFDictionaryStringControl

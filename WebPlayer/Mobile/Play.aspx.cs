@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
-using AxeSoftware.Utility.JSInterop;
+using TextAdventures.Utility.JSInterop;
 
 namespace WebPlayer.Mobile
 {

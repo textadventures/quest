@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace AxeSoftware.Utility
+namespace TextAdventures.Utility
 {
     public static class Utility
     {

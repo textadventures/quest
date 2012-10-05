@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Scripts;
-using AxeSoftware.Quest.Functions;
+using TextAdventures.Quest.Scripts;
+using TextAdventures.Quest.Functions;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public class AttributeChangedEventArgs : EventArgs
     {
@@ -291,7 +291,7 @@ namespace AxeSoftware.Quest
             if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(new UndoFieldSet(m_worldModel, m_element.Name, property, oldValue, newValue, added, m_isMeta));
         }
 
-        internal void UndoLog(AxeSoftware.Quest.UndoLogger.IUndoAction action)
+        internal void UndoLog(TextAdventures.Quest.UndoLogger.IUndoAction action)
         {
             if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(action);
         }
@@ -1047,7 +1047,7 @@ namespace AxeSoftware.Quest
         }
     }
 
-    public class UndoFieldSet : AxeSoftware.Quest.UndoLogger.IUndoAction
+    public class UndoFieldSet : TextAdventures.Quest.UndoLogger.IUndoAction
     {
         private string m_appliesTo;
         private string m_property;
@@ -1162,7 +1162,7 @@ namespace AxeSoftware.Quest
         }
     }
 
-    public class UndoFieldRemove : AxeSoftware.Quest.UndoLogger.IUndoAction
+    public class UndoFieldRemove : TextAdventures.Quest.UndoLogger.IUndoAction
     {
         private string m_appliesTo;
         private string m_property;
@@ -1186,7 +1186,7 @@ namespace AxeSoftware.Quest
         }
     }
 
-    public class UndoAddRemoveType : AxeSoftware.Quest.UndoLogger.IUndoAction
+    public class UndoAddRemoveType : TextAdventures.Quest.UndoLogger.IUndoAction
     {
         private string m_appliesTo;
         private Stack<Element> m_oldValue;

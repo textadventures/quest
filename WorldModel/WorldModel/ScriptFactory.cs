@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 using System.Text.RegularExpressions;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public interface IScriptFactory
     {
@@ -32,7 +32,7 @@ namespace AxeSoftware.Quest
             m_worldModel = worldModel;
 
             // Use Reflection to create instances of all IScriptConstructors
-            foreach (Type t in AxeSoftware.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                 typeof(IScriptConstructor)))
             {
                 AddConstructor((IScriptConstructor)Activator.CreateInstance(t));

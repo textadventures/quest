@@ -1,4 +1,4 @@
-﻿Imports AxeSoftware.Quest
+﻿Imports TextAdventures.Quest
 
 Public Class DebuggerPane
 

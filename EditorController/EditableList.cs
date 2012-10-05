@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections.Specialized;
 using System.Collections;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public class EditableList<T> : IEditableList<T>, IDataWrapper, INotifyCollectionChanged
     {

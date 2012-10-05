@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ciloci.Flee;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Scripts;
 
-namespace AxeSoftware.Quest.Functions
+namespace TextAdventures.Quest.Functions
 {
     public abstract class ExpressionBase
     {

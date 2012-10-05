@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AxeSoftware.Utility
+namespace TextAdventures.Utility
 {
     public class WindowHelper
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using AxeSoftware.Quest.Functions;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest.Functions;
+using TextAdventures.Quest.Scripts;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public class Template
     {

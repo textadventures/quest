@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest;
+using TextAdventures.Quest;
 using System.Xml;
 using System.IO;
-using AxeSoftware.Utility.JSInterop;
+using TextAdventures.Utility.JSInterop;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public interface IPlayerHelperUI : IPlayer
     {

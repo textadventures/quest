@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AxeSoftware.Quest;
+using TextAdventures.Quest;
 
 namespace EditorControllerTests
 {
@@ -81,7 +81,7 @@ namespace EditorControllerTests
             m_tree.EndUpdate();
         }
 
-        void m_controller_AddedNode(object sender, AxeSoftware.Quest.EditorController.AddedNodeEventArgs e)
+        void m_controller_AddedNode(object sender, TextAdventures.Quest.EditorController.AddedNodeEventArgs e)
         {
             m_tree.Add(e.Key, e.Text, e.Parent);
         }

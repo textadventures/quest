@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest;
-using AxeSoftware.Quest.Scripts;
+using TextAdventures.Quest;
+using TextAdventures.Quest.Scripts;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     internal class EditorAttributeData : IEditorAttributeData
     {

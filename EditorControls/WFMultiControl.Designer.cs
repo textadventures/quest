@@ -1,4 +1,4 @@
-﻿namespace AxeSoftware.Quest.EditorControls
+﻿namespace TextAdventures.Quest.EditorControls
 {
     partial class WFMultiControl
     {
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.wpfMultiControl = new AxeSoftware.Quest.EditorControls.MultiControl();
+            this.wpfMultiControl = new TextAdventures.Quest.EditorControls.MultiControl();
             this.SuspendLayout();
             // 
             // elementHost1

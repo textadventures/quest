@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using AxeSoftware.Quest;
+using TextAdventures.Quest;
 using System.Configuration;
 
 namespace WebEditor.Services
@@ -85,14 +85,14 @@ namespace WebEditor.Services
             return result;
         }
 
-        void m_controller_ShowMessage(object sender, AxeSoftware.Quest.EditorController.ShowMessageEventArgs e)
+        void m_controller_ShowMessage(object sender, TextAdventures.Quest.EditorController.ShowMessageEventArgs e)
         {
             m_initMessage = e.Message;
         }
 
         public EditorController Controller { get { return m_controller; } }
 
-        void m_controller_AddedNode(object sender, AxeSoftware.Quest.EditorController.AddedNodeEventArgs e)
+        void m_controller_AddedNode(object sender, TextAdventures.Quest.EditorController.AddedNodeEventArgs e)
         {
             if (m_elements.ContainsKey(e.Key)) return;
             if (e.Parent != null && !m_elements.ContainsKey(e.Parent)) return;
@@ -105,7 +105,7 @@ namespace WebEditor.Services
             m_mustRefreshTree = true;
         }
 
-        void m_controller_RemovedNode(object sender, AxeSoftware.Quest.EditorController.RemovedNodeEventArgs e)
+        void m_controller_RemovedNode(object sender, TextAdventures.Quest.EditorController.RemovedNodeEventArgs e)
         {
             List<string> keysToRemove = new List<string>();
             PopulateTreeChildrenList(e.Key, keysToRemove);
@@ -127,7 +127,7 @@ namespace WebEditor.Services
             }
         }
 
-        void m_controller_RenamedNode(object sender, AxeSoftware.Quest.EditorController.RenamedNodeEventArgs e)
+        void m_controller_RenamedNode(object sender, TextAdventures.Quest.EditorController.RenamedNodeEventArgs e)
         {
             TreeItem item = m_elements[e.OldName];
             m_elements.Remove(e.OldName);
@@ -138,7 +138,7 @@ namespace WebEditor.Services
             m_mustRefreshTree = true;
         }
 
-        void m_controller_RetitledNode(object sender, AxeSoftware.Quest.EditorController.RetitledNodeEventArgs e)
+        void m_controller_RetitledNode(object sender, TextAdventures.Quest.EditorController.RetitledNodeEventArgs e)
         {
             if (!m_elements.ContainsKey(e.Key)) return;
             m_elements[e.Key].Text = e.NewTitle;
@@ -1284,7 +1284,7 @@ namespace WebEditor.Services
 
             if (!Controller.IsVerbAttribute(verbAttribute))
             {
-                AxeSoftware.Quest.EditorController.CanAddVerbResult canAddResult = Controller.CanAddVerb(verbPattern);
+                TextAdventures.Quest.EditorController.CanAddVerbResult canAddResult = Controller.CanAddVerb(verbPattern);
                 if (!canAddResult.CanAdd)
                 {
                     IDictionary<string, string> clashMessages = ctl.GetDictionary("clashmessages");
@@ -2306,7 +2306,7 @@ namespace WebEditor.Services
         {
             get
             {
-                return m_controller.EditorStyle == AxeSoftware.Quest.EditorStyle.GameBook ? "gamebook" : "textadventure";
+                return m_controller.EditorStyle == TextAdventures.Quest.EditorStyle.GameBook ? "gamebook" : "textadventure";
             }
         }
 

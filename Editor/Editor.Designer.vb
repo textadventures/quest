@@ -23,16 +23,16 @@ Partial Class Editor
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.splitMain = New System.Windows.Forms.SplitContainer()
-        Me.ctlTree = New AxeSoftware.Quest.EditorControls.WFEditorTree()
+        Me.ctlTree = New TextAdventures.Quest.EditorControls.WFEditorTree()
         Me.pnlContent = New System.Windows.Forms.Panel()
         Me.pnlHeader = New System.Windows.Forms.Panel()
         Me.lblHeader = New System.Windows.Forms.Label()
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
-        Me.ctlBanner = New AxeSoftware.Quest.AlertBanner()
-        Me.ctlTextEditor = New AxeSoftware.Quest.TextEditorControl()
-        Me.ctlReloadBanner = New AxeSoftware.Quest.AlertBanner()
-        Me.ctlToolbar = New AxeSoftware.Quest.MainToolbar()
-        Me.ctlLoading = New AxeSoftware.Quest.LoadingControl()
+        Me.ctlBanner = New TextAdventures.Quest.AlertBanner()
+        Me.ctlTextEditor = New TextAdventures.Quest.TextEditorControl()
+        Me.ctlReloadBanner = New TextAdventures.Quest.AlertBanner()
+        Me.ctlToolbar = New TextAdventures.Quest.MainToolbar()
+        Me.ctlLoading = New TextAdventures.Quest.LoadingControl()
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitMain.Panel1.SuspendLayout()
         Me.splitMain.Panel2.SuspendLayout()
@@ -175,15 +175,15 @@ Partial Class Editor
 
     End Sub
     Friend WithEvents splitMain As System.Windows.Forms.SplitContainer
-    Friend WithEvents ctlTree As AxeSoftware.Quest.EditorControls.WFEditorTree
-    Friend WithEvents ctlToolbar As AxeSoftware.Quest.MainToolbar
+    Friend WithEvents ctlTree As TextAdventures.Quest.EditorControls.WFEditorTree
+    Friend WithEvents ctlToolbar As TextAdventures.Quest.MainToolbar
     Private WithEvents ctlSaveFile As System.Windows.Forms.SaveFileDialog
     Friend WithEvents pnlHeader As System.Windows.Forms.Panel
     Friend WithEvents pnlContent As System.Windows.Forms.Panel
     Friend WithEvents lblHeader As System.Windows.Forms.Label
-    Friend WithEvents ctlTextEditor As AxeSoftware.Quest.TextEditorControl
-    Friend WithEvents ctlBanner As AxeSoftware.Quest.AlertBanner
-    Friend WithEvents ctlReloadBanner As AxeSoftware.Quest.AlertBanner
-    Friend WithEvents ctlLoading As AxeSoftware.Quest.LoadingControl
+    Friend WithEvents ctlTextEditor As TextAdventures.Quest.TextEditorControl
+    Friend WithEvents ctlBanner As TextAdventures.Quest.AlertBanner
+    Friend WithEvents ctlReloadBanner As TextAdventures.Quest.AlertBanner
+    Friend WithEvents ctlLoading As TextAdventures.Quest.LoadingControl
 
 End Class

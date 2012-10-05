@@ -1,11 +1,11 @@
-﻿Imports AxeSoftware.Quest
+﻿Imports TextAdventures.Quest
 
 Public Class Debugger
 
     Private m_loaded As Boolean = False
     Private m_game As IASLDebug
     Private m_debuggerPanes As New List(Of DebuggerPane)
-    Private m_splitHelper As AxeSoftware.Utility.SplitterHelper
+    Private m_splitHelper As TextAdventures.Utility.SplitterHelper
     Private m_primaryPane As DebuggerPane
 
     Public Sub New()
@@ -14,7 +14,7 @@ Public Class Debugger
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
-        Dim helper As New AxeSoftware.Utility.WindowHelper(Me, "Quest", "Debugger")
+        Dim helper As New TextAdventures.Utility.WindowHelper(Me, "Quest", "Debugger")
     End Sub
 
     Private Sub InitialiseTabs()
@@ -33,7 +33,7 @@ Public Class Debugger
 
             If m_splitHelper Is Nothing Then
                 m_primaryPane = pane
-                m_splitHelper = New AxeSoftware.Utility.SplitterHelper(pane.splitMain, "Quest", "DebuggerSplitter")
+                m_splitHelper = New TextAdventures.Utility.SplitterHelper(pane.splitMain, "Quest", "DebuggerSplitter")
                 AddHandler pane.splitMain.SplitterMoved, AddressOf SplitterMoved
             End If
         Next

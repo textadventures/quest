@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
     public class MismatchingQuotesException : Exception
@@ -487,7 +487,7 @@ namespace AxeSoftware.Quest
             foreach (string groupName in regex.GetGroupNames())
             {
                 // exclude group names like "0", we only want the explicitly named groups
-                if (!AxeSoftware.Utility.Strings.IsNumeric(groupName))
+                if (!TextAdventures.Utility.Strings.IsNumeric(groupName))
                 {
                     string groupMatch = regex.Match(input).Groups[groupName].Value;
                     lengthOfTextMatchedByGroups += groupMatch.Length;
@@ -515,7 +515,7 @@ namespace AxeSoftware.Quest
 
             foreach (string groupName in regex.GetGroupNames())
             {
-                if (!AxeSoftware.Utility.Strings.IsNumeric(groupName))
+                if (!TextAdventures.Utility.Strings.IsNumeric(groupName))
                 {
                     string groupMatch = regex.Match(input).Groups[groupName].Value;
                     result.Add(groupName, groupMatch);

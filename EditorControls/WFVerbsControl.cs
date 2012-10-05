@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     [ControlType("verbs")]
     class WFVerbsControl : WFAttributesControl
@@ -135,7 +135,7 @@ namespace AxeSoftware.Quest.EditorControls
         {
             if (!Controller.IsVerbAttribute(selectedAttribute))
             {
-                AxeSoftware.Quest.EditorController.CanAddVerbResult canAddResult = Controller.CanAddVerb(selectedPattern);
+                TextAdventures.Quest.EditorController.CanAddVerbResult canAddResult = Controller.CanAddVerb(selectedPattern);
                 if (!canAddResult.CanAdd)
                 {
                     string clashMessage = "Verb would clash with command: " + canAddResult.ClashingCommandDisplay;

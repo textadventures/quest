@@ -363,7 +363,7 @@ Partial Class Menu
         '
         'PageToolStripMenuItem
         '
-        Me.PageToolStripMenuItem.Image = Global.AxeSoftware.Quest.Controls.My.Resources.Resources.DocumentHS
+        Me.PageToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.DocumentHS
         Me.PageToolStripMenuItem.Name = "PageToolStripMenuItem"
         Me.PageToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.PageToolStripMenuItem.Tag = "addpage"
@@ -372,7 +372,7 @@ Partial Class Menu
         '
         'ObjectToolStripMenuItem
         '
-        Me.ObjectToolStripMenuItem.Image = Global.AxeSoftware.Quest.Controls.My.Resources.Resources.addobject
+        Me.ObjectToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.addobject
         Me.ObjectToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.ObjectToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver
         Me.ObjectToolStripMenuItem.Name = "ObjectToolStripMenuItem"
@@ -382,7 +382,7 @@ Partial Class Menu
         '
         'RoomToolStripMenuItem
         '
-        Me.RoomToolStripMenuItem.Image = Global.AxeSoftware.Quest.Controls.My.Resources.Resources.addroom
+        Me.RoomToolStripMenuItem.Image = Global.TextAdventures.Quest.Controls.My.Resources.Resources.addroom
         Me.RoomToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.RoomToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Silver
         Me.RoomToolStripMenuItem.Name = "RoomToolStripMenuItem"

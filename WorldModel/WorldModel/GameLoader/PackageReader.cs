@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using Ionic.Zip;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     internal class PackageReader
     {

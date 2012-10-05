@@ -1,4 +1,4 @@
-﻿Imports AxeSoftware.Quest.Controls.Menu
+﻿Imports TextAdventures.Quest.Controls.Menu
 
 Friend Class MenuData
 

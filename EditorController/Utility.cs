@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public static class EditorUtility
     {

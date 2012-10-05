@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using mshtml;
 
-namespace AxeSoftware.Quest.EditorControls
+namespace TextAdventures.Quest.EditorControls
 {
     public partial class WFRichTextControl : UserControl
     {

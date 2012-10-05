@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public interface IElementFactory
     {
@@ -181,7 +181,7 @@ namespace AxeSoftware.Quest
             WorldModel.UndoLogger.AddUndoAction(new CreateDestroyLogEntry(appliesTo.Name, appliesTo.ElemType, appliesTo, false, NotifyAddedElement, NotifyRemovedElement));
         }
 
-        protected class CreateDestroyLogEntry : AxeSoftware.Quest.UndoLogger.IUndoAction
+        protected class CreateDestroyLogEntry : TextAdventures.Quest.UndoLogger.IUndoAction
         {
             private string m_name;
             private ElementType m_type;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Configuration;
-using AxeSoftware.Quest;
+using TextAdventures.Quest;
 
 namespace WebEditor.Controllers
 {

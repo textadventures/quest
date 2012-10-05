@@ -29,7 +29,7 @@ Partial Class Player
         Me.ctlOpenFile = New System.Windows.Forms.OpenFileDialog()
         Me.tmrTick = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPause = New System.Windows.Forms.Timer(Me.components)
-        Me.ctlPlayerHtml = New AxeSoftware.Quest.PlayerHTML()
+        Me.ctlPlayerHtml = New TextAdventures.Quest.PlayerHTML()
         Me.SuspendLayout()
         '
         'tmrTimer
@@ -72,6 +72,6 @@ Partial Class Player
     Friend WithEvents ctlOpenFile As System.Windows.Forms.OpenFileDialog
     Friend WithEvents tmrTick As System.Windows.Forms.Timer
     Friend WithEvents tmrPause As System.Windows.Forms.Timer
-    Friend WithEvents ctlPlayerHtml As AxeSoftware.Quest.PlayerHTML
+    Friend WithEvents ctlPlayerHtml As TextAdventures.Quest.PlayerHTML
 
 End Class

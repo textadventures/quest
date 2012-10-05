@@ -1,12 +1,12 @@
-﻿Imports AxeSoftware.Quest.EditorControls
-Imports AxeSoftware.Quest.EditorController
+﻿Imports TextAdventures.Quest.EditorControls
+Imports TextAdventures.Quest.EditorController
 
 Public Class Editor
 
     Private WithEvents m_controller As EditorController
     Private m_elementEditors As Dictionary(Of String, WPFElementEditor)
     Private m_currentEditor As WPFElementEditor
-    Private m_menu As AxeSoftware.Quest.Controls.Menu
+    Private m_menu As TextAdventures.Quest.Controls.Menu
     Private m_filename As String
     Private m_currentElement As String
     Private m_codeView As Boolean
@@ -71,8 +71,8 @@ Public Class Editor
                             SetUpEditors()
                             RaiseEvent AddToRecent(m_filename, m_controller.GameName)
                             EditorStyle = m_controller.EditorStyle
-                            SimpleMode = (CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
-                            SetWordWrap(CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "EditorWordWrap", 0)) = 1)
+                            SimpleMode = (CInt(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "EditorSimpleMode", 0)) = 1)
+                            SetWordWrap(CInt(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "EditorWordWrap", 0)) = 1)
                             m_menu.Visible = True
                             m_uiHidden = False
                             DisplayCodeView(False)
@@ -110,7 +110,7 @@ Public Class Editor
         EditorControls.ElementEditor.InitialiseEditorControls(m_controller)
     End Sub
 
-    Public Sub SetMenu(menu As AxeSoftware.Quest.Controls.Menu)
+    Public Sub SetMenu(menu As TextAdventures.Quest.Controls.Menu)
         m_menu = menu
         menu.AddMenuClickHandler("save", AddressOf Save)
         menu.AddMenuClickHandler("saveas", AddressOf SaveAs)
@@ -1020,7 +1020,7 @@ Public Class Editor
                     editor.SimpleMode = m_simpleMode
                 Next
 
-                AxeSoftware.Utility.Registry.SaveSetting("Quest", "Settings", "EditorSimpleMode", If(m_simpleMode, 1, 0))
+                TextAdventures.Utility.Registry.SaveSetting("Quest", "Settings", "EditorSimpleMode", If(m_simpleMode, 1, 0))
             End If
         End Set
     End Property
@@ -1086,7 +1086,7 @@ Public Class Editor
     Private Sub SetWordWrap(turnOn As Boolean)
         m_menu.MenuChecked("wordwrap") = turnOn
         ctlTextEditor.WordWrap = turnOn
-        AxeSoftware.Utility.Registry.SaveSetting("Quest", "Settings", "EditorWordWrap", If(ctlTextEditor.WordWrap, 1, 0))
+        TextAdventures.Utility.Registry.SaveSetting("Quest", "Settings", "EditorWordWrap", If(ctlTextEditor.WordWrap, 1, 0))
     End Sub
 
     Private Sub ToggleWordWrap()

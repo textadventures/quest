@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Specialized;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public interface IQuestDictionary
     {
@@ -368,7 +368,7 @@ namespace AxeSoftware.Quest
             }
         }
 
-        private class UndoDictionaryAdd : AxeSoftware.Quest.UndoLogger.IUndoAction
+        private class UndoDictionaryAdd : TextAdventures.Quest.UndoLogger.IUndoAction
         {
             private IQuestDictionary m_appliesTo;
             private object m_addedKey;
@@ -398,7 +398,7 @@ namespace AxeSoftware.Quest
             #endregion
         }
 
-        private class UndoDictionaryRemove : AxeSoftware.Quest.UndoLogger.IUndoAction
+        private class UndoDictionaryRemove : TextAdventures.Quest.UndoLogger.IUndoAction
         {
             private IQuestDictionary m_appliesTo;
             private object m_removedKey;

@@ -12,7 +12,7 @@
 
         ' Add any initialization after the InitializeComponent() call.
         ctlVersionInfo.Visibility = Windows.Visibility.Collapsed
-        ctlTabs.SelectedIndex = CInt(AxeSoftware.Utility.Registry.GetSetting("Quest", "Settings", "SelectedTab", 0))
+        ctlTabs.SelectedIndex = CInt(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "SelectedTab", 0))
         AddHandler ctlPlayBrowser.LaunchGame, AddressOf ctlPlayBrowser_LaunchGame
         AddHandler ctlPlayBrowser.GotUpdateData, AddressOf ctlPlayBrowser_GotUpdateData
         AddHandler ctlEditBrowser.EditGame, AddressOf ctlEditBrowser_EditGame
@@ -50,7 +50,7 @@
     End Sub
 
     Private Sub ctlTabs_SelectionChanged(sender As System.Object, e As System.Windows.Controls.SelectionChangedEventArgs) Handles ctlTabs.SelectionChanged
-        AxeSoftware.Utility.Registry.SaveSetting("Quest", "Settings", "SelectedTab", ctlTabs.SelectedIndex)
+        TextAdventures.Utility.Registry.SaveSetting("Quest", "Settings", "SelectedTab", ctlTabs.SelectedIndex)
     End Sub
 
     Public Sub RefreshLists()

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest.Functions;
+using TextAdventures.Quest.Functions;
 
-namespace AxeSoftware.Quest.Scripts
+namespace TextAdventures.Quest.Scripts
 {
     // We store the parameters internally as a QuestList<string>, so we can edit them in the Editor
     // using the standard string list editor control.

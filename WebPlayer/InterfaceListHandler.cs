@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using AxeSoftware.Quest;
-using AxeSoftware.Utility.JSInterop;
+using TextAdventures.Quest;
+using TextAdventures.Utility.JSInterop;
 
 namespace WebPlayer
 {

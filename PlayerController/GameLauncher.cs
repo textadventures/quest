@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AxeSoftware.Quest;
+using TextAdventures.Quest;
 using Ionic.Zip;
 using System.IO;
 
-namespace AxeSoftware.Quest
+namespace TextAdventures.Quest
 {
     public static class GameLauncher
     {
@@ -27,7 +27,7 @@ namespace AxeSoftware.Quest
                 case ".asl":
                 case ".cas":
                 case ".qsg":
-                    LegacyASL.LegacyGame game = new AxeSoftware.Quest.LegacyASL.LegacyGame(filename, originalFilename);
+                    LegacyASL.LegacyGame game = new TextAdventures.Quest.LegacyASL.LegacyGame(filename, originalFilename);
                     game.SetUnzipFunction(UnzipAndGetGameFile);
                     return game;
                 case ".zip":

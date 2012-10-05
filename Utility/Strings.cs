@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AxeSoftware.Utility
+namespace TextAdventures.Utility
 {
     public static class Strings
     {

@@ -1,4 +1,4 @@
-﻿Imports AxeSoftware.Quest
+﻿Imports TextAdventures.Quest
 
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class Main
@@ -26,9 +26,9 @@ Partial Class Main
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main))
         Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
-        Me.ctlPlayer = New AxeSoftware.Quest.Player()
-        Me.ctlEditor = New AxeSoftware.Quest.Editor()
-        Me.ctlMenu = New AxeSoftware.Quest.Controls.Menu()
+        Me.ctlPlayer = New TextAdventures.Quest.Player()
+        Me.ctlEditor = New TextAdventures.Quest.Editor()
+        Me.ctlMenu = New TextAdventures.Quest.Controls.Menu()
         Me.ctlLauncherHost = New System.Windows.Forms.Integration.ElementHost()
         Me.ctlLauncher = New GameBrowser.Launcher()
         Me.SuspendLayout()
@@ -65,7 +65,7 @@ Partial Class Main
         '
         Me.ctlMenu.Dock = System.Windows.Forms.DockStyle.Top
         Me.ctlMenu.Location = New System.Drawing.Point(0, 0)
-        Me.ctlMenu.Mode = AxeSoftware.Quest.Controls.Menu.MenuMode.GameBrowser
+        Me.ctlMenu.Mode = TextAdventures.Quest.Controls.Menu.MenuMode.GameBrowser
         Me.ctlMenu.Name = "ctlMenu"
         Me.ctlMenu.Size = New System.Drawing.Size(734, 24)
         Me.ctlMenu.TabIndex = 5
@@ -96,10 +96,10 @@ Partial Class Main
         Me.ResumeLayout(False)
 
     End Sub
-    Friend WithEvents ctlPlayer As AxeSoftware.Quest.Player
+    Friend WithEvents ctlPlayer As TextAdventures.Quest.Player
     Friend WithEvents dlgOpenFile As System.Windows.Forms.OpenFileDialog
     Friend WithEvents ctlEditor As Editor
-    Friend WithEvents ctlMenu As AxeSoftware.Quest.Controls.Menu
+    Friend WithEvents ctlMenu As TextAdventures.Quest.Controls.Menu
     Friend WithEvents ctlLauncherHost As System.Windows.Forms.Integration.ElementHost
     Friend ctlLauncher As GameBrowser.Launcher
 

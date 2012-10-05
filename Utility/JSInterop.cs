@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AxeSoftware.Utility.JSInterop
+namespace TextAdventures.Utility.JSInterop
 {
     public static class JavaScriptParameterHelpers
     {
