@@ -29,11 +29,28 @@ namespace AxeSoftware.Quest.EditorControls
 
         void m_helper_Initialise()
         {
-            textblock.Text = m_helper.ControlDefinition.Caption;
+            string url = m_helper.ControlDefinition.GetString("href");
+            if (url == null)
+            {
+                textblock.Text = m_helper.ControlDefinition.Caption;
+            }
+            else
+            {
+                var hyperlink = new Hyperlink { NavigateUri = new Uri(url) };
+                hyperlink.Inlines.Add(m_helper.ControlDefinition.Caption);
+                textblock.Inlines.Add(hyperlink);
+                hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
+            }
+
             if (m_helper.ControlDefinition.GetBool("bold"))
             {
                 textblock.FontWeight = FontWeights.Bold;
             }
+        }
+
+        void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.Uri.ToString());
         }
 
         public IControlDataHelper Helper

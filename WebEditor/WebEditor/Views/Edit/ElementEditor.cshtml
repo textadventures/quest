@@ -202,7 +202,19 @@ Working...
             @Html.Action("EditScript", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
         case "label":
-            <div class="elementEditorLabel">@caption</div>
+            <div class="elementEditorLabel">
+            @{
+                var href = ctl.GetString("href");
+                if (href == null)
+                {
+                    @caption
+                }
+                else
+                {
+                    <a href="@href" target="_blank">@caption</a>
+                }
+            }
+            </div>
             break;
         case "title":
             string className = isFirst ? "elementEditorTitleTop" : "elementEditorTitle";

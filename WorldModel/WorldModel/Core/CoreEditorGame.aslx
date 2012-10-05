@@ -237,6 +237,11 @@
       </control>
 
       <control>
+        <controltype>label</controltype>
+        <caption>The web font will override the base font if an internet connection is available, or the game is running in a web browser.</caption>
+      </control>
+
+      <control>
         <controltype>dropdown</controltype>
         <caption>Base font</caption>
         <attribute>defaultfont</attribute>
@@ -250,6 +255,12 @@
         <attribute>defaultwebfont</attribute>
         <source>webfonts</source>
         <freetext/>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>Browse available web fonts</caption>
+        <href>http://www.google.com/webfonts</href>
       </control>
       
       <control>
