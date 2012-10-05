@@ -406,7 +406,7 @@
     <appliesto>(function)DisplayList</appliesto>
     <display>Print list #0</display>
     <category>Output</category>
-    <create>DisplayList ()</create>
+    <create>DisplayList (, false)</create>
     <add>Print a list</add>
     <advanced/>
 
