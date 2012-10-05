@@ -34,23 +34,21 @@ namespace WebEditor.Views.Edit
             {typeof(IEditableDictionary<IEditableScripts>), "scriptdictionary"}
         };
 
-        public static IEnumerable<SelectListItem> GetDropdownValues(IEditorControl ctl, string currentValue)
+        public static IEnumerable<SelectListItem> GetDropdownValues(IEditorControl ctl, string currentValue, EditorController controller)
         {
             IEnumerable<string> valuesList = ctl.GetListString("validvalues");
             IDictionary<string, string> valuesDictionary = ctl.GetDictionary("validvalues");
-            bool fontsList = ctl.GetBool("fontslist");
+            string source = ctl.GetString("source");
 
             // TO DO: Need a way of allowing free text entry
 
-            if (fontsList)
+            if (source == "basefonts")
             {
-                // TO DO: Fonts list should be a standard list of web-safe fonts, not the list of fonts on the server
-                List<string> fonts = new List<string>();
-                foreach (var family in System.Drawing.FontFamily.Families)
-                {
-                    fonts.Add(family.Name);
-                }
-                valuesList = fonts;
+                valuesList = controller.AvailableBaseFonts();
+            }
+            else if (source == "webfonts")
+            {
+                valuesList = controller.AvailableWebFonts();
             }
 
             if (valuesList != null)

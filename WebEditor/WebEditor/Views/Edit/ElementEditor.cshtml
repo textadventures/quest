@@ -210,7 +210,7 @@ Working...
             break;
         case "dropdown":
             string selectedItem = value as string;
-            IEnumerable<SelectListItem> valuesList = Controls.GetDropdownValues(ctl, selectedItem);
+            IEnumerable<SelectListItem> valuesList = Controls.GetDropdownValues(ctl, selectedItem, Model.Controller);
             @Html.DropDownList(ctl.Attribute, valuesList, new { @class = "elementEditorDropdown" });
             break;
         case "richtext":

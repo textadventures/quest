@@ -100,7 +100,7 @@
             @ctl.Caption
             break;
         case "dropdown":
-            IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, (string)value);
+            IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, (string)value, Model.Controller);
             @Html.DropDownList(name, valuesList);
             break;
         case "expression":
@@ -184,7 +184,7 @@
                 editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"width: 50px\" />");
                 break;
             case "dropdown":
-                IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, simpleValue);
+                IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, simpleValue, Model.Controller);
                 editorHtml = Html.DropDownList(name + "-simpleeditor", valuesList, new { @class = "elementEditorDropdown" });
                 break;
             default:
