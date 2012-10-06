@@ -23,6 +23,7 @@ namespace TextAdventures.Quest.EditorControls
         private Func<IEnumerable<string>> m_fileLister;
         private IEditorData m_data;
         private bool m_updatingList;
+        private bool m_preview;
 
         public FileControl()
         {
@@ -35,6 +36,8 @@ namespace TextAdventures.Quest.EditorControls
         void m_helper_Initialise()
         {
             m_source = m_helper.ControlDefinition.GetString("source");
+            m_preview = m_helper.ControlDefinition.GetBool("preview");
+
             if (m_source == "libraries")
             {
                 m_source = "*.aslx";
@@ -47,9 +50,19 @@ namespace TextAdventures.Quest.EditorControls
             m_fileFilter = string.Format("{0} ({1})|{1}", m_helper.ControlDefinition.GetString("filefiltername"), m_source);
         }
 
+        private class FileListItem
+        {
+            public string Title { get; set; }
+            public string Filename { get; set; }
+            public ImageSource Image { get; set; }
+            public Visibility ImageVisibility { get; set; }
+        }
+
+        private List<FileListItem> m_fileListItems;
+
         private void lstFiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            m_helper.SetDirty((string)lstFiles.SelectedItem);
+            m_helper.SetDirty(Filename);
             Save();
         }
 
@@ -64,7 +77,7 @@ namespace TextAdventures.Quest.EditorControls
             if (data == null) return;
             m_helper.StartPopulating();
             RefreshFileList();
-            lstFiles.Text = m_helper.Populate(data);
+            Filename = m_helper.Populate(data);
             lstFiles.IsEnabled = m_helper.CanEdit(data) && !data.ReadOnly;
             m_helper.FinishedPopulating();
         }
@@ -73,7 +86,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             if (m_data == null) return;
             if (!m_helper.IsDirty) return;
-            string saveValue = (string)lstFiles.SelectedItem;
+            string saveValue = Filename;
             m_helper.Save(saveValue);
         }
 
@@ -81,9 +94,36 @@ namespace TextAdventures.Quest.EditorControls
         {
             m_updatingList = true;
             lstFiles.Items.Clear();
+            m_fileListItems = new List<FileListItem>();
             foreach (string file in m_fileLister.Invoke())
             {
-                lstFiles.Items.Add(file);
+                BitmapImage bitmap = null;
+                if (m_preview && !string.IsNullOrEmpty(file))
+                {
+                    bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(file);
+                    bitmap.EndInit();
+                }
+
+                var item = new FileListItem
+                {
+                    Filename = System.IO.Path.GetFileName(file),
+                    Image = bitmap,
+                    ImageVisibility = (bitmap == null) ? Visibility.Collapsed : Visibility.Visible
+                };
+
+                if (string.IsNullOrEmpty(item.Filename))
+                {
+                    item.Title = "None";
+                }
+                else
+                {
+                    item.Title = item.Filename;
+                }
+
+                lstFiles.Items.Add(item);
+                m_fileListItems.Add(item);
             }
             m_updatingList = false;
         }
@@ -177,7 +217,7 @@ namespace TextAdventures.Quest.EditorControls
                     // m_data is null if this control is being used in an ExpressionControl, so in this case
                     // just set the list text
                     RefreshFileList();
-                    lstFiles.Text = filename;
+                    Filename = filename;
                 }
             }
         }
@@ -202,11 +242,13 @@ namespace TextAdventures.Quest.EditorControls
         {
             get
             {
-                return (string)lstFiles.SelectedItem;
+                if (lstFiles.SelectedItem == null) return string.Empty;
+                return ((FileListItem)lstFiles.SelectedItem).Filename;
             }
             set
             {
-                lstFiles.Text = value;
+                if (value == null) value = string.Empty;
+                lstFiles.SelectedItem = m_fileListItems.First(f => f.Filename == value);
             }
         }
 

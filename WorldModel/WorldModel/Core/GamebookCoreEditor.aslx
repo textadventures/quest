@@ -78,6 +78,7 @@
         <attribute>cover</attribute>
         <source>[EditorImageFormats]</source>
         <filefiltername>Picture Files</filefiltername>
+        <preview/>
       </control>
 
       <control>

@@ -76,6 +76,7 @@
         <attribute>cover</attribute>
         <source>[EditorImageFormats]</source>
         <filefiltername>Picture Files</filefiltername>
+        <preview/>
       </control>
 
       <control>
@@ -325,6 +326,7 @@
         <attribute>backgroundimage</attribute>
         <source>[EditorImageFormats]</source>
         <filefiltername>Picture Files</filefiltername>
+        <preview/>
       </control>
 
       <control>

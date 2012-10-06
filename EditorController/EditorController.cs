@@ -1722,7 +1722,8 @@ namespace TextAdventures.Quest
 
         public IEnumerable<string> GetAvailableExternalFiles(string searchPattern)
         {
-            return m_worldModel.GetAvailableExternalFiles(searchPattern);
+            string baseFolder = System.IO.Path.GetDirectoryName(m_worldModel.Filename);
+            return m_worldModel.GetAvailableExternalFiles(searchPattern).Select(f => System.IO.Path.Combine(baseFolder, f));
         }
 
         public string Filename
