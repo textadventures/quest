@@ -76,6 +76,9 @@ Public Class GameList
                     newItem.DownloadFilename = downloadFilename
                     newItem.Author = data.Author
                     newItem.GameId = data.GameId
+                    If Not String.IsNullOrEmpty(data.Thumbnail) Then
+                        newItem.SetImageURL(data.Thumbnail)
+                    End If
 
                     If System.IO.File.Exists(downloadFilename) Then
                         ' The file has already been downloaded

@@ -5,11 +5,14 @@ Public Class GameDescription
 
     Private WithEvents m_client As WebClient
     Private WithEvents m_reviewsClient As WebClient
+    Private WithEvents m_imageClient As WebClient
     Private m_cache As New Dictionary(Of String, GameDescriptionData)
     Private m_linkUrl As String
     Private WithEvents m_listItemControl As GameListItem
     Private m_downloadedReviews As Boolean
     Private m_data As GameListItemData
+    Private m_imageCache As New Dictionary(Of String, Byte())
+    Private m_downloadingUri As String
 
     Private Sub cmdClose_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles cmdClose.Click
         RaiseEvent Close()
@@ -31,6 +34,35 @@ Public Class GameDescription
         m_listItemControl = control
         UpdateState()
         RequestData(data.GameId)
+        cover.Visibility = Windows.Visibility.Collapsed
+        If m_imageClient IsNot Nothing Then
+            m_imageClient.CancelAsync()
+        End If
+        If Not String.IsNullOrEmpty(data.Cover) Then
+            If m_imageCache.ContainsKey(data.Cover) Then
+                SetImage(m_imageCache(data.Cover))
+            Else
+                m_imageClient = WebClientFactory.GetNewWebClient
+                m_downloadingUri = data.Cover
+                m_imageClient.DownloadDataAsync(New Uri(data.Cover))
+            End If
+        End If
+    End Sub
+
+    Private Sub m_imageClient_DownloadDataCompleted(sender As Object, e As DownloadDataCompletedEventArgs) Handles m_imageClient.DownloadDataCompleted
+        If e.Error Is Nothing Then
+            m_imageCache(m_downloadingUri) = e.Result
+            SetImage(e.Result)
+        End If
+    End Sub
+
+    Private Sub SetImage(image As Byte())
+        Dim bitmap As New Windows.Media.Imaging.BitmapImage()
+        bitmap.BeginInit()
+        bitmap.StreamSource = New System.IO.MemoryStream(image)
+        bitmap.EndInit()
+        cover.Source = bitmap
+        cover.Visibility = Windows.Visibility.Visible
     End Sub
 
     Private Sub UpdateState()
@@ -208,5 +240,4 @@ Public Class GameDescription
             reviewsStack.Children.Add(textBlock)
         End If
     End Sub
-
 End Class

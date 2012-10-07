@@ -23,6 +23,7 @@ Public Class GameListItem
     Private m_url As String
     Private m_downloading As Boolean = False
     Private WithEvents m_client As System.Net.WebClient
+    Private WithEvents m_imageClient As System.Net.WebClient
     Private m_downloadFilename As String
     Private m_setDownloadTooltip As Boolean
     Private m_isOnlineItem As Boolean
@@ -175,6 +176,22 @@ Public Class GameListItem
             m_gameId = value
         End Set
     End Property
+
+    Public Sub SetImageURL(url As String)
+        m_imageClient = WebClientFactory.GetNewWebClient
+        m_imageClient.DownloadDataAsync(New Uri(url))
+    End Sub
+
+    Private Sub m_imageClient_DownloadDataCompleted(sender As Object, e As Net.DownloadDataCompletedEventArgs) Handles m_imageClient.DownloadDataCompleted
+        If e.Error Is Nothing Then
+            Dim bitmap As New Imaging.BitmapImage()
+            bitmap.BeginInit()
+            bitmap.StreamSource = New System.IO.MemoryStream(e.Result)
+            bitmap.EndInit()
+            imageBorder.Visibility = Windows.Visibility.Visible
+            image.Source = bitmap
+        End If
+    End Sub
 
     Private Sub SetToolTipText(text As String)
         If text.Length = 0 Then

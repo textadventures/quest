@@ -47,38 +47,9 @@
     End Property
 
     Public Property Author As String
-        Get
-            Return m_author
-        End Get
-        Set(value As String)
-            m_author = value
-        End Set
-    End Property
-
     Public Property Rating As Double
-        Get
-            Return m_rating
-        End Get
-        Set(value As Double)
-            m_rating = value
-        End Set
-    End Property
-
     Public Property Description As String
-        Get
-            Return m_desc
-        End Get
-        Set(value As String)
-            m_desc = value
-        End Set
-    End Property
-
     Public Property GameId As String
-        Get
-            Return m_gameId
-        End Get
-        Set(value As String)
-            m_gameId = value
-        End Set
-    End Property
+    Public Property Cover As String
+    Public Property Thumbnail As String
 End Class

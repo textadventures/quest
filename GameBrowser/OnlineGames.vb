@@ -14,6 +14,8 @@
         Public Author As String
         Public Rating As Double
         Public GameId As String
+        Public Cover As String
+        Public Thumbnail As String
     End Class
 
     Public Class GameCategory
@@ -70,7 +72,9 @@
                                                      .Filename = game.@filename,
                                                      .Author = game.@author,
                                                      .Rating = ParseDouble(game.@rating),
-                                                     .GameId = game.@id
+                                                     .GameId = game.@id,
+                                                     .Cover = game.@cover,
+                                                     .Thumbnail = game.@thumbnail
                                               }).ToList()
                              }).ToList()
         Catch ex As Exception
@@ -103,7 +107,9 @@
                 gamesList.Add(New GameListItemData(game.Name, game.Ref, game.Filename) With
                               {.Author = game.Author,
                                .GameId = game.GameId,
-                               .Rating = game.Rating
+                               .Rating = game.Rating,
+                               .Cover = game.Cover,
+                               .Thumbnail = game.Thumbnail
                               })
             Next
 

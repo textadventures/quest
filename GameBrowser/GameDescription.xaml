@@ -23,6 +23,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel>
+                                <Image Name="cover" MaxHeight="256" MaxWidth="256" RenderOptions.BitmapScalingMode="HighQuality"></Image>
                                 <TextBlock Name="author">Author Name</TextBlock>
                                 <TextBlock Name="title" FontSize="20" FontWeight="Bold" TextWrapping="Wrap">Game Title</TextBlock>
                                 <TextBlock Name="category">Category</TextBlock>
