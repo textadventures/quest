@@ -76,7 +76,7 @@
         <controltype>file</controltype>
         <caption>Cover art</caption>
         <attribute>cover</attribute>
-        <source>[EditorImageFormats]</source>
+        <source>*.jpg;*.jpeg;*.png;*.gif</source>
         <filefiltername>Picture Files</filefiltername>
         <preview/>
       </control>
