@@ -15,7 +15,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Border Padding="0,0,10,0" Visibility="{Binding Path=ImageVisibility}" Width="60" Height="60">
-                            <Image Source="{Binding Path=Image}" MaxHeight="60" MaxWidth="60" />
+                            <Image Source="{Binding Path=Image}" MaxHeight="60" MaxWidth="60" RenderOptions.BitmapScalingMode="HighQuality" />
                         </Border>
                         <TextBlock Text="{Binding Path=Title}" VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
