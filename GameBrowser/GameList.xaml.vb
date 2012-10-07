@@ -43,8 +43,10 @@ Public Class GameList
         For Each data As GameListItemData In list
             count += 1
 
-            If Not String.IsNullOrEmpty(data.DownloadFilename) AndAlso m_gameListItems.ContainsKey(data.DownloadFilename) Then
-                newItem = m_gameListItems(data.DownloadFilename)
+            Dim key As String = String.Format("{0}~{1}", data.GameId, data.DownloadFilename)
+
+            If Not String.IsNullOrEmpty(data.DownloadFilename) AndAlso m_gameListItems.ContainsKey(key) Then
+                newItem = m_gameListItems(key)
             Else
                 newItem = New GameListItem
                 newItem.Data = data
@@ -52,7 +54,7 @@ Public Class GameList
                 newItem.Author = ""
 
                 If Not String.IsNullOrEmpty(data.DownloadFilename) Then
-                    m_gameListItems.Add(data.DownloadFilename, newItem)
+                    m_gameListItems.Add(key, newItem)
                 End If
 
                 If IsOnlineList Then
