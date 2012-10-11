@@ -13,18 +13,36 @@ namespace TextAdventures.Quest
 {
     public class ConducttrApi
     {
-        public string Execute()
+        private string m_consumerKey;
+        private string m_consumerSecret;
+        private string m_accessToken;
+        private string m_accessTokenSecret;
+        private string m_apiUrl;
+
+        public string Execute(string command, IList<string> parameters)
         {
-            string consumerKey = "a599823e633c8f0c096c3349f1854ac9050657264";
-            string consumerSecret = "a82b2071d88b45d4154ee9c50ad1dfd0";
-            string accessToken = "6acf422bf0ad6fe06ac45495f3830062050657267";
-            string accessTokenSecret = "69803b3e2699460ae6d9f929e77a9949";
-            string apiUrl = "https://api.tstoryteller.com/v1/project/226/";
-            string apiMethod = "ping";
+            switch (command)
+            {
+                case "init":
+                    m_consumerKey = parameters[0];
+                    m_consumerSecret = parameters[1];
+                    m_accessToken = parameters[2];
+                    m_accessTokenSecret = parameters[3];
+                    m_apiUrl = parameters[4];
+                    return null;
+                case "ping":
+                    return CallAPI("ping");
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public string CallAPI(string apiMethod)
+        {
             HttpDeliveryMethods method = HttpDeliveryMethods.PostRequest;
 
-            InMemoryTokenManager tokenManager = new InMemoryTokenManager(consumerKey, consumerSecret);
-            tokenManager.ExpireRequestTokenAndStoreNewAccessToken(consumerKey, "", accessToken, accessTokenSecret);
+            InMemoryTokenManager tokenManager = new InMemoryTokenManager(m_consumerKey, m_consumerSecret);
+            tokenManager.ExpireRequestTokenAndStoreNewAccessToken(m_consumerKey, "", m_accessToken, m_accessTokenSecret);
             var conducttr = new WebConsumer(
                 new ServiceProviderDescription
                 {
@@ -36,12 +54,12 @@ namespace TextAdventures.Quest
                 }
                 , tokenManager);
 
-            string url = apiUrl + apiMethod;
+            string url = m_apiUrl + apiMethod;
             Uri uri = new Uri(url);
 
             HttpWebRequest request = conducttr.PrepareAuthorizedRequest(
                 new MessageReceivingEndpoint(url, method),
-                accessToken);
+                m_accessToken);
             var response = request.GetResponse();
             return (new StreamReader(response.GetResponseStream())).ReadToEnd();
         }
