@@ -130,11 +130,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private IEnumerable<string> GetAvailableLibraries()
         {
-            yield return "";
-            foreach (string result in m_helper.Controller.GetAvailableLibraries())
-            {
-                yield return result;
-            }
+            return m_helper.Controller.GetAvailableLibraries();
         }
 
         private IEnumerable<string> GetFilesInGamePath()
