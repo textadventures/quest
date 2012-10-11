@@ -20,14 +20,16 @@ namespace TextAdventures.Quest
             m_conducttr = new ConducttrApi();
         }
 
-        public void Execute(string api, string method, object parameters, IScript callback)
+        // We will want to be able to call methods and functions via reflection
+
+        public void Execute(string api, string method, IList<string> parameters, IScript callback)
         {
             if (api != "conducttr")
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-            object result = m_conducttr.Execute(method, parameters);
+            string result = m_conducttr.Execute(method, parameters);
             m_worldModel.RunScript(callback, new Parameters("result", result));
         }
     }
