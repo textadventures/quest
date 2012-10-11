@@ -450,35 +450,7 @@
     <control>
       <controltype>expression</controltype>
       <attribute>0</attribute>
-      <simple>name</simple>
-    </control>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>method</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>1</attribute>
-      <simple>name</simple>
-    </control>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>with parameter dictionary</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>2</attribute>
-    </control>
-
-    <control>
-      <controltype>script</controltype>
-      <attribute>3</attribute>
-      <caption>On response, run script:</caption>
-      <breakbefore/>
+      <simple>text</simple>
     </control>
   </editor>
 </library>

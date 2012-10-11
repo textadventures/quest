@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TextAdventures.Quest.Scripts;
 
 namespace TextAdventures.Quest
 {
@@ -22,15 +21,10 @@ namespace TextAdventures.Quest
 
         // We will want to be able to call methods and functions via reflection
 
-        public void Execute(string api, string method, IList<string> parameters, IScript callback)
+        public void Test()
         {
-            if (api != "conducttr")
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
-            string result = m_conducttr.Execute(method, parameters);
-            m_worldModel.RunScript(callback, new Parameters("result", result));
+            string result = m_conducttr.Execute();
+            m_worldModel.Print(result);
         }
     }
 }
