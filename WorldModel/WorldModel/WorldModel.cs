@@ -69,6 +69,7 @@ namespace TextAdventures.Quest
         private RegexCache m_regexCache = new RegexCache();
         private OutputLogger m_outputLogger;
         private CallbackManager m_callbacks = new CallbackManager();
+        private API m_api;
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
         private static Dictionary<string, Type> s_typeNamesToTypes = new Dictionary<string, Type>();
@@ -164,6 +165,7 @@ namespace TextAdventures.Quest
             m_saver = new GameSaver(this);
             m_outputLogger = new OutputLogger(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
+            m_api = new API(this);
         }
 
         public WorldModel(string filename, string libFolder, string originalFilename)
@@ -1582,6 +1584,8 @@ namespace TextAdventures.Quest
                 m_callbacks.AddOnReadyCallback(new Callback(callback, c));
             }
         }
+
+        internal API API { get { return m_api; } }
 
         internal RegexCache RegexCache { get { return m_regexCache; } }
 

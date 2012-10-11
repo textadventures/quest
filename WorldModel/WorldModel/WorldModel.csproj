@@ -19,7 +19,8 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -97,6 +98,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API.cs" />
     <Compile Include="Callback.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Elements.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="QuestDictionary.cs" />
     <Compile Include="QuestList.cs" />
     <Compile Include="RegexCache.cs" />
+    <Compile Include="Scripts\ApiScript.cs" />
     <Compile Include="Scripts\AskScript.cs" />
     <Compile Include="Scripts\CommentScript.cs" />
     <Compile Include="Scripts\CreateScript.cs" />
@@ -407,6 +410,10 @@
     <Compile Include="WorldModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ConducttrApi\ConducttrApi.csproj">
+      <Project>{22e83960-993e-4786-8255-2e5ab816169a}</Project>
+      <Name>ConducttrApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\IASL\IASL.csproj">
       <Project>{BE34CB28-317F-4732-AA32-9D715B4F2C7E}</Project>
       <Name>IASL</Name>
