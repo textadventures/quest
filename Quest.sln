@@ -52,8 +52,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebEditor", "WebEditor\WebE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerControllerTests", "PlayerControllerTests\PlayerControllerTests.csproj", "{B3C706FC-CC0B-4AC7-B233-90B552873787}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConducttrApi", "ConducttrApi\ConducttrApi.csproj", "{22E83960-993E-4786-8255-2E5AB816169A}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Quest.vsmdi
@@ -738,36 +736,6 @@ Global
 		{B3C706FC-CC0B-4AC7-B233-90B552873787}.SingleImage|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B3C706FC-CC0B-4AC7-B233-90B552873787}.SingleImage|Mixed Platforms.Build.0 = Release|Any CPU
 		{B3C706FC-CC0B-4AC7-B233-90B552873787}.SingleImage|x86.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.CD_ROM|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.CD_ROM|Mixed Platforms.Build.0 = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.CD_ROM|x86.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.DVD-5|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.DVD-5|Mixed Platforms.Build.0 = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.DVD-5|x86.ActiveCfg = Debug|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.Release|x86.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.ReleaseSetup|Any CPU.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.ReleaseSetup|Any CPU.Build.0 = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.ReleaseSetup|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.ReleaseSetup|Mixed Platforms.Build.0 = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.ReleaseSetup|x86.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.SingleImage|Any CPU.Build.0 = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.SingleImage|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.SingleImage|Mixed Platforms.Build.0 = Release|Any CPU
-		{22E83960-993E-4786-8255-2E5AB816169A}.SingleImage|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
