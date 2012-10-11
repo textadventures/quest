@@ -433,24 +433,4 @@
       <caption>Run script</caption>
     </control>
   </editor>
-
-  <editor>
-    <appliesto>api</appliesto>
-    <display>Call API #0</display>
-    <category>Scripts</category>
-    <create>api ("")</create>
-    <add>Call API</add>
-    <advanced/>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>Call API</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>0</attribute>
-      <simple>text</simple>
-    </control>
-  </editor>
 </library>
