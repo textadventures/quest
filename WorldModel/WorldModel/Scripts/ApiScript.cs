@@ -59,8 +59,7 @@ namespace TextAdventures.Quest.Scripts
 
         public override void Execute(Context c)
         {
-            QuestList<string> parameters = m_parameters.Execute(c) as QuestList<string>;
-            m_worldModel.API.Execute(m_api.Execute(c), m_method.Execute(c), parameters, m_callbackScript);
+            m_worldModel.API.Execute(m_api.Execute(c), m_method.Execute(c), m_parameters.Execute(c), m_callbackScript);
         }
 
         public override string Save()

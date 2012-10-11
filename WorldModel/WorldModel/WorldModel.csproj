@@ -161,9 +161,11 @@
     </Compile>
     <None Include="Core\Conducttr.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\ConducttrEditor.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Core\Core.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

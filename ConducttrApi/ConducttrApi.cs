@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -19,28 +20,47 @@ namespace TextAdventures.Quest
         private string m_accessTokenSecret;
         private string m_apiUrl;
 
-        public string Execute(string command, IList<string> parameters)
+        public object Execute(string command, object parameters)
         {
-            switch (command)
+            if (command == "init")
             {
-                case "init":
-                    m_consumerKey = parameters[0];
-                    m_consumerSecret = parameters[1];
-                    m_accessToken = parameters[2];
-                    m_accessTokenSecret = parameters[3];
-                    m_apiUrl = parameters[4];
-                    return null;
-                case "ping":
-                    return CallAPI("ping");
-                default:
-                    throw new ArgumentOutOfRangeException();
+                var parameterList = (IList<string>)parameters;
+                m_consumerKey = parameterList[0];
+                m_consumerSecret = parameterList[1];
+                m_accessToken = parameterList[2];
+                m_accessTokenSecret = parameterList[3];
+                m_apiUrl = parameterList[4];
+                return null;
             }
+
+            string apiMethod;
+            string[] data = command.Split(new[] { ' ' }, 2);
+            HttpDeliveryMethods method = (data[0] == "get") ? HttpDeliveryMethods.GetRequest : HttpDeliveryMethods.PostRequest;
+
+            var parameterDictionary = parameters as IDictionary<string, string>;
+
+            if (parameterDictionary != null)
+            {
+                NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                foreach (var item in parameterDictionary)
+                {
+                    queryString.Add(item.Key, item.Value);
+                }
+
+                apiMethod = data[1] + "?" + queryString.ToString();
+            }
+            else
+            {
+                apiMethod = data[1];
+            }
+
+            string result = CallAPI(apiMethod, method);
+
+            return ParseResult(result);
         }
 
-        public string CallAPI(string apiMethod)
+        private string CallAPI(string apiMethod, HttpDeliveryMethods method)
         {
-            HttpDeliveryMethods method = HttpDeliveryMethods.PostRequest;
-
             InMemoryTokenManager tokenManager = new InMemoryTokenManager(m_consumerKey, m_consumerSecret);
             tokenManager.ExpireRequestTokenAndStoreNewAccessToken(m_consumerKey, "", m_accessToken, m_accessTokenSecret);
             var conducttr = new WebConsumer(
@@ -62,6 +82,18 @@ namespace TextAdventures.Quest
                 m_accessToken);
             var response = request.GetResponse();
             return (new StreamReader(response.GetResponseStream())).ReadToEnd();
+        }
+
+        private class ConducttrApiResult
+        {
+            public List<Dictionary<string, string>> results { get; set; }
+            public Dictionary<string, string> response { get; set; }
+        }
+
+        private object ParseResult(string resultString)
+        {
+            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<ConducttrApiResult>(resultString);
+            return (result.results == null) ? null : result.results.FirstOrDefault();
         }
     }
 }
