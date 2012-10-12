@@ -138,6 +138,9 @@
     <Compile Include="NumberControl.xaml.cs">
       <DependentUpon>NumberControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NumberDoubleControl.xaml.cs">
+      <DependentUpon>NumberDoubleControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PatternControl.xaml.cs">
       <DependentUpon>PatternControl.xaml</DependentUpon>
     </Compile>
@@ -406,6 +409,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NumberControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NumberDoubleControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

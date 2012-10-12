@@ -14,17 +14,18 @@ namespace TextAdventures.Quest.EditorControls
         protected class SubEditorControlData : IEditorControl
         {
             private static Dictionary<string, string> s_allTypes = new Dictionary<string, string> {
-		        {"string","String"},
-		        {"boolean","Boolean"},
-		        {"int","Integer"},
-		        {"script","Script"},
-		        {"stringlist","String List"},
-		        {"object","Object"},
-		        {"simplepattern","Command pattern"},
+                {"string","String"},
+                {"boolean","Boolean"},
+                {"int","Integer"},
+                {"double","Double"},
+                {"script","Script"},
+                {"stringlist","String List"},
+                {"object","Object"},
+                {"simplepattern","Command pattern"},
                 {"stringdictionary","String dictionary"},
-		        {"scriptdictionary","Script dictionary"},
-		        {"null","Null"}
-	        };
+                {"scriptdictionary","Script dictionary"},
+                {"null","Null"}
+            };
 
             private string m_attribute;
 

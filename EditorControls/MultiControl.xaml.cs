@@ -23,6 +23,7 @@ namespace TextAdventures.Quest.EditorControls
             {"script", "script"},
             {"stringlist", "list"},
             {"int", "number"},
+            {"double", "numberdouble"},
             {"object", "objects"},
             {"simplepattern", "pattern"},
             {"stringdictionary", "stringdictionary"},
@@ -36,6 +37,7 @@ namespace TextAdventures.Quest.EditorControls
             {typeof(IEditableScripts), "script"},
             {typeof(IEditableList<string>), "stringlist"},
             {typeof(int), "int"},
+            {typeof(double), "double"},
             {typeof(IEditableObjectReference), "object"},
             {typeof(IEditableCommandPattern), "simplepattern"},
             {typeof(IEditableDictionary<string>),"stringdictionary"},
@@ -363,6 +365,9 @@ namespace TextAdventures.Quest.EditorControls
                         break;
                     case "int":
                         newValue = 0;
+                        break;
+                    case "double":
+                        newValue = 0.0;
                         break;
                     case "script":
                         newValue = m_controller.CreateNewEditableScripts(m_data.Name, m_definition.Attribute, null, false);
