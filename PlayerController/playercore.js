@@ -219,6 +219,7 @@ function panesVisible(visible) {
 
 function scrollToEnd() {
     $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height() }, 200);
+    $("#txtCommand").focus();
 }
 
 var _backgroundOpacity = 1;

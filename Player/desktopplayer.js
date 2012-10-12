@@ -1,11 +1,7 @@
 ﻿var webPlayer = false;
 
-function scrollToEnd() {
-    $('html, body').animate({ scrollTop: $(document).height() }, 0);
-    $("#txtCommand").focus();
-}
-
 function sendCommand(text, metadata) {
+    markScrollPosition();
     var data = new Object();
     data["command"] = text;
     if (typeof metadata != "undefined") {
