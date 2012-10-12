@@ -78,6 +78,18 @@
             }
         }
     });
+    $("#dialog-imgPreview").dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        width: 500,
+        height: 380,
+        buttons: {
+            "OK": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
 }
 
 function showDialog(prompt, defaultText, ok, list, listPrompt, autoCompleteList) {
@@ -758,6 +770,13 @@ function initialiseElementEditor() {
         $("#dialog-upload").attr("data-key", key);
         $("#dialog-upload").dialog("open");
     });
+    $(".img-preview").button().click(function () {
+        var key = $(this).attr("data-key");
+        var imgFile = $('#' + key).val();
+        $('#imgPreviewElem').attr("src", "/ImageProcessor.ashx?image=" + imgFile + "&w=500&h=350&gameId=" + $("#_game_id").val());
+        $('#dialog-imgPreview').dialog("open");
+    });
+
     $("#button-move").button({
         icons: { primary: "ui-icon-extlink" }
     }).click(function () {

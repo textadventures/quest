@@ -79,6 +79,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="ImageProcessor.ashx.cs">
+      <DependentUpon>ImageProcessor.ashx</DependentUpon>
+    </Compile>
     <Compile Include="KeepAlive.ashx.cs">
       <DependentUpon>KeepAlive.ashx</DependentUpon>
     </Compile>
@@ -229,7 +232,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="WebEditorSettings.default.xml" />
+    <Content Include="WebEditorSettings.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Edit\ElementEditor.cshtml" />
@@ -278,6 +281,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Edit\StringDictionaryEditor.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ImageProcessor.ashx" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
