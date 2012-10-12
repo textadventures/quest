@@ -109,9 +109,13 @@ Public Class PlayerHTML
         InvokeScript("clearScreen", "")
     End Sub
 
-    Public Sub ShowPicture(filename As String)
+    Public Function GetURL(filename As String) As String
         Dim id = m_schemeHandler.AddImage(filename)
-        WriteText(String.Format("<img src=""quest://local/{0}"" onload=""scrollToEnd();"" /><br />", id))
+        Return "quest://local/" + id
+    End Function
+
+    Public Sub ShowPicture(filename As String)
+        WriteText(String.Format("<img src=""{0}"" onload=""scrollToEnd();"" /><br />", GetURL(filename)))
     End Sub
 
     Public Sub Copy()
