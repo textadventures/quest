@@ -20,6 +20,7 @@ Public Class PlayerHTML
     Private m_resetting As Boolean = False
     Private WithEvents ctlWebView As WebView
     Private m_schemeHandler As CefSchemeHandlerFactory
+    Private m_resourceSchemeHandler As CefResourceSchemeHandlerFactory
     Private WithEvents m_interop As QuestCefInterop
     Private WithEvents m_keyHandler As CefKeyboardHandler
 
@@ -32,11 +33,12 @@ Public Class PlayerHTML
         ctlWebView.KeyboardHandler = m_keyHandler
 
         m_schemeHandler = New CefSchemeHandlerFactory()
+        m_resourceSchemeHandler = New CefResourceSchemeHandlerFactory()
         m_interop = New QuestCefInterop()
 
         CEF.Initialize(New Settings)
         CEF.RegisterScheme("quest", m_schemeHandler)
-        CEF.RegisterScheme("res", New CefResourceSchemeHandlerFactory())
+        CEF.RegisterScheme("res", m_resourceSchemeHandler)
         CEF.RegisterJsObject("questCefInterop", m_interop)
     End Sub
 
@@ -183,8 +185,8 @@ Public Class PlayerHTML
         htmlContent = htmlContent.Replace(k_htmlUIPlaceholder, PlayerHelper.GetUIHTML())
         htmlContent = htmlContent.Replace(k_gridJSPlaceholder, gridJsContent)
 
-        m_schemeHandler.HTML = htmlContent
-        ctlWebView.Load("quest://local/ui")
+        m_resourceSchemeHandler.HTML = htmlContent
+        ctlWebView.Load("res://local/ui")
     End Sub
 
     Public Sub Finished()

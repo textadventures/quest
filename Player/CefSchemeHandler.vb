@@ -5,17 +5,7 @@ Imports System.Text
 Public Class CefSchemeHandlerFactory
     Implements ISchemeHandlerFactory
 
-    Private _html As String
     Private _images As New Dictionary(Of String, String)
-
-    Public Property HTML As String
-        Get
-            Return _html
-        End Get
-        Set(value As String)
-            _html = value
-        End Set
-    End Property
 
     Public Function Create() As ISchemeHandler Implements ISchemeHandlerFactory.Create
         Return New CefSchemeHandler(Me)
@@ -44,13 +34,6 @@ Public Class CefSchemeHandler
 
     Public Function ProcessRequest(request As IRequest, ByRef mimeType As String, ByRef stream As IO.Stream) As Boolean Implements ISchemeHandler.ProcessRequest
         Dim uri = New Uri(request.Url)
-        If uri.AbsolutePath = "/ui" Then
-            mimeType = "text/html"
-            Dim bytes = Encoding.UTF8.GetBytes(_parent.HTML)
-            stream = New MemoryStream(bytes)
-            Return True
-        End If
-
         Dim id = uri.AbsolutePath.Substring(1)
         Dim filename = _parent.GetImageId(id)
         If filename IsNot Nothing Then
@@ -78,15 +61,31 @@ Public Class CefResourceSchemeHandlerFactory
     Implements ISchemeHandlerFactory
 
     Public Function Create() As ISchemeHandler Implements ISchemeHandlerFactory.Create
-        Return New CefResourceSchemeHandler()
+        Return New CefResourceSchemeHandler(Me)
     End Function
+
+    Public Property HTML As String
 End Class
 
 Public Class CefResourceSchemeHandler
     Implements ISchemeHandler
 
+    Private _parent As CefResourceSchemeHandlerFactory
+
+    Public Sub New(parent As CefResourceSchemeHandlerFactory)
+        _parent = parent
+    End Sub
+
     Public Function ProcessRequest(request As IRequest, ByRef mimeType As String, ByRef stream As Stream) As Boolean Implements ISchemeHandler.ProcessRequest
         Dim uri = New Uri(request.Url)
+
+        If uri.AbsolutePath = "/ui" Then
+            mimeType = "text/html"
+            Dim bytes = Encoding.UTF8.GetBytes(_parent.HTML)
+            stream = New MemoryStream(bytes)
+            Return True
+        End If
+
         Dim filepath = Path.Combine(My.Application.Info.DirectoryPath(), uri.AbsolutePath.Substring(1))
 
         If File.Exists(filepath) Then
