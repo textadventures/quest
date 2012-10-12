@@ -56,3 +56,7 @@ function showExitFullScreenButton(show) {
         $("#cmdExitFullScreen").hide();
     }
 }
+
+function panesVisibleEval(visible) {
+    panesVisible(eval(visible));
+}

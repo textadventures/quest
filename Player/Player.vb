@@ -530,16 +530,13 @@ Public Class Player
                         Select Case data
                             Case "on"
                                 PanesVisible = True
-                                ' TO DO: Call JS function
-                                'cmdPanes.Visible = True
+                                ctlPlayerHtml.InvokeScript("panesVisibleEval", "true")
                             Case "off"
                                 PanesVisible = False
-                                ' TO DO: Call JS function
-                                'cmdPanes.Visible = True
+                                ctlPlayerHtml.InvokeScript("panesVisibleEval", "false")
                             Case "disabled"
                                 PanesVisible = False
-                                ' TO DO: Call JS function
-                                'cmdPanes.Visible = False
+                                ctlPlayerHtml.InvokeScript("panesVisibleEval", "false")
                         End Select
                     End Sub)
     End Sub
