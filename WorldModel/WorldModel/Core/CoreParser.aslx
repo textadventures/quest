@@ -405,7 +405,7 @@
             result = StringDictionaryItem(game.pov.currentcommandvarlist, var)
           }
           else {
-            error ("Unhandled command variable '" + var + "'")
+            error ("Unhandled command variable '" + var + "' - command variable names must begin with 'object', 'exit' or 'text'")
           }
         
           // at this point, ResolveName has returned - either an object name, unresolved, or pending
