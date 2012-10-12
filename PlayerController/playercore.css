@@ -222,3 +222,11 @@ div#controlButtons .ui-button
     padding: 3px;
     cursor: default;
 }
+div#gamePanel img
+{
+    max-width: 700px;
+}
+div#divOutput img
+{
+    max-width: 700px;
+}

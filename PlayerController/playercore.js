@@ -206,6 +206,10 @@ function panesVisible(visible) {
         $("#updating").css("margin-left", (screenWidth / 2 - 290) + "px");
         $("#gamePanel").width(screenWidth - 250);
         $("#gridPanel").width(screenWidth - 250);
+        var css = addCSSRule("div#gamePanel img");
+        css.style.maxWidth = (screenWidth - 250) + "px";
+        var css = addCSSRule("div#divOutput img");
+        css.style.maxWidth = (screenWidth - 250) + "px";
     }
     else {
         $("#gamePanes").hide();
@@ -214,6 +218,10 @@ function panesVisible(visible) {
         $("#updating").css("margin-left", (screenWidth / 2 - 70) + "px");
         $("#gamePanel").width(screenWidth - 40);
         $("#gridPanel").width(screenWidth - 40);
+        var css = addCSSRule("div#gamePanel img");
+        css.style.maxWidth = (screenWidth - 40) + "px";
+        var css = addCSSRule("div#divOutput img");
+        css.style.maxWidth = (screenWidth - 40) + "px";
     }
 }
 
