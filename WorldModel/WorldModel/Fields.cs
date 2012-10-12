@@ -386,7 +386,14 @@ namespace TextAdventures.Quest
                 throw new ArgumentException(string.Format("Parent of element '{0}' cannot be set to itself", m_element.Name));
             }
 
-            m_attributes[name] = value;
+            if (m_worldModel.Version >= WorldModelVersion.v530 && value == null)
+            {
+                m_attributes.Remove(name);
+            }
+            else
+            {
+                m_attributes[name] = value;
+            }
 
             if (changed && allowUpdateSortOrder && name == "parent" && m_element.Initialised)
             {
