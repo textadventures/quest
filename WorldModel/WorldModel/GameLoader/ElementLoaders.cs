@@ -9,7 +9,7 @@ namespace TextAdventures.Quest
 {
     partial class GameLoader
     {
-        private delegate void LoadNestedXMLHandler(XmlReader newReader);
+        private delegate void LoadNestedXMLHandler(string filename, XmlReader newReader);
 
         private Dictionary<string, IXMLLoader> m_xmlLoaders = new Dictionary<string, IXMLLoader>();
         private IXMLLoader m_defaultXmlLoader;
@@ -151,9 +151,9 @@ namespace TextAdventures.Quest
                 AddError(error);
             }
 
-            protected void LoadXML(XmlReader newReader)
+            protected void LoadXML(string filename, XmlReader newReader)
             {
-                LoadNestedXML(newReader);
+                LoadNestedXML(filename, newReader);
             }
         }
 
@@ -325,7 +325,7 @@ namespace TextAdventures.Quest
                 {
                     RaiseError(string.Format("Included file '{0}' is not a library", file));
                 }
-                LoadXML(newReader);
+                LoadXML(path, newReader);
                 return LoadInternal(file);
             }
 
@@ -595,6 +595,8 @@ namespace TextAdventures.Quest
 
         private class TemplateLoader : XMLLoaderBase
         {
+            public bool IsBaseTemplateLoader { get; set; }
+
             public override string AppliesTo
             {
                 get { return "template"; }
@@ -613,7 +615,7 @@ namespace TextAdventures.Quest
                     RaiseError("Expected 'name' attribute in template");
                     return null;
                 }
-                return WorldModel.Template.AddTemplate(t, text, isCommandTemplate);
+                return WorldModel.Template.AddTemplate(t, text, isCommandTemplate, IsBaseTemplateLoader);
             }
         }
 

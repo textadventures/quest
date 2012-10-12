@@ -15,14 +15,26 @@ namespace TextAdventures.Quest
             m_worldModel = worldModel;
         }
 
-        internal Element AddTemplate(string templateName, string text, bool isCommandTemplate)
+        internal Element AddTemplate(string templateName, string text, bool isCommandTemplate, bool isBaseTemplate = false)
         {
+            // if a template is marked as IsBaseTemplate, it's from the base .aslx file so shouldn't be overwritten
+            // by an equivalent library definition
+            Element existingTemplate;
+            if (m_templateLookup.TryGetValue(templateName, out existingTemplate))
+            {
+                if (existingTemplate.Fields[FieldDefinitions.IsBaseTemplate])
+                {
+                    return null;
+                }
+            }
+
             string elementName = m_worldModel.GetUniqueID("template");
 
             Element template = m_worldModel.GetElementFactory(ElementType.Template).Create(elementName);
             template.Fields[FieldDefinitions.TemplateName] = templateName;
             template.Fields[FieldDefinitions.Text] = text;
             template.Fields[FieldDefinitions.Anonymous] = true;
+            template.Fields[FieldDefinitions.IsBaseTemplate] = isBaseTemplate;
 
             if (isCommandTemplate)
             {

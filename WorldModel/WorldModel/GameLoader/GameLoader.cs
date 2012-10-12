@@ -117,7 +117,7 @@ namespace TextAdventures.Quest
                     AddError("File must begin with an ASL element");
                 }
 
-                LoadXML(reader);
+                LoadXML(filename, reader);
             }
             catch (XmlException e)
             {
@@ -157,7 +157,7 @@ namespace TextAdventures.Quest
             return result.GameFile;
         }
 
-        private void LoadXML(XmlReader reader)
+        private void LoadXML(string filename, XmlReader reader)
         {
             Element current = null;
             IXMLLoader currentLoader = null;
@@ -166,6 +166,11 @@ namespace TextAdventures.Quest
             bool isEditorLibrary = false;
             if (m_currentFile.Count > 0 && m_currentFile.Peek().IsEditorLibrary) isEditorLibrary = true;
             if (reader.GetAttribute("type") == "editor") isEditorLibrary = true;
+            
+            if (!IsCompiledFile && m_currentFile.Count == 0 && m_worldModel.Version >= WorldModelVersion.v530)
+            {
+                ScanForTemplates(filename);
+            }
 
             FileData data = new FileData
             {
@@ -392,6 +397,33 @@ namespace TextAdventures.Quest
             }
 
             return result;
+        }
+
+        private void ScanForTemplates(string filename)
+        {
+            // We only do one pass of a file, but this means that it's difficult for a game
+            // file to override any templates specified in libraries. To allow for this, we
+            // do a preliminary pass of the base .aslx file to scan for any template definitions,
+            // then we add those and mark them as non-overwritable.
+
+            System.IO.FileStream stream = new System.IO.FileStream(filename,
+                    System.IO.FileMode.Open,
+                    System.IO.FileAccess.Read,
+                    System.IO.FileShare.ReadWrite);
+            XmlReader reader = new XmlTextReader(stream);
+
+            TemplateLoader templateLoader = new TemplateLoader();
+            templateLoader.GameLoader = this;
+            templateLoader.IsBaseTemplateLoader = true;
+            Element e = null;
+
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Element && reader.Name == "template")
+                {
+                    templateLoader.Load(reader, ref e);
+                }
+            }
         }
 
         private class ImplicitTypes
