@@ -165,9 +165,12 @@
                 break;
             case "file":
                 MvcHtmlString textBox = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 200px", @readonly = "readonly" });
-                string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
+                string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));                
                 Func<int, object> button = @<text><button type="button" class="file-upload" data-key="@name-simpleeditor" data-extensions="@source">Choose file</button></text>;
-                editorHtml = MvcHtmlString.Create(textBox.ToString() + button(0).ToString());
+                Func<int, object> previewBtn = @<text><button type="button" class="img-preview" data-key="@name-simpleeditor" data-extensions="@source">Preview</button></text>;
+                MvcHtmlString imageDiv = ctl.isShowPreview && source.Contains("jpg") ? MvcHtmlString.Create(previewBtn(0).ToString()) : MvcHtmlString.Empty;
+
+                editorHtml = MvcHtmlString.Create(textBox.ToString() + imageDiv.ToString() + button(0).ToString());
                 break;
             case "boolean":
                 list.Add(new SelectListItem { Text = "yes", Selected = (value == "true") });
@@ -190,7 +193,7 @@
             default:
                 throw new InvalidOperationException("Invalid control type for expression");
         }
-        
+
         if (editorHtml != null && (simple != null || simpleEditor == "boolean"))
         {
             list.Add(new SelectListItem { Text = simple, Selected = simpleEditorVisible });
@@ -207,15 +210,15 @@
 
         @Html.TextBox(name + "-expressioneditor", value, new { style = "width: 350px; display: " + expressionDisplayStyle, @class = "elementEditorTextbox" });
 
-        if (editorHtml != null)
-        {
+                                                                                                                                                             if (editorHtml != null)
+                                                                                                                                                             {
             <span id="@name-simpleeditorspan" style="display: @simpleEditorDisplayStyle">@editorHtml</span>
-        }
+                                                                                                                                                             }
     }
 }
 
 @helper RenderTemplateControl(string name, string value, string templatesFilter)
-{
+    {
     IEditorDefinition editorDefinition = Model.Controller.GetExpressionEditorDefinition(value, templatesFilter);
     bool useTemplate = (editorDefinition != null);
     string templateName = null;
@@ -242,15 +245,15 @@
         string templateEditorControlsSpanName = name + "-templateeditor";
         <span id="@templateEditorControlsSpanName">
             @{
-                expressionVisibility = "none";
-                int count = 0;
-                IEditorData data = Model.Controller.GetExpressionEditorData(value, templatesFilter, null);
-                foreach (IEditorControl ctl in editorDefinition.Controls)
-                {
-                    object editorValue = ctl.Attribute == null ? null : data.GetAttribute(ctl.Attribute);
+        expressionVisibility = "none";
+        int count = 0;
+        IEditorData data = Model.Controller.GetExpressionEditorData(value, templatesFilter, null);
+        foreach (IEditorControl ctl in editorDefinition.Controls)
+        {
+            object editorValue = ctl.Attribute == null ? null : data.GetAttribute(ctl.Attribute);
                     @RenderEditorControl(ctl, editorValue, name)
-                    count++;
-                }
+            count++;
+        }
             }
         </span>
     }
@@ -259,7 +262,7 @@
 }
 
 @helper RenderIfScript(EditableIfScript script, string attributePrefix)
-{
+    {
     <text>If: </text>
     @RenderTemplateControl(attributePrefix + "-expression", (string)script.GetAttribute("expression"), "if")
     <div class="childScript">

@@ -389,6 +389,11 @@ namespace TextAdventures.Quest
             get { return false; }
         }
 
+        public bool isShowPreview
+        {
+            get { return false; }
+        }
+
         public string GetString(string tag)
         {
             if (tag == "usetemplates") return "if";

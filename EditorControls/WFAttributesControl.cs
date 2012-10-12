@@ -58,6 +58,11 @@ namespace TextAdventures.Quest.EditorControls
                 get { return false; }
             }
 
+            public bool isShowPreview
+            {
+                get { return false; }
+            }
+
             public bool GetBool(string tag)
             {
                 return false;
