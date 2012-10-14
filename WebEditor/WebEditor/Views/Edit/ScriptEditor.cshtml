@@ -167,8 +167,12 @@
                 MvcHtmlString textBox = Html.TextBox(name + "-simpleeditor", simpleValue, new { style = "width: 200px", @readonly = "readonly" });
                 string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));                
                 Func<int, object> button = @<text><button type="button" class="file-upload" data-key="@name-simpleeditor" data-extensions="@source">Choose file</button></text>;
-                Func<int, object> previewBtn = @<text><button type="button" class="img-preview" data-key="@name-simpleeditor" data-extensions="@source">Preview</button></text>;
-                MvcHtmlString imageDiv = ctl.isShowPreview && source.Contains("jpg") ? MvcHtmlString.Create(previewBtn(0).ToString()) : MvcHtmlString.Empty;
+                Func<int, object> previewBtn = @<text>
+                    <button type="button" class="img-preview" data-key="@name-simpleeditor" data-extensions="@source">
+                        <img src="/ImageProcessor.ashx?h=40&w=40&gameId=@Model.GameId&image=@simpleValue" />
+                    </button>
+                 </text>;
+                MvcHtmlString imageDiv = ctl.GetBool("preview") && source.Contains("jpg") && !string.IsNullOrEmpty(simpleValue) ? MvcHtmlString.Create(previewBtn(0).ToString()) : MvcHtmlString.Empty;
 
                 editorHtml = MvcHtmlString.Create(textBox.ToString() + imageDiv.ToString() + button(0).ToString());
                 break;

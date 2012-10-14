@@ -15,8 +15,7 @@ namespace WebEditor
     {
 
         public void ProcessRequest(HttpContext context)
-        {
-            context.Response.ContentType = "image/jpeg";
+        {            
             // parse the filename
             int gameId = Int32.Parse(context.Request["gameId"]);
             string filename = context.Request["image"];
@@ -28,6 +27,20 @@ namespace WebEditor
 
             context.Response.Clear();
             context.Response.BufferOutput = true;
+            string format = fullsizeImg.RawFormat.ToString();
+            // Set correct content type header
+            if (ImageFormat.Jpeg.Equals(fullsizeImg.RawFormat))
+                context.Response.ContentType = "image/jpeg";
+            else if (ImageFormat.Png.Equals(fullsizeImg.RawFormat))
+                context.Response.ContentType = "image/png";
+            else if (ImageFormat.Gif.Equals(fullsizeImg.RawFormat))
+                context.Response.ContentType = "image/gif";
+            else if (ImageFormat.Tiff.Equals(fullsizeImg.RawFormat))
+                context.Response.ContentType = "image/tiff";
+            else if (ImageFormat.Bmp.Equals(fullsizeImg.RawFormat))
+                context.Response.ContentType = "image/bmp";
+            else
+                context.Response.ContentType = "image";  //default -- when MIME Type not known
 
             if (fullsizeImg != null)
             {
@@ -38,6 +51,13 @@ namespace WebEditor
                         fullsizeImg.Save(context.Response.OutputStream, ImageFormat.Jpeg);
                     else
                     {
+                        // Maintain aspect ratio.
+                        float widthPerc = (float)width / (float)fullsizeImg.Width;
+                        float heightPerc = (float)height / (float)fullsizeImg.Height;
+                        float resizePerc = heightPerc < widthPerc ? heightPerc : widthPerc;
+                        height = (int)(fullsizeImg.Height * resizePerc);
+                        width = (int)(fullsizeImg.Width * resizePerc);
+
                         Bitmap bmp = new Bitmap(width, height);
                         Graphics objGraphics = Graphics.FromImage(bmp);
                         objGraphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.GammaCorrected;
@@ -60,10 +80,7 @@ namespace WebEditor
 
             fullsizeImg.Dispose();
 
-            context.Response.Flush();
-
-            
-            context.Response.Write("Hello World");
+            context.Response.Flush();            
         }
 
         public bool IsReusable

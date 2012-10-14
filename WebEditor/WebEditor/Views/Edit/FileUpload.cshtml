@@ -22,7 +22,8 @@
         @Html.HiddenFor(m => m.PostedFile)
         <div id="file-upload-existing" style="display: none">
             <p class="file-upload-header">Choose an existing file:</p>
-            <select id="existingFiles"></select>
+            <select id="existingFiles" style="max-width:200px;"></select>
+            <div id="file-upload-imgPreview"></div>
         </div>
         <div id="file-upload-new">
             <p id="file-upload-new-header" class="file-upload-header" style="display:none">Or upload a new file:</p>

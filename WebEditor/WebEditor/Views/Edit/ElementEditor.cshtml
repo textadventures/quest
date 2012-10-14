@@ -275,32 +275,39 @@ Working...
             break;
         case "file":
             string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
+            <span style="display:inline-block;height:auto;width:auto;">
             @Html.TextBox(ctl.Attribute, (string)value, new { @readonly = "readonly", @class = "elementEditorFile" })
+            @if (ctl.GetBool("preview") && source.Contains("jpg") && value != null){
+                <button type="button" class="img-preview" data-key="@ctl.Attribute" data-extensions="@source">
+                    <img src="/ImageProcessor.ashx?h=60&w=60&gameId=@Model.GameId&image=@value.ToString()" />
+                </button>
+            }
             <button type="button" class="file-upload" data-key="@ctl.Attribute" data-extensions="@source">Choose file</button>
+            </span>
             break;
         case "scriptdictionary":
             @Html.Action("EditScriptDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
-            break;
+       break;
         case "stringdictionary":
             @Html.Action("EditStringDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
-            break;
+       break;
         case "gamebookoptions":
             @Html.Action("EditGameBookOptions", new { id = Model.GameId, key = Model.Key, control = ctl })
-            break;
+       break;
         case "pattern":
-            IEditableCommandPattern commandPattern = value as IEditableCommandPattern;
-            string text = (commandPattern != null) ? commandPattern.Pattern : string.Empty;
+       IEditableCommandPattern commandPattern = value as IEditableCommandPattern;
+       string text = (commandPattern != null) ? commandPattern.Pattern : string.Empty;
             @Html.TextBox(ctl.Attribute, text, new { style = "width: 100%", @class = "elementEditorTextbox" })
-            break;
+       break;
         case null:
-            break;
+       break;
         default:
-            throw new ArgumentException(string.Format("Invalid control type: {0}", controlType));
+       throw new ArgumentException(string.Format("Invalid control type: {0}", controlType));
     }
 }
 
 @helper RenderMultiControl(IEditorControl ctl, object value)
-{
+    {
     string caption = ctl.GetString("selfcaption");
     if (caption != null)
     {
