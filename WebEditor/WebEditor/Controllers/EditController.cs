@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Configuration;
 using TextAdventures.Quest;
+using System.IO;
 
 namespace WebEditor.Controllers
 {
@@ -225,6 +226,7 @@ namespace WebEditor.Controllers
         {
             if (ModelState.IsValid)
             {
+                bool continueSave = true;
                 string ext = System.IO.Path.GetExtension(fileModel.File.FileName);
                 List<string> controlPermittedExtensions = EditorDictionary[fileModel.GameId].GetPermittedExtensions(fileModel.Key, fileModel.Attribute);
                 if (fileModel.File != null
@@ -235,7 +237,25 @@ namespace WebEditor.Controllers
                     string filename = System.IO.Path.GetFileName(fileModel.File.FileName);
                     Logging.Log.DebugFormat("{0}: Upload file {1}", fileModel.GameId, filename);
                     string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
-                    fileModel.File.SaveAs(System.IO.Path.Combine(uploadPath, filename));
+                    
+                    // Check to see if file with same name exists
+                    if(System.IO.File.Exists(System.IO.Path.Combine(uploadPath, filename)))
+                    {
+                        FileStream existingFile = new FileStream(System.IO.Path.Combine(uploadPath, filename), FileMode.Open);
+                        // if files different, rename the new file by appending a Guid to the name
+                        if (!FileCompare(fileModel.File.InputStream, existingFile))
+                        {
+                            Guid uniqId = Guid.NewGuid();
+                            filename = System.IO.Path.GetFileNameWithoutExtension(fileModel.File.FileName) + "_" + uniqId.ToString() + ext;
+                        }
+                        else
+                            continueSave = false; // skip saving if files are identical
+                        existingFile.Close();
+                    }
+
+                    if(continueSave)
+                        fileModel.File.SaveAs(System.IO.Path.Combine(uploadPath, filename));
+
                     ModelState.Remove("AllFiles");
                     fileModel.AllFiles = GetAllFilesList(fileModel.GameId);
                     ModelState.Remove("PostedFile");
@@ -292,6 +312,28 @@ namespace WebEditor.Controllers
             string url = ConfigurationManager.AppSettings["PublishURL"] + id;
 
             return Redirect(url);
+        }
+
+        // Helper methods
+        private bool FileCompare(Stream file1, Stream file2)
+        {
+            int file1byte;
+            int file2byte;
+
+            // check the file-sizes; if they are not same then not identical
+            if (file1.Length != file2.Length)
+            {
+                return false;
+            }
+
+            // do Byte by Byte Comparison
+            do{
+               file1byte = file1.ReadByte();
+                file2byte = file2.ReadByte();
+            }while((file1byte == file2byte) && (file1byte != -1));
+            
+            // return result of comparison
+            return ((file1byte - file2byte) == 0);
         }
     }
 }

@@ -40,6 +40,13 @@ function fileUploadInit(element, key, extensions, currentValue) {
     var anyFiles = false;
 
     $("#existingFiles").append($("<option/>").attr("value", "<none>").text("None"));
+    $("#existingFiles").change(function () {
+        $("#file-upload-imgPreview").empty();
+        if ($("#existingFiles").val() != "<none>") {
+            $("#file-upload-imgPreview").append($("<img />")
+            .attr("src", "/ImageProcessor.ashx?image=" + $("#existingFiles").val() + "&gameId=" + $("#GameId").val() + "&w=100&h=100"));
+        }
+    });
 
     $.each(filesList, function (index, value) {
         $.each(extensionsList, function (extIdx, extValue) {
@@ -53,6 +60,7 @@ function fileUploadInit(element, key, extensions, currentValue) {
     if (anyFiles) {
         if (currentValue == "") currentValue = "<none>";
         $("#existingFiles").val(currentValue);
+        $("#existingFiles").trigger('change');
         $("#file-upload-existing").show();
         $("#file-upload-new-header").show();
     }

@@ -14,7 +14,6 @@ namespace TextAdventures.Quest
         private int? m_width = null;
         private string m_attribute;
         private bool m_expand = false;
-        private bool m_showImagePreview = false;
         private Element m_source;
         private EditorVisibilityHelper m_visibilityHelper;
         private EditorDefinition m_parent;
@@ -30,8 +29,7 @@ namespace TextAdventures.Quest
             m_attribute = source.Fields.GetString("attribute");
             if (source.Fields.HasType<int>("height")) m_height = source.Fields.GetAsType<int>("height");
             if (source.Fields.HasType<int>("width")) m_width = source.Fields.GetAsType<int>("width");
-            if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");
-            if (source.Fields.HasType<bool>("preview")) m_showImagePreview = source.Fields.GetAsType<bool>("preview");
+            if (source.Fields.HasType<bool>("expand")) m_expand = source.Fields.GetAsType<bool>("expand");            
             m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
             IsControlVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
             m_id = source.Name;
@@ -70,11 +68,6 @@ namespace TextAdventures.Quest
         public bool Expand
         {
             get { return m_expand; }
-        }
-
-        public bool isShowPreview
-        {
-            get { return m_showImagePreview; }
         }
 
         public string GetString(string tag)

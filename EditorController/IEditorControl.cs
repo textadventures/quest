@@ -13,7 +13,6 @@ namespace TextAdventures.Quest
         int? Width { get; }
         string Attribute { get; }
         bool Expand { get; }
-        bool isShowPreview { get; }
         string GetString(string tag);
         IEnumerable<string> GetListString(string tag);
         IDictionary<string, string> GetDictionary(string tag);
