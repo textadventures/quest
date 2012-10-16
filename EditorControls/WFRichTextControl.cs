@@ -6,7 +6,6 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using mshtml;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -17,7 +16,6 @@ namespace TextAdventures.Quest.EditorControls
         private string m_attribute;
         private string m_attributeName;
         private IEditorData m_data;
-        private IHTMLDocument2 m_document;
 
         private string m_valueToSet;
         private static Dictionary<string, string> s_htmlToXml = new Dictionary<string, string> {
@@ -169,8 +167,8 @@ namespace TextAdventures.Quest.EditorControls
         private void SetUpBrowser()
         {
             ctlWebBrowser.DocumentText = "<html><body></body></html>";
-            m_document = (IHTMLDocument2)ctlWebBrowser.Document.DomDocument;
-            m_document.designMode = "On";
+            dynamic doc = ctlWebBrowser.Document.DomDocument;
+            doc.designMode = "On";
         }
 
         private string HTML
