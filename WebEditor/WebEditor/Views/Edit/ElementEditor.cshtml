@@ -226,7 +226,8 @@ Working...
             @Html.DropDownList(ctl.Attribute, valuesList, new { @class = "elementEditorDropdown" });
             break;
         case "richtext":
-            @Html.TextArea(ctl.Attribute, (string)value, 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
+            // replace any <br/> tags with NewLine character
+            @Html.TextArea(ctl.Attribute, System.Text.RegularExpressions.Regex.Replace(value.ToString(), @"(?i:<br/?>)", Environment.NewLine), 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
             break;
         case "number":
             string minMax = string.Empty;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace TextAdventures.Quest
 {
@@ -49,6 +50,22 @@ namespace TextAdventures.Quest
 
             // surround with quotes
             return string.Format("\"{0}\"", result);
+        }
+
+        public static string GetUniqueFilename(string filename)
+        {
+            int i = 1;
+            string directory = Path.GetDirectoryName(filename);
+            string baseFilename = Path.GetFileNameWithoutExtension(filename);
+            string extension = Path.GetExtension(filename);
+            string newFilename;
+            do
+            {
+                i++;
+                newFilename = Path.Combine(directory, baseFilename + " " + i.ToString() + extension);
+            }
+            while (System.IO.File.Exists(newFilename));
+            return newFilename;
         }
     }
 }
