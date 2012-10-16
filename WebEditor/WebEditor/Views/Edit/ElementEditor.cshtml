@@ -275,15 +275,21 @@ Working...
             break;
         case "file":
             string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
-            <span style="display:inline-block;height:auto;width:auto;">
+            <div style="display:inline-block;height:auto;width:auto;">
+            <div style="float:left;">
             @Html.TextBox(ctl.Attribute, (string)value, new { @readonly = "readonly", @class = "elementEditorFile" })
-            @if (ctl.GetBool("preview") && source.Contains("jpg") && value != null){
+            </div>
+            @if (ctl.GetBool("preview") && source.Contains("jpg") && !string.IsNullOrEmpty(value.ToString())){
+                <div style="float:left;position:relative;top:-12px;">
                 <button type="button" class="img-preview" data-key="@ctl.Attribute" data-extensions="@source">
-                    <img src="/ImageProcessor.ashx?h=60&w=60&gameId=@Model.GameId&image=@value.ToString()" />
+                    <img src="/ImageProcessor.ashx?h=40&w=40&gameId=@Model.GameId&image=@value.ToString()" />
                 </button>
+                </div>
             }
+            <div style="float:left;">
             <button type="button" class="file-upload" data-key="@ctl.Attribute" data-extensions="@source">Choose file</button>
-            </span>
+            </div>
+            </div>
             break;
         case "scriptdictionary":
             @Html.Action("EditScriptDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
