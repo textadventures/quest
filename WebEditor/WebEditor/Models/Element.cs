@@ -162,7 +162,9 @@ namespace WebEditor.Models
                     saveValue = intValue;
                     break;
                 case "richtext":
-                    saveValue = StripHTMLComments(HttpUtility.HtmlDecode(GetValueProviderString(bindingContext.ValueProvider, attribute)));
+                    // Replace all new line characters with a <Br/> tag here
+                    string richtextValue = GetValueProviderString(bindingContext.ValueProvider, attribute);
+                    saveValue = StripHTMLComments(HttpUtility.HtmlDecode(richtextValue.Replace(Environment.NewLine, "<br/>")));
                     break;
                 case "checkbox":
                     ValueProviderResult value = bindingContext.ValueProvider.GetValue(attribute);

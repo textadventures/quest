@@ -245,8 +245,8 @@ namespace WebEditor.Controllers
                         // if files different, rename the new file by appending a Guid to the name
                         if (!FileCompare(fileModel.File.InputStream, existingFile))
                         {
-                            Guid uniqId = Guid.NewGuid();
-                            filename = System.IO.Path.GetFileNameWithoutExtension(fileModel.File.FileName) + "_" + uniqId.ToString() + ext;
+                            // rename the file by adding a number [count] at the end of filename
+                            filename = EditorUtility.GetUniqueFilename(fileModel.File.FileName);                            
                         }
                         else
                             continueSave = false; // skip saving if files are identical
