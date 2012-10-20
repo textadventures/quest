@@ -10,7 +10,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBox Name="textBox" MinWidth="40" IsReadOnly="True" />
+        <TextBox Name="textBox" MinWidth="40" IsReadOnly="True" MinHeight="20" VerticalContentAlignment="Center" />
         <Button Name="cmdGenerate" Margin="10,0,0,0" Padding="8,0,8,0"  Grid.Column="1" Content="Generate..." Click="cmdGenerate_Click" />
     </Grid>
 </UserControl>

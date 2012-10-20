@@ -25,7 +25,7 @@
         </Grid.RowDefinitions>
         <ComboBox Name="lstType" SelectionChanged="lstType_SelectionChanged" Margin="0,0,10,0" VerticalAlignment="Top" />
         <ComboBox Name="lstTemplate" SelectionChanged="lstTemplate_SelectionChanged" Margin="0,0,10,0" Visibility="Collapsed" VerticalAlignment="Top" />
-        <TextBox Name="txtExpression" Grid.Column="1" TextChanged="txtExpression_TextChanged" LostFocus="txtExpression_LostFocus" HorizontalScrollBarVisibility="Auto" MinWidth="40"></TextBox>
+        <TextBox Name="txtExpression" Grid.Column="1" TextChanged="txtExpression_TextChanged" LostFocus="txtExpression_LostFocus" HorizontalScrollBarVisibility="Auto" MinWidth="40" MinHeight="20" VerticalContentAlignment="Center"></TextBox>
         <Button Name="cmdInsert" Click="cmdInsert_Click"  Grid.Column="2" Padding="1,0,1,0" Margin="0,0,0,0" Background="{StaticResource InsertButtonBackground}" Foreground="White" ToolTip="Insert..." VerticalAlignment="Top" Height="{Binding ElementName=lstType, Path=ActualHeight}" MinHeight="22" >
             <Button.FontFamily>Marlett</Button.FontFamily>
             <Button.Content>u</Button.Content>
