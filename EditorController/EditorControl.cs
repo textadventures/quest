@@ -96,6 +96,12 @@ namespace TextAdventures.Quest
             return m_source.Fields.GetAsType<int>(tag);
         }
 
+        public double? GetDouble(string tag)
+        {
+            if (!m_source.Fields.HasType<double>(tag)) return null;
+            return m_source.Fields.GetAsType<double>(tag);
+        }
+
         public bool IsControlVisible(IEditorData data)
         {
             return m_visibilityHelper.IsVisible(data);

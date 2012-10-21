@@ -29,16 +29,22 @@ namespace TextAdventures.Quest.EditorControls
 
         void m_helper_Initialise()
         {
-            double? minimum = m_helper.ControlDefinition.GetInt("minimum");
+            double? minimum = m_helper.ControlDefinition.GetDouble("minimum");
             if (minimum.HasValue)
             {
                 ctlNumber.Minimum = minimum;
             }
 
-            double? maximum = m_helper.ControlDefinition.GetInt("maximum");
+            double? maximum = m_helper.ControlDefinition.GetDouble("maximum");
             if (maximum.HasValue)
             {
                 ctlNumber.Maximum = maximum;
+            }
+
+            double? increment = m_helper.ControlDefinition.GetDouble("increment");
+            if (increment.HasValue)
+            {
+                ctlNumber.Increment = increment;
             }
         }
 

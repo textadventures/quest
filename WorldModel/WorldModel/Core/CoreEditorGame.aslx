@@ -336,10 +336,13 @@
       </control>
 
       <control>
-        <controltype>textbox</controltype>
+        <controltype>numberdouble</controltype>
         <attribute>backgroundopacity</attribute>
         <caption>Opacity</caption>
         <onlydisplayif>game.setbackgroundopacity</onlydisplayif>
+        <minimum type="double">0.0</minimum>
+        <maximum type="double">1.0</maximum>
+        <increment type="double">0.1</increment>
       </control>
 
       <control>

@@ -410,6 +410,11 @@ namespace TextAdventures.Quest
             throw new NotImplementedException();
         }
 
+        public double? GetDouble(string tag)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool GetBool(string tag)
         {
             if (tag == "nullable") return false;
