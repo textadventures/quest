@@ -232,7 +232,7 @@ function scrollToEnd() {
 
 var _backgroundOpacity = 1;
 
-function setBackgroundOpacity(opacity) {
+function SetBackgroundOpacity(opacity) {
     _backgroundOpacity = opacity;
 }
 

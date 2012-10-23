@@ -137,7 +137,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub SetBackground(colour As String)
-        InvokeScript("SetBackground", colour)
+        InvokeScript("setBackground", colour)
     End Sub
 
     Public Sub ClearBuffer()
