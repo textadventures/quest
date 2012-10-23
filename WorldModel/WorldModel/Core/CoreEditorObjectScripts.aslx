@@ -3,6 +3,7 @@
     <parent>_ObjectEditor</parent>
     <caption>Scripts</caption>
     <mustnotinherit>editor_object</mustnotinherit>
+    <advanced/>
 
     <control>
       <controltype>script</controltype>
