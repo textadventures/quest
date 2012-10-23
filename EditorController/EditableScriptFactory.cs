@@ -88,10 +88,12 @@ namespace TextAdventures.Quest
             return CreateEditableScript(script);
         }
 
-        internal IEnumerable<string> GetCategories()
+        internal IEnumerable<string> GetCategories(bool simpleModeOnly)
         {
             List<string> result = new List<string>();
-            foreach (EditableScriptData data in m_scriptData.Values)
+            IEnumerable<EditableScriptData> values = m_scriptData.Values;
+            if (simpleModeOnly) values = values.Where(v => v.IsVisibleInSimpleMode);
+            foreach (EditableScriptData data in values)
             {
                 if (!result.Contains(data.Category)) result.Add(data.Category);
             }

@@ -804,7 +804,7 @@ namespace TextAdventures.Quest
 
         public IEnumerable<string> GetAllScriptEditorCategories()
         {
-            return m_editableScriptFactory.GetCategories();
+            return m_editableScriptFactory.GetCategories(SimpleMode);
         }
 
         public IEditorDefinition GetEditorDefinition(IEditableScript script)
