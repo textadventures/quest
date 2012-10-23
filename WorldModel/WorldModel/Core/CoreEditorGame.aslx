@@ -458,7 +458,6 @@
     <tab>
       <caption>Attributes</caption>
       <advanced/>
-      <desktop/>
 
       <control>
         <controltype>stringdictionary</controltype>
@@ -472,6 +471,8 @@
         <controltype>attributes</controltype>
         <expand/>
       </control>
+
+     
     </tab>
 
   </editor>

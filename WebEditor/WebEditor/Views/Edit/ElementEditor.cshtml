@@ -201,6 +201,30 @@ Working...
         case @"script":
             @Html.Action("EditScript", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
+        case "attributes":
+            var m_data = (IEditorDataExtendedAttributeInfo)Model.EditorData;
+            <div style="height:500px;overflow:scroll;width:630px;">
+            <table style="margin-top:18px;">
+            <thead style="position:absolute;height:18px;margin-top:-22px;">
+            <tr class="ui-corner-tr ui-widget-header">
+                <th style="width:200px;">Name</th>
+                <th style="width:300px;">Value</th>
+                <th style="width:100px;">Source</th>
+            </tr>
+            </thead>
+            <tbody style="height:200px;overflow:scroll;">
+            @foreach(var attr in m_data.GetAttributeData())
+            {
+               <tr>
+                   <td style="max-width:200px;word-wrap:break-word;">@Html.Raw(attr.AttributeName)</td>
+                   <td style="max-width:300px;word-wrap:break-word;">@Html.Raw(Model.EditorData.GetAttribute(attr.AttributeName).ToString())</td>
+                   <td style="max-width:100px;">@Html.Raw(attr.Source)</td>
+               </tr>
+            } 
+            </tbody>
+            </table> 
+            </div>
+            break;        
         case "label":
             <div class="elementEditorLabel">
             @{
