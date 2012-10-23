@@ -288,4 +288,14 @@
     newPOV.article = newPOV.pov_article
     ]]>
   </function>
+
+  <function name="GetDisplayVerbs" parameters="object" type="stringlist">
+    if (Contains(game.pov, object)) {
+      return (object.inventoryverbs)
+    }
+    else {
+      return (object.displayverbs)
+    }
+  </function>
+  
 </library>

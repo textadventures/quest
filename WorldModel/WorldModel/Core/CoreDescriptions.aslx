@@ -192,12 +192,7 @@
     listLength = ListCount(list)
     foreach (item, list) {
       if (LengthOf(result) = 0) result = preList + " "
-      if (useinventoryverbs) {
-        verbs = item.inventoryverbs
-      }
-      else {
-        verbs = item.displayverbs
-      }
+      verbs = GetDisplayVerbs(item)
       result = result + GetDisplayNameLink(item, "object", verbs)
       if (CanSeeThrough(item)) {
         result = result + FormatObjectList(" (" + item.contentsprefix, item, preFinal, ")", useinventoryverbs)
