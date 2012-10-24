@@ -108,6 +108,7 @@
     InitPOV (null, game.pov)
     InitStatusAttributes
     UpdateStatusAttributes
+    InitVerbsList
     if (HasScript(game, "start")) do (game, "start")
     UpdateStatusAttributes
     on ready {
@@ -289,13 +290,39 @@
     ]]>
   </function>
 
+  <function name="InitVerbsList">
+    game.verbattributes = NewStringList()
+    game.verbattributeslookup = NewObjectDictionary()
+    foreach (cmd, AllCommands()) {
+      if (HasString(cmd, "property")) {
+        list add (game.verbattributes, cmd.property)
+        dictionary add (game.verbattributeslookup, cmd.property, cmd)
+      }
+    }
+  </function>
+
   <function name="GetDisplayVerbs" parameters="object" type="stringlist">
     if (Contains(game.pov, object)) {
-      return (object.inventoryverbs)
+      baselist = object.inventoryverbs
     }
     else {
-      return (object.displayverbs)
+      baselist = object.displayverbs
     }
+    // TO DO: Only if auto display verbs is turned on
+    // TO DO: Cache result as object attribute
+    verbs = NewStringList()
+    foreach (attr, GetAttributeNames(object, false)) {
+      if (ListContains(game.verbattributes, attr)) {
+        cmd = ObjectDictionaryItem(game.verbattributeslookup, attr)
+        if (HasString(cmd, "displayverb")) {
+          list add (verbs, CapFirst(cmd.displayverb))
+        }
+        else {
+          list add (verbs, CapFirst(attr))
+        }
+      }
+    }
+    return (ListCombine(baselist, verbs))
   </function>
   
 </library>

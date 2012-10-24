@@ -229,6 +229,11 @@ namespace TextAdventures.Quest
                 }
                 else
                 {
+                    if (WorldModel.Version >= WorldModelVersion.v530)
+                    {
+                        string[] verbs = pattern.Split(';');
+                        newCommand.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Trim();
+                    }
                     LoadPattern(newCommand, pattern);
                 }
             }

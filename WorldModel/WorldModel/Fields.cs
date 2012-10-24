@@ -113,6 +113,7 @@ namespace TextAdventures.Quest
         public static IField<string> Description = new FieldDef<string>("description");
         public static IField<string> DefaultWebFont = new FieldDef<string>("defaultwebfont");
         public static IField<bool> IsBaseTemplate = new FieldDef<bool>("isbasetemplate");
+        public static IField<string> DisplayVerb = new FieldDef<string>("displayverb");
     }
 
     public static class MetaFieldDefinitions
