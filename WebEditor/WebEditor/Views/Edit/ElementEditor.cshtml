@@ -217,7 +217,7 @@ Working...
             {
                <tr>
                    <td style="max-width:200px;word-wrap:break-word;">@Html.Raw(attr.AttributeName)</td>
-                   <td style="max-width:300px;word-wrap:break-word;">@Html.Raw(Model.EditorData.GetAttribute(attr.AttributeName).ToString())</td>
+                   <td style="max-width:300px;word-wrap:break-word;">@Html.Raw(GetDisplayString(m_data.GetAttribute(attr.AttributeName)))</td>
                    <td style="max-width:100px;">@Html.Raw(attr.Source)</td>
                </tr>
             } 
@@ -378,4 +378,74 @@ Working...
         if (string.IsNullOrEmpty(ctl.Caption)) return true;
         return false;
     }
+
+    string GetDisplayString(object value)
+    {
+        IEditableScripts scriptValue = value as IEditableScripts;
+        IEditableList<string> listStringValue = value as IEditableList<string>;
+        IEditableDictionary<string> dictionaryStringValue = value as IEditableDictionary<string>;
+        IEditableDictionary<IEditableScripts> dictionaryScriptValue = value as IEditableDictionary<IEditableScripts>;
+        IDataWrapper wrappedValue = value as IDataWrapper;
+        string result = null;
+
+        if (scriptValue != null)
+        {
+            result = scriptValue.DisplayString();
+        }
+        else if (listStringValue != null)
+        {
+            result = GetListDisplayString(listStringValue.DisplayItems);
+        }
+        else if (dictionaryStringValue != null)
+        {
+            result = GetDictionaryDisplayString(dictionaryStringValue.DisplayItems);
+        }
+        else if (dictionaryScriptValue != null)
+        {
+            result = GetDictionaryDisplayString(dictionaryScriptValue.DisplayItems);
+        }
+        else if (wrappedValue != null)
+        {
+            result = wrappedValue.DisplayString();
+        }
+        else if (value == null)
+        {
+            result = "(null)";
+        }
+        else
+        {
+            result = value.ToString();
+        }
+
+        return EditorUtility.FormatAsOneLine(result);
+    }
+
+    string GetListDisplayString(IEnumerable<KeyValuePair<string, string>> items)
+    {
+        string result = string.Empty;
+
+        foreach (var item in items)
+        {
+            if (result.Length > 0)
+                result += ", ";
+            result += item.Value;
+        }
+
+        return result;
+    }
+
+    string GetDictionaryDisplayString(IEnumerable<KeyValuePair<string, string>> items)
+    {
+        string result = string.Empty;
+
+        foreach (var item in items)
+        {
+            if (result.Length > 0)
+                result += ", ";
+            result += item.Key + "=" + item.Value;
+        }
+
+        return result;
+    }
+
 }
