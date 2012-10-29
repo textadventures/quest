@@ -304,7 +304,8 @@ Working...
             <div style="float:left;">
             @Html.TextBox(ctl.Attribute, (string)value, new { @readonly = "readonly", @class = "elementEditorFile" })
             </div>
-            @if (ctl.GetBool("preview") && source.Contains("jpg") && !string.IsNullOrEmpty(value.ToString())){
+            @if (ctl.GetBool("preview") && value is string && !string.IsNullOrEmpty((string)value))
+            {
                 <div style="float:left;position:relative;top:-12px;">
                 <button type="button" class="img-preview" data-key="@ctl.Attribute" data-extensions="@source">
                     <img src="/ImageProcessor.ashx?h=40&w=40&gameId=@Model.GameId&image=@value.ToString()" />
