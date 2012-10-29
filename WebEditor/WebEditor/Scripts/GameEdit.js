@@ -232,6 +232,13 @@ function initialiseElementEditor() {
             if (selectTab && selectTab.length > 0) {
                 $("#elementEditorTabs").tabs("select", parseInt(selectTab));
             }
+        },
+        select: function (event, ui) {
+            if (ui.panel.id == "elementEditorTab6" && _unsavedChanges) {
+                $("#_additionalAction").val("none");
+                $("#_additionalActionTab").val("5");
+                submitForm();
+            }
         }
     });
     $("#centerPane").scrollTop(0);
