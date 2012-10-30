@@ -638,7 +638,7 @@ namespace TextAdventures.Quest
 
             private Element AddVerbTemplate(string c, string text)
             {
-                return WorldModel.Template.AddVerbTemplate(c, text);
+                return WorldModel.Template.AddVerbTemplate(c, text, GameLoader.m_currentFile.Peek().Filename);
             }
         }
 

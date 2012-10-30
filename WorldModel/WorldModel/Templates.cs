@@ -97,7 +97,7 @@ namespace TextAdventures.Quest
             return template.Fields[FieldDefinitions.Function].Execute(c);
         }
 
-        internal Element AddVerbTemplate(string c, string text)
+        internal Element AddVerbTemplate(string c, string text, string filename)
         {
             Element template;
 
@@ -108,7 +108,18 @@ namespace TextAdventures.Quest
             else
             {
                 template = m_templateLookup[c];
-                template.Fields[FieldDefinitions.Text] += "; ";
+
+                if (m_worldModel.Version >= WorldModelVersion.v530 && template.MetaFields[MetaFieldDefinitions.Filename] != filename)
+                {
+                    // As of Quest 5.3, if the existing verbtemplate was defined in a different file, clear it out.
+                    // This means that language libraries can "reset" the verbtemplates defined in English.aslx.
+
+                    template.Fields[FieldDefinitions.Text] = "";
+                }
+                else
+                {
+                    template.Fields[FieldDefinitions.Text] += "; ";
+                }
             }
 
             template.Fields[FieldDefinitions.Text] += text;
