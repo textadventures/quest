@@ -313,18 +313,23 @@
       return (baselist)
     }
     else {
-      // TO DO: Cache result as object attribute
-      verbs = NewStringList()
-      foreach (attr, GetAttributeNames(object, false)) {
-        if (ListContains(game.verbattributes, attr)) {
-          cmd = ObjectDictionaryItem(game.verbattributeslookup, attr)
-          if (HasString(cmd, "displayverb")) {
-            list add (verbs, CapFirst(cmd.displayverb))
-          }
-          else {
-            list add (verbs, CapFirst(attr))
+      if (HasAttribute(object, "generatedverbslist")) {
+        verbs = object.generatedverbslist
+      }
+      else {
+        verbs = NewStringList()
+        foreach (attr, GetAttributeNames(object, false)) {
+          if (ListContains(game.verbattributes, attr)) {
+            cmd = ObjectDictionaryItem(game.verbattributeslookup, attr)
+            if (HasString(cmd, "displayverb")) {
+              list add (verbs, CapFirst(cmd.displayverb))
+            }
+            else {
+              list add (verbs, CapFirst(attr))
+            }
           }
         }
+        object.generatedverbslist = verbs
       }
       return (ListCombine(baselist, verbs))
     }
