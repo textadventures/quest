@@ -37,8 +37,19 @@
     </control>
 
     <control>
+      <caption>Display verbs</caption>
+      <controltype>title</controltype>
+    </control>
+
+    <control>
       <controltype>label</controltype>
       <caption>Display verbs appear when the object hyperlink is clicked, and also as buttons in the "Places and Objects" list.</caption>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <onlydisplayif>game.autodisplayverbs</onlydisplayif>
+      <caption>Verbs added to the "Verbs" tab will be automatically added to the list. To turn this off, untick the "Automatically generate object display verbs list" on the game "Room Descriptions" tab.</caption>
     </control>
 
     <control>

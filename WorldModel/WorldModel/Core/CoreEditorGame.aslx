@@ -131,6 +131,11 @@
         <caption>Enable hyperlinks</caption>
         <attribute>enablehyperlinks</attribute>
       </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Automatically generate object display verbs list</caption>
+        <attribute>autodisplayverbs</attribute>
+      </control>
 
       <control>
         <controltype>title</controltype>

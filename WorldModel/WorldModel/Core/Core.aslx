@@ -308,21 +308,26 @@
     else {
       baselist = object.displayverbs
     }
-    // TO DO: Only if auto display verbs is turned on
-    // TO DO: Cache result as object attribute
-    verbs = NewStringList()
-    foreach (attr, GetAttributeNames(object, false)) {
-      if (ListContains(game.verbattributes, attr)) {
-        cmd = ObjectDictionaryItem(game.verbattributeslookup, attr)
-        if (HasString(cmd, "displayverb")) {
-          list add (verbs, CapFirst(cmd.displayverb))
-        }
-        else {
-          list add (verbs, CapFirst(attr))
+    
+    if (not game.autodisplayverbs) {
+      return (baselist)
+    }
+    else {
+      // TO DO: Cache result as object attribute
+      verbs = NewStringList()
+      foreach (attr, GetAttributeNames(object, false)) {
+        if (ListContains(game.verbattributes, attr)) {
+          cmd = ObjectDictionaryItem(game.verbattributeslookup, attr)
+          if (HasString(cmd, "displayverb")) {
+            list add (verbs, CapFirst(cmd.displayverb))
+          }
+          else {
+            list add (verbs, CapFirst(attr))
+          }
         }
       }
+      return (ListCombine(baselist, verbs))
     }
-    return (ListCombine(baselist, verbs))
   </function>
   
 </library>
