@@ -67,5 +67,74 @@ namespace TextAdventures.Quest
             while (System.IO.File.Exists(newFilename));
             return newFilename;
         }
+
+        public static string GetDisplayString(object value)
+        {
+            IEditableScripts scriptValue = value as IEditableScripts;
+            IEditableList<string> listStringValue = value as IEditableList<string>;
+            IEditableDictionary<string> dictionaryStringValue = value as IEditableDictionary<string>;
+            IEditableDictionary<IEditableScripts> dictionaryScriptValue = value as IEditableDictionary<IEditableScripts>;
+            IDataWrapper wrappedValue = value as IDataWrapper;
+            string result = null;
+
+            if (scriptValue != null)
+            {
+                result = scriptValue.DisplayString();
+            }
+            else if (listStringValue != null)
+            {
+                result = GetListDisplayString(listStringValue.DisplayItems);
+            }
+            else if (dictionaryStringValue != null)
+            {
+                result = GetDictionaryDisplayString(dictionaryStringValue.DisplayItems);
+            }
+            else if (dictionaryScriptValue != null)
+            {
+                result = GetDictionaryDisplayString(dictionaryScriptValue.DisplayItems);
+            }
+            else if (wrappedValue != null)
+            {
+                result = wrappedValue.DisplayString();
+            }
+            else if (value == null)
+            {
+                result = "(null)";
+            }
+            else
+            {
+                result = value.ToString();
+            }
+
+            return FormatAsOneLine(result);
+        }
+
+        static string GetListDisplayString(IEnumerable<KeyValuePair<string, string>> items)
+        {
+            string result = string.Empty;
+
+            foreach (var item in items)
+            {
+                if (result.Length > 0)
+                    result += ", ";
+                result += item.Value;
+            }
+
+            return result;
+        }
+
+        static string GetDictionaryDisplayString(IEnumerable<KeyValuePair<string, string>> items)
+        {
+            string result = string.Empty;
+
+            foreach (var item in items)
+            {
+                if (result.Length > 0)
+                    result += ", ";
+                result += item.Key + "=" + item.Value;
+            }
+
+            return result;
+        }
     }
 }
