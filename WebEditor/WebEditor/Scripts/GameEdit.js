@@ -234,9 +234,9 @@ function initialiseElementEditor() {
             }
         },
         select: function (event, ui) {
-            if (ui.panel.id == "elementEditorTab6" && _unsavedChanges) {
+            if (ui.tab.className == "saveBeforeLoad" && _unsavedChanges) {
                 $("#_additionalAction").val("none");
-                $("#_additionalActionTab").val("5");
+                $("#_additionalActionTab").val(ui.index);
                 submitForm();
             }
         }
