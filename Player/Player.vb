@@ -38,6 +38,7 @@ Public Class Player
     Private m_fromEditor As Boolean = False
     Private WithEvents m_log As Log
     Private m_gameLoadedSuccessfully As Boolean = False
+    Private WithEvents ctlToolbar As Toolbar
 
     Public Event Quit()
     Public Event AddToRecent(filename As String, name As String)
@@ -51,6 +52,11 @@ Public Class Player
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        ctlToolbar = New Toolbar
+        Me.Controls.Add(ctlToolbar)
+        ctlToolbar.Dock = DockStyle.Top
+        ctlToolbar.Visible = False
+
         PanesVisible = True
         Reset()
 
@@ -73,6 +79,17 @@ Public Class Player
         menu.AddMenuClickHandler("htmldevtools", AddressOf HTMLDevToolsClick)
     End Sub
 
+    Private Sub ctlToolbar_ButtonClicked(sender As Object, args As Toolbar.ButtonClickedEventArgs) Handles ctlToolbar.ButtonClicked
+        Select Case args.Button
+            Case "stop"
+                StopGame()
+            Case "debugger"
+                DebuggerMenuClick()
+            Case "log"
+                LogMenuClick()
+        End Select
+    End Sub
+
     Private Sub DebuggerMenuClick()
         ShowDebugger(Not m_menu.MenuChecked("debugger"))
     End Sub
@@ -85,8 +102,12 @@ Public Class Player
         ctlPlayerHtml.ShowDevTools()
     End Sub
 
-    Public Sub Initialise(ByRef game As IASL, Optional fromEditor As Boolean = False)
+    Public Sub Initialise(ByRef game As IASL, Optional fromEditor As Boolean = False, Optional editorSimpleMode As Boolean = False)
         m_fromEditor = fromEditor
+        ctlToolbar.Visible = fromEditor
+        If fromEditor Then
+            ctlToolbar.SimpleMode = editorSimpleMode
+        End If
         SetPanesVisible(True)
         SetCommandVisible(True)
         SetLocationVisible(True)
@@ -103,7 +124,7 @@ Public Class Player
         ResetInterfaceStrings()
         m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlHelper.UseGameColours = UseGameColours
- 
+
         Me.Cursor = Cursors.WaitCursor
 
         m_gameLoadedSuccessfully = m_game.Initialise(Me)
@@ -301,10 +322,12 @@ Public Class Player
 
     Private Sub m_debugger_VisibleChanged(sender As Object, e As System.EventArgs) Handles m_debugger.VisibleChanged
         m_menu.MenuChecked("debugger") = m_debugger.Visible
+        ctlToolbar.SetButtonChecked("debugger", m_debugger.Visible)
     End Sub
 
     Private Sub m_log_VisibleChanged(sender As Object, e As System.EventArgs) Handles m_log.VisibleChanged
         m_menu.MenuChecked("log") = m_log.Visible
+        ctlToolbar.SetButtonChecked("log", m_log.Visible)
     End Sub
 
     Private Sub RunWalkthrough()
@@ -1043,4 +1066,5 @@ Public Class Player
         m_initialised = False
         ctlPlayerHtml.Reset()
     End Sub
+
 End Class

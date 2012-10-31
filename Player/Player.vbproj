@@ -197,6 +197,12 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="QuestCefInterop.vb" />
+    <Compile Include="Toolbar.Designer.vb">
+      <DependentUpon>Toolbar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Toolbar.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="WalkthroughRunner.vb" />
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +232,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerHTML.resx">
       <DependentUpon>PlayerHTML.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Toolbar.resx">
+      <DependentUpon>Toolbar.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

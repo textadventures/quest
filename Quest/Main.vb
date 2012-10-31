@@ -123,7 +123,7 @@ Public Class Main
         End If
     End Sub
 
-    Private Sub Launch(filename As String, Optional fromEditor As Boolean = False)
+    Private Sub Launch(filename As String, Optional fromEditor As Boolean = False, Optional editorSimpleMode As Boolean = False)
         Dim game As TextAdventures.Quest.IASL = Nothing
 
         Try
@@ -154,7 +154,7 @@ Public Class Main
                         Options.Instance.GetSingleValue(OptionNames.FontSize),
                         DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
                 ctlPlayer.PlaySounds = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
-                ctlPlayer.Initialise(game, fromEditor)
+                ctlPlayer.Initialise(game, fromEditor, editorSimpleMode)
                 ctlPlayer.Focus()
             End If
 
@@ -321,7 +321,7 @@ Public Class Main
 
     Private Sub ctlEditor_Play(filename As String) Handles ctlEditor.Play
         m_playingEditorGame = True
-        Launch(filename, True)
+        Launch(filename, True, ctlEditor.SimpleMode)
     End Sub
 
     Private Sub ctlEditor_PlayWalkthrough(filename As String, walkthrough As String, record As Boolean) Handles ctlEditor.PlayWalkthrough
