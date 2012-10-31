@@ -63,7 +63,7 @@ Partial Class MainToolbar
         Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butNew, Me.butOpen, Me.butSave, Me.ToolStripSeparator1, Me.butCut, Me.butCopy, Me.butPaste, Me.ToolStripSeparator4, Me.butUndoSimple, Me.butRedoSimple, Me.butUndo, Me.butRedo, Me.ToolStripSeparator3, Me.butAddPage, Me.butAddRoom, Me.butAddObject, Me.butDelete, Me.ToolStripSeparator2, Me.butBack, Me.butForward, Me.ToolStripSeparator8, Me.butPlay, Me.butCode, Me.ToolStripSeparator5, Me.butHelp, Me.ToolStripSeparator6, Me.butLogError})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
-        Me.ctlToolStrip.Size = New System.Drawing.Size(811, 25)
+        Me.ctlToolStrip.Size = New System.Drawing.Size(886, 25)
         Me.ctlToolStrip.TabIndex = 0
         Me.ctlToolStrip.Text = "ToolStrip1"
         '
@@ -195,26 +195,24 @@ Partial Class MainToolbar
         '
         'butAddRoom
         '
-        Me.butAddRoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butAddRoom.Image = CType(resources.GetObject("butAddRoom.Image"), System.Drawing.Image)
         Me.butAddRoom.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.butAddRoom.ImageTransparentColor = System.Drawing.Color.Silver
         Me.butAddRoom.Name = "butAddRoom"
-        Me.butAddRoom.Size = New System.Drawing.Size(23, 22)
+        Me.butAddRoom.Size = New System.Drawing.Size(59, 22)
         Me.butAddRoom.Tag = "addroom"
-        Me.butAddRoom.Text = "ToolStripButton3"
+        Me.butAddRoom.Text = "Room"
         Me.butAddRoom.ToolTipText = "Add Room"
         '
         'butAddObject
         '
-        Me.butAddObject.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.butAddObject.Image = CType(resources.GetObject("butAddObject.Image"), System.Drawing.Image)
         Me.butAddObject.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.butAddObject.ImageTransparentColor = System.Drawing.Color.Silver
         Me.butAddObject.Name = "butAddObject"
-        Me.butAddObject.Size = New System.Drawing.Size(23, 22)
+        Me.butAddObject.Size = New System.Drawing.Size(62, 22)
         Me.butAddObject.Tag = "addobject"
-        Me.butAddObject.Text = "ToolStripButton4"
+        Me.butAddObject.Text = "Object"
         Me.butAddObject.ToolTipText = "Add Object"
         '
         'butDelete

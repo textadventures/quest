@@ -59,6 +59,7 @@
         AddMenuData("replace", MenuMode.Editor)
         AddMenuData("options", MenuMode.GameBrowser, MenuMode.Player)
         AddMenuData("simplemode", MenuMode.Editor)
+        AddMenuData("codeview", MenuMode.Editor)
         AddMenuData("wordwrap", MenuMode.Editor)
         AddMenuData("htmldevtools", MenuMode.Player)
     End Sub

@@ -144,6 +144,7 @@ Public Class Editor
         menu.AddMenuClickHandler("find", AddressOf Find)
         menu.AddMenuClickHandler("replace", AddressOf Replace)
         menu.AddMenuClickHandler("simplemode", AddressOf ToggleSimpleMode)
+        menu.AddMenuClickHandler("codeview", AddressOf ToggleCodeView)
         menu.AddMenuClickHandler("wordwrap", AddressOf ToggleWordWrap)
     End Sub
 
@@ -793,6 +794,7 @@ Public Class Editor
         m_menu.MenuVisible("replace") = codeView
         m_menu.MenuVisible("wordwrap") = codeView
         m_menu.MenuEnabled("simplemode") = Not codeView
+        m_menu.MenuChecked("codeview") = codeView
     End Sub
 
     Public Sub Redisplay()
@@ -1051,6 +1053,7 @@ Public Class Editor
         m_menu.MenuVisible("addturnscript") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
         m_menu.MenuVisible("addwalkthrough") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
         m_menu.MenuVisible("advanced") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("codeview") = Not SimpleMode
     End Sub
 
     Private Sub SetTreeMenuVisibility()
