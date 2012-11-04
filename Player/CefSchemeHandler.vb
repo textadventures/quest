@@ -47,6 +47,8 @@ Public Class CefSchemeHandler
                     mimeType = "image/bmp"
                 Case ".png"
                     mimeType = "image/png"
+                Case ".js"
+                    mimeType = "text/javascript"
                 Case Else
                     Throw New Exception("Unknown MIME type")
             End Select
@@ -89,7 +91,7 @@ Public Class CefResourceSchemeHandler
         Dim filepath = Path.Combine(My.Application.Info.DirectoryPath(), uri.AbsolutePath.Substring(1))
 
         If File.Exists(filepath) Then
-            System.Diagnostics.Debug.WriteLine("Served " + filepath)
+            System.Diagnostics.Debug.WriteLine("Served {0} from {1}", request.Url, filepath)
 
             stream = New System.IO.FileStream(filepath, FileMode.Open, FileAccess.Read)
 

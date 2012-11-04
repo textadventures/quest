@@ -164,7 +164,8 @@ Public Class PlayerHTML
         Dim scriptsHtml As String = String.Empty
         If scripts IsNot Nothing Then
             For Each script As String In scripts
-                scriptsHtml += String.Format("<script type=""text/javascript"" src=""{0}""></script>", script)
+                Dim scriptURL = GetURL(script)
+                scriptsHtml += String.Format("<script type=""text/javascript"" src=""{0}""></script>", scriptURL)
             Next
         End If
 
