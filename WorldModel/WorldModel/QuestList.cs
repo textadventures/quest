@@ -12,7 +12,7 @@ namespace TextAdventures.Quest
         void Add(object item, UpdateSource source);
         void Add(object item, UpdateSource source, int index);
         bool Remove(object item);
-        bool Remove(object item, UpdateSource source, int index);
+        void Remove(object item, UpdateSource source, int index);
         bool Contains(object item);
         object this[int index] { get; }
         int Count { get; }
@@ -137,21 +137,22 @@ namespace TextAdventures.Quest
         private bool RemoveInternal(T item)
         {
             int index = m_list.IndexOf(item);
-            return RemoveInternal(item, UpdateSource.System, index);
+            if (index == -1) return false;
+            RemoveInternal(item, UpdateSource.System, index);
+            return true;
         }
 
-        private bool RemoveInternal(T item, UpdateSource source, int index)
+        private void RemoveInternal(T item, UpdateSource source, int index)
         {
             CheckNotLocked();
             UndoLogRemove(item, index);
-            bool ret = m_list.Remove(item);
+            m_list.RemoveAt(index);
             NotifyRemove(item, source, index);
-            return ret;
         }
 
-        public bool RemoveByIndex(int index, UpdateSource source)
+        public void RemoveByIndex(int index, UpdateSource source)
         {
-            return RemoveInternal(m_list[index], source, index);
+            RemoveInternal(m_list[index], source, index);
         }
 
         public bool Remove(object item)
@@ -159,9 +160,9 @@ namespace TextAdventures.Quest
             return RemoveInternal((T)item);
         }
 
-        public bool Remove(object item, UpdateSource source, int index)
+        public void Remove(object item, UpdateSource source, int index)
         {
-            return RemoveInternal((T)item, source, index);
+            RemoveInternal((T)item, source, index);
         }
 
         public bool Contains(object item)
