@@ -66,17 +66,6 @@ Public Class PlayerHTML
         RaiseEvent Ready()
     End Sub
 
-    'Private Sub wbOutput_Error(sender As Object, e As HtmlElementErrorEventArgs)
-    '    Dim displayError As Boolean = True
-    '    If m_internetExplorerVersion < 9 AndAlso e.Description.Contains("HTMLCanvasElement") Then
-    '        displayError = False
-    '    End If
-    '    If displayError Then
-    '        WriteText(String.Format("JavaScript error at line {0}: {1}", e.LineNumber, e.Description))
-    '    End If
-    '    e.Handled = True
-    'End Sub
-
     Private Sub UIEvent(cmd As String, args As String)
         Select Case cmd
             Case "RunCommand"
@@ -121,11 +110,12 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub Copy()
-        'wbOutput.Document.ExecCommand("Copy", True, Nothing)
+        ctlWebView.Copy()
     End Sub
 
     Public Sub SelectAll()
-        'wbOutput.Document.ExecCommand("SelectAll", True, Nothing)
+        InvokeScript("selectText", "divOutput")
+        ClearBuffer()
     End Sub
 
     Public Sub InvokeScript(functionName As String, ParamArray args() As String)

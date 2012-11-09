@@ -58,3 +58,11 @@ function panesVisibleEval(visible) {
 function setCompassDirectionsEval(list) {
     setCompassDirections(eval(list));
 }
+
+function selectText(containerid) {
+    var range = document.createRange();
+    range.selectNodeContents(document.getElementById(containerid));
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
