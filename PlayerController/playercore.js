@@ -508,6 +508,30 @@ function addExternalStylesheet(source) {
     $("head").append(link);
 }
 
+function setInterfaceString(name, text) {
+    switch (name) {
+        case "InventoryLabel":
+            $("#inventoryLabel a").html(text);
+            break;
+        case "PlacesObjectsLabel":
+            $("#placesObjectsLabel a").html(text);
+            break;
+        case "CompassLabel":
+            $("#compassLabel a").html(text);
+            break;
+        case "InButtonLabel":
+            $("#cmdCompassIn").attr("value", text);
+            break;
+        case "OutButtonLabel":
+            $("#cmdCompassOut").attr("value", text);
+            break;
+        case "EmptyListLabel":
+            break;
+        case "NothingSelectedLabel":
+            break;
+    }
+}
+
 function CheckFlashAndShowMsg() {
     var hasFlash = false;
     try {

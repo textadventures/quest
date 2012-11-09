@@ -846,33 +846,7 @@ Public Class Player
     End Sub
 
     Public Sub SetInterfaceString(name As String, text As String) Implements IPlayer.SetInterfaceString
-        BeginInvoke(Sub()
-                        Select Case name
-                            Case "InventoryLabel"
-                                ' TO DO: Call JS function
-                                'lstInventory.Title = text
-                            Case "PlacesObjectsLabel"
-                                ' TO DO: Call JS function
-                                'lstPlacesObjects.Title = text
-                            Case "CompassLabel"
-                                ' TO DO: Call JS function
-                                'lblCompass.Text = text
-                            Case "InButtonLabel"
-                                ' TO DO: Call JS function
-                                'ctlCompass.InLabel = text
-                            Case "OutButtonLabel"
-                                ' TO DO: Call JS function
-                                'ctlCompass.OutLabel = text
-                            Case "EmptyListLabel"
-                                ' TO DO: Call JS function - or is this label is obsolete?
-                                'lstInventory.EmptyListLabel = text
-                                'lstPlacesObjects.EmptyListLabel = text
-                            Case "NothingSelectedLabel"
-                                ' TO DO: Call JS function - or is this label is obsolete?
-                                'lstInventory.NothingSelectedLabel = text
-                                'lstPlacesObjects.NothingSelectedLabel = text
-                        End Select
-                    End Sub)
+        BeginInvoke(Sub() ctlPlayerHtml.SetInterfaceString(name, text))
     End Sub
 
     Public Function GetURL(file As String) As String Implements IPlayer.GetURL

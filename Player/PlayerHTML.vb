@@ -241,6 +241,10 @@ Public Class PlayerHTML
         InvokeScript("setCompassDirectionsEval", (New Utility.JSInterop.StringArrayParameter(list)).GetParameter())
     End Sub
 
+    Public Sub SetInterfaceString(name As String, text As String)
+        InvokeScript("setInterfaceString", name, text)
+    End Sub
+
     Public Sub BeginWait()
         InvokeScript("beginWait")
     End Sub
