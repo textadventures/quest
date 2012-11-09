@@ -35,8 +35,9 @@ namespace TextAdventures.Quest
             if (string.IsNullOrEmpty(m_displayTemplate)) return (Script == null) ? null : Script.Save();
 
             string result = m_displayTemplate;
+            int startAt = 1;
 
-            while (s_regex.IsMatch(result))
+            while (startAt < result.Length && s_regex.IsMatch(result, startAt))
             {
                 Match m = s_regex.Match(result);
                 int attributeNum = int.Parse(m.Groups["attribute"].Value);
@@ -82,7 +83,8 @@ namespace TextAdventures.Quest
                     attributeValue = "<unknown>";
                 }
 
-                result = s_regex.Replace(result, attributeValue, 1);
+                result = s_regex.Replace(result, attributeValue, 1, startAt);
+                startAt = m.Groups["attribute"].Index + attributeValue.Length;
             }
 
             return result;
