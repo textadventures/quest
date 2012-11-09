@@ -239,7 +239,19 @@
       </control>
 
     </tab>
+    <tab>
+      <caption>Action</caption>
+      <mustnotinherit>defaultplayer</mustnotinherit>
 
+      <control>
+        <caption>Play sound when entering page</caption>
+        <controltype>file</controltype>
+        <attribute>sound</attribute>
+        <source>*.mp3;*.wav</source>
+        <filefiltername>Sound Files</filefiltername>
+      </control>
+
+    </tab>
   </editor>
 
 </library>

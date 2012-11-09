@@ -1,6 +1,7 @@
 ﻿<library>
 
   <command name="lookat" template="lookat">
+    <![CDATA[
     if (GetBoolean(object, "hidechildren")) {
       object.hidechildren = false
     }
@@ -28,11 +29,17 @@
           lookdesc = lookdesc + " " + object.switchedoffdesc
         }
       }
-
+      
+      isDark = CheckDarkness()
+      if (isDark and GetString(object, "lightstrength") <> "weak") {
+        lookdesc = DynamicTemplate("LookAtDarkness", object)
+      }
+      
       msg (lookdesc)
     }
     
     ListObjectContents (object)
+    ]]>
   </command>
 
   <function name="ListObjectContents" parameters="object">
@@ -158,6 +165,9 @@
       
         if (LengthOf(takemsg) > 0) {
           msg (prefix + takemsg)
+          if (GetBoolean ( object , "scenery" )) {
+            object.scenery=false
+          }
         }
       
         if (HasScript(object, "ontake")) {

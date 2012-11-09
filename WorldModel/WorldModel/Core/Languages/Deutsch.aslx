@@ -20,6 +20,8 @@
   <template name="Or">oder</template>
   <template name="NothingToUndo">Kein Undo möglich!</template>
   <template name="NotCarryingAnything">Du trägst überhaupt nichts.</template>
+  <dynamictemplate name="CantUse">"Du kannst das nicht benutzen."</dynamictemplate>
+  <dynamictemplate name="CantGive">"Du kannst das nicht geben."</dynamictemplate>
   <template name="CarryingListHeader">Du trägst</template>
   <dynamictemplate name="DropSuccessful">"Du legst " + GetPrefix (object,"ihn")+ " ab."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"Du kannst das nicht ablegen."</dynamictemplate>
@@ -94,6 +96,7 @@
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " enthält " + " " + GetPrefix (object2,"kein")  + " " + GetDisplayAlias(object2) + "."</dynamictemplate>
 
   <dynamictemplate name="YouLooking">"Du schaust nach " + text +"."</dynamictemplate>
+  <dynamictemplate name="LookAtDarkness">"Es ist zu dunkel, um etwas zu erkennen."</dynamictemplate>
   <template name="VerbObjectSeparator">mit;auf</template>
   <template name="DefaultMultiObjectVerb">Das funktioniert so nicht.</template>
   <template name="MultiObjectVerbMenu">Mit welchem Gegenstand?</template>
