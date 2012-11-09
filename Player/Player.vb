@@ -6,7 +6,6 @@ Public Class Player
     Implements IPlayerHelperUI
 
     Private m_htmlHelper As PlayerHelper
-    Private m_panesVisible As Boolean
     Private WithEvents m_game As IASL
     Private WithEvents m_gameTimer As IASLTimer
     Private m_gameDebug As IASLDebug
@@ -57,7 +56,6 @@ Public Class Player
         ctlToolbar.Dock = DockStyle.Top
         ctlToolbar.Visible = False
 
-        PanesVisible = True
         Reset()
 
     End Sub
@@ -179,21 +177,6 @@ Public Class Player
             m_menu.MenuEnabled("debugger") = False
         End If
     End Sub
-
-    Public Property PanesVisible() As Boolean
-        Get
-            Return m_panesVisible
-        End Get
-        Set(value As Boolean)
-            m_panesVisible = value
-            ' TO DO: Call JS function
-        End Set
-    End Property
-
-    ' TO DO: Call JS function
-    'Private Sub cmdPanes_Click(sender As System.Object, e As System.EventArgs)
-    '    PanesVisible = Not PanesVisible
-    'End Sub
 
     Private Sub RunCommand(command As String, Optional metadata As IDictionary(Of String, String) = Nothing)
 
@@ -552,13 +535,10 @@ Public Class Player
         BeginInvoke(Sub()
                         Select Case data
                             Case "on"
-                                PanesVisible = True
                                 ctlPlayerHtml.InvokeScript("panesVisibleEval", "true")
                             Case "off"
-                                PanesVisible = False
                                 ctlPlayerHtml.InvokeScript("panesVisibleEval", "false")
                             Case "disabled"
-                                PanesVisible = False
                                 ctlPlayerHtml.InvokeScript("panesVisibleEval", "false")
                         End Select
                     End Sub)

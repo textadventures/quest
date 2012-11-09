@@ -42,7 +42,6 @@ Partial Class Main
         Me.ctlPlayer.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlPlayer.Location = New System.Drawing.Point(0, 24)
         Me.ctlPlayer.Name = "ctlPlayer"
-        Me.ctlPlayer.PanesVisible = True
         Me.ctlPlayer.PostLaunchAction = Nothing
         Me.ctlPlayer.PreLaunchAction = Nothing
         Me.ctlPlayer.RecordWalkthrough = Nothing
