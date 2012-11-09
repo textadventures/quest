@@ -539,5 +539,15 @@ namespace TextAdventures.Quest.Functions
         {
             return new QuestList<Element>(ObjectListSort(list, attribute).Reverse());
         }
+
+        public QuestList<string> StringListSort(QuestList<string> list)
+        {
+            return new QuestList<string>(list.OrderBy(item => item));
+        }
+
+        public QuestList<string> StringListSortDescending(QuestList<string> list)
+        {
+            return new QuestList<string>(StringListSort(list).Reverse());
+        }
     }
 }
