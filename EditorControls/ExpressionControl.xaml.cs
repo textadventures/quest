@@ -132,6 +132,7 @@ namespace TextAdventures.Quest.EditorControls
                     newDropDown.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
                     newDropDown.Helper.Dirty += SimpleEditor_Dirty;
                     newDropDown.lstDropdown.SelectionChanged += DropDown_SelectionChanged;
+                    newDropDown.LostFocus += SimpleEditor_LostFocus;
                     m_simpleEditor = newDropDown;
                     break;
                 default:
@@ -193,6 +194,7 @@ namespace TextAdventures.Quest.EditorControls
                 dropDown.Helper.DoUninitialise();
                 dropDown.Helper.Dirty -= SimpleEditor_Dirty;
                 dropDown.lstDropdown.SelectionChanged -= DropDown_SelectionChanged;
+                dropDown.LostFocus -= SimpleEditor_LostFocus;
             }
         }
 
@@ -229,6 +231,11 @@ namespace TextAdventures.Quest.EditorControls
 
         void SimpleEditor_Dirty(object sender, DataModifiedEventArgs e)
         {
+            if (m_simpleEditor is DropDownControl)
+            {
+                m_helper.SetDirty(e.NewValue.ToString());
+                // Don't want to save as that will cause repopulation, which is annoying if we're typing something in to a freetext dropdown
+            }
             if (m_simpleEditor is NumberControl)
             {
                 m_helper.SetDirty(e.NewValue.ToString());

@@ -183,7 +183,7 @@ namespace TextAdventures.Quest.EditorControls
 
         public string SelectedItem
         {
-            get { return (string)lstDropdown.SelectedItem; }
+            get { return (string)lstDropdown.SelectedItem ?? lstDropdown.Text; }
             set
             {
                 lstDropdown.Text = value;
