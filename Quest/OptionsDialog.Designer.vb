@@ -40,12 +40,13 @@ Partial Class OptionsDialog
         Me.cmdLink = New System.Windows.Forms.Button()
         Me.chkUseDefaultColours = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
+        Me.chkShowAdult = New System.Windows.Forms.CheckBox()
         Me.chkShowSandpit = New System.Windows.Forms.CheckBox()
         Me.cmdGamesFolder = New System.Windows.Forms.Button()
         Me.txtGamesFolder = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.dlgFolderBrowser = New System.Windows.Forms.FolderBrowserDialog()
-        Me.chkShowAdult = New System.Windows.Forms.CheckBox()
+        Me.lnkShowAdultHelp = New System.Windows.Forms.LinkLabel()
         Me.ctlTabs.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
@@ -74,6 +75,7 @@ Partial Class OptionsDialog
         '
         'dlgFont
         '
+        Me.dlgFont.Color = System.Drawing.SystemColors.ControlText
         Me.dlgFont.ScriptsOnly = True
         Me.dlgFont.ShowEffects = False
         '
@@ -216,6 +218,7 @@ Partial Class OptionsDialog
         '
         'TabPage2
         '
+        Me.TabPage2.Controls.Add(Me.lnkShowAdultHelp)
         Me.TabPage2.Controls.Add(Me.chkShowAdult)
         Me.TabPage2.Controls.Add(Me.chkShowSandpit)
         Me.TabPage2.Controls.Add(Me.cmdGamesFolder)
@@ -228,6 +231,16 @@ Partial Class OptionsDialog
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Game Browser"
         Me.TabPage2.UseVisualStyleBackColor = True
+        '
+        'chkShowAdult
+        '
+        Me.chkShowAdult.AutoSize = True
+        Me.chkShowAdult.Location = New System.Drawing.Point(10, 82)
+        Me.chkShowAdult.Name = "chkShowAdult"
+        Me.chkShowAdult.Size = New System.Drawing.Size(113, 17)
+        Me.chkShowAdult.TabIndex = 4
+        Me.chkShowAdult.Text = "Show adult games"
+        Me.chkShowAdult.UseVisualStyleBackColor = True
         '
         'chkShowSandpit
         '
@@ -268,15 +281,15 @@ Partial Class OptionsDialog
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Download games to:"
         '
-        'chkShowAdult
+        'lnkShowAdultHelp
         '
-        Me.chkShowAdult.AutoSize = True
-        Me.chkShowAdult.Location = New System.Drawing.Point(10, 82)
-        Me.chkShowAdult.Name = "chkShowAdult"
-        Me.chkShowAdult.Size = New System.Drawing.Size(113, 17)
-        Me.chkShowAdult.TabIndex = 4
-        Me.chkShowAdult.Text = "Show adult games"
-        Me.chkShowAdult.UseVisualStyleBackColor = True
+        Me.lnkShowAdultHelp.AutoSize = True
+        Me.lnkShowAdultHelp.Location = New System.Drawing.Point(129, 83)
+        Me.lnkShowAdultHelp.Name = "lnkShowAdultHelp"
+        Me.lnkShowAdultHelp.Size = New System.Drawing.Size(130, 13)
+        Me.lnkShowAdultHelp.TabIndex = 5
+        Me.lnkShowAdultHelp.TabStop = True
+        Me.lnkShowAdultHelp.Text = "How to remove this option"
         '
         'OptionsDialog
         '
@@ -326,4 +339,5 @@ Partial Class OptionsDialog
     Friend WithEvents dlgFolderBrowser As System.Windows.Forms.FolderBrowserDialog
     Friend WithEvents chkPlaySounds As System.Windows.Forms.CheckBox
     Friend WithEvents chkShowAdult As System.Windows.Forms.CheckBox
+    Friend WithEvents lnkShowAdultHelp As System.Windows.Forms.LinkLabel
 End Class

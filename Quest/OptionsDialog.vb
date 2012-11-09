@@ -22,7 +22,9 @@ Public Class OptionsDialog
         txtGamesFolder.Text = Options.Instance.GetStringValue(OptionNames.GamesFolder)
         chkShowSandpit.Checked = Options.Instance.GetBooleanValue(OptionNames.ShowSandpit)
         chkShowAdult.Checked = Options.Instance.GetBooleanValue(OptionNames.ShowAdult)
-        chkShowAdult.Visible = DirectCast(Registry.GetHKLMSetting("Quest", "Settings", "LockAdult", "0"), String) = "0"
+        Dim showAdult As Boolean = DirectCast(Registry.GetHKLMSetting("Quest", "Settings", "LockAdult", "0"), String) = "0"
+        chkShowAdult.Visible = showAdult
+        lnkShowAdultHelp.Visible = showAdult
         chkPlaySounds.Checked = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
         UpdateSampleText()
     End Sub
@@ -152,4 +154,17 @@ Public Class OptionsDialog
             txtGamesFolder.Text = dlgFolderBrowser.SelectedPath
         End If
     End Sub
+
+    Private Sub lnkShowAdultHelp_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkShowAdultHelp.LinkClicked
+        LaunchURL("http://quest5.net/wiki/Configuring_Quest")
+    End Sub
+
+    Private Sub LaunchURL(url As String)
+        Try
+            System.Diagnostics.Process.Start(url)
+        Catch ex As Exception
+            MsgBox(String.Format("Error launching {0}{1}{2}", url, Environment.NewLine + Environment.NewLine, ex.Message), MsgBoxStyle.Critical, "Quest")
+        End Try
+    End Sub
+
 End Class
