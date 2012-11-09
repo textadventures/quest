@@ -116,7 +116,7 @@ namespace TextAdventures.Quest.Scripts
                     m_expr = new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 1:
-                    m_type = new Expression<string>((string)value, m_scriptContext);
+                    m_type = (value == null) ? null : new Expression<string>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -245,7 +245,7 @@ namespace TextAdventures.Quest.Scripts
             switch (index)
             {
                 case 0:
-                    m_id = new Expression<string>((string)value, m_scriptContext);
+                    m_id = (value == null) ? null : new Expression<string>((string)value, m_scriptContext);
                     break;
                 case 1:
                     m_name = new Expression<string>((string)value, m_scriptContext);
@@ -257,7 +257,7 @@ namespace TextAdventures.Quest.Scripts
                     m_to = new Expression<Element>((string)value, m_scriptContext);
                     break;
                 case 4:
-                    m_initialType = new Expression<string>((string)value, m_scriptContext);
+                    m_initialType = (value == null) ? null : new Expression<string>((string)value, m_scriptContext);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

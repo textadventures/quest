@@ -336,6 +336,10 @@ namespace TextAdventures.Quest.EditorControls
             {
                 PopupEditors.DisplayValidationError(result, saveValue, "Invalid expression");
             }
+            if (m_helper.ControlDefinition.GetBool("nullable") && string.IsNullOrEmpty(saveValue))
+            {
+                saveValue = null;
+            }
             if (save)
             {
                 m_helper.Save(saveValue);
