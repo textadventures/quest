@@ -64,6 +64,7 @@ Partial Class Menu
         Me.lstOptions.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lstOptions.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
+        Me.lstOptions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.lstOptions.HideSelection = False
         Me.lstOptions.Location = New System.Drawing.Point(12, 30)
         Me.lstOptions.MultiSelect = False
@@ -71,7 +72,7 @@ Partial Class Menu
         Me.lstOptions.Size = New System.Drawing.Size(329, 216)
         Me.lstOptions.TabIndex = 0
         Me.lstOptions.UseCompatibleStateImageBehavior = False
-        Me.lstOptions.View = System.Windows.Forms.View.List
+        Me.lstOptions.View = System.Windows.Forms.View.Details
         '
         'colName
         '

@@ -58,7 +58,7 @@
     End Sub
 
     Private Sub lstOptions_Resize(sender As Object, e As System.EventArgs) Handles lstOptions.Resize
-        lstOptions.Columns(0).Width = lstOptions.Width
+        lstOptions.Columns(0).Width = lstOptions.Width - 40
     End Sub
 
     Private Sub Menu_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
