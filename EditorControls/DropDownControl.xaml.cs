@@ -159,14 +159,15 @@ namespace TextAdventures.Quest.EditorControls
 
         private string GetCurrentValue()
         {
+            string selectedValue = (string)lstDropdown.SelectedItem ?? lstDropdown.Text;
             if (m_dictionary == null)
             {
-                return (string)lstDropdown.SelectedItem ?? lstDropdown.Text;
+                return selectedValue;
             }
             else
             {
-                if (lstDropdown.Text.Length == 0) return null;
-                return m_dictionaryValuesToKeys[lstDropdown.Text];
+                if (selectedValue.Length == 0) return null;
+                return m_dictionaryValuesToKeys[selectedValue];
             }
         }
 
