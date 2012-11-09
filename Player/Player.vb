@@ -700,14 +700,6 @@ Public Class Player
         m_htmlHelper.SetFontSize(size)
     End Sub
 
-    Public Sub RequestLoad() Implements IPlayer.RequestLoad
-        ' TO DO: Raise event
-    End Sub
-
-    Public Sub RequestRestart() Implements IPlayer.RequestRestart
-        ' TO DO: Raise event
-    End Sub
-
     Public Sub RequestSave() Implements IPlayer.RequestSave
         BeginInvoke(Sub() Save())
     End Sub

@@ -64,8 +64,6 @@ namespace TextAdventures.Quest
         void SetFontSize(string fontSize);
         void Speak(string text);
         void RequestSave();
-        void RequestLoad();
-        void RequestRestart();
         void Show(string element);
         void Hide(string element);
         void SetCompassDirections(IEnumerable<string> dirs);

@@ -188,16 +188,6 @@ namespace QuestConsole
             OutputText("Saving is not currently supported");
         }
 
-        public void RequestLoad()
-        {
-            OutputText("Loading is not currently supported");
-        }
-
-        public void RequestRestart()
-        {
-            OutputText("Restart is not currently supported");
-        }
-
         public void Show(string element)
         {
         }

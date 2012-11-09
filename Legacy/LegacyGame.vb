@@ -10288,10 +10288,6 @@ errhandle:
                 ExecAddRemove(thecommand, Thread)
             ElseIf cmd = "save" Then
                 m_player.RequestSave()
-            ElseIf cmd = "load" Or cmd = "restore" Then
-                m_player.RequestLoad()
-            ElseIf cmd = "restart" Then
-                m_player.RequestRestart()
             ElseIf cmd = "quit" Then
                 GameFinished()
             ElseIf BeginsWith(cmd, "help") Then

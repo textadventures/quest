@@ -161,14 +161,6 @@ namespace LegacyASLTests
         {
         }
 
-        public void RequestLoad()
-        {
-        }
-
-        public void RequestRestart()
-        {
-        }
-
         public void SetLinkForeground(string colour)
         {
         }

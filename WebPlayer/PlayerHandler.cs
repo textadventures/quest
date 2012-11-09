@@ -390,17 +390,6 @@ namespace WebPlayer
             m_controller.AppendText("Saved.");
         }
 
-        public void RequestLoad()
-        {
-            // TO DO: This will need to link to the textadventures.co.uk "Restore Game" page (or other page as determined by plugin)
-            m_controller.AppendText("Sorry, loading and saving is not currently supported for online games. <a href=\"http://www.axeuk.com/quest/\">Download Quest</a> for load/save support.");
-        }
-
-        public void RequestRestart()
-        {
-            m_controller.AppendText("Sorry, restarting is not currently supported for online games. Refresh your browser to restart the game.");
-        }
-
         public void SetLinkForeground(string colour)
         {
             m_controller.SetLinkForeground(colour);

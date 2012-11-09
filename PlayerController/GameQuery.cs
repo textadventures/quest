@@ -244,16 +244,6 @@ namespace TextAdventures.Quest
                 throw new NotImplementedException();
             }
 
-            public void RequestLoad()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void RequestRestart()
-            {
-                throw new NotImplementedException();
-            }
-
             public void Show(string element)
             {
             }
