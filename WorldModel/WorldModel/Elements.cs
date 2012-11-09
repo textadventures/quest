@@ -9,6 +9,7 @@ namespace TextAdventures.Quest
     {
         private Dictionary<string, Element> m_allElements = new Dictionary<string, Element>();
         private Dictionary<ElementType, Dictionary<string, Element>> m_elements = new Dictionary<ElementType, Dictionary<string, Element>>();
+        private Dictionary<ElementType, List<Element>> m_elementsLists = new Dictionary<ElementType, List<Element>>();
 
         public event EventHandler<NameChangedEventArgs> ElementRenamed;
 
@@ -17,6 +18,7 @@ namespace TextAdventures.Quest
             foreach (ElementType t in Enum.GetValues(typeof(ElementType)))
             {
                 m_elements.Add(t, new Dictionary<string, Element>());
+                m_elementsLists.Add(t, new List<Element>());
             }
         }
 
@@ -43,10 +45,14 @@ namespace TextAdventures.Quest
 
                 // element is being overridden, so detach the event handler
                 m_allElements[key].Fields.NameChanged -= ElementNameChanged;
+
+                // remove old element from ordered elements list
+                m_elementsLists[t].Remove(m_elements[t][key]);
             }
 
             m_allElements[key] = e;
             m_elements[t][key] = e;
+            m_elementsLists[t].Add(e);
 
             e.Fields.NameChanged += ElementNameChanged;
         }
@@ -70,6 +76,7 @@ namespace TextAdventures.Quest
         internal void Remove(ElementType t, string key)
         {
             m_allElements.Remove(key);
+            m_elementsLists[t].Remove(m_elements[t][key]);
             m_elements[t].Remove(key);
         }
 
@@ -97,7 +104,7 @@ namespace TextAdventures.Quest
 
         public IEnumerable<Element> GetElements(ElementType t)
         {
-            foreach (Element e in m_elements[t].Values) yield return e;
+            foreach (Element e in m_elementsLists[t]) yield return e;
         }
 
         public IEnumerable<Element> GetElements()
