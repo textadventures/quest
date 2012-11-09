@@ -237,6 +237,10 @@ Public Class PlayerHTML
         InvokeScript("updateListEval", "inventory", PlayerHelper.ListDataParameter(list).GetParameter())
     End Sub
 
+    Public Sub SetCompassDirections(list As IEnumerable(Of String))
+        InvokeScript("setCompassDirectionsEval", (New Utility.JSInterop.StringArrayParameter(list)).GetParameter())
+    End Sub
+
     Public Sub BeginWait()
         InvokeScript("beginWait")
     End Sub

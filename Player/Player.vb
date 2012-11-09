@@ -832,9 +832,7 @@ Public Class Player
     End Sub
 
     Public Sub SetCompassDirections(dirs As IEnumerable(Of String)) Implements IPlayer.SetCompassDirections
-        ' TO DO: Call JS function to set compass direction names
-        'ctlCompass.CompassDirections = New List(Of String)(dirs)
-        'lstPlacesObjects.IgnoreNames = ctlCompass.CompassDirections
+        BeginInvoke(Sub() ctlPlayerHtml.SetCompassDirections(dirs))
     End Sub
 
     Private Sub ResetInterfaceStrings()

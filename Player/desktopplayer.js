@@ -54,3 +54,7 @@ function showExitFullScreenButton(show) {
 function panesVisibleEval(visible) {
     panesVisible(eval(visible));
 }
+
+function setCompassDirectionsEval(list) {
+    setCompassDirections(eval(list));
+}
