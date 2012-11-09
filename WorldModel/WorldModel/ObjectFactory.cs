@@ -64,7 +64,7 @@ namespace TextAdventures.Quest
             newElement.Name = name;
             newElement.ElemType = CreateElementType;
 
-            if (elementToClone != null)
+            if (elementToClone != null && CreateElementType == ElementType.Object)
             {
                 newElement.Type = elementToClone.Type;
             }
