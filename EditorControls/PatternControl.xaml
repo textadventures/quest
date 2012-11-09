@@ -6,6 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TextBox Name="textBox" TextChanged="textBox_TextChanged" LostFocus="textBox_LostFocus" />
+        <TextBox Name="textBox" TextChanged="textBox_TextChanged" LostFocus="textBox_LostFocus" MinHeight="20" VerticalContentAlignment="Center" />
     </Grid>
 </UserControl>
