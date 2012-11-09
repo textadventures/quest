@@ -53,6 +53,8 @@
     <displayverbs type="list">[LookAt];[Take]</displayverbs>
     <inventoryverbs type="list">[LookAt];[Use];[Drop]</inventoryverbs>
     <take type="boolean">false</take>
+    <use type="boolean">false</use>
+    <givesingle type="boolean">false</givesingle>
     <drop/>
     <gender>[NeutralGender]</gender>
     <article>[NeutralArticle]</article>

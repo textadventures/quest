@@ -20,6 +20,8 @@
   <dynamictemplate name="DropUnsuccessful">"You can't drop " + object.article + "."</dynamictemplate>
   <dynamictemplate name="AlreadyTaken">"You are already carrying " + object.article + "."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"You are not carrying " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantUse">"You can't use " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantGive">"You can't give " + object.article + "."</dynamictemplate>
   <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "say") + " nothing."</dynamictemplate>
   <template name="UnrecognisedCommand">I don't understand your command.</template>
   <template name="YouAreIn">You are in</template>

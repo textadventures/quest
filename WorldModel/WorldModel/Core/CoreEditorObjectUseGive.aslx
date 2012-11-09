@@ -14,15 +14,16 @@
       <caption>Action</caption>
       <attribute>use</attribute>
       <types>
-        null=Display menu of objects this can be used on;script=Run a script
+        boolean=Default behaviour;script=Run script
       </types>
+      <checkbox>Display menu of objects this can be used on</checkbox>
     </control>
 
     <control>
       <controltype>textbox</controltype>
       <attribute>usemenuprompt</attribute>
       <caption>Menu caption (leave blank for default)</caption>
-      <onlydisplayif>this.use = null</onlydisplayif>
+      <onlydisplayif>GetBoolean(this, "use")</onlydisplayif>
     </control>
 
     <control>
@@ -87,15 +88,16 @@
       <caption>Action</caption>
       <attribute>givesingle</attribute>
       <types>
-        null=Display menu of objects this can be given to;script=Run a script
+        boolean=Default behaviour;script=Run script
       </types>
+      <checkbox>Display menu of objects this can be given to</checkbox>
     </control>
 
     <control>
       <controltype>textbox</controltype>
       <attribute>givemenuprompt</attribute>
       <caption>Menu caption (leave blank for default)</caption>
-      <onlydisplayif>this.givesingle = null</onlydisplayif>
+      <onlydisplayif>GetBoolean(this, "givesingle")</onlydisplayif>
     </control>
 
     <control>

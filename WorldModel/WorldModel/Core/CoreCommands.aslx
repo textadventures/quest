@@ -239,32 +239,37 @@
       do (object, "use")
     }
     else {
-      menu = NewStringDictionary()
-      objectlist = NewObjectList()
-      objectlist = ScopeReachableInventory()
-      objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
-      excludelist = NewObjectList()
-      list add (excludelist, game.pov)
-      list add (excludelist, object)
-      candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
-      if (ListCount(candidates) = 0) {
-        msg (Template("NoObjectsAvailable"))
-      }
-      else {
-        GenerateMenuChoices(menu, candidates)
-        game.pov.usemenuobject = object
-        if (HasString(object, "usemenuprompt")) {
-          menucaption = object.usemenuprompt
+      if (GetBoolean(object, "use")) {
+        menu = NewStringDictionary()
+        objectlist = NewObjectList()
+        objectlist = ScopeReachableInventory()
+        objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
+        excludelist = NewObjectList()
+        list add (excludelist, game.pov)
+        list add (excludelist, object)
+        candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+        if (ListCount(candidates) = 0) {
+          msg (Template("NoObjectsAvailable"))
         }
         else {
-          menucaption = Template("UseOnMenu")
-        }
-        show menu (menucaption, menu, true) {
-          if (result <> null) {
-            HandleUseOn (game.pov.usemenuobject, GetObject(result))
-            game.pov.usemenuobject = null
+          GenerateMenuChoices(menu, candidates)
+          game.pov.usemenuobject = object
+          if (HasString(object, "usemenuprompt")) {
+            menucaption = object.usemenuprompt
+          }
+          else {
+            menucaption = Template("UseOnMenu")
+          }
+          show menu (menucaption, menu, true) {
+            if (result <> null) {
+              HandleUseOn (game.pov.usemenuobject, GetObject(result))
+              game.pov.usemenuobject = null
+            }
           }
         }
+      }
+      else {
+        msg (DynamicTemplate("CantUse", object))
       }
     }
   ]]></command>
@@ -483,32 +488,37 @@
       do (object, "givesingle")
     }
     else {
-      menu = NewStringDictionary()
-      objectlist = NewObjectList()
-      objectlist = ScopeReachableInventory()
-      objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
-      excludelist = NewObjectList()
-      list add (excludelist, game.pov)
-      list add (excludelist, object)
-      candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
-      if (ListCount(candidates) = 0) {
-        msg (Template("NoObjectsAvailable"))
-      }
-      else {
-        GenerateMenuChoices(menu, candidates)
-        game.pov.givemenuobject = object
-        if (HasString(object, "givemenuprompt")) {
-          menucaption = object.givemenuprompt
+      if (GetBoolean(object, "givesingle")) {
+        menu = NewStringDictionary()
+        objectlist = NewObjectList()
+        objectlist = ScopeReachableInventory()
+        objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
+        excludelist = NewObjectList()
+        list add (excludelist, game.pov)
+        list add (excludelist, object)
+        candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+        if (ListCount(candidates) = 0) {
+          msg (Template("NoObjectsAvailable"))
         }
         else {
-          menucaption = Template("GiveToMenu")
-        }
-        show menu (menucaption, menu, true) {
-          if (result <> null) {
-            HandleGiveTo (game.pov.givemenuobject, GetObject(result))
-            game.pov.givemenuobject = null
+          GenerateMenuChoices(menu, candidates)
+          game.pov.givemenuobject = object
+          if (HasString(object, "givemenuprompt")) {
+            menucaption = object.givemenuprompt
+          }
+          else {
+            menucaption = Template("GiveToMenu")
+          }
+          show menu (menucaption, menu, true) {
+            if (result <> null) {
+              HandleGiveTo (game.pov.givemenuobject, GetObject(result))
+              game.pov.givemenuobject = null
+            }
           }
         }
+      }
+      else {
+        msg (DynamicTemplate("CantGive", object))
       }
     }
   ]]>
