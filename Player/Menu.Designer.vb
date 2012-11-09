@@ -66,6 +66,7 @@ Partial Class Menu
         Me.lstOptions.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colName})
         Me.lstOptions.HideSelection = False
         Me.lstOptions.Location = New System.Drawing.Point(12, 30)
+        Me.lstOptions.MultiSelect = False
         Me.lstOptions.Name = "lstOptions"
         Me.lstOptions.Size = New System.Drawing.Size(329, 216)
         Me.lstOptions.TabIndex = 0
