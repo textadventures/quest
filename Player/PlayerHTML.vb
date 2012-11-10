@@ -23,6 +23,8 @@ Public Class PlayerHTML
     Private m_resourceSchemeHandler As CefResourceSchemeHandlerFactory
     Private WithEvents m_interop As QuestCefInterop
     Private WithEvents m_keyHandler As CefKeyboardHandler
+    Private m_browserInitialized As Boolean = False
+    Private m_browserInitializationLock As New Object()
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
         ctlWebView = New WebView()
@@ -177,7 +179,16 @@ Public Class PlayerHTML
         htmlContent = htmlContent.Replace(k_gridJSPlaceholder, gridJsContent)
 
         m_resourceSchemeHandler.HTML = htmlContent
+        WaitForBrowserInitialization()
         ctlWebView.Load("res://local/ui")
+    End Sub
+
+    Private Sub WaitForBrowserInitialization()
+        If m_browserInitialized Then Return
+
+        SyncLock m_browserInitializationLock
+            System.Threading.Monitor.Wait(m_browserInitializationLock)
+        End SyncLock
     End Sub
 
     Public Sub Finished()
@@ -263,6 +274,11 @@ Public Class PlayerHTML
                 If Not ctlWebView.IsLoading Then
                     OnDocumentLoad()
                 End If
+            Case "IsBrowserInitialized"
+                m_browserInitialized = True
+                SyncLock m_browserInitializationLock
+                    System.Threading.Monitor.Pulse(m_browserInitializationLock)
+                End SyncLock
         End Select
     End Sub
 
