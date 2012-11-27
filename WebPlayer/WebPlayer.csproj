@@ -83,6 +83,18 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\PlayerController\grid.js">
+      <Link>grid.js</Link>
+    </Content>
+    <Content Include="..\PlayerController\paper.js">
+      <Link>paper.js</Link>
+    </Content>
+    <Content Include="..\PlayerController\playercore.css">
+      <Link>playercore.css</Link>
+    </Content>
+    <Content Include="..\PlayerController\playercore.js">
+      <Link>playercore.js</Link>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="js\jjmenu.js" />
     <Content Include="js\Jplayer.swf" />
