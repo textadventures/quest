@@ -24,6 +24,7 @@ namespace TextAdventures.Utility.JSInterop
 
         public StringParameter(string param)
         {
+            if (param == null) param = string.Empty;
             m_param = param.Replace("\r", "").Replace("\n", "");
         }
 
