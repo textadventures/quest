@@ -151,23 +151,27 @@ Public Class PlayerHTML
     Private Const k_gridJSPlaceholder As String = "// GRID_JS_PLACEHOLDER"
 
     Public Sub InitialiseHTMLUI(game As IASL)
-        Dim scripts As IEnumerable(Of String) = game.GetExternalScripts()
-
         Dim scriptsHtml As String = String.Empty
-        If scripts IsNot Nothing Then
-            For Each script As String In scripts
-                Dim scriptURL = GetURL(script)
-                scriptsHtml += String.Format("<script type=""text/javascript"" src=""{0}""></script>", scriptURL)
-            Next
-        End If
-
-        Dim stylesheets As IEnumerable(Of String) = game.GetExternalStylesheets()
-
         Dim stylesheetsHtml As String = String.Empty
-        If stylesheets IsNot Nothing Then
-            For Each stylesheet As String In stylesheets
-                stylesheetsHtml += String.Format("<link href=""{0}"" rel=""stylesheet"" type=""text/css"" />", stylesheet)
-            Next
+
+        If game IsNot Nothing Then
+
+            Dim scripts As IEnumerable(Of String) = game.GetExternalScripts()
+
+            If scripts IsNot Nothing Then
+                For Each script As String In scripts
+                    Dim scriptURL = GetURL(script)
+                    scriptsHtml += String.Format("<script type=""text/javascript"" src=""{0}""></script>", scriptURL)
+                Next
+            End If
+
+            Dim stylesheets As IEnumerable(Of String) = game.GetExternalStylesheets()
+
+            If stylesheets IsNot Nothing Then
+                For Each stylesheet As String In stylesheets
+                    stylesheetsHtml += String.Format("<link href=""{0}"" rel=""stylesheet"" type=""text/css"" />", stylesheet)
+                Next
+            End If
         End If
 
         Dim htmlContent As String = System.IO.File.ReadAllText(m_baseHtmlPath)
