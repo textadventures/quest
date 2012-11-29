@@ -453,7 +453,9 @@
         game.unresolvedcommandvarlist = null
         game.unresolvedcommandkey = null
       }
-      do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
+      if (HasScript(game.pov.currentcommandpattern, "script")) {
+        do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
+      }
       HandleNextCommandQueueItem
     }
     ]]>
