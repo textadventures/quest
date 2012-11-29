@@ -1,0 +1,40 @@
+﻿<library>
+  <editor>
+    <appliesto>(function)TextFX_Typewriter</appliesto>
+    <display>Typewriter #0</display>
+    <category>Effects</category>
+    <create>TextFX_Typewriter ("", 100)</create>
+    <add>Typewriter</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Typewriter</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>message</simple>
+      <expand/>
+      <multiline/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Delay between characters</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>ms</caption>
+    </control>
+  </editor>
+</library>

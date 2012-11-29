@@ -24,6 +24,7 @@
   <include ref="CoreOutput.aslx"/>
   <include ref="CoreGrid.aslx"/>
   <include ref="CoreCombat.aslx"/>
+  <include ref="CoreEffects.aslx"/>
   <include ref="CoreEditor.aslx"/>
 
   <function name="InitInterface">

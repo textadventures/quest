@@ -1,0 +1,9 @@
+﻿<library>
+  <function name="TextFX_Typewriter" parameters="text, speed">
+    TextFX_Typewriter_Internal (text, speed, game.defaultfont, game.defaultforeground, game.defaultfontsize)
+  </function>
+  
+  <function name="TextFX_Typewriter_Internal" parameters="text, speed, font, color, size">
+    request (RunScript, "TextFX.Typewriter; " + text + ";" + speed + ";" + font + ";" + color + ";" + size)
+  </function>
+</library>

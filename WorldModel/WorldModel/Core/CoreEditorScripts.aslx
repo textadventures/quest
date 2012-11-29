@@ -10,5 +10,6 @@
   <include ref="CoreEditorScriptsTurnScripts.aslx"/>
   <include ref="CoreEditorScriptsDrawing.aslx"/>
   <include ref="CoreEditorScriptsDarkness.aslx"/>
+  <include ref="CoreEditorScriptsEffects.aslx"/>
 
 </library>

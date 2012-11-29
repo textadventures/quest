@@ -609,6 +609,28 @@ function SetBackgroundImage(url) {
     $("body").css("background-image", "url(" + url + ")");
 }
 
+var TextFX = new function() {
+    var fxCount = 0;
+
+    function addFx(text, font, color, size) {
+        fxCount++;
+        var style = "font-family:" + font + ";color:" + color + ";font-size:" + size + "pt";
+        var html = "<span id=\"fx" + fxCount + "\" style=\"" + style + "\">" + text + " </span><br />";
+        addText(html);
+        return $("#fx" + fxCount);
+    }
+
+    this.Typewriter = function(text, speed, font, color, size) {
+        var el = addFx(text, font, color, size);
+        el.typewriter(speed);
+    }
+
+    this.Unscramble = function(text, speed, font, color, size) {
+        var el = addFx(text, font, color, size);
+        el.unscramble(speed);
+    }
+}
+
 function colourNameToHex(colour) {
     var colours = { "aliceblue": "#f0f8ff", "antiquewhite": "#faebd7", "aqua": "#00ffff", "aquamarine": "#7fffd4", "azure": "#f0ffff",
         "beige": "#f5f5dc", "bisque": "#ffe4c4", "black": "#000000", "blanchedalmond": "#ffebcd", "blue": "#0000ff", "blueviolet": "#8a2be2", "brown": "#a52a2a", "burlywood": "#deb887",
@@ -864,5 +886,102 @@ function Grid_DrawSquare(id, x, y, width, height, text, fill) {
 
         return ($.event.dispatch || $.event.handle).apply(this, args);
     }
+
+})(jQuery);
+
+// JQUERY.TEXT-EFFECTS.JS ***************************************************************************************************************
+// https://github.com/jaz303/jquery-grab-bag/blob/master/javascripts/jquery.text-effects.js
+
+// (c) 2008 Jason Frame (jason@onehackoranother.com)
+// Released under The MIT License.
+
+(function ($) {
+
+    function shuffle(a) {
+        var i = a.length, j;
+        while (i) {
+            var j = Math.floor((i--) * Math.random());
+            var t = a[i];
+            a[i] = a[j];
+            a[j] = t;
+        }
+    }
+
+    function randomAlphaNum() {
+        var rnd = Math.floor(Math.random() * 62);
+        if (rnd >= 52) return String.fromCharCode(rnd - 4);
+        else if (rnd >= 26) return String.fromCharCode(rnd + 71);
+        else return String.fromCharCode(rnd + 65);
+    }
+
+    $.fn.rot13 = function () {
+        this.each(function () {
+            $(this).text($(this).text().replace(/[a-z0-9]/ig, function (chr) {
+                var cc = chr.charCodeAt(0);
+                if (cc >= 65 && cc <= 90) cc = 65 + ((cc - 52) % 26);
+                else if (cc >= 97 && cc <= 122) cc = 97 + ((cc - 84) % 26);
+                else if (cc >= 48 && cc <= 57) cc = 48 + ((cc - 43) % 10);
+                return String.fromCharCode(cc);
+            }));
+        });
+        return this;
+    };
+
+    $.fn.scrambledWriter = function () {
+        this.each(function () {
+            var $ele = $(this), str = $ele.text(), progress = 0, replace = /[^\s]/g,
+                random = randomAlphaNum, inc = 3;
+            $ele.text('');
+            var timer = setInterval(function () {
+                $ele.text(str.substring(0, progress) + str.substring(progress, str.length).replace(replace, random));
+                progress += inc
+                if (progress >= str.length + inc) clearInterval(timer);
+            }, 100);
+        });
+        return this;
+    };
+
+    $.fn.typewriter = function (speed) {
+        this.each(function () {
+            var $ele = $(this), str = $ele.text(), progress = 0;
+            $ele.text('');
+            var timer = setInterval(function () {
+                $ele.text(str.substring(0, progress++) + ((progress & 1) && progress < str.length ? '_' : ''));
+                if (progress >= str.length) clearInterval(timer);
+            }, speed);
+        });
+        return this;
+    };
+
+    $.fn.unscramble = function (speed) {
+        this.each(function () {
+            var $ele = $(this), str = $ele.text(), replace = /[^\s]/,
+                state = [], choose = [], reveal = 25, random = randomAlphaNum;
+
+            for (var i = 0; i < str.length; i++) {
+                if (str.charAt(i).match(replace)) {
+                    state.push(random());
+                    choose.push(i);
+                } else {
+                    state.push(str.charAt(i));
+                }
+            }
+
+            shuffle(choose);
+            $ele.text(state.join(''));
+
+            var timer = setInterval(function () {
+                var i, r = reveal;
+                while (r-- && choose.length) {
+                    i = choose.pop();
+                    state[i] = str.charAt(i);
+                }
+                for (i = 0; i < choose.length; i++) state[choose[i]] = random();
+                $ele.text(state.join(''));
+                if (choose.length == 0) clearInterval(timer);
+            }, speed);
+        });
+        return this;
+    };
 
 })(jQuery);

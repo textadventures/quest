@@ -247,6 +247,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Core\CoreEditorScriptsEffects.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\CoreEditorScriptsGameState.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -295,6 +298,9 @@
     <None Include="Core\CoreEditorWalkthrough.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Core\CoreEffects.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Core\CoreGrid.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
