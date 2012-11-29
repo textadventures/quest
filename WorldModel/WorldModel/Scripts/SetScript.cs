@@ -50,6 +50,18 @@ namespace TextAdventures.Quest.Scripts
                 string variable;
                 IFunction<Element> expr = GetAppliesTo(scriptContext, appliesTo, out variable);
 
+                if (WorldModel.Version >= WorldModelVersion.v530)
+                {
+                    if (!Utility.IsValidAttributeName(variable))
+                    {
+                        string error = string.Format("Invalid {0} name '{1}' in '{2}'",
+                            expr == null ? "variable" : "attribute",
+                            variable,
+                            script);
+                        throw new Exception(error);
+                    }
+                }
+
                 if (!isScript)
                 {
                     return new SetExpressionScript(this, scriptContext, expr, variable, new Expression<object>(value, scriptContext));

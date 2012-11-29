@@ -122,6 +122,7 @@ namespace WorldModelTests
             Assert.IsTrue(Utility.IsValidAttributeName("attribute"));
             Assert.IsTrue(Utility.IsValidAttributeName("attribute name"));
             Assert.IsTrue(Utility.IsValidAttributeName("attribute name2"));
+            Assert.IsTrue(Utility.IsValidAttributeName("a"));
         }
 
         [TestMethod]
