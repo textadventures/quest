@@ -26,7 +26,12 @@
         <CheckBox Style="{StaticResource item}" Name="chkCorresponding">Also create exit in the other direction</CheckBox>
         <TextBlock Style="{StaticResource item}" Name="corresponding">Exit in the other direction already exists</TextBlock>
         <Button Style="{StaticResource button}" Name="createCorresponding" HorizontalAlignment="Left" Click="createCorresponding_Click">Create exit in the other direction</Button>
-        <TextBlock Style="{StaticResource item}" FontWeight="Bold" Name="createLookOnlyTitle" Margin="0,20,0,0">Create a "look" direction:</TextBlock>
+        <Rectangle Name="rectangle" Height="1" VerticalAlignment="Bottom" Margin="25,15,25,5" SnapsToDevicePixels="True">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="DarkGray"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <TextBlock Style="{StaticResource item}" FontWeight="Bold" Name="createLookOnlyTitle" Margin="0,5,0,0">Or create a "look" direction:</TextBlock>
         <TextBlock Style="{StaticResource item}" Name="createLookOnlyDesc" TextWrapping="Wrap">Allows players to look in this direction, but not move this way.</TextBlock>
         <Button Style="{StaticResource button}"  Name="createLookOnly" HorizontalAlignment="Left" Click="createLookOnly_Click">Create "look" direction</Button>
     </StackPanel>

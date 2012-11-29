@@ -7,8 +7,8 @@
              d:DesignHeight="300" d:DesignWidth="800">
     <UserControl.Resources>
         <Style TargetType="{x:Type my:CompassDirectionControl}">
-            <Setter Property="MaxHeight" Value="80"></Setter>
-            <Setter Property="MinWidth" Value="20"></Setter>
+            <Setter Property="Height" Value="100"></Setter>
+            <Setter Property="Width" Value="120"></Setter>
         </Style>
     </UserControl.Resources>
     <Grid Background="White">
@@ -17,18 +17,18 @@
             <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
         
-        <Grid>
+        <Grid HorizontalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <my:CompassDirectionControl x:Name="dirNW" Grid.Row="0" Grid.Column="0" Direction="0" />
             <my:CompassDirectionControl x:Name="dirN" Grid.Row="0" Grid.Column="1" Direction="1" />

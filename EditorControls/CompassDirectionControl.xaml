@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Border Margin="10" BorderThickness="1" CornerRadius="10" SnapsToDevicePixels="True" BorderBrush="Black">
+        <Border Margin="10" BorderThickness="1" CornerRadius="0" SnapsToDevicePixels="True" x:Name="border">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition/>

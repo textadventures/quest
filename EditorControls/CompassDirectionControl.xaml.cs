@@ -40,21 +40,11 @@ namespace TextAdventures.Quest.EditorControls
         public CompassDirectionControl()
         {
             InitializeComponent();
+            border.BorderBrush = SystemColors.ControlTextBrush;
             m_defaultBackground = new SolidColorBrush(Colors.White);
 
-            m_mouseOverBackground = new LinearGradientBrush(
-                new GradientStopCollection {
-                    new GradientStop(Color.FromRgb(0xF0, 0xFA, 0xFE), 0.0),
-                    new GradientStop(Color.FromRgb(0xD6, 0xF0, 0xFF), 1.0)},
-                new Point(0.0, 0.0), new Point(0.0, 1.0));
-
-            m_selectedBackground = new LinearGradientBrush(
-                new GradientStopCollection {
-                                new GradientStop(Color.FromRgb(0xE3, 0xF4, 0xFC), 0.0),
-                                new GradientStop(Color.FromRgb(0xD8, 0xEF, 0xFC), 0.38),
-                                new GradientStop(Color.FromRgb(0xBE, 0xE6, 0xFD), 0.38),
-                                new GradientStop(Color.FromRgb(0xA6, 0xD9, 0xF4), 1.0)},
-                new Point(0.0, 0.0), new Point(0.0, 1.0));
+            m_mouseOverBackground = SystemColors.HotTrackBrush;
+            m_selectedBackground = SystemColors.HighlightBrush;
 
             this.Background = m_defaultBackground;
             this.MouseEnter += MouseEnterUpdateBackground;
@@ -82,10 +72,14 @@ namespace TextAdventures.Quest.EditorControls
                 if (value)
                 {
                     this.Background = m_selectedBackground;
+                    this.Foreground = SystemColors.HighlightTextBrush;
+                    border.BorderBrush = SystemColors.HighlightTextBrush;
                 }
                 else
                 {
                     this.Background = IsMouseOver ? m_mouseOverBackground : m_defaultBackground;
+                    this.Foreground = SystemColors.ControlTextBrush;
+                    border.BorderBrush = SystemColors.ControlTextBrush;
                 }
             }
         }

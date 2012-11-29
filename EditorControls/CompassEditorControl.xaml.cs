@@ -59,6 +59,7 @@ namespace TextAdventures.Quest.EditorControls
                     toLabel.Visibility = Visibility.Collapsed;
                     to.Visibility = Visibility.Collapsed;
                     toName.Visibility = Visibility.Collapsed;
+                    rectangle.Visibility = Visibility.Collapsed;
                     createLookOnlyTitle.Visibility = Visibility.Collapsed;
                     createLookOnlyDesc.Visibility = Visibility.Collapsed;
                     createLookOnly.Visibility = Visibility.Collapsed;
@@ -76,6 +77,7 @@ namespace TextAdventures.Quest.EditorControls
                     toLabel.Visibility = Visibility.Visible;
                     to.Visibility = Visibility.Visible;
                     toName.Visibility = Visibility.Collapsed;
+                    rectangle.Visibility = Visibility.Visible;
                     createLookOnlyTitle.Visibility = Visibility.Visible;
                     createLookOnlyDesc.Visibility = Visibility.Visible;
                     createLookOnly.Visibility = Visibility.Visible;
@@ -91,6 +93,7 @@ namespace TextAdventures.Quest.EditorControls
                     toLabel.Visibility = Visibility.Visible;
                     to.Visibility = Visibility.Collapsed;
                     toName.Visibility = Visibility.Visible;
+                    rectangle.Visibility = Visibility.Collapsed;
                     createLookOnlyTitle.Visibility = Visibility.Collapsed;
                     createLookOnlyDesc.Visibility = Visibility.Collapsed;
                     createLookOnly.Visibility = Visibility.Collapsed;

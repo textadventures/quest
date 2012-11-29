@@ -21,7 +21,7 @@
         
         <this:CompassControl x:Name="compassControl" />
         
-        <WindowsFormsHost Name="toolbarHost" Grid.Row="1">
+        <WindowsFormsHost Name="toolbarHost" Grid.Row="1" Margin="0,10,0,0">
             <this:WFToolbar Name="toolbar" AddClicked="toolbar_AddClicked" EditClicked="toolbar_EditClicked" DeleteClicked="toolbar_DeleteClicked" MoveUpClicked="toolbar_MoveUpClicked" MoveDownClicked="toolbar_MoveDownClicked" />
         </WindowsFormsHost>
 
