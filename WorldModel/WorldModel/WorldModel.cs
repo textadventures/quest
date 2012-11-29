@@ -1213,7 +1213,7 @@ namespace TextAdventures.Quest
             }
             else
             {
-                if (recurse && !file.Contains("\\"))
+                if (recurse && !file.Contains("\\") && !file.Contains("/"))
                 {
                     var results = System.IO.Directory.GetFiles(path, file, System.IO.SearchOption.AllDirectories);
                     if (results.Length > 0)
