@@ -250,6 +250,7 @@
     commands = Split(command, ".")
     game.pov.commandmetadata = metadata
     if (ListCount(commands) = 1) {
+      game.pov.commandqueue = null
       HandleSingleCommand (Trim(command))
     }
     else {
