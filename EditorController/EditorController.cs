@@ -1824,6 +1824,13 @@ namespace TextAdventures.Quest
 
                 if (e.ElemType == ElementType.Walkthrough || (e.ElemType == ElementType.Object && e.Type == ObjectType.Object))
                 {
+                    // But don't paste a copy of an object inside itself
+
+                    if (m_clipboardElements.Any(clipboardElement => clipboardElement == e))
+                    {
+                        return e.Parent;
+                    }
+
                     return e;
                 }
                 return null;
