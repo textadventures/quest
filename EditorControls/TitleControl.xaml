@@ -16,16 +16,6 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Rectangle Name="rectangle" Height="1" VerticalAlignment="Bottom" Margin="5,0,5,0">
-                <Rectangle.Fill>
-                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                        <GradientStop x:Name="gs1" Color="White" Offset="0" />
-                        <GradientStop x:Name="gs2" Color="Gray" Offset="0.5" />
-                        <GradientStop x:Name="gs3" Color="White" Offset="1" />
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
-
         </Grid>        
     </Grid>
 </UserControl>

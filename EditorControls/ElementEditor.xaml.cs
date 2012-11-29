@@ -117,7 +117,7 @@ namespace TextAdventures.Quest.EditorControls
 
             if (ctl.ControlType == "title" && !firstControl)
             {
-                newControl.Margin = new Thickness(0, 8, 0, 0);
+                newControl.Margin = new Thickness(0, 15, 0, 0);
             }
 
             IElementEditorControl elementEditorControl = newControl as IElementEditorControl;

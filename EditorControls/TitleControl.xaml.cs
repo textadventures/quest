@@ -25,10 +25,6 @@ namespace TextAdventures.Quest.EditorControls
             m_helper = new ControlDataHelper<string>(this);
             m_helper.Initialise += m_helper_Initialise;
             m_helper.Options.DisplaysOwnCaption = true;
-
-            gs1.Color = SystemColors.ControlLightLightColor;
-            gs2.Color = SystemColors.ControlDarkColor;
-            gs3.Color = gs1.Color;
         }
 
         void m_helper_Initialise()
