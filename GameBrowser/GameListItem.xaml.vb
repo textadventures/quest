@@ -49,19 +49,9 @@ Public Class GameListItem
         ratingBlock.Visibility = Windows.Visibility.Collapsed
         notRatedBlock.Visibility = Windows.Visibility.Collapsed
 
-        m_hoverBrush = New LinearGradientBrush(
-                New GradientStopCollection From {
-                    New GradientStop(Color.FromRgb(&HF0, &HFA, &HFE), 0.0),
-                    New GradientStop(Color.FromRgb(&HD6, &HF0, &HFF), 1.0)},
-                New Point(0, 0), New Point(0, 1))
+        m_hoverBrush = New SolidColorBrush(Color.FromRgb(&HBE, &HE6, &HFD))
 
-        m_selectedBackground = New LinearGradientBrush(
-                New GradientStopCollection From {
-                    New GradientStop(Color.FromRgb(&HE3, &HF4, &HFC), 0.0),
-                    New GradientStop(Color.FromRgb(&HD8, &HEF, &HFC), 0.38),
-                    New GradientStop(Color.FromRgb(&HBE, &HE6, &HFD), 0.38),
-                    New GradientStop(Color.FromRgb(&HA6, &HD9, &HF4), 1.0)},
-                New Point(0, 0), New Point(0, 1))
+        m_selectedBackground = SystemColors.HighlightBrush
 
         AddHandler Me.MouseEnter, AddressOf MouseEnterUpdateBackground
         AddHandler Me.MouseLeave, AddressOf MouseLeaveUpdateBackground
@@ -360,8 +350,10 @@ Public Class GameListItem
             m_isSelected = value
             If m_isSelected Then
                 Me.Background = m_selectedBackground
+                Me.Foreground = SystemColors.HighlightTextBrush
             Else
                 Me.Background = m_background
+                Me.Foreground = SystemColors.ControlTextBrush
             End If
         End Set
     End Property
