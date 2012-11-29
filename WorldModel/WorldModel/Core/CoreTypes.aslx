@@ -1,6 +1,7 @@
 ﻿<library>
   <type name="defaultgame">
     <enablehyperlinks/>
+    <echohyperlinks/>
     <showdescriptiononenter/>
     <autodescription/>
     <defaultfont>Georgia, serif</defaultfont>

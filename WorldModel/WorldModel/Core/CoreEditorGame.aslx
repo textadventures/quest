@@ -133,6 +133,12 @@
       </control>
       <control>
         <controltype>checkbox</controltype>
+        <caption>Display hyperlinks in commands</caption>
+        <attribute>echohyperlinks</attribute>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
         <caption>Automatically generate object display verbs list</caption>
         <attribute>autodisplayverbs</attribute>
       </control>
