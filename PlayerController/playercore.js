@@ -625,9 +625,9 @@ var TextFX = new function() {
         el.typewriter(speed);
     }
 
-    this.Unscramble = function(text, speed, font, color, size) {
+    this.Unscramble = function(text, speed, reveal, font, color, size) {
         var el = addFx(text, font, color, size);
-        el.unscramble(speed);
+        el.unscramble(speed, reveal);
     }
 }
 
@@ -953,10 +953,10 @@ function Grid_DrawSquare(id, x, y, width, height, text, fill) {
         return this;
     };
 
-    $.fn.unscramble = function (speed) {
+    $.fn.unscramble = function (speed, reveal) {
         this.each(function () {
             var $ele = $(this), str = $ele.text(), replace = /[^\s]/,
-                state = [], choose = [], reveal = 25, random = randomAlphaNum;
+                state = [], choose = [], random = randomAlphaNum;
 
             for (var i = 0; i < str.length; i++) {
                 if (str.charAt(i).match(replace)) {

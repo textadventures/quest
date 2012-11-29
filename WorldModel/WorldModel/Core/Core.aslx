@@ -34,17 +34,7 @@
         request (RunScript, "addExternalStylesheet; " + stylesheet)
       }
     }
-    if (game.defaultwebfont = null) {
-      request (FontName, game.defaultfont)
-    }
-    else {
-      if (game.defaultwebfont = "") {
-        request (FontName, game.defaultfont)
-      }
-      else {
-        request (FontName, "'" + game.defaultwebfont + "', " + game.defaultfont)
-      }
-    }
+    request (FontName, GetCurrentFontFamily())
     request (FontSize, ToString(game.defaultfontsize))
     if (game.setbackgroundopacity) {
       SetBackgroundOpacity (game.backgroundopacity)
@@ -333,6 +323,20 @@
         object.generatedverbslist = verbs
       }
       return (ListCombine(baselist, verbs))
+    }
+  </function>
+
+  <function name="GetCurrentFontFamily" type="string">
+    if (game.defaultwebfont = null) {
+      return (game.defaultfont)
+    }
+    else {
+      if (game.defaultwebfont = "") {
+        return (game.defaultfont)
+      }
+      else {
+        return ("'" + game.defaultwebfont + "', " + game.defaultfont)
+      }
     }
   </function>
   

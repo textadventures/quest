@@ -1,9 +1,17 @@
 ﻿<library>
   <function name="TextFX_Typewriter" parameters="text, speed">
-    TextFX_Typewriter_Internal (text, speed, game.defaultfont, game.defaultforeground, game.defaultfontsize)
+    TextFX_Typewriter_Internal (text, speed, GetCurrentFontFamily(), game.defaultforeground, game.defaultfontsize)
   </function>
   
   <function name="TextFX_Typewriter_Internal" parameters="text, speed, font, color, size">
     request (RunScript, "TextFX.Typewriter; " + text + ";" + speed + ";" + font + ";" + color + ";" + size)
+  </function>
+
+  <function name="TextFX_Unscramble" parameters="text, speed, reveal">
+    TextFX_Unscramble_Internal (text, speed, reveal, GetCurrentFontFamily(), game.defaultforeground, game.defaultfontsize)
+  </function>
+
+  <function name="TextFX_Unscramble_Internal" parameters="text, speed, reveal, font, color, size">
+    request (RunScript, "TextFX.Unscramble; " + text + ";" + speed + ";" + reveal + ";" + font + ";" + color + ";" + size)
   </function>
 </library>
