@@ -125,30 +125,17 @@ div#divOutput
 }
 div#txtCommandDiv
 {
-    padding-top: 10px;
-    position: fixed;
-    bottom: 0;
-    margin-left: -10px;
     height: 40px;
-    background: white;
-    filter: alpha(opacity=80);
-    opacity: 0.8;
 }
 #txtCommand
 {
     width: 680px;
     font-size: 20px;
-    margin-left: 5px;
     vertical-align: bottom;
 }
 #txtCommandSpacer
 {
-    height: 50px;
-}
-#txtCommandPrompt
-{
-    font-size: 150%;
-    font-weight: bold;
+    height: 10px;
 }
 div#controlButtons .ui-button
 {
@@ -191,11 +178,6 @@ div#controlButtons .ui-button
 {
     font-size: 16px;
     font-weight: bold;
-    position: absolute;
-    top: 17px;
-    left: 25px;
-    background: white;
-    padding: 2px 20px;
 }
 .ui-selecting
 {

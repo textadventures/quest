@@ -242,7 +242,6 @@ function setBackground(col) {
     var cssBackground = "rgba(" + rgbCol.r + "," + rgbCol.g + "," + rgbCol.b + "," + _backgroundOpacity + ")";
     $("#gameBorder").css("background-color", cssBackground);
 
-    $("#txtCommandDiv").css("background-color", col);
     $("#gamePanel").css("background-color", col);
     $("#gridPanel").css("background-color", col);
 }
@@ -324,7 +323,6 @@ function updateStatus(text) {
 }
 
 function setForeground(col) {
-    $("#txtCommandPrompt").css("color", col);
 }
 
 function setCompassDirections(directions) {
@@ -407,8 +405,8 @@ function updateVerbButtons(selectedItem, verbsArray, idprefix) {
 
 function beginWait() {
     _waitMode = true;
-    $("#txtCommand").fadeTo(400, 0, function () {
-        $("#endWaitLink").fadeTo(400, 1);
+    $("#txtCommand").fadeOut(400, function () {
+        $("#endWaitLink").fadeIn(400);
     });
     markScrollPosition();
 }
@@ -422,7 +420,7 @@ function waitEnded() {
     _waitMode = false;
     $("#endWaitLink").fadeOut(400, function () {
         if (!_waitMode) {
-            $("#txtCommand").fadeTo(400, 1);
+            $("#txtCommand").fadeIn(400);
         }
     });
 }
