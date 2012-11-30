@@ -43,7 +43,7 @@ namespace TextAdventures.Quest.EditorControls
             border.BorderBrush = SystemColors.ControlTextBrush;
             m_defaultBackground = new SolidColorBrush(Colors.White);
 
-            m_mouseOverBackground = SystemColors.HotTrackBrush;
+            m_mouseOverBackground = new SolidColorBrush(Color.FromRgb(0xBE, 0xE6, 0xFD));
             m_selectedBackground = SystemColors.HighlightBrush;
 
             this.Background = m_defaultBackground;

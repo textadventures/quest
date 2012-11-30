@@ -35,6 +35,7 @@ namespace TextAdventures.Quest.EditorControls
         private CompassEditorMode m_mode;
         private bool m_allowCreateInverse;
         private bool m_correspondingExitExists;
+        private bool m_simpleMode;
 
         public event EventHandler<CreateExitEventArgs> CreateExit;
         public event Action<string> EditExit;
@@ -52,63 +53,77 @@ namespace TextAdventures.Quest.EditorControls
             set
             {
                 m_mode = value;
+                UpdateControlVisibility();
+            }
+        }
 
-                if (m_mode == CompassEditorMode.NoSelection || m_mode == CompassEditorMode.NotACompassExit)
-                {
-                    createExitTitle.Visibility = Visibility.Collapsed;
-                    toLabel.Visibility = Visibility.Collapsed;
-                    to.Visibility = Visibility.Collapsed;
-                    toName.Visibility = Visibility.Collapsed;
-                    rectangle.Visibility = Visibility.Collapsed;
-                    createLookOnlyTitle.Visibility = Visibility.Collapsed;
-                    createLookOnlyDesc.Visibility = Visibility.Collapsed;
-                    createLookOnly.Visibility = Visibility.Collapsed;
-                    create.Visibility = Visibility.Collapsed;
-                    edit.Visibility = Visibility.Collapsed;
-                    chkCorresponding.Visibility = Visibility.Collapsed;
-                    corresponding.Visibility = Visibility.Collapsed;
-                    createCorresponding.Visibility = Visibility.Collapsed;
+        public bool SimpleMode
+        {
+            get { return m_simpleMode; }
+            set
+            {
+                m_simpleMode = value;
+                UpdateControlVisibility();
+            }
+        }
 
-                    direction.Text = m_mode == CompassEditorMode.NoSelection ? "No exit selected" : "Selected exit is not a compass direction";
-                }
-                else if (m_mode == CompassEditorMode.NewCompassExit)
-                {
-                    createExitTitle.Visibility = Visibility.Visible;
-                    toLabel.Visibility = Visibility.Visible;
-                    to.Visibility = Visibility.Visible;
-                    toName.Visibility = Visibility.Collapsed;
-                    rectangle.Visibility = Visibility.Visible;
-                    createLookOnlyTitle.Visibility = Visibility.Visible;
-                    createLookOnlyDesc.Visibility = Visibility.Visible;
-                    createLookOnly.Visibility = Visibility.Visible;
-                    create.Visibility = Visibility.Visible;
-                    edit.Visibility = Visibility.Collapsed;
-                    chkCorresponding.Visibility = Visibility.Visible;
-                    corresponding.Visibility = Visibility.Collapsed;
-                    createCorresponding.Visibility = Visibility.Collapsed;
-                }
-                else if (m_mode == CompassEditorMode.ExistingCompassExit)
-                {
-                    createExitTitle.Visibility = Visibility.Collapsed;
-                    toLabel.Visibility = Visibility.Visible;
-                    to.Visibility = Visibility.Collapsed;
-                    toName.Visibility = Visibility.Visible;
-                    rectangle.Visibility = Visibility.Collapsed;
-                    createLookOnlyTitle.Visibility = Visibility.Collapsed;
-                    createLookOnlyDesc.Visibility = Visibility.Collapsed;
-                    createLookOnly.Visibility = Visibility.Collapsed;
-                    create.Visibility = Visibility.Collapsed;
-                    edit.Visibility = Visibility.Visible;
-                    chkCorresponding.Visibility = Visibility.Collapsed;
+        private void UpdateControlVisibility()
+        {
+            if (m_mode == CompassEditorMode.NoSelection || m_mode == CompassEditorMode.NotACompassExit)
+            {
+                createExitTitle.Visibility = Visibility.Collapsed;
+                toLabel.Visibility = Visibility.Collapsed;
+                to.Visibility = Visibility.Collapsed;
+                toName.Visibility = Visibility.Collapsed;
+                rectangle.Visibility = Visibility.Collapsed;
+                createLookOnlyTitle.Visibility = Visibility.Collapsed;
+                createLookOnlyDesc.Visibility = Visibility.Collapsed;
+                createLookOnly.Visibility = Visibility.Collapsed;
+                create.Visibility = Visibility.Collapsed;
+                edit.Visibility = Visibility.Collapsed;
+                chkCorresponding.Visibility = Visibility.Collapsed;
+                corresponding.Visibility = Visibility.Collapsed;
+                createCorresponding.Visibility = Visibility.Collapsed;
 
-                    // depends on where the exit points
-                    corresponding.Visibility = Visibility.Visible;
-                    createCorresponding.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
+                direction.Text = m_mode == CompassEditorMode.NoSelection ? "No exit selected" : "Selected exit is not a compass direction";
+            }
+            else if (m_mode == CompassEditorMode.NewCompassExit)
+            {
+                createExitTitle.Visibility = Visibility.Visible;
+                toLabel.Visibility = Visibility.Visible;
+                to.Visibility = Visibility.Visible;
+                toName.Visibility = Visibility.Collapsed;
+                rectangle.Visibility = m_simpleMode ? Visibility.Collapsed : Visibility.Visible;
+                createLookOnlyTitle.Visibility = m_simpleMode ? Visibility.Collapsed : Visibility.Visible;
+                createLookOnlyDesc.Visibility = m_simpleMode ? Visibility.Collapsed : Visibility.Visible;
+                createLookOnly.Visibility = m_simpleMode ? Visibility.Collapsed : Visibility.Visible;
+                create.Visibility = Visibility.Visible;
+                edit.Visibility = Visibility.Collapsed;
+                chkCorresponding.Visibility = Visibility.Visible;
+                corresponding.Visibility = Visibility.Collapsed;
+                createCorresponding.Visibility = Visibility.Collapsed;
+            }
+            else if (m_mode == CompassEditorMode.ExistingCompassExit)
+            {
+                createExitTitle.Visibility = Visibility.Collapsed;
+                toLabel.Visibility = Visibility.Visible;
+                to.Visibility = Visibility.Collapsed;
+                toName.Visibility = Visibility.Visible;
+                rectangle.Visibility = Visibility.Collapsed;
+                createLookOnlyTitle.Visibility = Visibility.Collapsed;
+                createLookOnlyDesc.Visibility = Visibility.Collapsed;
+                createLookOnly.Visibility = Visibility.Collapsed;
+                create.Visibility = Visibility.Collapsed;
+                edit.Visibility = Visibility.Visible;
+                chkCorresponding.Visibility = Visibility.Collapsed;
+
+                // depends on where the exit points
+                corresponding.Visibility = Visibility.Visible;
+                createCorresponding.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException();
             }
         }
 

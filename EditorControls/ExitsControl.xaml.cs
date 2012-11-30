@@ -52,6 +52,7 @@ namespace TextAdventures.Quest.EditorControls
             m_controller = controller;
             m_controller.ElementsUpdated += m_controller_ElementsUpdated;
             m_controller.ElementMoved += m_controller_ElementMoved;
+            m_controller.SimpleModeChanged += m_controller_SimpleModeChanged;
 
             m_directionNames = new List<string>(definition.GetListString("compass"));
             m_compassTypes = definition.GetDictionary("compasstypes");
@@ -61,6 +62,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             m_controller.ElementsUpdated -= m_controller_ElementsUpdated;
             m_controller.ElementMoved -= m_controller_ElementMoved;
+            m_controller.SimpleModeChanged -= m_controller_SimpleModeChanged;
             m_controller = null;
             m_directionNames = null;
             m_compassTypes = null;
@@ -74,6 +76,11 @@ namespace TextAdventures.Quest.EditorControls
         void m_controller_ElementMoved(object sender, TextAdventures.Quest.EditorController.ElementMovedEventArgs e)
         {
             Populate(m_data);
+        }
+
+        void m_controller_SimpleModeChanged(object sender, EventArgs e)
+        {
+            CompassEditor.SimpleMode = m_controller.SimpleMode;
         }
 
         private class ExitListData
@@ -99,6 +106,7 @@ namespace TextAdventures.Quest.EditorControls
             listView.Items.Clear();
             compassControl.Clear();
             m_directionListIndexes.Clear();
+            CompassEditor.SimpleMode = m_controller.SimpleMode;
             PopulateCompassEditor(null);
 
             if (data != null)
@@ -352,7 +360,6 @@ namespace TextAdventures.Quest.EditorControls
             {
                 newExit = m_controller.CreateNewExit(m_data.Name, e.To, e.Direction, GetDirectionType(e.Direction), e.LookOnly);
             }
-            m_controller.UIRequestEditElement(newExit);
         }
 
         void CompassEditor_CreateInverseExit()
