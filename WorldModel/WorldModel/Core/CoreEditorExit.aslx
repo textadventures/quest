@@ -28,6 +28,7 @@
         <freetext/>
         <nullable/>
         <width>200</width>
+        <advanced/>
       </control>
 
       <control>
@@ -63,7 +64,7 @@
       </control>
 
       <control>
-        <caption>Scenery</caption>
+        <caption>Scenery (do not display in room description)</caption>
         <controltype>checkbox</controltype>
         <attribute>scenery</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
@@ -96,17 +97,20 @@
         <controltype>script</controltype>
         <attribute>script</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
+        <advanced/>
       </control>
 
       <control>
         <controltype>title</controltype>
         <caption>Look (in this direction)</caption>
+        <advanced/>
       </control>
 
       <control>
         <caption>Exit is a look direction only (players can't move this way)</caption>
         <controltype>checkbox</controltype>
         <attribute>lookonly</attribute>
+        <advanced/>
       </control>
 
       <control>
@@ -119,12 +123,14 @@
         <editors>
           string=textbox
         </editors>
+        <advanced/>
       </control>
 
     </tab>
 
     <tab>
       <caption>Map</caption>
+      <onlydisplayif>game.gridmap</onlydisplayif>
 
       <control>
         <controltype>number</controltype>
@@ -152,6 +158,7 @@
     <tab>
       <caption>Attributes</caption>
       <desktop/>
+      <advanced/>
 
       <control>
         <controltype>attributes</controltype>

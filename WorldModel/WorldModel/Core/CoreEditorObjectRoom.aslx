@@ -18,12 +18,14 @@
       <caption>Description prefix</caption>
       <attribute>descprefix</attribute>
       <onlydisplayif>game.autodescription_youarein_useprefix</onlydisplayif>
+      <advanced/>
     </control>
 
     <control>
       <controltype>textbox</controltype>
       <caption>Objects list prefix</caption>
       <attribute>objectslistprefix</attribute>
+      <advanced/>
     </control>
 
     <control>

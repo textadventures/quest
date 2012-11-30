@@ -112,6 +112,7 @@
       <mustinherit>editor_player</mustinherit>
       <controltype>label</controltype>
       <caption>When this object is the player, the settings below will override the settings specified on other tabs.</caption>
+      <advanced/>
     </control>
 
     <control>
@@ -120,6 +121,7 @@
       <controltype>textbox</controltype>
       <attribute>pov_alias</attribute>
       <nullable/>
+      <advanced/>
     </control>
 
     <control>
@@ -127,6 +129,7 @@
       <caption>Gender</caption>
       <controltype>textbox</controltype>
       <attribute>pov_gender</attribute>
+      <advanced/>
     </control>
 
     <control>
@@ -134,6 +137,7 @@
       <caption>Article</caption>
       <controltype>textbox</controltype>
       <attribute>pov_article</attribute>
+      <advanced/>
     </control>
 
     <control>
@@ -142,6 +146,7 @@
       <controltype>list</controltype>
       <attribute>pov_alt</attribute>
       <editprompt>Please enter an additional name for this object</editprompt>
+      <advanced/>
     </control>
 
     <control>
@@ -156,6 +161,7 @@
         string=richtext
       </editors>
       <expand/>
+      <advanced/>
     </control>
 
   </tab>

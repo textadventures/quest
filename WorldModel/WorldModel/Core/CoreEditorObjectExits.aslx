@@ -8,6 +8,7 @@
       <controltype>textbox</controltype>
       <caption>Exits list prefix</caption>
       <attribute>exitslistprefix</attribute>
+      <advanced/>
     </control>
 
     <control>
