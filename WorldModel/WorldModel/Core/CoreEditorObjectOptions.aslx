@@ -93,6 +93,7 @@
       <attribute>eathealth</attribute>
       <caption>Change health by</caption>
       <mustinherit>edible</mustinherit>
+      <onlydisplayif>game.showhealth</onlydisplayif>
     </control>
 
     <control>
