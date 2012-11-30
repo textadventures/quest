@@ -79,10 +79,13 @@
                     <br /><br />
                     @Html.CheckBox(Model.Id + "-exit-data-create-inverse", Model.CreateInverse)
                     @Html.Label(Model.Id + "-exit-data-create-inverse", "Also create exit in the other direction")
-                    <hr />
-                    <b>Create a "look" direction:</b><br /><br />
-                    Allows players to look in this direction, but not move this way.<br /><br />
-                    <button type="button" class="compass-direction-create-look" id="@Model.Id-exit-data-create-look" data-key="@Model.Id">Create "look" direction</button>
+                    @if (!Model.SimpleMode)
+                    {
+                        <hr />
+                        <b>Or create a "look" direction:</b><br /><br />
+                        <text>Allows players to look in this direction, but not move this way.</text><br /><br />
+                        <button type="button" class="compass-direction-create-look" id="@Model.Id-exit-data-create-look" data-key="@Model.Id">Create "look" direction</button>
+                    }
                 </div>
             </div>
         </td>

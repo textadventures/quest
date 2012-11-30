@@ -839,7 +839,8 @@ namespace WebEditor.Services
                 Id = ctl.Id,
                 Objects = new List<string>(m_controller.GetObjectNames("object")
                     .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)),
-                CreateInverse = m_createInverse
+                CreateInverse = m_createInverse,
+                SimpleMode = m_controller.SimpleMode
             };
 
             IEnumerable<string> exits = m_controller.GetObjectNames("exit", key, true);

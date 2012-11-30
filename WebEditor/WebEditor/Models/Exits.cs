@@ -33,5 +33,6 @@ namespace WebEditor.Models
         public List<string> Objects { get; set; }
         public bool CreateInverse { get; set; }
         public Dictionary<string, Exit> AllExits { get; set; }
+        public bool SimpleMode { get; set; }
     }
 }
