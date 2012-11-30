@@ -216,7 +216,7 @@ namespace TextAdventures.Quest
             }
             else
             {
-                status = "";
+                status = "Finished loading files";
             }
             UpdateStatus(status);
         }

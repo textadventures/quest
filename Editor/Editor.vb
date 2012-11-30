@@ -75,11 +75,13 @@ Public Class Editor
                             SetWordWrap(CInt(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "EditorWordWrap", 0)) = 1)
                             m_menu.Visible = True
                             m_uiHidden = False
+                            Me.SuspendLayout()
                             DisplayCodeView(False)
+                            ctlLoading.Visible = False
                             splitMain.Visible = True
                             ctlTree.Visible = True
                             ctlToolbar.Visible = True
-                            ctlLoading.Visible = False
+                            Me.ResumeLayout()
                             ctlTree.SetSelectedItem("game")
                             ctlTree.FocusOnTree()
                             SetWindowTitle()
@@ -103,6 +105,8 @@ Public Class Editor
                         Else
                             RaiseEvent InitialiseFinished(e.Success)
                         End If
+
+                        ctlLoading.Clear()
                     End Sub)
     End Sub
 
@@ -716,6 +720,7 @@ Public Class Editor
         splitMain.Visible = False
         ctlTree.Visible = False
         ctlToolbar.Visible = False
+        ctlTextEditor.Visible = False
         ctlLoading.Visible = True
         ctlLoading.BringToFront()
     End Sub

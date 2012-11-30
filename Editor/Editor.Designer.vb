@@ -149,7 +149,7 @@ Partial Class Editor
         '
         'ctlLoading
         '
-        Me.ctlLoading.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ctlLoading.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlLoading.Location = New System.Drawing.Point(0, 0)
         Me.ctlLoading.Name = "ctlLoading"
         Me.ctlLoading.Size = New System.Drawing.Size(618, 329)
