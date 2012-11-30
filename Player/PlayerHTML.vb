@@ -122,7 +122,7 @@ Public Class PlayerHTML
 
     Public Sub InvokeScript(functionName As String, ParamArray args() As String)
         Dim quotedArgs = From arg In args
-                         Select """" + arg.Replace("\", "\\").Replace("""", "\""").Replace(Chr(13), "").Replace(Chr(10), "") + """"
+                         Select (If(arg Is Nothing, """""", """" + arg.Replace("\", "\\").Replace("""", "\""").Replace(Chr(13), "").Replace(Chr(10), "") + """"))
         Dim script As String = String.Format("{0}({1})", functionName, String.Join(",", quotedArgs))
         Debug.WriteLine(script)
         m_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
