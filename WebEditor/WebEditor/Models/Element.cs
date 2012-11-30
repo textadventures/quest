@@ -161,6 +161,16 @@ namespace WebEditor.Models
                     if (max.HasValue && intValue > max) intValue = max.Value;
                     saveValue = intValue;
                     break;
+                case "numberdouble":
+                    string stringDoubleValue = GetValueProviderString(bindingContext.ValueProvider, attribute);
+                    double doubleValue;
+                    double.TryParse(stringDoubleValue, out doubleValue);
+                    double? doubleMin = ctl.GetDouble("minimum");
+                    double? doubleMax = ctl.GetDouble("maximum");
+                    if (doubleMin.HasValue && doubleValue < doubleMin) doubleValue = doubleMin.Value;
+                    if (doubleMax.HasValue && doubleValue > doubleMax) doubleValue = doubleMax.Value;
+                    saveValue = doubleValue;
+                    break;
                 case "richtext":
                     // Replace all new line characters with a <Br/> tag here
                     string richtextValue = GetValueProviderString(bindingContext.ValueProvider, attribute);

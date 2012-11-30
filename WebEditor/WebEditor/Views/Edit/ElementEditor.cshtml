@@ -274,6 +274,30 @@ Working...
             }
             <input type="number" name="@ctl.Attribute" id="@ctl.Attribute" value="@Model.EditorData.GetAttribute(ctl.Attribute)" @minMax style="width: 50px" />
             break;
+        case "numberdouble":
+            string doubleMinMax = string.Empty;
+            double? dblMin = ctl.GetDouble("minimum");
+            double? dblMax = ctl.GetDouble("maximum");
+            if (dblMin.HasValue)
+            {
+                doubleMinMax += string.Format("min={0}", dblMin);
+            }
+            if (dblMax.HasValue)
+            {
+                if (doubleMinMax.Length > 0)
+                {
+                    doubleMinMax += " ";
+                }
+                doubleMinMax += string.Format("max={0}", dblMax);
+            }
+            double? increment = ctl.GetDouble("increment");
+            string step = string.Empty;
+            if (increment.HasValue)
+            {
+                step = string.Format("step={0}", increment);
+            }
+            <input type="number" name="@ctl.Attribute" id="@ctl.Attribute" value="@Model.EditorData.GetAttribute(ctl.Attribute)" @doubleMinMax @step style="width: 50px" />
+            break;
         case "multi":
             @RenderMultiControl(ctl, value)
             break;
