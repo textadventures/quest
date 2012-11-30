@@ -324,27 +324,27 @@ Working...
             break;
         case "scriptdictionary":
             @Html.Action("EditScriptDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
-       break;
+            break;
         case "stringdictionary":
             @Html.Action("EditStringDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
-       break;
+            break;
         case "gamebookoptions":
             @Html.Action("EditGameBookOptions", new { id = Model.GameId, key = Model.Key, control = ctl })
-       break;
+            break;
         case "pattern":
-       IEditableCommandPattern commandPattern = value as IEditableCommandPattern;
-       string text = (commandPattern != null) ? commandPattern.Pattern : string.Empty;
+            IEditableCommandPattern commandPattern = value as IEditableCommandPattern;
+            string text = (commandPattern != null) ? commandPattern.Pattern : string.Empty;
             @Html.TextBox(ctl.Attribute, text, new { style = "width: 100%", @class = "elementEditorTextbox" })
-       break;
+            break;
         case null:
-       break;
+            break;
         default:
-       throw new ArgumentException(string.Format("Invalid control type: {0}", controlType));
+            throw new ArgumentException(string.Format("Invalid control type: {0}", controlType));
     }
 }
 
 @helper RenderMultiControl(IEditorControl ctl, object value)
-    {
+{
     string caption = ctl.GetString("selfcaption");
     if (caption != null)
     {
