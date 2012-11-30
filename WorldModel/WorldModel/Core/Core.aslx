@@ -76,7 +76,13 @@
     if (game.gridmap) {
       request (RunScript, "ShowGrid; " + game.mapsize)
       Grid_SetScale (game.mapscale)
-      DrawMap
+      
+      if (game.pov <> null) {
+        if (game.pov.parent <> null) {
+          Grid_Redraw
+          Grid_DrawPlayerInRoom (game.pov.parent)
+        }
+      }
     }
     ]]>
   </function>

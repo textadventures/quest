@@ -1,8 +1,4 @@
 ﻿<library>
-  <function name="DrawMap">
-    //request (RunScript, "DrawGrid; -4; -4; 10; 10")
-  </function>
-
   <function name="Grid_SetScale" parameters="scale">
     request (RunScript, "Grid_SetScale; " + scale)
   </function>
@@ -136,7 +132,7 @@
 
   <function name="Grid_DrawPlayerInRoom" parameters="room">
     if (room.grid_render) {
-      Grid_DrawRoom (room)
+      Grid_DrawRoom (room, false)
     
       player_x = room.grid_x + room.grid_width/2.0
       player_y = room.grid_y + room.grid_length/2.0
@@ -147,13 +143,13 @@
     }
   </function>
 
-  <function name="Grid_DrawRoom" parameters="room">
+  <function name="Grid_DrawRoom" parameters="room, redraw">
     <![CDATA[
     if (room.grid_render) {
-      if (not GetBoolean(room, "grid_isdrawn")) {
+      if (redraw or not GetBoolean(room, "grid_isdrawn")) {
       
         if (room.parent <> null) {
-          Grid_DrawRoom (room.parent)
+          Grid_DrawRoom (room.parent, redraw)
         }
       
         // Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill, sides)
@@ -217,5 +213,13 @@
 
   <function name="GridSquareClick" parameters="x, y">
     // Copy this function into your game to handle grid square clicks
+  </function>
+
+  <function name="Grid_Redraw">
+    foreach (object, AllObjects()) {
+      if (GetBoolean(object, "grid_isdrawn")) {
+        Grid_DrawRoom (object, true)
+      }
+    }
   </function>
 </library>

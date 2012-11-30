@@ -243,6 +243,13 @@ gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
         player.fillColor = fill;
         player.fillColor = fill;
         allPaths.push(player);
+        
+        playerPositionAbsolute = player.position - offset;
+        offsetDestinationX = ($("#gridPanel").width() / 2) - playerPositionAbsolute.x;
+        offsetDestinationY = ($("#gridPanel").height() / 2) - playerPositionAbsolute.y;
+
+        offsetDestination = new Point(offsetDestinationX, offsetDestinationY);
+        offsetVector = (offsetDestination - offset);
     }
     else {
         playerDestination = gridPoint(x, y);
