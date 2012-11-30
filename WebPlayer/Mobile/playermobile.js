@@ -183,6 +183,12 @@ function setInterfaceString(name, text) {
             break;
         case "NothingSelectedLabel":
             break;
+        case "TypeHereLabel":
+            $("#txtCommand").prop("placeholder", text);
+            break;
+        case "ContinueLabel":
+            $("#endWaitLink").html(text);
+            break;
     }
 }
 

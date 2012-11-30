@@ -814,6 +814,8 @@ Public Class Player
         SetInterfaceString("OutButtonLabel", "out")
         SetInterfaceString("EmptyListLabel", "(empty)")
         SetInterfaceString("NothingSelectedLabel", "(nothing selected)")
+        SetInterfaceString("TypeHereLabel", "Type here...")
+        SetInterfaceString("ContinueLabel", "Continue...")
     End Sub
 
     Public Sub SetInterfaceString(name As String, text As String) Implements IPlayer.SetInterfaceString

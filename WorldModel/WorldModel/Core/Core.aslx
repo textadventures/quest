@@ -53,6 +53,8 @@
     request (SetInterfaceString, "OutButtonLabel=[OutButtonLabel]")
     request (SetInterfaceString, "EmptyListLabel=[EmptyListLabel]")
     request (SetInterfaceString, "NothingSelectedLabel=[NothingSelectedLabel]")
+    request (SetInterfaceString, "TypeHereLabel=[TypeHereLabel]")
+    request (SetInterfaceString, "ContinueLabel=[ContinueLabel]")
     request (RunScript, "SetMenuBackground;" + game.menubackground)
     request (RunScript, "SetMenuForeground;" + game.menuforeground)
     request (RunScript, "SetMenuHoverBackground;" + game.menuhoverbackground)
