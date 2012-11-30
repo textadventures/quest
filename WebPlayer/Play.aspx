@@ -21,7 +21,7 @@
     <script type="text/paperscript" src="grid.js" canvas="gridCanvas"></script>
     <% Response.Write(GetHead()); %>
 </head>
-<body onkeydown="globalKey(event);" onload="init();">
+<body onload="init();">
     <% Response.Write(GetBodyHeader()); %>
     <div style="display: none">
         <form id="playerform" runat="server" defaultbutton="cmdSubmit">

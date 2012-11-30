@@ -799,7 +799,6 @@ Public Class Player
         If keys = Windows.Forms.Keys.Escape Then
             EscPressed()
         End If
-        m_waiting = False
         RaiseEvent ShortcutKeyPressed(keys)
     End Sub
 

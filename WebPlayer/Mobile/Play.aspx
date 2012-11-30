@@ -18,7 +18,7 @@
     <script type="text/javascript" src="playermobile.js"></script>
     <% Response.Write(GetHead()); %>
 </head>
-<body onkeydown="globalKey(event);" onload="init();">
+<body onload="init();">
     <% Response.Write(GetBodyHeader()); %>    
     <div id="dialog" title="Menu">
     <p id="dialogCaption">

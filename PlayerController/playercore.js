@@ -10,6 +10,12 @@ var verbButtonCount = 9;
 var beginningOfCurrentTurnScrollPosition = 0;
 
 $(function () {
+    $("body").keydown(function (e) {
+        if (_waitMode) {
+            endWait();
+        }
+    });
+
     $("button").button();
     $("#gamePanesRunning").multiOpenAccordion({ active: [0, 1, 2, 3] });
     showStatusVisible(false);
@@ -111,13 +117,6 @@ function endPause() {
         $("#fldUIMsg").val("endpause");
         $("#cmdSubmit").click();
     }, 100);
-}
-
-function globalKey(e) {
-    if (_waitMode) {
-        endWait();
-        return;
-    }
 }
 
 function commandKey(e) {
