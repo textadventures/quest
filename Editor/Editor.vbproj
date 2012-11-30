@@ -110,12 +110,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="IElementEditorControl.vb" />
-    <Compile Include="InputWindow.Designer.vb">
-      <DependentUpon>InputWindow.vb</DependentUpon>
-    </Compile>
-    <Compile Include="InputWindow.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="LoadingControl.Designer.vb">
       <DependentUpon>LoadingControl.vb</DependentUpon>
     </Compile>
@@ -180,9 +174,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editor.resx">
       <DependentUpon>Editor.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InputWindow.resx">
-      <DependentUpon>InputWindow.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoadingControl.resx">
       <DependentUpon>LoadingControl.vb</DependentUpon>
