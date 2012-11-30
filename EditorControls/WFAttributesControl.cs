@@ -207,7 +207,7 @@ namespace TextAdventures.Quest.EditorControls
 
                 foreach (var attr in m_data.GetAttributeData())
                 {
-                    if (CanDisplayAttribute(attr.AttributeName, m_data.GetAttribute(attr.AttributeName)))
+                    if (CanDisplayAttribute(attr.AttributeName, m_data.GetAttribute(attr.AttributeName), attr.Source != m_data.Name))
                     {
                         AddListItem(lstAttributes, attr, GetAttributeDisplayString);
                         ListenToAttribute(attr);
@@ -244,7 +244,7 @@ namespace TextAdventures.Quest.EditorControls
             AttributeChangedInternal(attribute, wrappedValue, false);
         }
 
-        protected virtual bool CanDisplayAttribute(string attribute, object value)
+        protected virtual bool CanDisplayAttribute(string attribute, object value, bool isInherited)
         {
             return true;
         }
@@ -407,7 +407,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             ListViewItem listViewItem = lstAttributes.Items[attribute];
 
-            if (value == null || !CanDisplayAttribute(attribute, value))
+            if (value == null || !CanDisplayAttribute(attribute, value, false))
             {
                 // Remove attribute
                 lstAttributes.Items.Remove(listViewItem);

@@ -68,9 +68,10 @@ namespace TextAdventures.Quest.EditorControls
             m_defaultExpression = controlData == null ? null : controlData.GetString("defaultexpression");
         }
 
-        protected override bool CanDisplayAttribute(string attribute, object value)
+        protected override bool CanDisplayAttribute(string attribute, object value, bool isInherited)
         {
             if (!Controller.IsVerbAttribute(attribute)) return false;
+            if (Controller.SimpleMode && isInherited) return false;
             Type valueType = value.GetType();
             return s_validTypes.Any(t => t.IsAssignableFrom(valueType));
         }
