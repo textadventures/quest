@@ -259,7 +259,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub UpdateStatus(status As String)
-        InvokeScript("updateStatus", status)
+        InvokeScript("updateStatus", status.Replace(Environment.NewLine, "<br/>"))
     End Sub
 
     Public Sub ShowExitFullScreenButton(show As Boolean)
