@@ -753,7 +753,7 @@ namespace WebEditor.Services
         public Models.StringDictionary GetStringDictionaryModel(int id, string key, IEditorControl ctl, System.Web.Mvc.ModelStateDictionary modelState)
         {
             IEditableDictionary<string> value = m_controller.GetEditorData(key).GetAttribute(ctl.Attribute) as IEditableDictionary<string>;
-            
+
             foreach (var error in m_dictionaryErrors)
             {
                 modelState.AddModelError(error.Key, error.Value.Message);
@@ -822,7 +822,8 @@ namespace WebEditor.Services
                 previousElement = element;
             }
 
-            return new Models.ElementsList {
+            return new Models.ElementsList
+            {
                 Key = ctl.Id,
                 Items = listItems,
                 ElementType = elementType,
@@ -838,6 +839,7 @@ namespace WebEditor.Services
             {
                 Id = ctl.Id,
                 Objects = new List<string>(m_controller.GetObjectNames("object")
+                    .Where(n => n != key)
                     .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)),
                 CreateInverse = m_createInverse,
                 SimpleMode = m_controller.SimpleMode
@@ -848,7 +850,8 @@ namespace WebEditor.Services
             IDictionary<string, string> compassTypes = ctl.GetDictionary("compasstypes");
 
             result.Directions = new List<Models.Exits.CompassDirection>(
-                compassDirections.Select(d => new Models.Exits.CompassDirection {
+                compassDirections.Select(d => new Models.Exits.CompassDirection
+                {
                     Name = d,
                     InverseName = GetInverseDirection(d, compassDirections),
                     DirectionType = compassTypes[d],
@@ -1760,7 +1763,7 @@ namespace WebEditor.Services
 
             m_controller.EndTransaction();
         }
-        
+
         private void ScriptAddElse(string element, string attribute)
         {
             // TO DO: if (m_data.ReadOnly) return;
@@ -1794,7 +1797,7 @@ namespace WebEditor.Services
                 {
                     ifScript.RemoveElse();
                 }
-                else if(section.StartsWith("elseif"))
+                else if (section.StartsWith("elseif"))
                 {
                     elseIfsToRemove.Add(ifScript.ElseIfScripts.ElementAt(int.Parse(section.Substring(6))));
                 }
@@ -2023,7 +2026,7 @@ namespace WebEditor.Services
                 string[] path;
 
                 // Is it a script dictionary?
-                
+
                 path = attribute.Split(new[] { '-' });
                 object value = m_controller.GetEditorData(element).GetAttribute(path[0]);
                 IEditableDictionary<IEditableScripts> dict = value as IEditableDictionary<IEditableScripts>;
@@ -2097,7 +2100,7 @@ namespace WebEditor.Services
         {
             string[] path = attribute.Split(new[] { '-' });
             object value = m_controller.GetEditorData(element).GetAttribute(path[0]);
-            
+
             IEditableScripts parent = value as IEditableScripts;
             if (parent != null)
             {
@@ -2299,7 +2302,7 @@ namespace WebEditor.Services
             {
                 ctl = FindEditorControlByAttribute(element, attribute);
             }
-            
+
             return new List<string>(ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
         }
 
