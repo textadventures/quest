@@ -324,7 +324,9 @@ namespace TextAdventures.Quest.EditorControls
             {
                 CompassEditor.Mode = CompassEditorControl.CompassEditorMode.NewCompassExit;
                 CompassEditor.to.Items.Clear();
-                foreach (string objectName in m_controller.GetObjectNames("object").OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase))
+                foreach (string objectName in m_controller.GetObjectNames("object")
+                    .Where(n => n != m_data.Name)
+                    .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase))
                 {
                     CompassEditor.to.Items.Add(objectName);
                 }
