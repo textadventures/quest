@@ -1,6 +1,19 @@
 ﻿Public Class Menu
     Private m_cancelled As Boolean
     Private m_selected As Boolean
+    Private dpiX, dpiY As Single
+
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        Using g As Graphics = Me.CreateGraphics()
+            dpiX = g.DpiX
+            dpiY = g.DpiY
+        End Using
+    End Sub
 
     Public WriteOnly Property Options() As IDictionary(Of String, String)
         Set(value As IDictionary(Of String, String))
@@ -58,7 +71,7 @@
     End Sub
 
     Private Sub lstOptions_Resize(sender As Object, e As System.EventArgs) Handles lstOptions.Resize
-        lstOptions.Columns(0).Width = lstOptions.Width - 40
+        lstOptions.Columns(0).Width = lstOptions.Width - CInt(40 * dpiX / 96)
     End Sub
 
     Private Sub Menu_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
@@ -66,8 +79,9 @@
     End Sub
 
     Private Sub DoResize()
-        lblCaption.MaximumSize = New Size(Me.Width - 24, lblCaption.MaximumSize.Height)
-        lstOptions.Top = lblCaption.Top + lblCaption.Height + 8
-        lstOptions.Height = Me.Height - (lstOptions.Top + 76)
+        lblCaption.MaximumSize = New Size(Me.Width - CInt(24 * dpiX / 96), lblCaption.MaximumSize.Height)
+        lstOptions.Top = lblCaption.Top + lblCaption.Height + CInt(8 * dpiY / 96)
+        lstOptions.Height = Me.Height - (lstOptions.Top + CInt(76 * dpiY / 96))
     End Sub
+
 End Class

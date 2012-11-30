@@ -12,13 +12,20 @@ namespace TextAdventures.Quest.EditorControls
     public partial class InputWindow : Form
     {
         private Control m_activeControl;
+        private float dpiX, dpiY;
 
         public InputWindow()
         {
             InitializeComponent();
 
+            using (Graphics g = this.CreateGraphics())
+            {
+                dpiX = g.DpiX;
+                dpiY = g.DpiY;
+            }
+
             ShowDropdown(false);
-            m_activeControl = txtInput;
+            m_activeControl = txtInput;            
         }
 
         private void cmdOK_Click(System.Object sender, System.EventArgs e)
@@ -38,11 +45,11 @@ namespace TextAdventures.Quest.EditorControls
         {
             if (visible)
             {
-                this.Height = 162;
+                this.Height = (int)Math.Round(162 * (dpiY / 96));
             }
             else
             {
-                this.Height = 127;
+                this.Height = (int)Math.Round(127 * (dpiY / 96));
             }
 
             lblDropdownCaption.Visible = visible;
