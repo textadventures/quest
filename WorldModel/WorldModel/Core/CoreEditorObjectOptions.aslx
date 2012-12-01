@@ -98,6 +98,22 @@
 
     <control>
       <controltype>title</controltype>
+      <caption>Light/Dark</caption>
+      <advanced/>
+    </control>
+
+    <control>
+      <mustnotinherit>editor_room</mustnotinherit>
+      <controltype>dropdown</controltype>
+      <caption>Brightness</caption>
+      <attribute>lightstrength</attribute>
+      <validvalues type="stringdictionary">=Not a light source; weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
+      <advanced/>
+    </control>
+
+
+    <control>
+      <controltype>title</controltype>
       <caption>Player</caption>
       <advanced/>
     </control>

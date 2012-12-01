@@ -247,32 +247,37 @@
   <function name="HandleCommand" parameters="command, metadata">
     <![CDATA[
     msg ("")
-    shownlink = false
-    if (metadata <> null and game.enablehyperlinks and game.echohyperlinks) {
-      foreach (key, metadata) {
-        if (EndsWith(command, key)) {
-          objectname = StringDictionaryItem(metadata, key)
-          object = GetObject(objectname)
-          if (object <> null) {
-            msg ("> " + Left(command, LengthOf(command) - LengthOf(key)) + GetTaggedName(object, "object", GetDisplayVerbs(object)))
-            shownlink = true
+    if (StartsWith (command, "*")) {
+      msg (SafeXML (command))
+    }
+    else {    
+      shownlink = false
+      if (metadata <> null and game.enablehyperlinks and game.echohyperlinks) {
+        foreach (key, metadata) {
+          if (EndsWith(command, key)) {
+            objectname = StringDictionaryItem(metadata, key)
+            object = GetObject(objectname)
+            if (object <> null) {
+              msg ("> " + Left(command, LengthOf(command) - LengthOf(key)) + GetTaggedName(object, "object", GetDisplayVerbs(object)))
+              shownlink = true
+            }
           }
         }
       }
-    }
-    if (not shownlink) {
-      msg ("> " + SafeXML(command))
-    }
-    commands = Split(command, ".")
-    game.pov.commandmetadata = metadata
-    if (ListCount(commands) = 1) {
-      game.pov.commandqueue = null
-      HandleSingleCommand (Trim(command))
-    }
-    else {
-      game.pov.commandqueue = commands
-      HandleNextCommandQueueItem
-    }
+      if (not shownlink) {
+        msg ("> " + SafeXML(command))
+      }
+      commands = Split(command, ".")
+      game.pov.commandmetadata = metadata
+      if (ListCount(commands) = 1) {
+        game.pov.commandqueue = null
+        HandleSingleCommand (Trim(command))
+      }
+      else {
+        game.pov.commandqueue = commands
+        HandleNextCommandQueueItem
+      }
+    }  
     ]]>
   </function>
 

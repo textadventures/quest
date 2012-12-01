@@ -362,14 +362,16 @@
   </function>
   
   <function name="CheckDarkness" type="boolean">
-    roomCheckDarkness = false
-    if (GetBoolean(player.parent, "dark")) {
-      roomCheckDarkness = true
+    roomCheckDarkness = true
+    if (GetBoolean(game.pov.parent, "dark")) {
       if (ListCount(ScopeReachableLightsource("strong")) > 0) {
         roomCheckDarkness = false
       }
-      player.parent.darklevel = roomCheckDarkness
+    } 
+    else {
+      roomCheckDarkness = false
     }
+    game.pov.parent.darklevel = roomCheckDarkness
     return (roomCheckDarkness)
- </function>
+  </function>
 </library>
