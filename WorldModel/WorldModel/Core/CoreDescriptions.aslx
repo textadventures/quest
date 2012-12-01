@@ -364,7 +364,6 @@
   <function name="CheckDarkness" type="boolean">
     roomCheckDarkness = true
     if (GetBoolean(game.pov.parent, "dark")) {
-      roomCheckDarkness = true
       if (ListCount(ScopeReachableLightsource("strong")) > 0) {
         roomCheckDarkness = false
       }
