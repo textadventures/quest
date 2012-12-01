@@ -341,11 +341,26 @@
 		<col def="S0">ISDotNetInstallerArgsCommit</col>
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
+		<row><td>CefSharp.WinForms.dll</td><td>{D8152723-C9B9-4C66-A01B-5BDF1E794EF3}</td><td>INSTALLDIR</td><td>2</td><td/><td>cefsharp.winforms.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>CefSharp.dll</td><td>{B0787DE5-5E4C-4BA1-98DB-54214EEA1BF9}</td><td>INSTALLDIR</td><td>2</td><td/><td>cefsharp.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td>{92A7F792-ACA2-4800-AA99-8B5CD6CDD1F4}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{486CE893-7AC6-4F4D-9CD3-FEA01BA1471C}</td><td>LANGUAGES</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td>{32476EDB-69C8-421A-8E03-7BB2350A5151}</td><td>TEMPLATES</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ISX_DEFAULTCOMPONENT3</td><td>{D1BC863C-7953-42AF-99BE-6E7FBA34D0F7}</td><td>LOCALES</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ISX_DEFAULTCOMPONENT4</td><td>{4AD82590-7360-417C-85C5-E71CAEDFEB5C}</td><td>CSS</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ISX_DEFAULTCOMPONENT5</td><td>{F33402F7-B5CB-45B8-8551-4E9937D03011}</td><td>REDMOND</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ISX_DEFAULTCOMPONENT6</td><td>{36ED7086-F02C-465B-B444-28C11DBE5BA8}</td><td>IMAGES</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Quest.Content_Files</td><td>{797A8561-ABA6-4CA9-AE93-A22067536F94}</td><td>INSTALLDIR</td><td>2</td><td/><td>quest.content_files</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Quest.Primary_output</td><td>{A239A6E8-7217-405E-902E-1E66B72BFBF3}</td><td>INSTALLDIR</td><td>2</td><td/><td>quest.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>avcodec_54.dll</td><td>{6A1EC5B2-57C2-452A-AAED-B25D59A594A1}</td><td>INSTALLDIR</td><td>2</td><td/><td>avcodec_54.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>avformat_54.dll</td><td>{C610AC03-F810-47B4-9D0E-1FA3CD9AAD08}</td><td>INSTALLDIR</td><td>2</td><td/><td>avformat_54.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>avutil_51.dll</td><td>{F8E92755-41F6-4431-BA54-CDCE9B93A0A9}</td><td>INSTALLDIR</td><td>2</td><td/><td>avutil_51.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>d3dcompiler_43.dll</td><td>{0A26CE02-DE92-4D05-8ECE-E18E7D8E0DFF}</td><td>INSTALLDIR</td><td>2</td><td/><td>d3dcompiler_43.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>d3dx9_43.dll</td><td>{3FA0FDE8-0C41-4DE2-89B4-20FED91828CC}</td><td>INSTALLDIR</td><td>2</td><td/><td>d3dx9_43.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>icudt.dll</td><td>{9D0610E7-C542-43B8-8393-AE51CB43E666}</td><td>INSTALLDIR</td><td>2</td><td/><td>icudt.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>libEGL.dll</td><td>{FF0DCA80-F353-4774-B04C-5688A7F424D6}</td><td>INSTALLDIR</td><td>2</td><td/><td>libegl.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>libGLESv2.dll</td><td>{E2CCE337-8DB7-4743-8621-B0B9DE40E670}</td><td>INSTALLDIR</td><td>2</td><td/><td>libglesv2.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>libcef.dll</td><td>{85D56CE2-6027-4236-B53E-DDC5CD0906C6}</td><td>INSTALLDIR</td><td>2</td><td/><td>libcef.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
 	<table name="Condition">
@@ -1055,6 +1070,7 @@
 	<table name="CreateFolder">
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
+		<row><td>CSS</td><td>ISX_DEFAULTCOMPONENT4</td></row>
 	</table>
 
 	<table name="CustomAction">
@@ -1139,6 +1155,7 @@
 		<row><td>AXE_SOFTWARE</td><td>ProgramFilesFolder</td><td>AXESOF~1|Axe Software</td><td/><td>0</td><td/></row>
 		<row><td>AdminToolsFolder</td><td>TARGETDIR</td><td>.:Admint~1|AdminTools</td><td/><td>0</td><td/></row>
 		<row><td>AppDataFolder</td><td>TARGETDIR</td><td>.:APPLIC~1|Application Data</td><td/><td>0</td><td/></row>
+		<row><td>CSS</td><td>INSTALLDIR</td><td>css</td><td/><td>0</td><td/></row>
 		<row><td>CommonAppDataFolder</td><td>TARGETDIR</td><td>.:Common~1|CommonAppData</td><td/><td>0</td><td/></row>
 		<row><td>CommonFilesFolder</td><td>TARGETDIR</td><td>.:Common</td><td/><td>0</td><td/></row>
 		<row><td>DATABASEDIR</td><td>ISYourDataBaseDir</td><td>.</td><td/><td>0</td><td/></row>
@@ -1146,12 +1163,14 @@
 		<row><td>FavoritesFolder</td><td>TARGETDIR</td><td>.:FAVORI~1|Favorites</td><td/><td>0</td><td/></row>
 		<row><td>FontsFolder</td><td>TARGETDIR</td><td>.:Fonts</td><td/><td>0</td><td/></row>
 		<row><td>GlobalAssemblyCache</td><td>TARGETDIR</td><td>.:Global~1|GlobalAssemblyCache</td><td/><td>0</td><td/></row>
-		<row><td>INSTALLDIR</td><td>QUEST</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>IMAGES</td><td>REDMOND</td><td>images</td><td/><td>0</td><td/></row>
+		<row><td>INSTALLDIR</td><td>QUEST_5</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>ISCommonFilesFolder</td><td>CommonFilesFolder</td><td>Instal~1|InstallShield</td><td/><td>0</td><td/></row>
 		<row><td>ISMyCompanyDir</td><td>ProgramFilesFolder</td><td>MYCOMP~1|My Company Name</td><td/><td>0</td><td/></row>
 		<row><td>ISMyProductDir</td><td>ISMyCompanyDir</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
 		<row><td>ISYourDataBaseDir</td><td>INSTALLDIR</td><td>Database</td><td/><td>0</td><td/></row>
 		<row><td>LANGUAGES</td><td>INSTALLDIR</td><td>LANGUA~1|Languages</td><td/><td>0</td><td/></row>
+		<row><td>LOCALES</td><td>INSTALLDIR</td><td>locales</td><td/><td>0</td><td/></row>
 		<row><td>LocalAppDataFolder</td><td>TARGETDIR</td><td>.:LocalA~1|LocalAppData</td><td/><td>0</td><td/></row>
 		<row><td>MY_PRODUCT_NAME</td><td>AXE_SOFTWARE</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
 		<row><td>MyPicturesFolder</td><td>TARGETDIR</td><td>.:MyPict~1|MyPictures</td><td/><td>0</td><td/></row>
@@ -1162,6 +1181,9 @@
 		<row><td>ProgramFilesFolder</td><td>TARGETDIR</td><td>.:PROGRA~1|program files</td><td/><td>0</td><td/></row>
 		<row><td>ProgramMenuFolder</td><td>TARGETDIR</td><td>.:Programs</td><td/><td>3</td><td/></row>
 		<row><td>QUEST</td><td>AXE_SOFTWARE</td><td>Quest</td><td/><td>0</td><td/></row>
+		<row><td>QUEST1</td><td>ProgramFilesFolder</td><td>Quest</td><td/><td>0</td><td/></row>
+		<row><td>QUEST_5</td><td>ProgramFilesFolder</td><td>QUEST5~1|Quest 5</td><td/><td>0</td><td/></row>
+		<row><td>REDMOND</td><td>CSS</td><td>redmond</td><td/><td>0</td><td/></row>
 		<row><td>RecentFolder</td><td>TARGETDIR</td><td>.:Recent</td><td/><td>0</td><td/></row>
 		<row><td>SendToFolder</td><td>TARGETDIR</td><td>.:SendTo</td><td/><td>3</td><td/></row>
 		<row><td>StartMenuFolder</td><td>TARGETDIR</td><td>.:STARTM~1|Start Menu</td><td/><td>3</td><td/></row>
@@ -1872,11 +1894,26 @@
 	<table name="FeatureComponents">
 		<col key="yes" def="s38">Feature_</col>
 		<col key="yes" def="s72">Component_</col>
+		<row><td>AlwaysInstall</td><td>CefSharp.WinForms.dll</td></row>
+		<row><td>AlwaysInstall</td><td>CefSharp.dll</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT2</td></row>
+		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT3</td></row>
+		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT4</td></row>
+		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT5</td></row>
+		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT6</td></row>
 		<row><td>AlwaysInstall</td><td>Quest.Content_Files</td></row>
 		<row><td>AlwaysInstall</td><td>Quest.Primary_output</td></row>
+		<row><td>AlwaysInstall</td><td>avcodec_54.dll</td></row>
+		<row><td>AlwaysInstall</td><td>avformat_54.dll</td></row>
+		<row><td>AlwaysInstall</td><td>avutil_51.dll</td></row>
+		<row><td>AlwaysInstall</td><td>d3dcompiler_43.dll</td></row>
+		<row><td>AlwaysInstall</td><td>d3dx9_43.dll</td></row>
+		<row><td>AlwaysInstall</td><td>icudt.dll</td></row>
+		<row><td>AlwaysInstall</td><td>libEGL.dll</td></row>
+		<row><td>AlwaysInstall</td><td>libGLESv2.dll</td></row>
+		<row><td>AlwaysInstall</td><td>libcef.dll</td></row>
 	</table>
 
 	<table name="File">
@@ -1891,8 +1928,20 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
+		<row><td>am.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>am.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\am.pak</td><td>1</td><td/></row>
+		<row><td>ar.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ar.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ar.pak</td><td>1</td><td/></row>
+		<row><td>avcodec_54.dll</td><td>avcodec_54.dll</td><td>AVCODE~1.DLL|avcodec-54.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\avcodec-54.dll</td><td>1</td><td/></row>
+		<row><td>avformat_54.dll</td><td>avformat_54.dll</td><td>AVFORM~1.DLL|avformat-54.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\avformat-54.dll</td><td>1</td><td/></row>
+		<row><td>avutil_51.dll</td><td>avutil_51.dll</td><td>AVUTIL~1.DLL|avutil-51.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\avutil-51.dll</td><td>1</td><td/></row>
+		<row><td>bg.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>bg.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\bg.pak</td><td>1</td><td/></row>
 		<row><td>blank.htm</td><td>ISX_DEFAULTCOMPONENT</td><td>Blank.htm</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\Blank.htm</td><td>1</td><td/></row>
+		<row><td>bn.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>bn.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\bn.pak</td><td>1</td><td/></row>
+		<row><td>ca.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ca.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ca.pak</td><td>1</td><td/></row>
+		<row><td>cefsharp.dll</td><td>CefSharp.dll</td><td>CefSharp.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\CefSharp.dll</td><td>1</td><td/></row>
+		<row><td>cefsharp.winforms.dll</td><td>CefSharp.WinForms.dll</td><td>CEFSHA~1.DLL|CefSharp.WinForms.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\CefSharp.WinForms.dll</td><td>1</td><td/></row>
+		<row><td>chrome.pak</td><td>ISX_DEFAULTCOMPONENT</td><td>chrome.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\chrome.pak</td><td>1</td><td/></row>
 		<row><td>core.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORE~1.ASL|Core.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Core.aslx</td><td>1</td><td/></row>
+		<row><td>corecombat.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORECO~1.ASL|CoreCombat.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreCombat.aslx</td><td>1</td><td/></row>
 		<row><td>corecommands.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORECO~1.ASL|CoreCommands.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreCommands.aslx</td><td>1</td><td/></row>
 		<row><td>coredescriptions.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREDE~1.ASL|CoreDescriptions.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreDescriptions.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditor.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditor.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditor.aslx</td><td>1</td><td/></row>
@@ -1912,6 +1961,8 @@
 		<row><td>coreeditorobjectcontainer.as</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectContainer.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectContainer.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectexits.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectExits.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectExits.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectinventory.as</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectInventory.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectInventory.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditorobjectlightdark.as</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectLightDark.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectLightDark.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditorobjectmap.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectMap.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectMap.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectobject.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectObject.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectObject.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectoptions.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectOptions.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectOptions.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectroom.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectRoom.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectRoom.aslx</td><td>1</td><td/></row>
@@ -1920,6 +1971,9 @@
 		<row><td>coreeditorobjectusegive.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectUseGive.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectUseGive.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorobjectverbs.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorObjectVerbs.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorObjectVerbs.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorscripts.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScripts.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditorscriptsdarkness.as</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScriptsDarkness.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScriptsDarkness.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditorscriptsdrawing.asl</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScriptsDrawing.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScriptsDrawing.aslx</td><td>1</td><td/></row>
+		<row><td>coreeditorscriptseffects.asl</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScriptsEffects.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScriptsEffects.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorscriptsgamestate.a</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScriptsGameState.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScriptsGameState.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorscriptsobjects.asl</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScriptsObjects.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScriptsObjects.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorscriptsoutput.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorScriptsOutput.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorScriptsOutput.aslx</td><td>1</td><td/></row>
@@ -1934,6 +1988,8 @@
 		<row><td>coreeditortype.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorType.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorType.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorverb.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorVerb.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorVerb.aslx</td><td>1</td><td/></row>
 		<row><td>coreeditorwalkthrough.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREED~1.ASL|CoreEditorWalkthrough.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEditorWalkthrough.aslx</td><td>1</td><td/></row>
+		<row><td>coreeffects.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREEF~1.ASL|CoreEffects.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreEffects.aslx</td><td>1</td><td/></row>
+		<row><td>coregrid.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREGR~1.ASL|CoreGrid.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreGrid.aslx</td><td>1</td><td/></row>
 		<row><td>coreoutput.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREOU~1.ASL|CoreOutput.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreOutput.aslx</td><td>1</td><td/></row>
 		<row><td>coreparser.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>COREPA~1.ASL|CoreParser.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreParser.aslx</td><td>1</td><td/></row>
 		<row><td>corescopes.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORESC~1.ASL|CoreScopes.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreScopes.aslx</td><td>1</td><td/></row>
@@ -1941,30 +1997,106 @@
 		<row><td>coretimers.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORETI~1.ASL|CoreTimers.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreTimers.aslx</td><td>1</td><td/></row>
 		<row><td>coreturnscripts.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORETU~1.ASL|CoreTurnScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreTurnScripts.aslx</td><td>1</td><td/></row>
 		<row><td>coretypes.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>CORETY~1.ASL|CoreTypes.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\CoreTypes.aslx</td><td>1</td><td/></row>
+		<row><td>cs.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>cs.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\cs.pak</td><td>1</td><td/></row>
+		<row><td>d3dcompiler_43.dll</td><td>d3dcompiler_43.dll</td><td>D3DCOM~1.DLL|d3dcompiler_43.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\d3dcompiler_43.dll</td><td>1</td><td/></row>
+		<row><td>d3dx9_43.dll</td><td>d3dx9_43.dll</td><td>d3dx9_43.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\d3dx9_43.dll</td><td>1</td><td/></row>
+		<row><td>da.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>da.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\da.pak</td><td>1</td><td/></row>
+		<row><td>de.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>de.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\de.pak</td><td>1</td><td/></row>
 		<row><td>desktopplayer.css</td><td>ISX_DEFAULTCOMPONENT</td><td>DESKTO~1.CSS|desktopplayer.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\desktopplayer.css</td><td>1</td><td/></row>
 		<row><td>desktopplayer.js</td><td>ISX_DEFAULTCOMPONENT</td><td>DESKTO~1.JS|desktopplayer.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\desktopplayer.js</td><td>1</td><td/></row>
 		<row><td>deutsch.aslx2</td><td>ISX_DEFAULTCOMPONENT1</td><td>DEUTSC~1.ASL|Deutsch.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Deutsch.aslx</td><td>1</td><td/></row>
 		<row><td>deutsch.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>DEUTSC~1.TEM|Deutsch.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Deutsch.template</td><td>1</td><td/></row>
+		<row><td>el.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>el.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\el.pak</td><td>1</td><td/></row>
+		<row><td>en_gb.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>en-GB.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\en-GB.pak</td><td>1</td><td/></row>
+		<row><td>en_us.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>en-US.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\en-US.pak</td><td>1</td><td/></row>
 		<row><td>english.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ENGLIS~1.ASL|English.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\English.aslx</td><td>1</td><td/></row>
 		<row><td>english.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>ENGLIS~1.TEM|English.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\English.template</td><td>1</td><td/></row>
+		<row><td>es.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>es.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\es.pak</td><td>1</td><td/></row>
+		<row><td>es_419.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>es-419.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\es-419.pak</td><td>1</td><td/></row>
 		<row><td>espanol.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ESPANO~1.ASL|Espanol.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Espanol.aslx</td><td>1</td><td/></row>
 		<row><td>espanol.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>ESPANO~1.TEM|Espanol.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Espanol.template</td><td>1</td><td/></row>
 		<row><td>esperanto.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ESPERA~1.ASL|Esperanto.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Esperanto.aslx</td><td>1</td><td/></row>
 		<row><td>esperanto.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>ESPERA~1.TEM|Esperanto.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Esperanto.template</td><td>1</td><td/></row>
+		<row><td>et.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>et.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\et.pak</td><td>1</td><td/></row>
+		<row><td>fa.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>fa.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\fa.pak</td><td>1</td><td/></row>
+		<row><td>fi.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>fi.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\fi.pak</td><td>1</td><td/></row>
+		<row><td>fil.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>fil.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\fil.pak</td><td>1</td><td/></row>
+		<row><td>fr.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>fr.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\fr.pak</td><td>1</td><td/></row>
 		<row><td>francais.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>FRANCA~1.ASL|Francais.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Francais.aslx</td><td>1</td><td/></row>
 		<row><td>francais.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>FRANCA~1.TEM|Francais.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Francais.template</td><td>1</td><td/></row>
 		<row><td>gamebook.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>GAMEBO~1.TEM|Gamebook.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Gamebook.template</td><td>1</td><td/></row>
 		<row><td>gamebookcore.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>GAMEBO~1.ASL|GamebookCore.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCore.aslx</td><td>1</td><td/></row>
 		<row><td>gamebookcoreeditor.aslx</td><td>ISX_DEFAULTCOMPONENT</td><td>GAMEBO~1.ASL|GamebookCoreEditor.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCoreEditor.aslx</td><td>1</td><td/></row>
+		<row><td>grid.js</td><td>ISX_DEFAULTCOMPONENT</td><td>grid.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\PlayerController\grid.js</td><td>1</td><td/></row>
+		<row><td>gu.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>gu.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\gu.pak</td><td>1</td><td/></row>
+		<row><td>he.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>he.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\he.pak</td><td>1</td><td/></row>
+		<row><td>hi.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>hi.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\hi.pak</td><td>1</td><td/></row>
+		<row><td>hr.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>hr.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\hr.pak</td><td>1</td><td/></row>
+		<row><td>hu.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>hu.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\hu.pak</td><td>1</td><td/></row>
+		<row><td>icudt.dll</td><td>icudt.dll</td><td>icudt.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\icudt.dll</td><td>1</td><td/></row>
+		<row><td>id.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>id.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\id.pak</td><td>1</td><td/></row>
+		<row><td>it.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>it.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\it.pak</td><td>1</td><td/></row>
+		<row><td>italiano.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ITALIA~1.ASL|Italiano.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Italiano.aslx</td><td>1</td><td/></row>
+		<row><td>italiano.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>ITALIA~1.TEM|Italiano.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Italiano.template</td><td>1</td><td/></row>
+		<row><td>ja.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ja.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ja.pak</td><td>1</td><td/></row>
 		<row><td>jjmenu.css</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jjmenu.css</td><td>1</td><td/></row>
 		<row><td>jjmenu.js</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jjmenu.js</td><td>1</td><td/></row>
+		<row><td>jquery.multi_open_accordion_</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery.multi-open-accordion-1.5.3.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery.multi-open-accordion-1.5.3.js</td><td>1</td><td/></row>
 		<row><td>jquery_1.7.1.min.js</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-1.7.1.min.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery-1.7.1.min.js</td><td>1</td><td/></row>
+		<row><td>jquery_ui_1.8.20.custom.css</td><td>ISX_DEFAULTCOMPONENT5</td><td>JQUERY~1.CSS|jquery-ui-1.8.20.custom.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\jquery-ui-1.8.20.custom.css</td><td>1</td><td/></row>
+		<row><td>jquery_ui_1.8.20.custom.min.</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-ui-1.8.20.custom.min.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery-ui-1.8.20.custom.min.js</td><td>1</td><td/></row>
+		<row><td>kn.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>kn.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\kn.pak</td><td>1</td><td/></row>
+		<row><td>ko.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ko.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ko.pak</td><td>1</td><td/></row>
+		<row><td>libcef.dll</td><td>libcef.dll</td><td>libcef.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\libcef.dll</td><td>1</td><td/></row>
+		<row><td>libegl.dll</td><td>libEGL.dll</td><td>libEGL.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\libEGL.dll</td><td>1</td><td/></row>
+		<row><td>libglesv2.dll</td><td>libGLESv2.dll</td><td>LIBGLE~1.DLL|libGLESv2.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\libGLESv2.dll</td><td>1</td><td/></row>
+		<row><td>lt.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>lt.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\lt.pak</td><td>1</td><td/></row>
+		<row><td>lv.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>lv.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\lv.pak</td><td>1</td><td/></row>
+		<row><td>ml.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ml.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ml.pak</td><td>1</td><td/></row>
+		<row><td>mr.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>mr.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\mr.pak</td><td>1</td><td/></row>
+		<row><td>ms.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ms.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ms.pak</td><td>1</td><td/></row>
+		<row><td>nb.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>nb.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\nb.pak</td><td>1</td><td/></row>
 		<row><td>nederlands.aslx2</td><td>ISX_DEFAULTCOMPONENT1</td><td>NEDERL~1.ASL|Nederlands.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Nederlands.aslx</td><td>1</td><td/></row>
 		<row><td>nederlands.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>NEDERL~1.TEM|Nederlands.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Nederlands.template</td><td>1</td><td/></row>
+		<row><td>nl.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>nl.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\nl.pak</td><td>1</td><td/></row>
+		<row><td>paper.js</td><td>ISX_DEFAULTCOMPONENT</td><td>paper.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\PlayerController\paper.js</td><td>1</td><td/></row>
+		<row><td>pl.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>pl.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\pl.pak</td><td>1</td><td/></row>
 		<row><td>playercore.css</td><td>ISX_DEFAULTCOMPONENT</td><td>PLAYER~1.CSS|playercore.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\PlayerController\playercore.css</td><td>1</td><td/></row>
 		<row><td>playercore.js</td><td>ISX_DEFAULTCOMPONENT</td><td>PLAYER~1.JS|playercore.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\PlayerController\playercore.js</td><td>1</td><td/></row>
+		<row><td>pt_br.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>pt-BR.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\pt-BR.pak</td><td>1</td><td/></row>
+		<row><td>pt_pt.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>pt-PT.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\pt-PT.pak</td><td>1</td><td/></row>
 		<row><td>quest.content_files</td><td>Quest.Content_Files</td><td>Quest.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Quest&gt;|ContentFiles</td><td>3</td><td/></row>
 		<row><td>quest.primary_output</td><td>Quest.Primary_output</td><td>Quest.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Quest&gt;|Built</td><td>3</td><td/></row>
+		<row><td>ro.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ro.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ro.pak</td><td>1</td><td/></row>
+		<row><td>ru.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ru.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ru.pak</td><td>1</td><td/></row>
+		<row><td>sk.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>sk.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\sk.pak</td><td>1</td><td/></row>
+		<row><td>sl.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>sl.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\sl.pak</td><td>1</td><td/></row>
+		<row><td>sr.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>sr.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\sr.pak</td><td>1</td><td/></row>
+		<row><td>sv.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>sv.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\sv.pak</td><td>1</td><td/></row>
+		<row><td>sw.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>sw.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\sw.pak</td><td>1</td><td/></row>
+		<row><td>ta.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ta.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ta.pak</td><td>1</td><td/></row>
+		<row><td>te.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>te.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\te.pak</td><td>1</td><td/></row>
+		<row><td>th.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>th.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\th.pak</td><td>1</td><td/></row>
+		<row><td>tr.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>tr.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\tr.pak</td><td>1</td><td/></row>
+		<row><td>ui_bg_flat_0_aaaaaa_40x100.p</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-BG_~1.PNG|ui-bg_flat_0_aaaaaa_40x100.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-bg_flat_0_aaaaaa_40x100.png</td><td>1</td><td/></row>
+		<row><td>ui_bg_flat_55_fbec88_40x100.</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-BG_~1.PNG|ui-bg_flat_55_fbec88_40x100.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-bg_flat_55_fbec88_40x100.png</td><td>1</td><td/></row>
+		<row><td>ui_bg_glass_75_d0e5f5_1x400.</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-BG_~1.PNG|ui-bg_glass_75_d0e5f5_1x400.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-bg_glass_75_d0e5f5_1x400.png</td><td>1</td><td/></row>
+		<row><td>ui_bg_glass_85_dfeffc_1x400.</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-BG_~1.PNG|ui-bg_glass_85_dfeffc_1x400.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-bg_glass_85_dfeffc_1x400.png</td><td>1</td><td/></row>
+		<row><td>ui_bg_glass_95_fef1ec_1x400.</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-BG_~1.PNG|ui-bg_glass_95_fef1ec_1x400.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-bg_glass_95_fef1ec_1x400.png</td><td>1</td><td/></row>
+		<row><td>ui_bg_gloss_wave_55_5c9ccc_5</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-BG_~1.PNG|ui-bg_gloss-wave_55_5c9ccc_500x100.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-bg_gloss-wave_55_5c9ccc_500x100.png</td><td>1</td><td/></row>
+		<row><td>ui_bg_inset_hard_100_f5f8f9_</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-BG_~1.PNG|ui-bg_inset-hard_100_f5f8f9_1x100.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-bg_inset-hard_100_f5f8f9_1x100.png</td><td>1</td><td/></row>
+		<row><td>ui_bg_inset_hard_100_fcfdfd_</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-BG_~1.PNG|ui-bg_inset-hard_100_fcfdfd_1x100.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-bg_inset-hard_100_fcfdfd_1x100.png</td><td>1</td><td/></row>
+		<row><td>ui_icons_217bc0_256x240.png</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-ICO~1.PNG|ui-icons_217bc0_256x240.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-icons_217bc0_256x240.png</td><td>1</td><td/></row>
+		<row><td>ui_icons_2e83ff_256x240.png</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-ICO~1.PNG|ui-icons_2e83ff_256x240.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-icons_2e83ff_256x240.png</td><td>1</td><td/></row>
+		<row><td>ui_icons_469bdd_256x240.png</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-ICO~1.PNG|ui-icons_469bdd_256x240.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-icons_469bdd_256x240.png</td><td>1</td><td/></row>
+		<row><td>ui_icons_6da8d5_256x240.png</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-ICO~1.PNG|ui-icons_6da8d5_256x240.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-icons_6da8d5_256x240.png</td><td>1</td><td/></row>
+		<row><td>ui_icons_cd0a0a_256x240.png</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-ICO~1.PNG|ui-icons_cd0a0a_256x240.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-icons_cd0a0a_256x240.png</td><td>1</td><td/></row>
+		<row><td>ui_icons_d8e7f3_256x240.png</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-ICO~1.PNG|ui-icons_d8e7f3_256x240.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-icons_d8e7f3_256x240.png</td><td>1</td><td/></row>
+		<row><td>ui_icons_f9bd01_256x240.png</td><td>ISX_DEFAULTCOMPONENT6</td><td>UI-ICO~1.PNG|ui-icons_f9bd01_256x240.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\images\ui-icons_f9bd01_256x240.png</td><td>1</td><td/></row>
+		<row><td>uk.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>uk.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\uk.pak</td><td>1</td><td/></row>
+		<row><td>vi.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>vi.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\vi.pak</td><td>1</td><td/></row>
+		<row><td>zh_cn.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>zh-CN.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\zh-CN.pak</td><td>1</td><td/></row>
+		<row><td>zh_tw.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>zh-TW.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\zh-TW.pak</td><td>1</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">
@@ -2221,11 +2353,26 @@
 		<col def="S0">FTPLocation</col>
 		<col def="S0">HTTPLocation</col>
 		<col def="S0">Miscellaneous</col>
+		<row><td>CefSharp.WinForms.dll</td><td/><td/><td>_2653B5D9_FD83_42F6_91A5_85099015B10D_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>CefSharp.dll</td><td/><td/><td>_8949782B_82BE_461E_A54B_F3361FE5F7E5_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_006512F6_E930_4216_B9C1_CBF884E072D0_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_942962BB_3555_4B45_8BB5_92748AA75547_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td/><td/><td>_95C962AA_683B_4C82_9BF0_18F36713A53F_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ISX_DEFAULTCOMPONENT3</td><td/><td/><td>_F47E8A0D_3D7C_41CE_AB3C_1D76607C6A6B_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ISX_DEFAULTCOMPONENT4</td><td/><td/><td>_AABF0BCF_4E56_45E2_8E71_AAC859F660DA_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ISX_DEFAULTCOMPONENT5</td><td/><td/><td>_C58D4AC8_9671_4E4A_B34F_26A3E5A8512E_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ISX_DEFAULTCOMPONENT6</td><td/><td/><td>_4E7DDF16_A003_4B8F_8588_0AAB051D9BAD_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Quest.Content_Files</td><td/><td/><td>_F2BD1798_47DE_4AFE_BEE8_42454104B389_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Quest.Primary_output</td><td/><td/><td>_168A4028_4B7F_4993_9D44_F0EE93EE2BDD_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>avcodec_54.dll</td><td/><td/><td>_518DEC23_C852_4DA0_87C5_5798D1733634_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>avformat_54.dll</td><td/><td/><td>_B22E513C_478D_48E0_9E4D_F4F188ED3E16_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>avutil_51.dll</td><td/><td/><td>_55658455_378D_41FB_B8FE_61708E750A22_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>d3dcompiler_43.dll</td><td/><td/><td>_BA5DAFD0_21F5_468B_9F12_DDE3F0A75876_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>d3dx9_43.dll</td><td/><td/><td>_13446F09_3219_465A_9E4F_2BDC957251F3_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>icudt.dll</td><td/><td/><td>_D67BCB55_2D84_46B0_BFD7_80B4E2D27F20_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>libEGL.dll</td><td/><td/><td>_D6D8BFCA_2BC6_4D62_BDA3_CE50C44D3756_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>libGLESv2.dll</td><td/><td/><td>_75187B72_82D5_4E1F_BB41_4B20DC18BB20_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>libcef.dll</td><td/><td/><td>_740C12F3_98FA_4BEA_BA11_F1432A3BFADE_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISCustomActionReference">
@@ -2533,7 +2680,7 @@
 	</table>
 
 	<table name="ISPathVariable">
-		<col key="yes" def="s72">ISPathVariable</col>
+		<col key="yes" def="s32">ISPathVariable</col>
 		<col def="S255">Value</col>
 		<col def="S255">TestValue</col>
 		<col def="i4">Type</col>
@@ -2765,9 +2912,8 @@
 		<col def="S0">Comments</col>
 		<col def="i2">ErrorHandling</col>
 		<col def="i2">Attributes</col>
-		<col def="S255">Version</col>
+		<col def="S15">Version</col>
 		<col def="S255">Condition</col>
-		<col def="S72">DisplayName</col>
 	</table>
 
 	<table name="ISSQLScriptImport">
@@ -2850,7 +2996,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1033</td><td>Axe Software</td><td>0</td><td/><td>-1163980368</td></row>
+		<row><td>COMPANY_NAME</td><td>1033</td><td>Text Adventures Ltd</td><td>0</td><td/><td>237018003</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1033</td><td>Always Install</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1033</td><td>The color settings of your system are not adequate for running [ProductName].</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_DOTNETVERSION40CLIENT</td><td>1033</td><td>Microsoft .NET Framework 4.0 Client Package or greater needs to be installed for this installation to continue.</td><td>0</td><td/><td>-1163972176</td></row>
@@ -3951,8 +4097,8 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>-1163984720</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>http://www.axeuk.com/</td><td>0</td><td/><td>-1163965550</td></row>
-		<row><td>ID_STRING3</td><td>1033</td><td>Axe Software</td><td>0</td><td/><td>-1163980368</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.textadventures.co.uk/</td><td>0</td><td/><td>237026195</td></row>
+		<row><td>ID_STRING3</td><td>1033</td><td>Text Adventures Ltd</td><td>0</td><td/><td>237013907</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>Quest</td><td>0</td><td/><td>-1163970158</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>-1163925360</td></row>
 		<row><td>NEW_STRING1</td><td>1033</td><td>ASL</td><td>0</td><td/><td>-1163936110</td></row>
@@ -3961,11 +4107,6 @@
 		<row><td>NEW_STRING4</td><td>1033</td><td>ASLX</td><td>0</td><td/><td>-1163933870</td></row>
 		<row><td>NEW_STRING5</td><td>1033</td><td>QUEST</td><td>0</td><td/><td>-1558189940</td></row>
 		<row><td>NEW_STRING6</td><td>1033</td><td>QUEST-SAVE</td><td>0</td><td/><td>-1558247252</td></row>
-	</table>
-
-	<table name="ISSwidtagProperty">
-		<col key="yes" def="s72">Name</col>
-		<col def="s0">Value</col>
 	</table>
 
 	<table name="ISTargetImage">
@@ -4219,7 +4360,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>SaveAsSchema</td><td/></row>
 		<row><td>SccEnabled</td><td>0</td></row>
 		<row><td>SccPath</td><td/></row>
-		<row><td>SchemaVersion</td><td>773</td></row>
+		<row><td>SchemaVersion</td><td>771</td></row>
 		<row><td>Type</td><td>MSIE</td></row>
 	</table>
 
@@ -4591,9 +4732,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{99843EA4-C506-40F6-87FC-FFDC588D810F}</td><td/></row>
+		<row><td>ProductCode</td><td>{BCC2A66F-D1B0-4FBE-9290-E1532BAC6402}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
-		<row><td>ProductVersion</td><td>5.20.0000</td><td/></row>
+		<row><td>ProductVersion</td><td>5.30.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
@@ -4878,7 +5019,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="s72">ActionProperty</col>
 		<col def="S72">ISDisplayName</col>
 		<row><td>{00000000-0000-0000-0000-000000000000}</td><td>***ALL_VERSIONS***</td><td></td><td></td><td>2</td><td/><td>ISFOUNDNEWERPRODUCTVERSION</td><td>ISPreventDowngrade</td></row>
-		<row><td>{B53DD8C6-7B30-4A8D-B27C-0F8E52EBCE1D}</td><td>5.00.0000</td><td>5.00.0001</td><td></td><td>768</td><td/><td>ISACTIONPROP1</td><td>UpgradeEntry</td></row>
+		<row><td>{B53DD8C6-7B30-4A8D-B27C-0F8E52EBCE1D}</td><td>5.00.0000</td><td>5.20.0000</td><td></td><td>768</td><td/><td>ISACTIONPROP1</td><td>UpgradeEntry</td></row>
 	</table>
 
 	<table name="Verb">
@@ -5376,7 +5517,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISLocalRadioButton</td><td>Width</td><td>N</td><td>0</td><td>32767</td><td/><td/><td/><td/><td>The width of the button.</td></row>
 		<row><td>ISLocalRadioButton</td><td>X</td><td>N</td><td>0</td><td>32767</td><td/><td/><td/><td/><td>The horizontal coordinate of the upper left corner of the bounding rectangle of the radio button.</td></row>
 		<row><td>ISLocalRadioButton</td><td>Y</td><td>N</td><td>0</td><td>32767</td><td/><td/><td/><td/><td>The vertical coordinate of the upper left corner of the bounding rectangle of the radio button.</td></row>
-		<row><td>ISLockPermissions</td><td>Attributes</td><td>Y</td><td>-2147483647</td><td>2147483647</td><td/><td/><td/><td/><td>Permissions attributes mask, 1==Deny access; 2==No inherit, 4==Ignore apply failures, 8==Target object is 64-bit</td></row>
+		<row><td>ISLockPermissions</td><td>Attributes</td><td>Y</td><td>-2147483647</td><td>2147483647</td><td/><td/><td/><td/><td>Permissions attributes mask, 1==Deny access; 2==No inherit</td></row>
 		<row><td>ISLockPermissions</td><td>Domain</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Domain name for user whose permissions are being set.</td></row>
 		<row><td>ISLockPermissions</td><td>LockObject</td><td>N</td><td/><td/><td/><td/><td>Identifier</td><td/><td>Foreign key into CreateFolder, Registry, or File table</td></row>
 		<row><td>ISLockPermissions</td><td>Permission</td><td>Y</td><td>-2147483647</td><td>2147483647</td><td/><td/><td/><td/><td>Permission Access mask.</td></row>
@@ -5607,14 +5748,13 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISSQLScriptFile</td><td>Comments</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Comments</td></row>
 		<row><td>ISSQLScriptFile</td><td>Component_</td><td>N</td><td/><td/><td>Component</td><td>1</td><td>Identifier</td><td/><td>Foreign key referencing Component that controls the SQL script.</td></row>
 		<row><td>ISSQLScriptFile</td><td>Condition</td><td>Y</td><td/><td/><td/><td/><td>Condition</td><td/><td>A conditional statement that will disable this script if the specified condition evaluates to the 'False' state. If a script is disabled, it will not be installed regardless of the 'Action' state associated with the component.</td></row>
-		<row><td>ISSQLScriptFile</td><td>DisplayName</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Display name for the SQL script file.</td></row>
 		<row><td>ISSQLScriptFile</td><td>ErrorHandling</td><td>N</td><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>ISSQLScriptFile</td><td>ISBuildSourcePath</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Full path, the category is of Text instead of Path because of potential use of path variables.</td></row>
 		<row><td>ISSQLScriptFile</td><td>ISSQLScriptFile</td><td>N</td><td/><td/><td/><td/><td>Identifier</td><td/><td>This is the primary key to the ISSQLScriptFile table</td></row>
 		<row><td>ISSQLScriptFile</td><td>InstallText</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Feedback end-user text at install</td></row>
 		<row><td>ISSQLScriptFile</td><td>Scheduling</td><td>N</td><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>ISSQLScriptFile</td><td>UninstallText</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Feedback end-user text at Uninstall</td></row>
-		<row><td>ISSQLScriptFile</td><td>Version</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Schema Version (#####.#####.#####.#####)</td></row>
+		<row><td>ISSQLScriptFile</td><td>Version</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Schema Version (####.#####.####)</td></row>
 		<row><td>ISSQLScriptImport</td><td>Attributes</td><td>N</td><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>ISSQLScriptImport</td><td>Authentication</td><td>N</td><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>ISSQLScriptImport</td><td>Database</td><td>Y</td><td/><td/><td/><td/><td/><td/><td/></row>
@@ -5660,8 +5800,6 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISString</td><td>ISString</td><td>N</td><td/><td/><td/><td/><td>Text</td><td/><td>String id.</td></row>
 		<row><td>ISString</td><td>TimeStamp</td><td>Y</td><td/><td/><td/><td/><td>Time/Date</td><td/><td>Time Stamp. MSI's Time/Date column type is just an int, with bits packed in a certain order.</td></row>
 		<row><td>ISString</td><td>Value</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>real string value.</td></row>
-		<row><td>ISSwidtagProperty</td><td>Name</td><td>N</td><td/><td/><td/><td/><td>Identifier</td><td/><td>Property name</td></row>
-		<row><td>ISSwidtagProperty</td><td>Value</td><td>N</td><td/><td/><td/><td/><td>Text</td><td/><td>Property value</td></row>
 		<row><td>ISTargetImage</td><td>Flags</td><td>Y</td><td/><td/><td/><td/><td/><td/><td>relative order of the target image</td></row>
 		<row><td>ISTargetImage</td><td>IgnoreMissingFiles</td><td>N</td><td/><td/><td/><td/><td/><td/><td>If true, ignore missing source files when creating patch</td></row>
 		<row><td>ISTargetImage</td><td>MsiPath</td><td>N</td><td/><td/><td/><td/><td>Text</td><td/><td>Path to the target image</td></row>
