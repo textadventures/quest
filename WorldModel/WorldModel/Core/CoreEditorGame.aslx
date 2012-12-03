@@ -61,13 +61,22 @@
         <controltype>dropdown</controltype>
         <caption>Difficulty</caption>
         <attribute>difficulty</attribute>
+        <validvalues type="list">;Easy;Medium;Hard;Very Hard</validvalues>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Cruelty</caption>
+        <attribute>cruelty</attribute>
         <validvalues type="list">;Merciful;Polite;Tough;Nasty;Cruel</validvalues>
+        <advanced/>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>What do the difficulty levels mean?</caption>
+        <caption>What do the cruelty levels mean?</caption>
         <href>http://www.ifwiki.org/index.php/Cruelty_scale</href>
+        <advanced/>
       </control>
 
       <control>
