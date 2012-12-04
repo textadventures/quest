@@ -265,7 +265,7 @@ namespace TextAdventures.Quest
             public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
             {
                 double number = (double)value;
-                base.WriteAttribute(writer, element, attribute, "double", number.ToString());
+                base.WriteAttribute(writer, element, attribute, "double", number.ToString(System.Globalization.CultureInfo.InvariantCulture));
             }
         }
 

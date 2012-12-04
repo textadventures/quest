@@ -371,22 +371,22 @@ namespace TextAdventures.Quest.Functions
 
         public int ToInt(string number)
         {
-            return int.Parse(number);
+            return int.Parse(number, System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public double ToDouble(string number)
         {
-            return double.Parse(number);
+            return double.Parse(number, System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public string ToString(int number)
         {
-            return number.ToString();
+            return number.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public string ToString(double number)
         {
-            return number.ToString();
+            return number.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public bool IsInt(string number)
@@ -398,7 +398,7 @@ namespace TextAdventures.Quest.Functions
         public bool IsDouble(string number)
         {
             double result;
-            return double.TryParse(number, out result);
+            return double.TryParse(number, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out result);
         }
 
         public string GetInput()

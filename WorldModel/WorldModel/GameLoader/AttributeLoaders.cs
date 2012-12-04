@@ -160,7 +160,7 @@ namespace TextAdventures.Quest
             public override void Load(Element element, string attribute, string value)
             {
                 double num;
-                if (double.TryParse(value, out num))
+                if (double.TryParse(value, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out num))
                 {
                     element.Fields.Set(attribute, num);
                 }
