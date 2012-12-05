@@ -11,14 +11,14 @@
     <script type="text/javascript" src="js/jjmenu.js"></script>
     <script type="text/javascript" src="js/jquery.multi-open-accordion-1.5.3.js"></script>
     <link rel="Stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/themes/redmond/jquery-ui.css" />
-    <link rel="Stylesheet" type="text/css" href="playercore.css" />
-    <link rel="Stylesheet" type="text/css" href="player.css" />
+    <link rel="Stylesheet" type="text/css" href="<%= CacheBuster("playercore.css") %>" />
+    <link rel="Stylesheet" type="text/css" href="<%= CacheBuster("player.css") %>" />
     <link rel="Stylesheet" type="text/css" href="js/jjmenu.css" />
-    <script type="text/javascript" src="playercore.js"></script>
-    <script type="text/javascript" src="player.js"></script>
-    <script type="text/javascript" src="playerweb.js"></script>
+    <script type="text/javascript" src="<%= CacheBuster("playercore.js") %>"></script>
+    <script type="text/javascript" src="<%= CacheBuster("player.js") %>"></script>
+    <script type="text/javascript" src="<%= CacheBuster("playerweb.js") %>"></script>
     <script type="text/javascript" src="paper.js"></script>
-    <script type="text/paperscript" src="grid.js" canvas="gridCanvas"></script>
+    <script type="text/paperscript" src="<%= CacheBuster("grid.js") %>" canvas="gridCanvas"></script>
     <% Response.Write(GetHead()); %>
 </head>
 <body onload="init();">

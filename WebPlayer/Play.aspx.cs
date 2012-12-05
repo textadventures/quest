@@ -412,5 +412,10 @@ namespace WebPlayer
         {
             return "WebPlayer " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
+
+        protected string CacheBuster(string file)
+        {
+            return file + "?c=" + (Convert.ToInt32((DateTime.Now - (new DateTime(2012, 1, 1))).TotalSeconds)).ToString();
+        }
     }
 }
