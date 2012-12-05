@@ -43,6 +43,13 @@ namespace WebPlayer
                 return;
             }
 
+            if (!System.IO.File.Exists(filename))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                Logging.Log.InfoFormat("File not found: {0}", filename);
+                return;
+            }
+
             string contentType = GetContentType(filename);
             if (string.IsNullOrEmpty(contentType))
             {
