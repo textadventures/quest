@@ -335,10 +335,10 @@ Working...
             </div>
             @if (ctl.GetBool("preview") && value is string && !string.IsNullOrEmpty((string)value))
             {
-                <div style="float:left;position:relative;top:-12px;">
-                <button type="button" class="img-preview" data-key="@ctl.Attribute" data-extensions="@source">
-                    <img src="/ImageProcessor.ashx?h=40&w=40&gameId=@Model.GameId&image=@value.ToString()" />
-                </button>
+                <div style="float:left">
+                    <button type="button" class="img-preview" data-key="@ctl.Attribute" data-extensions="@source">
+                        <img src="/ImageProcessor.ashx?h=80&w=80&gameId=@Model.GameId&image=@value.ToString()" />
+                    </button>
                 </div>
             }
             <div style="float:left;">
