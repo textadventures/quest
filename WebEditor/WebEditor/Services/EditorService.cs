@@ -424,6 +424,14 @@ namespace WebEditor.Services
             {
                 return (bool)newValue;
             }
+            if (oldValue == null && newValue is int)
+            {
+                return (int)newValue != 0;
+            }
+            if (oldValue == null && newValue is double)
+            {
+                return (double)newValue != 0;
+            }
             if (oldValue is string && newValue is string)
             {
                 return (string)oldValue != (string)newValue;
@@ -455,7 +463,11 @@ namespace WebEditor.Services
             {
                 return false;
             }
-            throw new NotImplementedException();
+            throw new NotImplementedException(string.Format("Unhandled data types in call to DataChanged. 1: {0} ({1}), 2: {2} ({3})",
+                oldValue ?? "null",
+                oldValue == null ? "null" : oldValue.GetType().ToString(),
+                newValue ?? "null",
+                newValue == null ? "null" : newValue.GetType().ToString()));
         }
 
         private void SaveScript(IEditableScripts scripts, WebEditor.Models.ElementSaveData.ScriptsSaveData saveData, string parentElement)
