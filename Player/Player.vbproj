@@ -535,6 +535,9 @@
     <Content Include="Blank.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="css\redmond\jquery-ui-1.9.2.custom.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="css\redmond\images\ui-bg_flat_0_aaaaaa_40x100.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -580,9 +583,6 @@
     <Content Include="css\redmond\images\ui-icons_f9bd01_256x240.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="css\redmond\jquery-ui-1.8.20.custom.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="desktopplayer.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -598,7 +598,7 @@
     <Content Include="jquery-1.7.1.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="jquery-ui-1.8.20.custom.min.js">
+    <Content Include="jquery-ui-1.9.2.custom.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="jquery.multi-open-accordion-1.5.3.js">
