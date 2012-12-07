@@ -10,6 +10,7 @@ namespace TextAdventures.Quest
     public class MismatchingQuotesException : Exception
     {
         public MismatchingQuotesException() : base("Missing quote character (\")") { }
+        public MismatchingQuotesException(string message) : base(message) { }
     }
 
     public static class Utility
@@ -353,8 +354,7 @@ namespace TextAdventures.Quest
                 curParam.Append(curChar);
             }
             
-            if (!gotCloseQuote)
-                throw new MismatchingQuotesException();
+            if (!gotCloseQuote) throw new MismatchingQuotesException("Missing quote character in " + text);
                 
             result.Add(curParam.ToString());
 
