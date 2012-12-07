@@ -13,7 +13,7 @@ namespace TextAdventures.Quest
 
         private List<IEditableScript> m_scripts;
         private EditorController m_controller;
-        private MultiScript m_underlyingScript;
+        private IMultiScript m_underlyingScript;
         private static EditableDataWrapper<IScript, EditableScripts> s_wrapper;
 
         static EditableScripts()
@@ -45,7 +45,7 @@ namespace TextAdventures.Quest
         private EditableScripts(EditorController controller, IScript script)
             : this(controller)
         {
-            InitialiseMultiScript((MultiScript)script);
+            InitialiseMultiScript((IMultiScript)script);
             foreach (IScript scriptItem in m_underlyingScript.Scripts)
             {
                 m_scripts.Add(m_controller.ScriptFactory.CreateEditableScript(scriptItem));
@@ -59,7 +59,7 @@ namespace TextAdventures.Quest
             System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
         }
 
-        private void InitialiseMultiScript(MultiScript script)
+        private void InitialiseMultiScript(IMultiScript script)
         {
             System.Diagnostics.Debug.Assert(m_underlyingScript == null);
             m_underlyingScript = script;

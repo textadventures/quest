@@ -5,22 +5,25 @@ using System.Text;
 
 namespace TextAdventures.Quest.Scripts
 {
-    public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript
+    public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
     {
-        private IScriptConstructor m_constructor;
+        private ScriptFactory m_scriptFactory;
+        private IScriptConstructor m_scriptConstructor;
         private string m_scriptString;
         private ScriptContext m_scriptContext;
         private IScript m_script;
         private IScriptParent m_parent;
 
-        private static int count = 0;
-        private static int initialised = 0;
-
-        public LazyLoadScript(IScriptConstructor constructor, string scriptString, ScriptContext scriptContext)
+        public LazyLoadScript(ScriptFactory scriptFactory, string scriptString, ScriptContext scriptContext)
         {
-            count++;
-            System.Diagnostics.Debug.WriteLine("New LazyLoadScript {0}", count);
-            m_constructor = constructor;
+            m_scriptFactory = scriptFactory;
+            m_scriptString = scriptString;
+            m_scriptContext = scriptContext;
+        }
+
+        public LazyLoadScript(IScriptConstructor scriptConstructor, string scriptString, ScriptContext scriptContext)
+        {
+            m_scriptConstructor = scriptConstructor;
             m_scriptString = scriptString;
             m_scriptContext = scriptContext;
         }
@@ -28,17 +31,22 @@ namespace TextAdventures.Quest.Scripts
         private void Initialise()
         {
             if (m_script != null) return;
-            initialised++;
-            System.Diagnostics.Debug.WriteLine("Initialise LazyLoadScript {0}", initialised);
-            m_script = m_constructor.Create(m_scriptString, m_scriptContext);
-            m_script.Line = m_scriptString;
+            if (m_scriptConstructor == null)
+            {
+                m_script = m_scriptFactory.CreateScript(m_scriptString, m_scriptContext, false);
+            }
+            else
+            {
+                m_script = m_scriptConstructor.Create(m_scriptString, m_scriptContext);
+                m_script.Line = m_scriptString;
+            }
             m_script.Parent = m_parent;
         }
 
         public IMutableField Clone()
         {
             if (m_script != null) return m_script.Clone();
-            LazyLoadScript result = new LazyLoadScript(m_constructor, m_scriptString, m_scriptContext);
+            LazyLoadScript result = new LazyLoadScript(m_scriptFactory, m_scriptString, m_scriptContext);
             result.Line = m_scriptString;
             result.Parent = m_parent;
             return result;
@@ -229,6 +237,39 @@ namespace TextAdventures.Quest.Scripts
         {
             Initialise();
             ((FirstTimeScript)m_script).SetOtherwiseScript(script);
+        }
+
+        public IEnumerable<IScript> Scripts
+        {
+            get
+            {
+                Initialise();
+                return ((MultiScript)m_script).Scripts;
+            }
+        }
+
+        public void Add(params IScript[] scripts)
+        {
+            Initialise();
+            ((MultiScript)m_script).Add(scripts);
+        }
+
+        public void Remove(int index)
+        {
+            Initialise();
+            ((MultiScript)m_script).Remove(index);
+        }
+
+        public void Swap(int index1, int index2)
+        {
+            Initialise();
+            ((MultiScript)m_script).Swap(index1, index2);
+        }
+
+        public void Insert(int index, IScript script)
+        {
+            Initialise();
+            ((MultiScript)m_script).Insert(index, script);
         }
     }
 }

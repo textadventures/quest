@@ -5,7 +5,16 @@ using System.Text;
 
 namespace TextAdventures.Quest.Scripts
 {
-    public class MultiScript : ScriptBase, IScriptParent
+    public interface IMultiScript : IScript
+    {
+        IEnumerable<IScript> Scripts { get; }
+        void Add(params IScript[] scripts);
+        void Remove(int index);
+        void Swap(int index1, int index2);
+        void Insert(int index, IScript script);
+    }
+
+    public class MultiScript : ScriptBase, IScriptParent, IMultiScript
     {
         private List<IScript> m_scripts;
 

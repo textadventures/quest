@@ -9,12 +9,15 @@ namespace TextAdventures.Quest
 {
     public interface IScriptFactory
     {
+        IScript CreateScript(string line, ScriptContext scriptContext, bool lazy);
         IScript CreateScript(string line, ScriptContext scriptContext);
         IScript CreateScript(string line);
     }
 
     public class ScriptFactory : IScriptFactory
     {
+        private bool m_lazyLoadingEnabled = false;
+
         public class AddErrorEventArgs : EventArgs
         {
             public string Error { get; set; }
@@ -64,7 +67,7 @@ namespace TextAdventures.Quest
         /// <returns></returns>
         public IScript CreateSimpleScript(string line)
         {
-            MultiScript result = (MultiScript)CreateScript(line);
+            IMultiScript result = (IMultiScript)CreateScript(line);
             return result.Scripts.First();
         }
 
@@ -84,6 +87,11 @@ namespace TextAdventures.Quest
 
         public IScript CreateScript(string line, ScriptContext scriptContext)
         {
+            return CreateScript(line, scriptContext, m_lazyLoadingEnabled);
+        }
+
+        public IScript CreateScript(string line, ScriptContext scriptContext, bool lazy)
+        {
             string remainingScript;
             IScript newScript;
             MultiScript result = new MultiScript();
@@ -95,7 +103,10 @@ namespace TextAdventures.Quest
             bool addedError;
             IfScriptConstructor ifConstructor = null;
 
-            bool useLazyScripts = false; // true;
+            if (lazy)
+            {
+                return new LazyLoadScript(this, line, scriptContext);
+            }
 
             line = Utility.RemoveSurroundingBraces(line);
 
@@ -181,7 +192,7 @@ namespace TextAdventures.Quest
                             {
                                 try
                                 {
-                                    if (useLazyScripts)
+                                    if (m_lazyLoadingEnabled)
                                     {
                                         newScript = new LazyLoadScript(constructor, line, scriptContext);
                                     }
@@ -237,7 +248,10 @@ namespace TextAdventures.Quest
                         }
                         else
                         {
-                            if (!useLazyScripts) newScript.Line = line;
+                            if (!m_lazyLoadingEnabled)
+                            {
+                                newScript.Line = line;
+                            }
                             result.Add(newScript);
                         }
                     }

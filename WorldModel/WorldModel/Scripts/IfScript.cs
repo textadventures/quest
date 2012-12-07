@@ -61,7 +61,7 @@ namespace TextAdventures.Quest.Scripts
             // GetElse uses the ScriptFactory to parse the "else if" block, so it will return
             // a MultiScript containing an IfScript with one expression and one "then" script block.
 
-            IIfScript elseIf = (IIfScript)((MultiScript)add).Scripts.First();
+            IIfScript elseIf = (IIfScript)((IMultiScript)add).Scripts.First();
 
             ((IIfScript)script).AddElseIf(elseIf.Expression, elseIf.ThenScript);
         }
