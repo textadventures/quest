@@ -454,9 +454,8 @@ namespace TextAdventures.Quest
         {
             AttributeData result = new AttributeData();
 
-            if (m_attributes.ContainsKey(attribute))
+            if (m_attributes.TryGetValue(attribute, out result.Value))
             {
-                result.Value = m_attributes[attribute];
                 if (withSource)
                 {
                     result.Source = m_element.Name;
