@@ -95,6 +95,8 @@ namespace TextAdventures.Quest
             bool addedError;
             IfScriptConstructor ifConstructor = null;
 
+            bool useLazyScripts = false; // true;
+
             line = Utility.RemoveSurroundingBraces(line);
 
             while (!finished)
@@ -179,7 +181,15 @@ namespace TextAdventures.Quest
                             {
                                 try
                                 {
-                                    newScript = constructor.Create(line, scriptContext);
+                                    if (useLazyScripts)
+                                    {
+                                        newScript = new LazyLoadScript(constructor, line, scriptContext);
+                                    }
+                                    else
+                                    {
+                                        newScript = constructor.Create(line, scriptContext);
+                                    }
+
                                     if (constructor.Keyword == "if")
                                     {
                                         ifConstructor = (IfScriptConstructor)constructor;
@@ -227,7 +237,7 @@ namespace TextAdventures.Quest
                         }
                         else
                         {
-                            newScript.Line = line;
+                            if (!useLazyScripts) newScript.Line = line;
                             result.Add(newScript);
                         }
                     }

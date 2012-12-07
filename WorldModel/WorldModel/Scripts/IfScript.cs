@@ -6,6 +6,14 @@ using TextAdventures.Quest.Functions;
 
 namespace TextAdventures.Quest.Scripts
 {
+    internal interface IIfScript
+    {
+        void SetElse(IScript elseScript);
+        IfScript.ElseIfScript AddElseIf(IFunction<bool> expression, IScript script);
+        IFunction<bool> Expression { get; }
+        IScript ThenScript { get; set; }
+    }
+
     public class IfScriptConstructor : IScriptConstructor
     {
         #region IScriptConstructor Members
@@ -42,7 +50,7 @@ namespace TextAdventures.Quest.Scripts
         public void AddElse(IScript script, string elseScript, ScriptContext scriptContext)
         {
             IScript add = GetElse(elseScript, scriptContext);
-            ((IfScript)script).SetElse(add);
+            ((IIfScript)script).SetElse(add);
         }
 
         public void AddElseIf(IScript script, string elseIfScript, ScriptContext scriptContext)
@@ -53,9 +61,9 @@ namespace TextAdventures.Quest.Scripts
             // GetElse uses the ScriptFactory to parse the "else if" block, so it will return
             // a MultiScript containing an IfScript with one expression and one "then" script block.
 
-            IfScript elseIf = (IfScript)((MultiScript)add).Scripts.First();
+            IIfScript elseIf = (IIfScript)((MultiScript)add).Scripts.First();
 
-            ((IfScript)script).AddElseIf(elseIf.Expression, elseIf.ThenScript);
+            ((IIfScript)script).AddElseIf(elseIf.Expression, elseIf.ThenScript);
         }
 
         private IScript GetElse(string elseScript, ScriptContext scriptContext)
@@ -65,7 +73,7 @@ namespace TextAdventures.Quest.Scripts
         }
     }
 
-    public class IfScript : ScriptBase
+    public class IfScript : ScriptBase, IIfScript
     {
         public class ElseIfScript
         {
@@ -327,7 +335,7 @@ namespace TextAdventures.Quest.Scripts
             }
         }
 
-        internal IFunction<bool> Expression
+        public IFunction<bool> Expression
         {
             get { return m_expression; }
         }

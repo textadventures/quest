@@ -6,6 +6,11 @@ using TextAdventures.Quest.Functions;
 
 namespace TextAdventures.Quest.Scripts
 {
+    internal interface IFirstTimeScript
+    {
+        void SetOtherwiseScript(IScript script);
+    }
+
     public class FirstTimeScriptConstructor : IScriptConstructor
     {
         public string Keyword
@@ -29,7 +34,7 @@ namespace TextAdventures.Quest.Scripts
             script = script.Substring(9).Trim();
             string otherwise = Utility.GetScript(script);
             IScript otherwiseScript = scriptFactory.CreateScript(otherwise);
-            ((FirstTimeScript)firstTimeScript).SetOtherwiseScript(otherwiseScript);
+            ((IFirstTimeScript)firstTimeScript).SetOtherwiseScript(otherwiseScript);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -37,7 +42,7 @@ namespace TextAdventures.Quest.Scripts
         public WorldModel WorldModel { get; set; }
     }
 
-    public class FirstTimeScript : ScriptBase
+    public class FirstTimeScript : ScriptBase, IFirstTimeScript
     {
         private IScript m_firstTimeScript;
         private IScript m_otherwiseScript;
@@ -166,7 +171,7 @@ namespace TextAdventures.Quest.Scripts
             }
         }
 
-        internal void SetOtherwiseScript(IScript script)
+        public void SetOtherwiseScript(IScript script)
         {
             m_otherwiseScript = script;
         }
