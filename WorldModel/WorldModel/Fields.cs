@@ -127,12 +127,16 @@ namespace TextAdventures.Quest
 
     public class Fields
     {
+        private static Dictionary<Type, DebugFormatDelegate> s_formatters = new Dictionary<Type, DebugFormatDelegate>
+        {
+            { typeof(List<string>), ListFormatter }
+        };
+
         private delegate string DebugFormatDelegate(object input);
         private WorldModel m_worldModel;
         private Element m_element;
         private Dictionary<string, object> m_attributes = new Dictionary<string, object>();
         private Dictionary<string, IExtendableField> m_extendableFields = new Dictionary<string, IExtendableField>();
-        private Dictionary<Type, DebugFormatDelegate> m_formatters = new Dictionary<Type, DebugFormatDelegate>();
         private Stack<Element> m_types = new Stack<Element>();
         private LazyFields m_lazyFields;
         public event EventHandler<AttributeChangedEventArgs> AttributeChanged;
@@ -145,7 +149,6 @@ namespace TextAdventures.Quest
         {
             m_worldModel = worldModel;
             m_element = element;
-            m_formatters.Add(typeof(List<string>), ListFormatter);
             m_lazyFields = new LazyFields(worldModel, this);
             m_isMeta = isMeta;
         }
@@ -265,7 +268,7 @@ namespace TextAdventures.Quest
         private DebugFormatDelegate GetFormatter(Type type)
         {
             if (type == null) return DefaultFormatter;
-            if (m_formatters.ContainsKey(type)) return m_formatters[type];
+            if (s_formatters.ContainsKey(type)) return s_formatters[type];
             return DefaultFormatter;
         }
 
@@ -275,7 +278,7 @@ namespace TextAdventures.Quest
             return input.ToString();
         }
 
-        private string ListFormatter(object input)
+        private static string ListFormatter(object input)
         {
             List<string> list = (List<string>)input;
             string output = string.Empty;
