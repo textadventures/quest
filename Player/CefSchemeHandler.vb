@@ -38,7 +38,7 @@ Public Class CefSchemeHandler
         Dim filename = _parent.GetImageId(id)
         If filename IsNot Nothing Then
             stream = New System.IO.FileStream(filename, FileMode.Open, FileAccess.Read)
-            Select Case Path.GetExtension(filename)
+            Select Case Path.GetExtension(filename).ToLowerInvariant()
                 Case ".jpg", ".jpeg"
                     mimeType = "image/jpeg"
                 Case ".gif"
