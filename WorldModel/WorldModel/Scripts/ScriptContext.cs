@@ -13,7 +13,6 @@ namespace TextAdventures.Quest.Scripts
         private WorldModel m_worldModel;
         protected Context m_context;
 
-
         public ScriptContext(WorldModel worldModel)
             : this(worldModel, false)
         {
