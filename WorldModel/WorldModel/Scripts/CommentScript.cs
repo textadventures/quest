@@ -20,7 +20,7 @@ namespace TextAdventures.Quest.Scripts
 
         public IScriptFactory ScriptFactory { set { } }
 
-        public WorldModel WorldModel { set { } }
+        public WorldModel WorldModel { get; set; }
     }
 
     public class CommentScript : ScriptBase

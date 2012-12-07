@@ -79,7 +79,7 @@ namespace TextAdventures.Quest.Scripts
         string Keyword { get; }
         IScript Create(string script, ScriptContext scriptContext);
         IScriptFactory ScriptFactory { set; }
-        WorldModel WorldModel { set; }      // maybe we need an IWorldModel at some point
+        WorldModel WorldModel { get; set; }
     }
 
     public abstract class ScriptBase : IScript, IMutableField

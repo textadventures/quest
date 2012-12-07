@@ -13,12 +13,14 @@ namespace TextAdventures.Quest.Scripts
         private ScriptContext m_scriptContext;
         private IScript m_script;
         private IScriptParent m_parent;
+        private WorldModel m_worldModel;
 
         public LazyLoadScript(ScriptFactory scriptFactory, string scriptString, ScriptContext scriptContext)
         {
             m_scriptFactory = scriptFactory;
             m_scriptString = scriptString;
             m_scriptContext = scriptContext;
+            m_worldModel = scriptFactory.WorldModel;
         }
 
         public LazyLoadScript(IScriptConstructor scriptConstructor, string scriptString, ScriptContext scriptContext)
@@ -26,19 +28,30 @@ namespace TextAdventures.Quest.Scripts
             m_scriptConstructor = scriptConstructor;
             m_scriptString = scriptString;
             m_scriptContext = scriptContext;
+            m_worldModel = scriptConstructor.WorldModel;
         }
 
         private void Initialise()
         {
             if (m_script != null) return;
-            if (m_scriptConstructor == null)
+
+            try
             {
-                m_script = m_scriptFactory.CreateScript(m_scriptString, m_scriptContext, false);
+                if (m_scriptConstructor == null)
+                {
+                    m_script = m_scriptFactory.CreateScript(m_scriptString, m_scriptContext, false);
+                }
+                else
+                {
+                    m_script = m_scriptConstructor.Create(m_scriptString, m_scriptContext);
+                    m_script.Line = m_scriptString;
+                }
             }
-            else
+            catch
             {
-                m_script = m_scriptConstructor.Create(m_scriptString, m_scriptContext);
-                m_script.Line = m_scriptString;
+                if (!m_worldModel.EditMode) throw;
+
+                m_script = new FailedScript(m_scriptString);
             }
             m_script.Parent = m_parent;
         }

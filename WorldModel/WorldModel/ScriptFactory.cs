@@ -16,7 +16,7 @@ namespace TextAdventures.Quest
 
     public class ScriptFactory : IScriptFactory
     {
-        private bool m_lazyLoadingEnabled = false;
+        private bool m_lazyLoadingEnabled = true;
 
         public class AddErrorEventArgs : EventArgs
         {
@@ -102,7 +102,7 @@ namespace TextAdventures.Quest
             bool dontAdd;
             bool addedError;
             IfScriptConstructor ifConstructor = null;
-
+            
             if (lazy)
             {
                 return new LazyLoadScript(this, line, scriptContext);
@@ -294,6 +294,11 @@ namespace TextAdventures.Quest
         private void AddError(string error)
         {
             if (ErrorHandler != null) ErrorHandler(this, new AddErrorEventArgs { Error = error });
+        }
+
+        internal WorldModel WorldModel
+        {
+            get { return m_worldModel; }
         }
     }
 }

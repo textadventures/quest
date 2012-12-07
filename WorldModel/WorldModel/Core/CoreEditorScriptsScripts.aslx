@@ -1,5 +1,23 @@
 ﻿<library>
   <editor>
+    <appliesto>@failed</appliesto>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Failed to load script:</caption>
+    </control>
+    
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>0</attribute>
+      <colour>Red</colour>
+      <multiline/>
+      <expand/>
+      <breakbefore/>
+    </control>
+  </editor>
+  
+  <editor>
     <appliesto>//</appliesto>
     <category>Scripts</category>
     <add>Comment</add>
