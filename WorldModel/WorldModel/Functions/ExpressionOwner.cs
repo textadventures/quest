@@ -398,7 +398,7 @@ namespace TextAdventures.Quest.Functions
         public bool IsDouble(string number)
         {
             double result;
-            return double.TryParse(number, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out result);
+            return double.TryParse(number, System.Globalization.NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowLeadingSign, System.Globalization.CultureInfo.InvariantCulture, out result);
         }
 
         public string GetInput()

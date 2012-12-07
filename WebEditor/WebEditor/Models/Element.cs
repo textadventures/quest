@@ -164,7 +164,7 @@ namespace WebEditor.Models
                 case "numberdouble":
                     string stringDoubleValue = GetValueProviderString(bindingContext.ValueProvider, attribute);
                     double doubleValue;
-                    double.TryParse(stringDoubleValue, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out doubleValue);
+                    double.TryParse(stringDoubleValue, System.Globalization.NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowLeadingSign, System.Globalization.CultureInfo.InvariantCulture, out doubleValue);
                     double? doubleMin = ctl.GetDouble("minimum");
                     double? doubleMax = ctl.GetDouble("maximum");
                     if (doubleMin.HasValue && doubleValue < doubleMin) doubleValue = doubleMin.Value;
