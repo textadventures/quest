@@ -13,6 +13,7 @@ namespace TextAdventures.Quest.Scripts
         private WorldModel m_worldModel;
         protected Context m_context;
 
+
         public ScriptContext(WorldModel worldModel)
             : this(worldModel, false)
         {
@@ -22,18 +23,23 @@ namespace TextAdventures.Quest.Scripts
         {
             m_worldModel = worldModel;
 
-            if (!worldModel.EditMode || createEditorExpressionContext)
+            if (createEditorExpressionContext)
             {
-                m_expressionContext = new ExpressionContext(worldModel.ExpressionOwner);
-                m_expressionContext.Imports.AddType(typeof(StringFunctions));
-                m_expressionContext.Imports.AddType(typeof(System.Math));
-
-                m_expressionContext.Variables.ResolveVariableType += new EventHandler<ResolveVariableTypeEventArgs>(Variables_ResolveVariableType);
-                m_expressionContext.Variables.ResolveVariableValue += new EventHandler<ResolveVariableValueEventArgs>(Variables_ResolveVariableValue);
-                m_expressionContext.Variables.ResolveFunction += new EventHandler<ResolveFunctionEventArgs>(Variables_ResolveFunction);
-                m_expressionContext.Variables.InvokeFunction += new EventHandler<InvokeFunctionEventArgs>(Variables_InvokeFunction);
-                m_expressionContext.Options.ParseCulture = System.Globalization.CultureInfo.InvariantCulture;
+                InitialiseExpressionContext();
             }
+        }
+
+        private void InitialiseExpressionContext()
+        {
+            m_expressionContext = new ExpressionContext(m_worldModel.ExpressionOwner);
+            m_expressionContext.Imports.AddType(typeof(StringFunctions));
+            m_expressionContext.Imports.AddType(typeof(System.Math));
+
+            m_expressionContext.Variables.ResolveVariableType += new EventHandler<ResolveVariableTypeEventArgs>(Variables_ResolveVariableType);
+            m_expressionContext.Variables.ResolveVariableValue += new EventHandler<ResolveVariableValueEventArgs>(Variables_ResolveVariableValue);
+            m_expressionContext.Variables.ResolveFunction += new EventHandler<ResolveFunctionEventArgs>(Variables_ResolveFunction);
+            m_expressionContext.Variables.InvokeFunction += new EventHandler<InvokeFunctionEventArgs>(Variables_InvokeFunction);
+            m_expressionContext.Options.ParseCulture = System.Globalization.CultureInfo.InvariantCulture;
         }
 
         void Variables_ResolveFunction(object sender, ResolveFunctionEventArgs e)
@@ -175,7 +181,11 @@ namespace TextAdventures.Quest.Scripts
 
         public ExpressionContext ExpressionContext
         {
-            get { return m_expressionContext; }
+            get
+            {
+                if (m_expressionContext == null) InitialiseExpressionContext();
+                return m_expressionContext;
+            }
         }
 
         public WorldModel WorldModel
