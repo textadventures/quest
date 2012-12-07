@@ -1571,12 +1571,25 @@ namespace TextAdventures.Quest
 
         internal void UpdateElementSortOrder(Element movedElement)
         {
+            // There's no need to worry about element sort order when playing the game, unless this is an element that can be seen by the
+            // player
+            if (!EditMode)
+            {
+                bool doUpdate = false;
+                if (movedElement.ElemType == ElementType.Object && (movedElement.Type == ObjectType.Exit || movedElement.Type == ObjectType.Object))
+                {
+                    doUpdate = true;
+                }
+                if (!doUpdate) return;
+            }
+
             // This function is called when an element is moved to a new parent.
             // When this happens, its SortIndex MetaField must be updated so that it
             // is at the end of the list of children.
 
             int maxIndex = -1;
-            foreach (Element sibling in m_elements.GetElements().Where(e => e.Parent == movedElement.Parent))
+
+            foreach (Element sibling in m_elements.GetDirectChildren(movedElement.Parent))
             {
                 int thisSortIndex = sibling.MetaFields[MetaFieldDefinitions.SortIndex];
                 if (thisSortIndex > maxIndex) maxIndex = thisSortIndex;
