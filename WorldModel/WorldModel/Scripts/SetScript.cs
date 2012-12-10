@@ -50,7 +50,7 @@ namespace TextAdventures.Quest.Scripts
                 string variable;
                 IFunction<Element> expr = GetAppliesTo(scriptContext, appliesTo, out variable);
 
-                if (WorldModel.Version >= WorldModelVersion.v530)
+                if (!WorldModel.EditMode && WorldModel.Version >= WorldModelVersion.v530)
                 {
                     if (!Utility.IsValidAttributeName(variable))
                     {
