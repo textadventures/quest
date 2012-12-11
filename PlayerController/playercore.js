@@ -72,6 +72,11 @@ $(function () {
     // fix to make compass button icons centred
     $(".compassbutton span").css("left", "0.8em");
 
+    $("#txtCommand").bind('webkitspeechchange', function () {
+        sendCommand($("#txtCommand").val());
+        $("#txtCommand").val("");
+    });
+
     ui_init();
 
     $("#txtCommand").focus();
