@@ -122,7 +122,7 @@ namespace TextAdventures.Quest
             bool processThisCharacter;
             bool processNextCharacter = true;
             int bracketCount = 0;
-            string curParam = string.Empty;
+            StringBuilder curParam = new StringBuilder();
 
             foreach (char c in text)
             {
@@ -148,17 +148,17 @@ namespace TextAdventures.Quest
                             if (c == ')') bracketCount--;
                             if (bracketCount == 0 && c == ',')
                             {
-                                result.Add(curParam.Trim());
-                                curParam = string.Empty;
+                                result.Add(curParam.ToString().Trim());
+                                curParam.Clear();
                                 continue;
                             }
                         }
                     }
                 }
 
-                curParam += c;
+                curParam.Append(c);
             }
-            result.Add(curParam.Trim());
+            result.Add(curParam.ToString().Trim());
 
             return result;
         }
