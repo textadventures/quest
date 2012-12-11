@@ -66,58 +66,60 @@ namespace TextAdventures.Quest
                 filename = LoadCompiledFile(filename);
             }
 
-            XmlReader reader = null;
-
             try
             {
                 System.IO.FileStream stream = new System.IO.FileStream(filename,
                     System.IO.FileMode.Open,
                     System.IO.FileAccess.Read,
                     System.IO.FileShare.ReadWrite);
-                reader = new XmlTextReader(stream);
 
-                do
+                using (XmlReader reader = new XmlTextReader(stream))
                 {
-                    reader.Read();
-                } while (reader.NodeType != XmlNodeType.Element);
-
-                if (reader.Name == "asl")
-                {
-                    string version = reader.GetAttribute("version");
-
-                    if (string.IsNullOrEmpty(version))
+                    do
                     {
-                        AddError("No ASL version number found");
-                    }
+                        reader.Read();
+                    } while (reader.NodeType != XmlNodeType.Element);
 
-                    if (!s_versions.ContainsKey(version))
+                    if (reader.Name == "asl")
                     {
-                        AddError("Incorrect ASL version number");
+                        string version = reader.GetAttribute("version");
+
+                        if (string.IsNullOrEmpty(version))
+                        {
+                            AddError("No ASL version number found");
+                        }
+
+                        if (!s_versions.ContainsKey(version))
+                        {
+                            AddError("Incorrect ASL version number");
+                        }
+                        else
+                        {
+                            m_worldModel.Version = s_versions[version];
+                            m_worldModel.VersionString = version;
+                        }
+
+                        string originalFile = reader.GetAttribute("original");
+
+                        if (!string.IsNullOrEmpty(originalFile) && System.IO.Path.GetExtension(originalFile) == ".quest")
+                        {
+                            LoadCompiledFile(originalFile);
+                        }
+
+                        if (!string.IsNullOrEmpty(originalFile))
+                        {
+                            FilenameUpdated(originalFile);
+                        }
                     }
                     else
                     {
-                        m_worldModel.Version = s_versions[version];
-                        m_worldModel.VersionString = version;
+                        AddError("File must begin with an ASL element");
                     }
 
-                    string originalFile = reader.GetAttribute("original");
+                    LoadXML(filename, reader);
 
-                    if (!string.IsNullOrEmpty(originalFile) && System.IO.Path.GetExtension(originalFile) == ".quest")
-                    {
-                        LoadCompiledFile(originalFile);
-                    }
-
-                    if (!string.IsNullOrEmpty(originalFile))
-                    {
-                        FilenameUpdated(originalFile);
-                    }
+                    reader.Close();
                 }
-                else
-                {
-                    AddError("File must begin with an ASL element");
-                }
-
-                LoadXML(filename, reader);
             }
             catch (XmlException e)
             {
@@ -126,10 +128,6 @@ namespace TextAdventures.Quest
             catch (Exception e)
             {
                 AddError(string.Format("Error: {0}", e.Message));
-            }
-            finally
-            {
-                if (reader != null) reader.Close();
             }
 
             if (m_errors.Count == 0)
