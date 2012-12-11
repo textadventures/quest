@@ -908,6 +908,7 @@ namespace TextAdventures.Quest
                     m_fields.AddType(m_worldModel.GetObjectType(typename));
                 }
             }
+            m_defaultTypes = null;
             foreach (string typename in m_types)
             {
                 try
@@ -919,6 +920,7 @@ namespace TextAdventures.Quest
                     throw new Exception(string.Format("Error adding type '{0}' to element '{1}': {2}", typename, m_fields.Get("name"), ex.Message), ex);
                 }
             }
+            m_types = null;
             foreach (string property in m_objectFields.Keys)
             {
                 try
@@ -930,6 +932,7 @@ namespace TextAdventures.Quest
                     throw new Exception(string.Format("Error adding attribute '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
                 }
             }
+            m_objectFields = null;
             foreach (string property in m_scripts.Keys)
             {
                 try
@@ -941,6 +944,7 @@ namespace TextAdventures.Quest
                     throw new Exception(string.Format("Error adding script attribute '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
                 }
             }
+            m_scripts = null;
             foreach (string property in m_scriptDictionaries.Keys)
             {
                 try
@@ -952,6 +956,7 @@ namespace TextAdventures.Quest
                     throw new Exception(string.Format("Error adding script dictionary '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
                 }
             }
+            m_scriptDictionaries = null;
             foreach (string property in m_objectLists.Keys)
             {
                 try
@@ -964,6 +969,7 @@ namespace TextAdventures.Quest
                 }
 
             }
+            m_objectLists = null;
             foreach (string property in m_objectDictionaries.Keys)
             {
                 try
@@ -975,10 +981,12 @@ namespace TextAdventures.Quest
                     throw new Exception(string.Format("Error adding object dictionary '{0}' to element '{1}': {2}", property, m_fields.Get("name"), ex.Message), ex);
                 }
             }
+            m_objectDictionaries = null;
             foreach (Action action in m_actions)
             {
                 action();
             }
+            m_actions = null;
             m_resolved = true;
         }
 
