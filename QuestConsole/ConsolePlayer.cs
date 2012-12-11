@@ -123,7 +123,7 @@ namespace QuestConsole
 
         public string GetURL(string file)
         {
-            throw new NotImplementedException();
+            return file;
         }
 
         public void LocationUpdated(string location)
