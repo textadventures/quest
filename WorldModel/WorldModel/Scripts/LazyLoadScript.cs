@@ -54,6 +54,7 @@ namespace TextAdventures.Quest.Scripts
                 m_script = new FailedScript(m_scriptString);
             }
             m_script.Parent = m_parent;
+            m_scriptString = null;
         }
 
         public IMutableField Clone()
