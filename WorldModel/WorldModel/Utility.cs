@@ -423,7 +423,7 @@ namespace TextAdventures.Quest
         public static string ObscureStrings(string input)
         {
             string[] sections = SplitQuotes(input);
-            string result = string.Empty;
+            StringBuilder result = new StringBuilder();
 
             bool insideQuote = false;
             for (int i = 0; i <= sections.Length - 1; i++)
@@ -431,16 +431,16 @@ namespace TextAdventures.Quest
                 string section = sections[i];
                 if (insideQuote)
                 {
-                    result = result + new string('-', section.Length);
+                    result.Append(new string('-', section.Length));
                 }
                 else
                 {
-                    result = result + section;
+                    result.Append(section);
                 }
-                if (i < sections.Length - 1) result += "\"";
+                if (i < sections.Length - 1) result.Append("\"");
                 insideQuote = !insideQuote;
             }
-            return result;
+            return result.ToString();
         }
 
         public static bool ContainsUnresolvedDotNotation(string input)
