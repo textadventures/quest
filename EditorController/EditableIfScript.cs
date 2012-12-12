@@ -22,10 +22,10 @@ namespace TextAdventures.Quest
         {
             public event EventHandler Changed { add { } remove { } }
 
-            private IfScript.ElseIfScript m_elseIfScript;
+            private IElseIfScript m_elseIfScript;
             private EditableIfScript m_parent;
 
-            internal EditableElseIf(IfScript.ElseIfScript elseIfScript, EditableIfScript parent)
+            internal EditableElseIf(IElseIfScript elseIfScript, EditableIfScript parent)
             {
                 m_elseIfScript = elseIfScript;
                 m_parent = parent;
@@ -87,7 +87,7 @@ namespace TextAdventures.Quest
                 get { return m_elseIfScript.Id; }
             }
 
-            internal IfScript.ElseIfScript ElseIfScript
+            internal IElseIfScript ElseIfScript
             {
                 get { return m_elseIfScript; }
             }
@@ -106,7 +106,7 @@ namespace TextAdventures.Quest
             public bool IsDirectlySaveable { get { return true; } }
         }
 
-        private IfScript m_ifScript;
+        private IIfScript m_ifScript;
         private EditableScripts m_thenScript;
         private EditableScripts m_elseScript;
         private Dictionary<IScript, EditableElseIf> m_elseIfScripts = new Dictionary<IScript, EditableElseIf>();
@@ -117,7 +117,7 @@ namespace TextAdventures.Quest
         public event EventHandler<ElseIfEventArgs> RemovedElseIf;
         public event EventHandler Changed { add { } remove { } }
 
-        internal EditableIfScript(EditorController controller, IfScript script, UndoLogger undoLogger)
+        internal EditableIfScript(EditorController controller, IIfScript script, UndoLogger undoLogger)
             : base(controller, script, undoLogger)
         {
             m_ifScript = script;
@@ -146,21 +146,21 @@ namespace TextAdventures.Quest
             }
         }
 
-        void m_ifScript_IfScriptUpdated(object sender, IfScript.IfScriptUpdatedEventArgs e)
+        void m_ifScript_IfScriptUpdated(object sender, IfScriptUpdatedEventArgs e)
         {
             switch (e.EventType)
             {
-                case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
+                case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElse:
                     m_elseScript = EditableScripts.GetInstance(Controller, m_ifScript.ElseScript);
                     m_elseScript.Updated += nestedScript_Updated;
                     if (AddedElse != null) AddedElse(this, new EventArgs());
                     break;
-                case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElse:
+                case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElse:
                     m_elseScript.Updated -= nestedScript_Updated;
                     m_elseScript = null;
                     if (RemovedElse != null) RemovedElse(this, new EventArgs());
                     break;
-                case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
+                case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.AddedElseIf:
                     EditableScripts editableNewScript = EditableScripts.GetInstance(Controller, e.Data.Script);
                     editableNewScript.Updated += nestedScript_Updated;
 
@@ -174,7 +174,7 @@ namespace TextAdventures.Quest
                         AddedElseIf(this, new ElseIfEventArgs(newEditableElseIf));
                     }
                     break;
-                case IfScript.IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
+                case IfScriptUpdatedEventArgs.IfScriptUpdatedEventType.RemovedElseIf:
                     EditableScripts.GetInstance(Controller, e.Data.Script).Updated -= nestedScript_Updated;
                     if (RemovedElseIf != null) RemovedElseIf(this, new ElseIfEventArgs(m_elseIfScripts[e.Data.Script]));
                     m_elseIfScripts.Remove(e.Data.Script);
@@ -330,7 +330,7 @@ namespace TextAdventures.Quest
         public void AddElseIf()
         {
             IScript newScript = new MultiScript();
-            IfScript.ElseIfScript newElseIf = m_ifScript.AddElseIf(string.Empty, newScript);
+            IElseIfScript newElseIf = m_ifScript.AddElseIf(string.Empty, newScript);
         }
 
         public void RemoveElseIf(EditableElseIf removeElseIf)

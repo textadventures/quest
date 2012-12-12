@@ -6,12 +6,25 @@ using TextAdventures.Quest.Functions;
 
 namespace TextAdventures.Quest.Scripts
 {
-    internal interface IIfScript
+    public interface IIfScript : IScript
     {
         void SetElse(IScript elseScript);
-        IfScript.ElseIfScript AddElseIf(IFunction<bool> expression, IScript script);
+        IElseIfScript AddElseIf(string expression, IScript script);
+        IElseIfScript AddElseIf(IFunction<bool> expression, IScript script);
         IFunction<bool> Expression { get; }
         IScript ThenScript { get; set; }
+        event EventHandler<IfScriptUpdatedEventArgs> IfScriptUpdated;
+        IScript ElseScript { get; }
+        IList<IElseIfScript> ElseIfScripts { get; }
+        string ExpressionString { get; set; }
+        void RemoveElseIf(IElseIfScript elseIfScript);
+    }
+
+    public interface IElseIfScript
+    {
+        IScript Script { get; }
+        string ExpressionString { get; set; }
+        string Id { get; }
     }
 
     public class IfScriptConstructor : IScriptConstructor
@@ -75,7 +88,7 @@ namespace TextAdventures.Quest.Scripts
 
     public class IfScript : ScriptBase, IIfScript
     {
-        public class ElseIfScript
+        public class ElseIfScript : IElseIfScript
         {
             private IfScript m_parent;
 
@@ -116,7 +129,7 @@ namespace TextAdventures.Quest.Scripts
         private IFunction<bool> m_expression;
         private IScript m_thenScript;
         private IScript m_elseScript;
-        private List<ElseIfScript> m_elseIfScript = new List<ElseIfScript>();
+        private List<IElseIfScript> m_elseIfScript = new List<IElseIfScript>();
         private bool m_hasElse = false;
         private ScriptContext m_scriptContext;
         private WorldModel m_worldModel;
@@ -189,13 +202,13 @@ namespace TextAdventures.Quest.Scripts
             return "elseif" + m_lastElseIfId;
         }
 
-        public ElseIfScript AddElseIf(string expression, IScript script)
+        public IElseIfScript AddElseIf(string expression, IScript script)
         {
             IFunction<bool> expr = new Expression<bool>(expression, m_scriptContext);
             return AddElseIf(expr, script);
         }
 
-        public ElseIfScript AddElseIf(IFunction<bool> expression, IScript script)
+        public IElseIfScript AddElseIf(IFunction<bool> expression, IScript script)
         {
             ElseIfScript elseIfScript = new ElseIfScript(expression, script, this, GetNewElseIfID());
 
@@ -215,7 +228,7 @@ namespace TextAdventures.Quest.Scripts
             return elseIfScript;
         }
 
-        private void AddElseIfSilent(ElseIfScript elseIfScript)
+        private void AddElseIfSilent(IElseIfScript elseIfScript)
         {
             m_elseIfScript.Add(elseIfScript);
 
@@ -225,7 +238,7 @@ namespace TextAdventures.Quest.Scripts
             }
         }
 
-        public void RemoveElseIf(ElseIfScript elseIfScript)
+        public void RemoveElseIf(IElseIfScript elseIfScript)
         {
             if (base.UndoLog != null)
             {
@@ -241,7 +254,7 @@ namespace TextAdventures.Quest.Scripts
             }
         }
 
-        private void RemoveElseIfSilent(ElseIfScript elseIfScript)
+        private void RemoveElseIfSilent(IElseIfScript elseIfScript)
         {
             m_elseIfScript.Remove(elseIfScript);
 
@@ -251,7 +264,7 @@ namespace TextAdventures.Quest.Scripts
             }
         }
 
-        public IList<ElseIfScript> ElseIfScripts
+        public IList<IElseIfScript> ElseIfScripts
         {
             get { return m_elseIfScript.AsReadOnly(); }
         }
@@ -432,9 +445,9 @@ namespace TextAdventures.Quest.Scripts
         private class UndoAddElseIf : UndoLogger.IUndoAction
         {
             private IfScript m_script;
-            private ElseIfScript m_elseIf;
+            private IElseIfScript m_elseIf;
 
-            public UndoAddElseIf(IfScript script, ElseIfScript elseIf)
+            public UndoAddElseIf(IfScript script, IElseIfScript elseIf)
             {
                 m_script = script;
                 m_elseIf = elseIf;
@@ -454,9 +467,9 @@ namespace TextAdventures.Quest.Scripts
         private class UndoRemoveElseIf : UndoLogger.IUndoAction
         {
             private IfScript m_script;
-            private ElseIfScript m_elseIf;
+            private IElseIfScript m_elseIf;
 
-            public UndoRemoveElseIf(IfScript script, ElseIfScript elseIf)
+            public UndoRemoveElseIf(IfScript script, IElseIfScript elseIf)
             {
                 m_script = script;
                 m_elseIf = elseIf;
@@ -472,30 +485,30 @@ namespace TextAdventures.Quest.Scripts
                 m_script.RemoveElseIfSilent(m_elseIf);
             }
         }
+    }
 
-        public class IfScriptUpdatedEventArgs : EventArgs
+    public class IfScriptUpdatedEventArgs : EventArgs
+    {
+        public enum IfScriptUpdatedEventType
         {
-            public enum IfScriptUpdatedEventType
-            {
-                AddedElse,
-                RemovedElse,
-                AddedElseIf,
-                RemovedElseIf
-            }
-
-            internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType)
-            {
-                EventType = eventType;
-            }
-
-            internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType, ElseIfScript data)
-                : this(eventType)
-            {
-                Data = data;
-            }
-
-            public IfScriptUpdatedEventType EventType { get; private set; }
-            public ElseIfScript Data { get; private set; }
+            AddedElse,
+            RemovedElse,
+            AddedElseIf,
+            RemovedElseIf
         }
+
+        internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType)
+        {
+            EventType = eventType;
+        }
+
+        internal IfScriptUpdatedEventArgs(IfScriptUpdatedEventType eventType, IElseIfScript data)
+            : this(eventType)
+        {
+            Data = data;
+        }
+
+        public IfScriptUpdatedEventType EventType { get; private set; }
+        public IElseIfScript Data { get; private set; }
     }
 }

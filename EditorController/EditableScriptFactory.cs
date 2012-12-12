@@ -67,10 +67,9 @@ namespace TextAdventures.Quest
                 return newScript;
             }
 
-            IfScript ifScript = script as IfScript;
-            if (ifScript != null)
+            if (script.Keyword == "if")
             {
-                newScript = new EditableIfScript(m_controller, ifScript, m_worldModel.UndoLogger);
+                newScript = new EditableIfScript(m_controller, (IIfScript)script, m_worldModel.UndoLogger);
             }
             else
             {

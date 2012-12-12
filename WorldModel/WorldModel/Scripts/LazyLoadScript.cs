@@ -80,6 +80,20 @@ namespace TextAdventures.Quest.Scripts
             }
         }
 
+        public event EventHandler<IfScriptUpdatedEventArgs> IfScriptUpdated
+        {
+            add
+            {
+                Initialise();
+                ((IfScript)m_script).IfScriptUpdated += value;
+            }
+            remove
+            {
+                Initialise();
+                ((IfScript)m_script).IfScriptUpdated -= value;
+            }
+        }
+
         public void Execute(Context c)
         {
             Initialise();
@@ -218,7 +232,13 @@ namespace TextAdventures.Quest.Scripts
             ((IfScript)m_script).SetElse(elseScript);
         }
 
-        public IfScript.ElseIfScript AddElseIf(Functions.IFunction<bool> expression, IScript script)
+        public IElseIfScript AddElseIf(string expression, IScript script)
+        {
+            Initialise();
+            return ((IfScript)m_script).AddElseIf(expression, script);
+        }
+
+        public IElseIfScript AddElseIf(Functions.IFunction<bool> expression, IScript script)
         {
             Initialise();
             return ((IfScript)m_script).AddElseIf(expression, script);
@@ -284,6 +304,45 @@ namespace TextAdventures.Quest.Scripts
         {
             Initialise();
             ((MultiScript)m_script).Insert(index, script);
+        }
+
+        public IScript ElseScript
+        {
+            get
+            {
+                Initialise();
+                return ((IfScript)m_script).ElseScript;
+            }
+        }
+
+        public IList<IElseIfScript> ElseIfScripts
+        {
+            get
+            {
+                Initialise();
+                return ((IfScript)m_script).ElseIfScripts;
+            }
+        }
+
+
+        public string ExpressionString
+        {
+            get
+            {
+                Initialise();
+                return ((IfScript)m_script).ExpressionString;
+            }
+            set
+            {
+                Initialise();
+                ((IfScript)m_script).ExpressionString = value;
+            }
+        }
+
+        public void RemoveElseIf(IElseIfScript elseIfScript)
+        {
+            Initialise();
+            ((IfScript)m_script).RemoveElseIf(elseIfScript);
         }
     }
 }
