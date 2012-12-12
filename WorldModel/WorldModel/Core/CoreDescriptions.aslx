@@ -1,8 +1,15 @@
 ﻿<library>
   <function name="ShowRoomDescription">
     <![CDATA[
+      isDark = CheckDarkness()
+      if (isDark) {
+        descriptionfield = "darkroomdescription"
+      }
+      else {
+        descriptionfield = "description"
+      }
+
       if (game.autodescription) {
-        isDark = CheckDarkness()
         desc = ""
         
         for (i, 1, 4) {
@@ -35,12 +42,6 @@
             }
           }
           if (i = game.autodescription_description) {
-            if (isDark) {
-              descriptionfield = "darkroomdescription"
-            }
-            else {
-              descriptionfield = "description"
-            }
             if (HasScript(game.pov.parent, descriptionfield)) {
               if (LengthOf(desc) > 0) {
                     msg (desc)
@@ -65,10 +66,15 @@
         }
       }
       else {
-        fulldesc = GetRoomDescription()
+        if (HasScript(game.pov.parent, descriptionfield)) {
+          do (game.pov.parent, descriptionfield)
+        }
+        else {
+          fulldesc = GetRoomDescription()
      
-        if (LengthOf(fulldesc) > 0) {
-          msg (fulldesc)
+          if (LengthOf(fulldesc) > 0) {
+            msg (fulldesc)
+          }
         }
       }
     ]]>
