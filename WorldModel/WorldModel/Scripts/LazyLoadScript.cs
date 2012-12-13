@@ -324,7 +324,6 @@ namespace TextAdventures.Quest.Scripts
             }
         }
 
-
         public string ExpressionString
         {
             get
