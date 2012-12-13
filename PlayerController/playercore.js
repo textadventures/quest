@@ -363,6 +363,15 @@ function updateList(listName, listData) {
         placesObjectsVerbs = new Array();
     }
 
+    var previousSelectionText = "";
+    var previousSelectionKey = "";
+
+    var $selected = $(listElement + " .ui-selected");
+    if ($selected.length > 0) {
+        previousSelectionText = $selected.first().text();
+        previousSelectionKey = $selected.first().data("key");
+    }
+
     $(listElement).empty();
     var count = 0;
     $.each(listData, function (key, value) {
@@ -378,9 +387,11 @@ function updateList(listName, listData) {
         }
 
         if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
-            $(listElement).append(
-                $("<li/>").attr("value", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).html(objectDisplayName)
-            );
+            var $newItem = $("<li/>").data("key", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).html(objectDisplayName);
+            if (objectDisplayName == previousSelectionText && key == previousSelectionKey) {
+                $newItem.addClass("ui-selected");
+            }
+            $(listElement).append($newItem);
             count++;
         }
     });
