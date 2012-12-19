@@ -256,7 +256,14 @@ namespace TextAdventures.Quest
         public void Add(object key, object value, int index)
         {
             CheckNotLocked();
-            m_dictionary.Insert(index, (string)key, (T)value);
+            try
+            {
+                m_dictionary.Insert(index, (string)key, (T)value);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Error adding key '{0}' to dictionary: {1}", key, ex.Message), ex);
+            }
             UndoLogAdd(key);
             NotifyAdd((string)key, (T)value, UpdateSource.System, m_dictionary.IndexOfKey((string)key));
         }
