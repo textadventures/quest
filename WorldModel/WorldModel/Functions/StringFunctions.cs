@@ -117,9 +117,9 @@ namespace TextAdventures.Quest.Functions
             return Microsoft.VisualBasic.Strings.Asc(input);
         }
 
-        public static int Chr(int input)
+        public static string Chr(int input)
         {
-            return Microsoft.VisualBasic.Strings.Chr(input);
+            return Microsoft.VisualBasic.Strings.Chr(input).ToString();
         }
     }
 }
