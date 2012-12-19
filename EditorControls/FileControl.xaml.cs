@@ -252,7 +252,19 @@ namespace TextAdventures.Quest.EditorControls
             set
             {
                 if (value == null) value = string.Empty;
-                lstFiles.SelectedItem = m_fileListItems.First(f => f.Filename == value);
+                lstFiles.SelectedItem = m_fileListItems.FirstOrDefault(f => f.Filename == value);
+                if (lstFiles.SelectedItem == null)
+                {
+                    // add a new temporary item. This may be needed if file does not exist or file is in a parent directory
+                    var item = new FileListItem
+                    {
+                        Filename = value,
+                        Title = value,
+                        ImageVisibility = Visibility.Collapsed
+                    };
+                    lstFiles.Items.Add(item);
+                    lstFiles.SelectedItem = item;
+                }
             }
         }
 
