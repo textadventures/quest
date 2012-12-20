@@ -278,6 +278,9 @@ namespace TextAdventures.Quest
             private void LoadVerb(Element element, string attribute, string value)
             {
                 element.Fields.Set(attribute, Utility.ConvertVerbSimplePattern(value, element.Fields[FieldDefinitions.Separator]));
+
+                string[] verbs = value.Split(';');
+                element.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Trim();
             }
 
             public override bool SupportsMode(LoadMode mode)
