@@ -44,6 +44,10 @@ Public Class PlayerHTML
         CEF.RegisterJsObject("questCefInterop", m_interop)
     End Sub
 
+    Private Sub PlayerHTML_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
+        CEF.Shutdown()
+    End Sub
+
     Public Sub WriteText(text As String)
         If (text.Length > 0) Then
             InvokeScript("addText", text)
@@ -297,4 +301,5 @@ Public Class PlayerHTML
     Private Sub m_keyHandler_KeyPressed(code As Integer) Handles m_keyHandler.KeyPressed
         BeginInvoke(Sub() RaiseEvent ShortcutKeyPressed(CType(code, Keys)))
     End Sub
+
 End Class
