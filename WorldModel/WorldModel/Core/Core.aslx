@@ -321,10 +321,13 @@
           if (ListContains(game.verbattributes, attr)) {
             cmd = ObjectDictionaryItem(game.verbattributeslookup, attr)
             if (HasString(cmd, "displayverb")) {
-              list add (verbs, CapFirst(cmd.displayverb))
+              displayverb = CapFirst(cmd.displayverb)
             }
             else {
-              list add (verbs, CapFirst(attr))
+              displayverb = CapFirst(attr)
+            }
+            if (not ListContains(baselist, displayverb)) {
+              list add (verbs, displayverb)
             }
           }
         }
