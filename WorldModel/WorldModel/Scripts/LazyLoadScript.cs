@@ -343,5 +343,11 @@ namespace TextAdventures.Quest.Scripts
             Initialise();
             ((IfScript)m_script).RemoveElseIf(elseIfScript);
         }
+
+        public override string ToString()
+        {
+            if (m_script != null) return m_script.ToString();
+            return m_scriptString;
+        }
     }
 }
