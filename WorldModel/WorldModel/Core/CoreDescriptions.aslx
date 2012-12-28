@@ -234,7 +234,7 @@
     <![CDATA[
     result = NewObjectList()
     foreach (obj, list) {
-      if (LengthOf(GetString(obj, "lightstrength")) > 0) {
+      if (GetBoolean(obj, "lightsource") or obj.parent = game.pov) {
         list add(result, obj)
       }
     }

@@ -31,7 +31,7 @@
       }
       
       isDark = CheckDarkness()
-      if (isDark and GetString(object, "lightstrength") <> "weak") {
+      if (isDark and not GetBoolean(object, "lightsource")) {
         lookdesc = DynamicTemplate("LookAtDarkness", object)
       }
       

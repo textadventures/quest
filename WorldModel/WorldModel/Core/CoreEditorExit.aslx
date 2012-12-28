@@ -156,12 +156,20 @@
         <caption>Light/Dark</caption>
         <advanced/>
       </control>
-
+      
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>This object is a lightsource</caption>
+        <attribute>lightsource</attribute>
+        <advanced/>
+      </control>
+      
       <control>
         <controltype>dropdown</controltype>
         <caption>Brightness</caption>
         <attribute>lightstrength</attribute>
-        <validvalues type="stringdictionary">=Not a light source; weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
+        <validvalues type="stringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
+        <onlydisplayif>this.lightsource</onlydisplayif>
         <advanced/>
       </control>
     </tab>
