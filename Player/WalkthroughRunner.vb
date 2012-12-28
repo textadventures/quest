@@ -9,6 +9,7 @@
     Private m_menuOptions As IDictionary(Of String, String)
 
     Public Event Output(text As String)
+    Public Event MarkScrollPosition()
 
     Public Sub New(game As IASLDebug, walkthrough As String)
         m_gameDebug = game
@@ -18,6 +19,7 @@
 
     Public Sub Run()
         For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps
+            RaiseEvent MarkScrollPosition()
             If m_showingMenu Then
                 SetMenuResponse(cmd)
             ElseIf m_showingQuestion Then

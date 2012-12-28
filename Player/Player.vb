@@ -859,6 +859,11 @@ Public Class Player
         ClearBuffer()
     End Sub
 
+    Private Sub m_walkthroughRunner_MarkScrollPosition() Handles m_walkthroughRunner.MarkScrollPosition
+        ctlPlayerHtml.MarkScrollPosition()
+        ClearBuffer()
+    End Sub
+
     Private Sub m_walkthroughRunner_Output(text As String) Handles m_walkthroughRunner.Output
         WriteLine(text)
     End Sub

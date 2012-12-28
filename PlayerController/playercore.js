@@ -230,6 +230,7 @@ function panesVisible(visible) {
 }
 
 function scrollToEnd() {
+    $('html, body').stop(true, true);
     $('html, body').animate({ scrollTop: beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height() }, 200);
     $("#txtCommand").focus();
 }

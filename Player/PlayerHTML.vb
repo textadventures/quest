@@ -302,4 +302,8 @@ Public Class PlayerHTML
         BeginInvoke(Sub() RaiseEvent ShortcutKeyPressed(CType(code, Keys)))
     End Sub
 
+    Public Sub MarkScrollPosition()
+        InvokeScript("markScrollPosition")
+    End Sub
+
 End Class
