@@ -331,7 +331,7 @@ Public Class Main
         If record Then
             ctlPlayer.RecordWalkthrough = walkthrough
         End If
-        Launch(filename)
+        Launch(filename, True, ctlEditor.SimpleMode)
     End Sub
 
     Private Sub Main_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
