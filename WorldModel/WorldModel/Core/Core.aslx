@@ -220,10 +220,20 @@
   </function>
 
   <function name="SetObjectLightstrength" parameters="object,strength">
+    if (LengthOf(strength) = 0) {
+      object.lightsource = false
+    } else {
+      object.lightsource = true
+    }
     object.lightstrength = strength
   </function>
 
   <function name="SetExitLightstrength" parameters="exit,strength">
+    if (LengthOf(strength) = 0) {
+      exit.lightsource = false
+    } else {
+      exit.lightsource = true
+    }    
     exit.lightstrength = strength
   </function>
   

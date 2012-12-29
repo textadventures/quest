@@ -98,13 +98,13 @@
     result = ScopeReachable()
     lightobjects = NewObjectList()
     foreach (obj, result) {
-      if (GetString(obj, "lightstrength") = lightstrength) {
+      if (GetBoolean(obj, "lightsource") and GetString(obj, "lightstrength") = lightstrength) {
         list add(lightobjects, obj)
       }
     }
     exits = ScopeExits()
     foreach (obj, exits) {
-      if (GetString(obj, "lightstrength") = lightstrength) {
+      if (GetBoolean(obj, "lightsource") and GetString(obj, "lightstrength") = lightstrength) {
         list add(lightobjects, obj)
       }
     }
@@ -147,7 +147,7 @@
       if (exit.parent = room and not GetBoolean(exit, "lookonly")) {
         if (exit.visible and not exit.scenery) {
           if (GetBoolean(room, "darklevel")) {
-            if (Lengthof(GetString(exit, "lightstrength")) > 0) {
+            if (GetBoolean(exit, "lightsource")) {
               list add(result, exit)
             }
           }
@@ -222,7 +222,7 @@
     else if (not searchObj.visible) {
       return (false)
     }
-    else if (GetBoolean(parentObj, "darklevel") and Lengthof(GetString(searchObj, "lightstrength")) = 0) {
+    else if (GetBoolean(parentObj, "darklevel") and not GetBoolean(searchObj, "lightsource")) {
       return (false)
     }
     else {
