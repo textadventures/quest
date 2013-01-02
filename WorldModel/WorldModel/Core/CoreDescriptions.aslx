@@ -330,7 +330,7 @@
 
   <function name="GetTaggedName" type="string" parameters="obj, type, verbs">
     <![CDATA[
-    alias = GetDisplayAlias(obj)
+    alias = SafeXML(GetDisplayAlias(obj))
     if (not game.enablehyperlinks) {
       type = ""
     }
