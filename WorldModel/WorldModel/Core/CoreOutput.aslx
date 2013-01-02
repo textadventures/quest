@@ -8,6 +8,7 @@
 
   <function name="ClearFramePicture">
     request (SetPanelContents, "")
+    game.panelcontents = null
   </function>
 
   <function name="ClearScreen">
