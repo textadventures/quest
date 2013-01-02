@@ -600,7 +600,7 @@ namespace TextAdventures.Quest
         //  - must not start with a number
         //  - must not contain keywords "and", "or" etc.
         //  - can contain spaces, but not at the beginning or end
-        private static Regex s_validAttributeName = new Regex(@"^[A-Za-z][\w ]*$");
+        private static Regex s_validAttributeName = new Regex(@"^[A-Za-z_][\w ]*$");
 
         public static bool IsValidAttributeName(string name)
         {

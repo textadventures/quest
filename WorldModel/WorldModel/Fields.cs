@@ -344,7 +344,7 @@ namespace TextAdventures.Quest
 
         private void Set(string name, object value, bool raiseEvent, bool cloneClonableValues, bool allowUpdateSortOrder = true)
         {
-            bool changed = false;
+            bool changed;
             bool added = true;
             object oldValue = null;
 
@@ -352,6 +352,13 @@ namespace TextAdventures.Quest
             {
                 added = false;
                 oldValue = Get(name);
+            }
+            else
+            {
+                if (!Utility.IsValidAttributeName(name))
+                {
+                    throw new Exception(string.Format("Invalid attribute name '{0}'", name));
+                }
             }
 
             if (value == null)
