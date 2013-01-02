@@ -17,12 +17,6 @@ namespace WebPlayer
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Page.IsPostBack)
-            {
-                // TO DO: cmdSave has been moved to playercore.htm - needs to be shown/hidden via JS
-                // cmdSave.Visible = IsLoggedIn && (!string.IsNullOrEmpty(Request["id"]) || !string.IsNullOrEmpty(Request["load"]));
-            }
-
             // We store the game in the Session, but use a dictionary keyed by GUIDs which
             // are stored in the ViewState. This allows the same user in the same browser
             // to open multiple games in different browser tabs.
@@ -62,6 +56,9 @@ namespace WebPlayer
             {
                 m_buffer = new OutputBuffer();
                 OutputBuffers.Add(m_gameId, m_buffer);
+
+                bool saveVisible = IsLoggedIn && (!string.IsNullOrEmpty(Request["id"]) || !string.IsNullOrEmpty(Request["load"]));
+                m_buffer.AddJavaScriptToBuffer("showSaveButton", new BooleanParameter(saveVisible));
             }
         }
 

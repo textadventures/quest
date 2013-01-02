@@ -101,3 +101,12 @@ function finishSync() {
         $("#cmdSubmit").click();
     }, 100);
 }
+
+function showSaveButton(show) {
+    if (show) {
+        $("#cmdSave").show();
+    }
+    else {
+        $("#cmdSave").hide();
+    }
+}
