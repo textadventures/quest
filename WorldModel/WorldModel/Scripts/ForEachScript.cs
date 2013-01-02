@@ -27,8 +27,6 @@ namespace TextAdventures.Quest.Scripts
             }
             IScript loopScript = ScriptFactory.CreateScript(loop);
 
-            string type = parameters[0];
-
             return new ForEachScript(scriptContext, parameters[0], new ExpressionGeneric(parameters[1], scriptContext), loopScript);
         }
 
@@ -43,12 +41,10 @@ namespace TextAdventures.Quest.Scripts
         private IFunctionGeneric m_list;
         private IScript m_loopScript;
         private string m_variable;
-        private WorldModel m_worldModel;
 
         public ForEachScript(ScriptContext scriptContext, string variable, IFunctionGeneric list, IScript loopScript)
         {
             m_scriptContext = scriptContext;
-            m_worldModel = scriptContext.WorldModel;
             m_variable = variable;
             m_list = list;
             m_loopScript = loopScript;
@@ -64,13 +60,20 @@ namespace TextAdventures.Quest.Scripts
             object result = m_list.Execute(c);
             IEnumerable resultList = null;
 
-            if (result is IDictionary)
+            // Cannot foreach over strings as of Quest 5.3, as the Char data type is not supported (retained functionality
+            // for pre-5.3 to prevent breaking existing scripts)
+
+            if (m_scriptContext.WorldModel.Version < WorldModelVersion.v530 || !(result is string))
             {
-                resultList = ((IDictionary)result).Keys;
-            }
-            else
-            {
-                resultList = result as IEnumerable;
+                var resultDictionary = result as IDictionary;
+                if (resultDictionary != null)
+                {
+                    resultList = resultDictionary.Keys;
+                }
+                else
+                {
+                    resultList = result as IEnumerable;
+                }
             }
 
             if (resultList == null) throw new Exception(string.Format("Cannot foreach over '{0}' as it is not a list", result));
