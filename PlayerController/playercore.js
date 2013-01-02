@@ -353,19 +353,23 @@ function updateLocation(text) {
 
 function updateList(listName, listData) {
     var listElement = "";
+    var buttonPrefix = "";
 
     if (listName == "inventory") {
         listElement = "#lstInventory";
         inventoryVerbs = new Array();
+        buttonPrefix = "cmdInventory";
     }
 
     if (listName == "placesobjects") {
         listElement = "#lstPlacesObjects";
         placesObjectsVerbs = new Array();
+        buttonPrefix = "cmdPlacesObjects";
     }
 
     var previousSelectionText = "";
     var previousSelectionKey = "";
+    var foundPreviousSelection = false;
 
     var $selected = $(listElement + " .ui-selected");
     if ($selected.length > 0) {
@@ -391,6 +395,7 @@ function updateList(listName, listData) {
             var $newItem = $("<li/>").data("key", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).html(objectDisplayName);
             if (objectDisplayName == previousSelectionText && key == previousSelectionKey) {
                 $newItem.addClass("ui-selected");
+                foundPreviousSelection = true;
             }
             $(listElement).append($newItem);
             count++;
@@ -401,6 +406,13 @@ function updateList(listName, listData) {
     if (selectSize < 3) selectSize = 3;
     if (selectSize > 12) selectSize = 12;
     $(listElement).attr("size", selectSize);
+    
+    if (!foundPreviousSelection) {
+        for (var i = 1; i <= verbButtonCount; i++) {
+            var target = $("#" + buttonPrefix + i);
+            target.hide();
+        }
+    }
 }
 
 function updateVerbButtons(selectedItem, verbsArray, idprefix) {
