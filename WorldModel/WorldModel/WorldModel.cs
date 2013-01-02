@@ -1050,11 +1050,22 @@ namespace TextAdventures.Quest
             {
                 Element function = m_elements.Get(ElementType.Function, name);
 
-                if (Version >= WorldModelVersion.v520 && parameters == null && function.Fields[FieldDefinitions.ParamNames].Count > 0)
+                // Only check for too few parameters for games for Quest 5.2 or later, as previous Quest versions
+                // would ignore this (but would usually still fail when the function was run, as the required
+                // variable wouldn't exist). For Quest 5.3, an additional check if parameters is non-null but empty.
+
+                bool parametersInvalid = false;
+                if (Version == WorldModelVersion.v520)
                 {
-                    // Only check for too few parameters for games for Quest 5.2 or later, as previous Quest versions
-                    // would ignore this (but would usually still fail when the function was run, as the required
-                    // variable wouldn't exist)
+                    parametersInvalid = parameters == null && function.Fields[FieldDefinitions.ParamNames].Count > 0;
+                }
+                else if (Version >= WorldModelVersion.v530)
+                {
+                    parametersInvalid = (parameters == null || parameters.Count == 0) && function.Fields[FieldDefinitions.ParamNames].Count > 0;
+                }
+
+                if (parametersInvalid)
+                {
                     throw new Exception(string.Format("No parameters passed to {0} function - expected {1} parameters",
                             name,
                             function.Fields[FieldDefinitions.ParamNames].Count));
