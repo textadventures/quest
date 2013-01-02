@@ -40,10 +40,11 @@ namespace TextAdventures.Quest
             afterScript = null;
             string obscuredScript = ObscureStrings(script);
             int bracePos = obscuredScript.IndexOf('{');
-            int crlfPos = obscuredScript.IndexOf("\n");
+            int crlfPos = obscuredScript.IndexOf("\n", StringComparison.Ordinal);
+            int commentPos = obscuredScript.IndexOf("//", StringComparison.Ordinal);
             if (crlfPos == -1) return script;
 
-            if (bracePos == -1 || crlfPos < bracePos)
+            if (bracePos == -1 || crlfPos < bracePos || (commentPos != -1 && commentPos < bracePos && commentPos < crlfPos))
             {
                 afterScript = script.Substring(crlfPos + 1);
                 return script.Substring(0, crlfPos);
@@ -65,7 +66,6 @@ namespace TextAdventures.Quest
             }
 
             return result;
-
         }
 
         private static string GetParameterInt(string text, char open, char close, out string afterParameter)
@@ -322,14 +322,13 @@ namespace TextAdventures.Quest
         private static string[] SplitQuotes(string text)
         {
             List<string> result = new List<string>();
-            bool processThisCharacter;
             bool processNextCharacter = true;
             StringBuilder curParam = new StringBuilder();
             bool gotCloseQuote = true;
 
             foreach (var curChar in text)
             {
-                processThisCharacter = processNextCharacter;
+                bool processThisCharacter = processNextCharacter;
                 processNextCharacter = true;
 
                 if (processThisCharacter)
@@ -381,7 +380,7 @@ namespace TextAdventures.Quest
             string obfuscateDoubleSlashesInsideStrings = ReplaceRegexMatchesRespectingQuotes(input, s_detectComments, "--", true);
             if (obfuscateDoubleSlashesInsideStrings.Contains("//"))
             {
-                return input.Substring(0, obfuscateDoubleSlashesInsideStrings.IndexOf("//"));
+                return input.Substring(0, obfuscateDoubleSlashesInsideStrings.IndexOf("//", StringComparison.Ordinal));
             }
             return input;
         }
