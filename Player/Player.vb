@@ -505,6 +505,7 @@ Public Class Player
         Else
             BeginInvoke(Sub()
                             ClearBuffer()
+                            ctlPlayerHtml.Focus()
                             Dim result As Boolean = (MsgBox(caption, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, m_gameName) = MsgBoxResult.Yes)
 
                             If RecordWalkthrough IsNot Nothing Then
