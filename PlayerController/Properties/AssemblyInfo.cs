@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
 [assembly: AssemblyProduct("PlayerController")]
-[assembly: AssemblyCopyright("Copyright © 2012 Text Adventures Ltd")]
+[assembly: AssemblyCopyright("Copyright © 2013 Text Adventures Ltd")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
