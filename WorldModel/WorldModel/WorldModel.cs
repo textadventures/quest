@@ -137,6 +137,7 @@ namespace TextAdventures.Quest
             s_typeNamesToTypes.Add("stringdictionary", typeof(QuestDictionary<string>));
             s_typeNamesToTypes.Add("objectdictionary", typeof(QuestDictionary<Element>));
             s_typeNamesToTypes.Add("scriptdictionary", typeof(QuestDictionary<IScript>));
+            s_typeNamesToTypes.Add("dictionary", typeof(QuestDictionary<object>));
 
             foreach (KeyValuePair<string, Type> kvp in s_typeNamesToTypes)
             {
