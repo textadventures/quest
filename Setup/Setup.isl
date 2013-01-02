@@ -2046,8 +2046,8 @@
 		<row><td>jjmenu.js</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jjmenu.js</td><td>1</td><td/></row>
 		<row><td>jquery.multi_open_accordion_</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery.multi-open-accordion-1.5.3.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery.multi-open-accordion-1.5.3.js</td><td>1</td><td/></row>
 		<row><td>jquery_1.7.1.min.js</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-1.7.1.min.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery-1.7.1.min.js</td><td>1</td><td/></row>
-		<row><td>jquery_ui_1.8.20.custom.css</td><td>ISX_DEFAULTCOMPONENT5</td><td>JQUERY~1.CSS|jquery-ui-1.8.20.custom.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\jquery-ui-1.8.20.custom.css</td><td>1</td><td/></row>
-		<row><td>jquery_ui_1.8.20.custom.min.</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-ui-1.8.20.custom.min.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery-ui-1.8.20.custom.min.js</td><td>1</td><td/></row>
+		<row><td>jquery_ui_1.9.2.custom.min.c</td><td>ISX_DEFAULTCOMPONENT5</td><td>JQUERY~1.CSS|jquery-ui-1.9.2.custom.min.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\jquery-ui-1.9.2.custom.min.css</td><td>1</td><td/></row>
+		<row><td>jquery_ui_1.9.2.custom.min.j</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-ui-1.9.2.custom.min.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery-ui-1.9.2.custom.min.js</td><td>1</td><td/></row>
 		<row><td>kn.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>kn.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\kn.pak</td><td>1</td><td/></row>
 		<row><td>ko.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ko.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ko.pak</td><td>1</td><td/></row>
 		<row><td>libcef.dll</td><td>libcef.dll</td><td>libcef.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\libcef.dll</td><td>1</td><td/></row>
@@ -4736,9 +4736,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{8800DA7D-DA00-4140-B0DF-78A6C1435121}</td><td/></row>
+		<row><td>ProductCode</td><td>{9EBF3758-6F33-4124-B893-F6D58D691EFE}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
-		<row><td>ProductVersion</td><td>5.30.0001</td><td/></row>
+		<row><td>ProductVersion</td><td>5.30.0002</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
@@ -5023,7 +5023,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="s72">ActionProperty</col>
 		<col def="S72">ISDisplayName</col>
 		<row><td>{00000000-0000-0000-0000-000000000000}</td><td>***ALL_VERSIONS***</td><td></td><td></td><td>2</td><td/><td>ISFOUNDNEWERPRODUCTVERSION</td><td>ISPreventDowngrade</td></row>
-		<row><td>{B53DD8C6-7B30-4A8D-B27C-0F8E52EBCE1D}</td><td>5.00.0000</td><td>5.30.0000</td><td></td><td>768</td><td/><td>ISACTIONPROP1</td><td>UpgradeEntry</td></row>
+		<row><td>{B53DD8C6-7B30-4A8D-B27C-0F8E52EBCE1D}</td><td>5.00.0000</td><td></td><td></td><td>256</td><td/><td>ISACTIONPROP1</td><td>UpgradeEntry</td></row>
 	</table>
 
 	<table name="Verb">
