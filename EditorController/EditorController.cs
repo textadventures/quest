@@ -584,12 +584,21 @@ namespace TextAdventures.Quest
 
             foreach (ElementType type in Enum.GetValues(typeof(ElementType)))
             {
-                foreach (Element o in m_worldModel.Elements.GetElements(type))
+                foreach (Element o in m_worldModel.Elements.GetElements(type).Where(e => e.Parent == null))
                 {
-                    AddElementToTree(o);
+                    AddElementAndChildrenToTree(o);
                 }
             }
             EndTreeUpdate(this, new EventArgs());
+        }
+
+        private void AddElementAndChildrenToTree(Element o)
+        {
+            AddElementToTree(o);
+            foreach (Element child in m_worldModel.Elements.GetDirectChildren(o))
+            {
+                AddElementAndChildrenToTree(child);
+            }
         }
 
         private void AddElementToTree(Element o, int? position = null)
