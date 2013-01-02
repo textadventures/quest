@@ -92,15 +92,11 @@ namespace TextAdventures.Quest
 
         public IScript CreateScript(string line, ScriptContext scriptContext, bool lazy)
         {
-            string remainingScript;
-            IScript newScript;
             MultiScript result = new MultiScript();
             bool finished = false;
             IScript lastIf = null;
             IScript lastComment = null;
             IScript lastFirstTime = null;
-            bool dontAdd;
-            bool addedError;
             IfScriptConstructor ifConstructor = null;
             
             if (lazy)
@@ -109,9 +105,11 @@ namespace TextAdventures.Quest
             }
 
             line = Utility.RemoveSurroundingBraces(line);
+            line = Utility.RemoveComments(line, m_worldModel.EditMode);
 
             while (!finished)
             {
+                string remainingScript;
                 try
                 {
                     line = Utility.GetScript(line, out remainingScript);
@@ -125,14 +123,13 @@ namespace TextAdventures.Quest
                 if (line != null)
                 {
                     line = line.Trim();
-                    line = Utility.RemoveComments(line, m_worldModel.EditMode);
                 }
 
                 if (!string.IsNullOrEmpty(line))
                 {
-                    newScript = null;
-                    dontAdd = false;
-                    addedError = false;
+                    IScript newScript = null;
+                    bool dontAdd = false;
+                    bool addedError = false;
 
                     if (line.StartsWith("else"))
                     {
