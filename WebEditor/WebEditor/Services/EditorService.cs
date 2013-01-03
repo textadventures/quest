@@ -1530,7 +1530,7 @@ namespace WebEditor.Services
             return null;
         }
 
-        private IEditorControl FindEditorControlByAttribute(string element, string attribute)
+        public IEditorControl FindEditorControlByAttribute(string element, string attribute)
         {
             IEditorDefinition def = m_controller.GetEditorDefinition(m_controller.GetElementEditorName(element));
             foreach (IEditorTab tab in def.Tabs.Values)

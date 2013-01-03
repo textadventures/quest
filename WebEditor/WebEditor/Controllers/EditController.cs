@@ -55,6 +55,20 @@ namespace WebEditor.Controllers
             return Json(EditorDictionary[id].GetScriptAdderJson(), JsonRequestBehavior.AllowGet);
         }
 
+        public PartialViewResult EditAttribute(int id, string key, string attributeName)
+        {
+
+            IEditorControl control = new AttributeSubEditorControlData(attributeName); //EditorDictionary[id].FindEditorControlByAttribute(key, attributeName);
+            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, "", null, null, ModelState);
+            var m_data = (IEditorDataExtendedAttributeInfo)model.EditorData;
+            object value = m_data.GetAttribute(attributeName);
+
+            ViewBag.control = control;
+            ViewBag.data = value;
+
+            return PartialView("EditAttribute", model);
+        }
+
         public PartialViewResult EditElement(int id, string key, string tab, string error, string refreshTreeSelectElement)
         {
             Logging.Log.DebugFormat("{0}: EditElement {1}", id, key);

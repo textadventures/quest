@@ -232,7 +232,9 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="WebEditorSettings.xml" />
+    <Content Include="WebEditorSettings.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Edit\ElementEditor.cshtml" />
@@ -284,6 +286,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ImageProcessor.ashx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Edit\EditAttribute.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
