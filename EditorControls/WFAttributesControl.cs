@@ -389,7 +389,7 @@ namespace TextAdventures.Quest.EditorControls
 
         protected virtual IEditorControl GetControlData(string attribute)
         {
-            return new SubEditorControlData(attribute);
+            return new AttributeSubEditorControlData(attribute);
         }
 
         public void AttributeChanged(string attribute, object value)

@@ -9,7 +9,7 @@ namespace TextAdventures.Quest.EditorControls
     [ControlType("verbs")]
     class WFVerbsControl : WFAttributesControl
     {
-        private class VerbsSubEditorControlData : SubEditorControlData
+        private class VerbsSubEditorControlData : AttributeSubEditorControlData
         {
             private static Dictionary<string, string> s_allowedTypes = new Dictionary<string, string> {
                 {"string", "Print a message"},
