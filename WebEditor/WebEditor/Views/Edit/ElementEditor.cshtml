@@ -2,6 +2,33 @@
 @using WebEditor.Views.Edit;
 @model WebEditor.Models.Element
            
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#attributeRowEditor').hide();
+        $('.attributeRow').hover(function () {
+            $(this).css('background-color', '#DFEFFC');
+        }, function () {
+            var cssObj = {
+                'background-color': 'white'
+            };
+            $(this).not('.selected').css(cssObj);
+        });
+
+        $('.attributeRow').click(function () {
+            var cssObj = {
+                'background-color': '#DFEFFC'
+            };
+            $(this).addClass('selected').css(cssObj);
+            $(this).siblings().removeClass('selected').css('background-color', 'white');
+
+            var key = $(this).children('.attributeName').first().html();
+            $.get('/Edit/EditAttribute?id=@(Model.GameId)&key=@(Model.Key)&attributeName=' + key, function (result) {
+                $('#attributeRowEditor').html(result).show('slow');
+            });
+        });
+    });
+</script>
+           
 <div id="form-loading">
 Working...
 </div>
@@ -220,96 +247,101 @@ Working...
             <tbody style="height:200px;overflow:scroll;">
             @foreach(var attr in m_data.GetAttributeData())
             {
-               <tr>
-                   <td style="max-width:200px;word-wrap:break-word;">@Html.Raw(attr.AttributeName)</td>
-                   <td style="max-width:300px;word-wrap:break-word;">@Html.Raw(EditorUtility.GetDisplayString(m_data.GetAttribute(attr.AttributeName)))</td>
-                   <td style="max-width:100px;">@Html.Raw(attr.Source)</td>
+               <tr class="attributeRow" style="cursor:pointer;">
+                   <td class="attributeName" style="max-width:200px;word-wrap:break-word;">@Html.Raw(attr.AttributeName)</td>
+                   <td class="attributeValue" style="max-width:300px;word-wrap:break-word;">@Html.Raw(EditorUtility.GetDisplayString(m_data.GetAttribute(attr.AttributeName)))</td>
+                   <td class="attributeSource" style="max-width:100px;">@Html.Raw(attr.Source)</td>                  
                </tr>
             } 
             </tbody>
-            </table> 
+            </table>
             </div>
-            break;        
+            <div id="attributeRowEditor" style="display:none;">
+            </div>
+            break;
         case "label":
             <div class="elementEditorLabel">
             @{
-                var href = ctl.GetString("href");
-                if (href == null)
-                {
+            var href = ctl.GetString("href");
+            if (href == null)
+            {
                     @caption
-                }
-                else
-                {
+            }
+            else
+            {
                     <a href="@href" target="_blank">@caption</a>
-                }
+            }
             }
             </div>
             break;
         case "title":
             string className = isFirst ? "elementEditorTitleTop" : "elementEditorTitle";
             <div class="@className">@caption</div>
-            break;
+                               break;
         case "dropdown":
-            string selectedItem = value as string;
-            IEnumerable<SelectListItem> valuesList = Controls.GetDropdownValues(ctl, selectedItem, Model.Controller);
+                               string selectedItem = value as string;
+                               IEnumerable<SelectListItem> valuesList = Controls.GetDropdownValues(ctl, selectedItem, Model.Controller);
             @Html.DropDownList(ctl.Attribute, valuesList, new { @class = "elementEditorDropdown" });
-            break;
+                                                                                                   break;
         case "richtext":
-            // replace any <br/> tags with NewLine character
+                                                                                                   // replace any <br/> tags with NewLine character
             @Html.TextArea(ctl.Attribute, System.Text.RegularExpressions.Regex.Replace(value.ToString(), @"(?i:<br/?>)", Environment.NewLine), 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
-            break;
+       break;
         case "number":
-            string minMax = string.Empty;
-            int? min = ctl.GetInt("minimum");
-            int? max = ctl.GetInt("maximum");
-            if (min.HasValue) {
-                minMax += string.Format("min={0}", min);
-            }
-            if (max.HasValue)
-            {
-                if (minMax.Length > 0) {
-                    minMax += " ";
-                }
-                minMax += string.Format("max={0}", max);
-            }
+       string minMax = string.Empty;
+       int? min = ctl.GetInt("minimum");
+       int? max = ctl.GetInt("maximum");
+       if (min.HasValue)
+       {
+           minMax += string.Format("min={0}", min);
+       }
+       if (max.HasValue)
+       {
+           if (minMax.Length > 0)
+           {
+               minMax += " ";
+           }
+           minMax += string.Format("max={0}", max);
+       }
             <input type="number" name="@ctl.Attribute" id="@ctl.Attribute" value="@Model.EditorData.GetAttribute(ctl.Attribute)" @minMax style="width: 50px" />
-            break;
+                                                                                                                            break;
         case "multi":
             @RenderMultiControl(ctl, value)
-            break;
+       break;
         case "dropdowntypes":
-            @Html.DropDownList("types-dropdown-" + ctl.Id, Controls.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key), new { @class = "types-dropdown", data_key = ctl.Id }); 
-            break;
+            @Html.DropDownList("types-dropdown-" + ctl.Id, Controls.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key), new { @class = "types-dropdown", data_key = ctl.Id });
+                                                                                                                                                                                         break;
         case "elementslist":
             @Html.Action("ElementsList", new { id = Model.GameId, key = Model.Key, control = ctl })
-            break;
+       break;
         case "exits":
             @Html.Action("EditExits", new { id = Model.GameId, key = Model.Key, control = ctl })
-            break;
+       break;
         case "objects":
-            IEditableObjectReference objectRef = value as IEditableObjectReference;
-            string selectedValue = null;
-            if (objectRef != null)
-            {
-                selectedValue = objectRef.Reference;
-            }
-            List<SelectListItem> items = new List<SelectListItem>(
-                Controls.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
-                .Select(s => new SelectListItem { Text = s, Value = s, Selected = (selectedValue == s) })
-                );
-            // if ctl.Attribute is "key" (or any name that exists in the Model), ASP.NET MVC ignores Selected value
+       IEditableObjectReference objectRef = value as IEditableObjectReference;
+       string selectedValue = null;
+       if (objectRef != null)
+       {
+           selectedValue = objectRef.Reference;
+       }
+       List<SelectListItem> items = new List<SelectListItem>(
+           Controls.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
+           .Select(s => new SelectListItem { Text = s, Value = s, Selected = (selectedValue == s) })
+           );
+       // if ctl.Attribute is "key" (or any name that exists in the Model), ASP.NET MVC ignores Selected value
             @Html.DropDownList("dropdown-" + ctl.Attribute, items);
-            break;
+                                                                  break;
         case "verbs":
             @Html.Action("EditVerbs", new { id = Model.GameId, key = Model.Key, control = ctl })
-            break;
+       break;
         case "file":
-            string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
+       string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
             <div style="display:inline-block;height:auto;width:auto;">
             <div style="float:left;">
             @Html.TextBox(ctl.Attribute, (string)value, new { @readonly = "readonly", @class = "elementEditorFile" })
             </div>
-            @if (ctl.GetBool("preview") && source.Contains("jpg") && !string.IsNullOrEmpty(value.ToString())){
+            @if (ctl.GetBool("preview") && source.Contains("jpg") && !string.IsNullOrEmpty(value.ToString()))
+            {
                 <div style="float:left;position:relative;top:-12px;">
                 <button type="button" class="img-preview" data-key="@ctl.Attribute" data-extensions="@source">
                     <img src="/ImageProcessor.ashx?h=40&w=40&gameId=@Model.GameId&image=@value.ToString()" />
@@ -320,7 +352,7 @@ Working...
             <button type="button" class="file-upload" data-key="@ctl.Attribute" data-extensions="@source">Choose file</button>
             </div>
             </div>
-            break;
+                                                                                            break;
         case "scriptdictionary":
             @Html.Action("EditScriptDictionary", new { id = Model.GameId, key = Model.Key, control = ctl })
        break;
@@ -344,21 +376,21 @@ Working...
 
 @helper RenderMultiControl(IEditorControl ctl, object value)
     {
-    string caption = ctl.GetString("selfcaption");
-    if (caption != null)
-    {
+        string caption = ctl.GetString("selfcaption");
+        if (caption != null)
+        {
         <text>@caption:</text>
-    }
-    IDictionary<string, string> types = ctl.GetDictionary("types");
-    string selectedType = Controls.GetTypeName(value);
+        }
+        IDictionary<string, string> types = ctl.GetDictionary("types");
+        string selectedType = Controls.GetTypeName(value);
     @Html.DropDownList(ctl.Attribute + "-type", types.Select(t => new SelectListItem { Text = t.Value, Value = t.Key, Selected = (t.Key == selectedType) }), new { @class = "multi-dropdown", data_key = ctl.Attribute })
     <br />
-    string controlType = Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
-    string ctlCaption = null;
-    if (controlType == "checkbox")
-    {
-        ctlCaption = ctl.GetString("checkbox");
-    }
+        string controlType = Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
+        string ctlCaption = null;
+        if (controlType == "checkbox")
+        {
+            ctlCaption = ctl.GetString("checkbox");
+        }
     @RenderEditorControl(ctl, false, controlType, ctlCaption)
 }
 
