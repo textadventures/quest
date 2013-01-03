@@ -1,6 +1,6 @@
 ﻿<library>
   <function name="Grid_SetScale" parameters="scale">
-    request (RunScript, "Grid_SetScale; " + ToString(scale))
+    JS.Grid_SetScale(scale)
   </function>
 
   <function name="Grid_CalculateMapCoordinates" parameters="room">
@@ -139,7 +139,7 @@
       player_z = room.grid_z
       
       // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
-      request (RunScript, "Grid_DrawPlayer;" + ToString(player_x) + ";" + ToString(player_y) + ";" + ToString(player_z) + ";5;black;2;yellow")
+      JS.Grid_DrawPlayer(player_x, player_y, player_z, 5, "black", 2, "yellow")
     }
   </function>
 
@@ -153,13 +153,13 @@
         }
       
         // Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill, sides)
-        request (RunScript, "Grid_DrawBox;" + ToString(room.grid_x) + ";" + ToString(room.grid_y) + ";" + ToString(room.grid_z) + ";" + ToString(room.grid_width) + ";" + ToString(room.grid_length) + ";" + room.grid_border + ";" + ToString(room.grid_borderwidth) + ";" + room.grid_fill + ";" + ToString(room.grid_bordersides))
+        JS.Grid_DrawBox(room.grid_x, room.grid_y, room.grid_z, room.grid_width, room.grid_length, room.grid_border, room.grid_borderwidth, room.grid_fill, room.grid_bordersides)
         
         if (LengthOf(room.grid_label) > 0) {
           label_x = room.grid_x + room.grid_width/2.0
           label_y = (room.grid_y + room.grid_length/2.0) - 0.5
           // Grid_DrawLabel(x, y, z, text)
-          request (RunScript, "Grid_DrawLabel;" + ToString(label_x) + ";" + ToString(label_y) + ";" + ToString(room.grid_z) + ";" + room.grid_label)
+          JS.Grid_DrawLabel(label_x, label_y, room.grid_z, room.grid_label)
         }
       
         foreach (exit, AllExits()) {
@@ -176,32 +176,32 @@
 
   <function name="Grid_ShowCustomLayer" parameters="visible">
     if (visible) {
-      request (RunScript, "Grid_ShowCustomLayer;true")
+      JS.Grid_ShowCustomLayer(true)
     }
     else {
-      request (RunScript, "Grid_ShowCustomLayer;false")
+      JS.Grid_ShowCustomLayer(false)
     }
   </function>
 
   <function name="Grid_ClearCustomLayer">
-    request (RunScript, "Grid_ClearCustomLayer")
+    JS.Grid_ClearCustomLayer()
   </function>
 
   <function name="Grid_DrawLine" parameters="x1, y1, x2, y2, border, borderWidth">
     // Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
-    request (RunScript, "Grid_DrawLine;" + ToString(x1) + ";" + ToString(y1) + ";" + ToString(x2) + ";" + ToString(y2) + ";" + border + ";" + ToString(borderWidth))
+    JS.Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
   </function>
 
   <function name="Grid_DrawGridLines" parameters="x1, y1, x2, y2, border">
-    request (RunScript, "Grid_DrawGridLines;" + ToString(x1) + ";" + ToString(y1) + ";" + ToString(x2) + ";" + ToString(y2) + ";" + border)
+    JS.Grid_DrawGridLines(x1, y1, x2, y2, border)
   </function>
 
   <function name="Grid_SetCentre" parameters="x, y">
-    request (RunScript, "Grid_SetCentre;" + ToString(x) + ";" + ToString(y))
+    JS.Grid_SetCentre(x, y)
   </function>
 
   <function name="Grid_DrawSquare" parameters="id, x, y, width, height, text, fill">
-    request (RunScript, "Grid_DrawSquare;" + id + ";" + ToString(x) + ";" + ToString(y) + ";" + ToString(width) + ";" + ToString(height) + ";" + text + ";" + fill)
+    JS.Grid_DrawSquare(id, x, y, width, height, text, fill)
   </function>
 
   <function name="JS_GridSquareClick" parameters="parameterstring">

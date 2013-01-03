@@ -31,7 +31,7 @@
     <![CDATA[
     if (game.externalstylesheets <> null) {
       foreach (stylesheet, game.externalstylesheets) {
-        request (RunScript, "addExternalStylesheet; " + stylesheet)
+        JS.addExternalStylesheet(stylesheet)
       }
     }
     request (FontName, GetCurrentFontFamily())
@@ -55,14 +55,14 @@
     request (SetInterfaceString, "NothingSelectedLabel=[NothingSelectedLabel]")
     request (SetInterfaceString, "TypeHereLabel=[TypeHereLabel]")
     request (SetInterfaceString, "ContinueLabel=[ContinueLabel]")
-    request (RunScript, "SetMenuBackground;" + game.menubackground)
-    request (RunScript, "SetMenuForeground;" + game.menuforeground)
-    request (RunScript, "SetMenuHoverBackground;" + game.menuhoverbackground)
-    request (RunScript, "SetMenuHoverForeground;" + game.menuhoverforeground)
-    request (RunScript, "SetMenuFontName;" + game.menufont)
-    request (RunScript, "SetMenuFontSize;" + game.menufontsize + "pt")
+    JS.SetMenuBackground(game.menubackground)
+    JS.SetMenuForeground(game.menuforeground)
+    JS.SetMenuHoverBackground(game.menuhoverbackground)
+    JS.SetMenuHoverForeground(game.menuhoverforeground)
+    JS.SetMenuFontName(game.menufont)
+    JS.SetMenuFontSize(game.menufontsize + "pt")
     if (not game.underlinehyperlinks) {
-      request (RunScript, "TurnOffHyperlinksUnderline")
+      JS.TurnOffHyperlinksUnderline()
     }
     if (game.showpanes) {
       request (Show, "Panes")
@@ -74,7 +74,7 @@
       SetFramePicture (game.panelcontents)
     }
     if (game.gridmap) {
-      request (RunScript, "ShowGrid; " + game.mapsize)
+      JS.ShowGrid(game.mapsize)
       Grid_SetScale (game.mapscale)
       
       if (game.pov <> null) {

@@ -56,12 +56,12 @@
     request (Background, game.defaultbackground)
     request (Foreground, game.defaultforeground)
     request (LinkForeground, game.defaultlinkforeground)
-    request (RunScript, "SetMenuBackground;" + game.menubackground)
-    request (RunScript, "SetMenuForeground;" + game.menuforeground)
-    request (RunScript, "SetMenuHoverBackground;" + game.menuhoverbackground)
-    request (RunScript, "SetMenuHoverForeground;" + game.menuhoverforeground)
-    request (RunScript, "SetMenuFontName;" + game.menufont)
-    request (RunScript, "SetMenuFontSize;" + game.menufontsize + "pt")
+    JS.SetMenuBackground(game.menubackground)
+    JS.SetMenuForeground(game.menuforeground)
+    JS.SetMenuHoverBackground(game.menuhoverbackground)
+    JS.SetMenuHoverForeground(game.menuhoverforeground)
+    JS.SetMenuFontName(game.menufont)
+    JS.SetMenuFontSize(game.menufontsize + "pt")
     request (Hide, "Panes")
     request (Hide, "Command")
     request (Hide, "Location")
@@ -126,7 +126,7 @@
       msg ("")
     }
     if (HasString(player.parent, "youtube")) {
-      request (RunScript, "AddYouTube; " + player.parent.youtube)
+      JS.AddYouTube(player.parent.youtube)
       msg ("")
       msg ("")
     }

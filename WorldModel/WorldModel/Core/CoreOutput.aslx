@@ -43,7 +43,7 @@
     }
     if (not ListContains(game.externalstylesheets, stylesheet)) {
       list add (game.externalstylesheets, stylesheet)
-      request (RunScript, "addExternalStylesheet; " + stylesheet)
+      JS.addExternalStylesheet(stylesheet)
     }
   </function>
 
@@ -59,11 +59,11 @@
   </function>
 
   <function name="ShowYouTube" parameters="id">
-    request (RunScript, "AddYouTube; " + id)
+    JS.AddYouTube(id)
   </function>
 
   <function name="ShowVimeo" parameters="id">
-    request (RunScript, "AddVimeo; " + id)
+    JS.AddVimeo(id)
   </function>
 
   <function name="WaitForKeyPress">
@@ -106,12 +106,12 @@
   </function>
 
   <function name="SetBackgroundImage" parameters="filename">
-    request (RunScript, "SetBackgroundImage;" + GetFileURL(filename))
+    JS.SetBackgroundImage(GetFileURL(filename))
     game.backgroundimage = filename
   </function>
 
   <function name="SetBackgroundOpacity" parameters="opacity">
-    request (RunScript, "SetBackgroundOpacity;" + opacity)
+    JS.SetBackgroundOpacity(opacity)
     game.backgroundopacity = opacity
     game.setbackgroundopacity = true
   </function>

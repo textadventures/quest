@@ -275,7 +275,7 @@ namespace TextAdventures.Quest
                     // character must be a non-word character. For example "msgfunction" is not
                     // a match for "msg".
 
-                    if (line.Length == c.Keyword.Length || s_nonWordCharacterRegex.IsMatch(line.Substring(c.Keyword.Length)) || c is CommentScriptConstructor)
+                    if (line.Length == c.Keyword.Length || s_nonWordCharacterRegex.IsMatch(line.Substring(c.Keyword.Length)) || c is CommentScriptConstructor || c is JSScriptConstructor)
                     {
                         if (c.Keyword.Length > strength)
                         {
