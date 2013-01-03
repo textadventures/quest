@@ -78,6 +78,11 @@ namespace TextAdventures.Quest
                 return null;
             }
 
+            public double? GetDouble(string tag)
+            {
+                return null;
+            }
+
             public System.Collections.Generic.IEnumerable<string> GetListString(string tag)
             {
                 throw new NotImplementedException();
