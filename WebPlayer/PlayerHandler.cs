@@ -132,17 +132,37 @@ namespace WebPlayer
 
         public void RunScript(string data, object[] parameters)
         {
-            string[] args = data.Split(';');
-            var fnparameters = new List<IJavaScriptParameter>();
-            for (int i = 1; i < args.Length; i++)
-            {
-                fnparameters.Add(new StringParameter(args[i].Trim()));
-            }
+            var paramValues = parameters.Select(GetScriptParameter);
 
             // Clear text buffer before running custom JavaScript, otherwise text written
             // before now may appear after inserted HTML.
             m_buffer.OutputText(ClearBuffer());
-            m_buffer.AddJavaScriptToBuffer(args[0], fnparameters.ToArray());
+            m_buffer.AddJavaScriptToBuffer(data, paramValues.ToArray());
+        }
+
+        private IJavaScriptParameter GetScriptParameter(object arg)
+        {
+            if (arg == null)
+            {
+                return new NullParameter();
+            }
+            if (arg is string)
+            {
+                return new StringParameter((string)arg);
+            }
+            if (arg is int)
+            {
+                return new IntParameter((int)arg);
+            }
+            if (arg is double)
+            {
+                return new DoubleParameter((double)arg);
+            }
+            if (arg is bool)
+            {
+                return new BooleanParameter((bool)arg);
+            }
+            throw new Exception(string.Format("Invalid script argument type: {0}", arg.GetType()));
         }
 
         public void SetAlignment(string align)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -31,6 +32,14 @@ namespace TextAdventures.Utility.JSInterop
         public string GetParameter()
         {
             return JavaScriptParameterHelpers.StringParameter(m_param);
+        }
+    }
+
+    public class NullParameter : IJavaScriptParameter
+    {
+        public string GetParameter()
+        {
+            return "null";
         }
     }
 
@@ -77,7 +86,22 @@ namespace TextAdventures.Utility.JSInterop
 
         public string GetParameter()
         {
-            return m_param.ToString();
+            return m_param.ToString(CultureInfo.InvariantCulture);
+        }
+    }
+
+    public class DoubleParameter : IJavaScriptParameter
+    {
+        private double m_param;
+
+        public DoubleParameter(double param)
+        {
+            m_param = param;
+        }
+
+        public string GetParameter()
+        {
+            return m_param.ToString(CultureInfo.InvariantCulture);
         }
     }
 

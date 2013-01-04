@@ -149,6 +149,8 @@ Public Class PlayerHTML
         ElseIf TypeOf arg Is Double Then
             Dim argInt = DirectCast(arg, Double)
             Return argInt.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        ElseIf TypeOf arg Is Boolean Then
+            Return If(DirectCast(arg, Boolean), "true", "false")
         Else
             Throw New Exception(String.Format("Invalid script argument type: {0}", arg.GetType()))
         End If
