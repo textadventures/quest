@@ -1,6 +1,7 @@
 ﻿var _currentDiv = null;
 var _allowMenuFontSizeChange = true;
 var _showGrid = false;
+var _outputSections = new Array();
 var numCommands = 0;
 var thisCommand = 0;
 var commandsList = new Array();
@@ -476,10 +477,12 @@ function addText(text) {
 var _divCount = 0;
 
 function createNewDiv(alignment) {
+    var classes = _outputSections.join(" ");
     _divCount++;
     $("<div/>", {
         id: "divOutputAlign" + _divCount,
-        style: "text-align: " + alignment
+        style: "text-align: " + alignment,
+        "class": classes
     }).appendTo("#divOutput");
     _currentDiv = $("#divOutputAlign" + _divCount);
 }
@@ -639,6 +642,26 @@ function TurnOffHyperlinksUnderline() {
 
 function SetBackgroundImage(url) {
     $("body").css("background-image", "url(" + url + ")");
+}
+
+function StartOutputSection(name) {
+    if ($.inArray(name, _outputSections) == -1) {
+        _outputSections.push(name);
+        createNewDiv("left");
+    }
+}
+
+function EndOutputSection(name) {
+    var index = $.inArray(name, _outputSections);
+    if (index != -1) {
+        _outputSections.splice(index, 1);
+        createNewDiv("left");
+    }
+}
+
+function HideOutputSection(name) {
+    EndOutputSection(name);
+    $("." + name).hide(400);
 }
 
 var TextFX = new function() {

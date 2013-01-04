@@ -367,15 +367,18 @@
 
   <function name="ShowMenu" parameters="caption, options, callback">
     <![CDATA[
+    outputsection = StartNewOutputSection()
     msg (caption)
-    // TO DO: Also handle stringlist options type
     
+    // TO DO: Also handle stringlist options type
     foreach (option, options) {
       optionText = StringDictionaryItem(options, option)
       msg ("<a onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
     }
+    EndOutputSection(outputsection)
     
     game.menucallback = callback
+    game.menuoutputsection = outputsection
     
     // could also show numbers as choices to left of link, then in HandleCommand we can handle these if a menu was shown.
     // also, HandleCommand could see which menu choice is best match if text is entered, e.g. "green" matches "green apple"
@@ -387,12 +390,28 @@
       error ("Unexpected menu response")
     }
     else {
+      JS.HideOutputSection(game.menuoutputsection)
+      game.menuoutputsection = null
       parameters = NewStringDictionary()
       dictionary add (parameters, "result", option)
       script = game.menucallback
       game.menucallback = null
       invoke (script, parameters)
     }
+  </function>
+
+  <function name="StartNewOutputSection" type="string">
+    if (not HasInt(game, "lastoutputsection")) {
+      game.lastoutputsection = 0
+    }
+    game.lastoutputsection = game.lastoutputsection + 1
+    name = "section" + game.lastoutputsection
+    JS.StartOutputSection(name)
+    return (name)
+  </function>
+
+  <function name="EndOutputSection" parameters="name">
+    JS.EndOutputSection(name)
   </function>
   
 </library>
