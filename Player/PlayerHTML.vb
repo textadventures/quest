@@ -130,14 +130,29 @@ Public Class PlayerHTML
             script = String.Format("{0}()", functionName)
         Else
             Dim stringArgs = From arg In args
-                             Select (If(arg Is Nothing, Nothing, arg.ToString()))
-            Dim quotedArgs = From arg In stringArgs
-                             Select (If(arg Is Nothing, """""", """" + arg.Replace("\", "\\").Replace("""", "\""").Replace(Chr(13), "").Replace(Chr(10), "") + """"))
-            script = String.Format("{0}({1})", functionName, String.Join(",", quotedArgs))
+                             Select (GetScriptParameter(arg))
+            script = String.Format("{0}({1})", functionName, String.Join(",", stringArgs))
         End If
         Debug.WriteLine(script)
         m_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
     End Sub
+
+    Private Function GetScriptParameter(arg As Object) As String
+        If arg Is Nothing Then
+            Return "null"
+        ElseIf TypeOf arg Is String Then
+            Dim argString = DirectCast(arg, String)
+            Return """" + argString.Replace("\", "\\").Replace("""", "\""").Replace(Chr(13), "").Replace(Chr(10), "") + """"
+        ElseIf TypeOf arg Is Integer Then
+            Dim argInt = DirectCast(arg, Integer)
+            Return argInt.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        ElseIf TypeOf arg Is Double Then
+            Dim argInt = DirectCast(arg, Double)
+            Return argInt.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        Else
+            Throw New Exception(String.Format("Invalid script argument type: {0}", arg.GetType()))
+        End If
+    End Function
 
     Public Sub SetBackground(colour As String)
         InvokeScript("setBackground", colour)
