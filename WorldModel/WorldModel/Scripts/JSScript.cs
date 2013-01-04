@@ -14,7 +14,7 @@ namespace TextAdventures.Quest.Scripts
             get { return "JS."; }
         }
 
-        private static Regex s_jsFunctionName = new Regex(@"^JS\.([\w\.]*)");
+        private static Regex s_jsFunctionName = new Regex(@"^JS\.([\w\.\@]*)");
 
         public IScript Create(string script, ScriptContext scriptContext)
         {
@@ -38,7 +38,15 @@ namespace TextAdventures.Quest.Scripts
 
             var functionName = s_jsFunctionName.Match(script).Groups[1].Value;
 
-            return new JSScript(scriptContext, functionName, expressions);
+            bool outputLog = false;
+
+            if (functionName.StartsWith("output@"))
+            {
+                outputLog = true;
+                functionName = functionName.Substring(7);
+            }
+
+            return new JSScript(scriptContext, functionName, outputLog, expressions);
         }
 
         public IScriptFactory ScriptFactory { get; set; }
@@ -50,12 +58,14 @@ namespace TextAdventures.Quest.Scripts
     {
         private readonly ScriptContext m_scriptContext;
         private readonly string m_function;
+        private readonly bool m_outputLog;
         private readonly List<IFunctionGeneric> m_parameters;
 
-        public JSScript(ScriptContext scriptContext, string function, List<IFunctionGeneric> parameters)
+        public JSScript(ScriptContext scriptContext, string function, bool outputLog, List<IFunctionGeneric> parameters)
         {
             m_scriptContext = scriptContext;
             m_function = function;
+            m_outputLog = outputLog;
             m_parameters = parameters;
         }
 
@@ -70,16 +80,25 @@ namespace TextAdventures.Quest.Scripts
             {
                 var paramValues = m_parameters.Select(p => p.Execute(c));
                 m_scriptContext.WorldModel.PlayerUI.RunScript(m_function, paramValues.ToArray());
+                if (m_outputLog)
+                {
+                    m_scriptContext.WorldModel.OutputLogger.RunJavaScript(m_function, paramValues.ToArray());
+                }
             }
             else
             {
                 m_scriptContext.WorldModel.PlayerUI.RunScript(m_function, null);
+                if (m_outputLog)
+                {
+                    m_scriptContext.WorldModel.OutputLogger.RunJavaScript(m_function, null);
+                }
             }
         }
 
         public override string Save()
         {
-            return SaveScript("JS." + m_function, m_parameters == null ? new[] { string.Empty } : m_parameters.Select(p => p.Save()).ToArray());
+            string functionName = (m_outputLog ? "output@" : "") + m_function;
+            return SaveScript("JS." + functionName, m_parameters == null ? new[] { string.Empty } : m_parameters.Select(p => p.Save()).ToArray());
         }
 
         public override void SetParameterInternal(int index, object value)

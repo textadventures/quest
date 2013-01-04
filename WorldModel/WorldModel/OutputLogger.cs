@@ -45,6 +45,23 @@ namespace TextAdventures.Quest
             m_text.Append(string.Format("<output_setfontsize size=\"{0}\"/>", fontSize));
         }
 
+        public void RunJavaScript(string function, object[] parameters)
+        {
+            // TO DO: We should be using a proper XML writer here and ensure parameter types are serialized properly
+
+            m_text.Append(string.Format("<output_runjs function=\"{0}\" parameters=\"{1}\" ", function, parameters == null ? 0 : parameters.Length));
+            if (parameters != null)
+            {
+                int count = 0;
+                foreach (var parameter in parameters)
+                {
+                    count++;
+                    m_text.Append(string.Format("parameter{0}=\"{1}\"", count, parameter));
+                }
+            }
+            m_text.Append("/>");
+        }
+
         public void Clear()
         {
             m_text.Clear();
@@ -67,9 +84,8 @@ namespace TextAdventures.Quest
             text = "<output>" + text + "</output>";
             StringBuilder output = new StringBuilder();
 
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreWhitespace = false;
-            XmlReader reader = XmlReader.Create(new System.IO.StringReader(text), settings);
+            var settings = new XmlReaderSettings {IgnoreWhitespace = false};
+            var reader = XmlReader.Create(new System.IO.StringReader(text), settings);
 
             while (reader.Read())
             {
@@ -107,6 +123,21 @@ namespace TextAdventures.Quest
                                 string name = reader.GetAttribute("name");
                                 m_worldModel.OutputLogger.SetFontName(name);
                                 m_worldModel.PlayerUI.SetFont(name);
+                                break;
+                            case "output_runjs":
+                                if (output.Length > 0)
+                                {
+                                    m_worldModel.Print(output.ToString(), false);
+                                    output.Clear();
+                                }
+                                string function = reader.GetAttribute("function");
+                                int parameterCount = int.Parse(reader.GetAttribute("parameters"));
+                                List<object> paramValues = new List<object>();
+                                for (int i = 1; i <= parameterCount; i++)
+                                {
+                                    paramValues.Add(reader.GetAttribute("parameter" + i));
+                                }
+                                m_worldModel.PlayerUI.RunScript(function, paramValues.ToArray());
                                 break;
                             default:
                                 output.Append("<" + reader.Name);
@@ -150,7 +181,6 @@ namespace TextAdventures.Quest
             }
 
             m_worldModel.Print(output.ToString());
-
         }
     }
 }

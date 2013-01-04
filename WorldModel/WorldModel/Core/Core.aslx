@@ -415,7 +415,7 @@
   </function>
 
   <function name="ClearMenu">
-    JS.HideOutputSection(game.menuoutputsection)
+    JS.output@HideOutputSection(game.menuoutputsection)
     game.menuoutputsection = null
     game.menuoptions = null
     game.menucallback = null
@@ -427,12 +427,12 @@
     }
     game.lastoutputsection = game.lastoutputsection + 1
     name = "section" + game.lastoutputsection
-    JS.StartOutputSection(name)
+    JS.output@StartOutputSection(name)
     return (name)
   </function>
 
   <function name="EndOutputSection" parameters="name">
-    JS.EndOutputSection(name)
+    JS.output@EndOutputSection(name)
   </function>
   
 </library>
