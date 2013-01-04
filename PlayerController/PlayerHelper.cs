@@ -74,6 +74,7 @@ namespace TextAdventures.Quest
             string currentCommand = "";
             string currentHref = "";
             string currentLinkColour = "";
+            string currentOnClick = null;
             bool generatingLink = false;
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = false;
@@ -136,6 +137,7 @@ namespace TextAdventures.Quest
                                 generatingLink = true;
                                 currentHref = reader.GetAttribute("href");
                                 currentLinkColour = reader.GetAttribute("color");
+                                currentOnClick = reader.GetAttribute("onclick");
                                 break;
                             case "ul":
                                 WriteText("<ul>");
@@ -197,7 +199,7 @@ namespace TextAdventures.Quest
                                 alignmentSet = true;
                                 break;
                             case "a":
-                                AddExternalLink(currentTagValue, currentHref, currentLinkColour);
+                                AddExternalLink(currentTagValue, currentHref, currentLinkColour, currentOnClick);
                                 generatingLink = false;
                                 break;
                             case "ul":
@@ -320,7 +322,7 @@ namespace TextAdventures.Quest
         {
             string onclick = string.Empty;
             m_linkCount++;
-            string linkid = "verbLink" + m_linkCount.ToString();
+            string linkid = "verbLink" + m_linkCount;
 
             if (string.IsNullOrEmpty(verbs))
             {
@@ -343,12 +345,12 @@ namespace TextAdventures.Quest
             }
         }
 
-        private void AddExternalLink(string text, string href, string colour)
+        private void AddExternalLink(string text, string href, string colour, string onclick)
         {
-            WriteText(string.Format("<a style=\"{0}\" class=\"cmdlink\" onclick=\"goUrl('{1}')\">{2}</a>",
-                GetCurrentFormat(colour ?? m_linkForeground),
-                href,
-                text));
+            WriteText(string.Format("<a style=\"{0}\" class=\"cmdlink\" onclick=\"{1}\">{2}</a>",
+                                    GetCurrentFormat(colour ?? m_linkForeground),
+                                    onclick ?? string.Format("goUrl('{0}')", href),
+                                    text));
         }
 
         private void WriteText(string text)
