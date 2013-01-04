@@ -162,7 +162,7 @@ namespace QuestConsole
         {
         }
 
-        public void RunScript(string script)
+        public void RunScript(string function, object[] parameters)
         {
         }
 

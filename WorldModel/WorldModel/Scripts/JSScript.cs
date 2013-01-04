@@ -68,13 +68,12 @@ namespace TextAdventures.Quest.Scripts
         {
             if (m_parameters != null)
             {
-                // TO DO: We want to pass parameters individually, so that semicolons work
-                var tempParams = m_parameters.Select(p => p.Execute(c));
-                m_scriptContext.WorldModel.PlayerUI.RunScript(m_function + ";" + string.Join(";", tempParams));
+                var paramValues = m_parameters.Select(p => p.Execute(c));
+                m_scriptContext.WorldModel.PlayerUI.RunScript(m_function, paramValues.ToArray());
             }
             else
             {
-                m_scriptContext.WorldModel.PlayerUI.RunScript(m_function);
+                m_scriptContext.WorldModel.PlayerUI.RunScript(m_function, null);
             }
         }
 

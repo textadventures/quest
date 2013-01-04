@@ -124,10 +124,17 @@ Public Class PlayerHTML
         ClearBuffer()
     End Sub
 
-    Public Sub InvokeScript(functionName As String, ParamArray args() As String)
-        Dim quotedArgs = From arg In args
-                         Select (If(arg Is Nothing, """""", """" + arg.Replace("\", "\\").Replace("""", "\""").Replace(Chr(13), "").Replace(Chr(10), "") + """"))
-        Dim script As String = String.Format("{0}({1})", functionName, String.Join(",", quotedArgs))
+    Public Sub InvokeScript(functionName As String, ParamArray args() As Object)
+        Dim script As String
+        If args Is Nothing Then
+            script = String.Format("{0}()", functionName)
+        Else
+            Dim stringArgs = From arg In args
+                             Select (If(arg Is Nothing, Nothing, arg.ToString()))
+            Dim quotedArgs = From arg In stringArgs
+                             Select (If(arg Is Nothing, """""", """" + arg.Replace("\", "\\").Replace("""", "\""").Replace(Chr(13), "").Replace(Chr(10), "") + """"))
+            script = String.Format("{0}({1})", functionName, String.Join(",", quotedArgs))
+        End If
         Debug.WriteLine(script)
         m_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
     End Sub

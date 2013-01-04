@@ -386,24 +386,10 @@ Public Class Player
         BeginInvoke(Sub() ctlPlayerHtml.SetBackground(colour))
     End Sub
 
-    Private Sub RunScript(data As String) Implements IPlayer.RunScript
+    Private Sub RunScript(functionName As String, parameters As Object()) Implements IPlayer.RunScript
         ClearBuffer()
         BeginInvoke(Sub()
-                        Dim functionName As String = ""
-                        Dim dataList As List(Of String)
-                        Dim args As New List(Of String)
-
-                        dataList = New List(Of String)(data.Split(CChar(";")))
-
-                        For Each value As String In dataList
-                            If functionName.Length = 0 Then
-                                functionName = value
-                            Else
-                                args.Add(value.Trim())
-                            End If
-                        Next
-
-                        ctlPlayerHtml.InvokeScript(functionName, args.ToArray())
+                        ctlPlayerHtml.InvokeScript(functionName, parameters)
                     End Sub)
     End Sub
 

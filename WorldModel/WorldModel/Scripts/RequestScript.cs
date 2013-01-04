@@ -121,7 +121,18 @@ namespace TextAdventures.Quest.Scripts
                             m_worldModel.PlayerUI.SetPanelContents("");
                         }
                     }
-                    m_worldModel.PlayerUI.RunScript(data);
+
+                    string[] jsArgs = data.Split(';').Select(a => a.Trim()).ToArray();
+                    string functionName = jsArgs[0];
+                    if (jsArgs.Length == 0)
+                    {
+                        m_worldModel.PlayerUI.RunScript(functionName, null);
+                    }
+                    else
+                    {
+                        m_worldModel.PlayerUI.RunScript(functionName, jsArgs.Skip(1).ToArray());
+                    }
+                    
                     break;
                 case Request.Quit:
                     m_worldModel.PlayerUI.Quit();

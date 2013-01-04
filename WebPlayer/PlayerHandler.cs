@@ -130,19 +130,19 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer("setBackground", new StringParameter(col));
         }
 
-        public void RunScript(string data)
+        public void RunScript(string data, object[] parameters)
         {
             string[] args = data.Split(';');
-            var parameters = new List<IJavaScriptParameter>();
+            var fnparameters = new List<IJavaScriptParameter>();
             for (int i = 1; i < args.Length; i++)
             {
-                parameters.Add(new StringParameter(args[i].Trim()));
+                fnparameters.Add(new StringParameter(args[i].Trim()));
             }
 
             // Clear text buffer before running custom JavaScript, otherwise text written
             // before now may appear after inserted HTML.
             m_buffer.OutputText(ClearBuffer());
-            m_buffer.AddJavaScriptToBuffer(args[0], parameters.ToArray());
+            m_buffer.AddJavaScriptToBuffer(args[0], fnparameters.ToArray());
         }
 
         public void SetAlignment(string align)

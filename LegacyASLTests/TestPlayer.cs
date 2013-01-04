@@ -132,7 +132,7 @@ namespace LegacyASLTests
         public string Background { get { return m_background; } }
         public string Foreground { get { return m_foreground; } }
 
-        public void RunScript(string script)
+        public void RunScript(string function, object[] parameters)
         {
         }
 
