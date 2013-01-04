@@ -10,17 +10,14 @@ Public Class Player
     Private WithEvents m_gameTimer As IASLTimer
     Private m_gameDebug As IASLDebug
     Private m_initialised As Boolean
-    Private m_gameReady As Boolean
     Private m_gameName As String
     Private WithEvents m_debugger As Debugger
-    Private m_loaded As Boolean = False
     Private m_menu As TextAdventures.Quest.Controls.Menu = Nothing
     Private m_saveFile As String
     Private m_waiting As Boolean = False
     Private m_speech As New System.Speech.Synthesis.SpeechSynthesizer
     Private m_loopSound As Boolean = False
     Private m_waitingForSoundToFinish As Boolean = False
-    Private m_soundPlaying As Boolean = False
     Private m_destroyed As Boolean = False
     Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
     Private m_tickCount As Integer
@@ -118,7 +115,6 @@ Public Class Player
         m_game = game
         m_gameDebug = TryCast(game, IASLDebug)
         m_gameTimer = TryCast(m_game, IASLTimer)
-        m_gameReady = True
         ResetInterfaceStrings()
         m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlHelper.UseGameColours = UseGameColours
@@ -166,7 +162,6 @@ Public Class Player
     Public Sub Reset()
         If Not m_game Is Nothing Then m_game.Finish()
         m_initialised = False
-        m_gameReady = False
         m_gameName = ""
         ShowDebugger(False)
         ShowLog(False)
@@ -514,10 +509,6 @@ Public Class Player
         Return False
     End Function
 
-    Private Sub wbOutput_PreviewKeyDown(sender As Object, e As System.Windows.Forms.PreviewKeyDownEventArgs)
-        KeyPressed()
-    End Sub
-
     Private Sub SetPanesVisible(data As String) Implements IPlayer.SetPanesVisible
         BeginInvoke(Sub()
                         Select Case data
@@ -548,7 +539,6 @@ Public Class Player
 
                         If System.IO.File.Exists(filename) And PlaySounds Then
                             m_loopSound = looped
-                            m_soundPlaying = True
 
                             m_mediaPlayer.Open(New System.Uri(filename))
                             m_mediaPlayer.Play()
@@ -581,7 +571,6 @@ Public Class Player
     End Sub
 
     Private Sub PlaybackFinished()
-        m_soundPlaying = False
         If m_waitingForSoundToFinish Then
             m_waitingForSoundToFinish = False
             m_game.FinishWait()
