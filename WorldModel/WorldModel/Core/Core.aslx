@@ -364,5 +364,35 @@
       }
     }
   </function>
+
+  <function name="ShowMenu" parameters="caption, options, callback">
+    <![CDATA[
+    msg (caption)
+    // TO DO: Also handle stringlist options type
+    
+    foreach (option, options) {
+      optionText = StringDictionaryItem(options, option)
+      msg ("<a onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
+    }
+    
+    game.menucallback = callback
+    
+    // could also show numbers as choices to left of link, then in HandleCommand we can handle these if a menu was shown.
+    // also, HandleCommand could see which menu choice is best match if text is entered, e.g. "green" matches "green apple"
+    ]]>
+  </function>
+
+  <function name="ShowMenuResponse" parameters="option">
+    if (game.menucallback = null) {
+      error ("Unexpected menu response")
+    }
+    else {
+      parameters = NewStringDictionary()
+      dictionary add (parameters, "result", option)
+      script = game.menucallback
+      game.menucallback = null
+      invoke (script, parameters)
+    }
+  </function>
   
 </library>
