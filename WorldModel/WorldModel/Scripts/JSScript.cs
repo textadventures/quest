@@ -79,7 +79,7 @@ namespace TextAdventures.Quest.Scripts
 
         public override string Save()
         {
-            throw new NotImplementedException();
+            return SaveScript("JS." + m_function, m_parameters == null ? new[] { string.Empty } : m_parameters.Select(p => p.Save()).ToArray());
         }
 
         public override void SetParameterInternal(int index, object value)
