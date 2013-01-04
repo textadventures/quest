@@ -371,17 +371,19 @@
     msg (caption)
     
     // TO DO: Also handle stringlist options type
+    count = 0
+    game.menuoptionskeys = NewStringList()
     foreach (option, options) {
+      list add (game.menuoptionskeys, option)
+      count = count + 1
       optionText = StringDictionaryItem(options, option)
-      msg ("<a onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
+      msg (count + ": <a onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
     }
     EndOutputSection(outputsection)
     
+    game.menuoptions = options
     game.menucallback = callback
     game.menuoutputsection = outputsection
-    
-    // could also show numbers as choices to left of link, then in HandleCommand we can handle these if a menu was shown.
-    // also, HandleCommand could see which menu choice is best match if text is entered, e.g. "green" matches "green apple"
     ]]>
   </function>
 
@@ -390,14 +392,33 @@
       error ("Unexpected menu response")
     }
     else {
-      JS.HideOutputSection(game.menuoutputsection)
-      game.menuoutputsection = null
       parameters = NewStringDictionary()
       dictionary add (parameters, "result", option)
       script = game.menucallback
-      game.menucallback = null
+      ClearMenu
       invoke (script, parameters)
     }
+  </function>
+
+  <function name="HandleMenuTextResponse" parameters="input" type="boolean">
+    <![CDATA[
+    handled = false
+    if (IsInt(input)) {
+      number = ToInt(input)
+      if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
+        handled = true
+        ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
+      }
+    }
+    return (handled)
+    ]]>
+  </function>
+
+  <function name="ClearMenu">
+    JS.HideOutputSection(game.menuoutputsection)
+    game.menuoutputsection = null
+    game.menuoptions = null
+    game.menucallback = null
   </function>
 
   <function name="StartNewOutputSection" type="string">
