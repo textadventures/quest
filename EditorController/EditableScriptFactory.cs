@@ -40,7 +40,7 @@ namespace TextAdventures.Quest
             m_scriptFactory = factory;
             m_worldModel = worldModel;
 
-            foreach (Element editor in worldModel.Elements.GetElements(ElementType.Editor).Where(e => IsScriptEditor(e)))
+            foreach (Element editor in worldModel.Elements.GetElements(ElementType.Editor).Where(IsScriptEditor))
             {
                 string appliesTo = editor.Fields.GetString("appliesto");
                 m_scriptData.Add(appliesTo, new EditableScriptData(editor));
@@ -74,7 +74,7 @@ namespace TextAdventures.Quest
             else
             {
                 EditableScript newEditableScript = new EditableScript(m_controller, script, m_worldModel.UndoLogger);
-                if (script != null && m_scriptData.ContainsKey(script.Keyword)) newEditableScript.DisplayTemplate = m_scriptData[script.Keyword].DisplayString;
+                if (m_scriptData.ContainsKey(script.Keyword)) newEditableScript.DisplayTemplate = m_scriptData[script.Keyword].DisplayString;
                 newScript = newEditableScript;
             }
             m_cache.Add(script, newScript);
