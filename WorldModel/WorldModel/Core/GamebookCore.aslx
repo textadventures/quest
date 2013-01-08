@@ -129,7 +129,7 @@
     }
     if (HasString(player.parent, "youtube")) {
       if (LengthOf(player.parent.youtube) > 0) {
-      JS.AddYouTube(player.parent.youtube)
+        JS.AddYouTube(player.parent.youtube)
         msg ("")
         msg ("")
       }
