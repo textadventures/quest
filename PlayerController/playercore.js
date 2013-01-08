@@ -474,6 +474,7 @@ function addText(text) {
     }
 
     _currentDiv.append(text);
+    $("#divOutput").css("min-height", $("#divOutput").height());
     scrollToEnd();
 }
 
@@ -516,6 +517,7 @@ function doMenuClick(command, metadata) {
 }
 
 function clearScreen() {
+    $("#divOutput").css("min-height", 0);
     $("#divOutput").html("");
     createNewDiv("left");
 }
@@ -664,7 +666,9 @@ function EndOutputSection(name) {
 
 function HideOutputSection(name) {
     EndOutputSection(name);
-    $("." + name).hide(400);
+    setTimeout(function() {
+        $("." + name).hide(400);
+    }, 500);
 }
 
 var TextFX = new function() {
