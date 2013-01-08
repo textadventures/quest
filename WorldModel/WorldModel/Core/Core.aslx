@@ -370,13 +370,17 @@
     outputsection = StartNewOutputSection()
     msg (caption)
     
-    // TO DO: Also handle stringlist options type
     count = 0
     game.menuoptionskeys = NewStringList()
     foreach (option, options) {
       list add (game.menuoptionskeys, option)
       count = count + 1
-      optionText = StringDictionaryItem(options, option)
+      if (TypeOf(options) = "stringlist") {
+        optionText = option
+      }
+      else {
+        optionText = StringDictionaryItem(options, option)
+      }
       msg (count + ": <a onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
     }
     EndOutputSection(outputsection)
