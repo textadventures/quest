@@ -438,5 +438,25 @@
   <function name="EndOutputSection" parameters="name">
     JS.output@EndOutputSection(name)
   </function>
+
+  <function name="Ask" parameters="question, callback">
+    options = NewStringList()
+    list add (options, "[Yes]")
+    list add (options, "[No]")
+    game.askcallback = callback
+    ShowMenu (question, options) {
+      parameters = NewDictionary()
+      if (result = "[Yes]") {
+        boolresult = true
+      }
+      else {
+        boolresult = false
+      }
+      dictionary add (parameters, "result", boolresult)
+      callback = game.askcallback
+      game.askcallback = null
+      invoke (callback, parameters)
+    }
+  </function>
   
 </library>

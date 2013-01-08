@@ -96,6 +96,8 @@
   <template name="UseOnMenu">On which object?</template>
   <template name="GiveToMenu">To which object?</template>
   <template name="NoObjectsAvailable">There are no objects available to do that with.</template>
+  <template name="Yes">Yes</template>
+  <template name="No">No</template>
 
   <template name="CompassNW">northwest</template>
   <template name="CompassN">north</template>
