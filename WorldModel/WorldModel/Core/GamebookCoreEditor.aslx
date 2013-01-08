@@ -203,6 +203,7 @@
         <source>*.jpg;*.jpeg;*.png;*.gif</source>
         <filefiltername>Picture Files</filefiltername>
         <mustinherit>picture</mustinherit>
+        <preview/>
       </control>
 
       <control>
