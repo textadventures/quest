@@ -115,7 +115,7 @@
       <caption>Brightness</caption>
       <attribute>lightstrength</attribute>
       <validvalues type="stringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
-      <onlydisplayif>this.lightsource</onlydisplayif>
+      <onlydisplayif>GetBoolean(this, "lightsource")</onlydisplayif>
       <advanced/>
     </control>
 
