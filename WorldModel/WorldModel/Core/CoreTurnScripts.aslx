@@ -1,18 +1,20 @@
 ﻿<library>
   <function name="RunTurnScripts">
     if (IsGameRunning()) {
-      foreach (turnscript, AllTurnScripts()) {
-        if (GetBoolean(turnscript, "enabled")) {
-          inscope = false
-          if (turnscript.parent = game or turnscript.parent = null) {
-            inscope = true
-          } else {
-            if (Contains(turnscript.parent, game.pov)) {
+      if (game.menucallback = null) {
+        foreach (turnscript, AllTurnScripts()) {
+          if (GetBoolean(turnscript, "enabled")) {
+            inscope = false
+            if (turnscript.parent = game or turnscript.parent = null) {
               inscope = true
+            } else {
+              if (Contains(turnscript.parent, game.pov)) {
+                inscope = true
+              }
             }
-          }
-          if (inscope) {
-            do (turnscript, "script")
+            if (inscope) {
+              do (turnscript, "script")
+            }
           }
         }
       }

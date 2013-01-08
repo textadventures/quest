@@ -75,7 +75,7 @@ namespace TextAdventures.Quest
             writer.WriteStartElement("asl");
             if (mode == SaveMode.Editor)
             {
-                writer.WriteAttributeString("version", "530");
+                writer.WriteAttributeString("version", "540");
             }
             else
             {

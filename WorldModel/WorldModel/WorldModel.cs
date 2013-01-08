@@ -33,7 +33,8 @@ namespace TextAdventures.Quest
         v500,
         v510,
         v520,
-        v530
+        v530,
+        v540
     }
 
     public class WorldModel : IASL, IASLDebug, IASLTimer
@@ -657,6 +658,10 @@ namespace TextAdventures.Quest
             parameters.Add((string)handler.Fields[FieldDefinitions.ParamNames][0], param);
 
             RunProcedure(eventName, parameters, false);
+            if (Version >= WorldModelVersion.v540)
+            {
+                TryFinishTurn();
+            }
         }
 
         public string Filename

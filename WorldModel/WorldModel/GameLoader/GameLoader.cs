@@ -45,6 +45,7 @@ namespace TextAdventures.Quest
             {"510", WorldModelVersion.v510},
             {"520", WorldModelVersion.v520},
             {"530", WorldModelVersion.v530},
+            {"540", WorldModelVersion.v540},
         };
 
         public GameLoader(WorldModel worldModel, LoadMode mode)
