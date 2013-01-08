@@ -351,11 +351,19 @@ namespace TextAdventures.Quest.Functions
 
         public string ShowMenu(string caption, QuestDictionary<string> options, bool allowCancel)
         {
+            if (m_worldModel.Version >= WorldModelVersion.v540)
+            {
+                throw new Exception("The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
+            }
             return m_worldModel.DisplayMenu(caption, options, allowCancel, false);
         }
 
         public string ShowMenu(string caption, QuestList<string> options, bool allowCancel)
         {
+            if (m_worldModel.Version >= WorldModelVersion.v540)
+            {
+                throw new Exception("The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
+            }
             return m_worldModel.DisplayMenu(caption, options, allowCancel, false);
         }
 
@@ -403,6 +411,10 @@ namespace TextAdventures.Quest.Functions
 
         public string GetInput()
         {
+            if (m_worldModel.Version >= WorldModelVersion.v540)
+            {
+                throw new Exception("The 'GetInput' function is not supported for games written for Quest 5.4 or later. Use the 'get input' script command instead.");
+            }
             return m_worldModel.GetNextCommandInput(false);
         }
 
@@ -419,6 +431,10 @@ namespace TextAdventures.Quest.Functions
 
         public bool Ask(string caption)
         {
+            if (m_worldModel.Version >= WorldModelVersion.v540)
+            {
+                throw new Exception("The 'Ask' function is not supported for games written for Quest 5.4 or later. Use the 'ask' script command instead.");
+            }
             return m_worldModel.ShowQuestion(caption);
         }
 

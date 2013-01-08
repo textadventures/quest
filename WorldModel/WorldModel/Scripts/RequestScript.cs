@@ -168,6 +168,10 @@ namespace TextAdventures.Quest.Scripts
                     }
                     break;
                 case Request.Wait:
+                    if (m_worldModel.Version >= WorldModelVersion.v540)
+                    {
+                        throw new Exception("The 'Wait' request is not supported for games written for Quest 5.4 or later. Use the 'wait' script command instead.");
+                    }
                     m_worldModel.StartWait();
                     break;
                 case Request.SetInterfaceString:
