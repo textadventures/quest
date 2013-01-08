@@ -280,7 +280,7 @@ namespace TextAdventures.Quest
                 element.Fields.Set(attribute, Utility.ConvertVerbSimplePattern(value, element.Fields[FieldDefinitions.Separator]));
 
                 string[] verbs = value.Split(';');
-                element.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Trim();
+                element.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Replace("#object#", string.Empty).Trim();
             }
 
             public override bool SupportsMode(LoadMode mode)
