@@ -746,6 +746,9 @@ Public Class Player
     End Sub
 
     Private Sub ctlPlayerHtml_SendEvent(eventName As String, param As String) Handles ctlPlayerHtml.SendEvent
+        If RecordWalkthrough IsNot Nothing Then
+            m_recordedWalkthrough.Add("event:" + eventName + ";" + param)
+        End If
         m_game.SendEvent(eventName, param)
         ClearBuffer()
     End Sub
