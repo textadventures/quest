@@ -122,13 +122,17 @@
     } 
     
     if (HasString(player.parent, "picture")) {
-      picture (player.parent.picture)
-      msg ("")
+      if (LengthOf(player.parent.picture) > 0) {
+        picture (player.parent.picture)
+        msg ("")
+      }
     }
     if (HasString(player.parent, "youtube")) {
+      if (LengthOf(player.parent.youtube) > 0) {
       JS.AddYouTube(player.parent.youtube)
-      msg ("")
-      msg ("")
+        msg ("")
+        msg ("")
+      }
     }
     msg (player.parent.description)
     msg ("")

@@ -135,15 +135,18 @@ function commandKey(e) {
             thisCommand--;
             if (thisCommand == 0) thisCommand = numCommands;
             $("#txtCommand").val(commandsList[thisCommand]);
+            e.preventDefault();
             break;
         case 40:
             thisCommand++;
             if (thisCommand > numCommands) thisCommand = 1;
             $("#txtCommand").val(commandsList[thisCommand]);
+            e.preventDefault();
             break;
         case 27:
             thisCommand = numCommands + 1;
             $("#txtCommand").val("");
+            e.preventDefault();
             break;
     }
 }

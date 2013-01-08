@@ -7,6 +7,7 @@
     Private m_waiting As Boolean
     Private m_pausing As Boolean
     Private m_menuOptions As IDictionary(Of String, String)
+    Private m_cancelled As Boolean
 
     Public Event Output(text As String)
     Public Event MarkScrollPosition()
@@ -19,6 +20,8 @@
 
     Public Sub Run()
         For Each cmd As String In m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps
+            If m_cancelled Then Exit For
+
             RaiseEvent MarkScrollPosition()
             If m_showingMenu Then
                 SetMenuResponse(cmd)
@@ -41,6 +44,8 @@
                 End If
             End If
 
+            If m_cancelled Then Exit For
+
             Do
                 If m_waiting Then
                     m_waiting = False
@@ -51,7 +56,7 @@
                     m_pausing = False
                     FinishPause()
                 End If
-            Loop Until Not m_waiting And Not m_pausing
+            Loop Until (Not m_waiting And Not m_pausing) Or m_cancelled
         Next
     End Sub
 
@@ -123,4 +128,8 @@
             Return m_gameDebug.Walkthroughs.Walkthroughs(m_walkthrough).Steps.Count
         End Get
     End Property
+
+    Public Sub Cancel()
+        m_cancelled = True
+    End Sub
 End Class
