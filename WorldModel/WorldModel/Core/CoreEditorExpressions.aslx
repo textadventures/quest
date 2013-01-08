@@ -358,19 +358,6 @@
   </editor>
 
   <editor>
-    <pattern>Ask(#question#)</pattern>
-    <create>Ask("")</create>
-    <description>player answers "Yes" to</description>
-    <expressiontype>if</expressiontype>
-
-    <control>
-      <controltype>expression</controltype>
-      <simple>question</simple>
-      <attribute>question</attribute>
-    </control>
-  </editor>
-
-  <editor>
     <pattern>RandomChance(#percentile#)</pattern>
     <create>RandomChance(50)</create>
     <description>random chance</description>
@@ -392,13 +379,6 @@
   </editor>
   
   <!-- Templates for "set" -->
-
-  <editor>
-    <pattern>GetInput()</pattern>
-    <create>GetInput()</create>
-    <description>player input</description>
-    <expressiontype>set</expressiontype>
-  </editor>
 
   <editor>
     <pattern>NewStringList()</pattern>
