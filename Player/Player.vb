@@ -164,6 +164,7 @@ Public Class Player
     End Sub
 
     Public Sub Reset()
+        CancelWalkthrough()
         If Not m_game Is Nothing Then m_game.Finish()
         m_initialised = False
         m_gameReady = False
@@ -175,6 +176,13 @@ Public Class Player
         If Not m_menu Is Nothing Then
             m_menu.MenuEnabled("walkthrough") = False
             m_menu.MenuEnabled("debugger") = False
+        End If
+    End Sub
+
+    Private Sub CancelWalkthrough()
+        If Not m_walkthroughRunner Is Nothing Then
+            m_walkthroughRunner.Cancel()
+            m_walkthroughRunner = Nothing
         End If
     End Sub
 
@@ -213,6 +221,7 @@ Public Class Player
 
     Private Sub GameFinished()
         If Not m_initialised Then Return
+        CancelWalkthrough()
         m_initialised = False
         tmrTick.Enabled = False
         StopSound()
@@ -324,16 +333,22 @@ Public Class Player
     End Sub
 
     Public Sub RunWalkthrough(name As String)
-        InitWalkthrough(name)
-        StartWalkthrough()
+        If InitWalkthrough(name) Then
+            StartWalkthrough()
+        End If
     End Sub
 
-    Public Sub InitWalkthrough(name As String)
+    Public Function InitWalkthrough(name As String) As Boolean
+        If m_walkthroughRunner IsNot Nothing Then
+            Return False
+        End If
         m_walkthroughRunner = New WalkthroughRunner(m_gameDebug, name)
         If m_walkthroughRunner.Steps = 0 Then
             m_walkthroughRunner = Nothing
+            Return False
         End If
-    End Sub
+        Return True
+    End Function
 
     Public Sub StartWalkthrough()
         Dim runnerThread As New Thread(Sub() WalkthroughRunner())
@@ -634,6 +649,7 @@ Public Class Player
 
     Public Sub WindowClosing()
         If Not m_game Is Nothing Then
+            CancelWalkthrough()
             m_game.Finish()
         End If
     End Sub
