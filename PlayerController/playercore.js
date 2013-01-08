@@ -666,6 +666,7 @@ function EndOutputSection(name) {
 
 function HideOutputSection(name) {
     EndOutputSection(name);
+    $("." + name + " a").attr("onclick", "");
     setTimeout(function() {
         $("." + name).hide(400);
     }, 500);
