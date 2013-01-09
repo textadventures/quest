@@ -23,6 +23,8 @@ Public Class Main
         ctlPlayer.Visible = False
         InitialiseMenuHandlers()
 
+        Dim helper As New TextAdventures.Utility.WindowHelper(Me, "Quest", "Main")
+
         Dim args As New List(Of String)(Environment.GetCommandLineArgs())
         If args.Count > 1 Then
             CmdLineLaunch(args(1))
