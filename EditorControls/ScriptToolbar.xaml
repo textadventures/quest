@@ -39,9 +39,9 @@
                     <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/PasteHS.png" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <Separator/>
-                <Button Name="cmdCodeView" ToolTip="Code View" Click="cmdCodeView_OnClick" SnapsToDevicePixels="True">
+                <ToggleButton Name="cmdCodeView" ToolTip="Code View" Click="cmdCodeView_OnClick" SnapsToDevicePixels="True">
                     <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/EditCodeHS.png" SnapsToDevicePixels="True"></Image>
-                </Button>
+                </ToggleButton>
                 <Separator Name="popOutSeparator" />
                 <Button Name="cmdPopOut" ToolTip="Pop out" Click="cmdPopOut_Click" SnapsToDevicePixels="True">
                     <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/FullView.png" SnapsToDevicePixels="True"></Image>

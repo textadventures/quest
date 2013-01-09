@@ -45,6 +45,7 @@ namespace TextAdventures.Quest.EditorControls
             ctlToolbar.Cut += ctlToolbar_Cut;
             ctlToolbar.Copy += ctlToolbar_Copy;
             ctlToolbar.Paste += ctlToolbar_Paste;
+            ctlToolbar.CodeView += ctlToolbar_CodeView;
             ctlToolbar.PopOut += ctlToolbar_PopOut;
         }
 
@@ -528,6 +529,11 @@ namespace TextAdventures.Quest.EditorControls
             SetSelectedIndex(index);
         }
 
+        void ctlToolbar_CodeView()
+        {
+            CodeView = !CodeView;
+        }
+
         void ctlToolbar_PopOut()
         {
             ScriptEditorPopOut popOut = new ScriptEditorPopOut();
@@ -632,6 +638,18 @@ namespace TextAdventures.Quest.EditorControls
             if (script != null)
             {
                 AddNewScriptCommand(script);
+            }
+        }
+
+        public bool CodeView
+        {
+            get { return textEditorBorder.Visibility == Visibility.Visible; }
+            set
+            {
+                textEditorBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                lstScripts.Visibility = value ? Visibility.Collapsed : (lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
+                cmdAddScript.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
+                ctlToolbar.IsCodeView = value;
             }
         }
     }

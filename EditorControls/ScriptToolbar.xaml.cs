@@ -23,6 +23,7 @@ namespace TextAdventures.Quest.EditorControls
         public event Action Cut;
         public event Action Copy;
         public event Action Paste;
+        public event Action CodeView;
         public event Action PopOut;
 
         public ScriptToolbar()
@@ -67,6 +68,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private void cmdCodeView_OnClick(object sender, RoutedEventArgs e)
         {
+            CodeView();
         }
 
         private void cmdPopOut_Click(object sender, RoutedEventArgs e)
@@ -114,6 +116,12 @@ namespace TextAdventures.Quest.EditorControls
         {
             get { return cmdMoveDown.IsEnabled; }
             set { cmdMoveDown.IsEnabled = value; }
+        }
+
+        public bool IsCodeView
+        {
+            get { return cmdCodeView.IsChecked == true; }
+            set { cmdCodeView.IsChecked = value; }
         }
 
         public void HidePopOutButton()
