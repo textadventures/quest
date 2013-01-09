@@ -19,6 +19,6 @@
             <this:WFEditorTree />
         </WindowsFormsHost>
         <Button Grid.Row="1" Name="addButton" Click="addButton_Click" HorizontalAlignment="Left" Padding="10,3,10,3" Margin="2">Add</Button>
-        <Button Grid.Row="1" Grid.Column="1" Name="closeButton" Click="closeButton_Click" HorizontalAlignment="Right" Padding="10,3,10,3" Margin="2">Cancel</Button>
+        <Button Grid.Row="1" Grid.Column="1" Name="closeButton" Click="closeButton_Click" HorizontalAlignment="Right" Padding="10,3,10,3" Margin="2" IsCancel="True">Cancel</Button>
     </Grid>
 </UserControl>
