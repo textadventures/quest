@@ -661,6 +661,10 @@ namespace TextAdventures.Quest
             if (Version >= WorldModelVersion.v540)
             {
                 TryFinishTurn();
+                if (State != GameState.Finished)
+                {
+                    UpdateLists();
+                }
             }
         }
 
