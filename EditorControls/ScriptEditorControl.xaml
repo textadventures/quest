@@ -62,17 +62,7 @@
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
             </ListBox>
-            <Button x:Name="cmdAddScript" Grid.Row="2" Click="cmdAddScript_Click">Add new script</Button>
-            <!--
-            <Expander HorizontalAlignment="Stretch" Grid.Row="2" Name="adderExpander">
-                <Expander.Header>
-                    <TextBlock>
-                        Add new script
-                    </TextBlock>
-                </Expander.Header>
-                <this:ScriptAdder HorizontalAlignment="Stretch" x:Name="ctlScriptAdder" />
-            </Expander>
-            -->
+            <Button x:Name="cmdAddScript" Grid.Row="2" Click="cmdAddScript_Click" HorizontalAlignment="Left" Padding="10,5">Add new script</Button>
         </Grid>
     </Grid>
 </UserControl>

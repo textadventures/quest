@@ -71,7 +71,7 @@ namespace TextAdventures.Quest.EditorControls
             get { return m_data == null ? null : m_data.Name; }
         }
 
-        private void AddScript(string script)
+        private void AddNewScriptCommand(string script)
         {
             if (m_scripts == null)
             {
@@ -628,7 +628,11 @@ namespace TextAdventures.Quest.EditorControls
 
         private void cmdAddScript_Click(object sender, RoutedEventArgs e)
         {
-            PopupEditors.AddScript(m_controller);
+            var script = PopupEditors.AddScript(m_controller);
+            if (script != null)
+            {
+                AddNewScriptCommand(script);
+            }
         }
     }
 }

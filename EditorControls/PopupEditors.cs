@@ -79,15 +79,28 @@ namespace TextAdventures.Quest.EditorControls
             popOut.ctlScriptEditor.Helper.Dirty -= dirtyEventHandler;
         }
 
+        private static EditorController s_popOutScriptAdderController;
+        private static ScriptAdderPopOut s_popOutScriptAdder;
+
         public static string AddScript(EditorController controller)
         {
-            // TO DO: Reuse the same window
+            if (controller != s_popOutScriptAdderController)
+            {
+                if (s_popOutScriptAdder != null)
+                {
+                    s_popOutScriptAdder.ctlScriptAdder.Uninitialise();
+                }
 
-            ScriptAdderPopOut popOut = new ScriptAdderPopOut();
-            popOut.ctlScriptAdder.Initialise(controller);
-            popOut.ShowDialog();
+                s_popOutScriptAdder = new ScriptAdderPopOut();
+                s_popOutScriptAdder.ctlScriptAdder.Initialise(controller);
 
-            return null;
+                s_popOutScriptAdderController = controller;
+            }
+
+            s_popOutScriptAdder.ctlScriptAdder.Initialise(controller);
+            s_popOutScriptAdder.SelectedScript = null;
+            s_popOutScriptAdder.ShowDialog();
+            return s_popOutScriptAdder.SelectedScript;
         }
     }
 }

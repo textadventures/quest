@@ -1,7 +1,7 @@
 ﻿<Window xmlns:my="clr-namespace:TextAdventures.Quest.EditorControls" x:Class="TextAdventures.Quest.EditorControls.ScriptAdderPopOut"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ScriptAdderPopOut" Height="300" Width="300">
+        Title="Add Script Command" Height="600" Width="400" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Icon="/EditorControls;component/q2_48x48c.ico">
     <Grid TextOptions.TextFormattingMode="Display">
         <my:ScriptAdder x:Name="ctlScriptAdder" />
     </Grid>

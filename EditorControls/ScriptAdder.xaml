@@ -8,17 +8,17 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <WindowsFormsHost Name="treeHost" Height="300" HorizontalAlignment="Stretch" Grid.ColumnSpan="2">
+        <WindowsFormsHost Name="treeHost" Grid.ColumnSpan="2">
             <this:WFEditorTree />
         </WindowsFormsHost>
         <Button Grid.Row="1" Name="addButton" Click="addButton_Click" HorizontalAlignment="Left" Padding="10,3,10,3" Margin="2">Add</Button>
-        <Button Grid.Row="1" Grid.Column="1" Name="closeButton" Click="closeButton_Click" HorizontalAlignment="Right" Padding="10,3,10,3" Margin="2">Close</Button>
+        <Button Grid.Row="1" Grid.Column="1" Name="closeButton" Click="closeButton_Click" HorizontalAlignment="Right" Padding="10,3,10,3" Margin="2">Cancel</Button>
     </Grid>
 </UserControl>
