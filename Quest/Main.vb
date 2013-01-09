@@ -5,7 +5,8 @@ Public Class Main
     Private m_currentFile As String
     Private m_playingEditorGame As Boolean = False
     Private m_cmdLineLaunch As String = Nothing
-    Private Delegate Sub MenuHandler()
+    Private m_fromEditor As Boolean
+    Private m_editorSimpleMode As Boolean
 
     Public Sub New()
         ' This call is required by the Windows Form Designer.
@@ -124,7 +125,10 @@ Public Class Main
     End Sub
 
     Private Sub Launch(filename As String, Optional fromEditor As Boolean = False, Optional editorSimpleMode As Boolean = False)
-        Dim game As TextAdventures.Quest.IASL = Nothing
+        Dim game As IASL
+
+        m_fromEditor = fromEditor
+        m_editorSimpleMode = editorSimpleMode
 
         Try
             m_currentFile = filename
@@ -225,7 +229,7 @@ Public Class Main
     End Sub
 
     Private Sub RestartMenuClick()
-        Launch(m_currentFile)
+        Launch(m_currentFile, m_fromEditor, m_editorSimpleMode)
     End Sub
 
     Private Sub OpenEditMenuClick()
