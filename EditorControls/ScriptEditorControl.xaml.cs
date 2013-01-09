@@ -46,8 +46,6 @@ namespace TextAdventures.Quest.EditorControls
             ctlToolbar.Copy += ctlToolbar_Copy;
             ctlToolbar.Paste += ctlToolbar_Paste;
             ctlToolbar.PopOut += ctlToolbar_PopOut;
-
-            ctlScriptAdder.AddScript += ctlScriptAdder_AddScript;
         }
 
         void m_helper_Initialise()
@@ -55,8 +53,6 @@ namespace TextAdventures.Quest.EditorControls
             if (m_initialised) return;
             m_controller = m_helper.Controller;
             m_controller.ScriptClipboardUpdated += m_controller_ScriptClipboardUpdated;
-            ctlScriptAdder.CloseButtonVisible = false;
-            ctlScriptAdder.Initialise(m_controller);
 
             if (Initialise != null) Initialise();
             m_initialised = true;
@@ -67,7 +63,6 @@ namespace TextAdventures.Quest.EditorControls
             if (!m_initialised) return;
             if (m_controller != null) m_controller.ScriptClipboardUpdated -= m_controller_ScriptClipboardUpdated;
             m_controller = null;
-            ctlScriptAdder.Uninitialise();
             m_initialised = false;
         }
 
@@ -76,7 +71,7 @@ namespace TextAdventures.Quest.EditorControls
             get { return m_data == null ? null : m_data.Name; }
         }
 
-        void ctlScriptAdder_AddScript(string script)
+        private void AddScript(string script)
         {
             if (m_scripts == null)
             {
@@ -149,7 +144,7 @@ namespace TextAdventures.Quest.EditorControls
             m_readOnly = data.ReadOnly;
             Populate(m_helper.Populate(data));
 
-            adderExpander.Visibility = (m_helper.CanEdit(data) && !m_readOnly) ? Visibility.Visible : Visibility.Collapsed;
+            cmdAddScript.Visibility = (m_helper.CanEdit(data) && !m_readOnly) ? Visibility.Visible : Visibility.Collapsed;
 
             m_helper.FinishedPopulating();
         }
@@ -216,7 +211,6 @@ namespace TextAdventures.Quest.EditorControls
             }
 
             lstScripts.Visibility = (lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
-            adderExpander.IsExpanded = (lstScripts.Items.Count == 0);
             SetEditButtonsEnabled(lstScripts.SelectedItems.Count > 0);
         }
 
@@ -603,7 +597,7 @@ namespace TextAdventures.Quest.EditorControls
             set
             {
                 m_readOnly = value;
-                if (m_readOnly) adderExpander.Visibility = Visibility.Collapsed;
+                if (m_readOnly) cmdAddScript.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -630,6 +624,11 @@ namespace TextAdventures.Quest.EditorControls
         void m_controller_ScriptClipboardUpdated(object sender, TextAdventures.Quest.EditorController.ScriptClipboardUpdateEventArgs e)
         {
             ctlToolbar.CanPaste = e.HasScript && !m_readOnly;
+        }
+
+        private void cmdAddScript_Click(object sender, RoutedEventArgs e)
+        {
+            PopupEditors.AddScript(m_controller);
         }
     }
 }

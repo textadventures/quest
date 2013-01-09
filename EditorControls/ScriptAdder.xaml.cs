@@ -96,12 +96,6 @@ namespace TextAdventures.Quest.EditorControls
             get { return (WFEditorTree)treeHost.Child; }
         }
 
-        public bool CloseButtonVisible
-        {
-            get { return closeButton.Visibility == Visibility.Visible; }
-            set { closeButton.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
-        }
-
         private void AddCurrent()
         {
             EditableScriptData data = null;

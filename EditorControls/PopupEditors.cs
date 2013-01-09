@@ -79,5 +79,15 @@ namespace TextAdventures.Quest.EditorControls
             popOut.ctlScriptEditor.Helper.Dirty -= dirtyEventHandler;
         }
 
+        public static string AddScript(EditorController controller)
+        {
+            // TO DO: Reuse the same window
+
+            ScriptAdderPopOut popOut = new ScriptAdderPopOut();
+            popOut.ctlScriptAdder.Initialise(controller);
+            popOut.ShowDialog();
+
+            return null;
+        }
     }
 }

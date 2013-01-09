@@ -151,6 +151,9 @@
     <Compile Include="ScriptAdder.xaml.cs">
       <DependentUpon>ScriptAdder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ScriptAdderPopOut.xaml.cs">
+      <DependentUpon>ScriptAdderPopOut.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ScriptEditorControl.xaml.cs">
       <DependentUpon>ScriptEditorControl.xaml</DependentUpon>
     </Compile>
@@ -264,6 +267,7 @@
     <Compile Include="WFVerbsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="WindowHelpers.cs" />
     <EmbeddedResource Include="InputWindow.resx">
       <DependentUpon>InputWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -425,6 +429,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ScriptAdder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScriptAdderPopOut.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
