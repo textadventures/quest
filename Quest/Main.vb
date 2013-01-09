@@ -23,8 +23,6 @@ Public Class Main
         ctlPlayer.Visible = False
         InitialiseMenuHandlers()
 
-        Dim helper As New TextAdventures.Utility.WindowHelper(Me, "Quest", "Main")
-
         Dim args As New List(Of String)(Environment.GetCommandLineArgs())
         If args.Count > 1 Then
             CmdLineLaunch(args(1))
@@ -169,7 +167,6 @@ Public Class Main
     End Sub
 
     Private Sub LaunchEdit(filename As String)
-        Dim game As TextAdventures.Quest.IASL = Nothing
         Dim ext As String
 
         Try
@@ -185,7 +182,6 @@ Public Class Main
                     ctlEditor.Visible = True
                     ctlEditor.SetMenu(ctlMenu)
                     Me.ResumeLayout()
-                    'ctlPlayer.RestoreSplitterPositions()
                     Application.DoEvents()
                     ctlEditor.Initialise(filename)
                     ctlEditor.Focus()
