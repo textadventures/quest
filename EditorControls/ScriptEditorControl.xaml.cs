@@ -646,11 +646,22 @@ namespace TextAdventures.Quest.EditorControls
             get { return textEditorBorder.Visibility == Visibility.Visible; }
             set
             {
+                Save();
+                if (value)
+                {
+                    PopulateCodeView();
+                }
                 textEditorBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
                 lstScripts.Visibility = value ? Visibility.Collapsed : (lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
                 cmdAddScript.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
                 ctlToolbar.IsCodeView = value;
             }
+        }
+
+        private void PopulateCodeView()
+        {
+            string code = m_scripts == null ? string.Empty : m_scripts.Code;
+            textEditor.Text = code;
         }
     }
 }

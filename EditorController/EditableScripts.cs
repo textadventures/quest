@@ -309,5 +309,21 @@ namespace TextAdventures.Quest
                 return m_underlyingScript.Owner.Name;
             }
         }
+
+        public string Code
+        {
+            get
+            {
+                if (m_underlyingScript == null) return string.Empty;
+                string result = Utility.IndentScript(m_underlyingScript.Save(), 0, "  ");
+                if (result.StartsWith(Environment.NewLine)) result = result.Substring(Environment.NewLine.Length);
+                if (result.EndsWith(Environment.NewLine)) result = result.Substring(0, result.Length - Environment.NewLine.Length);
+                return result;
+            }
+            set
+            {
+                
+            }
+        }
     }
 }

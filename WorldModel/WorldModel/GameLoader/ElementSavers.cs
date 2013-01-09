@@ -324,7 +324,7 @@ namespace TextAdventures.Quest
                 if (steps != null && steps.Count > 0)
                 {
                     string result = string.Empty;
-                    string indent = GameSaver.GetIndentChars(writer.IndentLevel + 1, writer.IndentChars);
+                    string indent = Utility.GetIndentChars(writer.IndentLevel + 1, writer.IndentChars);
 
                     foreach (string step in steps)
                     {

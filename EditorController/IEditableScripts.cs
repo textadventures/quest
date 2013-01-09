@@ -36,5 +36,6 @@ namespace TextAdventures.Quest
         void Paste(int index, bool useTransaction);
         IEditableScripts Clone(string parent, string attribute);
         string Owner { get; }
+        string Code { get; set; }
     }
 }

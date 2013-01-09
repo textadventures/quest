@@ -141,57 +141,7 @@ namespace TextAdventures.Quest
 
         public string SaveScript(GameXmlWriter writer, IScript script, int indent)
         {
-            return IndentScript(script.Save(), writer.IndentLevel + indent, writer.IndentChars);
-        }
-
-        private string IndentScript(string script, int indentLevel, string indentChars)
-        {
-            List<string> lines = Utility.SplitIntoLines(script);
-            string result = Environment.NewLine;
-
-            foreach (string line in lines)
-            {
-                AddLine(ref result, ref indentLevel, line, indentChars);
-            }
-
-            return result;
-        }
-
-        private void AddLine(ref string result, ref int indentLevel, string line, string indentChars)
-        {
-            if (line.Length == 0) return;
-
-            if (line.StartsWith("}"))
-            {
-                // if line starts with closing brace, de-indent, put the brace on a line on its own,
-                // then resume with the rest of the line.
-                indentLevel--;
-                result += GetIndentChars(indentLevel, indentChars) + "}" + Environment.NewLine;
-                AddLine(ref result, ref indentLevel, line.Substring(1), indentChars);
-                return;
-            }
-
-            // Add this line at the current indent level
-            result += GetIndentChars(indentLevel, indentChars) + line + Environment.NewLine;
-
-            // Now work out the indent level for the following line
-            for (int i = 0; i < line.Length; i++)
-            {
-                string curChar = line.Substring(i, 1);
-                if (curChar == "{") indentLevel++;
-                if (curChar == "}") indentLevel--;
-            }
-        }
-
-        private string GetIndentChars(int indentLevel, string indentChars)
-        {
-            string indentString = string.Empty;
-
-            for (int i = 0; i < indentLevel; i++)
-            {
-                indentString += indentChars;
-            }
-            return indentString;
+            return Utility.IndentScript(script.Save(), writer.IndentLevel + indent, writer.IndentChars);
         }
 
         private void UpdateImpliedTypesCache()
