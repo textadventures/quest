@@ -65,6 +65,10 @@ namespace TextAdventures.Quest.EditorControls
             Paste();
         }
 
+        private void cmdCodeView_OnClick(object sender, RoutedEventArgs e)
+        {
+        }
+
         private void cmdPopOut_Click(object sender, RoutedEventArgs e)
         {
             PopOut();

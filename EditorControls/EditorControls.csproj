@@ -494,6 +494,9 @@
   <ItemGroup>
     <Resource Include="Images\FindHS.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EditCodeHS.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if exist "$(TargetPath).locked" del "$(TargetPath).locked"
