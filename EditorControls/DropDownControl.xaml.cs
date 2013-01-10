@@ -92,7 +92,7 @@ namespace TextAdventures.Quest.EditorControls
         private void InitialiseWebFonts()
         {
             var fonts = m_helper.Controller.AvailableWebFonts();
-            if (fonts.Any())
+            if (fonts.Count() > 1)
             {
                 SetListItems(fonts);
                 m_initialised = true;
