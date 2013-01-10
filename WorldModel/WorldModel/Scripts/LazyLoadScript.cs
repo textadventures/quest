@@ -306,6 +306,12 @@ namespace TextAdventures.Quest.Scripts
             ((MultiScript)m_script).Insert(index, script);
         }
 
+        public void LoadCode(string code)
+        {
+            Initialise();
+            ((MultiScript)m_script).LoadCode(code);
+        }
+
         public IScript ElseScript
         {
             get

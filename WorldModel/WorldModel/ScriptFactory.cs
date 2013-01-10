@@ -92,7 +92,7 @@ namespace TextAdventures.Quest
 
         public IScript CreateScript(string line, ScriptContext scriptContext, bool lazy)
         {
-            MultiScript result = new MultiScript();
+            MultiScript result = new MultiScript(m_worldModel);
             bool finished = false;
             IScript lastIf = null;
             IScript lastComment = null;

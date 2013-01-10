@@ -126,7 +126,7 @@ namespace TextAdventures.Quest
 
             if (m_ifScript.ThenScript == null)
             {
-                m_ifScript.ThenScript = new MultiScript();
+                m_ifScript.ThenScript = new MultiScript(Controller.WorldModel);
             }
 
             m_thenScript = EditableScripts.GetInstance(Controller, m_ifScript.ThenScript);
@@ -323,13 +323,13 @@ namespace TextAdventures.Quest
 
         public void AddElse()
         {
-            IScript newScript = new MultiScript();
+            IScript newScript = new MultiScript(Controller.WorldModel);
             m_ifScript.SetElse(newScript);
         }
 
         public void AddElseIf()
         {
-            IScript newScript = new MultiScript();
+            IScript newScript = new MultiScript(Controller.WorldModel);
             IElseIfScript newElseIf = m_ifScript.AddElseIf(string.Empty, newScript);
         }
 

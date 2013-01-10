@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using TextAdventures.Quest.Scripts;
@@ -15,6 +16,7 @@ namespace TextAdventures.Quest
         private EditorController m_controller;
         private IMultiScript m_underlyingScript;
         private static EditableDataWrapper<IScript, EditableScripts> s_wrapper;
+        private bool m_replacingScripts;
 
         static EditableScripts()
         {
@@ -45,7 +47,13 @@ namespace TextAdventures.Quest
         private EditableScripts(EditorController controller, IScript script)
             : this(controller)
         {
-            InitialiseMultiScript((IMultiScript)script);
+            InitialiseScript(script);
+        }
+
+        private void InitialiseScript(IScript script)
+        {
+            InitialiseMultiScript((IMultiScript) script);
+
             foreach (IScript scriptItem in m_underlyingScript.Scripts)
             {
                 m_scripts.Add(m_controller.ScriptFactory.CreateEditableScript(scriptItem));
@@ -61,7 +69,10 @@ namespace TextAdventures.Quest
 
         private void InitialiseMultiScript(IMultiScript script)
         {
-            System.Diagnostics.Debug.Assert(m_underlyingScript == null);
+            if (m_underlyingScript != null)
+            {
+                m_underlyingScript.ScriptUpdated -= multiScript_ScriptUpdated;
+            }
             m_underlyingScript = script;
             m_underlyingScript.ScriptUpdated += multiScript_ScriptUpdated;
             m_underlyingScript.UndoLog = m_controller.WorldModel.UndoLogger;
@@ -93,7 +104,7 @@ namespace TextAdventures.Quest
 
             if (m_underlyingScript == null)
             {
-                InitialiseMultiScript(new MultiScript());
+                InitialiseMultiScript(new MultiScript(m_controller.WorldModel));
             }
 
             if (!fromUpdate)
@@ -108,7 +119,7 @@ namespace TextAdventures.Quest
                 m_adding = false;
             }
 
-            System.Diagnostics.Debug.Assert(m_underlyingScript.Scripts.Count() == m_scripts.Count);
+            System.Diagnostics.Debug.Assert(m_replacingScripts || m_underlyingScript.Scripts.Count() == m_scripts.Count);
         }
 
         // TO DO: This is a temporary hacky flag to prevent re-entrant updates. What we should be doing instead is
@@ -203,6 +214,16 @@ namespace TextAdventures.Quest
             if (e.InsertedScript != null)
             {
                 Add(m_controller.ScriptFactory.CreateEditableScript(e.InsertedScript), e.Index, true);
+            }
+            if (e.ScriptsReplaced)
+            {
+                m_replacingScripts = true;
+                m_scripts.Clear();
+                foreach (var script in ((MultiScript) sender).Scripts)
+                {
+                    Add(m_controller.ScriptFactory.CreateEditableScript(script), true);
+                }
+                m_replacingScripts = false;
             }
             if (Updated != null) Updated(this, new EditableScriptsUpdatedEventArgs());
             if (UnderlyingValueUpdated != null) UnderlyingValueUpdated(this, new DataWrapperUpdatedEventArgs());
@@ -322,8 +343,21 @@ namespace TextAdventures.Quest
             }
             set
             {
-                
+                m_controller.StartTransaction("Editing script in code view");
+                m_underlyingScript.LoadCode(value);
+                ClearScripts();
+                InitialiseScript(m_underlyingScript);
+                m_controller.EndTransaction();
             }
+        }
+
+        private void ClearScripts()
+        {
+            foreach (var script in m_scripts)
+            {
+                script.Updated -= script_Updated;
+            }
+            m_scripts.Clear();
         }
     }
 }

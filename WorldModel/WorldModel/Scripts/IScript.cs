@@ -45,6 +45,7 @@ namespace TextAdventures.Quest.Scripts
         public bool IsParameterUpdate { get; private set; }
         public bool IsNamedParameterUpdate { get; private set; }
         public string Id { get; private set; }
+        public bool ScriptsReplaced { get; set; }
     }
 
     public interface IScriptParent

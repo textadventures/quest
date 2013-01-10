@@ -103,7 +103,7 @@ namespace TextAdventures.Quest.Scripts
             m_scriptContext = scriptContext;
             m_worldModel = scriptContext.WorldModel;
             m_expr = expression;
-            m_default = defaultScript ?? new MultiScript();
+            m_default = defaultScript ?? new MultiScript(m_worldModel);
         }
 
         protected override ScriptBase CloneScript()

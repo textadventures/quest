@@ -972,7 +972,7 @@ namespace TextAdventures.Quest
                 WorldModel.UndoLogger.StartTransaction(string.Format("Set '{0}' {1} script to '{2}'", parent, attribute, keyword));
             }
             Element element = (parent == null) ? null : m_worldModel.Elements.Get(parent);
-            EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript());
+            EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript(m_worldModel));
             if (keyword != null || nullKeywordIsFunctionCall)
             {
                 newValue.AddNewInternal(keyword);
@@ -997,7 +997,7 @@ namespace TextAdventures.Quest
             {
                 WorldModel.UndoLogger.StartTransaction(string.Format("Add script '{0}'", keyword));
             }
-            EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript());
+            EditableScripts newValue = EditableScripts.GetInstance(this, new MultiScript(m_worldModel));
             if (keyword != null)
             {
                 newValue.AddNewInternal(keyword);

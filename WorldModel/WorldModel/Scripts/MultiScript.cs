@@ -12,15 +12,23 @@ namespace TextAdventures.Quest.Scripts
         void Remove(int index);
         void Swap(int index1, int index2);
         void Insert(int index, IScript script);
+        void LoadCode(string code);
     }
 
     public class MultiScript : ScriptBase, IScriptParent, IMultiScript
     {
+        private WorldModel m_worldModel;
         private List<IScript> m_scripts;
 
-        public MultiScript(params IScript[] scripts)
+        public MultiScript(WorldModel worldModel, params IScript[] scripts)
+            : this(worldModel)
         {
             m_scripts = new List<IScript>(scripts);
+        }
+
+        private MultiScript(WorldModel worldModel)
+        {
+            m_worldModel = worldModel;
         }
 
         public override string Keyword
@@ -30,7 +38,7 @@ namespace TextAdventures.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            MultiScript clone = new MultiScript();
+            MultiScript clone = new MultiScript(m_worldModel);
             clone.m_scripts = new List<IScript>();
             foreach (IScript script in m_scripts)
             {
@@ -40,8 +48,6 @@ namespace TextAdventures.Quest.Scripts
             }
             return clone;
         }
-
-        private MultiScript() { }
 
         public void Add(params IScript[] scripts)
         {
@@ -203,6 +209,65 @@ namespace TextAdventures.Quest.Scripts
             else
             {
                 return Parent.GetVariablesInScope();
+            }
+        }
+
+        public void LoadCode(string code)
+        {
+            var newScript = (IMultiScript)ScriptFactory.CreateScript(code);
+            var newScriptList = new List<IScript>(newScript.Scripts);
+            if (base.UndoLog != null)
+            {
+                base.UndoLog.AddUndoAction(new UndoMultiScriptLoadCode(this, m_scripts, newScriptList));
+            }
+            ReplaceScripts(newScriptList);
+        }
+
+        private void ReplaceScripts(List<IScript> newScripts)
+        {
+            foreach (var script in m_scripts)
+            {
+                script.Parent = null;
+            }
+            m_scripts = newScripts;
+            foreach (var script in m_scripts)
+            {
+                script.Parent = this;
+            }
+            NotifyUpdate(new ScriptUpdatedEventArgs { ScriptsReplaced = true });
+        }
+
+        private ScriptFactory m_scriptFactory;
+        private ScriptFactory ScriptFactory
+        {
+            get
+            {
+                if (m_scriptFactory == null) m_scriptFactory = new ScriptFactory(m_worldModel);
+                return m_scriptFactory;
+            }
+        }
+
+        private class UndoMultiScriptLoadCode : UndoLogger.IUndoAction
+        {
+            private readonly MultiScript m_appliesTo;
+            private readonly List<IScript> m_oldScripts;
+            private readonly List<IScript> m_newScripts;
+
+            public UndoMultiScriptLoadCode(MultiScript appliesTo, List<IScript> oldScripts, List<IScript> newScripts)
+            {
+                m_appliesTo = appliesTo;
+                m_oldScripts = oldScripts;
+                m_newScripts = newScripts;
+            }
+
+            public void DoUndo(WorldModel worldModel)
+            {
+                m_appliesTo.ReplaceScripts(m_oldScripts);
+            }
+
+            public void DoRedo(WorldModel worldModel)
+            {
+                m_appliesTo.ReplaceScripts(m_newScripts);
             }
         }
 

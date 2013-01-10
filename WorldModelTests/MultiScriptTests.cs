@@ -33,7 +33,7 @@ namespace WorldModelTests
                 source.Add(script.Object);
             }
 
-            MultiScript result = new MultiScript(source.ToArray());
+            MultiScript result = new MultiScript(m_worldModel, source.ToArray());
             result.UndoLog = m_worldModel.UndoLogger;
 
             return result;

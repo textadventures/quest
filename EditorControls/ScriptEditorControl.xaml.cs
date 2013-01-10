@@ -646,10 +646,15 @@ namespace TextAdventures.Quest.EditorControls
             get { return textEditorBorder.Visibility == Visibility.Visible; }
             set
             {
+                if (value == CodeView) return;
                 Save();
                 if (value)
                 {
                     PopulateCodeView();
+                }
+                else
+                {
+                    m_scripts.Code = textEditor.Text;
                 }
                 textEditorBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
                 lstScripts.Visibility = value ? Visibility.Collapsed : (lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
