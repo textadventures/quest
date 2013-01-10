@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Threading;
 
 namespace TextAdventures.Quest.EditorControls
@@ -26,7 +20,7 @@ namespace TextAdventures.Quest.EditorControls
         private ScriptCommandEditorData m_parentScript;
         private bool m_readOnly;
         private bool m_saving;
-        private bool m_initialised = false;
+        private bool m_initialised;
 
         internal event Action Initialise;
 
@@ -117,8 +111,8 @@ namespace TextAdventures.Quest.EditorControls
 
             Thread.Sleep(100);
 
-            Dispatcher.BeginInvoke((ThreadStart)delegate()
-            {
+            Dispatcher.BeginInvoke((ThreadStart)delegate
+                {
                 ctl.Focus();
                 FocusManager.SetFocusedElement(ctl, ctl);
                 Keyboard.Focus(ctl);
@@ -234,7 +228,7 @@ namespace TextAdventures.Quest.EditorControls
                     if (m_scriptParameterControlMap.ContainsKey(e.UpdatedScript))
                     {
                         // An entire script refresh would be overkill - we just need to update the specified parameter
-                        IElementEditorControl control = GetScriptParameterControl(e.UpdatedScript, e.UpdatedScriptEventArgs.Index.ToString());
+                        IElementEditorControl control = GetScriptParameterControl(e.UpdatedScript, e.UpdatedScriptEventArgs.Index.ToString(CultureInfo.InvariantCulture));
                         if (e.UpdatedScript.Type == ScriptType.Normal)
                         {
                             control.Populate(m_controller.GetScriptEditorData(e.UpdatedScript));
@@ -273,8 +267,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private void AddScript(IEditableScript script)
         {
-            ListBoxItem newItem = new ListBoxItem();
-            newItem.HorizontalAlignment = HorizontalAlignment.Stretch;
+            ListBoxItem newItem = new ListBoxItem {HorizontalAlignment = HorizontalAlignment.Stretch};
 
             // a DockPanel is used as the ItemsPanel, so that when nested Expanders are collapsed,
             // they don't leave a blank space
@@ -292,9 +285,11 @@ namespace TextAdventures.Quest.EditorControls
             }
             else
             {
-                IfEditor newIfEditor = new IfEditor();
-                newIfEditor.Padding = new Thickness(3);
-                newIfEditor.HorizontalAlignment = HorizontalAlignment.Stretch;
+                IfEditor newIfEditor = new IfEditor
+                {
+                    Padding = new Thickness(3),
+                    HorizontalAlignment = HorizontalAlignment.Stretch
+                };
                 AddEditorControl(newIfEditor, newItem, null);
                 newItem.Content = newIfEditor;
                 newIfEditor.ReadOnly = m_readOnly;
@@ -311,8 +306,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private Grid NewScriptControlGrid(Grid parent)
         {
-            Grid grid = new Grid();
-            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Grid grid = new Grid {HorizontalAlignment = HorizontalAlignment.Stretch};
             parent.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             Grid.SetRow(grid, parent.RowDefinitions.Count - 1);
             parent.Children.Add(grid);
@@ -616,7 +610,7 @@ namespace TextAdventures.Quest.EditorControls
             return (m_scripts.Owner != m_data.Name);
         }
 
-        void m_controller_ScriptClipboardUpdated(object sender, TextAdventures.Quest.EditorController.ScriptClipboardUpdateEventArgs e)
+        void m_controller_ScriptClipboardUpdated(object sender, EditorController.ScriptClipboardUpdateEventArgs e)
         {
             ctlToolbar.CanPaste = e.HasScript && !m_readOnly;
         }
