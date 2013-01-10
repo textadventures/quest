@@ -16,6 +16,7 @@ namespace TextAdventures.Quest
             AdderDisplayString = editor.Fields.GetString("add");
             IsVisibleInSimpleMode = !editor.Fields.GetAsType<bool>("advanced");
             IsDesktopOnly = editor.Fields.GetAsType<bool>("desktop");
+            CommonButton = editor.Fields.GetString("common");
         }
 
         public string DisplayString { get; private set; }
@@ -24,6 +25,7 @@ namespace TextAdventures.Quest
         public string AdderDisplayString { get; private set; }
         public bool IsVisibleInSimpleMode { get; private set; }
         public bool IsDesktopOnly { get; private set; }
+        public string CommonButton { get; private set; }
     }
 
     internal class EditableScriptFactory

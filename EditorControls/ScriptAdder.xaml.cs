@@ -63,6 +63,7 @@ namespace TextAdventures.Quest.EditorControls
         private void PopulateTree()
         {
             ctlEditorTree.Clear();
+            commonButtons.Children.Clear();
 
             foreach (string cat in m_controller.GetAllScriptEditorCategories())
             {
@@ -74,11 +75,29 @@ namespace TextAdventures.Quest.EditorControls
                 if (data.Value.IsVisibleInSimpleMode || !m_controller.SimpleMode)
                 {
                     ctlEditorTree.AddNode(data.Key, data.Value.AdderDisplayString, data.Value.Category, null, null);
+
+                    if (!string.IsNullOrEmpty(data.Value.CommonButton))
+                    {
+                        Button newButton = new Button
+                        {
+                            Padding = new Thickness(6, 3, 6, 3),
+                            Margin = new Thickness(3, 2, 3, 2),
+                            Content = data.Value.CommonButton,
+                            Tag = data.Value.CreateString
+                        };
+                        newButton.Click += commonButton_Click;
+                        commonButtons.Children.Add(newButton);
+                    }
                 }
             }
 
             ctlEditorTree.ExpandAll();
             ctlEditorTree.SelectFirstNode();
+        }
+
+        void commonButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddScript((string)((Button)sender).Tag);
         }
 
         public void Uninitialise()

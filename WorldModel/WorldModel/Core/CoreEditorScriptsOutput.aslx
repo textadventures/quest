@@ -5,6 +5,7 @@
     <category>Output</category>
     <create>msg ("")</create>
     <add>Print a message</add>
+    <common>Print</common>
 
     <control>
       <controltype>label</controltype>

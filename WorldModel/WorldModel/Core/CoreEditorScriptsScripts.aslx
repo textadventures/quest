@@ -39,6 +39,7 @@
     <category>Scripts</category>
     <add>If...</add>
     <create>if ()</create>
+    <common>If</common>
     <!-- note: "if" has its own special editor, so it doesn't have any editor definition in this file -->
   </editor>
 

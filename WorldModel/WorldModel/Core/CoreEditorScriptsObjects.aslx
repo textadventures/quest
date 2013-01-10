@@ -5,6 +5,7 @@
     <category>Objects</category>
     <create>AddToInventory ()</create>
     <add>Add to inventory</add>
+    <common>Inventory</common>
 
     <control>
       <controltype>label</controltype>
@@ -25,6 +26,7 @@
     <category>Objects</category>
     <create>MoveObject (,)</create>
     <add>Move object</add>
+    <common>Move</common>
 
     <control>
       <controltype>label</controltype>
@@ -57,6 +59,7 @@
     <category>Objects</category>
     <create>MakeObjectVisible ()</create>
     <add>Make object visible</add>
+    <common>Show</common>
 
     <control>
       <controltype>label</controltype>
@@ -77,6 +80,7 @@
     <category>Objects</category>
     <create>MakeObjectInvisible ()</create>
     <add>Make object invisible</add>
+    <common>Hide</common>
 
     <control>
       <controltype>label</controltype>
