@@ -1,0 +1,635 @@
+﻿<library>
+  <editor>
+    <appliesto>msg</appliesto>
+    <display>Print #0</display>
+    <category>Output</category>
+    <create>msg ("")</create>
+    <add>Print a message</add>
+    <common>Print</common>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Print</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>message</simple>
+      <expand/>
+      <multiline/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>picture</appliesto>
+    <display>Show picture #0</display>
+    <category>Output</category>
+    <create>picture ("")</create>
+    <add>Show a picture</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Show picture</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>filename</simple>
+      <simpleeditor>file</simpleeditor>
+      <source>[EditorImageFormats]</source>
+      <filefiltername>Picture Files</filefiltername>
+      <preview/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)ClearScreen</appliesto>
+    <display>Clear the screen</display>
+    <category>Output</category>
+    <create>ClearScreen</create>
+    <add>Clear the screen</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Clear the screen</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetForegroundColour</appliesto>
+    <display>Change foreground colour to #0</display>
+    <category>Output</category>
+    <create>SetForegroundColour ("Black")</create>
+    <add>Change foreground colour</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the foreground colour to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetBackgroundColour</appliesto>
+    <display>Change background colour to #0</display>
+    <category>Output</category>
+    <create>SetBackgroundColour ("White")</create>
+    <add>Change background colour</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the background colour to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetFontName</appliesto>
+    <display>Change font to #0</display>
+    <category>Output</category>
+    <create>SetFontName ("Georgia, serif")</create>
+    <add>Change font</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the font to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <source>basefonts</source>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetWebFontName</appliesto>
+    <display>Change font to #0</display>
+    <category>Output</category>
+    <create>SetWebFontName ("")</create>
+    <add>Change font (using web fonts)</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the font to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>0</attribute>
+      <source>webfonts</source>
+      <freetext/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetFontSize</appliesto>
+    <display>Change font size to #0</display>
+    <category>Output</category>
+    <create>SetFontSize (9)</create>
+    <add>Change font size</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change the font size to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>size</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)PrintCentered</appliesto>
+    <display>Print (centered) #0</display>
+    <category>Output</category>
+    <create>PrintCentered ("")</create>
+    <add>Print a centered message</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Print (centered)</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>message</simple>
+      <expand/>
+      <multiline/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>play sound</appliesto>
+    <display>Play sound #0</display>
+    <category>Output</category>
+    <create>play sound ("", false, false)</create>
+    <add>Play a sound</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Play sound</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>filename</simple>
+      <simpleeditor>file</simpleeditor>
+      <source>*.wav;*.mp3</source>
+      <filefiltername>Sound Files</filefiltername>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Wait for sound to finish before continuing:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Loop:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+
+  </editor>
+
+  <editor>
+    <appliesto>stop sound</appliesto>
+    <display>Stop sound</display>
+    <category>Output</category>
+    <create>stop sound</create>
+    <add>Stop sound</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Stop sound</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)ShowYouTube</appliesto>
+    <display>Play YouTube video #0</display>
+    <category>Output</category>
+    <create>ShowYouTube ("")</create>
+    <add>Play YouTube video</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Play YouTube video</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>id</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)ShowVimeo</appliesto>
+    <display>Play Vimeo video #0</display>
+    <category>Output</category>
+    <create>ShowVimeo ("")</create>
+    <add>Play Vimeo video</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Play Vimeo video</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>id</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DisplayHttpLink</appliesto>
+    <display>Display link '#0' to http(s)://#1</display>
+    <category>Output</category>
+    <create>DisplayHttpLink ("", "", false)</create>
+    <add>Print web link</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Display link</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+      <expand/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>http://</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>URL</simple>
+      <expand/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Use HTTPS:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DisplayMailtoLink</appliesto>
+    <display>Display link '#0' to email #1</display>
+    <category>Output</category>
+    <create>DisplayMailtoLink ("", "")</create>
+    <add>Print email link</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Display link</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+      <expand/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Email address:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>email</simple>
+      <expand/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)Log</appliesto>
+    <display>Log #0</display>
+    <category>Output</category>
+    <create>Log ("")</create>
+    <add>Log</add>
+    <advanced/>
+    <desktop/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Log</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>@failed</appliesto>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Failed to load script:</caption>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>0</attribute>
+      <colour>Red</colour>
+      <multiline/>
+      <expand/>
+      <breakbefore/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>//</appliesto>
+    <category>Scripts</category>
+    <add>Comment</add>
+    <create>// Type comment</create>
+    <advanced/>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>0</attribute>
+      <colour>Green</colour>
+      <multiline/>
+      <expand/>
+    </control>
+
+  </editor>
+
+  <editor>
+    <appliesto>if</appliesto>
+    <category>Scripts</category>
+    <add>If...</add>
+    <create>if ()</create>
+    <common>If</common>
+    <!-- note: "if" has its own special editor, so it doesn't have any editor definition in this file -->
+  </editor>
+
+  <editor>
+    <appliesto>firsttime</appliesto>
+    <display>The first time, run: #0 - otherwise run: #1</display>
+    <category>Scripts</category>
+    <add>First time...</add>
+    <create>firsttime</create>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>The first time,</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>0</attribute>
+      <caption>Run script</caption>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Otherwise</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>1</attribute>
+      <caption>Run script</caption>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>for</appliesto>
+    <display>For #0 values #1 to #2, run: #4</display>
+    <category>Scripts</category>
+    <add>For...</add>
+    <create>for (,,,1)</create>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>For: loop variable</caption>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>from</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>in steps of</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>3</attribute>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>4</attribute>
+      <caption>Run script</caption>
+      <breakbefore/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>foreach</appliesto>
+    <display>For each #0 in #1, run: #2</display>
+    <category>Scripts</category>
+    <add>For each...</add>
+    <create>foreach (,)</create>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>For each: loop variable</caption>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>in source</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <usetemplates>foreach</usetemplates>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>2</attribute>
+      <caption>Run script</caption>
+      <breakbefore/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>switch</appliesto>
+    <display>Switch #0: (#1 cases), Default: #2</display>
+    <category>Scripts</category>
+    <add>Switch...</add>
+    <create>switch ()</create>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Switch:</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Cases:</caption>
+      <breakbefore/>
+    </control>
+
+    <!-- TO DO: Popup needs to have ExpressionControl in it -->
+
+    <control>
+      <controltype>scriptdictionary</controltype>
+      <caption>Cases</caption>
+      <attribute>1</attribute>
+      <keyprompt>Please enter the case expression</keyprompt>
+    </control>
+
+    <control>
+      <breakbefore/>
+      <controltype>script</controltype>
+      <caption>Default</caption>
+      <attribute>2</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>while</appliesto>
+    <display>While #0 is true, run: #1</display>
+    <category>Scripts</category>
+    <add>While...</add>
+    <create>while ()</create>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>While</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>is true,</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>1</attribute>
+      <caption>Run script</caption>
+      <breakbefore/>
+    </control>
+  </editor>
+</library>

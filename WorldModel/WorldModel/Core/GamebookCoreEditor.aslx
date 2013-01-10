@@ -12,7 +12,10 @@
   <implied element="tab" property="mustnotinherit" type="list"/>
   <implied element="tab" property="parent" type="object"/>
 
+  <template name="EditorImageFormats">*.jpg;*.jpeg;*.png;*.gif</template>
   <template name="HTMLColorNames">AliceBlue;AntiqueWhite;Aqua;Aquamarine;Azure;Beige;Bisque;Black;BlanchedAlmond;Blue;BlueViolet;Brown;BurlyWood;CadetBlue;Chartreuse;Chocolate;Coral;CornflowerBlue;Cornsilk;Crimson;Cyan;DarkBlue;DarkCyan;DarkGoldenRod;DarkGray;DarkGrey;DarkGreen;DarkKhaki;DarkMagenta;DarkOliveGreen;Darkorange;DarkOrchid;DarkRed;DarkSalmon;DarkSeaGreen;DarkSlateBlue;DarkSlateGray;DarkSlateGrey;DarkTurquoise;DarkViolet;DeepPink;DeepSkyBlue;DimGray;DimGrey;DodgerBlue;FireBrick;FloralWhite;ForestGreen;Fuchsia;Gainsboro;GhostWhite;Gold;GoldenRod;Gray;Grey;Green;GreenYellow;HoneyDew;HotPink;IndianRed ;Indigo ;Ivory;Khaki;Lavender;LavenderBlush;LawnGreen;LemonChiffon;LightBlue;LightCoral;LightCyan;LightGoldenRodYellow;LightGray;LightGrey;LightGreen;LightPink;LightSalmon;LightSeaGreen;LightSkyBlue;LightSlateGray;LightSlateGrey;LightSteelBlue;LightYellow;Lime;LimeGreen;Linen;Magenta;Maroon;MediumAquaMarine;MediumBlue;MediumOrchid;MediumPurple;MediumSeaGreen;MediumSlateBlue;MediumSpringGreen;MediumTurquoise;MediumVioletRed;MidnightBlue;MintCream;MistyRose;Moccasin;NavajoWhite;Navy;OldLace;Olive;OliveDrab;Orange;OrangeRed;Orchid;PaleGoldenRod;PaleGreen;PaleTurquoise;PaleVioletRed;PapayaWhip;PeachPuff;Peru;Pink;Plum;PowderBlue;Purple;Red;RosyBrown;RoyalBlue;SaddleBrown;Salmon;SandyBrown;SeaGreen;SeaShell;Sienna;Silver;SkyBlue;SlateBlue;SlateGray;SlateGrey;Snow;SpringGreen;SteelBlue;Tan;Teal;Thistle;Tomato;Turquoise;Violet;Wheat;White;WhiteSmoke;Yellow;YellowGreen</template>
+
+  <include ref="GamebookCoreEditorScripts.aslx"/>
 
   <editor>
     <appliesto>game</appliesto>
@@ -192,7 +195,7 @@
       <control>
         <controltype>dropdowntypes</controltype>
         <caption>Page type</caption>
-        <types>*=Text; picture=Picture; youtube=YouTube; link=External link</types>
+        <types>*=Text; picture=Picture; youtube=YouTube; link=External link; script=Script</types>
         <width>150</width>
       </control>
 
@@ -221,10 +224,18 @@
       </control>
 
       <control>
+        <caption>Script</caption>
+        <controltype>script</controltype>
+        <attribute>script</attribute>
+        <mustinherit>script</mustinherit>
+      </control>
+
+      <control>
         <controltype>richtext</controltype>
         <caption>Description</caption>
         <attribute>description</attribute>
         <mustnotinherit>link</mustnotinherit>
+        <mustnotinherit>script</mustnotinherit>
         <expand/>
       </control>
 
@@ -237,12 +248,14 @@
         <source>object</source>
         <sourceexclude>player</sourceexclude>
         <mustnotinherit>link</mustnotinherit>
+        <mustnotinherit>script</mustnotinherit>
       </control>
 
     </tab>
     <tab>
       <caption>Action</caption>
       <mustnotinherit>defaultplayer</mustnotinherit>
+      <mustnotinherit>script</mustnotinherit>
 
       <control>
         <caption>Play sound when entering page</caption>

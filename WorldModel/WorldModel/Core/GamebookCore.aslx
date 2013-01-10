@@ -38,6 +38,10 @@
     <address>http://</address>
   </type>
 
+  <type name="script">
+    <runscript/>
+  </type>
+
   <template name="NothingToUndo">Nothing to undo!</template>
 
   <function name="InitInterface">
@@ -117,41 +121,51 @@
     <![CDATA[
     request (ClearScreen, "")
     stop sound
-    if (HasString(player.parent, "sound")) {
-	    play sound ( player.parent.sound, false, false )
-    } 
+    if (GetBoolean(player.parent, "runscript")) {
+      if (HasScript(player.parent, "script")) {
+        do (player.parent, "script")
+      }
+      else {
+        msg ("No script has been created for this page.")
+      }
+    }
+    else {
+      if (HasString(player.parent, "sound")) {
+	      play sound ( player.parent.sound, false, false )
+      } 
     
-    if (HasString(player.parent, "picture")) {
-      if (LengthOf(player.parent.picture) > 0) {
-        picture (player.parent.picture)
-        msg ("")
-      }
-    }
-    if (HasString(player.parent, "youtube")) {
-      if (LengthOf(player.parent.youtube) > 0) {
-        JS.AddYouTube(player.parent.youtube)
-        msg ("")
-        msg ("")
-      }
-    }
-    msg (player.parent.description)
-    msg ("")
-    msg ("")
-    if (TypeOf(player.parent, "options") = "stringdictionary") {
-      foreach (key, player.parent.options) {
-        destination = GetObject(key)
-        if (destination = null) {
-          msg (StringDictionaryItem(player.parent.options, key) + " (broken link)")
+      if (HasString(player.parent, "picture")) {
+        if (LengthOf(player.parent.picture) > 0) {
+          picture (player.parent.picture)
+          msg ("")
         }
-        else {
-          if (DoesInherit(destination, "link")) {
-            msg ("<a href=\"" + destination.address + "\">" + StringDictionaryItem(player.parent.options, key) + "</a>")
+      }
+      if (HasString(player.parent, "youtube")) {
+        if (LengthOf(player.parent.youtube) > 0) {
+          JS.AddYouTube(player.parent.youtube)
+          msg ("")
+          msg ("")
+        }
+      }
+      msg (player.parent.description)
+      msg ("")
+      msg ("")
+      if (TypeOf(player.parent, "options") = "stringdictionary") {
+        foreach (key, player.parent.options) {
+          destination = GetObject(key)
+          if (destination = null) {
+            msg (StringDictionaryItem(player.parent.options, key) + " (broken link)")
           }
           else {
-            msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+            if (DoesInherit(destination, "link")) {
+              msg ("<a href=\"" + destination.address + "\">" + StringDictionaryItem(player.parent.options, key) + "</a>")
+            }
+            else {
+              msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+            }
           }
+          msg ("")
         }
-        msg ("")
       }
     }
     ]]>
