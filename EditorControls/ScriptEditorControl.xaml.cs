@@ -676,6 +676,18 @@ namespace TextAdventures.Quest.EditorControls
 
                 if (value)
                 {
+                    if (m_scripts == null)
+                    {
+                        if (m_parentScript != null)
+                        {
+                            m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, null, true);
+                        }
+                        else
+                        {
+                            m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, null, true, true);
+                        }
+                    }
+
                     PopulateCodeView();
                     SetCodeViewEditButtonsEnabled();
                 }
