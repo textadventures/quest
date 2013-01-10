@@ -57,9 +57,9 @@ namespace TextAdventures.Quest.Scripts
     public class JSScript : ScriptBase
     {
         private readonly ScriptContext m_scriptContext;
-        private readonly string m_function;
-        private readonly bool m_outputLog;
-        private readonly List<IFunctionGeneric> m_parameters;
+        private string m_function;
+        private bool m_outputLog;
+        private List<IFunctionGeneric> m_parameters;
 
         public JSScript(ScriptContext scriptContext, string function, bool outputLog, List<IFunctionGeneric> parameters)
         {
@@ -71,11 +71,13 @@ namespace TextAdventures.Quest.Scripts
 
         protected override ScriptBase CloneScript()
         {
-            throw new NotImplementedException();
+            return new JSScript(m_scriptContext, m_function, m_outputLog, m_parameters == null ? null : new List<IFunctionGeneric>(m_parameters));
         }
 
         public override void Execute(Context c)
         {
+            if (string.IsNullOrEmpty(m_function)) return;
+
             if (m_parameters != null)
             {
                 var paramValues = m_parameters.Select(p => p.Execute(c));
@@ -97,23 +99,35 @@ namespace TextAdventures.Quest.Scripts
 
         public override string Save()
         {
+            if (string.IsNullOrEmpty(m_function)) return "JS.";
             string functionName = (m_outputLog ? "output@" : "") + m_function;
             return SaveScript("JS." + functionName, m_parameters == null ? new[] { string.Empty } : m_parameters.Select(p => p.Save()).ToArray());
         }
 
         public override void SetParameterInternal(int index, object value)
         {
-            throw new NotImplementedException();
+            var constuctor = new JSScriptConstructor();
+            try
+            {
+                var newScript = (JSScript)constuctor.Create("JS." + (string)value, m_scriptContext);
+                m_function = newScript.m_function;
+                m_outputLog = newScript.m_outputLog;
+                m_parameters = newScript.m_parameters;
+            }
+            catch
+            {
+                // simply ignore any invalid input
+            }
         }
 
         public override object GetParameter(int index)
         {
-            throw new NotImplementedException();
+            return Save().Substring(3);
         }
 
         public override string Keyword
         {
-            get { throw new NotImplementedException(); }
+            get { return "JS."; }
         }
     }
 }

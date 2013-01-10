@@ -636,4 +636,23 @@
       <simple>string</simple>
     </control>
   </editor>
+
+  <editor>
+    <appliesto>JS.</appliesto>
+    <display>Run JavaScript: #0</display>
+    <add>Run Javascript</add>
+    <category>Output</category>
+    <create>JS.</create>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>JavaScript:</caption>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <attribute>0</attribute>
+    </control>
+  </editor>
 </library>
