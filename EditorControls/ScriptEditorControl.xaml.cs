@@ -208,7 +208,7 @@ namespace TextAdventures.Quest.EditorControls
             }
 
             lstScripts.Visibility = (lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
-            SetEditButtonsEnabled(lstScripts.SelectedItems.Count > 0);
+            SetEditButtonsEnabled();
         }
 
         void m_scripts_Updated(object sender, EditableScriptsUpdatedEventArgs e)
@@ -475,54 +475,76 @@ namespace TextAdventures.Quest.EditorControls
 
         void ctlToolbar_Cut()
         {
-            Save();
-            m_scripts.Cut(GetSelectedIndicesArray());
+            if (m_readOnly) return;
+            if (CodeView)
+            {
+                textEditor.Cut();
+            }
+            else
+            {
+                Save();
+                m_scripts.Cut(GetSelectedIndicesArray());
+            }
         }
 
         void ctlToolbar_Copy()
         {
-            Save();
-            m_scripts.Copy(GetSelectedIndicesArray());
+            if (CodeView)
+            {
+                textEditor.Copy();
+            }
+            else
+            {
+                Save();
+                m_scripts.Copy(GetSelectedIndicesArray());
+            }
         }
 
         void ctlToolbar_Paste()
         {
             if (m_readOnly) return;
-            int index;
-            if (lstScripts.SelectedIndex < 0)
+            if (CodeView)
             {
-                index = lstScripts.Items.Count;
+                textEditor.Paste();
             }
             else
             {
-                index = lstScripts.SelectedIndex + 1;
-            }
-
-            Save();
-
-            if (m_scripts == null)
-            {
-                m_controller.StartTransaction("Paste script");
-
-                if (m_parentScript != null)
+                int index;
+                if (lstScripts.SelectedIndex < 0)
                 {
-                    m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, null, false);
+                    index = lstScripts.Items.Count;
                 }
                 else
                 {
-                    m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, null, false);
+                    index = lstScripts.SelectedIndex + 1;
                 }
+
+                Save();
+
+                if (m_scripts == null)
+                {
+                    m_controller.StartTransaction("Paste script");
+
+                    if (m_parentScript != null)
+                    {
+                        m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, null, false);
+                    }
+                    else
+                    {
+                        m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, null, false);
+                    }
                 
-                m_scripts.Paste(index, false);
-                m_controller.EndTransaction();
-                RefreshScriptsList();
+                    m_scripts.Paste(index, false);
+                    m_controller.EndTransaction();
+                    RefreshScriptsList();
+                }
+                else
+                {
+                    m_scripts.Paste(index, true);
+                }
+                Save();
+                SetSelectedIndex(index);
             }
-            else
-            {
-                m_scripts.Paste(index, true);
-            }
-            Save();
-            SetSelectedIndex(index);
         }
 
         void ctlToolbar_CodeView()
@@ -542,6 +564,11 @@ namespace TextAdventures.Quest.EditorControls
             ctlToolbar.ShowPopOutButton();
         }
 
+        private void SetEditButtonsEnabled()
+        {
+            SetEditButtonsEnabled(lstScripts.SelectedItems.Count > 0);
+        }
+
         private void SetEditButtonsEnabled(bool enabled)
         {
             // Copy is enabled even in read-only mode
@@ -559,7 +586,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private void lstScripts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SetEditButtonsEnabled(lstScripts.SelectedItems.Count > 0);
+            SetEditButtonsEnabled();
         }
 
         public void HidePopOutButton()
@@ -636,6 +663,7 @@ namespace TextAdventures.Quest.EditorControls
                 if (value)
                 {
                     PopulateCodeView();
+                    SetCodeViewEditButtonsEnabled();
                 }
                 else
                 {
@@ -643,6 +671,7 @@ namespace TextAdventures.Quest.EditorControls
                     {
                         m_scripts.Code = textEditor.Text;
                     }
+                    SetEditButtonsEnabled();
                 }
                 textEditorBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
                 lstScripts.Visibility = value ? Visibility.Collapsed : (lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
@@ -656,6 +685,17 @@ namespace TextAdventures.Quest.EditorControls
             string code = m_scripts == null ? string.Empty : m_scripts.Code;
             textEditor.Text = code;
             textEditor.IsModified = false;
+        }
+
+        private void SetCodeViewEditButtonsEnabled()
+        {
+            ctlToolbar.CanCopy = true;
+            ctlToolbar.CanPaste = !m_readOnly;
+            ctlToolbar.CanCut = !m_readOnly;
+
+            ctlToolbar.CanDelete = false;
+            ctlToolbar.CanMoveUp = false;
+            ctlToolbar.CanMoveDown = false;
         }
     }
 }
