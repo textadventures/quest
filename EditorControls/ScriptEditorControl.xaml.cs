@@ -639,7 +639,10 @@ namespace TextAdventures.Quest.EditorControls
                 }
                 else
                 {
-                    m_scripts.Code = textEditor.Text;
+                    if (textEditor.IsModified)
+                    {
+                        m_scripts.Code = textEditor.Text;
+                    }
                 }
                 textEditorBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
                 lstScripts.Visibility = value ? Visibility.Collapsed : (lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
@@ -652,6 +655,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             string code = m_scripts == null ? string.Empty : m_scripts.Code;
             textEditor.Text = code;
+            textEditor.IsModified = false;
         }
     }
 }
