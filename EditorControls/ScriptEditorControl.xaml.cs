@@ -48,6 +48,8 @@ namespace TextAdventures.Quest.EditorControls
             if (m_initialised) return;
             m_controller = m_helper.Controller;
             m_controller.ScriptClipboardUpdated += m_controller_ScriptClipboardUpdated;
+            m_controller.SimpleModeChanged += m_controller_SimpleModeChanged;
+            ShowHideCodeViewButton();
 
             if (Initialise != null) Initialise();
             m_initialised = true;
@@ -56,7 +58,11 @@ namespace TextAdventures.Quest.EditorControls
         void m_helper_Uninitialise()
         {
             if (!m_initialised) return;
-            if (m_controller != null) m_controller.ScriptClipboardUpdated -= m_controller_ScriptClipboardUpdated;
+            if (m_controller != null)
+            {
+                m_controller.ScriptClipboardUpdated -= m_controller_ScriptClipboardUpdated;
+                m_controller.SimpleModeChanged -= m_controller_SimpleModeChanged;
+            }
             m_controller = null;
             m_initialised = false;
         }
@@ -654,6 +660,24 @@ namespace TextAdventures.Quest.EditorControls
         void m_controller_ScriptClipboardUpdated(object sender, EditorController.ScriptClipboardUpdateEventArgs e)
         {
             ctlToolbar.CanPaste = e.HasScript && !m_readOnly;
+        }
+
+        void m_controller_SimpleModeChanged(object sender, EventArgs e)
+        {
+            ShowHideCodeViewButton();
+        }
+
+        private void ShowHideCodeViewButton()
+        {
+            if (m_controller.SimpleMode)
+            {
+                CodeView = false;
+                ctlToolbar.HideCodeViewButton();
+            }
+            else
+            {
+                ctlToolbar.ShowCodeViewButton();
+            }
         }
 
         private void cmdAddScript_Click(object sender, RoutedEventArgs e)

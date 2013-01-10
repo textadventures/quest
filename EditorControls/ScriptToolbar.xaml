@@ -38,7 +38,7 @@
                 <Button Name="cmdPaste" ToolTip="Paste" Click="cmdPaste_Click" SnapsToDevicePixels="True">
                     <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/PasteHS.png" SnapsToDevicePixels="True"></Image>
                 </Button>
-                <Separator/>
+                <Separator Name="codeViewSeparator" />
                 <ToggleButton Name="cmdCodeView" ToolTip="Code View" Click="cmdCodeView_OnClick" SnapsToDevicePixels="True">
                     <Image Style="{StaticResource toolbarImageStyle}" RenderOptions.BitmapScalingMode="NearestNeighbor" Width="16" Height="16" Source="./Images/EditCodeHS.png" SnapsToDevicePixels="True"></Image>
                 </ToggleButton>
