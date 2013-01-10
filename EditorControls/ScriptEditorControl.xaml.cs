@@ -536,25 +536,14 @@ namespace TextAdventures.Quest.EditorControls
 
         void ctlToolbar_PopOut()
         {
-            ScriptEditorPopOut popOut = new ScriptEditorPopOut();
-            popOut.ScriptEditor.Helper.Dirty += PopOut_Dirty;
-            popOut.ScriptEditor.Helper.RequestParentElementEditorSave += PopOut_RequestParentElementEditorSave;
-            popOut.ScriptEditor.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
-            popOut.ScriptEditor.ReadOnly = m_readOnly;
-            popOut.ScriptEditor.Populate(m_scripts);
+            PopOut popOut = new PopOut();
+            scriptEditorGrid.Children.Remove(scriptEditor);
+            popOut.grid.Children.Add(scriptEditor);
+            ctlToolbar.HidePopOutButton();
             popOut.ShowDialog();
-            m_scripts = popOut.ScriptEditor.m_scripts;
-        }
-
-        void PopOut_RequestParentElementEditorSave()
-        {
-            m_helper.RaiseRequestParentElementEditorSaveEvent();
-        }
-
-        void PopOut_Dirty(object sender, DataModifiedEventArgs e)
-        {
-            m_helper.RaiseDirtyEvent(m_scripts);
-            RefreshScriptsList();
+            popOut.grid.Children.Remove(scriptEditor);
+            scriptEditorGrid.Children.Add(scriptEditor);
+            ctlToolbar.ShowPopOutButton();
         }
 
         private void SetEditButtonsEnabled(bool enabled)

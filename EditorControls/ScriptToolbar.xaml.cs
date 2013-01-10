@@ -117,5 +117,11 @@ namespace TextAdventures.Quest.EditorControls
             popOutSeparator.Visibility = Visibility.Collapsed;
             cmdPopOut.Visibility = Visibility.Collapsed;
         }
+
+        public void ShowPopOutButton()
+        {
+            popOutSeparator.Visibility = Visibility.Visible;
+            cmdPopOut.Visibility = Visibility.Visible;
+        }
     }
 }
