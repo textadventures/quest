@@ -167,6 +167,11 @@ namespace TextAdventures.Quest.EditorControls
 
         public void Save()
         {
+            if (CodeView && textEditor.IsModified)
+            {
+                m_scripts.Code = textEditor.Text;
+            }
+
             m_saving = true;
             foreach (IElementEditorControl subControl in m_subControls)
             {
@@ -207,8 +212,15 @@ namespace TextAdventures.Quest.EditorControls
                 AddScript(script);
             }
 
-            lstScripts.Visibility = (lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
-            SetEditButtonsEnabled();
+            lstScripts.Visibility = (!CodeView && lstScripts.Items.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
+            if (CodeView)
+            {
+                SetCodeViewEditButtonsEnabled();
+            }
+            else
+            {
+                SetEditButtonsEnabled();
+            }
         }
 
         void m_scripts_Updated(object sender, EditableScriptsUpdatedEventArgs e)
@@ -659,7 +671,9 @@ namespace TextAdventures.Quest.EditorControls
             set
             {
                 if (value == CodeView) return;
+
                 Save();
+
                 if (value)
                 {
                     PopulateCodeView();
@@ -667,10 +681,6 @@ namespace TextAdventures.Quest.EditorControls
                 }
                 else
                 {
-                    if (textEditor.IsModified)
-                    {
-                        m_scripts.Code = textEditor.Text;
-                    }
                     SetEditButtonsEnabled();
                 }
                 textEditorBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
