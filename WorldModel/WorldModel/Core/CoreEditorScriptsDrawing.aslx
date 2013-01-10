@@ -24,6 +24,11 @@
     <category>Drawing</category>
     <create>Grid_ClearCustomLayer</create>
     <add>Clear custom drawing layer</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Clear custom drawing layer</caption>
+    </control>
   </editor>
 
   <editor>
