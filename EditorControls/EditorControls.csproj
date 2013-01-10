@@ -144,6 +144,9 @@
     <Compile Include="PatternControl.xaml.cs">
       <DependentUpon>PatternControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PopOut.xaml.cs">
+      <DependentUpon>PopOut.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PopupEditors.cs" />
     <Compile Include="RichTextControl.xaml.cs">
       <DependentUpon>RichTextControl.xaml</DependentUpon>
@@ -421,6 +424,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PatternControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PopOut.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
