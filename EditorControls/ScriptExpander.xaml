@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Expander Name="ctlExpander" Expanded="ctlExpander_Expanded" HorizontalAlignment="Stretch">
+        <Expander Name="ctlExpander" Expanded="ctlExpander_Expanded" HorizontalAlignment="Stretch" IsExpanded="True">
             <Expander.Header>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Name="header" VerticalAlignment="Center">Script</TextBlock>

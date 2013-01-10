@@ -32,17 +32,22 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ctlExpander_Expanded(object sender, RoutedEventArgs e)
         {
+            PopulateScript();
+        }
+
+        private void PopulateScript()
+        {
             if (m_scriptPopulated) return;
             if (m_script != null)
             {
                 ctlScript.Populate(m_script);
+                m_scriptPopulated = true;
             }
-            else
+            else if (m_data != null)
             {
                 ctlScript.Populate(m_data);
+                m_scriptPopulated = true;
             }
-
-            m_scriptPopulated = true;
         }
 
         public void DoInitialise(EditorController controller, IEditorControl definition)
@@ -72,13 +77,27 @@ namespace TextAdventures.Quest.EditorControls
         public void Populate(IEditorData data, IEditableScripts script)
         {
             m_script = script;
-            if (script == null) ctlScript.Populate(script);
+            if (script == null)
+            {
+                ctlScript.Populate(script);
+            }
+            else if (ctlExpander.IsExpanded)
+            {
+                PopulateScript();
+            }
         }
 
         public void Populate(IEditorData data)
         {
             m_data = data;
-            if (data == null) ctlScript.Populate(data);
+            if (data == null)
+            {
+                ctlScript.Populate(data);
+            }
+            else if (ctlExpander.IsExpanded)
+            {
+                PopulateScript();
+            }
         }
 
         public bool ReadOnly
