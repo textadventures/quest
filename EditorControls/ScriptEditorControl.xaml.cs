@@ -160,6 +160,8 @@ namespace TextAdventures.Quest.EditorControls
             if (fromInheritedType) m_readOnly = true;
             ctlToolbar.CanMakeEditable = fromInheritedType;
 
+            textEditor.IsReadOnly = m_readOnly;
+
             RefreshScriptsList();
         }
 
