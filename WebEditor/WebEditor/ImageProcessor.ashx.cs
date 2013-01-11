@@ -13,7 +13,6 @@ namespace WebEditor
     /// </summary>
     public class ImageProcessor : IHttpHandler
     {
-
         public void ProcessRequest(HttpContext context)
         {            
             // parse the filename
@@ -23,7 +22,11 @@ namespace WebEditor
             Int32.TryParse(context.Request["w"], out width);
             Int32.TryParse(context.Request["h"], out height);
             string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(gameId);
-            Image fullsizeImg = Image.FromFile(Path.Combine(uploadPath, filename));
+            string path = Path.Combine(uploadPath, filename);
+
+            if (!File.Exists(path)) return;
+
+            Image fullsizeImg = Image.FromFile(path);
 
             context.Response.Clear();
             context.Response.BufferOutput = true;
@@ -42,40 +45,37 @@ namespace WebEditor
             else
                 context.Response.ContentType = "image";  //default -- when MIME Type not known
 
-            if (fullsizeImg != null)
+            if (height > 0 && width > 0)
             {
-                if (height > 0 && width > 0)
-                {
-                    // resize as per the height width requested
-                    if (height >= fullsizeImg.Height && width >= fullsizeImg.Width)
-                        fullsizeImg.Save(context.Response.OutputStream, ImageFormat.Jpeg);
-                    else
-                    {
-                        // Maintain aspect ratio.
-                        float widthPerc = (float)width / (float)fullsizeImg.Width;
-                        float heightPerc = (float)height / (float)fullsizeImg.Height;
-                        float resizePerc = heightPerc < widthPerc ? heightPerc : widthPerc;
-                        height = (int)(fullsizeImg.Height * resizePerc);
-                        width = (int)(fullsizeImg.Width * resizePerc);
-
-                        Bitmap bmp = new Bitmap(width, height);
-                        Graphics objGraphics = Graphics.FromImage(bmp);
-                        objGraphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.GammaCorrected;
-                        objGraphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-                        objGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                        objGraphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                        objGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-
-                        objGraphics.DrawImage(fullsizeImg, 0, 0, bmp.Width, bmp.Height);
-                        bmp.Save(context.Response.OutputStream, ImageFormat.Jpeg);
-                        objGraphics.Dispose();
-                        bmp.Dispose();
-                    }
-                }
+                // resize as per the height width requested
+                if (height >= fullsizeImg.Height && width >= fullsizeImg.Width)
+                    fullsizeImg.Save(context.Response.OutputStream, ImageFormat.Jpeg);
                 else
                 {
-                    fullsizeImg.Save(context.Response.OutputStream, ImageFormat.Jpeg);
+                    // Maintain aspect ratio.
+                    float widthPerc = (float)width / (float)fullsizeImg.Width;
+                    float heightPerc = (float)height / (float)fullsizeImg.Height;
+                    float resizePerc = heightPerc < widthPerc ? heightPerc : widthPerc;
+                    height = (int)(fullsizeImg.Height * resizePerc);
+                    width = (int)(fullsizeImg.Width * resizePerc);
+
+                    Bitmap bmp = new Bitmap(width, height);
+                    Graphics objGraphics = Graphics.FromImage(bmp);
+                    objGraphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.GammaCorrected;
+                    objGraphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                    objGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                    objGraphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    objGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+                    objGraphics.DrawImage(fullsizeImg, 0, 0, bmp.Width, bmp.Height);
+                    bmp.Save(context.Response.OutputStream, ImageFormat.Jpeg);
+                    objGraphics.Dispose();
+                    bmp.Dispose();
                 }
+            }
+            else
+            {
+                fullsizeImg.Save(context.Response.OutputStream, ImageFormat.Jpeg);
             }
 
             fullsizeImg.Dispose();

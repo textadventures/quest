@@ -232,7 +232,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="WebEditorSettings.xml">
+    <Content Include="WebEditorSettings.default.xml">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
