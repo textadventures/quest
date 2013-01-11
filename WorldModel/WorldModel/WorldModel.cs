@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Threading;
 using TextAdventures.Quest.Scripts;
 using System.Linq;
@@ -286,18 +287,33 @@ namespace TextAdventures.Quest
 
         public void Print(string text, bool linebreak = true)
         {
-            if (PrintText != null)
+            if (Version >= WorldModelVersion.v540 && m_elements.ContainsKey(ElementType.Function, "OutputText"))
             {
-                if (linebreak)
+                try
                 {
-                    PrintText("<output>" + text + "</output>");
+                    RunProcedure("OutputText", new Parameters(new Dictionary<string, string> {{"text", text}}), false);
                 }
-                else
+                catch (Exception ex)
                 {
-                    PrintText("<output nobr=\"true\">" + text + "</output>");
+                    LogException(ex);
                 }
-                m_outputLogger.AddText(text, linebreak);
             }
+            else
+            {
+                if (PrintText != null)
+                {
+                    if (linebreak)
+                    {
+                        PrintText("<output>" + text + "</output>");
+                    }
+                    else
+                    {
+                        PrintText("<output nobr=\"true\">" + text + "</output>");
+                    }
+                }
+            }
+
+            m_outputLogger.AddText(text, linebreak);
         }
 
         internal QuestList<Element> GetAllObjects()

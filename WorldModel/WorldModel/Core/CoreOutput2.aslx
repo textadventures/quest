@@ -1,0 +1,10 @@
+﻿<library>
+  
+  <!-- TO DO: Move this into CoreOutput.aslx when ready for all games to use as the main output method -->
+  
+  <function name="OutputText" parameters="text">
+    <![CDATA[
+    JS.addText(text + "<br/>")
+    ]]>
+  </function>
+</library>
