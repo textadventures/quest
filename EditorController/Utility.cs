@@ -19,6 +19,8 @@ namespace TextAdventures.Quest
 
         public static bool IsSimpleStringExpression(string expression)
         {
+            if (string.IsNullOrEmpty(expression)) return false;
+
             // must start and end with quote character
             if (!(expression.StartsWith("\"") && expression.EndsWith("\""))) return false;
 
