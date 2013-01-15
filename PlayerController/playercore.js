@@ -395,20 +395,24 @@ function updateList(listName, listData) {
     $.each(listData, function (key, value) {
         var data = JSON.parse(value);
         var objectDisplayName = data["Text"];
+        var verbsArray, idPrefix;
 
         if (listName == "inventory") {
-            inventoryVerbs.push(data);
+            verbsArray = inventoryVerbs;
+            idPrefix = "cmdInventory";
+        } else {
+            verbsArray = placesObjectsVerbs;
+            idPrefix = "cmdPlacesObjects";
         }
 
-        if (listName == "placesobjects") {
-            placesObjectsVerbs.push(data);
-        }
+        verbsArray.push(data);
 
         if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
             var $newItem = $("<li/>").data("key", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).html(objectDisplayName);
             if (objectDisplayName == previousSelectionText && key == previousSelectionKey) {
                 $newItem.addClass("ui-selected");
                 foundPreviousSelection = true;
+                updateVerbButtons($newItem, verbsArray, idPrefix);
             }
             $(listElement).append($newItem);
             count++;
