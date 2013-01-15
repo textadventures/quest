@@ -681,8 +681,8 @@ function HideOutputSection(name) {
     EndOutputSection(name);
     $("." + name + " a").attr("onclick", "");
     setTimeout(function() {
-        $("." + name).hide(400);
-    }, 500);
+        $("." + name).hide(250);
+    }, 250);
 }
 
 var TextFX = new function() {
