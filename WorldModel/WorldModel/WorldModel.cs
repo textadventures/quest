@@ -1677,5 +1677,6 @@ namespace TextAdventures.Quest
         public string GameID { get { return m_game.Fields[FieldDefinitions.GameID]; } }
         public string Category { get { return m_game.Fields[FieldDefinitions.Category]; } }
         public string Description { get { return m_game.Fields[FieldDefinitions.Description]; } }
+        public string Cover { get { return m_game.Fields[FieldDefinitions.Cover]; } }
     }
 }

@@ -112,6 +112,22 @@ namespace TextAdventures.Quest
             }
         }
 
+        public string Cover
+        {
+            get
+            {
+                if (m_v4Game != null)
+                {
+                    return null;
+                }
+                if (m_v5Game != null)
+                {
+                    return m_v5Game.GetExternalPath(m_v5Game.Cover);
+                }
+                throw new InvalidOperationException();
+            }
+        }
+
         public IEnumerable<string> Errors
         {
             get
