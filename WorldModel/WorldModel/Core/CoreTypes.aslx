@@ -27,6 +27,7 @@
     <parserignoreprefixes type="list">[ParserIgnorePrefixes]</parserignoreprefixes>
     <displayroomdescriptiononstart type="boolean">true</displayroomdescriptiononstart>
     <showpanes/>
+    <showcommandbar/>
     <showscore type="boolean">false</showscore>
     <showhealth type="boolean">false</showhealth>
     <autodisplayverbs/>

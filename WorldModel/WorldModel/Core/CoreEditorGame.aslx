@@ -476,6 +476,12 @@
         <caption>Show panes (Inventory, Places and Objects, Compass)</caption>
         <attribute>showpanes</attribute>
       </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show command bar</caption>
+        <attribute>showcommandbar</attribute>
+      </control>
     </tab>
 
     <tab>
