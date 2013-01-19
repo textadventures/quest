@@ -1,6 +1,7 @@
 ﻿<library>
   <type name="defaultgame">
     <enablehyperlinks/>
+    <echocommand/>
     <echohyperlinks/>
     <showdescriptiononenter/>
     <autodescription/>

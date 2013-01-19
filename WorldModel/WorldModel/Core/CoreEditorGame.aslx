@@ -142,9 +142,14 @@
       </control>
       <control>
         <controltype>checkbox</controltype>
+        <caption>Display commands entered by the player</caption>
+        <attribute>echocommand</attribute>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
         <caption>Display hyperlinks in commands</caption>
         <attribute>echohyperlinks</attribute>
-        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+        <onlydisplayif>game.enablehyperlinks and game.echocommand</onlydisplayif>
       </control>
       <control>
         <controltype>checkbox</controltype>
