@@ -70,6 +70,12 @@
     else {
       request (Hide, "Panes")
     }
+    if (game.showcommandbar) {
+      request (Show, "Command")
+    }
+    else {
+      request (Hide, "Command")
+    }
     if (HasString(game, "panelcontents")) {
       SetFramePicture (game.panelcontents)
     }
