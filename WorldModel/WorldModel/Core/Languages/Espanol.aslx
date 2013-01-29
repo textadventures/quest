@@ -126,7 +126,7 @@
   <template name="EmptyListLabel">(vacio)</template>
   <template name="NothingSelectedLabel">(nada seleccionado)</template>
 
-  <template templatetype="command" name="go"><![CDATA[^ir a (?<exit>.*)$|^ir (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
+  <template templatetype="command" name="go"><![CDATA[^ir (a|al) (?<exit>.*)$|^ir (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
   <template templatetype="command" name="lookdir"><![CDATA[^mirar (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
   <template templatetype="command" name="look">^mirar$</template>
   <verbtemplate name="lookat">examinar</verbtemplate>
@@ -143,14 +143,14 @@
   <verbtemplate name="drop">dejar</verbtemplate>
   <verbtemplate name="use">usar</verbtemplate>
   <verbtemplate name="speakto">hablar a</verbtemplate>
-  <verbtemplate name="speakto">decir a</verbtemplate>
-  <verbtemplate name="speakto">habla a</verbtemplate>
-  <verbtemplate name="speakto">habla</verbtemplate>
+  <verbtemplate name="speakto">hablar con</verbtemplate>
+  <verbtemplate name="speakto">hablar</verbtemplate>
+
   <verbtemplate name="open">abrir</verbtemplate>
   <verbtemplate name="close">cerrar</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^dejar (?<object1>.*) (sobre|en) (?<object2>.*)$]]></template>
   <template templatetype="command" name="removefrom"><![CDATA[^quitar (?<object1>.*) de (?<object2>.*)$]]></template>
-  <template templatetype="command" name="ask"><![CDATA[^preguntar (?<object>.*) sobre (?<text>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^preguntar a (?<object>.*) (sobre|por) (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^hablar (?<object>.*) sobre (?<text>.*)$]]></template>
   <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
 
@@ -163,7 +163,7 @@
   <verbtemplate name="eat">comer</verbtemplate>
   <dynamictemplate name="DefaultEat">"No puedes comerte" + object.article + "."</dynamictemplate>
   <template templatetype="command" name="give"><![CDATA[^dar (?<object1>.*) a (?<object2>.*)$]]></template>
-  <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " no quiere " + object2.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " no " + object2.article + "quiere."</dynamictemplate>
   <verbtemplate name="hit">golpea</verbtemplate>
   <dynamictemplate name="DefaultHit">"No puedes golpear" + object.article + "."</dynamictemplate>
   <verbtemplate name="kill">matar</verbtemplate>
@@ -247,5 +247,35 @@
 <b>- Para moverte:</b>  Pulsa en la rosa de los vientos o escribe IR [AL] NORTE, SUR, E, ...<br/>
 <b>- Atajos de teclado:</b>  Pulsa arriba/abajo para localizar comandos tecleados previamente. X... es una abreviatura para EXAMINAR ...]]></template>
 
+  <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
+  <template name="LanguageSpecificObjectTypes"></template>
+  <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
+  <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
+  <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
 
+  <template name="EditorVerbDefaultExpression">"You can't #verb# " + object.article + "."</template>
+
+  <function name="GetDefaultPrefix" type="string" parameters="obj">
+    return(GetPrefix(obj,"un"))
+  </function>
+
+  <function name="GetPrefix" type="string" parameters="obj,type">
+    if ( DoesInherit (obj, "male") <!--  or DoesInherit (obj, "maleobject")  --> ) {
+      if (type="un") { return ("un") }
+      else if (type="algún") { return ("algún") }
+    } else if ( DoesInherit (obj, "female") <!-- or DoesInherit (obj, "femaleobject") --> ) {
+      if (type="un") { return ("una") }
+      else if (type="algún") { return ("alguna") }
+    } else if ( <!-- DoesInherit (obj, "maleobjectplural") or -->  DoesInherit (obj, "maleplural") ) {
+      if (type="un") { return ("unos") }
+      else if (type="algún") { return ("algunos") }
+    
+    } else if ( <!-- DoesInherit (obj, "femaleobjectplural") or --> DoesInherit (obj, "femaleplural") or DoesInherit (obj, "plural")) {
+      if (type="un") { return ("unas") }
+      else if (type="algún") { return ("algunas") }
+
+    } else { 
+      return ("") 
+    }
+  </function>  
 </library>
