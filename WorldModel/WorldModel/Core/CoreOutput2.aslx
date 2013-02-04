@@ -5,6 +5,7 @@
   <function name="OutputText" parameters="text">
     <![CDATA[
     Log(text)
+    text = ProcessText(text)
     JS.addText("<span style=\"" + GetCurrentTextFormat() + "\">" + text + "</span><br/>")
     ]]>
   </function>
@@ -30,5 +31,52 @@
     }
     
     return (style)
+  </function>
+
+  <function name="ProcessText" type="string" parameters="text">
+    <![CDATA[
+    
+    containsUnprocessedSection = false
+    
+    open = Instr(text, "{")
+    
+    if (open > 0) {
+      nestCount = 1
+      searchStart = open + 1
+      finished = false
+      
+      while (not finished) {
+        nextOpen = Instr(searchStart, text, "{")
+        nextClose = Instr(searchStart, text, "}")
+      
+        if (nextClose > 0) {
+          if (nextOpen > 0 and nextOpen < nextClose) {
+            nestCount = nestCount + 1
+            searchStart = nextOpen + 1
+          }
+          else {
+            nestCount = nestCount - 1
+            searchStart = nextClose + 1
+            if (nestCount = 0) {
+              close = nextClose
+              containsUnprocessedSection = true
+              finished = true
+            }
+          }
+        }
+        else {
+          finished = true
+        }
+      }
+    }
+    
+    if (containsUnprocessedSection) {
+      section = Mid(text, open + 1, close - open - 1)
+      Log ("Found section: " + section)
+      // do the processing
+    }
+    
+    return (text)
+    ]]>
   </function>
 </library>
