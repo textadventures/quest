@@ -952,12 +952,12 @@ namespace WebEditor.Services
             };
         }
 
-        private struct AdditionalActionResult
+        public struct AdditionalActionResult
         {
             public string RefreshTreeSelectElement;
         }
 
-        private AdditionalActionResult ProcessAdditionalAction(string key, string arguments)
+        public AdditionalActionResult ProcessAdditionalAction(string key, string arguments)
         {
             Logging.Log.DebugFormat("{0}: ProcessAdditionalAction {1}, {2}", m_id, key, arguments);
             AdditionalActionResult result = new AdditionalActionResult();

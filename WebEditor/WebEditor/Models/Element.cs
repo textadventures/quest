@@ -151,6 +151,12 @@ namespace WebEditor.Models
             bool addSaveValueToResult = true;
             if (attribute == null) attribute = ctl.Attribute;
 
+            // check to see if attribute changes from attribute editor is being passed along
+            // if so, use the attribute editor value
+
+            if(bindingContext.ValueProvider.ContainsPrefix("attr_" + attribute))
+                attribute = "attr_" + attribute;
+
             switch (controlType)
             {
                 case "textbox":
@@ -274,6 +280,10 @@ namespace WebEditor.Models
                 }
                 else
                 {
+                    // remove attr prefix if it is in the attribute name:
+                    if (attribute.StartsWith("attr_"))
+                        attribute = attribute.Substring(5);
+
                     result.Values.Add(attribute, saveValue);
                 }
             }

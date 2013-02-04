@@ -94,6 +94,13 @@ namespace WebEditor.Controllers
             return EditElement(element.GameId, element.RedirectToElement, tab, result.Error, result.RefreshTreeSelectElement);
         }
 
+        [HttpPost]
+        public PartialViewResult ProcessAction(int id, string key, string tab, string actionCmd)
+        {
+            var result = EditorDictionary[id].ProcessAdditionalAction(key, actionCmd);
+            return EditElement(id, key, tab, null, result.RefreshTreeSelectElement);
+        }
+
         private PartialViewResult Timeout()
         {
             return PartialView("ElementEditor", new Models.Element

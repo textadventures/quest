@@ -1,13 +1,74 @@
 ﻿@using TextAdventures.Quest;
 @using WebEditor.Views.Edit;
 @model WebEditor.Models.Element
-
+           
 @{
     IEditorControl cntrl = ViewBag.control;
     object value = ViewBag.data;
 }
+           
+<script type="text/javascript">
+    function postChanges() {
+        var data = $('form').serialize();
+        $.post('/Edit/SaveElement', data, function (response) {
+            // refresh the attribute row with updated values after save
+            var attributeRowHtml = $('#attr__@(cntrl.Attribute)', $(response)).html();
+            $('#attr__@(cntrl.Attribute)').html(attributeRowHtml);
+        });
+    }
 
+    $(document).ready(function () {
+        // rename the name attribute for inputs within the attribute editor
+        // to differentiate from similar inputs from the form
+        $('.multi-control-editor :input').each(function () {
+            var id = $(this).attr('id');
+            var name = $(this).attr('name');
+            id = 'attr-' + id;
+            name = 'attr_' + name;
+            $(this).removeAttr('id');
+            $(this).removeAttr('name');
+            $(this).attr('id', id);
+            $(this).attr('name', name);
+        });
+
+        $(".elementEditorCheckbox").change(function () {
+            debugger;
+            $("input[name='attributeEditorValue']").val($(this).is(':checked'));
+            postChanges();
+        });
+
+        $(".elementEditorTextbox").change(function () {
+            debugger;
+            $("input[name='attributeEditorValue']").val($(this).val());
+            postChanges();
+        });
+
+        $(".elementEditorTextbox").on('keyUp paste', function () {            
+            $("input[name='attributeEditorValue']").val($(this).val());
+        });
+
+        $(".multi-dropdown").change(function () {
+            var key = $(this).attr("data-key");
+            var value = $(this).find('option:selected').attr("value");
+            $.post('/Edit/ProcessAction', { id: "@(Model.GameId)", key: "@(Model.Key)", tab: "@(Model.Tab)", actionCmd: "multi set " + key + ";" + value }, function (response) {
+                debugger;
+                // refresh the attribute list table
+                var tempScrollPos = $('#attributesListScroller').scrollTop();
+                var attributeListHtml = $('#attributesListEditor', $(response)).html();
+                $('#attributesListEditor').html(attributeListHtml);
+                initializeAttributeListEditor();
+                $('#attributesListScroller').scrollTop(tempScrollPos);
+            });
+        });
+    });
+</script>
+
+@Html.Hidden("attributeEditorFieldName", cntrl.Attribute)
+@Html.Hidden("attributeEditorValue")
+
+<div id="attributeMultiControl_editor">
 @RenderMultiControl(cntrl, value);
+</div>
 
 @helper RenderMultiControl(IEditorControl ctl, object value)
     {
@@ -26,7 +87,9 @@
         {
             ctlCaption = ctl.GetString("checkbox");
         }
-    @RenderEditorControl(ctl, false, controlType, ctlCaption)
+    <div class="multi-control-editor">
+        @RenderEditorControl(ctl, false, controlType, ctlCaption)
+    </div>
 }
 
 @helper RenderEditorControl(IEditorControl ctl, bool isFirst, string controlType, string caption = null)

@@ -3,7 +3,7 @@
 @model WebEditor.Models.Element
            
 <script type="text/javascript">
-    $(document).ready(function () {
+    function initializeAttributeListEditor(){
         $('#attributeRowEditor').hide();
         $('.attributeRow').hover(function () {
             $(this).css('background-color', '#DFEFFC');
@@ -26,6 +26,10 @@
                 $('#attributeRowEditor').html(result).show('slow');
             });
         });
+    }
+
+    $(document).ready(function () {
+        initializeAttributeListEditor();
     });
 </script>
            
@@ -82,22 +86,24 @@ Working...
 
     @using (Ajax.BeginForm("SaveElement", new { }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "elementEditorForm", OnSuccess = "initialiseElementEditor", OnFailure = "ajaxError", OnBegin = "beginFormSubmit" }))
     {
-        <input type="hidden" name="_game_id" id="_game_id" value="@Model.GameId" />
-        <input type="hidden" name="_key" id="_key" value="@Model.Key" />
-        <input type="hidden" name="_redirectToElement" id="_redirectToElement" value="@Model.Key" />
-        <input type="hidden" name="_additionalAction" id="_additionalAction" value="" />
-        <input type="hidden" name="_additionalActionTab" id="_additionalActionTab" value="@Model.Tab" />
-        <input type="hidden" name="_ignoreExpression" id="_ignoreExpression" value="" />
-        <input type="hidden" name="_refreshTreeSelectElement" id="_refreshTreeSelectElement" value="@Model.RefreshTreeSelectElement" />
-        <input type="hidden" name="_popupError" id="_popupError" value="@Model.PopupError" />
-        <input type="hidden" name="_newObjectPossibleParents" id="_newObjectPossibleParents" value="@Model.NewObjectPossibleParents" />
-        <input type="hidden" name="_enabledButtons" id="_enabledButtons" value="@Model.EnabledButtons" />
-        <input type="hidden" name="_pageTitle" id="_pageTitle" value="@Model.PageTitle" />
-        <input type="hidden" name="_reload" id="_reload" value="@Model.Reload" />
-        <input type="hidden" name="_availableVerbs" id="_availableVerbs" value="@Model.AvailableVerbs" />
-        <input type="hidden" name="_uiAction" id="_uiAction" value="@Model.UIAction" />
-        <input type="hidden" name="_movePossibleParents" id="_movePossibleParents" value="@Model.MovePossibleParents" />
-        <input type="hidden" name="_allObjects" id="_allObjects" value="@Model.AllObjects" />
+        <div id="hiddenElementValues">
+            <input type="hidden" name="_game_id" id="_game_id" value="@Model.GameId" />
+            <input type="hidden" name="_key" id="_key" value="@Model.Key" />
+            <input type="hidden" name="_redirectToElement" id="_redirectToElement" value="@Model.Key" />
+            <input type="hidden" name="_additionalAction" id="_additionalAction" value="" />
+            <input type="hidden" name="_additionalActionTab" id="_additionalActionTab" value="@Model.Tab" />
+            <input type="hidden" name="_ignoreExpression" id="_ignoreExpression" value="" />
+            <input type="hidden" name="_refreshTreeSelectElement" id="_refreshTreeSelectElement" value="@Model.RefreshTreeSelectElement" />
+            <input type="hidden" name="_popupError" id="_popupError" value="@Model.PopupError" />
+            <input type="hidden" name="_newObjectPossibleParents" id="_newObjectPossibleParents" value="@Model.NewObjectPossibleParents" />
+            <input type="hidden" name="_enabledButtons" id="_enabledButtons" value="@Model.EnabledButtons" />
+            <input type="hidden" name="_pageTitle" id="_pageTitle" value="@Model.PageTitle" />
+            <input type="hidden" name="_reload" id="_reload" value="@Model.Reload" />
+            <input type="hidden" name="_availableVerbs" id="_availableVerbs" value="@Model.AvailableVerbs" />
+            <input type="hidden" name="_uiAction" id="_uiAction" value="@Model.UIAction" />
+            <input type="hidden" name="_movePossibleParents" id="_movePossibleParents" value="@Model.MovePossibleParents" />
+            <input type="hidden" name="_allObjects" id="_allObjects" value="@Model.AllObjects" />
+        </div>
         if (Model.NextPage != null)
         {
             <input type="hidden" name="_nextPage" id="_nextPage" value="@Model.NextPage" />
@@ -235,28 +241,30 @@ Working...
             break;
         case "attributes":
             var m_data = (IEditorDataExtendedAttributeInfo)Model.EditorData;
-            <div style="height:500px;overflow:scroll;width:630px;">
-            <table style="margin-top:18px;">
-            <thead style="position:absolute;height:18px;margin-top:-22px;">
-            <tr class="ui-corner-tr ui-widget-header">
-                <th style="width:200px;">Name</th>
-                <th style="width:300px;">Value</th>
-                <th style="width:100px;">Source</th>
-            </tr>
-            </thead>
-            <tbody style="height:200px;overflow:scroll;">
-            @foreach(var attr in m_data.GetAttributeData())
-            {
-               <tr class="attributeRow" style="cursor:pointer;">
-                   <td class="attributeName" style="max-width:200px;word-wrap:break-word;">@Html.Raw(attr.AttributeName)</td>
-                   <td class="attributeValue" style="max-width:300px;word-wrap:break-word;">@Html.Raw(EditorUtility.GetDisplayString(m_data.GetAttribute(attr.AttributeName)))</td>
-                   <td class="attributeSource" style="max-width:100px;">@Html.Raw(attr.Source)</td>                  
-               </tr>
-            } 
-            </tbody>
-            </table>
-            </div>
-            <div id="attributeRowEditor" style="display:none;">
+            <div id="attributesListEditor">
+                <div id="attributesListScroller" style="height:500px;overflow:scroll;width:630px;">
+                <table style="margin-top:18px;">
+                <thead style="position:absolute;height:18px;margin-top:-22px;">
+                <tr class="ui-corner-tr ui-widget-header">
+                    <th style="width:200px;">Name</th>
+                    <th style="width:300px;">Value</th>
+                    <th style="width:100px;">Source</th>
+                </tr>
+                </thead>
+                <tbody style="height:200px;overflow:scroll;">
+                @foreach(var attr in m_data.GetAttributeData())
+                {
+                   <tr id="attr__@(attr.AttributeName)" class="attributeRow" style="cursor:pointer;">
+                       <td class="attributeName" style="max-width:200px;word-wrap:break-word;">@Html.Raw(attr.AttributeName)</td>
+                       <td class="attributeValue" style="max-width:300px;word-wrap:break-word;">@Html.Raw(EditorUtility.GetDisplayString(m_data.GetAttribute(attr.AttributeName)))</td>
+                       <td class="attributeSource" style="max-width:100px;">@Html.Raw(attr.Source)</td>                  
+                   </tr>
+                } 
+                </tbody>
+                </table>
+                </div>
+                <div id="attributeRowEditor" style="display:none;">
+                </div>
             </div>
             break;
         case "label":

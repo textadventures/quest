@@ -242,33 +242,53 @@ function initialiseElementEditor() {
         }
     });
     $("#centerPane").scrollTop(0);
+//    $(".stringlist-add").button({
+//        icons: { primary: "ui-icon-plusthick" }
+//    }).click(function () {
+//        var key = $(this).attr("data-key");
+//        showDialog($(this).attr("data-prompt"), "", function (text) {
+//            sendAdditionalAction("stringlist add " + key + ";" + text);
+//        });
+//    });
+
     $(".stringlist-add").button({
         icons: { primary: "ui-icon-plusthick" }
-    }).click(function () {
+    });
+
+    $('body').on('click', '.stringlist-add', function () {
         var key = $(this).attr("data-key");
         showDialog($(this).attr("data-prompt"), "", function (text) {
             sendAdditionalAction("stringlist add " + key + ";" + text);
         });
     });
+
     $(".stringlist-edit").button({
         icons: { primary: "ui-icon-pencil" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.stringlist-edit', function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
+
     $(".stringlist-delete").button({
         icons: { primary: "ui-icon-trash" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.stringlist-delete', function () {
         var key = $(this).attr("data-key");
         var selectElement = $("#select-" + key + " option:selected");
         sendAdditionalAction("stringlist delete " + key + ";" + selectElement.val());
     });
-    $(".stringlist").dblclick(function () {
+
+    $('body').on('dblclick','.stringlist', function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
+
     $(".stringlist-edit, .stringlist-delete").each(function () {
         $(this).button("disable");
     });
-    $(".stringlist").change(function () {
+
+    $('body').on('change','.stringlist', function () {
         var editButton = $("#stringlist-" + $(this).attr("data-key") + "-edit");
         var deleteButton = $("#stringlist-" + $(this).attr("data-key") + "-delete");
         var selectElement = $("#" + this.id + " option:selected");
@@ -281,9 +301,12 @@ function initialiseElementEditor() {
             deleteButton.button("enable");
         }
     });
+
     $(".script-add").button({
         icons: { primary: "ui-icon-plusthick" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.script-add', function () {
         var key = $(this).attr("data-key");
         $("#dialog-add-script").data("dialog_ok", function () {
             var create = $("#dialog-add-script-form input[type='radio']:checked").val();
@@ -291,71 +314,97 @@ function initialiseElementEditor() {
         });
         $("#dialog-add-script").dialog("open");
     });
+
     $(".script-delete").button({
         icons: { primary: "ui-icon-trash" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.script-delete', function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
             sendAdditionalAction("script delete " + key + ";" + selected);
         }
     });
+
     $(".script-cut").button({
         icons: { primary: "ui-icon-scissors" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.script-cut', function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
             sendAdditionalAction("script cut " + key + ";" + selected);
         }
     });
+
     $(".script-copy").button({
         icons: { primary: "ui-icon-copy" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.script-copy', function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
             sendAdditionalAction("script copy " + key + ";" + selected);
         }
     });
+
     $(".script-paste").button({
         icons: { primary: "ui-icon-clipboard" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.script-paste', function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script paste " + key);
     });
+
     $(".script-moveup").button({
         icons: { primary: "ui-icon-arrowthick-1-n" }
-    }).click(function () {
+    });
+    
+    $('body').on('click','.script-moveup',function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
             sendAdditionalAction("script moveup " + key + ";" + selected);
         }
     });
+
     $(".script-movedown").button({
         icons: { primary: "ui-icon-arrowthick-1-s" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.script-movedown', function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
             sendAdditionalAction("script movedown " + key + ";" + selected);
         }
     });
+
     $(".script-clipboard").buttonset();
     $(".script-move").buttonset();
+
     $(".script-if-add-else").button({
         icons: { primary: "ui-icon-plusthick" }
-    }).click(function () {
+    });
+    
+    $('body').on('click','.script-if-add-else', function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelse " + key );
     });
+
     $(".script-if-add-elseif").button({
         icons: { primary: "ui-icon-plusthick" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.script-if-add-elseif', function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelseif " + key);
     });
+
     $(".script-toolbar").each(function () {
         var key = $(this).attr("data-key");
         var selectedScripts = getSelectedScripts(key);
@@ -363,7 +412,8 @@ function initialiseElementEditor() {
             $(this).show();
         }
     });
-    $(".script-select").click(function () {
+
+    $('body').on('click', '.script-select', function () {
         var key = $(this).attr("data-key");
         var selectedScripts = getSelectedScripts(key);
         if (selectedScripts.length > 0) {
@@ -373,7 +423,8 @@ function initialiseElementEditor() {
             $("#script-toolbar-" + key).hide(200);
         }
     });
-    $(".ifsection-select").click(function () {
+
+    $('body').on('click', '.ifsection-select', function () {
         var key = $(this).attr("data-key");
         var selectedSections = getSelectedIfSections(key);
         if (selectedSections.length > 0) {
@@ -383,13 +434,17 @@ function initialiseElementEditor() {
             $("#ifsection-toolbar-" + key).hide(200);
         }
     });
+
     $(".ifsection-delete").button({
         icons: { primary: "ui-icon-trash" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.ifsection-delete', function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script deleteifsection " + key + ";" + getSelectedIfSections(key));
     });
-    $(".expression-dropdown").change(function () {
+
+    $('body').on('change', '.expression-dropdown', function () {
         var key = $(this).attr("data-key");
         var showExpression = ($(this).find('option:selected').text() == "expression");
         if (showExpression) {
@@ -401,7 +456,8 @@ function initialiseElementEditor() {
             $("#" + key + "-simpleeditorspan").show();
         }
     });
-    $(".template-dropdown").change(function () {
+
+    $('body').on('change', '.template-dropdown', function () {
         var key = $(this).attr("data-key");
         var text = $(this).find('option:selected').text();
         if (text == "expression") {
@@ -413,9 +469,12 @@ function initialiseElementEditor() {
             sendAdditionalAction("script settemplate " + key + ";" + text);
         }
     });
+
     $(".script-dictionary-add").button({
         icons: { primary: "ui-icon-plusthick" }
-    }).click(function () {
+    });
+    
+    $('body').on('click', '.script-dictionary-add', function () {
         var key = $(this).attr("data-key");
         if ($(this).attr("data-source") == "object") {
             var possibleParents = $("#_allObjects").val().split(";");
@@ -429,11 +488,13 @@ function initialiseElementEditor() {
             });
         }
     });
+
     $(".error-clear").button().click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("error clear " + key);
     });
-    $(".scriptDictionarySection-select").click(function () {
+
+    $('body').on('click', '.scriptDictionarySection-select', function () {
         var key = $(this).attr("data-key");
         var selectedSections = getSelectedScriptDictionaryItems(key);
         if (selectedSections.length > 0) {
@@ -443,17 +504,24 @@ function initialiseElementEditor() {
             $("#scriptDictionarySection-toolbar-" + key).hide(200);
         }
     });
+
     $(".scriptDictionarySection-delete").button({
         icons: { primary: "ui-icon-trash" }
-    }).click(function () {
+    });
+    
+    $('body').on('click','.scriptDictionarySection-delete',function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("scriptdictionary delete " + key + ";" + getSelectedScriptDictionaryItems(key));
     });
+
     $(".string-dictionary-add").button({
         icons: { primary: "ui-icon-plusthick" }
-    }).click(function () {
+    });
+    
+    $('body').on('click','.string-dictionary-add',function () {
         stringDictionaryAdd($(this), "Add");
     });
+
     $(".gamebookoptions-addnew").button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
@@ -464,10 +532,13 @@ function initialiseElementEditor() {
     });
     $(".gamebookoptions-link").button({
         icons: { primary: "ui-icon-link" }
-    }).click(function () {
+    });
+    
+    $('body').on('click','.gamebookoptions-link',function () {
         stringDictionaryAdd($(this), "Add link to");
     });
-    $(".stringDictionarySection-select").click(function () {
+
+    $('body').on('click', '.stringDictionarySection-select', function () {
         var key = $(this).attr("data-key");
         var selectedSections = getSelectedStringDictionaryItems(key);
         if (selectedSections.length > 0) {
@@ -477,9 +548,12 @@ function initialiseElementEditor() {
             $("#stringDictionarySection-toolbar-" + key).hide(200);
         }
     });
+
     $(".stringDictionarySection-delete").button({
         icons: { primary: "ui-icon-trash" }
-    }).click(function () {
+    });
+    
+    $('body').on('click','.stringDictionarySection-delete',function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("stringdictionary delete " + key + ";" + getSelectedStringDictionaryItems(key));
     });
