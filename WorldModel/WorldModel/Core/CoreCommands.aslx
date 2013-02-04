@@ -243,6 +243,20 @@
       }
     }
   </function>
+
+ <function name="CreateUseMenuList" parameters="object" type="objectlist">
+	  objectlist = NewObjectList()
+	  objectlist = ScopeReachableInventory()
+	  objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
+	  excludelist = NewObjectList()
+	  list add (excludelist, game.pov)
+	  list add (excludelist, object)
+	  candidates = NewObjectList()
+	  candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+	  return (candidates)   
+ </function> 
+  
+
   
   <command name="use" template="use"><![CDATA[
     if (HasScript(object, "use")) {
@@ -251,13 +265,8 @@
     else {
       if (GetBoolean(object, "use")) {
         menu = NewStringDictionary()
-        objectlist = NewObjectList()
-        objectlist = ScopeReachableInventory()
-        objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
-        excludelist = NewObjectList()
-        list add (excludelist, game.pov)
-        list add (excludelist, object)
-        candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+        candidates = NewObjectList()
+	    candidates = CreateUseMenuList (object)
         if (ListCount(candidates) = 0) {
           msg (Template("NoObjectsAvailable"))
         }
@@ -492,6 +501,18 @@
     }
   </command>
 
+  <function name="CreateGiveMenuList" parameters="object" type="objectlist">
+	objectlist = NewObjectList()
+	objectlist = ScopeReachableInventory()
+	objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
+	excludelist = NewObjectList()
+	list add (excludelist, game.pov)
+	list add (excludelist, object)
+	candidates = NewObjectList()
+	candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+	return (candidates)
+  </function>
+  
   <command name="givesingle" template="givesingle">
     <![CDATA[
     if (HasScript(object, "givesingle")) {
@@ -500,14 +521,9 @@
     else {
       if (GetBoolean(object, "givesingle")) {
         menu = NewStringDictionary()
-        objectlist = NewObjectList()
-        objectlist = ScopeReachableInventory()
-        objectlist = ListCombine (objectlist, ScopeReachableNotHeld()) 
-        excludelist = NewObjectList()
-        list add (excludelist, game.pov)
-        list add (excludelist, object)
-        candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
-        if (ListCount(candidates) = 0) {
+		candidates = NewObjectList()
+        candidates = CreateGiveMenuList (object)
+		if (ListCount(candidates) = 0) {
           msg (Template("NoObjectsAvailable"))
         }
         else {

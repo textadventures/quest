@@ -142,6 +142,8 @@
   <template name="OutButtonLabel">raus</template>
   <template name="EmptyListLabel">(leer)</template>
   <template name="NothingSelectedLabel">(nichts selektiert)</template>
+  <template name="TypeHereLabel">Schreibe hier...</template>
+  <template name="ContinueLabel">Weiter...</template>
   
   <template templatetype="command" name="go"><![CDATA[^gehe nach (?<exit>.*)$|^gehe (?<exit>.*)$|^nach (?<exit>.*)$|^(?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|rein|raus|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
   <template templatetype="command" name="lookdir"><![CDATA[^(schau|schaue|schau nach|schaue nach) (?<exit>norden|osten|süden|westen|nordosten|nordwesten|südosten|südwesten|raus|hoch|runter|rein|raus|n|o|s|w|no|nw|so|sw|h|r)$]]></template>
@@ -352,7 +354,7 @@
 				"kein"	für kein, keine, keiner
 				"sein"	für bin, bist, ist
 				"er"	für er, sie, es
-				"ihn"   für ihn, sie, es
+				"ihn"   für ihn, sie, es 
 	-->			
 		if ( DoesInherit (obj, "male") or DoesInherit (obj, "maleobject") ) {
 			if (type="der") { return ("der") }
