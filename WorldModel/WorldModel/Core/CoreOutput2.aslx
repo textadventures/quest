@@ -73,14 +73,15 @@
     if (containsUnprocessedSection) {
       section = Mid(text, open + 1, close - open - 1)
       Log ("Found section: " + section)
-      text = Left(text, open - 1) + ProcessTextSection(section) + Mid(text, close + 1)
+      value = ProcessTextSection(section, text)
+      text = Left(text, open - 1) + value + Mid(text, close + 1)
     }
     
     return (text)
     ]]>
   </function>
 
-  <function name="ProcessTextSection" type="string" parameters="section">
+  <function name="ProcessTextSection" type="string" parameters="section, fulltext">
     if (StartsWith(section, "if ")) {
       // TO DO
       return ("(if)")
@@ -98,8 +99,7 @@
       return ("(command)")
     }
     else if (StartsWith(section, "once:")) {
-      // TO DO
-      return ("(once)")
+      return (ProcessTextSection_Once(section, fulltext))
     }
     else if (StartsWith(section, "random:")) {
       // TO DO
@@ -107,6 +107,21 @@
     }
     else {
       return ("{" + section + "}")
+    }
+  </function>
+
+  <function name="ProcessTextSection_Once" type="string" parameters="section, fulltext">
+    if (not HasAttribute(game, "textprocessor_seen")) {
+      game.textprocessor_seen = NewStringList()
+    }
+    if (not ListContains(game.textprocessor_seen, fulltext)) {
+      // TO DO: Would be better to have a dictionary on the game, with keys as fulltext, and values as section.
+      // Until then, this implementation only allows one {once} section per block of text.
+      list add (game.textprocessor_seen, fulltext)
+      return (ProcessText(Mid(section, 6)))
+    }
+    else {
+      return ("")
     }
   </function>
 </library>
