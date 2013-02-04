@@ -4,7 +4,31 @@
   
   <function name="OutputText" parameters="text">
     <![CDATA[
-    JS.addText(text + "<br/>")
+    Log(text)
+    JS.addText("<span style=\"" + GetCurrentTextFormat() + "\">" + text + "</span><br/>")
     ]]>
+  </function>
+
+  <function name="GetCurrentTextFormat" type="string">
+    // TO DO: Need a way to query Quest options to see if there is a font or colour override
+    
+    style = ""
+    
+    font = GetCurrentFontFamily()
+    if (LengthOf(font) > 0) {
+      style = style + "font-family:" + font + ";"
+    }
+    
+    colour = game.defaultforeground
+    if (LengthOf(colour) > 0) {
+      style = style + "color:" + colour + ";"
+    }
+    
+    size = game.defaultfontsize
+    if (size > 0) {
+      style = style + "font-size:" + ToString(size) + "pt;"
+    }
+    
+    return (style)
   </function>
 </library>
