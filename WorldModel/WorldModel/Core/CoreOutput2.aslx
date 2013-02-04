@@ -73,10 +73,40 @@
     if (containsUnprocessedSection) {
       section = Mid(text, open + 1, close - open - 1)
       Log ("Found section: " + section)
-      // do the processing
+      text = Left(text, open - 1) + ProcessTextSection(section) + Mid(text, close + 1)
     }
     
     return (text)
     ]]>
+  </function>
+
+  <function name="ProcessTextSection" type="string" parameters="section">
+    if (StartsWith(section, "if ")) {
+      // TO DO
+      return ("(if)")
+    }
+    else if (StartsWith(section, "object:")) {
+      // TO DO
+      return ("(object)")
+    }
+    else if (StartsWith(section, "exit:")) {
+      // TO DO
+      return ("(exit)")
+    }
+    else if (StartsWith(section, "command:")) {
+      // TO DO
+      return ("(command)")
+    }
+    else if (StartsWith(section, "once:")) {
+      // TO DO
+      return ("(once)")
+    }
+    else if (StartsWith(section, "random:")) {
+      // TO DO
+      return ("(random)")
+    }
+    else {
+      return ("{" + section + "}")
+    }
   </function>
 </library>
