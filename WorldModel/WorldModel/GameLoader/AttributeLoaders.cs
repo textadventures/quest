@@ -39,8 +39,6 @@ namespace TextAdventures.Quest
 
         private abstract class AttributeLoaderBase : IAttributeLoader
         {
-            #region IAttributeLoader Members
-
             public abstract string AppliesTo { get; }
             public abstract void Load(Element element, string attribute, string value);
 
@@ -50,8 +48,6 @@ namespace TextAdventures.Quest
             {
                 return true;
             }
-
-            #endregion
         }
 
         private class ListLoader : AttributeLoaderBase
@@ -70,7 +66,7 @@ namespace TextAdventures.Quest
             protected string[] GetValues(string value)
             {
                 string[] values;
-                if (value.IndexOf("\n") >= 0)
+                if (value.IndexOf("\n", StringComparison.Ordinal) >= 0)
                 {
                     values = Utility.SplitIntoLines(value).ToArray();
                 }
@@ -112,7 +108,7 @@ namespace TextAdventures.Quest
             protected IEnumerable<string> GetValues(string value)
             {
                 string[] values;
-                if (value.IndexOf("\n") >= 0)
+                if (value.IndexOf("\n", StringComparison.Ordinal) >= 0)
                 {
                     values = Utility.SplitIntoLines(value).ToArray();
                 }
