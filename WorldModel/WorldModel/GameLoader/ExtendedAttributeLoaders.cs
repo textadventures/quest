@@ -59,6 +59,8 @@ namespace TextAdventures.Quest
             }
         }
 
+        // TO DO: Would be good for ScriptDictionary to use the same <item><key>...</key><value>...</value></item>
+        // format as the other dictionary types, then this can simply derive from DictionaryLoaderBase
         private class ScriptDictionaryLoader : ExtendedAttributeLoaderBase
         {
             public override string AppliesTo
@@ -154,6 +156,77 @@ namespace TextAdventures.Quest
             public override void Load(XmlReader reader, Element current)
             {
                 // TO DO: Implement
+            }
+        }
+
+        private abstract class DictionaryLoaderBase : ExtendedAttributeLoaderBase
+        {
+            protected IDictionary<string, string> LoadDictionary(XmlReader reader, Element current)
+            {
+                XElement xml = XElement.Load(reader.ReadSubtree());
+
+                var result = new Dictionary<string, string>();
+
+                var items = xml.Elements("item");
+                foreach (var item in items)
+                {
+                    var key = item.Element("key");
+                    var value = item.Element("value");
+
+                    if (key == null)
+                    {
+                        GameLoader.AddError(string.Format("Missing key in dictionary for '{0}.{1}'", current.Name, reader.Name));
+                    }
+                    else if (value == null)
+                    {
+                        GameLoader.AddError(string.Format("Missing value in dictionary for '{0}.{1}'", current.Name, reader.Name));
+                    }
+                    else if (result.ContainsKey(key.Value))
+                    {
+                        GameLoader.AddError(string.Format("Duplicate key '{2}' in dictionary for '{0}.{1}'", current.Name, reader.Name, key.Value));
+                    }
+                    else
+                    {
+                        try
+                        {
+                            result.Add(key.Value, value.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            GameLoader.AddError(string.Format("Error adding key '{2}' to dictionary for '{0}.{1}': {3}", current.Name, reader.Name, key.Value, ex.Message));
+                        }
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        private class StringDictionaryLoader : DictionaryLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "stringdictionary"; }
+            }
+
+            public override void Load(XmlReader reader, Element current)
+            {
+                var result = LoadDictionary(reader, current);
+                current.Fields.Set(reader.Name, new QuestDictionary<string>(result));
+            }
+        }
+
+        private class ObjectDictionaryLoader : DictionaryLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "objectdictionary"; }
+            }
+
+            public override void Load(XmlReader reader, Element current)
+            {
+                var result = LoadDictionary(reader, current);
+                current.Fields.LazyFields.AddObjectDictionary(reader.Name, result);
             }
         }
     }

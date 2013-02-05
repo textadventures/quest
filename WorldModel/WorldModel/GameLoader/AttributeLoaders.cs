@@ -322,7 +322,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class StringDictionaryLoader : AttributeLoaderBase
+        private class SimpleStringDictionaryLoader : AttributeLoaderBase
         {
             public override string AppliesTo
             {
@@ -355,7 +355,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class ObjectDictionaryLoader : AttributeLoaderBase
+        private class SimpleObjectDictionaryLoader : AttributeLoaderBase
         {
             public override string AppliesTo
             {
