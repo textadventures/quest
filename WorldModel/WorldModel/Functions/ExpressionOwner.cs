@@ -137,6 +137,11 @@ namespace TextAdventures.Quest.Functions
             return new QuestList<string>();
         }
 
+        public QuestList<object> NewList()
+        {
+            return new QuestList<object>();
+        }
+
         public QuestDictionary<string> NewStringDictionary()
         {
             return new QuestDictionary<string>();
