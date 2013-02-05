@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using TextAdventures.Quest.Scripts;
 
 // AttributeLoaders load properties which are stored in the XML as simple values.
@@ -125,6 +126,21 @@ namespace TextAdventures.Quest
                 }
 
                 throw new Exception("Unexpected end of XML data");
+            }
+        }
+
+        private class StringListLoader : ExtendedAttributeLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "list"; }
+            }
+
+            public override void Load(XmlReader reader, Element current)
+            {
+                XElement xml = XElement.Load(reader.ReadSubtree());
+                var values = xml.Elements("value").Select(e => e.Value);
+                current.Fields.Set(reader.Name, new QuestList<string>(values));
             }
         }
 
