@@ -125,7 +125,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class ObjectListLoader : AttributeLoaderBase
+        private class ObjectListLoader : AttributeLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -138,7 +138,7 @@ namespace TextAdventures.Quest
                 element.Fields.LazyFields.AddObjectList(attribute, values);
             }
 
-            protected IEnumerable<string> GetValues(string value)
+            private IEnumerable<string> GetValues(string value)
             {
                 string[] values;
                 if (value.IndexOf("\n", StringComparison.Ordinal) >= 0)
@@ -150,6 +150,11 @@ namespace TextAdventures.Quest
                     values = Utility.ListSplit(value);
                 }
                 return values.Where(v => v.Length > 0);
+            }
+
+            public object GetValue(XElement xml)
+            {
+                return new Types.LazyObjectList(GetValues(xml.Value));
             }
         }
 

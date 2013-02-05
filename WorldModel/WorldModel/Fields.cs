@@ -1082,11 +1082,35 @@ namespace TextAdventures.Quest
             for (int i = 0; i < list.Count; i++)
             {
                 var value = list[i];
+                
+                var genericList = value as QuestList<object>;
+                if (genericList != null)
+                {
+                    ResolveObjectList(genericList);
+                    continue;
+                }
+
+                bool replace = false;
+                object replacement = null;
+
                 var objRef = value as Types.LazyObjectReference;
                 if (objRef != null)
                 {
+                    replace = true;
+                    replacement = m_worldModel.Elements.Get(objRef.ObjectName);
+                }
+
+                var objList = value as Types.LazyObjectList;
+                if (objList != null)
+                {
+                    replace = true;
+                    replacement = new QuestList<Element>(objList.Objects.Select(o => m_worldModel.Elements.Get(o)));
+                }
+
+                if (replace)
+                {
                     list.RemoveAt(i);
-                    list.Insert(i, m_worldModel.Elements.Get(objRef.ObjectName));
+                    list.Insert(i, replacement);
                 }
             }
         }

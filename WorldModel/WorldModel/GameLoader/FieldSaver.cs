@@ -205,7 +205,7 @@ namespace TextAdventures.Quest
             public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
             {
                 writer.WriteStartElement(attribute);
-                if (!GameSaver.IsImpliedType(element, attribute, "stringlist"))
+                if (element == null || !GameSaver.IsImpliedType(element, attribute, "stringlist"))
                 {
                     writer.WriteAttributeString("type", "stringlist");
                 }
@@ -232,7 +232,7 @@ namespace TextAdventures.Quest
             public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
             {
                 writer.WriteStartElement(attribute);
-                if (!GameSaver.IsImpliedType(element, attribute, "list"))
+                if (element == null || !GameSaver.IsImpliedType(element, attribute, "list"))
                 {
                     writer.WriteAttributeString("type", "list");
                 }
@@ -471,7 +471,7 @@ namespace TextAdventures.Quest
             public void Save(GameXmlWriter writer, Element element, string attribute, object value)
             {
                 writer.WriteStartElement(attribute);
-                if (!GameSaver.IsImpliedType(element, attribute, "scriptdictionary"))
+                if (element == null || !GameSaver.IsImpliedType(element, attribute, "scriptdictionary"))
                 {
                     writer.WriteAttributeString("type", "scriptdictionary");
                 }
