@@ -10,6 +10,7 @@ namespace TextAdventures.Quest
     internal class FieldSaver
     {
         private Dictionary<Type, IFieldSaver> m_savers = new Dictionary<Type, IFieldSaver>();
+        private Dictionary<Type, IValueSaver> m_valueSavers = new Dictionary<Type, IValueSaver>();
         private GameSaver m_saver;
 
         public FieldSaver(GameSaver saver)
@@ -22,6 +23,13 @@ namespace TextAdventures.Quest
             {
                 AddSaver((IFieldSaver)Activator.CreateInstance(t));
             }
+
+            // Use Reflection to create instances of all IValueSavers
+            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+                typeof(IValueSaver)))
+            {
+                AddValueSaver((IValueSaver)Activator.CreateInstance(t));
+            }
         }
 
         private void AddSaver(IFieldSaver saver)
@@ -32,6 +40,13 @@ namespace TextAdventures.Quest
             if (ignore) return;
 
             m_savers.Add(saver.AppliesTo, saver);
+            saver.GameSaver = m_saver;
+            saver.FieldSaver = this;
+        }
+
+        private void AddValueSaver(IValueSaver saver)
+        {
+            m_valueSavers.Add(saver.AppliesTo, saver);
             saver.GameSaver = m_saver;
         }
 
@@ -45,15 +60,29 @@ namespace TextAdventures.Quest
             }
             else
             {
-                throw new Exception(string.Format("ERROR: No FieldSaver for attribute {0}, type: {1}", attribute, value.GetType().ToString()));
+                throw new Exception(string.Format("ERROR: No FieldSaver for attribute {0}, type: {1}", attribute, value.GetType()));
             }
         }
 
-        private bool TryGetSaver(Type type, out IFieldSaver saver)
+        public void SaveValue(GameXmlWriter writer, string xmlElementName, object value)
         {
-            if (m_savers.TryGetValue(type, out saver)) return true;
+            if (value == null) return;
+            IValueSaver saver;
+            if (TryGetValueSaver(value.GetType(), out saver))
+            {
+                saver.Save(writer, xmlElementName, value);
+            }
+            else
+            {
+                throw new Exception(string.Format("ERROR: No ValueSaver for XML element {0}, type: {1}", xmlElementName, value.GetType()));
+            }
+        }
 
-            foreach (var s in m_savers.Where(s => s.Key.IsAssignableFrom(type)))
+        private bool TryGetSaver<T>(Type type, Dictionary<Type, T> savers, out T saver)
+        {
+            if (savers.TryGetValue(type, out saver)) return true;
+
+            foreach (var s in savers.Where(s => s.Key.IsAssignableFrom(type)))
             {
                 saver = s.Value;
                 return true;
@@ -62,13 +91,31 @@ namespace TextAdventures.Quest
             return false;
         }
 
+        private bool TryGetSaver(Type type, out IFieldSaver saver)
+        {
+            return TryGetSaver(type, m_savers, out saver);
+        }
+
+        private bool TryGetValueSaver(Type type, out IValueSaver saver)
+        {
+            return TryGetSaver(type, m_valueSavers, out saver);
+        }
+
         private interface IFieldSaver
         {
             Type AppliesTo { get; }
             void Save(GameXmlWriter writer, Element element, string attribute, object value);
             GameSaver GameSaver { set; }
+            FieldSaver FieldSaver { set; }
             WorldModelVersion? MinVersion { get; }
             WorldModelVersion? MaxVersion { get; }
+        }
+
+        private interface IValueSaver
+        {
+            Type AppliesTo { get; }
+            void Save(GameXmlWriter writer, string xmlElementName, object value);
+            GameSaver GameSaver { set; }
         }
 
         private abstract class FieldSaverBase : IFieldSaver
@@ -91,7 +138,7 @@ namespace TextAdventures.Quest
                     //      <myattribute ... />
                     writer.WriteStartElement(attribute);
                 }
-                if (!GameSaver.IsImpliedType(element, attribute, type) || value.Length == 0)
+                if (element == null || !GameSaver.IsImpliedType(element, attribute, type) || value.Length == 0)
                 {
                     writer.WriteAttributeString("type", type);
                 }
@@ -100,12 +147,13 @@ namespace TextAdventures.Quest
             }
 
             public GameSaver GameSaver { get; set; }
+            public FieldSaver FieldSaver { get; set; }
 
             public virtual WorldModelVersion? MinVersion { get { return null; } }
             public virtual WorldModelVersion? MaxVersion { get { return null; } }
         }
 
-        private class StringSaver : FieldSaverBase
+        private class StringSaver : FieldSaverBase, IValueSaver
         {
             public override Type AppliesTo
             {
@@ -116,6 +164,11 @@ namespace TextAdventures.Quest
             {
                 string strValue = (string)value;
                 base.WriteAttribute(writer, element, attribute, "string", strValue);
+            }
+
+            public void Save(GameXmlWriter writer, string xmlElementName, object value)
+            {
+                Save(writer, null, xmlElementName, value);
             }
         }
 
@@ -199,6 +252,31 @@ namespace TextAdventures.Quest
             }
         }
 
+        private class ListSaver : FieldSaverBase
+        {
+            public override Type AppliesTo
+            {
+                get { return typeof (QuestList<object>); }
+            }
+
+            public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
+            {
+                writer.WriteStartElement(attribute);
+                if (!GameSaver.IsImpliedType(element, attribute, "list"))
+                {
+                    writer.WriteAttributeString("type", "list");
+                }
+
+                QuestList<object> list = (QuestList<object>)value;
+
+                foreach (var item in list)
+                {
+                    FieldSaver.SaveValue(writer, "value", item);
+                }
+                writer.WriteEndElement();
+            }
+        }
+
         private class LegacyStringDictionarySaver : FieldSaverBase
         {
             public override Type AppliesTo
@@ -266,7 +344,7 @@ namespace TextAdventures.Quest
             public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
             {
                 writer.WriteStartElement(attribute);
-                if (!GameSaver.IsImpliedType(element, attribute, TypeName))
+                if (element == null || !GameSaver.IsImpliedType(element, attribute, TypeName))
                 {
                     writer.WriteAttributeString("type", TypeName);
                 }
@@ -288,7 +366,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class StringDictionarySaver : DictionarySaverBase<string>
+        private class StringDictionarySaver : DictionarySaverBase<string>, IValueSaver
         {
             public override Type AppliesTo
             {
@@ -303,6 +381,11 @@ namespace TextAdventures.Quest
             protected override string WriteValue(string value)
             {
                 return value;
+            }
+
+            public void Save(GameXmlWriter writer, string xmlElementName, object value)
+            {
+                Save(writer, null, xmlElementName, value);
             }
         }
 
@@ -441,6 +524,7 @@ namespace TextAdventures.Quest
             }
 
             public GameSaver GameSaver { get; set; }
+            public FieldSaver FieldSaver { get; set; }
 
             public WorldModelVersion? MinVersion { get { return null; } }
             public WorldModelVersion? MaxVersion { get { return null; } }
