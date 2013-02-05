@@ -333,7 +333,7 @@ namespace TextAdventures.Quest
                     result += Environment.NewLine;
 
                     writer.WriteStartElement("steps");
-                    writer.WriteAttributeString("type", "list");
+                    writer.WriteAttributeString("type", GameSaver.Version <= WorldModelVersion.v530 ? "list" : "simplestringlist");
                     writer.WriteString(result);
                     writer.WriteEndElement();
                 }
