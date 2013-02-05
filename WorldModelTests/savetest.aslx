@@ -30,6 +30,24 @@
         </scriptdictionaryattr>
         <objectattr type="object">start</objectattr>
         <booleanattr type="boolean">false</booleanattr>
+        <newlistattr type="stringlist">
+          <value>one</value>
+          <value>two</value>
+          <value>three</value>
+          <value>four</value>
+        </newlistattr>
+        <newstringdictionaryattr type="stringdictionary">
+          <item>
+            <key>newkey1</key>
+            <value>newvalue1</value>
+          </item>
+        </newstringdictionaryattr>
+        <newobjectdictionaryattr type="objectdictionary">
+          <item>
+            <key>newkey1</key>
+            <value>lamp</value>
+          </item>
+        </newobjectdictionaryattr>
       </object>
     </object>
   </object>
@@ -120,6 +138,11 @@
       ne
       assert:player.parent = room2
       assert:VerifyCreatedExit()
+      assert:ListCount(lamp.newlistattr) = 4
+      assert:DictionaryCount(lamp.newstringdictionaryattr) = 1
+      assert:StringDictionaryItem(lamp.newstringdictionaryattr, "newkey1") = "newvalue1"
+      assert:DictionaryCount(lamp.newobjectdictionaryattr) = 1
+      assert:ObjectDictionaryItem(lamp.newobjectdictionaryattr, "newkey1") = lamp
       ]]>
     </steps>
   </walkthrough>
