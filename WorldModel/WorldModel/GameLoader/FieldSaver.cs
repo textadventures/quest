@@ -199,7 +199,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class StringDictionarySaver : FieldSaverBase
+        private class LegacyStringDictionarySaver : FieldSaverBase
         {
             public override Type AppliesTo
             {
@@ -210,6 +210,11 @@ namespace TextAdventures.Quest
             {
                 QuestDictionary<string> dictionary = (QuestDictionary<string>)value;
                 base.WriteAttribute(writer, element, attribute, "stringdictionary", dictionary.SaveString());
+            }
+
+            public override WorldModelVersion? MaxVersion
+            {
+                get { return WorldModelVersion.v530; }
             }
         }
 
@@ -228,7 +233,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class ObjectDictionarySaver : FieldSaverBase
+        private class LegacyObjectDictionarySaver : FieldSaverBase
         {
             public override Type AppliesTo
             {
@@ -239,6 +244,83 @@ namespace TextAdventures.Quest
             {
                 QuestDictionary<Element> dictionary = (QuestDictionary<Element>)value;
                 base.WriteAttribute(writer, element, attribute, "objectdictionary", dictionary.SaveString(o => o.Name));
+            }
+
+            public override WorldModelVersion? MaxVersion
+            {
+                get { return WorldModelVersion.v530; }
+            }
+        }
+
+        private abstract class DictionarySaverBase<T> : FieldSaverBase
+        {
+            public override WorldModelVersion? MinVersion
+            {
+                get { return WorldModelVersion.v540; }
+            }
+
+            protected abstract string TypeName { get; }
+
+            protected abstract string WriteValue(T value);
+
+            public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
+            {
+                writer.WriteStartElement(attribute);
+                if (!GameSaver.IsImpliedType(element, attribute, TypeName))
+                {
+                    writer.WriteAttributeString("type", TypeName);
+                }
+
+                var dictionary = (QuestDictionary<T>)value;
+
+                foreach (var item in dictionary)
+                {
+                    writer.WriteStartElement("item");
+                    writer.WriteStartElement("key");
+                    writer.WriteString(item.Key);
+                    writer.WriteEndElement();
+                    writer.WriteStartElement("value");
+                    writer.WriteString(WriteValue(item.Value));
+                    writer.WriteEndElement();
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+            }
+        }
+
+        private class StringDictionarySaver : DictionarySaverBase<string>
+        {
+            public override Type AppliesTo
+            {
+                get { return typeof(QuestDictionary<string>); }
+            }
+
+            protected override string TypeName
+            {
+                get { return "stringdictionary"; }
+            }
+
+            protected override string WriteValue(string value)
+            {
+                return value;
+            }
+        }
+
+        private class ObjectDictionarySaver : DictionarySaverBase<Element>
+        {
+            public override Type AppliesTo
+            {
+                get { return typeof(QuestDictionary<Element>); }
+            }
+
+            protected override string TypeName
+            {
+                get { return "objectdictionary"; }
+            }
+
+            protected override string WriteValue(Element value)
+            {
+                return value.Name;
             }
         }
 
@@ -329,6 +411,8 @@ namespace TextAdventures.Quest
             }
         }
 
+        // TO DO: Would be good for ScriptDictionary to use the same <item><key>...</key><value>...</value></item>
+        // format as the other dictionary types, then this can simply derive from DictionarySaverBase
         private class ScriptDictionarySaver : IFieldSaver
         {
             public Type AppliesTo
