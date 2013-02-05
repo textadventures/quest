@@ -410,6 +410,13 @@ namespace TextAdventures.Quest
                 get { return null; }
             }
 
+            private static Dictionary<string, string> s_legacyTypeMappings = new Dictionary<string, string>
+            {
+                { "list", "simplestringlist" },
+                { "stringdictionary", "simplestringdictionary" },
+                { "objectdictionary", "simpleobjectdictionary" },
+            };
+
             public override object Load(XmlReader reader, ref Element current)
             {
                 string attribute = reader.Name;
@@ -430,6 +437,12 @@ namespace TextAdventures.Quest
                         currentElementType = current.Fields.GetString("elementtype");
                     }
                     type = GameLoader.m_implicitTypes.Get(currentElementType, attribute);
+                }
+
+                // map old to new type names if necessary
+                if (type != null && WorldModel.Version <= WorldModelVersion.v530 && s_legacyTypeMappings.ContainsKey(type))
+                {
+                    type = s_legacyTypeMappings[type];
                 }
 
                 if (type != null && GameLoader.ExtendedAttributeLoaders.ContainsKey(type))
