@@ -73,7 +73,7 @@
       <attribute>1</attribute>
       <!-- TO DO: Would be more user-friendly if we could use a dictionary type here (as in CoreEditorObjectSetup), but
       this doesn't currently work in an expression control -->
-      <validvalues type="list">weak;strong;</validvalues>
+      <validvalues type="simplestringlist">weak;strong;</validvalues>
     </control>
   </editor>
 
@@ -110,7 +110,7 @@
        <attribute>1</attribute>
        <!-- TO DO: Would be more user-friendly if we could use a dictionary type here (as in CoreEditorObjectSetup), but
        this doesn't currently work in an expression control -->
-       <validvalues type="list">weak;strong;</validvalues>
+       <validvalues type="simplestringlist">weak;strong;</validvalues>
      </control>
   </editor>
   

@@ -311,25 +311,25 @@
 
 
    <type name="maleobject">
-    <displayverbs type="list">[LookAt];[Take]</displayverbs>
+    <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
   </type>
 
    <type name="femaleobject">
-    <displayverbs type="list">[LookAt];[Take]</displayverbs>
+    <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>
   </type>
 
    <type name="maleobjectplural">
-    <displayverbs type="list">[LookAt];[Take]</displayverbs>
+    <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <gender>[MalePluralGender]</gender>
     <article>[MalePluralArticle]</article>
   </type>
 
    <type name="femaleobjectplural">
-    <displayverbs type="list">[LookAt];[Take]</displayverbs>
+    <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>
   </type>

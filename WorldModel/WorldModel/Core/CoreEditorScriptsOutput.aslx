@@ -113,7 +113,7 @@
       <simple>colour</simple>
       <simpleeditor>dropdown</simpleeditor>
       <attribute>0</attribute>
-      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
       <freetext/>
     </control>
   </editor>
@@ -135,7 +135,7 @@
       <simple>colour</simple>
       <simpleeditor>dropdown</simpleeditor>
       <attribute>0</attribute>
-      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
       <freetext/>
     </control>
   </editor>
@@ -621,7 +621,7 @@
 
     <control>
       <controltype>dropdown</controltype>
-      <validvalues type="list">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause;Wait;SetInterfaceString;RequestSave;SetPanelContents;Log</validvalues>
+      <validvalues type="simplestringlist">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause;Wait;SetInterfaceString;RequestSave;SetPanelContents;Log</validvalues>
       <caption>Request</caption>
       <attribute>0</attribute>
     </control>

@@ -2,14 +2,14 @@
 
   <implied element="control" property="height" type="int"/>
   <implied element="control" property="width" type="int"/>
-  <implied element="control" property="types" type="stringdictionary"/>
-  <implied element="control" property="filters" type="stringdictionary"/>
-  <implied element="control" property="editors" type="stringdictionary"/>
+  <implied element="control" property="types" type="simplestringdictionary"/>
+  <implied element="control" property="filters" type="simplestringdictionary"/>
+  <implied element="control" property="editors" type="simplestringdictionary"/>
   <implied element="control" property="minimum" type="int"/>
-  <implied element="control" property="mustinherit" type="list"/>
-  <implied element="control" property="mustnotinherit" type="list"/>
-  <implied element="tab" property="mustinherit" type="list"/>
-  <implied element="tab" property="mustnotinherit" type="list"/>
+  <implied element="control" property="mustinherit" type="simplestringlist"/>
+  <implied element="control" property="mustnotinherit" type="simplestringlist"/>
+  <implied element="tab" property="mustinherit" type="simplestringlist"/>
+  <implied element="tab" property="mustnotinherit" type="simplestringlist"/>
   <implied element="tab" property="parent" type="object"/>
 
   <template name="EditorImageFormats">*.jpg;*.jpeg;*.png;*.gif</template>
@@ -65,7 +65,7 @@
         <controltype>dropdown</controltype>
         <caption>Category</caption>
         <attribute>category</attribute>
-        <validvalues type="list">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
+        <validvalues type="simplestringlist">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
         <freetext/>
       </control>
 
@@ -147,21 +147,21 @@
         <controltype>dropdown</controltype>
         <caption>Background</caption>
         <attribute>defaultbackground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
       <control>
         <controltype>dropdown</controltype>
         <caption>Foreground</caption>
         <attribute>defaultforeground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
       <control>
         <controltype>dropdown</controltype>
         <caption>Link foreground</caption>
         <attribute>defaultlinkforeground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
     </tab>

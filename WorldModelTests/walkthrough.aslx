@@ -1,9 +1,9 @@
-<asl version="500">
+<asl version="540">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <game name="assert">
-    <dictionary type="stringdictionary">key1=value1; key2=value2</dictionary>
-    <list type="list">value1; value2; value3</list>
+    <dictionary type="simplestringdictionary">key1=value1; key2=value2</dictionary>
+    <list type="simplestringlist">value1; value2; value3</list>
   </game>
   <object name="start">
     <alias>oldalias</alias>
@@ -12,7 +12,7 @@
     </object>
     <object name="table">
       <inherit name="surface"/>
-      <tablelist type="list">item</tablelist>
+      <tablelist type="simplestringlist">item</tablelist>
       <look type="script">
         list add (table.tablelist, "newitem")
         msg ("Table list count: " + ListCount(table.tablelist))

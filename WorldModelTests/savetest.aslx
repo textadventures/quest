@@ -1,4 +1,4 @@
-﻿<asl version="500">
+﻿<asl version="540">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <game name="savetest"/>
@@ -16,10 +16,10 @@
           lamp.scriptresult = "run, old"
         </scriptattr>
         <becomesnull>some value</becomesnull>
-        <listattr type="list">one; two</listattr>
+        <listattr type="simplestringlist">one; two</listattr>
         <objlistattr type="objectlist">start; player</objlistattr>
-        <stringdictionaryattr type="stringdictionary">key1=old1; key2=old2</stringdictionaryattr>
-        <objectdictionaryattr type="objectdictionary">key1=table; key2=player</objectdictionaryattr>
+        <stringdictionaryattr type="simplestringdictionary">key1=old1; key2=old2</stringdictionaryattr>
+        <objectdictionaryattr type="simpleobjectdictionary">key1=table; key2=player</objectdictionaryattr>
         <scriptdictionaryattr type="scriptdictionary">
           <item key="key1">
             lamp.scriptresult = "script key1 old"

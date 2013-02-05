@@ -74,7 +74,7 @@
       <simple>colour</simple>
       <simpleeditor>dropdown</simpleeditor>
       <attribute>0</attribute>
-      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
       <freetext/>
     </control>
   </editor>
@@ -96,7 +96,7 @@
       <simple>colour</simple>
       <simpleeditor>dropdown</simpleeditor>
       <attribute>0</attribute>
-      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
       <freetext/>
     </control>
   </editor>

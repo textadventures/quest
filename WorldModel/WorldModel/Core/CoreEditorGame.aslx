@@ -47,7 +47,7 @@
         <controltype>dropdown</controltype>
         <caption>Category</caption>
         <attribute>category</attribute>
-        <validvalues type="list">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
+        <validvalues type="simplestringlist">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
         <freetext/>
       </control>
 
@@ -61,14 +61,14 @@
         <controltype>dropdown</controltype>
         <caption>Difficulty</caption>
         <attribute>difficulty</attribute>
-        <validvalues type="list">;Easy;Medium;Hard;Very Hard</validvalues>
+        <validvalues type="simplestringlist">;Easy;Medium;Hard;Very Hard</validvalues>
       </control>
 
       <control>
         <controltype>dropdown</controltype>
         <caption>Cruelty</caption>
         <attribute>cruelty</attribute>
-        <validvalues type="list">;Merciful;Polite;Tough;Nasty;Cruel</validvalues>
+        <validvalues type="simplestringlist">;Merciful;Polite;Tough;Nasty;Cruel</validvalues>
         <advanced/>
       </control>
 
@@ -341,7 +341,7 @@
         <controltype>dropdown</controltype>
         <caption>Background colour</caption>
         <attribute>defaultbackground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
 
@@ -374,7 +374,7 @@
         <controltype>dropdown</controltype>
         <caption>Foreground</caption>
         <attribute>defaultforeground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
       
@@ -382,7 +382,7 @@
         <controltype>dropdown</controltype>
         <caption>Link foreground</caption>
         <attribute>defaultlinkforeground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
 
@@ -415,7 +415,7 @@
         <controltype>dropdown</controltype>
         <caption>Background</caption>
         <attribute>menubackground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
       
@@ -423,7 +423,7 @@
         <controltype>dropdown</controltype>
         <caption>Foreground</caption>
         <attribute>menuforeground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
       
@@ -431,7 +431,7 @@
         <controltype>dropdown</controltype>
         <caption>Hover background</caption>
         <attribute>menuhoverbackground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
       
@@ -439,7 +439,7 @@
         <controltype>dropdown</controltype>
         <caption>Hover foreground</caption>
         <attribute>menuhoverforeground</attribute>
-        <validvalues type="list">[HTMLColorNames]</validvalues>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
 

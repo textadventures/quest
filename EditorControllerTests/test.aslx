@@ -1,4 +1,4 @@
-<asl version="500">
+<asl version="540">
   <!--  
   <include ref="English.aslx"/>
   <include ref="Core.aslx"/>
@@ -19,7 +19,7 @@
   </editor>
 
   <object name="testobj">
-    <listattr type="list">one; two; three; four; five</listattr>
+    <listattr type="simplestringlist">one; two; three; four; five</listattr>
   </object>
     
 </asl>

@@ -22,7 +22,9 @@ namespace WorldModelTests
                 null);
 
             Mock<IPlayer> player = new Mock<IPlayer>();
-            worldModel.Initialise(player.Object);
+            bool success = worldModel.Initialise(player.Object);
+            Assert.IsTrue(success, "Initialisation failed");
+
             worldModel.Begin();
 
             worldModel.SendCommand("update");

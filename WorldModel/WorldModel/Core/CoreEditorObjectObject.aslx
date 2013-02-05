@@ -32,7 +32,7 @@
       <controltype>dropdown</controltype>
       <caption>Link colour</caption>
       <attribute>linkcolour</attribute>
-      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
       <freetext/>
     </control>
 

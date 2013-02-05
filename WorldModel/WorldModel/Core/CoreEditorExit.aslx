@@ -24,7 +24,7 @@
         <caption>Alias</caption>
         <controltype>dropdown</controltype>
         <attribute>alias</attribute>
-        <validvalues type="list">[CompassN];[CompassS];[CompassE];[CompassW];[CompassNE];[CompassNW];[CompassSE];[CompassSW];[CompassIn];[CompassOut];[CompassUp];[CompassDown]</validvalues>
+        <validvalues type="simplestringlist">[CompassN];[CompassS];[CompassE];[CompassW];[CompassNE];[CompassNW];[CompassSE];[CompassSW];[CompassIn];[CompassOut];[CompassUp];[CompassDown]</validvalues>
         <freetext/>
         <nullable/>
         <width>200</width>
@@ -168,7 +168,7 @@
         <controltype>dropdown</controltype>
         <caption>Brightness</caption>
         <attribute>lightstrength</attribute>
-        <validvalues type="stringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
+        <validvalues type="simplestringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
         <onlydisplayif>GetBoolean(this, "lightsource")</onlydisplayif>
         <advanced/>
       </control>

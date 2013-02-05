@@ -114,7 +114,7 @@
       <controltype>dropdown</controltype>
       <caption>Brightness</caption>
       <attribute>lightstrength</attribute>
-      <validvalues type="stringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
+      <validvalues type="simplestringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
       <onlydisplayif>GetBoolean(this, "lightsource")</onlydisplayif>
       <advanced/>
     </control>

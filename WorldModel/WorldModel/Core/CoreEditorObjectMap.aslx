@@ -23,7 +23,7 @@
       <controltype>dropdown</controltype>
       <caption>Fill colour</caption>
       <attribute>grid_fill</attribute>
-      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
       <freetext/>
     </control>
 
@@ -31,7 +31,7 @@
       <controltype>dropdown</controltype>
       <caption>Border colour</caption>
       <attribute>grid_border</attribute>
-      <validvalues type="list">[HTMLColorNames]</validvalues>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
       <freetext/>
     </control>
 

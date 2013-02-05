@@ -54,7 +54,7 @@ namespace TextAdventures.Quest
         {
             public override string AppliesTo
             {
-                get { return "list"; }
+                get { return "simplestringlist"; }
             }
 
             public override void Load(Element element, string attribute, string value)
@@ -326,7 +326,7 @@ namespace TextAdventures.Quest
         {
             public override string AppliesTo
             {
-                get { return "stringdictionary"; }
+                get { return "simplestringdictionary"; }
             }
 
             public override void Load(Element element, string attribute, string value)
@@ -359,7 +359,7 @@ namespace TextAdventures.Quest
         {
             public override string AppliesTo
             {
-                get { return "objectdictionary"; }
+                get { return "simpleobjectdictionary"; }
             }
 
             public override void Load(Element element, string attribute, string value)
