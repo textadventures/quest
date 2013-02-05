@@ -146,25 +146,42 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class GenericDictionaryLoader : ExtendedAttributeLoaderBase
+        private class ListLoader : ExtendedAttributeLoaderBase
         {
             public override string AppliesTo
             {
-                get { return "dictionary"; }
+                get { return "list"; }
             }
 
             public override void Load(XmlReader reader, Element current)
             {
-                // TO DO: Implement
+                XElement xml = XElement.Load(reader.ReadSubtree());
+                var result = new QuestList<object>();
+
+                foreach (var xmlValue in xml.Elements("value"))
+                {
+                    string type = xmlValue.Attribute("type").Value;
+                    var value = GameLoader.ReadXmlValue(type, xmlValue);
+
+                    result.Add(value);
+                }
+
+                current.Fields.Set(reader.Name, result);
             }
         }
 
         private abstract class DictionaryLoaderBase : ExtendedAttributeLoaderBase
         {
-            protected IDictionary<string, string> LoadDictionary(XmlReader reader, Element current)
+            protected IDictionary<string, string> LoadDictionary(XmlReader reader, string xmlElementName)
             {
                 XElement xml = XElement.Load(reader.ReadSubtree());
 
+                return LoadDictionaryFromXElement(xml, string.Format("{0}.{1}", xmlElementName, reader.Name));
+            }
+
+            protected IDictionary<string, string> LoadDictionaryFromXElement(XElement xml, string errorSource)
+            {
+                XmlReader reader;
                 var result = new Dictionary<string, string>();
 
                 var items = xml.Elements("item");
@@ -175,15 +192,15 @@ namespace TextAdventures.Quest
 
                     if (key == null)
                     {
-                        GameLoader.AddError(string.Format("Missing key in dictionary for '{0}.{1}'", current.Name, reader.Name));
+                        GameLoader.AddError(string.Format("Missing key in dictionary for '{0}'", errorSource));
                     }
                     else if (value == null)
                     {
-                        GameLoader.AddError(string.Format("Missing value in dictionary for '{0}.{1}'", current.Name, reader.Name));
+                        GameLoader.AddError(string.Format("Missing value in dictionary for '{0}'", errorSource));
                     }
                     else if (result.ContainsKey(key.Value))
                     {
-                        GameLoader.AddError(string.Format("Duplicate key '{2}' in dictionary for '{0}.{1}'", current.Name, reader.Name, key.Value));
+                        GameLoader.AddError(string.Format("Duplicate key '{1}' in dictionary for '{0}'", errorSource, key.Value));
                     }
                     else
                     {
@@ -193,7 +210,8 @@ namespace TextAdventures.Quest
                         }
                         catch (Exception ex)
                         {
-                            GameLoader.AddError(string.Format("Error adding key '{2}' to dictionary for '{0}.{1}': {3}", current.Name, reader.Name, key.Value, ex.Message));
+                            GameLoader.AddError(string.Format("Error adding key '{1}' to dictionary for '{0}': {2}",
+                                                              errorSource, key.Value, ex.Message));
                         }
                     }
                 }
@@ -202,7 +220,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class StringDictionaryLoader : DictionaryLoaderBase
+        private class StringDictionaryLoader : DictionaryLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -211,8 +229,13 @@ namespace TextAdventures.Quest
 
             public override void Load(XmlReader reader, Element current)
             {
-                var result = LoadDictionary(reader, current);
+                var result = LoadDictionary(reader, current.Name);
                 current.Fields.Set(reader.Name, new QuestDictionary<string>(result));
+            }
+
+            public object GetValue(XElement xml)
+            {
+                return new QuestDictionary<string>(LoadDictionaryFromXElement(xml, "(nested stringdictionary)"));
             }
         }
 
@@ -225,8 +248,21 @@ namespace TextAdventures.Quest
 
             public override void Load(XmlReader reader, Element current)
             {
-                var result = LoadDictionary(reader, current);
+                var result = LoadDictionary(reader, current.Name);
                 current.Fields.LazyFields.AddObjectDictionary(reader.Name, result);
+            }
+        }
+
+        private class GenericDictionaryLoader : ExtendedAttributeLoaderBase
+        {
+            public override string AppliesTo
+            {
+                get { return "dictionary"; }
+            }
+
+            public override void Load(XmlReader reader, Element current)
+            {
+                // TO DO: Implement
             }
         }
     }

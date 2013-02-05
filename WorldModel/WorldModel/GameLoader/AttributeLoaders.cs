@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace TextAdventures.Quest
 {
@@ -10,6 +11,7 @@ namespace TextAdventures.Quest
         private delegate void AddErrorHandler(string error);
 
         private Dictionary<string, IAttributeLoader> m_attributeLoaders = new Dictionary<string, IAttributeLoader>();
+        private Dictionary<string, IValueLoader> m_valueLoaders = new Dictionary<string, IValueLoader>();
 
         private void AddLoaders(LoadMode mode)
         {
@@ -17,6 +19,12 @@ namespace TextAdventures.Quest
                 typeof(IAttributeLoader)))
             {
                 AddLoader((IAttributeLoader)Activator.CreateInstance(t), mode);
+            }
+
+            foreach (Type t in TextAdventures.Utility.Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+                typeof(IValueLoader)))
+            {
+                AddValueLoader((IValueLoader)Activator.CreateInstance(t));
             }
         }
 
@@ -29,12 +37,37 @@ namespace TextAdventures.Quest
             }
         }
 
+        private void AddValueLoader(IValueLoader loader)
+        {
+            m_valueLoaders.Add(loader.AppliesTo, loader);
+        }
+
+        private object ReadXmlValue(string type, XElement xml)
+        {
+            IValueLoader loader;
+
+            if (m_valueLoaders.TryGetValue(type, out loader))
+            {
+                return loader.GetValue(xml);
+            }
+
+            AddError(string.Format("Unrecognised attribute type '{0}'", type));
+
+            return null;
+        }
+
         private interface IAttributeLoader
         {
             string AppliesTo { get; }
             void Load(Element element, string attribute, string value);
             GameLoader GameLoader { set; }
             bool SupportsMode(LoadMode mode);
+        }
+
+        private interface IValueLoader
+        {
+            string AppliesTo { get; }
+            object GetValue(XElement xml);
         }
 
         private abstract class AttributeLoaderBase : IAttributeLoader
@@ -50,7 +83,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class ListLoader : AttributeLoaderBase
+        private class SimpleStringListLoader : AttributeLoaderBase
         {
             public override string AppliesTo
             {
@@ -78,7 +111,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class ListExtensionLoader : ListLoader
+        private class ListExtensionLoader : SimpleStringListLoader
         {
             public override string AppliesTo
             {
@@ -133,7 +166,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class StringLoader : AttributeLoaderBase
+        private class StringLoader : AttributeLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -143,6 +176,11 @@ namespace TextAdventures.Quest
             public override void Load(Element element, string attribute, string value)
             {
                 element.Fields.Set(attribute, value);
+            }
+
+            public object GetValue(XElement xml)
+            {
+                return xml.Value;
             }
         }
 
