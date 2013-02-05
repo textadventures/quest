@@ -51,7 +51,7 @@ namespace TextAdventures.Quest
                 return loader.GetValue(xml);
             }
 
-            AddError(string.Format("Unrecognised attribute type '{0}'", type));
+            AddError(string.Format("Unrecognised nested attribute type '{0}'", type));
 
             return null;
         }
@@ -426,7 +426,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class ObjectReferenceLoader : AttributeLoaderBase
+        private class ObjectReferenceLoader : AttributeLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -436,6 +436,11 @@ namespace TextAdventures.Quest
             public override void Load(Element element, string attribute, string value)
             {
                 element.Fields.LazyFields.AddObjectField(attribute, value);   
+            }
+
+            public object GetValue(XElement xml)
+            {
+                return new Types.LazyObjectReference(xml.Value);
             }
         }
     }

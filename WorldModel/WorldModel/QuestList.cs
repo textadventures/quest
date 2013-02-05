@@ -370,12 +370,12 @@ namespace TextAdventures.Quest
 
         public void Insert(int index, T item)
         {
-            throw new NotImplementedException();
+            AddInternal(item, UpdateSource.System, index);
         }
 
         public void RemoveAt(int index)
         {
-            throw new NotImplementedException();
+            RemoveInternal((T)this[index], UpdateSource.System, index);
         }
 
         T IList<T>.this[int index]

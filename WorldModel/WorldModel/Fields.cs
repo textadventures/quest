@@ -995,6 +995,15 @@ namespace TextAdventures.Quest
                 action();
             }
             m_actions = null;
+            foreach (var field in m_fields.FieldNames)
+            {
+                var attribute = m_fields.Get(field);
+                var objectList = attribute as QuestList<object>;
+                if (objectList != null)
+                {
+                    ResolveObjectList(objectList);
+                }
+            }
             m_resolved = true;
         }
 
@@ -1066,6 +1075,20 @@ namespace TextAdventures.Quest
         {
             CheckNotResolved();
             m_actions.Add(action);
+        }
+
+        private void ResolveObjectList(QuestList<object> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var value = list[i];
+                var objRef = value as Types.LazyObjectReference;
+                if (objRef != null)
+                {
+                    list.RemoveAt(i);
+                    list.Insert(i, m_worldModel.Elements.Get(objRef.ObjectName));
+                }
+            }
         }
 
         private void CheckNotResolved()

@@ -181,7 +181,6 @@ namespace TextAdventures.Quest
 
             protected IDictionary<string, string> LoadDictionaryFromXElement(XElement xml, string errorSource)
             {
-                XmlReader reader;
                 var result = new Dictionary<string, string>();
 
                 var items = xml.Elements("item");

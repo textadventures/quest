@@ -425,6 +425,7 @@
     <Compile Include="Templates.cs" />
     <Compile Include="TimerRunner.cs" />
     <Compile Include="Types\EditorCommandPattern.cs" />
+    <Compile Include="Types\LazyObjectReference.cs" />
     <Compile Include="UndoLogger.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="Walkthrough.cs" />
