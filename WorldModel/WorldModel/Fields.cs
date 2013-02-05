@@ -1107,6 +1107,18 @@ namespace TextAdventures.Quest
                     replacement = new QuestList<Element>(objList.Objects.Select(o => m_worldModel.Elements.Get(o)));
                 }
 
+                var objDictionary = value as Types.LazyObjectDictionary;
+                if (objDictionary != null)
+                {
+                    replace = true;
+                    var newDictionary = new QuestDictionary<Element>();
+                    foreach (var kvp in objDictionary.Dictionary)
+                    {
+                        newDictionary.Add(kvp.Key, m_worldModel.Elements.Get(kvp.Value));
+                    }
+                    replacement = newDictionary;
+                }
+
                 if (replace)
                 {
                     list.RemoveAt(i);

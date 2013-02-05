@@ -238,7 +238,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class ObjectDictionaryLoader : DictionaryLoaderBase
+        private class ObjectDictionaryLoader : DictionaryLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -249,6 +249,11 @@ namespace TextAdventures.Quest
             {
                 var result = LoadDictionary(reader, current.Name);
                 current.Fields.LazyFields.AddObjectDictionary(reader.Name, result);
+            }
+
+            public object GetValue(XElement xml)
+            {
+                return new Types.LazyObjectDictionary(LoadDictionaryFromXElement(xml, "(nested objectdictionary)"));
             }
         }
 
