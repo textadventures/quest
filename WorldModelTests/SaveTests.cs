@@ -33,7 +33,9 @@ namespace WorldModelTests
             worldModel.Save(tempFilename);
 
             WorldModel savedGameWorldModel = new WorldModel(tempFilename, null, null);
-            savedGameWorldModel.Initialise(player.Object);
+            success = savedGameWorldModel.Initialise(player.Object);
+            Assert.IsTrue(success, "Initialisation failed");
+
             savedGameWorldModel.Begin();
 
             foreach (string cmd in worldModel.Walkthroughs.Walkthroughs["verify"].Steps)
