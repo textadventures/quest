@@ -133,7 +133,7 @@ namespace TextAdventures.Quest
         {
             public override string AppliesTo
             {
-                get { return "list"; }
+                get { return "stringlist"; }
             }
 
             public override void Load(XmlReader reader, Element current)
