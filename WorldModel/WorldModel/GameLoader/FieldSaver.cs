@@ -26,6 +26,11 @@ namespace TextAdventures.Quest
 
         private void AddSaver(IFieldSaver saver)
         {
+            bool ignore = (saver.MinVersion.HasValue && saver.MinVersion.Value > m_saver.Version)
+                          || (saver.MaxVersion.HasValue && saver.MaxVersion.Value < m_saver.Version);
+
+            if (ignore) return;
+
             m_savers.Add(saver.AppliesTo, saver);
             saver.GameSaver = m_saver;
         }
@@ -48,13 +53,10 @@ namespace TextAdventures.Quest
         {
             if (m_savers.TryGetValue(type, out saver)) return true;
 
-            foreach (KeyValuePair<Type, IFieldSaver> s in m_savers)
+            foreach (var s in m_savers.Where(s => s.Key.IsAssignableFrom(type)))
             {
-                if (s.Key.IsAssignableFrom(type))
-                {
-                    saver = s.Value;
-                    return true;
-                }
+                saver = s.Value;
+                return true;
             }
 
             return false;
@@ -65,6 +67,8 @@ namespace TextAdventures.Quest
             Type AppliesTo { get; }
             void Save(GameXmlWriter writer, Element element, string attribute, object value);
             GameSaver GameSaver { set; }
+            WorldModelVersion? MinVersion { get; }
+            WorldModelVersion? MaxVersion { get; }
         }
 
         private abstract class FieldSaverBase : IFieldSaver
@@ -96,6 +100,9 @@ namespace TextAdventures.Quest
             }
 
             public GameSaver GameSaver { get; set; }
+
+            public virtual WorldModelVersion? MinVersion { get { return null; } }
+            public virtual WorldModelVersion? MaxVersion { get { return null; } }
         }
 
         private class StringSaver : FieldSaverBase
@@ -155,6 +162,11 @@ namespace TextAdventures.Quest
             public override Type AppliesTo
             {
                 get { return typeof(QuestList<string>); }
+            }
+
+            public override WorldModelVersion? MaxVersion
+            {
+                get { return WorldModelVersion.v530; }
             }
 
             public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
@@ -325,6 +337,9 @@ namespace TextAdventures.Quest
             }
 
             public GameSaver GameSaver { get; set; }
+
+            public WorldModelVersion? MinVersion { get { return null; } }
+            public WorldModelVersion? MaxVersion { get { return null; } }
         }
 
         private class ObjectReferenceSaver : FieldSaverBase

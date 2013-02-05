@@ -41,6 +41,11 @@ namespace TextAdventures.Quest
             }
         }
 
+        public WorldModelVersion Version
+        {
+            get { return m_worldModel.Version; }
+        }
+
         private void AddElementSaver(IElementSaver saver)
         {
             saver.GameSaver = this;
