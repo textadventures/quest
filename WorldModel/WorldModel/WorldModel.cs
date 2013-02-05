@@ -164,7 +164,6 @@ namespace TextAdventures.Quest
             m_originalFilename = originalFilename;
             m_elements = new Elements();
             m_undoLogger = new UndoLogger(this);
-            m_saver = new GameSaver(this);
             m_outputLogger = new OutputLogger(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
         }
@@ -498,10 +497,11 @@ namespace TextAdventures.Quest
             loader.FilenameUpdated += loader_FilenameUpdated;
             loader.LoadStatus += loader_LoadStatus;
             m_state = GameState.Loading;
-            bool success = m_filename == null ? true : loader.Load(m_filename);
+            bool success = m_filename == null || loader.Load(m_filename);
             DebugEnabled = !loader.IsCompiledFile;
             m_state = success ? GameState.Running : GameState.Finished;
             m_errors = loader.Errors;
+            m_saver = new GameSaver(this);
             return success;
         }
 

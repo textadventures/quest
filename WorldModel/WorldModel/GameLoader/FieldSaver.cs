@@ -107,8 +107,6 @@ namespace TextAdventures.Quest
 
         private class StringSaver : FieldSaverBase
         {
-            #region IFieldSaver Members
-
             public override Type AppliesTo
             {
                 get { return typeof(string); }
@@ -119,14 +117,10 @@ namespace TextAdventures.Quest
                 string strValue = (string)value;
                 base.WriteAttribute(writer, element, attribute, "string", strValue);
             }
-
-            #endregion
         }
 
         private class BooleanSaver : FieldSaverBase
         {
-            #region IFieldSaver Members
-
             public override Type AppliesTo
             {
                 get { return typeof(bool); }
@@ -151,14 +145,10 @@ namespace TextAdventures.Quest
                     base.WriteAttribute(writer, element, attribute, "boolean", "false");
                 }
             }
-
-            #endregion
         }
 
-        private class StringListSaver : FieldSaverBase
+        private class LegacyStringListSaver : FieldSaverBase
         {
-            #region IFieldSaver Members
-
             public override Type AppliesTo
             {
                 get { return typeof(QuestList<string>); }
@@ -175,8 +165,38 @@ namespace TextAdventures.Quest
                 string saveString = String.Join("; ", list.ToArray());
                 base.WriteAttribute(writer, element, attribute, "list", saveString);
             }
+        }
 
-            #endregion
+        private class StringListSaver : FieldSaverBase
+        {
+            public override Type AppliesTo
+            {
+                get { return typeof(QuestList<string>); }
+            }
+
+            public override WorldModelVersion? MinVersion
+            {
+                get { return WorldModelVersion.v540; }
+            }
+
+            public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
+            {
+                writer.WriteStartElement(attribute);
+                if (!GameSaver.IsImpliedType(element, attribute, "stringlist"))
+                {
+                    writer.WriteAttributeString("type", "stringlist");
+                }
+
+                QuestList<string> list = (QuestList<string>)value;
+
+                foreach (var item in list)
+                {
+                    writer.WriteStartElement("value");
+                    writer.WriteString(item);
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+            }
         }
 
         private class StringDictionarySaver : FieldSaverBase
