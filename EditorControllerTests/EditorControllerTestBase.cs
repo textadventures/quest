@@ -38,13 +38,20 @@ namespace EditorControllerTests
             m_controller.BeginTreeUpdate += m_controller_BeginTreeUpdate;
             m_controller.EndTreeUpdate += m_controller_EndTreeUpdate;
             m_controller.AddedNode += m_controller_AddedNode;
-            m_controller.UndoListUpdated += new EventHandler<EditorController.UpdateUndoListEventArgs>(m_controller_UndoListUpdated);
-            m_controller.RedoListUpdated += new EventHandler<EditorController.UpdateUndoListEventArgs>(m_controller_RedoListUpdated);
+            m_controller.UndoListUpdated += m_controller_UndoListUpdated;
+            m_controller.RedoListUpdated += m_controller_RedoListUpdated;
             string tempFile = System.IO.Path.GetTempFileName();
             ExtractResource("EditorControllerTests.test.aslx", tempFile);
             m_controller.Initialise(tempFile);
             DoExtraInitialisation();
-            System.IO.File.Delete(tempFile);
+            try
+            {
+                System.IO.File.Delete(tempFile);
+            }
+            catch (System.IO.IOException)
+            {
+                // ignore
+            }
         }
 
         private void ExtractResource(string resource, string location)
@@ -81,7 +88,7 @@ namespace EditorControllerTests
             m_tree.EndUpdate();
         }
 
-        void m_controller_AddedNode(object sender, TextAdventures.Quest.EditorController.AddedNodeEventArgs e)
+        void m_controller_AddedNode(object sender, EditorController.AddedNodeEventArgs e)
         {
             m_tree.Add(e.Key, e.Text, e.Parent);
         }
