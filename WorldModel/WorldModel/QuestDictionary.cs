@@ -82,6 +82,7 @@ namespace TextAdventures.Quest
             get { return m_undoLog; }
             set
             {
+                if (m_undoLog == value) return;
                 m_undoLog = value;
                 foreach (var item in Values)
                 {
