@@ -48,6 +48,19 @@
             <value>lamp</value>
           </item>
         </newobjectdictionaryattr>
+        <genericdictionaryattr type="dictionary">
+          <item>
+            <key>k1</key>
+            <value type="string">string1</value>
+          </item>
+          <item>
+            <key>k2</key>
+            <value type="list">
+              <value type="string">list1</value>
+              <value type="int">2</value>
+            </value>
+          </item>
+        </genericdictionaryattr>
       </object>
     </object>
   </object>
@@ -143,6 +156,9 @@
       assert:StringDictionaryItem(lamp.newstringdictionaryattr, "newkey1") = "newvalue1"
       assert:DictionaryCount(lamp.newobjectdictionaryattr) = 1
       assert:ObjectDictionaryItem(lamp.newobjectdictionaryattr, "newkey1") = lamp
+      assert:DictionaryCount(lamp.genericdictionaryattr) = 2
+      assert:StringDictionaryItem(lamp.genericdictionaryattr, "k1") = "string1"
+      assert:StringListItem(DictionaryItem(lamp.genericdictionaryattr, "k2"), 0) = "list1"
       ]]>
     </steps>
   </walkthrough>

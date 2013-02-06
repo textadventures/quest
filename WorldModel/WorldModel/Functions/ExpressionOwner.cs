@@ -162,9 +162,15 @@ namespace TextAdventures.Quest.Functions
             return new QuestDictionary<object>();
         }
 
-        public bool ListContains(IQuestList list, object item)
+        public bool ListContains(/* IQuestList */ object list, object item)
         {
-            return list.Contains(item);
+            IQuestList questList = list as IQuestList;
+            if (questList == null)
+            {
+                throw new Exception(string.Format("ListContains: Invalid list '{0}'", list));
+            }
+
+            return questList.Contains(item);
         }
 
         public QuestList<Element> AllObjects()
@@ -216,39 +222,57 @@ namespace TextAdventures.Quest.Functions
             return list.Count;
         }
 
-        public object ListItem(IQuestList list, int index)
+        public object ListItem(/* IQuestList */ object list, int index)
         {
+            IQuestList questList = list as IQuestList;
+            if (questList == null)
+            {
+                throw new Exception(string.Format("ListItem: Invalid list '{0}'", list));
+            }
+
             try
             {
-                return list[index];
+                return questList[index];
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                throw new Exception(string.Format("ListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, list.Count, list.Count - 1), ex);
+                throw new Exception(string.Format("ListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, questList.Count, questList.Count - 1), ex);
             }
         }
 
-        public string StringListItem(IQuestList list, int index)
+        public string StringListItem(/* IQuestList */ object list, int index)
         {
+            IQuestList questList = list as IQuestList;
+            if (questList == null)
+            {
+                throw new Exception(string.Format("StringListItem: Invalid list '{0}'", list));
+            }
+
             try
             {
-                return list[index] as string;
+                return questList[index] as string;
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                throw new Exception(string.Format("StringListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, list.Count, list.Count - 1), ex);
+                throw new Exception(string.Format("StringListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, questList.Count, questList.Count - 1), ex);
             }
         }
 
-        public Element ObjectListItem(IQuestList list, int index)
+        public Element ObjectListItem(/* IQuestList */ object list, int index)
         {
+            IQuestList questList = list as IQuestList;
+            if (questList == null)
+            {
+                throw new Exception(string.Format("ObjectListItem: Invalid list '{0}'", list));
+            }
+
             try
             {
-                return list[index] as Element;
+                return questList[index] as Element;
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                throw new Exception(string.Format("ObjectListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, list.Count, list.Count - 1), ex);
+                throw new Exception(string.Format("ObjectListItem: index {0} is out of range for this list ({1} items, last index is {2})", index, questList.Count, questList.Count - 1), ex);
             }
         }
 
