@@ -159,7 +159,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class ListLoader : ExtendedAttributeLoaderBase
+        private class ListLoader : ExtendedAttributeLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -169,17 +169,32 @@ namespace TextAdventures.Quest
             public override void Load(XmlReader reader, Element current)
             {
                 XElement xml = XElement.Load(reader.ReadSubtree());
+                var result = LoadQuestList(xml);
+                current.Fields.Set(reader.Name, result);
+            }
+
+            private QuestList<object> LoadQuestList(XElement xml)
+            {
                 var result = new QuestList<object>();
 
                 foreach (var xmlValue in xml.Elements("value"))
                 {
-                    string type = xmlValue.Attribute("type").Value;
+                    var typeAttribute = xmlValue.Attribute("type");
+                    if (typeAttribute == null)
+                    {
+                        throw new Exception("Type not specified for value " + xmlValue);
+                    }
+                    string type = typeAttribute.Value;
                     var value = GameLoader.ReadXmlValue(type, xmlValue);
 
                     result.Add(value);
                 }
+                return result;
+            }
 
-                current.Fields.Set(reader.Name, result);
+            public object GetValue(XElement xml)
+            {
+                return LoadQuestList(xml);
             }
         }
 
