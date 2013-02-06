@@ -159,6 +159,7 @@
       assert:DictionaryCount(lamp.genericdictionaryattr) = 2
       assert:StringDictionaryItem(lamp.genericdictionaryattr, "k1") = "string1"
       assert:StringListItem(DictionaryItem(lamp.genericdictionaryattr, "k2"), 0) = "list1"
+      assert:ToString(ListItem(DictionaryItem(lamp.genericdictionaryattr, "k2"), 1)) = "2"
       ]]>
     </steps>
   </walkthrough>

@@ -452,6 +452,11 @@ namespace TextAdventures.Quest.Functions
             return number.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
+        public string ToString(object obj)
+        {
+            return obj.ToString();
+        }
+
         public bool IsInt(string number)
         {
             int result;
