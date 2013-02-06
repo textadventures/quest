@@ -152,6 +152,11 @@ namespace TextAdventures.Quest.Functions
             return new QuestDictionary<Element>();
         }
 
+        public QuestDictionary<IScript> NewScriptDictionary()
+        {
+            return new QuestDictionary<IScript>();
+        }
+
         public QuestDictionary<object> NewDictionary()
         {
             return new QuestDictionary<object>();

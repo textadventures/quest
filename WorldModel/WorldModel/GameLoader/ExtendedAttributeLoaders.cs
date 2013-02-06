@@ -61,7 +61,7 @@ namespace TextAdventures.Quest
 
         // TO DO: Would be good for ScriptDictionary to use the same <item><key>...</key><value>...</value></item>
         // format as the other dictionary types, then this can simply derive from DictionaryLoaderBase
-        private class ScriptDictionaryLoader : ExtendedAttributeLoaderBase
+        private class ScriptDictionaryLoader : ExtendedAttributeLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -97,7 +97,7 @@ namespace TextAdventures.Quest
                             }
                             else
                             {
-                                throw new InvalidOperationException(string.Format("Invalid element '{0}' in scriptdictionary block for '{1}.{2}' - expected only 'item' elements", reader.Name, current.Name, xmlElementName));
+                                throw new InvalidOperationException(string.Format("Invalid element '{0}' in scriptdictionary block for '{1}.{2}' - expected only 'item' elements", reader.Name, current == null ? "(nested)" : current.Name, xmlElementName));
                             }
                             break;
                         case XmlNodeType.EndElement:
@@ -128,6 +128,14 @@ namespace TextAdventures.Quest
                 }
 
                 throw new Exception("Unexpected end of XML data");
+            }
+
+            public object GetValue(XElement xml)
+            {
+                var xmlReader = xml.CreateReader();
+                // move to first sub-element
+                xmlReader.Read();
+                return new Types.LazyScriptDictionary(LoadScriptDictionary(xmlReader, null, "value"));
             }
         }
 

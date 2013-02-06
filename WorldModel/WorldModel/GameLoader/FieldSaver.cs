@@ -490,7 +490,7 @@ namespace TextAdventures.Quest
 
             public void Save(GameXmlWriter writer, string xmlElementName, object value)
             {
-                throw new NotImplementedException();
+                Save(writer, null, xmlElementName, value);
             }
 
             public GameSaver GameSaver { get; set; }

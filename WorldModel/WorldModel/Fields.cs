@@ -1126,6 +1126,13 @@ namespace TextAdventures.Quest
                     replacement = scriptFactory.CreateScript(script.Script);
                 }
 
+                var scriptDictionary = value as Types.LazyScriptDictionary;
+                if (scriptDictionary != null)
+                {
+                    replace = true;
+                    replacement = ConvertToScriptDictionary(scriptDictionary.Dictionary, scriptFactory);
+                }
+
                 if (replace)
                 {
                     list.RemoveAt(i);
