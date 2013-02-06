@@ -219,24 +219,23 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class DoubleLoader : AttributeLoaderBase
+        private class DoubleLoader : BasicAttributeLoaderBase
         {
             public override string AppliesTo
             {
                 get { return "double"; }
             }
 
-            public override void Load(Element element, string attribute, string value)
+            protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
             {
                 double num;
-                if (double.TryParse(value, System.Globalization.NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowLeadingSign, System.Globalization.CultureInfo.InvariantCulture, out num))
+                if (double.TryParse(s, System.Globalization.NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowLeadingSign, System.Globalization.CultureInfo.InvariantCulture, out num))
                 {
-                    element.Fields.Set(attribute, num);
+                    return new AttributeLoadResult {IsValid = true, Value = num};
                 }
-                else
-                {
-                    GameLoader.AddError(string.Format("Invalid number specified '{0}.{1} = {2}'", element.Name, attribute, value));
-                }
+
+                GameLoader.AddError(string.Format("Invalid number specified '{0} = {1}'", errorSource, s));
+                return new AttributeLoadResult {IsValid = false};
             }
         }
 
