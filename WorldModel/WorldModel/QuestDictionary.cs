@@ -27,6 +27,7 @@ namespace TextAdventures.Quest
         public event EventHandler<QuestDictionaryUpdatedEventArgs<T>> Removed;
 
         private OrderedDictionary<string, T> m_dictionary = new OrderedDictionary<string, T>();
+        private UndoLogger m_undoLog;
 
         public QuestDictionary()
         {
@@ -47,7 +48,15 @@ namespace TextAdventures.Quest
         {
             if (UndoLog != null)
             {
-                UndoLog.AddUndoAction(new UndoDictionaryAdd(this, key, m_dictionary[(string)key], m_dictionary.IndexOfKey((string)key)));
+                // also set UndoLog property on added item, if it needs a reference to the undo logger
+                object value = m_dictionary[(string)key];
+                IMutableField mutableValue = value as IMutableField;
+                if (mutableValue != null)
+                {
+                    mutableValue.UndoLog = UndoLog;
+                }
+
+                UndoLog.AddUndoAction(new UndoDictionaryAdd(this, key, value, m_dictionary.IndexOfKey((string)key)));
             }
         }
 
@@ -70,8 +79,19 @@ namespace TextAdventures.Quest
 
         public UndoLogger UndoLog
         {
-            get;
-            set;
+            get { return m_undoLog; }
+            set
+            {
+                m_undoLog = value;
+                foreach (var item in Values)
+                {
+                    var mutableValue = item as IMutableField;
+                    if (mutableValue != null)
+                    {
+                        mutableValue.UndoLog = value;
+                    }
+                }
+            }
         }
 
         public IMutableField Clone()

@@ -31,6 +31,7 @@ namespace TextAdventures.Quest
         public event EventHandler<QuestListUpdatedEventArgs<T>> Removed;
 
         private List<T> m_list;
+        private UndoLogger m_undoLog;
 
         public QuestList()
         {
@@ -57,8 +58,19 @@ namespace TextAdventures.Quest
 
         public UndoLogger UndoLog
         {
-            get;
-            set;
+            get { return m_undoLog; }
+            set
+            {
+                m_undoLog = value;
+                foreach (var item in this)
+                {
+                    var mutableValue = item as IMutableField;
+                    if (mutableValue != null)
+                    {
+                        mutableValue.UndoLog = value;
+                    }
+                }
+            }
         }
 
         public Element Owner { get; set; }
@@ -179,6 +191,13 @@ namespace TextAdventures.Quest
         {
             if (UndoLog != null)
             {
+                // also set UndoLog property on added item, if it needs a reference to the undo logger
+                IMutableField mutableValue = item as IMutableField;
+                if (mutableValue != null)
+                {
+                    mutableValue.UndoLog = UndoLog;
+                }
+
                 UndoLog.AddUndoAction(new UndoListAdd(this, item, index));
             }
         }
