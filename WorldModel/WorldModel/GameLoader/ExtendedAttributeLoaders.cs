@@ -139,7 +139,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class StringListLoader : ExtendedAttributeLoaderBase
+        private class StringListLoader : ExtendedAttributeLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -151,6 +151,11 @@ namespace TextAdventures.Quest
                 XElement xml = XElement.Load(reader.ReadSubtree());
                 var values = xml.Elements("value").Select(e => e.Value);
                 current.Fields.Set(reader.Name, new QuestList<string>(values));
+            }
+
+            public object GetValue(XElement xml)
+            {
+                return new QuestList<string>(xml.Elements("value").Select(e => e.Value));
             }
         }
 
@@ -178,18 +183,18 @@ namespace TextAdventures.Quest
             }
         }
 
-        private abstract class DictionaryLoaderBase : ExtendedAttributeLoaderBase
+        private abstract class DictionaryLoaderBase<T> : ExtendedAttributeLoaderBase
         {
-            protected IDictionary<string, string> LoadDictionary(XmlReader reader, string xmlElementName)
+            protected IDictionary<string, T> LoadDictionary(XmlReader reader, string xmlElementName)
             {
                 XElement xml = XElement.Load(reader.ReadSubtree());
 
                 return LoadDictionaryFromXElement(xml, string.Format("{0}.{1}", xmlElementName, reader.Name));
             }
 
-            protected IDictionary<string, string> LoadDictionaryFromXElement(XElement xml, string errorSource)
+            protected IDictionary<string, T> LoadDictionaryFromXElement(XElement xml, string errorSource)
             {
-                var result = new Dictionary<string, string>();
+                var result = new Dictionary<string, T>();
 
                 var items = xml.Elements("item");
                 foreach (var item in items)
@@ -213,7 +218,7 @@ namespace TextAdventures.Quest
                     {
                         try
                         {
-                            result.Add(key.Value, value.Value);
+                            AddResultToDictionary(result, key.Value, value);
                         }
                         catch (Exception ex)
                         {
@@ -225,9 +230,11 @@ namespace TextAdventures.Quest
 
                 return result;
             }
+
+            protected abstract void AddResultToDictionary(IDictionary<string, T> dictionary, string key, XElement xmlValue);
         }
 
-        private class StringDictionaryLoader : DictionaryLoaderBase, IValueLoader
+        private class StringDictionaryLoader : DictionaryLoaderBase<string>, IValueLoader
         {
             public override string AppliesTo
             {
@@ -244,9 +251,14 @@ namespace TextAdventures.Quest
             {
                 return new QuestDictionary<string>(LoadDictionaryFromXElement(xml, "(nested stringdictionary)"));
             }
+
+            protected override void AddResultToDictionary(IDictionary<string, string> dictionary, string key, XElement xmlValue)
+            {
+                dictionary.Add(key, xmlValue.Value);
+            }
         }
 
-        private class ObjectDictionaryLoader : DictionaryLoaderBase, IValueLoader
+        private class ObjectDictionaryLoader : DictionaryLoaderBase<string>, IValueLoader
         {
             public override string AppliesTo
             {
@@ -263,9 +275,14 @@ namespace TextAdventures.Quest
             {
                 return new Types.LazyObjectDictionary(LoadDictionaryFromXElement(xml, "(nested objectdictionary)"));
             }
+
+            protected override void AddResultToDictionary(IDictionary<string, string> dictionary, string key, XElement xmlValue)
+            {
+                dictionary.Add(key, xmlValue.Value);
+            }
         }
 
-        private class GenericDictionaryLoader : ExtendedAttributeLoaderBase
+        private class DictionaryLoader : DictionaryLoaderBase<object>
         {
             public override string AppliesTo
             {
@@ -274,7 +291,15 @@ namespace TextAdventures.Quest
 
             public override void Load(XmlReader reader, Element current)
             {
-                // TO DO: Implement
+                var result = LoadDictionary(reader, current.Name);
+                current.Fields.Set(reader.Name, new QuestDictionary<object>(result));
+            }
+
+            protected override void AddResultToDictionary(IDictionary<string, object> dictionary, string key, XElement xmlValue)
+            {
+                string type = xmlValue.Attribute("type").Value;
+                var value = GameLoader.ReadXmlValue(type, xmlValue);
+                dictionary.Add(key, value);
             }
         }
     }

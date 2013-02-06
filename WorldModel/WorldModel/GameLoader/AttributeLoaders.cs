@@ -236,7 +236,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class BooleanLoader : AttributeLoaderBase
+        private class BooleanLoader : AttributeLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -245,19 +245,32 @@ namespace TextAdventures.Quest
 
             public override void Load(Element element, string attribute, string value)
             {
+                bool error;
+                var result = GetBoolValue(value, string.Format("{0}.{1}", element.Name, attribute), out error);
+                if (!error) element.Fields.Set(attribute, result);
+            }
+
+            private bool GetBoolValue(string value, string errorSource, out bool error)
+            {
+                error = false;
                 switch (value)
                 {
                     case "":
                     case "true":
-                        element.Fields.Set(attribute, true);
-                        break;
+                        return true;
                     case "false":
-                        element.Fields.Set(attribute, false);
-                        break;
+                        return false;
                     default:
-                        GameLoader.AddError(string.Format("Invalid boolean specified '{0}.{1} = {2}'", element.Name, attribute, value));
-                        break;
+                        GameLoader.AddError(string.Format("Invalid boolean specified '{0} = {1}'", errorSource, value));
+                        error = true;
+                        return false;
                 }
+            }
+
+            public object GetValue(XElement xml)
+            {
+                bool error;
+                return GetBoolValue(xml.Value, "(nested boolean)", out error);
             }
         }
 
