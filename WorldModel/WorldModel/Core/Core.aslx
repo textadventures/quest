@@ -323,11 +323,6 @@
       baselist = object.displayverbs
     }
     
-    // workaround for empty string lists loading as a list with one zero-length item
-    if (ListCount(baselist) = 1 and LengthOf(StringListItem(baselist, 0)) = 0) {
-      baselist = NewStringList()
-    }
-    
     if (not game.autodisplayverbs) {
       return (baselist)
     }
