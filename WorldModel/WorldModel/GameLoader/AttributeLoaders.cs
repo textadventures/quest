@@ -158,7 +158,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class ScriptLoader : AttributeLoaderBase
+        private class ScriptLoader : AttributeLoaderBase, IValueLoader
         {
             public override string AppliesTo
             {
@@ -168,6 +168,11 @@ namespace TextAdventures.Quest
             public override void Load(Element element, string attribute, string value)
             {
                 element.Fields.LazyFields.AddScript(attribute, value);
+            }
+
+            public object GetValue(XElement xml)
+            {
+                return new Types.LazyScript(xml.Value);
             }
         }
 

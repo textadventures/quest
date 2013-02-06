@@ -428,6 +428,7 @@
     <Compile Include="Types\LazyObjectDictionary.cs" />
     <Compile Include="Types\LazyObjectList.cs" />
     <Compile Include="Types\LazyObjectReference.cs" />
+    <Compile Include="Types\LazyScript.cs" />
     <Compile Include="UndoLogger.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="Walkthrough.cs" />

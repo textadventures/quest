@@ -1001,7 +1001,7 @@ namespace TextAdventures.Quest
                 var objectList = attribute as QuestList<object>;
                 if (objectList != null)
                 {
-                    ResolveObjectList(objectList);
+                    ResolveObjectList(objectList, scriptFactory);
                 }
             }
             m_resolved = true;
@@ -1077,7 +1077,7 @@ namespace TextAdventures.Quest
             m_actions.Add(action);
         }
 
-        private void ResolveObjectList(QuestList<object> list)
+        private void ResolveObjectList(QuestList<object> list, ScriptFactory scriptFactory)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -1086,7 +1086,7 @@ namespace TextAdventures.Quest
                 var genericList = value as QuestList<object>;
                 if (genericList != null)
                 {
-                    ResolveObjectList(genericList);
+                    ResolveObjectList(genericList, scriptFactory);
                     continue;
                 }
 
@@ -1117,6 +1117,13 @@ namespace TextAdventures.Quest
                         newDictionary.Add(kvp.Key, m_worldModel.Elements.Get(kvp.Value));
                     }
                     replacement = newDictionary;
+                }
+
+                var script = value as Types.LazyScript;
+                if (script != null)
+                {
+                    replace = true;
+                    replacement = scriptFactory.CreateScript(script.Script);
                 }
 
                 if (replace)
