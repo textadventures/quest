@@ -17,6 +17,16 @@ namespace TextAdventures.Quest.Functions
             m_worldModel = worldModel;
         }
 
+        private T GetParameter<T>(object parameter, string caller, string expectedType) where T : class
+        {
+            T result = parameter as T;
+            if (result == null)
+            {
+                throw new Exception(string.Format("{0} function expected {1} parameter but was passed '{2}'", caller, expectedType, parameter ?? "null"));
+            }
+            return result;
+        }
+
         public string Template(string template)
         {
             return m_worldModel.Template.GetText(template);
@@ -32,99 +42,118 @@ namespace TextAdventures.Quest.Functions
             return m_worldModel.Template.GetDynamicText(template, text);
         }
 
-        public bool HasString(Element obj, string property)
+        public bool HasString(/* Element */ object obj, string property)
         {
-            return obj.Fields.HasString(property);
+            Element element = GetParameter<Element>(obj, "HasString", "object");
+            return element.Fields.HasString(property);
         }
 
-        public string GetString(Element obj, string property)
+        public string GetString(/* Element */ object obj, string property)
         {
-            return obj.Fields.GetString(property);
+            Element element = GetParameter<Element>(obj, "GetString", "object");
+            return element.Fields.GetString(property);
         }
 
-        public bool HasBoolean(Element obj, string property)
+        public bool HasBoolean(/* Element */ object obj, string property)
         {
-            return obj.Fields.HasType<bool>(property);
+            Element element = GetParameter<Element>(obj, "HasBoolean", "object");
+            return element.Fields.HasType<bool>(property);
         }
 
-        public bool GetBoolean(Element obj, string property)
+        public bool GetBoolean(/* Element */ object obj, string property)
         {
-            return obj.Fields.GetAsType<bool>(property);
+            Element element = GetParameter<Element>(obj, "GetBoolean", "object");
+            return element.Fields.GetAsType<bool>(property);
+        }
+        
+        public bool HasInt(/* Element */ object obj, string property)
+        {
+            Element element = GetParameter<Element>(obj, "HasInt", "object");
+            return element.Fields.HasType<int>(property);
         }
 
-        public bool HasInt(Element obj, string property)
+        public int GetInt(/* Element */ object obj, string property)
         {
-            return obj.Fields.HasType<int>(property);
+            Element element = GetParameter<Element>(obj, "GetInt", "object");
+            return element.Fields.GetAsType<int>(property);
         }
 
-        public int GetInt(Element obj, string property)
+        public bool HasDouble(/* Element */ object obj, string property)
         {
-            return obj.Fields.GetAsType<int>(property);
+            Element element = GetParameter<Element>(obj, "HasDouble", "object");
+            return element.Fields.HasType<double>(property);
         }
 
-        public bool HasDouble(Element obj, string property)
+        public double GetDouble(/* Element */ object obj, string property)
         {
-            return obj.Fields.HasType<double>(property);
+            Element element = GetParameter<Element>(obj, "GetDouble", "object");
+            return element.Fields.GetAsType<double>(property);
         }
 
-        public double GetDouble(Element obj, string property)
+        public bool HasScript(/* Element */ object obj, string property)
         {
-            return obj.Fields.GetAsType<double>(property);
+            Element element = GetParameter<Element>(obj, "HasScript", "object");
+            return element.Fields.HasType<IScript>(property);
         }
 
-        public bool HasScript(Element obj, string property)
+        public bool HasObject(/* Element */ object obj, string property)
         {
-            return obj.Fields.HasType<IScript>(property);
+            Element element = GetParameter<Element>(obj, "HasObject", "object");
+            return element.Fields.HasType<Element>(property);
         }
 
-        public bool HasObject(Element obj, string property)
+        public bool HasDelegateImplementation(/* Element */ object obj, string property)
         {
-            return obj.Fields.HasType<Element>(property);
+            Element element = GetParameter<Element>(obj, "HasDelegateImplementation", "object");
+            return element.Fields.HasType<DelegateImplementation>(property);
         }
 
-        public bool HasDelegateImplementation(Element obj, string property)
+        public object GetAttribute(/* Element */ object obj, string property)
         {
-            return obj.Fields.HasType<DelegateImplementation>(property);
+            Element element = GetParameter<Element>(obj, "GetAttribute", "object");
+            return element.Fields.Get(property);
         }
 
-        public object GetAttribute(Element obj, string property)
+        public bool HasAttribute(/* Element */ object obj, string property)
         {
-            return obj.Fields.Get(property);
+            Element element = GetParameter<Element>(obj, "HasAttribute", "object");
+            return element.Fields.Exists(property, true);
         }
 
-        public bool HasAttribute(Element obj, string property)
+        public QuestList<string> GetAttributeNames(/* Element */ object obj, bool includeInheritedAttributes)
         {
-            return obj.Fields.Exists(property, true);
+            Element element = GetParameter<Element>(obj, "GetAttributeNames", "object");
+            return new QuestList<string>(element.Fields.GetAttributeNames(includeInheritedAttributes));
         }
 
-        public QuestList<string> GetAttributeNames(Element obj, bool includeInheritedAttributes)
+        public string GetExitByLink(/* Element */ object from, /* Element */ object to)
         {
-            return new QuestList<string>(obj.Fields.GetAttributeNames(includeInheritedAttributes));
-        }
-
-        public string GetExitByLink(Element from, Element to)
-        {
+            Element fromElement = GetParameter<Element>(from, "GetExitByLink", "object");
+            Element toElement = GetParameter<Element>(to, "GetExitByLink", "object");
             foreach (Element e in m_worldModel.Objects)
             {
-                if (e.Parent == from && e.Fields[FieldDefinitions.To] == to) return e.Name;
+                if (e.Parent == fromElement && e.Fields[FieldDefinitions.To] == toElement) return e.Name;
             }
 
             return null;
         }
 
-        public string GetExitByName(Element parent, string name)
+        public string GetExitByName(/* Element */ object parent, string name)
         {
+            Element parentElement = GetParameter<Element>(parent, "GetExitByName", "object");
             foreach (Element e in m_worldModel.Objects)
             {
-                if (e.Parent == parent && e.Fields[FieldDefinitions.Alias] == name) return e.Name;
+                if (e.Parent == parentElement && e.Fields[FieldDefinitions.Alias] == name) return e.Name;
             }
 
             return null;
         }
 
-        public bool Contains(Element parent, Element name)
+        public bool Contains(/* Element */ object parent, /* Element */ object name)
         {
-            return m_worldModel.ObjectContains(parent, name);
+            Element parentElement = GetParameter<Element>(parent, "Contains", "object");
+            Element nameElement = GetParameter<Element>(name, "Contains", "object");
+            return m_worldModel.ObjectContains(parentElement, nameElement);
         }
 
         public QuestList<Element> NewObjectList()
@@ -164,12 +193,7 @@ namespace TextAdventures.Quest.Functions
 
         public bool ListContains(/* IQuestList */ object list, object item)
         {
-            IQuestList questList = list as IQuestList;
-            if (questList == null)
-            {
-                throw new Exception(string.Format("ListContains: Invalid list '{0}'", list));
-            }
-
+            IQuestList questList = GetParameter<IQuestList>(list, "ListContains", "list");
             return questList.Contains(item);
         }
 
@@ -217,18 +241,15 @@ namespace TextAdventures.Quest.Functions
             return result;
         }
 
-        public int ListCount(ICollection list)
+        public int ListCount(/* ICollection */ object list)
         {
-            return list.Count;
+            ICollection questList = GetParameter<ICollection>(list, "ListCount", "list");
+            return questList.Count;
         }
 
         public object ListItem(/* IQuestList */ object list, int index)
         {
-            IQuestList questList = list as IQuestList;
-            if (questList == null)
-            {
-                throw new Exception(string.Format("ListItem: Invalid list '{0}'", list));
-            }
+            IQuestList questList = GetParameter<IQuestList>(list, "ListItem", "list");
 
             try
             {
@@ -242,11 +263,7 @@ namespace TextAdventures.Quest.Functions
 
         public string StringListItem(/* IQuestList */ object list, int index)
         {
-            IQuestList questList = list as IQuestList;
-            if (questList == null)
-            {
-                throw new Exception(string.Format("StringListItem: Invalid list '{0}'", list));
-            }
+            IQuestList questList = GetParameter<IQuestList>(list, "StringListItem", "list");
 
             try
             {
@@ -260,11 +277,7 @@ namespace TextAdventures.Quest.Functions
 
         public Element ObjectListItem(/* IQuestList */ object list, int index)
         {
-            IQuestList questList = list as IQuestList;
-            if (questList == null)
-            {
-                throw new Exception(string.Format("ObjectListItem: Invalid list '{0}'", list));
-            }
+            IQuestList questList = GetParameter<IQuestList>(list, "ObjectListItem", "list");
 
             try
             {
@@ -293,9 +306,10 @@ namespace TextAdventures.Quest.Functions
             return result;
         }
 
-        public string TypeOf(Element obj, string attribute)
+        public string TypeOf(/* Element */ object obj, string attribute)
         {
-            object value = obj.Fields.Get(attribute);
+            Element element = GetParameter<Element>(obj, "TypeOf", "object");
+            object value = element.Fields.Get(attribute);
             return TypeOf(value);
         }
 
@@ -307,13 +321,14 @@ namespace TextAdventures.Quest.Functions
             return WorldModel.ConvertTypeToTypeName(value.GetType());
         }
 
-        public object RunDelegateFunction(Element obj, string del, params object[] parameters)
+        public object RunDelegateFunction(/* Element */ object obj, string del, params object[] parameters)
         {
-            DelegateImplementation impl = obj.Fields.Get(del) as DelegateImplementation;
+            Element element = GetParameter<Element>(obj, "RunDelegateFunction", "object");
+            DelegateImplementation impl = element.Fields.Get(del) as DelegateImplementation;
 
             if (impl == null)
             {
-                throw new Exception(string.Format("Object '{0}' has no delegate implementation '{1}'", obj.Name, del));
+                throw new Exception(string.Format("Object '{0}' has no delegate implementation '{1}'", element.Name, del));
             }
 
             Parameters paramValues = new Parameters();
@@ -325,7 +340,7 @@ namespace TextAdventures.Quest.Functions
                 cnt++;
             }
 
-            return m_worldModel.RunDelegateScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
+            return m_worldModel.RunDelegateScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, element);
         }
 
         public string SafeXML(string input)
@@ -363,23 +378,27 @@ namespace TextAdventures.Quest.Functions
             return Utility.Populate(regexPattern, input, m_worldModel.RegexCache, cacheID);
         }
 
-        public object DictionaryItem(IDictionary dictionary, string key)
+        public object DictionaryItem(/* IDictionary */ object obj, string key)
         {
+            IDictionary dictionary = GetParameter<IDictionary>(obj, "DictionaryItem", "dictionary");
             return dictionary[key];
         }
 
-        public string StringDictionaryItem(IDictionary dictionary, string key)
+        public string StringDictionaryItem(/* IDictionary */ object obj, string key)
         {
+            IDictionary dictionary = GetParameter<IDictionary>(obj, "StringDictionaryItem", "dictionary");
             return dictionary[key] as string;
         }
 
-        public Element ObjectDictionaryItem(IDictionary dictionary, string key)
+        public Element ObjectDictionaryItem(/* IDictionary */ object obj, string key)
         {
+            IDictionary dictionary = GetParameter<IDictionary>(obj, "ObjectDictionaryItem", "dictionary");
             return dictionary[key] as Element;
         }
 
-        public IScript ScriptDictionaryItem(IDictionary dictionary, string key)
+        public IScript ScriptDictionaryItem(/* IDictionary */ object obj, string key)
         {
+            IDictionary dictionary = GetParameter<IDictionary>(obj, "ScriptDictionaryItem", "dictionary");
             return dictionary[key] as IScript;
         }
 
@@ -401,13 +420,15 @@ namespace TextAdventures.Quest.Functions
             return m_worldModel.DisplayMenu(caption, options, allowCancel, false);
         }
 
-        public bool DictionaryContains(IDictionary dictionary, string key)
+        public bool DictionaryContains(/* IDictionary */ object obj, string key)
         {
+            IDictionary dictionary = GetParameter<IDictionary>(obj, "DictionaryContains", "dictionary");
             return dictionary.Contains(key);
         }
 
-        public int DictionaryCount(IDictionary dictionary)
+        public int DictionaryCount(IDictionary obj)
         {
+            IDictionary dictionary = GetParameter<IDictionary>(obj, "DictionaryCount", "dictionary");
             return dictionary.Count;
         }
 
@@ -490,22 +511,25 @@ namespace TextAdventures.Quest.Functions
             return Eval(expression, null);
         }
 
-        public object Eval(string expression, IDictionary parameters)
+        public object Eval(string expression, /* IDictionary */ object obj)
         {
+            IDictionary parameters = GetParameter<IDictionary>(obj, "Eval", "dictionary");
             ExpressionGeneric expr = new ExpressionGeneric(expression, new ScriptContext(m_worldModel));
             Context context = new Context();
             if (parameters != null) context.Parameters = new Parameters(parameters);
             return expr.Execute(context);
         }
 
-        public Element Clone(Element element)
+        public Element Clone(/* Element */ object obj)
         {
+            Element element = GetParameter<Element>(obj, "Clone", "object");
             Element newElement = element.Clone();
             return newElement;
         }
 
-        public bool DoesInherit(Element element, string typeName)
+        public bool DoesInherit(/* Element */ object obj, string typeName)
         {
+            Element element = GetParameter<Element>(obj, "DoesInherit", "object");
             Element type = m_worldModel.Elements.Get(ElementType.ObjectType, typeName);
             return element.Fields.InheritsTypeRecursive(type);
         }
@@ -546,13 +570,15 @@ namespace TextAdventures.Quest.Functions
             return list.Exclude(excludeList);
         }
 
-        public QuestList<Element> GetAllChildObjects(Element element)
+        public QuestList<Element> GetAllChildObjects(/* Element */ object obj)
         {
+            Element element = GetParameter<Element>(obj, "GetAllChildObjects", "object");
             return GetAllChildren(element, ObjectType.Object);
         }
 
-        private QuestList<Element> GetAllChildren(Element element, ObjectType type)
+        private QuestList<Element> GetAllChildren(/* Element */ object obj, ObjectType type)
         {
+            Element element = GetParameter<Element>(obj, "GetAllChildren", "object");
             QuestList<Element> result = new QuestList<Element>();
             foreach (Element child in m_worldModel.Elements.GetDirectChildren(element).Where(e => e.ElemType == ElementType.Object && e.Type == type))
             {
@@ -562,8 +588,9 @@ namespace TextAdventures.Quest.Functions
             return result;
         }
 
-        public QuestList<Element> GetDirectChildren(Element element)
+        public QuestList<Element> GetDirectChildren(/* Element */ object obj)
         {
+            Element element = GetParameter<Element>(obj, "GetDirectChildren", "object");
             return new QuestList<Element>(
                 m_worldModel.Elements.GetDirectChildren(element)
                 .Where(e => e.ElemType == ElementType.Object && e.Type == ObjectType.Object));
@@ -574,8 +601,9 @@ namespace TextAdventures.Quest.Functions
             return m_worldModel.State != GameState.Finished;
         }
 
-        public QuestList<Element> ObjectListSort(QuestList<Element> list, params string[] attribute)
+        public QuestList<Element> ObjectListSort(/* QuestList<Element> */ object obj, params string[] attribute)
         {
+            var list = GetParameter<QuestList<Element>>(obj, "ObjectListSort", "objectlist");
             IOrderedEnumerable<Element> result = list.OrderBy(e => e.Fields.Get(attribute[0]));
             for (int i = 1; i < attribute.Length; i++)
             {
@@ -585,18 +613,21 @@ namespace TextAdventures.Quest.Functions
             return new QuestList<Element>(result);
         }
 
-        public QuestList<Element> ObjectListSortDescending(QuestList<Element> list, params string[] attribute)
+        public QuestList<Element> ObjectListSortDescending(/* QuestList<Element> */ object obj, params string[] attribute)
         {
+            var list = GetParameter<QuestList<Element>>(obj, "ObjectListSortDescending", "objectlist");
             return new QuestList<Element>(ObjectListSort(list, attribute).Reverse());
         }
 
-        public QuestList<string> StringListSort(QuestList<string> list)
+        public QuestList<string> StringListSort(/* QuestList<string> */ object obj)
         {
+            var list = GetParameter<QuestList<string>>(obj, "StringListSort", "objectlist");
             return new QuestList<string>(list.OrderBy(item => item));
         }
 
-        public QuestList<string> StringListSortDescending(QuestList<string> list)
+        public QuestList<string> StringListSortDescending(/* QuestList<string> */ object obj)
         {
+            var list = GetParameter<QuestList<string>>(obj, "StringListSortDescending", "objectlist");
             return new QuestList<string>(StringListSort(list).Reverse());
         }
     }
