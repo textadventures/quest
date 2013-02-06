@@ -116,12 +116,17 @@
 
   <function name="ProcessTextCommand_Once" type="string" parameters="section, fulltext">
     if (not HasAttribute(game, "textprocessor_seen")) {
-      game.textprocessor_seen = NewStringList()
+      game.textprocessor_seen = NewDictionary()
     }
-    if (not ListContains(game.textprocessor_seen, fulltext)) {
-      // TO DO: Would be better to have a dictionary on the game, with keys as fulltext, and values as section.
-      // Until then, this implementation only allows one {once} section per block of text.
-      list add (game.textprocessor_seen, fulltext)
+    if (not DictionaryContains(game.textprocessor_seen, fulltext)) {
+      onceSectionsInThisText = NewList()
+      dictionary add (game.textprocessor_seen, fulltext, onceSectionsInThisText)
+    }
+    else {
+      onceSectionsInThisText = DictionaryItem(game.textprocessor_seen, fulltext)
+    }
+    if (not ListContains(onceSectionsInThisText, section)) {
+      list add (onceSectionsInThisText, section)
       return (ProcessText(Mid(section, 6)))
     }
     else {
