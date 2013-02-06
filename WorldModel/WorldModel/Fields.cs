@@ -1003,6 +1003,12 @@ namespace TextAdventures.Quest
                 {
                     ResolveObjectList(objectList, scriptFactory);
                 }
+
+                var objectDictionary = attribute as QuestDictionary<object>;
+                if (objectDictionary != null)
+                {
+                    ResolveObjectDictionary(objectDictionary, scriptFactory);
+                }
             }
             m_resolved = true;
         }
@@ -1082,56 +1088,9 @@ namespace TextAdventures.Quest
             for (int i = 0; i < list.Count; i++)
             {
                 var value = list[i];
-                
-                var genericList = value as QuestList<object>;
-                if (genericList != null)
-                {
-                    ResolveObjectList(genericList, scriptFactory);
-                    continue;
-                }
 
-                bool replace = false;
-                object replacement = null;
-
-                var objRef = value as Types.LazyObjectReference;
-                if (objRef != null)
-                {
-                    replace = true;
-                    replacement = m_worldModel.Elements.Get(objRef.ObjectName);
-                }
-
-                var objList = value as Types.LazyObjectList;
-                if (objList != null)
-                {
-                    replace = true;
-                    replacement = new QuestList<Element>(objList.Objects.Select(o => m_worldModel.Elements.Get(o)));
-                }
-
-                var objDictionary = value as Types.LazyObjectDictionary;
-                if (objDictionary != null)
-                {
-                    replace = true;
-                    var newDictionary = new QuestDictionary<Element>();
-                    foreach (var kvp in objDictionary.Dictionary)
-                    {
-                        newDictionary.Add(kvp.Key, m_worldModel.Elements.Get(kvp.Value));
-                    }
-                    replacement = newDictionary;
-                }
-
-                var script = value as Types.LazyScript;
-                if (script != null)
-                {
-                    replace = true;
-                    replacement = scriptFactory.CreateScript(script.Script);
-                }
-
-                var scriptDictionary = value as Types.LazyScriptDictionary;
-                if (scriptDictionary != null)
-                {
-                    replace = true;
-                    replacement = ConvertToScriptDictionary(scriptDictionary.Dictionary, scriptFactory);
-                }
+                object replacement;
+                var replace = ReplaceValue(value, scriptFactory, out replacement);
 
                 if (replace)
                 {
@@ -1139,6 +1098,83 @@ namespace TextAdventures.Quest
                     list.Insert(i, replacement);
                 }
             }
+        }
+
+        private void ResolveObjectDictionary(QuestDictionary<object> dictionary, ScriptFactory scriptFactory)
+        {
+            var copy = new Dictionary<string, object>(dictionary);
+
+            foreach (var item in copy)
+            {
+                object replacement;
+                var replace = ReplaceValue(item.Value, scriptFactory, out replacement);
+
+                if (replace)
+                {
+                    dictionary[item.Key] = replacement;
+                }
+            }
+        }
+
+        private bool ReplaceValue(object value, ScriptFactory scriptFactory, out object replacement)
+        {
+            replacement = null;
+            
+            var genericList = value as QuestList<object>;
+            if (genericList != null)
+            {
+                ResolveObjectList(genericList, scriptFactory);
+                return false;
+            }
+
+            var genericDictionary = value as QuestDictionary<object>;
+            if (genericDictionary != null)
+            {
+                ResolveObjectDictionary(genericDictionary, scriptFactory);
+                return false;
+            }
+
+            var objRef = value as Types.LazyObjectReference;
+            if (objRef != null)
+            {
+                replacement = m_worldModel.Elements.Get(objRef.ObjectName);
+                return true;
+            }
+
+            var objList = value as Types.LazyObjectList;
+            if (objList != null)
+            {
+                replacement = new QuestList<Element>(objList.Objects.Select(o => m_worldModel.Elements.Get(o)));
+                return true;
+            }
+
+            var objDictionary = value as Types.LazyObjectDictionary;
+            if (objDictionary != null)
+            {
+                var newDictionary = new QuestDictionary<Element>();
+                foreach (var kvp in objDictionary.Dictionary)
+                {
+                    newDictionary.Add(kvp.Key, m_worldModel.Elements.Get(kvp.Value));
+                }
+                replacement = newDictionary;
+                return true;
+            }
+
+            var script = value as Types.LazyScript;
+            if (script != null)
+            {
+                replacement = scriptFactory.CreateScript(script.Script);
+                return true;
+            }
+
+            var scriptDictionary = value as Types.LazyScriptDictionary;
+            if (scriptDictionary != null)
+            {
+                replacement = ConvertToScriptDictionary(scriptDictionary.Dictionary, scriptFactory);
+                return true;
+            }
+
+            return false;
         }
 
         private void CheckNotResolved()
