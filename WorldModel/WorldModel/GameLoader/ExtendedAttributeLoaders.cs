@@ -282,7 +282,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class DictionaryLoader : DictionaryLoaderBase<object>
+        private class DictionaryLoader : DictionaryLoaderBase<object>, IValueLoader
         {
             public override string AppliesTo
             {
@@ -300,6 +300,11 @@ namespace TextAdventures.Quest
                 string type = xmlValue.Attribute("type").Value;
                 var value = GameLoader.ReadXmlValue(type, xmlValue);
                 dictionary.Add(key, value);
+            }
+
+            public object GetValue(XElement xml)
+            {
+                return new QuestDictionary<object>(LoadDictionaryFromXElement(xml, "(nested dictionary)"));
             }
         }
     }

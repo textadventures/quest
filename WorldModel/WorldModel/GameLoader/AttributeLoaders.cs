@@ -40,6 +40,7 @@ namespace TextAdventures.Quest
         private void AddValueLoader(IValueLoader loader)
         {
             m_valueLoaders.Add(loader.AppliesTo, loader);
+            loader.GameLoader = this;
         }
 
         private object ReadXmlValue(string type, XElement xml)
@@ -68,6 +69,7 @@ namespace TextAdventures.Quest
         {
             string AppliesTo { get; }
             object GetValue(XElement xml);
+            GameLoader GameLoader { set; }
         }
 
         private abstract class AttributeLoaderBase : IAttributeLoader
