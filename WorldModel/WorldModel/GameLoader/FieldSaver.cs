@@ -309,7 +309,7 @@ namespace TextAdventures.Quest
 
             protected abstract string TypeName { get; }
 
-            protected abstract string WriteValue(T value);
+            protected abstract string GetValueString(T value);
 
             public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
             {
@@ -327,11 +327,16 @@ namespace TextAdventures.Quest
                     writer.WriteStartElement("key");
                     writer.WriteString(item.Key);
                     writer.WriteEndElement();
-                    writer.WriteStartElement("value");
-                    writer.WriteString(WriteValue(item.Value));
-                    writer.WriteEndElement();
+                    WriteXml(writer, item.Value);
                     writer.WriteEndElement();
                 }
+                writer.WriteEndElement();
+            }
+
+            protected virtual void WriteXml(GameXmlWriter writer, T value)
+            {
+                writer.WriteStartElement("value");
+                writer.WriteString(GetValueString(value));
                 writer.WriteEndElement();
             }
         }
@@ -348,7 +353,7 @@ namespace TextAdventures.Quest
                 get { return "stringdictionary"; }
             }
 
-            protected override string WriteValue(string value)
+            protected override string GetValueString(string value)
             {
                 return value;
             }
@@ -366,22 +371,32 @@ namespace TextAdventures.Quest
                 get { return "objectdictionary"; }
             }
 
-            protected override string WriteValue(Element value)
+            protected override string GetValueString(Element value)
             {
                 return value.Name;
             }
         }
 
-        private class GenericDictionarySaver : FieldSaverBase
+        private class DictionarySaver : DictionarySaverBase<object>
         {
             public override Type AppliesTo
             {
                 get { return typeof(QuestDictionary<object>); }
             }
 
-            public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
+            protected override string TypeName
             {
-                // TO DO: Implement
+                get { return "dictionary"; }
+            }
+
+            protected override string GetValueString(object value)
+            {
+                throw new NotImplementedException();
+            }
+
+            protected override void WriteXml(GameXmlWriter writer, object value)
+            {
+                FieldSaver.SaveValue(writer, "value", value);
             }
         }
 
