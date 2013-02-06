@@ -72,6 +72,7 @@
     <Compile Include="QuestListTest.cs" />
     <Compile Include="SaveTests.cs" />
     <Compile Include="SwitchScriptConstructorTest.cs" />
+    <Compile Include="ComplexTypesTests.cs" />
     <Compile Include="UtilityTests.cs" />
     <Compile Include="Walkthrough.cs" />
   </ItemGroup>
