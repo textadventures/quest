@@ -83,6 +83,31 @@ namespace TextAdventures.Quest
             }
         }
 
+        private abstract class BasicAttributeLoaderBase : AttributeLoaderBase, IValueLoader
+        {
+            protected class AttributeLoadResult
+            {
+                public bool IsValid { get; set; }
+                public object Value { get; set; }
+            }
+
+            public object GetValue(XElement xml)
+            {
+                return GetValueFromString(xml.Value, "(nested)").Value;
+            }
+
+            public override void Load(Element element, string attribute, string value)
+            {
+                var result = GetValueFromString(value, string.Format("{0}.{1}", element.Name, attribute));
+                if (result.IsValid)
+                {
+                    element.Fields.Set(attribute, result.Value);
+                }
+            }
+
+            protected abstract AttributeLoadResult GetValueFromString(string s, string errorSource);
+        }
+
         private class SimpleStringListLoader : AttributeLoaderBase
         {
             public override string AppliesTo
@@ -215,62 +240,46 @@ namespace TextAdventures.Quest
             }
         }
 
-        private class IntLoader : AttributeLoaderBase
+        private class IntLoader : BasicAttributeLoaderBase
         {
             public override string AppliesTo
             {
                 get { return "int"; }
             }
 
-            public override void Load(Element element, string attribute, string value)
+            protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
             {
                 int num;
-                if (int.TryParse(value, out num))
+                if (int.TryParse(s, out num))
                 {
-                    element.Fields.Set(attribute, num);
+                    return new AttributeLoadResult {IsValid = true, Value = num};
                 }
-                else
-                {
-                    GameLoader.AddError(string.Format("Invalid number specified '{0}.{1} = {2}'", element.Name, attribute, value));
-                }
+
+                GameLoader.AddError(string.Format("Invalid number specified '{0} = {1}'", errorSource, s));
+                return new AttributeLoadResult {IsValid = false};
             }
         }
 
-        private class BooleanLoader : AttributeLoaderBase, IValueLoader
+        private class BooleanLoader : BasicAttributeLoaderBase
         {
             public override string AppliesTo
             {
                 get { return "boolean"; }
             }
 
-            public override void Load(Element element, string attribute, string value)
+            protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
             {
-                bool error;
-                var result = GetBoolValue(value, string.Format("{0}.{1}", element.Name, attribute), out error);
-                if (!error) element.Fields.Set(attribute, result);
-            }
-
-            private bool GetBoolValue(string value, string errorSource, out bool error)
-            {
-                error = false;
-                switch (value)
+                switch (s)
                 {
                     case "":
                     case "true":
-                        return true;
+                        return new AttributeLoadResult {IsValid = true, Value = true};
                     case "false":
-                        return false;
+                        return new AttributeLoadResult {IsValid = true, Value = false};
                     default:
-                        GameLoader.AddError(string.Format("Invalid boolean specified '{0} = {1}'", errorSource, value));
-                        error = true;
-                        return false;
+                        GameLoader.AddError(string.Format("Invalid boolean specified '{0} = {1}'", errorSource, s));
+                        return new AttributeLoadResult {IsValid = false};
                 }
-            }
-
-            public object GetValue(XElement xml)
-            {
-                bool error;
-                return GetBoolValue(xml.Value, "(nested boolean)", out error);
             }
         }
 
