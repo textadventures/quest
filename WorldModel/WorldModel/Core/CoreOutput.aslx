@@ -1,7 +1,6 @@
 ﻿<library>
   <function name="OutputText" parameters="text">
     <![CDATA[
-    Log(text)
     data = NewDictionary()
     dictionary add (data, "fulltext", text)
     text = ProcessTextSection(text, data)
@@ -89,7 +88,6 @@
     
     if (containsUnprocessedSection) {
       section = Mid(text, open + 1, close - open - 1)
-      Log ("Found section: " + section)
       value = ProcessTextCommand(section, data)
       text = Left(text, open - 1) + value + ProcessTextSection(Mid(text, close + 1), data)
     }
@@ -100,8 +98,7 @@
 
   <function name="ProcessTextCommand" type="string" parameters="section, data">
     if (StartsWith(section, "if ")) {
-      // TO DO
-      return ("(if)")
+      return (ProcessTextCommand_If(section))
     }
     else if (StartsWith(section, "object:")) {
       return (ProcessTextCommand_Object(section, data))
@@ -203,6 +200,112 @@
     elementslist = Split(elements, ":")
     index = GetRandomInt(0, ListCount(elementslist) - 1)
     return (ListItem(elementslist, index))
+  </function>
+
+  <function name="ProcessTextCommand_If" type="string" parameters="section">
+    <![CDATA[
+    command = Mid(section, 4)
+    colon = Instr(command, ":")
+    if (colon = 0) {
+      return ("{if " + command + "}")
+    }
+    else {
+      text = Mid(command, colon + 1)
+      condition = Left(command, colon - 1)
+      operator = Instr(condition, "<=")
+      if (operator <> 0) {
+        operatorlength = 2
+      }
+      if (operator = 0) {
+        operator = Instr(condition, ">=")
+        if (operator <> 0) {
+          operatorlength = 2
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, "<")
+        if (operator <> 0) {
+          operatorlength = 1
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, ">")
+        if (operator <> 0) {
+          operatorlength = 1
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, "=")
+        if (operator <> 0) {
+          operatorlength = 1
+        }
+      }
+      if (operator = 0) {
+        return ("{if " + command + "}")
+      }
+      else {
+        lhs = Left(condition, operator - 1)
+        rhs = Mid(condition, operator + operatorlength)
+        op = Mid(condition, operator, operatorlength)
+      
+        dot = Instr(lhs, ".")
+        if (dot = 0) {
+          return ("{if " + command + "}")
+        }
+        else {
+          objectname = Left(lhs, dot - 1)
+          attributename = Mid(lhs, dot + 1)
+          object = GetObject(objectname)
+          if (object = null) {
+            return ("{if " + command + "}")
+          }
+          else {
+            value = GetAttribute(object, attributename)
+            if (op = "=") {
+              if (ToString(value) = rhs) {
+                return (text)
+              }
+              else {
+                return ("")
+              }
+            }
+            else if (op = ">") {
+              if (ToDouble(ToString(value)) > ToDouble(rhs)) {
+                return (text)
+              }
+              else {
+                return ("")
+              }
+            }
+            else if (op = "<") {
+              if (ToDouble(ToString(value)) < ToDouble(rhs)) {
+                return (text)
+              }
+              else {
+                return ("")
+              }
+            }
+            else if (op = ">=") {
+              if (ToDouble(ToString(value)) >= ToDouble(rhs)) {
+                return (text)
+              }
+              else {
+                return ("")
+              }
+            }
+            else if (op = "<=") {
+              if (ToDouble(ToString(value)) <= ToDouble(rhs)) {
+                return (text)
+              }
+              else {
+                return ("")
+              }
+            }
+          }
+        }
+      }
+    }
+    ]]>
   </function>
   
   <function name="SetFramePicture" parameters="filename">
