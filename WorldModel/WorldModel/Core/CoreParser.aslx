@@ -269,7 +269,7 @@
                 objectname = StringDictionaryItem(metadata, key)
                 object = GetObject(objectname)
                 if (object <> null) {
-                  msg ("&gt; " + Left(command, LengthOf(command) - LengthOf(key)) + GetTaggedName(object, "object", GetDisplayVerbs(object)))
+                  msg ("&gt; " + Left(command, LengthOf(command) - LengthOf(key)) + "{object:" + object.name + "}" )
                   shownlink = true
                 }
               }

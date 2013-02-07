@@ -300,7 +300,7 @@
       }
     }
     else {
-      result = GetTaggedName(obj, type, verbs)
+      result = "{object:" + obj.name + "}"
     }
     
     if (not GetBoolean(obj, "usedefaultprefix")) {
@@ -328,31 +328,8 @@
   ]]>
   </function>
 
-  <function name="GetTaggedName" type="string" parameters="obj, type, verbs">
-    <![CDATA[
-    alias = SafeXML(GetDisplayAlias(obj))
-    if (not game.enablehyperlinks) {
-      type = ""
-    }
-    if (not type = "") {
-      result = "<object id='" + obj.name + "'"
-      if (verbs <> null) {
-        result = result + " verbs='" + Join(verbs, "/") + "'"
-      }
-      if (HasString(obj, "linkcolour")) {
-        result = result + " color='" + obj.linkcolour + "'"
-      }
-      result = result + ">" + alias + "</object>"
-    }
-    else {
-      result = alias
-    }
-    return (result)
-  ]]>
-  </function>
-
   <function name="ObjectLink" type="string" parameters="obj">
-    return (GetTaggedName(obj, "object", obj.displayverbs))
+    return ("{object:" + obj.name + "}")
   </function>
 
   <function name="GetListDisplayAlias" type="string" parameters="obj">
