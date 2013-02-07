@@ -276,7 +276,7 @@
             }
           }
           if (not shownlink) {
-            msg ("&gt; " + SafeXML(command))
+            OutputTextRaw ("&gt; " + SafeXML(command))
           }
         }
         commands = Split(command, ".")

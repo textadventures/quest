@@ -5,7 +5,7 @@
     data = NewDictionary()
     dictionary add (data, "fulltext", text)
     text = ProcessTextSection(text, data)
-    JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span><br/>")
+    OutputTextRaw(text)
     if (DictionaryContains(data, "menubindings")) {
       menubindings = DictionaryItem(data, "menubindings")
       foreach (menubinding, menubindings) {
@@ -16,6 +16,12 @@
         JS.bindMenu(linkid, verbs, text, elementId)
       }
     }
+    ]]>
+  </function>
+
+  <function name="OutputTextRaw" parameters="text">
+    <![CDATA[
+    JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span><br/>")
     ]]>
   </function>
 
