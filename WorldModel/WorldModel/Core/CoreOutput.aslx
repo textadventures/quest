@@ -132,29 +132,34 @@
       return ("{" + section + "}") 
     }
     else {
-      if (not HasInt(game, "lastlinkid")) {
-        game.lastlinkid = 0
-      }
-      game.lastlinkid = game.lastlinkid + 1
-      linkid = "verblink" + game.lastlinkid
-      colour = ""
-      if (HasString(object, "linkcolour")) {
-        colour = object.linkcolour
+      text = SafeXML(GetDisplayAlias(object))
+      if (game.enablehyperlinks) {
+        if (not HasInt(game, "lastlinkid")) {
+          game.lastlinkid = 0
+        }
+        game.lastlinkid = game.lastlinkid + 1
+        linkid = "verblink" + game.lastlinkid
+        colour = ""
+        if (HasString(object, "linkcolour")) {
+          colour = object.linkcolour
+        }
+        else {
+          colour = game.defaultlinkforeground
+        }
+        style = GetCurrentTextFormat(colour)
+        verbs = Join(GetDisplayVerbs(object), "/")
+        menubindings = DictionaryItem(data, "menubindings")
+        menubinding = NewDictionary()
+        dictionary add (menubinding, "linkid", linkid)
+        dictionary add (menubinding, "verbs", verbs)
+        dictionary add (menubinding, "text", text)
+        dictionary add (menubinding, "elementId", object.name)
+        list add (menubindings, menubinding)
+        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink\">" + text + "</a>")
       }
       else {
-        colour = game.defaultlinkforeground
+        return (text)
       }
-      style = GetCurrentTextFormat(colour)
-      verbs = Join(GetDisplayVerbs(object), "/")
-      text = SafeXML(GetDisplayAlias(object))
-      menubindings = DictionaryItem(data, "menubindings")
-      menubinding = NewDictionary()
-      dictionary add (menubinding, "linkid", linkid)
-      dictionary add (menubinding, "verbs", verbs)
-      dictionary add (menubinding, "text", text)
-      dictionary add (menubinding, "elementId", object.name)
-      list add (menubindings, menubinding)
-      return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink\">" + text + "</a>")
     }
     ]]>
   </function>
