@@ -137,7 +137,7 @@
     <locked type="boolean">false</locked>
     <lockmessage>[LockedExit]</lockmessage>
     <lookonly type="boolean">false</lookonly>
-  <lightstrength type="string"></lightstrength>  
+    <lightstrength type="string"></lightstrength>  
     <grid_length type="int">1</grid_length>
     <grid_render type="boolean">false</grid_render>
     <grid_offset_x type="int">0</grid_offset_x>
