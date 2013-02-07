@@ -98,19 +98,19 @@
 
   <function name="ProcessTextCommand" type="string" parameters="section, data">
     if (StartsWith(section, "if ")) {
-      return (ProcessTextCommand_If(section))
+      return (ProcessTextCommand_If(section, data))
     }
     else if (StartsWith(section, "object:")) {
       return (ProcessTextCommand_Object(section, data))
     }
     else if (StartsWith(section, "command:")) {
-      return (ProcessTextCommand_Command(section))
+      return (ProcessTextCommand_Command(section, data))
     }
     else if (StartsWith(section, "once:")) {
       return (ProcessTextCommand_Once(section, data))
     }
     else if (StartsWith(section, "random:")) {
-      return (ProcessTextCommand_Random(section))
+      return (ProcessTextCommand_Random(section, data))
     }
     else {
       dot = Instr(section, ".")
@@ -174,7 +174,7 @@
     ]]>
   </function>
 
-  <function name="ProcessTextCommand_Command" type="string" parameters="section">
+  <function name="ProcessTextCommand_Command" type="string" parameters="section, data">
     <![CDATA[
     command = Mid(section, 9)
     text = command
@@ -184,7 +184,7 @@
       command = Left(command, colon - 1)
     }
     style = GetCurrentTextFormat(game.defaultlinkforeground)
-    return ("<a style=\"" + style + "\" class=\"cmdlink\" onclick=\"sendCommand('" + command + "')\">" + text + "</a>")
+    return ("<a style=\"" + style + "\" class=\"cmdlink\" onclick=\"sendCommand('" + command + "')\">" + ProcessTextSection(text, data) + "</a>")
     ]]>
   </function>
 
@@ -209,14 +209,14 @@
     }
   </function>
   
-  <function name="ProcessTextCommand_Random" type="string" parameters="section">
+  <function name="ProcessTextCommand_Random" type="string" parameters="section, data">
     elements = Mid(section, 8)
     elementslist = Split(elements, ":")
     index = GetRandomInt(0, ListCount(elementslist) - 1)
-    return (ListItem(elementslist, index))
+    return (ProcessTextSection(ListItem(elementslist, index), data))
   </function>
 
-  <function name="ProcessTextCommand_If" type="string" parameters="section">
+  <function name="ProcessTextCommand_If" type="string" parameters="section, data">
     <![CDATA[
     command = Mid(section, 4)
     colon = Instr(command, ":")
@@ -277,7 +277,7 @@
             value = GetAttribute(object, attributename)
             if (op = "=") {
               if (ToString(value) = rhs) {
-                return (text)
+                return (ProcessTextSection(text, data))
               }
               else {
                 return ("")
@@ -285,7 +285,7 @@
             }
             else if (op = ">") {
               if (ToDouble(ToString(value)) > ToDouble(rhs)) {
-                return (text)
+                return (ProcessTextSection(text, data))
               }
               else {
                 return ("")
@@ -293,7 +293,7 @@
             }
             else if (op = "<") {
               if (ToDouble(ToString(value)) < ToDouble(rhs)) {
-                return (text)
+                return (ProcessTextSection(text, data))
               }
               else {
                 return ("")
@@ -301,7 +301,7 @@
             }
             else if (op = ">=") {
               if (ToDouble(ToString(value)) >= ToDouble(rhs)) {
-                return (text)
+                return (ProcessTextSection(text, data))
               }
               else {
                 return ("")
@@ -309,7 +309,7 @@
             }
             else if (op = "<=") {
               if (ToDouble(ToString(value)) <= ToDouble(rhs)) {
-                return (text)
+                return (ProcessTextSection(text, data))
               }
               else {
                 return ("")
