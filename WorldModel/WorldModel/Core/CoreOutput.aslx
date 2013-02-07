@@ -156,8 +156,14 @@
   <function name="ProcessTextCommand_Command" type="string" parameters="section">
     <![CDATA[
     command = Mid(section, 9)
+    text = command
+    colon = Instr(command, ":")
+    if (colon > 0) {
+      text = Mid(command, colon + 1)
+      command = Left(command, colon - 1)
+    }
     style = GetCurrentTextFormat(game.defaultlinkforeground)
-    return ("<a style=\"" + style + "\" class=\"cmdlink\" onclick=\"sendCommand('" + command + "')\">" + command + "</a>")
+    return ("<a style=\"" + style + "\" class=\"cmdlink\" onclick=\"sendCommand('" + command + "')\">" + text + "</a>")
     ]]>
   </function>
 
