@@ -86,6 +86,14 @@ $(function () {
         sendCommand($("#txtCommand").val());
         $("#txtCommand").val("");
     });
+    
+    $(document).on("click", "a", function (e) {
+        var href = $(this).attr("href");
+        if (href) {
+            goUrl(href);
+        }
+        e.preventDefault();
+    });
 
     ui_init();
 
