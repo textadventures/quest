@@ -103,10 +103,6 @@
     else if (StartsWith(section, "object:")) {
       return (ProcessTextCommand_Object(section, data))
     }
-    else if (StartsWith(section, "exit:")) {
-      // TO DO
-      return ("(exit)")
-    }
     else if (StartsWith(section, "command:")) {
       // TO DO
       return ("(command)")
