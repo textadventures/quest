@@ -103,10 +103,24 @@ namespace TextAdventures.Quest.Functions
             {
                 // Lazy compilation since when the game is loaded, we don't know what types of
                 // variables we have.
-                m_compiledExpression = m_scriptContext.ExpressionContext.CompileDynamic(m_expression);
-                m_scriptContext.PopulateVariableTypesCache(m_compiledExpression.Info.GetReferencedVariables(), m_types);
+                try
+                {
+                    m_compiledExpression = m_scriptContext.ExpressionContext.CompileDynamic(m_expression);
+                    m_scriptContext.PopulateVariableTypesCache(m_compiledExpression.Info.GetReferencedVariables(), m_types);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Error compiling expression '{0}': {1}", Utility.ConvertFleeFormatToVariables(m_expression), ex.Message), ex);
+                }
             }
-            return m_compiledExpression.Evaluate();
+            try
+            {
+                return m_compiledExpression.Evaluate();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Error evaluating expression '{0}': {1}", Utility.ConvertFleeFormatToVariables(m_expression), ex.Message), ex);
+            }
         }
 
         public string Save()
