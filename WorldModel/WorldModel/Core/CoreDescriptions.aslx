@@ -300,6 +300,9 @@
         result = CommandLink(LCase(StringListItem(verbs, 0)) + " " + alias, alias)
       }
     }
+    else if (type = "") {
+      result = GetDisplayAlias(obj)
+    }
     else {
       result = "{object:" + obj.name + "}"
     }
