@@ -243,7 +243,9 @@
 
   <function name="PrintCentered" parameters="text">
     <![CDATA[
-    msg ("<align align=\"center\">" + text + "</align>")
+    SetAlignment("center")
+    msg (text)
+    SetAlignment("left")
     ]]>
   </function>
 
@@ -324,6 +326,10 @@
     }
     msg (result)
     ]]>
+  </function>
+
+  <function name="SetAlignment" parameters="align">
+    JS.createNewDiv(align)
   </function>
 
 </library>
