@@ -104,8 +104,7 @@
       return (ProcessTextCommand_Object(section, data))
     }
     else if (StartsWith(section, "command:")) {
-      // TO DO
-      return ("(command)")
+      return (ProcessTextCommand_Command(section))
     }
     else if (StartsWith(section, "once:")) {
       return (ProcessTextCommand_Once(section, data))
@@ -154,6 +153,14 @@
       list add (menubindings, menubinding)
       return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink\">" + text + "</a>")
     }
+    ]]>
+  </function>
+
+  <function name="ProcessTextCommand_Command" type="string" parameters="section">
+    <![CDATA[
+    command = Mid(section, 9)
+    style = GetCurrentTextFormat(game.defaultlinkforeground)
+    return ("<a style=\"" + style + "\" class=\"cmdlink\" onclick=\"sendCommand('" + command + "')\">" + command + "</a>")
     ]]>
   </function>
 
