@@ -113,8 +113,7 @@
       return (ProcessTextCommand_Once(section, data))
     }
     else if (StartsWith(section, "random:")) {
-      // TO DO
-      return ("(random)")
+      return (ProcessTextCommand_Random(section))
     }
     else {
       return ("{" + section + "}")
@@ -197,6 +196,13 @@
     else {
       return ("")
     }
+  </function>
+  
+  <function name="ProcessTextCommand_Random" type="string" parameters="section">
+    elements = Mid(section, 8)
+    elementslist = Split(elements, ":")
+    index = GetRandomInt(0, ListCount(elementslist) - 1)
+    return (ListItem(elementslist, index))
   </function>
   
   <function name="SetFramePicture" parameters="filename">
