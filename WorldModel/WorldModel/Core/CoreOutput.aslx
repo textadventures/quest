@@ -1,4 +1,187 @@
 ﻿<library>
+  <function name="OutputText" parameters="text">
+    <![CDATA[
+    Log(text)
+    data = NewDictionary()
+    dictionary add (data, "fulltext", text)
+    text = ProcessTextSection(text, data)
+    JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span><br/>")
+    if (DictionaryContains(data, "menubindings")) {
+      menubindings = DictionaryItem(data, "menubindings")
+      foreach (menubinding, menubindings) {
+        linkid = DictionaryItem(menubinding, "linkid")
+        verbs = DictionaryItem(menubinding, "verbs")
+        text = DictionaryItem(menubinding, "text")
+        elementId = DictionaryItem(menubinding, "elementId")
+        JS.bindMenu(linkid, verbs, text, elementId)
+      }
+    }
+    ]]>
+  </function>
+
+  <function name="GetCurrentTextFormat" type="string" parameters="colour">
+    // TO DO: Need a way to query Quest options to see if there is a font or colour override
+    
+    style = ""
+    
+    font = GetCurrentFontFamily()
+    if (LengthOf(font) > 0) {
+      style = style + "font-family:" + font + ";"
+    }
+    
+    if (LengthOf(colour) = 0) {
+      colour = game.defaultforeground
+    }
+    if (LengthOf(colour) > 0) {
+      style = style + "color:" + colour + ";"
+    }
+    
+    size = game.defaultfontsize
+    if (size > 0) {
+      style = style + "font-size:" + ToString(size) + "pt;"
+    }
+    
+    return (style)
+  </function>
+
+  <function name="ProcessTextSection" type="string" parameters="text, data">
+    <![CDATA[
+    
+    containsUnprocessedSection = false
+    
+    open = Instr(text, "{")
+    
+    if (open > 0) {
+      nestCount = 1
+      searchStart = open + 1
+      finished = false
+      
+      while (not finished) {
+        nextOpen = Instr(searchStart, text, "{")
+        nextClose = Instr(searchStart, text, "}")
+      
+        if (nextClose > 0) {
+          if (nextOpen > 0 and nextOpen < nextClose) {
+            nestCount = nestCount + 1
+            searchStart = nextOpen + 1
+          }
+          else {
+            nestCount = nestCount - 1
+            searchStart = nextClose + 1
+            if (nestCount = 0) {
+              close = nextClose
+              containsUnprocessedSection = true
+              finished = true
+            }
+          }
+        }
+        else {
+          finished = true
+        }
+      }
+    }
+    
+    if (containsUnprocessedSection) {
+      section = Mid(text, open + 1, close - open - 1)
+      Log ("Found section: " + section)
+      value = ProcessTextCommand(section, data)
+      text = Left(text, open - 1) + value + ProcessTextSection(Mid(text, close + 1), data)
+    }
+    
+    return (text)
+    ]]>
+  </function>
+
+  <function name="ProcessTextCommand" type="string" parameters="section, data">
+    if (StartsWith(section, "if ")) {
+      // TO DO
+      return ("(if)")
+    }
+    else if (StartsWith(section, "object:")) {
+      return (ProcessTextCommand_Object(section, data))
+    }
+    else if (StartsWith(section, "command:")) {
+      return (ProcessTextCommand_Command(section))
+    }
+    else if (StartsWith(section, "once:")) {
+      return (ProcessTextCommand_Once(section, data))
+    }
+    else if (StartsWith(section, "random:")) {
+      // TO DO
+      return ("(random)")
+    }
+    else {
+      return ("{" + section + "}")
+    }
+  </function>
+
+  <function name="ProcessTextCommand_Object" type="string" parameters="section, data">
+    <![CDATA[
+    if (not DictionaryContains(data, "menubindings")) {
+      dictionary add (data, "menubindings", NewList())
+    }
+    objectname = Mid(section, 8)
+    object = GetObject(objectname)
+    if (object = null) {
+      return ("{" + section + "}") 
+    }
+    else {
+      if (not HasInt(game, "lastlinkid")) {
+        game.lastlinkid = 0
+      }
+      game.lastlinkid = game.lastlinkid + 1
+      linkid = "verblink" + game.lastlinkid
+      colour = ""
+      if (HasString(object, "linkcolour")) {
+        colour = object.linkcolour
+      }
+      else {
+        colour = game.defaultlinkforeground
+      }
+      style = GetCurrentTextFormat(colour)
+      verbs = Join(GetDisplayVerbs(object), "/")
+      text = SafeXML(GetDisplayAlias(object))
+      menubindings = DictionaryItem(data, "menubindings")
+      menubinding = NewDictionary()
+      dictionary add (menubinding, "linkid", linkid)
+      dictionary add (menubinding, "verbs", verbs)
+      dictionary add (menubinding, "text", text)
+      dictionary add (menubinding, "elementId", object.name)
+      list add (menubindings, menubinding)
+      return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink\">" + text + "</a>")
+    }
+    ]]>
+  </function>
+
+  <function name="ProcessTextCommand_Command" type="string" parameters="section">
+    <![CDATA[
+    command = Mid(section, 9)
+    style = GetCurrentTextFormat(game.defaultlinkforeground)
+    return ("<a style=\"" + style + "\" class=\"cmdlink\" onclick=\"sendCommand('" + command + "')\">" + command + "</a>")
+    ]]>
+  </function>
+
+  <function name="ProcessTextCommand_Once" type="string" parameters="section, data">
+    if (not HasAttribute(game, "textprocessor_seen")) {
+      game.textprocessor_seen = NewDictionary()
+    }
+    fulltext = StringDictionaryItem(data, "fulltext")
+    if (not DictionaryContains(game.textprocessor_seen, fulltext)) {
+      onceSectionsInThisText = NewList()
+      dictionary add (game.textprocessor_seen, fulltext, onceSectionsInThisText)
+    }
+    else {
+      onceSectionsInThisText = DictionaryItem(game.textprocessor_seen, fulltext)
+    }
+    if (not ListContains(onceSectionsInThisText, section)) {
+      list add (onceSectionsInThisText, section)
+      return (ProcessTextSection(Mid(section, 6), data))
+    }
+    else {
+      return ("")
+    }
+  </function>
+  
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
     request (SetPanelContents, "<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
