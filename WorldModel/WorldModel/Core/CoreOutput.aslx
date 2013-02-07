@@ -286,7 +286,7 @@
 
   <function name="CommandLink" type="string" parameters="cmd, text">
     <![CDATA[
-    return ("<command input=\"" + cmd + "\">" + text + "</command>")
+    return ("{command:" + cmd + ":" + text + "}")
     ]]>
   </function>
 
