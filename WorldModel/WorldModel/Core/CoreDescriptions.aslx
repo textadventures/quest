@@ -199,7 +199,7 @@
     foreach (item, list) {
       if (LengthOf(result) = 0) result = preList + " "
       verbs = GetDisplayVerbs(item)
-      result = result + GetDisplayNameLink(item, "object", verbs)
+      result = result + GetDisplayNameLink(item, "object")
       if (CanSeeThrough(item)) {
         result = result + FormatObjectList(" (" + item.contentsprefix, item, preFinal, ")", useinventoryverbs)
       }
@@ -251,7 +251,7 @@
       count = 0
       result = preList + " "
       foreach (item, list) {
-        result = result + GetDisplayNameLink(item, "exit", item.displayverbs)
+        result = result + GetDisplayNameLink(item, "exit")
         count = count + 1
         if (count = listLength - 1) {
           result = result + " " + preFinal + " "
@@ -279,11 +279,12 @@
   </function>
 
   <function name="GetDisplayName" type="string" parameters="obj">
-    return (GetDisplayNameLink(obj, "", null))
+    return (GetDisplayNameLink(obj, ""))
   </function>
 
-  <function name="GetDisplayNameLink" type="string" parameters="obj, type, verbs">
+  <function name="GetDisplayNameLink" type="string" parameters="obj, type">
   <![CDATA[
+    verbs = GetDisplayVerbs(obj)
     if (verbs <> null) {
       verbCount = ListCount(verbs)
     }
