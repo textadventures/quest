@@ -34,8 +34,6 @@
         JS.addExternalStylesheet(stylesheet)
       }
     }
-    request (FontName, GetCurrentFontFamily())
-    request (FontSize, ToString(game.defaultfontsize))
     if (game.setbackgroundopacity) {
       SetBackgroundOpacity (game.backgroundopacity)
     }

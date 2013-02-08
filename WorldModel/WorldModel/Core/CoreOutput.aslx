@@ -331,7 +331,7 @@
     return ("<img src=\"" + GetFileURL(filename) + "\" />")
     ]]>
   </function>
-  
+
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
     request (SetPanelContents, "<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
@@ -359,14 +359,12 @@
   </function>
 
   <function name="SetFontName" parameters="font">
-    request (FontName, font)
     game.defaultfont = font
     game.defaultwebfont = ""
   </function>
 
   <function name="SetWebFontName" parameters="font">
     AddExternalStylesheet ("http://fonts.googleapis.com/css?family=" + Replace(font, " ", "+"))
-    request (FontName, "'" + font + "', " + game.defaultfont)
     game.defaultwebfont = font
   </function>
 
@@ -381,7 +379,6 @@
   </function>
 
   <function name="SetFontSize" parameters="size">
-    request (FontSize, ToString(size))
     game.defaultfontsize = size
   </function>
 

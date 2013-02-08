@@ -139,12 +139,20 @@ namespace TextAdventures.Quest.Scripts
                     m_worldModel.Finish();
                     break;
                 case Request.FontName:
+                    if (m_worldModel.Version >= WorldModelVersion.v540)
+                    {
+                        throw new InvalidOperationException("FontName request is not supported for games written for Quest 5.4 or later.");
+                    }
                     m_worldModel.PlayerUI.SetFont(data);
-                    m_worldModel.OutputLogger.SetFontName(data);
+                    ((LegacyOutputLogger)(m_worldModel.OutputLogger)).SetFontName(data);
                     break;
                 case Request.FontSize:
+                    if (m_worldModel.Version >= WorldModelVersion.v540)
+                    {
+                        throw new InvalidOperationException("FontSize request is not supported for games written for Quest 5.4 or later.");
+                    }
                     m_worldModel.PlayerUI.SetFontSize(data);
-                    m_worldModel.OutputLogger.SetFontSize(data);
+                    ((LegacyOutputLogger)(m_worldModel.OutputLogger)).SetFontSize(data);
                     break;
                 case Request.LinkForeground:
                     m_worldModel.PlayerUI.SetLinkForeground(data);

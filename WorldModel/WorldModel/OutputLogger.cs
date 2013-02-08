@@ -6,13 +6,36 @@ using System.Xml;
 
 namespace TextAdventures.Quest
 {
-    internal class OutputLogger
+    internal interface IOutputLogger
+    {
+        void RunJavaScript(string function, object[] parameters);
+        void Save();
+        void Clear();
+    }
+
+    internal class OutputLogger : IOutputLogger
+    {
+        public void RunJavaScript(string function, object[] parameters)
+        {
+            // Store JS calls as a list of dictionaries with function=name, parameters=QuestList<object> params
+        }
+
+        public void Save()
+        {
+        }
+
+        public void Clear()
+        {
+        }
+    }
+
+    internal class LegacyOutputLogger : IOutputLogger
     {
         private WorldModel m_worldModel;
         private StringBuilder m_text = new StringBuilder();
         bool m_anyText = false;
 
-        public OutputLogger(WorldModel worldModel)
+        public LegacyOutputLogger(WorldModel worldModel)
         {
             m_worldModel = worldModel;
         }
@@ -111,7 +134,7 @@ namespace TextAdventures.Quest
                                     output.Clear();
                                 }
                                 string size = reader.GetAttribute("size");
-                                m_worldModel.OutputLogger.SetFontSize(size);
+                                ((LegacyOutputLogger)(m_worldModel.OutputLogger)).SetFontSize(size);
                                 m_worldModel.PlayerUI.SetFontSize(size);
                                 break;
                             case "output_setfontname":
@@ -121,7 +144,7 @@ namespace TextAdventures.Quest
                                     output.Clear();
                                 }
                                 string name = reader.GetAttribute("name");
-                                m_worldModel.OutputLogger.SetFontName(name);
+                                ((LegacyOutputLogger)(m_worldModel.OutputLogger)).SetFontName(name);
                                 m_worldModel.PlayerUI.SetFont(name);
                                 break;
                             case "output_runjs":

@@ -69,7 +69,8 @@ namespace TextAdventures.Quest
         private object m_commandOverrideLock = new object();
         private TimerRunner m_timerRunner;
         private RegexCache m_regexCache = new RegexCache();
-        private OutputLogger m_outputLogger;
+        private IOutputLogger m_outputLogger;
+        private LegacyOutputLogger m_legacyOutputLogger;
         private CallbackManager m_callbacks = new CallbackManager();
 
         private static Dictionary<ObjectType, string> s_defaultTypeNames = new Dictionary<ObjectType, string>();
@@ -165,7 +166,6 @@ namespace TextAdventures.Quest
             m_originalFilename = originalFilename;
             m_elements = new Elements();
             m_undoLogger = new UndoLogger(this);
-            m_outputLogger = new OutputLogger(this);
             m_game = ObjectFactory.CreateObject("game", ObjectType.Game);
         }
 
@@ -312,7 +312,10 @@ namespace TextAdventures.Quest
                     }
                 }
 
-                m_outputLogger.AddText(text, linebreak);
+                if (m_legacyOutputLogger != null)
+                {
+                    m_legacyOutputLogger.AddText(text, linebreak);
+                }
             }
         }
 
@@ -503,6 +506,15 @@ namespace TextAdventures.Quest
             m_state = success ? GameState.Running : GameState.Finished;
             m_errors = loader.Errors;
             m_saver = new GameSaver(this);
+            if (Version <= WorldModelVersion.v530)
+            {
+                m_legacyOutputLogger = new LegacyOutputLogger(this);
+                m_outputLogger = m_legacyOutputLogger;
+            }
+            else
+            {
+                m_outputLogger = new OutputLogger();
+            }
             return success;
         }
 
@@ -545,7 +557,10 @@ namespace TextAdventures.Quest
                         }
                         else
                         {
-                            m_outputLogger.DisplayOutput(output.Fields.GetString("text"));
+                            if (m_legacyOutputLogger != null)
+                            {
+                                m_legacyOutputLogger.DisplayOutput(output.Fields.GetString("text"));
+                            }
                         }
                     }
                     SendNextTimerRequest();
@@ -1672,7 +1687,7 @@ namespace TextAdventures.Quest
         public WorldModelVersion Version { get; internal set; }
         internal string VersionString { get; set; }
         public string TempFolder { get; set; }
-        internal OutputLogger OutputLogger { get { return m_outputLogger; } }
+        internal IOutputLogger OutputLogger { get { return m_outputLogger; } }
 
         public int ASLVersion { get { return int.Parse(VersionString); } }
         public string GameID { get { return m_game.Fields[FieldDefinitions.GameID]; } }
