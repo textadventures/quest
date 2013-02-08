@@ -112,6 +112,9 @@
     else if (StartsWith(section, "random:")) {
       return (ProcessTextCommand_Random(section, data))
     }
+    else if (StartsWith(section, "img:")) {
+      return (ProcessTextCommand_Img(section, data))
+    }
     else {
       dot = Instr(section, ".")
       if (dot = 0) {
@@ -319,6 +322,13 @@
         }
       }
     }
+    ]]>
+  </function>
+
+  <function name="ProcessTextCommand_Img" type="string" parameters="section, data">
+    <![CDATA[
+    filename = Mid(section, 5)
+    return ("<img src=\"" + GetFileURL(filename) + "\" />")
     ]]>
   </function>
   
