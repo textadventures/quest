@@ -550,14 +550,18 @@ namespace TextAdventures.Quest
                     UpdateLists();
                     if (m_loadedFromSaved)
                     {
-                        Element output = Elements.GetSingle(ElementType.Output);
-                        if (output == null)
+                        if (Version >= WorldModelVersion.v540)
                         {
-                            Print("Loaded saved game");
+                            RunOutputLog();
                         }
                         else
                         {
-                            if (m_legacyOutputLogger != null)
+                            Element output = Elements.GetSingle(ElementType.Output);
+                            if (output == null)
+                            {
+                                Print("Loaded saved game");
+                            }
+                            else if (m_legacyOutputLogger != null)
                             {
                                 m_legacyOutputLogger.DisplayOutput(output.Fields.GetString("text"));
                             }
@@ -575,6 +579,26 @@ namespace TextAdventures.Quest
             });
 
             SendNextTimerRequest();
+        }
+
+        private void RunOutputLog()
+        {
+            var outputLog = Game.Fields[FieldDefinitions.OutputLog];
+            if (outputLog == null) return;
+
+            foreach (var jsCall in outputLog)
+            {
+                var callData = jsCall as QuestDictionary<object>;
+                if (callData == null) continue;
+
+                var function = callData["function"] as string;
+                var parameters = callData["parameters"] as QuestList<object>;
+
+                if (function != null && parameters != null)
+                {
+                    PlayerUI.RunScript(function, parameters.ToArray());
+                }
+            }
         }
 
         public List<string> Errors

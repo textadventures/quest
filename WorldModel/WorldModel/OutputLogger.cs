@@ -43,6 +43,7 @@ namespace TextAdventures.Quest
 
         public void Save()
         {
+            // Save call is only required for LegacyOutputLogger
         }
 
         public void Clear()
