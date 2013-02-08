@@ -400,6 +400,24 @@ namespace TextAdventures.Quest
             }
         }
 
+        private class LegacyDictionarySaver : FieldSaverBase
+        {
+            public override Type AppliesTo
+            {
+                get { return typeof(QuestDictionary<object>); }
+            }
+
+            public override void Save(GameXmlWriter writer, Element element, string attribute, object value)
+            {
+                // Do nothing - objectdictionaries are not saved for ASL 530 and earlier.
+            }
+
+            public override WorldModelVersion? MaxVersion
+            {
+                get { return WorldModelVersion.v530; }
+            }
+        }
+
         private class ScriptSaver : FieldSaverBase
         {
             public override Type AppliesTo
