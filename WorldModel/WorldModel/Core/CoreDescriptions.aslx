@@ -22,7 +22,8 @@
               desc = AddDescriptionLine (desc, "<b>" + CapFirst(GetDisplayName(game.pov.parent)) + "</b>")
             }
             if (game.autodescription_youarein_newline) {
-              desc = desc + "<br/>"
+              msg (desc)
+              desc = ""
             }
           }
           if (i = game.autodescription_youcansee) {
@@ -30,7 +31,8 @@
             desc = AddDescriptionLine(desc, objects)
             
             if (game.autodescription_youcansee_newline) {
-              desc = desc + "<br/>"
+              msg (desc)
+              desc = ""
             }
           }
           if (i = game.autodescription_youcango) {
@@ -38,7 +40,8 @@
             desc = AddDescriptionLine(desc, exits)
             
             if (game.autodescription_youcango_newline) {
-              desc = desc + "<br/>"
+              msg (desc)
+              desc = ""
             }
           }
           if (i = game.autodescription_description) {
@@ -49,13 +52,14 @@
                 }
               do (game.pov.parent, descriptionfield)
               if (game.autodescription_description_newline) {
-                msg("")
+                msg ("")
               }
             }
             else  {
               desc = AddDescriptionLine(desc, GetRoomDescription())
               if (game.autodescription_description_newline) {
-                desc = desc + "<br/>"
+                msg (desc)
+                desc = ""
               }
             }
           }
@@ -84,7 +88,8 @@
     <![CDATA[
     if (LengthOf(line) > 0) {
       if (LengthOf(desc) > 0) {
-        desc = desc + "<br />"
+        msg (desc)
+        desc = ""
       }
       desc = desc + line
     }
