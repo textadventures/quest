@@ -115,6 +115,7 @@ namespace TextAdventures.Quest
         public static IField<bool> IsBaseTemplate = new FieldDef<bool>("isbasetemplate");
         public static IField<string> DisplayVerb = new FieldDef<string>("displayverb");
         public static IField<string> Cover = new FieldDef<string>("cover");
+        public static IField<QuestList<object>> OutputLog = new FieldDef<QuestList<object>>("outputlog");
     }
 
     public static class MetaFieldDefinitions
@@ -252,6 +253,18 @@ namespace TextAdventures.Quest
             get
             {
                 return GetAsType<IFunction<string>>(field.Property);
+            }
+            set
+            {
+                Set(field.Property, value);
+            }
+        }
+
+        public QuestList<object> this[IField<QuestList<object>> field]
+        {
+            get
+            {
+                return GetAsType<QuestList<object>>(field.Property);
             }
             set
             {

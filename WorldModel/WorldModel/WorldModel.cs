@@ -513,7 +513,7 @@ namespace TextAdventures.Quest
             }
             else
             {
-                m_outputLogger = new OutputLogger();
+                m_outputLogger = new OutputLogger(this);
             }
             return success;
         }

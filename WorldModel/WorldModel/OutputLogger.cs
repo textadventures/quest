@@ -15,9 +15,30 @@ namespace TextAdventures.Quest
 
     internal class OutputLogger : IOutputLogger
     {
+        private readonly WorldModel m_worldModel;
+
+        public OutputLogger(WorldModel worldModel)
+        {
+            m_worldModel = worldModel;
+        }
+
         public void RunJavaScript(string function, object[] parameters)
         {
             // Store JS calls as a list of dictionaries with function=name, parameters=QuestList<object> params
+
+            var outputLog = m_worldModel.Game.Fields[FieldDefinitions.OutputLog];
+
+            if (outputLog == null)
+            {
+                outputLog = new QuestList<object>();
+                m_worldModel.Game.Fields[FieldDefinitions.OutputLog] = outputLog;
+            }
+
+            var newItem = new QuestDictionary<object>();
+            outputLog.Add(newItem);
+
+            newItem.Add("function", function);
+            newItem.Add("parameters", new QuestList<object>(parameters));
         }
 
         public void Save()
@@ -26,6 +47,12 @@ namespace TextAdventures.Quest
 
         public void Clear()
         {
+            var outputLog = m_worldModel.Game.Fields[FieldDefinitions.OutputLog];
+
+            if (outputLog != null)
+            {
+                outputLog.Clear();
+            }
         }
     }
 
