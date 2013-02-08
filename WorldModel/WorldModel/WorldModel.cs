@@ -311,9 +311,9 @@ namespace TextAdventures.Quest
                         PrintText("<output nobr=\"true\">" + text + "</output>");
                     }
                 }
-            }
 
-            m_outputLogger.AddText(text, linebreak);
+                m_outputLogger.AddText(text, linebreak);
+            }
         }
 
         internal QuestList<Element> GetAllObjects()

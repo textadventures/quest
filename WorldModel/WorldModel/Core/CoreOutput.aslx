@@ -12,7 +12,7 @@
         verbs = DictionaryItem(menubinding, "verbs")
         text = DictionaryItem(menubinding, "text")
         elementId = DictionaryItem(menubinding, "elementId")
-        JS.bindMenu(linkid, verbs, text, elementId)
+        JS.output@bindMenu(linkid, verbs, text, elementId)
       }
     }
     ]]>
@@ -20,7 +20,7 @@
 
   <function name="OutputTextRaw" parameters="text">
     <![CDATA[
-    JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span><br/>")
+    JS.output@addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span><br/>")
     ]]>
   </function>
 
@@ -376,7 +376,7 @@
     }
     if (not ListContains(game.externalstylesheets, stylesheet)) {
       list add (game.externalstylesheets, stylesheet)
-      JS.addExternalStylesheet(stylesheet)
+      JS.output@addExternalStylesheet(stylesheet)
     }
   </function>
 
@@ -394,11 +394,11 @@
   </function>
 
   <function name="ShowYouTube" parameters="id">
-    JS.AddYouTube(id)
+    JS.output@AddYouTube(id)
   </function>
 
   <function name="ShowVimeo" parameters="id">
-    JS.AddVimeo(id)
+    JS.output@AddVimeo(id)
   </function>
 
   <function name="WaitForKeyPress">
@@ -441,12 +441,12 @@
   </function>
 
   <function name="SetBackgroundImage" parameters="filename">
-    JS.SetBackgroundImage(GetFileURL(filename))
+    JS.output@SetBackgroundImage(GetFileURL(filename))
     game.backgroundimage = filename
   </function>
 
   <function name="SetBackgroundOpacity" parameters="opacity">
-    JS.SetBackgroundOpacity(opacity)
+    JS.output@SetBackgroundOpacity(opacity)
     game.backgroundopacity = opacity
     game.setbackgroundopacity = true
   </function>
@@ -473,7 +473,7 @@
   </function>
 
   <function name="SetAlignment" parameters="align">
-    JS.createNewDiv(align)
+    JS.output@createNewDiv(align)
   </function>
 
 </library>
