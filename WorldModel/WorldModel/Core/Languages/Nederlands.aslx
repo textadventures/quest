@@ -5,7 +5,7 @@
   
   <!-- Contributed by Lina Anna -->
   <template name="UnresolvedObject">Ik zie dat hier niet.</template>
-  <template name="UnresolvedLocation">Je kan hier niet heengaan.</template>
+  <template name="UnresolvedLocation">Je kan hier niet heen gaan.</template>
   <template name="DefaultObjectDescription">Niets bijzonders.</template>
   <dynamictemplate name="TakeSuccessful">"Je pakt " + object.article + " op."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Je kan " + object.article + " niet pakken."</dynamictemplate>
@@ -16,10 +16,10 @@
   <template name="NothingToUndo">Niets om ongedaan te maken !</template>
   <template name="NotCarryingAnything">Je draagt niets.</template>
   <template name="CarryingListHeader">Je draagt</template>
-  <dynamictemplate name="DropSuccessful">"Je laat " + object.article + " vallen."</dynamictemplate>
-  <dynamictemplate name="DropUnsuccessful">"Je kan " + object.article + " niet laten vallen."</dynamictemplate>
-  <dynamictemplate name="AlreadyTaken">"Je draagt " + object.article + " al."</dynamictemplate>
-  <dynamictemplate name="NotCarrying">"Je draagt " + object.article + " niet."</dynamictemplate>
+  <dynamictemplate name="DropSuccessful">"Je laat" + object.article + " allen."</dynamictemplate>
+  <dynamictemplate name="DropUnsuccessful">"Je kan" + object.article + " niet laten vallen."</dynamictemplate>
+  <dynamictemplate name="AlreadyTaken">"Je draagt" + object.article + " al."</dynamictemplate>
+  <dynamictemplate name="NotCarrying">"Je draagt" + object.article + " niet."</dynamictemplate>
   <dynamictemplate name="CantUse">"Je kan " + object.article + " niet gebruiken."</dynamictemplate>
   <dynamictemplate name="DefaultSpeakTo">CapFirst(object.gender) + " zegt niets."</dynamictemplate>
   <template name="UnrecognisedCommand">Ik begrijp je opdracht niet.</template>
@@ -52,29 +52,68 @@
   <dynamictemplate name="DisambiguateMenu">"Kies alsjeblieft welke '" + text + "' je bedoelt:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Ongedaan maken: " + text</dynamictemplate>
 
-  <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
-  <template templatetype="command" name="look">^look$</template>
-  <verbtemplate name="lookat">look at</verbtemplate>
-  <verbtemplate name="lookat">x</verbtemplate>
-  <verbtemplate name="take">take</verbtemplate>
-  <verbtemplate name="take">get</verbtemplate>
-  <verbtemplate name="take">pick up</verbtemplate>
+  <template templatetype="command" name="go"><![CDATA[^ga (?<exit>.*)$|^ga (?<exit>.*)$|^(?<exit>noord|oost|zuid|west|noordoost|noordwest|zuidoost|zuidwest|erin|eruit|omhoog|omlaag|n|o|z|w|no|nw|zo|zw|nb|omh|oml)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^kijk (?<exit>noord|oost|zuid|west|noordoost|noordwest|zuidoost|zuidwest|erin|eruit|omhoog|omlaag|n|o|z|w|no|nw|zo|zw|nb|omh|oml)$]]></template>
+  <template templatetype="command" name="look">^kijk$</template>
+ <template name="CompassNW">noordwest</template>
+ <template name="CompassN">noord</template>
+ <template name="CompassNE">noordoost</template>
+ <template name="CompassW">west</template>
+ <template name="CompassE">oost</template>
+ <template name="CompassSW">zuidwest</template>
+ <template name="CompassS">zuid</template>
+ <template name="CompassSE">zuidoost</template>
+ <template name="CompassUp">omhoog</template>
+ <template name="CompassDown">omlaag</template>
+ <template name="CompassIn">erin</template>
+ <template name="CompassOut">eruit</template>
+ <template name="CompassDirectionPrefix"></template>
+ <template name="UpDownDirectionPrefix"></template>
+ <template name="InOutDirectionPrefix"></template>
+ <template name="CompassNWShort">nw</template>
+ <template name="CompassNShort">n</template>
+ <template name="CompassNEShort">no</template>
+ <template name="CompassWShort">w</template>
+ <template name="CompassEShort">o</template>
+ <template name="CompassSWShort">zo</template>
+ <template name="CompassSShort">z</template>
+ <template name="CompassSEShort">zw</template>
+ <template name="CompassUpShort">omh</template>
+ <template name="CompassDownShort">oml</template>
+ <template name="CompassInShort">in</template>
+ <template name="CompassOutShort">uit</template>
+ <dynamictemplate name="YouLooking">"Je kijkt" + text +"."</dynamictemplate>
+
+ <template name="InventoryLabel">Inventaris</template>
+ <template name="PlacesObjectsLabel">Plaatsen en voorwerpen</template>
+ <template name="CompassLabel">Kompas</template>
+ <template name="InButtonLabel">in</template>
+ <template name="OutButtonLabel">uit</template>
+ <template name="EmptyListLabel">(leeg)</template>
+ <template name="NothingSelectedLabel">(niets geselecteerd)</template>
+ 
+
+
+  <verbtemplate name="lookat">kijk naar</verbtemplate>
+  <verbtemplate name="lookat">kijk</verbtemplate>
+  <verbtemplate name="take">pak</verbtemplate>
+  <verbtemplate name="take">haal</verbtemplate>
+  <verbtemplate name="take">pak op</verbtemplate>
   <template templatetype="command" name="undo">^undo$</template>
-  <template templatetype="command" name="inventory">^i$|^inv$|^inventory$</template>
-  <template templatetype="command" name="quit">^quit$</template>
-  <verbtemplate name="drop">drop</verbtemplate>
-  <verbtemplate name="use">use</verbtemplate>
-  <verbtemplate name="speakto">speak to</verbtemplate>
-  <verbtemplate name="speakto">speak</verbtemplate>
-  <verbtemplate name="speakto">talk to</verbtemplate>
-  <verbtemplate name="speakto">talk</verbtemplate>
+  <template templatetype="command" name="inventory">^i$|^inv$|^inventaris$</template>
+  <template templatetype="command" name="quit">^stop$</template>
+  <verbtemplate name="drop">laat vallen</verbtemplate>
+  <verbtemplate name="use">gebruik</verbtemplate>
+  <verbtemplate name="speakto">praat tegen</verbtemplate>
+  <verbtemplate name="speakto">vertel</verbtemplate>
+  <verbtemplate name="speakto">zeg tegen</verbtemplate>
+  <verbtemplate name="speakto">zeg</verbtemplate>
   <verbtemplate name="open">open</verbtemplate>
-  <verbtemplate name="close">close</verbtemplate>
+  <verbtemplate name="close">sluit</verbtemplate>
   <dynamictemplate name="YouLooking">"U bent op zoek " + text +"."</dynamictemplate>
   <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
 
-  <verbtemplate name="buy">buy</verbtemplate>
+  <verbtemplate name="buy">koop</verbtemplate>
   <dynamictemplate name="DefaultBuy">"Je kan " + object.article + " niet kopen."</dynamictemplate>
   <verbtemplate name="climb">beklim</verbtemplate>
   <dynamictemplate name="DefaultClimb">"Je kan " + object.article + " niet beklimmen."</dynamictemplate>
