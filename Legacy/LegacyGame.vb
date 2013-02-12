@@ -6876,7 +6876,7 @@ errhandle:
         Else
             If looped And sync Then sync = False ' Can't loop and sync at the same time, that would just hang!
 
-            m_player.PlaySound(GetResourcePath(filename), sync, looped)
+            m_player.PlaySound(filename, sync, looped)
 
             If sync Then
                 ChangeState(State.Waiting)
