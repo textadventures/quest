@@ -119,6 +119,7 @@ Public Class Player
         ResetInterfaceStrings()
         m_htmlHelper = New PlayerHelper(m_game, Me)
         m_htmlHelper.UseGameColours = UseGameColours
+        m_saveFile = Nothing
 
         Me.Cursor = Cursors.WaitCursor
 
