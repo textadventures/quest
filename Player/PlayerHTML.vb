@@ -26,6 +26,8 @@ Public Class PlayerHTML
     Private m_browserInitialized As Boolean = False
     Private m_browserInitializationLock As New Object()
 
+    Public Property CurrentGame As IASL
+
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
         ctlWebView = New WebView()
         ctlWebView.Dock = DockStyle.Fill
@@ -34,7 +36,7 @@ Public Class PlayerHTML
         m_keyHandler = New CefKeyboardHandler()
         ctlWebView.KeyboardHandler = m_keyHandler
 
-        m_schemeHandler = New CefSchemeHandlerFactory()
+        m_schemeHandler = New CefSchemeHandlerFactory(Me)
         m_resourceSchemeHandler = New CefResourceSchemeHandlerFactory()
         m_interop = New QuestCefInterop()
 
@@ -107,8 +109,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Function GetURL(filename As String) As String
-        Dim id = m_schemeHandler.AddImage(filename)
-        Return "quest://local/" + id
+        Return "quest://local/" + filename
     End Function
 
     Public Sub ShowPicture(filename As String)
@@ -181,6 +182,8 @@ Public Class PlayerHTML
     Public Sub InitialiseHTMLUI(game As IASL)
         Dim scriptsHtml As String = String.Empty
         Dim stylesheetsHtml As String = String.Empty
+
+        CurrentGame = game
 
         If game IsNot Nothing Then
 

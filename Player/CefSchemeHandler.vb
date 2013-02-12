@@ -5,22 +5,16 @@ Imports System.Text
 Public Class CefSchemeHandlerFactory
     Implements ISchemeHandlerFactory
 
-    Private _images As New Dictionary(Of String, String)
+    Public Sub New(parent As PlayerHTML)
+        Me.Parent = parent
+    End Sub
+
+    Public Property Parent As PlayerHTML
 
     Public Function Create() As ISchemeHandler Implements ISchemeHandlerFactory.Create
         Return New CefSchemeHandler(Me)
     End Function
 
-    Public Function AddImage(filename As String) As String
-        Dim id As String = Guid.NewGuid().ToString()
-        _images.Add(id, filename)
-        Return id
-    End Function
-
-    Public Function GetImageId(filename As String) As String
-        If Not _images.ContainsKey(filename) Then Return Nothing
-        Return _images(filename)
-    End Function
 End Class
 
 Public Class CefSchemeHandler
@@ -34,10 +28,11 @@ Public Class CefSchemeHandler
 
     Public Function ProcessRequest(request As IRequest, ByRef mimeType As String, ByRef stream As IO.Stream) As Boolean Implements ISchemeHandler.ProcessRequest
         Dim uri = New Uri(request.Url)
-        Dim id = uri.AbsolutePath.Substring(1)
-        Dim filename = _parent.GetImageId(id)
-        If filename IsNot Nothing Then
-            stream = New System.IO.FileStream(filename, FileMode.Open, FileAccess.Read)
+        Dim filename = uri.AbsolutePath.Substring(1)
+
+        stream = _parent.Parent.CurrentGame.GetResource(filename)
+
+        If (stream IsNot Nothing) Then
             Select Case Path.GetExtension(filename).ToLowerInvariant()
                 Case ".jpg", ".jpeg"
                     mimeType = "image/jpeg"

@@ -35,6 +35,7 @@ namespace TextAdventures.Quest
         IEnumerable<string> GetExternalScripts();
         IEnumerable<string> GetExternalStylesheets();
         string TempFolder { get; set; }
+        System.IO.Stream GetResource(string filename);
     }
 
     public interface IPlayer

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Threading;
 using TextAdventures.Quest.Scripts;
 using System.Linq;
@@ -1214,11 +1215,21 @@ namespace TextAdventures.Quest
 
         public string GetExternalPath(string file)
         {
-            string resourcesFolder = ResourcesFolder ?? System.IO.Path.GetDirectoryName(Filename);
-            return GetExternalPath(resourcesFolder, file);
+            return GetExternalPath(file, true);
         }
 
-        private string GetExternalPath(string current, string file)
+        private string TryGetExternalPath(string file)
+        {
+            return GetExternalPath(file, false);
+        }
+
+        private string GetExternalPath(string file, bool throwException)
+        {
+            string resourcesFolder = ResourcesFolder ?? Path.GetDirectoryName(Filename);
+            return GetExternalPath(resourcesFolder, file, throwException);
+        }
+
+        private string GetExternalPath(string current, string file, bool throwException)
         {
             string path;
 
@@ -1235,13 +1246,17 @@ namespace TextAdventures.Quest
                     if (TryPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().CodeBase), file, out path, true)) return path;
                 }
             }
-            throw new Exception(string.Format("Cannot find a file called '{0}' in current path or application/resource path", file));
+            if (throwException)
+            {
+                throw new Exception(
+                    string.Format("Cannot find a file called '{0}' in current path or application/resource path", file));
+            }
+            return null;
         }
 
         internal string GetExternalURL(string file)
         {
-            string path = GetExternalPath(file);
-            return m_playerUI.GetURL(path);
+            return m_playerUI.GetURL(file);
         }
 
         public IEnumerable<string> GetAvailableLibraries()
@@ -1694,6 +1709,13 @@ namespace TextAdventures.Quest
             }
         }
 
+        public Stream GetResource(string filename)
+        {
+            string path = TryGetExternalPath(filename);
+            if (path == null) return null;
+            return new FileStream(GetExternalPath(filename), FileMode.Open, FileAccess.Read);
+        }
+
         internal RegexCache RegexCache { get { return m_regexCache; } }
 
         ~WorldModel()
@@ -1709,8 +1731,11 @@ namespace TextAdventures.Quest
         }
 
         public WorldModelVersion Version { get; internal set; }
+
         internal string VersionString { get; set; }
+
         public string TempFolder { get; set; }
+
         internal IOutputLogger OutputLogger { get { return m_outputLogger; } }
 
         public int ASLVersion { get { return int.Parse(VersionString); } }
