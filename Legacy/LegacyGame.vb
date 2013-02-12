@@ -13579,4 +13579,12 @@ ErrorHandler:
     Public Function GetResource(ByVal file As String) As System.IO.Stream Implements IASL.GetResource
         Return New System.IO.FileStream(GetResourcePath(file), System.IO.FileMode.Open, System.IO.FileAccess.Read)
     End Function
+
+    Public ReadOnly Property GameID() As String Implements IASL.GameID
+        Get
+            If String.IsNullOrEmpty(GameFileName) Then Return Nothing
+            Return TextAdventures.Utility.Utility.FileMD5Hash(GameFileName)
+        End Get
+    End Property
+
 End Class

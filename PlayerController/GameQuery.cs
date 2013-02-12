@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace TextAdventures.Quest
@@ -67,18 +66,7 @@ namespace TextAdventures.Quest
 
         public string GameID
         {
-            get
-            {
-                if (m_v4Game != null)
-                {
-                    return MD5Hash();
-                }
-                if (m_v5Game != null)
-                {
-                    return !string.IsNullOrEmpty(m_v5Game.GameID) ? m_v5Game.GameID : MD5Hash();
-                }
-                throw new InvalidOperationException();
-            }
+            get { return m_game.GameID; }
         }
 
         public string Category
@@ -139,20 +127,7 @@ namespace TextAdventures.Quest
 
         private string MD5Hash()
         {
-            return CalculateMD5Hash(System.IO.File.ReadAllBytes(m_game.Filename));
-        }
-
-        private string CalculateMD5Hash(byte[] input)
-        {
-            MD5 md5 = MD5.Create();
-            var hash = md5.ComputeHash(input);
-
-            var sb = new StringBuilder();
-            for (int i = 0; i < hash.Length; i++)
-            {
-                sb.Append(hash[i].ToString("X2"));
-            }
-            return sb.ToString();
+            return TextAdventures.Utility.Utility.FileMD5Hash(m_game.Filename);
         }
 
         private class GameQueryUI : IPlayerHelperUI

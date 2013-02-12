@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.IO;
 
@@ -51,6 +52,24 @@ namespace TextAdventures.Utility
             }
 
             return true;
+        }
+
+        public static string FileMD5Hash(string filename)
+        {
+            return CalculateMD5Hash(File.ReadAllBytes(filename));
+        }
+
+        private static string CalculateMD5Hash(byte[] input)
+        {
+            MD5 md5 = MD5.Create();
+            var hash = md5.ComputeHash(input);
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+            return sb.ToString();
         }
     }
 }

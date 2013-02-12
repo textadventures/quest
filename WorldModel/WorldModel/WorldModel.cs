@@ -1739,7 +1739,15 @@ namespace TextAdventures.Quest
         internal IOutputLogger OutputLogger { get { return m_outputLogger; } }
 
         public int ASLVersion { get { return int.Parse(VersionString); } }
-        public string GameID { get { return m_game.Fields[FieldDefinitions.GameID]; } }
+
+        public string GameID
+        {
+            get
+            {
+                string gameId = m_game.Fields[FieldDefinitions.GameID];
+                return gameId ?? TextAdventures.Utility.Utility.FileMD5Hash(m_filename);
+            }
+        }
         public string Category { get { return m_game.Fields[FieldDefinitions.Category]; } }
         public string Description { get { return m_game.Fields[FieldDefinitions.Description]; } }
         public string Cover { get { return m_game.Fields[FieldDefinitions.Cover]; } }
