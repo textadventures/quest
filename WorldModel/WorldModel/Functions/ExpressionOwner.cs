@@ -635,5 +635,15 @@ namespace TextAdventures.Quest.Functions
             var list = GetParameter<QuestList<string>>(obj, "StringListSortDescending", "objectlist");
             return new QuestList<string>(StringListSort(list).Reverse());
         }
+
+        public string GetUIOption(string optionName)
+        {
+            UIOption option;
+            if (Enum.TryParse(optionName, out option))
+            {
+                return m_worldModel.PlayerUI.GetUIOption(option);
+            }
+            throw new Exception(string.Format("Unrecognised UI option name '{0}'", optionName));
+        }
     }
 }

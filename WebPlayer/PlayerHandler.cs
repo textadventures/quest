@@ -477,6 +477,11 @@ namespace WebPlayer
         {
         }
 
+        public string GetUIOption(UIOption option)
+        {
+            return null;
+        }
+
         public IASL Game { get { return m_controller.Game; } }
     }
 }

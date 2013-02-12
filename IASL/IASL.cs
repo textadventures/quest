@@ -73,6 +73,7 @@ namespace TextAdventures.Quest
         void SetInterfaceString(string name, string text);
         void SetPanelContents(string html);
         void Log(string text);
+        string GetUIOption(UIOption option);
     }
 
     public enum ListType
@@ -80,6 +81,16 @@ namespace TextAdventures.Quest
         InventoryList,
         ExitsList,
         ObjectsList
+    }
+
+    public enum UIOption
+    {
+        UseGameColours,
+        UseGameFont,
+        OverrideForeground,
+        OverrideLinkForeground,
+        OverrideFontName,
+        OverrideFontSize
     }
 
     public class MenuData

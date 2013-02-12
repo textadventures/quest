@@ -1,5 +1,6 @@
 ﻿Imports System.Xml
 Imports System.Threading
+Imports System.Globalization
 
 Public Class Player
 
@@ -923,18 +924,27 @@ Public Class Player
     Private m_playerOverrideForeground As Color
     Private m_playerOverrideLink As Color
 
+    Private m_playerOverrideBackgroundHtml As String
+    Private m_playerOverrideForegroundHtml As String
+    Private m_playerOverrideLinkHtml As String
+
     Public Sub SetPlayerOverrideColours(background As Color, foreground As Color, link As Color)
         m_playerOverrideBackground = background
         m_playerOverrideForeground = foreground
         m_playerOverrideLink = link
+
+        m_playerOverrideBackgroundHtml = ColorTranslator.ToHtml(background)
+        m_playerOverrideForegroundHtml = ColorTranslator.ToHtml(foreground)
+        m_playerOverrideLinkHtml = ColorTranslator.ToHtml(link)
+
         If m_htmlHelper IsNot Nothing Then
-            m_htmlHelper.PlayerOverrideForeground = ColorTranslator.ToHtml(foreground)
+            m_htmlHelper.PlayerOverrideForeground = m_playerOverrideForegroundHtml
         End If
         If Not UseGameColours Then
-            BeginInvoke(Sub() ctlPlayerHtml.SetBackground(ColorTranslator.ToHtml(background)))
+            BeginInvoke(Sub() ctlPlayerHtml.SetBackground(m_playerOverrideBackgroundHtml))
             If m_htmlHelper IsNot Nothing Then
-                m_htmlHelper.SetForeground(ColorTranslator.ToHtml(foreground))
-                m_htmlHelper.SetLinkForeground(ColorTranslator.ToHtml(link))
+                m_htmlHelper.SetForeground(m_playerOverrideForegroundHtml)
+                m_htmlHelper.SetLinkForeground(m_playerOverrideLinkHtml)
             End If
             ClearBuffer()
         End If
@@ -1014,4 +1024,22 @@ Public Class Player
         ctlPlayerHtml.Reset()
     End Sub
 
+    Public Function GetUIOption(ByVal [option] As UIOption) As String Implements IPlayer.GetUIOption
+        Select Case [option]
+            Case UIOption.UseGameColours
+                Return If(UseGameColours, "true", "false")
+            Case UIOption.UseGameFont
+                Return If(UseGameFont, "true", "false")
+            Case UIOption.OverrideForeground
+                Return m_playerOverrideForegroundHtml
+            Case UIOption.OverrideLinkForeground
+                Return m_playerOverrideLinkHtml
+            Case UIOption.OverrideFontName
+                Return m_htmlHelper.PlayerOverrideFontFamily
+            Case UIOption.OverrideFontSize
+                Return m_htmlHelper.PlayerOverrideFontSize.ToString(CultureInfo.InvariantCulture)
+            Case Else
+                Throw New NotImplementedException()
+        End Select
+    End Function
 End Class

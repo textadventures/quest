@@ -257,5 +257,10 @@ namespace QuestConsole
         public void Log(string text)
         {
         }
+
+        public string GetUIOption(UIOption option)
+        {
+            return null;
+        }
     }
 }

@@ -25,23 +25,37 @@
   </function>
 
   <function name="GetCurrentTextFormat" type="string" parameters="colour">
-    // TO DO: Need a way to query Quest options to see if there is a font or colour override
-    
     style = ""
     
-    font = GetCurrentFontFamily()
+    if (UIOptionUseGameFont()) {
+      font = GetCurrentFontFamily()
+    }
+    else {
+      font = GetUIOption("OverrideFontName")
+    }
+    
     if (LengthOf(font) > 0) {
       style = style + "font-family:" + font + ";"
     }
     
     if (LengthOf(colour) = 0) {
-      colour = game.defaultforeground
+      if (UIOptionUseGameColours()) {
+        colour = game.defaultforeground
+      }
+      else {
+        colour = GetUIOption("OverrideForeground")
+      }
     }
     if (LengthOf(colour) > 0) {
       style = style + "color:" + colour + ";"
     }
     
-    size = game.defaultfontsize
+    if (UIOptionUseGameFont()) {
+      size = game.defaultfontsize
+    }
+    else {
+      size = ToDouble(GetUIOption("OverrideFontSize"))
+    }
     if (size > 0) {
       style = style + "font-size:" + ToString(size) + "pt;"
     }
@@ -49,6 +63,40 @@
     return (style)
   </function>
 
+  <function name="GetCurrentLinkTextFormat" type="string">
+    return (GetCurrentTextFormat(GetLinkTextColour()))
+  </function>
+  
+  <function name="UIOptionUseGameFont" type="boolean">
+    value = GetUIOption("UseGameFont")
+    if (value = null or value = "true") {
+      return (true)
+    }
+    else {
+      return (false)
+    }
+  </function>
+
+  <function name="UIOptionUseGameColours" type="boolean">
+    value = GetUIOption("UseGameColours")
+    if (value = null or value = "true") {
+      return (true)
+    }
+    else {
+      return (false)
+    }
+  </function>
+
+    
+  <function name="GetLinkTextColour" type="string">
+    if (UIOptionUseGameColours()) {
+      return (game.defaultlinkforeground)
+    }
+    else {
+      return (GetUIOption("OverrideLinkForeground"))
+    }
+  </function>
+  
   <function name="ProcessTextSection" type="string" parameters="text, data">
     <![CDATA[
     
@@ -175,11 +223,11 @@
         game.lastlinkid = game.lastlinkid + 1
         linkid = "verblink" + game.lastlinkid
         colour = ""
-        if (HasString(object, "linkcolour")) {
+        if (HasString(object, "linkcolour") and GetUIOption("UseGameColours") = "true") {
           colour = object.linkcolour
         }
         else {
-          colour = game.defaultlinkforeground
+          colour = GetLinkTextColour()
         }
         style = GetCurrentTextFormat(colour)
         verbs = Join(GetDisplayVerbs(object), "/")
@@ -208,7 +256,7 @@
       text = Mid(command, colon + 1)
       command = Left(command, colon - 1)
     }
-    style = GetCurrentTextFormat(game.defaultlinkforeground)
+    style = GetCurrentLinkTextFormat()
     return ("<a style=\"" + style + "\" class=\"cmdlink\" onclick=\"sendCommand('" + command + "')\">" + ProcessTextSection(text, data) + "</a>")
     ]]>
   </function>
@@ -436,7 +484,7 @@
     else {
       url = "http://" + url
     }
-    msg ("<a style=\"" + GetCurrentTextFormat(game.defaultlinkforeground) + "\" href=\"" + url + "\">" + text + "</a>")
+    msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
     ]]>
   </function>
 
@@ -445,7 +493,7 @@
     if (instr(url, "mailto:") = 0) {
       url = "mailto:" + url
     }
-    msg ("<a style=\"" + GetCurrentTextFormat(game.defaultlinkforeground) + "\" href=\"" + url + "\">" + text + "</a>")
+    msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
     ]]>
   </function>
 
