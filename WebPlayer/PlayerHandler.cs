@@ -133,12 +133,19 @@ namespace WebPlayer
 
         public void RunScript(string data, object[] parameters)
         {
-            var paramValues = parameters.Select(GetScriptParameter);
-
             // Clear text buffer before running custom JavaScript, otherwise text written
             // before now may appear after inserted HTML.
             m_buffer.OutputText(ClearBuffer());
-            m_buffer.AddJavaScriptToBuffer(data, paramValues.ToArray());
+
+            if (parameters != null)
+            {
+                var paramValues = parameters.Select(GetScriptParameter);
+                m_buffer.AddJavaScriptToBuffer(data, paramValues.ToArray());
+            }
+            else
+            {
+                m_buffer.AddJavaScriptToBuffer(data);
+            }
         }
 
         private IJavaScriptParameter GetScriptParameter(object arg)
