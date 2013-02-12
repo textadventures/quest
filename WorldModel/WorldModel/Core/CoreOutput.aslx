@@ -414,7 +414,7 @@
     else {
       url = "http://" + url
     }
-    msg ("<a href=\"" + url + "\">" + text + "</a>")
+    msg ("<a style=\"" + GetCurrentTextFormat(game.defaultlinkforeground) + "\" href=\"" + url + "\">" + text + "</a>")
     ]]>
   </function>
 
@@ -423,7 +423,7 @@
     if (instr(url, "mailto:") = 0) {
       url = "mailto:" + url
     }
-    msg ("<a href=\"" + url + "\">" + text + "</a>")
+    msg ("<a style=\"" + GetCurrentTextFormat(game.defaultlinkforeground) + "\" href=\"" + url + "\">" + text + "</a>")
     ]]>
   </function>
 

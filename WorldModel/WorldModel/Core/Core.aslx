@@ -380,7 +380,7 @@
       else {
         optionText = StringDictionaryItem(options, option)
       }
-      msg (count + ": <a class=\"cmdlink\" onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
+      msg (count + ": <a class=\"cmdlink\" style=\"" + GetCurrentTextFormat(game.defaultlinkforeground) + "\" onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
     }
     EndOutputSection(outputsection)
     
