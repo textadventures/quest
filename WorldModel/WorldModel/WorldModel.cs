@@ -992,7 +992,7 @@ namespace TextAdventures.Quest
                     if (jsRef.Fields[FieldDefinitions.Src].ToLower() == "frame.js") continue;
                 }
 
-                result.Add(GetExternalPath(jsRef.Fields[FieldDefinitions.Src]));
+                result.Add(jsRef.Fields[FieldDefinitions.Src]);
             }
             return result;
         }
