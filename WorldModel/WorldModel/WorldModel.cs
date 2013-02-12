@@ -600,6 +600,9 @@ namespace TextAdventures.Quest
                     PlayerUI.RunScript(function, parameters.ToArray());
                 }
             }
+
+            PlayerUI.RunScript("markScrollPosition", null);
+            PlayerUI.RunScript("scrollToEnd", null);
         }
 
         public List<string> Errors
