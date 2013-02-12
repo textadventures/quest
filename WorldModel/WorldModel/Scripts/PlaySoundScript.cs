@@ -52,8 +52,7 @@ namespace TextAdventures.Quest.Scripts
         public override void Execute(Context c)
         {
             string filename = m_filename.Execute(c);
-            string path = m_worldModel.GetExternalPath(filename);
-            m_worldModel.PlaySound(path, m_synchronous.Execute(c), m_loop.Execute(c));
+            m_worldModel.PlaySound(filename, m_synchronous.Execute(c), m_loop.Execute(c));
         }
 
         public override string Save()

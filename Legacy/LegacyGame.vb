@@ -13337,7 +13337,7 @@ ErrorHandler:
         Cleanup()
     End Sub
 
-    Private Function GetResourcePath(filename As String) As String
+    Private Function GetResourcePath(filename As String) As String Implements IASL.GetResourcePath
         If Not ResourceFile Is Nothing AndAlso ResourceFile.Length > 0 Then
             Dim extractResult As String = ExtractFile(filename)
             Return extractResult

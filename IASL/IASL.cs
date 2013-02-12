@@ -36,6 +36,7 @@ namespace TextAdventures.Quest
         IEnumerable<string> GetExternalStylesheets();
         string TempFolder { get; set; }
         System.IO.Stream GetResource(string filename);
+        string GetResourcePath(string filename);
         string GameID { get; }
     }
 

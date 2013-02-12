@@ -552,6 +552,8 @@ Public Class Player
                             Throw New Exception("Can't play sound that is both synchronous and looped")
                         End If
 
+                        filename = m_game.GetResourcePath(filename)
+
                         If System.IO.File.Exists(filename) And PlaySounds Then
                             m_loopSound = looped
 

@@ -52,8 +52,7 @@ namespace TextAdventures.Quest.Scripts
             }
             else
             {
-                string path = m_worldModel.GetExternalPath(filename);
-                m_worldModel.PlayerUI.ShowPicture(path);
+                m_worldModel.PlayerUI.ShowPicture(filename);
                 ((LegacyOutputLogger)m_worldModel.OutputLogger).AddPicture(filename);
             }
         }

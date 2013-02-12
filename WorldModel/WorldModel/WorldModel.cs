@@ -1633,11 +1633,8 @@ namespace TextAdventures.Quest
         {
             if (s_functionNames == null)
             {
-                System.Reflection.MethodInfo[] methods = typeof(TextAdventures.Quest.Functions.ExpressionOwner)
-                                                            .GetMethods();
-
-                System.Reflection.MethodInfo[] stringMethods = typeof(TextAdventures.Quest.Functions.StringFunctions)
-                                                            .GetMethods();
+                System.Reflection.MethodInfo[] methods = typeof(ExpressionOwner).GetMethods();
+                System.Reflection.MethodInfo[] stringMethods = typeof(StringFunctions).GetMethods();
 
                 IEnumerable<System.Reflection.MethodInfo> allMethods = methods.Union(stringMethods);
 
@@ -1714,6 +1711,11 @@ namespace TextAdventures.Quest
             string path = TryGetExternalPath(filename);
             if (path == null) return null;
             return new FileStream(GetExternalPath(filename), FileMode.Open, FileAccess.Read);
+        }
+
+        public string GetResourcePath(string filename)
+        {
+            return TryGetExternalPath(filename);
         }
 
         internal RegexCache RegexCache { get { return m_regexCache; } }
