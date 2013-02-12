@@ -31,6 +31,11 @@ namespace WebPlayer
                 OutputBuffers = new Dictionary<string, OutputBuffer>();
             }
 
+            if (Resources == null)
+            {
+                Resources = new SessionResources();
+            }
+
             m_gameId = (string)ViewState["GameId"];
             if (m_gameId == null)
             {
@@ -163,6 +168,8 @@ namespace WebPlayer
                 
                 if (m_player.Initialise(out errors))
                 {
+                    Resources.AddGame(m_player.Game);
+
                     // Successful game start
                     return m_player.ClearBuffer();
                 }
@@ -211,7 +218,7 @@ namespace WebPlayer
 
             if (functionName == null) return;
 
-            string url = AddResource(e.Filename);
+            string url = AddResource(e.GameId, e.Filename);
             
             m_buffer.AddJavaScriptToBuffer(
                 functionName,
@@ -225,14 +232,9 @@ namespace WebPlayer
             m_buffer.AddJavaScriptToBuffer("stopAudio");
         }
 
-        string AddResource(string filename)
+        string AddResource(string gameId, string filename)
         {
-            if (Resources == null)
-            {
-                Resources = new SessionResources();
-            }
-
-            return Resources.Add(filename);
+            return "Resource.ashx?id=" + gameId + "&filename=" + filename;
         }
 
         void m_player_BeginWait()

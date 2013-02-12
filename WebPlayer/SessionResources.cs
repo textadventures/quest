@@ -1,44 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
+using TextAdventures.Quest;
 
 namespace WebPlayer
 {
     public class SessionResources
     {
-        private int m_count = 0;
-        private Dictionary<string, string> m_resourceList = new Dictionary<string, string>();
-        private Dictionary<string, string> m_resourceKeys = new Dictionary<string, string>();
+        private Dictionary<string, IASL> m_games = new Dictionary<string, IASL>();
+
+        public void AddGame(IASL game)
+        {
+            m_games[game.GameID] = game;
+        }
         
-        public string Add(string filename)
+        public Stream Get(string id, string filename)
         {
-            // if adding the same filename, return the existing resource id
-            if (m_resourceKeys.ContainsKey(filename))
-            {
-                return ToUrl(m_resourceKeys[filename]);
-            }
-
-            m_count++;
-            string key = m_count.ToString() + System.IO.Path.GetExtension(filename);
-            m_resourceList.Add(key, filename);
-            m_resourceKeys.Add(filename, key);
-            return ToUrl(key);
-        }
-
-        public string ToUrl(string key)
-        {
-            return "Resource.ashx?id=" + key;
-        }
-
-        public string Get(string key)
-        {
-            string result;
-            if (m_resourceList.TryGetValue(key, out result))
-            {
-                return result;
-            }
-            return string.Empty;
+            if (!m_games.ContainsKey(id)) return null;
+            return m_games[id].GetResource(filename);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace WebPlayer
 
         public class PlayAudioEventArgs : EventArgs
         {
+            public string GameId { get; set; }
             public string Filename { get; set; }
             public bool Synchronous { get; set; }
             public bool Looped { get; set; }
@@ -30,7 +31,7 @@ namespace WebPlayer
 
         public event Action BeginWait;
         public event Action<int> BeginPause;
-        public event Func<string, string> AddResource;
+        public event Func<string, string, string> AddResource;
         public event EventHandler<PlayAudioEventArgs> PlayAudio;
         public event Action StopAudio;
 
@@ -175,7 +176,7 @@ namespace WebPlayer
         public void ShowPicture(string filename)
         {
             m_buffer.OutputText(ClearBuffer());
-            string url = AddResource(filename);
+            string url = AddResource(m_controller.Game.GameID, filename);
             m_buffer.OutputText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" /><br />", url));
         }
 
@@ -262,7 +263,13 @@ namespace WebPlayer
 
         public void PlaySound(string filename, bool synchronous, bool looped)
         {
-            PlayAudio(this, new PlayAudioEventArgs { Filename = filename, Synchronous = synchronous, Looped = looped });
+            PlayAudio(this, new PlayAudioEventArgs
+            {
+                GameId = m_controller.Game.GameID,
+                Filename = filename,
+                Synchronous = synchronous,
+                Looped = looped
+            });
         }
 
         public void StopSound()
@@ -291,7 +298,7 @@ namespace WebPlayer
 
             foreach (string script in scripts)
             {
-                string url = AddResource(script);
+                string url = AddResource(m_controller.Game.GameID, script);
                 result.Add(url);
             }
 
@@ -453,7 +460,7 @@ namespace WebPlayer
 
         public string GetURL(string file)
         {
-            return AddResource(file);
+            return AddResource(m_controller.Game.GameID, file);
         }
 
         public void SetInterfaceString(string name, string text)
@@ -469,5 +476,7 @@ namespace WebPlayer
         public void Log(string text)
         {
         }
+
+        public IASL Game { get { return m_controller.Game; } }
     }
 }

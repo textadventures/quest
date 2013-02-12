@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.SessionState;
@@ -27,23 +28,18 @@ namespace WebPlayer
         public void ProcessRequest(HttpContext context)
         {
             SessionResources resources = context.Session["Resources"] as SessionResources;
-            string key = context.Request["id"];
+            string id = context.Request["id"];
+            string filename = context.Request["filename"];
             
-            if (resources == null || key == null)
+            if (resources == null || id == null || filename == null)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
             }
 
-            string filename = resources.Get(key);
+            Stream stream = resources.Get(id, filename);
 
-            if (string.IsNullOrEmpty(filename))
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return;
-            }
-
-            if (!System.IO.File.Exists(filename))
+            if (stream == null)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 Logging.Log.InfoFormat("File not found: {0}", filename);
@@ -58,9 +54,14 @@ namespace WebPlayer
                 return;
             }
 
-            Logging.Log.DebugFormat("Sending resource '{0}', format is '{1}'", filename, contentType);
+            Logging.Log.DebugFormat("Sending resource {0}:'{1}', format is '{2}'", id, filename, contentType);
             context.Response.ContentType = contentType;
-            context.Response.WriteFile(filename);
+
+            int fileSize = (int)stream.Length;
+            byte[] buffer = new byte[fileSize];
+            stream.Read(buffer, 0, fileSize);
+            stream.Close();
+            context.Response.BinaryWrite(buffer);
         }
 
         public bool IsReusable
