@@ -567,9 +567,6 @@
   <editor>
     <appliesto>insert</appliesto>
     <display>Insert HTML from file #0</display>
-    <category>Output</category>
-    <create>insert ("")</create>
-    <add>Insert HTML from a file</add>
     <advanced/>
     <desktop/>
 

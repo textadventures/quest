@@ -44,6 +44,11 @@ namespace TextAdventures.Quest.Scripts
 
         public override void Execute(Context c)
         {
+            if (m_worldModel.Version >= WorldModelVersion.v540)
+            {
+                throw new Exception("The 'insert' script command is not supported for games written for Quest 5.4 or later. You can output HTML directly using the 'msg' command instead.");
+            }
+
             string filename = m_filename.Execute(c);
             if (m_worldModel.Version == WorldModelVersion.v500)
             {
