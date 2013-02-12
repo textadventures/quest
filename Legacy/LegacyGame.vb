@@ -8121,13 +8121,12 @@ errhandle:
     End Sub
 
     Private Sub ShowPictureInText(ByRef sFileName As String)
-        Dim path As String = GetResourcePath(sFileName)
         If Not m_useStaticFrameForPictures Then
-            m_player.ShowPicture(path)
+            m_player.ShowPicture(sFileName)
         Else
             ' Workaround for a particular game which expects pictures to be in a popup window -
             ' use the static picture frame feature so that image is not cleared
-            m_player.SetPanelContents("<img src=""" + path + """ onload=""setPanelHeight()""/>")
+            m_player.SetPanelContents("<img src=""" + m_player.GetURL(sFileName) + """ onload=""setPanelHeight()""/>")
         End If
     End Sub
 
