@@ -554,6 +554,7 @@ Public Class LegacyGame
         Dim CurPos As Integer
         Dim ThisSection As String = ""
         Dim HasErrors As Boolean
+        Dim bSkipBlock As Boolean
         OpenErrorReport = ""
         HasErrors = False
         Defines = 0
@@ -565,6 +566,7 @@ Public Class LegacyGame
                     ThisSection = Lines(i)
                     Braces = 0
                     Defines = Defines + 1
+                    bSkipBlock = BeginsWith(Lines(i), "define text") Or BeginsWith(Lines(i), "define synonyms")
                 ElseIf Trim(Lines(i)) = "end define" Then
                     Defines = Defines - 1
 
@@ -586,7 +588,7 @@ Public Class LegacyGame
                     End If
                 End If
 
-                If Left(Lines(i), 1) <> "'" Then
+                If Left(Lines(i), 1) <> "'" And Not bSkipBlock Then
                     CheckLine = ObliterateParameters(Lines(i))
                     If BeginsWith(CheckLine, "'<ERROR;") Then
                         ' ObliterateParameters denotes a mismatched $, ( etc.
