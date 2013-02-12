@@ -128,7 +128,29 @@
           return ("{" + section + "}")
         }
         else {
-          return (ToString(GetAttribute(object, attributename)))
+          if (HasAttribute(object, attributename)) {
+            type = TypeOf(object, attributename)
+            switch (type) {
+              case ("string", "int", "double") {
+                return (ToString(GetAttribute(object, attributename)))
+              }
+              case ("boolean") {
+                result = GetAttribute(object, attributename)
+                if (result) {
+                  return ("true")
+                }
+                else {
+                  return ("false")
+                }
+              }
+              default {
+                return ("(" + type + ")")
+              }
+            }
+          }
+          else {
+            return ("")
+          }
         }
       }
     }
