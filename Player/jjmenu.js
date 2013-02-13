@@ -9,30 +9,25 @@
 
     $.fn.jjmenu = function (param) {
 
-        var global = this;
-
-        global.click(
-                function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    menu("main", param, this);
-                    $(this).blur();
-                    return false;
-                });
+        this.click(function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            menu(this);
+            $(this).blur();
+            return false;
+        });
 
         $(document).click(function (event) { if (event.button != 2) $("div[id^=jjmenu]").remove(); });
 
-        function menu(id, param, el) {
-
-            if (id == "main") window.triggerElement = el;
-            $("div[id^=jjmenu_" + id + "]").remove();
+        function menu(el) {
+            $("div[id^=jjmenu_main]").remove();
 
             var m = document.createElement('div');
             var ms = document.createElement('span');
             $(m).append(ms);
 
             m.className = "jjmenu";
-            m.id = "jjmenu_" + id;
+            m.id = "jjmenu_main";
             $(m).css({ display: 'none' });
             $(document.body).append(m);
 
@@ -54,9 +49,9 @@
 
             function checkPosition() {
 
-                var isHidden = $(m).css("display") == "none" ? true : false;
-
+                var isHidden = $(m).css("display") == "none";
                 if (isHidden) $(m).show();
+                
                 var positionTop = $(m).offset().top;
                 var positionLeft = $(m).offset().left;
                 if (isHidden) $(m).hide();
@@ -124,12 +119,7 @@
                 var span = document.createElement('span');
                 $(item).append(span);
 
-                $(item).hover(function () { $("div[id^=jjmenu_" + id + "_sub]").remove(); });
                 item.className = "jj_menu_item";
-
-                if (n.customClass && n.customClass.length > 0) {
-                    jQuery(span).addClass(n.customClass);
-                }
 
                 $(span).html(n.title);
                 $(ms).append(item);
