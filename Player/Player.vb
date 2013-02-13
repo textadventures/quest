@@ -703,7 +703,7 @@ Public Class Player
         m_htmlHelper.SetFontSize(size)
     End Sub
 
-    Public Sub RequestSave() Implements IPlayer.RequestSave
+    Public Sub RequestSave(html As String) Implements IPlayer.RequestSave
         BeginInvoke(Sub() Save())
     End Sub
 

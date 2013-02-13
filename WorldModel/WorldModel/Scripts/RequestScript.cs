@@ -187,7 +187,7 @@ namespace TextAdventures.Quest.Scripts
                     m_worldModel.PlayerUI.SetInterfaceString(args[0], args[1]);
                     break;
                 case Request.RequestSave:
-                    m_worldModel.PlayerUI.RequestSave();
+                    m_worldModel.PlayerUI.RequestSave(null);
                     break;
                 case Request.SetPanelContents:
                     m_worldModel.PlayerUI.SetPanelContents(data);

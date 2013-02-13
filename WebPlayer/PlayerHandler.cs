@@ -400,7 +400,7 @@ namespace WebPlayer
             // Do nothing
         }
 
-        public void RequestSave()
+        public void RequestSave(string html)
         {
             if (m_user == null || string.IsNullOrEmpty(m_gameId))
             {
@@ -417,8 +417,7 @@ namespace WebPlayer
                 notifySave = true;
             }
 
-            // TO DO: Need to get $("#divOutput").html()
-            m_controller.Game.Save(fullPath, null);
+            m_controller.Game.Save(fullPath, html);
 
             if (notifySave)
             {

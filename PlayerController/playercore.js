@@ -116,6 +116,10 @@ $(function () {
     $("#txtCommand").focus();
 });
 
+function loadHtml(html) {
+    $("#divOutput").html(html);
+}
+
 function showStatusVisible(visible) {
     if (visible) {
         $("#statusVars").show();

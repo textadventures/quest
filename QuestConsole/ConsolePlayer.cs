@@ -183,7 +183,7 @@ namespace QuestConsole
         {
         }
 
-        public void RequestSave()
+        public void RequestSave(string html)
         {
             OutputText("Saving is not currently supported");
         }

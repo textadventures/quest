@@ -249,7 +249,7 @@ namespace TextAdventures.Quest
             {
             }
 
-            public void RequestSave()
+            public void RequestSave(string html)
             {
                 throw new NotImplementedException();
             }

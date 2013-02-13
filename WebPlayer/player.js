@@ -168,7 +168,8 @@ function goUrl(href) {
 
 function saveGame() {
     window.setTimeout(function () {
-        $("#fldUIMsg").val("save");
+        var saveData = $("#divOutput").html().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        $("#fldUIMsg").val("save " + saveData);
         $("#cmdSubmit").click();
     }, 100);
 }

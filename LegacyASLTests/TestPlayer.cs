@@ -157,7 +157,7 @@ namespace LegacyASLTests
         {
         }
 
-        public void RequestSave()
+        public void RequestSave(string html)
         {
         }
 

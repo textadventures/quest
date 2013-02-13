@@ -26,10 +26,6 @@ function doSave() {
     UIEvent("Save", $("#divOutput").html());
 }
 
-function loadHtml(html) {
-    $("#divOutput").html(html);
-}
-
 function UIEvent(cmd, parameter) {
     questCefInterop.UIEvent(cmd, parameter);
 }

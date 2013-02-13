@@ -10288,7 +10288,7 @@ errhandle:
             ElseIf CmdStartsWith(thecommand, "remove ") And GameASLVersion >= 391 Then
                 ExecAddRemove(thecommand, Thread)
             ElseIf cmd = "save" Then
-                m_player.RequestSave()
+                m_player.RequestSave(Nothing)
             ElseIf cmd = "quit" Then
                 GameFinished()
             ElseIf BeginsWith(cmd, "help") Then

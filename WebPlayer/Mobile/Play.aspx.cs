@@ -304,7 +304,8 @@ namespace WebPlayer.Mobile
                         m_player.Tick(tickCount);
                         break;
                     case "save":
-                        m_player.RequestSave();
+                        string unescapedHtml = args[1].Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&");
+                        m_player.RequestSave(unescapedHtml);
                         break;
                 }
                 fldUIMsg.Value = "";
