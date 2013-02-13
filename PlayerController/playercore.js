@@ -525,18 +525,13 @@ function bindMenu(linkid, verbs, text, elementId) {
             action: {
                 type: "fn",
                 callback: function(selectedValue) {
-                    doMenuClick(selectedValue.toLowerCase() + " " + text, metadataString);
+                    sendCommand(selectedValue.toLowerCase() + " " + text, metadataString);
                 }
             }
         });
     });
 
     $("#" + linkid).jjmenu(options);
-}
-
-function doMenuClick(command, metadata) {
-    $("div[id^=jjmenu]").remove();
-    sendCommand(command, metadata);
 }
 
 function clearScreen() {

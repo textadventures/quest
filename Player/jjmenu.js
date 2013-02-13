@@ -113,6 +113,7 @@
 
                 $(item).click(function (event) {
                     event.stopPropagation();
+                    $("div[id^=jjmenu]").remove();
                     n.action.callback(n.title);
                 });
 

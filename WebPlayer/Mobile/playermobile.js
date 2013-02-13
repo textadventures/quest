@@ -39,7 +39,7 @@ function ui_init() {
     initTabMenu(true);
 
     $("button.backButton span").html("&lt; Back to game");
-    $("button.backButton").click(function () { tabMenu('game'); });
+    $("button.backButton").click(function () { tabSelected('game'); });
     $("#cmdLook").click(function () { sendCommand("look"); });
     $("#cmdRestart").click(function () { window.location.reload(); });
     $("#cmdUndo").click(function () { sendCommand("undo"); });
@@ -54,24 +54,19 @@ function initTabMenu(full) {
 
     if (full) {
         options = [
-            { title: "Inventory", action: { type: "fn", callback: function() { tabMenu('inventory'); } } },
-            { title: "Location", action: { type: "fn", callback: function () { tabMenu('objects'); } } },
-            { title: "Exits", action: { type: "fn", callback: function() { tabMenu('exits'); } } },
-            { title: "More", action: { type: "fn", callback: function() { tabMenu('more'); } } }
+            { title: "Inventory", action: { type: "fn", callback: function() { tabSelected('inventory'); } } },
+            { title: "Location", action: { type: "fn", callback: function () { tabSelected('objects'); } } },
+            { title: "Exits", action: { type: "fn", callback: function() { tabSelected('exits'); } } },
+            { title: "More", action: { type: "fn", callback: function() { tabSelected('more'); } } }
         ];
     }
     else {
         options = [
-            { title: "More", action: { type: "fn", callback: function () { tabMenu('more'); } } }
+            { title: "More", action: { type: "fn", callback: function () { tabSelected('more'); } } }
         ];
     }
 
     $("#tabButton").jjmenu(options);
-}
-
-function tabMenu(id) {
-    $("div[id^=jjmenu]").remove();
-    tabSelected(id);
 }
 
 function resizeUI() {
