@@ -95,13 +95,13 @@ $(function () {
         e.preventDefault();
     });
 
-    //$(document).on("click", ".elementmenu", function () {
-    //    event.preventDefault();
-    //    event.stopPropagation();
-    //    $(this).jjmenu_popup();
-    //    $(this).blur();
-    //    return false;
-    //});
+    $(document).on("click", ".elementmenu", function () {
+        event.preventDefault();
+        event.stopPropagation();
+        $(this).jjmenu_popup();
+        $(this).blur();
+        return false;
+    });
 
     ui_init();
 
@@ -1181,12 +1181,12 @@ function Grid_DrawSquare(id, x, y, width, height, text, fill) {
 
         positionMenu();
 
-        //if (typeof param === "undefined") {
-        //    var verbs = "test1/test2/test3";
-        //    var text = "some text";
-        //    var elementId = "myelement";
-        //    param = buildMenuOptions(verbs, text, elementId);
-        //}
+        if (typeof param === "undefined") {
+            var verbs = el.data("verbs");
+            var text = el.html();
+            var elementId = el.data("elementid");
+            param = buildMenuOptions(verbs, text, elementId);
+        }
 
         for (var i in param) {
             putItem(param[i]);

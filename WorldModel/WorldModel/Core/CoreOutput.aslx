@@ -5,16 +5,6 @@
     dictionary add (data, "fulltext", text)
     text = ProcessTextSection(text, data)
     OutputTextRaw(text)
-    if (DictionaryContains(data, "menubindings")) {
-      menubindings = DictionaryItem(data, "menubindings")
-      foreach (menubinding, menubindings) {
-        linkid = DictionaryItem(menubinding, "linkid")
-        verbs = DictionaryItem(menubinding, "verbs")
-        text = DictionaryItem(menubinding, "text")
-        elementId = DictionaryItem(menubinding, "elementId")
-        JS.bindMenu(linkid, verbs, text, elementId)
-      }
-    }
     ]]>
   </function>
 
@@ -206,9 +196,6 @@
 
   <function name="ProcessTextCommand_Object" type="string" parameters="section, data">
     <![CDATA[
-    if (not DictionaryContains(data, "menubindings")) {
-      dictionary add (data, "menubindings", NewList())
-    }
     objectname = Mid(section, 8)
     object = GetObject(objectname)
     if (object = null) {
@@ -231,14 +218,7 @@
         }
         style = GetCurrentTextFormat(colour)
         verbs = Join(GetDisplayVerbs(object), "/")
-        menubindings = DictionaryItem(data, "menubindings")
-        menubinding = NewDictionary()
-        dictionary add (menubinding, "linkid", linkid)
-        dictionary add (menubinding, "verbs", verbs)
-        dictionary add (menubinding, "text", text)
-        dictionary add (menubinding, "elementId", object.name)
-        list add (menubindings, menubinding)
-        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink\">" + text + "</a>")
+        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-verbs=\"" + verbs + "\" data-elementid=\"" + object.name + "\" >" + text + "</a>")
       }
       else {
         return (text)
