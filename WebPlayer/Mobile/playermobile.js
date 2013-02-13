@@ -54,15 +54,15 @@ function initTabMenu(full) {
 
     if (full) {
         options = [
-            { title: "Inventory", action: { type: "fn", callback: "tabMenu('inventory');"} },
-            { title: "Location", action: { type: "fn", callback: "tabMenu('objects');"} },
-            { title: "Exits", action: { type: "fn", callback: "tabMenu('exits');"} },
-            { title: "More", action: { type: "fn", callback: "tabMenu('more');"} }
+            { title: "Inventory", action: { type: "fn", callback: function() { tabMenu('inventory'); } } },
+            { title: "Location", action: { type: "fn", callback: function () { tabMenu('objects'); } } },
+            { title: "Exits", action: { type: "fn", callback: function() { tabMenu('exits'); } } },
+            { title: "More", action: { type: "fn", callback: function() { tabMenu('more'); } } }
         ];
     }
     else {
         options = [
-            { title: "More", action: { type: "fn", callback: "tabMenu('more');"} }
+            { title: "More", action: { type: "fn", callback: function () { tabMenu('more'); } } }
         ];
     }
 
