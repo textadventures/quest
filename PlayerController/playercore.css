@@ -16,6 +16,12 @@ a.cmdlink
     color: Blue;
     cursor: pointer;
 }
+a.cmdlink.disabled
+{
+    text-decoration: inherit;
+    color: inherit !important;
+    cursor: inherit;
+}
 div#gameBorder
 {
     width: 950px;

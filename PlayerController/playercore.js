@@ -96,11 +96,13 @@ $(function () {
     });
 
     $(document).on("click", ".elementmenu", function () {
-        event.preventDefault();
-        event.stopPropagation();
-        $(this).jjmenu_popup();
-        $(this).blur();
-        return false;
+        if (!$(this).hasClass("disabled")) {
+            event.preventDefault();
+            event.stopPropagation();
+            $(this).jjmenu_popup();
+            $(this).blur();
+            return false;
+        }
     });
 
     ui_init();
