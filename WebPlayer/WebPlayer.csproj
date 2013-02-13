@@ -20,6 +20,10 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,7 +100,6 @@
       <Link>playercore.js</Link>
     </Content>
     <Content Include="Global.asax" />
-    <Content Include="js\jjmenu.js" />
     <Content Include="js\Jplayer.swf" />
     <Content Include="js\jquery.jplayer.min.js" />
     <Content Include="js\jquery.multi-open-accordion-1.5.3.js" />
@@ -107,7 +110,6 @@
     <Content Include="Play.aspx" />
     <Content Include="player.css" />
     <Content Include="player.js" />
-    <Content Include="js\jjmenu.css" />
     <Content Include="playerweb.js" />
     <Content Include="updating.gif" />
     <Content Include="Web.config">
