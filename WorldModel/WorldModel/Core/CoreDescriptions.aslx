@@ -298,11 +298,10 @@
     }
     
     if (type = "exit" and verbCount = 1) {
-      alias = GetDisplayAlias(obj)
       if (not game.enablehyperlinks) {
-        result = alias
+        result = GetDisplayAlias(obj)
       } else {
-        result = CommandLink(LCase(StringListItem(verbs, 0)) + " " + alias, alias)
+        result = "{exit:" + obj.name + "}"
       }
     }
     else if (type = "") {

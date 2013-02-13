@@ -144,6 +144,9 @@
     else if (StartsWith(section, "command:")) {
       return (ProcessTextCommand_Command(section, data))
     }
+    else if (StartsWith(section, "exit:")) {
+      return (ProcessTextCommand_Exit(section, data))
+    }
     else if (StartsWith(section, "once:")) {
       return (ProcessTextCommand_Once(section, data))
     }
@@ -240,6 +243,23 @@
     ]]>
   </function>
 
+  <function name="ProcessTextCommand_Exit" type="string" parameters="section, data">
+    <![CDATA[
+    exitname = Mid(section, 6)
+    exit = GetObject(exitname)
+    if (exit = null) {
+      return ("{" + section + "}") 
+    }
+    else {
+      verbs = GetDisplayVerbs(exit)
+      alias = GetDisplayAlias(exit)
+      command = LCase(StringListItem(verbs, 0)) + " " + alias
+      style = GetCurrentLinkTextFormat()
+      return ("<a style=\"" + style + "\" class=\"cmdlink exitlink\" data-elementid=\"" + exit.name + "\" onclick=\"sendCommand('" + command + "')\">" + alias + "</a>")
+    }
+    ]]>
+  </function>
+  
   <function name="ProcessTextCommand_Once" type="string" parameters="section, data">
     if (not HasAttribute(game, "textprocessor_seen")) {
       game.textprocessor_seen = NewDictionary()
