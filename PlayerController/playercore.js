@@ -11,8 +11,6 @@ var verbButtonCount = 9;
 var beginningOfCurrentTurnScrollPosition = 0;
 
 $(function () {
-    $.fx.off = true;
-
     $("#txtCommand").bind("inview", function (event, visible) {
         // allows spacebar to scroll browser when txtCommand is not visible
         if (visible == true) {
@@ -101,13 +99,6 @@ $(function () {
 
     $("#txtCommand").focus();
 });
-
-function enableFx() {
-    // after a 1s delay as some element hiding occurs inside a setTimeout, so give those time to trigger
-    setTimeout(function() {
-        $.fx.off = false;
-    }, 1000);
-}
 
 function showStatusVisible(visible) {
     if (visible) {

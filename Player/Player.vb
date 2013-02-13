@@ -421,7 +421,7 @@ Public Class Player
         If Len(m_saveFile) = 0 Then
             SaveAs()
         Else
-            Save(m_saveFile)
+            BeginSave()
         End If
     End Sub
 
@@ -431,16 +431,23 @@ Public Class Player
         ctlSaveFile.FileName = m_saveFile
         If ctlSaveFile.ShowDialog() = DialogResult.OK Then
             m_saveFile = ctlSaveFile.FileName
-            Save(m_saveFile)
+            BeginSave()
         End If
     End Sub
 
-    Private Sub Save(filename As String)
+    Private Sub BeginSave()
+        BeginInvoke(Sub()
+                        ctlPlayerHtml.InvokeScript("doSave")
+                        ctlPlayerHtml.ClearBuffer()
+                    End Sub)
+    End Sub
+
+    Private Sub FinishSave(html As String)
         Try
-            m_game.Save(filename)
-            RaiseEvent AddToRecent(filename, m_gameName + " (Saved)")
+            m_game.Save(m_saveFile, html)
+            RaiseEvent AddToRecent(m_saveFile, m_gameName + " (Saved)")
             WriteLine("")
-            WriteLine("Saved: " + filename)
+            WriteLine("Saved: " + m_saveFile)
             ClearBuffer()
         Catch ex As Exception
             MsgBox("Unable to save the file due to the following error:" + Environment.NewLine + Environment.NewLine + ex.Message, MsgBoxStyle.Critical)
@@ -747,6 +754,10 @@ Public Class Player
             End If
             GameFinished()
         End If
+    End Sub
+
+    Private Sub ctlPlayerHtml_Save(html As String) Handles ctlPlayerHtml.Save
+        FinishSave(html)
     End Sub
 
     Private Sub ctlPlayerHtml_SendEvent(eventName As String, param As String) Handles ctlPlayerHtml.SendEvent

@@ -30,7 +30,7 @@ namespace WorldModelTests
             worldModel.SendCommand("update");
 
             string tempFilename = System.IO.Path.GetTempFileName();
-            worldModel.Save(tempFilename);
+            worldModel.Save(tempFilename, null);
 
             WorldModel savedGameWorldModel = new WorldModel(tempFilename, null, null);
             success = savedGameWorldModel.Initialise(player.Object);

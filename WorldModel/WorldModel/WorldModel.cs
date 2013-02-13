@@ -551,21 +551,20 @@ namespace TextAdventures.Quest
                     UpdateLists();
                     if (m_loadedFromSaved)
                     {
-                        if (Version >= WorldModelVersion.v540)
+                        var output = Elements.GetSingle(ElementType.Output);
+                        if (output == null)
                         {
-                            RunOutputLog();
+                            Print("Loaded saved game");
                         }
-                        else
+                        else if (Version >= WorldModelVersion.v540)
                         {
-                            Element output = Elements.GetSingle(ElementType.Output);
-                            if (output == null)
-                            {
-                                Print("Loaded saved game");
-                            }
-                            else if (m_legacyOutputLogger != null)
-                            {
-                                m_legacyOutputLogger.DisplayOutput(output.Fields.GetString("text"));
-                            }
+                            PlayerUI.RunScript("loadHtml", new object[] { output.Fields.GetString("html") });
+                            PlayerUI.RunScript("markScrollPosition", null);
+                            PlayerUI.RunScript("scrollToEnd", null);
+                        }
+                        else if (m_legacyOutputLogger != null)
+                        {
+                            m_legacyOutputLogger.DisplayOutput(output.Fields.GetString("text"));
                         }
                     }
                     SendNextTimerRequest();
@@ -580,29 +579,6 @@ namespace TextAdventures.Quest
             });
 
             SendNextTimerRequest();
-        }
-
-        private void RunOutputLog()
-        {
-            var outputLog = Game.Fields[FieldDefinitions.OutputLog];
-            if (outputLog == null) return;
-
-            foreach (var jsCall in outputLog)
-            {
-                var callData = jsCall as QuestDictionary<object>;
-                if (callData == null) continue;
-
-                var function = callData["function"] as string;
-                var parameters = callData["parameters"] as QuestList<object>;
-
-                if (function != null && parameters != null)
-                {
-                    PlayerUI.RunScript(function, parameters.ToArray());
-                }
-            }
-
-            PlayerUI.RunScript("markScrollPosition", null);
-            PlayerUI.RunScript("scrollToEnd", null);
         }
 
         public List<string> Errors
@@ -1170,15 +1146,15 @@ namespace TextAdventures.Quest
             get { return m_elements; }
         }
 
-        public void Save(string filename)
+        public void Save(string filename, string html)
         {
-            string saveData = Save(SaveMode.SavedGame);
-            System.IO.File.WriteAllText(filename, saveData);
+            string saveData = Save(SaveMode.SavedGame, html: html);
+            File.WriteAllText(filename, saveData);
         }
 
-        public string Save(SaveMode mode, bool? includeWalkthrough = null)
+        public string Save(SaveMode mode, bool? includeWalkthrough = null, string html = null)
         {
-            return m_saver.Save(mode, includeWalkthrough);
+            return m_saver.Save(mode, includeWalkthrough, html);
         }
 
         public static Type ConvertTypeNameToType(string name)

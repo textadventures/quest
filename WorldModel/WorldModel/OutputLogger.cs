@@ -8,8 +8,7 @@ namespace TextAdventures.Quest
 {
     internal interface IOutputLogger
     {
-        void RunJavaScript(string function, object[] parameters);
-        void Save();
+        void Save(string html);
         void Clear();
     }
 
@@ -22,38 +21,16 @@ namespace TextAdventures.Quest
             m_worldModel = worldModel;
         }
 
-        public void RunJavaScript(string function, object[] parameters)
+        public void Save(string html)
         {
-            // Store JS calls as a list of dictionaries with function=name, parameters=QuestList<object> params
+            var element = m_worldModel.Elements.GetSingle(ElementType.Output) ??
+                          m_worldModel.GetElementFactory(ElementType.Output).Create();
 
-            var outputLog = m_worldModel.Game.Fields[FieldDefinitions.OutputLog];
-
-            if (outputLog == null)
-            {
-                outputLog = new QuestList<object>();
-                m_worldModel.Game.Fields[FieldDefinitions.OutputLog] = outputLog;
-            }
-
-            var newItem = new QuestDictionary<object>();
-            outputLog.Add(newItem);
-
-            newItem.Add("function", function);
-            newItem.Add("parameters", new QuestList<object>(parameters));
-        }
-
-        public void Save()
-        {
-            // Save call is only required for LegacyOutputLogger
+            element.Fields.Set("html", html);
         }
 
         public void Clear()
         {
-            var outputLog = m_worldModel.Game.Fields[FieldDefinitions.OutputLog];
-
-            if (outputLog != null)
-            {
-                outputLog.Clear();
-            }
         }
     }
 
@@ -96,18 +73,13 @@ namespace TextAdventures.Quest
             m_text.Append(string.Format("<output_setfontsize size=\"{0}\"/>", fontSize));
         }
 
-        public void RunJavaScript(string function, object[] parameters)
-        {
-            // only implemented by new OutputLogger
-        }
-
         public void Clear()
         {
             m_text.Clear();
             m_anyText = false;
         }
 
-        public void Save()
+        public void Save(string html)
         {
             Element element = m_worldModel.Elements.GetSingle(ElementType.Output);
             if (element == null)

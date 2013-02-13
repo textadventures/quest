@@ -411,7 +411,9 @@ namespace WebPlayer
                 fullPath = System.IO.Path.Combine(ConfigurationManager.AppSettings["GameSaveFolder"], m_saveFilename);
                 notifySave = true;
             }
-            m_controller.Game.Save(fullPath);
+
+            // TO DO: Need to get $("#divOutput").html()
+            m_controller.Game.Save(fullPath, null);
 
             if (notifySave)
             {

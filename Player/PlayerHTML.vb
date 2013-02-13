@@ -11,6 +11,7 @@ Public Class PlayerHTML
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
     Public Event EndWait()
     Public Event ExitFullScreen()
+    Public Event Save(html As String)
 
     ' TO DO: Both Blank.htm and grid.js should be loaded from embedded resource
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
@@ -86,6 +87,8 @@ Public Class PlayerHTML
                 RaiseEvent EndWait()
             Case "ExitFullScreen"
                 RaiseEvent ExitFullScreen()
+            Case "Save"
+                RaiseEvent Save(args)
         End Select
     End Sub
 

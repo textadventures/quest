@@ -26,7 +26,7 @@ namespace TextAdventures.Quest
         string OriginalFilename { get; }
         string SaveFilename { get; }
         void Finish();
-        void Save(string filename);
+        void Save(string filename, string html);
         string SaveExtension { get; }
         void FinishWait();
         void FinishPause();

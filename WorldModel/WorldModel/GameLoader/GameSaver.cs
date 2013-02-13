@@ -63,7 +63,7 @@ namespace TextAdventures.Quest
             return m_elementSavers[t];
         }
 
-        public string Save(SaveMode mode, bool? includeWalkthrough = null)
+        public string Save(SaveMode mode, bool? includeWalkthrough = null, string html = null)
         {
             m_mode = mode;
             GameXmlWriter.GameXmlWriterOptions options = null;
@@ -90,7 +90,7 @@ namespace TextAdventures.Quest
             if (mode == SaveMode.SavedGame)
             {
                 writer.WriteAttributeString("original", m_worldModel.Filename);
-                m_worldModel.OutputLogger.Save();
+                m_worldModel.OutputLogger.Save(html);
             }
 
             foreach (ElementType t in Enum.GetValues(typeof(ElementType)))

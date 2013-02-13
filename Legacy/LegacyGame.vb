@@ -13239,7 +13239,7 @@ ErrorHandler:
 
     Public Event PrintText(text As String) Implements IASL.PrintText
 
-    Public Sub Save(filename As String) Implements IASL.Save
+    Public Sub Save(filename As String, html As String) Implements IASL.Save
         SaveGame(filename)
     End Sub
 
@@ -13577,7 +13577,7 @@ ErrorHandler:
         End Get
     End Property
 
-    Public Function GetResource(ByVal file As String) As System.IO.Stream Implements IASL.GetResource
+    Public Function GetResource(file As String) As System.IO.Stream Implements IASL.GetResource
         Return New System.IO.FileStream(GetResourcePath(file), System.IO.FileMode.Open, System.IO.FileAccess.Read)
     End Function
 

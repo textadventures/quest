@@ -88,7 +88,6 @@
         }
       }
     }
-    JS.enableFx()
     ]]>
   </function>
 
@@ -419,7 +418,7 @@
   </function>
 
   <function name="ClearMenu">
-    JS.output@HideOutputSection(game.menuoutputsection)
+    JS.HideOutputSection(game.menuoutputsection)
     game.menuoutputsection = null
     game.menuoptions = null
     game.menucallback = null
@@ -431,12 +430,12 @@
     }
     game.lastoutputsection = game.lastoutputsection + 1
     name = "section" + game.lastoutputsection
-    JS.output@StartOutputSection(name)
+    JS.StartOutputSection(name)
     return (name)
   </function>
 
   <function name="EndOutputSection" parameters="name">
-    JS.output@EndOutputSection(name)
+    JS.EndOutputSection(name)
   </function>
 
   <function name="Ask" parameters="question, callback">
