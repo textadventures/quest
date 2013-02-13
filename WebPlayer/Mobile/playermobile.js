@@ -66,7 +66,7 @@ function initTabMenu(full) {
         ];
     }
 
-    $("#tabButton").jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
+    $("#tabButton").jjmenu(options);
 }
 
 function tabMenu(id) {

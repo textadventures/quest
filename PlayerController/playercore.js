@@ -524,12 +524,14 @@ function bindMenu(linkid, verbs, text, elementId) {
             title: value,
             action: {
                 type: "fn",
-                callback: "doMenuClick('" + value.toLowerCase() + " " + text.replace("'", "\\'") + "','" + metadataString + "');"
+                callback: function(selectedValue) {
+                    doMenuClick(selectedValue.toLowerCase() + " " + text, metadataString);
+                }
             }
         });
     });
 
-    $("#" + linkid).jjmenu("both", options, {}, { show: "fadeIn", speed: 100, xposition: "left", yposition: "auto", "orientation": "auto" });
+    $("#" + linkid).jjmenu(options);
 }
 
 function doMenuClick(command, metadata) {
