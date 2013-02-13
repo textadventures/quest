@@ -113,6 +113,7 @@
     InitVerbsList
     if (HasScript(game, "start")) do (game, "start")
     UpdateStatusAttributes
+    UpdateObjectLinks
     on ready {
       if (game.gridmap) {
         game.pov.parent.grid_x = 0
@@ -126,6 +127,7 @@
         OnEnterRoom (null)
       }
       UpdateStatusAttributes
+      UpdateObjectLinks
     }
     ]]>
   </function>

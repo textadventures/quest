@@ -170,6 +170,11 @@ namespace WebPlayer
             {
                 return new BooleanParameter((bool)arg);
             }
+            var dictionary = arg as IDictionary<string, string>;
+            if (dictionary != null)
+            {
+                return new JSONParameter(dictionary);
+            }
             throw new Exception(string.Format("Invalid script argument type: {0}", arg.GetType()));
         }
 

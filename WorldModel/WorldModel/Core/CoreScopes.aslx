@@ -273,4 +273,14 @@
   <function name="Got" type="boolean" parameters="obj">
     return (ListContains(ScopeInventory(), obj))
   </function>
+
+  <function name="UpdateObjectLinks">
+    if (game.enablehyperlinks) {
+      data = NewStringDictionary()
+      foreach (object, ScopeVisible()) {
+        dictionary add (data, object.name, Join(GetDisplayVerbs(object), "/"))
+      }
+      JS.updateObjectLinks(data)
+    }
+  </function>
 </library>

@@ -217,8 +217,7 @@
           colour = GetLinkTextColour()
         }
         style = GetCurrentTextFormat(colour)
-        verbs = Join(GetDisplayVerbs(object), "/")
-        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-verbs=\"" + verbs + "\" data-elementid=\"" + object.name + "\" >" + text + "</a>")
+        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-elementid=\"" + object.name + "\" >" + text + "</a>")
       }
       else {
         return (text)

@@ -548,6 +548,21 @@ function buildMenuOptions(verbs, text, elementId) {
     return options;
 }
 
+function updateObjectLinks(data) {
+    $(".elementmenu").each(function (index, e) {
+        var $e = $(e);
+        var verbs = data[$e.data("elementid")];
+        if (verbs) {
+            $e.removeClass("disabled");
+            $e.data("verbs", verbs);
+            // also set attribute so verbs are persisted to savegame
+            $e.attr("data-verbs", verbs);
+        } else {
+            $e.addClass("disabled");
+        }
+    });
+}
+
 function clearScreen() {
     $("#divOutput").css("min-height", 0);
     $("#divOutput").html("");

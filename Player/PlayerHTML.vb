@@ -155,8 +155,12 @@ Public Class PlayerHTML
             Return argInt.ToString(System.Globalization.CultureInfo.InvariantCulture)
         ElseIf TypeOf arg Is Boolean Then
             Return If(DirectCast(arg, Boolean), "true", "false")
+        ElseIf TypeOf arg Is IDictionary(Of String, String) Then
+            ' Copy dictionary to work around an InvalidCastException when serializing
+            Dim copy = New Dictionary(Of String, String)(DirectCast(arg, IDictionary(Of String, String)))
+            Return Newtonsoft.Json.JsonConvert.SerializeObject(copy)
         Else
-            Throw New Exception(String.Format("Invalid script argument type: {0}", arg.GetType()))
+            Return Newtonsoft.Json.JsonConvert.SerializeObject(arg)
         End If
     End Function
 

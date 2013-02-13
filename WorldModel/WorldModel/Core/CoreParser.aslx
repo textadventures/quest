@@ -366,6 +366,7 @@
     RunTurnScripts
     UpdateStatusAttributes
     CheckDarkness
+    UpdateObjectLinks
   </function>
 
   <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
