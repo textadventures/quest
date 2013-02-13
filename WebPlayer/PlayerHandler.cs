@@ -173,9 +173,9 @@ namespace WebPlayer
             var dictionary = arg as IDictionary<string, string>;
             if (dictionary != null)
             {
-                return new JSONParameter(dictionary);
+                return new DictionaryParameter(dictionary);
             }
-            throw new Exception(string.Format("Invalid script argument type: {0}", arg.GetType()));
+            return new JSONParameter(arg);
         }
 
         public void SetAlignment(string align)

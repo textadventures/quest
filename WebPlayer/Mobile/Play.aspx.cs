@@ -251,7 +251,7 @@ namespace WebPlayer.Mobile
 
         void m_player_ShowMenu(string caption, IDictionary<string, string> options, bool allowCancel)
         {
-            m_buffer.AddJavaScriptToBuffer("showMenu", new StringParameter(caption), new JSONParameter(options), new BooleanParameter(allowCancel));
+            m_buffer.AddJavaScriptToBuffer("showMenu", new StringParameter(caption), new DictionaryParameter(options), new BooleanParameter(allowCancel));
         }
 
         void m_player_ShowQuestion(string caption)

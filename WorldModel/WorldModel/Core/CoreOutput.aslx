@@ -220,7 +220,7 @@
           colour = GetLinkTextColour()
         }
         style = GetCurrentTextFormat(colour)
-        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-elementid=\"" + object.name + "\" >" + text + "</a>")
+        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-elementid=\"" + object.name + "\">" + text + "</a>")
       }
       else {
         return (text)
@@ -255,7 +255,7 @@
       alias = GetDisplayAlias(exit)
       command = LCase(StringListItem(verbs, 0)) + " " + alias
       style = GetCurrentLinkTextFormat()
-      return ("<a style=\"" + style + "\" class=\"cmdlink exitlink\" data-elementid=\"" + exit.name + "\" onclick=\"sendCommand('" + command + "')\">" + alias + "</a>")
+      return ("<a style=\"" + style + "\" class=\"cmdlink exitlink\" data-elementid=\"" + exit.name + "\" data-command=\"" + command + "\">" + alias + "</a>")
     }
     ]]>
   </function>

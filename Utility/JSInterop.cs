@@ -43,11 +43,11 @@ namespace TextAdventures.Utility.JSInterop
         }
     }
 
-    public class JSONParameter : IJavaScriptParameter
+    public class DictionaryParameter : IJavaScriptParameter
     {
         private IDictionary<string, string> m_param;
 
-        public JSONParameter(IDictionary<string, string> param)
+        public DictionaryParameter(IDictionary<string, string> param)
         {
             m_param = param;
         }
@@ -57,6 +57,21 @@ namespace TextAdventures.Utility.JSInterop
             // Copy dictionary to work around an InvalidCastException when serializing
             Dictionary<string, string> dictionary = new Dictionary<string, string>(m_param);
             return Newtonsoft.Json.JsonConvert.SerializeObject(dictionary);
+        }
+    }
+
+    public class JSONParameter : IJavaScriptParameter
+    {
+        private object m_param;
+
+        public JSONParameter(object param)
+        {
+            m_param = param;
+        }
+
+        public string GetParameter()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(m_param);
         }
     }
 

@@ -281,6 +281,11 @@
         dictionary add (data, object.name, Join(GetDisplayVerbs(object), "/"))
       }
       JS.updateObjectLinks(data)
+      exits = NewStringList()
+      foreach (exit, ScopeExits()) {
+        list add (exits, exit.name)
+      }
+      JS.updateExitLinks(exits)
     }
   </function>
 </library>

@@ -446,7 +446,7 @@ namespace TextAdventures.Quest
                 );
                 count++;
             }
-            return new JSONParameter(convertedList);
+            return new DictionaryParameter(convertedList);
         }
 
         public static string VerbString(IEnumerable<string> verbs)

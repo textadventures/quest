@@ -104,6 +104,12 @@ $(function () {
             return false;
         }
     });
+    
+    $(document).on("click", ".exitlink", function () {
+        if (!$(this).hasClass("disabled")) {
+            sendCommand($(this).data("command"));
+        }
+    });
 
     ui_init();
 
@@ -557,6 +563,19 @@ function updateObjectLinks(data) {
             $e.data("verbs", verbs);
             // also set attribute so verbs are persisted to savegame
             $e.attr("data-verbs", verbs);
+        } else {
+            $e.addClass("disabled");
+        }
+    });
+}
+
+function updateExitLinks(data) {
+    $(".exitlink").each(function (index, e) {
+        var $e = $(e);
+        var exitid = $e.data("elementid");
+        var available = $.inArray(exitid, data) > -1;
+        if (available) {
+            $e.removeClass("disabled");
         } else {
             $e.addClass("disabled");
         }
