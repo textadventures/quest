@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 
 namespace TextAdventures.Utility
 {
@@ -51,6 +52,18 @@ namespace TextAdventures.Utility
             }
 
             return true;
+        }
+
+        public static void LaunchURL(string url)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(url);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("Error launching {0}\n\n{1}", url, ex.Message), "Quest", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

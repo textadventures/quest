@@ -28,6 +28,9 @@ Partial Class ErrorHandler
         Me.txtError = New System.Windows.Forms.TextBox()
         Me.cmdClose = New System.Windows.Forms.Button()
         Me.cmdReport = New System.Windows.Forms.Button()
+        Me.cmdCopy = New System.Windows.Forms.Button()
+        Me.lblHelp = New System.Windows.Forms.Label()
+        Me.lblIssueTracker = New System.Windows.Forms.LinkLabel()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -58,14 +61,14 @@ Partial Class ErrorHandler
         Me.txtError.Multiline = True
         Me.txtError.Name = "txtError"
         Me.txtError.ReadOnly = True
-        Me.txtError.Size = New System.Drawing.Size(358, 223)
+        Me.txtError.Size = New System.Drawing.Size(505, 82)
         Me.txtError.TabIndex = 2
         '
         'cmdClose
         '
         Me.cmdClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdClose.Location = New System.Drawing.Point(355, 259)
+        Me.cmdClose.Location = New System.Drawing.Point(502, 284)
         Me.cmdClose.Name = "cmdClose"
         Me.cmdClose.Size = New System.Drawing.Size(75, 23)
         Me.cmdClose.TabIndex = 3
@@ -75,12 +78,44 @@ Partial Class ErrorHandler
         'cmdReport
         '
         Me.cmdReport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdReport.Location = New System.Drawing.Point(197, 259)
+        Me.cmdReport.Location = New System.Drawing.Point(344, 284)
         Me.cmdReport.Name = "cmdReport"
         Me.cmdReport.Size = New System.Drawing.Size(152, 23)
         Me.cmdReport.TabIndex = 4
         Me.cmdReport.Text = "Report this error"
         Me.cmdReport.UseVisualStyleBackColor = True
+        Me.cmdReport.Visible = False
+        '
+        'cmdCopy
+        '
+        Me.cmdCopy.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.cmdCopy.Location = New System.Drawing.Point(72, 118)
+        Me.cmdCopy.Name = "cmdCopy"
+        Me.cmdCopy.Size = New System.Drawing.Size(204, 23)
+        Me.cmdCopy.TabIndex = 5
+        Me.cmdCopy.Text = "Copy error details to clipboard"
+        Me.cmdCopy.UseVisualStyleBackColor = True
+        '
+        'lblHelp
+        '
+        Me.lblHelp.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblHelp.Location = New System.Drawing.Point(72, 155)
+        Me.lblHelp.Name = "lblHelp"
+        Me.lblHelp.Size = New System.Drawing.Size(492, 101)
+        Me.lblHelp.TabIndex = 6
+        Me.lblHelp.Text = resources.GetString("lblHelp.Text")
+        '
+        'lblIssueTracker
+        '
+        Me.lblIssueTracker.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblIssueTracker.AutoSize = True
+        Me.lblIssueTracker.Location = New System.Drawing.Point(72, 284)
+        Me.lblIssueTracker.Name = "lblIssueTracker"
+        Me.lblIssueTracker.Size = New System.Drawing.Size(72, 13)
+        Me.lblIssueTracker.TabIndex = 7
+        Me.lblIssueTracker.TabStop = True
+        Me.lblIssueTracker.Text = "Issue Tracker"
         '
         'ErrorHandler
         '
@@ -88,7 +123,10 @@ Partial Class ErrorHandler
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.cmdClose
-        Me.ClientSize = New System.Drawing.Size(442, 294)
+        Me.ClientSize = New System.Drawing.Size(589, 319)
+        Me.Controls.Add(Me.lblIssueTracker)
+        Me.Controls.Add(Me.lblHelp)
+        Me.Controls.Add(Me.cmdCopy)
         Me.Controls.Add(Me.cmdReport)
         Me.Controls.Add(Me.cmdClose)
         Me.Controls.Add(Me.txtError)
@@ -110,4 +148,7 @@ Partial Class ErrorHandler
     Friend WithEvents txtError As System.Windows.Forms.TextBox
     Friend WithEvents cmdClose As System.Windows.Forms.Button
     Friend WithEvents cmdReport As System.Windows.Forms.Button
+    Friend WithEvents cmdCopy As System.Windows.Forms.Button
+    Friend WithEvents lblHelp As System.Windows.Forms.Label
+    Friend WithEvents lblIssueTracker As System.Windows.Forms.LinkLabel
 End Class
