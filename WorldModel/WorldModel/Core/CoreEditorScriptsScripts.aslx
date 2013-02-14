@@ -250,7 +250,7 @@
     <display>Call function #0 (#1 parameters)</display>
     <category>Scripts</category>
     <add>Call function</add>
-    <create></create>
+    <create type="string"></create>
     <advanced/>
 
     <control>
