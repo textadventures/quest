@@ -790,7 +790,12 @@ namespace TextAdventures.Quest
         private List<ListData> GetExitsListData()
         {
             List<ListData> exits = new List<ListData>();
-            foreach (Element exit in GetObjectsInScope("ScopeExits"))
+            var scopeFunction = "ScopeExits";
+            if (Version >= WorldModelVersion.v530 && Elements.ContainsKey(ElementType.Function, "GetExitsList"))
+            {
+                scopeFunction = "GetExitsList";
+            }
+            foreach (Element exit in GetObjectsInScope(scopeFunction))
             {
                 IEnumerable<string> verbs;
                 if (Version <= WorldModelVersion.v520 || !m_elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
