@@ -86,7 +86,7 @@
       scope = ScopeVisible()
     }
     else if (objtype = "exit") {
-      scope = ScopeExitsAll()
+      scope = ScopeExits()
     }
     
     value = Trim(value)
