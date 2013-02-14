@@ -2,7 +2,11 @@
   <function name="GetPlacesObjectsList" type="objectlist">
     return (ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov))
   </function>
-  
+
+  <function name="GetExitsList" type="objectlist">
+    return (RemoveSceneryObjects(ScopeExits()))
+  </function>
+
   <function name="ScopeInventory" type="objectlist">
     result = NewObjectList()
     foreach (obj, GetAllChildObjects(game.pov)) {
@@ -145,7 +149,7 @@
     result = NewObjectList()
     foreach (exit, AllExits()) {
       if (exit.parent = room and not GetBoolean(exit, "lookonly")) {
-        if (exit.visible and not exit.scenery) {
+        if (exit.visible) {
           if (GetBoolean(room, "darklevel")) {
             if (GetBoolean(exit, "lightsource")) {
               list add(result, exit)
@@ -161,20 +165,6 @@
     ]]>
   </function>
 
-  <function name="ScopeExitsAll" type="objectlist">
-    return (ScopeAllExitsForRoom(game.pov.parent))
-  </function>
-
-  <function name="ScopeAllExitsForRoom" type="objectlist" parameters="room">
-    result = NewObjectList()
-    foreach (exit, AllExits()) {
-      if (exit.parent = room) {
-        list add(result, exit)
-      }
-    }
-    return (result)
-  </function>
-  
   <function name="ScopeCommands" type="objectlist">
     result = NewObjectList()
     foreach (command, AllCommands()) {

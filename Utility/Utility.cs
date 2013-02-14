@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 
 namespace TextAdventures.Utility
 {
@@ -70,6 +71,18 @@ namespace TextAdventures.Utility
                 sb.Append(hash[i].ToString("X2"));
             }
             return sb.ToString();
+        }
+        
+        public static void LaunchURL(string url)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(url);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("Error launching {0}\n\n{1}", url, ex.Message), "Quest", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

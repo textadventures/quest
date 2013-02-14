@@ -36,7 +36,7 @@
             }
           }
           if (i = game.autodescription_youcango) {
-            exits = FormatExitList(game.pov.parent.exitslistprefix, ScopeExits(), Template("Or"), ".")
+            exits = FormatExitList(game.pov.parent.exitslistprefix, RemoveSceneryObjects(ScopeExits()), Template("Or"), ".")
             desc = AddDescriptionLine(desc, exits)
             
             if (game.autodescription_youcango_newline) {

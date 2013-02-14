@@ -22,7 +22,7 @@
   <dynamictemplate name="CantUse">"Vous ne pouvez pas l'utiliser."</dynamictemplate>
   <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "ne dit") + " rien."</dynamictemplate>
   <template name="UnrecognisedCommand">[Commande inconnue ou paramètres supplémentaires manquants. Tapez "aide" pour avoir une liste des commandes valides.]</template>
-  <template name="YouAreIn">Vous êtes</template>
+  <template name="YouAreIn">Vous êtes dans</template>
   <template name="LookAt">Regarder</template>
   <template name="Take">Prendre</template>
   <template name="SpeakTo">Parler</template>
@@ -260,12 +260,12 @@
   <template name="EditorVerbDefaultExpression">"Vous ne pouvez pas " + object.article + " #verb#."</template>
 
   <function name="GetDefaultPrefix" type="string" parameters="obj">
-    if (Instr("aeiou", Left(GetDisplayAlias(obj), 1)) > 0) {
-      return ("an")
+    if (DoesInherit(obj, "feminine") or obj.gender = "elle" or obj.article = "la") {
+      return ("une")
     }
     else {
-      return ("a")
-    }
+      return ("un")
+     }
   </function>
 
   <function name="WriteVerb" type="string" parameters="obj, verb">
@@ -273,64 +273,8 @@
   </function>
 
   <function name="Conjugate" type="string" parameters="obj, verb">
-    gender = obj.gender
-    if (gender = "he" or gender = "she") {
-      gender = "it"
-    }
-    switch (verb) {
-      case ("be") {
-        switch (gender) {
-          case ("i") {
-            return ("am")
-          }
-          case ("you") {
-            return ("are")
-          }
-          case ("it") {
-            return ("is")
-          }
-          case ("we") {
-            return ("are")
-          }
-          case ("they") {
-            return ("are")
-          }
-          default {
-            return ("is")
-          }
-        }
-      }
-      case ("do") {
-        switch (gender) {
-          case ("i") {
-            return ("do")
-          }
-          case ("you") {
-            return ("do")
-          }
-          case ("it") {
-            return ("does")
-          }
-          case ("we") {
-            return ("do")
-          }
-          case ("they") {
-            return ("do")
-          }
-          default {
-            return ("do")
-          }       
-        }
-      }
-      default {
-        if (gender = "it") {
-          return (verb + "s")
-        }
-        else {
-          return (verb)
-        }
-      }
-    }
+    // TO DO: This should be implemented for any verbs passed to WriteVerb in templates above
+    return (verb)
   </function>
 
 </library>
