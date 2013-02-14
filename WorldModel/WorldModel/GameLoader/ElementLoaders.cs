@@ -687,7 +687,7 @@ namespace TextAdventures.Quest
 
                 if (!string.IsNullOrEmpty(parameters))
                 {
-                    paramNames = parameters.Split(m_delimiters, StringSplitOptions.None);
+                    paramNames = parameters.Split(m_delimiters, StringSplitOptions.None).Select(p => p.Trim()).ToArray();
                 }
 
                 Type returns = null;
