@@ -138,7 +138,7 @@ function markScrollPosition() {
 }
 
 function setGameName(text) {
-    $("#gameTitle").hide();
+    $("#gameTitle").remove();
     document.title = text;
 }
 
@@ -738,7 +738,7 @@ function HideOutputSection(name) {
     EndOutputSection(name);
     $("." + name + " a").attr("onclick", "");
     setTimeout(function() {
-        $("." + name).hide(250);
+        $("." + name).hide(250, function () { $(this).remove(); });
     }, 250);
 }
 

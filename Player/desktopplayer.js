@@ -35,7 +35,7 @@ function disableMainScrollbar() {
 }
 
 function ui_init() {
-    $("#gameTitle").hide();
+    $("#gameTitle").remove();
     $("#cmdExitFullScreen").click(function () {
         UIEvent("ExitFullScreen", "");
     });
