@@ -1,5 +1,4 @@
-﻿var _currentDiv = null;
-var _allowMenuFontSizeChange = true;
+﻿var _allowMenuFontSizeChange = true;
 var _showGrid = false;
 var _outputSections = new Array();
 var numCommands = 0;
@@ -510,26 +509,57 @@ function disableInterface() {
 }
 
 function addText(text) {
-    if (_currentDiv == null) {
+    if (getCurrentDiv() == null) {
         createNewDiv("left");
     }
 
-    _currentDiv.append(text);
+    getCurrentDiv().append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
     scrollToEnd();
 }
 
-var _divCount = 0;
-
 function createNewDiv(alignment) {
     var classes = _outputSections.join(" ");
-    _divCount++;
+    setDivCount(getDivCount() + 1);
     $("<div/>", {
-        id: "divOutputAlign" + _divCount,
+        id: "divOutputAlign" + getDivCount(),
         style: "text-align: " + alignment,
         "class": classes
     }).appendTo("#divOutput");
-    _currentDiv = $("#divOutputAlign" + _divCount);
+    setCurrentDiv("#divOutputAlign" + getDivCount());
+}
+
+var _currentDiv = null;
+
+function getCurrentDiv() {
+    if (_currentDiv) return _currentDiv;
+
+    var divId = $("#outputData").attr("data-currentdiv");
+    if (divId) {
+        _currentDiv = $(divId);
+        return _currentDiv;
+    }
+
+    return null;
+}
+
+function setCurrentDiv(div) {
+    _currentDiv = $(div);
+    $("#outputData").attr("data-currentdiv", div);
+}
+
+var _divCount = -1;
+
+function getDivCount() {
+    if (_divCount == -1) {
+        _divCount = parseInt($("#outputData").attr("data-divcount"));
+    }
+    return _divCount;
+}
+
+function setDivCount(count) {
+    _divCount = count;
+    $("#outputData").attr("data-divcount", _divCount);
 }
 
 function bindMenu(linkid, verbs, text, elementId) {
