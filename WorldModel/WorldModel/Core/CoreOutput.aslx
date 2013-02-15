@@ -200,12 +200,20 @@
   <function name="ProcessTextCommand_Object" type="string" parameters="section, data">
     <![CDATA[
     objectname = Mid(section, 8)
+    text = ""
+    colon = Instr(objectname, ":")
+    if (colon > 0) {
+      text = Mid(objectname, colon + 1)
+      objectname = Left(objectname, colon - 1)
+    }
     object = GetObject(objectname)
     if (object = null) {
-      return ("{" + section + "}") 
+      return ("{" + section + "}")
     }
     else {
-      text = SafeXML(GetDisplayAlias(object))
+      if (LengthOf(text) = 0) {
+        text = SafeXML(GetDisplayAlias(object))
+      }
       if (game.enablehyperlinks) {
         if (not HasInt(game, "lastlinkid")) {
           game.lastlinkid = 0
