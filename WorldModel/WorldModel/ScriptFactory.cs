@@ -191,7 +191,7 @@ namespace TextAdventures.Quest
                                 {
                                     if (m_lazyLoadingEnabled)
                                     {
-                                        newScript = new LazyLoadScript(constructor, line, scriptContext);
+                                        newScript = new LazyLoadScript(this, constructor, line, scriptContext);
                                     }
                                     else
                                     {

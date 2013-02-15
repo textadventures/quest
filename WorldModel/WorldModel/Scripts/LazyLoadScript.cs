@@ -23,8 +23,9 @@ namespace TextAdventures.Quest.Scripts
             m_worldModel = scriptFactory.WorldModel;
         }
 
-        public LazyLoadScript(IScriptConstructor scriptConstructor, string scriptString, ScriptContext scriptContext)
+        public LazyLoadScript(ScriptFactory scriptFactory, IScriptConstructor scriptConstructor, string scriptString, ScriptContext scriptContext)
         {
+            m_scriptFactory = scriptFactory;
             m_scriptConstructor = scriptConstructor;
             m_scriptString = scriptString;
             m_scriptContext = scriptContext;
