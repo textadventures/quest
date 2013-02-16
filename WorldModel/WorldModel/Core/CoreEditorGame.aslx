@@ -89,6 +89,11 @@
       </control>
 
       <control>
+        <controltype>label</controltype>
+        <caption>Recommended format for cover art is a 512x512 PNG file.</caption>
+      </control>
+
+      <control>
         <controltype>richtext</controltype>
         <caption>Description</caption>
         <attribute>description</attribute>

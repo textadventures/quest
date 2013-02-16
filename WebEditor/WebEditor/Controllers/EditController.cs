@@ -248,7 +248,7 @@ namespace WebEditor.Controllers
             if (ModelState.IsValid)
             {
                 bool continueSave = true;
-                string ext = System.IO.Path.GetExtension(fileModel.File.FileName);
+                string ext = System.IO.Path.GetExtension(fileModel.File.FileName).ToLower();
                 List<string> controlPermittedExtensions = EditorDictionary[fileModel.GameId].GetPermittedExtensions(fileModel.Key, fileModel.Attribute);
                 if (fileModel.File != null
                     && fileModel.File.ContentLength > 0

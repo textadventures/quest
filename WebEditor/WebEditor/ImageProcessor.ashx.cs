@@ -5,13 +5,14 @@ using System.Web;
 using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Web.SessionState;
 
 namespace WebEditor
 {
     /// <summary>
     /// Summary description for ImageProcessor
     /// </summary>
-    public class ImageProcessor : IHttpHandler
+    public class ImageProcessor : IHttpHandler, IRequiresSessionState
     {
         public void ProcessRequest(HttpContext context)
         {            
