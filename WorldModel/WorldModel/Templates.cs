@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TextAdventures.Quest.Functions;
 using TextAdventures.Quest.Scripts;
 
@@ -46,7 +47,7 @@ namespace TextAdventures.Quest
             return template;
         }
 
-        public string GetText(string t)
+        public string GetText(string t, bool throwException = true)
         {
             if (!m_templateLookup.ContainsKey(t))
             {
@@ -54,10 +55,11 @@ namespace TextAdventures.Quest
                 {
                     return string.Format("{{UNKNOWN TEMPLATE: {0}}}", t);
                 }
-                else
+                if (throwException)
                 {
                     throw new Exception(string.Format("No template named '{0}'", t));
                 }
+                return null;
             }
             return m_templateLookup[t].Fields[FieldDefinitions.Text];
         }
@@ -163,6 +165,26 @@ namespace TextAdventures.Quest
         internal Element GetTemplateElement(string name)
         {
             return m_templateLookup[name];
+        }
+
+        private Regex m_templateRegex = new Regex(@"\[(?<name>.*?)\]");
+
+        public string ReplaceTemplateText(string text)
+        {
+            if (text == null) return null;
+
+            int start = 0;
+
+            while (m_templateRegex.IsMatch(text, start))
+            {
+                var match = m_templateRegex.Match(text, start);
+                var templateName = match.Groups["name"].Value;
+                var templateValue = GetText(templateName, false) ?? "[" + templateName + "]";
+                text = m_templateRegex.Replace(text, templateValue, 1, start);
+                start = match.Index + templateValue.Length;
+                if (start > text.Length) break;
+            }
+            return text;
         }
     }
 }

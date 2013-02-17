@@ -243,8 +243,6 @@ namespace TextAdventures.Quest
             return loader;
         }
 
-        private Regex m_templateRegex = new Regex(@"\[(?<name>.*?)\]");
-
         private string GetTemplateAttribute(XmlReader reader, string attribute)
         {
             return GetTemplate(reader.GetAttribute(attribute));
@@ -257,20 +255,7 @@ namespace TextAdventures.Quest
 
         private string GetTemplate(string text)
         {
-            if (text == null) return null;
-
-            while (m_templateRegex.IsMatch(text))
-            {
-                string templateName = m_templateRegex.Match(text).Groups["name"].Value;
-                string templateValue = m_worldModel.Template.GetText(templateName);
-                if (templateValue == null)
-                {
-                    AddError(string.Format("Undefined template '{0}'", templateName));
-                    return null;
-                }
-                text = m_templateRegex.Replace(text, templateValue, 1);
-            }
-            return text;
+            return m_worldModel.Template.ReplaceTemplateText(text);
         }
 
         // resolves "lazy" exit strings into actual objects,

@@ -73,6 +73,7 @@
     <Compile Include="SaveTests.cs" />
     <Compile Include="SwitchScriptConstructorTest.cs" />
     <Compile Include="ComplexTypesTests.cs" />
+    <Compile Include="TemplateTests.cs" />
     <Compile Include="UtilityTests.cs" />
     <Compile Include="Walkthrough.cs" />
   </ItemGroup>
