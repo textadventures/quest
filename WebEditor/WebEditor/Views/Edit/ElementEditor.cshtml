@@ -277,7 +277,7 @@ Working...
                 }
                 else
                 {
-                        <a href="@href" target="_blank">@caption</a>
+                    <a href="@href" target="_blank">@caption</a>
                 }
             }
             </div>
@@ -293,8 +293,8 @@ Working...
             break;
         case "richtext":
             // replace any <br/> tags with NewLine character
-            @Html.TextArea(ctl.Attribute, System.Text.RegularExpressions.Regex.Replace(value.ToString(), @"(?i:<br/?>)", Environment.NewLine), 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
-           break;
+            @Html.TextArea(ctl.Attribute, ((string)value).Replace("<br/>", Environment.NewLine).Replace("<br />", Environment.NewLine), 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
+            break;
         case "number":
            string minMax = string.Empty;
            int? min = ctl.GetInt("minimum");
