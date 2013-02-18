@@ -100,7 +100,7 @@
             @ctl.Caption
             break;
         case "dropdown":
-            IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, (string)value, Model.Controller);
+            IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.ControlHelpers.GetDropdownValues(ctl, (string)value, Model.Controller);
             @Html.DropDownList(name, valuesList);
             break;
         case "expression":
@@ -182,7 +182,7 @@
                 break;
             case "objects":
                 List<SelectListItem> items = new List<SelectListItem>(
-                    Controls.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
+                    ControlHelpers.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
                     .Select(s => new SelectListItem { Text = s, Value = s, Selected = (value == s) })
                     );
                 editorHtml = Html.DropDownList(name + "-simpleeditor", items, new { @class = "elementEditorDropdown" });
@@ -191,7 +191,7 @@
                 editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"width: 50px\" />");
                 break;
             case "dropdown":
-                IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.Controls.GetDropdownValues(ctl, simpleValue, Model.Controller);
+                IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.ControlHelpers.GetDropdownValues(ctl, simpleValue, Model.Controller);
                 editorHtml = Html.DropDownList(name + "-simpleeditor", valuesList, new { @class = "elementEditorDropdown" });
                 break;
             default:
@@ -322,7 +322,7 @@
 
         if (simpleEditor == "objects")
         {
-            return expression.Length == 0  || Controls.GetObjectListNames(ctl, Model.Controller).Contains(expression);
+            return expression.Length == 0  || ControlHelpers.GetObjectListNames(ctl, Model.Controller).Contains(expression);
         }
 
         if (simpleEditor == "number")

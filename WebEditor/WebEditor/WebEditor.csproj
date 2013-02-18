@@ -21,6 +21,10 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -101,7 +105,7 @@
     <Compile Include="Services\DebugPlugins.cs" />
     <Compile Include="Services\EditorService.cs" />
     <Compile Include="Services\FileManager.cs" />
-    <Compile Include="Views\Edit\Controls.cs" />
+    <Compile Include="Views\Edit\ControlHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\favicon.ico" />

@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace WebEditor.Views.Edit
 {
-    public static class Controls
+    public static class ControlHelpers
     {
         private static Dictionary<string, string> s_controlTypesMap = new Dictionary<string, string> {
             {"boolean", "checkbox"},

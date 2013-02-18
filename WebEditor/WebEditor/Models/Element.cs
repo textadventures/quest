@@ -205,8 +205,8 @@ namespace WebEditor.Models
                     saveValue = BindScript(bindingContext.ValueProvider, attribute, originalElement.EditorData, editorDictionary[gameId].Controller, ignoreExpression);
                     break;
                 case "multi":
-                    string type = WebEditor.Views.Edit.Controls.GetTypeName(originalElement.EditorData.GetAttribute(attribute));
-                    string subControlType = WebEditor.Views.Edit.Controls.GetEditorNameForType(type, ctl.GetDictionary("editors"));
+                    string type = WebEditor.Views.Edit.ControlHelpers.GetTypeName(originalElement.EditorData.GetAttribute(attribute));
+                    string subControlType = WebEditor.Views.Edit.ControlHelpers.GetEditorNameForType(type, ctl.GetDictionary("editors"));
                     BindControl(bindingContext, result, gameId, ignoreExpression, editorDictionary, originalElement, ctl, subControlType);
                     addSaveValueToResult = false;
                     break;

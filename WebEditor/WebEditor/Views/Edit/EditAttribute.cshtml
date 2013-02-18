@@ -78,10 +78,10 @@
         <text>@caption:</text>
         }
         IDictionary<string, string> types = ctl.GetDictionary("types");
-        string selectedType = Controls.GetTypeName(value);
+        string selectedType = ControlHelpers.GetTypeName(value);
     @Html.DropDownList(ctl.Attribute + "-type", types.Select(t => new SelectListItem { Text = t.Value, Value = t.Key, Selected = (t.Key == selectedType) }), new { @class = "multi-dropdown", data_key = ctl.Attribute })
     <br />
-        string controlType = Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
+        string controlType = ControlHelpers.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
         string ctlCaption = null;
         if (controlType == "checkbox")
         {
@@ -162,7 +162,7 @@
                                break;
         case "dropdown":
                                string selectedItem = value as string;
-                               IEnumerable<SelectListItem> valuesList = Controls.GetDropdownValues(ctl, selectedItem, Model.Controller);
+                               IEnumerable<SelectListItem> valuesList = ControlHelpers.GetDropdownValues(ctl, selectedItem, Model.Controller);
             @Html.DropDownList(ctl.Attribute, valuesList, new { @class = "elementEditorDropdown" });
                                                                                                    break;
         case "richtext":
@@ -191,7 +191,7 @@
             @RenderMultiControl(ctl, value)
        break;
         case "dropdowntypes":
-            @Html.DropDownList("types-dropdown-" + ctl.Id, Controls.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key), new { @class = "types-dropdown", data_key = ctl.Id });
+            @Html.DropDownList("types-dropdown-" + ctl.Id, ControlHelpers.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key), new { @class = "types-dropdown", data_key = ctl.Id });
                                                                                                                                                                                          break;
         case "elementslist":
             @Html.Action("ElementsList", new { id = Model.GameId, key = Model.Key, control = ctl })
@@ -207,7 +207,7 @@
            selectedValue = objectRef.Reference;
        }
        List<SelectListItem> items = new List<SelectListItem>(
-           Controls.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
+           ControlHelpers.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
            .Select(s => new SelectListItem { Text = s, Value = s, Selected = (selectedValue == s) })
            );
        // if ctl.Attribute is "key" (or any name that exists in the Model), ASP.NET MVC ignores Selected value
