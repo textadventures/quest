@@ -88,6 +88,7 @@
                 // replace any <br/> tags with NewLine character
                 Value = ((string)value).Replace("<br/>", Environment.NewLine).Replace("<br />", Environment.NewLine)
             };
+            ControlHelpers.PopulateRichTextControlModel(ctl, Model.Controller, richTextModel);
             Html.RenderPartial("Controls/RichTextControl", richTextModel);
             break;
         case "number":

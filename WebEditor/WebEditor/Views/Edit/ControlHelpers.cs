@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using TextAdventures.Quest;
 using System.Web.Mvc;
+using WebEditor.Models.Controls;
 
 namespace WebEditor.Views.Edit
 {
@@ -113,6 +115,20 @@ namespace WebEditor.Views.Edit
                 IEnumerable<string> objectNames = controller.GetObjectNames(objectType ?? "object");
                 return new List<string> { "" }.Union(objectNames);
             }
+        }
+
+        public static void PopulateRichTextControlModel(IEditorControl ctl, EditorController controller, RichTextControl model)
+        {
+            var commandDataList = controller.GetElementDataAttribute("_RichTextControl_TextProcessorCommands", "data") as IEnumerable;
+
+            model.TextProcessorCommands = (from IDictionary<string, string> commandData in commandDataList
+                                           select new RichTextControl.TextProcessorCommand
+                                           {
+                                               Command = commandData["command"],
+                                               Info = commandData["info"],
+                                               InsertBefore = commandData["insertbefore"],
+                                               InsertAfter = commandData["insertafter"]
+                                           });
         }
     }
 }
