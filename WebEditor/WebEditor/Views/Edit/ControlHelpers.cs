@@ -119,6 +119,8 @@ namespace WebEditor.Views.Edit
 
         public static void PopulateRichTextControlModel(IEditorControl ctl, EditorController controller, RichTextControl model)
         {
+            if (ctl.GetBool("notextprocessor")) return;
+
             var commandDataList = controller.GetElementDataAttribute("_RichTextControl_TextProcessorCommands", "data") as IEnumerable;
 
             model.TextProcessorCommands = (from IDictionary<string, string> commandData in commandDataList
