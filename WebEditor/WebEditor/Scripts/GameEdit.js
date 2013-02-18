@@ -557,38 +557,7 @@ function initialiseElementEditor() {
         var key = $(this).attr("data-key");
         sendAdditionalAction("stringdictionary delete " + key + ";" + getSelectedStringDictionaryItems(key));
     });
-//    $('textarea.richtext').tinymce({
-//        script_url: '../../Scripts/tiny_mce/tiny_mce.js',
-//        theme: "advanced",
-//        plugins: "inlinepopups,searchreplace,paste,directionality",
-//        theme_advanced_buttons1: "bold,italic,underline",
-//        theme_advanced_buttons2: "",
-//        theme_advanced_buttons3: "",
-//        theme_advanced_toolbar_location: "top",
-//        theme_advanced_toolbar_align: "left",
-//        theme_advanced_statusbar_location: "none",
-//        forced_root_block: "",
-//        force_br_newlines: true,
-//        force_p_newlines: false,
-//        gecko_spellcheck: true,
-//        inline_styles: false,
-//        formats: {
-//            bold: { inline: 'b' },
-//            italic: { inline: 'i' },
-//            underline: { inline: 'u' }
-//        },
-//        valid_elements: "b,i,u,br",
-//        onchange_callback: function () {
-//            setUnsavedChanges();
-//        },
-//        setup: function (ed) {
-//            ed.onKeyUp.add(function (ed, e) {
-//                if (isCharKey(e.keyCode)) {
-//                    setUnsavedChanges();
-//                }
-//            });
-//        }
-//    });
+
     $(".multi-dropdown").change(function () {
         var key = $(this).attr("data-key");
         var value = $(this).find('option:selected').attr("value");
@@ -939,7 +908,6 @@ function initialiseElementEditor() {
 //    $(".gamebookoptions-link").button("destroy");
 //    $(".stringDictionarySection-select").unbind("click");
 //    $(".stringDictionarySection-delete").button("destroy");
-//    // TO DO: Unbind   $('textarea.richtext').tinymce({
 //    $(".multi-dropdown").unbind("change");
 //    $(".types-dropdown").unbind("change");
 //    $(".elementslist-add").button("destroy");
