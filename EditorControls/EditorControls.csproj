@@ -255,12 +255,6 @@
     <Compile Include="WFMultiControl.Designer.cs">
       <DependentUpon>WFMultiControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="WFRichTextControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="WFRichTextControl.Designer.cs">
-      <DependentUpon>WFRichTextControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="WFToolbar.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -301,9 +295,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WFMultiControl.resx">
       <DependentUpon>WFMultiControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WFRichTextControl.resx">
-      <DependentUpon>WFRichTextControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WFToolbar.resx">
       <DependentUpon>WFToolbar.cs</DependentUpon>
