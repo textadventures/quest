@@ -3,7 +3,7 @@
 <table>
     <tr>
         <td style="vertical-align: top">
-            @Html.TextArea(Model.Control.Attribute, Model.Value, 10, 80, new { @class = "richtext", style = "width: 40em; height: 20em" })
+            @Html.TextArea(Model.Control.Attribute, Model.Value, 10, 80, new { @class = "richtext", style = "width: 40em; height: 25em; font-size: 12pt" })
         </td>
         @if (Model.TextProcessorCommands != null)
         {
@@ -11,7 +11,7 @@
                 @foreach (var commandData in Model.TextProcessorCommands)
                 {
                     <button type="button" class="text-processor-helper" data-key="@Model.Control.Attribute" data-insertbefore="@commandData.InsertBefore" data-insertafter="@commandData.InsertAfter">@commandData.Command</button>
-                    @commandData.Info
+                    <span style="vertical-align: middle">@commandData.Info</span>
                     <br/>
                 }
                 <a href="http://quest5.net/wiki/Text_processor" target="_blank">Text Processor help</a>

@@ -852,6 +852,10 @@ function initialiseElementEditor() {
         selectTreeNode(element);
     });
 
+    $(".text-processor-helper").button().click(function () {
+        $("#" + $(this).data("key")).insertAtCaret($(this).data("insertbefore"), $(this).data("insertafter"));
+    });
+
     var enabledButtons = $("#_enabledButtons").val();
     updateEnabledButtons(enabledButtons);
 
@@ -1235,3 +1239,31 @@ function isCharKey(keyCode) {
     }
     return false;
 }
+
+$.fn.insertAtCaret = function (textBefore, textAfter) {
+    // based on from http://stackoverflow.com/questions/4456545/how-to-insert-text-at-the-current-caret-position-in-a-textarea
+    return this.each(function () {
+        if (document.selection && this.tagName == 'TEXTAREA') {
+            //IE textarea support
+            this.focus();
+            var sel = document.selection.createRange();
+            sel.text = textBefore + textAfter;
+            this.focus();
+        } else if (this.selectionStart || this.selectionStart == '0') {
+            //MOZILLA/NETSCAPE support
+            var startPos = this.selectionStart;
+            var endPos = this.selectionEnd;
+            var scrollTop = this.scrollTop;
+            this.value = this.value.substring(0, startPos) + textBefore + textAfter + this.value.substring(endPos, this.value.length);
+            this.focus();
+            this.selectionStart = startPos + textBefore.length;
+            this.selectionEnd = startPos + textBefore.length;
+            this.scrollTop = scrollTop;
+        } else {
+            // IE input[type=text] and other browsers
+            this.value += textBefore + textAfter;
+            this.focus();
+            this.value = this.value;    // forces cursor to end
+        }
+    });
+};

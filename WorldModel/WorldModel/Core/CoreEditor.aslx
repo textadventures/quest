@@ -137,7 +137,7 @@
         </item>
         <item>
           <key>insertbefore</key>
-          <value>{if :</value>
+          <value>{if </value>
         </item>
         <item>
           <key>insertafter</key>
