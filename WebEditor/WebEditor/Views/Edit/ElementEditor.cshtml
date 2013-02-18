@@ -296,23 +296,23 @@ Working...
             @Html.TextArea(ctl.Attribute, ((string)value).Replace("<br/>", Environment.NewLine).Replace("<br />", Environment.NewLine), 10, 80, new { @class = "richtext", style = "width: 40em; height: 10em" })
             break;
         case "number":
-           string minMax = string.Empty;
-           int? min = ctl.GetInt("minimum");
-           int? max = ctl.GetInt("maximum");
-           if (min.HasValue)
-           {
-               minMax += string.Format("min={0}", min);
-           }
-           if (max.HasValue)
-           {
-               if (minMax.Length > 0)
-               {
-                   minMax += " ";
-               }
-               minMax += string.Format("max={0}", max);
-           }
-           <input type="number" name="@ctl.Attribute" id="@ctl.Attribute" value="@Model.EditorData.GetAttribute(ctl.Attribute)" @minMax style="width: 50px" />
-           break;
+            string minMax = string.Empty;
+            int? min = ctl.GetInt("minimum");
+            int? max = ctl.GetInt("maximum");
+            if (min.HasValue)
+            {
+                minMax += string.Format("min={0}", min);
+            }
+            if (max.HasValue)
+            {
+                if (minMax.Length > 0)
+                {
+                    minMax += " ";
+                }
+                minMax += string.Format("max={0}", max);
+            }
+            <input type="number" name="@ctl.Attribute" id="@ctl.Attribute" value="@Model.EditorData.GetAttribute(ctl.Attribute)" @minMax style="width: 50px" />
+            break;
         case "numberdouble":
             string doubleMinMax = string.Empty;
             double? dblMin = ctl.GetDouble("minimum");
@@ -350,17 +350,17 @@ Working...
             @Html.Action("EditExits", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
         case "objects":
-           IEditableObjectReference objectRef = value as IEditableObjectReference;
-           string selectedValue = null;
-           if (objectRef != null)
-           {
-               selectedValue = objectRef.Reference;
-           }
-           List<SelectListItem> items = new List<SelectListItem>(
-               Controls.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
-               .Select(s => new SelectListItem { Text = s, Value = s, Selected = (selectedValue == s) })
-               );
-           // if ctl.Attribute is "key" (or any name that exists in the Model), ASP.NET MVC ignores Selected value
+            IEditableObjectReference objectRef = value as IEditableObjectReference;
+            string selectedValue = null;
+            if (objectRef != null)
+            {
+                selectedValue = objectRef.Reference;
+            }
+            List<SelectListItem> items = new List<SelectListItem>(
+                Controls.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
+                .Select(s => new SelectListItem { Text = s, Value = s, Selected = (selectedValue == s) })
+                );
+            // if ctl.Attribute is "key" (or any name that exists in the Model), ASP.NET MVC ignores Selected value
             @Html.DropDownList("dropdown-" + ctl.Attribute, items);
             break;
         case "verbs":
@@ -408,22 +408,22 @@ Working...
 
 @helper RenderMultiControl(IEditorControl ctl, object value)
 {
-        string caption = ctl.GetString("selfcaption");
-        if (caption != null)
-        {
-            <text>@caption:</text>
-        }
-        IDictionary<string, string> types = ctl.GetDictionary("types");
-        string selectedType = Controls.GetTypeName(value);
-        @Html.DropDownList(ctl.Attribute + "-type", types.Select(t => new SelectListItem { Text = t.Value, Value = t.Key, Selected = (t.Key == selectedType) }), new { @class = "multi-dropdown", data_key = ctl.Attribute })
-        <br />
-        string controlType = Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
-        string ctlCaption = null;
-        if (controlType == "checkbox")
-        {
-            ctlCaption = ctl.GetString("checkbox");
-        }
-        @RenderEditorControl(ctl, false, controlType, ctlCaption)
+    string caption = ctl.GetString("selfcaption");
+    if (caption != null)
+    {
+        <text>@caption:</text>
+    }
+    IDictionary<string, string> types = ctl.GetDictionary("types");
+    string selectedType = Controls.GetTypeName(value);
+    @Html.DropDownList(ctl.Attribute + "-type", types.Select(t => new SelectListItem { Text = t.Value, Value = t.Key, Selected = (t.Key == selectedType) }), new { @class = "multi-dropdown", data_key = ctl.Attribute })
+    <br />
+    string controlType = Controls.GetEditorNameForType(selectedType, ctl.GetDictionary("editors"));
+    string ctlCaption = null;
+    if (controlType == "checkbox")
+    {
+        ctlCaption = ctl.GetString("checkbox");
+    }
+    @RenderEditorControl(ctl, false, controlType, ctlCaption)
 }
 
 @functions {
