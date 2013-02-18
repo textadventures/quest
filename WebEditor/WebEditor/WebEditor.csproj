@@ -92,6 +92,7 @@
     <Compile Include="Logging.cs" />
     <Compile Include="Models\Controls\EditorControl.cs" />
     <Compile Include="Models\Controls\MultiControl.cs" />
+    <Compile Include="Models\Controls\RichTextControl.cs" />
     <Compile Include="Models\Create.cs" />
     <Compile Include="Models\Editor.cs" />
     <Compile Include="Models\Element.cs" />
@@ -301,6 +302,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Edit\Controls\MultiControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Edit\Controls\RichTextControl.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
