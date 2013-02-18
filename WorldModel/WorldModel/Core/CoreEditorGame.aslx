@@ -97,6 +97,7 @@
         <controltype>richtext</controltype>
         <caption>Description</caption>
         <attribute>description</attribute>
+        <notextprocessor/>
         <expand/>
       </control>
 
