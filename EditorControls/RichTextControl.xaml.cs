@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -21,19 +22,6 @@ namespace TextAdventures.Quest.EditorControls
             public string Info { get; set; }
         }
 
-        private static List<TextProcessorCommand> s_commands = new List<TextProcessorCommand>
-        {
-            new TextProcessorCommand { Command = "Bold", InsertBefore = "<b>", InsertAfter = "</b>", Info = "<b>"},
-            new TextProcessorCommand { Command = "Italic", InsertBefore = "<i>", InsertAfter = "</i>", Info = "<i>"},
-            new TextProcessorCommand { Command = "Underline", InsertBefore = "<u>", InsertAfter = "</u>", Info = "<u>"},
-            new TextProcessorCommand { Command = "Once", InsertBefore = "{once:", InsertAfter = "}", Info = "{once}"},
-            new TextProcessorCommand { Command = "Object link", InsertBefore = "{object:", InsertAfter = "}", Info = "{object}"},
-            new TextProcessorCommand { Command = "Command link", InsertBefore = "{command:", InsertAfter = "}", Info = "{command}"},
-            new TextProcessorCommand { Command = "If...", InsertBefore = "{if ", InsertAfter = "object.attribute=value:}", Info = "{if}"},
-            new TextProcessorCommand { Command = "Random text", InsertBefore = "{random:", InsertAfter = "}", Info = "{random}"},
-            new TextProcessorCommand { Command = "Image", InsertBefore = "{img:", InsertAfter = "}", Info = "{img}"},
-        };
-
         public RichTextControl()
         {
             InitializeComponent();
@@ -52,7 +40,18 @@ namespace TextAdventures.Quest.EditorControls
             }
             else
             {
-                foreach (var command in s_commands)
+                var commandDataList = m_helper.Controller.GetElementDataAttribute("_RichTextControl_TextProcessorCommands", "data") as IEnumerable;
+
+                var commands = (from IDictionary<string, string> commandData in commandDataList
+                                select new TextProcessorCommand
+                                {
+                                    Command = commandData["command"],
+                                    Info = commandData["info"],
+                                    InsertBefore = commandData["insertbefore"],
+                                    InsertAfter = commandData["insertafter"]
+                                });
+
+                foreach (var command in commands)
                 {
                     stackCommandButtons.Children.Add(new StackPanel
                     {

@@ -1191,6 +1191,12 @@ namespace TextAdventures.Quest
             return WorldModel.GetTypeStringForElementType(WorldModel.Elements.Get(element).ElemType);
         }
 
+        public object GetElementDataAttribute(string elementName, string attribute)
+        {
+            var element = WorldModel.Elements.Get(elementName);
+            return element.Fields.Get(attribute);
+        }
+
         public string GetObjectType(string element)
         {
             if (!WorldModel.Elements.ContainsKey(element)) return null;

@@ -19,6 +19,173 @@
   <type name="editor_room"/>
   <type name="editor_object"/>
   <type name="editor_player"/>
+  
+  <object name="_RichTextControl_TextProcessorCommands">
+    <data type="list">
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>Bold</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>&lt;b&gt;</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>&lt;/b&gt;</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>&lt;b&gt;</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>Italic</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>&lt;i&gt;</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>&lt;/i&gt;</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>&lt;i&gt;</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>Underline</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>&lt;u&gt;</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>&lt;/u&gt;</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>&lt;u&gt;</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>Once</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{once:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{once}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>Object link</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{object:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{object}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>Command link</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{command:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{command}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>If...</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{if :</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>object.attribute=value:}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{if}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>Random text</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{random:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{random}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
+          <value>Image</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{img:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{img}</value>
+        </item>
+      </value>
+    </data>
+  </object>
 
   <include ref="CoreEditorGame.aslx"/>
   <include ref="CoreEditorObject.aslx"/>
