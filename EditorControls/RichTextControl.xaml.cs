@@ -100,6 +100,16 @@ namespace TextAdventures.Quest.EditorControls
             switch (command.Source)
             {
                 case "objects":
+                    var objects = m_helper.Controller.GetObjectNames("object", true).OrderBy(n => n);
+                    var result = PopupEditors.EditStringWithDropdown(
+                        "Please choose an object",
+                        string.Empty, null, null, string.Empty, objects);
+
+                    if (!result.Cancelled)
+                    {
+                        InsertText(command.InsertBefore + result.Result + command.InsertAfter, string.Empty);
+                    }
+
                     break;
                 case "images":
                     var window = new FilePopUp();
