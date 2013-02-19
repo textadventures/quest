@@ -126,11 +126,27 @@ namespace WebEditor.Views.Edit
             model.TextProcessorCommands = (from IDictionary<string, string> commandData in commandDataList
                                            select new RichTextControl.TextProcessorCommand
                                            {
-                                               Command = commandData["command"],
-                                               Info = commandData["info"],
-                                               InsertBefore = commandData["insertbefore"],
-                                               InsertAfter = commandData["insertafter"]
+                                               Command = GetDictionaryValue(commandData, "command"),
+                                               Info = GetDictionaryValue(commandData, "info"),
+                                               InsertBefore = GetDictionaryValue(commandData, "insertbefore"),
+                                               InsertAfter = GetDictionaryValue(commandData, "insertafter"),
+                                               Source = GetDictionaryValue(commandData, "source"),
+                                               Extensions = GetExtensions(commandData)
                                            });
+
+        }
+
+        private static string GetDictionaryValue(IDictionary<string, string> dictionary, string key)
+        {
+            string value;
+            dictionary.TryGetValue(key, out value);
+            return value;
+        }
+
+        private static string GetExtensions(IDictionary<string, string> dictionary)
+        {
+            var value = GetDictionaryValue(dictionary, "extensions");
+            return value == null ? null : string.Join(";", value.Split(';').Select(s => s.Substring(1)));
         }
     }
 }

@@ -2303,23 +2303,37 @@ namespace WebEditor.Services
 
         public List<string> GetPermittedExtensions(string element, string attribute)
         {
-            IEditorControl ctl;
+            string source;
 
-            if (attribute.Contains('-'))
+            if (attribute != null)
             {
-                // attribute will end with "-simpleeditor"
-                attribute = attribute.Substring(0, attribute.Length - 13);
-                string parameter;
-                IEditableScript script = GetScriptLine(element, attribute, out parameter);
-                IEditorDefinition def = m_controller.GetEditorDefinition(script);
-                ctl = def.Controls.First(c => c.Attribute == parameter);
+                IEditorControl ctl;
+
+                if (attribute.Contains('-'))
+                {
+                    // attribute will end with "-simpleeditor"
+                    attribute = attribute.Substring(0, attribute.Length - 13);
+                    string parameter;
+                    IEditableScript script = GetScriptLine(element, attribute, out parameter);
+                    IEditorDefinition def = m_controller.GetEditorDefinition(script);
+                    ctl = def.Controls.First(c => c.Attribute == parameter);
+                }
+                else
+                {
+                    ctl = FindEditorControlByAttribute(element, attribute);
+                }
+
+                source = ctl.GetString("source");
             }
             else
             {
-                ctl = FindEditorControlByAttribute(element, attribute);
+                // if no attribute specified, e.g. this is the text processor helper form, use a default
+                // image extensions list.
+
+                source = "*.jpg;*.jpeg;*.png;*.gif";
             }
 
-            return new List<string>(ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
+            return new List<string>(source.Split(';').Select(s => s.Substring(1)));
         }
 
         public string Style

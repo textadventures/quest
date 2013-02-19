@@ -269,7 +269,8 @@ namespace TextAdventures.Quest
 
             protected override void AddResultToDictionary(IDictionary<string, string> dictionary, string key, XElement xmlValue)
             {
-                dictionary.Add(key, xmlValue.Value);
+                string value = GameLoader.GetTemplate(xmlValue.Value);
+                dictionary.Add(key, value);
             }
         }
 

@@ -10,7 +10,7 @@
             <td style="vertical-align: top">
                 @foreach (var commandData in Model.TextProcessorCommands)
                 {
-                    <button type="button" class="text-processor-helper" data-key="@Model.Control.Attribute" data-insertbefore="@commandData.InsertBefore" data-insertafter="@commandData.InsertAfter">@commandData.Command</button>
+                    <button type="button" class="text-processor-helper" data-key="@Model.Control.Attribute" data-insertbefore="@commandData.InsertBefore" data-insertafter="@commandData.InsertAfter" data-source="@commandData.Source" data-extensions="@commandData.Extensions">@commandData.Command</button>
                     <span style="vertical-align: middle">@commandData.Info</span>
                     <br/>
                 }

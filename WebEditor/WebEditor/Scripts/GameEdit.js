@@ -853,7 +853,27 @@ function initialiseElementEditor() {
     });
 
     $(".text-processor-helper").button().click(function () {
-        $("#" + $(this).data("key")).insertAtCaret($(this).data("insertbefore"), $(this).data("insertafter"));
+        var source = $(this).data("source");
+        var insertBefore = $(this).data("insertbefore");
+        var insertAfter = $(this).data("insertafter");
+        var element = $("#" + $(this).data("key"));
+
+        switch (source) {
+            case "images":
+                var extensions = $(this).data("extensions");
+                _fileUploadInit("", "", extensions, "");
+                $("#dialog-upload").data("callback", function(result) {
+                    doInsert(element, insertBefore + result + insertAfter, "");
+                });
+                $("#dialog-upload").dialog("open");
+                break;
+            default:
+                doInsert(element, insertBefore, insertAfter);
+        }
+
+        function doInsert(el, before, after) {
+            el.insertAtCaret(before, after);
+        }
     });
 
     var enabledButtons = $("#_enabledButtons").val();
@@ -1195,7 +1215,13 @@ function registerFileUploadSubmit(submitFn) {
 
 function filePosted(file) {
     $("#dialog-upload").dialog("close");
-    $("#" + $("#dialog-upload").attr("data-key")).val(file);
+    var key = $("#dialog-upload").attr("data-key");
+    if (key) {
+        $("#" + key).val(file);
+    } else {
+        var callback = $("#dialog-upload").data("callback");
+        callback(file);
+    }
     sendAdditionalAction("none");
 }
 

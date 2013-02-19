@@ -77,10 +77,10 @@ function fileUploadSubmit() {
     else {
         var selection = $("#existingFiles").val();
         if (selection == "<none>") {
-            window.parent.filePosted("")
+            window.parent.filePosted("");
         }
         else {
-            window.parent.filePosted(selection)
+            window.parent.filePosted(selection);
         }
     }
 }

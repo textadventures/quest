@@ -183,6 +183,14 @@
           <key>info</key>
           <value>{img}</value>
         </item>
+        <item>
+          <key>source</key>
+          <value>images</value>
+        </item>
+        <item>
+          <key>extensions</key>
+          <value>[EditorImageFormats]</value>
+        </item>
       </value>
     </data>
   </editor>

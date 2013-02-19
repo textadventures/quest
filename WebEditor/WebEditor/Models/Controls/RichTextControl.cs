@@ -14,6 +14,8 @@ namespace WebEditor.Models.Controls
             public string InsertBefore { get; set; }
             public string InsertAfter { get; set; }
             public string Info { get; set; }
+            public string Source { get; set; }
+            public string Extensions { get; set; }
         }
 
         public IEditorControl Control { get; set; }
