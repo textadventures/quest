@@ -20,7 +20,7 @@
   <type name="editor_object"/>
   <type name="editor_player"/>
   
-  <object name="_RichTextControl_TextProcessorCommands">
+  <editor name="_RichTextControl_TextProcessorCommands">
     <data type="list">
       <value type="stringdictionary">
         <item>
@@ -185,7 +185,7 @@
         </item>
       </value>
     </data>
-  </object>
+  </editor>
 
   <include ref="CoreEditorGame.aslx"/>
   <include ref="CoreEditorObject.aslx"/>
