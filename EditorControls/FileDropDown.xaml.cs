@@ -9,16 +9,29 @@ using System.IO;
 
 namespace TextAdventures.Quest.EditorControls
 {
-    /// <summary>
-    /// Interaction logic for FileDropDown.xaml
-    /// </summary>
     public partial class FileDropDown : UserControl
     {
         private bool m_updatingList;
+        private EditorController m_controller;
 
         public FileDropDown()
         {
             InitializeComponent();
+        }
+
+        public void Initialise(EditorController controller)
+        {
+            m_controller = controller;
+            FileLister = GetFilesInGamePath;
+        }
+
+        private IEnumerable<string> GetFilesInGamePath()
+        {
+            yield return "";
+            foreach (string result in m_controller.GetAvailableExternalFiles(Source))
+            {
+                yield return result;
+            }
         }
 
         public bool Preview { get; set; }
@@ -27,6 +40,7 @@ namespace TextAdventures.Quest.EditorControls
         public event EventHandler<SelectionChangedEventArgs> SelectionChanged;
         public Action<string> FilenameUpdated { get; set; }
         public string BasePath { get; set; }
+        public string Source { get; set; }
 
         private class FileListItem
         {

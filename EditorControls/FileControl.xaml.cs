@@ -22,20 +22,20 @@ namespace TextAdventures.Quest.EditorControls
 
         void m_helper_Initialise()
         {
+            string source = m_helper.ControlDefinition.GetString("source");
             fileDropDown.BasePath = System.IO.Path.GetDirectoryName(m_helper.Controller.Filename);
-            m_source = m_helper.ControlDefinition.GetString("source");
+            fileDropDown.Source = source;
+            fileDropDown.Initialise(m_helper.Controller);
+            
             fileDropDown.Preview = m_helper.ControlDefinition.GetBool("preview");
 
-            if (m_source == "libraries")
+            if (source == "libraries")
             {
-                m_source = "*.aslx";
+                source = "*.aslx";
                 fileDropDown.FileLister = GetAvailableLibraries;
             }
-            else
-            {
-                fileDropDown.FileLister = GetFilesInGamePath;
-            }
-            fileDropDown.FileFilter = string.Format("{0} ({1})|{1}", m_helper.ControlDefinition.GetString("filefiltername"), m_source);
+
+            fileDropDown.FileFilter = string.Format("{0} ({1})|{1}", m_helper.ControlDefinition.GetString("filefiltername"), source);
         }
 
         private void lstFiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -72,15 +72,6 @@ namespace TextAdventures.Quest.EditorControls
         {
             yield return "";
             foreach (string result in m_helper.Controller.GetAvailableLibraries())
-            {
-                yield return result;
-            }
-        }
-
-        private IEnumerable<string> GetFilesInGamePath()
-        {
-            yield return "";
-            foreach (string result in m_helper.Controller.GetAvailableExternalFiles(m_source))
             {
                 yield return result;
             }

@@ -20,6 +20,8 @@ namespace TextAdventures.Quest.EditorControls
             public string InsertBefore { get; set; }
             public string InsertAfter { get; set; }
             public string Info { get; set; }
+            public string Source { get; set; }
+            public string Extensions { get; set; }
         }
 
         public RichTextControl()
@@ -45,10 +47,12 @@ namespace TextAdventures.Quest.EditorControls
                 var commands = (from IDictionary<string, string> commandData in commandDataList
                                 select new TextProcessorCommand
                                 {
-                                    Command = commandData["command"],
-                                    Info = commandData["info"],
-                                    InsertBefore = commandData["insertbefore"],
-                                    InsertAfter = commandData["insertafter"]
+                                    Command = GetDictionaryItem(commandData, "command"),
+                                    Info = GetDictionaryItem(commandData, "info"),
+                                    InsertBefore = GetDictionaryItem(commandData, "insertbefore"),
+                                    InsertAfter = GetDictionaryItem(commandData, "insertafter"),
+                                    Source = GetDictionaryItem(commandData, "source"),
+                                    Extensions = GetDictionaryItem(commandData, "extensions")
                                 });
 
                 foreach (var command in commands)
@@ -83,13 +87,41 @@ namespace TextAdventures.Quest.EditorControls
             }
         }
 
+        private string GetDictionaryItem(IDictionary<string, string> dictionary, string key)
+        {
+            string value;
+            dictionary.TryGetValue(key, out value);
+            return value;
+        }
+
         void button_Click(object sender, RoutedEventArgs e)
         {
             var command = (TextProcessorCommand)((Button)sender).Tag;
-            textBox.SelectedText = command.InsertBefore + command.InsertAfter;
-            textBox.SelectionStart = textBox.SelectionStart + command.InsertBefore.Length;
-            textBox.SelectionLength = 0;
+            switch (command.Source)
+            {
+                case "objects":
+                    break;
+                case "images":
+                    var window = new FilePopUp();
+                    window.Initialise(m_helper.Controller);
+                    window.ShowDialog();
+                    if (!string.IsNullOrEmpty(window.Filename))
+                    {
+                        InsertText(command.InsertBefore + window.Filename + command.InsertAfter, string.Empty);
+                    }
+                    break;
+                default:
+                    InsertText(command.InsertBefore, command.InsertAfter);
+                    break;
+            }
             textBox.Focus();
+        }
+
+        private void InsertText(string before, string after)
+        {
+            textBox.SelectedText = before + after;
+            textBox.SelectionStart = textBox.SelectionStart + before.Length;
+            textBox.SelectionLength = 0;
         }
 
         public IControlDataHelper Helper { get { return m_helper; } }
