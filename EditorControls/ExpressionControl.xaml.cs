@@ -104,7 +104,7 @@ namespace TextAdventures.Quest.EditorControls
                     newFileControl.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
                     newFileControl.RefreshFileList();
                     newFileControl.Helper.Dirty += SimpleEditor_Dirty;
-                    newFileControl.lstFiles.SelectionChanged += FileControl_SelectionChanged;
+                    newFileControl.SelectionChanged += FileControl_SelectionChanged;
                     m_simpleEditor = newFileControl;
                     break;
                 case "boolean":
@@ -169,7 +169,7 @@ namespace TextAdventures.Quest.EditorControls
             {
                 fileControl.Helper.DoUninitialise();
                 fileControl.Helper.Dirty -= SimpleEditor_Dirty;
-                fileControl.lstFiles.SelectionChanged -= FileControl_SelectionChanged;
+                fileControl.SelectionChanged -= FileControl_SelectionChanged;
             }
 
             DropDownObjectsControl dropDownObjects = m_simpleEditor as DropDownObjectsControl;

@@ -108,6 +108,9 @@
     <Compile Include="FileControl.xaml.cs">
       <DependentUpon>FileControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FileDropDown.xaml.cs">
+      <DependentUpon>FileDropDown.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FindControl.xaml.cs">
       <DependentUpon>FindControl.xaml</DependentUpon>
     </Compile>
@@ -371,6 +374,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FileControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileDropDown.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
