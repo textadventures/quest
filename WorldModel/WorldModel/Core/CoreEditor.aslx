@@ -111,6 +111,10 @@
           <key>info</key>
           <value>{object}</value>
         </item>
+        <item>
+          <key>source</key>
+          <value>objects</value>
+        </item>
       </value>
       <value type="stringdictionary">
         <item>

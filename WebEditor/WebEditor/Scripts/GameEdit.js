@@ -859,6 +859,12 @@ function initialiseElementEditor() {
         var element = $("#" + $(this).data("key"));
 
         switch (source) {
+            case "objects":
+                var objects = $("#_allObjects").val().split(";");
+                showDialog("", "", function (ignore, result) {
+                    doInsert(element, insertBefore + result + insertAfter, "");
+                }, objects, "Link to");
+                break;
             case "images":
                 var extensions = $(this).data("extensions");
                 _fileUploadInit("", "", extensions, "");
