@@ -239,10 +239,14 @@ div#dialog-codeview textarea
     width: 100%;
     height: 100%;
     margin: 0;
-    border: 0;
     font-family: Consolas, "Courier New", Courier, monospace;
     font-size: 14px;
     resize: none;
+}
+
+div#dialog-codeview textarea:focus
+{
+    outline: none;
 }
 
 /* Styles for basic forms
