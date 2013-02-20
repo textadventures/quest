@@ -20,6 +20,7 @@ namespace TextAdventures.Quest.EditorControls
         private ScriptCommandEditorData m_parentScript;
         private bool m_readOnly;
         private bool m_saving;
+        private bool m_populating;
         private bool m_initialised;
 
         internal event Action Initialise;
@@ -167,6 +168,10 @@ namespace TextAdventures.Quest.EditorControls
             ctlToolbar.CanMakeEditable = fromInheritedType;
 
             textEditor.IsReadOnly = m_readOnly;
+
+            m_populating = true;
+            CodeView = false;
+            m_populating = false;
 
             RefreshScriptsList();
         }
@@ -696,7 +701,7 @@ namespace TextAdventures.Quest.EditorControls
             {
                 if (value == CodeView) return;
 
-                Save();
+                if (!m_populating) Save();
 
                 if (value)
                 {
