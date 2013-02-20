@@ -330,4 +330,5 @@ textarea
 #dialog-add-script-tabs > div
 {
     height: 400px;
+    overflow-y: scroll;
 }
