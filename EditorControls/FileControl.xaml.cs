@@ -9,7 +9,6 @@ namespace TextAdventures.Quest.EditorControls
     public partial class FileControl : UserControl, IElementEditorControl
     {
         private ControlDataHelper<string> m_helper;
-        private string m_source;
         private IEditorData m_data;
 
         public FileControl()
