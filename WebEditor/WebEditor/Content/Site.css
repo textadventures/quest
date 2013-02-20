@@ -229,6 +229,22 @@ div#loading-text
     font-size: 0.95em;
 }
 
+div#dialog-codeview
+{
+    overflow: inherit;
+}
+
+div#dialog-codeview textarea
+{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: 0;
+    font-family: Consolas, "Courier New", Courier, monospace;
+    font-size: 14px;
+    resize: none;
+}
+
 /* Styles for basic forms
 -----------------------------------------------------------*/
 

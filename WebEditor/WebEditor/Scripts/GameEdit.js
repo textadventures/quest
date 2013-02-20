@@ -90,6 +90,20 @@
             }
         }
     });
+    $("#dialog-codeview").dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: true,
+        width: 500,
+        height: 400,
+        buttons: {
+            "OK": function () {
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
 }
 
 function showDialog(prompt, defaultText, ok, list, listPrompt, autoCompleteList) {
@@ -365,6 +379,12 @@ function initialiseElementEditor() {
 
     $(".script-clipboard").buttonset();
     $(".script-move").buttonset();
+
+    $(".script-codeview").button({
+        icons:  { primary: "ui-icon-script" }
+    }).click(function() {
+        $("#dialog-codeview").dialog("open");
+    }) ;
 
     $(".script-if-add-else").button({
         icons: { primary: "ui-icon-plusthick" }

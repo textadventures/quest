@@ -65,8 +65,9 @@
         <button type="button" class="script-add" data-key="@attribute">Add new script</button>
         @if (Model.Controller.CanPasteScript())
         {
-        <button type="button" class="script-paste" data-key="@attribute">Paste</button>
+            <button type="button" class="script-paste" data-key="@attribute">Paste</button>
         }
+        <button type="button" class="script-codeview" data-key="@attribute">Code View</button>
     </div>
 }
 
