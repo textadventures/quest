@@ -9,7 +9,7 @@ namespace TextAdventures.Quest
 {
     public interface IScriptFactory
     {
-        IScript CreateScript(string line, ScriptContext scriptContext, bool lazy);
+        IScript CreateScript(string line, ScriptContext scriptContext, bool lazy, bool addExceptionsToLog = true);
         IScript CreateScript(string line, ScriptContext scriptContext);
         IScript CreateScript(string line);
     }
@@ -90,7 +90,7 @@ namespace TextAdventures.Quest
             return CreateScript(line, scriptContext, m_lazyLoadingEnabled);
         }
 
-        public IScript CreateScript(string line, ScriptContext scriptContext, bool lazy)
+        public IScript CreateScript(string line, ScriptContext scriptContext, bool lazy, bool addExceptionsToLog = true)
         {
             MultiScript result = new MultiScript(m_worldModel);
             bool finished = false;
@@ -116,8 +116,12 @@ namespace TextAdventures.Quest
                 }
                 catch (Exception ex)
                 {
-                    AddError(string.Format("Error adding script '{0}': {1}", line, ex.Message));
-                    break;
+                    if (addExceptionsToLog)
+                    {
+                        AddError(string.Format("Error adding script '{0}': {1}", line, ex.Message));
+                        break;
+                    }
+                    throw;
                 }
 
                 if (line != null)

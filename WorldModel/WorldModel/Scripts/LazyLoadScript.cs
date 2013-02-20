@@ -40,7 +40,7 @@ namespace TextAdventures.Quest.Scripts
             {
                 if (m_scriptConstructor == null)
                 {
-                    m_script = m_scriptFactory.CreateScript(m_scriptString, m_scriptContext, false);
+                    m_script = m_scriptFactory.CreateScript(m_scriptString, m_scriptContext, false, false);
                 }
                 else
                 {
@@ -53,6 +53,10 @@ namespace TextAdventures.Quest.Scripts
                 if (!m_worldModel.EditMode) throw;
 
                 m_script = new FailedScript(m_scriptString);
+                if (m_scriptConstructor == null)
+                {
+                    m_script = new MultiScript(m_scriptFactory.WorldModel, m_script);
+                }
             }
             m_script.Parent = m_parent;
             m_scriptString = null;
