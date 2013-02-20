@@ -256,14 +256,6 @@ function initialiseElementEditor() {
         }
     });
     $("#centerPane").scrollTop(0);
-//    $(".stringlist-add").button({
-//        icons: { primary: "ui-icon-plusthick" }
-//    }).click(function () {
-//        var key = $(this).attr("data-key");
-//        showDialog($(this).attr("data-prompt"), "", function (text) {
-//            sendAdditionalAction("stringlist add " + key + ";" + text);
-//        });
-//    });
 
     $(".stringlist-add").button({
         icons: { primary: "ui-icon-plusthick" }
@@ -383,8 +375,12 @@ function initialiseElementEditor() {
     $(".script-codeview").button({
         icons:  { primary: "ui-icon-script" }
     }).click(function () {
-        $("#dialog-codeview-code").val($(this).data("code"));
-        $("#dialog-codeview").dialog("open");
+        if (!_unsavedChanges) {
+            $("#dialog-codeview-code").val($(this).data("code"));
+            $("#dialog-codeview").dialog("open");
+        } else {
+            sendAdditionalAction("script codeview " + $(this).data("key"));
+        }
     }) ;
 
     $(".script-if-add-else").button({
@@ -881,6 +877,9 @@ function initialiseElementEditor() {
         switch (data[0]) {
             case "settings":
                 $("#dialog-settings").dialog("open");
+                break;
+            case "codeview":
+                $("#script-codeview-" + data[1]).click();
                 break;
         }
     }

@@ -1090,6 +1090,9 @@ namespace WebEditor.Services
                         ScriptMoveDown(key, data[0], data[1].Split(';'));
                     }
                     break;
+                case "codeview":
+                    m_uiAction = "codeview " + parameter;
+                    break;
             }
         }
 
