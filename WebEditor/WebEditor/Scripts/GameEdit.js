@@ -253,9 +253,7 @@ function initialiseElementEditor() {
 
     $(".stringlist-add").button({
         icons: { primary: "ui-icon-plusthick" }
-    });
-
-    $('body').on('click', '.stringlist-add', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         showDialog($(this).attr("data-prompt"), "", function (text) {
             sendAdditionalAction("stringlist add " + key + ";" + text);
@@ -264,31 +262,25 @@ function initialiseElementEditor() {
 
     $(".stringlist-edit").button({
         icons: { primary: "ui-icon-pencil" }
-    });
-    
-    $('body').on('click', '.stringlist-edit', function () {
+    }).click(function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
 
     $(".stringlist-delete").button({
         icons: { primary: "ui-icon-trash" }
-    });
-    
-    $('body').on('click', '.stringlist-delete', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         var selectElement = $("#select-" + key + " option:selected");
         sendAdditionalAction("stringlist delete " + key + ";" + selectElement.val());
     });
-
-    $('body').on('dblclick','.stringlist', function () {
+    $(".stringlist").dblclick(function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
 
     $(".stringlist-edit, .stringlist-delete").each(function () {
         $(this).button("disable");
     });
-
-    $('body').on('change','.stringlist', function () {
+    $(".stringlist").change(function () {
         var editButton = $("#stringlist-" + $(this).attr("data-key") + "-edit");
         var deleteButton = $("#stringlist-" + $(this).attr("data-key") + "-delete");
         var selectElement = $("#" + this.id + " option:selected");
@@ -304,9 +296,7 @@ function initialiseElementEditor() {
 
     $(".script-add").button({
         icons: { primary: "ui-icon-plusthick" }
-    });
-    
-    $('body').on('click', '.script-add', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         $("#dialog-add-script").data("key", key);
         $("#dialog-add-script").data("dialog_ok", function () {
@@ -318,9 +308,7 @@ function initialiseElementEditor() {
 
     $(".script-delete").button({
         icons: { primary: "ui-icon-trash" }
-    });
-    
-    $('body').on('click', '.script-delete', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
@@ -330,9 +318,7 @@ function initialiseElementEditor() {
 
     $(".script-cut").button({
         icons: { primary: "ui-icon-scissors" }
-    });
-    
-    $('body').on('click', '.script-cut', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
@@ -342,9 +328,7 @@ function initialiseElementEditor() {
 
     $(".script-copy").button({
         icons: { primary: "ui-icon-copy" }
-    });
-    
-    $('body').on('click', '.script-copy', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
@@ -354,18 +338,14 @@ function initialiseElementEditor() {
 
     $(".script-paste").button({
         icons: { primary: "ui-icon-clipboard" }
-    });
-    
-    $('body').on('click', '.script-paste', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script paste " + key);
     });
 
     $(".script-moveup").button({
         icons: { primary: "ui-icon-arrowthick-1-n" }
-    });
-    
-    $('body').on('click','.script-moveup',function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
@@ -375,9 +355,7 @@ function initialiseElementEditor() {
 
     $(".script-movedown").button({
         icons: { primary: "ui-icon-arrowthick-1-s" }
-    });
-    
-    $('body').on('click', '.script-movedown', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         var selected = getSelectedScripts(key);
         if (selected.length > 0) {
@@ -390,18 +368,14 @@ function initialiseElementEditor() {
 
     $(".script-if-add-else").button({
         icons: { primary: "ui-icon-plusthick" }
-    });
-    
-    $('body').on('click','.script-if-add-else', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelse " + key );
     });
 
     $(".script-if-add-elseif").button({
         icons: { primary: "ui-icon-plusthick" }
-    });
-    
-    $('body').on('click', '.script-if-add-elseif', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelseif " + key);
     });
@@ -413,8 +387,7 @@ function initialiseElementEditor() {
             $(this).show();
         }
     });
-
-    $('body').on('click', '.script-select', function () {
+    $(".script-select").click(function () {
         var key = $(this).attr("data-key");
         var selectedScripts = getSelectedScripts(key);
         if (selectedScripts.length > 0) {
@@ -424,8 +397,7 @@ function initialiseElementEditor() {
             $("#script-toolbar-" + key).hide(200);
         }
     });
-
-    $('body').on('click', '.ifsection-select', function () {
+    $(".ifsection-select").click(function () {
         var key = $(this).attr("data-key");
         var selectedSections = getSelectedIfSections(key);
         if (selectedSections.length > 0) {
@@ -438,14 +410,11 @@ function initialiseElementEditor() {
 
     $(".ifsection-delete").button({
         icons: { primary: "ui-icon-trash" }
-    });
-    
-    $('body').on('click', '.ifsection-delete', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script deleteifsection " + key + ";" + getSelectedIfSections(key));
     });
-
-    $('body').on('change', '.expression-dropdown', function () {
+    $(".expression-dropdown").change(function () {
         var key = $(this).attr("data-key");
         var showExpression = ($(this).find('option:selected').text() == "expression");
         if (showExpression) {
@@ -457,8 +426,7 @@ function initialiseElementEditor() {
             $("#" + key + "-simpleeditorspan").show();
         }
     });
-
-    $('body').on('change', '.template-dropdown', function () {
+    $(".template-dropdown").change(function () {
         var key = $(this).attr("data-key");
         var text = $(this).find('option:selected').text();
         if (text == "expression") {
@@ -473,9 +441,7 @@ function initialiseElementEditor() {
 
     $(".script-dictionary-add").button({
         icons: { primary: "ui-icon-plusthick" }
-    });
-    
-    $('body').on('click', '.script-dictionary-add', function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         if ($(this).attr("data-source") == "object") {
             var possibleParents = $("#_allObjects").val().split(";");
@@ -494,8 +460,7 @@ function initialiseElementEditor() {
         var key = $(this).attr("data-key");
         sendAdditionalAction("error clear " + key);
     });
-
-    $('body').on('click', '.scriptDictionarySection-select', function () {
+    $(".scriptDictionarySection-select").click(function () {
         var key = $(this).attr("data-key");
         var selectedSections = getSelectedScriptDictionaryItems(key);
         if (selectedSections.length > 0) {
@@ -508,18 +473,14 @@ function initialiseElementEditor() {
 
     $(".scriptDictionarySection-delete").button({
         icons: { primary: "ui-icon-trash" }
-    });
-    
-    $('body').on('click','.scriptDictionarySection-delete',function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("scriptdictionary delete " + key + ";" + getSelectedScriptDictionaryItems(key));
     });
 
     $(".string-dictionary-add").button({
         icons: { primary: "ui-icon-plusthick" }
-    });
-    
-    $('body').on('click','.string-dictionary-add',function () {
+    }).click(function () {
         stringDictionaryAdd($(this), "Add");
     });
 
@@ -533,13 +494,10 @@ function initialiseElementEditor() {
     });
     $(".gamebookoptions-link").button({
         icons: { primary: "ui-icon-link" }
-    });
-    
-    $('body').on('click','.gamebookoptions-link',function () {
+    }).click(function () {
         stringDictionaryAdd($(this), "Add link to");
     });
-
-    $('body').on('click', '.stringDictionarySection-select', function () {
+    $(".stringDictionarySection-select").click(function () {
         var key = $(this).attr("data-key");
         var selectedSections = getSelectedStringDictionaryItems(key);
         if (selectedSections.length > 0) {
@@ -552,9 +510,7 @@ function initialiseElementEditor() {
 
     $(".stringDictionarySection-delete").button({
         icons: { primary: "ui-icon-trash" }
-    });
-    
-    $('body').on('click','.stringDictionarySection-delete',function () {
+    }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("stringdictionary delete " + key + ";" + getSelectedStringDictionaryItems(key));
     });
