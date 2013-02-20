@@ -160,10 +160,4 @@
     ]]>
   </function>
 
-  <function name="CommandLink" type="string" parameters="cmd, text">
-    <![CDATA[
-    return ("<command input=\"" + cmd + "\">" + text + "</command>")
-    ]]>
-  </function>
-
 </library>
