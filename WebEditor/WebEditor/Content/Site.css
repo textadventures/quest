@@ -296,6 +296,7 @@ textarea
 {
     position: relative;
     padding-left: 8.5em;
+    margin-top: 10px;
 }
 #dialog-add-script-tabs .ui-tabs-nav
 {
@@ -329,6 +330,6 @@ textarea
 }
 #dialog-add-script-tabs > div
 {
-    height: 400px;
+    height: 350px;
     overflow-y: scroll;
 }

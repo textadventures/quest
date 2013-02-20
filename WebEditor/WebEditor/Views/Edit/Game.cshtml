@@ -59,6 +59,19 @@
                             var additionalAttributes = (count == 0) ? " checked=\"checked\"" : "";
                             scriptAdderHtml += "<input type=\"radio\" name=\"dialog-add-script-selection\" value=\"" + create + "\" id=\"dialog-add-script-selection-" + count + "\"" + additionalAttributes + "/> ";
                             scriptAdderHtml += "<label for=\"dialog-add-script-selection-" + count + "\">" + script.display + "</label><br/>";
+                            
+                            if (script.button) {
+                                $("<button/>", {
+                                    text: script.button,
+                                    "data-create": script.create,
+                                    type: "button",
+                                }).button().click(function () {
+                                    $("#dialog-add-script").dialog("close");
+                                    var key = $("#dialog-add-script").data("key");
+                                    sendAdditionalAction("script add " + key + ";" + $(this).data("create"));
+                                }).appendTo("#dialog-add-script-buttons");
+                            }
+
                             count++;
                         }
                         scriptAdderHtml += "</div>";
@@ -187,6 +200,8 @@
 
 <div id="dialog-add-script" title="Add New Script">
     <form id="dialog-add-script-form" action="">
+        <div id="dialog-add-script-buttons">
+        </div>
         <div id="dialog-add-script-tabs">
         </div>
     </form>

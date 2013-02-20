@@ -2225,6 +2225,7 @@ namespace WebEditor.Services
         {
             public string display;
             public string create;
+            public string button;
         }
 
         public object GetScriptAdderJson()
@@ -2242,7 +2243,8 @@ namespace WebEditor.Services
                 categories[data.Category].items.Add(new ScriptAdderItem
                 {
                     display = data.AdderDisplayString,
-                    create = data.CreateString
+                    create = data.CreateString,
+                    button = data.CommonButton
                 });
             }
 

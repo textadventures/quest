@@ -308,6 +308,7 @@ function initialiseElementEditor() {
     
     $('body').on('click', '.script-add', function () {
         var key = $(this).attr("data-key");
+        $("#dialog-add-script").data("key", key);
         $("#dialog-add-script").data("dialog_ok", function () {
             var create = $("#dialog-add-script-form input[type='radio']:checked").val();
             sendAdditionalAction("script add " + key + ";" + create);
