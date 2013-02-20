@@ -67,7 +67,10 @@
         {
             <button type="button" class="script-paste" data-key="@attribute">Paste</button>
         }
-        <button type="button" class="script-codeview" data-key="@attribute">Code View</button>
+        @{
+            string code = scripts == null ? null : scripts.Code;
+        }
+        <button type="button" class="script-codeview" data-key="@attribute" data-code="@code">Code View</button>
     </div>
 }
 

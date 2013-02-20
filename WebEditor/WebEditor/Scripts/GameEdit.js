@@ -382,7 +382,8 @@ function initialiseElementEditor() {
 
     $(".script-codeview").button({
         icons:  { primary: "ui-icon-script" }
-    }).click(function() {
+    }).click(function () {
+        $("#dialog-codeview-code").val($(this).data("code"));
         $("#dialog-codeview").dialog("open");
     }) ;
 
