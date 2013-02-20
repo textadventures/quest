@@ -549,5 +549,18 @@
   <function name="SetAlignment" parameters="align">
     JS.createNewDiv(align)
   </function>
-
+  
+  <function name="GetCurrentFontFamily" type="string">
+    if (game.defaultwebfont = null) {
+      return (game.defaultfont)
+    }
+    else {
+      if (game.defaultwebfont = "") {
+        return (game.defaultfont)
+      }
+      else {
+        return ("'" + game.defaultwebfont + "', " + game.defaultfont)
+      }
+    }
+  </function>
 </library>

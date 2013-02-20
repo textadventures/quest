@@ -1,5 +1,6 @@
 ﻿<library>
 
+  <include ref="CoreOutput.aslx"/>
   <include ref="GamebookCoreEditor.aslx"/>
 
   <type name="defaultgame">
@@ -45,18 +46,6 @@
   <template name="NothingToUndo">Nothing to undo!</template>
 
   <function name="InitInterface">
-    if (game.defaultwebfont = null) {
-      request (FontName, game.defaultfont)
-    }
-    else {
-      if (game.defaultwebfont = "") {
-        request (FontName, game.defaultfont)
-      }
-      else {
-        request (FontName, "'" + game.defaultwebfont + "', " + game.defaultfont)
-      }
-    }
-    request (FontSize, ToString(game.defaultfontsize))
     request (Background, game.defaultbackground)
     request (Foreground, game.defaultforeground)
     request (LinkForeground, game.defaultlinkforeground)
