@@ -1093,6 +1093,10 @@ namespace WebEditor.Services
                 case "codeview":
                     m_uiAction = "codeview " + parameter;
                     break;
+                case "codeviewset":
+                    data = parameter.Split(new[] { ';' }, 2);
+                    ScriptSetCode(key, data[0], data[1]);
+                    break;
             }
         }
 
@@ -1826,6 +1830,30 @@ namespace WebEditor.Services
             {
                 ifScript.RemoveElseIf(elseIfToRemove);
             }
+        }
+
+        private void ScriptSetCode(string element, string attribute, string code)
+        {
+            // TO DO: if (m_data.ReadOnly) return;
+
+            IEditableScript parent;
+            string parameter;
+            IEditableScripts script = GetScript(element, attribute, out parent, out parameter);
+
+            if (script == null)
+            {
+                if (parent == null)
+                {
+                    script = m_controller.CreateNewEditableScripts(element, attribute, null, true, true);
+                }
+                else
+                {
+                    var editorData = (ScriptCommandEditorData)m_controller.GetScriptEditorData(parent);
+                    script = m_controller.CreateNewEditableScriptsChild(editorData, parameter, null, true);                   
+                }
+            }
+
+            script.Code = code;
         }
 
         private void ScriptSetTemplate(string element, string attribute, string template)

@@ -98,6 +98,8 @@
         height: 400,
         buttons: {
             "OK": function () {
+                $(this).data("ok")();
+                $(this).dialog("close");
             },
             "Cancel": function () {
                 $(this).dialog("close");
@@ -375,11 +377,19 @@ function initialiseElementEditor() {
     $(".script-codeview").button({
         icons:  { primary: "ui-icon-script" }
     }).click(function () {
+        var key = $(this).data("key");
         if (!_unsavedChanges) {
-            $("#dialog-codeview-code").val($(this).data("code"));
+            var code = $(this).data("code");
+            $("#dialog-codeview-code").val(code);
+            $("#dialog-codeview").data("ok", function () {
+                var newcode = $("#dialog-codeview-code").val();
+                if (code != newcode) {
+                    sendAdditionalAction("script codeviewset " + key + ";" + newcode);
+                }
+            });
             $("#dialog-codeview").dialog("open");
         } else {
-            sendAdditionalAction("script codeview " + $(this).data("key"));
+            sendAdditionalAction("script codeview " + key);
         }
     }) ;
 
