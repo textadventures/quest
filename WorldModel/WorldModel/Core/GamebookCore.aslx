@@ -131,7 +131,7 @@
     }
     else {
       if (HasString(player.parent, "sound")) {
-	      play sound ( player.parent.sound, false, false )
+        play sound ( player.parent.sound, false, false )
       } 
     
       if (HasString(player.parent, "picture")) {
