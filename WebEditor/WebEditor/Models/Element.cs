@@ -33,6 +33,7 @@ namespace WebEditor.Models
         public string AllObjects { get; set; }
         public string NextPage { get; set; }
         public string HiddenScripts { get; set; }
+        public string ScriptCategories { get; set; }
     }
 
     public class IgnoredValue

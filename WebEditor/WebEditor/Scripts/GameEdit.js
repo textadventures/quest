@@ -315,6 +315,10 @@ function initialiseElementEditor() {
         $.each($("#_hiddenScripts").val().split(";"), function(index, value) {
             $(".dialog-add-script-selection[data-key='" + value + "']").hide();
         });
+        $("#dialog-add-script-tabs li").hide();
+        $.each($("#_scriptCategories").val().split(";"), function(index, value) {
+            $("#dialog-add-script-tabs li[data-key='" + value + "']").show();
+        });
         $("#dialog-add-script").dialog("open");
     });
 

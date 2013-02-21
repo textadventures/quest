@@ -50,7 +50,7 @@
                     var count = 0;
                     for (var cat in data) {
                         var divId = "cat-" + cat.replace(/ /g, "");
-                        tabHeaderHtml += "<li><a href=\"#" + divId + "\">" + cat + "</a></li>";
+                        tabHeaderHtml += "<li data-key=\"" + cat + "\"><a href=\"#" + divId + "\">" + cat + "</a></li>";
                         scriptAdderHtml += "<div id=\"" + divId + "\">";
                         var scripts = data[cat].items;
                         for (var idx in scripts) {

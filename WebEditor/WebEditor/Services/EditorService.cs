@@ -300,6 +300,7 @@ namespace WebEditor.Services
                 AllObjects = string.Join(";", allObjects),
                 NextPage = (m_controller.EditorStyle == EditorStyle.GameBook) ? m_controller.GetUniqueElementName("Page1") : null,
                 HiddenScripts = GetHiddenScripts(),
+                ScriptCategories = GetScriptCategories(),
             };
         }
 
@@ -2391,6 +2392,12 @@ namespace WebEditor.Services
                                             .Where(d => !d.Value.IsVisible())
                                             .Select(d => d.Key);
             return string.Join(";", hiddenScripts);
+        }
+
+        private string GetScriptCategories()
+        {
+            var scriptCategories = m_controller.GetAllScriptEditorCategories(false);
+            return string.Join(";", scriptCategories);
         }
     }
 }
