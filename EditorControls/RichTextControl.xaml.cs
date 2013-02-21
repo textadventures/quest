@@ -100,31 +100,54 @@ namespace TextAdventures.Quest.EditorControls
             switch (command.Source)
             {
                 case "objects":
-                    var objects = m_helper.Controller.GetObjectNames("object", true).OrderBy(n => n);
-                    var result = PopupEditors.EditStringWithDropdown(
-                        "Please choose an object",
-                        string.Empty, null, null, string.Empty, objects);
-
-                    if (!result.Cancelled)
-                    {
-                        InsertText(command.InsertBefore + result.Result + command.InsertAfter, string.Empty);
-                    }
-
+                    InsertObject(command);
                     break;
                 case "images":
-                    var window = new FilePopUp();
-                    window.Initialise(m_helper.Controller);
-                    window.ShowDialog();
-                    if (!string.IsNullOrEmpty(window.Filename))
-                    {
-                        InsertText(command.InsertBefore + window.Filename + command.InsertAfter, string.Empty);
-                    }
+                    InsertPicture(command);
+                    break;
+                case "pages":
+                    InsertPage(command);
                     break;
                 default:
                     InsertText(command.InsertBefore, command.InsertAfter);
                     break;
             }
             textBox.Focus();
+        }
+
+        private void InsertObject(TextProcessorCommand command)
+        {
+            var objects = m_helper.Controller.GetObjectNames("object", true).OrderBy(n => n);
+            var result = PopupEditors.EditStringWithDropdown(
+                "Please choose an object",
+                string.Empty, null, null, string.Empty, objects);
+
+            if (!result.Cancelled)
+            {
+                InsertText(command.InsertBefore + result.Result + command.InsertAfter, string.Empty);
+            }
+        }
+
+        private void InsertPicture(TextProcessorCommand command)
+        {
+            var window = new FilePopUp();
+            window.Initialise(m_helper.Controller);
+            window.ShowDialog();
+            if (!string.IsNullOrEmpty(window.Filename))
+            {
+                InsertText(command.InsertBefore + window.Filename + command.InsertAfter, string.Empty);
+            }
+        }
+
+        private void InsertPage(TextProcessorCommand command)
+        {
+            var pages = m_helper.Controller.GetObjectNames("object", true).Where(n => n != "player").OrderBy(n => n);
+            var result = PopupEditors.EditStringWithDropdown("Link text", string.Empty, "Add link to", pages, string.Empty);
+
+            if (!result.Cancelled)
+            {
+                InsertText(command.InsertBefore + result.ListResult + ":" + result.Result + command.InsertAfter, string.Empty);
+            }
         }
 
         private void InsertText(string before, string after)
