@@ -90,6 +90,10 @@
           <key>info</key>
           <value>{page}</value>
         </item>
+        <item>
+          <key>source</key>
+          <value>pages</value>
+        </item>
       </value>
       <value type="stringdictionary">
         <item>

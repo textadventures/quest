@@ -849,6 +849,16 @@ function initialiseElementEditor() {
                     doInsert(element, insertBefore + result + insertAfter, "");
                 }, objects, "Link to");
                 break;
+            case "pages":
+                var allPages = $("#_allObjects").val().split(";");
+                var exclude = "player";
+                allPages = $.grep(allPages, function (value) {
+                    return (value != exclude);
+                });
+                showDialog("", "", function (text, object) {
+                    doInsert(element, insertBefore + object + insertAfter, "");
+                }, allPages, "Add link to");
+                break;
             case "images":
                 var extensions = $(this).data("extensions");
                 _fileUploadInit("", "", extensions, "");
