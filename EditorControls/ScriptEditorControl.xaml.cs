@@ -600,7 +600,7 @@ namespace TextAdventures.Quest.EditorControls
             // Paste is enabled only if not in read-only mode, and if we have something to paste
             ctlToolbar.CanPaste = (!m_readOnly) && m_controller != null && m_controller.CanPasteScript();
 
-            if (m_readOnly) enabled = false;
+            if (m_readOnly || m_scripts == null) enabled = false;
             ctlToolbar.CanDelete = enabled;
             ctlToolbar.CanMoveUp = enabled && lstScripts.SelectedIndex > 0;
             ctlToolbar.CanMoveDown = enabled && lstScripts.SelectedIndex < m_scripts.Count - 1;
