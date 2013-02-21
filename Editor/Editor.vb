@@ -1047,37 +1047,37 @@ Public Class Editor
     End Property
 
     Private Sub SetMenuVisibility()
-        m_menu.MenuVisible("addpage") = (EditorStyle = Quest.EditorStyle.GameBook)
-        m_menu.MenuVisible("addobject") = (EditorStyle = Quest.EditorStyle.TextAdventure)
-        m_menu.MenuVisible("addroom") = (EditorStyle = Quest.EditorStyle.TextAdventure)
-        m_menu.MenuVisible("addexit") = (EditorStyle = Quest.EditorStyle.TextAdventure)
-        m_menu.MenuVisible("addverb") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
-        m_menu.MenuVisible("addcommand") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
-        m_menu.MenuVisible("addfunction") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
-        m_menu.MenuVisible("addtimer") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
-        m_menu.MenuVisible("addturnscript") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
-        m_menu.MenuVisible("addwalkthrough") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
-        m_menu.MenuVisible("advanced") = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addpage") = (EditorStyle = EditorStyle.GameBook)
+        m_menu.MenuVisible("addobject") = (EditorStyle = EditorStyle.TextAdventure)
+        m_menu.MenuVisible("addroom") = (EditorStyle = EditorStyle.TextAdventure)
+        m_menu.MenuVisible("addexit") = (EditorStyle = EditorStyle.TextAdventure)
+        m_menu.MenuVisible("addverb") = (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addcommand") = (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addfunction") = Not SimpleMode
+        m_menu.MenuVisible("addtimer") = (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addturnscript") = (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("addwalkthrough") = (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode
+        m_menu.MenuVisible("advanced") = (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode
         m_menu.MenuVisible("codeview") = Not SimpleMode
     End Sub
 
     Private Sub SetTreeMenuVisibility()
-        ctlTree.ShowFilterBar = (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode
-        ctlTree.SetMenuVisible("addpage", EditorStyle = Quest.EditorStyle.GameBook)
-        ctlTree.SetMenuVisible("addobject", EditorStyle = Quest.EditorStyle.TextAdventure)
-        ctlTree.SetMenuVisible("addroom", EditorStyle = Quest.EditorStyle.TextAdventure)
-        ctlTree.SetMenuVisible("addexit", EditorStyle = Quest.EditorStyle.TextAdventure)
-        ctlTree.SetMenuVisible("addverb", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("addcommand", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("addfunction", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("addtimer", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("addturnscript", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("addwalkthrough", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("addlibrary", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("addtemplate", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("adddynamictemplate", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("addobjecttype", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
-        ctlTree.SetMenuVisible("addjavascript", (EditorStyle = Quest.EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.ShowFilterBar = Not SimpleMode
+        ctlTree.SetMenuVisible("addpage", EditorStyle = EditorStyle.GameBook)
+        ctlTree.SetMenuVisible("addobject", EditorStyle = EditorStyle.TextAdventure)
+        ctlTree.SetMenuVisible("addroom", EditorStyle = EditorStyle.TextAdventure)
+        ctlTree.SetMenuVisible("addexit", EditorStyle = EditorStyle.TextAdventure)
+        ctlTree.SetMenuVisible("addverb", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addcommand", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addfunction", Not SimpleMode)
+        ctlTree.SetMenuVisible("addtimer", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addturnscript", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addwalkthrough", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addlibrary", Not SimpleMode)
+        ctlTree.SetMenuVisible("addtemplate", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("adddynamictemplate", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addobjecttype", (EditorStyle = EditorStyle.TextAdventure) And Not SimpleMode)
+        ctlTree.SetMenuVisible("addjavascript", Not SimpleMode)
     End Sub
 
     Private Sub m_controller_LoadStatus(sender As Object, e As EditorController.LoadStatusEventArgs) Handles m_controller.LoadStatus
