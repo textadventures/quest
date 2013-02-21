@@ -856,7 +856,7 @@ function initialiseElementEditor() {
                     return (value != exclude);
                 });
                 showDialog("Link text", "", function (text, object) {
-                    doInsert(element, insertBefore + object + ":" + text + insertAfter, "");
+                    doInsert(element, insertBefore + object + (text.length > 0 ? ":" + text : "") + insertAfter, "");
                 }, allPages, "Add link to");
                 break;
             case "images":
