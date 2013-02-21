@@ -51,6 +51,7 @@
     <create>SetFramePicture ("")</create>
     <add>Set frame picture</add>
     <advanced/>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -76,6 +77,7 @@
     <add>Clear frame picture</add>
     <advanced/>
     <desktop/>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -474,6 +476,7 @@
     <create>get input { }</create>
     <add>Get input</add>
     <advanced/>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>

@@ -286,6 +286,7 @@
     <add>Run an object's script attribute</add>
     <create>do (,"")</create>
     <advanced/>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>

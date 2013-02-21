@@ -5,6 +5,7 @@
     <category>Variables</category>
     <add>Set object flag</add>
     <create>SetObjectFlagOn (,"")</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -31,6 +32,7 @@
     <category>Variables</category>
     <add>Unset object flag</add>
     <create>SetObjectFlagOff (,"")</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -117,6 +119,7 @@
     <add>Set an object's attribute (named by an expression)</add>
     <create>set (,"",)</create>
     <advanced/>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
