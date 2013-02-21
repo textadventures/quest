@@ -5,6 +5,7 @@
     <category>Player</category>
     <create>IncreaseScore (0)</create>
     <add>Increase score</add>
+    <onlydisplayif>game.showscore</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -25,6 +26,7 @@
     <category>Player</category>
     <create>DecreaseScore (0)</create>
     <add>Decrease score</add>
+    <onlydisplayif>game.showscore</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -45,6 +47,7 @@
     <category>Player</category>
     <create>IncreaseHealth (0)</create>
     <add>Increase health</add>
+    <onlydisplayif>game.showhealth</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -65,6 +68,7 @@
     <category>Player</category>
     <create>DecreaseHealth (0)</create>
     <add>Decrease health</add>
+    <onlydisplayif>game.showhealth</onlydisplayif>
 
     <control>
       <controltype>label</controltype>

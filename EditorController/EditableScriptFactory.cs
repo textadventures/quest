@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TextAdventures.Quest.Functions;
 using TextAdventures.Quest.Scripts;
 
 namespace TextAdventures.Quest
 {
     public class EditableScriptData
     {
-        public EditableScriptData(Element editor)
+        private Expression<bool> m_visibilityExpression;
+
+        public EditableScriptData(Element editor, WorldModel worldModel)
         {
             DisplayString = editor.Fields.GetString("display");
             Category = editor.Fields.GetString("category");
@@ -17,6 +20,16 @@ namespace TextAdventures.Quest
             IsVisibleInSimpleMode = !editor.Fields.GetAsType<bool>("advanced");
             IsDesktopOnly = editor.Fields.GetAsType<bool>("desktop");
             CommonButton = editor.Fields.GetString("common");
+            var expression = editor.Fields.GetString("onlydisplayif");
+            if (expression != null)
+            {
+                m_visibilityExpression = new Expression<bool>(Utility.ConvertVariablesToFleeFormat(expression), new ScriptContext(worldModel, true));
+            }
+        }
+
+        public bool IsVisible()
+        {
+            return m_visibilityExpression == null || m_visibilityExpression.Execute(new Context());
         }
 
         public string DisplayString { get; private set; }
@@ -45,7 +58,7 @@ namespace TextAdventures.Quest
             foreach (Element editor in worldModel.Elements.GetElements(ElementType.Editor).Where(IsScriptEditor))
             {
                 string appliesTo = editor.Fields.GetString("appliesto");
-                m_scriptData.Add(appliesTo, new EditableScriptData(editor));
+                m_scriptData.Add(appliesTo, new EditableScriptData(editor, worldModel));
             }
         }
 
@@ -92,7 +105,7 @@ namespace TextAdventures.Quest
         internal IEnumerable<string> GetCategories(bool simpleModeOnly)
         {
             List<string> result = new List<string>();
-            IEnumerable<EditableScriptData> values = m_scriptData.Values;
+            IEnumerable<EditableScriptData> values = m_scriptData.Values.Where(v => v.IsVisible());
             if (simpleModeOnly) values = values.Where(v => v.IsVisibleInSimpleMode);
             foreach (EditableScriptData data in values)
             {

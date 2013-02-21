@@ -40,27 +40,24 @@ namespace TextAdventures.Quest.EditorControls
 
         public void Initialise(EditorController controller)
         {
-            if (!m_initialised)
-            {
-                ctlEditorTree.CommitSelection += ctlEditorTree_CommitSelection;
-                ctlEditorTree.SelectionChanged += ctlEditorTree_SelectionChanged;
+            if (m_initialised) return;
 
-                m_controller = controller;
-                m_controller.SimpleModeChanged += m_controller_SimpleModeChanged;
+            ctlEditorTree.CommitSelection += ctlEditorTree_CommitSelection;
+            ctlEditorTree.SelectionChanged += ctlEditorTree_SelectionChanged;
 
-                ctlEditorTree.RemoveContextMenu();
-                ctlEditorTree.IncludeRootLevelInSearchResults = false;
-                ctlEditorTree.ShowFilterBar = false;
+            m_controller = controller;
+            m_controller.SimpleModeChanged += m_controller_SimpleModeChanged;
 
-                PopulateTree();
+            ctlEditorTree.RemoveContextMenu();
+            ctlEditorTree.IncludeRootLevelInSearchResults = false;
+            ctlEditorTree.ShowFilterBar = false;
 
-                m_initialised = true;
-            }
+            PopulateTree();
 
-            ctlEditorTree.ExpandAll();
+            m_initialised = true;
         }
 
-        private void PopulateTree()
+        public void PopulateTree()
         {
             ctlEditorTree.Clear();
             commonButtons.Children.Clear();
@@ -70,7 +67,7 @@ namespace TextAdventures.Quest.EditorControls
                 ctlEditorTree.AddNode(cat, cat, null, null, null);
             }
 
-            foreach (var data in m_controller.GetScriptEditorData())
+            foreach (var data in m_controller.GetScriptEditorData().Where(d => d.Value.IsVisible()))
             {
                 if (data.Value.IsVisibleInSimpleMode || !m_controller.SimpleMode)
                 {

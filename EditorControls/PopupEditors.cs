@@ -97,7 +97,8 @@ namespace TextAdventures.Quest.EditorControls
                 s_popOutScriptAdderController = controller;
             }
 
-            s_popOutScriptAdder.ctlScriptAdder.Initialise(controller);
+            s_popOutScriptAdder.ctlScriptAdder.PopulateTree();
+
             s_popOutScriptAdder.SelectedScript = null;
             s_popOutScriptAdder.ShowDialog();
             return s_popOutScriptAdder.SelectedScript;
