@@ -196,6 +196,8 @@ namespace TextAdventures.Quest.EditorControls
         {
             ctlTreeView.Nodes.Clear();
             m_nodes.Clear();
+            ShowSearchResults = false;
+            txtSearch.Text = "";
         }
 
         public void BeginUpdate()
