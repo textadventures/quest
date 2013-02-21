@@ -57,8 +57,9 @@
                             var script = scripts[idx];
                             var create = script.create == null ? null : script.create.replace(/\"/g, "&quot;");
                             var additionalAttributes = (count == 0) ? " checked=\"checked\"" : "";
-                            scriptAdderHtml += "<input type=\"radio\" name=\"dialog-add-script-selection\" value=\"" + create + "\" id=\"dialog-add-script-selection-" + count + "\"" + additionalAttributes + "/> ";
-                            scriptAdderHtml += "<label for=\"dialog-add-script-selection-" + count + "\">" + script.display + "</label><br/>";
+                            scriptAdderHtml += "<input type=\"radio\" class=\"dialog-add-script-selection\" data-key=\"" + script.key + "\" name=\"dialog-add-script-selection\" value=\"" + create + "\" id=\"dialog-add-script-selection-" + count + "\"" + additionalAttributes + "/> ";
+                            scriptAdderHtml += "<label class=\"dialog-add-script-selection\" data-key=\"" + script.key + "\" for=\"dialog-add-script-selection-" + count + "\">" + script.display + "</label>";
+                            scriptAdderHtml += "<br class=\"dialog-add-script-selection\" data-key=\"" + script.key + "\" />";
                             
                             if (script.button) {
                                 $("<button/>", {

@@ -297,8 +297,9 @@ namespace WebEditor.Services
                 CanMove = m_controller.CanMoveElement(key),
                 MovePossibleParents = (movePossibleParents == null) ? null : string.Join(";", movePossibleParents),
                 IsElement = m_controller.ElementExists(key),
-                AllObjects = (allObjects == null) ? null : string.Join(";", allObjects),
-                NextPage = (m_controller.EditorStyle == EditorStyle.GameBook) ? m_controller.GetUniqueElementName("Page1") : null
+                AllObjects = string.Join(";", allObjects),
+                NextPage = (m_controller.EditorStyle == EditorStyle.GameBook) ? m_controller.GetUniqueElementName("Page1") : null,
+                HiddenScripts = GetHiddenScripts(),
             };
         }
 
@@ -2257,25 +2258,27 @@ namespace WebEditor.Services
             public string display;
             public string create;
             public string button;
+            public string key;
         }
 
         public object GetScriptAdderJson()
         {
             Dictionary<string, ScriptAdderCategory> categories = new Dictionary<string, ScriptAdderCategory>();
-            foreach (string cat in m_controller.GetAllScriptEditorCategories())
+            foreach (string cat in m_controller.GetAllScriptEditorCategories(true))
             {
                 categories.Add(cat, new ScriptAdderCategory());
             }
 
-            foreach (EditableScriptData data in m_controller.GetScriptEditorData().Values)
+            foreach (var data in m_controller.GetScriptEditorData())
             {
-                if (m_controller.SimpleMode && !data.IsVisibleInSimpleMode) continue;
-                if (data.IsDesktopOnly) continue;
-                categories[data.Category].items.Add(new ScriptAdderItem
+                if (m_controller.SimpleMode && !data.Value.IsVisibleInSimpleMode) continue;
+                if (data.Value.IsDesktopOnly) continue;
+                categories[data.Value.Category].items.Add(new ScriptAdderItem
                 {
-                    display = data.AdderDisplayString,
-                    create = data.CreateString,
-                    button = data.CommonButton
+                    display = data.Value.AdderDisplayString,
+                    create = data.Value.CreateString,
+                    button = data.Value.CommonButton,
+                    key = data.Key
                 });
             }
 
@@ -2380,6 +2383,14 @@ namespace WebEditor.Services
         public void Publish(string filename)
         {
             m_controller.Publish(filename, false);
+        }
+
+        private string GetHiddenScripts()
+        {
+            var hiddenScripts = m_controller.GetScriptEditorData()
+                                            .Where(d => !d.Value.IsVisible())
+                                            .Select(d => d.Key);
+            return string.Join(";", hiddenScripts);
         }
     }
 }

@@ -32,6 +32,7 @@ namespace WebEditor.Models
         public bool IsElement { get; set; }
         public string AllObjects { get; set; }
         public string NextPage { get; set; }
+        public string HiddenScripts { get; set; }
     }
 
     public class IgnoredValue

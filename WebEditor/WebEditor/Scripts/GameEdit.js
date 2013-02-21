@@ -311,6 +311,10 @@ function initialiseElementEditor() {
             var create = $("#dialog-add-script-form input[type='radio']:checked").val();
             sendAdditionalAction("script add " + key + ";" + create);
         });
+        $(".dialog-add-script-selection").show();
+        $.each($("#_hiddenScripts").val().split(";"), function(index, value) {
+            $(".dialog-add-script-selection[data-key='" + value + "']").hide();
+        });
         $("#dialog-add-script").dialog("open");
     });
 
