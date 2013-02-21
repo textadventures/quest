@@ -142,11 +142,13 @@ namespace TextAdventures.Quest.EditorControls
         private void InsertPage(TextProcessorCommand command)
         {
             var pages = m_helper.Controller.GetObjectNames("object", true).Where(n => n != "player").OrderBy(n => n);
-            var result = PopupEditors.EditStringWithDropdown("Link text", string.Empty, "Add link to", pages, string.Empty);
+            var result = PopupEditors.EditStringWithDropdown("Link text", string.Empty, "Add link to", pages, pages.First(), allowEmptyString: true);
 
             if (!result.Cancelled)
             {
-                InsertText(command.InsertBefore + result.ListResult + ":" + result.Result + command.InsertAfter, string.Empty);
+                InsertText(
+                    command.InsertBefore + result.ListResult + (result.Result.Length > 0 ? ":" + result.Result : "") +
+                    command.InsertAfter, string.Empty);
             }
         }
 
