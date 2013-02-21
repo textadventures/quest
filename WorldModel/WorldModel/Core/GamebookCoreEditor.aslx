@@ -76,6 +76,24 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
+          <value>Page</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{page:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{page}</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
           <value>Once</value>
         </item>
         <item>
@@ -91,7 +109,6 @@
           <value>{once}</value>
         </item>
       </value>
-      <!-- TO DO: Page link -->
       <value type="stringdictionary">
         <item>
           <key>command</key>

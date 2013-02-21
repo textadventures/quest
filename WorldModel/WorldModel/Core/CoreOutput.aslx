@@ -142,7 +142,10 @@
       return (ProcessTextCommand_Object(section, data))
     }
     else if (StartsWith(section, "command:")) {
-      return (ProcessTextCommand_Command(section, data))
+      return (ProcessTextCommand_Command(Mid(section, 9), data))
+    }
+    else if (StartsWith(section, "page:")) {
+      return (ProcessTextCommand_Command(Mid(section, 6), data))
     }
     else if (StartsWith(section, "exit:")) {
       return (ProcessTextCommand_Exit(section, data))
@@ -237,9 +240,8 @@
     ]]>
   </function>
 
-  <function name="ProcessTextCommand_Command" type="string" parameters="section, data">
+  <function name="ProcessTextCommand_Command" type="string" parameters="command, data">
     <![CDATA[
-    command = Mid(section, 9)
     text = command
     colon = Instr(command, ":")
     if (colon > 0) {
