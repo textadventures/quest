@@ -1,6 +1,7 @@
 ﻿<library>
 
   <include ref="CoreOutput.aslx"/>
+  <include ref="CoreEffects.aslx"/>
   <include ref="GamebookCoreEditor.aslx"/>
 
   <type name="defaultgame">
@@ -81,11 +82,9 @@
 
   <function name="HandleCommand" parameters="command">
     if (command = "undo") {
-      undo
-      DoPage(player.parent)
+      // ignore
     }
     else {
-      start transaction (command)
       newpage = GetObject(command)
       if (newpage = null) {
         msg ("Error - no page named '" + command + "'")
