@@ -855,8 +855,8 @@ function initialiseElementEditor() {
                 allPages = $.grep(allPages, function (value) {
                     return (value != exclude);
                 });
-                showDialog("", "", function (text, object) {
-                    doInsert(element, insertBefore + object + insertAfter, "");
+                showDialog("Link text", "", function (text, object) {
+                    doInsert(element, insertBefore + object + ":" + text + insertAfter, "");
                 }, allPages, "Add link to");
                 break;
             case "images":
