@@ -86,22 +86,12 @@
     }
     else {
       start transaction (command)
-      if (TypeOf(player.parent, "options") = "stringdictionary") {
-        if (DictionaryContains(player.parent.options, command)) {
-          newpage = GetObject(command)
-          if (newpage = null) {
-            msg ("Error - no page named '" + command + "'")
-          }
-          else {
-            player.parent = GetObject(command)
-          }
-        }
-        else {
-          msg ("Error - '" + command + "' is not a valid option for this page")
-        }
+      newpage = GetObject(command)
+      if (newpage = null) {
+        msg ("Error - no page named '" + command + "'")
       }
       else {
-        msg ("Error - '" + command + "' is not a valid option for this page")
+        player.parent = GetObject(command)
       }
     }
   </function>
