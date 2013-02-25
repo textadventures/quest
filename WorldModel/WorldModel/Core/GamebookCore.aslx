@@ -162,4 +162,12 @@
     return (GetBoolean(page, "visited"))
   </function>
 
+  <function name="SetFlagOn" parameters="flag">
+    set (game, flag, true)
+  </function>
+
+  <function name="SetFlagOff" parameters="flag">
+    set (game, flag, false)
+  </function>
+
 </library>

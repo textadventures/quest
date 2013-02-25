@@ -54,6 +54,46 @@
   </editor>
 
   <editor>
+    <appliesto>(function)SetFlagOn</appliesto>
+    <display>Set flag #0 on</display>
+    <category>Variables</category>
+    <add>Set flag on</add>
+    <create>SetFlagOn ("")</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set flag on</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>flag name</simple>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)SetFlagOff</appliesto>
+    <display>Set flag #0 off</display>
+    <category>Variables</category>
+    <add>Set flag off</add>
+    <create>SetFlagOff ("")</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set flag off</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>flag name</simple>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>=</appliesto>
     <display>Set #0 = #1</display>
     <category>Variables</category>
