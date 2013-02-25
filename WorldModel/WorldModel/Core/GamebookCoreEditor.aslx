@@ -129,7 +129,7 @@
         </item>
         <item>
           <key>insertafter</key>
-          <value>object.attribute=value:}</value>
+          <value>flag:}</value>
         </item>
         <item>
           <key>info</key>
