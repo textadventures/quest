@@ -1,0 +1,25 @@
+﻿<library>
+
+  <implied element="editor" property="pattern" type="simplepattern"/>
+  
+  <editor>
+    <pattern>RandomChance(#percentile#)</pattern>
+    <create>RandomChance(50)</create>
+    <description>random chance</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>percentage</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>percentile</attribute>
+      <minimum>0</minimum>
+      <maximum>100</maximum>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>% of the time</caption>
+    </control>
+  </editor>
+</library>

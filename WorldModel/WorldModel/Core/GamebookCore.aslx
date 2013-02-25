@@ -151,4 +151,10 @@
     ]]>
   </function>
 
+  <function name="RandomChance" parameters="percentile" type="boolean">
+    <![CDATA[
+    return (GetRandomInt(1,100) <= percentile)
+    ]]>
+  </function>
+
 </library>

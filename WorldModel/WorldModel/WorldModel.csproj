@@ -334,6 +334,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Core\GamebookCoreEditorExpressions.aslx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Core\GamebookCoreEditorScripts.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
