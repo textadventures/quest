@@ -337,7 +337,32 @@
         }
       }
       if (operator = 0) {
-        return ("{if " + command + "}")
+        checkfor = true
+        if (StartsWith(condition, "not ")) {
+          checkfor = false
+          condition = Mid(condition, 5)
+        }
+        dot = Instr(condition, ".")
+        if (dot = 0) {
+          result = GetBoolean(game, condition)
+        }
+        else {
+          objectname = Left(condition, dot - 1)
+          attributename = Mid(condition, dot + 1)
+          object = GetObject(objectname)
+          if (object = null) {
+            result = false
+          }
+          else {
+            result = GetBoolean(object, attributename)
+          }
+        }
+        if (result = checkfor) {
+          return (ProcessTextSection(text, data))
+        }
+        else {
+          return ("")
+        }
       }
       else {
         lhs = Left(condition, operator - 1)
