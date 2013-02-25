@@ -22,4 +22,18 @@
       <caption>% of the time</caption>
     </control>
   </editor>
+
+  <editor>
+    <pattern>HasSeenPage(#page#)</pattern>
+    <create>HasSeenPage()</create>
+    <description>player has seen page</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>page</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>page</attribute>
+    </control>
+  </editor>
 </library>

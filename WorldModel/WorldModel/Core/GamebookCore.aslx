@@ -148,6 +148,7 @@
         }
       }
     }
+    set (player.parent, "visited", true)
     ]]>
   </function>
 
@@ -155,6 +156,10 @@
     <![CDATA[
     return (GetRandomInt(1,100) <= percentile)
     ]]>
+  </function>
+
+  <function name="HasSeenPage" parameters="page" type="boolean">
+    return (GetBoolean(page, "visited"))
   </function>
 
 </library>
