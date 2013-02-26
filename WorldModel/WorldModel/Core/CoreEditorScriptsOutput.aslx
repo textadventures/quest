@@ -104,6 +104,7 @@
     <category>Output</category>
     <create>HidePreviousTurnOutput</create>
     <add>Clear the previous turn</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>
