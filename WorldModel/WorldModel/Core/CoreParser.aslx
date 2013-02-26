@@ -587,11 +587,13 @@
               GenerateMenuChoices(menu, candidates)
               game.pov.multiverb = this.property
               game.pov.multiverbobject = object
-              show menu (this.multiobjectmenu, menu, true) {
+              game.pov.multiverbobjectdefault = this.multiobjectdefault
+              ShowMenu (this.multiobjectmenu, menu) {
                 if (result <> null) {
-                  HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), this.multiobjectdefault)
+                  HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), game.pov.multiverbobjectdefault)
                   game.pov.multiverb = null
                   game.pov.multiverbobject = null
+                  game.pov.multiverbobjectdefault = null
                 }
               }
             }
