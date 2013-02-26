@@ -13,6 +13,7 @@ Public Enum OptionNames
     ShowSandpit
     PlaySounds
     ShowAdult
+    UseSAPI
 End Enum
 
 Public Class Options
@@ -41,7 +42,8 @@ Public Class Options
                         "Downloaded Games")},
         {OptionNames.ShowSandpit, False.ToString()},
         {OptionNames.PlaySounds, True.ToString()},
-        {OptionNames.ShowAdult, False.ToString()}
+        {OptionNames.ShowAdult, False.ToString()},
+        {OptionNames.UseSAPI, False.ToString()}
     }
 
     Public Event OptionChanged(optionName As OptionNames)

@@ -158,6 +158,7 @@ Public Class Main
                         Options.Instance.GetSingleValue(OptionNames.FontSize),
                         DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle))
                 ctlPlayer.PlaySounds = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
+                ctlPlayer.UseSAPI = Options.Instance.GetBooleanValue(OptionNames.UseSAPI)
                 ctlPlayer.Initialise(game, fromEditor, editorSimpleMode)
                 ctlPlayer.Focus()
             End If
@@ -439,6 +440,8 @@ Public Class Main
                 ctlLauncher.ShowAdult = Options.Instance.GetBooleanValue(OptionNames.ShowAdult)
             Case OptionNames.PlaySounds
                 ctlPlayer.PlaySounds = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
+            Case OptionNames.UseSAPI
+                ctlPlayer.UseSAPI = Options.Instance.GetBooleanValue(OptionNames.UseSAPI)
         End Select
     End Sub
 

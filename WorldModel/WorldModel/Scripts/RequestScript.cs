@@ -31,7 +31,8 @@ namespace TextAdventures.Quest.Scripts
         SetInterfaceString,
         RequestSave,
         SetPanelContents,
-        Log
+        Log,
+        Speak
     }
 
     public class RequestScriptConstructor : ScriptConstructorBase
@@ -194,6 +195,9 @@ namespace TextAdventures.Quest.Scripts
                     break;
                 case Request.Log:
                     m_worldModel.PlayerUI.Log(data);
+                    break;
+                case Request.Speak:
+                    m_worldModel.PlayerUI.Speak(data);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("request", "Unhandled request type");

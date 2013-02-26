@@ -26,6 +26,7 @@ Public Class OptionsDialog
         chkShowAdult.Visible = showAdult
         lnkShowAdultHelp.Visible = showAdult
         chkPlaySounds.Checked = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
+        chkUseSAPI.Checked = Options.Instance.GetBooleanValue(OptionNames.UseSAPI)
         UpdateSampleText()
     End Sub
 
@@ -70,6 +71,7 @@ Public Class OptionsDialog
         Options.Instance.SetBooleanValue(OptionNames.ShowSandpit, chkShowSandpit.Checked)
         Options.Instance.SetBooleanValue(OptionNames.PlaySounds, chkPlaySounds.Checked)
         Options.Instance.SetBooleanValue(OptionNames.ShowAdult, chkShowAdult.Checked)
+        Options.Instance.SetBooleanValue(OptionNames.UseSAPI, chkUseSAPI.Checked)
         Me.Hide()
     End Sub
 

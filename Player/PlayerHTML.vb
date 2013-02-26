@@ -12,6 +12,7 @@ Public Class PlayerHTML
     Public Event EndWait()
     Public Event ExitFullScreen()
     Public Event Save(html As String)
+    Public Event Speak(text As String)
 
     ' TO DO: Both Blank.htm and grid.js should be loaded from embedded resource
     Private m_baseHtmlPath As String = My.Application.Info.DirectoryPath() & "\Blank.htm"
@@ -241,9 +242,8 @@ Public Class PlayerHTML
     Private Shared s_regexHtml As New System.Text.RegularExpressions.Regex("\<.+?\>")
 
     Private Sub StripTagsAndSendToJaws(text As String)
-        text = s_regexHtml.Replace(text, "")
-        text = text.Replace("&nbsp;", " ").Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&")
-        JawsApi.JawsApi.JFWSayString(text, False)
+        text = Player.StripTags(text)
+        RaiseEvent Speak(text)
     End Sub
 
     Public Sub SetPanelContents(html As String)

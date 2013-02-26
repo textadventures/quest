@@ -717,7 +717,7 @@
 
     <control>
       <controltype>dropdown</controltype>
-      <validvalues type="simplestringlist">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause;Wait;SetInterfaceString;RequestSave;SetPanelContents;Log</validvalues>
+      <validvalues type="simplestringlist">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause;Wait;SetInterfaceString;RequestSave;SetPanelContents;Log;Speak</validvalues>
       <caption>Request</caption>
       <attribute>0</attribute>
     </control>

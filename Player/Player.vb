@@ -32,6 +32,7 @@ Public Class Player
     Private m_allowColourChange As Boolean = True
     Private m_allowFontChange As Boolean = True
     Private m_playSounds As Boolean = True
+    Private m_useSapi As Boolean = False
     Private m_fromEditor As Boolean = False
     Private WithEvents m_log As Log
     Private m_gameLoadedSuccessfully As Boolean = False
@@ -230,6 +231,7 @@ Public Class Player
             RaiseEvent RecordedWalkthrough(RecordWalkthrough, m_recordedWalkthrough)
         End If
         RecordWalkthrough = Nothing
+        m_speech.SpeakAsyncCancelAll()
     End Sub
 
     Private Sub m_game_LogError(errorMessage As String) Handles m_game.LogError
@@ -609,7 +611,8 @@ Public Class Player
     End Sub
 
     Private Sub Speak(text As String) Implements IPlayer.Speak
-        BeginInvoke(Sub() m_speech.Speak(text))
+        If Not UseSAPI Then Return
+        BeginInvoke(Sub() m_speech.SpeakAsync(StripTags(text)))
     End Sub
 
     Public Sub SetWindowMenu(menuData As MenuData) Implements IPlayer.SetWindowMenu
@@ -766,6 +769,16 @@ Public Class Player
         End If
         m_game.SendEvent(eventName, param)
         ClearBuffer()
+    End Sub
+
+    Private Sub ctlPlayerHtml_Speak(text As String) Handles ctlPlayerHtml.Speak
+        BeginInvoke(Sub()
+                        If UseSAPI Then
+                            m_speech.SpeakAsync(text)
+                        Else
+                            JawsApi.JawsApi.JFWSayString(text, False)
+                        End If
+                    End Sub)
     End Sub
 
     Public Sub BindMenu(linkid As String, verbs As String, text As String, elementId As String) Implements IPlayerHelperUI.BindMenu
@@ -932,6 +945,18 @@ Public Class Player
         End Set
     End Property
 
+    Public Property UseSAPI As Boolean
+        Get
+            Return m_useSapi
+        End Get
+        Set(value As Boolean)
+            m_useSapi = value
+            If Not value Then
+                m_speech.SpeakAsyncCancelAll()
+            End If
+        End Set
+    End Property
+
     Private m_playerOverrideBackground As Color
     Private m_playerOverrideForeground As Color
     Private m_playerOverrideLink As Color
@@ -1054,4 +1079,13 @@ Public Class Player
                 Throw New NotImplementedException()
         End Select
     End Function
+
+    Private Shared s_regexHtml As New System.Text.RegularExpressions.Regex("\<.+?\>")
+
+    Friend Shared Function StripTags(text As String) As String
+        text = s_regexHtml.Replace(text, "")
+        text = text.Replace("&nbsp;", " ").Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&")
+        Return text
+    End Function
+
 End Class

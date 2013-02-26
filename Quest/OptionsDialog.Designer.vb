@@ -40,13 +40,14 @@ Partial Class OptionsDialog
         Me.cmdLink = New System.Windows.Forms.Button()
         Me.chkUseDefaultColours = New System.Windows.Forms.CheckBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
+        Me.lnkShowAdultHelp = New System.Windows.Forms.LinkLabel()
         Me.chkShowAdult = New System.Windows.Forms.CheckBox()
         Me.chkShowSandpit = New System.Windows.Forms.CheckBox()
         Me.cmdGamesFolder = New System.Windows.Forms.Button()
         Me.txtGamesFolder = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.dlgFolderBrowser = New System.Windows.Forms.FolderBrowserDialog()
-        Me.lnkShowAdultHelp = New System.Windows.Forms.LinkLabel()
+        Me.chkUseSAPI = New System.Windows.Forms.CheckBox()
         Me.ctlTabs.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
@@ -56,7 +57,7 @@ Partial Class OptionsDialog
         '
         Me.cmdCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.cmdCancel.Location = New System.Drawing.Point(418, 357)
+        Me.cmdCancel.Location = New System.Drawing.Point(418, 378)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
         Me.cmdCancel.TabIndex = 9
@@ -66,7 +67,7 @@ Partial Class OptionsDialog
         'cmdOK
         '
         Me.cmdOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdOK.Location = New System.Drawing.Point(337, 357)
+        Me.cmdOK.Location = New System.Drawing.Point(337, 378)
         Me.cmdOK.Name = "cmdOK"
         Me.cmdOK.Size = New System.Drawing.Size(75, 23)
         Me.cmdOK.TabIndex = 8
@@ -89,11 +90,12 @@ Partial Class OptionsDialog
         Me.ctlTabs.Location = New System.Drawing.Point(12, 12)
         Me.ctlTabs.Name = "ctlTabs"
         Me.ctlTabs.SelectedIndex = 0
-        Me.ctlTabs.Size = New System.Drawing.Size(481, 316)
+        Me.ctlTabs.Size = New System.Drawing.Size(481, 337)
         Me.ctlTabs.TabIndex = 12
         '
         'TabPage1
         '
+        Me.TabPage1.Controls.Add(Me.chkUseSAPI)
         Me.TabPage1.Controls.Add(Me.chkPlaySounds)
         Me.TabPage1.Controls.Add(Me.cmdFont)
         Me.TabPage1.Controls.Add(Me.lblFontSample)
@@ -108,7 +110,7 @@ Partial Class OptionsDialog
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(473, 290)
+        Me.TabPage1.Size = New System.Drawing.Size(473, 311)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Player"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -232,6 +234,16 @@ Partial Class OptionsDialog
         Me.TabPage2.Text = "Game Browser"
         Me.TabPage2.UseVisualStyleBackColor = True
         '
+        'lnkShowAdultHelp
+        '
+        Me.lnkShowAdultHelp.AutoSize = True
+        Me.lnkShowAdultHelp.Location = New System.Drawing.Point(129, 83)
+        Me.lnkShowAdultHelp.Name = "lnkShowAdultHelp"
+        Me.lnkShowAdultHelp.Size = New System.Drawing.Size(130, 13)
+        Me.lnkShowAdultHelp.TabIndex = 5
+        Me.lnkShowAdultHelp.TabStop = True
+        Me.lnkShowAdultHelp.Text = "How to remove this option"
+        '
         'chkShowAdult
         '
         Me.chkShowAdult.AutoSize = True
@@ -281,15 +293,15 @@ Partial Class OptionsDialog
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Download games to:"
         '
-        'lnkShowAdultHelp
+        'chkUseSAPI
         '
-        Me.lnkShowAdultHelp.AutoSize = True
-        Me.lnkShowAdultHelp.Location = New System.Drawing.Point(129, 83)
-        Me.lnkShowAdultHelp.Name = "lnkShowAdultHelp"
-        Me.lnkShowAdultHelp.Size = New System.Drawing.Size(130, 13)
-        Me.lnkShowAdultHelp.TabIndex = 5
-        Me.lnkShowAdultHelp.TabStop = True
-        Me.lnkShowAdultHelp.Text = "How to remove this option"
+        Me.chkUseSAPI.AutoSize = True
+        Me.chkUseSAPI.Location = New System.Drawing.Point(6, 281)
+        Me.chkUseSAPI.Name = "chkUseSAPI"
+        Me.chkUseSAPI.Size = New System.Drawing.Size(140, 17)
+        Me.chkUseSAPI.TabIndex = 23
+        Me.chkUseSAPI.Text = "Speak all text (via SAPI)"
+        Me.chkUseSAPI.UseVisualStyleBackColor = True
         '
         'OptionsDialog
         '
@@ -297,7 +309,7 @@ Partial Class OptionsDialog
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.cmdCancel
-        Me.ClientSize = New System.Drawing.Size(505, 392)
+        Me.ClientSize = New System.Drawing.Size(505, 413)
         Me.Controls.Add(Me.ctlTabs)
         Me.Controls.Add(Me.cmdOK)
         Me.Controls.Add(Me.cmdCancel)
@@ -340,4 +352,5 @@ Partial Class OptionsDialog
     Friend WithEvents chkPlaySounds As System.Windows.Forms.CheckBox
     Friend WithEvents chkShowAdult As System.Windows.Forms.CheckBox
     Friend WithEvents lnkShowAdultHelp As System.Windows.Forms.LinkLabel
+    Friend WithEvents chkUseSAPI As System.Windows.Forms.CheckBox
 End Class
