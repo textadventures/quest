@@ -494,7 +494,6 @@
     <!-- Removed from adder as this is superseded by the ShowMenu function -->
     <appliesto>show menu</appliesto>
     <display>Show a menu</display>
-    <create>show menu ("",,true) { }</create>
     <advanced/>
 
     <control>
@@ -578,11 +577,9 @@
   </editor>
 
   <editor>
+    <!-- Removed from adder as this is superseded by the Ask function -->
     <appliesto>ask</appliesto>
     <display>Ask a question</display>
-    <category>Output</category>
-    <create>ask ("") { }</create>
-    <add>Ask a question</add>
     <advanced/>
 
     <control>
@@ -599,6 +596,33 @@
     <control>
       <controltype>script</controltype>
       <attribute>1</attribute>
+      <caption>After choosing, run script:</caption>
+      <breakbefore/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)Ask</appliesto>
+    <display>Ask a question</display>
+    <category>Output</category>
+    <create>Ask ("") { }</create>
+    <add>Ask a question</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Ask question</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>script</attribute>
       <caption>After choosing, run script:</caption>
       <breakbefore/>
     </control>
