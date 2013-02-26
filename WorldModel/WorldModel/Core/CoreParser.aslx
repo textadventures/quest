@@ -256,6 +256,7 @@
       }
     }
     if (not handled) {
+      StartTurnOutputSection
       msg ("")
       if (StartsWith (command, "*")) {
         msg (SafeXML (command))

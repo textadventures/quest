@@ -93,6 +93,7 @@
 
   <function name="StartGame">
     <![CDATA[
+    StartTurnOutputSection
     if (game.pov = null) {
       playerObject = GetObject("player")
       if (playerObject = null) {
@@ -406,7 +407,7 @@
   </function>
 
   <function name="ClearMenu">
-    JS.HideOutputSection(game.menuoutputsection)
+    HideOutputSection(game.menuoutputsection)
     game.menuoutputsection = null
     game.menuoptions = null
     game.menucallback = null
@@ -424,6 +425,24 @@
 
   <function name="EndOutputSection" parameters="name">
     JS.EndOutputSection(name)
+  </function>
+
+  <function name="HideOutputSection" parameters="name">
+    JS.HideOutputSection(name)
+  </function>
+
+  <function name="StartTurnOutputSection">
+    if (HasString(game, "currentturnoutputsection")) {
+      game.lastturnoutputsection = game.currentturnoutputsection
+      EndOutputSection (game.currentturnoutputsection)
+    }
+    game.currentturnoutputsection = StartNewOutputSection()
+  </function>
+
+  <function name="HidePreviousTurnOutput">
+    if (HasString(game, "lastturnoutputsection")) {
+      HideOutputSection(game.lastturnoutputsection)
+    }
   </function>
 
   <function name="Ask" parameters="question, callback">

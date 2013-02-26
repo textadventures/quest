@@ -99,6 +99,19 @@
   </editor>
 
   <editor>
+    <appliesto>(function)HidePreviousTurnOutput</appliesto>
+    <display>Clear the previous turn</display>
+    <category>Output</category>
+    <create>HidePreviousTurnOutput</create>
+    <add>Clear the previous turn</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Clear the previous turn</caption>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>(function)SetForegroundColour</appliesto>
     <display>Change foreground colour to #0</display>
     <category>Output</category>
