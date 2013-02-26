@@ -2,11 +2,11 @@
   <include ref="English.aslx"/>
   <template name="LanguageId">ro</template>
 
-  <template name="UnresolvedObject">[Obiectul nu poate fi găsit. Verifică articolul elementului și prezența sa în locul în care te afli. Dacă nu ești sigur de o comandă, scrie "ajutor".]</template>
+   <template name="UnresolvedObject">[Obiectul nu poate fi găsit. Verifică articolul elementului și prezența sa în locul în care te afli. Dacă nu ești sigur de o comandă, scrie "ajutor".]</template>
   <template name="UnresolvedLocation">Nu poți merge acolo.</template>
   <template name="DefaultObjectDescription">Nu vezi nimic deosebit.</template>
-  <template name="DefaultSelfDescription">Eu o duc bine.</template>
-  <dynamictemplate name="TakeSuccessful">"" + object.article + " iei."</dynamictemplate>
+  <template name="DefaultSelfDescription">Eu o duc bine...</template>
+  <dynamictemplate name="TakeSuccessful">"Te apleci să " + object.article + " iei."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Nu poți să " + object.article + " iei."</dynamictemplate>
   <template name="SeeListHeader">Poți vedea</template>
   <template name="GoListHeader">Poți s-o iei în următoarele direcții : </template>
@@ -15,25 +15,25 @@
   <template name="NothingToUndo">[Comanda "undo" nu e disponibilă dacă n-ai efectuat cel puțin o altă comandă.]</template>
   <template name="NotCarryingAnything">Nu ai nimic la tine.</template>
   <template name="CarryingListHeader">Ai următoarele lucruri</template>
-  <dynamictemplate name="DropSuccessful">"" + object.article + " pui jos."</dynamictemplate>
+  <dynamictemplate name="DropSuccessful">"Te apleci și " + object.article + " pui jos."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"Nu poți să " + object.article + " pui jos."</dynamictemplate>
-  <dynamictemplate name="AlreadyTaken">"" + object.article + " ai deja."</dynamictemplate>
+  <dynamictemplate name="AlreadyTaken">"Nu poți, " + object.article + " ai deja."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"Nu " + object.article + " ai (încă)."</dynamictemplate>
   <dynamictemplate name="CantUse">"Nu poți utiliza acest lucru."</dynamictemplate>
   <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "nu spune") + " nimic."</dynamictemplate>
   <template name="UnrecognisedCommand">[Comandă necunoscută sau lipsesc parametri suplimentari. Scrie "ajutor" pentru a vedea o listă de comenzi valide.]</template>
   <template name="YouAreIn">Te afli</template>
-  <template name="LookAt">Priveste; Privește</template>
+  <template name="LookAt">Priveste</template>
   <template name="Take">Ia</template>
   <template name="SpeakTo">Spune</template>
-  <template name="Use">Foloseste; Folosește</template>
+  <template name="Use">Foloseste</template>
   <template name="Drop">Pune jos</template>
   <template name="GoTo">Mergi</template>
   <template name="Go">Mergi</template>
   <template name="SwitchOn">Aprinde</template>
   <template name="SwitchOff">Stinge</template>
   <template name="Open">Deschide</template>
-  <template name="Close">Inchide; Închide</template>
+  <template name="Close">Inchide</template>
   <dynamictemplate name="ObjectNotOpen">"Nu e deschis."</dynamictemplate>
   <template name="NeutralGender">el/ea</template>
   <template name="MaleGender">el</template>
@@ -50,18 +50,18 @@
   <template name="MalePluralArticle"></template>
   <template name="FemalePluralArticle"></template>
   <template name="SelfAlias">eu</template>
-  <template name="SelfAlt">eu insumi; eu însumi; eu</template>
+  <template name="SelfAlt">eu insumi</template>
   <template name="AllObjects">tot</template>
   <template name="ParserIgnorePrefixes"></template>
   <dynamictemplate name="AlreadyOpen">"E deja deschis."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">"E deja închis."</dynamictemplate>
   <dynamictemplate name="CantOpen">"Nu poți deschide."</dynamictemplate>
   <dynamictemplate name="CantClose">"Nu poți închide."</dynamictemplate>
-  <dynamictemplate name="OpenSuccessful">" " + object.article + " deschizi."</dynamictemplate>
-  <dynamictemplate name="CloseSuccessful">" " + object.article + " închizi."</dynamictemplate>
+  <dynamictemplate name="OpenSuccessful">"Reușești să " + object.article + " deschizi."</dynamictemplate>
+  <dynamictemplate name="CloseSuccessful">"Reușești să " + object.article + " închizi."</dynamictemplate>
   <template name="CannotDoThat">Nu poți face asta.</template>
   <dynamictemplate name="AlreadyThere">"E deja aici."</dynamictemplate>
-  <template name="Done">E făcut.</template>
+  <template name="Done">S-a făcut.</template>
   <template name="ContainerContentsPrefix">ce conține</template>
   <template name="SurfaceContentsPrefix">pe care există</template>
   <dynamictemplate name="ObjectContains">WriteVerb(object, "conține")</dynamictemplate>
@@ -98,7 +98,7 @@
   <template name="CompassIn">în</template>
   <template name="CompassOut">afară din</template>
   <template name="CompassDirectionPrefix">spre</template>
-  <template name="UpDownDirectionPrefix">în</template>
+  <template name="UpDownDirectionPrefix">in</template>
   <template name="InOutDirectionPrefix"></template>
   <template name="CompassNWShort">nv</template>
   <template name="CompassNShort">n</template>
@@ -122,8 +122,8 @@
   <template name="EmptyListLabel">(gol)</template>
   <template name="NothingSelectedLabel">(nici o selecție)</template>
   
-  <template templatetype="command" name="go"><![CDATA[^mergi (?<exit>.*)$|^mergi (?<exit>.*)$|^(?<exit>nord|est|sud|vest|nord-est|nord-vest|sud-est|sud-vest|in|afara|sus|jos|n|e|s|v|ne|nv|se|sv|i|ss|j)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^regarder (?<exit>nord|est|sud|vest|nord-est|nord-vest|sud-est|sud-vest|in|afara|sus|jos|n|e|s|v|ne|nv|se|sv|i|ss|j)$]]></template>
+  <template templatetype="command" name="go"><![CDATA[^mergi la (?<exit>.*)$|^mergi (?<exit>.*)$|^(?<exit>nord|est|sud|vest|nord-est|nord-vest|sud-est|sud-vest|in|afara|sus|jos|n|e|s|v|ne|nv|se|sv|i|ss|j)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^priveste (?<exit>nord|est|sud|vest|nord-est|nord-vest|sud-est|sud-vest|in|afara|sus|jos|n|e|s|v|ne|nv|se|sv|i|ss|j)$]]></template>
   <template templatetype="command" name="look">^priveste$</template>
   <verbtemplate name="lookat">priveste</verbtemplate>
   <verbtemplate name="lookat">privește</verbtemplate>
@@ -245,7 +245,7 @@
   <template name="DefaultXyzzy">Surprinzător, nu se întâmplă nimic.</template>
   <template templatetype="command" name="help">^ajutor$|^\?$</template>
   <template name="DefaultHelp"><![CDATA[<br/><u>Lista comenzilor principale</u><br/><br/>
-<b>- Objets :</b><br/>  PRIVESTE... ; VORBESTE (CU)... ; IA... ; PUNE JOS... ; DESCHIDE... ; DA... (LUI)... ; FOLOSESTE... (CU)... ; IMPINGE... ; TRAGE... ; PUNE... (PE)... ; SCOATE... (DIN)... ; INTREABA... (DESPRE)... ; SPUNE... ; Etc. <br/><br/>
+<b>- Obiecte :</b><br/>  PRIVESTE... ; VORBESTE (CU)... ; IA... ; PUNE JOS... ; DESCHIDE... ; DA... (LUI)... ; FOLOSESTE... (CU)... ; IMPINGE... ; TRAGE... ; PUNE... (PE)... ; SCOATE... (DIN)... ; INTREABA... (DESPRE)... ; SPUNE... ; Etc. <br/><br/>
 <b>- Inventar :</b><br/>  Pentru a ști ce ai în inventar : I, INV sau INVENTAR.<br/><br/>
 <b>- Deplasare :</b><br/>  Folosește butoanele de pe busolă sau scrie NORD, SUD, EST, VEST, N, S, E, V, NV, NE, Sus, Jos, In, Afara, etc.<br/><br/>
 <b>- Scurtaturi :</b><br/>  Folosește săgețile sus și jos pentru a trece prin ultimele comenzi tastate. Pentru a examina ceva, e de ajuns să tastezi "X".<br/>]]></template>
