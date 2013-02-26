@@ -491,11 +491,10 @@
   </editor>
 
   <editor>
+    <!-- Removed from adder as this is superseded by the ShowMenu function -->
     <appliesto>show menu</appliesto>
     <display>Show a menu</display>
-    <category>Output</category>
     <create>show menu ("",,true) { }</create>
-    <add>Show a menu</add>
     <advanced/>
 
     <control>
@@ -535,6 +534,44 @@
     <control>
       <controltype>script</controltype>
       <attribute>3</attribute>
+      <caption>After choosing, run script:</caption>
+      <breakbefore/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)ShowMenu</appliesto>
+    <display>Show a menu</display>
+    <category>Output</category>
+    <create>ShowMenu ("",) { }</create>
+    <add>Show a menu</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Show menu with caption</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>text</simple>
+    </control>
+
+    <control>
+      <breakbefore/>
+      <controltype>label</controltype>
+      <caption>Options from list/dictionary:</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>script</attribute>
       <caption>After choosing, run script:</caption>
       <breakbefore/>
     </control>
