@@ -505,6 +505,27 @@
   </editor>
 
   <editor>
+    <appliesto>(function)GetInput</appliesto>
+    <display>Get input</display>
+    <category>Output</category>
+    <create>GetInput () { }</create>
+    <add>Get input</add>
+    <advanced/>
+    <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Get input, then</caption>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <attribute>script</attribute>
+      <caption>run script:</caption>
+    </control>
+  </editor>
+
+  <editor>
     <!-- Removed from adder as this is superseded by the ShowMenu function -->
     <appliesto>show menu</appliesto>
     <display>Show a menu</display>
