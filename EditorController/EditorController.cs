@@ -49,6 +49,7 @@ namespace TextAdventures.Quest
         public bool Valid;
         public ValidationMessage Message;
         public string MessageData;
+        public string SuggestedName;
     }
 
     public class TemplateData
@@ -1312,17 +1313,17 @@ namespace TextAdventures.Quest
             return element.Fields.InheritsType(type);
         }
 
-        public void CreateNewObject(string name, string parent)
+        public void CreateNewObject(string name, string parent, string alias)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create object '{0}'", name));
-            CreateNewObject(name, parent, "editor_object");
+            CreateNewObject(name, parent, "editor_object", alias);
             m_worldModel.UndoLogger.EndTransaction();
         }
 
-        public void CreateNewRoom(string name, string parent)
+        public void CreateNewRoom(string name, string parent, string alias)
         {
             m_worldModel.UndoLogger.StartTransaction(string.Format("Create room '{0}'", name));
-            CreateNewObject(name, parent, "editor_room");
+            CreateNewObject(name, parent, "editor_room", alias);
             m_worldModel.UndoLogger.EndTransaction();
         }
 
@@ -1411,12 +1412,16 @@ namespace TextAdventures.Quest
             return newObject.Name;
         }
 
-        private void CreateNewObject(string name, string parent, string editorType)
+        private void CreateNewObject(string name, string parent, string editorType, string alias)
         {
             Element newObject = m_worldModel.GetElementFactory(ElementType.Object).Create(name);
             if (parent != null)
             {
                 newObject.Parent = m_worldModel.Elements.Get(ElementType.Object, parent);
+            }
+            if (!string.IsNullOrEmpty(alias))
+            {
+                newObject.Fields[FieldDefinitions.Alias] = alias;
             }
             if (m_worldModel.Elements.ContainsKey(ElementType.ObjectType, editorType))
             {
@@ -1606,7 +1611,7 @@ namespace TextAdventures.Quest
         {
             if (m_worldModel.Elements.ContainsKey(name))
             {
-                return new ValidationResult { Valid = false, Message = ValidationMessage.ElementAlreadyExists };
+                return new ValidationResult { Valid = false, Message = ValidationMessage.ElementAlreadyExists, SuggestedName = GetUniqueElementName(name)};
             }
             return ValidateElementName(name);
         }

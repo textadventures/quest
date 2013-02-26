@@ -69,7 +69,7 @@ namespace TextAdventures.Quest.EditorControls
                     PopupEditors.DisplayValidationError(result, newKey, "Unable to add page");
                     return false;
                 }
-                m_controller.CreateNewObject(newKey, null);
+                m_controller.CreateNewObject(newKey, null, null);
                 return true;
             }, m_controller.GetUniqueElementName("Page1"));
         }

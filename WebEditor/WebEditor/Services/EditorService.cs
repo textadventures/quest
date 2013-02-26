@@ -1418,7 +1418,7 @@ namespace WebEditor.Services
                 return null;
             }
 
-            m_controller.CreateNewRoom(value, null);
+            m_controller.CreateNewRoom(value, null, null);
             return value;
         }
 
@@ -1433,7 +1433,7 @@ namespace WebEditor.Services
 
             if (parent != null && !m_controller.ElementExists(parent)) parent = null;
 
-            m_controller.CreateNewObject(value, parent);
+            m_controller.CreateNewObject(value, parent, null);
             return value;
         }
 

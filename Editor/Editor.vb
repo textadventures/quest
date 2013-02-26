@@ -501,7 +501,7 @@ Public Class Editor
     Private Sub AddNewElement(typeName As String, action As Action(Of String))
         Dim result = PopupEditors.EditString(String.Format("Please enter a name for the new {0}", typeName), "")
         If result.Cancelled Then Return
-        If Not ValidateInput(result.Result) Then Return
+        If Not ValidateInput(result.Result).IsValid Then Return
 
         action(result.Result)
         ctlTree.SetSelectedItem(result.Result)
@@ -509,20 +509,20 @@ Public Class Editor
 
     Private Sub AddNewObject()
         Dim possibleParents = m_controller.GetPossibleNewObjectParentsForCurrentSelection(ctlTree.SelectedItem)
-        Dim result = GetNameAndParent("Please enter a name for the new object", possibleParents)
+        Dim result = GetNameAndParent("Please enter a name for the new object", possibleParents, True)
 
         If result Is Nothing Then Return
 
-        m_controller.CreateNewObject(result.Value.Result, result.Value.ListResult)
+        m_controller.CreateNewObject(result.Value.Result, result.Value.ListResult, result.Value.AliasResult)
         ctlTree.SetSelectedItem(result.Value.Result)
     End Sub
 
     Private Sub AddNewRoom()
         Dim result = PopupEditors.EditString("Please enter a name for the new room", "")
         If result.Cancelled Then Return
-        If Not ValidateInput(result.Result) Then Return
+        If Not ValidateInput(result.Result).IsValid Then Return
 
-        m_controller.CreateNewRoom(result.Result, Nothing)
+        m_controller.CreateNewRoom(result.Result, Nothing, Nothing)
         ctlTree.SetSelectedItem(result.Result)
     End Sub
 
@@ -556,7 +556,7 @@ Public Class Editor
 
     Private Sub AddNewWalkthrough()
         Dim possibleParents = m_controller.GetPossibleNewParentsForCurrentSelection(ctlTree.SelectedItem, "walkthrough")
-        Dim result = GetNameAndParent("Please enter a name for the new walkthrough", possibleParents)
+        Dim result = GetNameAndParent("Please enter a name for the new walkthrough", possibleParents, False)
 
         If result Is Nothing Then Return
 
@@ -610,13 +610,13 @@ Public Class Editor
     Private Sub AddNewPage()
         Dim result = PopupEditors.EditString("Please enter a name for the new page", m_controller.GetUniqueElementName("Page1"))
         If result.Cancelled Then Return
-        If Not ValidateInput(result.Result) Then Return
+        If Not ValidateInput(result.Result).IsValid Then Return
 
-        m_controller.CreateNewObject(result.Result, Nothing)
+        m_controller.CreateNewObject(result.Result, Nothing, Nothing)
         ctlTree.SetSelectedItem(result.Result)
     End Sub
 
-    Private Function GetNameAndParent(prompt As String, possibleParents As IEnumerable(Of String)) As PopupEditors.EditStringResult?
+    Private Function GetNameAndParent(prompt As String, possibleParents As IEnumerable(Of String), allowAlias As Boolean) As PopupEditors.EditStringResult?
         Const noParent As String = "(none)"
 
         Dim result As PopupEditors.EditStringResult
@@ -632,7 +632,16 @@ Public Class Editor
         End If
 
         If result.Cancelled Then Return Nothing
-        If Not ValidateInput(result.Result) Then Return Nothing
+        Dim validateResult = ValidateInput(result.Result, allowAlias)
+
+        If Not validateResult.IsValid Then
+            If Not allowAlias Or String.IsNullOrEmpty(validateResult.Alias) Then
+                Return Nothing
+            Else
+                result.Result = validateResult.ElementName
+                result.AliasResult = validateResult.Alias
+            End If
+        End If
 
         If possibleParents IsNot Nothing And result.ListResult = noParent Then
             result.ListResult = Nothing
@@ -641,12 +650,31 @@ Public Class Editor
         Return result
     End Function
 
-    Private Function ValidateInput(input As String) As Boolean
-        Dim result = m_controller.CanAdd(input)
-        If result.Valid Then Return True
+    Private Class ValidateInputResult
+        Public ElementName As String
+        Public [Alias] As String
+        Public IsValid As Boolean
+    End Class
 
-        PopupEditors.DisplayValidationError(result, input, "Unable to add element")
-        Return False
+    Private Function ValidateInput(input As String, Optional allowAlias As Boolean = False) As ValidateInputResult
+        Dim result As New ValidateInputResult
+        Dim validationResult = m_controller.CanAdd(input)
+        If validationResult.Valid Then
+            result.ElementName = input
+            result.IsValid = True
+            Return result
+        End If
+
+        If allowAlias And Not String.IsNullOrEmpty(validationResult.SuggestedName) Then
+            result.ElementName = validationResult.SuggestedName
+            result.Alias = input
+            result.IsValid = False
+            Return result
+        End If
+
+        PopupEditors.DisplayValidationError(validationResult, input, "Unable to add element")
+        result.IsValid = False
+        Return result
     End Function
 
     Private Function ValidateInputTemplateName(input As String) As Boolean

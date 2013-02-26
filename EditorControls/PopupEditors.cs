@@ -15,6 +15,7 @@ namespace TextAdventures.Quest.EditorControls
             public bool Cancelled;
             public string Result;
             public string ListResult;
+            public string AliasResult;
         }
 
         public static EditStringResult EditString(string prompt, string defaultResult, IEnumerable<string> autoCompleteList = null, bool allowEmptyString = false)
