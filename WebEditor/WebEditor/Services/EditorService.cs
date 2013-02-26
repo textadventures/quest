@@ -1425,15 +1425,21 @@ namespace WebEditor.Services
         private string AddNewObject(string parent, string value)
         {
             ValidationResult result = m_controller.CanAdd(value);
+            string alias = null;
             if (!result.Valid)
             {
-                m_popupError = GetValidationError(result, value);
-                return null;
+                if (string.IsNullOrEmpty(result.SuggestedName))
+                {
+                    m_popupError = GetValidationError(result, value);
+                    return null;
+                }
+                alias = value;
+                value = result.SuggestedName;
             }
 
             if (parent != null && !m_controller.ElementExists(parent)) parent = null;
 
-            m_controller.CreateNewObject(value, parent, null);
+            m_controller.CreateNewObject(value, parent, alias);
             return value;
         }
 
