@@ -628,7 +628,7 @@ Public Class Editor
             parentOptions.Add(noParent)
             parentOptions.AddRange(possibleParents)
 
-            result = PopupEditors.EditStringWithDropdown(prompt, "", "Parent", parentOptions, ctlTree.SelectedItem)
+            result = PopupEditors.EditStringWithDropdown(prompt, "", "Parent", parentOptions, parentOptions(1))
         End If
 
         If result.Cancelled Then Return Nothing
