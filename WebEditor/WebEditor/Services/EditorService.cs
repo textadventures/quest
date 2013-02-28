@@ -653,6 +653,8 @@ namespace WebEditor.Services
 
         private void SaveObjectReference(IEditorData data, string attribute, IEditableObjectReference currentValue, WebEditor.Models.ElementSaveData.ObjectReferenceSaveData newValue)
         {
+            if (currentValue == null && string.IsNullOrEmpty(newValue.Reference)) return;
+
             if (currentValue == null || currentValue.Reference != newValue.Reference)
             {
                 IEditableObjectReference newReference = m_controller.CreateNewEditableObjectReference(data.Name, attribute, false);
