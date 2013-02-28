@@ -95,7 +95,7 @@ namespace TextAdventures.Quest.EditorControls
             if (newValue != null && newValue.Equals(m_oldValue)) return;
             if (newValue == null && m_oldValue == null) return;
             m_dirty = true;
-            Dirty(this, new DataModifiedEventArgs(ControlDefinition.Attribute, newValue));
+            if (Dirty != null) Dirty(this, new DataModifiedEventArgs(ControlDefinition.Attribute, newValue));
         }
 
         internal void SaveParent()

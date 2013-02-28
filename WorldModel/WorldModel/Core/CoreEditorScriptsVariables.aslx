@@ -148,6 +148,46 @@
   </editor>
 
   <editor>
+    <appliesto>(function)IncreaseCounter</appliesto>
+    <display>Increase counter #0</display>
+    <category>Variables</category>
+    <add>Increase counter</add>
+    <create>IncreaseCounter ("")</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Increase counter</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>counter name</simple>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DecreaseCounter</appliesto>
+    <display>Decrease counter #0</display>
+    <category>Variables</category>
+    <add>Decrease counter</add>
+    <create>DecreaseCounter ("")</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Decrease counter</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>counter name</simple>
+      <attribute>0</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>=</appliesto>
     <display>Set #0 = #1</display>
     <category>Variables</category>

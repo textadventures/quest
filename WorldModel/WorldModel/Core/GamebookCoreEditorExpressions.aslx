@@ -43,6 +43,39 @@
   </editor>
 
   <editor>
+    <pattern><![CDATA[GetInt(game, #counter#) #compare# #value#]]></pattern>
+    <create><![CDATA[GetInt(game, "") = 0]]></create>
+    <description>counter</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>counter name</simple>
+      <attribute>counter</attribute>
+    </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <attribute>compare</attribute>
+      <validvalues type="stringlist">
+        <value>=</value>
+        <value>&lt;</value>
+        <value>&lt;=</value>
+        <value>&gt;</value>
+        <value>&gt;=</value>
+        <value>&lt;&gt;</value>
+      </validvalues>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>value</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <pattern>RandomChance(#percentile#)</pattern>
     <create>RandomChance(50)</create>
     <description>random chance</description>
