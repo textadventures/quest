@@ -645,6 +645,7 @@
     <create>Ask ("") { }</create>
     <add>Ask a question</add>
     <advanced/>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
