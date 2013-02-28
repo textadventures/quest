@@ -2030,6 +2030,8 @@
 		<row><td>gamebook.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>GAMEBO~1.TEM|Gamebook.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Gamebook.template</td><td>1</td><td/></row>
 		<row><td>gamebookcore.aslx2</td><td>ISX_DEFAULTCOMPONENT7</td><td>GAMEBO~1.ASL|GamebookCore.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCore.aslx</td><td>1</td><td/></row>
 		<row><td>gamebookcoreeditor.aslx2</td><td>ISX_DEFAULTCOMPONENT7</td><td>GAMEBO~1.ASL|GamebookCoreEditor.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCoreEditor.aslx</td><td>1</td><td/></row>
+		<row><td>gamebookcoreeditorexpression</td><td>ISX_DEFAULTCOMPONENT7</td><td>GAMEBO~1.ASL|GamebookCoreEditorExpressions.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCoreEditorExpressions.aslx</td><td>1</td><td/></row>
+		<row><td>gamebookcoreeditorscripts.as</td><td>ISX_DEFAULTCOMPONENT7</td><td>GAMEBO~1.ASL|GamebookCoreEditorScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCoreEditorScripts.aslx</td><td>1</td><td/></row>
 		<row><td>grid.js</td><td>ISX_DEFAULTCOMPONENT</td><td>grid.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\PlayerController\grid.js</td><td>1</td><td/></row>
 		<row><td>gu.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>gu.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\gu.pak</td><td>1</td><td/></row>
 		<row><td>he.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>he.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\he.pak</td><td>1</td><td/></row>
@@ -2042,8 +2044,6 @@
 		<row><td>italiano.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ITALIA~1.ASL|Italiano.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Italiano.aslx</td><td>1</td><td/></row>
 		<row><td>italiano.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>ITALIA~1.TEM|Italiano.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Italiano.template</td><td>1</td><td/></row>
 		<row><td>ja.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ja.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ja.pak</td><td>1</td><td/></row>
-		<row><td>jjmenu.css</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jjmenu.css</td><td>1</td><td/></row>
-		<row><td>jjmenu.js</td><td>ISX_DEFAULTCOMPONENT</td><td>jjmenu.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jjmenu.js</td><td>1</td><td/></row>
 		<row><td>jquery.multi_open_accordion_</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery.multi-open-accordion-1.5.3.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery.multi-open-accordion-1.5.3.js</td><td>1</td><td/></row>
 		<row><td>jquery_1.7.1.min.js</td><td>ISX_DEFAULTCOMPONENT</td><td>JQUERY~1.JS|jquery-1.7.1.min.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\jquery-1.7.1.min.js</td><td>1</td><td/></row>
 		<row><td>jquery_ui_1.9.2.custom.min.c</td><td>ISX_DEFAULTCOMPONENT5</td><td>JQUERY~1.CSS|jquery-ui-1.9.2.custom.min.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Player\css\redmond\jquery-ui-1.9.2.custom.min.css</td><td>1</td><td/></row>
@@ -2066,11 +2066,15 @@
 		<row><td>pl.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>pl.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\pl.pak</td><td>1</td><td/></row>
 		<row><td>playercore.css</td><td>ISX_DEFAULTCOMPONENT</td><td>PLAYER~1.CSS|playercore.css</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\PlayerController\playercore.css</td><td>1</td><td/></row>
 		<row><td>playercore.js</td><td>ISX_DEFAULTCOMPONENT</td><td>PLAYER~1.JS|playercore.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\PlayerController\playercore.js</td><td>1</td><td/></row>
+		<row><td>portugues.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>PORTUG~1.ASL|Portugues.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Portugues.aslx</td><td>1</td><td/></row>
+		<row><td>portugues.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>PORTUG~1.TEM|Portugues.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Portugues.template</td><td>1</td><td/></row>
 		<row><td>pt_br.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>pt-BR.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\pt-BR.pak</td><td>1</td><td/></row>
 		<row><td>pt_pt.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>pt-PT.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\pt-PT.pak</td><td>1</td><td/></row>
 		<row><td>quest.content_files</td><td>Quest.Content_Files</td><td>Quest.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Quest&gt;|ContentFiles</td><td>3</td><td/></row>
 		<row><td>quest.primary_output</td><td>Quest.Primary_output</td><td>Quest.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Quest&gt;|Built</td><td>3</td><td/></row>
 		<row><td>ro.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ro.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ro.pak</td><td>1</td><td/></row>
+		<row><td>romana.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>ROMANA~1.ASL|Romana.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Romana.aslx</td><td>1</td><td/></row>
+		<row><td>romana.template</td><td>ISX_DEFAULTCOMPONENT2</td><td>ROMANA~1.TEM|Romana.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Romana.template</td><td>1</td><td/></row>
 		<row><td>ru.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>ru.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\ru.pak</td><td>1</td><td/></row>
 		<row><td>sk.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>sk.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\sk.pak</td><td>1</td><td/></row>
 		<row><td>sl.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>sl.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\sl.pak</td><td>1</td><td/></row>
@@ -4736,9 +4740,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{7AE41FF3-E418-43BD-97F3-8D3FB70BD623}</td><td/></row>
+		<row><td>ProductCode</td><td>{DFB951E1-6106-4C13-AE97-B43658F8408D}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
-		<row><td>ProductVersion</td><td>5.30.0003</td><td/></row>
+		<row><td>ProductVersion</td><td>5.40.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
