@@ -105,6 +105,7 @@
     <create>HidePreviousTurnOutput</create>
     <add>Clear the previous turn</add>
     <advanced/>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -469,6 +470,7 @@
     <create>wait { }</create>
     <add>Wait for key press</add>
     <advanced/>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
