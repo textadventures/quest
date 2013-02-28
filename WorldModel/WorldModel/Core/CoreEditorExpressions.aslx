@@ -5,6 +5,34 @@
   <!-- Templates for "if" -->
 
   <editor>
+    <pattern>Got(#object#)</pattern>
+    <create>Got()</create>
+    <description>player is carrying object</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <pattern>not Got(#object#)</pattern>
+    <create>not Got()</create>
+    <description>player is not carrying object</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>object</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <pattern>GetBoolean(#object#, #flag#)</pattern>
     <create>GetBoolean(, "")</create>
     <description>object has flag</description>
@@ -43,12 +71,11 @@
       <attribute>flag</attribute>
     </control>
   </editor>
-
-
+  
   <editor>
-    <pattern>Got(#object#)</pattern>
-    <create>Got()</create>
-    <description>player is carrying object</description>
+    <pattern><![CDATA[GetInt(#object#, #counter#) #compare# #value#]]></pattern>
+    <create><![CDATA[GetInt(, "") = 0]]></create>
+    <description>object counter</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -57,20 +84,33 @@
       <simpleeditor>objects</simpleeditor>
       <attribute>object</attribute>
     </control>
-  </editor>
-
-  <editor>
-    <pattern>not Got(#object#)</pattern>
-    <create>not Got()</create>
-    <description>player is not carrying object</description>
-    <expressiontype>if</expressiontype>
 
     <control>
       <controltype>expression</controltype>
-      <simple>object</simple>
-      <simpleeditor>objects</simpleeditor>
-      <attribute>object</attribute>
+      <simple>counter name</simple>
+      <attribute>counter</attribute>
     </control>
+
+    <control>
+      <controltype>dropdown</controltype>
+      <attribute>compare</attribute>
+      <validvalues type="stringlist">
+        <value>=</value>
+        <value>&lt;</value>
+        <value>&lt;=</value>
+        <value>&gt;</value>
+        <value>&gt;=</value>
+        <value>&lt;&gt;</value>
+      </validvalues>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>number</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>value</attribute>
+    </control>
+
   </editor>
 
   <editor>

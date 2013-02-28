@@ -94,6 +94,60 @@
   </editor>
 
   <editor>
+    <appliesto>(function)IncreaseObjectCounter</appliesto>
+    <display>Increase #0 counter #1</display>
+    <category>Variables</category>
+    <add>Increase object counter</add>
+    <create>IncreaseObjectCounter (,"")</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Increase counter</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>counter name</simple>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DecreaseObjectCounter</appliesto>
+    <display>Decrease #0 counter #1</display>
+    <category>Variables</category>
+    <add>Decrease object counter</add>
+    <create>DecreaseObjectCounter (,"")</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Decrease counter</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>object</simple>
+      <simpleeditor>objects</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>counter name</simple>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>=</appliesto>
     <display>Set #0 = #1</display>
     <category>Variables</category>
