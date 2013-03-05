@@ -1,89 +1,106 @@
-<library>
+﻿<library>
+  <!-- Contributed by Mihnea Firan -->
+  <!-- versiune 1.1.30301 -->
   <include ref="English.aslx"/>
   <template name="LanguageId">ro</template>
-
-   <template name="UnresolvedObject">[Obiectul nu poate fi găsit. Verifică articolul elementului și prezența sa în locul în care te afli. Dacă nu ești sigur de o comandă, scrie "ajutor".]</template>
+  <template name="UnresolvedObject">Nu poți vedea acest obiect.</template>
   <template name="UnresolvedLocation">Nu poți merge acolo.</template>
-  <template name="DefaultObjectDescription">Nu vezi nimic deosebit.</template>
-  <template name="DefaultSelfDescription">Eu o duc bine...</template>
-  <dynamictemplate name="TakeSuccessful">"Te apleci să " + object.article + " iei."</dynamictemplate>
+  <template name="DefaultObjectDescription">Nimic neobișnuit.</template>
+  <template name="DefaultSelfDescription">Arăți bine, ca de obicei.</template>
+  <dynamictemplate name="TakeSuccessful">CapFirst(object.article) + " iei."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Nu poți să " + object.article + " iei."</dynamictemplate>
+  <dynamictemplate name="FullInventory">WriteVerb(object, "este") + " prea greu."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInInventory">"Nu poți căra mai multe lucruri."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInContainer">"Nu poți pune mai mult în " + object.gender + "."</dynamictemplate>
   <template name="SeeListHeader">Poți vedea</template>
-  <template name="GoListHeader">Poți s-o iei în următoarele direcții : </template>
+  <template name="GoListHeader">Poți merge spre</template>
   <template name="And">și</template>
   <template name="Or">sau</template>
-  <template name="NothingToUndo">[Comanda "undo" nu e disponibilă dacă n-ai efectuat cel puțin o altă comandă.]</template>
+  <template name="NothingToUndo">Nimic de făcut!</template>
   <template name="NotCarryingAnything">Nu ai nimic la tine.</template>
-  <template name="CarryingListHeader">Ai următoarele lucruri</template>
-  <dynamictemplate name="DropSuccessful">"Te apleci și " + object.article + " pui jos."</dynamictemplate>
-  <dynamictemplate name="DropUnsuccessful">"Nu poți să " + object.article + " pui jos."</dynamictemplate>
-  <dynamictemplate name="AlreadyTaken">"Nu poți, " + object.article + " ai deja."</dynamictemplate>
-  <dynamictemplate name="NotCarrying">"Nu " + object.article + " ai (încă)."</dynamictemplate>
-  <dynamictemplate name="CantUse">"Nu poți utiliza acest lucru."</dynamictemplate>
-  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "nu spune") + " nimic."</dynamictemplate>
-  <template name="UnrecognisedCommand">[Comandă necunoscută sau lipsesc parametri suplimentari. Scrie "ajutor" pentru a vedea o listă de comenzi valide.]</template>
-  <template name="YouAreIn">Te afli</template>
-  <template name="LookAt">Priveste</template>
-  <template name="Take">Ia</template>
-  <template name="SpeakTo">Spune</template>
-  <template name="Use">Foloseste</template>
-  <template name="Drop">Pune jos</template>
-  <template name="GoTo">Mergi</template>
-  <template name="Go">Mergi</template>
-  <template name="SwitchOn">Aprinde</template>
-  <template name="SwitchOff">Stinge</template>
-  <template name="Open">Deschide</template>
-  <template name="Close">Inchide</template>
-  <dynamictemplate name="ObjectNotOpen">"Nu e deschis."</dynamictemplate>
-  <template name="NeutralGender">el/ea</template>
+  <template name="CarryingListHeader">Ai la tine</template>
+  <dynamictemplate name="DropSuccessful">CapFirst(object.article) + " lași jos."</dynamictemplate>
+  <dynamictemplate name="DropUnsuccessful">"Nu poți să " + object.article + " lași jos."</dynamictemplate>
+  <dynamictemplate name="AlreadyTaken">CapFirst(object.article) + " ai deja la tine."</dynamictemplate>
+  <dynamictemplate name="NotCarrying">"Nu " + object.article + " ai la tine."</dynamictemplate>
+  <dynamictemplate name="CantUse">"Nu " + object.article + " poți folosi."</dynamictemplate>
+  <dynamictemplate name="CantGive">"Nu poți să " + object.article + " dai."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">CapFirst(object.gender) + " nu " + Conjugate(object, "raspunde") + " nimic."</dynamictemplate>
+  <template name="UnrecognisedCommand">Nu înțeleg comanda ta.</template>
+  <template name="YouAreIn">Ești în</template>
+  <template name="LookAt">Examinezi</template>
+  <template name="Take">Iei</template>
+  <template name="SpeakTo">Vorbești cu</template>
+  <template name="Use">Folosești</template>
+  <template name="Drop">Lași jos</template>
+  <template name="GoTo">Te duci la</template>
+  <template name="Go">Mergi spre</template>
+  <template name="SwitchOn">Pornești</template>
+  <template name="SwitchOff">Oprești</template>
+  <template name="Open">Deschizi</template>
+  <template name="Close">Închizi</template>
+  <template name="Eat">Mănânci</template>
+  <dynamictemplate name="ObjectNotOpen">"Nu " + Conjugate(object, "este") + " " + Deschis(object) + "."</dynamictemplate>
+  <template name="NeutralGender">el</template>
   <template name="MaleGender">el</template>
   <template name="FemaleGender">ea</template>
   <template name="SelfGender">tu</template>
-  <template name="NeutralPluralGender">ei</template>
+  <template name="NeutralPluralGender">ele</template>
   <template name="MalePluralGender">ei</template>
   <template name="FemalePluralGender">ele</template>
-  <template name="NeutralArticle"></template>
-  <template name="MaleArticle"></template>
-  <template name="FemaleArticle"></template>
-  <template name="SelfArticle">tu</template>
-  <template name="NeutralPluralArticle"></template>
-  <template name="MalePluralArticle"></template>
-  <template name="FemalePluralArticle"></template>
-  <template name="SelfAlias">eu</template>
-  <template name="SelfAlt">eu insumi</template>
-  <template name="AllObjects">tot</template>
-  <template name="ParserIgnorePrefixes"></template>
-  <dynamictemplate name="AlreadyOpen">"E deja deschis."</dynamictemplate>
-  <dynamictemplate name="AlreadyClosed">"E deja închis."</dynamictemplate>
-  <dynamictemplate name="CantOpen">"Nu poți deschide."</dynamictemplate>
-  <dynamictemplate name="CantClose">"Nu poți închide."</dynamictemplate>
-  <dynamictemplate name="OpenSuccessful">"Reușești să " + object.article + " deschizi."</dynamictemplate>
-  <dynamictemplate name="CloseSuccessful">"Reușești să " + object.article + " închizi."</dynamictemplate>
+  <template name="NeutralArticle">îl</template>
+  <template name="MaleArticle">îl</template>
+  <template name="FemaleArticle">o</template>
+  <template name="SelfArticle">te</template>
+  <template name="NeutralPluralArticle">îi</template>
+  <template name="MalePluralArticle">îi</template>
+  <template name="FemalePluralArticle">le</template>
+  <template name="SelfAlias">la tine</template>
+  <template name="SelfAlt">tine</template>
+  <template name="AllObjects">tot; toate</template>
+  <template name="ParserIgnorePrefixes">o; un</template>
+  <dynamictemplate name="AlreadyOpen">"Este deja " + Deschis(object) + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyClosed">"Este deja " + Inchis(object) + "."</dynamictemplate>
+  <dynamictemplate name="CantOpen">"Nu poți să " + object.article + " deschizi."</dynamictemplate>
+  <dynamictemplate name="CantClose">"Nu poți să " + object.article + " închizi."</dynamictemplate>
+  <dynamictemplate name="OpenSuccessful">CapFirst(object.article) + " deschizi."</dynamictemplate>
+  <dynamictemplate name="CloseSuccessful">CapFirst(object.article) + " închizi."</dynamictemplate>
   <template name="CannotDoThat">Nu poți face asta.</template>
-  <dynamictemplate name="AlreadyThere">"E deja aici."</dynamictemplate>
-  <template name="Done">S-a făcut.</template>
+  <dynamictemplate name="AlreadyThere">WriteVerb(object, "este") + " deja acolo."</dynamictemplate>
+  <template name="Done">Gata.</template>
   <template name="ContainerContentsPrefix">ce conține</template>
-  <template name="SurfaceContentsPrefix">pe care există</template>
-  <dynamictemplate name="ObjectContains">WriteVerb(object, "conține")</dynamictemplate>
-  <dynamictemplate name="ContainerFull">"E deja plin."</dynamictemplate>
-  <dynamictemplate name="DisambiguateMenu">"Alege elementul la care te referi:"</dynamictemplate>
+  <template name="SurfaceContentsPrefix">pe care vezi</template>
+  <dynamictemplate name="ObjectContains">WriteVerb(object, "contine")</dynamictemplate>
+  <dynamictemplate name="ContainerFull">WriteVerb(object, "este") + " plin."</dynamictemplate>
+  <dynamictemplate name="DisambiguateMenu">"Alege la care '" + text + "' te referi:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
-  <template name="LockedExit">Pe aici trecerea e blocată sau închisă.</template>
-  <dynamictemplate name="DefaultAsk">WriteVerb(object, "nu") + " răspunde."</dynamictemplate>
-  <dynamictemplate name="DefaultTell">WriteVerb(object, "nu") + " răspunde."</dynamictemplate>
+  <template name="LockedExit">Drumul acesta este blocat.</template>
+  <dynamictemplate name="DefaultAsk">CapFirst(object.gender) + " nu " + Conjugate(object, "raspunde") + " nimic."</dynamictemplate>
+  <dynamictemplate name="DefaultTell">CapFirst(object.gender) + " nu " + Conjugate(object, "raspunde") + " nimic."</dynamictemplate>
   <template name="NoKey">Nu ai cheia.</template>
-  <template name="UnlockMessage">S-a descuiat.</template>
-  <template name="LockMessage">S-a încuiat.</template>
-  <dynamictemplate name="LockedObject">"E încuiat."</dynamictemplate>
-  <dynamictemplate name="AlreadyLocked">"E deja încuiat."</dynamictemplate>
-  <dynamictemplate name="AlreadyUnlocked">"E deja descuiat."</dynamictemplate>
-  <dynamictemplate name="CannotLockOpen">"Nu poți să " + object.article + " încui dacă e deja deschis."</dynamictemplate>
-  <dynamictemplate name="AlreadySwitchedOn">"E deja aprins."</dynamictemplate>"
-  <dynamictemplate name="AlreadySwitchedOff">"E deja stins."</dynamictemplate>"
-  <dynamictemplate name="SwitchedOn">"Îl/o aprindeți."</dynamictemplate>
-  <dynamictemplate name="SwitchedOff">"Îl/o stingeți."</dynamictemplate>
-  <template name="DefaultOops">Nu e nimic de corectat.</template>
+  <template name="UnlockMessage">Descuiat.</template>
+  <template name="LockMessage">Încuiat.</template>
+  <dynamictemplate name="LockedObject">WriteVerb(object, "este") + " " + Incuiat(object) + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyLocked">WriteVerb(object, "este") + " deja " + Incuiat(object) + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyUnlocked">WriteVerb(object, "este") + " deja " + Descuiat(object) + "."</dynamictemplate>
+  <dynamictemplate name="CannotLockOpen">"Nu poți să " + object.article + " încui dacă " + WriteVerb(object, "este") + " " + Deschis(object) + "."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOn">WriteVerb(object, "este") + " deja " + Pornit(object) + "."</dynamictemplate>"
+  <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "este") + " deja " + Oprit(object) + "."</dynamictemplate>"
+  <dynamictemplate name="SwitchedOn">object.article + " pornești."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">object.article + " oprești."</dynamictemplate>
+  <dynamictemplate name="Eaten">CapFirst(object.article) + " mănânci."</dynamictemplate>
+  <template name="DefaultOops">Nu este nimic de corectat.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " nu conține " + GetDisplayAlias(object2) + "."</dynamictemplate>
+  <dynamictemplate name="YouLooking">"Te uiți spre " + text + "."</dynamictemplate>
+  <dynamictemplate name="LookAtDarkness">"Este prea întuneric pentru a face ceva."</dynamictemplate>
+  <template name="VerbObjectSeparator">cu; folosind</template>
+  <template name="DefaultMultiObjectVerb">Nu poți face asta.</template>
+  <template name="MultiObjectVerbMenu">Cu care obiect?</template>
+  <template name="UseOnMenu">Unde?</template>
+  <template name="GiveToMenu">Cui?</template>
+  <template name="NoObjectsAvailable">Nu există obiecte pentru a face asta.</template>
+  <template name="Yes">Da</template>
+  <template name="No">Nu</template>
 
   <template name="CompassNW">nord-vest</template>
   <template name="CompassN">nord</template>
@@ -97,9 +114,12 @@
   <template name="CompassDown">jos</template>
   <template name="CompassIn">în</template>
   <template name="CompassOut">afară din</template>
-  <template name="CompassDirectionPrefix">spre</template>
-  <template name="UpDownDirectionPrefix">in</template>
+  <template name="CompassDirectionPrefix"></template>
+  <template name="CompassDirectionSuffix"></template>
+  <template name="UpDownDirectionPrefix"></template>
+  <template name="UpDownDirectionSuffix"></template>
   <template name="InOutDirectionPrefix"></template>
+  <template name="InOutDirectionSuffix"></template>
   <template name="CompassNWShort">nv</template>
   <template name="CompassNShort">n</template>
   <template name="CompassNEShort">ne</template>
@@ -108,231 +128,520 @@
   <template name="CompassSWShort">sv</template>
   <template name="CompassSShort">s</template>
   <template name="CompassSEShort">se</template>
-  <template name="CompassUpShort">ss</template>
-  <template name="CompassDownShort">j</template>
-  <template name="CompassInShort">in</template>
+  <template name="CompassUpShort"></template>
+  <template name="CompassDownShort"></template>
+  <template name="CompassInShort"></template>
   <template name="CompassOutShort"></template>
-  <dynamictemplate name="YouLooking">"Te uiți la " + text +"."</dynamictemplate>
 
   <template name="InventoryLabel">Inventar</template>
   <template name="PlacesObjectsLabel">Locuri și obiecte</template>
-  <template name="CompassLabel">Compas</template>
+  <template name="CompassLabel">Busolă</template>
   <template name="InButtonLabel">în</template>
-  <template name="OutButtonLabel">afară</template>
+  <template name="OutButtonLabel">ex</template>
   <template name="EmptyListLabel">(gol)</template>
-  <template name="NothingSelectedLabel">(nici o selecție)</template>
-  
-  <template templatetype="command" name="go"><![CDATA[^mergi la (?<exit>.*)$|^mergi (?<exit>.*)$|^(?<exit>nord|est|sud|vest|nord-est|nord-vest|sud-est|sud-vest|in|afara|sus|jos|n|e|s|v|ne|nv|se|sv|i|ss|j)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^priveste (?<exit>nord|est|sud|vest|nord-est|nord-vest|sud-est|sud-vest|in|afara|sus|jos|n|e|s|v|ne|nv|se|sv|i|ss|j)$]]></template>
-  <template templatetype="command" name="look">^priveste$</template>
-  <verbtemplate name="lookat">priveste</verbtemplate>
-  <verbtemplate name="lookat">privește</verbtemplate>
+  <template name="NothingSelectedLabel">(nu este selectat nimic)</template>
+  <template name="TypeHereLabel">Scrie aici...</template>
+  <template name="ContinueLabel">Continuă...</template>
+
+  <template templatetype="command" name="go"><![CDATA[^mergi spre (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>nord|est|sud|vest|nord-est|nord-vest|sud-est|sud-vest|înăuntru|afară|sus|jos|n|e|s|v|ne|nv|se|sv)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^te uiți spre (?<exit>.*)$|^(?<exit>nord|est|sud|vest|nord-est|nord-vest|sud-est|sud-vest|înăuntru|afară|sus|jos|n|e|s|v|ne|nv|se|sv)$]]></template>
+  <template templatetype="command" name="look">^l$|^te uiți spre$</template>
+  <verbtemplate name="lookat">examinezi</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
-  <verbtemplate name="lookat">examineaza</verbtemplate>
-  <verbtemplate name="lookat">examinează</verbtemplate>
-  <verbtemplate name="lookat">exam</verbtemplate>
-  <verbtemplate name="lookat">ex</verbtemplate>
-  <verbtemplate name="take">ia</verbtemplate>
-  <verbtemplate name="take">aduna</verbtemplate>
-  <verbtemplate name="take">adună</verbtemplate>
-  <verbtemplate name="take">apuca</verbtemplate>
-  <verbtemplate name="take">apucă</verbtemplate>
+  <verbtemplate name="take">iei</verbtemplate>
+  <verbtemplate name="take">ridici</verbtemplate>
+  <verbtemplate name="take">aduni</verbtemplate>
   <template templatetype="command" name="undo">^undo$</template>
   <template templatetype="command" name="inventory">^i$|^inv$|^inventar$</template>
-  <template templatetype="command" name="quit">^iesi$</template>
-  <template templatetype="command" name="quit">^ieși$</template>
-  <verbtemplate name="drop">pune jos</verbtemplate>
-  <verbtemplate name="use">foloseste</verbtemplate>
-  <verbtemplate name="use">folosește</verbtemplate>
-  <verbtemplate name="speakto">vorbeste</verbtemplate>
-  <verbtemplate name="speakto">vorbește</verbtemplate>
-  <verbtemplate name="speakto">vorbeste cu</verbtemplate>
-  <verbtemplate name="speakto">vorbește cu</verbtemplate>
-  <verbtemplate name="open">deschide</verbtemplate>
-  <verbtemplate name="close">inchide</verbtemplate>
-  <verbtemplate name="close">închide</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^pune (?<object1>.*) (deasupra|sub|pe|in) (?<object2>.*)$]]></template>
-  <template templatetype="command" name="removefrom"><![CDATA[^scoate (?<object1>.*) din (?<object2>.*)$]]></template>
-  <template templatetype="command" name="ask"><![CDATA[^intreaba (?<object>.*) despre (?<text>.*)$]]></template>
-  <template templatetype="command" name="tell"><![CDATA[^spune (?<object>.*) (?<text>.*)$]]></template>
-  <template templatetype="command" name="oops"><![CDATA[^hopa (?<text>.*)$]]></template>
-
-  <verbtemplate name="buy">cumpara</verbtemplate>
-  <dynamictemplate name="DefaultBuy">"Nu poți cumpăra asta."</dynamictemplate>
-  <verbtemplate name="climb">urca</verbtemplate>
-  <dynamictemplate name="DefaultClimb">"Nu poți urca cu asta/pe aici."</dynamictemplate>
-  <verbtemplate name="drink">bea</verbtemplate>
-  <dynamictemplate name="DefaultDrink">"Nu poți bea asta."</dynamictemplate>
-  <verbtemplate name="eat">mananca</verbtemplate>
-  <dynamictemplate name="DefaultEat">"Nu poți mânca asta."</dynamictemplate>
-  <template templatetype="command" name="da"><![CDATA[^da (?<object1>.*) lui (?<object2>.*)$]]></template>
-  <dynamictemplate name="DefaultGive">WriteVerb(object1, "nu") + " " + object2.article + " vrea." </dynamictemplate>
-  <verbtemplate name="hit">loveste</verbtemplate>
+  <template templatetype="command" name="quit">^quit$</template>
+  <verbtemplate name="drop">lași jos</verbtemplate>
+  <verbtemplate name="use">folosești</verbtemplate>
+  <verbtemplate name="speakto">vorbești cu</verbtemplate>
+  <verbtemplate name="speakto">vorbești</verbtemplate>
+  <verbtemplate name="open">deschizi</verbtemplate>
+  <verbtemplate name="close">închizi</verbtemplate>
+  <template templatetype="command" name="put"><![CDATA[^pui (?<object1>.*) (deasupra|sub|pe|în) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^scoți (?<object1>.*) din (?<object2>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^întrebi (?<object>.*) despre (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^spui (?<object>.*) despre (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
+  
+  <verbtemplate name="buy">cumperi</verbtemplate>
+  <dynamictemplate name="DefaultBuy">"Nu " + object.article + " poți cumpăra."</dynamictemplate>
+  <verbtemplate name="climb">te urci pe</verbtemplate>
+  <dynamictemplate name="DefaultClimb">"Nu poți să te urci pe " + object.gender + "."</dynamictemplate>
+  <verbtemplate name="drink">bei</verbtemplate>
+  <dynamictemplate name="DefaultDrink">"Nu poți să " + object.article + " bei."</dynamictemplate>
+  <verbtemplate name="eat">mănânci</verbtemplate>
+  <dynamictemplate name="DefaultEat">"Nu poți să " + object.article + " mănânci."</dynamictemplate>
+  <verbtemplate name="givesingle">dai</verbtemplate>
+  <template templatetype="command" name="give"><![CDATA[^dai (?<object1>.*) lui (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultGive">CapFirst(object.gender) + " nu " + object2.article + " " + Conjugate(object, "vrea") + "."</dynamictemplate>
+  <verbtemplate name="hit">lovești</verbtemplate>
   <dynamictemplate name="DefaultHit">"Nu poți să " + object.article + " lovești."</dynamictemplate>
-  <verbtemplate name="kill">omoara</verbtemplate>
+  <verbtemplate name="kill">omori</verbtemplate>
   <dynamictemplate name="DefaultKill">"Nu poți să " + object.article + " omori."</dynamictemplate>
-  <verbtemplate name="kiss">pupa</verbtemplate>
-  <dynamictemplate name="DefaultKiss">"Nu poți să pupi."</dynamictemplate>
-  <verbtemplate name="knock">bate</verbtemplate>
-  <dynamictemplate name="DefaultKnock">"Nu poți bate asta."</dynamictemplate>
-  <verbtemplate name="lick">linge</verbtemplate>
-  <dynamictemplate name="DefaultLick">"Nu poți linge asta."</dynamictemplate>
-  <verbtemplate name="lie">culca-te</verbtemplate>
-  <verbtemplate name="lie">culca-te pe</verbtemplate>
-  <dynamictemplate name="DefaultLie">"Nu te poți culca aici."</dynamictemplate>
-  <verbtemplate name="listento">asculta</verbtemplate>
-  <dynamictemplate name="DefaultListenTo">"Nu auzi nimic deosebit."</dynamictemplate>
-  <verbtemplate name="lock">incuie</verbtemplate>
-  <dynamictemplate name="DefaultLock">"Nu poți încuia asta."</dynamictemplate>
-  <verbtemplate name="move">muta</verbtemplate>
-  <dynamictemplate name="DefaultMove">"Nu poți muta asta."</dynamictemplate>
-  <verbtemplate name="pull">trage</verbtemplate>
-  <dynamictemplate name="DefaultPull">"Nu poți trage asta."</dynamictemplate>
-  <verbtemplate name="push">impinge</verbtemplate>
-  <dynamictemplate name="DefaultPush">"Nu poți împinge asta."</dynamictemplate>
-  <verbtemplate name="read">citeste</verbtemplate>
-  <dynamictemplate name="DefaultRead">"Nu e nimic de citit."</dynamictemplate>
-  <verbtemplate name="search">cauta</verbtemplate>
-  <dynamictemplate name="DefaultSearch">"Nu ai găsit nimic."</dynamictemplate>
-  <verbtemplate name="show">arata</verbtemplate>
-  <dynamictemplate name="DefaultShow">"Nu poți arăta asta."</dynamictemplate>
+  <verbtemplate name="kiss">săruți</verbtemplate>
+  <dynamictemplate name="DefaultKiss">"Nu poți să " + object.article + " săruți."</dynamictemplate>
+  <verbtemplate name="knock">knock</verbtemplate>
+  <dynamictemplate name="DefaultKnock">"You can't knock " + object.article + "."</dynamictemplate>
+  <verbtemplate name="lick">lingi</verbtemplate>
+  <dynamictemplate name="DefaultLick">"Nu poți să " + object.article + " lingi."</dynamictemplate>
+  <verbtemplate name="lie">te culci pe</verbtemplate>
+  <verbtemplate name="lie">te întinzi pe</verbtemplate>
+  <dynamictemplate name="DefaultLie">"Nu poți să te culci pe " + object.gender + "."</dynamictemplate>
+  <verbtemplate name="listento">îl asculți pe</verbtemplate>
+  <verbtemplate name="listento">asculți</verbtemplate>
+  <dynamictemplate name="DefaultListenTo">CapFirst(object.article) + " asculți, dar " + object.gender + " nu " + Conjugate(object, "face") + " nici un zgomot."</dynamictemplate>
+  <verbtemplate name="lock">încui</verbtemplate>
+  <dynamictemplate name="DefaultLock">"Nu poți să " + object.article + " încui."</dynamictemplate>
+  <verbtemplate name="move">miști</verbtemplate>
+  <dynamictemplate name="DefaultMove">"Nu poți să " + object.article + " miști."</dynamictemplate>
+  <verbtemplate name="pull">tragi</verbtemplate>
+  <dynamictemplate name="DefaultPull">"Nu poți să " + object.article + " tragi."</dynamictemplate>
+  <verbtemplate name="push">împingi</verbtemplate>
+  <dynamictemplate name="DefaultPush">"Nu poți să " + object.article + " împingi."</dynamictemplate>
+  <verbtemplate name="read">citești</verbtemplate>
+  <dynamictemplate name="DefaultRead">"Nu poți să " + object.article + " citești."</dynamictemplate>
+  <verbtemplate name="search">cauți</verbtemplate>
+  <dynamictemplate name="DefaultSearch">"Nu poți să " + object.article + " cauți."</dynamictemplate>
+  <verbtemplate name="show">arăți</verbtemplate>
+  <dynamictemplate name="DefaultShow">"Nu poți să " + object.article + " arăți."</dynamictemplate>
   <verbtemplate name="sit">stai pe</verbtemplate>
-  <verbtemplate name="sit">asaza-te</verbtemplate>
-  <dynamictemplate name="DefaultSit">"Nu te poți așeza aici."</dynamictemplate>
-  <verbtemplate name="smell">miroase</verbtemplate>
-  <dynamictemplate name="DefaultSmell">"Nu miroși nimic deosebit."</dynamictemplate>
-  <verbtemplate name="taste">gusta</verbtemplate>
-  <dynamictemplate name="DefaultTaste">"Nu poți gusta asta."</dynamictemplate>
-  <verbtemplate name="throw">arunca</verbtemplate>
-  <dynamictemplate name="DefaultThrow">"Nu poți arunca asta."</dynamictemplate>
-  <verbtemplate name="tie">leaga</verbtemplate>
-  <dynamictemplate name="DefaultTie">"Nu poți lega asta."</dynamictemplate>
-  <verbtemplate name="touch">atinge</verbtemplate>
-  <dynamictemplate name="DefaultTouch">"Nu poți atinge asta."</dynamictemplate>
-  <verbtemplate name="turnon">deschide</verbtemplate>
-  <verbtemplate name="turnon">deschide #object#</verbtemplate>
-  <verbtemplate name="turnon">aprinde</verbtemplate>
-  <verbtemplate name="turnon">switch #object# on</verbtemplate>
-  <dynamictemplate name="DefaultTurnOn">"Nu poți deschide sau aprinde asta."</dynamictemplate>
-  <verbtemplate name="turnoff">inchide</verbtemplate>
-  <verbtemplate name="turnoff">inchide #object#</verbtemplate>
-  <verbtemplate name="turnoff">stinge</verbtemplate>
-  <verbtemplate name="turnoff">stinge #object#</verbtemplate>
-  <dynamictemplate name="DefaultTurnOff">"Nu poți închide sau stinge asta."</dynamictemplate>
-  <verbtemplate name="turn">invarte</verbtemplate>
-  <dynamictemplate name="DefaultTurn">"Nu poți învârti asta."</dynamictemplate>
-  <verbtemplate name="unlock">descuie</verbtemplate>
-  <dynamictemplate name="DefaultUnlock">"Nu poți descuia asta."</dynamictemplate>
-  <verbtemplate name="untie">dezleaga</verbtemplate>
-  <dynamictemplate name="DefaultUntie">"Nu poți dezlega asta."</dynamictemplate>
-  <template templatetype="command" name="useon"><![CDATA[^foloseste (?<object1>.*) cu (?<object2>.*)$]]></template>
-  <dynamictemplate name="DefaultUseOn">"Nu poți folosi asta în acest mod."</dynamictemplate>
-  <verbtemplate name="wear">poarta</verbtemplate>
-  <dynamictemplate name="DefaultWear">"Nu poți purta asta."</dynamictemplate>
-  <template templatetype="command" name="listen">^asculta$</template>
-  <template name="DefaultListen">Nu auzi nimic deosebit.</template>
-  <template templatetype="command" name="jump">^sari$</template>
-  <template name="DefaultJump">Sari.</template>
-  <template templatetype="command" name="sitdown">^stai$|^stai jos$|^asaza-te$</template>
-  <template name="DefaultSitDown">Nu vrei să stai deocamdată.</template>
-  <template templatetype="command" name="liedown">^culca-te$|^culca-te pe$|^culca$</template>
-  <template name="DefaultLieDown">Nu vrei să te culci deocamdată.</template>
-  <template templatetype="command" name="sleep">^dormi$|^odihneste$|^odihneste-te$</template>
-  <template name="DefaultSleep">Nu ai nevoie de somn deocamdată.</template>
-  <template templatetype="command" name="wait">^asteapta$</template>
-  <template name="DefaultWait">Trece puțin timp.</template>
+  <verbtemplate name="sit">stai jos pe</verbtemplate>
+  <verbtemplate name="sit">te așezi pe</verbtemplate>
+  <dynamictemplate name="DefaultSit">"Nu poți să stai pe " + object.gender + "."</dynamictemplate>
+  <verbtemplate name="smell">miroși</verbtemplate>
+  <dynamictemplate name="DefaultSmell">CapFirst(object.article) + " miroși, dar " + object.gender + " nu " + Conjugate(object, "miroase") + " a nimic."</dynamictemplate>
+  <verbtemplate name="taste">guști</verbtemplate>
+  <dynamictemplate name="DefaultTaste">"Nu poți să " + object.article + " guști."</dynamictemplate>
+  <verbtemplate name="throw">arunci</verbtemplate>
+  <dynamictemplate name="DefaultThrow">"Nu poți să " + object.article + " arunci."</dynamictemplate>
+  <verbtemplate name="tie">legi</verbtemplate>
+  <dynamictemplate name="DefaultTie">"Nu poți să " + object.article + " legi."</dynamictemplate>
+  <verbtemplate name="touch">atingi</verbtemplate>
+  <dynamictemplate name="DefaultTouch">"Nu poți să " + object.article + " atingi."</dynamictemplate>
+  <verbtemplate name="turnon">pornești</verbtemplate>
+  <dynamictemplate name="DefaultTurnOn">"Nu poți să " + object.article + " pornești."</dynamictemplate>
+  <verbtemplate name="turnoff">oprești</verbtemplate>
+  <dynamictemplate name="DefaultTurnOff">"Nu poți să " + object.article + " oprești."</dynamictemplate>
+  <verbtemplate name="turn">întorci</verbtemplate>
+  <dynamictemplate name="DefaultTurn">"Nu poți să " + object.article + " întorci."</dynamictemplate>
+  <verbtemplate name="unlock">descui</verbtemplate>
+  <dynamictemplate name="DefaultUnlock">"Nu poți să " + object.article + " descui."</dynamictemplate>
+  <verbtemplate name="untie">dezlegi</verbtemplate>
+  <dynamictemplate name="DefaultUntie">"Nu poți să " + object.article + " dezlegi."</dynamictemplate>
+  <template templatetype="command" name="useon"><![CDATA[^folosești (?<object1>.*) (pe|cu|împreună cu) (?<object2>.*)$]]></template>
+  <dynamictemplate name="DefaultUseOn">"Nu poți să " + object2.article + " folosești în acest fel."</dynamictemplate>
+  <verbtemplate name="wear">îmbraci</verbtemplate>
+  <dynamictemplate name="DefaultWear">"Nu poți să " + object.article + " îmbraci."</dynamictemplate>
+  <template templatetype="command" name="listen">^asculți$</template>
+  <template name="DefaultListen">Nu poți auzi prea mult.</template>
+  <template templatetype="command" name="jump">^sări$</template>
+  <template name="DefaultJump">Sări, dar nu se întâmplă nimic.</template>
+  <template templatetype="command" name="sitdown">^stai$|^stai jos$</template>
+  <template name="DefaultSitDown">Nu ai timp să stai.</template>
+  <template templatetype="command" name="liedown">^te întinzi$|^te întinzi pe jos$</template>
+  <template name="DefaultLieDown">Nu ai timp de leneveală.</template>
+  <template templatetype="command" name="sleep">^dormi$|^te odihnești$</template>
+  <template name="DefaultSleep">Nu ai timp de somn.</template>
+  <template templatetype="command" name="wait">^aștepți$</template>
+  <template name="DefaultWait">Timpul trece.</template>
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
-  <template name="DefaultXyzzy">Surprinzător, nu se întâmplă nimic.</template>
+  <template name="DefaultXyzzy">Surprinzător, dar nu se întâmplă absolut nimic.</template>
   <template templatetype="command" name="help">^ajutor$|^\?$</template>
-  <template name="DefaultHelp"><![CDATA[<br/><u>Lista comenzilor principale</u><br/><br/>
-<b>- Obiecte :</b><br/>  PRIVESTE... ; VORBESTE (CU)... ; IA... ; PUNE JOS... ; DESCHIDE... ; DA... (LUI)... ; FOLOSESTE... (CU)... ; IMPINGE... ; TRAGE... ; PUNE... (PE)... ; SCOATE... (DIN)... ; INTREABA... (DESPRE)... ; SPUNE... ; Etc. <br/><br/>
-<b>- Inventar :</b><br/>  Pentru a ști ce ai în inventar : I, INV sau INVENTAR.<br/><br/>
-<b>- Deplasare :</b><br/>  Folosește butoanele de pe busolă sau scrie NORD, SUD, EST, VEST, N, S, E, V, NV, NE, Sus, Jos, In, Afara, etc.<br/><br/>
-<b>- Scurtaturi :</b><br/>  Folosește săgețile sus și jos pentru a trece prin ultimele comenzi tastate. Pentru a examina ceva, e de ajuns să tastezi "X".<br/>]]></template>
+  <template templatetype="command" name="save">^salvează$</template>
 
-  <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
+  <template name="DefaultHelp"><![CDATA[<u>Ajutor</u><br/><br/>
+<b>- Obiecte:</b>Încearcă TE UIȚI LA..., VORBEȘTI CU..., IEI..., ARUNCI..., DESCHIZI..., DAI... LUI..., FOLOSEȘTI... PE/CU...<br/>
+<b>- Inventar:</b>Vezi ce obiecte ai la tine, scriind I, INV sau INVENTAR.<br/>
+<b>- Cum te miști:</b>Apasă pe butoanele de la busolă, sau scrie MERGI SPRE NORD, SUD, E, MERGI LA...<br/>
+<b>- Scurtături:</b>Apasă butoanele cu săgeți de la tastatură pentru a derula prin comenzile pe care deja le-ai scris. Tastează X... ca o scurtătură pentru TE UIȚI LA...]]></template>
 
-  <type name="masculine">
-  <gender>el</gender>
-  <article>îl</article>
+  <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
+  <template name="LanguageSpecificObjectTypes"></template>
+  <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
+  <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
+  <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
+
+  <template name="EditorVerbDefaultExpression">"Nu poți să " + object.article + " #verb#."</template>
+
+  <type name="maleobject">
+    <displayverbs type="list">[LookAt];[Take]</displayverbs>
+    <gender>[MaleGender]</gender>
+    <article>[MaleArticle]</article>
   </type>
-  
-  <type name="feminine">
-  <gender>ea</gender>
-  <article>o</article>
+
+   <type name="femaleobject">
+    <displayverbs type="list">[LookAt];[Take]</displayverbs>
+    <gender>[FemaleGender]</gender>
+    <article>[FemaleArticle]</article>
   </type>
-  
-  <template name="EditorVerbDefaultExpression">"Nu poți sp " + object.article + " #verb#."</template>
+
+   <type name="maleobjectplural">
+    <displayverbs type="list">[LookAt];[Take]</displayverbs>
+    <gender>[MalePluralGender]</gender>
+    <article>[MalePluralArticle]</article>
+  </type>
+
+   <type name="femaleobjectplural">
+    <displayverbs type="list">[LookAt];[Take]</displayverbs>
+    <gender>[FemalePluralGender]</gender>
+    <article>[FemalePluralArticle]</article>
+  </type>
+
+
+  <template name="LanguageSpecificObjectTypes">
+    masculin=Inanimate object (masculin);
+    masculinPlural=Inanimate objects (masculin plural);
+    feminin=Inanimate object (feminin);
+    femininPlural=Inanimate objects (feminin plural);
+  </template>
+
+  <type name="masculin">
+    <gender>el</gender>
+    <article>îl</article>
+  </type>
+
+  <type name="masculinPlural">
+    <gender>ei</gender>
+    <article>îi</article>
+  </type>
+
+  <type name="feminin">
+    <gender>ea</gender>
+    <article>o</article>
+  </type>
+
+  <type name="femininPlural">
+    <gender>ele</gender>
+    <article>le</article>
+  </type>
 
   <function name="GetDefaultPrefix" type="string" parameters="obj">
-    if (Instr("aeiou", Left(GetDisplayAlias(obj), 1)) > 0) {
-      return ("an")
-    }
-    else {
-      return ("a")
-    }
+    gender = obj.gender
+        if (gender = "el") {
+          return ("un")
+        }
+        else if (gender = "ea") {
+          return ("o")
+        }
+        else {
+          return ("niște")
+        }
   </function>
 
   <function name="WriteVerb" type="string" parameters="obj, verb">
     return (CapFirst(obj.gender) + " " + Conjugate(obj, verb))
   </function>
 
+  <function name="Deschis" type="string" parameters="obj">
+    gender = obj.gender
+    if (gender = "el") {
+      return ("deschis")
+    }
+    elseif (gender = "ea") {
+      return ("deschisă")
+    }
+    elseif (gender = "ei") {
+      return ("deschiși")
+    }
+    elseif (gender = "ele") {
+      return ("deschise")
+    }
+    else {
+      return ("deschisă")
+    }
+  </function>
+
+  <function name="Inchis" type="string" parameters="obj">
+    gender = obj.gender
+    if (gender = "el") {
+      return ("închis")
+    }
+    elseif (gender = "ea") {
+      return ("închisă")
+    }
+    elseif (gender = "ei") {
+      return ("închiși")
+    }
+    elseif (gender = "ele") {
+      return ("închise")
+    }
+    else {
+      return ("închisă")
+    }
+  </function>
+
+  <function name="Descuiat" type="string" parameters="obj">
+    gender = obj.gender
+    if (gender = "el") {
+      return ("descuiat")
+    }
+    elseif (gender = "ea") {
+      return ("descuiată")
+    }
+    elseif (gender = "ei") {
+      return ("descuiați")
+    }
+    elseif (gender = "ele") {
+      return ("descuiate")
+    }
+    else {
+      return ("descuiată")
+    }
+  </function>
+
+  <function name="Incuiat" type="string" parameters="obj">
+    gender = obj.gender
+    if (gender = "el") {
+      return ("încuiat")
+    }
+    elseif (gender = "ea") {
+      return ("încuiată")
+    }
+    elseif (gender = "ei") {
+      return ("încuiați")
+    }
+    elseif (gender = "ele") {
+      return ("încuiate")
+    }
+    else {
+      return ("încuiată")
+    }
+  </function>
+
+  <function name="Pornit" type="string" parameters="obj">
+    gender = obj.gender
+    if (gender = "el") {
+      return ("pornit")
+    }
+    elseif (gender = "ea") {
+      return ("pornită")
+    }
+    elseif (gender = "ei") {
+      return ("porniți")
+    }
+    elseif (gender = "ele") {
+      return ("pornite")
+    }
+    else {
+      return ("pornită")
+    }
+  </function>
+
+  <function name="Oprit" type="string" parameters="obj">
+    gender = obj.gender
+    if (gender = "el") {
+      return ("oprit")
+    }
+    elseif (gender = "ea") {
+      return ("oprită")
+    }
+    elseif (gender = "ei") {
+      return ("opriți")
+    }
+    elseif (gender = "ele") {
+      return ("oprite")
+    }
+    else {
+      return ("oprită")
+    }
+  </function>
+
   <function name="Conjugate" type="string" parameters="obj, verb">
     gender = obj.gender
-    if (gender = "he" or gender = "she") {
-      gender = "it"
-    }
     switch (verb) {
-      case ("be") {
+    
+      case ("este") {
         switch (gender) {
-          case ("i") {
-            return ("am")
+          case ("eu") {
+            return ("sunt")
           }
-          case ("you") {
-            return ("are")
+          case ("tu") {
+            return ("ești")
           }
-          case ("it") {
-            return ("is")
+          case ("el") {
+            return ("este")
           }
-          case ("we") {
-            return ("are")
+          case ("ea") {
+            return ("este")
           }
-          case ("they") {
-            return ("are")
+          case ("noi") {
+            return ("suntem")
+          }
+          case ("voi") {
+            return ("sunteți")
+          }
+          case ("ei") {
+            return ("sunt")
+          }
+          case ("ele") {
+            return ("sunt")
           }
           default {
-            return ("is")
+            return ("este")
           }
         }
       }
-      case ("do") {
+
+      case ("vrea") {
         switch (gender) {
-          case ("i") {
-            return ("do")
+          case ("eu") {
+            return ("vreau")
           }
-          case ("you") {
-            return ("do")
+          case ("tu") {
+            return ("vrei")
           }
-          case ("it") {
-            return ("does")
+          case ("el") {
+            return ("vrea")
           }
-          case ("we") {
-            return ("do")
+          case ("ea") {
+            return ("vrea")
           }
-          case ("they") {
-            return ("do")
+          case ("noi") {
+            return ("vrem")
+          }
+          case ("voi") {
+            return ("vreți")
+          }
+          case ("ei") {
+            return ("vor")
+          }
+          case ("ele") {
+            return ("vor")
           }
           default {
-            return ("do")
-          }       
+            return ("vrea")
+          }
         }
       }
-      default {
-        if (gender = "it") {
-          return (verb + "s")
+
+      case ("face") {
+        switch (gender) {
+          case ("eu") {
+            return ("fac")
+          }
+          case ("tu") {
+            return ("faci")
+          }
+          case ("el") {
+            return ("face")
+          }
+          case ("ea") {
+            return ("face")
+          }
+          case ("noi") {
+            return ("facem")
+          }
+          case ("voi") {
+            return ("faceți")
+          }
+          case ("ei") {
+            return ("fac")
+          }
+          case ("ele") {
+            return ("fac")
+          }
+          default {
+            return ("face")
+          }
         }
-        else {
-          return (verb)
+      }
+
+      case ("raspunde") {
+        switch (gender) {
+          case ("eu") {
+            return ("răspund")
+          }
+          case ("tu") {
+            return ("răspunzi")
+          }
+          case ("el") {
+            return ("răspunde")
+          }
+          case ("ea") {
+            return ("răspunde")
+          }
+          case ("noi") {
+            return ("răspundem")
+          }
+          case ("voi") {
+            return ("răspundeți")
+          }
+          case ("ei") {
+            return ("răspund")
+          }
+          case ("ele") {
+            return ("răspund")
+          }
+          default {
+            return ("răspunde")
+          }
+        }
+      }
+
+      case ("contine") {
+        switch (gender) {
+          case ("eu") {
+            return ("conțin")
+          }
+          case ("tu") {
+            return ("conții")
+          }
+          case ("el") {
+            return ("conține")
+          }
+          case ("ea") {
+            return ("conține")
+          }
+          case ("noi") {
+            return ("conținem")
+          }
+          case ("voi") {
+            return ("conțineți")
+          }
+          case ("ei") {
+            return ("conțin")
+          }
+          case ("ele") {
+            return ("conțin")
+          }
+          default {
+            return ("conține")
+          }
+        }
+      }
+      
+      case ("miroase") {
+        switch (gender) {
+          case ("eu") {
+            return ("miros")
+          }
+          case ("tu") {
+            return ("miroși")
+          }
+          case ("el") {
+            return ("miroase")
+          }
+          case ("ea") {
+            return ("miroase")
+          }
+          case ("noi") {
+            return ("mirosim")
+          }
+          case ("voi") {
+            return ("mirosiți")
+          }
+          case ("ei") {
+            return ("miros")
+          }
+          case ("ele") {
+            return ("miros")
+          }
+          default {
+            return ("miroase")
+          }   
         }
       }
     }
