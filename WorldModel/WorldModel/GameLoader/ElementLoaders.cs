@@ -439,8 +439,8 @@ namespace TextAdventures.Quest
                     type = GameLoader.m_implicitTypes.Get(currentElementType, attribute);
                 }
 
-                // map old to new type names if necessary
-                if (type != null && WorldModel.Version <= WorldModelVersion.v530 && s_legacyTypeMappings.ContainsKey(type))
+                // map old to new type names if necessary (but not in included library files)
+                if (type != null && WorldModel.Version <= WorldModelVersion.v530 && !current.MetaFields[MetaFieldDefinitions.Library] && s_legacyTypeMappings.ContainsKey(type))
                 {
                     type = s_legacyTypeMappings[type];
                 }
