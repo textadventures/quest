@@ -18,7 +18,7 @@
   <dynamictemplate name="FullInventory">"Isso é pesado demais para você carregar."</dynamictemplate>
   <dynamictemplate name="MaxObjectsInInventory">"Você não pode carregar mais nada."</dynamictemplate>
   <dynamictemplate name="MaxObjectsInContainer">"Você não pode pôr mais nada nisso."</dynamictemplate>
-  <template name="SeeListHeader">Você pode ver</template>
+  <template name="SeeListHeader">Você observa</template>
   <template name="GoListHeader">Você pode ir para</template>
   <template name="And">e</template>
   <template name="Or">ou</template>
@@ -74,8 +74,8 @@
   <template name="CannotDoThat">Isso não é permitido.</template>
   <dynamictemplate name="AlreadyThere">CapFirst(object.article) + " " + GetDisplayAlias(object) + " já " + Conjugate(object, "estar") + " lá."</dynamictemplate>
   <template name="Done">Pronto.</template>
-  <template name="ContainerContentsPrefix">contendo</template>
-  <template name="SurfaceContentsPrefix">em que há</template>
+  <template name="ContainerContentsPrefix">onde se vê</template>
+  <template name="SurfaceContentsPrefix">onde se vê</template>
   <dynamictemplate name="ObjectContains">WriteVerb(object, "conter")</dynamictemplate>
   <dynamictemplate name="ContainerFull">WriteVerb(object, "estar") + " chei" + object.article + "."</dynamictemplate>
   <dynamictemplate name="DisambiguateMenu">"Favor estipular a que '" + text + "' você se refere:"</dynamictemplate>
@@ -97,7 +97,7 @@
   <dynamictemplate name="Eaten">"Você " + object.article + " comeu."</dynamictemplate>
   <template name="DefaultOops">Nada para corrigir.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(object1.article) + " " + GetDisplayAlias(object1) + " não " + Conjugate(object1, "conter") + object2.article + " " + GetDisplayAlias(object2) + "."</dynamictemplate>
-  <dynamictemplate name="YouLooking">"Você parece " + text +"."</dynamictemplate>
+  <dynamictemplate name="YouLooking">"Você está olhando para " + text + "."</dynamictemplate>
   <dynamictemplate name="LookAtDarkness">"Está escuro demais para ver qualquer coisa."</dynamictemplate>
   <template name="VerbObjectSeparator">com; usando</template>
   <template name="DefaultMultiObjectVerb">Isso não funciona.</template>
@@ -105,7 +105,9 @@
   <template name="UseOnMenu">Em que objeto?</template>
   <template name="GiveToMenu">Para que objeto?</template>
   <template name="NoObjectsAvailable">Não há objeto disponível para isso.</template>
-
+  <template name="Yes">Sim</template>
+  <template name="No">Não</template>
+  
   <template name="CompassNW">noroeste</template>
   <template name="CompassN">norte</template>
   <template name="CompassNE">nordeste</template>
@@ -148,7 +150,7 @@
   <template name="ContinueLabel">Continuar...</template>
 
   <template templatetype="command" name="go"><![CDATA[^ir para (?<exit>.*)$|^ir (?<exit>.*)$|^(?<exit>norte|leste|sul|oeste|nordeste|noroeste|sudeste|sudoeste|dentro|fora|cima|baixo|nt|le|sl|oe|nd|nr|sd|so|af|ac|ad|ab)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^observar (?<exit>norte|leste|sul|oeste|nordeste|noroeste|sudeste|sudoeste|dentro|fora|cima|baixo|nt|le|sl|oe|nd|nr|sd|so|af|ac|ad|ab)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^olhar para (?<exit>.*)$|^ob (?<exit>norte|leste|sul|oeste|nordeste|noroeste|sudeste|sudoeste|dentro |fora|cima|baixo|nt|le|sl|oe|nd|nr|sd|so|af|ac|ad|ab)$]]></template>
   <template templatetype="command" name="look">^observar$|^observa$|^observe$|^ob$</template>
   <verbtemplate name="lookat">examinar</verbtemplate>
   <verbtemplate name="lookat">examina</verbtemplate>
@@ -253,11 +255,11 @@
   <verbtemplate name="knock">bate</verbtemplate>
   <verbtemplate name="knock">bata</verbtemplate>
   <dynamictemplate name="DefaultKnock">"Você não pode bater."</dynamictemplate>
-  <verbtemplate name="lick">surrar</verbtemplate>
-  <verbtemplate name="lick">surra</verbtemplate>
-  <verbtemplate name="lick">surra-#object#</verbtemplate>
-  <verbtemplate name="lick">surre</verbtemplate>
-  <verbtemplate name="lick">surre-#object#</verbtemplate>
+  <verbtemplate name="lick">lamber</verbtemplate>
+  <verbtemplate name="lick">lambe</verbtemplate>
+  <verbtemplate name="lick">lambe-#object#</verbtemplate>
+  <verbtemplate name="lick">lamba</verbtemplate>
+  <verbtemplate name="lick">lamba-#object#</verbtemplate>
   <dynamictemplate name="DefaultLick">"Você não " + object.article + " pode surrar."</dynamictemplate>
   <verbtemplate name="lie">deitar</verbtemplate>
   <verbtemplate name="lie">deitar-se</verbtemplate>
