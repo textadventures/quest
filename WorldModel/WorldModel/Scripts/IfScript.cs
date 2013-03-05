@@ -164,10 +164,10 @@ namespace TextAdventures.Quest.Scripts
 
         public void SetElse(IScript elseScript)
         {
-            System.Diagnostics.Debug.Assert(elseScript == null || !m_hasElse, "UndoSetElse assumes that we only ever set the Else script once");
-
             if (base.UndoLog != null)
             {
+                System.Diagnostics.Debug.Assert(elseScript == null || !m_hasElse, "UndoSetElse assumes that we only ever set the Else script once");
+
                 base.UndoLog.StartTransaction("Add Else script");
                 base.UndoLog.AddUndoAction(new UndoSetElse(this, m_elseScript, elseScript, m_hasElse, true));
             }
