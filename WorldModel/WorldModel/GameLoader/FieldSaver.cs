@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using TextAdventures.Quest.Scripts;
 
@@ -93,11 +94,13 @@ namespace TextAdventures.Quest
             public abstract Type AppliesTo { get; }
             public abstract void Save(GameXmlWriter writer, Element element, string attribute, object value);
 
+            private static Regex s_regex = new Regex("^[A-Za-z0-9]*$");
+
             protected void WriteAttribute(GameXmlWriter writer, Element element, string attribute, string type, string value)
             {
-                if (attribute.Contains(" "))
+                if (!s_regex.IsMatch(attribute))
                 {
-                    // For attribute names with spaces, we output
+                    // For attribute names with spaces or accented characters, we output
                     //      <attr name="my attribute" ... />
                     writer.WriteStartElement("attr");
                     writer.WriteAttributeString("name", attribute);
