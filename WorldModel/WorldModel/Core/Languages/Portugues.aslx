@@ -260,7 +260,7 @@
   <verbtemplate name="lick">lambe-#object#</verbtemplate>
   <verbtemplate name="lick">lamba</verbtemplate>
   <verbtemplate name="lick">lamba-#object#</verbtemplate>
-  <dynamictemplate name="DefaultLick">"Você não " + object.article + " pode surrar."</dynamictemplate>
+  <dynamictemplate name="DefaultLick">"Você não " + object.article + " pode lamber."</dynamictemplate>
   <verbtemplate name="lie">deitar</verbtemplate>
   <verbtemplate name="lie">deitar-se</verbtemplate>
   <verbtemplate name="lie">deita</verbtemplate>
