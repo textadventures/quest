@@ -342,7 +342,7 @@
       baselist = object.displayverbs
     }
     
-    if (not game.autodisplayverbs) {
+    if (not game.autodisplayverbs or GetBoolean(object,"usestandardverblist")) {
       return (baselist)
     }
     else {
@@ -367,7 +367,12 @@
         }
         object.generatedverbslist = verbs
       }
-      return (ListCombine(baselist, verbs))
+      if (GetBoolean(object,"useindividualverblist")) {
+        return (verbs)
+      }
+      else {
+        return (ListCombine(baselist, verbs))
+      }  
     }
   </function>
 
