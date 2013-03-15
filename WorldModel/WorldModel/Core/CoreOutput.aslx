@@ -157,6 +157,9 @@
     else if (StartsWith(section, "random:")) {
       return (ProcessTextCommand_Random(section, data))
     }
+    else if (StartsWith(section, "rndalt:")) {
+      return (ProcessTextCommand_RandomAlias(section, data))
+    }
     else if (StartsWith(section, "img:")) {
       return (ProcessTextCommand_Img(section, data))
     }
@@ -299,7 +302,24 @@
     return (ProcessTextSection(ListItem(elementslist, index), data))
   </function>
 
-  <function name="ProcessTextCommand_If" type="string" parameters="section, data">
+  <function name="ProcessTextCommand_RandomAlias" type="string" parameters="section, data">
+    objectname = Mid(section, 8)
+    object = GetObject(objectname)
+    if (object = null) {
+      return ("{" + section + "}")
+    }
+    else {
+      count = ListCount(object.alt)
+      if (count > 0) {
+        return (ListItem(object.alt, GetRandomInt(0, count - 1)))
+      }
+      else {
+        return ("")
+      }
+    }
+  </function>
+
+    <function name="ProcessTextCommand_If" type="string" parameters="section, data">
     <![CDATA[
     command = Mid(section, 4)
     colon = Instr(command, ":")
