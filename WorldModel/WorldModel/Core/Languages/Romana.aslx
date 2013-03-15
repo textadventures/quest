@@ -1,6 +1,6 @@
 ﻿<library>
   <!-- Contributed by Mihnea Firan -->
-  <!-- versiune 1.1.30301 -->
+  <!-- versiune 1.4.30304 -->
   <include ref="English.aslx"/>
   <template name="LanguageId">ro</template>
   <template name="UnresolvedObject">Nu poți vedea acest obiect.</template>
@@ -12,7 +12,7 @@
   <dynamictemplate name="FullInventory">WriteVerb(object, "este") + " prea greu."</dynamictemplate>
   <dynamictemplate name="MaxObjectsInInventory">"Nu poți căra mai multe lucruri."</dynamictemplate>
   <dynamictemplate name="MaxObjectsInContainer">"Nu poți pune mai mult în " + object.gender + "."</dynamictemplate>
-  <template name="SeeListHeader">Poți vedea</template>
+  <template name="SeeListHeader">Aici se află</template>
   <template name="GoListHeader">Poți merge spre</template>
   <template name="And">și</template>
   <template name="Or">sau</template>
@@ -59,8 +59,8 @@
   <template name="SelfAlt">tine</template>
   <template name="AllObjects">tot; toate</template>
   <template name="ParserIgnorePrefixes">o; un</template>
-  <dynamictemplate name="AlreadyOpen">"Este deja " + Deschis(object) + "."</dynamictemplate>
-  <dynamictemplate name="AlreadyClosed">"Este deja " + Inchis(object) + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyOpen">WriteVerb(object, "este") + " deja " + Deschis(object) + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyClosed">WriteVerb(object, "este") + " deja " + Inchis(object) + "."</dynamictemplate>
   <dynamictemplate name="CantOpen">"Nu poți să " + object.article + " deschizi."</dynamictemplate>
   <dynamictemplate name="CantClose">"Nu poți să " + object.article + " închizi."</dynamictemplate>
   <dynamictemplate name="OpenSuccessful">CapFirst(object.article) + " deschizi."</dynamictemplate>
@@ -71,7 +71,7 @@
   <template name="ContainerContentsPrefix">ce conține</template>
   <template name="SurfaceContentsPrefix">pe care vezi</template>
   <dynamictemplate name="ObjectContains">WriteVerb(object, "contine")</dynamictemplate>
-  <dynamictemplate name="ContainerFull">WriteVerb(object, "este") + " plin."</dynamictemplate>
+  <dynamictemplate name="ContainerFull">WriteVerb(object, "este") + Plin(object) + "."</dynamictemplate>
   <dynamictemplate name="DisambiguateMenu">"Alege la care '" + text + "' te referi:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
   <template name="LockedExit">Drumul acesta este blocat.</template>
@@ -84,10 +84,10 @@
   <dynamictemplate name="AlreadyLocked">WriteVerb(object, "este") + " deja " + Incuiat(object) + "."</dynamictemplate>
   <dynamictemplate name="AlreadyUnlocked">WriteVerb(object, "este") + " deja " + Descuiat(object) + "."</dynamictemplate>
   <dynamictemplate name="CannotLockOpen">"Nu poți să " + object.article + " încui dacă " + WriteVerb(object, "este") + " " + Deschis(object) + "."</dynamictemplate>
-  <dynamictemplate name="AlreadySwitchedOn">WriteVerb(object, "este") + " deja " + Pornit(object) + "."</dynamictemplate>"
-  <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "este") + " deja " + Oprit(object) + "."</dynamictemplate>"
-  <dynamictemplate name="SwitchedOn">object.article + " pornești."</dynamictemplate>
-  <dynamictemplate name="SwitchedOff">object.article + " oprești."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOn">CapFirst(Conjugate(object, "este")) + " deja " + Pornit(object) + "."</dynamictemplate>"
+  <dynamictemplate name="AlreadySwitchedOff">CapFirst(Conjugate(object, "este")) + " deja " + Oprit(object) + "."</dynamictemplate>"
+  <dynamictemplate name="SwitchedOn">CapFirst(object.article) + " pornești."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">CapFirst(object.article) + " oprești."</dynamictemplate>
   <dynamictemplate name="Eaten">CapFirst(object.article) + " mănânci."</dynamictemplate>
   <template name="DefaultOops">Nu este nimic de corectat.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " nu conține " + GetDisplayAlias(object2) + "."</dynamictemplate>
@@ -160,10 +160,10 @@
   <verbtemplate name="speakto">vorbești</verbtemplate>
   <verbtemplate name="open">deschizi</verbtemplate>
   <verbtemplate name="close">închizi</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^pui (?<object1>.*) (deasupra|sub|pe|în) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="put"><![CDATA[^pui (?<object1>.*) (deasupra|sub|pe|peste|în) (?<object2>.*)$]]></template>
   <template templatetype="command" name="removefrom"><![CDATA[^scoți (?<object1>.*) din (?<object2>.*)$]]></template>
-  <template templatetype="command" name="ask"><![CDATA[^întrebi (?<object>.*) despre (?<text>.*)$]]></template>
-  <template templatetype="command" name="tell"><![CDATA[^spui (?<object>.*) despre (?<text>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^(îl|o|îi|le) întrebi pe (?<object>.*) despre (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^îi spui lui (?<object>.*) despre (?<text>.*)$]]></template>
   <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
   
   <verbtemplate name="buy">cumperi</verbtemplate>
@@ -340,13 +340,13 @@
     if (gender = "el") {
       return ("deschis")
     }
-    elseif (gender = "ea") {
+    else if (gender = "ea") {
       return ("deschisă")
     }
-    elseif (gender = "ei") {
+    else if (gender = "ei") {
       return ("deschiși")
     }
-    elseif (gender = "ele") {
+    else if (gender = "ele") {
       return ("deschise")
     }
     else {
@@ -359,13 +359,13 @@
     if (gender = "el") {
       return ("închis")
     }
-    elseif (gender = "ea") {
+    else if (gender = "ea") {
       return ("închisă")
     }
-    elseif (gender = "ei") {
+    else if (gender = "ei") {
       return ("închiși")
     }
-    elseif (gender = "ele") {
+    else if (gender = "ele") {
       return ("închise")
     }
     else {
@@ -373,18 +373,38 @@
     }
   </function>
 
+  <function name="Plin" type="string" parameters="obj">
+    gender = obj.gender
+    if (gender = "el") {
+      return ("plin")
+    }
+    else if (gender = "ea") {
+      return ("plină")
+    }
+    else if (gender = "ei") {
+      return ("plini")
+    }
+    else if (gender = "ele") {
+      return ("pline")
+    }
+    else {
+      return ("plin")
+    }
+  </function>
+
+  
   <function name="Descuiat" type="string" parameters="obj">
     gender = obj.gender
     if (gender = "el") {
       return ("descuiat")
     }
-    elseif (gender = "ea") {
+    else if (gender = "ea") {
       return ("descuiată")
     }
-    elseif (gender = "ei") {
+    else if (gender = "ei") {
       return ("descuiați")
     }
-    elseif (gender = "ele") {
+    else if (gender = "ele") {
       return ("descuiate")
     }
     else {
@@ -397,13 +417,13 @@
     if (gender = "el") {
       return ("încuiat")
     }
-    elseif (gender = "ea") {
+    else if (gender = "ea") {
       return ("încuiată")
     }
-    elseif (gender = "ei") {
+    else if (gender = "ei") {
       return ("încuiați")
     }
-    elseif (gender = "ele") {
+    else if (gender = "ele") {
       return ("încuiate")
     }
     else {
@@ -416,13 +436,13 @@
     if (gender = "el") {
       return ("pornit")
     }
-    elseif (gender = "ea") {
+    else if (gender = "ea") {
       return ("pornită")
     }
-    elseif (gender = "ei") {
+    else if (gender = "ei") {
       return ("porniți")
     }
-    elseif (gender = "ele") {
+    else if (gender = "ele") {
       return ("pornite")
     }
     else {
@@ -435,13 +455,13 @@
     if (gender = "el") {
       return ("oprit")
     }
-    elseif (gender = "ea") {
+    else if (gender = "ea") {
       return ("oprită")
     }
-    elseif (gender = "ei") {
+    else if (gender = "ei") {
       return ("opriți")
     }
-    elseif (gender = "ele") {
+    else if (gender = "ele") {
       return ("oprite")
     }
     else {
