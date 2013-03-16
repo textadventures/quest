@@ -28,7 +28,7 @@ Public Class CefSchemeHandler
 
     Public Function ProcessRequest(request As IRequest, ByRef mimeType As String, ByRef stream As IO.Stream) As Boolean Implements ISchemeHandler.ProcessRequest
         Dim uri = New Uri(request.Url)
-        Dim filename = uri.AbsolutePath.Substring(1)
+        Dim filename = uri.UnescapeDataString(uri.AbsolutePath.Substring(1))
 
         stream = _parent.Parent.CurrentGame.GetResource(filename)
 
