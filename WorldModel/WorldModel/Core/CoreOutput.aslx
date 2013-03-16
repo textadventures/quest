@@ -529,9 +529,9 @@
 
   <function name="DisplayHttpLink" parameters="text, url, https">
     <![CDATA[
-    pos = instr(url, "://")
+    pos = Instr(url, "://")
     if (pos > 0) {
-      url = mid(url, pos + 3) 
+      url = Mid(url, pos + 3) 
     }
     if (https) {
       url = "https://" + url
@@ -545,7 +545,7 @@
 
   <function name="DisplayMailtoLink" parameters="text, url">
     <![CDATA[
-    if (instr(url, "mailto:") = 0) {
+    if (Instr(url, "mailto:") = 0) {
       url = "mailto:" + url
     }
     msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
