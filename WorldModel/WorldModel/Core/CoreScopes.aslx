@@ -98,8 +98,8 @@
     return (ScopeReachableNotHeldForRoom(game.pov.parent))
   </function>
 
-  <function name="ScopeReachableLightsource" type="objectlist" parameters="lightstrength">    
-    result = ScopeReachable()
+  <function name="ScopeVisibleLightsource" type="objectlist" parameters="lightstrength">    
+    result = ScopeVisibleNotHeld()
     lightobjects = NewObjectList()
     foreach (obj, result) {
       if (GetBoolean(obj, "lightsource") and GetString(obj, "lightstrength") = lightstrength) {
