@@ -1,6 +1,6 @@
 ﻿<library>
   <!-- Contributed by Mihnea Firan -->
-  <!-- versiune 1.4.30304 -->
+  <!-- versiune 1.5.30307 -->
   <include ref="English.aslx"/>
   <template name="LanguageId">ro</template>
   <template name="UnresolvedObject">Nu poți vedea acest obiect.</template>
@@ -9,8 +9,8 @@
   <template name="DefaultSelfDescription">Arăți bine, ca de obicei.</template>
   <dynamictemplate name="TakeSuccessful">CapFirst(object.article) + " iei."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Nu poți să " + object.article + " iei."</dynamictemplate>
-  <dynamictemplate name="FullInventory">WriteVerb(object, "este") + " prea greu."</dynamictemplate>
-  <dynamictemplate name="MaxObjectsInInventory">"Nu poți căra mai multe lucruri."</dynamictemplate>
+  <dynamictemplate name="FullInventory">WriteVerb(object, "este") + " prea " + Greu(object) + "."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInInventory">"Nu poți căra mai mult."</dynamictemplate>
   <dynamictemplate name="MaxObjectsInContainer">"Nu poți pune mai mult în " + object.gender + "."</dynamictemplate>
   <template name="SeeListHeader">Aici se află</template>
   <template name="GoListHeader">Poți merge spre</template>
@@ -56,7 +56,7 @@
   <template name="MalePluralArticle">îi</template>
   <template name="FemalePluralArticle">le</template>
   <template name="SelfAlias">la tine</template>
-  <template name="SelfAlt">tine</template>
+  <template name="SelfAlt">pe tine</template>
   <template name="AllObjects">tot; toate</template>
   <template name="ParserIgnorePrefixes">o; un</template>
   <dynamictemplate name="AlreadyOpen">WriteVerb(object, "este") + " deja " + Deschis(object) + "."</dynamictemplate>
@@ -83,7 +83,7 @@
   <dynamictemplate name="LockedObject">WriteVerb(object, "este") + " " + Incuiat(object) + "."</dynamictemplate>
   <dynamictemplate name="AlreadyLocked">WriteVerb(object, "este") + " deja " + Incuiat(object) + "."</dynamictemplate>
   <dynamictemplate name="AlreadyUnlocked">WriteVerb(object, "este") + " deja " + Descuiat(object) + "."</dynamictemplate>
-  <dynamictemplate name="CannotLockOpen">"Nu poți să " + object.article + " încui dacă " + WriteVerb(object, "este") + " " + Deschis(object) + "."</dynamictemplate>
+  <dynamictemplate name="CannotLockOpen">"Nu poți să " + object.article + " încui pentru că " + LCase(WriteVerb(object, "este")) + " " + Deschis(object) + "."</dynamictemplate>
   <dynamictemplate name="AlreadySwitchedOn">CapFirst(Conjugate(object, "este")) + " deja " + Pornit(object) + "."</dynamictemplate>"
   <dynamictemplate name="AlreadySwitchedOff">CapFirst(Conjugate(object, "este")) + " deja " + Oprit(object) + "."</dynamictemplate>"
   <dynamictemplate name="SwitchedOn">CapFirst(object.article) + " pornești."</dynamictemplate>
@@ -264,7 +264,7 @@
   <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
   <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
 
-  <template name="EditorVerbDefaultExpression">"Nu poți să " + object.article + " #verb#."</template>
+  <template name="EditorVerbDefaultExpression">"Nu poți să faci asta."</template>
 
   <type name="maleobject">
     <displayverbs type="list">[LookAt];[Take]</displayverbs>
@@ -332,7 +332,7 @@
   </function>
 
   <function name="WriteVerb" type="string" parameters="obj, verb">
-    return (CapFirst(obj.gender) + " " + Conjugate(obj, verb))
+    return (CapFirst(Conjugate(obj, verb)))
   </function>
 
   <function name="Deschis" type="string" parameters="obj">
@@ -466,6 +466,25 @@
     }
     else {
       return ("oprită")
+    }
+  </function>
+
+    <function name="Greu" type="string" parameters="obj">
+    gender = obj.gender
+    if (gender = "el") {
+      return ("greu")
+    }
+    else if (gender = "ea") {
+      return ("grea")
+    }
+    else if (gender = "ei") {
+      return ("grei")
+    }
+    else if (gender = "ele") {
+      return ("grele")
+    }
+    else {
+      return ("greu")
     }
   </function>
 
