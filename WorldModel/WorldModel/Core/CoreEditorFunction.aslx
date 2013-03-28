@@ -15,7 +15,7 @@
         <controltype>dropdown</controltype>
         <attribute>returntype</attribute>
         <width>150</width>
-        <validvalues type="simplestringdictionary">=None; string=String; boolean=Boolean; int=Integer; double=Double; object=Object; stringlist=String List; objectlist=Object List; stringdictionary=String Dictionary; objectdictionary=Object Dictionary; scriptdictionary=Script Dictionary</validvalues>
+        <validvalues type="simplestringdictionary">=None; string=String; boolean=Boolean; int=Integer; double=Double; object=Object; list=List; stringlist=String List; objectlist=Object List; dictionary=Dictionary; stringdictionary=String Dictionary; objectdictionary=Object Dictionary; scriptdictionary=Script Dictionary</validvalues>
       </control>
 
       <control>
