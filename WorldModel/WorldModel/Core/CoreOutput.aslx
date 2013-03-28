@@ -166,14 +166,14 @@
     else {
       dot = Instr(section, ".")
       if (dot = 0) {
-        return ("{" + section + "}")
+        return ("{" + ProcessTextSection(section, data) + "}")
       }
       else {
         objectname = Left(section, dot - 1)
         attributename = Mid(section, dot + 1)
         object = GetObject(objectname)
         if (object = null) {
-          return ("{" + section + "}")
+          return ("{" + ProcessTextSection(section, data) + "}")
         }
         else {
           if (HasAttribute(object, attributename)) {
@@ -215,7 +215,7 @@
     }
     object = GetObject(objectname)
     if (object = null) {
-      return ("{" + section + "}")
+      return ("{" + ProcessTextSection(section, data) + "}")
     }
     else {
       if (LengthOf(text) = 0) {
@@ -262,7 +262,7 @@
     exitname = Mid(section, 6)
     exit = GetObject(exitname)
     if (exit = null) {
-      return ("{" + section + "}") 
+      return ("{" + ProcessTextSection(section, data) + "}") 
     }
     else {
       verbs = GetDisplayVerbs(exit)
@@ -306,7 +306,7 @@
     objectname = Mid(section, 8)
     object = GetObject(objectname)
     if (object = null) {
-      return ("{" + section + "}")
+      return ("{" + ProcessTextSection(section, data) + "}")
     }
     else {
       count = ListCount(object.alt)
