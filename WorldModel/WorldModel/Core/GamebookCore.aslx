@@ -101,6 +101,7 @@
 
   <function name="DoPage" parameters="page">
     <![CDATA[
+    parent = player.parent
     request (ClearScreen, "")
     stop sound
     if (GetBoolean(player.parent, "runscript") or GetBoolean(player.parent, "runscriptonly")) {
@@ -111,7 +112,8 @@
         msg ("No script has been created for this page.")
       }
     }
-    if (not GetBoolean(player.parent, "runscriptonly")) {
+    // script may have moved the player, so finish DoPage if parent has changed
+    if (parent = player.parent and not GetBoolean(player.parent, "runscriptonly")) {
       if (HasString(player.parent, "sound")) {
         if (LengthOf(player.parent.sound) > 0) {
           play sound (player.parent.sound, false, false)
@@ -176,14 +178,14 @@
 
   <function name="IncreaseCounter" parameters="counter">
     if (not HasInt(game, counter)) {
-    set (game, counter, 0)
+      set (game, counter, 0)
     }
     set (game, counter, GetInt(game, counter) + 1)
   </function>
 
   <function name="DecreaseCounter" parameters="counter">
     if (not HasInt(game, counter)) {
-    set (game, counter, 0)
+      set (game, counter, 0)
     }
     set (game, counter, GetInt(game, counter) - 1)
   </function>
@@ -207,6 +209,10 @@
     if (DictionaryContains(source.options, destination.name)) {
       dictionary remove (source.options, destination.name)
     }
+  </function>
+
+  <function name="MovePlayer" parameters="destination">
+    player.parent = destination
   </function>
 
 </library>
