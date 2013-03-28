@@ -362,7 +362,7 @@
       <control>
         <controltype>dropdowntypes</controltype>
         <caption>Page type</caption>
-        <types>*=Text; picture=Picture; youtube=YouTube; link=External link; script=Script</types>
+        <types>*=Text; picture=Picture; youtube=YouTube; link=External link; script=Script; scripttext = Script + Text</types>
         <width>150</width>
       </control>
 
@@ -394,7 +394,7 @@
         <caption>Script</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>
-        <mustinherit>script</mustinherit>
+        <mustinherit>script; scripttext</mustinherit>
       </control>
 
       <control>

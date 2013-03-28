@@ -41,6 +41,10 @@
   </type>
 
   <type name="script">
+    <runscriptonly/>
+  </type>
+
+  <type name="scripttext">
     <runscript/>
   </type>
 
@@ -99,7 +103,7 @@
     <![CDATA[
     request (ClearScreen, "")
     stop sound
-    if (GetBoolean(player.parent, "runscript")) {
+    if (GetBoolean(player.parent, "runscript") or GetBoolean(player.parent, "runscriptonly")) {
       if (HasScript(player.parent, "script")) {
         do (player.parent, "script")
       }
@@ -107,7 +111,7 @@
         msg ("No script has been created for this page.")
       }
     }
-    else {
+    if (not GetBoolean(player.parent, "runscriptonly")) {
       if (HasString(player.parent, "sound")) {
         if (LengthOf(player.parent.sound) > 0) {
           play sound (player.parent.sound, false, false)
