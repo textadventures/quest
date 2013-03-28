@@ -165,7 +165,9 @@ namespace TextAdventures.Quest.EditorControls
         {
             if (data == null) return;
             m_helper.StartPopulating();
-            textBox.Text = m_helper.Populate(data).Replace("<br/>", Environment.NewLine).Replace("<br />",Environment.NewLine);
+            var value = m_helper.Populate(data);
+            if (value != null) value = value.Replace("<br/>", Environment.NewLine).Replace("<br />", Environment.NewLine);
+            textBox.Text = value;
             textBox.IsEnabled = m_helper.CanEdit(data);
             textBox.IsReadOnly = data.ReadOnly;
             m_helper.FinishedPopulating();
