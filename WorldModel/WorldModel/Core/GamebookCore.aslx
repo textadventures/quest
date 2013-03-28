@@ -194,4 +194,11 @@
     }
   </function>
 
+  <function name="AddPageLink" parameters="source, destination, text">
+    if (DictionaryContains(source.options, destination.name)) {
+      dictionary remove (source.options, destination.name)
+    }
+    dictionary add (source.options, destination.name, text)
+  </function>
+
 </library>
