@@ -109,6 +109,9 @@
       }
       game.pov = player
     }
+    else {
+      InitPOV (null, game.pov)
+    }
     InitStatusAttributes
     UpdateStatusAttributes
     InitVerbsList
