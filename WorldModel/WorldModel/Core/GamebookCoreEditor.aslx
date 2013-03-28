@@ -429,6 +429,13 @@
         <filefiltername>Sound Files</filefiltername>
       </control>
 
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Continue to play sound after the player moves to another page</caption>
+        <attribute>continuesound</attribute>
+        <onlydisplayif>LengthOf(GetString(this, "sound")) > 0</onlydisplayif>
+      </control>
+
     </tab>
   </editor>
 
