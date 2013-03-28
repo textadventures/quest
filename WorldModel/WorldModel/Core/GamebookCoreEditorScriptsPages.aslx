@@ -43,4 +43,36 @@
       <expand/>
     </control>
   </editor>
+
+  <editor>
+    <appliesto>(function)RemovePageLink</appliesto>
+    <display>Remove link from #0 to #1</display>
+    <category>Pages</category>
+    <create>RemovePageLink (,)</create>
+    <add>Remove page link</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Remove page link from</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>page</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>to</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>page</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+  </editor>
 </library>
