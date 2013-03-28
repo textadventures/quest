@@ -623,6 +623,7 @@ function clearScreen() {
     $("#divOutput").css("min-height", 0);
     $("#divOutput").html("");
     createNewDiv("left");
+    beginningOfCurrentTurnScrollPosition = 0;
 }
 
 function keyPressCode(e) {
