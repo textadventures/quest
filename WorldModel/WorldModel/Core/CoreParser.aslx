@@ -252,7 +252,12 @@
         handled = true
       }
       else {
-        ClearMenu
+        if (game.menuallowcancel) {
+          ClearMenu
+        }
+        else {
+          handled = true
+        }
       }
     }
     if (not handled) {

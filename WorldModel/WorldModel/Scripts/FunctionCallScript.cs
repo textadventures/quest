@@ -266,7 +266,7 @@ namespace TextAdventures.Quest.Scripts
 
         public void SetFunctionCallParameter(int index, object value)
         {
-            if (!(index == 0 && m_parameters.ParametersAsQuestList.Count == 0))
+            if (index < m_parameters.ParametersAsQuestList.Count)
             {
                 // In the editor, when a blank function call is created, it will have no parameters
                 m_parameters.ParametersAsQuestList.Remove(m_parameters.ParametersAsQuestList[index], UpdateSource.User, index);

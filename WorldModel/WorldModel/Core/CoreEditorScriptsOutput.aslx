@@ -579,7 +579,7 @@
     <appliesto>(function)ShowMenu</appliesto>
     <display>Show a menu</display>
     <category>Output</category>
-    <create>ShowMenu ("",) { }</create>
+    <create>ShowMenu ("",,true) { }</create>
     <add>Show a menu</add>
     <advanced/>
 
@@ -603,6 +603,18 @@
     <control>
       <controltype>expression</controltype>
       <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Allow player to ignore the menu:</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simpleeditor>boolean</simpleeditor>
     </control>
 
     <control>

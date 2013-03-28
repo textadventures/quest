@@ -376,7 +376,7 @@
     }
   </function>
 
-  <function name="ShowMenu" parameters="caption, options, callback">
+  <function name="ShowMenu" parameters="caption, options, allowCancel, callback">
     <![CDATA[
     outputsection = StartNewOutputSection()
     msg (caption)
@@ -397,6 +397,7 @@
     EndOutputSection(outputsection)
     
     game.menuoptions = options
+    game.menuallowcancel = allowCancel
     game.menucallback = callback
     game.menuoutputsection = outputsection
     ]]>
