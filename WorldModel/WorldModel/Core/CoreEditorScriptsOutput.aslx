@@ -22,6 +22,28 @@
   </editor>
 
   <editor>
+    <appliesto>(function)OutputTextNoBr</appliesto>
+    <display>Print #0 (no line-break)</display>
+    <category>Output</category>
+    <create>OutputTextNoBr ("")</create>
+    <add>Print a message (no line-break)</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Print (no line-break)</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>message</simple>
+      <expand/>
+      <multiline/>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>picture</appliesto>
     <display>Show picture #0</display>
     <category>Output</category>

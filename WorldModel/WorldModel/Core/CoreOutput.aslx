@@ -15,6 +15,22 @@
     ]]>
   </function>
 
+  <function name="OutputTextNoBr" parameters="text">
+    <![CDATA[
+    data = NewDictionary()
+    dictionary add (data, "fulltext", text)
+    text = ProcessTextSection(text, data)
+    OutputTextRawNoBr(text)
+    ]]>
+  </function>
+
+  <function name="OutputTextRawNoBr" parameters="text">
+    <![CDATA[
+    JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
+    request (Speak, text)
+    ]]>
+  </function>
+
   <function name="GetCurrentTextFormat" type="string" parameters="colour">
     style = ""
     
