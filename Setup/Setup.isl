@@ -2032,6 +2032,7 @@
 		<row><td>gamebookcoreeditor.aslx2</td><td>ISX_DEFAULTCOMPONENT7</td><td>GAMEBO~1.ASL|GamebookCoreEditor.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCoreEditor.aslx</td><td>1</td><td/></row>
 		<row><td>gamebookcoreeditorexpression</td><td>ISX_DEFAULTCOMPONENT7</td><td>GAMEBO~1.ASL|GamebookCoreEditorExpressions.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCoreEditorExpressions.aslx</td><td>1</td><td/></row>
 		<row><td>gamebookcoreeditorscripts.as</td><td>ISX_DEFAULTCOMPONENT7</td><td>GAMEBO~1.ASL|GamebookCoreEditorScripts.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCoreEditorScripts.aslx</td><td>1</td><td/></row>
+		<row><td>gamebookcoreeditorscriptspag</td><td>ISX_DEFAULTCOMPONENT7</td><td>GAMEBO~1.ASL|GamebookCoreEditorScriptsPages.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\WorldModel\WorldModel\Core\GamebookCoreEditorScriptsPages.aslx</td><td>1</td><td/></row>
 		<row><td>grid.js</td><td>ISX_DEFAULTCOMPONENT</td><td>grid.js</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\PlayerController\grid.js</td><td>1</td><td/></row>
 		<row><td>gu.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>gu.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\gu.pak</td><td>1</td><td/></row>
 		<row><td>he.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>he.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\VBProjects\Quest (CodePlex)\Dependencies\Chromium\locales\he.pak</td><td>1</td><td/></row>
@@ -4740,9 +4741,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{994A618D-EAC8-41F8-8CF1-C9A8FCCFA01F}</td><td/></row>
+		<row><td>ProductCode</td><td>{7BBDFAD6-55B7-48E3-BAD9-9A33762DF3D9}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
-		<row><td>ProductVersion</td><td>5.40.0001</td><td/></row>
+		<row><td>ProductVersion</td><td>5.40.0002</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
