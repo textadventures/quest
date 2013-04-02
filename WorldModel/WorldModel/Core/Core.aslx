@@ -477,7 +477,7 @@
     list add (options, "[Yes]")
     list add (options, "[No]")
     game.askcallback = callback
-    ShowMenu (question, options) {
+    ShowMenu (question, options, false) {
       parameters = NewDictionary()
       if (result = "[Yes]") {
         boolresult = true

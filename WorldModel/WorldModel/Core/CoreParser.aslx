@@ -126,7 +126,7 @@
         // single object command, so after showing the menu, add the object to game.pov.currentcommandresolvedelements
         game.pov.currentcommandpendingvariable = variable
       
-        ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu) {
+        ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu, true) {
           varname = game.pov.currentcommandpendingvariable
           game.pov.currentcommandpendingvariable = null
           if (result <> null) {
@@ -139,7 +139,7 @@
         
         game.pov.currentcommandmultiobjectpending = true
         
-        ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu) {
+        ShowMenu(DynamicTemplate("DisambiguateMenu", value), menu, true) {
           if (result <> null) {
             list add (game.pov.currentcommandpendingobjectlist, GetObject(result))
             ResolveNextNameListItem
@@ -594,7 +594,7 @@
               game.pov.multiverb = this.property
               game.pov.multiverbobject = object
               game.pov.multiverbobjectdefault = this.multiobjectdefault
-              ShowMenu (this.multiobjectmenu, menu) {
+              ShowMenu (this.multiobjectmenu, menu, true) {
                 if (result <> null) {
                   HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), game.pov.multiverbobjectdefault)
                   game.pov.multiverb = null

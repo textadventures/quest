@@ -277,7 +277,7 @@
           else {
             menucaption = Template("UseOnMenu")
           }
-          ShowMenu (menucaption, menu) {
+          ShowMenu (menucaption, menu, true) {
             if (result <> null) {
               HandleUseOn (game.pov.usemenuobject, GetObject(result))
               game.pov.usemenuobject = null
@@ -533,7 +533,7 @@
           else {
             menucaption = Template("GiveToMenu")
           }
-          ShowMenu (menucaption, menu) {
+          ShowMenu (menucaption, menu, true) {
             if (result <> null) {
               HandleGiveTo (game.pov.givemenuobject, GetObject(result))
               game.pov.givemenuobject = null
