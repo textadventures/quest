@@ -258,7 +258,6 @@ gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
         // move player to the end of the activeLayer so it gets drawn on top
         project.activeLayer.addChild(player);
     }
-    player.opactity = 0.5;
 }
 
 gridApi.drawLabel = function (x, y, z, text) {
