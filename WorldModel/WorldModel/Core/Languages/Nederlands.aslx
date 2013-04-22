@@ -99,6 +99,7 @@
   <verbtemplate name="take">pak</verbtemplate>
   <verbtemplate name="take">haal</verbtemplate>
   <verbtemplate name="take">pak op</verbtemplate>
+  <verbtemplate name="take">neem</verbtemplate>
   <template templatetype="command" name="undo">^undo$</template>
   <template templatetype="command" name="inventory">^i$|^inv$|^inventaris$</template>
   <template templatetype="command" name="quit">^stop$</template>
@@ -168,7 +169,7 @@
   <dynamictemplate name="DefaultTie">"Je kan " + object.article + " niet knopen."</dynamictemplate>
   <verbtemplate name="touch">aanraken</verbtemplate>
   <dynamictemplate name="DefaultTouch">"Je kan " + object.article + " niet aanraken."</dynamictemplate>
-  <verbtemplate name="turnon">turn on</verbtemplate>
+  <verbtemplate name="turnon">zet aan</verbtemplate>
   <dynamictemplate name="DefaultTurnOn">"Je kan " + object.article + " niet aanzetten."</dynamictemplate>
   <verbtemplate name="turnoff">zet uit</verbtemplate>
   <dynamictemplate name="DefaultTurnOff">"Je kan " + object.article + " niet uitzetten."</dynamictemplate>
