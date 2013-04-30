@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Configuration;
+using WebInterfaces;
 
 namespace WebPlayer
 {
@@ -25,12 +26,5 @@ namespace WebPlayer
                 return s_htmlManager;
             }
         }
-    }
-
-    public interface IHTMLManager
-    {
-        string GetHead();
-        string GetBodyHeader();
-        string GetBodyFooter();
     }
 }

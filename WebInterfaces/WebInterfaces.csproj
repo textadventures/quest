@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IFileManager.cs" />
+    <Compile Include="IHTMLManager.cs" />
     <Compile Include="ISessionManager.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
