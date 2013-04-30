@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Configuration;
+using WebInterfaces;
 
 namespace WebPlayer
 {
@@ -25,14 +26,5 @@ namespace WebPlayer
                 return s_sessionManager;
             }
         }
-    }
-
-    public interface ISessionManager
-    {
-        IUser GetUser();
-    }
-
-    public interface IUser
-    {
     }
 }
