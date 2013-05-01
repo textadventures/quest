@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using TextAdventures.Quest;
 using System.Configuration;
+using WebInterfaces;
 
 namespace WebEditor.Services
 {

@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IEditorFileManager.cs" />
     <Compile Include="IFileManager.cs" />
     <Compile Include="IHTMLManager.cs" />
     <Compile Include="ISessionManager.cs" />

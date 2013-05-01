@@ -168,6 +168,10 @@
       <Project>{B3B92783-0D5E-43BB-833B-87DEA9B67D00}</Project>
       <Name>EditorController</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WebInterfaces\WebInterfaces.csproj">
+      <Project>{EAAFAF5A-3A08-440A-863A-D5FC79DBBCB7}</Project>
+      <Name>WebInterfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Edit\StringListEditor.cshtml" />

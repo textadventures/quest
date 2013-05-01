@@ -2,42 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Configuration;
+using WebInterfaces;
 
 namespace WebEditor.Services
 {
     public static class FileManagerLoader
     {
         private static bool s_loaded = false;
-        private static IFileManager s_fileManager = null;
+        private static IEditorFileManager s_editorFileManager = null;
 
-        public static IFileManager GetFileManager()
+        public static IEditorFileManager GetFileManager()
         {
             if (s_loaded)
             {
-                return s_fileManager;
+                return s_editorFileManager;
             }
             else
             {
                 string typeName = ConfigurationManager.AppSettings["FileManagerType"];
                 s_loaded = true;
                 if (typeName == null) return null;
-                s_fileManager = (IFileManager)Activator.CreateInstance(Type.GetType(typeName));
-                return s_fileManager;
+                s_editorFileManager = (IEditorFileManager)Activator.CreateInstance(Type.GetType(typeName));
+                return s_editorFileManager;
             }
         }
-    }
-
-    public struct CreateNewFileData
-    {
-        public string FullPath;
-        public int Id;
-    }
-
-    public interface IFileManager
-    {
-        string GetFile(int id);
-        void SaveFile(int id, string data);
-        CreateNewFileData CreateNewFile(string filename, string gameName);
-        string UploadPath(int id);
     }
 }
