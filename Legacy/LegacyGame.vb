@@ -13578,7 +13578,9 @@ ErrorHandler:
     End Property
 
     Public Function GetResource(file As String) As System.IO.Stream Implements IASL.GetResource
-        Return New System.IO.FileStream(GetResourcePath(file), System.IO.FileMode.Open, System.IO.FileAccess.Read)
+        Dim path As String = GetResourcePath(file)
+        If Not System.IO.File.Exists(path) Then Return Nothing
+        Return New IO.FileStream(path, IO.FileMode.Open, IO.FileAccess.Read)
     End Function
 
     Public ReadOnly Property GameID() As String Implements IASL.GameID
