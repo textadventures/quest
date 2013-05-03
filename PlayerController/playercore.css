@@ -220,31 +220,31 @@ h3 a
 }
 div#gamePanel img
 {
-    max-width: 700px;
+    max-width: 100%;
 }
 div#divOutput img
 {
-    max-width: 700px;
+    max-width: 100%;
 }
 div.jjmenu {
-	font-size:12px;
-	position:absolute;
-	background:#fffef0;
-	border-bottom:2px solid gray;
-	border-right:1px solid gray;
-	padding:0px;
+    font-size:12px;
+    position:absolute;
+    background:#fffef0;
+    border-bottom:2px solid gray;
+    border-right:1px solid gray;
+    padding:0px;
 }
 div.jj_menu_item {
-	color:black;
-	border:1px solid gray;
-	border-bottom:none;
-	background: white;
-	cursor:pointer;
+    color:black;
+    border:1px solid gray;
+    border-bottom:none;
+    background: white;
+    cursor:pointer;
 }
 div.jj_menu_item span {
-	display:block;
-	padding:4px;
+    display:block;
+    padding:4px;
 }
 div.jj_menu_item_hover {
-	background:#e4e4e4;	
+    background:#e4e4e4;	
 }
