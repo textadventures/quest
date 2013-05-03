@@ -432,10 +432,7 @@ namespace TextAdventures.Quest
             {
                 IScript script = (IScript)value;
                 string savedScript = GameSaver.SaveScript(writer, script, 1);
-                if (savedScript.Trim().Length > 0)
-                {
-                    base.WriteAttribute(writer, element, attribute, "script", savedScript);
-                }
+                base.WriteAttribute(writer, element, attribute, "script", savedScript);
             }
         }
 
