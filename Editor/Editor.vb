@@ -828,6 +828,7 @@ Public Class Editor
         m_menu.MenuVisible("wordwrap") = codeView
         m_menu.MenuEnabled("simplemode") = Not codeView
         m_menu.MenuChecked("codeview") = codeView
+        m_menu.MenuEnabled("publish") = Not codeView
     End Sub
 
     Public Sub Redisplay()
