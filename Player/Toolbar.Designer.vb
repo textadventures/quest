@@ -27,12 +27,13 @@ Partial Class Toolbar
         Me.butStop = New System.Windows.Forms.ToolStripButton()
         Me.butDebugger = New System.Windows.Forms.ToolStripButton()
         Me.butLog = New System.Windows.Forms.ToolStripButton()
+        Me.butHTML = New System.Windows.Forms.ToolStripButton()
         Me.ctlToolStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'ctlToolStrip
         '
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butStop, Me.butDebugger, Me.butLog})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butStop, Me.butDebugger, Me.butLog, Me.butHTML})
         Me.ctlToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.ctlToolStrip.Name = "ctlToolStrip"
         Me.ctlToolStrip.Size = New System.Drawing.Size(601, 25)
@@ -53,18 +54,27 @@ Partial Class Toolbar
         Me.butDebugger.Image = CType(resources.GetObject("butDebugger.Image"), System.Drawing.Image)
         Me.butDebugger.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.butDebugger.Name = "butDebugger"
-        Me.butDebugger.Size = New System.Drawing.Size(107, 22)
+        Me.butDebugger.Size = New System.Drawing.Size(79, 22)
         Me.butDebugger.Tag = "debugger"
-        Me.butDebugger.Text = "View Debugger"
+        Me.butDebugger.Text = "Debugger"
         '
         'butLog
         '
         Me.butLog.Image = CType(resources.GetObject("butLog.Image"), System.Drawing.Image)
         Me.butLog.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.butLog.Name = "butLog"
-        Me.butLog.Size = New System.Drawing.Size(75, 22)
+        Me.butLog.Size = New System.Drawing.Size(47, 22)
         Me.butLog.Tag = "log"
-        Me.butLog.Text = "View Log"
+        Me.butLog.Text = "Log"
+        '
+        'butHTML
+        '
+        Me.butHTML.Image = CType(resources.GetObject("butHTML.Image"), System.Drawing.Image)
+        Me.butHTML.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.butHTML.Name = "butHTML"
+        Me.butHTML.Size = New System.Drawing.Size(92, 22)
+        Me.butHTML.Tag = "htmldevtools"
+        Me.butHTML.Text = "HTML Tools"
         '
         'Toolbar
         '
@@ -83,5 +93,6 @@ Partial Class Toolbar
     Friend WithEvents butStop As System.Windows.Forms.ToolStripButton
     Friend WithEvents butDebugger As System.Windows.Forms.ToolStripButton
     Friend WithEvents butLog As System.Windows.Forms.ToolStripButton
+    Friend WithEvents butHTML As System.Windows.Forms.ToolStripButton
 
 End Class

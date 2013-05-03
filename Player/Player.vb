@@ -84,6 +84,8 @@ Public Class Player
                 DebuggerMenuClick()
             Case "log"
                 LogMenuClick()
+            Case "htmldevtools"
+                HTMLDevToolsClick()
         End Select
     End Sub
 
