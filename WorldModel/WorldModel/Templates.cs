@@ -51,7 +51,7 @@ namespace TextAdventures.Quest
         {
             if (!m_templateLookup.ContainsKey(t))
             {
-                if (m_worldModel.EditMode)
+                if (m_worldModel.EditMode && throwException)
                 {
                     return string.Format("{{UNKNOWN TEMPLATE: {0}}}", t);
                 }
