@@ -549,6 +549,11 @@ namespace TextAdventures.Quest.Functions
             return ListCombine<Element>(list1, list2);
         }
 
+        public QuestList<object> ListCombine(QuestList<object> list1, QuestList<object> list2)
+        {
+            return ListCombine<object>(list1, list2);
+        }
+
         private QuestList<T> ListCombine<T>(QuestList<T> list1, QuestList<T> list2)
         {
             if (list1 == null) return new QuestList<T>(list2);
@@ -565,12 +570,22 @@ namespace TextAdventures.Quest.Functions
             return list.Exclude(element);
         }
 
+        public QuestList<object> ListExclude(QuestList<object> list, Element element)
+        {
+            return list.Exclude(element);
+        }
+
         public QuestList<string> ListExclude(QuestList<string> list, QuestList<string> excludeList)
         {
             return list.Exclude(excludeList);
         }
 
         public QuestList<Element> ListExclude(QuestList<Element> list, QuestList<Element> excludeList)
+        {
+            return list.Exclude(excludeList);
+        }
+
+        public QuestList<object> ListExclude(QuestList<object> list, QuestList<object> excludeList)
         {
             return list.Exclude(excludeList);
         }
