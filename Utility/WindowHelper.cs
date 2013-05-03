@@ -96,7 +96,9 @@ namespace TextAdventures.Utility
         {
             ListViewItem listviewX = (ListViewItem)x;
             ListViewItem listviewY = (ListViewItem)y;
-            int compareResult = ObjectCompare.Compare(listviewX.SubItems[SortColumn].Text, listviewY.SubItems[SortColumn].Text);
+            int compareResult = ObjectCompare.Compare(
+                listviewX.SubItems.Count > SortColumn ? listviewX.SubItems[SortColumn].Text : null,
+                listviewY.SubItems.Count > SortColumn ? listviewY.SubItems[SortColumn].Text : null);
 
             if (Order == SortOrder.Ascending)
             {
