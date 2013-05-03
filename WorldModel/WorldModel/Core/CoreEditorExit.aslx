@@ -83,12 +83,20 @@
         <attribute>lockmessage</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
+
+      <control>
+        <caption>Run a script (instead of moving the player automatically)</caption>
+        <controltype>checkbox</controltype>
+        <attribute>runscript</attribute>
+        <onlydisplayif>not this.lookonly</onlydisplayif>
+        <advanced/>
+      </control>
   
       <control>
-        <caption>Script to run (leave blank to automatically go to the specified location)</caption>
+        <caption>Script to run</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>
-        <onlydisplayif>not this.lookonly</onlydisplayif>
+        <onlydisplayif>this.runscript</onlydisplayif>
         <advanced/>
       </control>
 

@@ -347,8 +347,10 @@
       if (exit.locked) {
         msg (exit.lockmessage)
       }
-      else if (HasScript(exit, "script")) {
-        do (exit, "script")
+      else if (exit.runscript) {
+        if (HasScript(exit, "script")) {
+          do (exit, "script")
+        }
       }
       else if (exit.lookonly) {
          msg ("[UnresolvedLocation]")
