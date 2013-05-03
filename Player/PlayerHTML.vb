@@ -113,6 +113,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Function GetURL(filename As String) As String
+        filename = System.Uri.EscapeDataString(filename)
         filename += "?c=" + (Convert.ToInt32((DateTime.Now - (New DateTime(2012, 1, 1))).TotalSeconds)).ToString()
         Return "quest://local/" + filename
     End Function
