@@ -24,7 +24,9 @@
   
   <function name="GenerateMenuChoices" parameters="dictionary, objects">
     foreach (obj, objects) {
-      dictionary add (dictionary, obj.name, GetDisplayAlias(obj))
+      if (not DictionaryContains(dictionary, obj.name)) {
+        dictionary add (dictionary, obj.name, GetDisplayAlias(obj))
+      }
     }
   </function>
   
