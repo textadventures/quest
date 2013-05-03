@@ -4,7 +4,7 @@
   </function>
 
   <function name="GetExitsList" type="objectlist">
-    return (RemoveSceneryObjects(ScopeExits()))
+    return (RemoveLookOnlyExits(RemoveSceneryObjects(ScopeExits())))
   </function>
 
   <function name="ScopeInventory" type="objectlist">
@@ -148,7 +148,7 @@
     <![CDATA[
     result = NewObjectList()
     foreach (exit, AllExits()) {
-      if (exit.parent = room and not GetBoolean(exit, "lookonly")) {
+      if (exit.parent = room) {
         if (exit.visible) {
           if (GetBoolean(room, "darklevel")) {
             if (GetBoolean(exit, "lightsource")) {

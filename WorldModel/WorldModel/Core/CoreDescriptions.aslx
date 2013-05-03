@@ -36,7 +36,7 @@
             }
           }
           if (i = game.autodescription_youcango) {
-            exits = FormatExitList(game.pov.parent.exitslistprefix, RemoveSceneryObjects(ScopeExits()), Template("Or"), ".")
+            exits = FormatExitList(game.pov.parent.exitslistprefix, GetExitsList(), Template("Or"), ".")
             desc = AddDescriptionLine(desc, exits)
             
             if (game.autodescription_youcango_newline) {
@@ -228,6 +228,18 @@
     result = NewObjectList()
     foreach (obj, list) {
       if (not obj.scenery and obj <> game.pov and obj.visible) {
+        list add (result, obj)
+      }
+    }
+    return (result)
+    ]]>
+  </function>
+
+  <function name="RemoveLookOnlyExits" type="objectlist" parameters="list">
+    <![CDATA[
+    result = NewObjectList()
+    foreach (obj, list) {
+      if (not obj.lookonly) {
         list add (result, obj)
       }
     }
