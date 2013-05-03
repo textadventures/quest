@@ -203,7 +203,10 @@ namespace TextAdventures.Quest.Scripts
             private SwitchCases(SwitchScript parent)
             {
                 m_parent = parent;
-                m_cases.UndoLog = parent.m_worldModel.UndoLogger;
+                if (parent.m_worldModel.EditMode)
+                {
+                    m_cases.UndoLog = parent.m_worldModel.UndoLogger;
+                }
             }
 
             internal SwitchCases Clone(SwitchScript newParent)
