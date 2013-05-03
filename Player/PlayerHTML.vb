@@ -237,6 +237,7 @@ Public Class PlayerHTML
 
     Public Sub Finished()
         InvokeScript("gameFinished")
+        ctlWebView.CloseDevTools()
     End Sub
 
     Private Shared s_regexHtml As New System.Text.RegularExpressions.Regex("\<.+?\>")
