@@ -1,4 +1,5 @@
 ﻿Imports System.Xml
+Imports System.IO
 Imports Microsoft.Win32
 Imports CefSharp.WinForms
 Imports CefSharp
@@ -31,6 +32,9 @@ Public Class PlayerHTML
     Public Property CurrentGame As IASL
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
+        ' CefSharp writes a debug.log to the current directory, so set it to the Temp folder
+        Directory.SetCurrentDirectory(Path.GetTempPath())
+
         ctlWebView = New WebView()
         ctlWebView.Dock = DockStyle.Fill
         Controls.Add(ctlWebView)
