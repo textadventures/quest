@@ -209,6 +209,9 @@
   </function>
   
   <function name="RemovePageLink" parameters="source, destination">
+    if (source.options = null) {
+      source.options = NewStringDictionary()
+    }
     if (DictionaryContains(source.options, destination.name)) {
       dictionary remove (source.options, destination.name)
     }
