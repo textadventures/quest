@@ -521,7 +521,7 @@ namespace TextAdventures.Quest
             if (args.Added != null)
             {
                 Element addedElement = m_worldModel.Elements.Get(args.Added);
-                AddElementToTree(addedElement);
+                AddElementToTree(addedElement, name: args.Added);
             }
 
             if (args.Removed != null)
@@ -596,7 +596,9 @@ namespace TextAdventures.Quest
             }
         }
 
-        private void AddElementToTree(Element o, int? position = null)
+        // optional name parameter to prevent an exception when redoing object creation, as the
+        // object will not have a name attribute immediately
+        private void AddElementToTree(Element o, int? position = null, string name = null)
         {
             if (!IsElementVisible(o)) return;
 
@@ -613,7 +615,8 @@ namespace TextAdventures.Quest
 
             if (display)
             {
-                AddedNode(this, new AddedNodeEventArgs { Key = o.Name, Text = text, Parent = parent, IsLibraryNode = isLibrary, Position = position });
+                string key = name ?? o.Name;
+                AddedNode(this, new AddedNodeEventArgs { Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary, Position = position });
 
                 if (o.Name == "game" && !SimpleMode && m_editorStyle == EditorStyle.TextAdventure)
                 {
