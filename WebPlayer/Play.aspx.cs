@@ -235,7 +235,7 @@ namespace WebPlayer
 
         string AddResource(string gameId, string filename)
         {
-            return "Resource.ashx?id=" + gameId + "&filename=" + filename;
+            return "Resource.ashx?id=" + gameId + "&filename=" + Uri.EscapeDataString(filename);
         }
 
         void m_player_BeginWait()
