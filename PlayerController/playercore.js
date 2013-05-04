@@ -94,7 +94,7 @@ $(function () {
         e.preventDefault();
     });
 
-    $(document).on("click", ".elementmenu", function () {
+    $(document).on("click", ".elementmenu", function (event) {
         if (!$(this).hasClass("disabled")) {
             event.preventDefault();
             event.stopPropagation();
