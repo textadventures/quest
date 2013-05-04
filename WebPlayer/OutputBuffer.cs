@@ -12,13 +12,20 @@ namespace WebPlayer
 
         public void AddJavaScriptToBuffer(string function, params IJavaScriptParameter[] parameters)
         {
-            m_javaScriptBuffer.Add(string.Format("{0}({1})", function, string.Join(",", parameters.Select(p => p.GetParameter()))));
+            lock (m_javaScriptBuffer)
+            {
+                m_javaScriptBuffer.Add(string.Format("{0}({1})", function, string.Join(",", parameters.Select(p => p.GetParameter()))));
+            }
         }
 
         public List<string> ClearJavaScriptBuffer()
         {
-            List<string> output = new List<string>(m_javaScriptBuffer);
-            m_javaScriptBuffer.Clear();
+            List<string> output;
+            lock (m_javaScriptBuffer)
+            {
+                output = new List<string>(m_javaScriptBuffer);
+                m_javaScriptBuffer.Clear();
+            }
             return output;
         }
 
