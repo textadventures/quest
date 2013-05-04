@@ -145,7 +145,9 @@ Public Class PlayerHTML
             script = String.Format("{0}({1})", functionName, String.Join(",", stringArgs))
         End If
         Debug.WriteLine(script)
-        m_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
+        SyncLock m_buffer
+            m_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
+        End SyncLock
     End Sub
 
     Private Function GetScriptParameter(arg As Object) As String
@@ -180,8 +182,11 @@ Public Class PlayerHTML
         ' copy m_buffer to a new list, in case invoking scripts cause new scripts to be added
         ' to the buffer.
         Do
-            Dim bufferCopy As List(Of Action) = New List(Of Action)(m_buffer)
-            m_buffer.Clear()
+            Dim bufferCopy As List(Of Action)
+            SyncLock m_buffer
+                bufferCopy = New List(Of Action)(m_buffer)
+                m_buffer.Clear()
+            End SyncLock
             For Each script In bufferCopy
                 script.Invoke()
             Next
