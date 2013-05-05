@@ -4741,9 +4741,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{1BD43D2A-E60E-4C2B-A555-5A3A034B03D8}</td><td/></row>
+		<row><td>ProductCode</td><td>{909C8870-274B-420C-837F-9FA570535E45}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
-		<row><td>ProductVersion</td><td>5.40.0003</td><td/></row>
+		<row><td>ProductVersion</td><td>5.40.0004</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
