@@ -543,6 +543,12 @@ namespace TextAdventures.Quest
                 try
                 {
                     m_timerRunner = new TimerRunner(this, !m_loadedFromSaved);
+                    if (Version <= WorldModelVersion.v540)
+                    {
+                        PlayerUI.Show("Panes");
+                        PlayerUI.Show("Location");
+                        PlayerUI.Show("Command");
+                    }
                     if (m_elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
                     if (!m_loadedFromSaved)
                     {

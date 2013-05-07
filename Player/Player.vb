@@ -107,9 +107,6 @@ Public Class Player
         If fromEditor Then
             ctlToolbar.SimpleMode = editorSimpleMode
         End If
-        SetPanesVisible(True)
-        SetCommandVisible(True)
-        SetLocationVisible(True)
         SetStatusText("")
         LocationUpdated("")
         m_menu.ClearWindowMenu()

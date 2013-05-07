@@ -71,6 +71,7 @@ div#gamePanes
     padding: 2px;
     background: #F9F9FF;
     min-height: 100%;
+    display: none;
 }
 div#status
 {
@@ -86,6 +87,7 @@ div#status
 }
 div#location
 {
+    display: none;
     padding-left: 4px;
     padding-top: 4px;
 }
@@ -132,6 +134,7 @@ div#divOutput
 div#txtCommandDiv
 {
     height: 40px;
+    display: none;
 }
 #txtCommand
 {

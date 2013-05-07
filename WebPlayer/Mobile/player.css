@@ -74,6 +74,7 @@ div#txtCommandDiv
     opacity: 0.8;
     position: static;
     margin-left: 0px;
+    display: none;
 }
 #txtCommand
 {

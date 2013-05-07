@@ -11834,6 +11834,9 @@ ErrorHandler:
         GameName = RetrieveParameter(Lines(GetDefineBlock("game").StartLine), NullThread)
 
         m_player.UpdateGameName(GameName)
+        m_player.Show("Panes")
+        m_player.Show("Location")
+        m_player.Show("Command")
 
         SetUpGameObject()
         SetUpOptions()
