@@ -276,6 +276,11 @@
         list add (exits, exit.name)
       }
       JS.updateExitLinks(exits)
+      commands = NewStringList()
+      foreach (cmd, ScopeCommands()) {
+        list add (commands, cmd.name)
+      }
+      JS.updateCommandLinks(commands)
     }
   </function>
 </library>
