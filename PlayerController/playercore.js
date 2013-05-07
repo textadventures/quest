@@ -619,19 +619,6 @@ function updateExitLinks(data) {
     });
 }
 
-function updateCommandLinks(data) {
-    $(".commandlink").each(function (index, e) {
-        var $e = $(e);
-        var exitid = $e.data("elementid");
-        var available = $.inArray(exitid, data) > -1;
-        if (available) {
-            $e.removeClass("disabled");
-        } else {
-            $e.addClass("disabled");
-        }
-    });
-}
-
 function clearScreen() {
     $("#divOutput").css("min-height", 0);
     $("#divOutput").html("");
