@@ -269,7 +269,18 @@
       command = Left(command, colon - 1)
     }
     style = GetCurrentLinkTextFormat()
-    return ("<a style=\"" + style + "\" class=\"cmdlink\" onclick=\"sendCommand('" + command + "')\">" + ProcessTextSection(text, data) + "</a>")
+    candidates = NewObjectList()
+    foreach (cmd, ScopeCommands()) {
+      if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
+        list add (candidates, cmd)
+      }
+    }
+    elementid = ""
+    if (ListCount(candidates) = 1) {
+      cmd = ObjectListItem(candidates, 0)
+      elementid = cmd.name
+    }
+    return ("<a style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" onclick=\"sendCommand('" + command + "')\">" + ProcessTextSection(text, data) + "</a>")
     ]]>
   </function>
 
