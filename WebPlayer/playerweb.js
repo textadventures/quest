@@ -109,4 +109,5 @@ function showSaveButton(show) {
     else {
         $("#cmdSave").hide();
     }
+    updateStatusVisibility();
 }

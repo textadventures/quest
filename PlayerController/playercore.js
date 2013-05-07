@@ -237,7 +237,25 @@ function uiHide(element) {
     }
     else {
         $(element).hide();
+        updateStatusVisibility();
     }
+}
+
+function updateStatusVisibility() {
+    var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave") || isElementVisible("#cmdExitFullScreen");
+    if (anyVisible) {
+        $("#status").show();
+        $("#divOutput").css("margin-top", "20px");
+        $("#gamePanes").css("top", "24px");
+    } else {
+        $("#status").hide();
+        $("#divOutput").css("margin-top", "0px");
+        $("#gamePanes").css("top", "0px");
+    }
+}
+
+function isElementVisible(element) {
+    return $(element).css("display") != "none";
 }
 
 function panesVisible(visible) {
