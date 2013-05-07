@@ -80,8 +80,8 @@ namespace TextAdventures.Quest
             writer.WriteStartElement("asl");
             if (mode == SaveMode.Editor)
             {
-                m_worldModel.Version = WorldModelVersion.v540;
-                m_worldModel.VersionString = "540";
+                m_worldModel.Version = WorldModelVersion.v550;
+                m_worldModel.VersionString = "550";
             }
             writer.WriteAttributeString("version", m_worldModel.VersionString);
 

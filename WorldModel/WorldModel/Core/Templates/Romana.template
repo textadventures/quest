@@ -1,4 +1,4 @@
-﻿<asl version="540" template="Română">
+﻿<asl version="550" template="Română">
 
   <include ref="Romana.aslx"/>
   <include ref="Core.aslx"/>
