@@ -404,7 +404,7 @@ Public Class Main
     End Property
 
     Private Sub ctlPlayer_ExitFullScreen() Handles ctlPlayer.ExitFullScreen
-        FullScreen = False
+        BeginInvoke(Sub() FullScreen = False)
     End Sub
 
     Private Sub ctlPlayer_RecordedWalkthrough(name As String, steps As System.Collections.Generic.List(Of String)) Handles ctlPlayer.RecordedWalkthrough
