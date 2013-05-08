@@ -32,6 +32,9 @@
     if (game.setcustomwidth) {
       JS.setGameWidth(game.customwidth)
     }
+    if (not game.showborder) {
+      JS.hideBorder()
+    }
     if (game.externalstylesheets <> null) {
       foreach (stylesheet, game.externalstylesheets) {
         JS.addExternalStylesheet(stylesheet)

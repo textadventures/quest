@@ -32,6 +32,7 @@
     <showlocation/>
     <setcustomwidth type="boolean">false</setcustomwidth>
     <customwidth type="int">950</customwidth>
+    <showborder/>
     <showscore type="boolean">false</showscore>
     <showhealth type="boolean">false</showhealth>
     <autodisplayverbs/>

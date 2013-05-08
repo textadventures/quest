@@ -502,6 +502,12 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>Show border</caption>
+        <attribute>showborder</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>Set a custom display width</caption>
         <attribute>setcustomwidth</attribute>
       </control>

@@ -342,6 +342,10 @@ function setGameWidth(width) {
     $("#gamePanes").css("margin-left", (width / 2 - 220) + "px");
 }
 
+function hideBorder() {
+    $("#gameBorder").css("border", "none");
+}
+
 var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwest", "south", "southeast", "up", "down", "in", "out"];
 
 function updateCompass(listData) {
