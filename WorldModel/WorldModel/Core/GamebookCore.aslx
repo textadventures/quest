@@ -18,6 +18,14 @@
     <menuhoverbackground>LightGrey</menuhoverbackground>
     <menuhoverforeground>Black</menuhoverforeground>
     <description type="string"></description>
+    <setcustomwidth type="boolean">false</setcustomwidth>
+    <customwidth type="int">950</customwidth>
+    <setcustompadding type="boolean">false</setcustompadding>
+    <custompaddingtop type="int">30</custompaddingtop>
+    <custompaddingbottom type="int">0</custompaddingbottom>
+    <custompaddingleft type="int">20</custompaddingleft>
+    <custompaddingright type="int">20</custompaddingright>
+    <showborder/>
   </type>
 
   <type name="defaultobject">
@@ -51,6 +59,15 @@
   <template name="NothingToUndo">Nothing to undo!</template>
 
   <function name="InitInterface">
+    if (game.setcustomwidth) {
+      JS.setGameWidth(game.customwidth)
+    }
+    if (not game.showborder) {
+      JS.hideBorder()
+    }
+    if (game.setcustompadding) {
+      JS.setGamePadding(game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
+    }
     request (Background, game.defaultbackground)
     request (Foreground, game.defaultforeground)
     request (LinkForeground, game.defaultlinkforeground)

@@ -331,6 +331,69 @@
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
       </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Layout</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show border</caption>
+        <attribute>showborder</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Set a custom display width</caption>
+        <attribute>setcustomwidth</attribute>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustomwidth</onlydisplayif>
+        <attribute>customwidth</attribute>
+        <caption>Width</caption>
+        <minimum>100</minimum>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Set custom padding</caption>
+        <attribute>setcustompadding</attribute>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingtop</attribute>
+        <caption>Top</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingbottom</attribute>
+        <caption>Bottom</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingleft</attribute>
+        <caption>Left</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingright</attribute>
+        <caption>Right</caption>
+        <minimum>0</minimum>
+      </control>
     </tab>
 
   </editor>
