@@ -65,6 +65,7 @@ namespace TextAdventures.Quest.EditorControls
 
             ScrollViewer scrollViewer = new ScrollViewer();
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            scrollViewer.Padding = new Thickness(5);
             newTab.Content = scrollViewer;
 
             Grid controlGrid = new Grid();
@@ -112,7 +113,7 @@ namespace TextAdventures.Quest.EditorControls
 
             Control newControl = InitialiseEditorControl(ctl);
             m_controlUIElements[ctl].Add(newControl);
-            newControl.Padding = new Thickness(5);
+            newControl.Padding = new Thickness(6);
 
             if (ctl.ControlType == "title")
             {
