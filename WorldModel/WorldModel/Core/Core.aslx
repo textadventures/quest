@@ -29,6 +29,9 @@
 
   <function name="InitInterface">
     <![CDATA[
+    if (game.setcustomwidth) {
+      JS.setGameWidth(game.customwidth)
+    }
     if (game.externalstylesheets <> null) {
       foreach (stylesheet, game.externalstylesheets) {
         JS.addExternalStylesheet(stylesheet)

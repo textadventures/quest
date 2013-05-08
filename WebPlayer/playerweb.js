@@ -1,11 +1,7 @@
 ﻿$(function () {
     var width = $_GET["w"];
     if (width) {
-        $("#gameBorder").width(width);
-        $("#status").width(width - 2);
-        $("#gamePanel").css("margin-left", "-" + (width / 2 - 19) + "px");
-        $("#gridPanel").css("margin-left", "-" + (width / 2 - 19) + "px");
-        $("#gamePanes").css("margin-left", (width / 2 - 220) + "px");
+        setGameWidth(width);
     }
 });
 

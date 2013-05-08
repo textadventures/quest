@@ -499,6 +499,20 @@
         <caption>Show location bar</caption>
         <attribute>showlocation</attribute>
       </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Set a custom display width</caption>
+        <attribute>setcustomwidth</attribute>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustomwidth</onlydisplayif>
+        <attribute>customwidth</attribute>
+        <caption>Width</caption>
+        <minimum>100</minimum>
+      </control>
     </tab>
 
     <tab>
