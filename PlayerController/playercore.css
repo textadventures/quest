@@ -142,6 +142,7 @@ div#txtCommandDiv
     width: 680px;
     font-size: 20px;
     vertical-align: bottom;
+    padding: 6px;
 }
 #txtCommandSpacer
 {
