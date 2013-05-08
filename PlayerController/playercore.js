@@ -262,11 +262,12 @@ function isElementVisible(element) {
 
 function panesVisible(visible) {
     var screenWidth = $("#gameBorder").width();
+    var gameContentPadding = parseInt($("#gameContent").css("padding-left").replace("px", "")) + parseInt($("#gameContent").css("padding-right").replace("px", ""));
 
     if (visible) {
         $("#gamePanes").show();
         $("#gameContent").width(screenWidth - 250);
-        $("#txtCommand").width(screenWidth - 270);
+        $("#txtCommand").width(screenWidth - gameContentPadding - 230);
         $("#updating").css("margin-left", (screenWidth / 2 - 290) + "px");
         $("#gamePanel").width(screenWidth - 250);
         $("#gridPanel").width(screenWidth - 250);
@@ -277,7 +278,7 @@ function panesVisible(visible) {
     }
     else {
         $("#gamePanes").hide();
-        $("#gameContent").width(screenWidth - 40);
+        $("#gameContent").width(screenWidth - gameContentPadding);
         $("#txtCommand").width(screenWidth - 60);
         $("#updating").css("margin-left", (screenWidth / 2 - 70) + "px");
         $("#gamePanel").width(screenWidth - 40);
@@ -340,6 +341,13 @@ function setGameWidth(width) {
     $("#gamePanel").css("margin-left", "-" + (width / 2 - 19) + "px");
     $("#gridPanel").css("margin-left", "-" + (width / 2 - 19) + "px");
     $("#gamePanes").css("margin-left", (width / 2 - 220) + "px");
+}
+
+function setGamePadding(top, bottom, left, right) {
+    $("#gameContent").css("padding-top", top);
+    $("#gameContent").css("padding-bottom", bottom);
+    $("#gameContent").css("padding-left", left);
+    $("#gameContent").css("padding-right", right);
 }
 
 function hideBorder() {

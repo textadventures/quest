@@ -35,6 +35,9 @@
     if (not game.showborder) {
       JS.hideBorder()
     }
+    if (game.setcustompadding) {
+      JS.setGamePadding(game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
+    }
     if (game.externalstylesheets <> null) {
       foreach (stylesheet, game.externalstylesheets) {
         JS.addExternalStylesheet(stylesheet)

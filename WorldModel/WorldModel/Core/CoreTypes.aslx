@@ -32,6 +32,11 @@
     <showlocation/>
     <setcustomwidth type="boolean">false</setcustomwidth>
     <customwidth type="int">950</customwidth>
+    <setcustompadding type="boolean">false</setcustompadding>
+    <custompaddingtop type="int">30</custompaddingtop>
+    <custompaddingbottom type="int">0</custompaddingbottom>
+    <custompaddingleft type="int">20</custompaddingleft>
+    <custompaddingright type="int">20</custompaddingright>
     <showborder/>
     <showscore type="boolean">false</showscore>
     <showhealth type="boolean">false</showhealth>
