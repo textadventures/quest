@@ -12,6 +12,14 @@
     </control>
 
     <control>
+      <controltype>label</controltype>
+      <mustinherit>container_limited</mustinherit>
+      <onlydisplayif>not game.feature_limitinventory</onlydisplayif>
+      <caption>Turn on "Inventory limits" from the game Features tab to enable limited containers.</caption>
+      <bold/>
+    </control>
+
+    <control>
       <controltype>textbox</controltype>
       <caption>Contents prefix</caption>
       <attribute>contentsprefix</attribute>
@@ -91,6 +99,7 @@
       <width>100</width>
       <mustinherit>container_limited</mustinherit>
       <minimum>0</minimum>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
@@ -99,6 +108,7 @@
       <attribute>containermaxobjects</attribute>
       <mustinherit>container_limited</mustinherit>
       <nullable/>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
@@ -108,6 +118,7 @@
       <width>100</width>
       <minimum>0</minimum>
       <mustinherit>container_limited</mustinherit>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
@@ -116,6 +127,7 @@
       <attribute>containerfullmessage</attribute>
       <mustinherit>container_limited</mustinherit>
       <nullable/>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
   
     <control>

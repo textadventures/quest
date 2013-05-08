@@ -74,12 +74,14 @@
       <mustinherit>editor_player</mustinherit>
       <controltype>title</controltype>
       <caption>Inventory limitation</caption>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
       <mustinherit>editor_player</mustinherit>
       <controltype>label</controltype>
       <caption>Set "maximum objects" to 0 to allow unlimited inventory items.</caption>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
@@ -89,6 +91,7 @@
       <width>100</width>
       <mustinherit>editor_player</mustinherit>
       <minimum>0</minimum>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
@@ -97,11 +100,13 @@
       <attribute>containermaxobjects</attribute>
       <mustinherit>editor_player</mustinherit>
       <nullable/>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
       <controltype>title</controltype>
       <caption>Volume</caption>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
@@ -110,6 +115,7 @@
       <attribute>volume</attribute>
       <width>100</width>
       <minimum>0</minimum>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
@@ -119,6 +125,7 @@
       <width>100</width>
       <mustinherit>editor_player</mustinherit>
       <minimum>0</minimum>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
@@ -127,6 +134,7 @@
       <attribute>containerfullmessage</attribute>
       <mustinherit>editor_player</mustinherit>
       <nullable/>
+      <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
   </tab>

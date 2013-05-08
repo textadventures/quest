@@ -61,6 +61,7 @@
     </changedpov>
     <feature_lightdark type="boolean">false</feature_lightdark>
     <feature_pictureframe type="boolean">false</feature_pictureframe>
+    <feature_limitinventory type="boolean">false</feature_limitinventory>
   </type>
 
   <type name="theme_novella">
