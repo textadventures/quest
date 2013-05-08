@@ -10,7 +10,13 @@
 
   <function name="OutputTextRaw" parameters="text">
     <![CDATA[
-    JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span><br/>")
+    format = GetCurrentTextFormat("")
+    JS.addText("<span style=\"" + format + "\">" + text + "</span><br/>")
+    if (GetString(game, "commandbarformat") <> format) {
+      format = format + ";background:" + game.defaultbackground
+      game.commandbarformat = format
+      JS.setCommandBarStyle(format)
+    }
     request (Speak, text)
     ]]>
   </function>

@@ -551,6 +551,12 @@ function disableInterface() {
     $("#gamePanesFinished").show();
 }
 
+function setCommandBarStyle(style) {
+    var width = $("#txtCommand").width();
+    $("#txtCommand").attr("style", style);
+    $("#txtCommand").width(width);
+}
+
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
