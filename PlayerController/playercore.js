@@ -249,10 +249,14 @@ function updateStatusVisibility() {
         $("#status").show();
         $("#divOutput").css("margin-top", "20px");
         $("#gamePanes").css("top", "24px");
+        $("#gridPanel").css("top", "32px");
+        $("#gamePanel").css("top", "32px");
     } else {
         $("#status").hide();
         $("#divOutput").css("margin-top", "0px");
         $("#gamePanes").css("top", "0px");
+        $("#gridPanel").css("top", "0px");
+        $("#gamePanel").css("top", "0px");
     }
 }
 
