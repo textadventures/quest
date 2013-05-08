@@ -18,14 +18,14 @@
     <menuhoverbackground>LightGrey</menuhoverbackground>
     <menuhoverforeground>Black</menuhoverforeground>
     <description type="string"></description>
-    <setcustomwidth type="boolean">false</setcustomwidth>
-    <customwidth type="int">950</customwidth>
+    <setcustomwidth type="boolean">true</setcustomwidth>
+    <customwidth type="int">700</customwidth>
     <setcustompadding type="boolean">false</setcustompadding>
     <custompaddingtop type="int">30</custompaddingtop>
     <custompaddingbottom type="int">0</custompaddingbottom>
     <custompaddingleft type="int">20</custompaddingleft>
     <custompaddingright type="int">20</custompaddingright>
-    <showborder/>
+    <showborder type="boolean">false</showborder>
     <showtitle/>
     <noclear type="boolean">false</noclear>
   </type>
