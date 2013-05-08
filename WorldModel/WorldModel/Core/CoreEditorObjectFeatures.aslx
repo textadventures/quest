@@ -1,0 +1,45 @@
+﻿<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Features</caption>
+    <mustnotinherit>editor_room</mustnotinherit>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Use/Give: object can be used on its own or with other objects/characters, or given to other objects/characters</caption>
+      <attribute>feature_usegive</attribute>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Container: object is a container or surface, or can be opened and closed</caption>
+      <attribute>feature_container</attribute>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Switchable: object can be switched on and off</caption>
+      <attribute>feature_switchable</attribute>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Edible: object can be eaten (and give health if the "Health" feature is enabled on the game features tab)</caption>
+      <attribute>feature_edible</attribute>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Lightness and darkness: objects can light up a room</caption>
+      <attribute>feature_lightdark</attribute>
+      <onlydisplayif>game.feature_lightdark</onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
+      <caption>Player: player can become this object</caption>
+      <attribute>feature_player</attribute>
+    </control>
+  </tab>
+
+</library>

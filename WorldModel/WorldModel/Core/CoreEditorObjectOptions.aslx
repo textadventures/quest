@@ -1,14 +1,10 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Options</caption>
+    <caption>Switchable</caption>
     <mustnotinherit>editor_room</mustnotinherit>
+    <onlydisplayif>this.feature_switchable</onlydisplayif>
 
-    <control>
-      <controltype>title</controltype>
-      <caption>Switch on/off</caption>
-    </control>
-    
     <control>
       <controltype>dropdowntypes</controltype>
       <caption>Switchable</caption>
@@ -69,10 +65,13 @@
       <mustinherit>switchable</mustinherit>
     </control>
 
-    <control>
-      <controltype>title</controltype>
-      <caption>Health</caption>
-    </control>
+  </tab>
+  
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Edible</caption>
+    <mustnotinherit>editor_room</mustnotinherit>
+    <onlydisplayif>this.feature_edible</onlydisplayif>
 
     <control>
       <controltype>dropdowntypes</controltype>
@@ -96,19 +95,18 @@
       <onlydisplayif>game.showhealth</onlydisplayif>
     </control>
 
-    <control>
-      <controltype>title</controltype>
-      <caption>Light/Dark</caption>
-      <advanced/>
-      <onlydisplayif>game.feature_lightdark</onlydisplayif>
-    </control>
-    
+  </tab>
+
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Light/Dark</caption>
+    <mustnotinherit>editor_room</mustnotinherit>
+    <onlydisplayif>this.feature_lightdark</onlydisplayif>
+
     <control>
       <controltype>checkbox</controltype>
       <caption>This object is a lightsource</caption>
       <attribute>lightsource</attribute>
-      <advanced/>
-      <onlydisplayif>game.feature_lightdark</onlydisplayif>
     </control>
     
     <control>
@@ -118,15 +116,16 @@
       <attribute>lightstrength</attribute>
       <validvalues type="simplestringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
       <onlydisplayif>GetBoolean(this, "lightsource")</onlydisplayif>
-      <advanced/>
       <onlydisplayif>game.feature_lightdark</onlydisplayif>
     </control>
 
-    <control>
-      <controltype>title</controltype>
-      <caption>Player</caption>
-      <advanced/>
-    </control>
+  </tab>
+
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Player</caption>
+    <mustnotinherit>editor_room</mustnotinherit>
+    <onlydisplayif>this.feature_player</onlydisplayif>
 
     <control>
       <controltype>dropdowntypes</controltype>

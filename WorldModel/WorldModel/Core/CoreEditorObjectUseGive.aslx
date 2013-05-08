@@ -3,6 +3,7 @@
     <parent>_ObjectEditor</parent>
     <caption>Use/Give</caption>
     <mustnotinherit>editor_room</mustnotinherit>
+    <onlydisplayif>this.feature_usegive</onlydisplayif>
 
     <control>
       <controltype>title</controltype>

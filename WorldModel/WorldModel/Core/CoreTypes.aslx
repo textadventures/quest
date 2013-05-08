@@ -192,6 +192,12 @@
     <pov_look>[DefaultSelfDescription]</pov_look>
     <pov_gender>[SelfGender]</pov_gender>
     <pov_article>[SelfArticle]</pov_article>
+    <feature_usegive type="boolean">false</feature_usegive>
+    <feature_container type="boolean">false</feature_container>
+    <feature_switchable type="boolean">false</feature_switchable>
+    <feature_edible type="boolean">false</feature_edible>
+    <feature_player type="boolean">false</feature_player>
+    <feature_lightdark type="boolean">false</feature_lightdark>
   </type>
 
   <type name="defaultexit">

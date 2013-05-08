@@ -16,16 +16,19 @@
       <caption>Alias to display in "Inventory" or "Places and Objects" pane</caption>
       <controltype>textbox</controltype>
       <attribute>listalias</attribute>
+      <onlydisplayif>game.showpanes</onlydisplayif>
     </control>
 
     <control>
       <caption>Hyperlink options</caption>
       <controltype>title</controltype>
+      <onlydisplayif>game.enablehyperlinks</onlydisplayif>
     </control>
 
     <control>
       <controltype>label</controltype>
       <caption>If you specify a link colour here, it will override the default colour specified on the game Display tab.</caption>
+      <onlydisplayif>game.enablehyperlinks</onlydisplayif>
     </control>
 
     <control>
@@ -34,36 +37,40 @@
       <attribute>linkcolour</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
       <freetext/>
+      <onlydisplayif>game.enablehyperlinks</onlydisplayif>
     </control>
 
     <control>
       <caption>Display verbs</caption>
       <controltype>title</controltype>
+      <onlydisplayif>game.enablehyperlinks or game.showpanes</onlydisplayif>
     </control>
 
     <control>
       <controltype>label</controltype>
       <caption>Display verbs appear when the object hyperlink is clicked, and also as buttons in the "Places and Objects" list.</caption>
+      <onlydisplayif>game.enablehyperlinks or game.showpanes</onlydisplayif>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <onlydisplayif>game.autodisplayverbs</onlydisplayif>
+      <onlydisplayif>game.autodisplayverbs and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
       <caption>Verbs added to the "Verbs" tab will be automatically added to the list. To turn this off, untick the "Automatically generate object display verbs list" on the game "Room Descriptions" tab. You can also turn this feature off just for this object, by ticking one of the options below.</caption>
+      <onlydisplayif>game.enablehyperlinks or game.showpanes</onlydisplayif>
     </control>
 
     <control>
       <caption>Disable automatically generated display verb list for this object</caption>
       <controltype>checkbox</controltype>
       <attribute>usestandardverblist</attribute>
-      <onlydisplayif>GetBoolean(game, "autodisplayverbs") and not GetBoolean(this, "useindividualverblist")</onlydisplayif>
+      <onlydisplayif>GetBoolean(game, "autodisplayverbs") and not GetBoolean(this, "useindividualverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
     <control>
       <caption>Only display verbs from this object's Verbs tab</caption>
       <controltype>checkbox</controltype>
       <attribute>useindividualverblist</attribute>
-      <onlydisplayif>GetBoolean(game, "autodisplayverbs") and not GetBoolean(this, "usestandardverblist")</onlydisplayif>
+      <onlydisplayif>GetBoolean(game, "autodisplayverbs") and not GetBoolean(this, "usestandardverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
     <control>
@@ -71,13 +78,13 @@
       <controltype>list</controltype>
       <attribute>displayverbs</attribute>
       <editprompt>Please enter a verb</editprompt>
-      <onlydisplayif>not GetBoolean(this, "useindividualverblist")</onlydisplayif>
+      <onlydisplayif>not GetBoolean(this, "useindividualverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
     <control>
       <controltype>label</controltype>
       <caption>Inventory verbs appear when the object hyperlink is clicked from an "inventory" command, and also as buttons in the "Inventory" list.</caption>
-      <onlydisplayif>not GetBoolean(this, "useindividualverblist")</onlydisplayif>
+      <onlydisplayif>not GetBoolean(this, "useindividualverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
     <control>
@@ -85,7 +92,7 @@
       <controltype>list</controltype>
       <attribute>inventoryverbs</attribute>
       <editprompt>Please enter a verb</editprompt>
-      <onlydisplayif>not GetBoolean(this, "useindividualverblist")</onlydisplayif>
+      <onlydisplayif>not GetBoolean(this, "useindividualverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
   </tab>
