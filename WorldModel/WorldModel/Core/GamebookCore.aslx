@@ -26,6 +26,8 @@
     <custompaddingleft type="int">20</custompaddingleft>
     <custompaddingright type="int">20</custompaddingright>
     <showborder/>
+    <showtitle/>
+    <noclear type="boolean">false</noclear>
   </type>
 
   <type name="defaultobject">
@@ -83,7 +85,25 @@
   </function>
 
   <function name="StartGame">
+    <![CDATA[
+    if (game.showtitle) {
+      PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
+      if (game.subtitle <> null) {
+        if (LengthOf(game.subtitle) > 0) {
+          PrintCentered ("<span style=\"font-size:130%\">" + game.subtitle + "</span>")
+        }
+      }
+      if (game.author <> null) {
+        if (LengthOf(game.author) > 0) {
+          PrintCentered ("<br/><span style=\"font-size:140%\">" + game.author + "</span>")
+        }
+      }
+      msg ("<div style=\"margin-top:20px\"></div>")
+    }
+    game.noclear = true
     DoPage(player.parent)
+    game.noclear = false
+    ]]>
   </function>
 
   <function name="ScopeInventory" type="objectlist">
@@ -124,7 +144,9 @@
   <function name="DoPage" parameters="page">
     <![CDATA[
     parent = player.parent
-    request (ClearScreen, "")
+    if (not game.noclear) {
+      request (ClearScreen, "")
+    }
     if (not GetBoolean(game, "continuesound")) {
       stop sound
     }

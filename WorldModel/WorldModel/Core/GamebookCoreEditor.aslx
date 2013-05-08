@@ -207,6 +207,12 @@
       </control>
 
       <control>
+        <controltype>checkbox</controltype>
+        <caption>Display title and author when the game begins</caption>
+        <attribute>showtitle</attribute>
+      </control>
+
+      <control>
         <controltype>textbox</controltype>
         <caption>Version</caption>
         <attribute>version</attribute>
