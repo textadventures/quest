@@ -672,6 +672,12 @@ function updateCommandLinks(data) {
     });
 }
 
+function disableAllCommandLinks() {
+    $(".commandlink").each(function (index, e) {
+        $(e).addClass("disabled");
+    });
+}
+
 function clearScreen() {
     $("#divOutput").css("min-height", 0);
     $("#divOutput").html("");

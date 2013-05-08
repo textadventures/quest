@@ -144,9 +144,12 @@
       }
       else {
         if (not game.clearlastpage) {
-          optiontext = StringDictionaryItem(player.parent.options, command)
-          msg ("<b>" + optiontext + "</b>")
-          msg ("")
+          if (DictionaryContains(player.parent.options, command)) {
+            optiontext = StringDictionaryItem(player.parent.options, command)
+            msg ("<b>" + optiontext + "</b>")
+            msg ("")
+          }
+          JS.disableAllCommandLinks()
         }
         player.parent = GetObject(command)
       }
