@@ -84,6 +84,11 @@
     return (result)
   </function>
 
+  <function name="ScopeCommands" type="objectlist">
+    result = NewObjectList()
+    return (result)
+  </function>
+
   <function name="HandleCommand" parameters="command">
     if (command = "undo") {
       // ignore
