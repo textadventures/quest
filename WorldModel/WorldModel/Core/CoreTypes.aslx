@@ -78,6 +78,11 @@
     <defaultlinkforeground>White</defaultlinkforeground>
     <defaultfont>'Lucida Console', Monaco, monospace</defaultfont>
     <defaultwebfont>Press Start 2P</defaultwebfont>
+    <menufontsize type="int">14</menufontsize>
+    <menufont>'Lucida Console', Monaco, monospace</menufont>
+    <menubackground>Black</menubackground>
+    <menuforeground>White</menuforeground>
+    <menuhoverbackground>GreenYellow</menuhoverbackground>
   </type>
 
   <type name="theme_typewriter">
@@ -98,6 +103,12 @@
     <defaultforeground>Yellow</defaultforeground>
     <defaultlinkforeground>Yellow</defaultlinkforeground>
     <defaultfont>'Comic Sans MS', cursive, sans-serif</defaultfont>
+    <menufontsize type="int">14</menufontsize>
+    <menufont>Impact, Charcoal, sans-serif</menufont>
+    <menubackground>Red</menubackground>
+    <menuforeground>Yellow</menuforeground>
+    <menuhoverbackground>Black</menuhoverbackground>
+    <menuhoverforeground>Yellow</menuhoverforeground>
   </type>
 
   <type name="defaultobject">
