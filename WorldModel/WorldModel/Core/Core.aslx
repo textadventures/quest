@@ -118,7 +118,7 @@
       }
       if (game.author <> null) {
         if (LengthOf(game.author) > 0) {
-          PrintCentered ("<br/><span style=\"font-size:140%\">by " + game.author + "</span>")
+          PrintCentered ("<br/><span style=\"font-size:140%\">[By] " + game.author + "</span>")
         }
       }
       msg ("<div style=\"margin-top:20px\"></div>")
