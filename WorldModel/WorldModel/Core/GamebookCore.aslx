@@ -28,6 +28,7 @@
     <showborder type="boolean">false</showborder>
     <showtitle/>
     <noclear type="boolean">false</noclear>
+    <clearlastpage type="boolean">false</clearlastpage>
   </type>
 
   <type name="defaultobject">
@@ -123,10 +124,16 @@
 
   <function name="ScopeCommands" type="objectlist">
     result = NewObjectList()
+    foreach (command, AllCommands()) {
+      if (command.parent = game.pov.parent) {
+        list add(result, command)
+      }
+    }
     return (result)
   </function>
 
   <function name="HandleCommand" parameters="command">
+    <![CDATA[
     if (command = "undo") {
       // ignore
     }
@@ -136,17 +143,30 @@
         msg ("Error - no page named '" + command + "'")
       }
       else {
+        if (not game.clearlastpage) {
+          optiontext = StringDictionaryItem(player.parent.options, command)
+          msg ("<b>" + optiontext + "</b>")
+          msg ("")
+        }
         player.parent = GetObject(command)
       }
     }
+    ]]>
   </function>
 
   <function name="DoPage" parameters="page">
     <![CDATA[
     parent = player.parent
-    if (not game.noclear) {
-      request (ClearScreen, "")
+    if (game.clearlastpage) {
+      if (not game.noclear) {
+        request (ClearScreen, "")
+      }
     }
+    else {
+      if (HasString(game, "optionsoutputsection")) {
+        HideOutputSection(game.optionsoutputsection)
+      }
+    }    
     if (not GetBoolean(game, "continuesound")) {
       stop sound
     }
@@ -183,6 +203,7 @@
       msg (player.parent.description)
       msg ("")
       msg ("")
+      game.optionsoutputsection = StartNewOutputSection()
       if (TypeOf(player.parent, "options") = "stringdictionary") {
         foreach (key, player.parent.options) {
           destination = GetObject(key)
@@ -200,9 +221,28 @@
           msg ("")
         }
       }
+      EndOutputSection (game.optionsoutputsection)
     }
     set (player.parent, "visited", true)
     ]]>
+  </function>
+  
+  <function name="StartNewOutputSection" type="string">
+    if (not HasInt(game, "lastoutputsection")) {
+      game.lastoutputsection = 0
+    }
+    game.lastoutputsection = game.lastoutputsection + 1
+    name = "section" + game.lastoutputsection
+    JS.StartOutputSection(name)
+    return (name)
+  </function>
+
+  <function name="EndOutputSection" parameters="name">
+    JS.EndOutputSection(name)
+  </function>
+
+  <function name="HideOutputSection" parameters="name">
+    JS.HideOutputSection(name)
   </function>
 
   <function name="RandomChance" parameters="percentile" type="boolean">

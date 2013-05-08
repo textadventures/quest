@@ -270,6 +270,12 @@
       <caption>Display</caption>
 
       <control>
+        <controltype>checkbox</controltype>
+        <attribute>clearlastpage</attribute>
+        <caption>Clear screen between each page</caption>
+      </control>
+
+      <control>
         <controltype>title</controltype>
         <caption>Font</caption>
       </control>
