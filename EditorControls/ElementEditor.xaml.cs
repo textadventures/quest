@@ -78,12 +78,9 @@ namespace TextAdventures.Quest.EditorControls
 
             scrollViewer.Content = controlGrid;
 
-            bool firstControl = true;
-
             foreach (IEditorControl ctl in tab.Controls)
             {
-                AddControlToGrid(controlGrid, ctl, firstControl);
-                firstControl = false;
+                AddControlToGrid(controlGrid, ctl);
             }
 
             if (m_lastRowIsResizable)
@@ -101,7 +98,9 @@ namespace TextAdventures.Quest.EditorControls
             }
         }
 
-        private void AddControlToGrid(Grid grid, IEditorControl ctl, bool firstControl)
+        private List<Control> m_titleControls = new List<Control>();
+
+        private void AddControlToGrid(Grid grid, IEditorControl ctl)
         {
             m_controlUIElements.Add(ctl, new List<UIElement>());
 
@@ -115,9 +114,9 @@ namespace TextAdventures.Quest.EditorControls
             m_controlUIElements[ctl].Add(newControl);
             newControl.Padding = new Thickness(5);
 
-            if (ctl.ControlType == "title" && !firstControl)
+            if (ctl.ControlType == "title")
             {
-                newControl.Margin = new Thickness(0, 15, 0, 0);
+                m_titleControls.Add(newControl);
             }
 
             IElementEditorControl elementEditorControl = newControl as IElementEditorControl;
@@ -297,21 +296,42 @@ namespace TextAdventures.Quest.EditorControls
 
             foreach (var ctl in m_controlUIElements)
             {
-                bool visible;
-                if (SimpleMode && !ctl.Key.IsControlVisibleInSimpleMode)
-                {
-                    visible = false;
-                }
-                else
-                {
-                    visible = ctl.Key.IsControlVisible(m_data);
-                }
+                bool visible = IsControlVisible(ctl.Key);
                 Visibility visibility = visible ? Visibility.Visible : Visibility.Collapsed;
                 foreach (UIElement element in ctl.Value)
                 {
                     element.Visibility = visibility;
                 }
             }
+
+            foreach (var titleControl in m_titleControls)
+            {
+                titleControl.Margin = new Thickness(0, 15, 0, 0);
+            }
+
+            foreach (var tab in m_tabs)
+            {
+                var firstVisibleControl = tab.Key.Controls.FirstOrDefault(IsControlVisible);
+                if (firstVisibleControl == null) continue;
+                if (firstVisibleControl.ControlType != "title") continue;
+                var uiElement = m_controlUIElements[firstVisibleControl].FirstOrDefault() as Control;
+                if (uiElement == null) continue;
+                uiElement.Margin = new Thickness(0, 0, 0, 0);
+            }
+        }
+
+        private bool IsControlVisible(IEditorControl ctl)
+        {
+            bool visible;
+            if (SimpleMode && !ctl.IsControlVisibleInSimpleMode)
+            {
+                visible = false;
+            }
+            else
+            {
+                visible = ctl.IsControlVisible(m_data);
+            }
+            return visible;
         }
 
         public void Save()
