@@ -110,6 +110,333 @@
     </tab>
 
     <tab>
+      <caption>Features</caption>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Hyperlinks: players can access object verbs by clicking object names</caption>
+        <attribute>enablehyperlinks</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Map: a dynamically generated grid-based map, created as the player moves around the game</caption>
+        <attribute>gridmap</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Score</caption>
+        <attribute>showscore</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Health</caption>
+        <attribute>showhealth</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>In-room descriptions: additional text which each object contributes to a room description</caption>
+        <attribute>appendobjectdescription</attribute>
+      </control>
+
+    </tab>
+
+    <tab>
+      <caption>Display</caption>
+
+      <control>
+        <caption>Theme</caption>
+        <controltype>dropdowntypes</controltype>
+        <types>*=Quest Standard; theme_novella=Novella; theme_retro=Retro; theme_typewriter=Typewriter; theme_hotdogstand=Hot Dog Stand</types>
+        <width>150</width>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Font</caption>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>The web font will override the base font if an internet connection is available, or the game is running in a web browser.</caption>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Base font</caption>
+        <attribute>defaultfont</attribute>
+        <source>basefonts</source>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Web font</caption>
+        <attribute>defaultwebfont</attribute>
+        <source>webfonts</source>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>Browse available web fonts</caption>
+        <href>http://www.google.com/webfonts</href>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <caption>Font size</caption>
+        <attribute>defaultfontsize</attribute>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Colour</caption>
+      </control>
+
+      <control>
+        <controltype>label</controltype>
+        <caption>You can use any valid HTML colour name, including the hexadecimal form (#RRGGBB - valid values #000000 to #FFFFFF)</caption>
+      </control>
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Background colour</caption>
+        <attribute>defaultbackground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>file</controltype>
+        <caption>Background image</caption>
+        <attribute>backgroundimage</attribute>
+        <source>[EditorImageFormats]</source>
+        <filefiltername>Picture Files</filefiltername>
+        <preview/>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <attribute>setbackgroundopacity</attribute>
+        <caption>Set background opacity</caption>
+      </control>
+
+      <control>
+        <controltype>numberdouble</controltype>
+        <attribute>backgroundopacity</attribute>
+        <caption>Opacity</caption>
+        <onlydisplayif>game.setbackgroundopacity</onlydisplayif>
+        <minimum type="double">0.0</minimum>
+        <maximum type="double">1.0</maximum>
+        <increment type="double">0.1</increment>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Foreground</caption>
+        <attribute>defaultforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Link foreground</caption>
+        <attribute>defaultlinkforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Hyperlink Menus</caption>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Underline hyperlinks</caption>
+        <attribute>underlinehyperlinks</attribute>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Font</caption>
+        <attribute>menufont</attribute>
+        <source>basefonts</source>
+        <freetext/>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <caption>Font size</caption>
+        <attribute>menufontsize</attribute>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Background</caption>
+        <attribute>menubackground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Foreground</caption>
+        <attribute>menuforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Hover background</caption>
+        <attribute>menuhoverbackground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>dropdown</controltype>
+        <caption>Hover foreground</caption>
+        <attribute>menuhoverforeground</attribute>
+        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+        <freetext/>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+    </tab>
+
+    <tab>
+      <caption>Interface</caption>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Map</caption>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <attribute>mapscale</attribute>
+        <caption>Scale</caption>
+        <minimum>1</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.gridmap</onlydisplayif>
+        <attribute>mapsize</attribute>
+        <caption>Height (pixels)</caption>
+        <minimum>1</minimum>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Layout</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show panes (Inventory, Places and Objects, Compass)</caption>
+        <attribute>showpanes</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show command bar</caption>
+        <attribute>showcommandbar</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show location bar</caption>
+        <attribute>showlocation</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show border</caption>
+        <attribute>showborder</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Set a custom display width</caption>
+        <attribute>setcustomwidth</attribute>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustomwidth</onlydisplayif>
+        <attribute>customwidth</attribute>
+        <caption>Width</caption>
+        <minimum>100</minimum>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Set custom padding</caption>
+        <attribute>setcustompadding</attribute>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingtop</attribute>
+        <caption>Top</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingbottom</attribute>
+        <caption>Bottom</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingleft</attribute>
+        <caption>Left</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>number</controltype>
+        <onlydisplayif>game.setcustompadding</onlydisplayif>
+        <attribute>custompaddingright</attribute>
+        <caption>Right</caption>
+        <minimum>0</minimum>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Options</caption>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Clear picture panel if room has no picture</caption>
+        <attribute>clearframe</attribute>
+      </control>
+    </tab>
+
+    <tab>
       <caption>Script</caption>
       <advanced/>
 
@@ -141,16 +468,6 @@
         <controltype>checkbox</controltype>
         <caption>Show room description when entering a room</caption>
         <attribute>showdescriptiononenter</attribute>
-      </control>
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Append in-room descriptions to room description</caption>
-        <attribute>appendobjectdescription</attribute>
-      </control>
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Enable hyperlinks</caption>
-        <attribute>enablehyperlinks</attribute>
       </control>
       <control>
         <controltype>checkbox</controltype>
@@ -271,18 +588,6 @@
       </control>
 
       <control>
-        <controltype>checkbox</controltype>
-        <caption>Show score</caption>
-        <attribute>showscore</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Show health</caption>
-        <attribute>showhealth</attribute>
-      </control>
-
-      <control>
         <controltype>script</controltype>
         <attribute>onhealthzero</attribute>
         <onlydisplayif>game.showhealth</onlydisplayif>
@@ -296,279 +601,6 @@
         <valueprompt>Please enter the format string (blank for default)</valueprompt>
         <attribute>povstatusattributes</attribute>
         <advanced/>
-      </control>
-    </tab>
-
-    <tab>
-      <caption>Display</caption>
-
-      <control>
-        <caption>Theme</caption>
-        <controltype>dropdowntypes</controltype>
-        <types>*=Quest Standard; theme_novella=Novella; theme_retro=Retro; theme_typewriter=Typewriter; theme_hotdogstand=Hot Dog Stand</types>
-        <width>150</width>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>Font</caption>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>The web font will override the base font if an internet connection is available, or the game is running in a web browser.</caption>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Base font</caption>
-        <attribute>defaultfont</attribute>
-        <source>basefonts</source>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Web font</caption>
-        <attribute>defaultwebfont</attribute>
-        <source>webfonts</source>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>Browse available web fonts</caption>
-        <href>http://www.google.com/webfonts</href>
-      </control>
-      
-      <control>
-        <controltype>number</controltype>
-        <caption>Font size</caption>
-        <attribute>defaultfontsize</attribute>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>Colour</caption>
-      </control>
-
-      <control>
-        <controltype>label</controltype>
-        <caption>You can use any valid HTML colour name, including the hexadecimal form (#RRGGBB - valid values #000000 to #FFFFFF)</caption>
-      </control>
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Background colour</caption>
-        <attribute>defaultbackground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>file</controltype>
-        <caption>Background image</caption>
-        <attribute>backgroundimage</attribute>
-        <source>[EditorImageFormats]</source>
-        <filefiltername>Picture Files</filefiltername>
-        <preview/>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <attribute>setbackgroundopacity</attribute>
-        <caption>Set background opacity</caption>
-      </control>
-
-      <control>
-        <controltype>numberdouble</controltype>
-        <attribute>backgroundopacity</attribute>
-        <caption>Opacity</caption>
-        <onlydisplayif>game.setbackgroundopacity</onlydisplayif>
-        <minimum type="double">0.0</minimum>
-        <maximum type="double">1.0</maximum>
-        <increment type="double">0.1</increment>
-      </control>
-
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Foreground</caption>
-        <attribute>defaultforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-      </control>
-      
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Link foreground</caption>
-        <attribute>defaultlinkforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>Hyperlink Menus</caption>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Underline hyperlinks</caption>
-        <attribute>underlinehyperlinks</attribute>
-      </control>
-      
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Font</caption>
-        <attribute>menufont</attribute>
-        <source>basefonts</source>
-        <freetext/>
-      </control>
-      
-      <control>
-        <controltype>number</controltype>
-        <caption>Font size</caption>
-        <attribute>menufontsize</attribute>
-      </control>
-      
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Background</caption>
-        <attribute>menubackground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-      </control>
-      
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Foreground</caption>
-        <attribute>menuforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-      </control>
-      
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Hover background</caption>
-        <attribute>menuhoverbackground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-      </control>
-      
-      <control>
-        <controltype>dropdown</controltype>
-        <caption>Hover foreground</caption>
-        <attribute>menuhoverforeground</attribute>
-        <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
-        <freetext/>
-      </control>
-
-      <control>
-        <controltype>title</controltype>
-        <caption>Layout</caption>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Show map</caption>
-        <attribute>gridmap</attribute>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.gridmap</onlydisplayif>
-        <attribute>mapscale</attribute>
-        <caption>Scale</caption>
-        <minimum>1</minimum>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.gridmap</onlydisplayif>
-        <attribute>mapsize</attribute>
-        <caption>Height (pixels)</caption>
-        <minimum>1</minimum>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Clear picture panel if room has no picture</caption>
-        <attribute>clearframe</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Show panes (Inventory, Places and Objects, Compass)</caption>
-        <attribute>showpanes</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Show command bar</caption>
-        <attribute>showcommandbar</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Show location bar</caption>
-        <attribute>showlocation</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Show border</caption>
-        <attribute>showborder</attribute>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Set a custom display width</caption>
-        <attribute>setcustomwidth</attribute>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.setcustomwidth</onlydisplayif>
-        <attribute>customwidth</attribute>
-        <caption>Width</caption>
-        <minimum>100</minimum>
-      </control>
-
-      <control>
-        <controltype>checkbox</controltype>
-        <caption>Set custom padding</caption>
-        <attribute>setcustompadding</attribute>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.setcustompadding</onlydisplayif>
-        <attribute>custompaddingtop</attribute>
-        <caption>Top</caption>
-        <minimum>0</minimum>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.setcustompadding</onlydisplayif>
-        <attribute>custompaddingbottom</attribute>
-        <caption>Bottom</caption>
-        <minimum>0</minimum>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.setcustompadding</onlydisplayif>
-        <attribute>custompaddingleft</attribute>
-        <caption>Left</caption>
-        <minimum>0</minimum>
-      </control>
-
-      <control>
-        <controltype>number</controltype>
-        <onlydisplayif>game.setcustompadding</onlydisplayif>
-        <attribute>custompaddingright</attribute>
-        <caption>Right</caption>
-        <minimum>0</minimum>
       </control>
     </tab>
 
