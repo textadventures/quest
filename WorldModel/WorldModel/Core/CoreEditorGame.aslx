@@ -303,6 +303,13 @@
       <caption>Display</caption>
 
       <control>
+        <caption>Theme</caption>
+        <controltype>dropdowntypes</controltype>
+        <types>*=Quest Standard; theme_novella=Novella; theme_retro=Retro; theme_typewriter=Typewriter; theme_hotdogstand=Hot Dog Stand</types>
+        <width>150</width>
+      </control>
+
+      <control>
         <controltype>title</controltype>
         <caption>Font</caption>
       </control>

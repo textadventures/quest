@@ -61,6 +61,45 @@
     </changedpov>
   </type>
 
+  <type name="theme_novella">
+    <setcustompadding/>
+    <showborder type="boolean">false</showborder>
+    <showpanes type="boolean">false</showpanes>
+    <showlocation type="boolean">false</showlocation>
+    <setcustomwidth/>
+    <customwidth type="int">650</customwidth>
+    <setcustompadding/>
+    <custompaddingtop type="int">60</custompaddingtop>
+  </type>
+
+  <type name="theme_retro">
+    <defaultbackground>Black</defaultbackground>
+    <defaultforeground>White</defaultforeground>
+    <defaultlinkforeground>White</defaultlinkforeground>
+    <defaultfont>'Lucida Console', Monaco, monospace</defaultfont>
+    <defaultwebfont>Press Start 2P</defaultwebfont>
+  </type>
+
+  <type name="theme_typewriter">
+    <setcustompadding/>
+    <showborder type="boolean">false</showborder>
+    <showpanes type="boolean">false</showpanes>
+    <showlocation type="boolean">false</showlocation>
+    <setcustomwidth/>
+    <customwidth type="int">650</customwidth>
+    <setcustompadding/>
+    <custompaddingtop type="int">60</custompaddingtop>
+    <defaultfont>'Courier New', Courier, monospace</defaultfont>
+    <defaultwebfont>Special Elite</defaultwebfont>
+  </type>
+
+  <type name="theme_hotdogstand">
+    <defaultbackground>Red</defaultbackground>
+    <defaultforeground>Yellow</defaultforeground>
+    <defaultlinkforeground>Yellow</defaultlinkforeground>
+    <defaultfont>'Comic Sans MS', cursive, sans-serif</defaultfont>
+  </type>
+
   <type name="defaultobject">
     <visible/>
     <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
