@@ -6,6 +6,7 @@
     <create>SetDark()</create>
     <add>Make room dark</add>
     <advanced/>
+    <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
     <control>
       <controltype>label</controltype>
@@ -27,6 +28,7 @@
     <create>SetLight()</create>
     <add>Make room light</add>
     <advanced/>
+    <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
     <control>
       <controltype>label</controltype>
@@ -48,6 +50,7 @@
     <create>SetObjectLightstrength (,"")</create>
     <add>Set object brightness</add>
     <advanced/>
+    <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
     <control>
       <controltype>label</controltype>
@@ -77,13 +80,14 @@
     </control>
   </editor>
 
-   <editor>
+  <editor>
     <appliesto>(function)SetExitLightstrength</appliesto>
     <display>Set brightness of exit #0 to #1</display>
     <category>Darkness</category>
     <create>SetExitLightstrength (,"")</create>
     <add>Set exit brightness</add>
     <advanced/>
+    <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
     <control>
       <controltype>label</controltype>

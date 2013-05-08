@@ -100,6 +100,7 @@
       <controltype>title</controltype>
       <caption>Light/Dark</caption>
       <advanced/>
+      <onlydisplayif>game.feature_lightdark</onlydisplayif>
     </control>
     
     <control>
@@ -107,6 +108,7 @@
       <caption>This object is a lightsource</caption>
       <attribute>lightsource</attribute>
       <advanced/>
+      <onlydisplayif>game.feature_lightdark</onlydisplayif>
     </control>
     
     <control>
@@ -117,8 +119,8 @@
       <validvalues type="simplestringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
       <onlydisplayif>GetBoolean(this, "lightsource")</onlydisplayif>
       <advanced/>
+      <onlydisplayif>game.feature_lightdark</onlydisplayif>
     </control>
-
 
     <control>
       <controltype>title</controltype>

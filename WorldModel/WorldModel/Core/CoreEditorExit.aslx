@@ -158,6 +158,7 @@
     <tab>
       <caption>Options</caption>
       <advanced/>
+      <onlydisplayif>game.feature_lightdark</onlydisplayif>
 
       <control>
         <controltype>title</controltype>

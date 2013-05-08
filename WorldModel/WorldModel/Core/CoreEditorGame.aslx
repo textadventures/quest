@@ -138,6 +138,12 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>Lightness and darkness: rooms can be dark, and objects can light them up</caption>
+        <attribute>feature_lightdark</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>In-room descriptions: additional text which each object contributes to a room description</caption>
         <attribute>appendobjectdescription</attribute>
       </control>
