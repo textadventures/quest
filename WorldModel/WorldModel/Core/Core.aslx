@@ -74,6 +74,12 @@
     else {
       request (Hide, "Command")
     }
+    if (game.showlocation) {
+      request (Show, "Location")
+    }
+    else {
+      request (Hide, "Location")
+    }
     if (HasString(game, "panelcontents")) {
       SetFramePicture (game.panelcontents)
     }

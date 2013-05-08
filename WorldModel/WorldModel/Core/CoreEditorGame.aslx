@@ -493,6 +493,12 @@
         <caption>Show command bar</caption>
         <attribute>showcommandbar</attribute>
       </control>
+
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Show location bar</caption>
+        <attribute>showlocation</attribute>
+      </control>
     </tab>
 
     <tab>

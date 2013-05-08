@@ -111,6 +111,7 @@ $(function () {
     });
 
     ui_init();
+    updateStatusVisibility();
 
     $("#txtCommand").focus();
 });
@@ -228,6 +229,7 @@ function uiShow(element) {
     }
     else {
         $(element).show();
+        updateStatusVisibility();
     }
 }
 
