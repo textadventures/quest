@@ -152,6 +152,7 @@
         <controltype>checkbox</controltype>
         <caption>Lightness and darkness: rooms can be dark, and objects can light them up</caption>
         <attribute>feature_lightdark</attribute>
+        <advanced/>
       </control>
 
       <control>
