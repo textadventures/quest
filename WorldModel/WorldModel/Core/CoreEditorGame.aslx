@@ -156,6 +156,12 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>Ask/Tell: players can ask or tell characters about selected topics</caption>
+        <attribute>feature_asktell</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>In-room descriptions: additional text which each object contributes to a room description</caption>
         <attribute>appendobjectdescription</attribute>
       </control>

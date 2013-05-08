@@ -3,6 +3,7 @@
     <parent>_ObjectEditor</parent>
     <caption>Ask/Tell</caption>
     <mustnotinherit>editor_room</mustnotinherit>
+    <onlydisplayif>game.feature_asktell</onlydisplayif>
 
     <control>
       <controltype>title</controltype>
