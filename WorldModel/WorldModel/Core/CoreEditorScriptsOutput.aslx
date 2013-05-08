@@ -73,7 +73,7 @@
     <create>SetFramePicture ("")</create>
     <add>Set frame picture</add>
     <advanced/>
-    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
+    <onlydisplayif>GetString(game, "_editorstyle") = null and GetBoolean(game, "feature_pictureframe")</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -99,7 +99,7 @@
     <add>Clear frame picture</add>
     <advanced/>
     <desktop/>
-    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
+    <onlydisplayif>GetString(game, "_editorstyle") = null and GetBoolean(game, "feature_pictureframe")</onlydisplayif>
 
     <control>
       <controltype>label</controltype>

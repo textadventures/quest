@@ -60,6 +60,7 @@
       InitPOV (oldvalue, game.pov)
     </changedpov>
     <feature_lightdark type="boolean">false</feature_lightdark>
+    <feature_pictureframe type="boolean">false</feature_pictureframe>
   </type>
 
   <type name="theme_novella">

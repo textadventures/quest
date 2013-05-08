@@ -11,6 +11,7 @@
       <source>[EditorImageFormats]</source>
       <filefiltername>Picture Files</filefiltername>
       <preview/>
+      <onlydisplayif>game.feature_pictureframe</onlydisplayif>
     </control>
 
     <control>

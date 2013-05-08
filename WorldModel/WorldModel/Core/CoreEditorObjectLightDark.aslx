@@ -4,6 +4,7 @@
     <caption>Light/Dark</caption>
     <mustnotinherit>editor_object</mustnotinherit>
     <advanced/>
+    <onlydisplayif>game.feature_lightdark</onlydisplayif>
 
     <control>
       <caption>Room is initially dark</caption>

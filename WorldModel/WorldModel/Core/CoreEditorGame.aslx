@@ -126,6 +126,12 @@
 
       <control>
         <controltype>checkbox</controltype>
+        <caption>Picture frame: a static picture that appears above text. Pictures can be set per room, or using a script command</caption>
+        <attribute>feature_pictureframe</attribute>
+      </control>
+
+      <control>
+        <controltype>checkbox</controltype>
         <caption>Score</caption>
         <attribute>showscore</attribute>
       </control>
@@ -433,12 +439,14 @@
       <control>
         <controltype>title</controltype>
         <caption>Options</caption>
+        <onlydisplayif>game.feature_pictureframe</onlydisplayif>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
         <caption>Clear picture panel if room has no picture</caption>
         <attribute>clearframe</attribute>
+        <onlydisplayif>game.feature_pictureframe</onlydisplayif>
       </control>
     </tab>
 
