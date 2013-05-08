@@ -109,6 +109,20 @@
   <function name="StartGame">
     <![CDATA[
     StartTurnOutputSection
+    if (game.showtitle) {
+      PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
+      if (game.subtitle <> null) {
+        if (LengthOf(game.subtitle) > 0) {
+          PrintCentered ("<span style=\"font-size:130%\">" + game.subtitle + "</span>")
+        }
+      }
+      if (game.author <> null) {
+        if (LengthOf(game.author) > 0) {
+          PrintCentered ("<br/><span style=\"font-size:140%\">by " + game.author + "</span>")
+        }
+      }
+      msg ("<div style=\"margin-top:20px\"></div>")
+    }
     if (game.pov = null) {
       playerObject = GetObject("player")
       if (playerObject = null) {

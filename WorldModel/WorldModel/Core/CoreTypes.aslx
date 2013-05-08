@@ -40,6 +40,7 @@
     <showborder/>
     <showscore type="boolean">false</showscore>
     <showhealth type="boolean">false</showhealth>
+    <showtitle/>
     <autodisplayverbs/>
     <autodescription_youarein type="int">1</autodescription_youarein>
     <autodescription_youcansee type="int">2</autodescription_youcansee>
