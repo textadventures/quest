@@ -110,6 +110,7 @@
     <![CDATA[
     StartTurnOutputSection
     if (game.showtitle) {
+      JS.StartOutputSection ("title")
       PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
       if (game.subtitle <> null) {
         if (LengthOf(game.subtitle) > 0) {
@@ -122,6 +123,7 @@
         }
       }
       msg ("<div style=\"margin-top:20px\"></div>")
+      JS.EndOutputSection ("title")
     }
     if (game.pov = null) {
       playerObject = GetObject("player")
