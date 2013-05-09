@@ -43,7 +43,15 @@ namespace TextAdventures.Quest
             IFieldSaver saver;
             if (TryGetSaver(value.GetType(), out saver))
             {
-                saver.Save(writer, element, attribute, value);
+                try
+                {
+                    saver.Save(writer, element, attribute, value);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(string.Format("Failed to save field '{0}.{1}' with value '{2}' - {3}",
+                                                      element.Name, attribute, value, ex.Message), ex);
+                }
             }
             else
             {
