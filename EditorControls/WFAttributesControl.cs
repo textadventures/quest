@@ -383,30 +383,37 @@ namespace TextAdventures.Quest.EditorControls
             get { return null; }
         }
 
-        private void cmdAddType_DropDownOpening(object sender, System.EventArgs e)
-        {
-            foreach (ToolStripItem item in cmdAddType.DropDownItems)
-            {
-                item.Click -= cmdAddTypeDropDownItem_Click;
-            }
-
-            cmdAddType.DropDownItems.Clear();
-            IEnumerable<string> availableTypes = m_controller.GetElementNames("type");
-
-            foreach (string item in availableTypes.Where(t => !m_controller.IsDefaultTypeName(t)))
-            {
-                ToolStripItem menuItem = cmdAddType.DropDownItems.Add(item);
-                menuItem.Click += cmdAddTypeDropDownItem_Click;
-                menuItem.Enabled = !lstTypes.Items.ContainsKey(item);
-            }
-        }
-
-        private void cmdAddTypeDropDownItem_Click(System.Object sender, System.EventArgs e)
+        private void cmdAddType_Click(object sender, EventArgs e)
         {
             if (m_readOnly) return;
-            string typeToAdd = ((ToolStripItem)sender).Text;
-            var result = m_controller.AddInheritedTypeToElement(m_data.Name, typeToAdd, true);
-            if (!result.Valid) PopupEditors.DisplayValidationError(result, null, "Unable to add type");
+
+            var availableTypes = m_controller.GetElementNames("type")
+                                             .Where(t => !lstTypes.Items.ContainsKey(t))
+                                             .Where(t => !m_controller.IsDefaultTypeName(t))
+                                             .OrderBy(t => t);
+
+            var result = PopupEditors.EditStringWithDropdown("Please choose a type to add", string.Empty, null, null,
+                                                             string.Empty, availableTypes);
+
+            if (result.Cancelled) return;
+
+            if (!availableTypes.Contains(result.Result))
+            {
+                if (lstTypes.Items.ContainsKey(result.Result))
+                {
+                    MessageBox.Show(string.Format("Type '{0}' is already inherited", result.Result), "Invalid type",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                else
+                {
+                    MessageBox.Show(string.Format("Type '{0}' does not exist", result.Result), "Invalid type",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                return;
+            }
+
+            var addResult = m_controller.AddInheritedTypeToElement(m_data.Name, result.Result, true);
+            if (!addResult.Valid) PopupEditors.DisplayValidationError(addResult, null, "Unable to add type");
         }
 
         private void lstTypes_SelectedIndexChanged(System.Object sender, System.EventArgs e)

@@ -36,7 +36,6 @@
             this.ColumnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ctlTypesToolStrip = new System.Windows.Forms.ToolStrip();
             this.ToolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
-            this.cmdAddType = new System.Windows.Forms.ToolStripDropDownButton();
             this.cmdDeleteType = new System.Windows.Forms.ToolStripButton();
             this.ctlSplitContainer = new System.Windows.Forms.SplitContainer();
             this.lstAttributes = new System.Windows.Forms.ListView();
@@ -48,6 +47,7 @@
             this.cmdAdd = new System.Windows.Forms.ToolStripButton();
             this.cmdOnChange = new System.Windows.Forms.ToolStripButton();
             this.cmdDelete = new System.Windows.Forms.ToolStripButton();
+            this.cmdAddType = new System.Windows.Forms.ToolStripButton();
             this.ctlMultiControl = new TextAdventures.Quest.EditorControls.WFMultiControl();
             ((System.ComponentModel.ISupportInitialize)(this.ctlSplitContainerMain)).BeginInit();
             this.ctlSplitContainerMain.Panel1.SuspendLayout();
@@ -133,15 +133,6 @@
             this.ToolStripLabel2.Size = new System.Drawing.Size(100, 22);
             this.ToolStripLabel2.Text = "Inherited Types";
             this.ToolStripLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // cmdAddType
-            // 
-            this.cmdAddType.Image = ((System.Drawing.Image)(resources.GetObject("cmdAddType.Image")));
-            this.cmdAddType.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdAddType.Name = "cmdAddType";
-            this.cmdAddType.Size = new System.Drawing.Size(58, 22);
-            this.cmdAddType.Text = "Add";
-            this.cmdAddType.DropDownOpening += new System.EventHandler(this.cmdAddType_DropDownOpening);
             // 
             // cmdDeleteType
             // 
@@ -254,6 +245,15 @@
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
+            // cmdAddType
+            // 
+            this.cmdAddType.Image = ((System.Drawing.Image)(resources.GetObject("cmdAddType.Image")));
+            this.cmdAddType.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cmdAddType.Name = "cmdAddType";
+            this.cmdAddType.Size = new System.Drawing.Size(49, 22);
+            this.cmdAddType.Text = "Add";
+            this.cmdAddType.Click += new System.EventHandler(this.cmdAddType_Click);
+            // 
             // ctlMultiControl
             // 
             this.ctlMultiControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -291,7 +291,6 @@
 
         internal System.Windows.Forms.ToolStrip ctlTypesToolStrip;
         internal System.Windows.Forms.ToolStripLabel ToolStripLabel2;
-        internal System.Windows.Forms.ToolStripDropDownButton cmdAddType;
         internal System.Windows.Forms.ToolStripButton cmdDeleteType;
         internal System.Windows.Forms.ListView lstTypes;
         internal System.Windows.Forms.ColumnHeader ColumnHeader1;
@@ -309,6 +308,7 @@
         protected System.Windows.Forms.SplitContainer ctlSplitContainerMain;
         protected System.Windows.Forms.ToolStripButton cmdOnChange;
         protected System.Windows.Forms.SplitContainer ctlSplitContainer;
+        private System.Windows.Forms.ToolStripButton cmdAddType;
 
     }
 }
