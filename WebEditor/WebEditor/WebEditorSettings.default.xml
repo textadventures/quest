@@ -19,7 +19,7 @@
   <!-- DEBUG PLUGINS -->
 
   <!-- OR, when debugging, use the Debug Plugins -->
-  <!-- <add key="FileManagerType" value="WebEditor.Services.DebugFileManager, WebEditor"/> -->
+  <!-- <add key="FileManagerType" value="WebEditor.Services.DebugEditorFileManager, WebEditor"/> -->
   <!-- <add key="DebugFileManagerFile" value="C:\Path\To\some game file.aslx"/> -->
 
 </appSettings>
