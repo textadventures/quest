@@ -30,6 +30,7 @@
   <template name="Use">Gebruik</template>
   <template name="Drop">Laat vallen</template>
   <template name="GoTo">Ga naar</template>
+  <template name="Go">Ga</template>
   <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " is niet open."</dynamictemplate>
   <template name="NeutralGender">het</template>
   <template name="MaleGender">hij</template>
