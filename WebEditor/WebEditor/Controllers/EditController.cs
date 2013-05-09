@@ -185,6 +185,7 @@ namespace WebEditor.Controllers
             }
         }
 
+        [OutputCache(NoStore = true, Duration = 0)]
         public JsonResult RefreshTree(int id)
         {
             return Json(EditorDictionary[id].GetElementTreeForJson(), JsonRequestBehavior.AllowGet);

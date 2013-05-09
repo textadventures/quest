@@ -18,9 +18,11 @@
             $("#file-upload-new-error").html("Only the following file types are permitted: " + extensions);
         }
     });
-    window.parent.registerFileUploadInit(fileUploadInit);
-    window.parent.registerFileUploadSubmit(fileUploadSubmit);
-
+    setTimeout(function() {
+        window.parent.registerFileUploadInit(fileUploadInit);
+        window.parent.registerFileUploadSubmit(fileUploadSubmit);
+    }, 1000);
+    
     var postedFile = $("#PostedFile").val();
     if (postedFile.length > 0) {
         $("#PostedFile").val("");
