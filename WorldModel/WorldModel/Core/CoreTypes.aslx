@@ -51,6 +51,8 @@
     <autodescription_youcansee_newline type="boolean">false</autodescription_youcansee_newline>
     <autodescription_youcango_newline type="boolean">false</autodescription_youcango_newline>
     <autodescription_description_newline type="boolean">false</autodescription_description_newline>
+    <changeroom_newline/>
+    <command_newline type="boolean">false</command_newline>
     <description type="string"></description>
     <languageid>[LanguageId]</languageid>
     <gridmap type="boolean">false</gridmap>

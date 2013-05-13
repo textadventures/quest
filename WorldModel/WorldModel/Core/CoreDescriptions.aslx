@@ -158,8 +158,8 @@
           }
           
           if (IsDefined("oldRoom")) {
-            if (oldRoom <> null) {
-              msg("")
+            if (oldRoom <> null and game.changeroom_newline and not game.command_newline) {
+              msg ("")
             }            
           }
           

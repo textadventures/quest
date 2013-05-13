@@ -289,6 +289,9 @@
             OutputTextRaw ("&gt; " + SafeXML(command))
           }
         }
+        if (game.command_newline) {
+          msg ("")
+        }
         commands = Split(command, ".")
         game.pov.commandmetadata = metadata
         if (ListCount(commands) = 1) {

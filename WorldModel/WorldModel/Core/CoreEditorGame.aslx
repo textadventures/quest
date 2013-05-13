@@ -498,8 +498,19 @@
       </control>
       <control>
         <controltype>checkbox</controltype>
+        <caption>Put an extra newline when entering a room</caption>
+        <attribute>changeroom_newline</attribute>
+        <onlydisplayif>not game.command_newline</onlydisplayif>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
         <caption>Display commands entered by the player</caption>
         <attribute>echocommand</attribute>
+      </control>
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>Put an extra newline before each turn</caption>
+        <attribute>command_newline</attribute>
       </control>
       <control>
         <controltype>checkbox</controltype>
