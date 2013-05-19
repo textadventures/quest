@@ -103,9 +103,13 @@
         }
       }
     }
+    InitUserInterface
     ]]>
   </function>
 
+  <function name="InitUserInterface">
+  </function>
+  
   <function name="StartGame">
     <![CDATA[
     StartTurnOutputSection
