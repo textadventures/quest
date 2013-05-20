@@ -610,8 +610,14 @@ Public Class Player
     End Sub
 
     Private Sub Speak(text As String) Implements IPlayer.Speak
-        If Not UseSAPI Then Return
-        BeginInvoke(Sub() m_speech.SpeakAsync(StripTags(text)))
+        text = StripTags(text)
+        BeginInvoke(Sub()
+                        If UseSAPI Then
+                            m_speech.SpeakAsync(text)
+                        Else
+                            JawsApi.JawsApi.JFWSayString(text, False)
+                        End If
+                    End Sub)
     End Sub
 
     Public Sub SetWindowMenu(menuData As MenuData) Implements IPlayer.SetWindowMenu
@@ -771,13 +777,7 @@ Public Class Player
     End Sub
 
     Private Sub ctlPlayerHtml_Speak(text As String) Handles ctlPlayerHtml.Speak
-        BeginInvoke(Sub()
-                        If UseSAPI Then
-                            m_speech.SpeakAsync(text)
-                        Else
-                            JawsApi.JawsApi.JFWSayString(text, False)
-                        End If
-                    End Sub)
+        Speak(text)
     End Sub
 
     Public Sub BindMenu(linkid As String, verbs As String, text As String, elementId As String) Implements IPlayerHelperUI.BindMenu
