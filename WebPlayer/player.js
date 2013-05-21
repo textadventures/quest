@@ -18,9 +18,8 @@ function init() {
 }
 
 function keepSessionAlive() {
-    $.post("/KeepAlive.ashx");
+    $.post("KeepAlive.ashx");
 }
-
 
 var _waitingForSoundToFinish = false;
 
