@@ -54,7 +54,7 @@
       else {
         listprefix = DynamicTemplate("ObjectContains", object)
       }
-      list = FormatObjectList(listprefix, object, Template("And"), ".", false)
+      list = FormatObjectList(listprefix, object, Template("And"), ".")
       if (list <> "") {
         msg (list)
       }
@@ -298,7 +298,7 @@
   </command>
   
   <command name="inventory" pattern="[inventory]">
-    list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".", true)
+    list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
     if (list = "") {
       msg (Template("NotCarryingAnything"))
     }

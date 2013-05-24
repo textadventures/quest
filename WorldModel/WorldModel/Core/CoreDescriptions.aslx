@@ -27,7 +27,7 @@
             }
           }
           if (i = game.autodescription_youcansee) {
-            objects = FormatObjectList(game.pov.parent.objectslistprefix, GetNonTransparentParent(game.pov.parent), Template("And"), ".", false)
+            objects = FormatObjectList(game.pov.parent.objectslistprefix, GetNonTransparentParent(game.pov.parent), Template("And"), ".")
             desc = AddDescriptionLine(desc, objects)
             
             if (game.autodescription_youcansee_newline) {
@@ -192,7 +192,7 @@
     ]]>
   </function>
 
-  <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList, useinventoryverbs">
+  <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList">
     <![CDATA[
     result = ""
     count = 0
@@ -203,10 +203,9 @@
     listLength = ListCount(list)
     foreach (item, list) {
       if (LengthOf(result) = 0) result = preList + " "
-      verbs = GetDisplayVerbs(item)
       result = result + GetDisplayNameLink(item, "object")
       if (CanSeeThrough(item)) {
-        result = result + FormatObjectList(" (" + item.contentsprefix, item, preFinal, ")", useinventoryverbs)
+        result = result + FormatObjectList(" (" + item.contentsprefix, item, preFinal, ")")
       }
       count = count + 1
       if (count = listLength - 1) {
