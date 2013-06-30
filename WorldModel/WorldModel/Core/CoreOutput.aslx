@@ -185,6 +185,9 @@
     else if (StartsWith(section, "img:")) {
       return (ProcessTextCommand_Img(section, data))
     }
+    else if (StartsWith(section, "counter:")) {
+      return (ProcessTextCommand_Counter(Mid(section, 9), data))
+    }
     else {
       dot = Instr(section, ".")
       if (dot = 0) {
@@ -490,6 +493,15 @@
     ]]>
   </function>
 
+  <function name="ProcessTextCommand_Counter" type="string" parameters="section, data">
+    if (HasAttribute(game, section)) {
+      return (ToString(GetAttribute(game, section)))
+    }
+    else {
+      return (section)
+    }  
+  </function>
+  
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
     request (SetPanelContents, "<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")

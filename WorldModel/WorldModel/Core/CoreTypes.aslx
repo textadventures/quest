@@ -510,32 +510,56 @@
     <displayverbs type="listextend">[SwitchOn];[SwitchOff]</displayverbs>
     <switchedon type="boolean">false</switchedon>
     <turnon type="script">
-      if (this.switchedon) {
-        msg (DynamicTemplate("AlreadySwitchedOn", this))
+      found = false
+      foreach (obj, ScopeReachable()){
+        if (obj = this){
+          found = true
+        }
       }
-      else {
-        if (HasString(this, "switchonmsg")) {
-          msg (this.switchonmsg)
+
+      if (found){
+        if (this.switchedon) {
+          msg (DynamicTemplate("AlreadySwitchedOn", this))
         }
         else {
-          msg (DynamicTemplate("SwitchedOn", this))
+          if (HasString(this, "switchonmsg")) {
+            msg (this.switchonmsg)
+          }
+          else {
+            msg (DynamicTemplate("SwitchedOn", this))
+          }
+          this.switchedon = true
         }
-        this.switchedon = true
-      }
+      } 
+      else {
+        msg(DynamicTemplate("DefaultTurnOn", this))
+      }            
     </turnon>
     <turnoff type="script">
-      if (not this.switchedon) {
-        msg (DynamicTemplate("AlreadySwitchedOff", this))
+      found = false
+      foreach (obj, ScopeReachable()){
+        if (obj = this){
+          found = true
+        }
       }
-      else {
-        if (HasString(this, "switchoffmsg")) {
-          msg (this.switchoffmsg)
+
+      if (found){
+        if (not this.switchedon) {
+          msg (DynamicTemplate("AlreadySwitchedOff", this))
         }
         else {
-          msg (DynamicTemplate("SwitchedOff", this))
+          if (HasString(this, "switchoffmsg")) {
+            msg (this.switchoffmsg)
+          }
+          else {
+            msg (DynamicTemplate("SwitchedOff", this))
+          }
+          this.switchedon = false
         }
-        this.switchedon = false
-      }
+      } 
+      else {
+        msg(DynamicTemplate("DefaultTurnOff", this))
+      }        
     </turnoff>
   </type>
 

@@ -266,6 +266,17 @@
     set (game, flag, false)
   </function>
 
+  <function name="InitializeCounter" parameters="counter, value">
+    set (game, counter, value)
+  </function>
+
+  <function name="ModifyCounter" parameters="counter, value">
+    if (not HasInt(game, counter)) {
+      set (game, counter, 0)
+    }
+    set (game, counter, GetInt(game, counter) + value)
+  </function>
+  
   <function name="IncreaseCounter" parameters="counter">
     if (not HasInt(game, counter)) {
       set (game, counter, 0)

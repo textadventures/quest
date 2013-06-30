@@ -99,8 +99,7 @@
   </function>
 
   <function name="ScopeVisibleLightsource" type="objectlist" parameters="lightstrength">    
-    result = ScopeVisibleNotHeld()
-    result = ListCombine(result, ScopeReachableInventory())
+    result = ScopeVisible()
     lightobjects = NewObjectList()
     foreach (obj, result) {
       if (GetBoolean(obj, "lightsource") and GetString(obj, "lightstrength") = lightstrength) {
