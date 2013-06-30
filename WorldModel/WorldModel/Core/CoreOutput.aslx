@@ -498,7 +498,7 @@
       return (ToString(GetAttribute(game, section)))
     }
     else {
-      return (section)
+      return ("")
     }  
   </function>
   
