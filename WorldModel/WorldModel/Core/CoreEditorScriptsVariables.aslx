@@ -148,16 +148,16 @@
   </editor>
 
   <editor>
-    <appliesto>(function)InitializeCounter</appliesto>
-    <display>Initialize counter #0 with #1</display>
+    <appliesto>(function)SetCounter</appliesto>
+    <display>Set counter #0 to #1</display>
     <category>Variables</category>
-    <add>Initialize counter</add>
-    <create>InitializeCounter (,)</create>
+    <add>Set counter</add>
+    <create>SetCounter ("",0)</create>
     <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>Initialize counter</caption>
+      <caption>Set counter</caption>
     </control>
 
     <control>
@@ -168,7 +168,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>with</caption>
+      <caption>to</caption>
     </control>
     
     <control>
@@ -220,16 +220,16 @@
   </editor>
 
   <editor>
-    <appliesto>(function)ModifyCounter</appliesto>
-    <display>Modify counter #0 by #1</display>
+    <appliesto>(function)ChangeCounter</appliesto>
+    <display>Change counter #0 by #1</display>
     <category>Variables</category>
-    <add>Modify counter</add>
-    <create>ModifyCounter ("",0)</create>
+    <add>Change counter</add>
+    <create>ChangeCounter ("",0)</create>
     <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>Modify counter</caption>
+      <caption>Change counter</caption>
     </control>
 
     <control>

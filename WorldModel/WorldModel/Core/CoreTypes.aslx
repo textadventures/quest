@@ -510,14 +510,7 @@
     <displayverbs type="listextend">[SwitchOn];[SwitchOff]</displayverbs>
     <switchedon type="boolean">false</switchedon>
     <turnon type="script">
-      found = false
-      foreach (obj, ScopeReachable()){
-        if (obj = this){
-          found = true
-        }
-      }
-
-      if (found){
+      if (ListContains(ScopeReachable(), this)){
         if (this.switchedon) {
           msg (DynamicTemplate("AlreadySwitchedOn", this))
         }
@@ -536,14 +529,7 @@
       }            
     </turnon>
     <turnoff type="script">
-      found = false
-      foreach (obj, ScopeReachable()){
-        if (obj = this){
-          found = true
-        }
-      }
-
-      if (found){
+      if (ListContains(ScopeReachable(), this)){
         if (not this.switchedon) {
           msg (DynamicTemplate("AlreadySwitchedOff", this))
         }
