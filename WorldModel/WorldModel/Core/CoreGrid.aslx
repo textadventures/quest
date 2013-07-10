@@ -11,9 +11,13 @@
         room.grid_parent_offset_y = (room.parent.grid_length - room.grid_length) /2.0
       }
       
-      room.parent.grid_x = room.grid_x - room.grid_parent_offset_x
-      room.parent.grid_y = room.grid_y - room.grid_parent_offset_y
-      room.parent.grid_z = room.grid_z
+      //room.parent.grid_x = room.grid_x - room.grid_parent_offset_x
+      //room.parent.grid_y = room.grid_y - room.grid_parent_offset_y
+      //room.parent.grid_z = room.grid_z
+      
+      Grid_SetGridCoordinateForPlayer (game.pov, room.parent, "x", Grid_GetGridCoordinateForPlayer(game.pov, room, "x") - room.grid_parent_offset_x)
+      Grid_SetGridCoordinateForPlayer (game.pov, room.parent, "y", Grid_GetGridCoordinateForPlayer(game.pov, room, "y") - room.grid_parent_offset_y)
+      Grid_SetGridCoordinateForPlayer (game.pov, room.parent, "z", Grid_GetGridCoordinateForPlayer(game.pov, room, "z"))
       
       room.parent.grid_render = true
       
@@ -35,13 +39,20 @@
           exit.to.grid_render = true
         }
         else if (DoesInherit(exit, "eastdirection")) {
-          exit.grid_x = room.grid_x + room.grid_width + exit.grid_offset_x
-          exit.grid_y = room.grid_y + room.grid_length/2.0 + exit.grid_offset_y
-          exit.to.grid_x = exit.grid_x + exit.grid_length
-          exit.to.grid_y = exit.grid_y - exit.to.grid_length/2.0
-          exit.to.grid_z = room.grid_z
-          exit.end_x = exit.grid_x + exit.grid_length
-          exit.end_y = exit.grid_y
+          //exit.grid_x = room.grid_x + room.grid_width + exit.grid_offset_x
+          Grid_SetGridCoordinateForPlayer (game.pov, exit, "x", Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width + exit.grid_offset_x)
+          //exit.grid_y = room.grid_y + room.grid_length/2.0 + exit.grid_offset_y
+          Grid_SetGridCoordinateForPlayer (game.pov, exit, "y", Grid_GetGridCoordinateForPlayer(game.pov, room, "y") + room.grid_length/2.0 + exit.grid_offset_y)
+          //exit.to.grid_x = exit.grid_x + exit.grid_length
+          Grid_SetGridCoordinateForPlayer (game.pov, exit.to, "x", Grid_GetGridCoordinateForPlayer(game.pov, exit, "x") + exit.grid_length)
+          //exit.to.grid_y = exit.grid_y - exit.to.grid_length/2.0
+          Grid_SetGridCoordinateForPlayer (game.pov, exit.to, "y", Grid_GetGridCoordinateForPlayer(game.pov, exit, "y") - exit.to.grid_length/2.0)
+          //exit.to.grid_z = room.grid_z
+          Grid_SetGridCoordinateForPlayer (game.pov, exit.to, "z", Grid_GetGridCoordinateForPlayer(game.pov, room, "z"))
+          //exit.end_x = exit.grid_x + exit.grid_length
+          Grid_SetGridCoordinateForPlayer (game.pov, exit, "end_x", Grid_GetGridCoordinateForPlayer(game.pov, exit, "x") + exit.grid_length)
+          //exit.end_y = exit.grid_y
+          Grid_SetGridCoordinateForPlayer (game.pov, exit, "end_y", Grid_GetGridCoordinateForPlayer(game.pov, exit, "y"))
           exit.grid_render = true
           exit.to.grid_render = true
         }
@@ -139,14 +150,18 @@
 
   <function name="Grid_DrawPlayerInRoom" parameters="room">
     if (room.grid_render) {
-      Grid_DrawRoom (room, false)
-    
-      player_x = room.grid_x + room.grid_width/2.0
-      player_y = room.grid_y + room.grid_length/2.0
-      player_z = room.grid_z
-      
-      // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
-      JS.Grid_DrawPlayer(player_x, player_y, player_z, 5, "black", 2, "yellow")
+    Grid_DrawRoom (room, false)
+
+    //player_x = room.grid_x + room.grid_width/2.0
+    //player_y = room.grid_y + room.grid_length/2.0
+    //player_z = room.grid_z
+
+    player_x = Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width/2.0
+    player_y = Grid_GetGridCoordinateForPlayer(game.pov, room, "y") + room.grid_length/2.0
+    player_z = Grid_GetGridCoordinateForPlayer(game.pov, room, "z")
+
+    // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
+    JS.Grid_DrawPlayer(player_x, player_y, player_z, 5, "black", 2, "yellow")
     }
   </function>
 
@@ -159,19 +174,18 @@
           Grid_DrawRoom (room.parent, redraw)
         }
       
-        // Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill, sides)
-        JS.Grid_DrawBox(room.grid_x, room.grid_y, room.grid_z, room.grid_width, room.grid_length, room.grid_border, room.grid_borderwidth, room.grid_fill, room.grid_bordersides)
+        JS.Grid_DrawBox(Grid_GetGridCoordinateForPlayer(game.pov, room, "x"), Grid_GetGridCoordinateForPlayer(game.pov, room, "y"), Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_width, room.grid_length, room.grid_border, room.grid_borderwidth, room.grid_fill, room.grid_bordersides)
         
         if (LengthOf(room.grid_label) > 0) {
-          label_x = room.grid_x + room.grid_width/2.0
-          label_y = (room.grid_y + room.grid_length/2.0) - 0.5
+          label_x = Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width/2.0
+          label_y = (Grid_GetGridCoordinateForPlayer(game.pov, room, "y") + room.grid_length/2.0) - 0.5
           // Grid_DrawLabel(x, y, z, text)
           JS.Grid_DrawLabel(label_x, label_y, room.grid_z, room.grid_label)
         }
       
         foreach (exit, AllExits()) {
           if (exit.grid_render and exit.parent = room and exit.grid_length > 0) {
-            Grid_DrawLine (exit.grid_x, exit.grid_y, exit.end_x, exit.end_y, "black", 1)
+            Grid_DrawLine (Grid_GetGridCoordinateForPlayer(game.pov, exit, "x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "y"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_y"), "black", 1)
           }
         }
       
@@ -195,7 +209,6 @@
   </function>
 
   <function name="Grid_DrawLine" parameters="x1, y1, x2, y2, border, borderWidth">
-    // Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
     JS.Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
   </function>
 
@@ -228,5 +241,37 @@
         Grid_DrawRoom (object, true)
       }
     }
+  </function>
+
+  <function name="Grid_SetGridCoordinateForPlayer" parameters="playerobject, room, coordinate, value">
+    coordinates = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+    if (DictionaryContains(coordinates, coordinate)) {
+      dictionary remove (coordinates, coordinate)
+    }
+    dictionary add (coordinates, coordinate, value * 1.0)
+  </function>
+
+  <function name="Grid_GetGridCoordinateForPlayer" parameters="playerobject, room, coordinate" type="double">
+    coordinates = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+    return (DictionaryItem(coordinates, coordinate))
+  </function>
+
+  <function name="Grid_GetPlayerCoordinateDictionary" parameters="playerobject" type="dictionary">
+    // TODO: When we have the ability to merge player maps, we will delegate one player's map coordinate
+    // dictionary to another player. So use that player's dictionary instead here.
+    
+    if (not HasAttribute(playerobject, "grid_coordinates")) {
+      playerobject.grid_coordinates = NewDictionary()
+    }
+    
+    return (playerobject.grid_coordinates)
+  </function>
+
+  <function name="Grid_GetPlayerCoordinatesForRoom" parameters="playerobject, room" type="dictionary">
+    coordinatedata = Grid_GetPlayerCoordinateDictionary(playerobject)
+    if (not DictionaryContains(coordinatedata, room.name)) {
+      dictionary add (coordinatedata, room.name, NewDictionary())
+    }
+    return (DictionaryItem(coordinatedata, room.name))
   </function>
 </library>
