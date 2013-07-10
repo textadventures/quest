@@ -510,32 +510,42 @@
     <displayverbs type="listextend">[SwitchOn];[SwitchOff]</displayverbs>
     <switchedon type="boolean">false</switchedon>
     <turnon type="script">
-      if (this.switchedon) {
-        msg (DynamicTemplate("AlreadySwitchedOn", this))
-      }
-      else {
-        if (HasString(this, "switchonmsg")) {
-          msg (this.switchonmsg)
+      if (ListContains(ScopeReachable(), this)){
+        if (this.switchedon) {
+          msg (DynamicTemplate("AlreadySwitchedOn", this))
         }
         else {
-          msg (DynamicTemplate("SwitchedOn", this))
+          if (HasString(this, "switchonmsg")) {
+            msg (this.switchonmsg)
+          }
+          else {
+            msg (DynamicTemplate("SwitchedOn", this))
+          }
+          this.switchedon = true
         }
-        this.switchedon = true
-      }
+      } 
+      else {
+        msg(DynamicTemplate("DefaultTurnOn", this))
+      }            
     </turnon>
     <turnoff type="script">
-      if (not this.switchedon) {
-        msg (DynamicTemplate("AlreadySwitchedOff", this))
-      }
-      else {
-        if (HasString(this, "switchoffmsg")) {
-          msg (this.switchoffmsg)
+      if (ListContains(ScopeReachable(), this)){
+        if (not this.switchedon) {
+          msg (DynamicTemplate("AlreadySwitchedOff", this))
         }
         else {
-          msg (DynamicTemplate("SwitchedOff", this))
+          if (HasString(this, "switchoffmsg")) {
+            msg (this.switchoffmsg)
+          }
+          else {
+            msg (DynamicTemplate("SwitchedOff", this))
+          }
+          this.switchedon = false
         }
-        this.switchedon = false
-      }
+      } 
+      else {
+        msg(DynamicTemplate("DefaultTurnOff", this))
+      }        
     </turnoff>
   </type>
 

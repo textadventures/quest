@@ -64,8 +64,14 @@
 
   <command name="take" template="take">
     <multiple>
-      return (ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov))
-    </multiple>
+      takeList = NewObjectList()
+      foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
+        if (obj.parent=game.pov.parent) {
+          list add(takeList, obj)
+        }
+      }
+      return (takeList)
+      </multiple>
     <script>
       foreach (obj, object) {
         DoTake(obj, multiple)
@@ -179,7 +185,7 @@
 
   <command name="drop" template="drop">
     <multiple>
-      return (ScopeInventory())
+      return (GetDirectChildren(game.pov))
     </multiple>
     <script>
       foreach (obj, object) {

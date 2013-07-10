@@ -93,13 +93,13 @@
     </control>
   </editor>
 
-  <editor>
+<editor>
     <appliesto>(function)IncreaseObjectCounter</appliesto>
     <display>Increase #0 counter #1</display>
     <category>Variables</category>
     <add>Increase object counter</add>
     <create>IncreaseObjectCounter (,"")</create>
-    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
+      <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -148,6 +148,38 @@
   </editor>
 
   <editor>
+    <appliesto>(function)SetCounter</appliesto>
+    <display>Set counter #0 to #1</display>
+    <category>Variables</category>
+    <add>Set counter</add>
+    <create>SetCounter ("",0)</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Set counter</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>counter name</simple>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>to</caption>
+    </control>
+    
+    <control>
+      <controltype>expression</controltype>
+      <simple>value</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>1</attribute>
+    </control>    
+  </editor>
+  
+  <editor>
     <appliesto>(function)IncreaseCounter</appliesto>
     <display>Increase counter #0</display>
     <category>Variables</category>
@@ -186,6 +218,39 @@
       <attribute>0</attribute>
     </control>
   </editor>
+
+  <editor>
+    <appliesto>(function)ChangeCounter</appliesto>
+    <display>Change counter #0 by #1</display>
+    <category>Variables</category>
+    <add>Change counter</add>
+    <create>ChangeCounter ("",0)</create>
+    <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>Change counter</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>counter name</simple>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>by</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>value</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
 
   <editor>
     <appliesto>=</appliesto>
