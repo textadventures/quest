@@ -428,56 +428,65 @@
       
         dot = Instr(lhs, ".")
         if (dot = 0) {
-          return ("{if " + command + "}")
+          objectname = ""
+          attributename = ""
+          if (HasInt(game, lhs)) {
+		        objectname = "game"
+			      attributename = lhs
+		      }
+		      else {
+		        return ("{if " + command + "}")
+		      }	
         }
         else {
           objectname = Left(lhs, dot - 1)
           attributename = Mid(lhs, dot + 1)
-          object = GetObject(objectname)
-          if (object = null) {
-            return ("{if " + command + "}")
+        }  
+
+        object = GetObject(objectname)
+        if (object = null) {
+          return ("{if " + command + "}")
+        }
+        else {
+          value = GetAttribute(object, attributename)
+          if (op = "=") {
+            if (ToString(value) = rhs) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
           }
-          else {
-            value = GetAttribute(object, attributename)
-            if (op = "=") {
-              if (ToString(value) = rhs) {
-                return (ProcessTextSection(text, data))
-              }
-              else {
-                return ("")
-              }
+          else if (op = ">") {
+            if (ToDouble(ToString(value)) > ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
             }
-            else if (op = ">") {
-              if (ToDouble(ToString(value)) > ToDouble(rhs)) {
-                return (ProcessTextSection(text, data))
-              }
-              else {
-                return ("")
-              }
+            else {
+              return ("")
             }
-            else if (op = "<") {
-              if (ToDouble(ToString(value)) < ToDouble(rhs)) {
-                return (ProcessTextSection(text, data))
-              }
-              else {
-                return ("")
-              }
+          }
+          else if (op = "<") {
+            if (ToDouble(ToString(value)) < ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
             }
-            else if (op = ">=") {
-              if (ToDouble(ToString(value)) >= ToDouble(rhs)) {
-                return (ProcessTextSection(text, data))
-              }
-              else {
-                return ("")
-              }
+            else {
+              return ("")
             }
-            else if (op = "<=") {
-              if (ToDouble(ToString(value)) <= ToDouble(rhs)) {
-                return (ProcessTextSection(text, data))
-              }
-              else {
-                return ("")
-              }
+          }
+          else if (op = ">=") {
+            if (ToDouble(ToString(value)) >= ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = "<=") {
+            if (ToDouble(ToString(value)) <= ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
             }
           }
         }
