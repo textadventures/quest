@@ -431,12 +431,12 @@
           objectname = ""
           attributename = ""
           if (HasInt(game, lhs)) {
-		        objectname = "game"
-			      attributename = lhs
-		      }
-		      else {
-		        return ("{if " + command + "}")
-		      }	
+            objectname = "game"
+            attributename = lhs
+          }
+          else {
+            return ("{if " + command + "}")
+          }	
         }
         else {
           objectname = Left(lhs, dot - 1)
