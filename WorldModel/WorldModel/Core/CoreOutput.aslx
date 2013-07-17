@@ -247,11 +247,7 @@
         text = SafeXML(GetDisplayAlias(object))
       }
       if (game.enablehyperlinks) {
-        if (not HasInt(game, "lastlinkid")) {
-          game.lastlinkid = 0
-        }
-        game.lastlinkid = game.lastlinkid + 1
-        linkid = "verblink" + game.lastlinkid
+        linkid = ProcessTextCommand_GetNextLinkId()
         colour = ""
         if (HasString(object, "linkcolour") and GetUIOption("UseGameColours") = "true") {
           colour = object.linkcolour
@@ -267,6 +263,14 @@
       }
     }
     ]]>
+  </function>
+  
+  <function name="ProcessTextCommand_GetNextLinkId" type="string">
+    if (not HasInt(game, "lastlinkid")) {
+      game.lastlinkid = 0
+    }
+    game.lastlinkid = game.lastlinkid + 1
+    return ("verblink" + game.lastlinkid)
   </function>
 
   <function name="ProcessTextCommand_Command" type="string" parameters="command, data">
@@ -289,7 +293,13 @@
       cmd = ObjectListItem(candidates, 0)
       elementid = cmd.name
     }
-    return ("<a style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" onclick=\"sendCommand('" + command + "')\">" + ProcessTextSection(text, data) + "</a>")
+    linkid = ProcessTextCommand_GetNextLinkId()
+    onclick = ""
+    if (game.deactivatecommandlinks) {
+      onclick = onclick + "disableCommandLink('" + linkid + "');"
+    }
+    onclick = onclick + "sendCommand('" + command + "')"
+    return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" onclick=\"" + onclick + "\">" + ProcessTextSection(text, data) + "</a>")
     ]]>
   </function>
 

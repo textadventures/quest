@@ -268,8 +268,14 @@
       </control>
 
       <control>
+        <controltype>title</controltype>
+        <caption>Hyperlinks</caption>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
         <controltype>dropdown</controltype>
-        <caption>Link foreground</caption>
+        <caption>Link colour</caption>
         <attribute>defaultlinkforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -277,15 +283,22 @@
       </control>
 
       <control>
-        <controltype>title</controltype>
-        <caption>Hyperlink Menus</caption>
+        <controltype>checkbox</controltype>
+        <caption>Underline hyperlinks</caption>
+        <attribute>underlinehyperlinks</attribute>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Underline hyperlinks</caption>
-        <attribute>underlinehyperlinks</attribute>
+        <caption>After using a command hyperlink, deactivate it</caption>
+        <attribute>deactivatecommandlinks</attribute>
+        <onlydisplayif>game.enablehyperlinks</onlydisplayif>
+      </control>
+
+      <control>
+        <controltype>title</controltype>
+        <caption>Verb Menus</caption>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
