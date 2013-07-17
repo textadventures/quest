@@ -294,12 +294,12 @@
       elementid = cmd.name
     }
     linkid = ProcessTextCommand_GetNextLinkId()
-    onclick = ""
+    dataattrs = ""
     if (game.deactivatecommandlinks) {
-      onclick = onclick + "disableCommandLink('" + linkid + "');"
+      dataattrs = dataattrs + "data-deactivateonclick=\"true\" "
     }
-    onclick = onclick + "sendCommand('" + command + "')"
-    return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" onclick=\"" + onclick + "\">" + ProcessTextSection(text, data) + "</a>")
+    dataattrs = dataattrs + "data-command=\"" + command + "\""
+    return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" " + dataattrs + ">" + ProcessTextSection(text, data) + "</a>")
     ]]>
   </function>
 

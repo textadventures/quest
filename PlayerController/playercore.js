@@ -109,6 +109,17 @@ $(function () {
             sendCommand($(this).data("command"));
         }
     });
+    
+    $(document).on("click", ".commandlink", function () {
+        var $this = $(this);
+        if (!$this.hasClass("disabled")) {
+            if ($this.data("deactivateonclick")) {
+                $this.addClass("disabled");
+                $this.data("deactivated", true);
+            }
+            sendCommand($this.data("command"));
+        }
+    });
 
     ui_init();
     updateStatusVisibility();
@@ -698,13 +709,8 @@ function updateCommandLinks(data) {
 function disableAllCommandLinks() {
     $(".commandlink").each(function (index, e) {
         $(e).addClass("disabled");
+        $(e).data("deactivated", true);
     });
-}
-
-function disableCommandLink(linkid) {
-    var $e = $("#" + linkid);
-    $e.addClass("disabled");
-    $e.data("deactivated", true);
 }
 
 function clearScreen() {
