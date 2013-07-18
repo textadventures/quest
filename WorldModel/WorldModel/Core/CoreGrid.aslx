@@ -139,24 +139,24 @@
 
   <function name="Grid_DrawPlayerInRoom" parameters="room">
     if (room.grid_render) {
-    Grid_DrawRoom (room, false)
+      Grid_DrawRoom (room, false, game.pov)
 
-    player_x = Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width/2.0
-    player_y = Grid_GetGridCoordinateForPlayer(game.pov, room, "y") + room.grid_length/2.0
-    player_z = Grid_GetGridCoordinateForPlayer(game.pov, room, "z")
+      player_x = Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width/2.0
+      player_y = Grid_GetGridCoordinateForPlayer(game.pov, room, "y") + room.grid_length/2.0
+      player_z = Grid_GetGridCoordinateForPlayer(game.pov, room, "z")
 
-    // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
-    JS.Grid_DrawPlayer(player_x, player_y, player_z, 5, "black", 2, "yellow")
+      // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
+      JS.Grid_DrawPlayer(player_x, player_y, player_z, 5, "black", 2, "yellow")
     }
   </function>
 
-  <function name="Grid_DrawRoom" parameters="room, redraw">
+  <function name="Grid_DrawRoom" parameters="room, redraw, playerobject">
     <![CDATA[
     if (room.grid_render) {
-      if (redraw or not GetBoolean(room, "grid_isdrawn")) {
+      if (redraw or not Grid_GetRoomBooleanForPlayer(playerobject, room, "grid_isdrawn")) {
       
         if (room.parent <> null) {
-          Grid_DrawRoom (room.parent, redraw)
+          Grid_DrawRoom (room.parent, redraw, playerobject)
         }
       
         JS.Grid_DrawBox(Grid_GetGridCoordinateForPlayer(game.pov, room, "x"), Grid_GetGridCoordinateForPlayer(game.pov, room, "y"), Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_width, room.grid_length, room.grid_border, room.grid_borderwidth, room.grid_fill, room.grid_bordersides)
@@ -173,8 +173,8 @@
             Grid_DrawLine (Grid_GetGridCoordinateForPlayer(game.pov, exit, "x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "y"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_y"), "black", 1)
           }
         }
-      
-        room.grid_isdrawn = true
+
+        Grid_SetRoomBooleanForPlayer(playerobject, room, "grid_isdrawn", true)
       }
     }
     ]]>
@@ -223,7 +223,7 @@
   <function name="Grid_Redraw">
     foreach (object, AllObjects()) {
       if (GetBoolean(object, "grid_isdrawn")) {
-        Grid_DrawRoom (object, true)
+        Grid_DrawRoom (object, true, game.pov)
       }
     }
   </function>
@@ -239,6 +239,24 @@
   <function name="Grid_GetGridCoordinateForPlayer" parameters="playerobject, room, coordinate" type="double">
     coordinates = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
     return (DictionaryItem(coordinates, coordinate))
+  </function>
+
+  <function name="Grid_SetRoomBooleanForPlayer" parameters="playerobject, room, coordinate, value">
+    datadictionary = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+    if (DictionaryContains(datadictionary, coordinate)) {
+      dictionary remove (datadictionary, coordinate)
+    }
+    dictionary add (datadictionary, coordinate, value)
+  </function>
+
+  <function name="Grid_GetRoomBooleanForPlayer" parameters="playerobject, room, attribute" type="boolean">
+    datadictionary = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+    if (DictionaryContains(datadictionary, attribute)) {
+      return (DictionaryItem(datadictionary, attribute))
+    }
+    else {
+      return (false)
+    }
   </function>
 
   <function name="Grid_GetPlayerCoordinateDictionary" parameters="playerobject" type="dictionary">
