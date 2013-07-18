@@ -345,6 +345,7 @@
     
     source.grid_coordinates_delegate = target
     Grid_Redraw
+    Grid_DrawPlayerInRoom (game.pov.parent)
   </function>
 
   <function name="MapPOVCoordinate" parameters="sourcedata, targetdata, name, offset">
