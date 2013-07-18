@@ -298,6 +298,10 @@
     <![CDATA[
     if (game.pov <> object) {
       game.pov = object
+      if (game.gridmap) {
+        JS.Grid_ClearAllLayers()
+        Grid_Redraw
+      }
       OnEnterRoom (null)
     }
     ]]>

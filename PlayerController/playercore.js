@@ -1052,6 +1052,11 @@ function Grid_ClearCustomLayer() {
     gridApi.clearCustomLayer();
 }
 
+function Grid_ClearAllLayers() {
+    if (!_canvasSupported) return;
+    gridApi.clearAllLayers();
+}
+
 function Grid_SetCentre(x, y) {
     if (!_canvasSupported) return;
     gridApi.setCentre(parseFloat(x), parseFloat(y));

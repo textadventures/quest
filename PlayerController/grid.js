@@ -1,4 +1,4 @@
-var scale, gridX, gridY, player
+var scale, gridX, gridY, player;
 var playerVector, playerDestination;
 var offsetVector, offsetDestination;
 var allPaths = new Array();
@@ -38,19 +38,19 @@ function getLayerIndex(index) {
 
 activateLayer(currentLayer);
 
-gridApi.setScale = function (newScale) {
+gridApi.setScale = function(newScale) {
     scale = newScale;
     gridX = new Point(scale, 0);
     gridY = new Point(0, scale);
-}
+};
 
-gridApi.setZoom = function (zoom) {
+gridApi.setZoom = function(zoom) {
     paper.view.zoom = zoom;
-}
+};
 
-gridApi.zoomIn = function (amount) {
+gridApi.zoomIn = function(amount) {
     paper.view.zoom = paper.view.zoom * (Math.pow(1.1, amount));
-}
+};
 
 function onMouseDrag(event) {
     updateOffset(event.delta);
@@ -127,7 +127,8 @@ function onFrame(event) {
     }
 }
 
-gridApi.drawGrid = function (minX, minY, maxX, maxY, border) {
+gridApi.drawGrid = function(minX, minY, maxX, maxY, border) {
+
     function gridLine(start, end) {
         var path = new Path();
         path.strokeColor = border;
@@ -137,21 +138,21 @@ gridApi.drawGrid = function (minX, minY, maxX, maxY, border) {
 
     // draw the vertical lines
     for (var x = minX; x <= maxX; x++) {
-        var start = gridPoint(x, minY)
+        var start = gridPoint(x, minY);
         var end = gridPoint(x, maxY);
         gridLine(start, end);
-    };
+    }
 
     // draw the horizontal lines
     for (var y = minY; y <= maxY; y++) {
-        var start = gridPoint(minX, y)
+        var start = gridPoint(minX, y);
         var end = gridPoint(maxX, y);
         gridLine(start, end);
-    };
-}
+    }
+};
 
 function gridPoint(x, y) {
-	return (gridX * x) + (gridY * y) + getOffset();
+    return (gridX * x) + (gridY * y) + getOffset();
 }
 
 function getGridSquareX(point) {
@@ -171,7 +172,7 @@ function gridPointNudge(x, y, nudgeX, nudgeY) {
 
 var firstBox = true;
 
-gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill, sides) {
+gridApi.drawBox = function(x, y, z, width, height, border, borderWidth, fill, sides) {
     activateLayer(z);
     // if this is the very first room, centre the canvas by updating the offset
     if (firstBox) {
@@ -198,32 +199,30 @@ gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill, s
                 path.add(points[i]);
             }
             path.add(points[next]);
-        }
-        else {
+        } else {
             path = null;
         }
     }
     var fillPath;
     if (sides == 15) {
-        fillPath = path
-    }
-    else {
+        fillPath = path;
+    } else {
         fillPath = new Path();
         fillPath.add(points[0], points[1], points[2], points[3]);
         allPaths.push(fillPath);
     }
     fillPath.fillColor = fill;
     fillPath.closed = true;
-}
+};
 
-gridApi.drawLine = function (x1, y1, x2, y2, border, borderWidth) {
+gridApi.drawLine = function(x1, y1, x2, y2, border, borderWidth) {
     var path = new Path;
     path.strokeColor = border;
     path.strokeWidth = borderWidth;
     path.add(gridPoint(x1, y1));
     path.add(gridPoint(x2, y2));
     addPathToCurrentLayerList(path);
-}
+};
 
 function addPathToCurrentLayerList(path) {
     if (project.activeLayer == customLayer) {
@@ -234,7 +233,7 @@ function addPathToCurrentLayerList(path) {
     }
 }
 
-gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
+gridApi.drawPlayer = function(x, y, z, radius, border, borderWidth, fill) {
     activateLayer(z);
     if (!player) {
         player = new Path.Circle(gridPoint(x, y), radius);
@@ -243,31 +242,30 @@ gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
         player.fillColor = fill;
         player.fillColor = fill;
         allPaths.push(player);
-        
+
         playerPositionAbsolute = player.position - offset;
         offsetDestinationX = ($("#gridPanel").width() / 2) - playerPositionAbsolute.x;
         offsetDestinationY = ($("#gridPanel").height() / 2) - playerPositionAbsolute.y;
 
         offsetDestination = new Point(offsetDestinationX, offsetDestinationY);
         offsetVector = (offsetDestination - offset);
-    }
-    else {
+    } else {
         playerDestination = gridPoint(x, y);
         playerVector = (playerDestination - player.position) / 10;
         paper.view.zoom = 1;
         // move player to the end of the activeLayer so it gets drawn on top
         project.activeLayer.addChild(player);
     }
-}
+};
 
-gridApi.drawLabel = function (x, y, z, text) {
+gridApi.drawLabel = function(x, y, z, text) {
     activateLayer(z);
     var pointText = new PointText(gridPoint(x, y));
     pointText.justification = "center";
     pointText.fillColor = "black";
     pointText.content = text;
     allPaths.push(pointText);
-}
+};
 
 function showCustomLayer(visible) {
     if (visible != customLayer.visible) {
@@ -284,23 +282,29 @@ function showCustomLayer(visible) {
     }
 }
 
-gridApi.showCustomLayer = function (visible) {
+gridApi.showCustomLayer = function(visible) {
     showCustomLayer(visible);
-}
+};
 
-gridApi.clearCustomLayer = function () {
+gridApi.clearCustomLayer = function() {
     customLayer.removeChildren();
-}
+};
 
-gridApi.setCentre = function (x, y) {
+gridApi.clearAllLayers = function () {
+    $.each(layers, function(idx, layer) {
+        layer.removeChildren();
+    });
+};
+
+gridApi.setCentre = function(x, y) {
     var centrePoint = gridPoint(x, y);
     var offsetX = ($("#gridPanel").width() / 2) - centrePoint.x;
     var offsetY = ($("#gridPanel").height() / 2) - centrePoint.y;
     var curOffset = getOffset();
     updateOffset(new Point(offsetX, offsetY));
-}
+};
 
-gridApi.drawCustomLayerSquare = function (id, x, y, width, height, text, fill) {
+gridApi.drawCustomLayerSquare = function(id, x, y, width, height, text, fill) {
     var existing = customLayerObjects[id];
     if (existing) {
         for (var idx in existing) {
@@ -318,7 +322,7 @@ gridApi.drawCustomLayerSquare = function (id, x, y, width, height, text, fill) {
     addPathToCurrentLayerList(path);
     paths.push(path);
 
-    var pointText = new PointText(gridPoint(x + width/2, y + height/2));
+    var pointText = new PointText(gridPoint(x + width / 2, y + height / 2));
     pointText.justification = "center";
     pointText.fillColor = "black";
     pointText.content = text;
@@ -326,6 +330,6 @@ gridApi.drawCustomLayerSquare = function (id, x, y, width, height, text, fill) {
     paths.push(pointText);
 
     customLayerObjects[id] = paths;
-}
+};
 
 gridApi.onLoad();
