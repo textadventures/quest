@@ -155,14 +155,6 @@
     UpdateObjectLinks
     on ready {
       if (game.gridmap) {
-        //game.pov.parent.grid_x = 0
-        //game.pov.parent.grid_y = 0
-        //game.pov.parent.grid_z = 0
-        Grid_SetGridCoordinateForPlayer (game.pov, game.pov.parent, "x", 0)
-        Grid_SetGridCoordinateForPlayer (game.pov, game.pov.parent, "y", 0)
-        Grid_SetGridCoordinateForPlayer (game.pov, game.pov.parent, "z", 0)
-        game.pov.parent.grid_render = true
-        Grid_CalculateMapCoordinates (game.pov.parent)
         Grid_DrawPlayerInRoom (game.pov.parent)
       }
       if (game.displayroomdescriptiononstart) {

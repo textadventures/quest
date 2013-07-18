@@ -153,7 +153,7 @@
     
         on ready {
           if (game.gridmap) {
-            Grid_CalculateMapCoordinates (game.pov.parent)
+            Grid_CalculateMapCoordinates (game.pov.parent, game.pov)
             Grid_DrawPlayerInRoom (game.pov.parent)
           }
           
