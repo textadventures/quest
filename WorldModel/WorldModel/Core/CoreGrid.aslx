@@ -266,19 +266,21 @@
   </function>
 
   <function name="Grid_GetPlayerCoordinateDictionary" parameters="playerobject" type="dictionary">
-    // TODO: When we have the ability to merge player maps, we will delegate one player's map coordinate
-    // dictionary to another player. So use that player's dictionary instead here.
-
-    if (not HasAttribute(playerobject, "grid_coordinates")) {
-      playerobject.grid_coordinates = NewDictionary()
-      Grid_SetGridCoordinateForPlayer (playerobject, playerobject.parent, "x", 0)
-      Grid_SetGridCoordinateForPlayer (playerobject, playerobject.parent, "y", 0)
-      Grid_SetGridCoordinateForPlayer (playerobject, playerobject.parent, "z", 0)
-      playerobject.parent.grid_render = true
-      Grid_CalculateMapCoordinates (playerobject.parent, playerobject)
+    if (HasAttribute(playerobject, "grid_coordinates_delegate")) {
+      return (Grid_GetPlayerCoordinateDictionary(playerobject.grid_coordinates_delegate))
     }
+    else {
+      if (not HasAttribute(playerobject, "grid_coordinates")) {
+        playerobject.grid_coordinates = NewDictionary()
+        Grid_SetGridCoordinateForPlayer (playerobject, playerobject.parent, "x", 0)
+        Grid_SetGridCoordinateForPlayer (playerobject, playerobject.parent, "y", 0)
+        Grid_SetGridCoordinateForPlayer (playerobject, playerobject.parent, "z", 0)
+        playerobject.parent.grid_render = true
+        Grid_CalculateMapCoordinates (playerobject.parent, playerobject)
+      }
 
-    return (playerobject.grid_coordinates)
+      return (playerobject.grid_coordinates)
+    }
   </function>
 
   <function name="Grid_GetPlayerCoordinatesForRoom" parameters="playerobject, room" type="dictionary">
@@ -291,13 +293,25 @@
 
   <function name="MergePOVCoordinates">
     <![CDATA[
+    coordinateowner = GetCoordinateOwner(game.pov)
     foreach (obj, GetDirectChildren(game.pov.parent)) {
-      // TODO: Need to take into account the target's co-ordinates may have already been delegated
       if (obj <> game.pov and HasAttribute(obj, "grid_coordinates")) {
-        MapPOVCoordinates (obj, game.pov)
+        objcoordinateowner = GetCoordinateOwner(obj)
+        if (coordinateowner <> objcoordinateowner) {
+          MapPOVCoordinates (objcoordinateowner, coordinateowner)
+        }
       }
     }
     ]]>
+  </function>
+
+  <function name="GetCoordinateOwner" parameters="playerobject" type="object">
+    if (HasAttribute(playerobject, "grid_coordinates_delegate")) {
+      return (GetCoordinateOwner(playerobject.grid_coordinates_delegate))
+    }
+    else {
+      return (playerobject)
+    }
   </function>
 
   <function name="MapPOVCoordinates" parameters="source, target">
@@ -329,6 +343,7 @@
       }
     }
     
+    source.grid_coordinates_delegate = target
     Grid_Redraw
   </function>
 
