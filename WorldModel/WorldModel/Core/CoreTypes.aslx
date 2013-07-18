@@ -149,6 +149,9 @@
         else {
           OnEnterRoom(null)
         }
+        if (game.gridmap) {
+          MergePOVCoordinates
+        }
       }
     </changedparent>
     <changedisopen type="script">

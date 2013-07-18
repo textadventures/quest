@@ -288,4 +288,54 @@
     }
     return (DictionaryItem(coordinatedata, room.name))
   </function>
+
+  <function name="MergePOVCoordinates">
+    <![CDATA[
+    foreach (obj, GetDirectChildren(game.pov.parent)) {
+      // TODO: Need to take into account the target's co-ordinates may have already been delegated
+      if (obj <> game.pov and HasAttribute(obj, "grid_coordinates")) {
+        MapPOVCoordinates (obj, game.pov)
+      }
+    }
+    ]]>
+  </function>
+
+  <function name="MapPOVCoordinates" parameters="source, target">
+    sourcecoordinates = Grid_GetPlayerCoordinateDictionary(source)
+    targetcoordinates = Grid_GetPlayerCoordinateDictionary(target)
+    xoffset = Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "x") - Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "x")
+    yoffset = Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "y") - Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "y")
+    zoffset = Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "z") - Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "z")
+
+    foreach (roomname, sourcecoordinates) {
+      coordinatedata = DictionaryItem(sourcecoordinates, roomname)
+      if (not DictionaryContains(targetcoordinates, roomname)) {
+        newroomdata = NewDictionary()
+        dictionary add (targetcoordinates, roomname, newroomdata)
+        MapPOVCoordinate (coordinatedata, newroomdata, "x", xoffset)
+        MapPOVCoordinate (coordinatedata, newroomdata, "y", yoffset)
+        MapPOVCoordinate (coordinatedata, newroomdata, "z", zoffset)
+        MapPOVCoordinate (coordinatedata, newroomdata, "end_x", xoffset)
+        MapPOVCoordinate (coordinatedata, newroomdata, "end_y", yoffset)
+      }
+      else {
+        newroomdata = DictionaryItem(targetcoordinates, roomname)
+      }
+      if (DictionaryContains(coordinatedata, "grid_isdrawn")) {
+        if (DictionaryContains(newroomdata, "grid_isdrawn")) {
+          dictionary remove (newroomdata, "grid_isdrawn")
+        }
+        dictionary add (newroomdata, "grid_isdrawn", DictionaryItem(coordinatedata, "grid_isdrawn"))
+      }
+    }
+    
+    Grid_Redraw
+  </function>
+
+  <function name="MapPOVCoordinate" parameters="sourcedata, targetdata, name, offset">
+    if (DictionaryContains(sourcedata, name)) {
+      value = DictionaryItem(sourcedata, name)
+      dictionary add (targetdata, name, value + offset)
+    }
+  </function>
 </library>
