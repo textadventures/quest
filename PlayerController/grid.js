@@ -106,9 +106,9 @@ function onFrame(event) {
             playerVector = null;
             playerDestination = null;
 
-            playerPositionAbsolute = player.position - offset;
-            offsetDestinationX = ($("#gridPanel").width() / 2) - playerPositionAbsolute.x;
-            offsetDestinationY = ($("#gridPanel").height() / 2) - playerPositionAbsolute.y;
+            var playerPositionAbsolute = player.position - offset;
+            var offsetDestinationX = ($("#gridPanel").width() / 2) - playerPositionAbsolute.x;
+            var offsetDestinationY = ($("#gridPanel").height() / 2) - playerPositionAbsolute.y;
 
             offsetDestination = new Point(offsetDestinationX, offsetDestinationY);
             offsetVector = (offsetDestination-offset) / 10;
@@ -243,9 +243,9 @@ gridApi.drawPlayer = function(x, y, z, radius, border, borderWidth, fill) {
         player.fillColor = fill;
         allPaths.push(player);
 
-        playerPositionAbsolute = player.position - offset;
-        offsetDestinationX = ($("#gridPanel").width() / 2) - playerPositionAbsolute.x;
-        offsetDestinationY = ($("#gridPanel").height() / 2) - playerPositionAbsolute.y;
+        var playerPositionAbsolute = player.position - offset;
+        var offsetDestinationX = ($("#gridPanel").width() / 2) - playerPositionAbsolute.x;
+        var offsetDestinationY = ($("#gridPanel").height() / 2) - playerPositionAbsolute.y;
 
         offsetDestination = new Point(offsetDestinationX, offsetDestinationY);
         offsetVector = (offsetDestination - offset);
@@ -291,6 +291,7 @@ gridApi.clearCustomLayer = function() {
 };
 
 gridApi.clearAllLayers = function () {
+    player = null;
     $.each(layers, function(idx, layer) {
         layer.removeChildren();
     });
