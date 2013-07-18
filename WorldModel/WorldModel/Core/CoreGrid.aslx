@@ -303,10 +303,10 @@
   <function name="MapPOVCoordinates" parameters="source, target">
     sourcecoordinates = Grid_GetPlayerCoordinateDictionary(source)
     targetcoordinates = Grid_GetPlayerCoordinateDictionary(target)
-    xoffset = Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "x") - Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "x")
-    yoffset = Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "y") - Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "y")
-    zoffset = Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "z") - Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "z")
-
+    xoffset = Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "x") - Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "x")
+    yoffset = Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "y") - Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "y")
+    zoffset = Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "z") - Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "z")
+    
     foreach (roomname, sourcecoordinates) {
       coordinatedata = DictionaryItem(sourcecoordinates, roomname)
       if (not DictionaryContains(targetcoordinates, roomname)) {
