@@ -222,7 +222,7 @@
 
   <function name="Grid_Redraw">
     foreach (object, AllObjects()) {
-      if (GetBoolean(object, "grid_isdrawn")) {
+      if (Grid_GetRoomBooleanForPlayer(game.pov, object, "grid_isdrawn")) {
         Grid_DrawRoom (object, true, game.pov)
       }
     }
@@ -250,12 +250,18 @@
   </function>
 
   <function name="Grid_GetRoomBooleanForPlayer" parameters="playerobject, room, attribute" type="boolean">
-    datadictionary = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
-    if (DictionaryContains(datadictionary, attribute)) {
-      return (DictionaryItem(datadictionary, attribute))
+    coordinatedata = Grid_GetPlayerCoordinateDictionary(playerobject)
+    if (not DictionaryContains(coordinatedata, room.name)) {
+      return (false)
     }
     else {
-      return (false)
+      datadictionary = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+      if (DictionaryContains(datadictionary, attribute)) {
+        return (DictionaryItem(datadictionary, attribute))
+      }
+      else {
+        return (false)
+      }
     }
   </function>
 
