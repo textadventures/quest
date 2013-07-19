@@ -467,7 +467,7 @@ namespace TextAdventures.Quest
             Dictionary<string, object> values = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(data);
             if (values.ContainsKey("command"))
             {
-                result.Command = values["command"] as string;
+                result.Command = values["command"].ToString();
             }
 
             if (values.ContainsKey("metadata"))
