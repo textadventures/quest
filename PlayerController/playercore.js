@@ -695,8 +695,8 @@ function updateCommandLinks(data) {
     $(".commandlink").each(function (index, e) {
         var $e = $(e);
         if (!$(e).data("deactivated")) {
-            var exitid = $e.data("elementid");
-            var available = $.inArray(exitid, data) > -1;
+            var elementid = $e.data("elementid");
+            var available = $.inArray(elementid, data) > -1 || elementid.length == 0;
             if (available) {
                 $e.removeClass("disabled");
             } else {
