@@ -639,10 +639,14 @@
   <function name="HandleMultiVerb" parameters="object, property, object2, default">
     dictionary = GetAttribute(object, property)
     if (DictionaryContains(dictionary, object2.name)) {
-      invoke (ScriptDictionaryItem(dictionary, object2.name))
+      parameters = NewDictionary()
+      dictionary add(parameters, "this", object)
+      dictionary add(parameters, "object", object2)
+      invoke (ScriptDictionaryItem(dictionary, object2.name), parameters)
     }
     else {
       parameters = NewDictionary()
+      dictionary add(parameters, "this", object)
       dictionary add (parameters, "object", object2)
       if (DictionaryContains(dictionary, "default")) {
         invoke (ScriptDictionaryItem(dictionary, "default"), parameters)

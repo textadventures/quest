@@ -568,7 +568,10 @@
     }
     else if (TypeOf(object2, "give") = "scriptdictionary") {
       if (DictionaryContains(object2.give, object1.name)) {
-        invoke (ScriptDictionaryItem(object2.give, object1.name))
+        parameters = NewObjectDictionary()
+        dictionary add (parameters, "this", object2)
+        dictionary add (parameters, "object", object1)
+        invoke (ScriptDictionaryItem(object2.give, object1.name), parameters)
         handled = true
       }
       if (not handled) {
@@ -589,7 +592,10 @@
       }
       else if (TypeOf(object1, "giveto") = "scriptdictionary") {
         if (DictionaryContains(object1.giveto, object2.name)) {
-          invoke (ScriptDictionaryItem(object1.giveto, object2.name))
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "this", object1)
+          dictionary add (parameters, "object", object2)
+          invoke (ScriptDictionaryItem(object1.giveto, object2.name), parameters)
           handled = true
         }
         else {
@@ -621,7 +627,10 @@
     }
     else if (TypeOf(object2, "useon") = "scriptdictionary") {
       if (DictionaryContains(object2.useon, object1.name)) {
-        invoke (ScriptDictionaryItem(object2.useon, object1.name))
+        parameters = NewObjectDictionary()
+        dictionary add (parameters, "this", object2)
+        dictionary add (parameters, "object", object1)
+        invoke (ScriptDictionaryItem(object2.useon, object1.name), parameters)
         handled = true
       }
       else {
@@ -642,7 +651,10 @@
       }
       else if (TypeOf(object1, "selfuseon") = "scriptdictionary") {
         if (DictionaryContains(object1.selfuseon, object2.name)) {
-          invoke (ScriptDictionaryItem(object1.selfuseon, object2.name))
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "this", object1)
+          dictionary add (parameters, "object", object2)
+          invoke (ScriptDictionaryItem(object1.selfuseon, object2.name), parameters)
           handled = true
         }
         else {
@@ -690,7 +702,9 @@
       }
       
       if (match <> null) {
-        invoke (match)
+        parameters = NewObjectDictionary()
+        dictionary add(parameters, "this", object)
+        invoke (match, parameters)
         handled = true
       }
     }
