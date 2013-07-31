@@ -317,10 +317,9 @@ function panesVisible(visible) {
 }
 
 function scrollToEnd() {
-    $('html, body').stop(true, true);
     var scrollTo = beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height();
     if (scrollTo > $("body").scrollTop()) {
-        $('html, body').animate({ scrollTop: scrollTo }, 200);
+        $('body').stop().animate({ scrollTop: scrollTo }, 400);
     }
     $("#txtCommand").focus();
 }

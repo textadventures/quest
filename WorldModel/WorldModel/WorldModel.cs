@@ -1341,9 +1341,9 @@ namespace TextAdventures.Quest
             PlayerUI.RunScript("scrollToEnd", null);
         }
 
-        private void ChangeThreadState(ThreadState newState)
+        private void ChangeThreadState(ThreadState newState, bool scroll = true)
         {
-            if (Version >= WorldModelVersion.v540 && (newState == ThreadState.Ready || newState == ThreadState.Waiting))
+            if (scroll && Version >= WorldModelVersion.v540 && (newState == ThreadState.Ready || newState == ThreadState.Waiting))
             {
                 ScrollToEnd();
             }
@@ -1514,7 +1514,7 @@ namespace TextAdventures.Quest
 
                 UpdateLists();
 
-                ChangeThreadState(ThreadState.Ready);
+                ChangeThreadState(ThreadState.Ready, false);
             });
 
             SendNextTimerRequest();
