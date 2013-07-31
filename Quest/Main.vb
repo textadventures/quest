@@ -127,6 +127,8 @@ Public Class Main
     Private Sub Launch(filename As String, Optional fromEditor As Boolean = False, Optional editorSimpleMode As Boolean = False)
         Dim game As IASL
 
+        If System.IO.Path.GetExtension(filename) = ".aslx" Then fromEditor = True
+
         m_fromEditor = fromEditor
         m_editorSimpleMode = editorSimpleMode
 
