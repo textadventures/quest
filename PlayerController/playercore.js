@@ -583,6 +583,11 @@ function setCommandBarStyle(style) {
     $("#txtCommand").width(width);
 }
 
+function addTextAndScroll(text) {
+    addText(text);
+    scrollToEnd();
+}
+
 function addText(text) {
     if (getCurrentDiv() == null) {
         createNewDiv("left");
@@ -590,7 +595,6 @@ function addText(text) {
 
     getCurrentDiv().append(text);
     $("#divOutput").css("min-height", $("#divOutput").height());
-    scrollToEnd();
 }
 
 function createNewDiv(alignment) {

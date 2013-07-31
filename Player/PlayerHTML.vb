@@ -58,7 +58,7 @@ Public Class PlayerHTML
 
     Public Sub WriteText(text As String)
         If (text.Length > 0) Then
-            InvokeScript("addText", text)
+            InvokeScript("addTextAndScroll", text)
             StripTagsAndSendToJaws(text)
         End If
     End Sub

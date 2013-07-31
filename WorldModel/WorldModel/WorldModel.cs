@@ -567,7 +567,7 @@ namespace TextAdventures.Quest
                         {
                             PlayerUI.RunScript("loadHtml", new object[] { output.Fields.GetString("html") });
                             PlayerUI.RunScript("markScrollPosition", null);
-                            PlayerUI.RunScript("scrollToEnd", null);
+                            ScrollToEnd();
                         }
                         else if (m_legacyOutputLogger != null)
                         {
@@ -1336,8 +1336,18 @@ namespace TextAdventures.Quest
             get { return m_expressionOwner; }
         }
 
+        private void ScrollToEnd()
+        {
+            PlayerUI.RunScript("scrollToEnd", null);
+        }
+
         private void ChangeThreadState(ThreadState newState)
         {
+            if (Version >= WorldModelVersion.v540 && (newState == ThreadState.Ready || newState == ThreadState.Waiting))
+            {
+                ScrollToEnd();
+            }
+
             if (newState == ThreadState.Waiting && m_state == GameState.Finished) throw new Exception("Game is finished");
             m_threadState = newState;
             lock (m_threadLock)

@@ -38,7 +38,7 @@ namespace WebPlayer
         {
             if (text.Length > 0)
             {
-                AddJavaScriptToBuffer("addText", new StringParameter(text));
+                AddJavaScriptToBuffer("addTextAndScroll", new StringParameter(text));
             }
         }
 
