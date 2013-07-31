@@ -319,6 +319,8 @@ function panesVisible(visible) {
 function scrollToEnd() {
     var scrollTo = beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height();
     if (scrollTo > $("body").scrollTop()) {
+        var maxScrollTop = $(document).height() - $(window).height();
+        if (scrollTo > maxScrollTop) scrollTo = maxScrollTop;
         $('body').stop().animate({ scrollTop: scrollTo }, 400);
     }
     $("#txtCommand").focus();
