@@ -136,22 +136,12 @@ namespace WebPlayer.Mobile
                 return "No game specified";
             }
 
-            // Block attempts to access files outside the GameFolder
-            if (gameFile.Contains(".."))
-            {
-                return "Invalid filename";
-            }
-
             string rootPath = folder ?? ConfigurationManager.AppSettings["GameFolder"];
             string libPath = ConfigurationManager.AppSettings["LibraryFolder"];
-            string filename;
-            if (rootPath == null)
+            var filename = WebPlayer.Play.GetGameFilename(gameFile, rootPath);
+            if (filename == null)
             {
-                filename = gameFile;
-            }
-            else
-            {
-                filename = System.IO.Path.Combine(rootPath, gameFile);
+                return "Invalid filename";
             }
             List<string> errors;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -134,22 +135,12 @@ namespace WebPlayer
                 return "No game specified";
             }
 
-            // Block attempts to access files outside the GameFolder
-            if (gameFile.Contains(".."))
-            {
-                return "Invalid filename";
-            }
-
             string rootPath = folder ?? ConfigurationManager.AppSettings["GameFolder"];
             string libPath = ConfigurationManager.AppSettings["LibraryFolder"];
-            string filename;
-            if (rootPath == null)
+            var filename = GetGameFilename(gameFile, rootPath);
+            if (filename == null)
             {
-                filename = gameFile;
-            }
-            else
-            {
-                filename = System.IO.Path.Combine(rootPath, gameFile);
+                return "Invalid filename";
             }
             List<string> errors;
 
@@ -188,6 +179,29 @@ namespace WebPlayer
             }
 
             return output;
+        }
+
+        public static string GetGameFilename(string gameFile, string rootPath)
+        {
+            string filename;
+            if (rootPath == null)
+            {
+                filename = gameFile;
+            }
+            else
+            {
+                filename = Path.Combine(rootPath, gameFile);
+
+                var directory = new DirectoryInfo(Path.GetDirectoryName(filename));
+
+                // Block attempts to access files outside the GameFolder
+                if (!directory.FullName.StartsWith(rootPath))
+                {
+                    return null;
+                }
+            }
+
+            return filename;
         }
 
         void RegisterExternalScripts()
