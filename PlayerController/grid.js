@@ -306,6 +306,17 @@ gridApi.setCentre = function(x, y) {
 };
 
 gridApi.drawCustomLayerSquare = function(id, x, y, width, height, text, fill) {
+    var points = [];
+    points.push(gridPointNudge(x, y, 1, 1));
+    points.push(gridPointNudge(x + width, y, -1, 1));
+    points.push(gridPointNudge(x + width, y + height, -1, -1));
+    points.push(gridPointNudge(x, y + height, 1, -1));
+
+    var textPoint = gridPoint(x + width / 2, y + height / 2);
+    gridApi.drawCustomLayerObject(id, points, text, textPoint, fill);
+};
+
+gridApi.drawCustomLayerObject = function (id, points, text, textPoint, fill) {
     var existing = customLayerObjects[id];
     if (existing) {
         for (var idx in existing) {
@@ -317,18 +328,22 @@ gridApi.drawCustomLayerSquare = function(id, x, y, width, height, text, fill) {
 
     var paths = new Array();
     path = new Path();
-    path.add(gridPointNudge(x, y, 1, 1), gridPointNudge(x + width, y, -1, 1), gridPointNudge(x + width, y + height, -1, -1), gridPointNudge(x, y + height, 1, -1));
+    $.each(points, function(index, value) {
+        path.add(value);
+    });
     path.fillColor = fill;
     path.closed = true;
     addPathToCurrentLayerList(path);
     paths.push(path);
 
-    var pointText = new PointText(gridPoint(x + width / 2, y + height / 2));
-    pointText.justification = "center";
-    pointText.fillColor = "black";
-    pointText.content = text;
-    addPathToCurrentLayerList(pointText);
-    paths.push(pointText);
+    if (text) {
+        var pointText = new PointText(textPoint);
+        pointText.justification = "center";
+        pointText.fillColor = "black";
+        pointText.content = text;
+        addPathToCurrentLayerList(pointText);
+        paths.push(pointText);
+    }
 
     customLayerObjects[id] = paths;
 };
