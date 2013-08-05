@@ -313,10 +313,10 @@ gridApi.drawCustomLayerSquare = function(id, x, y, width, height, text, fill) {
     points.push(gridPointNudge(x, y + height, 1, -1));
 
     var textPoint = gridPoint(x + width / 2, y + height / 2);
-    gridApi.drawCustomLayerObject(id, points, text, textPoint, fill);
+    gridApi.drawCustomLayerObject(id, points, text, textPoint, fill, fill);
 };
 
-gridApi.drawCustomLayerObject = function (id, points, text, textPoint, fill) {
+gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, fill) {
     var existing = customLayerObjects[id];
     if (existing) {
         for (var idx in existing) {
@@ -328,6 +328,7 @@ gridApi.drawCustomLayerObject = function (id, points, text, textPoint, fill) {
 
     var paths = new Array();
     path = new Path();
+    path.strokeColor = border;
     $.each(points, function(index, value) {
         path.add(value);
     });
