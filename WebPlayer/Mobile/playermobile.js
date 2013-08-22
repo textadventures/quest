@@ -3,10 +3,16 @@
 }
 
 function scrollToEnd() {
-    var newScrollTop = beginningOfCurrentTurnScrollPosition - 15;
-    if ($("#gameBorder").height() > $(window).height()) {
-        $('html, body').animate({ scrollTop: newScrollTop }, 200);
+    var scrollTo = beginningOfCurrentTurnScrollPosition - 15;
+    var currentScrollTop = $("body").scrollTop();
+    if (scrollTo > currentScrollTop) {
+        var maxScrollTop = $(document).height() - $(window).height();
+        if (scrollTo > maxScrollTop) scrollTo = maxScrollTop;
+        var distance = scrollTo - currentScrollTop;
+        var duration = distance / 0.4;
+        $('body').stop().animate({ scrollTop: scrollTo }, duration, "easeInOutCubic");
     }
+    $("#txtCommand").focus();
 }
 
 function setBackground(col) {
