@@ -278,3 +278,6 @@ function finishSync() {
         $("#cmdSubmit").click();
     }, 100);
 }
+
+function setGameWidth() {
+}
