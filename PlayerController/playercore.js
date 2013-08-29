@@ -318,7 +318,7 @@ function panesVisible(visible) {
 
 function scrollToEnd() {
     var scrollTo = beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height();
-    var currentScrollTop = $("body").scrollTop();
+    var currentScrollTop = Math.max($("body").scrollTop(), $("html").scrollTop());
     if (scrollTo > currentScrollTop) {
         var maxScrollTop = $(document).height() - $(window).height();
         if (scrollTo > maxScrollTop) scrollTo = maxScrollTop;
