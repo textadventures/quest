@@ -171,8 +171,8 @@
       
         if (LengthOf(takemsg) > 0) {
           msg (prefix + takemsg)
-          if (GetBoolean ( object , "scenery" )) {
-            object.scenery=false
+          if (found and GetBoolean (object, "scenery")) {
+            object.scenery = false
           }
         }
       
