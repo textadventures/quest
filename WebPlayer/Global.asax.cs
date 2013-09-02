@@ -30,7 +30,13 @@ namespace WebPlayer
         {
             if (Request.Url.AbsolutePath.Contains("favicon.ico")) return;
             Exception error = Server.GetLastError().GetBaseException();
-            Logging.Log.ErrorFormat("Error in {0}: {1}\n{2}", Request.Url, error.Message, error.StackTrace);
+            Logging.Log.ErrorFormat("Error in {0}: {1}\n{2}\n\nIP: {3}\nReferrer: {4}\nUserAgent: {5}",
+                Request.Url,
+                error.Message,
+                error.StackTrace,
+                Request.UserHostAddress,
+                Request.UrlReferrer,
+                Request.UserAgent);
         }
 
         protected void Session_End(object sender, EventArgs e)
