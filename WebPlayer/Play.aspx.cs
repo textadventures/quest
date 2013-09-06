@@ -194,8 +194,14 @@ namespace WebPlayer
 
                 var directory = new DirectoryInfo(Path.GetDirectoryName(filename));
 
+                var directoryName = directory.FullName;
+                if (rootPath.EndsWith(@"\") && !directoryName.EndsWith(@"\"))
+                {
+                    directoryName += @"\";
+                }
+
                 // Block attempts to access files outside the GameFolder
-                if (!directory.FullName.StartsWith(rootPath))
+                if (!directoryName.StartsWith(rootPath))
                 {
                     return null;
                 }
