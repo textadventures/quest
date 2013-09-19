@@ -16,7 +16,7 @@
   <template name="NothingToUndo">Niets om ongedaan te maken !</template>
   <template name="NotCarryingAnything">Je draagt niets.</template>
   <template name="CarryingListHeader">Je draagt</template>
-  <dynamictemplate name="DropSuccessful">"Je laat" + object.article + " allen."</dynamictemplate>
+  <dynamictemplate name="DropSuccessful">"Je laat" + object.article + " vallen."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"Je kan" + object.article + " niet laten vallen."</dynamictemplate>
   <dynamictemplate name="AlreadyTaken">"Je draagt" + object.article + " al."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"Je draagt" + object.article + " niet."</dynamictemplate>
@@ -195,7 +195,7 @@
   <template templatetype="command" name="wait">^wait$</template>
   <template name="DefaultWait">De tijd verstrijkt.</template>
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
-  <template name="DefaultXyzzy">Verassend genoeg gebeurt er niets.</template>
+  <template name="DefaultXyzzy">Verrassend genoeg gebeurt er niets.</template>
 
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     return ("een")
