@@ -2,13 +2,16 @@
   <include ref="English.aslx"/>
   <template name="LanguageId">fr</template>
 
-  <template name="UnresolvedObject">[Objet introuvable. Vérifiez l'article de l'élément, et sa présence dans le lieu où vous vous trouvez. Si vous n'êtes pas sûr d'une commande, tapez "aide".]</template>
+  <template name="UnresolvedObject">[Objet introuvable. Vérifiez l'article de l'élément, et sa présence dans le lieu où vous vous trouvez. Si vous n'êtes pas sûr(e) d'une commande, tapez "aide".]</template>
   <template name="UnresolvedLocation">Vous ne pouvez pas y aller.</template>
   <template name="DefaultObjectDescription">Vous ne voyez rien d'extraordinaire.</template>
   <template name="DefaultSelfDescription">Je vais bien...</template>
   <dynamictemplate name="TakeSuccessful">"Vous " + object.article + " prenez."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"Vous ne pouvez pas " + object.article + " prendre."</dynamictemplate>
-  <template name="SeeListHeader">Vous apercevez</template>
+  <dynamictemplate name="FullInventory">"C'est trop lourd !"</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInInventory">"Vous ne pouvez pas porter plus d'objets."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInContainer">"Vous ne pouvez pas y mettre plus d'objets."</dynamictemplate>
+  <template name="SeeListHeader">Vous voyez</template>
   <template name="GoListHeader">Vous pouvez prendre les directions suivantes : </template>
   <template name="And">et</template>
   <template name="Or">ou</template>
@@ -20,6 +23,7 @@
   <dynamictemplate name="AlreadyTaken">"Vous " + object.article + " transportez déjà."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"Vous ne " + object.article + " transportez pas."</dynamictemplate>
   <dynamictemplate name="CantUse">"Vous ne pouvez pas l'utiliser."</dynamictemplate>
+  <dynamictemplate name="CantGive">"Vous ne pouvez pas " + object.article + " donner."</dynamictemplate>
   <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "ne dit") + " rien."</dynamictemplate>
   <template name="UnrecognisedCommand">[Commande inconnue ou paramètres supplémentaires manquants. Tapez "aide" pour avoir une liste des commandes valides.]</template>
   <template name="YouAreIn">Vous êtes dans</template>
@@ -34,6 +38,7 @@
   <template name="SwitchOff">Éteindre</template>
   <template name="Open">Ouvrir</template>
   <template name="Close">Fermer</template>
+  <template name="Eat">Manger</template>
   <dynamictemplate name="ObjectNotOpen">"Ce n'est pas ouvert."</dynamictemplate>
   <template name="NeutralGender">il/elle</template>
   <template name="MaleGender">il</template>
@@ -82,9 +87,19 @@
   <dynamictemplate name="AlreadySwitchedOff">"C'est déjà éteint."</dynamictemplate>"
   <dynamictemplate name="SwitchedOn">"Vous l'allumez."</dynamictemplate>
   <dynamictemplate name="SwitchedOff">"Vous l'éteignez."</dynamictemplate>
+  <dynamictemplate name="Eaten">"Vous " + object.article + " mangez."</dynamictemplate>
   <template name="DefaultOops">Il n'y a rien à corriger.</template>
-  <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " ne contient pas " + GetDisplayAlias(object2) + "."</dynamictemplate>
-
+  <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " ne contient pas de " + GetDisplayAlias(object2) + "."</dynamictemplate>
+  <dynamictemplate name="YouLooking">"Vous regardez vers le " + text + "."</dynamictemplate>
+  <dynamictemplate name="LookAtDarkness">"Il fait trop sombre, vous ne voyez rien."</dynamictemplate>
+  <template name="VerbObjectSeparator">avec; utilisez</template>
+  <template name="DefaultMultiObjectVerb">Cela ne fonctionne pas.</template>
+  <template name="MultiObjectVerbMenu">Avec quel objet ?</template>
+  <template name="UseOnMenu">Avec quel objet ?</template>
+  <template name="GiveToMenu">À qui ?</template>
+  <template name="NoObjectsAvailable">Il n'y a pas d'objets disponibles pour faire cela.</template>
+  <template name="Yes">Oui</template>
+  <template name="No">Non</template>
   <template name="CompassNW">nord-ouest</template>
   <template name="CompassN">nord</template>
   <template name="CompassNE">nord-est</template>
@@ -98,8 +113,11 @@
   <template name="CompassIn">dedans</template>
   <template name="CompassOut">dehors</template>
   <template name="CompassDirectionPrefix"></template>
+  <template name="CompassDirectionSuffix"></template>
   <template name="UpDownDirectionPrefix">en</template>
+  <template name="UpDownDirectionSuffix"></template>
   <template name="InOutDirectionPrefix"></template>
+  <template name="InOutDirectionSuffix"></template>
   <template name="CompassNWShort">no</template>
   <template name="CompassNShort">n</template>
   <template name="CompassNEShort">ne</template>
@@ -110,18 +128,18 @@
   <template name="CompassSEShort">se</template>
   <template name="CompassUpShort">h</template>
   <template name="CompassDownShort">b</template>
-  <template name="CompassInShort">in</template>
-  <template name="CompassOutShort">ex</template>
-  <dynamictemplate name="YouLooking">"Vous regardez " + text +"."</dynamictemplate>
+  <template name="CompassInShort">int</template>
+  <template name="CompassOutShort">ext</template>
 
   <template name="InventoryLabel">Inventaire</template>
   <template name="PlacesObjectsLabel">Lieux et objets</template>
   <template name="CompassLabel">Compas</template>
-  <template name="InButtonLabel">in</template>
-  <template name="OutButtonLabel">ex</template>
+  <template name="InButtonLabel">int</template>
+  <template name="OutButtonLabel">ext</template>
   <template name="EmptyListLabel">(vide)</template>
   <template name="NothingSelectedLabel">(rien n'est sélectionné)</template>
-  
+  <template name="TypeHereLabel">Écrivez ici ou cliquez sur les éléments interactifs...</template>
+  <template name="ContinueLabel">Continuer...</template>
   <template templatetype="command" name="go"><![CDATA[^aller au (?<exit>.*)$|^aller (?<exit>.*)$|^(?<exit>nord|est|sud|ouest|nord-est|nord-ouest|sud-est|sud-ouest|dedans|dehors|haut|bas|n|e|s|o|ne|no|se|so|d|h|b)$]]></template>
   <template templatetype="command" name="lookdir"><![CDATA[^regarder (?<exit>nord|est|sud|ouest|nord-est|nord-ouest|sud-est|sud-ouest|dedans|dehors|haut|bas|n|e|s|o|ne|no|se|so|d|h|b)$]]></template>
   <template templatetype="command" name="look">^regarder$</template>
@@ -158,6 +176,7 @@
   <dynamictemplate name="DefaultDrink">"Vous ne pouvez pas " + object.article + " boire."</dynamictemplate>
   <verbtemplate name="eat">manger</verbtemplate>
   <dynamictemplate name="DefaultEat">"Vous ne pouvez pas " + object.article + " manger."</dynamictemplate>
+  <verbtemplate name="givesingle">donner</verbtemplate>
   <template templatetype="command" name="give"><![CDATA[^donner (?<object1>.*) à (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultGive">WriteVerb(object1, "ne") + " " + object2.article + " veut pas." </dynamictemplate>
   <verbtemplate name="hit">frapper</verbtemplate>
@@ -239,10 +258,11 @@
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">De façon surprenante, rien ne se passe.</template>
   <template templatetype="command" name="help">^aide$|^\?$</template>
+  <template templatetype="command" name="save">^sauvegarder$</template>
   <template name="DefaultHelp"><![CDATA[<br/><u>Liste des commandes principales</u><br/><br/>
-<b>- Objets :</b><br/>  REGARDER... ; PARLER... ; PRENDRE... ; DÉPOSER... ; OUVRIR... ; DONNER... À... ; UTILISER... AVEC... ; POUSSER... ; TIRER... ; METTRE... SUR... ; ENLEVER... DE... ; INTERROGER... SUR... ; DIRE À... <br/><br/>
+<b>- Objets :</b><br/>  REGARDER... ; PARLER... ; PRENDRE... ; DÉPOSER... ; OUVRIR... ; DONNER... À... ; UTILISER... AVEC... ; POUSSER... ; TIRER... ; METTRE... SUR/DANS... ; ENLEVER... DE... ; INTERROGER... SUR... ; DIRE À... <br/><br/>
 <b>- Inventaire :</b><br/>  Examinez votre inventaire en entrant : I, INV ou INVENTAIRE.<br/><br/>
-<b>- Déplacement :</b><br/>  Utilisez les boutons du compas, ou tapez NORD, SUD, EST, OUEST, N, S, E, O, NO, NE, H, B, IN, EX etc.<br/><br/>
+<b>- Déplacement :</b><br/>  Utilisez les boutons du compas, ou tapez NORD, SUD, EST, OUEST, N, S, E, O, NO, NE, H, B, INT, EXT, etc.<br/><br/>
 <b>- Raccourcis :</b><br/>  Utilisez les flèches haut et bas pour voir les commandes que vous avez déjà entrées. Notez que vous pouvez utiliser la lettre "x" plutôt que le verbe "examiner" ou "regarder".<br/>]]></template>
 
   <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
