@@ -6,7 +6,7 @@
   <template name="DefaultSelfDescription">Looking good.</template>
   <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
   <dynamictemplate name="TakeUnsuccessful">"You can't take " + object.article + "."</dynamictemplate>
-  <dynamictemplate name="FullInventory">WriteVerb(object, "be") + " to heavy to be taken."</dynamictemplate>
+  <dynamictemplate name="FullInventory">WriteVerb(object, "be") + " too heavy to be taken."</dynamictemplate>
   <dynamictemplate name="MaxObjectsInInventory">"You can't carry any more items."</dynamictemplate>
   <dynamictemplate name="MaxObjectsInContainer">"You can't put more items in " + object.article + "."</dynamictemplate>
   <template name="SeeListHeader">You can see</template>
