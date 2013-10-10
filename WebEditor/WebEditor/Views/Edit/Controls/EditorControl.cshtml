@@ -7,9 +7,9 @@
     bool isFirst = Model.IsFirst;
     string controlType = Model.ControlType;
     string caption = Model.Caption;
-    
+
     object value;
-    value = (ctl.Attribute == null) ? null :  Model.EditorData.GetAttribute(ctl.Attribute);
+    value = (ctl.Attribute == null) ? null : Model.EditorData.GetAttribute(ctl.Attribute);
     if (caption == null)
     {
         caption = ctl.Caption;
@@ -30,46 +30,46 @@
             @Html.Action("EditScript", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
         case "attributes":
-            var m_data = (IEditorDataExtendedAttributeInfo)Model.EditorData;
+            var data = (IEditorDataExtendedAttributeInfo) Model.EditorData;
             <div id="attributesListEditor">
-                <div id="attributesListScroller" style="height:500px;overflow:scroll;width:630px;">
-                <table style="margin-top:18px;">
-                <thead style="position:absolute;height:18px;margin-top:-22px;">
-                <tr class="ui-corner-tr ui-widget-header">
-                    <th style="width:200px;">Name</th>
-                    <th style="width:300px;">Value</th>
-                    <th style="width:100px;">Source</th>
-                </tr>
-                </thead>
-                <tbody style="height:200px;overflow:scroll;">
-                @foreach(var attr in m_data.GetAttributeData())
-                {
-                   <tr id="attr__@(attr.AttributeName)" class="attributeRow" style="cursor:pointer;">
-                       <td class="attributeName" style="max-width:200px;word-wrap:break-word;">@Html.Raw(attr.AttributeName)</td>
-                       <td class="attributeValue" style="max-width:300px;word-wrap:break-word;">@Html.Raw(EditorUtility.GetDisplayString(m_data.GetAttribute(attr.AttributeName)))</td>
-                       <td class="attributeSource" style="max-width:100px;">@Html.Raw(attr.Source)</td>                  
-                   </tr>
-                } 
-                </tbody>
-                </table>
+                <div id="attributesListScroller" style="height: 500px; overflow: scroll; width: 630px;">
+                    <table style="margin-top: 18px;">
+                        <thead style="position: absolute; height: 18px; margin-top: -22px;">
+                            <tr class="ui-corner-tr ui-widget-header">
+                                <th style="width: 200px;">Name</th>
+                                <th style="width: 300px;">Value</th>
+                                <th style="width: 100px;">Source</th>
+                            </tr>
+                        </thead>
+                        <tbody style="height: 200px; overflow: scroll;">
+                            @foreach (var attr in data.GetAttributeData())
+                            {
+                                <tr id="attr__@(attr.AttributeName)" class="attributeRow" style="cursor: pointer;">
+                                    <td class="attributeName" style="max-width: 200px; word-wrap: break-word;">@Html.Raw(attr.AttributeName)</td>
+                                    <td class="attributeValue" style="max-width: 300px; word-wrap: break-word;">@Html.Raw(EditorUtility.GetDisplayString(data.GetAttribute(attr.AttributeName)))</td>
+                                    <td class="attributeSource" style="max-width: 100px;">@Html.Raw(attr.Source)</td>                  
+                                </tr>
+                            } 
+                        </tbody>
+                    </table>
                 </div>
-                <div id="attributeRowEditor" style="display:none;">
+                <div id="attributeRowEditor" style="display: none;">
                 </div>
             </div>
             break;
         case "label":
             <div class="elementEditorLabel">
-            @{
-                var href = ctl.GetString("href");
-                if (href == null)
-                {
-                    @caption
+                @{
+                    var href = ctl.GetString("href");
+                    if (href == null)
+                    {
+                        @caption
+                    }
+                    else
+                    {
+                        <a href="@href" target="_blank">@caption</a>
+                    }
                 }
-                else
-                {
-                    <a href="@href" target="_blank">@caption</a>
-                }
-            }
             </div>
             break;
         case "title":
@@ -79,7 +79,7 @@
         case "dropdown":
             string selectedItem = value as string;
             IEnumerable<SelectListItem> valuesList = ControlHelpers.GetDropdownValues(ctl, selectedItem, Model.Controller);
-            @Html.DropDownList(ctl.Attribute, valuesList, new { @class = "elementEditorDropdown" });
+            @Html.DropDownList(ctl.Attribute, valuesList, new { @class = "elementEditorDropdown" })
             break;
         case "richtext":
             var richTextModel = new WebEditor.Models.Controls.RichTextControl
@@ -137,7 +137,7 @@
             @RenderMultiControl(ctl, value)
             break;
         case "dropdowntypes":
-            @Html.DropDownList("types-dropdown-" + ctl.Id, ControlHelpers.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key), new { @class = "types-dropdown", data_key = ctl.Id });
+            @Html.DropDownList("types-dropdown-" + ctl.Id, ControlHelpers.GetDropDownTypesControlItems(ctl, Model.Controller, Model.Key), new { @class = "types-dropdown", data_key = ctl.Id })
             break;
         case "elementslist":
             @Html.Action("ElementsList", new { id = Model.GameId, key = Model.Key, control = ctl })
@@ -154,29 +154,29 @@
             }
             List<SelectListItem> items = new List<SelectListItem>(
                 ControlHelpers.GetObjectListNames(ctl, Model.Controller).OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
-                .Select(s => new SelectListItem { Text = s, Value = s, Selected = (selectedValue == s) })
+                              .Select(s => new SelectListItem { Text = s, Value = s, Selected = (selectedValue == s) })
                 );
             // if ctl.Attribute is "key" (or any name that exists in the Model), ASP.NET MVC ignores Selected value
-            @Html.DropDownList("dropdown-" + ctl.Attribute, items);
+            @Html.DropDownList("dropdown-" + ctl.Attribute, items)
             break;
         case "verbs":
             @Html.Action("EditVerbs", new { id = Model.GameId, key = Model.Key, control = ctl })
             break;
         case "file":
             string source = string.Join(";", ctl.GetString("source").Split(';').Select(s => s.Substring(1)));
-            <div style="display:inline-block;height:auto;width:auto;">
-                <div style="float:left;">
-                @Html.TextBox(ctl.Attribute, (string)value, new { @readonly = "readonly", @class = "elementEditorFile" })
+            <div style="display: inline-block; height: auto; width: auto;">
+                <div style="float: left;">
+                    @Html.TextBox(ctl.Attribute, (string) value, new { @readonly = "readonly", @class = "elementEditorFile" })
                 </div>
-                @if (ctl.GetBool("preview") && value is string && !string.IsNullOrEmpty((string)value))
+                @if (ctl.GetBool("preview") && value is string && !string.IsNullOrEmpty((string) value))
                 {
-                    <div style="float:left">
+                    <div style="float: left">
                         <button type="button" class="img-preview" data-key="@ctl.Attribute" data-extensions="@source">
                             <img src="/ImageProcessor.ashx?h=80&w=80&gameId=@Model.GameId&image=@value.ToString()" />
                         </button>
                     </div>
                 }
-                <div style="float:left;">
+                <div style="float: left;">
                     <button type="button" class="file-upload" data-key="@ctl.Attribute" data-extensions="@source">Choose file</button>
                 </div>
             </div>
@@ -204,7 +204,7 @@
 
 @helper RenderMultiControl(IEditorControl ctl, object value)
 {
-    var model = new WebEditor.Models.Controls.MultiControl()
+    var model = new WebEditor.Models.Controls.MultiControl
     {
         GameId = Model.GameId,
         Key = Model.Key,
