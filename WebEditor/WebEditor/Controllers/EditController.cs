@@ -58,11 +58,10 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditAttribute(int id, string key, string attributeName)
         {
-
-            IEditorControl control = new AttributeSubEditorControlData(attributeName); //EditorDictionary[id].FindEditorControlByAttribute(key, attributeName);
+            IEditorControl control = new AttributeSubEditorControlData(attributeName);
             Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, "", null, null, ModelState);
-            var m_data = (IEditorDataExtendedAttributeInfo)model.EditorData;
-            object value = m_data.GetAttribute(attributeName);
+            var data = (IEditorDataExtendedAttributeInfo)model.EditorData;
+            object value = data.GetAttribute(attributeName);
 
             ViewBag.control = control;
             ViewBag.data = value;
