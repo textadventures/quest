@@ -5,6 +5,7 @@ obj/
 TestResults/
 .*\.suo
 .*\.user
+packages/.*
 WebPlayer/playercore\..*
 WebPlayer/WebPlayerSettings\.xml
 WebPlayer/WebPlayer\.Publish\.xml
