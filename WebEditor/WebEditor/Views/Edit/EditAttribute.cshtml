@@ -32,13 +32,11 @@
         });
 
         $(".elementEditorCheckbox").change(function () {
-            debugger;
             $("input[name='attributeEditorValue']").val($(this).is(':checked'));
             postChanges();
         });
 
         $(".elementEditorTextbox").change(function () {
-            debugger;
             $("input[name='attributeEditorValue']").val($(this).val());
             postChanges();
         });
@@ -51,7 +49,6 @@
             var key = $(this).attr("data-key");
             var value = $(this).find('option:selected').attr("value");
             $.post('/Edit/ProcessAction', { id: "@(Model.GameId)", key: "@(Model.Key)", tab: "@(Model.Tab)", actionCmd: "multi set " + key + ";" + value }, function (response) {
-                debugger;
                 // refresh the attribute list table
                 var tempScrollPos = $('#attributesListScroller').scrollTop();
                 var attributeListHtml = $('#attributesListEditor', $(response)).html();
