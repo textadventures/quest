@@ -212,7 +212,7 @@ function commandKey(e) {
 
 function runCommand() {
     var command = $("#txtCommand").val();
-    if (command.length > 0) {
+    if (command.length > 0 && canSendCommand) {
         numCommands++;
         commandsList[numCommands] = command;
         thisCommand = numCommands + 1;
