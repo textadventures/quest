@@ -112,7 +112,7 @@ $(function () {
     
     $(document).on("click", ".commandlink", function () {
         var $this = $(this);
-        if (!$this.hasClass("disabled")) {
+        if (!$this.hasClass("disabled") && canSendCommand) {
             if ($this.data("deactivateonclick")) {
                 $this.addClass("disabled");
                 $this.data("deactivated", true);

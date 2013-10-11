@@ -3,6 +3,12 @@ var webPlayer = true;
 var tmrTick = null;
 var tickCount = 0;
 var sendNextGameTickerAfter = 0;
+var canSendCommand = true;
+
+function pageLoad() {
+    // triggered by ASP.NET every page load, including from the AJAX UpdatePanel
+    canSendCommand = true;
+}
 
 document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     function decode(s) {
@@ -20,7 +26,6 @@ function init() {
 function keepSessionAlive() {
     $.post("/KeepAlive.ashx");
 }
-
 
 var _waitingForSoundToFinish = false;
 
@@ -100,7 +105,8 @@ function dialogSendCancel() {
 }
 
 function sendCommand(text, metadata) {
-    if (_pauseMode || _waitingForSoundToFinish || _waitMode) return;
+    if (_pauseMode || _waitingForSoundToFinish || _waitMode || !canSendCommand) return;
+    canSendCommand = false;
     markScrollPosition();
     window.setTimeout(function () {
         $("#fldUITickCount").val(getTickCountAndStopTimer());
