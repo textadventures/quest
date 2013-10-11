@@ -130,10 +130,12 @@ Working...
                         }
                         count++;
                         string id = "#elementEditorTab" + count;
-                        if (def.Caption == "Attributes"){
-                            <li><a class="saveBeforeLoad" href="@id">@def.Caption</a></li>
-                            }
-                        else{
+                        if (def.Caption == "Attributes")
+                        {
+                            <li class="saveBeforeLoad"><a href="@id">@def.Caption</a></li>
+                        }
+                        else
+                        {
                             <li><a href="@id">@def.Caption</a></li>
                         }
                     }

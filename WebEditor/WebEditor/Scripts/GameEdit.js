@@ -249,8 +249,8 @@ function initialiseElementEditor() {
     }
     $("#elementEditorTabs").tabs({
         active: selectedTabIndex,
-        select: function (event, ui) {
-            if (ui.tab.className == "saveBeforeLoad" && _unsavedChanges) {
+        beforeActivate: function (event, ui) {
+            if (ui.oldTab.hasClass("saveBeforeLoad") || ui.newTab.hasClass("saveBeforeLoad")) {
                 $("#_additionalAction").val("none");
                 $("#_additionalActionTab").val(ui.newTab.index());
                 submitForm();
