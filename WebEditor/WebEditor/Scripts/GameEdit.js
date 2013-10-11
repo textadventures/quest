@@ -243,16 +243,16 @@ function initialiseElementEditor() {
         refreshTree(refreshTreeSelectElement, selectTab);
         return;
     }
+    var selectedTabIndex = 0;
+    if (selectTab && selectTab.length > 0) {
+        selectedTabIndex = parseInt(selectTab);
+    }
     $("#elementEditorTabs").tabs({
-        create: function () {
-            if (selectTab && selectTab.length > 0) {
-                $("#elementEditorTabs").tabs("select", parseInt(selectTab));
-            }
-        },
+        active: selectedTabIndex,
         select: function (event, ui) {
             if (ui.tab.className == "saveBeforeLoad" && _unsavedChanges) {
                 $("#_additionalAction").val("none");
-                $("#_additionalActionTab").val(ui.index);
+                $("#_additionalActionTab").val(ui.newTab.index());
                 submitForm();
             }
         }
@@ -1085,7 +1085,7 @@ function stringListEdit(key, prompt) {
 
 function sendAdditionalAction(action) {
     $("#_additionalAction").val(action);
-    $("#_additionalActionTab").val($("#elementEditorTabs").tabs('option', 'selected'));
+    $("#_additionalActionTab").val($("#elementEditorTabs").tabs('option', 'active'));
     submitForm();
 }
 
