@@ -167,6 +167,45 @@ input.elementEditorFile
 {
     float: right;
 }
+#attributesListScroller
+{
+    height: 500px;
+    overflow: scroll;
+    width: 630px;
+}
+#attributesListScroller table
+{
+    margin-top: 18px;
+}
+#attributesListScroller thead
+{
+    position: absolute;
+    height: 18px;
+    margin-top: -22px;
+}
+#attributesListScroller tbody
+{
+    height: 200px;
+    overflow: scroll;
+}
+.attributeName
+{
+    width: 200px;
+    word-wrap: break-word;
+}
+.attributeValue
+{
+    width: 300px;
+    word-wrap: break-word;
+}
+.attributeSource
+{
+    width: 100px;
+}
+.attributeRow
+{
+    cursor: pointer;
+}
 #form-loading
 {
     display: none;

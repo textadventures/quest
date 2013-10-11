@@ -32,22 +32,22 @@
         case "attributes":
             var data = (IEditorDataExtendedAttributeInfo) Model.EditorData;
             <div id="attributesListEditor">
-                <div id="attributesListScroller" style="height: 500px; overflow: scroll; width: 630px;">
-                    <table style="margin-top: 18px;">
-                        <thead style="position: absolute; height: 18px; margin-top: -22px;">
+                <div id="attributesListScroller" style="">
+                    <table>
+                        <thead>
                             <tr class="ui-corner-tr ui-widget-header">
-                                <th style="width: 200px;">Name</th>
-                                <th style="width: 300px;">Value</th>
-                                <th style="width: 100px;">Source</th>
+                                <th class="attributeName">Name</th>
+                                <th class="attributeValue">Value</th>
+                                <th class="attributeSource">Source</th>
                             </tr>
                         </thead>
-                        <tbody style="height: 200px; overflow: scroll;">
+                        <tbody>
                             @foreach (var attr in data.GetAttributeData())
                             {
-                                <tr id="attr__@(attr.AttributeName)" class="attributeRow" style="cursor: pointer;">
-                                    <td class="attributeName" style="max-width: 200px; word-wrap: break-word;">@Html.Raw(attr.AttributeName)</td>
-                                    <td class="attributeValue" style="max-width: 300px; word-wrap: break-word;">@Html.Raw(EditorUtility.GetDisplayString(data.GetAttribute(attr.AttributeName)))</td>
-                                    <td class="attributeSource" style="max-width: 100px;">@Html.Raw(attr.Source)</td>                  
+                                <tr id="attr__@(attr.AttributeName)" class="attributeRow">
+                                    <td class="attributeName">@Html.Raw(attr.AttributeName)</td>
+                                    <td class="attributeValue">@Html.Raw(EditorUtility.GetDisplayString(data.GetAttribute(attr.AttributeName)))</td>
+                                    <td class="attributeSource">@Html.Raw(attr.Source)</td>                  
                                 </tr>
                             } 
                         </tbody>
