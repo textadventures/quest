@@ -36,6 +36,13 @@ namespace WebEditor.Models
         public string ScriptCategories { get; set; }
     }
 
+    public class EditAttributeModel
+    {
+        public Element Element { get; set; }
+        public IEditorControl Control { get; set; }
+        public object Value { get; set; }
+    }
+
     public class IgnoredValue
     {
     }

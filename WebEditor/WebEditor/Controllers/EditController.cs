@@ -7,6 +7,7 @@ using System.Configuration;
 using Ionic.Zip;
 using TextAdventures.Quest;
 using System.IO;
+using WebEditor.Models;
 
 namespace WebEditor.Controllers
 {
@@ -58,13 +59,15 @@ namespace WebEditor.Controllers
 
         public PartialViewResult EditAttribute(int id, string key, string attributeName)
         {
-            IEditorControl control = new AttributeSubEditorControlData(attributeName);
-            Models.Element model = EditorDictionary[id].GetElementModelForView(id, key, "", null, null, ModelState);
-            var data = (IEditorDataExtendedAttributeInfo)model.EditorData;
-            object value = data.GetAttribute(attributeName);
+            var element = EditorDictionary[id].GetElementModelForView(id, key, "", null, null, ModelState);
+            var data = (IEditorDataExtendedAttributeInfo)element.EditorData;
 
-            ViewBag.control = control;
-            ViewBag.data = value;
+            var model = new EditAttributeModel
+            {
+                Element = element,
+                Control = new AttributeSubEditorControlData(attributeName),
+                Value = data.GetAttribute(attributeName)
+            };
 
             return PartialView("EditAttribute", model);
         }

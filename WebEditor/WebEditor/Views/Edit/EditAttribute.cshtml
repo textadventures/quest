@@ -1,19 +1,14 @@
 ﻿@using TextAdventures.Quest;
 @using WebEditor.Views.Edit;
-@model WebEditor.Models.Element
-           
-@{
-    IEditorControl cntrl = ViewBag.control;
-    object value = ViewBag.data;
-}
+@model WebEditor.Models.EditAttributeModel
            
 <script type="text/javascript">
     function postChanges() {
         var data = $('form').serialize();
         $.post('/Edit/SaveElement', data, function (response) {
             // refresh the attribute row with updated values after save
-            var attributeRowHtml = $('#attr__@(cntrl.Attribute)', $(response)).html();
-            $('#attr__@(cntrl.Attribute)').html(attributeRowHtml);
+            var attributeRowHtml = $('#attr__@(Model.Control.Attribute)', $(response)).html();
+            $('#attr__@(Model.Control.Attribute)').html(attributeRowHtml);
         });
     }
 
@@ -48,7 +43,7 @@
         $(".multi-dropdown").change(function () {
             var key = $(this).attr("data-key");
             var value = $(this).find('option:selected').attr("value");
-            $.post('/Edit/ProcessAction', { id: "@(Model.GameId)", key: "@(Model.Key)", tab: "@(Model.Tab)", actionCmd: "multi set " + key + ";" + value }, function (response) {
+            $.post('/Edit/ProcessAction', { id: "@(Model.Element.GameId)", key: "@(Model.Element.Key)", tab: "@(Model.Element.Tab)", actionCmd: "multi set " + key + ";" + value }, function (response) {
                 // refresh the attribute list table
                 var tempScrollPos = $('#attributesListScroller').scrollTop();
                 var attributeListHtml = $('#attributesListEditor', $(response)).html();
@@ -60,11 +55,11 @@
     });
 </script>
 
-@Html.Hidden("attributeEditorFieldName", cntrl.Attribute)
+@Html.Hidden("attributeEditorFieldName", Model.Control.Attribute)
 @Html.Hidden("attributeEditorValue")
 
 <div id="attributeMultiControl_editor">
-    @RenderMultiControl(cntrl, value)
+    @RenderMultiControl(Model.Control, Model.Value)
 </div>
 
 @helper RenderMultiControl(IEditorControl ctl, object value)
@@ -92,10 +87,10 @@
                 Caption = ctlCaption,
                 ControlType = controlType,
                 IsFirst = false,
-                Controller = Model.Controller,
-                GameId = Model.GameId,
-                EditorData = Model.EditorData,
-                Key = Model.Key
+                Controller = Model.Element.Controller,
+                GameId = Model.Element.GameId,
+                EditorData = Model.Element.EditorData,
+                Key = Model.Element.Key
             };
             Html.RenderPartial("Controls/EditorControl", editorControlModel);
         }
