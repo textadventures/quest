@@ -24,6 +24,7 @@
             var key = $(this).children('.attributeName').first().html();
             $.get('/Edit/EditAttribute?id=@(Model.GameId)&key=@(Model.Key)&attributeName=' + key, function (result) {
                 $('#attributeRowEditor').html(result).show('slow');
+                initialiseElementEditorControls($("#attributeRowEditor"));
             });
         });
     }

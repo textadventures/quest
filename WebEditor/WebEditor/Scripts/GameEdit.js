@@ -259,7 +259,43 @@ function initialiseElementEditor() {
     });
     $("#centerPane").scrollTop(0);
 
-    $(".stringlist-add").button({
+    initialiseElementEditorControls();
+
+    var enabledButtons = $("#_enabledButtons").val();
+    updateEnabledButtons(enabledButtons);
+
+    var popupError = $("#_popupError").val();
+    if (popupError.length > 0) {
+        var reload = $("#_reload").val();
+        if (reload == "1") {
+            $("#dialog-error").data("dialog_close", function () {
+                location.reload();
+            });
+        }
+        $("#dialog-error-message").html(popupError);
+        $("#dialog-error").dialog("open");
+    }
+
+    var uiAction = $("#_uiAction").val();
+    if (uiAction.length > 0) {
+        var data = uiAction.split(" ");
+        switch (data[0]) {
+            case "settings":
+                $("#dialog-settings").dialog("open");
+                break;
+            case "codeview":
+                $("#script-codeview-" + data[1]).click();
+                break;
+        }
+    }
+}
+
+function initialiseElementEditorControls(search) {
+    if (typeof search == "undefined") {
+        search = $("body");
+    }
+
+    $(".stringlist-add", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -268,27 +304,27 @@ function initialiseElementEditor() {
         });
     });
 
-    $(".stringlist-edit").button({
+    $(".stringlist-edit", search).button({
         icons: { primary: "ui-icon-pencil" }
     }).click(function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
 
-    $(".stringlist-delete").button({
+    $(".stringlist-delete", search).button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
         var key = $(this).attr("data-key");
         var selectElement = $("#select-" + key + " option:selected");
         sendAdditionalAction("stringlist delete " + key + ";" + selectElement.val());
     });
-    $(".stringlist").dblclick(function () {
+    $(".stringlist", search).dblclick(function () {
         stringListEdit($(this).attr("data-key"), $(this).attr("data-prompt"));
     });
 
-    $(".stringlist-edit, .stringlist-delete").each(function () {
+    $(".stringlist-edit, .stringlist-delete", search).each(function () {
         $(this).button("disable");
     });
-    $(".stringlist").change(function () {
+    $(".stringlist", search).change(function () {
         var editButton = $("#stringlist-" + $(this).attr("data-key") + "-edit");
         var deleteButton = $("#stringlist-" + $(this).attr("data-key") + "-delete");
         var selectElement = $("#" + this.id + " option:selected");
@@ -302,7 +338,7 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".script-add").button({
+    $(".script-add", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -312,17 +348,17 @@ function initialiseElementEditor() {
             sendAdditionalAction("script add " + key + ";" + create);
         });
         $(".dialog-add-script-selection").show();
-        $.each($("#_hiddenScripts").val().split(";"), function(index, value) {
+        $.each($("#_hiddenScripts").val().split(";"), function (index, value) {
             $(".dialog-add-script-selection[data-key='" + value + "']").hide();
         });
         $("#dialog-add-script-tabs li").hide();
-        $.each($("#_scriptCategories").val().split(";"), function(index, value) {
+        $.each($("#_scriptCategories").val().split(";"), function (index, value) {
             $("#dialog-add-script-tabs li[data-key='" + value + "']").show();
         });
         $("#dialog-add-script").dialog("open");
     });
 
-    $(".script-delete").button({
+    $(".script-delete", search).button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -332,7 +368,7 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".script-cut").button({
+    $(".script-cut", search).button({
         icons: { primary: "ui-icon-scissors" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -342,7 +378,7 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".script-copy").button({
+    $(".script-copy", search).button({
         icons: { primary: "ui-icon-copy" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -352,14 +388,14 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".script-paste").button({
+    $(".script-paste", search).button({
         icons: { primary: "ui-icon-clipboard" }
     }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script paste " + key);
     });
 
-    $(".script-moveup").button({
+    $(".script-moveup", search).button({
         icons: { primary: "ui-icon-arrowthick-1-n" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -369,7 +405,7 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".script-movedown").button({
+    $(".script-movedown", search).button({
         icons: { primary: "ui-icon-arrowthick-1-s" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -379,11 +415,11 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".script-clipboard").buttonset();
-    $(".script-move").buttonset();
+    $(".script-clipboard", search).buttonset();
+    $(".script-move", search).buttonset();
 
-    $(".script-codeview").button({
-        icons:  { primary: "ui-icon-script" }
+    $(".script-codeview", search).button({
+        icons: { primary: "ui-icon-script" }
     }).click(function () {
         var key = $(this).data("key");
         if (!_unsavedChanges) {
@@ -399,30 +435,30 @@ function initialiseElementEditor() {
         } else {
             sendAdditionalAction("script codeview " + key);
         }
-    }) ;
+    });
 
-    $(".script-if-add-else").button({
+    $(".script-if-add-else", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
-        sendAdditionalAction("script addelse " + key );
+        sendAdditionalAction("script addelse " + key);
     });
 
-    $(".script-if-add-elseif").button({
+    $(".script-if-add-elseif", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script addelseif " + key);
     });
 
-    $(".script-toolbar").each(function () {
+    $(".script-toolbar", search).each(function () {
         var key = $(this).attr("data-key");
         var selectedScripts = getSelectedScripts(key);
         if (selectedScripts.length > 0) {
             $(this).show();
         }
     });
-    $(".script-select").click(function () {
+    $(".script-select", search).click(function () {
         var key = $(this).attr("data-key");
         var selectedScripts = getSelectedScripts(key);
         if (selectedScripts.length > 0) {
@@ -432,7 +468,7 @@ function initialiseElementEditor() {
             $("#script-toolbar-" + key).hide(200);
         }
     });
-    $(".ifsection-select").click(function () {
+    $(".ifsection-select", search).click(function () {
         var key = $(this).attr("data-key");
         var selectedSections = getSelectedIfSections(key);
         if (selectedSections.length > 0) {
@@ -443,13 +479,13 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".ifsection-delete").button({
+    $(".ifsection-delete", search).button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("script deleteifsection " + key + ";" + getSelectedIfSections(key));
     });
-    $(".expression-dropdown").change(function () {
+    $(".expression-dropdown", search).change(function () {
         var key = $(this).attr("data-key");
         var showExpression = ($(this).find('option:selected').text() == "expression");
         if (showExpression) {
@@ -461,7 +497,7 @@ function initialiseElementEditor() {
             $("#" + key + "-simpleeditorspan").show();
         }
     });
-    $(".template-dropdown").change(function () {
+    $(".template-dropdown", search).change(function () {
         var key = $(this).attr("data-key");
         var text = $(this).find('option:selected').text();
         if (text == "expression") {
@@ -474,7 +510,7 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".script-dictionary-add").button({
+    $(".script-dictionary-add", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -491,7 +527,7 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".error-clear").button().click(function () {
+    $(".error-clear", search).button().click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("error clear " + key);
     });
@@ -506,20 +542,20 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".scriptDictionarySection-delete").button({
+    $(".scriptDictionarySection-delete", search).button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("scriptdictionary delete " + key + ";" + getSelectedScriptDictionaryItems(key));
     });
 
-    $(".string-dictionary-add").button({
+    $(".string-dictionary-add", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         stringDictionaryAdd($(this), "Add");
     });
 
-    $(".gamebookoptions-addnew").button({
+    $(".gamebookoptions-addnew", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -527,12 +563,12 @@ function initialiseElementEditor() {
             toplevelAdditionalAction("stringdictionary gamebookaddpage " + key + ";" + text);
         });
     });
-    $(".gamebookoptions-link").button({
+    $(".gamebookoptions-link", search).button({
         icons: { primary: "ui-icon-link" }
     }).click(function () {
         stringDictionaryAdd($(this), "Add link to");
     });
-    $(".stringDictionarySection-select").click(function () {
+    $(".stringDictionarySection-select", search).click(function () {
         var key = $(this).attr("data-key");
         var selectedSections = getSelectedStringDictionaryItems(key);
         if (selectedSections.length > 0) {
@@ -543,24 +579,24 @@ function initialiseElementEditor() {
         }
     });
 
-    $(".stringDictionarySection-delete").button({
+    $(".stringDictionarySection-delete", search).button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
         var key = $(this).attr("data-key");
         sendAdditionalAction("stringdictionary delete " + key + ";" + getSelectedStringDictionaryItems(key));
     });
 
-    $(".multi-dropdown").change(function () {
+    $(".multi-dropdown", search).change(function () {
         var key = $(this).attr("data-key");
         var value = $(this).find('option:selected').attr("value");
         sendAdditionalAction("multi set " + key + ";" + value);
     });
-    $(".types-dropdown").change(function () {
+    $(".types-dropdown", search).change(function () {
         var key = $(this).attr("data-key");
         var value = $(this).find('option:selected').attr("value");
         sendAdditionalAction("types set " + key + ";" + value);
     });
-    $(".elementslist-add").button({
+    $(".elementslist-add", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var elementType = $(this).attr("data-elementtype");
@@ -568,21 +604,21 @@ function initialiseElementEditor() {
         var filter = $(this).attr("data-filter");
         addNewElement(elementType, objectType, filter);
     });
-    $(".elementslist-edit").button({
+    $(".elementslist-edit", search).button({
         icons: { primary: "ui-icon-pencil" }
     }).click(function () {
         var key = $(this).attr("data-key");
         var selectElement = $("#select-" + key + " option:selected");
         selectTreeNode(selectElement.val());
     });
-    $(".elementslist-delete").button({
+    $(".elementslist-delete", search).button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
         var key = $(this).attr("data-key");
         var selectElement = $("#select-" + key + " option:selected");
         sendAdditionalAction("elementslist delete " + selectElement.val());
     });
-    $(".elementslist-moveup").button({
+    $(".elementslist-moveup", search).button({
         icons: { primary: "ui-icon-arrowthick-1-n" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -590,7 +626,7 @@ function initialiseElementEditor() {
         var previous = selectElement.attr("data-previous");
         sendAdditionalAction("elementslist swap " + selectElement.val() + ";" + previous);
     });
-    $(".elementslist-movedown").button({
+    $(".elementslist-movedown", search).button({
         icons: { primary: "ui-icon-arrowthick-1-s" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -598,7 +634,7 @@ function initialiseElementEditor() {
         var next = selectElement.attr("data-next");
         sendAdditionalAction("elementslist swap " + selectElement.val() + ";" + next);
     });
-    $(".elementslist").change(function () {
+    $(".elementslist", search).change(function () {
         var editButton = $("#elementslist-edit-" + $(this).attr("data-key"));
         var deleteButton = $("#elementslist-delete-" + $(this).attr("data-key"));
         var moveupButton = $("#elementslist-moveup-" + $(this).attr("data-key"));
@@ -639,30 +675,30 @@ function initialiseElementEditor() {
             }
         }
     });
-    $(".elementslist-edit, .elementslist-delete, .elementslist-moveup, .elementslist-movedown").each(function () {
+    $(".elementslist-edit, .elementslist-delete, .elementslist-moveup, .elementslist-movedown", search).each(function () {
         $(this).button("disable");
     });
-    $(".compass-direction").change(function () {
+    $(".compass-direction", search).change(function () {
         var key = $(this).attr("data-key");
         setSelectedDirection(key);
     });
-    $(".compass-direction-edit").button({
+    $(".compass-direction-edit", search).button({
         icons: { primary: "ui-icon-pencil" }
     }).click(function () {
         var key = $(this).attr("data-key");
         selectTreeNode(key);
     });
-    $(".compass-direction-link").click(function (e) {
+    $(".compass-direction-link", search).click(function (e) {
         selectTreeNode($(this).html());
         e.stopPropagation();
     });
-    $(".compassDirection").click(function () {
+    $(".compassDirection", search).click(function () {
         var key = $(this).attr("data-key");
         var option = $(this).attr("data-option");
         $("#" + option).attr("checked", "checked");
         setSelectedDirection(key);
     });
-    $(".compass-direction-create").button({
+    $(".compass-direction-create", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -680,7 +716,7 @@ function initialiseElementEditor() {
             sendAdditionalAction("exits create1 " + to + ";" + directionName + ";" + type);
         }
     });
-    $(".compass-direction-create-look").button({
+    $(".compass-direction-create-look", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -690,26 +726,26 @@ function initialiseElementEditor() {
         var type = direction.attr("data-type");
         sendAdditionalAction("exits createlook " + directionName + ";" + type);
     });
-    $(".exitslist-add").button({
+    $(".exitslist-add", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         addNewElement("object", "exit", null);
     });
-    $(".exitslist-edit").button({
+    $(".exitslist-edit", search).button({
         icons: { primary: "ui-icon-pencil" }
     }).click(function () {
         var key = $(this).attr("data-key");
         var selectElement = $("#exitslist-" + key + " option:selected");
         selectTreeNode(selectElement.val());
     });
-    $(".exitslist-delete").button({
+    $(".exitslist-delete", search).button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
         var key = $(this).attr("data-key");
         var selectElement = $("#exitslist-" + key + " option:selected");
         sendAdditionalAction("exits delete " + selectElement.val());
     });
-    $(".exitslist-moveup").button({
+    $(".exitslist-moveup", search).button({
         icons: { primary: "ui-icon-arrowthick-1-n" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -717,7 +753,7 @@ function initialiseElementEditor() {
         var previous = selectElement.attr("data-previous");
         sendAdditionalAction("exits swap " + selectElement.val() + ";" + previous);
     });
-    $(".exitslist-movedown").button({
+    $(".exitslist-movedown", search).button({
         icons: { primary: "ui-icon-arrowthick-1-s" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -725,7 +761,7 @@ function initialiseElementEditor() {
         var next = selectElement.attr("data-next");
         sendAdditionalAction("exits swap " + selectElement.val() + ";" + next);
     });
-    $(".exitslist").change(function () {
+    $(".exitslist", search).change(function () {
         var editButton = $("#" + $(this).attr("data-key") + "-exit-edit");
         var deleteButton = $("#" + $(this).attr("data-key") + "-exit-delete");
         var moveupButton = $("#" + $(this).attr("data-key") + "-exit-moveup");
@@ -758,24 +794,24 @@ function initialiseElementEditor() {
             }
         }
     });
-    $(".exitslist-edit, .exitslist-delete, .exitslist-moveup, .exitslist-movedown").each(function () {
+    $(".exitslist-edit, .exitslist-delete, .exitslist-moveup, .exitslist-movedown", search).each(function () {
         $(this).button("disable");
     });
-    $(".elementEditorCheckbox").change(function () {
-        sendAdditionalAction("none")
+    $(".elementEditorCheckbox", search).change(function () {
+        sendAdditionalAction("none");
     });
-    $(".elementEditorTextbox").change(function () {
+    $(".elementEditorTextbox", search).change(function () {
         setUnsavedChanges();
     });
-    $(".elementEditorTextbox").keydown(function (e) {
+    $(".elementEditorTextbox", search).keydown(function (e) {
         if (isCharKey(e.keyCode)) {
             setUnsavedChanges();
         }
     });
-    $(".elementEditorDropdown").change(function () {
+    $(".elementEditorDropdown", search).change(function () {
         setUnsavedChanges();
     });
-    $(".verbs-add").button({
+    $(".verbs-add", search).button({
         icons: { primary: "ui-icon-plusthick" }
     }).click(function () {
         var key = $(this).attr("data-key");
@@ -784,7 +820,7 @@ function initialiseElementEditor() {
             sendAdditionalAction("verbs add " + key + ";" + text);
         }, null, null, availableVerbs);
     });
-    $(".verbs-delete").button({
+    $(".verbs-delete", search).button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
         var selected = getSelectedVerbs();
@@ -792,7 +828,7 @@ function initialiseElementEditor() {
             sendAdditionalAction("verbs delete " + selected);
         }
     });
-    $(".verbs-select").click(function () {
+    $(".verbs-select", search).click(function () {
         var selected = getSelectedVerbs();
         if (selected.length > 0) {
             $(".verbs-delete").button("enable");
@@ -801,8 +837,8 @@ function initialiseElementEditor() {
             $(".verbs-delete").button("disable");
         }
     });
-    $(".verbs-delete").button("disable");
-    $(".file-upload").button({
+    $(".verbs-delete", search).button("disable");
+    $(".file-upload", search).button({
         icons: { primary: "ui-icon-folder-open" }
     }).click(function () {
         var element = $("#_key").val();
@@ -812,14 +848,14 @@ function initialiseElementEditor() {
         $("#dialog-upload").attr("data-key", key);
         $("#dialog-upload").dialog("open");
     });
-    $(".img-preview").button().click(function () {
+    $(".img-preview", search).button().click(function () {
         var key = $(this).attr("data-key");
         var imgFile = $('#' + key).val();
         $('#imgPreviewElem').attr("src", "/ImageProcessor.ashx?image=" + imgFile + "&w=500&h=350&gameId=" + $("#_game_id").val());
         $('#dialog-imgPreview').dialog("open");
     });
 
-    $("#button-move").button({
+    $("#button-move", search).button({
         icons: { primary: "ui-icon-extlink" }
     }).click(function () {
         var possibleParents = $("#_movePossibleParents").val().split(";");
@@ -827,24 +863,24 @@ function initialiseElementEditor() {
             toplevelAdditionalAction("main move " + parent);
         }, possibleParents, "Move to");
     });
-    $("#button-delete").button({
+    $("#button-delete", search).button({
         icons: { primary: "ui-icon-trash" }
     }).click(function () {
         toplevelAdditionalAction("main delete");
     });
-    $("#button-publish").button({
+    $("#button-publish", search).button({
         icons: { primary: "ui-icon-circle-arrow-n" }
     }).click(function () {
         var url = "/Edit/Publish/" + $("#_game_id").val();
         window.open(url, "WebEditorPublish");
         toplevelAdditionalAction("main publish");
     });
-    $(".elementLink").click(function () {
+    $(".elementLink", search).click(function () {
         var element = $(this).text();
         selectTreeNode(element);
     });
 
-    $(".text-processor-helper").button().click(function () {
+    $(".text-processor-helper", search).button().click(function () {
         var source = $(this).data("source");
         var insertBefore = $(this).data("insertbefore");
         var insertAfter = $(this).data("insertafter");
@@ -870,7 +906,7 @@ function initialiseElementEditor() {
             case "images":
                 var extensions = $(this).data("extensions");
                 _fileUploadInit("", "", extensions, "");
-                $("#dialog-upload").data("callback", function(result) {
+                $("#dialog-upload").data("callback", function (result) {
                     doInsert(element, insertBefore + result + insertAfter, "");
                 });
                 $("#dialog-upload").dialog("open");
@@ -883,34 +919,6 @@ function initialiseElementEditor() {
             el.insertAtCaret(before, after);
         }
     });
-
-    var enabledButtons = $("#_enabledButtons").val();
-    updateEnabledButtons(enabledButtons);
-
-    var popupError = $("#_popupError").val();
-    if (popupError.length > 0) {
-        var reload = $("#_reload").val();
-        if (reload == "1") {
-            $("#dialog-error").data("dialog_close", function () {
-                location.reload();
-            });
-        }
-        $("#dialog-error-message").html(popupError);
-        $("#dialog-error").dialog("open");
-    }
-
-    var uiAction = $("#_uiAction").val();
-    if (uiAction.length > 0) {
-        var data = uiAction.split(" ");
-        switch (data[0]) {
-            case "settings":
-                $("#dialog-settings").dialog("open");
-                break;
-            case "codeview":
-                $("#script-codeview-" + data[1]).click();
-                break;
-        }
-    }
 }
 
 //function deinitialiseElementEditor() {
