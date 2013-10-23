@@ -45,6 +45,11 @@ namespace TextAdventures.Quest
 
         private object ReadXmlValue(string type, XElement xml)
         {
+            if (type == null)
+            {
+                type = xml.IsEmpty ? "boolean" : "string";
+            }
+
             IValueLoader loader;
 
             if (m_valueLoaders.TryGetValue(type, out loader))

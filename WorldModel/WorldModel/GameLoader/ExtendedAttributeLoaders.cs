@@ -179,12 +179,8 @@ namespace TextAdventures.Quest
 
                 foreach (var xmlValue in xml.Elements("value"))
                 {
-                    var typeAttribute = xmlValue.Attribute("type");
-                    if (typeAttribute == null)
-                    {
-                        throw new Exception("Type not specified for value " + xmlValue);
-                    }
-                    string type = typeAttribute.Value;
+                    var typeAttr = xmlValue.Attribute("type");
+                    string type = typeAttr != null ? typeAttr.Value : null;
                     var value = GameLoader.ReadXmlValue(type, xmlValue);
 
                     result.Add(value);
@@ -313,7 +309,8 @@ namespace TextAdventures.Quest
 
             protected override void AddResultToDictionary(IDictionary<string, object> dictionary, string key, XElement xmlValue)
             {
-                string type = xmlValue.Attribute("type").Value;
+                var typeAttr = xmlValue.Attribute("type");
+                string type = typeAttr != null ? typeAttr.Value : null;
                 var value = GameLoader.ReadXmlValue(type, xmlValue);
                 dictionary.Add(key, value);
             }
