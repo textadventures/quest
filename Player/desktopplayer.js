@@ -1,4 +1,5 @@
 ﻿var webPlayer = false;
+var canSendCommand = true;
 
 function sendCommand(text, metadata) {
     markScrollPosition();
