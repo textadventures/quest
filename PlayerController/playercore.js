@@ -297,6 +297,8 @@ function panesVisible(visible) {
         $("#updating").css("margin-left", (screenWidth / 2 - 290) + "px");
         $("#gamePanel").width(screenWidth - 250);
         $("#gridPanel").width(screenWidth - 250);
+        $("#gridCanvas").prop("width", screenWidth - 250);
+        paper.view.viewSize.width = screenWidth - 250;
         var css = addCSSRule("div#gamePanel img");
         css.style.maxWidth = (screenWidth - 250) + "px";
         var css = addCSSRule("div#divOutput img");
@@ -309,6 +311,8 @@ function panesVisible(visible) {
         $("#updating").css("margin-left", (screenWidth / 2 - 70) + "px");
         $("#gamePanel").width(screenWidth - 40);
         $("#gridPanel").width(screenWidth - 40);
+        $("#gridCanvas").prop("width", screenWidth - 40);
+        paper.view.viewSize.width = screenWidth - 40;
         var css = addCSSRule("div#gamePanel img");
         css.style.maxWidth = (screenWidth - 40) + "px";
         var css = addCSSRule("div#divOutput img");
@@ -999,6 +1003,8 @@ function ShowGrid(height) {
     _showGrid = (height > 0);
     $("#gridPanel").show();
     $("#gridPanel").height(height);
+    $("#gridCanvas").prop("height", height);
+    paper.view.viewSize.height = height;
     $("#gamePanelSpacer").height(height);
 }
 

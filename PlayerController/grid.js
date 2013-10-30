@@ -107,10 +107,8 @@ function onFrame(event) {
             playerDestination = null;
 
             var playerPositionAbsolute = player.position - offset;
-            var offsetDestinationX = ($("#gridPanel").width() / 2) - playerPositionAbsolute.x;
-            var offsetDestinationY = ($("#gridPanel").height() / 2) - playerPositionAbsolute.y;
+            offsetDestination = paper.view.center - playerPositionAbsolute;
 
-            offsetDestination = new Point(offsetDestinationX, offsetDestinationY);
             offsetVector = (offsetDestination-offset) / 10;
         }
     }
@@ -177,8 +175,8 @@ gridApi.drawBox = function(x, y, z, width, height, border, borderWidth, fill, si
     // if this is the very first room, centre the canvas by updating the offset
     if (firstBox) {
         var centrePoint = gridPoint(x + width / 2, y + height / 2);
-        var offsetX = ($("#gridPanel").width() / 2) - centrePoint.x;
-        var offsetY = ($("#gridPanel").height() / 2) - centrePoint.y;
+        var offsetX = paper.view.center.x - centrePoint.x;
+        var offsetY = paper.view.center.y - centrePoint.y;
         updateOffset(new Point(offsetX, offsetY));
         firstBox = false;
     }
@@ -244,15 +242,14 @@ gridApi.drawPlayer = function(x, y, z, radius, border, borderWidth, fill) {
         allPaths.push(player);
 
         var playerPositionAbsolute = player.position - offset;
-        var offsetDestinationX = ($("#gridPanel").width() / 2) - playerPositionAbsolute.x;
-        var offsetDestinationY = ($("#gridPanel").height() / 2) - playerPositionAbsolute.y;
+        var offsetDestinationX = paper.view.center.x - playerPositionAbsolute.x;
+        var offsetDestinationY = paper.view.center.y - playerPositionAbsolute.y;
 
         offsetDestination = new Point(offsetDestinationX, offsetDestinationY);
         offsetVector = (offsetDestination - offset);
     } else {
         playerDestination = gridPoint(x, y);
         playerVector = (playerDestination - player.position) / 10;
-        paper.view.zoom = 1;
         // move player to the end of the activeLayer so it gets drawn on top
         project.activeLayer.addChild(player);
     }
@@ -299,8 +296,8 @@ gridApi.clearAllLayers = function () {
 
 gridApi.setCentre = function(x, y) {
     var centrePoint = gridPoint(x, y);
-    var offsetX = ($("#gridPanel").width() / 2) - centrePoint.x;
-    var offsetY = ($("#gridPanel").height() / 2) - centrePoint.y;
+    var offsetX = paper.view.center.x - centrePoint.x;
+    var offsetY = paper.view.center.y - centrePoint.y;
     var curOffset = getOffset();
     updateOffset(new Point(offsetX, offsetY));
 };
