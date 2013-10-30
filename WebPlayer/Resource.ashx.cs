@@ -23,6 +23,7 @@ namespace WebPlayer
             m_mimeTypes.Add(".mp3", "audio/mpeg3");
             m_mimeTypes.Add(".ogg", "audio/ogg");
             m_mimeTypes.Add(".js", "application/javascript");
+            m_mimeTypes.Add(".ttf", "application/font-woff");
         }
 
         public void ProcessRequest(HttpContext context)

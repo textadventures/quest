@@ -44,6 +44,8 @@ Public Class CefSchemeHandler
                     mimeType = "image/png"
                 Case ".js"
                     mimeType = "text/javascript"
+                Case ".ttf"
+                    mimeType = "application/font-woff"
                 Case Else
                     Throw New Exception("Unknown MIME type")
             End Select
