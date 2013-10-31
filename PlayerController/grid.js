@@ -8,6 +8,7 @@ var layers = new Array();
 var maxLayer = 3;
 var currentLayer = 0;
 var offset = new Point(0, 0);
+var symbols = new Object();
 
 for (var i = -maxLayer; i <= maxLayer; i++) {
     var layer = new Layer();
@@ -344,6 +345,20 @@ gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, f
     }
 
     customLayerObjects[id] = paths;
+};
+
+gridApi.drawCustomLayerSvg = function (symbol, x, y, width, height) {
+    if (symbol in symbols) {
+        var placedSymbol = symbols[symbol].place();
+        placedSymbol.position = gridPoint(x, y);
+        // TODO: Resize
+    } else {
+        var svg = paper.project.importSVG(symbol);
+        if (svg) {
+            symbols[symbol] = new Symbol(svg);
+            gridApi.drawCustomLayerSvg(symbol, x, y, width, height);
+        }
+    }
 };
 
 gridApi.onLoad();

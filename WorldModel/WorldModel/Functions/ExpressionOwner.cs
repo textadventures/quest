@@ -484,6 +484,12 @@ namespace TextAdventures.Quest.Functions
             return m_worldModel.GetExternalURL(filename);
         }
 
+        public string GetFileData(string filename)
+        {
+            if (filename.Contains("..")) throw new ArgumentOutOfRangeException("Invalid filename");
+            return m_worldModel.GetResourceData(filename);
+        }
+
         public string GetUniqueElementName(string name)
         {
             return m_worldModel.GetUniqueElementName(name);

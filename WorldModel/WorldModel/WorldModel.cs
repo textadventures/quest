@@ -1714,6 +1714,11 @@ namespace TextAdventures.Quest
             return new FileStream(GetExternalPath(filename), FileMode.Open, FileAccess.Read);
         }
 
+        public string GetResourceData(string filename)
+        {
+            return File.ReadAllText(GetExternalPath(filename));
+        }
+
         public string GetResourcePath(string filename)
         {
             return TryGetExternalPath(filename);
