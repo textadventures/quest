@@ -34,6 +34,23 @@ namespace TextAdventures.Quest
         private string m_fontSizeOverride = "";
         private string m_textBuffer = "";
 
+        private static readonly Dictionary<string, string> s_mimeTypes = new Dictionary<string, string>();
+
+        static PlayerHelper()
+        {
+            s_mimeTypes.Add(".jpg", "image/jpeg");
+            s_mimeTypes.Add(".jpeg", "image/jpeg");
+            s_mimeTypes.Add(".gif", "image/gif");
+            s_mimeTypes.Add(".bmp", "image/bmp");
+            s_mimeTypes.Add(".png", "image/png");
+            s_mimeTypes.Add(".wav", "audio/wav");
+            s_mimeTypes.Add(".mp3", "audio/mpeg3");
+            s_mimeTypes.Add(".ogg", "audio/ogg");
+            s_mimeTypes.Add(".js", "application/javascript");
+            s_mimeTypes.Add(".ttf", "application/font-woff");
+            s_mimeTypes.Add(".svg", "image/svg+xml");
+        }
+
         public PlayerHelper(IASL game, IPlayerHelperUI playerUI)
         {
             UseGameColours = true;
@@ -480,6 +497,12 @@ namespace TextAdventures.Quest
             }
 
             return result;
+        }
+
+        public static string GetContentType(string filename)
+        {
+            string result;
+            return s_mimeTypes.TryGetValue(Path.GetExtension(filename).ToLower(), out result) ? result : "";
         }
     }
 }

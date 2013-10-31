@@ -33,22 +33,7 @@ Public Class CefSchemeHandler
         stream = _parent.Parent.CurrentGame.GetResource(filename)
 
         If (stream IsNot Nothing) Then
-            Select Case Path.GetExtension(filename).ToLowerInvariant()
-                Case ".jpg", ".jpeg"
-                    mimeType = "image/jpeg"
-                Case ".gif"
-                    mimeType = "image/gif"
-                Case ".bmp"
-                    mimeType = "image/bmp"
-                Case ".png"
-                    mimeType = "image/png"
-                Case ".js"
-                    mimeType = "text/javascript"
-                Case ".ttf"
-                    mimeType = "application/font-woff"
-                Case Else
-                    Throw New Exception("Unknown MIME type")
-            End Select
+            mimeType = PlayerHelper.GetContentType(filename)
             Return True
         End If
 
