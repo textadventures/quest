@@ -350,8 +350,9 @@ gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, f
 gridApi.drawCustomLayerSvg = function (symbol, x, y, width, height) {
     if (symbol in symbols) {
         var placedSymbol = symbols[symbol].place();
-        placedSymbol.position = gridPoint(x, y);
-        // TODO: Resize
+        placedSymbol.scale(gridX.x * width / placedSymbol.bounds.width, gridY.y * height / placedSymbol.bounds.height);
+        placedSymbol.position = gridPoint(x, y) + placedSymbol.bounds.size / 2;
+        addPathToCurrentLayerList(placedSymbol);
     } else {
         var svg = paper.project.importSVG(symbol);
         if (svg) {
