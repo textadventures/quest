@@ -209,6 +209,10 @@
     JS.Grid_DrawSquare(id, x, y, width, height, text, fill)
   </function>
 
+  <function name="Grid_LoadSvg" parameters="data, id">
+    JS.Grid_LoadSvg(data, id)
+  </function>
+
   <function name="Grid_DrawSvg" parameters="symbol, x, y, width, height">
     JS.Grid_DrawSvg(symbol, x, y, width, height)
   </function>

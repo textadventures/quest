@@ -1081,6 +1081,11 @@ function Grid_DrawSquare(id, x, y, width, height, text, fill) {
     gridApi.drawCustomLayerSquare(id, parseInt(x), parseInt(y), parseInt(width), parseInt(height), text, fill);
 }
 
+function Grid_LoadSvg(data, id) {
+    if (!_canvasSupported) return;
+    gridApi.loadSvg(data, id);
+}
+
 function Grid_DrawSvg(symbol, x, y, width, height) {
     if (!_canvasSupported) return;
     gridApi.drawCustomLayerSvg(symbol, parseInt(x), parseInt(y), parseInt(width), parseInt(height));
