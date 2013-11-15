@@ -1086,9 +1086,9 @@ function Grid_LoadSvg(data, id) {
     gridApi.loadSvg(data, id);
 }
 
-function Grid_DrawSvg(symbol, x, y, width, height) {
+function Grid_DrawSvg(id, symbolId, x, y, width, height) {
     if (!_canvasSupported) return;
-    gridApi.drawCustomLayerSvg(symbol, parseInt(x), parseInt(y), parseInt(width), parseInt(height));
+    gridApi.drawCustomLayerSvg(id, symbolId, parseInt(x), parseInt(y), parseInt(width), parseInt(height));
 }
 
 // JQUERY.MOUSEWEHEEL.JS ****************************************************************************************************************

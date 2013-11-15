@@ -4,6 +4,7 @@ var offsetVector, offsetDestination;
 var allPaths = new Array();
 var customLayerPaths = new Array();
 var customLayerObjects = {};
+var customLayerSvg = {};
 var layers = new Array();
 var maxLayer = 3;
 var currentLayer = 0;
@@ -354,12 +355,14 @@ gridApi.loadSvg = function (data, id) {
     }
 };
 
-gridApi.drawCustomLayerSvg = function (symbol, x, y, width, height) {
-    if (symbol in symbols) {
-        var placedSymbol = symbols[symbol].place();
+gridApi.drawCustomLayerSvg = function (id, symbolId, x, y, width, height) {
+    if (symbolId in symbols) {
+        var existing = customLayerSvg[id];
+        var placedSymbol = existing ? existing : symbols[symbolId].place();
         placedSymbol.scale(gridX.x * width / placedSymbol.bounds.width, gridY.y * height / placedSymbol.bounds.height);
         placedSymbol.position = gridPoint(x, y) + placedSymbol.bounds.size / 2;
         addPathToCurrentLayerList(placedSymbol);
+        customLayerSvg[id] = placedSymbol;
     }
 };
 

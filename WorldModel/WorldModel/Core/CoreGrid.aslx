@@ -213,8 +213,8 @@
     JS.Grid_LoadSvg(data, id)
   </function>
 
-  <function name="Grid_DrawSvg" parameters="symbol, x, y, width, height">
-    JS.Grid_DrawSvg(symbol, x, y, width, height)
+  <function name="Grid_DrawSvg" parameters="id, symbolid, x, y, width, height">
+    JS.Grid_DrawSvg(id, symbolid, x, y, width, height)
   </function>
 
   <function name="JS_GridSquareClick" parameters="parameterstring">
