@@ -224,6 +224,32 @@ gridApi.drawLine = function(x1, y1, x2, y2, border, borderWidth) {
     addPathToCurrentLayerList(path);
 };
 
+gridApi.drawArrow = function (id, x1, y1, x2, y2, border, borderWidth) {
+    clearExistingObject(id);
+    
+    var linePath = new Path;
+    var start = gridPoint(x1, y1);
+    var end = gridPoint(x2, y2);
+    linePath.strokeColor = border;
+    linePath.strokeWidth = borderWidth;
+    linePath.add(start);
+    linePath.add(end);
+    addPathToCurrentLayerList(linePath);
+
+    var vector = end - start;
+    var arrowVector = vector.normalize(10);
+    var arrowheadPath = new Path([
+        end + arrowVector.rotate(150),
+        end,
+        end + arrowVector.rotate(-150)
+    ]);
+    arrowheadPath.strokeColor = border;
+    arrowheadPath.strokeWidth = borderWidth;
+    addPathToCurrentLayerList(arrowheadPath);
+
+    customLayerObjects[id] = [linePath, arrowheadPath];
+};
+
 function addPathToCurrentLayerList(path) {
     if (project.activeLayer == customLayer) {
         customLayerPaths.push(path);
@@ -315,7 +341,7 @@ gridApi.drawCustomLayerSquare = function(id, x, y, width, height, text, fill) {
     gridApi.drawCustomLayerObject(id, points, text, textPoint, fill, fill);
 };
 
-gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, fill) {
+function clearExistingObject(id) {
     var existing = customLayerObjects[id];
     if (existing) {
         for (var idx in existing) {
@@ -324,6 +350,10 @@ gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, f
             path.visible = false;
         }
     }
+}
+
+gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, fill) {
+    clearExistingObject(id);
 
     var paths = new Array();
     path = new Path();

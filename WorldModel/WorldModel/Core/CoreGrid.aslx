@@ -197,6 +197,10 @@
     JS.Grid_DrawLine(x1, y1, x2, y2, border, borderWidth)
   </function>
 
+  <function name="Grid_DrawArrow" parameters="id, x1, y1, x2, y2, border, borderWidth">
+    JS.Grid_DrawArrow(id, x1, y1, x2, y2, border, borderWidth)
+  </function>
+
   <function name="Grid_DrawGridLines" parameters="x1, y1, x2, y2, border">
     JS.Grid_DrawGridLines(x1, y1, x2, y2, border)
   </function>

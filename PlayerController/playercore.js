@@ -1046,6 +1046,11 @@ function Grid_DrawLine(x1, y1, x2, y2, border, borderWidth) {
     gridApi.drawLine(parseFloat(x1), parseFloat(y1), parseFloat(x2), parseFloat(y2), border, parseInt(borderWidth));
 }
 
+function Grid_DrawArrow(id, x1, y1, x2, y2, border, borderWidth) {
+    if (!_canvasSupported) return;
+    gridApi.drawArrow(id, parseFloat(x1), parseFloat(y1), parseFloat(x2), parseFloat(y2), border, parseInt(borderWidth));
+}
+
 function Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill) {
     if (!_canvasSupported) return;
     gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(radius), border, parseInt(borderWidth), fill);
