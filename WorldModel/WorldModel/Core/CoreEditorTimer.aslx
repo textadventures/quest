@@ -2,25 +2,25 @@
   <editor name="_TimerEditor">
     <appliesto>timer</appliesto>
     <tab>
-      <caption>Timer</caption>
+      <caption>[EditorTimerTimer]</caption>
 
       <control>
         <controltype>checkbox</controltype>
         <attribute>enabled</attribute>
-        <caption>Start timer when the game begins</caption>
+        <caption>[EditorTimerStarttimer]</caption>
       </control>
 
       <control>
         <controltype>number</controltype>
         <attribute>interval</attribute>
-        <caption>Interval (sec)</caption>
+        <caption>[EditorTimerIntervalsec]</caption>
         <minimum>1</minimum>
       </control>
 
       <control>
         <controltype>script</controltype>
         <attribute>script</attribute>
-        <caption>Script</caption>
+        <caption>[EditorTimerScript]</caption>
       </control>
     </tab>
   </editor>

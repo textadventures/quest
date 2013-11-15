@@ -2,12 +2,12 @@
   <editor>
     <appliesto>javascript</appliesto>
     <tab>
-      <caption>Javascript</caption>
+      <caption>[EditorJavascriptJavascript]</caption>
 
       <control>
         <controltype>file</controltype>
         <attribute>src</attribute>
-        <caption>Filename</caption>
+        <caption>[EditorJavascriptFilename]</caption>
         <source>*.js</source>
         <width>300</width>
         <filefiltername>Javascript Files</filefiltername>

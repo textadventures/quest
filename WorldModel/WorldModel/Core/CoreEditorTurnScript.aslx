@@ -2,24 +2,24 @@
   <editor name="_TurnScriptEditor">
     <appliesto>turnscript</appliesto>
     <tab>
-      <caption>Turn Script</caption>
+      <caption>[EditorTurnScriptTurnScript]</caption>
 
       <control>
         <controltype>textbox</controltype>
         <attribute>name</attribute>
-        <caption>Name</caption>
+        <caption>[EditorTurnScriptName]</caption>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
         <attribute>enabled</attribute>
-        <caption>Enabled when the game begins</caption>
+        <caption>[EditorTurnScriptEnabledwhen]</caption>
       </control>
 
       <control>
         <controltype>script</controltype>
         <attribute>script</attribute>
-        <caption>Script</caption>
+        <caption>[EditorTurnScriptScript]</caption>
       </control>
     </tab>
   </editor>

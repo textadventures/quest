@@ -1,18 +1,18 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Use/Give</caption>
+    <caption>[EditorObjectUseGiveUse/Give]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_usegive</onlydisplayif>
 
     <control>
       <controltype>title</controltype>
-      <caption>Use (on its own)</caption>
+      <caption>[EditorObjectUseGiveUseonitsown]</caption>
     </control>
 
     <control>
       <controltype>multi</controltype>
-      <caption>Action</caption>
+      <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>use</attribute>
       <types>
         boolean=Default behaviour;script=Run script
@@ -23,13 +23,13 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>usemenuprompt</attribute>
-      <caption>Menu caption (leave blank for default)</caption>
+      <caption>[EditorObjectUseGiveMenucaption]</caption>
       <onlydisplayif>GetBoolean(this, "use")</onlydisplayif>
     </control>
 
     <control>
       <controltype>title</controltype>
-      <caption>Use (other object) on this</caption>
+      <caption>[EditorObjectUseGiveUseotherobject]</caption>
     </control>
 
     <control>
@@ -46,7 +46,7 @@
 
     <control>
       <controltype>script</controltype>
-      <caption>Use any other object on this</caption>
+      <caption>[EditorObjectUseGiveUseanyother]</caption>
       <attribute>useanything</attribute>
       <onlydisplayif>TypeOf(this, "useon") = "scriptdictionary"</onlydisplayif>
       <advanced/>
@@ -54,13 +54,13 @@
 
     <control>
       <controltype>title</controltype>
-      <caption>Use this on (other object)</caption>
+      <caption>[EditorObjectUseGiveUsethisonother]</caption>
       <advanced/>
     </control>
 
     <control>
       <controltype>multi</controltype>
-      <caption>Action</caption>
+      <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>selfuseon</attribute>
       <types>
         null=None;scriptdictionary=Handle objects individually;string=Print a message
@@ -73,7 +73,7 @@
 
     <control>
       <controltype>script</controltype>
-      <caption>Use on any other object</caption>
+      <caption>[EditorObjectUseGiveUseonanyother]</caption>
       <attribute>selfuseanything</attribute>
       <onlydisplayif>TypeOf(this, "selfuseon") = "scriptdictionary"</onlydisplayif>
       <advanced/>
@@ -81,12 +81,12 @@
 
     <control>
       <controltype>title</controltype>
-      <caption>Give (on its own)</caption>
+      <caption>[EditorObjectUseGiveGiveonits]</caption>
     </control>
 
     <control>
       <controltype>multi</controltype>
-      <caption>Action</caption>
+      <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>givesingle</attribute>
       <types>
         boolean=Default behaviour;script=Run script
@@ -97,18 +97,18 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>givemenuprompt</attribute>
-      <caption>Menu caption (leave blank for default)</caption>
+      <caption>[EditorObjectUseGiveMenucaption]</caption>
       <onlydisplayif>GetBoolean(this, "givesingle")</onlydisplayif>
     </control>
 
     <control>
       <controltype>title</controltype>
-      <caption>Give (other object) to this</caption>
+      <caption>[EditorObjectUseGiveGiveother]</caption>
     </control>
 
     <control>
       <controltype>multi</controltype>
-      <caption>Action</caption>
+      <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>give</attribute>
       <types>
         null=None;scriptdictionary=Handle objects individually;string=Print a message
@@ -120,7 +120,7 @@
 
     <control>
       <controltype>script</controltype>
-      <caption>Give any other object to this</caption>
+      <caption>[EditorObjectUseGiveGiveanyother]</caption>
       <attribute>giveanything</attribute>
       <onlydisplayif>TypeOf(this, "give") = "scriptdictionary"</onlydisplayif>
       <advanced/>
@@ -128,13 +128,13 @@
 
     <control>
       <controltype>title</controltype>
-      <caption>Give this to (other object)</caption>
+      <caption>[EditorObjectUseGiveGivethisto]</caption>
       <advanced/>
     </control>
 
     <control>
       <controltype>multi</controltype>
-      <caption>Action</caption>
+      <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>giveto</attribute>
       <types>
         null=None;scriptdictionary=Handle objects individually;string=Print a message
@@ -147,7 +147,7 @@
 
     <control>
       <controltype>script</controltype>
-      <caption>Give to any other object</caption>
+      <caption>[EditorObjectUseGiveGivetoanyother]</caption>
       <attribute>givetoanything</attribute>
       <onlydisplayif>TypeOf(this, "giveto") = "scriptdictionary"</onlydisplayif>
       <advanced/>

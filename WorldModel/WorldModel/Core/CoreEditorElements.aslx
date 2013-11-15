@@ -3,7 +3,7 @@
   <editor>
     <appliesto>_objects</appliesto>
     <tab>
-      <caption>Objects</caption>
+      <caption>[EditorElementsObjects]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -18,7 +18,7 @@
   <editor>
     <appliesto>_gameCommands</appliesto>
     <tab>
-      <caption>Commands</caption>
+      <caption>[EditorElementsCommands]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -34,7 +34,7 @@
   <editor>
     <appliesto>_gameVerbs</appliesto>
     <tab>
-      <caption>Verbs</caption>
+      <caption>[EditorElementsVerbs]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -50,7 +50,7 @@
   <editor>
     <appliesto>_functions</appliesto>
     <tab>
-      <caption>Functions</caption>
+      <caption>[EditorElementsFunctions]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -64,7 +64,7 @@
   <editor>
     <appliesto>_walkthrough</appliesto>
     <tab>
-      <caption>Walkthrough</caption>
+      <caption>[EditorElementsWalkthrough]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -78,7 +78,7 @@
   <editor>
     <appliesto>_include</appliesto>
     <tab>
-      <caption>Included Libraries</caption>
+      <caption>[EditorElementsIncludedLibraries]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -92,7 +92,7 @@
   <editor>
     <appliesto>_implied</appliesto>
     <tab>
-      <caption>Implied Types</caption>
+      <caption>[EditorElementsImpliedTypes]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -106,7 +106,7 @@
   <editor>
     <appliesto>_template</appliesto>
     <tab>
-      <caption>Templates</caption>
+      <caption>[EditorElementsTemplates]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -120,7 +120,7 @@
   <editor>
     <appliesto>_dynamictemplate</appliesto>
     <tab>
-      <caption>Dynamic Templates</caption>
+      <caption>[EditorElementsDynamicTemplates]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -134,7 +134,7 @@
   <editor>
     <appliesto>_delegate</appliesto>
     <tab>
-      <caption>Delegates</caption>
+      <caption>[EditorElementsDelegates]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -148,7 +148,7 @@
   <editor>
     <appliesto>_objecttype</appliesto>
     <tab>
-      <caption>Object Types</caption>
+      <caption>[EditorElementsObjectTypes]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -162,7 +162,7 @@
   <editor>
     <appliesto>_editor</appliesto>
     <tab>
-      <caption>Editors</caption>
+      <caption>[EditorElementsEditors]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -176,7 +176,7 @@
   <editor>
     <appliesto>_javascript</appliesto>
     <tab>
-      <caption>Javascript</caption>
+      <caption>[EditorElementsJavascript]</caption>
 
       <control>
         <controltype>elementslist</controltype>
@@ -190,7 +190,7 @@
   <editor>
     <appliesto>_timers</appliesto>
     <tab>
-      <caption>Timers</caption>
+      <caption>[EditorElementsTimers]</caption>
 
       <control>
         <controltype>elementslist</controltype>

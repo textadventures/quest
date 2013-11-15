@@ -9,7 +9,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Show custom drawing layer</caption>
+      <caption>[EditorScriptsDrawingShowcustom]</caption>
     </control>
 
     <control>
@@ -29,7 +29,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Clear custom drawing layer</caption>
+      <caption>[EditorScriptsDrawingClearcustom]</caption>
     </control>
   </editor>
 
@@ -43,7 +43,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Draw line from X1</caption>
+      <caption>[EditorScriptsDrawingDrawlinefrom]</caption>
     </control>
 
     <control>
@@ -55,7 +55,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y1</caption>
+      <caption>[EditorScriptsDrawing,Y1]</caption>
     </control>
 
     <control>
@@ -67,7 +67,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>to X2</caption>
+      <caption>[EditorScriptsDrawingtoX2]</caption>
       <breakbefore/>
     </control>
 
@@ -80,7 +80,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y2</caption>
+      <caption>[EditorScriptsDrawing,Y2]</caption>
     </control>
 
     <control>
@@ -92,7 +92,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Colour</caption>
+      <caption>[EditorScriptsDrawingColour]</caption>
       <breakbefore/>
     </control>
 
@@ -107,7 +107,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Border width</caption>
+      <caption>[EditorScriptsDrawingBorderwidth]</caption>
     </control>
 
     <control>
@@ -129,7 +129,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Draw grid lines from X1</caption>
+      <caption>[EditorScriptsDrawingDrawgridlines]</caption>
     </control>
 
     <control>
@@ -141,7 +141,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y1</caption>
+      <caption>[EditorScriptsDrawing,Y1]</caption>
     </control>
 
     <control>
@@ -153,7 +153,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>to X2</caption>
+      <caption>[EditorScriptsDrawingtoX2]</caption>
       <breakbefore/>
     </control>
 
@@ -166,7 +166,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y2</caption>
+      <caption>[EditorScriptsDrawing,Y2]</caption>
     </control>
 
     <control>
@@ -178,7 +178,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Colour</caption>
+      <caption>[EditorScriptsDrawingColour]</caption>
       <breakbefore/>
     </control>
 
@@ -203,7 +203,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Center custom layer at X</caption>
+      <caption>[EditorScriptsDrawingCentercustom]</caption>
     </control>
 
     <control>
@@ -215,7 +215,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y</caption>
+      <caption>[EditorScriptsDrawing,Y]</caption>
     </control>
 
     <control>
@@ -236,7 +236,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Draw custom layer grid square with ID</caption>
+      <caption>[EditorScriptsDrawingDrawcustom]</caption>
     </control>
 
     <control>
@@ -247,7 +247,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>at X</caption>
+      <caption>[EditorScriptsDrawingatX]</caption>
     </control>
 
     <control>
@@ -259,7 +259,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y</caption>
+      <caption>[EditorScriptsDrawing,Y]</caption>
     </control>
 
     <control>
@@ -271,7 +271,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>width</caption>
+      <caption>[EditorScriptsDrawingwidth]</caption>
     </control>
 
     <control>
@@ -283,7 +283,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>height</caption>
+      <caption>[EditorScriptsDrawingheight]</caption>
     </control>
 
     <control>
@@ -295,7 +295,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Label</caption>
+      <caption>[EditorScriptsDrawingLabel]</caption>
       <breakbefore/>
     </control>
 
@@ -307,7 +307,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Colour</caption>
+      <caption>[EditorScriptsDrawingColour]</caption>
     </control>
 
     <control>

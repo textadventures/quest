@@ -9,7 +9,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Enable timer</caption>
+      <caption>[EditorScriptsTimersEnabletimer]</caption>
     </control>
 
     <control>
@@ -31,7 +31,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Disable timer</caption>
+      <caption>[EditorScriptsTimersDisabletimer]</caption>
     </control>
 
     <control>
@@ -53,7 +53,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set timer</caption>
+      <caption>[EditorScriptsTimersSettimer]</caption>
     </control>
 
     <control>
@@ -66,7 +66,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>interval to</caption>
+      <caption>[EditorScriptsTimersintervalto]</caption>
     </control>
 
     <control>
@@ -78,7 +78,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>seconds</caption>
+      <caption>[EditorScriptsTimersseconds]</caption>
     </control>
 
   </editor>
@@ -93,7 +93,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set timer</caption>
+      <caption>[EditorScriptsTimersSettimer]</caption>
     </control>
 
     <control>
@@ -106,7 +106,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>script to</caption>
+      <caption>[EditorScriptsTimersscriptto]</caption>
     </control>
 
     <control>
@@ -125,7 +125,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>After</caption>
+      <caption>[EditorScriptsTimersAfter]</caption>
     </control>
 
     <control>
@@ -137,13 +137,13 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>seconds</caption>
+      <caption>[EditorScriptsTimersseconds]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsTimersRunscript]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -158,7 +158,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>After</caption>
+      <caption>[EditorScriptsTimersAfter]</caption>
     </control>
 
     <control>
@@ -170,19 +170,19 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>seconds</caption>
+      <caption>[EditorScriptsTimersseconds]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsTimersRunscript]</caption>
       <breakbefore/>
     </control>
   
     <control>
       <controltype>label</controltype>
-      <caption>Name:</caption>
+      <caption>[EditorScriptsTimersName]</caption>
       <breakbefore/>
     </control>
 
@@ -203,7 +203,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Pause for</caption>
+      <caption>[EditorScriptsTimersPausefor]</caption>
     </control>
 
     <control>
@@ -215,7 +215,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>seconds</caption>
+      <caption>[EditorScriptsTimersseconds]</caption>
     </control>
   </editor>
 
@@ -229,7 +229,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Create timer</caption>
+      <caption>[EditorScriptsTimersCreatetimer]</caption>
     </control>
 
     <control>

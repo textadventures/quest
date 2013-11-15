@@ -9,7 +9,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Print</caption>
+      <caption>[EditorScriptsOutputPrint]</caption>
     </control>
 
     <control>
@@ -31,7 +31,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Print (no line-break)</caption>
+      <caption>[EditorScriptsOutputPrintnolinebreak]</caption>
     </control>
 
     <control>
@@ -52,7 +52,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Show picture</caption>
+      <caption>[EditorScriptsOutputShowpicture]</caption>
     </control>
 
     <control>
@@ -77,7 +77,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set frame picture</caption>
+      <caption>[EditorScriptsOutputSetframepicture]</caption>
     </control>
 
     <control>
@@ -103,7 +103,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Clear frame picture</caption>
+      <caption>[EditorScriptsOutputClearframe]</caption>
     </control>
   </editor>
 
@@ -116,7 +116,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Clear the screen</caption>
+      <caption>[EditorScriptsOutputClearthescreen]</caption>
     </control>
   </editor>
 
@@ -131,7 +131,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Clear the previous turn</caption>
+      <caption>[EditorScriptsOutputCleartheprevious]</caption>
     </control>
   </editor>
 
@@ -144,7 +144,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Change the foreground colour to</caption>
+      <caption>[EditorScriptsOutputChangetheforeground]</caption>
     </control>
 
     <control>
@@ -166,7 +166,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Change the background colour to</caption>
+      <caption>[EditorScriptsOutputChangethebackground]</caption>
     </control>
 
     <control>
@@ -188,7 +188,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Change the font to</caption>
+      <caption>[EditorScriptsOutputChangethefont]</caption>
     </control>
 
     <control>
@@ -210,7 +210,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Change the font to</caption>
+      <caption>[EditorScriptsOutputChangethefont2]</caption>
     </control>
 
     <control>
@@ -232,7 +232,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Change the font size to</caption>
+      <caption>[EditorScriptsOutputChangethefont3]</caption>
     </control>
 
     <control>
@@ -253,7 +253,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Print (centered)</caption>
+      <caption>[EditorScriptsOutputPrintcentered]</caption>
     </control>
 
     <control>
@@ -274,7 +274,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Play sound</caption>
+      <caption>[EditorScriptsOutputPlaysound]</caption>
     </control>
 
     <control>
@@ -288,7 +288,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Wait for sound to finish before continuing:</caption>
+      <caption>[EditorScriptsOutputWaitforsound]</caption>
       <breakbefore/>
     </control>
 
@@ -300,7 +300,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Loop:</caption>
+      <caption>[EditorScriptsOutputLoop]</caption>
       <breakbefore/>
     </control>
 
@@ -322,7 +322,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Stop sound</caption>
+      <caption>[EditorScriptsOutputStopsound]</caption>
     </control>
   </editor>
 
@@ -335,7 +335,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Play YouTube video</caption>
+      <caption>[EditorScriptsOutputPlayYouTube]</caption>
     </control>
 
     <control>
@@ -354,7 +354,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Play Vimeo video</caption>
+      <caption>[EditorScriptsOutputPlayVimeovideo]</caption>
     </control>
 
     <control>
@@ -374,7 +374,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Display link</caption>
+      <caption>[EditorScriptsOutputDisplaylink]</caption>
     </control>
     
     <control>
@@ -386,7 +386,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>http://</caption>
+      <caption>[EditorScriptsOutputhttp//]</caption>
       <breakbefore/>
     </control>
 
@@ -399,7 +399,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Use HTTPS:</caption>
+      <caption>[EditorScriptsOutputUseHTTPS]</caption>
       <breakbefore/>
     </control>
 
@@ -420,7 +420,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Display link</caption>
+      <caption>[EditorScriptsOutputDisplaylink]</caption>
     </control>
 
     <control>
@@ -432,7 +432,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Email address:</caption>
+      <caption>[EditorScriptsOutputEmailaddress]</caption>
       <breakbefore/>
     </control>
 
@@ -454,7 +454,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Print list</caption>
+      <caption>[EditorScriptsOutputPrintlist]</caption>
     </control>
 
     <control>
@@ -464,7 +464,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Numbered:</caption>
+      <caption>[EditorScriptsOutputNumbered]</caption>
     </control>
 
     <control>
@@ -481,7 +481,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Wait for key press</caption>
+      <caption>[EditorScriptsOutputWaitforkey]</caption>
     </control>
   </editor>
 
@@ -496,13 +496,13 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Wait for key press, then</caption>
+      <caption>[EditorScriptsOutputWaitforkey2]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>0</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsOutputRunscript]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -518,13 +518,13 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Get input, then</caption>
+      <caption>[EditorScriptsOutputGetinput,then]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>0</attribute>
-      <caption>run script:</caption>
+      <caption>[EditorScriptsOutputrunscript]</caption>
     </control>
   </editor>
 
@@ -539,13 +539,13 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Get input, then</caption>
+      <caption>[EditorScriptsOutputGetinput,then]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>run script:</caption>
+      <caption>[EditorScriptsOutputrunscript]</caption>
     </control>
   </editor>
 
@@ -557,7 +557,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Show menu with caption</caption>
+      <caption>[EditorScriptsOutputShowmenuwith]</caption>
     </control>
 
     <control>
@@ -569,7 +569,7 @@
     <control>
       <breakbefore/>
       <controltype>label</controltype>
-      <caption>Options from list/dictionary:</caption>
+      <caption>[EditorScriptsOutputOptionsfrom]</caption>
     </control>
 
     <control>
@@ -579,7 +579,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Allow player to cancel:</caption>
+      <caption>[EditorScriptsOutputAllowplayer]</caption>
       <breakbefore/>
     </control>
 
@@ -592,7 +592,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>3</attribute>
-      <caption>After choosing, run script:</caption>
+      <caption>[EditorScriptsOutputAfterchoosing,]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -607,7 +607,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Show menu with caption</caption>
+      <caption>[EditorScriptsOutputShowmenuwith]</caption>
     </control>
 
     <control>
@@ -619,7 +619,7 @@
     <control>
       <breakbefore/>
       <controltype>label</controltype>
-      <caption>Options from list/dictionary:</caption>
+      <caption>[EditorScriptsOutputOptionsfrom]</caption>
     </control>
 
     <control>
@@ -629,7 +629,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Allow player to ignore the menu:</caption>
+      <caption>[EditorScriptsOutputAllowplayer]</caption>
       <breakbefore/>
     </control>
 
@@ -642,7 +642,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>After choosing, run script:</caption>
+      <caption>[EditorScriptsOutputAfterchoosing,]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -655,7 +655,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Ask question</caption>
+      <caption>[EditorScriptsOutputAskquestion]</caption>
     </control>
 
     <control>
@@ -667,7 +667,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>1</attribute>
-      <caption>After choosing, run script:</caption>
+      <caption>[EditorScriptsOutputAfterchoosing,]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -683,7 +683,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Ask question</caption>
+      <caption>[EditorScriptsOutputAskquestion]</caption>
     </control>
 
     <control>
@@ -695,7 +695,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>After choosing, run script:</caption>
+      <caption>[EditorScriptsOutputAfterchoosing,]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -708,7 +708,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Insert HTML from</caption>
+      <caption>[EditorScriptsOutputInsertHTML]</caption>
     </control>
 
     <control>
@@ -732,7 +732,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Log</caption>
+      <caption>[EditorScriptsOutputLog]</caption>
     </control>
 
     <control>
@@ -749,19 +749,19 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Raise UI request</caption>
+      <caption>[EditorScriptsOutputRaiseUIrequest]</caption>
     </control>
 
     <control>
       <controltype>dropdown</controltype>
       <validvalues type="simplestringlist">Quit;UpdateLocation;GameName;FontName;FontSize;Background;Foreground;LinkForeground;RunScript;SetStatus;ClearScreen;PanesVisible;ShowPicture;Show;Hide;SetCompassDirections;Pause;Wait;SetInterfaceString;RequestSave;SetPanelContents;Log;Speak</validvalues>
-      <caption>Request</caption>
+      <caption>[EditorScriptsOutputRequest]</caption>
       <attribute>0</attribute>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <caption>with parameter</caption>
+      <caption>[EditorScriptsOutputwithparameter]</caption>
     </control>
 
     <control>
@@ -781,7 +781,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>JavaScript:</caption>
+      <caption>[EditorScriptsOutputJavaScript]</caption>
     </control>
 
     <control>

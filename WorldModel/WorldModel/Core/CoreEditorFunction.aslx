@@ -2,16 +2,16 @@
   <editor>
     <appliesto>function</appliesto>
     <tab>
-      <caption>Function</caption>
+      <caption>[EditorFunctionFunction]</caption>
 
       <control>
-        <caption>Name</caption>
+        <caption>[EditorFunctionName]</caption>
         <controltype>textbox</controltype>
         <attribute>name</attribute>
       </control>
 
       <control>
-        <caption>Return type</caption>
+        <caption>[EditorFunctionReturntype]</caption>
         <controltype>dropdown</controltype>
         <attribute>returntype</attribute>
         <width>150</width>
@@ -19,14 +19,14 @@
       </control>
 
       <control>
-        <caption>Parameters</caption>
+        <caption>[EditorFunctionParameters]</caption>
         <controltype>list</controltype>
         <attribute>paramnames</attribute>
         <editprompt>Please enter an parameter name</editprompt>
       </control>
 
       <control>
-        <caption>Script</caption>
+        <caption>[EditorFunctionScript]</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>
         <expand/>

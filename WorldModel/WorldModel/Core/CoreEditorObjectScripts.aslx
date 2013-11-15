@@ -1,49 +1,49 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Scripts</caption>
+    <caption>[EditorObjectScriptsScripts]</caption>
     <mustnotinherit>editor_object</mustnotinherit>
     <advanced/>
 
     <control>
       <controltype>script</controltype>
-      <caption>Before entering the room</caption>
+      <caption>[EditorObjectScriptsBeforeentering]</caption>
       <attribute>beforeenter</attribute>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>After entering the room</caption>
+      <caption>[EditorObjectScriptsAfterentering]</caption>
       <attribute>enter</attribute>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>After leaving the room</caption>
+      <caption>[EditorObjectScriptsAfterleaving]</caption>
       <attribute>onexit</attribute>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>Before entering the room for the first time</caption>
+      <caption>[EditorObjectScriptsBeforeentering]</caption>
       <attribute>beforefirstenter</attribute>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>After entering the room for the first time</caption>
+      <caption>[EditorObjectScriptsAfterentering]</caption>
       <attribute>firstenter</attribute>
     </control>
 
     <control>
-      <caption>Turn scripts - run after every turn the player takes in this room</caption>
+      <caption>[EditorObjectScriptsTurnscripts]</caption>
       <controltype>elementslist</controltype>
       <elementtype>object</elementtype>
       <objecttype>turnscript</objecttype>
     </control>
 
     <control>
-      <caption>Commands</caption>
+      <caption>[EditorObjectScriptsCommands]</caption>
       <controltype>elementslist</controltype>
       <elementtype>object</elementtype>
       <objecttype>command</objecttype>

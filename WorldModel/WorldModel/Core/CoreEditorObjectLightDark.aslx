@@ -1,13 +1,13 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Light/Dark</caption>
+    <caption>[EditorObjectLightDarkLight/Dark]</caption>
     <mustnotinherit>editor_object</mustnotinherit>
     <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
 
     <control>
-      <caption>Room is initially dark</caption>
+      <caption>[EditorObjectLightDarkRoomisinitially]</caption>
       <controltype>checkbox</controltype>
       <attribute>dark</attribute>
     </control>

@@ -1,13 +1,13 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Container</caption>
+    <caption>[EditorObjectContainerContainer]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_container</onlydisplayif>
 
     <control>
       <controltype>dropdowntypes</controltype>
-      <caption>Container type</caption>
+      <caption>[EditorObjectContainerContainertype]</caption>
       <types>*=Not a container; container_open=Container; container_closed=Closed container; surface=Surface; container_limited=Limited container; openable=Openable/Closable</types>
       <width>150</width>
     </control>
@@ -16,62 +16,62 @@
       <controltype>label</controltype>
       <mustinherit>container_limited</mustinherit>
       <onlydisplayif>not game.feature_limitinventory</onlydisplayif>
-      <caption>Turn on "Inventory limits" from the game Features tab to enable limited containers.</caption>
+      <caption>[EditorObjectContainerTurnonInventory]</caption>
       <bold/>
     </control>
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Contents prefix</caption>
+      <caption>[EditorObjectContainerContentsprefix]</caption>
       <attribute>contentsprefix</attribute>
       <mustinherit>container_base</mustinherit>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Can be opened</caption>
+      <caption>[EditorObjectContainerCanbeopened]</caption>
       <attribute>open</attribute>
       <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Can be closed</caption>
+      <caption>[EditorObjectContainerCanbeclosed]</caption>
       <attribute>close</attribute>
       <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Is open</caption>
+      <caption>[EditorObjectContainerIsopen]</caption>
       <attribute>isopen</attribute>
       <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>Script to run when opening object</caption>
+      <caption>[EditorObjectContainerScripttorun]</caption>
       <attribute>openscript</attribute>
       <mustinherit>openable</mustinherit>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>Script to run when closing object</caption>
+      <caption>[EditorObjectContainerScripttorun2]</caption>
       <attribute>closescript</attribute>
       <mustinherit>openable</mustinherit>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Transparent</caption>
+      <caption>[EditorObjectContainerTransparent]</caption>
       <attribute>transparent</attribute>
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Hide children until object is looked at</caption>
+      <caption>[EditorObjectContainerHidechildren]</caption>
       <attribute>hidechildren</attribute>
       <mustinherit>container_base</mustinherit>
       <advanced/>
@@ -79,7 +79,7 @@
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>List children when object is looked at or opened</caption>
+      <caption>[EditorObjectContainerListchildren]</caption>
       <attribute>listchildren</attribute>
       <mustinherit>container_base</mustinherit>
       <advanced/>
@@ -87,7 +87,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>List prefix (e.g. "It contains")</caption>
+      <caption>[EditorObjectContainerListprefix]</caption>
       <attribute>listchildrenprefix</attribute>
       <nullable/>
       <onlydisplayif>GetBoolean(this, "listchildren")</onlydisplayif>
@@ -95,7 +95,7 @@
 
     <control>
       <controltype>number</controltype>
-      <caption>Maximum number of objects</caption>
+      <caption>[EditorObjectContainerMaximumnumber]</caption>
       <attribute>maxobjects</attribute>
       <width>100</width>
       <mustinherit>container_limited</mustinherit>
@@ -105,7 +105,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Full container message (leave blank for default)</caption>
+      <caption>[EditorObjectContainerFullcontainer]</caption>
       <attribute>containermaxobjects</attribute>
       <mustinherit>container_limited</mustinherit>
       <nullable/>
@@ -114,7 +114,7 @@
 
     <control>
       <controltype>number</controltype>
-      <caption>Maximum volume of objects</caption>
+      <caption>[EditorObjectContainerMaximumvolume]</caption>
       <attribute>maxvolume</attribute>
       <width>100</width>
       <minimum>0</minimum>
@@ -124,7 +124,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Full container message (leave blank for default)</caption>
+      <caption>[EditorObjectContainerFullcontainer]</caption>
       <attribute>containerfullmessage</attribute>
       <mustinherit>container_limited</mustinherit>
       <nullable/>
@@ -134,7 +134,7 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>openmsg</attribute>
-      <caption>Message to print when opening (leave blank for default)</caption>
+      <caption>[EditorObjectContainerMessagetoprint]</caption>
       <nullable/>
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
@@ -142,34 +142,34 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>closemsg</attribute>
-      <caption>Message to print when closing (leave blank for default)</caption>
+      <caption>[EditorObjectContainerMessagetoprint2]</caption>
       <nullable/>
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>After opening the object</caption>
+      <caption>[EditorObjectContainerAfteropening]</caption>
       <attribute>onopen</attribute>
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>After closing the object</caption>
+      <caption>[EditorObjectContainerAfterclosing]</caption>
       <attribute>onclose</attribute>
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>title</controltype>
-      <caption>Locking</caption>
+      <caption>[EditorObjectContainerLocking]</caption>
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 
     <control>
       <controltype>dropdowntypes</controltype>
-      <caption>Lock type</caption>
+      <caption>[EditorObjectContainerLocktype]</caption>
       <types>*=Not lockable; container_lockable=Lockable</types>
       <width>150</width>
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
@@ -177,70 +177,70 @@
 
     <control>
       <controltype>objects</controltype>
-      <caption>Key</caption>
+      <caption>[EditorObjectContainerKey]</caption>
       <attribute>key</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Locked</caption>
+      <caption>[EditorObjectContainerLocked]</caption>
       <attribute>locked</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Automatically unlock if player has the key</caption>
+      <caption>[EditorObjectContainerAutomatically]</caption>
       <attribute>autounlock</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Automatically open when unlocked</caption>
+      <caption>[EditorObjectContainerAutomatically2]</caption>
       <attribute>autoopen</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>
 
     <control>
       <controltype>textbox</controltype>
-      <caption>If the player tries to lock/unlock the object, but does not have the key, print</caption>
+      <caption>[EditorObjectContainerIftheplayer]</caption>
       <attribute>nokeymessage</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Unlock message</caption>
+      <caption>[EditorObjectContainerUnlockmessage]</caption>
       <attribute>unlockmessage</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Lock message</caption>
+      <caption>[EditorObjectContainerLockmessage]</caption>
       <attribute>lockmessage</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>Can be locked open</caption>
+      <caption>[EditorObjectContainerCanbelocked]</caption>
       <attribute>canlockopen</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>After locking the object</caption>
+      <caption>[EditorObjectContainerAfterlocking]</caption>
       <attribute>onlock</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>After unlocking the object</caption>
+      <caption>[EditorObjectContainerAfterunlocking]</caption>
       <attribute>onunlock</attribute>
       <mustinherit>container_lockable</mustinherit>
     </control>

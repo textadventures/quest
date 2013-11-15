@@ -4,7 +4,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Failed to load script:</caption>
+      <caption>[EditorScriptsScriptsFailedtoload]</caption>
     </control>
     
     <control>
@@ -52,25 +52,25 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>The first time,</caption>
+      <caption>[EditorScriptsScriptsThefirsttime,]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>0</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsScriptsRunscript]</caption>
     </control>
     
     <control>
       <controltype>label</controltype>
-      <caption>Otherwise</caption>
+      <caption>[EditorScriptsScriptsOtherwise]</caption>
       <breakbefore/>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>1</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsScriptsRunscript]</caption>
     </control>    
   </editor>
 
@@ -84,7 +84,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>For: loop variable</caption>
+      <caption>[EditorScriptsScriptsForloopvariable]</caption>
     </control>
 
     <control>
@@ -94,7 +94,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>from</caption>
+      <caption>[EditorScriptsScriptsfrom]</caption>
     </control>
 
     <control>
@@ -106,7 +106,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>to</caption>
+      <caption>[EditorScriptsScriptsto]</caption>
     </control>
 
     <control>
@@ -118,7 +118,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>in steps of</caption>
+      <caption>[EditorScriptsScriptsinstepsof]</caption>
     </control>
 
     <control>
@@ -131,7 +131,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>4</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsScriptsRunscript]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -146,7 +146,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>For each: loop variable</caption>
+      <caption>[EditorScriptsScriptsForeachloop]</caption>
     </control>
 
     <control>
@@ -156,7 +156,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>in source</caption>
+      <caption>[EditorScriptsScriptsinsource]</caption>
     </control>
 
     <control>
@@ -168,7 +168,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>2</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsScriptsRunscript]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -183,7 +183,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Switch:</caption>
+      <caption>[EditorScriptsScriptsSwitch]</caption>
     </control>
 
     <control>
@@ -193,7 +193,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Cases:</caption>
+      <caption>[EditorScriptsScriptsCases]</caption>
       <breakbefore/>
     </control>
 
@@ -201,7 +201,7 @@
 
     <control>
       <controltype>scriptdictionary</controltype>
-      <caption>Cases</caption>
+      <caption>[EditorScriptsScriptsCases2]</caption>
       <attribute>1</attribute>
       <keyprompt>Please enter the case expression</keyprompt>
     </control>
@@ -209,7 +209,7 @@
     <control>
       <breakbefore/>
       <controltype>script</controltype>
-      <caption>Default</caption>
+      <caption>[EditorScriptsScriptsDefault]</caption>
       <attribute>2</attribute>
     </control>
   </editor>
@@ -224,7 +224,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>While</caption>
+      <caption>[EditorScriptsScriptsWhile]</caption>
     </control>
 
     <control>
@@ -234,13 +234,13 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>is true,</caption>
+      <caption>[EditorScriptsScriptsistrue,]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>1</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsScriptsRunscript]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -255,7 +255,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Call function</caption>
+      <caption>[EditorScriptsScriptsCallfunction]</caption>
     </control>
 
     <control>
@@ -265,14 +265,14 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>with parameters:</caption>
+      <caption>[EditorScriptsScriptswithparameters]</caption>
     </control>
 
     <!-- TO DO: Popup needs to have ExpressionControl in it -->
 
     <control>
       <controltype>list</controltype>
-      <caption>Parameters</caption>
+      <caption>[EditorScriptsScriptsParameters]</caption>
       <attribute>1</attribute>
       <editprompt>Please enter the parameter</editprompt>
     </control>
@@ -290,7 +290,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Run object</caption>
+      <caption>[EditorScriptsScriptsRunobject]</caption>
     </control>
 
     <control>
@@ -302,7 +302,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>script attribute</caption>
+      <caption>[EditorScriptsScriptsscriptattribute]</caption>
     </control>
 
     <control>
@@ -313,7 +313,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Using parameter dictionary</caption>
+      <caption>[EditorScriptsScriptsUsingparameter]</caption>
       <breakbefore/>
     </control>
 
@@ -334,7 +334,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Invoke script</caption>
+      <caption>[EditorScriptsScriptsInvokescript]</caption>
     </control>
 
     <control>
@@ -344,7 +344,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Using parameter dictionary</caption>
+      <caption>[EditorScriptsScriptsUsingparameter]</caption>
       <breakbefore/>
     </control>
 
@@ -364,7 +364,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Raise error</caption>
+      <caption>[EditorScriptsScriptsRaiseerror]</caption>
     </control>
 
     <control>
@@ -384,7 +384,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set this function's return value to</caption>
+      <caption>[EditorScriptsScriptsSetthisfunction's]</caption>
     </control>
 
     <control>
@@ -400,7 +400,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Run delegate implementation of object</caption>
+      <caption>[EditorScriptsScriptsRundelegate]</caption>
     </control>
 
     <control>
@@ -412,7 +412,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Attribute:</caption>
+      <caption>[EditorScriptsScriptsAttribute]</caption>
       <breakbefore/>
     </control>
 
@@ -424,7 +424,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>With parameters:</caption>
+      <caption>[EditorScriptsScriptsWithparameters]</caption>
       <breakbefore/>
     </control>
 
@@ -432,7 +432,7 @@
 
     <control>
       <controltype>list</controltype>
-      <caption>Parameters</caption>
+      <caption>[EditorScriptsScriptsParameters]</caption>
       <attribute>2</attribute>
       <editprompt>Please enter the parameter</editprompt>
     </control>
@@ -444,13 +444,13 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>When ready,</caption>
+      <caption>[EditorScriptsScriptsWhenready,]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>0</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsScriptsRunscript]</caption>
     </control>
   </editor>
 </library>
