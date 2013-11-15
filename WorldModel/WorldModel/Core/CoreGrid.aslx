@@ -221,6 +221,14 @@
     JS.Grid_DrawSvg(id, symbolid, x, y, width, height)
   </function>
 
+  <function name="Grid_AddNewShapePoint" parameters="x, y">
+    JS.Grid_AddNewShapePoint(x, y)
+  </function>
+
+  <function name="Grid_DrawShape" parameters="id, border, fill, opacity">
+    JS.Grid_DrawShape(id, border, fill, opacity)
+  </function>
+
   <function name="JS_GridSquareClick" parameters="parameterstring">
     parameters = Split(parameterstring, ";")
     x = ToInt(StringListItem(parameters, 0))

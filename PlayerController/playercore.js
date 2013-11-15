@@ -1096,6 +1096,16 @@ function Grid_DrawSvg(id, symbolId, x, y, width, height) {
     gridApi.drawCustomLayerSvg(id, symbolId, parseInt(x), parseInt(y), parseInt(width), parseInt(height));
 }
 
+function Grid_AddNewShapePoint(x, y) {
+    if (!_canvasSupported) return;
+    gridApi.addNewShapePoint(x, y);
+}
+
+function Grid_DrawShape(id, border, fill, opacity) {
+    if (!_canvasSupported) return;
+    gridApi.drawShape(id, border, fill, opacity);
+}
+
 // JQUERY.MOUSEWEHEEL.JS ****************************************************************************************************************
 // https://github.com/brandonaaron/jquery-mousewheel
 

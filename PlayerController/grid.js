@@ -10,6 +10,7 @@ var maxLayer = 3;
 var currentLayer = 0;
 var offset = new Point(0, 0);
 var symbols = new Object();
+var newShapePoints = new Array();
 
 for (var i = -maxLayer; i <= maxLayer; i++) {
     var layer = new Layer();
@@ -400,6 +401,20 @@ gridApi.drawCustomLayerSvg = function (id, symbolId, x, y, width, height) {
         addPathToCurrentLayerList(placedSymbol);
         customLayerSvg[id] = placedSymbol;
     }
+};
+
+gridApi.addNewShapePoint = function (x, y) {
+    newShapePoints.push([x, y]);
+};
+
+gridApi.drawShape = function (id, border, fill, opacity) {
+    var points = [];
+    for (var idx in newShapePoints) {
+        var xy = newShapePoints[idx];
+        points.push(gridPoint(xy[0], xy[1]));
+    }
+    gridApi.drawCustomLayerObject(id, points, null, null, border, fill, opacity);
+    newShapePoints = [];
 };
 
 gridApi.onLoad();
