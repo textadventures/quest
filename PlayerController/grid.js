@@ -352,7 +352,7 @@ function clearExistingObject(id) {
     }
 }
 
-gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, fill) {
+gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, fill, opacity) {
     clearExistingObject(id);
 
     var paths = new Array();
@@ -363,6 +363,9 @@ gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, f
     });
     path.fillColor = fill;
     path.closed = true;
+    if (typeof opacity != "undefined") {
+        path.opacity = opacity;
+    }
     addPathToCurrentLayerList(path);
     paths.push(path);
 
@@ -371,6 +374,9 @@ gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, f
         pointText.justification = "center";
         pointText.fillColor = "black";
         pointText.content = text;
+        if (typeof opacity != "undefined") {
+            pointText.opacity = opacity;
+        }
         addPathToCurrentLayerList(pointText);
         paths.push(pointText);
     }
