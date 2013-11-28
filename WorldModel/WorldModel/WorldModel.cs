@@ -708,6 +708,7 @@ namespace TextAdventures.Quest
                 {
                     UpdateLists();
                 }
+                SendNextTimerRequest();
             }
         }
 
