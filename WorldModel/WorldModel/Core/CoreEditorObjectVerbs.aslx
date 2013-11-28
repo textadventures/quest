@@ -6,7 +6,56 @@
 
     <control>
       <controltype>verbs</controltype>
-      <clashmessages type="simplestringdictionary">lookat=To configure the response for this command, set the Description on the Setup tab.;take=Use the Inventory tab to configure taking the object.;drop=Use the Inventory tab to configure dropping the object.;give=Use the Inventory tab to configure giving the object.;use=Use the Inventory tab to configure using the object.;useon=Use the Inventory tab to configure using the object.;go=Use the room Exits tab to create an exit to this object.;open=Use the Container to tab to configure opening the object.;close=Use the Container tab to configure closing the object.;put=Use the Container tab to configure container behaviour.;ask=Use the Ask/Tell tab to configure topics.;tell=Use the Ask/Tell tab to configure topics.</clashmessages>
+      <clashmessages type="stringdictionary">
+        <item>
+          <key>lookat</key>
+          <value>To configure the response for this command, set the Description on the Setup tab.</value>
+        </item>
+        <item>
+          <key>take</key>
+          <value>Use the Inventory tab to configure taking the object.</value>
+        </item>
+        <item>
+          <key>drop</key>
+          <value>Use the Inventory tab to configure dropping the object.</value>
+        </item>
+        <item>
+          <key>give</key>
+          <value>Use the Inventory tab to configure giving the object.</value>
+        </item>
+        <item>
+          <key>use</key>
+          <value>Use the Inventory tab to configure using the object.</value>
+        </item>
+        <item>
+          <key>useon</key>
+          <value>Use the Inventory tab to configure using the object.</value>
+        </item>
+        <item>
+          <key>go</key>
+          <value>Use the room Exits tab to create an exit to this object.</value>
+        </item>
+        <item>
+          <key>open</key>
+          <value>Use the Container to tab to configure opening the object.</value>
+        </item>
+        <item>
+          <key>close</key>
+          <value>Use the Container tab to configure closing the object.</value>
+        </item>
+        <item>
+          <key>put</key>
+          <value>Use the Container tab to configure container behaviour.</value>
+        </item>
+        <item>
+          <key>ask</key>
+          <value>Use the Ask/Tell tab to configure topics.</value>
+        </item>
+        <item>
+          <key>tell</key>
+          <value>Use the Ask/Tell tab to configure topics.</value>
+        </item>
+      </clashmessages>
       <defaultexpression>[EditorVerbDefaultExpression]</defaultexpression>
       <expand/>
     </control>
