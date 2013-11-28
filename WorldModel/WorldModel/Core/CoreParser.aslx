@@ -365,7 +365,13 @@
     }
     
     if (thiscommand = null) {
-      msg (Template("UnrecognisedCommand"))
+      if (HasScript(game, "unresolvedcommandhandler")) {
+        params = NewDictionary()
+        dictionary add(params, "command", command)
+        do (game, "unresolvedcommandhandler", params)
+      } else {
+        msg (Template("UnrecognisedCommand"))
+      }
       HandleNextCommandQueueItem
     }
     else {
