@@ -178,10 +178,10 @@ function setInterfaceString(name, text) {
             $("#compassLabel").html(text);
             break;
         case "InButtonLabel":
-            $("#cmdCompassIn").attr("value", text);
+            $("#cmdCompassIn span").html(text);
             break;
         case "OutButtonLabel":
-            $("#cmdCompassOut").attr("value", text);
+            $("#cmdCompassOut span").html(text);
             break;
         case "EmptyListLabel":
             break;
