@@ -195,6 +195,10 @@ namespace TextAdventures.Quest.Scripts
                     string caseString = compiledExpression.Save();
                     IScript script = switchCase.Value;
 
+                    if (m_cases.ContainsKey(caseString))
+                    {
+                        throw new Exception(string.Format("'switch' block contains duplicate case '{0}'", caseString));
+                    }
                     m_cases.Add(caseString, script);
                     m_compiledExpressions.Add(caseString, compiledExpression);
                 }
