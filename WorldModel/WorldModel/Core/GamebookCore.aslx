@@ -29,6 +29,7 @@
     <showtitle/>
     <noclear type="boolean">false</noclear>
     <clearlastpage type="boolean">false</clearlastpage>
+    <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
   </type>
 
   <type name="defaultobject">
