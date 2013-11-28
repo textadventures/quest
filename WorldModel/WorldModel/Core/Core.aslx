@@ -54,6 +54,7 @@
     }
     request (SetCompassDirections, Join(game.compassdirections, ";"))
     request (SetInterfaceString, "InventoryLabel=[InventoryLabel]")
+    request (SetInterfaceString, "StatusLabel=[StatusLabel]")
     request (SetInterfaceString, "PlacesObjectsLabel=[PlacesObjectsLabel]")
     request (SetInterfaceString, "CompassLabel=[CompassLabel]")
     request (SetInterfaceString, "InButtonLabel=[InButtonLabel]")

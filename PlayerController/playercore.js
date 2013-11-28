@@ -757,6 +757,9 @@ function setInterfaceString(name, text) {
         case "InventoryLabel":
             $("#inventoryLabel a").html(text);
             break;
+        case "StatusLabel":
+            $("#statusVarsLabel a").html(text);
+            break;
         case "PlacesObjectsLabel":
             $("#placesObjectsLabel a").html(text);
             break;

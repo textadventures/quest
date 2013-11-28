@@ -132,6 +132,7 @@
   <template name="CompassOutShort">o</template>
 
   <template name="InventoryLabel">Inventory</template>
+  <template name="StatusLabel">Status</template>
   <template name="PlacesObjectsLabel">Places and Objects</template>
   <template name="CompassLabel">Compass</template>
   <template name="InButtonLabel">in</template>

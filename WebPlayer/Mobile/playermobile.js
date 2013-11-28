@@ -168,6 +168,9 @@ function setInterfaceString(name, text) {
         case "InventoryLabel":
             $("#inventoryLabel").html(text);
             break;
+        case "StatusLabel":
+            $("#statusVarsLabel").html(text);
+            break;
         case "PlacesObjectsLabel":
             // not implemented on mobile WebPlayer
             break;

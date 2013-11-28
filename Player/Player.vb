@@ -835,6 +835,7 @@ Public Class Player
 
     Private Sub ResetInterfaceStrings()
         SetInterfaceString("InventoryLabel", "Inventory")
+        SetInterfaceString("StatusLabel", "Status")
         SetInterfaceString("PlacesObjectsLabel", "Places and Objects")
         SetInterfaceString("CompassLabel", "Compass")
         SetInterfaceString("InButtonLabel", "in")
