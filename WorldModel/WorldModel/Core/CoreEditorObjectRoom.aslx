@@ -18,7 +18,7 @@
       <controltype>textbox</controltype>
       <caption>Description prefix</caption>
       <attribute>descprefix</attribute>
-      <onlydisplayif>game.autodescription_youarein_useprefix</onlydisplayif>
+      <onlydisplayif>game.autodescription and game.autodescription_youarein_useprefix</onlydisplayif>
       <advanced/>
     </control>
 
@@ -26,6 +26,7 @@
       <controltype>textbox</controltype>
       <caption>Objects list prefix</caption>
       <attribute>objectslistprefix</attribute>
+      <onlydisplayif>game.autodescription</onlydisplayif>
       <advanced/>
     </control>
 
