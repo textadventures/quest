@@ -61,6 +61,7 @@ Public Class Player
 
     Public Sub SetMenu(menu As TextAdventures.Quest.Controls.Menu)
         m_menu = menu
+        ResetMenu()
 
         menu.AddMenuClickHandler("debugger", AddressOf DebuggerMenuClick)
         menu.AddMenuClickHandler("log", AddressOf LogMenuClick)
@@ -171,9 +172,13 @@ Public Class Player
         m_debugger = Nothing
         m_log = Nothing
         If Not m_menu Is Nothing Then
-            m_menu.MenuEnabled("walkthrough") = False
-            m_menu.MenuEnabled("debugger") = False
+            ResetMenu()
         End If
+    End Sub
+
+    Private Sub ResetMenu()
+        m_menu.MenuEnabled("walkthrough") = False
+        m_menu.MenuEnabled("debugger") = False
     End Sub
 
     Private Sub CancelWalkthrough()
