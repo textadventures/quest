@@ -24,10 +24,10 @@ Partial Class About
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(About))
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
-        Me.lblTitle = New System.Windows.Forms.Label()
         Me.lblCopyright = New System.Windows.Forms.Label()
         Me.btnClose = New System.Windows.Forms.Button()
-        Me.lblBuild = New System.Windows.Forms.Label()
+        Me.lblTitle = New System.Windows.Forms.TextBox()
+        Me.lblBuild = New System.Windows.Forms.TextBox()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -43,20 +43,10 @@ Partial Class About
         Me.PictureBox1.TabIndex = 3
         Me.PictureBox1.TabStop = False
         '
-        'lblTitle
-        '
-        Me.lblTitle.AutoSize = True
-        Me.lblTitle.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTitle.Location = New System.Drawing.Point(12, 132)
-        Me.lblTitle.Name = "lblTitle"
-        Me.lblTitle.Size = New System.Drawing.Size(73, 13)
-        Me.lblTitle.TabIndex = 4
-        Me.lblTitle.Text = "Quest"
-        '
         'lblCopyright
         '
         Me.lblCopyright.AutoSize = True
-        Me.lblCopyright.Location = New System.Drawing.Point(12, 154)
+        Me.lblCopyright.Location = New System.Drawing.Point(12, 172)
         Me.lblCopyright.Name = "lblCopyright"
         Me.lblCopyright.Size = New System.Drawing.Size(51, 13)
         Me.lblCopyright.TabIndex = 5
@@ -73,15 +63,33 @@ Partial Class About
         Me.btnClose.Text = "Close"
         Me.btnClose.UseVisualStyleBackColor = True
         '
+        'lblTitle
+        '
+        Me.lblTitle.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblTitle.BackColor = System.Drawing.SystemColors.Window
+        Me.lblTitle.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.lblTitle.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTitle.Location = New System.Drawing.Point(15, 132)
+        Me.lblTitle.Name = "lblTitle"
+        Me.lblTitle.ReadOnly = True
+        Me.lblTitle.Size = New System.Drawing.Size(305, 13)
+        Me.lblTitle.TabIndex = 8
+        Me.lblTitle.Text = "Quest"
+        '
         'lblBuild
         '
-        Me.lblBuild.AutoSize = True
+        Me.lblBuild.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblBuild.BackColor = System.Drawing.SystemColors.Window
+        Me.lblBuild.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.lblBuild.ForeColor = System.Drawing.SystemColors.ControlDarkDark
-        Me.lblBuild.Location = New System.Drawing.Point(81, 132)
+        Me.lblBuild.Location = New System.Drawing.Point(15, 151)
         Me.lblBuild.Name = "lblBuild"
-        Me.lblBuild.Size = New System.Drawing.Size(51, 13)
-        Me.lblBuild.TabIndex = 7
-        Me.lblBuild.Text = "(build x.x)"
+        Me.lblBuild.ReadOnly = True
+        Me.lblBuild.Size = New System.Drawing.Size(305, 13)
+        Me.lblBuild.TabIndex = 9
+        Me.lblBuild.Text = "Build x.x"
         '
         'About
         '
@@ -94,8 +102,8 @@ Partial Class About
         Me.Controls.Add(Me.lblBuild)
         Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.lblCopyright)
-        Me.Controls.Add(Me.lblTitle)
         Me.Controls.Add(Me.PictureBox1)
+        Me.Controls.Add(Me.lblTitle)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
@@ -109,8 +117,8 @@ Partial Class About
 
     End Sub
     Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
-    Friend WithEvents lblTitle As System.Windows.Forms.Label
     Friend WithEvents lblCopyright As System.Windows.Forms.Label
     Friend WithEvents btnClose As System.Windows.Forms.Button
-    Friend WithEvents lblBuild As System.Windows.Forms.Label
+    Friend WithEvents lblTitle As System.Windows.Forms.TextBox
+    Friend WithEvents lblBuild As System.Windows.Forms.TextBox
 End Class

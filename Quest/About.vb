@@ -11,9 +11,8 @@
         Me.Text = String.Format("About {0}", ApplicationTitle)
 
         lblTitle.Text = String.Format("{0} {1}", My.Application.Info.ProductName, Constants.QuestVersion)
-        lblBuild.Text = String.Format("(build {0})", My.Application.Info.Version.ToString)
+        lblBuild.Text = String.Format("Build {0}", My.Application.Info.Version.ToString)
         lblCopyright.Text = My.Application.Info.Copyright
-        lblBuild.Left = lblTitle.Left + lblTitle.Width
     End Sub
 
     Private Sub btnClose_Click(sender As System.Object, e As System.EventArgs) Handles btnClose.Click
