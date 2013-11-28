@@ -193,13 +193,10 @@
     </control>
   </editor>
 
+  <!-- deprecated -->
   <editor>
     <appliesto>(function)Pause</appliesto>
     <display>Pause for #0 seconds</display>
-    <category>Timers</category>
-    <create>Pause (1)</create>
-    <add>Pause the game</add>
-    <advanced/>
 
     <control>
       <controltype>label</controltype>

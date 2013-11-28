@@ -171,6 +171,10 @@ namespace TextAdventures.Quest.Scripts
                     m_worldModel.PlayerUI.SetStatusText(data.Replace("\n", Environment.NewLine));
                     break;
                 case Request.Pause:
+                    if (m_worldModel.Version >= WorldModelVersion.v550)
+                    {
+                        throw new Exception("The 'Pause' request is not supported for games written for Quest 5.5 or later. Use the 'SetTimeout' function instead.");
+                    }
                     int ms;
                     if (int.TryParse(data, out ms)){
                         m_worldModel.StartPause(ms);
