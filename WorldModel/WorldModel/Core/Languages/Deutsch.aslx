@@ -103,7 +103,10 @@
   <template name="UseOnMenu">Mit welchem Gegenstand?</template>
   <template name="GiveToMenu">An wen?</template>
   <template name="NoObjectsAvailable">Es gibt keine Gegenstände, mit denen du das machen könntest.</template>
-  
+  <template name="Yes">Ja</template>
+  <template name="No">Nein</template>
+  <template name="By">von</template>
+
   <template name="CompassNW">Nordwesten</template>
   <template name="CompassN">Norden</template>
   <template name="CompassNE">Nordosten</template>
@@ -136,6 +139,7 @@
   <template name="InOutDirectionPrefix"></template>
   <template name="InOutDirectionSuffix"></template>
   <template name="InventoryLabel">Inventar</template>
+  <template name="StatusLabel">Status</template>  
   <template name="PlacesObjectsLabel">Orte und Objekte</template>
   <template name="CompassLabel">Kompass</template>
   <template name="InButtonLabel">rein</template>
