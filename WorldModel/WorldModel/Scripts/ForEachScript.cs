@@ -82,6 +82,7 @@ namespace TextAdventures.Quest.Scripts
             {
                 c.Parameters[m_variable] = variable;
                 m_loopScript.Execute(c);
+                if (c.IsReturned) break;
             }
         }
 

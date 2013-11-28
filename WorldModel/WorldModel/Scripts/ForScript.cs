@@ -95,6 +95,7 @@ namespace TextAdventures.Quest.Scripts
             {
                 c.Parameters[m_variable] = count;
                 m_loopScript.Execute(c);
+                if (c.IsReturned) break;
 
                 object newCount = c.Parameters[m_variable];
                 if (newCount is int)

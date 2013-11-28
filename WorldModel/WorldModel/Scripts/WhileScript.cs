@@ -60,6 +60,7 @@ namespace TextAdventures.Quest.Scripts
             while (m_expression.Execute(c))
             {
                 m_loopScript.Execute(c);
+                if (c.IsReturned) break;
             }
         }
 

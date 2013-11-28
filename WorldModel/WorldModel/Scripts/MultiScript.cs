@@ -146,6 +146,7 @@ namespace TextAdventures.Quest.Scripts
             foreach (IScript script in m_scripts)
             {
                 script.Execute(c);
+                if (c.IsReturned) break;
             }
         }
 

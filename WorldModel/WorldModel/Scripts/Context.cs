@@ -12,24 +12,14 @@ namespace TextAdventures.Quest.Scripts
 
     public class Context
     {
-        private Parameters m_parameters;
-        private object m_returnValue = new NoReturnValue();
-
         public Context()
         {
+            ReturnValue = new NoReturnValue();
         }
 
-        public Parameters Parameters
-        {
-            set { m_parameters = value; }
-            get { return m_parameters; }
-        }
-
-        public object ReturnValue
-        {
-            get { return m_returnValue; }
-            set { m_returnValue = value; }
-        }
+        public Parameters Parameters { get; set; }
+        public object ReturnValue { get; set; }
+        public bool IsReturned { get; set; }
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
