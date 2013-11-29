@@ -1,17 +1,17 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Inventory</caption>
+    <caption>[EditorObjectInventoryInventory]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
 
     <control>
       <controltype>title</controltype>
-      <caption>Take</caption>
+      <caption>[EditorObjectInventoryTake]</caption>
     </control>
 
     <control>
       <controltype>multi</controltype>
-      <caption>Take</caption>
+      <caption>[EditorObjectInventoryTake2]</caption>
       <attribute>take</attribute>
       <types>
         boolean=Default behaviour; script=Run script
@@ -21,7 +21,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Take message (leave blank for default)</caption>
+      <caption>[EditorObjectInventoryTakemessage]</caption>
       <attribute>takemsg</attribute>
       <nullable/>
 
@@ -32,19 +32,19 @@
 
     <control>
       <controltype>script</controltype>
-      <caption>After taking the object</caption>
+      <caption>[EditorObjectInventoryAftertaking]</caption>
       <attribute>ontake</attribute>
       <onlydisplayif>GetBoolean(this, "take")</onlydisplayif>
     </control>
 
     <control>
       <controltype>title</controltype>
-      <caption>Drop</caption>
+      <caption>[EditorObjectInventoryDrop]</caption>
     </control>
 
     <control>
       <controltype>multi</controltype>
-      <caption>Drop</caption>
+      <caption>[EditorObjectInventoryDrop2]</caption>
       <attribute>drop</attribute>
       <types>
         boolean=Default behaviour; script=Run script
@@ -54,7 +54,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Drop message (leave blank for default)</caption>
+      <caption>[EditorObjectInventoryDropmessage]</caption>
       <attribute>dropmsg</attribute>
       <nullable/>
 
@@ -65,7 +65,7 @@
 
     <control>
       <controltype>script</controltype>
-      <caption>After dropping the object</caption>
+      <caption>[EditorObjectInventoryAfterdropping]</caption>
       <attribute>ondrop</attribute>
       <onlydisplayif>GetBoolean(this, "drop")</onlydisplayif>
     </control>
@@ -73,20 +73,20 @@
     <control>
       <mustinherit>editor_player</mustinherit>
       <controltype>title</controltype>
-      <caption>Inventory limitation</caption>
+      <caption>[EditorObjectInventoryInventorylimitation]</caption>
       <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
       <mustinherit>editor_player</mustinherit>
       <controltype>label</controltype>
-      <caption>Set "maximum objects" to 0 to allow unlimited inventory items.</caption>
+      <caption>[EditorObjectInventorySetmaximum]</caption>
       <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
       <controltype>number</controltype>
-      <caption>Maximum objects</caption>
+      <caption>[EditorObjectInventoryMaximumobjects]</caption>
       <attribute>maxobjects</attribute>
       <width>100</width>
       <mustinherit>editor_player</mustinherit>
@@ -96,7 +96,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Full container message (leave blank for default)</caption>
+      <caption>[EditorObjectInventoryFullcontainer]</caption>
       <attribute>containermaxobjects</attribute>
       <mustinherit>editor_player</mustinherit>
       <nullable/>
@@ -105,13 +105,13 @@
 
     <control>
       <controltype>title</controltype>
-      <caption>Volume</caption>
+      <caption>[EditorObjectInventoryVolume]</caption>
       <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
 
     <control>
       <controltype>number</controltype>
-      <caption>Volume</caption>
+      <caption>[EditorObjectInventoryVolume2]</caption>
       <attribute>volume</attribute>
       <width>100</width>
       <minimum>0</minimum>
@@ -120,7 +120,7 @@
 
     <control>
       <controltype>number</controltype>
-      <caption>Maximum volume of inventory</caption>
+      <caption>[EditorObjectInventoryMaximumvolume]</caption>
       <attribute>maxvolume</attribute>
       <width>100</width>
       <mustinherit>editor_player</mustinherit>
@@ -130,7 +130,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Full container message (leave blank for default)</caption>
+      <caption>[EditorObjectInventoryFullcontainer]</caption>
       <attribute>containerfullmessage</attribute>
       <mustinherit>editor_player</mustinherit>
       <nullable/>

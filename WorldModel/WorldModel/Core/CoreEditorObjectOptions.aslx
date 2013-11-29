@@ -1,13 +1,13 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Switchable</caption>
+    <caption>[EditorObjectOptionsSwitchable]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_switchable</onlydisplayif>
 
     <control>
       <controltype>dropdowntypes</controltype>
-      <caption>Switchable</caption>
+      <caption>[EditorObjectOptionsSwitchable2]</caption>
       <types>*=Cannot be switched on/off; switchable=Can be switched on/off</types>
       <width>150</width>
     </control>
@@ -15,14 +15,14 @@
     <control>
       <controltype>checkbox</controltype>
       <attribute>switchedon</attribute>
-      <caption>Switched on at the start of the game</caption>
+      <caption>[EditorObjectOptionsSwitchedon]</caption>
       <mustinherit>switchable</mustinherit>
     </control>
 
     <control>
       <controltype>textbox</controltype>
       <attribute>switchonmsg</attribute>
-      <caption>Message to print when switching on (leave blank for default)</caption>
+      <caption>[EditorObjectOptionsMessagetoprint]</caption>
       <nullable/>
       <mustinherit>switchable</mustinherit>
     </control>
@@ -30,7 +30,7 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>switchoffmsg</attribute>
-      <caption>Message to print when switching off (leave blank for default)</caption>
+      <caption>[EditorObjectOptionsMessagetoprint2]</caption>
       <nullable/>
       <mustinherit>switchable</mustinherit>
     </control>
@@ -38,7 +38,7 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>switchedondesc</attribute>
-      <caption>Extra object description when switched on</caption>
+      <caption>[EditorObjectOptionsExtraobject]</caption>
       <nullable/>
       <mustinherit>switchable</mustinherit>
     </control>
@@ -46,21 +46,21 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>switchedoffdesc</attribute>
-      <caption>Extra object description when switched off</caption>
+      <caption>[EditorObjectOptionsExtraobject2]</caption>
       <nullable/>
       <mustinherit>switchable</mustinherit>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>After switching on the object</caption>
+      <caption>[EditorObjectOptionsAfterswitching]</caption>
       <attribute>onswitchon</attribute>
       <mustinherit>switchable</mustinherit>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>After switching off the object</caption>
+      <caption>[EditorObjectOptionsAfterswitching2]</caption>
       <attribute>onswitchoff</attribute>
       <mustinherit>switchable</mustinherit>
     </control>
@@ -69,20 +69,20 @@
   
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Edible</caption>
+    <caption>[EditorObjectOptionsEdible]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_edible</onlydisplayif>
 
     <control>
       <controltype>dropdowntypes</controltype>
-      <caption>Edible</caption>
+      <caption>[EditorObjectOptionsEdible2]</caption>
       <types>*=Cannot be eaten; edible=Can be eaten</types>
     </control>
 
     <control>
       <controltype>textbox</controltype>
       <attribute>eatmsg</attribute>
-      <caption>Message to print when eating (leave blank for default)</caption>
+      <caption>[EditorObjectOptionsMessagetoprint]</caption>
       <nullable/>
       <mustinherit>edible</mustinherit>
     </control>
@@ -90,7 +90,7 @@
     <control>
       <controltype>number</controltype>
       <attribute>eathealth</attribute>
-      <caption>Change health by</caption>
+      <caption>[EditorObjectOptionsChangehealth]</caption>
       <mustinherit>edible</mustinherit>
       <onlydisplayif>game.showhealth</onlydisplayif>
     </control>
@@ -99,20 +99,20 @@
 
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Light/Dark</caption>
+    <caption>[EditorObjectOptionsLight/Dark]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_lightdark</onlydisplayif>
 
     <control>
       <controltype>checkbox</controltype>
-      <caption>This object is a lightsource</caption>
+      <caption>[EditorObjectOptionsThisobject]</caption>
       <attribute>lightsource</attribute>
     </control>
     
     <control>
       <mustnotinherit>editor_room</mustnotinherit>
       <controltype>dropdown</controltype>
-      <caption>Brightness</caption>
+      <caption>[EditorObjectOptionsBrightness]</caption>
       <attribute>lightstrength</attribute>
       <validvalues type="simplestringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
       <onlydisplayif>GetBoolean(this, "lightsource")</onlydisplayif>
@@ -123,13 +123,13 @@
 
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Player</caption>
+    <caption>[EditorObjectOptionsPlayer]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_player</onlydisplayif>
 
     <control>
       <controltype>dropdowntypes</controltype>
-      <caption>Player</caption>
+      <caption>[EditorObjectOptionsPlayer2]</caption>
       <types>*=Cannot be a player; editor_player=Can be a player</types>
       <advanced/>
     </control>
@@ -137,13 +137,13 @@
     <control>
       <mustinherit>editor_player</mustinherit>
       <controltype>label</controltype>
-      <caption>When this object is the player, the settings below will override the settings specified on other tabs.</caption>
+      <caption>[EditorObjectOptionsWhenthisobject]</caption>
       <advanced/>
     </control>
 
     <control>
       <mustinherit>editor_player</mustinherit>
-      <caption>Alias</caption>
+      <caption>[EditorObjectOptionsAlias]</caption>
       <controltype>textbox</controltype>
       <attribute>pov_alias</attribute>
       <nullable/>
@@ -152,7 +152,7 @@
 
     <control>
       <mustinherit>editor_player</mustinherit>
-      <caption>Gender</caption>
+      <caption>[EditorObjectOptionsGender]</caption>
       <controltype>textbox</controltype>
       <attribute>pov_gender</attribute>
       <advanced/>
@@ -160,7 +160,7 @@
 
     <control>
       <mustinherit>editor_player</mustinherit>
-      <caption>Article</caption>
+      <caption>[EditorObjectOptionsArticle]</caption>
       <controltype>textbox</controltype>
       <attribute>pov_article</attribute>
       <advanced/>
@@ -168,7 +168,7 @@
 
     <control>
       <mustinherit>editor_player</mustinherit>
-      <caption>Other names</caption>
+      <caption>[EditorObjectOptionsOthernames]</caption>
       <controltype>list</controltype>
       <attribute>pov_alt</attribute>
       <editprompt>Please enter an additional name for this object</editprompt>

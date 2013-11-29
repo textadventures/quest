@@ -1,11 +1,11 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Room</caption>
+    <caption>[EditorObjectRoomRoom]</caption>
     <mustnotinherit>editor_object</mustnotinherit>
 
     <control>
-      <caption>Room picture</caption>
+      <caption>[EditorObjectRoomRoompicture]</caption>
       <controltype>file</controltype>
       <attribute>picture</attribute>
       <source>[EditorImageFormats]</source>
@@ -16,7 +16,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Description prefix</caption>
+      <caption>[EditorObjectRoomDescription]</caption>
       <attribute>descprefix</attribute>
       <onlydisplayif>game.autodescription and game.autodescription_youarein_useprefix</onlydisplayif>
       <advanced/>
@@ -24,7 +24,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Objects list prefix</caption>
+      <caption>[EditorObjectRoomObjectslist]</caption>
       <attribute>objectslistprefix</attribute>
       <onlydisplayif>game.autodescription</onlydisplayif>
       <advanced/>
@@ -32,7 +32,7 @@
 
     <control>
       <controltype>multi</controltype>
-      <caption>Description</caption>
+      <caption>[EditorObjectRoomDescription]</caption>
       <attribute>description</attribute>
       <types>
         string=Text; script=Run script

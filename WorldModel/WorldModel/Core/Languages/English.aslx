@@ -1,5 +1,7 @@
-<library>
+<library type="editor">
+  <include ref="EditorEnglish.aslx"/>
   <template name="LanguageId">en</template>
+  
   <template name="UnresolvedObject">I can't see that.</template>
   <template name="UnresolvedLocation">You can't go there.</template>
   <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
@@ -278,7 +280,7 @@
   <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
 
   <template name="EditorVerbDefaultExpression">"You can't #verb# " + object.article + "."</template>
-
+  
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     if (Instr("aeiou", LCase(Left(GetDisplayAlias(obj), 1))) > 0) {
       return ("an")

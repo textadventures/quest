@@ -9,7 +9,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Increase score by</caption>
+      <caption>[EditorScriptsPlayerIncreasescore]</caption>
     </control>
 
     <control>
@@ -30,7 +30,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Decrease score by</caption>
+      <caption>[EditorScriptsPlayerDecreasescore]</caption>
     </control>
 
     <control>
@@ -51,7 +51,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Increase health by</caption>
+      <caption>[EditorScriptsPlayerIncreasehealth]</caption>
     </control>
 
     <control>
@@ -72,7 +72,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Decrease health by</caption>
+      <caption>[EditorScriptsPlayerDecreasehealth]</caption>
     </control>
 
     <control>

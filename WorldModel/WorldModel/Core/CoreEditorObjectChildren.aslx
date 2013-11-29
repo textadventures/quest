@@ -1,7 +1,7 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Objects</caption>
+    <caption>[EditorObjectChildrenObjects]</caption>
 
     <control>
       <controltype>elementslist</controltype>

@@ -2,48 +2,48 @@
   <editor name="_GameEditor">
     <appliesto>game</appliesto>
     <tab>
-      <caption>Setup</caption>
+      <caption>[EditorGameSetup]</caption>
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Game name</caption>
+        <caption>[EditorGameGamename]</caption>
         <attribute>gamename</attribute>
       </control>
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Subtitle</caption>
+        <caption>[EditorGameSubtitle]</caption>
         <attribute>subtitle</attribute>
       </control>
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Author</caption>
+        <caption>[EditorGameAuthor]</caption>
         <attribute>author</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Display title and author when the game begins</caption>
+        <caption>[EditorGameDisplaytitle]</caption>
         <attribute>showtitle</attribute>
       </control>
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Version</caption>
+        <caption>[EditorGameVersion]</caption>
         <attribute>version</attribute>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>The Game ID below is used to uniquely identify your game. You should only generate a new ID if you have copied a game to create a new one.</caption>
+        <caption>[EditorGameTheGameIDbelow]</caption>
         <advanced/>
         <desktop/>
       </control>
 
       <control>
         <controltype>gameid</controltype>
-        <caption>Game ID</caption>
+        <caption>[EditorGameGameID]</caption>
         <attribute>gameid</attribute>
         <advanced/>
         <desktop/>
@@ -51,7 +51,7 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Category</caption>
+        <caption>[EditorGameCategory]</caption>
         <attribute>category</attribute>
         <validvalues type="simplestringlist">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
         <freetext/>
@@ -59,20 +59,20 @@
 
       <control>
         <controltype>textbox</controltype>
-        <caption>Year of release</caption>
+        <caption>[EditorGameYearofrelease]</caption>
         <attribute>firstpublished</attribute>
       </control>
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Difficulty</caption>
+        <caption>[EditorGameDifficulty]</caption>
         <attribute>difficulty</attribute>
         <validvalues type="simplestringlist">;Easy;Medium;Hard;Very Hard</validvalues>
       </control>
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Cruelty</caption>
+        <caption>[EditorGameCruelty]</caption>
         <attribute>cruelty</attribute>
         <validvalues type="simplestringlist">;Merciful;Polite;Tough;Nasty;Cruel</validvalues>
         <advanced/>
@@ -80,14 +80,14 @@
 
       <control>
         <controltype>label</controltype>
-        <caption>What do the cruelty levels mean?</caption>
+        <caption>[EditorGameWhatdothecruelty]</caption>
         <href>http://www.ifwiki.org/index.php/Cruelty_scale</href>
         <advanced/>
       </control>
 
       <control>
         <controltype>file</controltype>
-        <caption>Cover art</caption>
+        <caption>[EditorGameCoverart]</caption>
         <attribute>cover</attribute>
         <source>[EditorImageFormats]</source>
         <filefiltername>Picture Files</filefiltername>
@@ -96,12 +96,12 @@
 
       <control>
         <controltype>label</controltype>
-        <caption>Recommended format for cover art is a 512x512 PNG file.</caption>
+        <caption>[EditorGameRecommended]</caption>
       </control>
 
       <control>
         <controltype>richtext</controltype>
-        <caption>Description</caption>
+        <caption>[EditorGameDescription]</caption>
         <attribute>description</attribute>
         <notextprocessor/>
         <expand/>
@@ -110,70 +110,70 @@
     </tab>
 
     <tab>
-      <caption>Features</caption>
+      <caption>[EditorGameFeatures]</caption>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Hyperlinks: players can access object verbs by clicking object names</caption>
+        <caption>[EditorGameHyperlinks]</caption>
         <attribute>enablehyperlinks</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Map: a dynamically generated grid-based map, created as the player moves around the game</caption>
+        <caption>[EditorGameMapadynamically]</caption>
         <attribute>gridmap</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Picture frame: a static picture that appears above text. Pictures can be set per room, or using a script command</caption>
+        <caption>[EditorGamePictureframe]</caption>
         <attribute>feature_pictureframe</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Score</caption>
+        <caption>[EditorGameScore]</caption>
         <attribute>showscore</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Health</caption>
+        <caption>[EditorGameHealth]</caption>
         <attribute>showhealth</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Inventory limits: limit items that can be carried or contained by specifying a volume</caption>
+        <caption>[EditorGameInventorylimits]</caption>
         <attribute>feature_limitinventory</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Lightness and darkness: rooms can be dark, and objects can light them up</caption>
+        <caption>[EditorGameLightnessand]</caption>
         <attribute>feature_lightdark</attribute>
         <advanced/>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Ask/Tell: players can ask or tell characters about selected topics</caption>
+        <caption>[EditorGameAsk/Tellplayers]</caption>
         <attribute>feature_asktell</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>In-room descriptions: additional text which each object contributes to a room description</caption>
+        <caption>[EditorGameInroomdescriptions]</caption>
         <attribute>appendobjectdescription</attribute>
       </control>
 
     </tab>
 
     <tab>
-      <caption>Display</caption>
+      <caption>[EditorGameDisplay]</caption>
 
       <control>
-        <caption>Theme</caption>
+        <caption>[EditorGameTheme]</caption>
         <controltype>dropdowntypes</controltype>
         <types>*=Quest Standard; theme_novella=Novella; theme_retro=Retro; theme_typewriter=Typewriter; theme_hotdogstand=Hot Dog Stand</types>
         <width>150</width>
@@ -181,17 +181,17 @@
 
       <control>
         <controltype>title</controltype>
-        <caption>Font</caption>
+        <caption>[EditorGameFont]</caption>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>The web font will override the base font if an internet connection is available, or the game is running in a web browser.</caption>
+        <caption>[EditorGameThewebfont]</caption>
       </control>
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Base font</caption>
+        <caption>[EditorGameBasefont]</caption>
         <attribute>defaultfont</attribute>
         <source>basefonts</source>
         <freetext/>
@@ -199,7 +199,7 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Web font</caption>
+        <caption>[EditorGameWebfont]</caption>
         <attribute>defaultwebfont</attribute>
         <source>webfonts</source>
         <freetext/>
@@ -207,28 +207,28 @@
 
       <control>
         <controltype>label</controltype>
-        <caption>Browse available web fonts</caption>
+        <caption>[EditorGameBrowseavailable]</caption>
         <href>http://www.google.com/webfonts</href>
       </control>
 
       <control>
         <controltype>number</controltype>
-        <caption>Font size</caption>
+        <caption>[EditorGameFontsize]</caption>
         <attribute>defaultfontsize</attribute>
       </control>
 
       <control>
         <controltype>title</controltype>
-        <caption>Colour</caption>
+        <caption>[EditorGameColour]</caption>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>You can use any valid HTML colour name, including the hexadecimal form (#RRGGBB - valid values #000000 to #FFFFFF)</caption>
+        <caption>[EditorGameYoucanuseany]</caption>
       </control>
       <control>
         <controltype>dropdown</controltype>
-        <caption>Background colour</caption>
+        <caption>[EditorGameBackground]</caption>
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -236,7 +236,7 @@
 
       <control>
         <controltype>file</controltype>
-        <caption>Background image</caption>
+        <caption>[EditorGameBackground2]</caption>
         <attribute>backgroundimage</attribute>
         <source>[EditorImageFormats]</source>
         <filefiltername>Picture Files</filefiltername>
@@ -246,13 +246,13 @@
       <control>
         <controltype>checkbox</controltype>
         <attribute>setbackgroundopacity</attribute>
-        <caption>Set background opacity</caption>
+        <caption>[EditorGameSetbackground]</caption>
       </control>
 
       <control>
         <controltype>numberdouble</controltype>
         <attribute>backgroundopacity</attribute>
-        <caption>Opacity</caption>
+        <caption>[EditorGameOpacity]</caption>
         <onlydisplayif>game.setbackgroundopacity</onlydisplayif>
         <minimum type="double">0.0</minimum>
         <maximum type="double">1.0</maximum>
@@ -261,7 +261,7 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Foreground</caption>
+        <caption>[EditorGameForeground]</caption>
         <attribute>defaultforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -269,13 +269,13 @@
 
       <control>
         <controltype>title</controltype>
-        <caption>Hyperlinks</caption>
+        <caption>[EditorGameHyperlinks]</caption>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Link colour</caption>
+        <caption>[EditorGameLinkcolour]</caption>
         <attribute>defaultlinkforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -284,27 +284,27 @@
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Underline hyperlinks</caption>
+        <caption>[EditorGameUnderlinehyperlinks]</caption>
         <attribute>underlinehyperlinks</attribute>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>After using a command hyperlink, deactivate it</caption>
+        <caption>[EditorGameAfterusing]</caption>
         <attribute>deactivatecommandlinks</attribute>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
       <control>
         <controltype>title</controltype>
-        <caption>Verb Menus</caption>
+        <caption>[EditorGameVerbMenus]</caption>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Font</caption>
+        <caption>[EditorGameFont]</caption>
         <attribute>menufont</attribute>
         <source>basefonts</source>
         <freetext/>
@@ -313,14 +313,14 @@
 
       <control>
         <controltype>number</controltype>
-        <caption>Font size</caption>
+        <caption>[EditorGameFontsize]</caption>
         <attribute>menufontsize</attribute>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Background</caption>
+        <caption>[EditorGameBackground]</caption>
         <attribute>menubackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -329,7 +329,7 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Foreground</caption>
+        <caption>[EditorGameForeground]</caption>
         <attribute>menuforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -338,7 +338,7 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Hover background</caption>
+        <caption>[EditorGameHoverbackground]</caption>
         <attribute>menuhoverbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -347,7 +347,7 @@
 
       <control>
         <controltype>dropdown</controltype>
-        <caption>Hover foreground</caption>
+        <caption>[EditorGameHoverforeground]</caption>
         <attribute>menuhoverforeground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -357,11 +357,11 @@
     </tab>
 
     <tab>
-      <caption>Interface</caption>
+      <caption>[EditorGameInterface]</caption>
 
       <control>
         <controltype>title</controltype>
-        <caption>Map</caption>
+        <caption>[EditorGameMap]</caption>
         <onlydisplayif>game.gridmap</onlydisplayif>
       </control>
 
@@ -369,7 +369,7 @@
         <controltype>number</controltype>
         <onlydisplayif>game.gridmap</onlydisplayif>
         <attribute>mapscale</attribute>
-        <caption>Scale</caption>
+        <caption>[EditorGameScale]</caption>
         <minimum>1</minimum>
       </control>
 
@@ -377,42 +377,42 @@
         <controltype>number</controltype>
         <onlydisplayif>game.gridmap</onlydisplayif>
         <attribute>mapsize</attribute>
-        <caption>Height (pixels)</caption>
+        <caption>[EditorGameHeightpixels]</caption>
         <minimum>1</minimum>
       </control>
 
       <control>
         <controltype>title</controltype>
-        <caption>Layout</caption>
+        <caption>[EditorGameLayout]</caption>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Show panes (Inventory, Places and Objects, Compass)</caption>
+        <caption>[EditorGameShowpanesInventory,]</caption>
         <attribute>showpanes</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Show command bar</caption>
+        <caption>[EditorGameShowcommand]</caption>
         <attribute>showcommandbar</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Show location bar</caption>
+        <caption>[EditorGameShowlocation]</caption>
         <attribute>showlocation</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Show border</caption>
+        <caption>[EditorGameShowborder]</caption>
         <attribute>showborder</attribute>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Set a custom display width</caption>
+        <caption>[EditorGameSetacustom]</caption>
         <attribute>setcustomwidth</attribute>
       </control>
 
@@ -420,13 +420,13 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustomwidth</onlydisplayif>
         <attribute>customwidth</attribute>
-        <caption>Width</caption>
+        <caption>[EditorGameWidth]</caption>
         <minimum>100</minimum>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Set custom padding</caption>
+        <caption>[EditorGameSetcustompadding]</caption>
         <attribute>setcustompadding</attribute>
       </control>
 
@@ -434,7 +434,7 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingtop</attribute>
-        <caption>Top</caption>
+        <caption>[EditorGameTop]</caption>
         <minimum>0</minimum>
       </control>
 
@@ -442,7 +442,7 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingbottom</attribute>
-        <caption>Bottom</caption>
+        <caption>[EditorGameBottom]</caption>
         <minimum>0</minimum>
       </control>
 
@@ -450,7 +450,7 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingleft</attribute>
-        <caption>Left</caption>
+        <caption>[EditorGameLeft]</caption>
         <minimum>0</minimum>
       </control>
 
@@ -458,36 +458,36 @@
         <controltype>number</controltype>
         <onlydisplayif>game.setcustompadding</onlydisplayif>
         <attribute>custompaddingright</attribute>
-        <caption>Right</caption>
+        <caption>[EditorGameRight]</caption>
         <minimum>0</minimum>
       </control>
 
       <control>
         <controltype>title</controltype>
-        <caption>Options</caption>
+        <caption>[EditorGameOptions]</caption>
         <onlydisplayif>game.feature_pictureframe</onlydisplayif>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Clear picture panel if room has no picture</caption>
+        <caption>[EditorGameClearpicture]</caption>
         <attribute>clearframe</attribute>
         <onlydisplayif>game.feature_pictureframe</onlydisplayif>
       </control>
     </tab>
 
     <tab>
-      <caption>Script</caption>
+      <caption>[EditorGameScript]</caption>
       <advanced/>
 
       <control>
         <controltype>script</controltype>
-        <caption>Start script</caption>
+        <caption>[EditorGameStartscript]</caption>
         <attribute>start</attribute>
       </control>
 
       <control>
-        <caption>Turn scripts - run after every turn the player takes in this game</caption>
+        <caption>[EditorGameTurnscripts]</caption>
         <controltype>elementslist</controltype>
         <elementtype>object</elementtype>
         <objecttype>turnscript</objecttype>
@@ -496,63 +496,63 @@
     </tab>
 
     <tab>
-      <caption>Room Descriptions</caption>
+      <caption>[EditorGameRoomDescriptions]</caption>
       <advanced/>
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>Automatically generate room descriptions</caption>
+        <caption>[EditorGameAutomatically]</caption>
         <attribute>autodescription</attribute>
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>Show room description when entering a room</caption>
+        <caption>[EditorGameShowroomdescription]</caption>
         <attribute>showdescriptiononenter</attribute>
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>Put an extra newline when entering a room</caption>
+        <caption>[EditorGamePutanextra]</caption>
         <attribute>changeroom_newline</attribute>
         <onlydisplayif>not game.command_newline</onlydisplayif>
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>Display commands entered by the player</caption>
+        <caption>[EditorGameDisplaycommands]</caption>
         <attribute>echocommand</attribute>
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>Put an extra newline before each turn</caption>
+        <caption>[EditorGamePutanextra]</caption>
         <attribute>command_newline</attribute>
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>Display hyperlinks in commands</caption>
+        <caption>[EditorGameDisplayhyperlinks]</caption>
         <attribute>echohyperlinks</attribute>
         <onlydisplayif>game.enablehyperlinks and game.echocommand</onlydisplayif>
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>Automatically generate object display verbs list</caption>
+        <caption>[EditorGameAutomatically]</caption>
         <attribute>autodisplayverbs</attribute>
       </control>
 
       <control>
         <controltype>title</controltype>
-        <caption>Room description layout</caption>
+        <caption>[EditorGameRoomdescription]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>Use the numbers 1 to 4 to control the order in which lines of the automatic room description are displayed. Use 0 to hide a line.</caption>
+        <caption>[EditorGameUsethenumbers]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
 
       <control>
         <controltype>number</controltype>
         <attribute>autodescription_youarein</attribute>
-        <caption>Room name</caption>
+        <caption>[EditorGameRoomname]</caption>
         <minimum>0</minimum>
         <maximum>4</maximum>
         <onlydisplayif>game.autodescription</onlydisplayif>
@@ -561,7 +561,7 @@
       <control>
         <controltype>number</controltype>
         <attribute>autodescription_youcansee</attribute>
-        <caption>Objects list</caption>
+        <caption>[EditorGameObjectslist]</caption>
         <minimum>0</minimum>
         <maximum>4</maximum>
         <onlydisplayif>game.autodescription</onlydisplayif>
@@ -570,7 +570,7 @@
       <control>
         <controltype>number</controltype>
         <attribute>autodescription_youcango</attribute>
-        <caption>Exits list</caption>
+        <caption>[EditorGameExitslist]</caption>
         <minimum>0</minimum>
         <maximum>4</maximum>
         <onlydisplayif>game.autodescription</onlydisplayif>
@@ -579,7 +579,7 @@
       <control>
         <controltype>number</controltype>
         <attribute>autodescription_description</attribute>
-        <caption>Description</caption>
+        <caption>[EditorGameDescription]</caption>
         <minimum>0</minimum>
         <maximum>4</maximum>
         <onlydisplayif>game.autodescription</onlydisplayif>
@@ -588,44 +588,44 @@
       <control>
         <controltype>checkbox</controltype>
         <attribute>autodescription_youarein_useprefix</attribute>
-        <caption>Use "[YouAreIn]" prefix (turn off to display room name in bold instead)</caption>
+        <caption>[EditorGameUseYouAreIn]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
            
       <control>
         <controltype>checkbox</controltype>
         <attribute>autodescription_youarein_newline</attribute>
-        <caption>Put a newline after the room name</caption>
+        <caption>[EditorGamePutanewline]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
         <attribute>autodescription_youcansee_newline</attribute>
-        <caption>Put a newline after the objects list</caption>
+        <caption>[EditorGamePutanewline2]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
       
       <control>
         <controltype>checkbox</controltype>
         <attribute>autodescription_youcango_newline</attribute>
-        <caption>Put a newline after the exits list</caption>
+        <caption>[EditorGamePutanewline3]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
       
       <control>
         <controltype>checkbox</controltype>
         <attribute>autodescription_description_newline</attribute>
-        <caption>Put a newline after the description</caption>
+        <caption>[EditorGamePutanewline4]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
     </tab>
 
     <tab>
-      <caption>Player</caption>
+      <caption>[EditorGamePlayer]</caption>
 
       <control>
-        <caption>Player object</caption>
+        <caption>[EditorGamePlayerobject]</caption>
         <attribute>pov</attribute>
         <controltype>objects</controltype>
         <advanced/>
@@ -635,19 +635,19 @@
         <onlydisplayif>game.pov = null</onlydisplayif>
         <advanced/>
         <controltype>label</controltype>
-        <caption>If no player object is specified, Quest will use the object named "player" (and create one in the first room if it doesn't exist)</caption>
+        <caption>[EditorGameIfnoplayer]</caption>
       </control>
 
       <control>
         <controltype>script</controltype>
         <attribute>onhealthzero</attribute>
         <onlydisplayif>game.showhealth</onlydisplayif>
-        <caption>Script to run when health reaches zero</caption>
+        <caption>[EditorGameScripttorun]</caption>
       </control>
 
       <control>
         <controltype>stringdictionary</controltype>
-        <caption>Player object status attributes (values read from the current player object)</caption>
+        <caption>[EditorGamePlayerobject]</caption>
         <keyprompt>Please enter the attribute name</keyprompt>
         <valueprompt>Please enter the format string (blank for default)</valueprompt>
         <attribute>povstatusattributes</attribute>
@@ -656,13 +656,13 @@
     </tab>
 
     <tab>
-      <caption>Attributes</caption>
+      <caption>[EditorGameAttributes]</caption>
       <advanced/>
       <desktop/>
 
       <control>
         <controltype>stringdictionary</controltype>
-        <caption>Status attributes</caption>
+        <caption>[EditorGameStatusattributes]</caption>
         <keyprompt>Please enter the attribute name</keyprompt>
         <valueprompt>Please enter the format string (blank for default)</valueprompt>
         <attribute>statusattributes</attribute>

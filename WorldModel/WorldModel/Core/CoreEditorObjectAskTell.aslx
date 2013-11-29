@@ -1,18 +1,18 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Ask/Tell</caption>
+    <caption>[EditorObjectAskTellAsk/Tell]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>game.feature_asktell</onlydisplayif>
 
     <control>
       <controltype>title</controltype>
-      <caption>Ask</caption>
+      <caption>[EditorObjectAskTellAsk]</caption>
     </control>
 
     <control>
       <controltype>scriptdictionary</controltype>
-      <caption>Ask about</caption>
+      <caption>[EditorObjectAskTellAskabout]</caption>
       <attribute>ask</attribute>
       <keyprompt>Please enter the topic keywords, separated by spaces</keyprompt>
     </control>
@@ -20,18 +20,18 @@
     <control>
       <controltype>script</controltype>
       <attribute>askdefault</attribute>
-      <caption>Script to run when asked about an unknown topic</caption>
+      <caption>[EditorObjectAskTellScripttorun]</caption>
       <advanced/>
     </control>
 
     <control>
       <controltype>title</controltype>
-      <caption>Tell</caption>
+      <caption>[EditorObjectAskTellTell]</caption>
     </control>
 
     <control>
       <controltype>scriptdictionary</controltype>
-      <caption>Tell about</caption>
+      <caption>[EditorObjectAskTellTellabout]</caption>
       <attribute>tell</attribute>
       <keyprompt>Please enter the topic keywords, separated by spaces</keyprompt>
     </control>
@@ -39,7 +39,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>telldefault</attribute>
-      <caption>Script to run when told about an unknown topic</caption>
+      <caption>[EditorObjectAskTellScripttorun]</caption>
       <advanced/>
     </control>
 

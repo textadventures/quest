@@ -1,39 +1,39 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Object</caption>
+    <caption>[EditorObjectObjectObject]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
     <advanced/>
 
     <control>
-      <caption>Other names</caption>
+      <caption>[EditorObjectObjectOthernames]</caption>
       <controltype>list</controltype>
       <attribute>alt</attribute>
       <editprompt>Please enter an additional name for this object</editprompt>
     </control>
 
     <control>
-      <caption>Alias to display in "Inventory" or "Places and Objects" pane</caption>
+      <caption>[EditorObjectObjectAliastodisplay]</caption>
       <controltype>textbox</controltype>
       <attribute>listalias</attribute>
       <onlydisplayif>game.showpanes</onlydisplayif>
     </control>
 
     <control>
-      <caption>Hyperlink options</caption>
+      <caption>[EditorObjectObjectHyperlinkoptions]</caption>
       <controltype>title</controltype>
       <onlydisplayif>game.enablehyperlinks</onlydisplayif>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <caption>If you specify a link colour here, it will override the default colour specified on the game Display tab.</caption>
+      <caption>[EditorObjectObjectIfyouspecify]</caption>
       <onlydisplayif>game.enablehyperlinks</onlydisplayif>
     </control>
 
     <control>
       <controltype>dropdown</controltype>
-      <caption>Link colour</caption>
+      <caption>[EditorObjectObjectLinkcolour]</caption>
       <attribute>linkcolour</attribute>
       <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
       <freetext/>
@@ -41,40 +41,40 @@
     </control>
 
     <control>
-      <caption>Display verbs</caption>
+      <caption>[EditorObjectObjectDisplayverbs]</caption>
       <controltype>title</controltype>
       <onlydisplayif>game.enablehyperlinks or game.showpanes</onlydisplayif>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <caption>Display verbs appear when the object hyperlink is clicked, and also as buttons in the "Places and Objects" list.</caption>
+      <caption>[EditorObjectObjectDisplayverbs2]</caption>
       <onlydisplayif>game.enablehyperlinks or game.showpanes</onlydisplayif>
     </control>
 
     <control>
       <controltype>label</controltype>
       <onlydisplayif>game.autodisplayverbs and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
-      <caption>Verbs added to the "Verbs" tab will be automatically added to the list. To turn this off, untick the "Automatically generate object display verbs list" on the game "Room Descriptions" tab. You can also turn this feature off just for this object, by ticking one of the options below.</caption>
+      <caption>[EditorObjectObjectVerbsadded]</caption>
       <onlydisplayif>game.enablehyperlinks or game.showpanes</onlydisplayif>
     </control>
 
     <control>
-      <caption>Disable automatically generated display verb list for this object</caption>
+      <caption>[EditorObjectObjectDisableautomatically]</caption>
       <controltype>checkbox</controltype>
       <attribute>usestandardverblist</attribute>
       <onlydisplayif>GetBoolean(game, "autodisplayverbs") and not GetBoolean(this, "useindividualverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
     <control>
-      <caption>Only display verbs from this object's Verbs tab</caption>
+      <caption>[EditorObjectObjectOnlydisplay]</caption>
       <controltype>checkbox</controltype>
       <attribute>useindividualverblist</attribute>
       <onlydisplayif>GetBoolean(game, "autodisplayverbs") and not GetBoolean(this, "usestandardverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
     <control>
-      <caption>Display verbs</caption>
+      <caption>[EditorObjectObjectDisplayverbs]</caption>
       <controltype>list</controltype>
       <attribute>displayverbs</attribute>
       <editprompt>Please enter a verb</editprompt>
@@ -83,12 +83,12 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Inventory verbs appear when the object hyperlink is clicked from an "inventory" command, and also as buttons in the "Inventory" list.</caption>
+      <caption>[EditorObjectObjectInventoryverbs]</caption>
       <onlydisplayif>not GetBoolean(this, "useindividualverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
     <control>
-      <caption>Inventory verbs</caption>
+      <caption>[EditorObjectObjectInventoryverbs2]</caption>
       <controltype>list</controltype>
       <attribute>inventoryverbs</attribute>
       <editprompt>Please enter a verb</editprompt>

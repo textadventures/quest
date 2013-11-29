@@ -3,11 +3,11 @@
     <appliesto>command</appliesto>
 
     <tab>
-      <caption>Command</caption>
+      <caption>[EditorCommandCommand]</caption>
 
       <control>
         <controltype>multi</controltype>
-        <caption>Pattern</caption>
+        <caption>[EditorCommandPattern]</caption>
         <attribute>pattern</attribute>
         <types>
           simplepattern=Command pattern; string=Regular expression
@@ -15,19 +15,19 @@
       </control>
 
       <control>
-        <caption>Name</caption>
+        <caption>[EditorCommandName]</caption>
         <controltype>textbox</controltype>
         <attribute>name</attribute>
       </control>
 
       <control>
-        <caption>Unresolved object text</caption>
+        <caption>[EditorCommandUnresolved]</caption>
         <controltype>textbox</controltype>
         <attribute>unresolved</attribute>
       </control>
 
       <control>
-        <caption>Script</caption>
+        <caption>[EditorCommandScript]</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>
         <expand/>
@@ -36,7 +36,7 @@
     </tab>
 
     <tab>
-      <caption>Attributes</caption>
+      <caption>[EditorCommandAttributes]</caption>
       <desktop/>
 
       <control>

@@ -1,13 +1,13 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Attributes</caption>
+    <caption>[EditorObjectAttributesAttributes]</caption>
     <advanced/>
     <desktop/>
 
     <control>
       <controltype>stringdictionary</controltype>
-      <caption>Status attributes</caption>
+      <caption>[EditorObjectAttributesStatusattributes]</caption>
       <keyprompt>Please enter the attribute name</keyprompt>
       <valueprompt>Please enter the format string (blank for default)</valueprompt>
       <attribute>statusattributes</attribute>

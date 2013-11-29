@@ -3,10 +3,10 @@
     <appliesto>exit</appliesto>
 
     <tab>
-      <caption>Exit</caption>
+      <caption>[EditorExitExit]</caption>
 
       <control>
-        <caption>To</caption>
+        <caption>[EditorExitTo]</caption>
         <controltype>objects</controltype>
         <attribute>to</attribute>
         <width>200</width>
@@ -14,14 +14,14 @@
       </control>
 
       <control>
-        <caption>Type</caption>
+        <caption>[EditorExitType]</caption>
         <controltype>dropdowntypes</controltype>
         <types>*=Non-directional exit;northwestdirection=[CompassNW];northdirection=[CompassN];northeastdirection=[CompassNE];westdirection=[CompassW];eastdirection=[CompassE];southwestdirection=[CompassSW];southdirection=[CompassS];southeastdirection=[CompassSE];updirection=[CompassUp];downdirection=[CompassDown];indirection=[CompassIn];outdirection=[CompassOut]</types>
         <width>150</width>
       </control>
 
       <control>
-        <caption>Alias</caption>
+        <caption>[EditorExitAlias]</caption>
         <controltype>dropdown</controltype>
         <attribute>alias</attribute>
         <validvalues type="simplestringlist">[CompassN];[CompassS];[CompassE];[CompassW];[CompassNE];[CompassNW];[CompassSE];[CompassSW];[CompassIn];[CompassOut];[CompassUp];[CompassDown]</validvalues>
@@ -32,60 +32,60 @@
       </control>
 
       <control>
-        <caption>Prefix</caption>
+        <caption>[EditorExitPrefix]</caption>
         <controltype>textbox</controltype>
         <attribute>prefix</attribute>
       </control>
 
       <control>
-        <caption>Suffix</caption>
+        <caption>[EditorExitSuffix]</caption>
         <controltype>textbox</controltype>
         <attribute>suffix</attribute>
       </control>
 
       <control>
         <controltype>label</controltype>
-        <caption>To unlock this exit during the game or to change its visibility using a script, you must give it a name below.</caption>
+        <caption>[EditorExitTounlockthis]</caption>
         <onlydisplayif>GetBoolean(this, "anonymous") and (GetBoolean(this, "locked") or not GetBoolean(this, "visible"))</onlydisplayif>
         <bold/>
       </control>
 
       <control>
-        <caption>Name</caption>
+        <caption>[EditorExitName]</caption>
         <controltype>textbox</controltype>
         <attribute>name</attribute>
       </control>
 
       <control>
-        <caption>Visible</caption>
+        <caption>[EditorExitVisible]</caption>
         <controltype>checkbox</controltype>
         <attribute>visible</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
 
       <control>
-        <caption>Scenery (do not display in room description)</caption>
+        <caption>[EditorExitScenerydo]</caption>
         <controltype>checkbox</controltype>
         <attribute>scenery</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
 
       <control>
-        <caption>Locked</caption>
+        <caption>[EditorExitLocked]</caption>
         <controltype>checkbox</controltype>
         <attribute>locked</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
     
       <control>
-        <caption>Print message when locked</caption>
+        <caption>[EditorExitPrintmessage]</caption>
         <controltype>textbox</controltype>
         <attribute>lockmessage</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
 
       <control>
-        <caption>Run a script (instead of moving the player automatically)</caption>
+        <caption>[EditorExitRunascript]</caption>
         <controltype>checkbox</controltype>
         <attribute>runscript</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
@@ -93,7 +93,7 @@
       </control>
   
       <control>
-        <caption>Script to run</caption>
+        <caption>[EditorExitScripttorun]</caption>
         <controltype>script</controltype>
         <attribute>script</attribute>
         <onlydisplayif>this.runscript</onlydisplayif>
@@ -102,19 +102,19 @@
 
       <control>
         <controltype>title</controltype>
-        <caption>Look (in this direction)</caption>
+        <caption>[EditorExitLookinthis]</caption>
         <advanced/>
       </control>
 
       <control>
-        <caption>Exit is a look direction only (players can't move this way)</caption>
+        <caption>[EditorExitExitisalook]</caption>
         <controltype>checkbox</controltype>
         <attribute>lookonly</attribute>
         <advanced/>
       </control>
 
       <control>
-        <caption>Look</caption>
+        <caption>[EditorExitLook]</caption>
         <controltype>multi</controltype>
         <attribute>look</attribute>
         <types>
@@ -129,53 +129,53 @@
     </tab>
 
     <tab>
-      <caption>Map</caption>
+      <caption>[EditorExitMap]</caption>
       <onlydisplayif>game.gridmap</onlydisplayif>
 
       <control>
         <controltype>number</controltype>
         <minimum>0</minimum>
         <attribute>grid_length</attribute>
-        <caption>Length</caption>
+        <caption>[EditorExitLength]</caption>
       </control>
 
       <!--
       <control>
         <controltype>number</controltype>
         <attribute>grid_offset_x</attribute>
-        <caption>Offset X</caption>
+        <caption>[EditorExitOffsetX]</caption>
       </control>
 
       <control>
         <controltype>number</controltype>
         <attribute>grid_offset_y</attribute>
-        <caption>Offset Y</caption>
+        <caption>[EditorExitOffsetY]</caption>
       </control>
       -->
       
     </tab>
 
     <tab>
-      <caption>Options</caption>
+      <caption>[EditorExitOptions]</caption>
       <advanced/>
       <onlydisplayif>game.feature_lightdark</onlydisplayif>
 
       <control>
         <controltype>title</controltype>
-        <caption>Light/Dark</caption>
+        <caption>[EditorExitLight/Dark]</caption>
         <advanced/>
       </control>
       
       <control>
         <controltype>checkbox</controltype>
-        <caption>This object is a lightsource</caption>
+        <caption>[EditorExitThisobject]</caption>
         <attribute>lightsource</attribute>
         <advanced/>
       </control>
       
       <control>
         <controltype>dropdown</controltype>
-        <caption>Brightness</caption>
+        <caption>[EditorExitBrightness]</caption>
         <attribute>lightstrength</attribute>
         <validvalues type="simplestringdictionary">weak=Weak (shown when room is dark); strong=Strong (illuminates room)</validvalues>
         <onlydisplayif>GetBoolean(this, "lightsource")</onlydisplayif>
@@ -184,7 +184,7 @@
     </tab>
 
     <tab>
-      <caption>Attributes</caption>
+      <caption>[EditorExitAttributes]</caption>
       <desktop/>
       <advanced/>
 

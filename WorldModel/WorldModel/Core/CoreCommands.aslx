@@ -142,7 +142,7 @@
         switch (TypeOf(object, "take")) {
           case ("script") {
             if (ismultiple) {
-              msg (prefix)
+              OutputTextNoBr (prefix)
             }
             do (object, "take")
             takemsg = ""
@@ -213,7 +213,7 @@
       switch (TypeOf(object, "drop")) {
         case ("script") {
           if (ismultiple) {
-            msg (prefix)
+            OutputTextNoBr (prefix)
           }
           do (object, "drop")
           dropmsg = ""

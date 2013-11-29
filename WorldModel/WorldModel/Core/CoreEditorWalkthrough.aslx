@@ -2,12 +2,12 @@
   <editor>
     <appliesto>walkthrough</appliesto>
     <tab>
-      <caption>Walkthrough</caption>
+      <caption>[EditorWalkthroughWalkthrough]</caption>
 
       <control>
         <controltype>textbox</controltype>
         <attribute>name</attribute>
-        <caption>Name</caption>
+        <caption>[EditorWalkthroughName]</caption>
       </control>
 
       <control>

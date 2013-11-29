@@ -246,7 +246,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Parent:</caption>
+      <caption>[EditorExpressionsParent]</caption>
     </control>
 
     <control>
@@ -258,7 +258,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Contains child:</caption>
+      <caption>[EditorExpressionsContainschild]</caption>
     </control>
 
     <control>
@@ -277,7 +277,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Parent:</caption>
+      <caption>[EditorExpressionsParent]</caption>
     </control>
 
     <control>
@@ -289,7 +289,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Does not contain child:</caption>
+      <caption>[EditorExpressionsDoesnotcontain]</caption>
     </control>
 
     <control>
@@ -336,7 +336,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Object</caption>
+      <caption>[EditorExpressionsObject]</caption>
     </control>
 
     <control>
@@ -346,7 +346,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Attribute</caption>
+      <caption>[EditorExpressionsAttribute]</caption>
     </control>
 
     <control>
@@ -364,7 +364,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Object</caption>
+      <caption>[EditorExpressionsObject]</caption>
     </control>
 
     <control>
@@ -376,7 +376,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Attribute</caption>
+      <caption>[EditorExpressionsAttribute]</caption>
     </control>
 
     <control>
@@ -386,7 +386,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>=</caption>
+      <caption>[EditorExpressions]</caption>
     </control>
 
     <control>
@@ -413,7 +413,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>% of the time</caption>
+      <caption>[EditorExpressionsofthetime]</caption>
     </control>
   </editor>
   
@@ -455,7 +455,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>between</caption>
+      <caption>[EditorExpressionsbetween]</caption>
     </control>
 
     <control>
@@ -467,7 +467,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>and</caption>
+      <caption>[EditorExpressionsand]</caption>
     </control>
 
     <control>

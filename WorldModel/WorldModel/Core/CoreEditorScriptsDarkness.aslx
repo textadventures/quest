@@ -10,7 +10,7 @@
   
     <control>
       <controltype>label</controltype>
-      <caption>Make dark</caption>
+      <caption>[EditorScriptsDarknessMakedark]</caption>
     </control>
 
     <control>
@@ -32,7 +32,7 @@
   
     <control>
       <controltype>label</controltype>
-      <caption>Make light</caption>
+      <caption>[EditorScriptsDarknessMakelight]</caption>
     </control>
 
     <control>
@@ -54,7 +54,7 @@
   
     <control>
       <controltype>label</controltype>
-      <caption>Set brightness of</caption>
+      <caption>[EditorScriptsDarknessSetbrightness]</caption>
     </control>
 
     <control>
@@ -66,7 +66,7 @@
     
     <control>
       <controltype>label</controltype>
-      <caption>to</caption>
+      <caption>[EditorScriptsDarknessto]</caption>
     </control>
 
     <control>
@@ -91,7 +91,7 @@
   
     <control>
       <controltype>label</controltype>
-      <caption>Set brightness of</caption>
+      <caption>[EditorScriptsDarknessSetbrightness]</caption>
     </control>
 
     <control>
@@ -104,7 +104,7 @@
     
     <control>
       <controltype>label</controltype>
-      <caption>to</caption>
+      <caption>[EditorScriptsDarknessto]</caption>
     </control>
 
      <control>

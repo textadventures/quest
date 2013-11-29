@@ -2,12 +2,12 @@
   <editor>
     <appliesto>include</appliesto>
     <tab>
-      <caption>Library</caption>
+      <caption>[EditorIncludedLibraryLibrary]</caption>
 
       <control>
         <controltype>file</controltype>
         <attribute>filename</attribute>
-        <caption>Filename</caption>
+        <caption>[EditorIncludedLibraryFilename]</caption>
         <source>libraries</source>
         <width>300</width>
         <filefiltername>Libraries</filefiltername>

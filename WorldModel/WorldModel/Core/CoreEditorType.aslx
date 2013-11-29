@@ -2,10 +2,10 @@
   <editor>
     <appliesto>type</appliesto>
     <tab>
-      <caption>Type</caption>
+      <caption>[EditorTypeType]</caption>
 
       <control>
-        <caption>Name</caption>
+        <caption>[EditorTypeName]</caption>
         <controltype>textbox</controltype>
         <attribute>name</attribute>
       </control>

@@ -1,12 +1,12 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Exits</caption>
+    <caption>[EditorObjectExitsExits]</caption>
     <mustnotinherit>editor_object</mustnotinherit>
 
     <control>
       <controltype>textbox</controltype>
-      <caption>Exits list prefix</caption>
+      <caption>[EditorObjectExitsExitslistprefix]</caption>
       <attribute>exitslistprefix</attribute>
       <advanced/>
     </control>

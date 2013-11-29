@@ -9,7 +9,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Enable turn script</caption>
+      <caption>[EditorScriptsTurnScriptsEnableturn]</caption>
     </control>
 
     <control>
@@ -30,7 +30,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Disable turn script</caption>
+      <caption>[EditorScriptsTurnScriptsDisableturn]</caption>
     </control>
 
     <control>
@@ -51,7 +51,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set turn script</caption>
+      <caption>[EditorScriptsTurnScriptsSetturnscript]</caption>
     </control>
 
     <control>
@@ -63,7 +63,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>script to</caption>
+      <caption>[EditorScriptsTurnScriptsscriptto]</caption>
     </control>
 
     <control>
@@ -82,7 +82,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>After</caption>
+      <caption>[EditorScriptsTurnScriptsAfter]</caption>
     </control>
 
     <control>
@@ -94,13 +94,13 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>turns</caption>
+      <caption>[EditorScriptsTurnScriptsturns]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsTurnScriptsRunscript]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -115,7 +115,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>After</caption>
+      <caption>[EditorScriptsTurnScriptsAfter]</caption>
     </control>
 
     <control>
@@ -127,19 +127,19 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>turns</caption>
+      <caption>[EditorScriptsTurnScriptsturns]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>Run script</caption>
+      <caption>[EditorScriptsTurnScriptsRunscript]</caption>
       <breakbefore/>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <caption>Name:</caption>
+      <caption>[EditorScriptsTurnScriptsName]</caption>
       <breakbefore/>
     </control>
 
@@ -160,7 +160,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Create turn script</caption>
+      <caption>[EditorScriptsTurnScriptsCreateturn]</caption>
     </control>
 
     <control>

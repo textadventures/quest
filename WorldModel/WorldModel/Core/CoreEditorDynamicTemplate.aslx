@@ -2,18 +2,18 @@
   <editor>
     <appliesto>dynamictemplate</appliesto>
     <tab>
-      <caption>Dynamic Template</caption>
+      <caption>[EditorDynamicTemplateDynamicTemplate]</caption>
 
       <control>
         <controltype>textbox</controltype>
         <attribute>name</attribute>
-        <caption>Name</caption>
+        <caption>[EditorDynamicTemplateName]</caption>
       </control>
 
       <control>
         <controltype>textbox</controltype>
         <attribute>text</attribute>
-        <caption>Text</caption>
+        <caption>[EditorDynamicTemplateText]</caption>
       </control>
     </tab>
   </editor>

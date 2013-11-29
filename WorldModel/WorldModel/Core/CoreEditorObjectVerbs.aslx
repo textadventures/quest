@@ -1,7 +1,7 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>Verbs</caption>
+    <caption>[EditorObjectVerbsVerbs]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
 
     <control>

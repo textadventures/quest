@@ -8,7 +8,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Finish the game</caption>
+      <caption>[EditorScriptsGameStateFinishthegame]</caption>
     </control>
   </editor>
 
@@ -22,7 +22,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Undo one transaction</caption>
+      <caption>[EditorScriptsGameStateUndoonetransaction]</caption>
     </control>
   </editor>
 
@@ -33,7 +33,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Start transaction for command</caption>
+      <caption>[EditorScriptsGameStateStarttransaction]</caption>
     </control>
 
     <control>

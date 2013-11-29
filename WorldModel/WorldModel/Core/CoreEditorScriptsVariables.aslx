@@ -9,7 +9,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set flag</caption>
+      <caption>[EditorScriptsVariablesSetflag]</caption>
     </control>
 
     <control>
@@ -36,7 +36,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Unset flag</caption>
+      <caption>[EditorScriptsVariablesUnsetflag]</caption>
     </control>
 
     <control>
@@ -63,7 +63,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set flag on</caption>
+      <caption>[EditorScriptsVariablesSetflagon]</caption>
     </control>
 
     <control>
@@ -83,7 +83,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set flag off</caption>
+      <caption>[EditorScriptsVariablesSetflagoff]</caption>
     </control>
 
     <control>
@@ -103,7 +103,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Increase counter</caption>
+      <caption>[EditorScriptsVariablesIncreasecounter]</caption>
     </control>
 
     <control>
@@ -130,7 +130,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Decrease counter</caption>
+      <caption>[EditorScriptsVariablesDecreasecounter]</caption>
     </control>
 
     <control>
@@ -157,7 +157,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set counter</caption>
+      <caption>[EditorScriptsVariablesSetcounter]</caption>
     </control>
 
     <control>
@@ -168,7 +168,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>to</caption>
+      <caption>[EditorScriptsVariablesto]</caption>
     </control>
     
     <control>
@@ -189,7 +189,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Increase counter</caption>
+      <caption>[EditorScriptsVariablesIncreasecounter]</caption>
     </control>
 
     <control>
@@ -209,7 +209,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Decrease counter</caption>
+      <caption>[EditorScriptsVariablesDecreasecounter]</caption>
     </control>
 
     <control>
@@ -229,7 +229,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Change counter</caption>
+      <caption>[EditorScriptsVariablesChangecounter]</caption>
     </control>
 
     <control>
@@ -240,7 +240,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>by</caption>
+      <caption>[EditorScriptsVariablesby]</caption>
     </control>
 
     <control>
@@ -262,7 +262,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set variable</caption>
+      <caption>[EditorScriptsVariablesSetvariable]</caption>
     </control>
 
     <control>
@@ -272,7 +272,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>=</caption>
+      <caption>[EditorScriptsVariables]</caption>
     </control>
 
     <control>
@@ -292,7 +292,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set variable</caption>
+      <caption>[EditorScriptsVariablesSetvariable]</caption>
     </control>
 
     <control>
@@ -302,7 +302,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>= script:</caption>
+      <caption>[EditorScriptsVariablesscript]</caption>
     </control>
 
     <control>
@@ -322,7 +322,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Set object</caption>
+      <caption>[EditorScriptsVariablesSetobject]</caption>
     </control>
 
     <control>
@@ -334,7 +334,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Attribute:</caption>
+      <caption>[EditorScriptsVariablesAttribute]</caption>
       <breakbefore/>
     </control>
 
@@ -345,7 +345,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Value:</caption>
+      <caption>[EditorScriptsVariablesValue]</caption>
       <breakbefore/>
     </control>
 
@@ -365,7 +365,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Add to list</caption>
+      <caption>[EditorScriptsVariablesAddtolist]</caption>
     </control>
 
     <control>
@@ -375,7 +375,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>value</caption>
+      <caption>[EditorScriptsVariablesvalue]</caption>
     </control>
 
     <control>
@@ -395,7 +395,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Remove from list</caption>
+      <caption>[EditorScriptsVariablesRemovefrom]</caption>
     </control>
 
     <control>
@@ -405,7 +405,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>value</caption>
+      <caption>[EditorScriptsVariablesvalue]</caption>
     </control>
 
     <control>
@@ -425,7 +425,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Add to dictionary</caption>
+      <caption>[EditorScriptsVariablesAddtodictionary]</caption>
     </control>
 
     <control>
@@ -435,7 +435,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>key</caption>
+      <caption>[EditorScriptsVariableskey]</caption>
     </control>
 
     <control>
@@ -446,7 +446,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>value</caption>
+      <caption>[EditorScriptsVariablesvalue]</caption>
     </control>
 
     <control>
@@ -466,7 +466,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Remove from dictionary</caption>
+      <caption>[EditorScriptsVariablesRemovefrom]</caption>
     </control>
 
     <control>
@@ -476,7 +476,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>key</caption>
+      <caption>[EditorScriptsVariableskey]</caption>
     </control>
 
     <control>

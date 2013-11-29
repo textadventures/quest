@@ -8,7 +8,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Typewriter</caption>
+      <caption>[EditorScriptsEffectsTypewriter]</caption>
     </control>
 
     <control>
@@ -20,7 +20,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Delay between characters</caption>
+      <caption>[EditorScriptsEffectsDelaybetween]</caption>
       <breakbefore/>
     </control>
 
@@ -33,7 +33,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>ms</caption>
+      <caption>[EditorScriptsEffectsms]</caption>
     </control>
   </editor>
 
@@ -46,7 +46,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Unscramble</caption>
+      <caption>[EditorScriptsEffectsUnscramble]</caption>
     </control>
 
     <control>
@@ -59,7 +59,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>Update every</caption>
+      <caption>[EditorScriptsEffectsUpdateevery]</caption>
       <breakbefore/>
     </control>
 
@@ -72,12 +72,12 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>ms</caption>
+      <caption>[EditorScriptsEffectsms]</caption>
     </control>
 
     <control>
       <controltype>label</controltype>
-      <caption>Reveal</caption>
+      <caption>[EditorScriptsEffectsReveal]</caption>
       <breakbefore/>
     </control>
 
@@ -90,7 +90,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>characters at a time</caption>
+      <caption>[EditorScriptsEffectscharacters]</caption>
     </control>
   </editor>
 </library>
