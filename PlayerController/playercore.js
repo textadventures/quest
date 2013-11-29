@@ -730,6 +730,9 @@ function clearScreen() {
     $("#divOutput").html("");
     createNewDiv("left");
     beginningOfCurrentTurnScrollPosition = 0;
+    setTimeout(function () {
+        $("html,body").scrollTop(0);
+    }, 100);
 }
 
 function keyPressCode(e) {
