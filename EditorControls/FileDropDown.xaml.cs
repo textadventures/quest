@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
+using Microsoft.Win32;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -41,6 +42,13 @@ namespace TextAdventures.Quest.EditorControls
         public Action<string> FilenameUpdated { get; set; }
         public string BasePath { get; set; }
         public string Source { get; set; }
+        public string DefaultFilename { get; set; }
+
+        public bool ShowNewButton
+        {
+            get { return newFileButton.Visibility == Visibility.Visible; }
+            set { newFileButton.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
+        }
 
         private class FileListItem
         {
@@ -90,77 +98,123 @@ namespace TextAdventures.Quest.EditorControls
             m_updatingList = false;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Browse_Click(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog dlgOpenFile = new Microsoft.Win32.OpenFileDialog
+            var dlgOpenFile = new OpenFileDialog
             {
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 Multiselect = false,
                 Filter = FileFilter,
-                FileName = ""
+                FileName = "",
             };
             dlgOpenFile.ShowDialog();
 
-            if (dlgOpenFile.FileName.Length > 0)
+            if (string.IsNullOrEmpty(dlgOpenFile.FileName)) return;
+            SetFilename(dlgOpenFile.FileName, false);
+        }
+
+        private void NewFile_Click(object sender, RoutedEventArgs e)
+        {
+            var dlgSaveFile = new SaveFileDialog
             {
-                string gameFolder = BasePath;
-                string filename = Path.GetFileName(dlgOpenFile.FileName);
-                string destFile = Path.Combine(gameFolder, filename);
-                bool copyRequired = true;
-                bool allowOverwrite = false;
+                InitialDirectory = BasePath,
+                Filter = FileFilter,
+                FileName = DefaultFilename,
+            };
+            dlgSaveFile.FileOk += dlgSaveFile_FileOk;
+            if (dlgSaveFile.ShowDialog() != true) return;
+            if (string.IsNullOrEmpty(dlgSaveFile.FileName)) return;
+            SetFilename(dlgSaveFile.FileName, true);
+        }
 
-                if (File.Exists(destFile))
+        void dlgSaveFile_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var dialog = (SaveFileDialog)sender;
+            if (Path.GetDirectoryName(dialog.FileName) != BasePath)
+            {
+                System.Windows.Forms.MessageBox.Show("Files can only be created in the game folder.");
+                e.Cancel = true;
+            }
+        }
+
+        private void SetFilename(string fullpath, bool newFile)
+        {
+            string filename = Path.GetFileName(fullpath);
+            string gameFolder = BasePath;
+            string destFile = Path.Combine(gameFolder, filename);
+            bool copyRequired = true;
+            bool allowOverwrite = false;
+
+            if (File.Exists(destFile))
+            {
+                if (!newFile && Utility.Utility.AreFilesEqual(fullpath, destFile))
                 {
-                    if (Utility.Utility.AreFilesEqual(dlgOpenFile.FileName, destFile))
-                    {
-                        copyRequired = false;
-                    }
-                    else
-                    {
-                        var result = MessageBox.Show(string.Format("A different file called {0} already exists in the game folder.\n\nWould you like to overwrite it?",
-                                              filename),
-                                              "Overwrite file?",
-                                              MessageBoxButton.YesNoCancel,
-                                              MessageBoxImage.Exclamation);
+                    copyRequired = false;
+                }
+                else
+                {
+                    var result =
+                        MessageBox.Show(
+                            string.Format(
+                                "A different file called {0} already exists in the game folder.\n\nWould you like to overwrite it?",
+                                filename),
+                            "Overwrite file?",
+                            MessageBoxButton.YesNoCancel,
+                            MessageBoxImage.Exclamation);
 
-                        switch (result)
-                        {
-                            case MessageBoxResult.Yes:
-                                allowOverwrite = true;
-                                break;
-                            case MessageBoxResult.No:
-                                destFile = GetUniqueFilename(destFile);
-                                filename = Path.GetFileName(destFile);
-                                break;
-                            case MessageBoxResult.Cancel:
-                                return;
-                        }
+                    switch (result)
+                    {
+                        case MessageBoxResult.Yes:
+                            allowOverwrite = true;
+                            break;
+                        case MessageBoxResult.No:
+                            destFile = GetUniqueFilename(destFile);
+                            filename = Path.GetFileName(destFile);
+                            break;
+                        case MessageBoxResult.Cancel:
+                            return;
                     }
                 }
+            }
 
-                if (copyRequired)
+            if (newFile)
+            {
+                try
                 {
-                    try
-                    {
-                        File.Copy(dlgOpenFile.FileName, destFile, allowOverwrite);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(string.Format("Unable to copy file. The following error occurred:{0}",
-                                              Environment.NewLine + Environment.NewLine + ex.Message),
-                                              "Error copying file",
-                                              MessageBoxButton.OK,
-                                              MessageBoxImage.Error);
-                        return;
-                    }
+                    File.WriteAllText(destFile, "");
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(string.Format("Unable to create file. The following error occurred:{0}",
+                                                  Environment.NewLine + Environment.NewLine + ex.Message),
+                                    "Error creating file",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                    return;
+                }
+            }
+            else if (copyRequired)
+            {
+                try
+                {
+                    File.Copy(fullpath, destFile, allowOverwrite);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(string.Format("Unable to copy file. The following error occurred:{0}",
+                                                  Environment.NewLine + Environment.NewLine + ex.Message),
+                                    "Error copying file",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                    return;
+                }
+            }
 
-                RefreshFileList();
-                Filename = filename;
-                if (FilenameUpdated != null)
-                {
-                    FilenameUpdated(filename);
-                }
+            RefreshFileList();
+            Filename = filename;
+            if (FilenameUpdated != null)
+            {
+                FilenameUpdated(filename);
             }
         }
 

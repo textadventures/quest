@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -35,6 +38,9 @@ namespace TextAdventures.Quest.EditorControls
             }
 
             fileDropDown.FileFilter = string.Format("{0} ({1})|{1}", m_helper.ControlDefinition.GetString("filefiltername"), source);
+
+            fileDropDown.ShowNewButton = !string.IsNullOrEmpty(m_helper.ControlDefinition.GetString("newfile"));
+            fileDropDown.DefaultFilename = m_helper.ControlDefinition.GetString("newfile");
         }
 
         private void lstFiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
