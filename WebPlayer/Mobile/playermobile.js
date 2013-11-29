@@ -27,6 +27,9 @@ function setPanelHeight() {
 function setPanelContents(html) {
 }
 
+function setCommandBarStyle() {
+}
+
 var resizeTimer;
 
 function ui_init() {
