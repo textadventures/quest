@@ -93,7 +93,7 @@ namespace TextAdventures.Quest.EditorControls
         public string StringValue
         {
             get { return ctlNumber.Value.Value.ToString(); }
-            set { ctlNumber.Value = int.Parse(value); }
+            set { ctlNumber.Value = double.Parse(value); }
         }
 
         public Control FocusableControl

@@ -197,6 +197,9 @@
             case "number":
                 editorHtml = new MvcHtmlString("<input type=\"number\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"width: 50px\" />");
                 break;
+            case "numberdouble":
+                editorHtml = new MvcHtmlString("<input type=\"text\" name=\"" + name + "-simpleeditor\" id=\"" + name + "-simpleeditor\"  value=\"" + simpleValue + "\" style=\"width: 50px\" />");
+                break;
             case "dropdown":
                 IEnumerable<SelectListItem> valuesList = WebEditor.Views.Edit.ControlHelpers.GetDropdownValues(ctl, simpleValue, Model.Controller);
                 editorHtml = Html.DropDownList(name + "-simpleeditor", valuesList, new { @class = "elementEditorDropdown" });
@@ -338,6 +341,12 @@
             return int.TryParse(expression, out number);
         }
 
+        if (simpleEditor == "numberdouble")
+        {
+            double number;
+            return double.TryParse(expression, out number);
+        }
+
         return EditorUtility.IsSimpleStringExpression(expression);
     }
 
@@ -348,6 +357,7 @@
             case "boolean":
             case "objects":
             case "number":
+            case "numberdouble":
                 return expression;
             default:
                 return EditorUtility.ConvertToSimpleStringExpression(expression);

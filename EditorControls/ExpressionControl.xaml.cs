@@ -127,6 +127,13 @@ namespace TextAdventures.Quest.EditorControls
                     newNumber.LostFocus += SimpleEditor_LostFocus;
                     m_simpleEditor = newNumber;
                     break;
+                case "numberdouble":
+                    NumberDoubleControl newNumberDouble = new NumberDoubleControl();
+                    newNumberDouble.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
+                    newNumberDouble.Helper.Dirty += SimpleEditor_Dirty;
+                    newNumberDouble.LostFocus += SimpleEditor_LostFocus;
+                    m_simpleEditor = newNumberDouble;
+                    break;
                 case "dropdown":
                     DropDownControl newDropDown = new DropDownControl();
                     newDropDown.Helper.DoInitialise(m_helper.Controller, m_helper.ControlDefinition);
@@ -188,6 +195,14 @@ namespace TextAdventures.Quest.EditorControls
                 number.LostFocus -= SimpleEditor_LostFocus;
             }
 
+            NumberDoubleControl numberDouble = m_simpleEditor as NumberDoubleControl;
+            if (numberDouble != null)
+            {
+                numberDouble.Helper.DoUninitialise();
+                numberDouble.Helper.Dirty -= SimpleEditor_Dirty;
+                numberDouble.LostFocus -= SimpleEditor_LostFocus;
+            }
+
             DropDownControl dropDown = m_simpleEditor as DropDownControl;
             if (dropDown != null)
             {
@@ -236,7 +251,7 @@ namespace TextAdventures.Quest.EditorControls
                 m_helper.SetDirty(e.NewValue.ToString());
                 // Don't want to save as that will cause repopulation, which is annoying if we're typing something in to a freetext dropdown
             }
-            if (m_simpleEditor is NumberControl)
+            if (m_simpleEditor is NumberControl || m_simpleEditor is NumberDoubleControl)
             {
                 m_helper.SetDirty(e.NewValue.ToString());
                 Save();
@@ -498,6 +513,12 @@ namespace TextAdventures.Quest.EditorControls
                 return int.TryParse(expression, out number);
             }
 
+            if (m_simpleEditor is NumberDoubleControl)
+            {
+                double number;
+                return double.TryParse(expression, out number);
+            }
+
             return EditorUtility.IsSimpleStringExpression(expression);
         }
 
@@ -508,6 +529,7 @@ namespace TextAdventures.Quest.EditorControls
             if (m_booleanEditor
                 || m_simpleEditor is DropDownObjectsControl
                 || m_simpleEditor is NumberControl
+                || m_simpleEditor is NumberDoubleControl
                 )
             {
                 return expression;
@@ -523,6 +545,7 @@ namespace TextAdventures.Quest.EditorControls
             if (m_booleanEditor
                 || m_simpleEditor is DropDownObjectsControl
                 || m_simpleEditor is NumberControl
+                || m_simpleEditor is NumberDoubleControl
                 )
             {
                 return simpleValue;
@@ -559,6 +582,10 @@ namespace TextAdventures.Quest.EditorControls
                 {
                     return ((NumberControl)m_simpleEditor).StringValue;
                 }
+                else if (m_simpleEditor is NumberDoubleControl)
+                {
+                    return ((NumberDoubleControl)m_simpleEditor).StringValue;
+                }
                 throw new InvalidOperationException("Unknown control type");
             }
             set
@@ -594,6 +621,15 @@ namespace TextAdventures.Quest.EditorControls
                         value = "0";
                     }
                     ((NumberControl)m_simpleEditor).StringValue = value;
+                }
+                else if (m_simpleEditor is NumberDoubleControl)
+                {
+                    double number;
+                    if (!double.TryParse(value, out number))
+                    {
+                        value = "0.0";
+                    }
+                    ((NumberDoubleControl)m_simpleEditor).StringValue = value;
                 }
                 else
                 {

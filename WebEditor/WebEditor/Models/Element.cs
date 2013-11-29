@@ -507,6 +507,7 @@ namespace WebEditor.Models
                             {
                                 case "objects":
                                 case "number":
+                                case "numberdouble":
                                     return simpleValue;
                                 default:
                                     return EditorUtility.ConvertFromSimpleStringExpression(simpleValue);

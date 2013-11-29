@@ -425,6 +425,106 @@
   </editor>
 
   <editor>
+    <appliesto>(function)Grid_AddNewShapePoint</appliesto>
+    <display>Add custom shape point</display>
+    <category>Drawing</category>
+    <create>Grid_AddNewShapePoint (0, 0)</create>
+    <add>Add custom shape point</add>
+    <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingAddNewShapePointAt] X</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)Grid_DrawShape</appliesto>
+    <display>Draw custom shape</display>
+    <category>Drawing</category>
+    <create>Grid_DrawShape ("", "Black", "Yellow", 1)</create>
+    <add>Draw custom shape</add>
+    <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawShapeId]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawShapeBorder]</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>1</attribute>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawShapeFill]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>2</attribute>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawShapeOpacity]</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>value</simple>
+      <simpleeditor>numberdouble</simpleeditor>
+      <attribute>3</attribute>
+      <minimum type="double">0.0</minimum>
+      <maximum type="double">1.0</maximum>
+      <increment type="double">0.1</increment>
+    </control>
+  </editor>
+
+  <editor>
     <appliesto>(function)Grid_LoadSvg</appliesto>
     <display>Load SVG data</display>
     <category>Drawing</category>
