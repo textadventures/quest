@@ -154,9 +154,10 @@ namespace TextAdventures.Quest.EditorControls
 
         private void InsertText(string before, string after)
         {
-            textBox.SelectedText = before + after;
+            var existingText = textBox.SelectedText;
+            textBox.SelectedText = before + existingText + after;
             textBox.SelectionStart = textBox.SelectionStart + before.Length;
-            textBox.SelectionLength = 0;
+            textBox.SelectionLength = existingText.Length;
         }
 
         public IControlDataHelper Helper { get { return m_helper; } }

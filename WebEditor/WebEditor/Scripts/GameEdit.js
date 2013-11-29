@@ -1299,10 +1299,10 @@ $.fn.insertAtCaret = function (textBefore, textAfter) {
             var startPos = this.selectionStart;
             var endPos = this.selectionEnd;
             var scrollTop = this.scrollTop;
-            this.value = this.value.substring(0, startPos) + textBefore + textAfter + this.value.substring(endPos, this.value.length);
+            this.value = this.value.substring(0, startPos) + textBefore + this.value.substring(startPos, endPos) + textAfter + this.value.substring(endPos, this.value.length);
             this.focus();
             this.selectionStart = startPos + textBefore.length;
-            this.selectionEnd = startPos + textBefore.length;
+            this.selectionEnd = startPos + textBefore.length + (endPos - startPos);
             this.scrollTop = scrollTop;
         } else {
             // IE input[type=text] and other browsers
