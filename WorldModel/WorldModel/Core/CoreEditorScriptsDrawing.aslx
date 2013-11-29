@@ -46,7 +46,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingDrawlinefrom]</caption>
+      <caption>[EditorScriptsDrawingDrawlinefrom] X1</caption>
     </control>
 
     <control>
@@ -58,7 +58,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawing,Y1]</caption>
+      <caption>, Y1</caption>
     </control>
 
     <control>
@@ -70,7 +70,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingtoX2]</caption>
+      <caption>[EditorScriptsDrawingto] X2</caption>
       <breakbefore/>
     </control>
 
@@ -83,7 +83,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawing,Y2]</caption>
+      <caption>, Y2</caption>
     </control>
 
     <control>
@@ -119,6 +119,103 @@
       <simpleeditor>number</simpleeditor>
       <attribute>5</attribute>
     </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)Grid_DrawArrow</appliesto>
+    <display>Draw arrow</display>
+    <category>Drawing</category>
+    <create>Grid_DrawArrow ("",0,0,1,1,"black",1)</create>
+    <add>Draw arrow</add>
+    <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawarrowwithid]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingfrom] X1</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y1</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>2</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingto] X2</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>3</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y2</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>4</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingColour]</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>colour</simple>
+      <simpleeditor>dropdown</simpleeditor>
+      <attribute>5</attribute>
+      <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
+      <freetext/>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingBorderwidth]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>pixels</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>6</attribute>
+    </control>
 
   </editor>
 
@@ -133,7 +230,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingDrawgridlines]</caption>
+      <caption>[EditorScriptsDrawingDrawgridlines] X1</caption>
     </control>
 
     <control>
@@ -145,7 +242,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawing,Y1]</caption>
+      <caption>, Y1</caption>
     </control>
 
     <control>
@@ -157,7 +254,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingtoX2]</caption>
+      <caption>[EditorScriptsDrawingto] X2</caption>
       <breakbefore/>
     </control>
 
@@ -170,7 +267,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawing,Y2]</caption>
+      <caption>, Y2</caption>
     </control>
 
     <control>
@@ -208,7 +305,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingCentercustom]</caption>
+      <caption>[EditorScriptsDrawingCentercustom] X</caption>
     </control>
 
     <control>
@@ -220,7 +317,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawing,Y]</caption>
+      <caption>, Y</caption>
     </control>
 
     <control>
@@ -253,7 +350,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingatX]</caption>
+      <caption>[EditorScriptsDrawingat] X</caption>
     </control>
 
     <control>
@@ -265,7 +362,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawing,Y]</caption>
+      <caption>, Y</caption>
     </control>
 
     <control>
@@ -278,6 +375,7 @@
     <control>
       <controltype>label</controltype>
       <caption>[EditorScriptsDrawingwidth]</caption>
+      <breakbefore/>
     </control>
 
     <control>
