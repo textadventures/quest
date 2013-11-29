@@ -593,7 +593,7 @@
     <Content Include="desktopplayer.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="jquery-1.7.1.min.js">
+    <Content Include="jquery-1.10.2.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="jquery-ui-1.9.2.custom.min.js">
