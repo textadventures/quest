@@ -424,4 +424,117 @@
     </control>
   </editor>
 
+  <editor>
+    <appliesto>(function)Grid_LoadSvg</appliesto>
+    <display>Load SVG data</display>
+    <category>Drawing</category>
+    <create>Grid_LoadSvg ("", "")</create>
+    <add>Load SVG data</add>
+    <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingLoadSvgData]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>data</simple>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingLoadSvgId]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <attribute>1</attribute>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)Grid_DrawSvg</appliesto>
+    <display>Draw SVG</display>
+    <category>Drawing</category>
+    <create>Grid_DrawSvg ("", "", 0, 0, 1, 1)</create>
+    <add>Draw SVG data</add>
+    <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawSvgData]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawSvgId]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>name</simple>
+      <attribute>1</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawSvgAt] X</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>2</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>, Y</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>3</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawSvgWidth]</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>4</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsDrawingDrawSvgHeight]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>co-ordinate</simple>
+      <simpleeditor>number</simpleeditor>
+      <attribute>5</attribute>
+    </control>
+  </editor>
 </library>

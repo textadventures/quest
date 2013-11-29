@@ -357,6 +357,13 @@
   <template name="EditorScriptsDrawingheight">Height</template>
   <template name="EditorScriptsDrawingLabel">Label</template>
   <template name="EditorScriptsDrawingColour">Colour</template>
+  <template name="EditorScriptsDrawingLoadSvgData">Load SVG data</template>
+  <template name="EditorScriptsDrawingLoadSvgId">with ID</template>
+  <template name="EditorScriptsDrawingDrawSvgData">Draw SVG data with ID</template>
+  <template name="EditorScriptsDrawingDrawSvgId">using data loaded from SVG ID</template>
+  <template name="EditorScriptsDrawingDrawSvgAt">At</template>
+  <template name="EditorScriptsDrawingDrawSvgWidth">Width</template>
+  <template name="EditorScriptsDrawingDrawSvgHeight">Height</template>
   <template name="EditorScriptsEffectsTypewriter">Typewriter</template>
   <template name="EditorScriptsEffectsDelaybetween">Delay between characters</template>
   <template name="EditorScriptsEffectsms">ms</template>
