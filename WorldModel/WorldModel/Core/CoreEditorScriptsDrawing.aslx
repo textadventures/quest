@@ -6,6 +6,7 @@
     <create>Grid_ShowCustomLayer (true)</create>
     <add>Show/hide custom drawing layer</add>
     <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -26,6 +27,7 @@
     <create>Grid_ClearCustomLayer</create>
     <add>Clear custom drawing layer</add>
     <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -40,6 +42,7 @@
     <create>Grid_DrawLine (0,0,1,1,"black",1)</create>
     <add>Draw line</add>
     <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -126,6 +129,7 @@
     <create>Grid_DrawGridLines (0,0,10,10,"black")</create>
     <add>Draw grid lines</add>
     <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -200,6 +204,7 @@
     <create>Grid_SetCentre (0,0)</create>
     <add>Center custom layer</add>
     <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
@@ -233,6 +238,7 @@
     <create>Grid_DrawSquare ("", 0, 0, 1, 1, "", "White")</create>
     <add>Draw custom layer grid square</add>
     <advanced/>
+    <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>

@@ -83,7 +83,7 @@
   <template name="EditorGameDescription">Description</template>
   <template name="EditorGameFeatures">Features</template>
   <template name="EditorGameHyperlinks">Hyperlinks: players can access object verbs by clicking object names</template>
-  <template name="EditorGameMapadynamically">Map: a dynamically generated grid-based map, created as the player moves around the game</template>
+  <template name="EditorGameMapadynamically">Map and Drawing Grid: a dynamically generated grid-based map, created as the player moves around the game. Also, functions for custom drawing.</template>
   <template name="EditorGamePictureframe">Picture frame: a static picture that appears above text. Pictures can be set per room, or using a script command</template>
   <template name="EditorGameScore">Score</template>
   <template name="EditorGameHealth">Health</template>
