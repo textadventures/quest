@@ -352,4 +352,8 @@ Public Class PlayerHTML
         InvokeScript("markScrollPosition")
     End Sub
 
+    Public Sub SetAnimateScroll(value As Boolean)
+        InvokeScript("SetAnimateScroll", value)
+    End Sub
+
 End Class

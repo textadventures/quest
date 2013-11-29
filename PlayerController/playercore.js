@@ -320,17 +320,23 @@ function panesVisible(visible) {
     }
 }
 
+var _animateScroll = true;
+
 function scrollToEnd() {
-    var scrollTo = beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height();
+    var scrollTo = _animateScroll ? beginningOfCurrentTurnScrollPosition - 50 - $("#gamePanelSpacer").height() : $(document).height();
     var currentScrollTop = Math.max($("body").scrollTop(), $("html").scrollTop());
     if (scrollTo > currentScrollTop) {
         var maxScrollTop = $(document).height() - $(window).height();
         if (scrollTo > maxScrollTop) scrollTo = maxScrollTop;
         var distance = scrollTo - currentScrollTop;
-        var duration = distance / 0.4;
+        var duration = _animateScroll ? distance / 0.4 : 1;
         $("body,html").stop().animate({ scrollTop: scrollTo }, duration, "easeInOutCubic");
     }
     $("#txtCommand").focus();
+}
+
+function SetAnimateScroll(value) {
+    _animateScroll = value;
 }
 
 var _backgroundOpacity = 1;

@@ -361,6 +361,8 @@ Public Class Player
     Private Sub WalkthroughRunner()
         If m_walkthroughRunner Is Nothing Then Exit Sub
 
+        BeginInvoke(Sub() ctlPlayerHtml.SetAnimateScroll(False))
+
         Try
             m_walkthroughRunner.Run()
 
@@ -369,6 +371,7 @@ Public Class Player
 
         Finally
             m_walkthroughRunner = Nothing
+            BeginInvoke(Sub() ctlPlayerHtml.SetAnimateScroll(True))
         End Try
     End Sub
 
