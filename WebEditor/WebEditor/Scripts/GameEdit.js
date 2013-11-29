@@ -803,6 +803,12 @@ function initialiseElementEditorControls(search) {
     $(".elementEditorTextbox", search).change(function () {
         setUnsavedChanges();
     });
+    $(".richtext", search).keyup(function () {
+        setUnsavedChanges();
+    });
+    $(".richtext", search).change(function () {
+        setUnsavedChanges();
+    });
     $(".elementEditorTextbox", search).keydown(function (e) {
         if (isCharKey(e.keyCode)) {
             setUnsavedChanges();
