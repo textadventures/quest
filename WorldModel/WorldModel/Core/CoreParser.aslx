@@ -227,7 +227,9 @@
     else {
       object = ResolveName("", value, game.pov.currentcommandpendingobjecttype)
       if (object <> null) {
-        list add (game.pov.currentcommandpendingobjectlist, object)
+        if (not ListContains(game.pov.currentcommandpendingobjectlist, object)) {
+          list add (game.pov.currentcommandpendingobjectlist, object)
+        }
         ResolveNextNameListItem
       }
     }

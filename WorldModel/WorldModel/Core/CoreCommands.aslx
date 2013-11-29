@@ -66,12 +66,12 @@
     <multiple>
       takeList = NewObjectList()
       foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
-        if (obj.parent=game.pov.parent) {
+        if (obj.parent = game.pov.parent) {
           list add(takeList, obj)
         }
       }
       return (takeList)
-      </multiple>
+    </multiple>
     <script>
       foreach (obj, object) {
         DoTake(obj, multiple)
