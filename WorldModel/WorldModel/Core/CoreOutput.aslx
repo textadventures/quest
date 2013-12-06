@@ -188,6 +188,9 @@
     else if (StartsWith(section, "counter:")) {
       return (ProcessTextCommand_Counter(Mid(section, 9), data))
     }
+    else if (StartsWith(section, "select:")) {
+      return (ProcessTextCommand_Select(section, data))
+    }
     else {
       dot = Instr(section, ".")
       if (dot = 0) {
@@ -365,8 +368,8 @@
     }
   </function>
 
-    <function name="ProcessTextCommand_If" type="string" parameters="section, data">
-    <![CDATA[
+  <function name="ProcessTextCommand_If" type="string" parameters="section, data">
+  <![CDATA[
     command = Mid(section, 4)
     colon = Instr(command, ":")
     if (colon = 0) {
@@ -381,6 +384,12 @@
       }
       if (operator = 0) {
         operator = Instr(condition, ">=")
+        if (operator <> 0) {
+          operatorlength = 2
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, "<>")
         if (operator <> 0) {
           operatorlength = 2
         }
@@ -467,6 +476,14 @@
               return ("")
             }
           }
+          else if (op = "<>") {
+            if (not ToString(value) = rhs) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
           else if (op = ">") {
             if (ToDouble(ToString(value)) > ToDouble(rhs)) {
               return (ProcessTextSection(text, data))
@@ -502,7 +519,7 @@
         }
       }
     }
-    ]]>
+  ]]>
   </function>
 
   <function name="ProcessTextCommand_Img" type="string" parameters="section, data">
@@ -519,6 +536,36 @@
     else {
       return ("0")
     }  
+  </function>
+  <function name="ProcessTextCommand_Select" parameters="section, data" type="string">
+    <![CDATA[
+    elements = Mid(section, 8)
+    elementslist = Split(elements, ":")
+    objectandatt = StringListItem (elementslist, 0)
+    list remove (elementslist, objectandatt)
+    objectandattlist = Split(objectandatt, ".")
+    if (not ListCount (objectandattlist) = 2) {
+      return ("{" + ProcessTextSection(section, data) + "}")
+    }
+    else {
+      object = GetObject(StringListItem(objectandattlist, 0))
+      if (object = null) {
+        return ("{" + ProcessTextSection(section, data) + "}")
+      }
+      else if (not HasInt (object, StringListItem(objectandattlist, 1))) {
+        return ("{" + ProcessTextSection(section, data) + "}")
+      }
+      else {
+        index = GetInt(object, StringListItem(objectandattlist, 1))
+        if ((0 > index) or (index >= Listcount(elementslist))) {
+          return ("{" + ProcessTextSection(section, data) + "}")
+        }
+        else {
+          return (ProcessTextSection(ListItem(elementslist, index), data))
+        }
+      }
+    }
+  ]]>
   </function>
   
   <function name="SetFramePicture" parameters="filename">
