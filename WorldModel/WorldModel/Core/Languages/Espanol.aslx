@@ -1,9 +1,10 @@
 ﻿<library>
   <!-- Contributed by Jhames -->
-
-  <!-- Get any undefined templates from the English library -->
-
   <include ref="English.aslx"/>
+  <include ref="EditorEnglish.aslx"/>
+  <include ref="EditorEspanol.aslx"/>
+  <!-- Get any undefined templates from the English library -->
+  
   <template name="LanguageId">es</template>
 
   <template name="UnresolvedObject">No veo eso.</template>
@@ -213,7 +214,7 @@
   <dynamictemplate name="DefaultTouch">"No puedes tocar" + object.article + "."</dynamictemplate>
   <verbtemplate name="turnon">encender</verbtemplate>
   <dynamictemplate name="DefaultTurnOn">"No puedes encender " + object.article + "."</dynamictemplate>
-  <verbtemplate name="turnoff">apager</verbtemplate>
+  <verbtemplate name="turnoff">apagar</verbtemplate>
   <dynamictemplate name="DefaultTurnOff">"No puedes apagar " + object.article + "."</dynamictemplate>
   <verbtemplate name="turn">girar</verbtemplate>
   <dynamictemplate name="DefaultTurn">"No puedes girar" + object.article + "."</dynamictemplate>
