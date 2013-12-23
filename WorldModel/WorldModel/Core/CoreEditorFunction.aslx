@@ -22,7 +22,7 @@
         <caption>[EditorFunctionParameters]</caption>
         <controltype>list</controltype>
         <attribute>paramnames</attribute>
-        <editprompt>Please enter an parameter name</editprompt>
+        <editprompt>[EditorFunctionPleaseenter]</editprompt>
       </control>
 
       <control>

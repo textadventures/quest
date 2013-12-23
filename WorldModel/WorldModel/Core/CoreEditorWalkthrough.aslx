@@ -13,7 +13,7 @@
       <control>
         <controltype>list</controltype>
         <attribute>steps</attribute>
-        <editprompt>Please enter the command for this walkthrough step</editprompt>
+        <editprompt>[EditorWalkthroughPleaseenter]</editprompt>
         <expand/>
         <iswalkthrough/>
       </control>

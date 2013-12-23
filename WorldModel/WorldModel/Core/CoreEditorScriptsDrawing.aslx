@@ -2,9 +2,9 @@
   <editor>
     <appliesto>(function)Grid_ShowCustomLayer</appliesto>
     <display>Show/hide custom drawing layer</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_ShowCustomLayer (true)</create>
-    <add>Show/hide custom drawing layer</add>
+    <add>[EditorScriptsDrawingShowHidecustom]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
@@ -23,9 +23,9 @@
   <editor>
     <appliesto>(function)Grid_ClearCustomLayer</appliesto>
     <display>Clear custom drawing layer</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_ClearCustomLayer</create>
-    <add>Clear custom drawing layer</add>
+    <add>[EditorScriptsDrawingClearcustom]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
@@ -38,15 +38,15 @@
   <editor>
     <appliesto>(function)Grid_DrawLine</appliesto>
     <display>Draw line</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_DrawLine (0,0,1,1,"black",1)</create>
-    <add>Draw line</add>
+    <add>[EditorScriptsDrawingDrawline]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingDrawlinefrom] X1</caption>
+      <caption>[EditorScriptsDrawingDrawlinefromX1]</caption>
     </control>
 
     <control>
@@ -58,7 +58,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y1</caption>
+      <caption>[EditorScriptsDrawingDrawlinefromY1]</caption>
     </control>
 
     <control>
@@ -70,7 +70,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingto] X2</caption>
+      <caption>[EditorScriptsDrawingDrawlinetoX2]</caption>
       <breakbefore/>
     </control>
 
@@ -83,7 +83,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y2</caption>
+      <caption>[EditorScriptsDrawingDrawlinetoY2]</caption>
     </control>
 
     <control>
@@ -124,9 +124,9 @@
   <editor>
     <appliesto>(function)Grid_DrawArrow</appliesto>
     <display>Draw arrow</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_DrawArrow ("",0,0,1,1,"black",1)</create>
-    <add>Draw arrow</add>
+    <add>[EditorScriptsDrawingDrawarrow]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
@@ -143,7 +143,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingfrom] X1</caption>
+      <caption>[EditorScriptsDrawingArrowfromX1]</caption>
     </control>
 
     <control>
@@ -155,7 +155,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y1</caption>
+      <caption>[EditorScriptsDrawingArrowfromY1]</caption>
     </control>
 
     <control>
@@ -167,7 +167,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingto] X2</caption>
+      <caption>[EditorScriptsDrawingArrowtoX2]</caption>
       <breakbefore/>
     </control>
 
@@ -180,7 +180,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y2</caption>
+      <caption>[EditorScriptsDrawingArrowtoY2]</caption>
     </control>
 
     <control>
@@ -222,15 +222,15 @@
   <editor>
     <appliesto>(function)Grid_DrawGridLines</appliesto>
     <display>Draw grid lines</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_DrawGridLines (0,0,10,10,"black")</create>
-    <add>Draw grid lines</add>
+    <add>[EditorScriptsDrawingDrawgridlines]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingDrawgridlines] X1</caption>
+      <caption>[EditorScriptsDrawingDrawgridlinesfromX1]</caption>
     </control>
 
     <control>
@@ -242,7 +242,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y1</caption>
+      <caption>[EditorScriptsDrawingDrawgridlinesfromY1]</caption>
     </control>
 
     <control>
@@ -254,7 +254,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingto] X2</caption>
+      <caption>[EditorScriptsDrawingDrawgridlinestoX2]</caption>
       <breakbefore/>
     </control>
 
@@ -267,7 +267,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y2</caption>
+      <caption>[EditorScriptsDrawingDrawgridlinestoY2]</caption>
     </control>
 
     <control>
@@ -297,15 +297,15 @@
   <editor>
     <appliesto>(function)Grid_SetCentre</appliesto>
     <display>Center custom layer</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_SetCentre (0,0)</create>
-    <add>Center custom layer</add>
+    <add>[EditorScriptsDrawingCentercustom]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingCentercustom] X</caption>
+      <caption>[EditorScriptsDrawingCentercustomX]</caption>
     </control>
 
     <control>
@@ -317,7 +317,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y</caption>
+      <caption>[EditorScriptsDrawingCentercustomY]</caption>
     </control>
 
     <control>
@@ -331,15 +331,15 @@
   <editor>
     <appliesto>(function)Grid_DrawSquare</appliesto>
     <display>Draw custom layer grid square</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_DrawSquare ("", 0, 0, 1, 1, "", "White")</create>
-    <add>Draw custom layer grid square</add>
+    <add>[EditorScriptsDrawingDrawcustom]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingDrawcustom]</caption>
+      <caption>[EditorScriptsDrawingDrawcustomID]</caption>
     </control>
 
     <control>
@@ -350,7 +350,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingat] X</caption>
+      <caption>[EditorScriptsDrawingDrawSquareatX]</caption>
     </control>
 
     <control>
@@ -362,7 +362,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y</caption>
+      <caption>[EditorScriptsDrawingDrawSquareatY]</caption>
     </control>
 
     <control>
@@ -374,7 +374,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingwidth]</caption>
+      <caption>[EditorScriptsDrawingDrawSquarewidth]</caption>
       <breakbefore/>
     </control>
 
@@ -387,7 +387,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingheight]</caption>
+      <caption>[EditorScriptsDrawingDrawSquareheight]</caption>
     </control>
 
     <control>
@@ -399,7 +399,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingLabel]</caption>
+      <caption>[EditorScriptsDrawingDrawSquareLabel]</caption>
       <breakbefore/>
     </control>
 
@@ -427,15 +427,15 @@
   <editor>
     <appliesto>(function)Grid_AddNewShapePoint</appliesto>
     <display>Add custom shape point</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_AddNewShapePoint (0, 0)</create>
-    <add>Add custom shape point</add>
+    <add>[EditorScriptsDrawingAddcustomshape]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingAddNewShapePointAt] X</caption>
+      <caption>[EditorScriptsDrawingAddNewShapePointAtX]</caption>
     </control>
 
     <control>
@@ -447,7 +447,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y</caption>
+      <caption>[EditorScriptsDrawingAddNewShapePointAtY]</caption>
     </control>
 
     <control>
@@ -461,9 +461,9 @@
   <editor>
     <appliesto>(function)Grid_DrawShape</appliesto>
     <display>Draw custom shape</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_DrawShape ("", "Black", "Yellow", 1)</create>
-    <add>Draw custom shape</add>
+    <add>[EditorScriptsDrawingDrawShape]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
@@ -527,9 +527,9 @@
   <editor>
     <appliesto>(function)Grid_LoadSvg</appliesto>
     <display>Load SVG data</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_LoadSvg ("", "")</create>
-    <add>Load SVG data</add>
+    <add>[EditorScriptsDrawingLoadSVGData]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
@@ -559,15 +559,15 @@
   <editor>
     <appliesto>(function)Grid_DrawSvg</appliesto>
     <display>Draw SVG</display>
-    <category>Drawing</category>
+    <category>[EditorScriptsDrawingDrawing]</category>
     <create>Grid_DrawSvg ("", "", 0, 0, 1, 1)</create>
-    <add>Draw SVG data</add>
+    <add>[EditorScriptsDrawingDrawSVGdata]</add>
     <advanced/>
     <onlydisplayif>game.gridmap</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingDrawSvgData]</caption>
+      <caption>[EditorScriptsDrawingDrawSvgDataID]</caption>
     </control>
 
     <control>
@@ -589,7 +589,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsDrawingDrawSvgAt] X</caption>
+      <caption>[EditorScriptsDrawingDrawSvgAtX]</caption>
       <breakbefore/>
     </control>
 
@@ -602,7 +602,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>, Y</caption>
+      <caption>[EditorScriptsDrawingDrawSvgAtY]</caption>
     </control>
 
     <control>

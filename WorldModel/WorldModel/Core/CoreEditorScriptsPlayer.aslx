@@ -2,9 +2,9 @@
   <editor>
     <appliesto>(function)IncreaseScore</appliesto>
     <display>Increase score by #0</display>
-    <category>Player</category>
+    <category>[EditorScriptsPlayerPlayer]</category>
     <create>IncreaseScore (0)</create>
-    <add>Increase score</add>
+    <add>[EditorScriptsPlayerIncreasescoreTitle]</add>
     <onlydisplayif>game.showscore</onlydisplayif>
 
     <control>
@@ -23,9 +23,9 @@
   <editor>
     <appliesto>(function)DecreaseScore</appliesto>
     <display>Decrease score by #0</display>
-    <category>Player</category>
+    <category>[EditorScriptsPlayerPlayer]</category>
     <create>DecreaseScore (0)</create>
-    <add>Decrease score</add>
+    <add>[EditorScriptsPlayerDecreasescoreTitle]</add>
     <onlydisplayif>game.showscore</onlydisplayif>
 
     <control>
@@ -44,9 +44,9 @@
   <editor>
     <appliesto>(function)IncreaseHealth</appliesto>
     <display>Increase health by #0</display>
-    <category>Player</category>
+    <category>[EditorScriptsPlayerPlayer]</category>
     <create>IncreaseHealth (0)</create>
-    <add>Increase health</add>
+    <add>[EditorScriptsPlayerIncreasehealthTitle]</add>
     <onlydisplayif>game.showhealth</onlydisplayif>
 
     <control>
@@ -65,9 +65,9 @@
   <editor>
     <appliesto>(function)DecreaseHealth</appliesto>
     <display>Decrease health by #0</display>
-    <category>Player</category>
+    <category>[EditorScriptsPlayerPlayer]</category>
     <create>DecreaseHealth (0)</create>
-    <add>Decrease health</add>
+    <add>[EditorScriptsPlayerDecreasehealthTitle]</add>
     <onlydisplayif>game.showhealth</onlydisplayif>
 
     <control>

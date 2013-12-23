@@ -2,9 +2,9 @@
   <editor>
     <appliesto>(function)EnableTurnScript</appliesto>
     <display>Enable turn script #0</display>
-    <category>Turn Scripts</category>
+    <category>[EditorScriptsTurnScriptsTurnScripts]</category>
     <create>EnableTurnScript ()</create>
-    <add>Enable turn script</add>
+    <add>[EditorScriptsTurnScriptsEnableturn]</add>
     <advanced/>
 
     <control>
@@ -23,9 +23,9 @@
   <editor>
     <appliesto>(function)DisableTurnScript</appliesto>
     <display>Disable turn script #0</display>
-    <category>Turn Scripts</category>
+    <category>[EditorScriptsTurnScriptsTurnScripts]</category>
     <create>DisableTurnScript ()</create>
-    <add>Disable turn script</add>
+    <add>[EditorScriptsTurnScriptsDisableturn]</add>
     <advanced/>
 
     <control>
@@ -44,9 +44,9 @@
   <editor>
     <appliesto>(function)SetTurnScript</appliesto>
     <display>Set turn script #0</display>
-    <category>Turn Scripts</category>
+    <category>[EditorScriptsTurnScriptsTurnScripts]</category>
     <create>SetTurnScript () { }</create>
-    <add>Set turn script</add>
+    <add>[EditorScriptsTurnScriptsSetturnscript]</add>
     <advanced/>
 
     <control>
@@ -76,9 +76,9 @@
   <editor>
     <appliesto>(function)SetTurnTimeout</appliesto>
     <display>Run script after #0 turns</display>
-    <category>Turn Scripts</category>
+    <category>[EditorScriptsTurnScriptsTurnScripts]</category>
     <create>SetTurnTimeout (1) { }</create>
-    <add>Run script after a number of turns</add>
+    <add>[EditorScriptsTurnScriptsRunscriptafter]</add>
 
     <control>
       <controltype>label</controltype>
@@ -108,9 +108,9 @@
   <editor>
     <appliesto>(function)SetTurnTimeoutID</appliesto>
     <display>Run script after #0 turns (name #1)</display>
-    <category>Turn Scripts</category>
+    <category>[EditorScriptsTurnScriptsTurnScripts]</category>
     <create>SetTurnTimeoutID (1, "") { }</create>
-    <add>Run script after a number of turns (with name)</add>
+    <add>[EditorScriptsTurnScriptsRunscriptafterName]</add>
     <advanced/>
 
     <control>
@@ -153,9 +153,9 @@
   <editor>
     <appliesto>create turnscript</appliesto>
     <display>Create turn script named #0</display>
-    <category>Turn Scripts</category>
+    <category>[EditorScriptsTurnScriptsTurnScripts]</category>
     <create>create turnscript ("")</create>
-    <add>Create a turn script</add>
+    <add>[EditorScriptsTurnScriptsCreateaturn]</add>
     <advanced/>
 
     <control>

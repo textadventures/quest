@@ -2,9 +2,9 @@
   <editor>
     <appliesto>msg</appliesto>
     <display>Print #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>msg ("")</create>
-    <add>Print a message</add>
+    <add>[EditorScriptsOutputPrintamessage]</add>
     <common>Print</common>
 
     <control>
@@ -24,9 +24,9 @@
   <editor>
     <appliesto>(function)OutputTextNoBr</appliesto>
     <display>Print #0 (no line-break)</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>OutputTextNoBr ("")</create>
-    <add>Print a message (no line-break)</add>
+    <add>[EditorScriptsOutputPrintamessagenolinebreak]</add>
     <advanced/>
 
     <control>
@@ -44,11 +44,63 @@
   </editor>
 
   <editor>
+    <appliesto>(function)PrintCentered</appliesto>
+    <display>Print (centered) #0</display>
+    <category>[EditorScriptsOutputOutput]</category>
+    <create>PrintCentered ("")</create>
+    <add>[EditorScriptsOutputPrintacentered]</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsOutputPrintcentered]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>message</simple>
+      <expand/>
+      <multiline/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)DisplayList</appliesto>
+    <display>Print list #0</display>
+    <category>[EditorScriptsOutputOutput]</category>
+    <create>DisplayList (, false)</create>
+    <add>[EditorScriptsOutputPrintalist]</add>
+    <advanced/>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsOutputPrintlist]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsOutputNumbered]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>  
+  
+  <editor>
     <appliesto>picture</appliesto>
     <display>Show picture #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>picture ("")</create>
-    <add>Show a picture</add>
+    <add>[EditorScriptsOutputShowapicture]</add>
 
     <control>
       <controltype>label</controltype>
@@ -69,9 +121,9 @@
   <editor>
     <appliesto>(function)SetFramePicture</appliesto>
     <display>Set frame picture #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>SetFramePicture ("")</create>
-    <add>Set frame picture</add>
+    <add>[EditorScriptsOutputSetframepicture]</add>
     <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null and GetBoolean(game, "feature_pictureframe")</onlydisplayif>
 
@@ -94,9 +146,9 @@
   <editor>
     <appliesto>(function)ClearFramePicture</appliesto>
     <display>Clear frame picture</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>ClearFramePicture</create>
-    <add>Clear frame picture</add>
+    <add>[EditorScriptsOutputClearframe]</add>
     <advanced/>
     <desktop/>
     <onlydisplayif>GetString(game, "_editorstyle") = null and GetBoolean(game, "feature_pictureframe")</onlydisplayif>
@@ -110,9 +162,9 @@
   <editor>
     <appliesto>(function)ClearScreen</appliesto>
     <display>Clear the screen</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>ClearScreen</create>
-    <add>Clear the screen</add>
+    <add>[EditorScriptsOutputClearthescreen]</add>
 
     <control>
       <controltype>label</controltype>
@@ -123,9 +175,9 @@
   <editor>
     <appliesto>(function)HidePreviousTurnOutput</appliesto>
     <display>Clear the previous turn</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>HidePreviousTurnOutput</create>
-    <add>Clear the previous turn</add>
+    <add>[EditorScriptsOutputCleartheprevious]</add>
     <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
@@ -138,9 +190,9 @@
   <editor>
     <appliesto>(function)SetForegroundColour</appliesto>
     <display>Change foreground colour to #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>SetForegroundColour ("Black")</create>
-    <add>Change foreground colour</add>
+    <add>[EditorScriptsOutputChangeforeground]</add>
 
     <control>
       <controltype>label</controltype>
@@ -160,9 +212,9 @@
   <editor>
     <appliesto>(function)SetBackgroundColour</appliesto>
     <display>Change background colour to #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>SetBackgroundColour ("White")</create>
-    <add>Change background colour</add>
+    <add>[EditorScriptsOutputChangebackground]</add>
 
     <control>
       <controltype>label</controltype>
@@ -182,9 +234,9 @@
   <editor>
     <appliesto>(function)SetFontName</appliesto>
     <display>Change font to #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>SetFontName ("Georgia, serif")</create>
-    <add>Change font</add>
+    <add>[EditorScriptsOutputChangefont]</add>
 
     <control>
       <controltype>label</controltype>
@@ -204,9 +256,9 @@
   <editor>
     <appliesto>(function)SetWebFontName</appliesto>
     <display>Change font to #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>SetWebFontName ("")</create>
-    <add>Change font (using web fonts)</add>
+    <add>[EditorScriptsOutputChangefontWeb]</add>
 
     <control>
       <controltype>label</controltype>
@@ -226,9 +278,9 @@
   <editor>
     <appliesto>(function)SetFontSize</appliesto>
     <display>Change font size to #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>SetFontSize (9)</create>
-    <add>Change font size</add>
+    <add>[EditorScriptsOutputChangefontSize]</add>
 
     <control>
       <controltype>label</controltype>
@@ -244,33 +296,11 @@
   </editor>
 
   <editor>
-    <appliesto>(function)PrintCentered</appliesto>
-    <display>Print (centered) #0</display>
-    <category>Output</category>
-    <create>PrintCentered ("")</create>
-    <add>Print a centered message</add>
-    <advanced/>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>[EditorScriptsOutputPrintcentered]</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>0</attribute>
-      <simple>message</simple>
-      <expand/>
-      <multiline/>
-    </control>
-  </editor>
-
-  <editor>
     <appliesto>play sound</appliesto>
     <display>Play sound #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>play sound ("", false, false)</create>
-    <add>Play a sound</add>
+    <add>[EditorScriptsOutputPlayasound]</add>
 
     <control>
       <controltype>label</controltype>
@@ -315,9 +345,9 @@
   <editor>
     <appliesto>stop sound</appliesto>
     <display>Stop sound</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>stop sound</create>
-    <add>Stop sound</add>
+    <add>[EditorScriptsOutputStopsound]</add>
     <advanced/>
 
     <control>
@@ -329,9 +359,9 @@
   <editor>
     <appliesto>(function)ShowYouTube</appliesto>
     <display>Play YouTube video #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>ShowYouTube ("")</create>
-    <add>Play YouTube video</add>
+    <add>[EditorScriptsOutputPlayYouTube]</add>
 
     <control>
       <controltype>label</controltype>
@@ -348,9 +378,9 @@
   <editor>
     <appliesto>(function)ShowVimeo</appliesto>
     <display>Play Vimeo video #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>ShowVimeo ("")</create>
-    <add>Play Vimeo video</add>
+    <add>[EditorScriptsOutputPlayVimeovideo]</add>
 
     <control>
       <controltype>label</controltype>
@@ -367,9 +397,9 @@
   <editor>
     <appliesto>(function)DisplayHttpLink</appliesto>
     <display>Display link '#0' to http(s)://#1</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>DisplayHttpLink ("", "", false)</create>
-    <add>Print web link</add>
+    <add>[EditorScriptsOutputPrintweblink]</add>
     <advanced/>
 
     <control>
@@ -413,9 +443,9 @@
   <editor>
     <appliesto>(function)DisplayMailtoLink</appliesto>
     <display>Display link '#0' to email #1</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>DisplayMailtoLink ("", "")</create>
-    <add>Print email link</add>
+    <add>[EditorScriptsOutputPrintemail]</add>
     <advanced/>
 
     <control>
@@ -443,37 +473,7 @@
       <expand/>
     </control>
   </editor>
-
-  <editor>
-    <appliesto>(function)DisplayList</appliesto>
-    <display>Print list #0</display>
-    <category>Output</category>
-    <create>DisplayList (, false)</create>
-    <add>Print a list</add>
-    <advanced/>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>[EditorScriptsOutputPrintlist]</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>0</attribute>
-    </control>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>[EditorScriptsOutputNumbered]</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>1</attribute>
-      <simpleeditor>boolean</simpleeditor>
-    </control>
-  </editor>
-  
+ 
   <!-- synchronous wait function is deprecated, so can no longer be added, but still needs a friendly display for older games -->
   <editor>
     <appliesto>(function)WaitForKeyPress</appliesto>
@@ -488,9 +488,9 @@
   <editor>
     <appliesto>wait</appliesto>
     <display>Wait for key press</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>wait { }</create>
-    <add>Wait for key press</add>
+    <add>[EditorScriptsOutputWaitforkey]</add>
     <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
@@ -510,42 +510,42 @@
   <editor>
     <appliesto>get input</appliesto>
     <display>Get input</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>get input { }</create>
-    <add>Get input</add>
+    <add>[EditorScriptsOutputGetinput]</add>
     <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsOutputGetinput,then]</caption>
+      <caption>[EditorScriptsOutputGetinputThen]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>0</attribute>
-      <caption>[EditorScriptsOutputrunscript]</caption>
+      <caption>[EditorScriptsOutputRunscript]</caption>
     </control>
   </editor>
 
   <editor>
     <appliesto>(function)GetInput</appliesto>
     <display>Get input</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>GetInput () { }</create>
-    <add>Get input</add>
+    <add>[EditorScriptsOutputGetinput]</add>
     <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsOutputGetinput,then]</caption>
+      <caption>[EditorScriptsOutputGetinputThen]</caption>
     </control>
 
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>[EditorScriptsOutputrunscript]</caption>
+      <caption>[EditorScriptsOutputRunscript]</caption>
     </control>
   </editor>
 
@@ -592,7 +592,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>3</attribute>
-      <caption>[EditorScriptsOutputAfterchoosing,]</caption>
+      <caption>[EditorScriptsOutputAfterchoosing]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -600,9 +600,9 @@
   <editor>
     <appliesto>(function)ShowMenu</appliesto>
     <display>Show a menu</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>ShowMenu ("",,true) { }</create>
-    <add>Show a menu</add>
+    <add>[EditorScriptsOutputShowamenu]</add>
     <advanced/>
 
     <control>
@@ -642,7 +642,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>[EditorScriptsOutputAfterchoosing,]</caption>
+      <caption>[EditorScriptsOutputAfterchoosing]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -667,7 +667,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>1</attribute>
-      <caption>[EditorScriptsOutputAfterchoosing,]</caption>
+      <caption>[EditorScriptsOutputAfterchoosing]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -675,9 +675,9 @@
   <editor>
     <appliesto>(function)Ask</appliesto>
     <display>Ask a question</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>Ask ("") { }</create>
-    <add>Ask a question</add>
+    <add>[EditorScriptsOutputAskaquestion]</add>
     <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
@@ -695,7 +695,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>script</attribute>
-      <caption>[EditorScriptsOutputAfterchoosing,]</caption>
+      <caption>[EditorScriptsOutputAfterchoosing]</caption>
       <breakbefore/>
     </control>
   </editor>
@@ -724,9 +724,9 @@
   <editor>
     <appliesto>(function)Log</appliesto>
     <display>Log #0</display>
-    <category>Output</category>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>Log ("")</create>
-    <add>Log</add>
+    <add>[EditorScriptsOutputLog]</add>
     <advanced/>
     <desktop/>
 
@@ -774,8 +774,8 @@
   <editor>
     <appliesto>JS.</appliesto>
     <display>Run JavaScript: #0</display>
-    <add>Run Javascript</add>
-    <category>Output</category>
+    <add>[EditorScriptsOutputRunJavascript]</add>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>JS.</create>
     <advanced/>
 

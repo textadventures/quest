@@ -2,9 +2,9 @@
   <editor>
     <appliesto>(function)AddToInventory</appliesto>
     <display>Add #0 to inventory</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>AddToInventory ()</create>
-    <add>Add to inventory</add>
+    <add>[EditorScriptsObjectsAddtoinventory]</add>
     <common>Inventory</common>
 
     <control>
@@ -23,9 +23,9 @@
   <editor>
     <appliesto>(function)MoveObject</appliesto>
     <display>Move #0 to #1</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>MoveObject (,)</create>
-    <add>Move object</add>
+    <add>[EditorScriptsObjectsMoveobject]</add>
     <common>Move</common>
 
     <control>
@@ -56,9 +56,9 @@
   <editor>
     <appliesto>(function)MoveObjectHere</appliesto>
     <display>Move #0 to the current room</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>MoveObjectHere ()</create>
-    <add>Move object to the current room</add>
+    <add>[EditorScriptsObjectsMoveobjectCurrentRoom]</add>
 
     <control>
       <controltype>label</controltype>
@@ -81,9 +81,9 @@
   <editor>
     <appliesto>(function)MakeObjectVisible</appliesto>
     <display>Make #0 visible</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>MakeObjectVisible ()</create>
-    <add>Make object visible</add>
+    <add>[EditorScriptsObjectsMakeobject]</add>
     <common>Show</common>
 
     <control>
@@ -102,9 +102,9 @@
   <editor>
     <appliesto>(function)MakeObjectInvisible</appliesto>
     <display>Make #0 invisible</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>MakeObjectInvisible ()</create>
-    <add>Make object invisible</add>
+    <add>[EditorScriptsObjectsMakeobjectinvisible]</add>
     <common>Hide</common>
 
     <control>
@@ -123,9 +123,9 @@
   <editor>
     <appliesto>(function)RemoveObject</appliesto>
     <display>Remove #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>RemoveObject ()</create>
-    <add>Remove object</add>
+    <add>[EditorScriptsObjectsRemoveobject]</add>
     <advanced/>
 
     <control>
@@ -144,9 +144,9 @@
   <editor>
     <appliesto>(function)HelperOpenObject</appliesto>
     <display>Open #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>HelperOpenObject ()</create>
-    <add>Open object</add>
+    <add>[EditorScriptsObjectsOpenobject]</add>
     <advanced/>
 
     <control>
@@ -165,9 +165,9 @@
   <editor>
     <appliesto>(function)HelperCloseObject</appliesto>
     <display>Close #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>HelperCloseObject ()</create>
-    <add>Close object</add>
+    <add>[EditorScriptsObjectsCloseobject]</add>
     <advanced/>
 
     <control>
@@ -186,9 +186,9 @@
   <editor>
     <appliesto>(function)SwitchOn</appliesto>
     <display>Switch on #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>SwitchOn ()</create>
-    <add>Switch on</add>
+    <add>[EditorScriptsObjectsSwitchon]</add>
     <advanced/>
 
     <control>
@@ -207,9 +207,9 @@
   <editor>
     <appliesto>(function)SwitchOff</appliesto>
     <display>Switch off #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>SwitchOff ()</create>
-    <add>Switch off</add>
+    <add>[EditorScriptsObjectsSwitchoff]</add>
     <advanced/>
 
     <control>
@@ -228,9 +228,9 @@
   <editor>
     <appliesto>(function)ChangePOV</appliesto>
     <display>Change player object to #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>ChangePOV ()</create>
-    <add>Change player object</add>
+    <add>[EditorScriptsObjectsChangeplayerObject]</add>
     <advanced/>
 
     <control>
@@ -249,9 +249,9 @@
   <editor>
     <appliesto>create</appliesto>
     <display>Create object named #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>create ("")</create>
-    <add>Create an object</add>
+    <add>[EditorScriptsObjectsCreateanobject]</add>
     <advanced/>
 
     <control>
@@ -282,9 +282,9 @@
   <editor>
     <appliesto>create exit</appliesto>
     <display>Create exit #0 (#1) from #2 to #3 (type #4)</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>create exit ("",,)</create>
-    <add>Create an exit</add>
+    <add>[EditorScriptsObjectsCreateanexit]</add>
     <advanced/>
 
     <control>
@@ -300,7 +300,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsObjectsfrom]</caption>
+      <caption>[EditorScriptsObjectsCreateExitfrom]</caption>
     </control>
 
     <control>
@@ -312,7 +312,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsObjectsto]</caption>
+      <caption>[EditorScriptsObjectsCreateExitto]</caption>
     </control>
 
     <control>
@@ -324,7 +324,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsObjectsTypeoptional]</caption>
+      <caption>[EditorScriptsObjectsExitTypeoptional]</caption>
       <breakbefore/>
     </control>
 
@@ -336,7 +336,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsObjectsIDoptional]</caption>
+      <caption>[EditorScriptsObjectsExitIDoptional]</caption>
     </control>
 
     <control>
@@ -355,9 +355,9 @@
   <editor>
     <appliesto>(function)LockExit</appliesto>
     <display>Lock #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>LockExit ()</create>
-    <add>Lock exit</add>
+    <add>[EditorScriptsObjectsLockexit]</add>
 
     <control>
       <controltype>label</controltype>
@@ -376,9 +376,9 @@
   <editor>
     <appliesto>(function)UnlockExit</appliesto>
     <display>Unlock #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>UnlockExit ()</create>
-    <add>Unlock exit</add>
+    <add>[EditorScriptsObjectsUnlockexit]</add>
 
     <control>
       <controltype>label</controltype>
@@ -397,9 +397,9 @@
   <editor>
     <appliesto>(function)MakeExitVisible</appliesto>
     <display>Make #0 visible</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>MakeExitVisible ()</create>
-    <add>Make exit visible</add>
+    <add>[EditorScriptsObjectsMakeexitvisible]</add>
 
     <control>
       <controltype>label</controltype>
@@ -418,9 +418,9 @@
   <editor>
     <appliesto>(function)MakeExitInvisible</appliesto>
     <display>Make #0 invisible</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>MakeExitInvisible ()</create>
-    <add>Make exit invisible</add>
+    <add>[EditorScriptsObjectsMakeexitinvisible]</add>
 
     <control>
       <controltype>label</controltype>
@@ -440,9 +440,9 @@
   <editor>
     <appliesto>(function)CloneObject</appliesto>
     <display>Clone #0</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>CloneObject ()</create>
-    <add>Clone object</add>
+    <add>[EditorScriptsObjectsCloneobject]</add>
     <advanced/>
 
     <control>
@@ -461,9 +461,9 @@
   <editor>
     <appliesto>(function)CloneObjectAndMove</appliesto>
     <display>Clone #0 and move to #1</display>
-    <category>Objects</category>
+    <category>[EditorScriptsObjectsObjects]</category>
     <create>CloneObjectAndMove (,)</create>
-    <add>Clone object and move</add>
+    <add>[EditorScriptsObjectsCloneobjectAndMove]</add>
     <advanced/>
 
     <control>

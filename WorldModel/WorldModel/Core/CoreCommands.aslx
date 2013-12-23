@@ -171,13 +171,14 @@
       
         if (LengthOf(takemsg) > 0) {
           msg (prefix + takemsg)
-          if (found and GetBoolean (object, "scenery")) {
-            object.scenery = false
-          }
         }
       
         if (HasScript(object, "ontake")) {
           do (object, "ontake")
+        }
+        
+        if (found and GetBoolean (object, "scenery") and object.parent = game.pov) {
+            object.scenery = false
         }
       }
     }

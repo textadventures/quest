@@ -100,7 +100,7 @@
 
     <control>
       <mustnotinherit>editor_room</mustnotinherit>
-      <selfcaption>"Look at" object description</selfcaption>
+      <selfcaption>[EditorObjectSetupLookatobject]</selfcaption>
       <controltype>multi</controltype>
       <attribute>look</attribute>
       <types>

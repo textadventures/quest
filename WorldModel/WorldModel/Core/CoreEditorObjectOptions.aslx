@@ -171,13 +171,13 @@
       <caption>[EditorObjectOptionsOthernames]</caption>
       <controltype>list</controltype>
       <attribute>pov_alt</attribute>
-      <editprompt>Please enter an additional name for this object</editprompt>
+      <editprompt>[EditorObjectOptionsPleaseenter]</editprompt>
       <advanced/>
     </control>
 
     <control>
       <mustinherit>editor_player</mustinherit>
-      <selfcaption>"Look at" object description</selfcaption>
+      <selfcaption>[EditorObjectOptionsLookatobject]</selfcaption>
       <controltype>multi</controltype>
       <attribute>pov_look</attribute>
       <types>

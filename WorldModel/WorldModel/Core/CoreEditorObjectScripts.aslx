@@ -25,13 +25,13 @@
 
     <control>
       <controltype>script</controltype>
-      <caption>[EditorObjectScriptsBeforeentering]</caption>
+      <caption>[EditorObjectScriptsBeforeenteringFirst]</caption>
       <attribute>beforefirstenter</attribute>
     </control>
 
     <control>
       <controltype>script</controltype>
-      <caption>[EditorObjectScriptsAfterentering]</caption>
+      <caption>[EditorObjectScriptsAfterenteringFirst]</caption>
       <attribute>firstenter</attribute>
     </control>
 

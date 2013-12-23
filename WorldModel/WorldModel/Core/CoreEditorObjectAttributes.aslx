@@ -8,8 +8,8 @@
     <control>
       <controltype>stringdictionary</controltype>
       <caption>[EditorObjectAttributesStatusattributes]</caption>
-      <keyprompt>Please enter the attribute name</keyprompt>
-      <valueprompt>Please enter the format string (blank for default)</valueprompt>
+      <keyprompt>[EditorObjectAttributesPleaseenter]</keyprompt>
+      <valueprompt>[EditorObjectAttributesPleaseenter2]</valueprompt>
       <attribute>statusattributes</attribute>
       <mustinherit>editor_player</mustinherit>
     </control>

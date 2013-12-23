@@ -2,9 +2,9 @@
   <editor>
     <appliesto>(function)EnableTimer</appliesto>
     <display>Enable timer #0</display>
-    <category>Timers</category>
+    <category>[EditorScriptsTimersTimers]</category>
     <create>EnableTimer ()</create>
-    <add>Enable timer</add>
+    <add>[EditorScriptsTimersEnabletimer]</add>
     <advanced/>
 
     <control>
@@ -24,9 +24,9 @@
   <editor>
     <appliesto>(function)DisableTimer</appliesto>
     <display>Disable timer #0</display>
-    <category>Timers</category>
+    <category>[EditorScriptsTimersTimers]</category>
     <create>DisableTimer ()</create>
-    <add>Disable timer</add>
+    <add>[EditorScriptsTimersDisabletimer]</add>
     <advanced/>
 
     <control>
@@ -46,9 +46,9 @@
   <editor>
     <appliesto>(function)SetTimerInterval</appliesto>
     <display>Set timer #0 interval to #1</display>
-    <category>Timers</category>
+    <category>[EditorScriptsTimersTimers]</category>
     <create>SetTimerInterval (,1)</create>
-    <add>Set timer interval</add>
+    <add>[EditorScriptsTimersSettimerinterval]</add>
     <advanced/>
 
     <control>
@@ -86,9 +86,9 @@
   <editor>
     <appliesto>(function)SetTimerScript</appliesto>
     <display>Set timer #0 script</display>
-    <category>Timers</category>
+    <category>[EditorScriptsTimersTimers]</category>
     <create>SetTimerScript () { }</create>
-    <add>Set timer script</add>
+    <add>[EditorScriptsTimersSettimerscript]</add>
     <advanced/>
 
     <control>
@@ -119,9 +119,9 @@
   <editor>
     <appliesto>(function)SetTimeout</appliesto>
     <display>Run script after #0 seconds</display>
-    <category>Timers</category>
+    <category>[EditorScriptsTimersTimers]</category>
     <create>SetTimeout (1) { }</create>
-    <add>Run script after a number of seconds</add>
+    <add>[EditorScriptsTimersRunscriptafter]</add>
 
     <control>
       <controltype>label</controltype>
@@ -151,9 +151,9 @@
   <editor>
     <appliesto>(function)SetTimeoutID</appliesto>
     <display>Run script after #0 seconds (name #1)</display>
-    <category>Timers</category>
+    <category>[EditorScriptsTimersTimers]</category>
     <create>SetTimeoutID (1, "") { }</create>
-    <add>Run script after a number of seconds (with name)</add>
+    <add>[EditorScriptsTimersRunscriptafterName]</add>
     <advanced/>
 
     <control>
@@ -219,9 +219,9 @@
   <editor>
     <appliesto>create timer</appliesto>
     <display>Create timer named #0</display>
-    <category>Timers</category>
+    <category>[EditorScriptsTimersTimers]</category>
     <create>create timer ("")</create>
-    <add>Create a timer</add>
+    <add>[EditorScriptsTimersCreateatimer]</add>
     <advanced/>
 
     <control>
