@@ -2,9 +2,9 @@
   <editor>
     <appliesto>(function)SetDark</appliesto>
     <display>Make room (#1) dark</display>
-    <category>Darkness</category>
+    <category>[EditorScriptsDarknessDarkness]</category>
     <create>SetDark()</create>
-    <add>Make room dark</add>
+    <add>[EditorScriptsDarknessMakeroomdark]</add>
     <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
@@ -24,9 +24,9 @@
   <editor>
     <appliesto>(function)SetLight</appliesto>
     <display>Make room (#1) light</display>
-    <category>Darkness</category>
+    <category>[EditorScriptsDarknessDarkness]</category>
     <create>SetLight()</create>
-    <add>Make room light</add>
+    <add>[EditorScriptsDarknessMakeroomlight]</add>
     <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
@@ -46,9 +46,9 @@
   <editor>
     <appliesto>(function)SetObjectLightstrength</appliesto>
     <display>Set brightness of object #0 to #1</display>
-    <category>Darkness</category>
+    <category>[EditorScriptsDarknessDarkness]</category>
     <create>SetObjectLightstrength (,"")</create>
-    <add>Set object brightness</add>
+    <add>[EditorScriptsDarknessSetobjectbrightness]</add>
     <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
@@ -83,9 +83,9 @@
   <editor>
     <appliesto>(function)SetExitLightstrength</appliesto>
     <display>Set brightness of exit #0 to #1</display>
-    <category>Darkness</category>
+    <category>[EditorScriptsDarknessDarkness]</category>
     <create>SetExitLightstrength (,"")</create>
-    <add>Set exit brightness</add>
+    <add>[EditorScriptsDarknessSetexitbrightness]</add>
     <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
   

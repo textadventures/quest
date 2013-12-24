@@ -13,7 +13,7 @@
     </control>
 
     <control>
-      <selfcaption>Description to display when the room is dark</selfcaption>
+      <selfcaption>[EditorObjectLightDarkDescription]</selfcaption>
       <controltype>multi</controltype>
       <attribute>darkroomdescription</attribute>
       <types>

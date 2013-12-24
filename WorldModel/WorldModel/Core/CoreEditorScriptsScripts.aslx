@@ -19,8 +19,8 @@
   
   <editor>
     <appliesto>//</appliesto>
-    <category>Scripts</category>
-    <add>Comment</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsComment]</add>
     <create>// Type comment</create>
     <advanced/>
 
@@ -36,8 +36,8 @@
   
   <editor>
     <appliesto>if</appliesto>
-    <category>Scripts</category>
-    <add>If...</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsIf]</add>
     <create>if ()</create>
     <common>If</common>
     <!-- note: "if" has its own special editor, so it doesn't have any editor definition in this file -->
@@ -46,13 +46,13 @@
   <editor>
     <appliesto>firsttime</appliesto>
     <display>The first time, run: #0 - otherwise run: #1</display>
-    <category>Scripts</category>
-    <add>First time...</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsFirsttime]</add>
     <create>firsttime</create>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsScriptsThefirsttime,]</caption>
+      <caption>[EditorScriptsScriptsThefirsttime]</caption>
     </control>
 
     <control>
@@ -77,8 +77,8 @@
   <editor>
     <appliesto>for</appliesto>
     <display>For #0 values #1 to #2, run: #4</display>
-    <category>Scripts</category>
-    <add>For...</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsFor]</add>
     <create>for (,,,1)</create>
     <advanced/>
 
@@ -139,8 +139,8 @@
   <editor>
     <appliesto>foreach</appliesto>
     <display>For each #0 in #1, run: #2</display>
-    <category>Scripts</category>
-    <add>For each...</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsForeach]</add>
     <create>foreach (,)</create>
     <advanced/>
 
@@ -176,14 +176,14 @@
   <editor>
     <appliesto>switch</appliesto>
     <display>Switch #0: (#1 cases), Default: #2</display>
-    <category>Scripts</category>
-    <add>Switch...</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsSwitch]</add>
     <create>switch ()</create>
     <advanced/>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsScriptsSwitch]</caption>
+      <caption>[EditorScriptsScriptsSwitch2]</caption>
     </control>
 
     <control>
@@ -203,7 +203,7 @@
       <controltype>scriptdictionary</controltype>
       <caption>[EditorScriptsScriptsCases2]</caption>
       <attribute>1</attribute>
-      <keyprompt>Please enter the case expression</keyprompt>
+      <keyprompt>[EditorScriptsScriptsPleaseenter]</keyprompt>
     </control>
 
     <control>
@@ -217,14 +217,14 @@
   <editor>
     <appliesto>while</appliesto>
     <display>While #0 is true, run: #1</display>
-    <category>Scripts</category>
-    <add>While...</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsWhile]</add>
     <create>while ()</create>
     <advanced/>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsScriptsWhile]</caption>
+      <caption>[EditorScriptsScriptsWhile2]</caption>
     </control>
 
     <control>
@@ -234,7 +234,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsScriptsistrue,]</caption>
+      <caption>[EditorScriptsScriptsistrue]</caption>
     </control>
 
     <control>
@@ -248,8 +248,8 @@
   <editor>
     <appliesto>()</appliesto>
     <display>Call function #0 (#1 parameters)</display>
-    <category>Scripts</category>
-    <add>Call function</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsCallfunction]</add>
     <create type="string"></create>
     <advanced/>
 
@@ -274,7 +274,7 @@
       <controltype>list</controltype>
       <caption>[EditorScriptsScriptsParameters]</caption>
       <attribute>1</attribute>
-      <editprompt>Please enter the parameter</editprompt>
+      <editprompt>[EditorScriptsScriptsPleaseenter2]</editprompt>
     </control>
   </editor>
 
@@ -282,8 +282,8 @@
     <appliesto>do</appliesto>
     <!-- TO DO: Don't display parameter #2 if it's null or empty -->
     <display>Run #0's '#1' script with parameters from dictionary #2</display>
-    <category>Scripts</category>
-    <add>Run an object's script attribute</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsRunanobjects]</add>
     <create>do (,"")</create>
     <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
@@ -327,8 +327,8 @@
     <appliesto>invoke</appliesto>
     <!-- TO DO: Don't display parameter #1 if it's null or empty -->
     <display>Run '#0' script with parameters from dictionary #1</display>
-    <category>Scripts</category>
-    <add>Run a script returned by an expression</add>
+    <category>[EditorScriptsScriptsScripts]</category>
+    <add>[EditorScriptsScriptsRunascript]</add>
     <create>invoke ()</create>
     <advanced/>
 
@@ -357,9 +357,9 @@
   <editor>
     <appliesto>error</appliesto>
     <display>Raise error #0</display>
-    <category>Scripts</category>
+    <category>[EditorScriptsScriptsScripts]</category>
     <create>error ("")</create>
-    <add>Raise an error</add>
+    <add>[EditorScriptsScriptsRaiseanerror]</add>
     <advanced/>
 
     <control>
@@ -377,14 +377,14 @@
   <editor>
     <appliesto>return</appliesto>
     <display>Return #0</display>
-    <category>Scripts</category>
+    <category>[EditorScriptsScriptsScripts]</category>
     <create>return ()</create>
-    <add>Set this function's return value</add>
+    <add>[EditorScriptsScriptsSetthisfunctions]</add>
     <advanced/>
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsScriptsSetthisfunction's]</caption>
+      <caption>[EditorScriptsScriptsSetthisfunctionsTo]</caption>
     </control>
 
     <control>
@@ -434,7 +434,7 @@
       <controltype>list</controltype>
       <caption>[EditorScriptsScriptsParameters]</caption>
       <attribute>2</attribute>
-      <editprompt>Please enter the parameter</editprompt>
+      <editprompt>[EditorScriptsScriptsPleaseenter2]</editprompt>
     </control>
   </editor>
 
@@ -444,7 +444,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsScriptsWhenready,]</caption>
+      <caption>[EditorScriptsScriptsWhenready]</caption>
     </control>
 
     <control>

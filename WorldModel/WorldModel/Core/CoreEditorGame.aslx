@@ -511,7 +511,7 @@
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGamePutanextra]</caption>
+        <caption>[EditorGamePutanextraNewline]</caption>
         <attribute>changeroom_newline</attribute>
         <onlydisplayif>not game.command_newline</onlydisplayif>
       </control>
@@ -522,7 +522,7 @@
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGamePutanextra]</caption>
+        <caption>[EditorGamePutanextraBeforeTurn]</caption>
         <attribute>command_newline</attribute>
       </control>
       <control>
@@ -533,7 +533,7 @@
       </control>
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGameAutomatically]</caption>
+        <caption>[EditorGameAutomaticallyObjectList]</caption>
         <attribute>autodisplayverbs</attribute>
       </control>
 

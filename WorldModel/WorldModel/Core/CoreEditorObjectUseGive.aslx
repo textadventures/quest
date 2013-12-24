@@ -34,13 +34,13 @@
 
     <control>
       <controltype>multi</controltype>
-      <selfcaption>Action</selfcaption>
+      <selfcaption>[EditorObjectUseGiveAction]</selfcaption>
       <attribute>useon</attribute>
       <types>
         null=None;scriptdictionary=Handle objects individually;string=Print a message
       </types>
       <keyname>Object</keyname>
-      <keyprompt>Please enter the object name</keyprompt>
+      <keyprompt>[EditorObjectUseGivePleaseenter]</keyprompt>
       <source>object</source>
     </control>
 

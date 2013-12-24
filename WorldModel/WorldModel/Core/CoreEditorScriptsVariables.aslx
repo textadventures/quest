@@ -2,8 +2,8 @@
   <editor>
     <appliesto>(function)SetObjectFlagOn</appliesto>
     <display>Set #0 flag #1</display>
-    <category>Variables</category>
-    <add>Set object flag</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesSetobjectflag]</add>
     <create>SetObjectFlagOn (,"")</create>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
@@ -29,8 +29,8 @@
   <editor>
     <appliesto>(function)SetObjectFlagOff</appliesto>
     <display>Unset #0 flag #1</display>
-    <category>Variables</category>
-    <add>Unset object flag</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesUnsetobject]</add>
     <create>SetObjectFlagOff (,"")</create>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
@@ -56,8 +56,8 @@
   <editor>
     <appliesto>(function)SetFlagOn</appliesto>
     <display>Set flag #0 on</display>
-    <category>Variables</category>
-    <add>Set flag on</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesSetflagon]</add>
     <create>SetFlagOn ("")</create>
     <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
 
@@ -76,8 +76,8 @@
   <editor>
     <appliesto>(function)SetFlagOff</appliesto>
     <display>Set flag #0 off</display>
-    <category>Variables</category>
-    <add>Set flag off</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesSetflagoff]</add>
     <create>SetFlagOff ("")</create>
     <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
 
@@ -93,11 +93,11 @@
     </control>
   </editor>
 
-<editor>
+  <editor>
     <appliesto>(function)IncreaseObjectCounter</appliesto>
     <display>Increase #0 counter #1</display>
-    <category>Variables</category>
-    <add>Increase object counter</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesIncreaseobject]</add>
     <create>IncreaseObjectCounter (,"")</create>
       <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
@@ -123,8 +123,8 @@
   <editor>
     <appliesto>(function)DecreaseObjectCounter</appliesto>
     <display>Decrease #0 counter #1</display>
-    <category>Variables</category>
-    <add>Decrease object counter</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesDecreaseobject]</add>
     <create>DecreaseObjectCounter (,"")</create>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
@@ -150,8 +150,8 @@
   <editor>
     <appliesto>(function)SetCounter</appliesto>
     <display>Set counter #0 to #1</display>
-    <category>Variables</category>
-    <add>Set counter</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesSetcounter]</add>
     <create>SetCounter ("",0)</create>
     <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
 
@@ -182,8 +182,8 @@
   <editor>
     <appliesto>(function)IncreaseCounter</appliesto>
     <display>Increase counter #0</display>
-    <category>Variables</category>
-    <add>Increase counter</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesIncreasecounter]</add>
     <create>IncreaseCounter ("")</create>
     <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
 
@@ -202,8 +202,8 @@
   <editor>
     <appliesto>(function)DecreaseCounter</appliesto>
     <display>Decrease counter #0</display>
-    <category>Variables</category>
-    <add>Decrease counter</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesDecreasecounter]</add>
     <create>DecreaseCounter ("")</create>
     <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
 
@@ -222,8 +222,8 @@
   <editor>
     <appliesto>(function)ChangeCounter</appliesto>
     <display>Change counter #0 by #1</display>
-    <category>Variables</category>
-    <add>Change counter</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesChangecounter]</add>
     <create>ChangeCounter ("",0)</create>
     <onlydisplayif>GetString(game, "_editorstyle") = "gamebook"</onlydisplayif>
 
@@ -255,8 +255,8 @@
   <editor>
     <appliesto>=</appliesto>
     <display>Set #0 = #1</display>
-    <category>Variables</category>
-    <add>Set a variable or attribute</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesSetavariable]</add>
     <create>=</create>
     <advanced/>
 
@@ -285,8 +285,8 @@
   <editor>
     <appliesto>=></appliesto>
     <display>Set #0 script: #1</display>
-    <category>Variables</category>
-    <add>Set a variable or attribute to a script</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesSetavariableScript]</add>
     <create>=></create>
     <advanced/>
 
@@ -314,8 +314,8 @@
   <editor>
     <appliesto>set</appliesto>
     <display>Set #0's #1 attribute to #2</display>
-    <category>Variables</category>
-    <add>Set an object's attribute (named by an expression)</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesSetanobjects]</add>
     <create>set (,"",)</create>
     <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
@@ -358,8 +358,8 @@
   <editor>
     <appliesto>list add</appliesto>
     <display>Add to list #0 value #1</display>
-    <category>Variables</category>
-    <add>Add a value to a list</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesAddavalueto]</add>
     <create>list add (,)</create>
     <advanced/>
 
@@ -388,8 +388,8 @@
   <editor>
     <appliesto>list remove</appliesto>
     <display>Remove from list #0 value #1</display>
-    <category>Variables</category>
-    <add>Remove a value from a list</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesRemoveavalue]</add>
     <create>list remove (,)</create>
     <advanced/>
 
@@ -418,8 +418,8 @@
   <editor>
     <appliesto>dictionary add</appliesto>
     <display>Add to dictionary #0: #1 = #2</display>
-    <category>Variables</category>
-    <add>Add a value to a dictionary</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesAddavaluetoDic]</add>
     <create>dictionary add (,"",)</create>
     <advanced/>
 
@@ -459,8 +459,8 @@
   <editor>
     <appliesto>dictionary remove</appliesto>
     <display>Remove from dictionary #0: #1</display>
-    <category>Variables</category>
-    <add>Remove a value from a dictionary</add>
+    <category>[EditorScriptsVariablesVariables]</category>
+    <add>[EditorScriptsVariablesRemoveavalueDic]</add>
     <create>dictionary remove (,"")</create>
     <advanced/>
 

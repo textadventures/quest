@@ -2,8 +2,8 @@
   <editor>
     <appliesto>finish</appliesto>
     <display>Finish the game</display>
-    <category>Game State</category>
-    <add>Finish the game</add>
+    <category>[EditorScriptsGameStateGameState]</category>
+    <add>[EditorScriptsGameStateFinishthegame]</add>
     <create>finish</create>
 
     <control>
@@ -15,8 +15,8 @@
   <editor>
     <appliesto>undo</appliesto>
     <display>Undo one transaction</display>
-    <category>Game State</category>
-    <add>Undo</add>
+    <category>[EditorScriptsGameStateGameState]</category>
+    <add>[EditorScriptsGameStateUndo]</add>
     <create>undo</create>
     <advanced/>
 

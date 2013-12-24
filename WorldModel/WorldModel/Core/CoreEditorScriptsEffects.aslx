@@ -2,9 +2,9 @@
   <editor>
     <appliesto>(function)TextFX_Typewriter</appliesto>
     <display>Typewriter #0</display>
-    <category>Effects</category>
+    <category>[EditorScriptsEffectsEffects]</category>
     <create>TextFX_Typewriter ("", 100)</create>
-    <add>Typewriter</add>
+    <add>[EditorScriptsEffectsTypewriter]</add>
 
     <control>
       <controltype>label</controltype>
@@ -40,9 +40,9 @@
   <editor>
     <appliesto>(function)TextFX_Unscramble</appliesto>
     <display>Unscramble #0</display>
-    <category>Effects</category>
+    <category>[EditorScriptsEffectsEffects]</category>
     <create>TextFX_Unscramble ("", 100, 1)</create>
-    <add>Unscramble</add>
+    <add>[EditorScriptsEffectsUnscramble]</add>
 
     <control>
       <controltype>label</controltype>

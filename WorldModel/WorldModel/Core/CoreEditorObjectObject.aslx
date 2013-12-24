@@ -9,7 +9,7 @@
       <caption>[EditorObjectObjectOthernames]</caption>
       <controltype>list</controltype>
       <attribute>alt</attribute>
-      <editprompt>Please enter an additional name for this object</editprompt>
+      <editprompt>[EditorObjectObjectPleaseenter]</editprompt>
     </control>
 
     <control>
@@ -77,7 +77,7 @@
       <caption>[EditorObjectObjectDisplayverbs]</caption>
       <controltype>list</controltype>
       <attribute>displayverbs</attribute>
-      <editprompt>Please enter a verb</editprompt>
+      <editprompt>[EditorObjectObjectPleaseenterVerb]</editprompt>
       <onlydisplayif>not GetBoolean(this, "useindividualverblist") and (game.enablehyperlinks or game.showpanes)</onlydisplayif>
     </control>
 
