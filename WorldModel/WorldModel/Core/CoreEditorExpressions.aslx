@@ -7,7 +7,7 @@
   <editor>
     <pattern>Got(#object#)</pattern>
     <create>Got()</create>
-    <description>player is carrying object</description>
+    <description>[EditorExpressionsplayeriscarrying]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -21,7 +21,7 @@
   <editor>
     <pattern>not Got(#object#)</pattern>
     <create>not Got()</create>
-    <description>player is not carrying object</description>
+    <description>[EditorExpressionsplayerisnot]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -35,7 +35,7 @@
   <editor>
     <pattern>GetBoolean(#object#, #flag#)</pattern>
     <create>GetBoolean(, "")</create>
-    <description>object has flag</description>
+    <description>[EditorExpressionsobjecthasflag]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -55,7 +55,7 @@
   <editor>
     <pattern>not GetBoolean(#object#, #flag#)</pattern>
     <create>not GetBoolean(, "")</create>
-    <description>object does not have flag</description>
+    <description>[EditorExpressionsobjectdoes]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -75,7 +75,7 @@
   <editor>
     <pattern><![CDATA[GetInt(#object#, #counter#) #compare# #value#]]></pattern>
     <create><![CDATA[GetInt(, "") = 0]]></create>
-    <description>object counter</description>
+    <description>[EditorExpressionsobjectcounter]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -115,7 +115,7 @@
   <editor>
     <pattern>game.pov.parent = #parent#</pattern>
     <create>game.pov.parent = </create>
-    <description>player is in room</description>
+    <description>[EditorExpressionsplayerisin]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -129,7 +129,7 @@
   <editor>
     <pattern>not game.pov.parent = #parent#</pattern>
     <create>not game.pov.parent = </create>
-    <description>player is not in room</description>
+    <description>[EditorExpressionsplayerisnot]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -143,7 +143,7 @@
   <editor>
     <pattern>game.pov = #object#</pattern>
     <create>game.pov = </create>
-    <description>player object is</description>
+    <description>[EditorExpressionsplayerobject]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -157,7 +157,7 @@
   <editor>
     <pattern>IsSwitchedOn(#object#)</pattern>
     <create>IsSwitchedOn()</create>
-    <description>object is switched on</description>
+    <description>[EditorExpressionsobjectisswitched]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -171,7 +171,7 @@
   <editor>
     <pattern>not IsSwitchedOn(#object#)</pattern>
     <create>not IsSwitchedOn()</create>
-    <description>object is switched off</description>
+    <description>[EditorExpressionsobjectisswitched]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -185,7 +185,7 @@
   <editor>
     <pattern>ListContains(ScopeVisible(), #object#)</pattern>
     <create>ListContains(ScopeVisible(), )</create>
-    <description>object is visible</description>
+    <description>[EditorExpressionsobjectisvisible]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -199,7 +199,7 @@
   <editor>
     <pattern>not ListContains(ScopeVisible(), #object#)</pattern>
     <create>not ListContains(ScopeVisible(), )</create>
-    <description>object is not visible</description>
+    <description>[EditorExpressionsobjectisnot]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -213,7 +213,7 @@
   <editor>
     <pattern>ListContains(ScopeReachable(), #object#)</pattern>
     <create>ListContains(ScopeReachable(), )</create>
-    <description>object is reachable</description>
+    <description>[EditorExpressionsobjectisreachable]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -227,7 +227,7 @@
   <editor>
     <pattern>not ListContains(ScopeReachable(), #object#)</pattern>
     <create>not ListContains(ScopeReachable(), )</create>
-    <description>object is not reachable</description>
+    <description>[EditorExpressionsobjectisnot]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -241,7 +241,7 @@
   <editor>
     <pattern>Contains (#object1#,#object2#)</pattern>
     <create>Contains (,)</create>
-    <description>object contains</description>
+    <description>[EditorExpressionsobjectcontains]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -272,7 +272,7 @@
   <editor>
     <pattern>not Contains (#object1#,#object2#)</pattern>
     <create>not Contains (,)</create>
-    <description>object does not contain</description>
+    <description>[EditorExpressionsobjectdoes]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -303,7 +303,7 @@
   <editor>
     <pattern>#object#.isopen</pattern>
     <create>.isopen</create>
-    <description>object is open</description>
+    <description>[EditorExpressionsobjectisopen]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -317,7 +317,7 @@
   <editor>
     <pattern>not #object#.isopen</pattern>
     <create>not .isopen</create>
-    <description>object is closed</description>
+    <description>[EditorExpressionsobjectisclosed]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -331,7 +331,7 @@
   <editor>
     <pattern>HasAttribute(#object#, #property#)</pattern>
     <create>HasAttribute(, "")</create>
-    <description>object has attribute</description>
+    <description>[EditorExpressionsobjecthasattribute]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -359,7 +359,7 @@
   <editor>
     <pattern>#object#.#property# = #value#</pattern>
     <create>. = </create>
-    <description>object attribute equals</description>
+    <description>[EditorExpressionsobjectattribute]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -399,7 +399,7 @@
   <editor>
     <pattern>RandomChance(#percentile#)</pattern>
     <create>RandomChance(50)</create>
-    <description>random chance</description>
+    <description>[EditorExpressionsrandomchance]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -422,35 +422,35 @@
   <editor>
     <pattern>NewStringList()</pattern>
     <create>NewStringList()</create>
-    <description>new string list</description>
+    <description>[EditorExpressionsnewstringlist]</description>
     <expressiontype>set</expressiontype>
   </editor>
 
   <editor>
     <pattern>NewObjectList()</pattern>
     <create>NewObjectList()</create>
-    <description>new object list</description>
+    <description>[EditorExpressionsnewobjectlist]</description>
     <expressiontype>set</expressiontype>
   </editor>
 
   <editor>
     <pattern>NewStringDictionary()</pattern>
     <create>NewStringDictionary()</create>
-    <description>new string dictionary</description>
+    <description>[EditorExpressionsnewstringdictionary]</description>
     <expressiontype>set</expressiontype>
   </editor>
 
   <editor>
     <pattern>NewObjectDictionary()</pattern>
     <create>NewObjectDictionary()</create>
-    <description>new object dictionary</description>
+    <description>[EditorExpressionsnewobjectdictionary]</description>
     <expressiontype>set</expressiontype>
   </editor>
 
   <editor>
     <pattern>GetRandomInt(#min#,#max#)</pattern>
     <create>GetRandomInt(1,10)</create>
-    <description>random number</description>
+    <description>[EditorExpressionsrandomnumber]</description>
     <expressiontype>set</expressiontype>
 
     <control>
@@ -484,35 +484,35 @@
   <editor>
     <pattern>AllObjects()</pattern>
     <create>AllObjects()</create>
-    <description>all objects</description>
+    <description>[EditorExpressionsallobjects]</description>
     <expressiontype>foreach</expressiontype>
   </editor>
 
   <editor>
     <pattern>ScopeVisible()</pattern>
     <create>ScopeVisible()</create>
-    <description>all visible objects</description>
+    <description>[EditorExpressionsallvisible]</description>
     <expressiontype>foreach</expressiontype>
   </editor>
 
   <editor>
     <pattern>ScopeInventory()</pattern>
     <create>ScopeInventory()</create>
-    <description>the inventory</description>
+    <description>[EditorExpressionstheinventory]</description>
     <expressiontype>foreach</expressiontype>
   </editor>
   
   <editor>
     <pattern>AllExits()</pattern>
     <create>AllExits()</create>
-    <description>all exits</description>
+    <description>[EditorExpressionsallexits]</description>
     <expressiontype>foreach</expressiontype>
   </editor>
 
   <editor>
     <pattern>AllCommands()</pattern>
     <create>AllCommands()</create>
-    <description>all commands</description>
+    <description>[EditorExpressionsallcommands]</description>
     <expressiontype>foreach</expressiontype>
   </editor>
 

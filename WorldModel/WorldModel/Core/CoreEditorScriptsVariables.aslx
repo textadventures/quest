@@ -466,7 +466,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsVariablesRemovefrom]</caption>
+      <caption>[EditorScriptsVariablesRemovefromDic]</caption>
     </control>
 
     <control>
