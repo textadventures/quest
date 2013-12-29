@@ -14,7 +14,7 @@
       <caption>[EditorObjectInventoryTake2]</caption>
       <attribute>take</attribute>
       <types>
-        boolean=Default behaviour; script=Run script
+        boolean=[TypeDefaultBehaviour]; script=[TypeRunScript]
       </types>
       <checkbox>Object can be taken</checkbox>
     </control>
@@ -47,7 +47,7 @@
       <caption>[EditorObjectInventoryDrop2]</caption>
       <attribute>drop</attribute>
       <types>
-        boolean=Default behaviour; script=Run script
+        boolean=[TypeDefaultBehaviour]; script=[TypeRunScript]
       </types>
       <checkbox>Object can be dropped</checkbox>
     </control>

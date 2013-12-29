@@ -8,7 +8,7 @@
     <control>
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectOptionsSwitchable2]</caption>
-      <types>*=Cannot be switched on/off; switchable=Can be switched on/off</types>
+      <types>*=[TypeCannotSwitched]; switchable=[TypeCanSwitched]</types>
       <width>150</width>
     </control>
 
@@ -76,7 +76,7 @@
     <control>
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectOptionsEdible2]</caption>
-      <types>*=Cannot be eaten; edible=Can be eaten</types>
+      <types>*=[TypeCannotEaten]; edible=[TypeCanEaten]</types>
     </control>
 
     <control>
@@ -130,7 +130,7 @@
     <control>
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectOptionsPlayer2]</caption>
-      <types>*=Cannot be a player; editor_player=Can be a player</types>
+      <types>*=[TypeCannotPlayer]; editor_player=[TypeCanPlayer]</types>
       <advanced/>
     </control>
 
@@ -181,7 +181,7 @@
       <controltype>multi</controltype>
       <attribute>pov_look</attribute>
       <types>
-        null=No description; string=Text; script=Run script
+        null=[TypeNoDescription]; string=[TypeText]; script=[TypeRunScript]
       </types>
       <editors>
         string=richtext

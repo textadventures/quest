@@ -6,7 +6,7 @@
     <control>
       <caption>[EditorObjectSetupType]</caption>
       <controltype>dropdowntypes</controltype>
-      <types>editor_room=Room; editor_object=Object; *=Object and/or room</types>
+      <types>editor_room=[TypeObjectRoom]; editor_object=[TypeObjectObject]; *=[TypeObjectAndOr]</types>
       <width>150</width>
       <advanced/>
     </control>
@@ -64,7 +64,7 @@
       <mustnotinherit>editor_room</mustnotinherit>
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectSetupType]</caption>
-      <types>*=Inanimate object; [LanguageSpecificObjectTypes]male=Male character; namedmale=Male character (named); female=Female character; namedfemale=Female character (named); plural=Inanimate objects (plural); maleplural=Male characters (plural); femaleplural=Female characters (plural)</types>
+      <types>*=[TypeInanimateObject]; [LanguageSpecificObjectTypes]male=[TypeMaleCharacter]; namedmale=[TypeMaleCharacterNamed]; female=[TypeFemaleCharacter]; namedfemale=[TypeFemaleCharacterNamed]; plural=[TypeInanimateObjects]; maleplural=[TypeMaleCharacters]; femaleplural=[TypeFemaleCharacters]</types>
       <width>150</width>
     </control>
 
@@ -104,7 +104,7 @@
       <controltype>multi</controltype>
       <attribute>look</attribute>
       <types>
-        null=No description; string=Text; script=Run script
+        null=[TypeNoDescription]; string=[TypeText]; script=[TypeRunScript]
       </types>
       <editors>
         string=richtext

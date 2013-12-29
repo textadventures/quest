@@ -10,7 +10,7 @@
         <caption>[EditorVerbPattern]</caption>
         <attribute>pattern</attribute>
         <types>
-          simplepattern=Command pattern; string=Regular expression
+          simplepattern=[TypePatternCommand]; string=[TypePatternRegular]
         </types>
       </control>
 

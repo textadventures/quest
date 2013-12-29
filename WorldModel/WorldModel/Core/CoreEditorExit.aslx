@@ -16,7 +16,7 @@
       <control>
         <caption>[EditorExitType]</caption>
         <controltype>dropdowntypes</controltype>
-        <types>*=Non-directional exit;northwestdirection=[CompassNW];northdirection=[CompassN];northeastdirection=[CompassNE];westdirection=[CompassW];eastdirection=[CompassE];southwestdirection=[CompassSW];southdirection=[CompassS];southeastdirection=[CompassSE];updirection=[CompassUp];downdirection=[CompassDown];indirection=[CompassIn];outdirection=[CompassOut]</types>
+        <types>*=[TypeExitNon];northwestdirection=[CompassNW];northdirection=[CompassN];northeastdirection=[CompassNE];westdirection=[CompassW];eastdirection=[CompassE];southwestdirection=[CompassSW];southdirection=[CompassS];southeastdirection=[CompassSE];updirection=[CompassUp];downdirection=[CompassDown];indirection=[CompassIn];outdirection=[CompassOut]</types>
         <width>150</width>
       </control>
 
@@ -118,7 +118,7 @@
         <controltype>multi</controltype>
         <attribute>look</attribute>
         <types>
-          null=No description; string=Text; script=Run script
+          null=[TypeNoDescription]; string=[TypeText]; script=[TypeRunScript]
         </types>
         <editors>
           string=textbox

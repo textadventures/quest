@@ -35,7 +35,7 @@
       <caption>[EditorObjectRoomDescription]</caption>
       <attribute>description</attribute>
       <types>
-        string=Text; script=Run script
+        string=[TypeText]; script=[TypeRunScript]
       </types>
       <editors>
         string=richtext
