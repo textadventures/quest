@@ -175,7 +175,7 @@
       <control>
         <caption>[EditorGameTheme]</caption>
         <controltype>dropdowntypes</controltype>
-        <types>*=Quest Standard; theme_novella=Novella; theme_retro=Retro; theme_typewriter=Typewriter; theme_hotdogstand=Hot Dog Stand</types>
+        <types>*=[TypeThemeStandard]; theme_novella=[TypeThemeNovella]; theme_retro=[TypeThemeRetro]; theme_typewriter=[TypeThemeTypewriter]; theme_hotdogstand=[TypeThemeHotDog]</types>
         <width>150</width>
       </control>
 

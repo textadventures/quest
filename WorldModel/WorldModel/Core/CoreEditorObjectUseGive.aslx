@@ -15,7 +15,7 @@
       <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>use</attribute>
       <types>
-        boolean=Default behaviour;script=Run script
+        boolean=[TypeDefaultBehaviour];script=[TypeRunScript]
       </types>
       <checkbox>Display menu of objects this can be used on</checkbox>
     </control>
@@ -37,7 +37,7 @@
       <selfcaption>[EditorObjectUseGiveAction]</selfcaption>
       <attribute>useon</attribute>
       <types>
-        null=None;scriptdictionary=Handle objects individually;string=Print a message
+        null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
       <keyname>Object</keyname>
       <keyprompt>[EditorObjectUseGivePleaseenter]</keyprompt>
@@ -63,7 +63,7 @@
       <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>selfuseon</attribute>
       <types>
-        null=None;scriptdictionary=Handle objects individually;string=Print a message
+        null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
       <keyname>Object</keyname>
       <keyprompt>Please enter the object name</keyprompt>
@@ -89,7 +89,7 @@
       <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>givesingle</attribute>
       <types>
-        boolean=Default behaviour;script=Run script
+        boolean=[TypeDefaultBehaviour];script=[TypeRunScript]
       </types>
       <checkbox>Display menu of objects this can be given to</checkbox>
     </control>
@@ -111,7 +111,7 @@
       <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>give</attribute>
       <types>
-        null=None;scriptdictionary=Handle objects individually;string=Print a message
+        null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
       <keyname>Object</keyname>
       <keyprompt>Please enter the object name</keyprompt>
@@ -137,7 +137,7 @@
       <caption>[EditorObjectUseGiveAction]</caption>
       <attribute>giveto</attribute>
       <types>
-        null=None;scriptdictionary=Handle objects individually;string=Print a message
+        null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
       <keyname>Object</keyname>
       <keyprompt>Please enter the object name</keyprompt>

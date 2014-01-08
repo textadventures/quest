@@ -17,7 +17,7 @@
       <controltype>multi</controltype>
       <attribute>darkroomdescription</attribute>
       <types>
-        null=Use default room description; string=Text; script=Run script
+        null=[TypeUseDefaultRoom]; string=[TypeText]; script=[TypeRunScript]
       </types>
       <editors>
         string=richtext

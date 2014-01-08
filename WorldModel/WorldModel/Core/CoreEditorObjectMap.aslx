@@ -45,7 +45,7 @@
     <control>
       <caption>[EditorObjectMapBordertype]</caption>
       <controltype>dropdowntypes</controltype>
-      <types>*=Normal;gridborder_path_ew=Path East-West;gridborder_path_e=Path East;gridborder_path_w=Path West;gridborder_path_ns=Path North-South;gridborder_path_n=Path North;gridborder_path_s=Path South</types>
+      <types>*=[TypePathNormal];gridborder_path_ew=[TypePathEastWest];gridborder_path_e=[TypePathEast];gridborder_path_w=[TypePathWest];gridborder_path_ns=[TypePathNorthSouth];gridborder_path_n=[TypePathNorth];gridborder_path_s=[TypePathSouth]</types>
     </control>
 
     <control>

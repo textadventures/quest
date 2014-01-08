@@ -1,7 +1,7 @@
 ﻿<library>
   <tab>
     <parent>_ObjectEditor</parent>
-    <caption>[EditorObjectAskTellAsk/Tell]</caption>
+    <caption>[EditorObjectAskTellAskTell]</caption>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>game.feature_asktell</onlydisplayif>
 
@@ -14,7 +14,7 @@
       <controltype>scriptdictionary</controltype>
       <caption>[EditorObjectAskTellAskabout]</caption>
       <attribute>ask</attribute>
-      <keyprompt>Please enter the topic keywords, separated by spaces</keyprompt>
+      <keyprompt>[EditorObjectAskTellPleaseenter]</keyprompt>
     </control>
 
     <control>
