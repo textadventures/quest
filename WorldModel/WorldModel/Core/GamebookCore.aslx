@@ -1,5 +1,5 @@
 ﻿<library>
-
+  <include ref="EditorEnglish.aslx"/>
   <include ref="CoreOutput.aslx"/>
   <include ref="CoreEffects.aslx"/>
   <include ref="GamebookCoreEditor.aslx"/>
