@@ -764,20 +764,4 @@
   <template name="TypeNone">None</template>
   <template name="TypeIndividually">Handle objects individually</template>
   <template name="TypePrintMessage">Print a message</template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  <template name="Type"></template>
-  
-  
-  
 </library>
