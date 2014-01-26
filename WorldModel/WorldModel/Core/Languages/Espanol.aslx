@@ -1,5 +1,5 @@
 ﻿<library>
-  <!-- Contributed by Jhames -->
+  <!-- Contributed by Jhames and Mauricio Díaz -->
   <include ref="English.aslx"/>
   <include ref="EditorEnglish.aslx"/>
   <include ref="EditorEspanol.aslx"/>
@@ -11,8 +11,11 @@
   <template name="UnresolvedLocation">No puedes ir por ahí.</template>
   <template name="DefaultObjectDescription">Nada fuera de lo común.</template>
   <template name="DefaultSelfDescription">Parece bien.</template>
-  <dynamictemplate name="TakeSuccessful">object.article + " coges."</dynamictemplate>
-  <dynamictemplate name="TakeUnsuccessful">"No puedes coger" + object.article + "."</dynamictemplate>
+  <dynamictemplate name="TakeSuccessful">CapFirst(object.gender) + " coges."</dynamictemplate>
+  <dynamictemplate name="TakeUnsuccessful">"No puedes coger" + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="FullInventory">WriteVerb(object, "be") + " demasiado pesado como para cargarlo."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInInventory">"No puedes cargar más objetos."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInContainer">"No le puedes poner más objetos."</dynamictemplate>
   <template name="SeeListHeader">Puedes ver</template>
   <template name="GoListHeader">Puedes ir</template>
   <template name="And">y</template>
@@ -20,12 +23,13 @@
   <template name="NothingToUndo">¡No se puede deshacer!</template>
   <template name="NotCarryingAnything">No llevas nada.</template>
   <template name="CarryingListHeader">Llevas</template>
-  <dynamictemplate name="DropSuccessful">object.article + " dejas."</dynamictemplate>
-  <dynamictemplate name="DropUnsuccessful">"No puedes dejar" + object.article + "."</dynamictemplate>
-  <dynamictemplate name="AlreadyTaken">"Ya " + object.article + " llevas."</dynamictemplate>
-  <dynamictemplate name="NotCarrying">"No " + object.article + " llevas."</dynamictemplate>
-  <dynamictemplate name="CantUse">"No puedes usar" + object.article + "."</dynamictemplate>
-  <dynamictemplate name="DefaultSpeakTo">CapFirst(object.gender) + " no dice nada."</dynamictemplate>
+  <dynamictemplate name="DropSuccessful">CapFirst(object.gender) + " dejas."</dynamictemplate>
+  <dynamictemplate name="DropUnsuccessful">"No puedes dejar" + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyTaken">"Ya " + object.gender + " llevas."</dynamictemplate>
+  <dynamictemplate name="NotCarrying">"No " + object.gender + " llevas."</dynamictemplate>
+  <dynamictemplate name="CantUse">"No puedes usar" + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">"No dice nada."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "say") + " nada."</dynamictemplate>
   <template name="UnrecognisedCommand">No entiendo tu orden.</template>
   <template name="YouAreIn">Estás en</template>
   <template name="LookAt">Examinar</template>
@@ -39,16 +43,17 @@
   <template name="SwitchOff">Apagar</template>
   <template name="Open">Abrir</template>
   <template name="Close">Cerrar</template> 
-  <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " no está abierto."</dynamictemplate>
-  <template name="NeutralGender">el</template>
-  <template name="MaleGender">él</template>
-  <template name="FemaleGender">ella</template>
+ <template name="Eat">comer</template>
+  <dynamictemplate name="ObjectNotOpen">CapFirst(object.article)+ " " + object.name + " no está abierto."</dynamictemplate>
+  <template name="NeutralGender">lo</template>
+  <template name="MaleGender">lo</template>
+  <template name="FemaleGender">la</template>
   <template name="SelfGender">tú</template>
-  <template name="NeutralPluralGender">they</template>
-  <template name="MalePluralGender">they</template>
-  <template name="FemalePluralGender">they</template>
-  <template name="NeutralArticle">lo</template>
-  <template name="MaleArticle">lo</template>
+  <template name="NeutralPluralGender">los</template>
+  <template name="MalePluralGender">los</template>
+  <template name="FemalePluralGender">las</template>
+  <template name="NeutralArticle">el</template>
+  <template name="MaleArticle">el</template>
   <template name="FemaleArticle">la</template>
   <template name="SelfArticle">tú mismo</template>
   <template name="NeutralPluralArticle">los</template>
@@ -58,38 +63,49 @@
   <template name="SelfAlt">yo mismo</template>
   <template name="AllObjects">todo</template>
   <template name="ParserIgnorePrefixes">el; la; los; las; uno; una; unos; unas</template>
-  <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " ya está abierto."</dynamictemplate>
-  <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " ya está cerrado."</dynamictemplate>
-  <dynamictemplate name="CantOpen">"No puedes abrir " + object.article + "."</dynamictemplate>
-  <dynamictemplate name="CantClose">"No puedes cerrar " + object.article + "."</dynamictemplate>
-  <dynamictemplate name="OpenSuccessful">object.article + " abres."</dynamictemplate>
-  <dynamictemplate name="CloseSuccessful">object.article + " cierras."</dynamictemplate>
+  <dynamictemplate name="AlreadyOpen">CapFirst(object.article)+ " " + object.name + " ya está abierto."</dynamictemplate>
+  <dynamictemplate name="AlreadyClosed">CapFirst(object.article)+ " " + object.name + " ya está cerrado."</dynamictemplate>
+  <dynamictemplate name="CantOpen">"No puedes abrir " + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="CantClose">"No puedes cerrar " + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="OpenSuccessful">CapFirst(object.gender) + " abres."</dynamictemplate>
+  <dynamictemplate name="CloseSuccessful">CapFirst(object.gender) + " cierras."</dynamictemplate>
   <template name="CannotDoThat">No puedes hacer eso.</template>
-  <dynamictemplate name="AlreadyThere">CapFirst(object.gender) + " ya está ahí."</dynamictemplate>
+  <dynamictemplate name="AlreadyThere">CapFirst(object.article)+ " " + object.name + " ya está ahí."</dynamictemplate>
   <template name="Done">Hecho.</template>
   <template name="ContainerContentsPrefix">conteniendo</template>
   <template name="SurfaceContentsPrefix">y dentro hay</template>
-  <dynamictemplate name="ObjectContains">CapFirst(object.gender) + "contiene" </dynamictemplate>
-  <dynamictemplate name="ContainerFull">CapFirst(object.gender) + " está lleno."</dynamictemplate>
+  <dynamictemplate name="ObjectContains">CapFirst(object.article)+ " " + object.name + "contiene" </dynamictemplate>
+  <dynamictemplate name="ContainerFull">CapFirst(object.article)+ " " + object.name + " está lleno."</dynamictemplate>
   <dynamictemplate name="DisambiguateMenu">"Por favor elige que '" + text + "' quieres decir:"</dynamictemplate>
   <dynamictemplate name="UndoTurn">"Deshecho: " + text</dynamictemplate>
   <template name="LockedExit">Esa dirección está bloqueada.</template>
-  <dynamictemplate name="DefaultAsk">CapFirst(object.gender) + " no responde."</dynamictemplate>
-  <dynamictemplate name="DefaultTell">CapFirst(object.gender) + " no responde."</dynamictemplate>
+  <dynamictemplate name="DefaultAsk">CapFirst(object.article)+ " " + object.name + " no responde."</dynamictemplate>
+  <dynamictemplate name="DefaultTell">CapFirst(object.article)+ " " + object.name + " no responde."</dynamictemplate>
   <template name="NoKey">No tienes la llave.</template>
   <template name="UnlockMessage">No está cerrado con llave.</template>
   <template name="LockMessage">Cerrado con llave.</template>
-  <dynamictemplate name="LockedObject">CapFirst(object.gender) + " está cerrado con llave."</dynamictemplate>
-  <dynamictemplate name="AlreadyLocked">CapFirst(object.gender) + " está ya cerrada con llave."</dynamictemplate>
-  <dynamictemplate name="AlreadyUnlocked">CapFirst(object.gender) + " ya está abierta con llave."</dynamictemplate>
-  <dynamictemplate name="CannotLockOpen">"No puedes cerrar con llave " + object.article + " cuando " + object.gender + " " + Conjugate(object, "be") + " abierto."</dynamictemplate>
-  <dynamictemplate name="AlreadySwitchedOn">CapFirst(object.gender) + " ya está encendido."</dynamictemplate>"
-  <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.gender) + " está ya encendido."</dynamictemplate>"
-  <dynamictemplate name="SwitchedOn">object.article + " enciendes."</dynamictemplate>
-  <dynamictemplate name="SwitchedOff">object.article + " apagas."</dynamictemplate>
+  <dynamictemplate name="LockedObject">CapFirst(object.article)+ " " + object.name + " está cerrado con llave."</dynamictemplate>
+  <dynamictemplate name="AlreadyLocked">CapFirst(object.article)+ " " + object.name + " está ya cerrada con llave."</dynamictemplate>
+  <dynamictemplate name="AlreadyUnlocked">CapFirst(object.article)+ " " + object.name + " ya está abierta con llave."</dynamictemplate>
+  <dynamictemplate name="CannotLockOpen">"No puedes cerrar con llave " + object.article + object.name + " cuando " + Conjugate(object, "be") + " abierto."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOn">CapFirst(object.article)+ " " + object.name + " ya está encendido."</dynamictemplate>"
+  <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.article)+ " " + object.name + " está ya encendido."</dynamictemplate>"
+  <dynamictemplate name="SwitchedOn">CapFirst(object.gender) + " enciendes."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">CapFirst(object.gender) + " apagas."</dynamictemplate>
+  <dynamictemplate name="Eaten">"Te comes " + object.article + object.name"."</dynamictemplate>
   <template name="DefaultOops">No hay nada que corregir.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " no contiene " + GetDisplayAlias(object2) + "."</dynamictemplate>
   <dynamictemplate name="YouLooking">"Miras " + text +"."</dynamictemplate>
+ <dynamictemplate name="LookAtDarkness">"Está demasiado oscuro como para distinguir nada."</dynamictemplate>
+  <template name="VerbObjectSeparator">con; usando</template>
+  <template name="DefaultMultiObjectVerb">Eso no funciona.</template>
+  <template name="MultiObjectVerbMenu">¿Con cuál objeto?</template>
+  <template name="UseOnMenu">¿En cuál objeto?</template>
+  <template name="GiveToMenu">¿A cuál objeto?</template>
+  <template name="NoObjectsAvailable">No hay objetos disponibles para hacer eso.</template>
+  <template name="Yes">Sí</template>
+  <template name="No">No</template>
+  <template name="By">Por</template>
 
   <template name="CompassNW">noroeste</template>
   <template name="CompassN">norte</template>
@@ -104,8 +120,11 @@
   <template name="CompassIn">dentro</template>
   <template name="CompassOut">fuera</template>
   <template name="CompassDirectionPrefix">al</template>
+<template name="CompassDirectionSuffix"></template>
   <template name="UpDownDirectionPrefix"></template>
+<template name="UpDownDirectionSuffix"></template>
   <template name="InOutDirectionPrefix"></template>
+ <template name="InOutDirectionSuffix"></template>
   <template name="CompassNWShort">no</template>
   <template name="CompassNShort">n</template>
   <template name="CompassNEShort">ne</template>
@@ -120,128 +139,293 @@
   <template name="CompassOutShort">f</template>
 
   <template name="InventoryLabel">Inventario</template>
+<template name="StatusLabel">Estado</template>
   <template name="PlacesObjectsLabel">Lugares y Objetos</template>
   <template name="CompassLabel">Direcciones</template>
   <template name="InButtonLabel">Entrar</template>
   <template name="OutButtonLabel">Salir</template>
   <template name="EmptyListLabel">(vacio)</template>
   <template name="NothingSelectedLabel">(nada seleccionado)</template>
+ <template name="TypeHereLabel">Escríbe aquí...</template>
+  <template name="ContinueLabel">Continúa...</template>
 
-  <template templatetype="command" name="go"><![CDATA[^ir (a|al) (?<exit>.*)$|^ir (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^mirar (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
-  <template templatetype="command" name="look">^mirar$</template>
+  <template templatetype="command" name="go"><![CDATA[^ir (a|al) (?<exit>.*)$|^ve (a|al) (?<exit>.*)$|^vaya (a|al) (?<exit>.*)$|^vete (a|al) (?<exit>.*)$|^vayase (a|al) (?<exit>.*)$|^váyase (a|al) (?<exit>.*)$|^ir (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^mirar (al) (?<exit>.*)$|^mire (al) (?<exit>.*)$|^mira al (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
+  <template templatetype="command" name="look">^mirar$|^mira$|^mire$|^vea$|^m$|^l$</template>
   <verbtemplate name="lookat">examinar</verbtemplate>
+<verbtemplate name="lookat">observa</verbtemplate>
+<verbtemplate name="lookat">observe</verbtemplate>
   <verbtemplate name="lookat">x</verbtemplate>
-  <verbtemplate name="lookat">examinar</verbtemplate>
+  <verbtemplate name="lookat">examina</verbtemplate>
+<verbtemplate name="lookat">examine</verbtemplate>
   <verbtemplate name="lookat">exam</verbtemplate>
   <verbtemplate name="lookat">ex</verbtemplate>
   <verbtemplate name="take">coger</verbtemplate>
   <verbtemplate name="take">coge</verbtemplate>
   <verbtemplate name="take">toma</verbtemplate>
-  <template templatetype="command" name="undo">^malfari$</template>
+<verbtemplate name="take">coja</verbtemplate>
+<verbtemplate name="take">tome</verbtemplate>
+<verbtemplate name="take">agarra</verbtemplate>
+<verbtemplate name="take">agarre</verbtemplate>
+  <template templatetype="command" name="undo">^deshacer$</template>
   <template templatetype="command" name="inventory">^i$|^inv$|^inventario$</template>
-  <template templatetype="command" name="quit">^fini$</template>
+  <template templatetype="command" name="quit">^quitar$</template>
   <verbtemplate name="drop">dejar</verbtemplate>
+<verbtemplate name="drop">deja</verbtemplate>
+<verbtemplate name="drop">deje</verbtemplate>
+<verbtemplate name="drop">suelta</verbtemplate>
+<verbtemplate name="drop">suelte</verbtemplate>
   <verbtemplate name="use">usar</verbtemplate>
+  <verbtemplate name="use">usa</verbtemplate>
+  <verbtemplate name="use">use</verbtemplate>
+  <verbtemplate name="use">utiliza</verbtemplate>
+  <verbtemplate name="use">utilice</verbtemplate>
   <verbtemplate name="speakto">hablar a</verbtemplate>
+ <verbtemplate name="speakto">háblale a</verbtemplate>
+ <verbtemplate name="speakto">habla a</verbtemplate>
   <verbtemplate name="speakto">hablar con</verbtemplate>
-  <verbtemplate name="speakto">hablar</verbtemplate>
-
+ <verbtemplate name="speakto">habla con</verbtemplate>
+ <verbtemplate name="speakto">hable con</verbtemplate>
+  <verbtemplate name="speakto">Dígale a</verbtemplate>
+  <verbtemplate name="speakto">Diga</verbtemplate>
   <verbtemplate name="open">abrir</verbtemplate>
+<verbtemplate name="open">abra</verbtemplate>
+<verbtemplate name="open">abre</verbtemplate>
   <verbtemplate name="close">cerrar</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^dejar (?<object1>.*) (sobre|en) (?<object2>.*)$]]></template>
-  <template templatetype="command" name="removefrom"><![CDATA[^quitar (?<object1>.*) de (?<object2>.*)$]]></template>
-  <template templatetype="command" name="ask"><![CDATA[^preguntar a (?<object>.*) (sobre|por) (?<text>.*)$]]></template>
-  <template templatetype="command" name="tell"><![CDATA[^hablar (?<object>.*) sobre (?<text>.*)$]]></template>
+  <verbtemplate name="close">cierra</verbtemplate>
+  <verbtemplate name="close">cierre</verbtemplate>
+  <template templatetype="command" name="put"><![CDATA[^poner (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^pon (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^meter (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^mete (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^meta (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^echar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^echa (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^eche (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^insertar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^inserte (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^inserta (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^colocar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^coloca (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^coloque (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^dejar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^deje (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^deja (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^tirar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^tire (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="removefrom"><![CDATA[^quita (?<object1>.*) de (?<object2>.*)$|^quitar (?<object1>.*) de (?<object2>.*)$|^quite (?<object1>.*) de (?<object2>.*)$|^remueve (?<object1>.*) de (?<object2>.*)$|^remueva (?<object1>.*) de (?<object2>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^pregunta a (?<object>.*) (sobre|por) (?<text>.*)$|^pregunte a (?<object>.*) (sobre|por) (?<text>.*)$^preguntar a (?<object>.*) (sobre|por) (?<text>.*)$^preguntarle a (?<object>.*) (sobre|por) (?<text>.*)$^preguntale a (?<object>.*) (sobre|por) (?<text>.*)$^pregúntale a (?<object>.*) (sobre|por) (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^habla (?<object>.*) sobre (?<text>.*)$|^hable (?<object>.*) sobre (?<text>.*)$|^hablale (?<object>.*) sobre (?<text>.*)$|^hablele (?<object>.*) sobre (?<text>.*)$]]></template>
   <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">comprar</verbtemplate>
-  <dynamictemplate name="DefaultBuy">"No puedes comprar" + object.article + "."</dynamictemplate>
+<verbtemplate name="buy">compre</verbtemplate>
+<verbtemplate name="buy">compra</verbtemplate>
+  <dynamictemplate name="DefaultBuy">"No puedes comprar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="climb">trepar</verbtemplate>
-  <dynamictemplate name="DefaultClimb">"No puedes trepar" + object.article + "."</dynamictemplate>
+ <verbtemplate name="climb">trepe</verbtemplate>
+ <verbtemplate name="climb">trepa</verbtemplate>
+ <verbtemplate name="climb">escala</verbtemplate>
+ <verbtemplate name="climb">escale</verbtemplate>
+  <dynamictemplate name="DefaultClimb">"No puedes trepar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="drink">beber</verbtemplate>
-  <dynamictemplate name="DefaultDrink">"No puedes beberte" + object.article + "."</dynamictemplate>
+  <verbtemplate name="drink">beba</verbtemplate>
+  <verbtemplate name="drink">bébete</verbtemplate>
+  <dynamictemplate name="DefaultDrink">"No puedes beberte" + object.gender + "."</dynamictemplate>
   <verbtemplate name="eat">comer</verbtemplate>
-  <dynamictemplate name="DefaultEat">"No puedes comerte" + object.article + "."</dynamictemplate>
-  <template templatetype="command" name="give"><![CDATA[^dar (?<object1>.*) a (?<object2>.*)$]]></template>
+  <verbtemplate name="eat">come</verbtemplate>
+  <verbtemplate name="eat">coma</verbtemplate>
+  <dynamictemplate name="DefaultEat">"No puedes comerte" + object.gender + "."</dynamictemplate>
+ <verbtemplate name="givesingle">dar</verbtemplate>
+ <verbtemplate name="givesingle">da</verbtemplate>
+ <verbtemplate name="givesingle">dale</verbtemplate>
+ <verbtemplate name="givesingle">dele</verbtemplate>
+  <template templatetype="command" name="give"><![CDATA[^da (?<object1>.*) a (?<object2>.*)$|^dale (?<object1>.*) a (?<object2>.*)$|^dele (?<object1>.*) a (?<object2>.*)$|^dar (?<object1>.*) a (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " no " + object2.article + "quiere."</dynamictemplate>
   <verbtemplate name="hit">golpea</verbtemplate>
-  <dynamictemplate name="DefaultHit">"No puedes golpear" + object.article + "."</dynamictemplate>
+  <verbtemplate name="hit">golpea a</verbtemplate>
+  <verbtemplate name="hit">golpear</verbtemplate>
+  <verbtemplate name="hit">golpear a</verbtemplate>
+  <verbtemplate name="hit">golpee</verbtemplate>
+  <verbtemplate name="hit">golpee a</verbtemplate>
+  <verbtemplate name="hit">da un golpe a</verbtemplate>
+  <verbtemplate name="hit">da una patada a</verbtemplate>
+  <verbtemplate name="hit">da un puñetazo a</verbtemplate>
+  <dynamictemplate name="DefaultHit">"No puedes golpear" + object.gender + "."</dynamictemplate>
   <verbtemplate name="kill">matar</verbtemplate>
-  <dynamictemplate name="DefaultKill">"No puedes matar" + object.article + "."</dynamictemplate>
+  <verbtemplate name="kill">mata</verbtemplate>
+  <verbtemplate name="kill">mate</verbtemplate>
+  <dynamictemplate name="DefaultKill">"No puedes matar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="kiss">besar</verbtemplate>
-  <dynamictemplate name="DefaultKiss">"No puedes besar" + object.article + "."</dynamictemplate>
-  <verbtemplate name="knock">tocar</verbtemplate>
-  <dynamictemplate name="DefaultKnock">"No puedes tocar" + object.article + "."</dynamictemplate>
+  <verbtemplate name="kiss">besa</verbtemplate>
+  <verbtemplate name="kiss">bese</verbtemplate>
+  <dynamictemplate name="DefaultKiss">"No puedes besar" + object.gender + "."</dynamictemplate>
+  <verbtemplate name="knock">tocar a</verbtemplate>
+  <verbtemplate name="knock">toca a</verbtemplate>
+  <verbtemplate name="knock">toque a</verbtemplate>
+  <dynamictemplate name="DefaultKnock">"No puedes tocar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="lick">chupar</verbtemplate>
-  <dynamictemplate name="DefaultLick">"No puedes chupar" + object.article + "."</dynamictemplate>
+  <verbtemplate name="lick">chupa</verbtemplate>
+  <verbtemplate name="lick">chupe</verbtemplate>
+  <verbtemplate name="lick">lamer</verbtemplate>
+  <verbtemplate name="lick">lame</verbtemplate>
+  <verbtemplate name="lick">lama</verbtemplate>
+  <dynamictemplate name="DefaultLick">"No puedes chupar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="lie">acostarse</verbtemplate>
+  <verbtemplate name="lie">acuéstate</verbtemplate>
+  <verbtemplate name="lie">acuéstese</verbtemplate>
+  <verbtemplate name="lie">acuestate</verbtemplate>
+  <verbtemplate name="lie">acuestese</verbtemplate>
   <verbtemplate name="lie">echarse</verbtemplate>
+  <verbtemplate name="lie">echese</verbtemplate>
+  <verbtemplate name="lie">echate</verbtemplate>
   <verbtemplate name="lie">descansar en</verbtemplate>
+ <verbtemplate name="lie">descansa en</verbtemplate>
+ <verbtemplate name="lie">descanse en</verbtemplate>
   <verbtemplate name="lie">descansar sobre</verbtemplate>
-  <dynamictemplate name="DefaultLie">"No puedes echarte en " + object.gender + "."</dynamictemplate>
-  <verbtemplate name="listento">listen to</verbtemplate>
-  <dynamictemplate name="DefaultListenTo">object.article + " escuchas, pero no produce ningún sonido."</dynamictemplate>
+  <verbtemplate name="lie">descansa sobre</verbtemplate>
+  <verbtemplate name="lie">descanse sobre</verbtemplate>
+  <dynamictemplate name="DefaultLie">"No puedes echarte en " + object.article + " " + object.name + "."</dynamictemplate>
+  <verbtemplate name="listento">escuchar a</verbtemplate>
+  <verbtemplate name="listento">escucha a</verbtemplate>
+  <verbtemplate name="listento">escuche a</verbtemplate>
+  <verbtemplate name="listento">oir a</verbtemplate>
+  <verbtemplate name="listento">oiga a</verbtemplate>
+  <verbtemplate name="listento">oye a</verbtemplate>
+  <dynamictemplate name="DefaultListenTo">CapFirst(object.gender) + " escuchas, pero no produce ningún sonido."</dynamictemplate>
   <verbtemplate name="lock">cerrar con llave</verbtemplate>
-  <dynamictemplate name="DefaultLock">"No puedes cerrar" + object.article + " con llave."</dynamictemplate>
+  <verbtemplate name="lock">cierra con llave</verbtemplate>
+  <verbtemplate name="lock">cierre con llave</verbtemplate>
+  <verbtemplate name="lock">pon cerrojo</verbtemplate>
+  <verbtemplate name="lock">pon el cerrojo</verbtemplate>
+  <dynamictemplate name="DefaultLock">"No puedes cerrar" + object.gender + " con llave."</dynamictemplate>
   <verbtemplate name="move">mover</verbtemplate>
-  <dynamictemplate name="DefaultMove">"No puedes mover" + object.article + "."</dynamictemplate>
-  <verbtemplate name="pull">tirar</verbtemplate>
+  <verbtemplate name="move">mueve</verbtemplate>
+  <verbtemplate name="move">mueva</verbtemplate>
+  <verbtemplate name="move">muévete</verbtemplate>
+  <verbtemplate name="move">muevete</verbtemplate>
+  <verbtemplate name="move">muévase</verbtemplate>
+  <verbtemplate name="move">muevase</verbtemplate>
+  <dynamictemplate name="DefaultMove">"No puedes mover" + object.gender + "."</dynamictemplate>
+  <verbtemplate name="pull">tirar de</verbtemplate>
+ <verbtemplate name="pull">tira de</verbtemplate>
+ <verbtemplate name="pull">tire de</verbtemplate>
+ <verbtemplate name="pull">jala</verbtemplate>
+ <verbtemplate name="pull">jale</verbtemplate>
+ <verbtemplate name="pull">jalar</verbtemplate>
   <dynamictemplate name="DefaultPull">"No puedes tirar de " + object.gender + "."</dynamictemplate>
   <verbtemplate name="push">empujar</verbtemplate>
-  <dynamictemplate name="DefaultPush">"No puedes empujar" + object.article + "."</dynamictemplate>
+  <verbtemplate name="push">empuja</verbtemplate>
+  <verbtemplate name="push">empuje</verbtemplate>
+  <verbtemplate name="push">pulsar</verbtemplate>
+  <verbtemplate name="push">pulse</verbtemplate>
+  <verbtemplate name="push">pulsa</verbtemplate>
+  <dynamictemplate name="DefaultPush">"No puedes empujar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="read">leer</verbtemplate>
-  <dynamictemplate name="DefaultRead">"No puedes leer" + object.article + "."</dynamictemplate>
+ <verbtemplate name="read">lee</verbtemplate>
+ <verbtemplate name="read">lea</verbtemplate>
+  <dynamictemplate name="DefaultRead">"No puedes leer" + object.gender + "."</dynamictemplate>
   <verbtemplate name="search">buscar</verbtemplate>
-  <dynamictemplate name="DefaultSearch">"No puedes buscar" + object.article + "."</dynamictemplate>
+  <verbtemplate name="search">busca</verbtemplate>
+  <verbtemplate name="search">busque</verbtemplate>
+  <dynamictemplate name="DefaultSearch">"No puedes buscar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="show">mostrar</verbtemplate>
-  <dynamictemplate name="DefaultShow">"No puedes mostrar" + object.article + "."</dynamictemplate>
+  <verbtemplate name="show">muestre</verbtemplate>
+  <verbtemplate name="show">muestra</verbtemplate>
+  <dynamictemplate name="DefaultShow">"No puedes mostrar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="sit">sentarse</verbtemplate>
-  <verbtemplate name="sit">sentar</verbtemplate>
+  <verbtemplate name="sit">sentarte</verbtemplate>
+  <verbtemplate name="sit">siéntate</verbtemplate>
+  <verbtemplate name="sit">sientate</verbtemplate>
+  <verbtemplate name="sit">siéntese</verbtemplate>
+  <verbtemplate name="sit">sientese</verbtemplate>
   <verbtemplate name="sit">sentarse en</verbtemplate>
+  <verbtemplate name="sit">siéntate en</verbtemplate>
+  <verbtemplate name="sit">sientate en</verbtemplate>
+  <verbtemplate name="sit">siéntese en</verbtemplate>
+  <verbtemplate name="sit">sientese en</verbtemplate>
   <verbtemplate name="sit">sentarse sobre</verbtemplate>
-  <dynamictemplate name="DefaultSit">"No te puedes sentar en " + object.gender + "."</dynamictemplate>
+  <verbtemplate name="sit">siéntate sobre</verbtemplate>
+  <verbtemplate name="sit">sientate sobre</verbtemplate>
+  <verbtemplate name="sit">siéntese sobre</verbtemplate>
+  <verbtemplate name="sit">sientese sobre</verbtemplate>
+  <dynamictemplate name="DefaultSit">"No te puedes sentar en " + object.article + " " + object.name + "."</dynamictemplate>
   <verbtemplate name="smell">oler</verbtemplate>
+  <verbtemplate name="smell">huela</verbtemplate>
+  <verbtemplate name="smell">huele</verbtemplate>
   <verbtemplate name="smell">olisquear</verbtemplate>
-  <dynamictemplate name="DefaultSmell">"Hueles, pero " + object.article + " no huele demasiado."</dynamictemplate>
+  <verbtemplate name="smell">olisquea</verbtemplate>
+  <verbtemplate name="smell">olisquee</verbtemplate>
+  <dynamictemplate name="DefaultSmell">"Hueles, pero " + object.article + " " + object.name + " no huele demasiado."</dynamictemplate>
   <verbtemplate name="taste">saborear</verbtemplate>
-  <dynamictemplate name="DefaultTaste">"No puedes saborear" + object.article + "."</dynamictemplate>
+  <verbtemplate name="taste">saborea</verbtemplate>
+  <verbtemplate name="taste">saboree</verbtemplate>
+  <verbtemplate name="taste">prueba</verbtemplate>
+  <verbtemplate name="taste">pruebe</verbtemplate>
+  <dynamictemplate name="DefaultTaste">"No puedes saborear" + object.gender + "."</dynamictemplate>
   <verbtemplate name="throw">lanzar</verbtemplate>
-  <dynamictemplate name="DefaultThrow">"No puedes lanzar" + object.article + "."</dynamictemplate>
+  <verbtemplate name="throw">lanza</verbtemplate>
+  <verbtemplate name="throw">lance</verbtemplate>
+  <verbtemplate name="throw">tira</verbtemplate>
+  <verbtemplate name="throw">tire</verbtemplate>
+  <verbtemplate name="throw">arroja</verbtemplate>
+  <verbtemplate name="throw">arroje</verbtemplate>
+  <dynamictemplate name="DefaultThrow">"No puedes lanzar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="tie">atar</verbtemplate>
-  <dynamictemplate name="DefaultTie">"No puedes atar" + object.article + "."</dynamictemplate>
+  <verbtemplate name="tie">ata</verbtemplate>
+  <verbtemplate name="tie">ate</verbtemplate>
+  <verbtemplate name="tie">amarra</verbtemplate>
+  <verbtemplate name="tie">amarre</verbtemplate>
+  <dynamictemplate name="DefaultTie">"No puedes atar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="touch">tocar</verbtemplate>
-  <dynamictemplate name="DefaultTouch">"No puedes tocar" + object.article + "."</dynamictemplate>
+ <verbtemplate name="touch">toca</verbtemplate>
+ <verbtemplate name="touch">toque</verbtemplate>
+  <dynamictemplate name="DefaultTouch">"No puedes tocar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="turnon">encender</verbtemplate>
-  <dynamictemplate name="DefaultTurnOn">"No puedes encender " + object.article + "."</dynamictemplate>
+  <verbtemplate name="turnon">enciende</verbtemplate>
+  <verbtemplate name="turnon">encienda</verbtemplate>
+  <verbtemplate name="turnon">prenda</verbtemplate>
+  <verbtemplate name="turnon">prende</verbtemplate>
+  <verbtemplate name="turnon">hacer que #object# encienda</verbtemplate>
+  <verbtemplate name="turnon">has que #object# encienda</verbtemplate>
+  <verbtemplate name="turnon">switch on</verbtemplate>
+  <verbtemplate name="turnon">switch #object# on</verbtemplate>
+  <dynamictemplate name="DefaultTurnOn">"No puedes encender " + object.gender + "."</dynamictemplate>
   <verbtemplate name="turnoff">apagar</verbtemplate>
-  <dynamictemplate name="DefaultTurnOff">"No puedes apagar " + object.article + "."</dynamictemplate>
+  <verbtemplate name="turnoff">apaga</verbtemplate>
+  <verbtemplate name="turnoff">apague</verbtemplate>
+  <verbtemplate name="turnoff">turn #object# off</verbtemplate>
+  <verbtemplate name="turnoff">switch off</verbtemplate>
+  <verbtemplate name="turnoff">switch #object# off</verbtemplate>
+  <dynamictemplate name="DefaultTurnOff">"No puedes apagar " + object.gender + "."</dynamictemplate>
   <verbtemplate name="turn">girar</verbtemplate>
-  <dynamictemplate name="DefaultTurn">"No puedes girar" + object.article + "."</dynamictemplate>
+  <verbtemplate name="turn">gira</verbtemplate>
+  <verbtemplate name="turn">gire</verbtemplate>
+  <dynamictemplate name="DefaultTurn">"No puedes girar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="unlock">abrir con llave</verbtemplate>
-  <dynamictemplate name="DefaultUnlock">"No puedes abrir" + object.article + " con llave."</dynamictemplate>
+  <verbtemplate name="unlock">abre con llave</verbtemplate>
+  <verbtemplate name="unlock">abra con llave</verbtemplate>
+  <dynamictemplate name="DefaultUnlock">"No puedes abrir" + object.gender + " con llave."</dynamictemplate>
   <verbtemplate name="untie">desatar</verbtemplate>
-  <dynamictemplate name="DefaultUntie">"No puedes desatar" + object.article + "."</dynamictemplate>
-  <template templatetype="command" name="useon"><![CDATA[^usar (?<object1>.*) (sobre|en|con) (?<object2>.*)$]]></template>
+  <verbtemplate name="untie">desata</verbtemplate>
+  <verbtemplate name="untie">desate</verbtemplate>
+  <verbtemplate name="untie">desamarrar</verbtemplate>
+  <verbtemplate name="untie">desamarre</verbtemplate>
+  <verbtemplate name="untie">desamarra</verbtemplate>
+  <dynamictemplate name="DefaultUntie">"No puedes desatar" + object.gender + "."</dynamictemplate>
+  <template templatetype="command" name="useon"><![CDATA[^usa (?<object1>.*) (sobre|en|dentro de|encima de|con) (?<object2>.*)$|^usar (?<object1>.*) (sobre|en|dentro de|encima de|con) (?<object2>.*)$|^use (?<object1>.*) (sobre|en|dentro de|encima de|con) (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultUseOn">"No puedes usar" + object2.article + " así."</dynamictemplate>
   <verbtemplate name="wear">vestir</verbtemplate>
-  <dynamictemplate name="DefaultWear">"No te " + object.article + " puedes poner."</dynamictemplate>
-  <template templatetype="command" name="listen">^listen$</template>
+  <verbtemplate name="wear">viste</verbtemplate>
+  <verbtemplate name="wear">vista</verbtemplate>
+  <verbtemplate name="wear">vístete</verbtemplate>
+  <verbtemplate name="wear">vistete</verbtemplate>
+  <verbtemplate name="wear">vístase</verbtemplate>
+  <verbtemplate name="wear">vistase</verbtemplate>
+  <verbtemplate name="wear">ponte</verbtemplate>
+  <verbtemplate name="wear">póngase</verbtemplate>
+  <verbtemplate name="wear">pongase</verbtemplate>
+  <verbtemplate name="wear">ponerse</verbtemplate>
+  <verbtemplate name="wear">vestirse</verbtemplate>
+  <dynamictemplate name="DefaultWear">"No te " + object.gender + " puedes poner."</dynamictemplate>
+  <template templatetype="command" name="listen">^escucha$|^escuche$|^oiga$|^oye$|^oir$|^escuchar$</template>
   <template name="DefaultListen">No puedes oir mucho.</template>
-  <template templatetype="command" name="jump">^jump$</template>
+  <template templatetype="command" name="jump">^salta$|^salte$|^saltar$</template>
   <template name="DefaultJump">Saltas, pero no pasa nada.</template>
-  <template templatetype="command" name="sitdown">^sit$|^sit down$</template>
+  <template templatetype="command" name="sitdown">^siéntate$|^sientate$|^sentarse$</template>
   <template name="DefaultSitDown">No es momento para sentarse ahora.</template>
-  <template templatetype="command" name="liedown">^lie$|^lie down$</template>
+  <template templatetype="command" name="liedown">^acuéstate$|^acuestate$|^acostarse$</template>
   <template name="DefaultLieDown">No es tiempo para echarte ahora.</template>
-  <template templatetype="command" name="sleep">^sleep$|^rest$</template>
+  <template templatetype="command" name="sleep">^duerma$|^duerme$|^duermete$|^duérme$|^dormir$</template>
   <template name="DefaultSleep">No es tiempo para echarte una siesta ahora.</template>
-  <template templatetype="command" name="wait">^wait$</template>
+  <template templatetype="command" name="wait">^espera$|^espere$|^esperar$</template>
   <template name="DefaultWait">El tiempo pasa.</template>
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">Sorprendentemente, no pasa absolutamente nada.</template>
   <template templatetype="command" name="help">^ayuda$|^\?$</template>
-  <template templatetype="command" name="save">^grabar$</template>
+  <template templatetype="command" name="save">^grabar$|^salvar$</template>
   <template name="DefaultHelp"><![CDATA[<u>Ayuda rápida</u><br/><br/>
 <b>- Objects:</b>  Intenta MIRAR, EXAMINAR..., HABLAR CON..., COGER..., DEJAR..., ABRIR...., DAR ... A ..., USAR ... EN ...<br/>
 <b>- Inventario:</b>  Para ver qué objetos llevas contigo, escribe:  I, INV o INVENTARIO.<br/>
@@ -254,7 +438,7 @@
   <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
   <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
 
-  <template name="EditorVerbDefaultExpression">"You can't #verb# " + object.article + "."</template>
+  <template name="EditorVerbDefaultExpression">"No puedes #verb# " + object.gender + "."</template>
 
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     return(GetPrefix(obj,"un"))
@@ -279,4 +463,5 @@
       return ("") 
     }
   </function>  
+
 </library>
