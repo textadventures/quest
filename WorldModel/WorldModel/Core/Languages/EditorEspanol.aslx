@@ -200,7 +200,7 @@
   <template name="EditorObjectContainerCanbeopened">Se puede abrir</template>
   <template name="EditorObjectContainerCanbeclosed">Se puede cerrar</template>
   <template name="EditorObjectContainerIsopen">Esta abierto</template>
-  <template name="EditorObjectContainerScripttorun">Guión a correr cuando se abre el objetoScript to run when opening object</template>
+  <template name="EditorObjectContainerScripttorun">Guión a correr cuando se abre el objeto</template>
   <template name="EditorObjectContainerScripttorun2">Guión a correr cuando se cierra el objeto</template>
   <template name="EditorObjectContainerTransparent">Transparente</template>
   <template name="EditorObjectContainerHidechildren">Ocultar contenido hasta que se mira el objeto</template>
@@ -282,8 +282,8 @@
   <template name="EditorObjectObjectInventoryverbs2">Verbos de inventario</template>
   <template name="EditorObjectOptionsSwitchable">Conmutable</template>
   <template name="EditorObjectOptionsSwitchable2">Conmutable</template>
-  <template name="EditorObjectOptionsMessagetoprint">Message to print when switching on (leave blank for default)</template>
-  <template name="EditorObjectOptionsMessagetoprint2">Message to print when switching off (leave blank for default)</template>  
+  <template name="EditorObjectOptionsMessagetoprint">Mensaje a imprimir cuando se enciende (dejar en blanco por defecto)</template>
+  <template name="EditorObjectOptionsMessagetoprint2">Mensaje a imprimir cuando se apaga (dejar en blanco por defecto)</template>  
   <template name="EditorObjectOptionsSwitchedon">Encendido al comienzo del juego</template>
   <template name="EditorObjectOptionsMessageSwitchon">Mensaje a imprimir cuando se enciende (dejar en blanco por defecto)</template>
   <template name="EditorObjectOptionsMessageSwitchoff">Mensaje a imprimir cuando se apaga ( dejar en blanco por defecto)</template>
@@ -339,7 +339,7 @@
   <template name="EditorObjectUseGiveUseotherobject">Usar(otro objeto) en este</template>
   <template name="EditorObjectUseGiveUseanyother">Usar cualquier objeto en este</template>
   <template name="EditorObjectUseGiveUsethisonother">Usar este en (otro objeto)</template>
-  <template name="EditorObjectUseGiveAction">Action</template>
+  <template name="EditorObjectUseGiveAction">Acción</template>
   <template name="EditorObjectUseGiveUseonanyother">Usar en cualquier otro objeto</template>
   <template name="EditorObjectUseGiveGiveonits">Dar (por sí solo)</template>
   <template name="EditorObjectUseGiveAction">Acción</template>
@@ -383,7 +383,7 @@
   <template name="EditorScriptsDrawingDrawgridlinestoX2">hasta X2</template> 
   <template name="EditorScriptsDrawingDrawgridlinestoY2">, Y2</template> 
   <template name="EditorScriptsDrawingCentercustom">Centrar diseño costumizado en</template>
-  <template name="EditorScriptsDrawingCentercustomX">Center custom layer at X</template>
+  <template name="EditorScriptsDrawingCentercustomX">Centrar diseño costumizado en X</template>
   <template name="EditorScriptsDrawingCentercustomY">, Y</template>
   <template name="EditorScriptsDrawingDrawcustom">Dibujar diseño de cuadrícula con Código</template>
   <template name="EditorScriptsDrawingDrawcustomID">Dibujar área de cuadrícula costumizada con Código</template>
@@ -429,7 +429,7 @@
   <template name="EditorScriptsObjectsMoveobject">Mover objeto</template>
   <template name="EditorScriptsObjectsto">a</template>
   <template name="EditorScriptsObjectsMoveobjectCurrentRoom">Mover objeto al lugar actual</template>
-  <template name="EditorScriptsObjectstothecurrent">to the current room</template>
+  <template name="EditorScriptsObjectstothecurrent">al lugar actual</template>
   <template name="EditorScriptsObjectsMakeobject">Hacer visible el objeto</template>  
   <template name="EditorScriptsObjectsMakeobjectinvisible">Hacer invisible el objeto</template>
   <template name="EditorScriptsObjectsMakevisible">Hacer visible</template>
@@ -640,7 +640,7 @@
   <template name="EditorScriptsVariables">=</template>
   <template name="EditorScriptsVariablesSetavariableScript">Definir una variable o atributo a un guión</template>
   <template name="EditorScriptsVariablesSetvariable">Definir variable</template>
-  <template name="EditorScriptsVariablesscript">= script:</template>
+  <template name="EditorScriptsVariablesscript">= guión:</template>
   <template name="EditorScriptsVariablesSetanobjects">Definir atributo a un objeto (llamado por una expresión)</template>
   <template name="EditorScriptsVariablesSetobject">Colocar objeto</template>
   <template name="EditorScriptsVariablesAttribute">Atributo:</template>
@@ -709,16 +709,16 @@
   <template name="EditorExpressionsnewstringdictionary">nuevo diccionario de textos</template>
   <template name="EditorExpressionsnewobjectdictionary">nuevo diccionario de objetos</template>
   <template name="EditorExpressionsrandomnumber">número aleatorio</template>
-  <template name="EditorExpressionsallobjects">all objects</template>
+  <template name="EditorExpressionsallobjects">todos los objetos</template>
   <template name="EditorExpressionsallvisible">todos los objetos visibles</template>
   <template name="EditorExpressionstheinventory">el inventario</template>
   <template name="EditorExpressionsallexits">todas las salidas</template>
   <template name="EditorExpressionsallcommands">todos los comandos</template> 
   
-  <template name="TypePatternCommand">Command pattern</template>
-  <template name="TypePatternRegular">Regular expression</template> 
-  <template name="TypeExitNon">Non-directional exit</template> 
-  <template name="TypeNoDescription">No description</template> 
+  <template name="TypePatternCommand">Patrón de comando</template>
+  <template name="TypePatternRegular">Expresión regulada</template> 
+  <template name="TypeExitNon">Salida no-direccional</template> 
+  <template name="TypeNoDescription">Sin descripción</template> 
   <template name="TypeText">Texto</template> 
   <template name="TypeRunScript">Correr guión</template> 
   <template name="TypeThemeStandard">Quest Estándar</template> 
