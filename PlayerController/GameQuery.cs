@@ -111,7 +111,7 @@ namespace TextAdventures.Quest
                 }
                 if (m_v5Game != null)
                 {
-                    return string.IsNullOrEmpty(m_v5Game.Cover) ? null : m_v5Game.GetExternalPath(m_v5Game.Cover);
+                    return string.IsNullOrEmpty(m_v5Game.Cover) ? null : m_v5Game.GetResourcePath(m_v5Game.Cover);
                 }
                 throw new InvalidOperationException();
             }
