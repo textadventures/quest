@@ -9,10 +9,10 @@
     <firstpublished>$YEAR$</firstpublished>
   </game>
 
-  <object name="room">
+  <object name="lugar">
     <inherit name="editor_room" />
 
-    <object name="player">
+    <object name="jugador">
       <inherit name="editor_object" />
       <inherit name="editor_player" />
     </object>

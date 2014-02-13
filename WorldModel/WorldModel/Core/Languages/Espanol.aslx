@@ -28,7 +28,8 @@
   <dynamictemplate name="AlreadyTaken">"Ya " + object.gender + " llevas."</dynamictemplate>
   <dynamictemplate name="NotCarrying">"No " + object.gender + " llevas."</dynamictemplate>
   <dynamictemplate name="CantUse">"No puedes usar" + object.gender + "."</dynamictemplate>
-  <dynamictemplate name="DefaultSpeakTo">CapFirst(object.article) + " " + object.name + " no dice nada."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">"No dice nada."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "say") + " nada."</dynamictemplate>
   <template name="UnrecognisedCommand">No entiendo tu orden.</template>
   <template name="YouAreIn">Estás en</template>
   <template name="LookAt">Examinar</template>
@@ -145,11 +146,11 @@
   <template name="OutButtonLabel">Salir</template>
   <template name="EmptyListLabel">(vacio)</template>
   <template name="NothingSelectedLabel">(nada seleccionado)</template>
- <template name="TypeHereLabel">Escríbe aquí...</template>
+ <template name="TypeHereLabel">Escribe aquí...</template>
   <template name="ContinueLabel">Continúa...</template>
 
   <template templatetype="command" name="go"><![CDATA[^ir (a|al) (?<exit>.*)$|^ve (a|al) (?<exit>.*)$|^vaya (a|al) (?<exit>.*)$|^vete (a|al) (?<exit>.*)$|^vayase (a|al) (?<exit>.*)$|^váyase (a|al) (?<exit>.*)$|^ir (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^mirar (al|hacia el) (?<exit>.*)$|^mire (al | hacia el) (?<exit>.*)$|^mira (al|hacia el) (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^mirar (al) (?<exit>.*)$|^mire (al) (?<exit>.*)$|^mira al (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
   <template templatetype="command" name="look">^mirar$|^mira$|^mire$|^vea$|^m$|^l$</template>
   <verbtemplate name="lookat">examinar</verbtemplate>
 <verbtemplate name="lookat">observa</verbtemplate>
@@ -168,7 +169,7 @@
 <verbtemplate name="take">agarre</verbtemplate>
   <template templatetype="command" name="undo">^deshacer$</template>
   <template templatetype="command" name="inventory">^i$|^inv$|^inventario$</template>
-  <template templatetype="command" name="quit">^quitar$|^terminar$|^acabar$|^abandonar$</template>
+  <template templatetype="command" name="quit">^quitar$</template>
   <verbtemplate name="drop">dejar</verbtemplate>
 <verbtemplate name="drop">deja</verbtemplate>
 <verbtemplate name="drop">deje</verbtemplate>
@@ -185,20 +186,20 @@
   <verbtemplate name="speakto">hablar con</verbtemplate>
  <verbtemplate name="speakto">habla con</verbtemplate>
  <verbtemplate name="speakto">hable con</verbtemplate>
-  <verbtemplate name="speakto">Dígale a</verbtemplate>
-  <verbtemplate name="speakto">Diga</verbtemplate>
+  <verbtemplate name="speakto">dígale a</verbtemplate>
+  <verbtemplate name="speakto">diga</verbtemplate>
+  <verbtemplate name="speakto">decir</verbtemplate>
+  <verbtemplate name="speakto">decirle</verbtemplate>
   <verbtemplate name="open">abrir</verbtemplate>
 <verbtemplate name="open">abra</verbtemplate>
 <verbtemplate name="open">abre</verbtemplate>
   <verbtemplate name="close">cerrar</verbtemplate>
   <verbtemplate name="close">cierra</verbtemplate>
   <verbtemplate name="close">cierre</verbtemplate>
- <verbtemplate name="close">tapa</verbtemplate>
- <verbtemplate name="close">tape</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^poner (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^pon (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^meter (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^mete (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^meta (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^echar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^echa (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^eche (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^insertar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^inserte (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^inserta (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^colocar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^coloca (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^coloque (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^dejar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^deje (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^deja (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^tirar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^tire (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="put"><![CDATA[^poner (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^pon (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^meter (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^mete (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^meta (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^echar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^echa (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^eche (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^insertar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^inserte (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^inserta (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^colocar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^coloca (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$|^coloque (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^dejar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^deje (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^deja (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^tirar (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$^tire (?<object1>.*) (sobre|en|dentro de|encima de) (?<object2>.*)$]]></template>
   <template templatetype="command" name="removefrom"><![CDATA[^quita (?<object1>.*) de (?<object2>.*)$|^quitar (?<object1>.*) de (?<object2>.*)$|^quite (?<object1>.*) de (?<object2>.*)$|^remueve (?<object1>.*) de (?<object2>.*)$|^remueva (?<object1>.*) de (?<object2>.*)$]]></template>
-  <template templatetype="command" name="ask"><![CDATA[^pregunta a (?<object>.*) (sobre|por) (?<text>.*)$|^pregunte a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^preguntar a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^preguntarle a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^preguntale a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^pregúntale a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^consúltale a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^consultale a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^consulta a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^consulte a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$]]></template>
-  <template templatetype="command" name="tell"><![CDATA[^habla a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^hable a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^hablale a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^hablele a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^cuéntale a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^cuentale a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^dile a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^dígale a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^digale a (?<object>.*) (sobre|por|de|acerca de) (?<text>.*)$|^dile (?<text>.*) a (?<object>.*)$|^di (?<text>.*) a (?<object>.*)$]]></template>
+  <template templatetype="command" name="ask"><![CDATA[^pregunta a (?<object>.*) (sobre|por) (?<text>.*)$|^pregunte a (?<object>.*) (sobre|por) (?<text>.*)$^preguntar a (?<object>.*) (sobre|por) (?<text>.*)$^preguntarle a (?<object>.*) (sobre|por) (?<text>.*)$^preguntale a (?<object>.*) (sobre|por) (?<text>.*)$^pregúntale a (?<object>.*) (sobre|por) (?<text>.*)$]]></template>
+  <template templatetype="command" name="tell"><![CDATA[^habla (?<object>.*) sobre (?<text>.*)$|^hable (?<object>.*) sobre (?<text>.*)$|^hablale (?<object>.*) sobre (?<text>.*)$|^hablele (?<object>.*) sobre (?<text>.*)$]]></template>
   <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">comprar</verbtemplate>
@@ -214,28 +215,11 @@
   <verbtemplate name="drink">beber</verbtemplate>
   <verbtemplate name="drink">beba</verbtemplate>
   <verbtemplate name="drink">bébete</verbtemplate>
-  <verbtemplate name="drink">bebe</verbtemplate>
-  <dynamictemplate name="DefaultDrink">"No puedes bebérte" + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="DefaultDrink">"No puedes beberte" + object.gender + "."</dynamictemplate>
   <verbtemplate name="eat">comer</verbtemplate>
   <verbtemplate name="eat">come</verbtemplate>
   <verbtemplate name="eat">coma</verbtemplate>
-  <verbtemplate name="eat">comete</verbtemplate>
-  <verbtemplate name="eat">cómete</verbtemplate>
-  <verbtemplate name="eat">comase</verbtemplate>
-  <verbtemplate name="eat">cómase</verbtemplate>
-  <verbtemplate name="eat">traga</verbtemplate>
-  <verbtemplate name="eat">trágate</verbtemplate>
-  <verbtemplate name="eat">tragate</verbtemplate>
-  <verbtemplate name="eat">traguese</verbtemplate>
-  <verbtemplate name="eat">tráguese</verbtemplate>
-  <verbtemplate name="eat">trague</verbtemplate>
-  <verbtemplate name="eat">ingiera</verbtemplate>
-  <verbtemplate name="eat">mastica</verbtemplate>
-  <verbtemplate name="eat">mastique</verbtemplate>
-  <verbtemplate name="eat">tragar</verbtemplate>
-  <verbtemplate name="eat">ingerir</verbtemplate>
-  <verbtemplate name="eat">masticar</verbtemplate>
-  <dynamictemplate name="DefaultEat">"No puedes comérte" + object.gender + "."</dynamictemplate>
+  <dynamictemplate name="DefaultEat">"No puedes comerte" + object.gender + "."</dynamictemplate>
  <verbtemplate name="givesingle">dar</verbtemplate>
  <verbtemplate name="givesingle">da</verbtemplate>
  <verbtemplate name="givesingle">dale</verbtemplate>
@@ -328,14 +312,6 @@
   <verbtemplate name="search">buscar</verbtemplate>
   <verbtemplate name="search">busca</verbtemplate>
   <verbtemplate name="search">busque</verbtemplate>
-  <verbtemplate name="search">busca en</verbtemplate>
-  <verbtemplate name="search">busque en</verbtemplate>
-  <verbtemplate name="search">registra a</verbtemplate>
-  <verbtemplate name="search">registre a</verbtemplate>
-  <verbtemplate name="search">registra</verbtemplate>
-  <verbtemplate name="search">registre</verbtemplate>
-  <verbtemplate name="search">registre en</verbtemplate>
-  <verbtemplate name="search">registra en</verbtemplate>
   <dynamictemplate name="DefaultSearch">"No puedes buscar" + object.gender + "."</dynamictemplate>
   <verbtemplate name="show">mostrar</verbtemplate>
   <verbtemplate name="show">muestre</verbtemplate>
@@ -396,12 +372,15 @@
   <verbtemplate name="turnon">prende</verbtemplate>
   <verbtemplate name="turnon">hacer que #object# encienda</verbtemplate>
   <verbtemplate name="turnon">has que #object# encienda</verbtemplate>
+  <verbtemplate name="turnon">switch on</verbtemplate>
+  <verbtemplate name="turnon">switch #object# on</verbtemplate>
   <dynamictemplate name="DefaultTurnOn">"No puedes encender " + object.gender + "."</dynamictemplate>
   <verbtemplate name="turnoff">apagar</verbtemplate>
   <verbtemplate name="turnoff">apaga</verbtemplate>
   <verbtemplate name="turnoff">apague</verbtemplate>
-  <verbtemplate name="turnoff">desconecta</verbtemplate>
-  <verbtemplate name="turnoff">desconecte</verbtemplate>
+  <verbtemplate name="turnoff">turn #object# off</verbtemplate>
+  <verbtemplate name="turnoff">switch off</verbtemplate>
+  <verbtemplate name="turnoff">switch #object# off</verbtemplate>
   <dynamictemplate name="DefaultTurnOff">"No puedes apagar " + object.gender + "."</dynamictemplate>
   <verbtemplate name="turn">girar</verbtemplate>
   <verbtemplate name="turn">gira</verbtemplate>
@@ -441,14 +420,14 @@
   <template name="DefaultSitDown">No es momento para sentarse ahora.</template>
   <template templatetype="command" name="liedown">^acuéstate$|^acuestate$|^acostarse$</template>
   <template name="DefaultLieDown">No es tiempo para echarte ahora.</template>
-  <template templatetype="command" name="sleep">^duerma$|^duerme$|^duermete$|^duérmete$|^dormir$|^descansa$|^descanse$|^descansar$|^duérmase$|^duermase$</template>
+  <template templatetype="command" name="sleep">^duerma$|^duerme$|^duermete$|^duérme$|^dormir$</template>
   <template name="DefaultSleep">No es tiempo para echarte una siesta ahora.</template>
   <template templatetype="command" name="wait">^espera$|^espere$|^esperar$</template>
   <template name="DefaultWait">El tiempo pasa.</template>
   <template templatetype="command" name="xyzzy">^xyzzy$</template>
   <template name="DefaultXyzzy">Sorprendentemente, no pasa absolutamente nada.</template>
   <template templatetype="command" name="help">^ayuda$|^\?$</template>
-  <template templatetype="command" name="save">^grabar$|^salvar$|^guardar$</template>
+  <template templatetype="command" name="save">^grabar$|^salvar$</template>
   <template name="DefaultHelp"><![CDATA[<u>Ayuda rápida</u><br/><br/>
 <b>- Objects:</b>  Intenta MIRAR, EXAMINAR..., HABLAR CON..., COGER..., DEJAR..., ABRIR...., DAR ... A ..., USAR ... EN ...<br/>
 <b>- Inventario:</b>  Para ver qué objetos llevas contigo, escribe:  I, INV o INVENTARIO.<br/>
