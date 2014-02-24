@@ -21,7 +21,7 @@
   <editor>
     <pattern>not Got(#object#)</pattern>
     <create>not Got()</create>
-    <description>[EditorExpressionsplayerisnot]</description>
+    <description>[EditorExpressionsplayerisnotcarrying]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -129,7 +129,7 @@
   <editor>
     <pattern>not game.pov.parent = #parent#</pattern>
     <create>not game.pov.parent = </create>
-    <description>[EditorExpressionsplayerisnot]</description>
+    <description>[EditorExpressionsplayerisnotin]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -157,7 +157,7 @@
   <editor>
     <pattern>IsSwitchedOn(#object#)</pattern>
     <create>IsSwitchedOn()</create>
-    <description>[EditorExpressionsobjectisswitched]</description>
+    <description>[EditorExpressionsobjectisswitchedon]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -171,7 +171,7 @@
   <editor>
     <pattern>not IsSwitchedOn(#object#)</pattern>
     <create>not IsSwitchedOn()</create>
-    <description>[EditorExpressionsobjectisswitched]</description>
+    <description>[EditorExpressionsobjectisswitchedoff]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -199,7 +199,7 @@
   <editor>
     <pattern>not ListContains(ScopeVisible(), #object#)</pattern>
     <create>not ListContains(ScopeVisible(), )</create>
-    <description>[EditorExpressionsobjectisnot]</description>
+    <description>[EditorExpressionsobjectisnotvisible]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -227,7 +227,7 @@
   <editor>
     <pattern>not ListContains(ScopeReachable(), #object#)</pattern>
     <create>not ListContains(ScopeReachable(), )</create>
-    <description>[EditorExpressionsobjectisnot]</description>
+    <description>[EditorExpressionsobjectisnotreachable]</description>
     <expressiontype>if</expressiontype>
 
     <control>
@@ -272,7 +272,7 @@
   <editor>
     <pattern>not Contains (#object1#,#object2#)</pattern>
     <create>not Contains (,)</create>
-    <description>[EditorExpressionsobjectdoes]</description>
+    <description>[EditorExpressionsobjectdoesnotcontain]</description>
     <expressiontype>if</expressiontype>
 
     <control>
