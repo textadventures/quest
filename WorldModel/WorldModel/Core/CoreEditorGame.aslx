@@ -53,7 +53,7 @@
         <controltype>dropdown</controltype>
         <caption>[EditorGameCategory]</caption>
         <attribute>category</attribute>
-        <validvalues type="simplestringlist">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Adult</validvalues>
+        <validvalues type="simplestringlist">;Comedy;Educational;Fantasy;Historical;Horror;Mystery;Puzzle;Romance;RPG;Sci-Fi;Seasonal;Simulation;Slice of Life;Surreal;Adult</validvalues>
         <freetext/>
       </control>
 

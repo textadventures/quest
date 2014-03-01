@@ -152,7 +152,7 @@
   <template name="EditorGameObjectslist">Objects list</template>
   <template name="EditorGameExitslist">Exits list</template>
   <template name="EditorGameDescription">Description</template>
-  <template name="EditorGameUseYouAreIn">Use "[YouAreIn]" prefix (turn off to display room name in bold instead)</template>
+  <template name="EditorGameUseYouAreIn">Use "You are in" prefix (turn off to display room name in bold instead)</template>
   <template name="EditorGamePutanewline">Put a newline after the room name</template>
   <template name="EditorGamePutanewline2">Put a newline after the objects list</template>
   <template name="EditorGamePutanewline3">Put a newline after the exits list</template>
