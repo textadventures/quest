@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("WebPlayer")]
-[assembly: AssemblyCopyright("Copyright © 2013 Text Adventures Ltd")]
+[assembly: AssemblyCopyright("Copyright © 2014 Text Adventures Ltd")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
