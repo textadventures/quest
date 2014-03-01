@@ -2011,6 +2011,7 @@
 		<row><td>deutsch.aslx2</td><td>ISX_DEFAULTCOMPONENT1</td><td>DEUTSC~1.ASL|Deutsch.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Projects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\Deutsch.aslx</td><td>1</td><td/></row>
 		<row><td>deutsch.template2</td><td>ISX_DEFAULTCOMPONENT2</td><td>DEUTSC~1.TEM|Deutsch.template</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Projects\Quest (CodePlex)\WorldModel\WorldModel\Core\Templates\Deutsch.template</td><td>1</td><td/></row>
 		<row><td>editorenglish.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>EditorEnglish.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Projects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\EditorEnglish.aslx</td><td>1</td><td/></row>
+		<row><td>editorespanol.aslx</td><td>ISX_DEFAULTCOMPONENT1</td><td>EditorEspanol.aslx</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Projects\Quest (CodePlex)\WorldModel\WorldModel\Core\Languages\EditorEspanol.aslx</td><td>1</td><td/></row>
 		<row><td>el.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>el.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Projects\Quest (CodePlex)\Dependencies\Chromium\locales\el.pak</td><td>1</td><td/></row>
 		<row><td>en_gb.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>en-GB.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Projects\Quest (CodePlex)\Dependencies\Chromium\locales\en-GB.pak</td><td>1</td><td/></row>
 		<row><td>en_us.pak</td><td>ISX_DEFAULTCOMPONENT3</td><td>en-US.pak</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Projects\Quest (CodePlex)\Dependencies\Chromium\locales\en-US.pak</td><td>1</td><td/></row>
@@ -4743,9 +4744,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]Quest.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{B04386A2-8C3D-4BB2-A281-ACCF165AAFCD}</td><td/></row>
+		<row><td>ProductCode</td><td>{49249D2C-C1C2-445A-B611-29404B024D6D}</td><td/></row>
 		<row><td>ProductName</td><td>Quest</td><td/></row>
-		<row><td>ProductVersion</td><td>5.50.0000</td><td/></row>
+		<row><td>ProductVersion</td><td>5.50.0001</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
