@@ -414,6 +414,7 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameSetacustom]</caption>
         <attribute>setcustomwidth</attribute>
+        <advanced/>
       </control>
 
       <control>
@@ -422,12 +423,14 @@
         <attribute>customwidth</attribute>
         <caption>[EditorGameWidth]</caption>
         <minimum>100</minimum>
+        <advanced/>
       </control>
 
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameSetcustompadding]</caption>
         <attribute>setcustompadding</attribute>
+        <advanced/>
       </control>
 
       <control>
@@ -436,6 +439,7 @@
         <attribute>custompaddingtop</attribute>
         <caption>[EditorGameTop]</caption>
         <minimum>0</minimum>
+        <advanced/>
       </control>
 
       <control>
@@ -444,6 +448,7 @@
         <attribute>custompaddingbottom</attribute>
         <caption>[EditorGameBottom]</caption>
         <minimum>0</minimum>
+        <advanced/>
       </control>
 
       <control>
@@ -452,6 +457,7 @@
         <attribute>custompaddingleft</attribute>
         <caption>[EditorGameLeft]</caption>
         <minimum>0</minimum>
+        <advanced/>
       </control>
 
       <control>
@@ -460,6 +466,7 @@
         <attribute>custompaddingright</attribute>
         <caption>[EditorGameRight]</caption>
         <minimum>0</minimum>
+        <advanced/>
       </control>
 
       <control>
@@ -623,6 +630,7 @@
 
     <tab>
       <caption>[EditorGamePlayer]</caption>
+      <advanced/>
 
       <control>
         <caption>[EditorGamePlayerobject]</caption>
