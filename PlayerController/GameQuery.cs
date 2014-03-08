@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -125,9 +126,26 @@ namespace TextAdventures.Quest
             }
         }
 
-        private string MD5Hash()
+        public IEnumerable<string> GetResourceNames()
         {
-            return TextAdventures.Utility.Utility.FileMD5Hash(m_game.Filename);
+            if (m_v4Game != null)
+            {
+                yield break;
+            }
+            if (m_v5Game != null)
+            {
+                foreach (var file in System.IO.Directory.GetFiles(m_v5Game.ResourcesFolder))
+                {
+                    yield return file;
+                }
+                yield break;
+            }
+            throw new InvalidOperationException();
+        }
+
+        public Stream GetResource(string resourceName)
+        {
+            return m_game.GetResource(resourceName);
         }
 
         private class GameQueryUI : IPlayerHelperUI
