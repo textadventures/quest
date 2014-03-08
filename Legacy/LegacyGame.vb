@@ -358,6 +358,7 @@ Public Class LegacyGame
     Private Resources() As ResourceType
     Private ResourceFile As String
     Private ResourceOffset As Integer
+    Private StartCatPos As Integer
     Private goptAbbreviations As Boolean
     Private m_loadedFromQSG As Boolean
     Private BeforeSaveScript As String
@@ -2020,6 +2021,7 @@ ErrorHandler:
         For i As Integer = 9 To Len(FileData)
             If CasVersion = 3 And Mid(FileData, i, 1) = StartCat Then
                 ' Read catalog
+                StartCatPos = i
                 EndCatPos = InStr(j, FileData, Keyword2CAS("!endcat"))
                 ReadCatalog(Mid(FileData, j + 1, EndCatPos - j - 1))
                 ResourceFile = thefilename
@@ -13581,6 +13583,9 @@ ErrorHandler:
     End Property
 
     Public Function GetResource(file As String) As System.IO.Stream Implements IASL.GetResource
+        If file = "_game.cas" Then
+            Return New IO.MemoryStream(GetResourcelessCAS())
+        End If
         Dim path As String = GetResourcePath(file)
         If Not System.IO.File.Exists(path) Then Return Nothing
         Return New IO.FileStream(path, IO.FileMode.Open, IO.FileAccess.Read)
@@ -13592,5 +13597,19 @@ ErrorHandler:
             Return TextAdventures.Utility.Utility.FileMD5Hash(GameFileName)
         End Get
     End Property
+
+    Public Iterator Function GetResources() As IEnumerable(Of String)
+        For i As Integer = 1 To NumResources
+            Yield Resources(i).ResourceName
+        Next
+        If NumResources > 0 Then
+            Yield "_game.cas"
+        End If
+    End Function
+
+    Private Function GetResourcelessCAS() As Byte()
+        Dim FileData As String = System.IO.File.ReadAllText(ResourceFile, System.Text.Encoding.GetEncoding(1252))
+        Return System.Text.Encoding.GetEncoding(1252).GetBytes(Left(FileData, StartCatPos - 1))
+    End Function
 
 End Class

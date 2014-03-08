@@ -130,6 +130,10 @@ namespace TextAdventures.Quest
         {
             if (m_v4Game != null)
             {
+                foreach (var file in m_v4Game.GetResources())
+                {
+                    yield return file;
+                }
                 yield break;
             }
             if (m_v5Game != null)
