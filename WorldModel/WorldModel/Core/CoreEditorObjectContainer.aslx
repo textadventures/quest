@@ -180,7 +180,7 @@
       <caption>Number of keys to unlock container</caption>
       <attribute>keycount</attribute>
       <mustinherit>container_lockable</mustinherit>
-      <minimum>1</minimum>
+      <minimum>0</minimum>
       <maximum>5</maximum>
     </control>
 
@@ -189,6 +189,7 @@
       <caption>[EditorObjectContainerKey]</caption>
       <attribute>key</attribute>
       <mustinherit>container_lockable</mustinherit>
+      <onlydisplayif>this.keycount > 0</onlydisplayif>
     </control>
 
     <control>
