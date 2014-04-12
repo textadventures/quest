@@ -440,7 +440,7 @@
   <type name="container_lockable">
     <openscript type="script">
       if (this.locked) {
-        if (this.autounlock and ListContains(ScopeInventory(), this.key)) {
+        if (this.autounlock and AllKeysAvailable(this)) {
           do (this, "unlock")
           if (not this.isopen) {
             OpenObject (this)
@@ -470,7 +470,7 @@
         msg (DynamicTemplate("CannotLockOpen", this))
       }
       else {
-        if (ListContains(ScopeInventory(), this.key)) {
+        if (AllKeysAvailable(this)) {
           msg (this.lockmessage)
           this.locked = true
         }
@@ -484,7 +484,7 @@
         msg (DynamicTemplate("AlreadyUnlocked", this))
       }
       else {
-        if (ListContains(ScopeInventory(), this.key)) {
+        if (AllKeysAvailable(this)) {
           msg (this.unlockmessage)
           this.locked = false
           if (this.autoopen and not this.isopen) {

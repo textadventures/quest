@@ -218,9 +218,9 @@
   <template name="EditorObjectContainerLocktype">Lock type</template>
   <template name="EditorObjectContainerKey">Key</template>
   <template name="EditorObjectContainerLocked">Locked</template>
-  <template name="EditorObjectContainerAutomatically">Automatically unlock if player has the key</template>
+  <template name="EditorObjectContainerAutomatically">Automatically unlock if player has the key(s)</template>
   <template name="EditorObjectContainerAutomatically2">Automatically open when unlocked</template>
-  <template name="EditorObjectContainerIftheplayer">If the player tries to lock/unlock the object, but does not have the key, print</template>
+  <template name="EditorObjectContainerIftheplayer">If the player tries to lock/unlock the object, but does not have the key(s), print</template>
   <template name="EditorObjectContainerUnlockmessage">Unlock message</template>
   <template name="EditorObjectContainerLockmessage">Lock message</template>
   <template name="EditorObjectContainerCanbelocked">Can be locked open</template>
