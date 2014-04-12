@@ -346,11 +346,33 @@
   
   <function name="ProcessTextCommand_Random" type="string" parameters="section, data">
     elements = Mid(section, 8)
-    elementslist = Split(elements, ":")
+    elementslist = Tsplit(elements)
     index = GetRandomInt(0, ListCount(elementslist) - 1)
     return (ProcessTextSection(ListItem(elementslist, index), data))
   </function>
 
+  <function name="Tsplit" type="stringlist" parameters="splittext">
+    itemlist = NewStringList()
+    sections=0
+    startpos=1
+    for (i, 1, LengthOf(splittext)){
+      if (Mid(splittext, i, 1) = "{"){
+        sections = sections + 1
+      }
+      if (Mid(splittext, i, 1) = "}"){
+        sections = sections - 1
+      }
+      if (Mid(splittext, i, 1) = ":" and 0 >= sections){
+        item = Mid(splittext, startpos, i - startpos)
+        list add(itemlist, item)
+        startpos = i + 1
+      }
+    }
+    item = Mid(splittext, startpos)
+    list add(itemlist, item)
+    return (itemlist)
+  </function>
+  
   <function name="ProcessTextCommand_RandomAlias" type="string" parameters="section, data">
     objectname = Mid(section, 8)
     object = GetObject(objectname)
@@ -668,7 +690,7 @@
     return ("{command:" + cmd + ":" + text + "}")
     ]]>
   </function>
-
+  
   <function name="Log" parameters="text">
     request (Log, text)
   </function>
