@@ -20,7 +20,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>askdefault</attribute>
-      <caption>[EditorObjectAskTellScripttorun]</caption>
+      <caption>[EditorObjectAskScripttorun]</caption>
       <advanced/>
     </control>
 
@@ -39,7 +39,7 @@
     <control>
       <controltype>script</controltype>
       <attribute>telldefault</attribute>
-      <caption>[EditorObjectAskTellScripttorun]</caption>
+      <caption>[EditorObjectTellScripttorun]</caption>
       <advanced/>
     </control>
 

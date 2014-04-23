@@ -114,7 +114,7 @@
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGameHyperlinks]</caption>
+        <caption>[EditorGameFeaturesHyperlinks]</caption>
         <attribute>enablehyperlinks</attribute>
       </control>
 
@@ -228,7 +228,7 @@
       </control>
       <control>
         <controltype>dropdown</controltype>
-        <caption>[EditorGameBackground]</caption>
+        <caption>[EditorGameBackgroundColour]</caption>
         <attribute>defaultbackground</attribute>
         <validvalues type="simplestringlist">[HTMLColorNames]</validvalues>
         <freetext/>
@@ -655,7 +655,7 @@
 
       <control>
         <controltype>stringdictionary</controltype>
-        <caption>[EditorGamePlayerobject]</caption>
+        <caption>[EditorGamePlayerobjectStatus]</caption>
         <keyprompt>Please enter the attribute name</keyprompt>
         <valueprompt>Please enter the format string (blank for default)</valueprompt>
         <attribute>povstatusattributes</attribute>

@@ -16,7 +16,7 @@
 
     <control>
       <controltype>textbox</controltype>
-      <caption>[EditorObjectRoomDescription]</caption>
+      <caption>[EditorObjectRoomDescriptionPrefix]</caption>
       <attribute>descprefix</attribute>
       <onlydisplayif>game.autodescription and game.autodescription_youarein_useprefix</onlydisplayif>
       <advanced/>
