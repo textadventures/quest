@@ -177,16 +177,22 @@
           if (game.showdescriptiononenter) {
             ShowRoomDescription
           }
-          if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "firstenter")) {
-            do (game.pov.parent, "firstenter")
+          
+          if (HasScript( game, "roomenter")) {
+            do (game, "roomenter")
           }
-          on ready {
-            if (HasScript(game.pov.parent, "enter")) {
-              do (game.pov.parent, "enter")
+          on ready {     
+            if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "firstenter")) {
+              do (game.pov.parent, "firstenter")
             }
+            on ready {
+              if (HasScript(game.pov.parent, "enter")) {
+                do (game.pov.parent, "enter")
+              }
+            }
+            set (game.pov.parent, "visited", true)
           }
-          set (game.pov.parent, "visited", true)
-        }
+        }  
       }
     }
     ]]>

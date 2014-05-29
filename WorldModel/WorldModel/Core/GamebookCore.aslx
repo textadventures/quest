@@ -144,7 +144,7 @@
         msg ("Error - no page named '" + command + "'")
       }
       else {
-        if (not game.clearlastpage) {
+        if (not game.clearlastpage and HasAttribute(player.parent, "options")) {
           if (DictionaryContains(player.parent.options, command)) {
             optiontext = StringDictionaryItem(player.parent.options, command)
             msg ("<b>" + optiontext + "</b>")
@@ -174,58 +174,63 @@
     if (not GetBoolean(game, "continuesound")) {
       stop sound
     }
-    if (GetBoolean(player.parent, "runscript") or GetBoolean(player.parent, "runscriptonly")) {
-      if (HasScript(player.parent, "script")) {
-        do (player.parent, "script")
-      }
-      else {
-        msg ("No script has been created for this page.")
-      }
+    if (HasScript( game, "roomenter")) {
+      do (game, "roomenter")
     }
-    // script may have moved the player, so finish DoPage if parent has changed
-    if (parent = player.parent and not GetBoolean(player.parent, "runscriptonly")) {
-      if (HasString(player.parent, "sound")) {
-        if (LengthOf(player.parent.sound) > 0) {
-          play sound (player.parent.sound, false, false)
-          game.continuesound = GetBoolean(player.parent, "continuesound")
+    on ready {
+      if (GetBoolean(player.parent, "runscript") or GetBoolean(player.parent, "runscriptonly")) {
+        if (HasScript(player.parent, "script")) {
+          do (player.parent, "script")
         }
-      } 
-    
-      if (HasString(player.parent, "picture")) {
-        if (LengthOf(player.parent.picture) > 0) {
-          picture (player.parent.picture)
-          msg ("")
+        else {
+          msg ("No script has been created for this page.")
         }
       }
-      if (HasString(player.parent, "youtube")) {
-        if (LengthOf(player.parent.youtube) > 0) {
-          JS.AddYouTube(player.parent.youtube)
-          msg ("")
-          msg ("")
-        }
-      }
-      msg (player.parent.description)
-      msg ("")
-      msg ("")
-      game.optionsoutputsection = StartNewOutputSection()
-      if (TypeOf(player.parent, "options") = "stringdictionary") {
-        foreach (key, player.parent.options) {
-          destination = GetObject(key)
-          if (destination = null) {
-            msg (StringDictionaryItem(player.parent.options, key) + " (broken link)")
+      // script may have moved the player, so finish DoPage if parent has changed
+      if (parent = player.parent and not GetBoolean(player.parent, "runscriptonly")) {
+        if (HasString(player.parent, "sound")) {
+          if (LengthOf(player.parent.sound) > 0) {
+            play sound (player.parent.sound, false, false)
+            game.continuesound = GetBoolean(player.parent, "continuesound")
           }
-          else {
-            if (DoesInherit(destination, "link")) {
-              msg ("<a href=\"" + destination.address + "\">" + StringDictionaryItem(player.parent.options, key) + "</a>")
+        } 
+    
+        if (HasString(player.parent, "picture")) {
+          if (LengthOf(player.parent.picture) > 0) {
+            picture (player.parent.picture)
+            msg ("")
+          }
+        }
+        if (HasString(player.parent, "youtube")) {
+          if (LengthOf(player.parent.youtube) > 0) {
+            JS.AddYouTube(player.parent.youtube)
+            msg ("")
+            msg ("")
+          }
+        }
+        msg (player.parent.description)
+        msg ("")
+        msg ("")
+        game.optionsoutputsection = StartNewOutputSection()
+        if (TypeOf(player.parent, "options") = "stringdictionary") {
+          foreach (key, player.parent.options) {
+            destination = GetObject(key)
+            if (destination = null) {
+              msg (StringDictionaryItem(player.parent.options, key) + " (broken link)")
             }
             else {
-              msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+              if (DoesInherit(destination, "link")) {
+                msg ("<a href=\"" + destination.address + "\">" + StringDictionaryItem(player.parent.options, key) + "</a>")
+              }
+              else {
+                msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+              }
             }
+            msg ("")
           }
-          msg ("")
         }
-      }
-      EndOutputSection (game.optionsoutputsection)
+        EndOutputSection (game.optionsoutputsection)
+      }  
     }
     set (player.parent, "visited", true)
     ]]>

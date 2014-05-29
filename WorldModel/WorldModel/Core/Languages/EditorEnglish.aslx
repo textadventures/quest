@@ -137,6 +137,7 @@
   <template name="EditorGameClearpicture">Clear picture panel if room has no picture</template>
   <template name="EditorGameScript">Script</template>
   <template name="EditorGameStartscript">Start script</template>
+  <template name="EditorGameRoomscript">Script when entering a room</template>
   <template name="EditorGameTurnscripts">Turn scripts - run after every turn the player takes in this game</template>
   <template name="EditorGameRoomDescriptions">Room Descriptions</template>
   <template name="EditorGameAutomatically">Automatically generate room descriptions</template>
