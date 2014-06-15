@@ -220,6 +220,10 @@
   <function name="Grid_DrawSvg" parameters="id, symbolid, x, y, width, height">
     JS.Grid_DrawSvg(id, symbolid, x, y, width, height)
   </function>
+  
+  <function name="Grid_DrawImage" parameters="id, url, x, y, width, height">
+    JS.Grid_DrawImage(id, url, x, y, width, height)
+  </function>
 
   <function name="Grid_AddNewShapePoint" parameters="x, y">
     JS.Grid_AddNewShapePoint(x, y)

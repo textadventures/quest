@@ -1108,6 +1108,11 @@ function Grid_DrawSvg(id, symbolId, x, y, width, height) {
     gridApi.drawCustomLayerSvg(id, symbolId, parseInt(x), parseInt(y), parseInt(width), parseInt(height));
 }
 
+function Grid_DrawImage(id, url, x, y, width, height) {
+    if (!_canvasSupported) return;
+    gridApi.drawCustomLayerImage(id, url, parseInt(x), parseInt(y), parseInt(width), parseInt(height));
+}
+
 function Grid_AddNewShapePoint(x, y) {
     if (!_canvasSupported) return;
     gridApi.addNewShapePoint(x, y);

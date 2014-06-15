@@ -5,6 +5,7 @@ var allPaths = new Array();
 var customLayerPaths = new Array();
 var customLayerObjects = {};
 var customLayerSvg = {};
+var customLayerImages = {};
 var layers = new Array();
 var maxLayer = 3;
 var currentLayer = 0;
@@ -398,10 +399,26 @@ gridApi.drawCustomLayerSvg = function (id, symbolId, x, y, width, height) {
         var placedSymbol = existing ? existing : symbols[symbolId].place();
         placedSymbol.scale(gridX.x * width / placedSymbol.bounds.width, gridY.y * height / placedSymbol.bounds.height);
         placedSymbol.position = gridPoint(x, y) + placedSymbol.bounds.size / 2;
-        addPathToCurrentLayerList(placedSymbol);
+        if (!existing) addPathToCurrentLayerList(placedSymbol);
         customLayerSvg[id] = placedSymbol;
     }
 };
+
+gridApi.drawCustomLayerImage = function(id, url, x, y, width, height) {
+    var existing = customLayerImages[id];
+    var raster = existing ? existing : new Raster(url);
+    var resizeRaster = function() {
+        raster.scale(gridX.x * width / raster.bounds.width, gridY.y * height / raster.bounds.height);
+        raster.position = gridPoint(x, y) + raster.bounds.size / 2;
+    };
+    if (existing) {
+        resizeRaster();
+    } else {
+        raster.onLoad = resizeRaster;
+        addPathToCurrentLayerList(raster);
+        customLayerImages[id] = raster;
+    }    
+}
 
 gridApi.addNewShapePoint = function (x, y) {
     newShapePoints.push([x, y]);
