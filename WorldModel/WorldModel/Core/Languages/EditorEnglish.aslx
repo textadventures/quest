@@ -395,9 +395,9 @@
   <template name="EditorScriptsDrawingAddcustomshape">Add custom shape point</template>
   <template name="EditorScriptsDrawingAddNewShapePointAtX">Add custom shape point at X</template>
   <template name="EditorScriptsDrawingAddNewShapePointAtY">, Y</template>
-   <template name="EditorScriptsDrawingLoadSVGData">Load SVG data</template>
+   <template name="EditorScriptsDrawingLoadSvgData">Load SVG data</template>
   <template name="EditorScriptsDrawingLoadSvgId">with ID</template>
-  <template name="EditorScriptsDrawingDrawSVGdata">Draw SVG data</template>
+  <template name="EditorScriptsDrawingDrawSvgData">Draw SVG data</template>
   <template name="EditorScriptsDrawingDrawSvgDataID">Draw SVG data with ID</template>
   <template name="EditorScriptsDrawingDrawSvgId">using data loaded from SVG ID</template>
   <template name="EditorScriptsDrawingDrawSvgAtX">At X</template>

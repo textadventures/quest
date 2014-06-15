@@ -395,9 +395,9 @@
   <template name="EditorScriptsDrawingAddcustomshape">Agregar punto de forma costumizada</template>
   <template name="EditorScriptsDrawingAddNewShapePointAtX">Agregar punto de forma costumizada en X</template>
   <template name="EditorScriptsDrawingAddNewShapePointAtY">, Y</template>
-  <template name="EditorScriptsDrawingLoadSVGData">Descargar datos SVG</template>
+  <template name="EditorScriptsDrawingLoadSvgData">Descargar datos SVG</template>
   <template name="EditorScriptsDrawingLoadSvgId">con Código</template>
-  <template name="EditorScriptsDrawingDrawSVGdata">Dibujar datos SVG</template>
+  <template name="EditorScriptsDrawingDrawSvgData">Dibujar datos SVG</template>
   <template name="EditorScriptsDrawingDrawSvgDataID">Dibujar datos SVG con Código</template>
   <template name="EditorScriptsDrawingDrawSvgId">usando datos descargados del código SVG</template>
   <template name="EditorScriptsDrawingDrawSvgAtX">En X</template>
