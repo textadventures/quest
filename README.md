@@ -12,6 +12,13 @@ Quest lets you make interactive story games – you can make text adventure game
 * Games can be played online by uploading the .quest file to [textadventures.co.uk](http://textadventures.co.uk/), or you can use the WebPlayer project to host them yourself on a web server with ASP.NET 4.0
 * MIT licence means you're free to create commercial Quest games, and use Quest in closed-source projects
 
+Installing Quest
+----------------
+
+Windows users can download [Quest for Windows](http://textadventures.co.uk/quest/desktop)
+
+Or, you can [use Quest in your web browser](http://textadventures.co.uk/create)
+
 Documentation
 -------------
 
