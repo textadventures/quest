@@ -494,6 +494,12 @@
       </control>
 
       <control>
+        <controltype>script</controltype>
+        <caption>[EditorGameRoomscript]</caption>
+        <attribute>roomenter</attribute>
+      </control>
+
+      <control>
         <caption>[EditorGameTurnscripts]</caption>
         <controltype>elementslist</controltype>
         <elementtype>object</elementtype>

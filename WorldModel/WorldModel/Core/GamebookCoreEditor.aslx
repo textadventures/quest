@@ -267,6 +267,18 @@
     </tab>
 
     <tab>
+      <caption>Script</caption>
+      <advanced/>
+
+      <control>
+        <controltype>script</controltype>
+        <caption>Script when entering page</caption>
+        <attribute>roomenter</attribute>
+      </control>
+    </tab>   
+    
+
+    <tab>
       <caption>Display</caption>
 
       <control>
