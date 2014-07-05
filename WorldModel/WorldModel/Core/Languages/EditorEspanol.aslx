@@ -50,10 +50,7 @@
   <template name="EditorExitAttributes">Atributos</template>
   <template name="EditorExpressionsParent">Padre:</template>
   <template name="EditorExpressionsContainschild">Contiene hijo:</template>
-  <template name="EditorExpressionsParent">Padre:</template>
   <template name="EditorExpressionsDoesnotcontain">No contiene hijo:</template>
-  <template name="EditorExpressionsObject">Objeto</template>
-  <template name="EditorExpressionsAttribute">Atributo</template>
   <template name="EditorExpressionsObject">Objeto</template>
   <template name="EditorExpressionsAttribute">Atributo</template>
   <template name="EditorExpressions">=</template>
@@ -82,7 +79,7 @@
   <template name="EditorGameRecommended">El formato recomendado para la carátula es un archivo PNG de 512x512.</template>
   <template name="EditorGameDescription">Descripción</template>
   <template name="EditorGameFeatures">Características</template>
-  <template name="EditorGameHyperlinks">Hipervínculos: los jugadores pueden accesar los verbos de los objetos al pulsar los nombres de los objetos</template>
+  <template name="EditorGameFeaturesHyperlinks">Hipervínculos: los jugadores pueden accesar los verbos de los objetos al pulsar los nombres de los objetos</template>
   <template name="EditorGameMapadynamically">Mapa y Cuadrícula de Dibujo: un mapa generado dinámicamente con base en una cuadrícula, se crea conforme el jugador se desplaza durante el juego. También, funciones para dibujarlo de forma costumizada</template>
   <template name="EditorGamePictureframe">Cuadro de Imagen: una imagen estática que aparece sobre el texto. Las imágenes pueden colocarse por lugar, o usando un comando de guión</template>
   <template name="EditorGameScore">Puntaje</template>
@@ -101,7 +98,7 @@
   <template name="EditorGameFontsize">Tamaño de fuente</template>
   <template name="EditorGameColour">Color</template>
   <template name="EditorGameYoucanuseany">Puedes usar cualquier nombre de color HTML válido, incluyendo la forma hexadecimal (#RRGGBB - valores válidos desde #000000 hasta #FFFFFF)</template>
-  <template name="EditorGameBackground">Color de fondo</template>
+  <template name="EditorGameBackgroundColour">Color de fondo</template>
   <template name="EditorGameBackground2">Imagen de fondo</template>
   <template name="EditorGameSetbackground">Definir transparencia del fondo</template>
   <template name="EditorGameOpacity">Transparencia</template>
@@ -111,10 +108,7 @@
   <template name="EditorGameUnderlinehyperlinks">Subrayar hipervínculos</template>
   <template name="EditorGameAfterusing">Después de usar un comando con hipervínculo, desactivarlo</template>
   <template name="EditorGameVerbMenus">Menú de verbos</template>
-  <template name="EditorGameFont">Fuente</template>
-  <template name="EditorGameFontsize">Tamaño de fuente</template>
   <template name="EditorGameBackground">Fondo</template>
-  <template name="EditorGameForeground">Primer plano</template>
   <template name="EditorGameHoverbackground">Fondo flotante</template>
   <template name="EditorGameHoverforeground">Primer plano flotante</template>
   <template name="EditorGameInterface">Interface</template>
@@ -151,7 +145,6 @@
   <template name="EditorGameRoomname">Nombre del lugar</template>
   <template name="EditorGameObjectslist">Lista de objetos</template>
   <template name="EditorGameExitslist">Lista de salidas</template>
-  <template name="EditorGameDescription">Descripción</template>
   <template name="EditorGameUseYouAreIn">Usar prefijo "[EstásEn]"(desactivar para mostrar en vez el nombre del lugar en negrita)</template>
   <template name="EditorGamePutanewline">Añadir una línea después del nombre del lugar</template>
   <template name="EditorGamePutanewline2">Añadir una línea después de la lista de objetos</template>
@@ -209,7 +202,6 @@
   <template name="EditorObjectContainerMaximumnumber">Máximo número de objetos</template>
   <template name="EditorObjectContainerFullcontainer">Mensaje recipiente lleno (dejar en blanco por defecto)</template>
   <template name="EditorObjectContainerMaximumvolume">Máximo volumen de objetos</template>
-  <template name="EditorObjectContainerFullcontainer">Mensaje recipiente lleno (dejar en blanco por defecto)</template>
   <template name="EditorObjectContainerMessagetoprint">Mensaje a imprimir cuando se abre (dejar en blanco por defecto)</template>
   <template name="EditorObjectContainerMessagetoprint2">Mensaje a imprimir cuando se cierra (dejar en blanco por defecto</template>
   <template name="EditorObjectContainerAfteropening">Después de abrir el objeto</template>
@@ -251,7 +243,6 @@
   <template name="EditorObjectInventoryVolume">Volumen</template>
   <template name="EditorObjectInventoryVolume2">Volumen</template>
   <template name="EditorObjectInventoryMaximumvolume">Máximo volumen de inventario</template>
-  <template name="EditorObjectInventoryFullcontainer">Mensaje recipiente lleno (dejar en blanco por defecto)</template>
   <template name="EditorObjectLightDarkLight/Dark">Claro/Oscuro</template>
   <template name="EditorObjectLightDarkRoomisinitially">El lugar esta inicialmente oscuro</template>
   <template name="EditorObjectMapMap">Mapa</template>
@@ -277,7 +268,6 @@
   <template name="EditorObjectObjectVerbsadded">Los verbos agregados a la pestaña "Verbos" se agregarán automáticamente a la lista.  Para desactivar esto, deselecciona "Generar automáticamente lista de verbos para los objetos" en la pestaña "Descripciones del lugar" del juego.  También puedes desactivar esta opción solo para este objeto, al seleccionar una de las opciones más abajo.</template>
   <template name="EditorObjectObjectDisableautomatically">Desactivar listas de verbos generadas automáticamente para este objeto</template>
   <template name="EditorObjectObjectOnlydisplay">Solo mostrar verbos desde la pestaña de verbos de este objeto</template>
-  <template name="EditorObjectObjectDisplayverbs">Mostrar verbos</template>
   <template name="EditorObjectObjectInventoryverbs">Los verbos de inventario aparecen cuando el hipervínculo del objeto es pulsado desde el comando "Inventario", y también desde los botones en el panel de "Inventario".</template>
   <template name="EditorObjectObjectInventoryverbs2">Verbos de inventario</template>
   <template name="EditorObjectOptionsSwitchable">Conmutable</template>
@@ -307,7 +297,7 @@
   <template name="EditorObjectOptionsOthernames">Otros nombres</template>
   <template name="EditorObjectRoomRoom">Lugar</template>
   <template name="EditorObjectRoomRoompicture">Imagen del lugar</template>
-  <template name="EditorObjectRoomDescription">Prefijo descripción</template>
+  <template name="EditorObjectRoomDescriptionPrefix">Prefijo descripción</template>
   <template name="EditorObjectRoomObjectslist">Prefijo lista de objetos</template>
   <template name="EditorObjectRoomDescription">Descripción</template>
   <template name="EditorObjectScriptsScripts">Guiones</template>
@@ -327,7 +317,6 @@
   <template name="EditorObjectSetupUsedefault">Usar prefijo y sufijo por defecto</template>
   <template name="EditorObjectSetupPrefix">Prefijo</template>
   <template name="EditorObjectSetupSuffix">Sufijo</template>
-  <template name="EditorObjectSetupType">Tipo</template>
   <template name="EditorObjectSetupGender">Género</template>
   <template name="EditorObjectSetupArticle">Artículo</template>
   <template name="EditorObjectSetupDescription">Descripción</template>
@@ -339,16 +328,11 @@
   <template name="EditorObjectUseGiveUseotherobject">Usar(otro objeto) en este</template>
   <template name="EditorObjectUseGiveUseanyother">Usar cualquier objeto en este</template>
   <template name="EditorObjectUseGiveUsethisonother">Usar este en (otro objeto)</template>
-  <template name="EditorObjectUseGiveAction">Acción</template>
   <template name="EditorObjectUseGiveUseonanyother">Usar en cualquier otro objeto</template>
   <template name="EditorObjectUseGiveGiveonits">Dar (por sí solo)</template>
-  <template name="EditorObjectUseGiveAction">Acción</template>
-  <template name="EditorObjectUseGiveMenucaption">Mensaje menú (dejar en blanco por defecto)</template>
   <template name="EditorObjectUseGiveGiveother">Dar (otro objeto) a este</template>
-  <template name="EditorObjectUseGiveAction">Acción</template>
   <template name="EditorObjectUseGiveGiveanyother">Dar cualquier otro objeto a este</template>
   <template name="EditorObjectUseGiveGivethisto">Dar este a (otro objeto)</template>
-  <template name="EditorObjectUseGiveAction">Acción</template>
   <template name="EditorObjectUseGiveGivetoanyother">Dar a cualquier otro objeto</template>
   <template name="EditorObjectVerbsVerbs">Verbos</template>
   <template name="EditorScriptsDarknessDarkness">Oscuridad</template>
@@ -416,7 +400,6 @@
   <template name="EditorScriptsEffectsms">ms</template>
   <template name="EditorScriptsEffectsUnscramble">Descifrado</template>
   <template name="EditorScriptsEffectsUpdateevery">Actualizar cada</template>
-  <template name="EditorScriptsEffectsms">ms</template>
   <template name="EditorScriptsEffectsReveal">Revelar</template>
   <template name="EditorScriptsEffectscharacters">caracteres a la vez</template>
   <template name="EditorScriptsGameStateGameState">Estado del juego</template>
@@ -453,9 +436,7 @@
   <template name="EditorScriptsObjectsYoumustenter">(Debes indicar un tipo si ingresas un Código)</template>
   <template name="EditorScriptsObjectsLockexit">Bloquear salida</template>
   <template name="EditorScriptsObjectsUnlockexit">Desbloquear salida</template>
-  <template name="EditorScriptsObjectsMakevisible">Hacer visible</template>
   <template name="EditorScriptsObjectsMakeexitvisible">Hacer salida visible</template>
-  <template name="EditorScriptsObjectsMakeinvisible">Hacer invisible</template>
   <template name="EditorScriptsObjectsMakeexitinvisible">Hacer salida invisible</template>  
   <template name="EditorScriptsObjectsCloneobject">Clonar objeto</template>
   <template name="EditorScriptsObjectsCloneobjectAndMove">Clonar objeto y moverlo</template>
@@ -496,7 +477,6 @@
   <template name="EditorScriptsOutputDisplaylink">Mostrar vínculo</template>
   <template name="EditorScriptsOutputhttp//">http://</template>
   <template name="EditorScriptsOutputUseHTTPS">Usar HTTPS:</template>
-  <template name="EditorScriptsOutputDisplaylink">Mostrar vínculo</template>
   <template name="EditorScriptsOutputPrintemail">Imprimir vínculo de correo</template>  
   <template name="EditorScriptsOutputEmailaddress">Dirección de correo:</template>
   <template name="EditorScriptsOutputPrintalist">Imprimir una lista</template>  
@@ -510,10 +490,8 @@
   <template name="EditorScriptsOutputShowamenu">Mostrar un menú</template>  
   <template name="EditorScriptsOutputShowmenuwith">Mostrar menú con mensaje</template>
   <template name="EditorScriptsOutputOptionsfrom">Opciones desde lista/diccionario:</template>
-  <template name="EditorScriptsOutputAllowplayer">Permitir al jugador cancelar:</template>
+  <template name="EditorScriptsOutputAllowplayerCancel">Permitir al jugador cancelar:</template>
   <template name="EditorScriptsOutputAfterchoosing">Después de escoger, correr guión:</template>
-  <template name="EditorScriptsOutputShowmenuwith">Mostrar menú con mensaje</template>
-  <template name="EditorScriptsOutputOptionsfrom">Opciones desde lista/diccionario:</template>
   <template name="EditorScriptsOutputAllowplayer">Permitir al jugador ignorar el menú:</template>
   <template name="EditorScriptsOutputAskaquestion">Hacer una pregunta</template>
   <template name="EditorScriptsOutputAskquestion">Preguntar</template>
@@ -572,10 +550,7 @@
   <template name="EditorScriptsScriptsSetthisfunctionsTo">Definir el valor de returno de esta función a</template>
   <template name="EditorScriptsScriptsRundelegate">Correr implementación delegada de objeto</template>
   <template name="EditorScriptsScriptsAttribute">Atributo:</template>
-  <template name="EditorScriptsScriptsWithparameters">Con parámetros:</template>
-  <template name="EditorScriptsScriptsParameters">Parámetros</template>
   <template name="EditorScriptsScriptsWhenready">Cuando esté listo,</template>
-  <template name="EditorScriptsScriptsRunscript">Correr guión</template>
   <template name="EditorScriptsTimersTimers">Temporizadores</template>
   <template name="EditorScriptsTimersEnabletimer">Habilitar temporizador</template>
   <template name="EditorScriptsTimersDisabletimer">Deshabilitar temporizador</template>
@@ -584,18 +559,13 @@
   <template name="EditorScriptsTimersintervalto">intérvalo a</template>
   <template name="EditorScriptsTimersseconds">segundo(s)</template>
   <template name="EditorScriptsTimersSettimerscript">Fijar temporizador de guiones</template>  
-  <template name="EditorScriptsTimersSettimer">Fijar temporizador</template>
   <template name="EditorScriptsTimersscriptto">guión a</template>
   <template name="EditorScriptsTimersAfter">Después</template>
-  <template name="EditorScriptsTimersseconds">segundo(s)</template>
   <template name="EditorScriptsTimersRunscript">Correr guión</template>
-  <template name="EditorScriptsTimersAfter">Después</template>
-  <template name="EditorScriptsTimersseconds">segundo(s)</template>
   <template name="EditorScriptsTimersRunscriptafter">Correr guión después de un número de segundos</template>
   <template name="EditorScriptsTimersRunscriptafterName">Correr guión después de un número de segundos (con nombre)</template>    
   <template name="EditorScriptsTimersName">Nombre:</template>
   <template name="EditorScriptsTimersPausefor">Pausar por</template>
-  <template name="EditorScriptsTimersseconds">segundo(s)</template>
   <template name="EditorScriptsTimersCreateatimer">Crear un temporizador</template>
   <template name="EditorScriptsTimersCreatetimer">Crear temporizador</template>
   <template name="EditorScriptsTurnScriptsTurnScripts">Guiones por turno</template>
@@ -607,8 +577,6 @@
   <template name="EditorScriptsTurnScriptsturns">turnos</template>
   <template name="EditorScriptsTurnScriptsRunscriptafter">Run script after a number of turns</template>  
   <template name="EditorScriptsTurnScriptsRunscript">Correr guión</template>
-  <template name="EditorScriptsTurnScriptsAfter">Después de</template>
-  <template name="EditorScriptsTurnScriptsturns">turnos</template>
   <template name="EditorScriptsTurnScriptsRunscriptafter">Correr guión después de un número de turnos</template>  
   <template name="EditorScriptsTurnScriptsName">Nombre:</template>
   <template name="EditorScriptsTurnScriptsCreateaturn">Crear un guión por turnos</template>  
@@ -628,33 +596,26 @@
   <template name="EditorScriptsVariablesDecreasecounter">Reducir contador</template>
   <template name="EditorScriptsVariablesSetcounter">Colocar contador</template>
   <template name="EditorScriptsVariablesto">a</template>
-  <template name="EditorScriptsVariablesIncreasecounter">Aumentar contador</template>
-  <template name="EditorScriptsVariablesDecreasecounter">Reducir contador</template>
   <template name="EditorScriptsVariablesChangecounter">Cambiar contador</template>
   <template name="EditorScriptsVariablesby">por</template>
   <template name="EditorScriptsVariablesSetavariable">Definir una variable o atributo</template>
   <template name="EditorScriptsVariablesSetvariable">Definir variable</template>
   <template name="EditorScriptsVariables">=</template>
   <template name="EditorScriptsVariablesSetavariableScript">Definir una variable o atributo a un guión</template>
-  <template name="EditorScriptsVariablesSetvariable">Definir variable</template>
   <template name="EditorScriptsVariablesscript">= guión:</template>
   <template name="EditorScriptsVariablesSetanobjects">Definir atributo a un objeto (llamado por una expresión)</template>
   <template name="EditorScriptsVariablesSetobject">Colocar objeto</template>
   <template name="EditorScriptsVariablesAttribute">Atributo:</template>
-  <template name="EditorScriptsVariablesValue">Valor:</template>
+  <template name="EditorScriptsVariablesValue">Valor</template>
   <template name="EditorScriptsVariablesAddavalueto">Añadir valor a una lista</template>
   <template name="EditorScriptsVariablesAddtolist">Añadir a lista</template>
-  <template name="EditorScriptsVariablesvalue">valor</template>
   <template name="EditorScriptsVariablesRemoveavalue">Quitar valor de una lista</template>
   <template name="EditorScriptsVariablesRemovefrom">Quitar de lista</template>
-  <template name="EditorScriptsVariablesvalue">valor</template>
   <template name="EditorScriptsVariablesAddavaluetoDic">Añadir valor a un diccionario</template>  
   <template name="EditorScriptsVariablesAddtodictionary">Añadir a diccionario</template>
   <template name="EditorScriptsVariableskey">llave</template>
-  <template name="EditorScriptsVariablesvalue">valor</template>
   <template name="EditorScriptsVariablesRemoveavalueDic">Quitar valor de un diccionario</template>  
   <template name="EditorScriptsVariablesRemovefrom">Quitar de diccionario</template>
-  <template name="EditorScriptsVariableskey">llave</template>
   <template name="EditorTemplateTemplate">Plantilla</template>
   <template name="EditorTemplateName">Nombre</template>
   <template name="EditorTemplateText">Texto</template>

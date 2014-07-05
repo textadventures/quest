@@ -579,7 +579,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsOutputAllowplayer]</caption>
+      <caption>[EditorScriptsOutputAllowplayerCancel]</caption>
       <breakbefore/>
     </control>
 

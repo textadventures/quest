@@ -50,10 +50,7 @@
   <template name="EditorExitAttributes">Attributes</template>
   <template name="EditorExpressionsParent">Parent:</template>
   <template name="EditorExpressionsContainschild">Contains child:</template>
-  <template name="EditorExpressionsParent">Parent:</template>
   <template name="EditorExpressionsDoesnotcontain">Does not contain child:</template>
-  <template name="EditorExpressionsObject">Object</template>
-  <template name="EditorExpressionsAttribute">Attribute</template>
   <template name="EditorExpressionsObject">Object</template>
   <template name="EditorExpressionsAttribute">Attribute</template>
   <template name="EditorExpressions">=</template>
@@ -82,7 +79,7 @@
   <template name="EditorGameRecommended">Recommended format for cover art is a 512x512 PNG file.</template>
   <template name="EditorGameDescription">Description</template>
   <template name="EditorGameFeatures">Features</template>
-  <template name="EditorGameHyperlinks">Hyperlinks: players can access object verbs by clicking object names</template>
+  <template name="EditorGameFeaturesHyperlinks">Hyperlinks: players can access object verbs by clicking object names</template>
   <template name="EditorGameMapadynamically">Map and Drawing Grid: a dynamically generated grid-based map, created as the player moves around the game. Also, functions for custom drawing.</template>
   <template name="EditorGamePictureframe">Picture frame: a static picture that appears above text. Pictures can be set per room, or using a script command</template>
   <template name="EditorGameScore">Score</template>
@@ -101,7 +98,7 @@
   <template name="EditorGameFontsize">Font size</template>
   <template name="EditorGameColour">Colour</template>
   <template name="EditorGameYoucanuseany">You can use any valid HTML colour name, including the hexadecimal form (#RRGGBB - valid values #000000 to #FFFFFF)</template>
-  <template name="EditorGameBackground">Background colour</template>
+  <template name="EditorGameBackgroundColour">Background colour</template>
   <template name="EditorGameBackground2">Background image</template>
   <template name="EditorGameSetbackground">Set background opacity</template>
   <template name="EditorGameOpacity">Opacity</template>
@@ -111,10 +108,7 @@
   <template name="EditorGameUnderlinehyperlinks">Underline hyperlinks</template>
   <template name="EditorGameAfterusing">After using a command hyperlink, deactivate it</template>
   <template name="EditorGameVerbMenus">Verb Menus</template>
-  <template name="EditorGameFont">Font</template>
-  <template name="EditorGameFontsize">Font size</template>
   <template name="EditorGameBackground">Background</template>
-  <template name="EditorGameForeground">Foreground</template>
   <template name="EditorGameHoverbackground">Hover background</template>
   <template name="EditorGameHoverforeground">Hover foreground</template>
   <template name="EditorGameInterface">Interface</template>
@@ -151,7 +145,6 @@
   <template name="EditorGameRoomname">Room name</template>
   <template name="EditorGameObjectslist">Objects list</template>
   <template name="EditorGameExitslist">Exits list</template>
-  <template name="EditorGameDescription">Description</template>
   <template name="EditorGameUseYouAreIn">Use "You are in" prefix (turn off to display room name in bold instead)</template>
   <template name="EditorGamePutanewline">Put a newline after the room name</template>
   <template name="EditorGamePutanewline2">Put a newline after the objects list</template>
@@ -161,7 +154,7 @@
   <template name="EditorGamePlayerobject">Player object</template>
   <template name="EditorGameIfnoplayer">If no player object is specified, Quest will use the object named "player" (and create one in the first room if it doesn't exist)</template>
   <template name="EditorGameScripttorun">Script to run when health reaches zero</template>
-  <template name="EditorGamePlayerobject">Player object status attributes (values read from the current player object)</template>
+  <template name="EditorGamePlayerobjectStatus">Player object status attributes (values read from the current player object)</template>
   <template name="EditorGameAttributes">Attributes</template>
   <template name="EditorGameStatusattributes">Status attributes</template>
   <template name="EditorIncludedLibraryLibrary">Library</template>
@@ -186,10 +179,10 @@
   <template name="EditorObjectAskTellPleaseenter">Please enter the topic keywords, separated by spaces</template>
   <template name="EditorObjectAskTellAsk">Ask</template>
   <template name="EditorObjectAskTellAskabout">Ask about</template>
-  <template name="EditorObjectAskTellScripttorun">Script to run when asked about an unknown topic</template>
+  <template name="EditorObjectAskScripttorun">Script to run when asked about an unknown topic</template>
   <template name="EditorObjectAskTellTell">Tell</template>
   <template name="EditorObjectAskTellTellabout">Tell about</template>
-  <template name="EditorObjectAskTellScripttorun">Script to run when told about an unknown topic</template>
+  <template name="EditorObjectTellScripttorun">Script to run when told about an unknown topic</template>
   <template name="EditorObjectAttributesAttributes">Attributes</template>
   <template name="EditorObjectAttributesStatusattributes">Status attributes</template>
   <template name="EditorObjectChildrenObjects">Objects</template>
@@ -209,7 +202,6 @@
   <template name="EditorObjectContainerMaximumnumber">Maximum number of objects</template>
   <template name="EditorObjectContainerFullcontainer">Full container message (leave blank for default)</template>
   <template name="EditorObjectContainerMaximumvolume">Maximum volume of objects</template>
-  <template name="EditorObjectContainerFullcontainer">Full container message (leave blank for default)</template>
   <template name="EditorObjectContainerMessagetoprint">Message to print when opening (leave blank for default)</template>
   <template name="EditorObjectContainerMessagetoprint2">Message to print when closing (leave blank for default)</template>
   <template name="EditorObjectContainerAfteropening">After opening the object</template>
@@ -251,7 +243,6 @@
   <template name="EditorObjectInventoryVolume">Volume</template>
   <template name="EditorObjectInventoryVolume2">Volume</template>
   <template name="EditorObjectInventoryMaximumvolume">Maximum volume of inventory</template>
-  <template name="EditorObjectInventoryFullcontainer">Full container message (leave blank for default)</template>
   <template name="EditorObjectLightDarkLight/Dark">Light/Dark</template>
   <template name="EditorObjectLightDarkRoomisinitially">Room is initially dark</template>
   <template name="EditorObjectMapMap">Map</template>
@@ -277,7 +268,6 @@
   <template name="EditorObjectObjectVerbsadded">Verbs added to the "Verbs" tab will be automatically added to the list. To turn this off, untick the "Automatically generate object display verbs list" on the game "Room Descriptions" tab. You can also turn this feature off just for this object, by ticking one of the options below.</template>
   <template name="EditorObjectObjectDisableautomatically">Disable automatically generated display verb list for this object</template>
   <template name="EditorObjectObjectOnlydisplay">Only display verbs from this object's Verbs tab</template>
-  <template name="EditorObjectObjectDisplayverbs">Display verbs</template>
   <template name="EditorObjectObjectInventoryverbs">Inventory verbs appear when the object hyperlink is clicked from an "inventory" command, and also as buttons in the "Inventory" list.</template>
   <template name="EditorObjectObjectInventoryverbs2">Inventory verbs</template>
   <template name="EditorObjectOptionsSwitchable">Switchable</template>
@@ -307,7 +297,7 @@
   <template name="EditorObjectOptionsOthernames">Other names</template>
   <template name="EditorObjectRoomRoom">Room</template>
   <template name="EditorObjectRoomRoompicture">Room picture</template>
-  <template name="EditorObjectRoomDescription">Description prefix</template>
+  <template name="EditorObjectRoomDescriptionPrefix">Description prefix</template>
   <template name="EditorObjectRoomObjectslist">Objects list prefix</template>
   <template name="EditorObjectRoomDescription">Description</template>
   <template name="EditorObjectScriptsScripts">Scripts</template>
@@ -327,7 +317,6 @@
   <template name="EditorObjectSetupUsedefault">Use default prefix and suffix</template>
   <template name="EditorObjectSetupPrefix">Prefix</template>
   <template name="EditorObjectSetupSuffix">Suffix</template>
-  <template name="EditorObjectSetupType">Type</template>
   <template name="EditorObjectSetupGender">Gender</template>
   <template name="EditorObjectSetupArticle">Article</template>
   <template name="EditorObjectSetupDescription">Description</template>
@@ -339,16 +328,11 @@
   <template name="EditorObjectUseGiveUseotherobject">Use (other object) on this</template>
   <template name="EditorObjectUseGiveUseanyother">Use any other object on this</template>
   <template name="EditorObjectUseGiveUsethisonother">Use this on (other object)</template>
-  <template name="EditorObjectUseGiveAction">Action</template>
   <template name="EditorObjectUseGiveUseonanyother">Use on any other object</template>
   <template name="EditorObjectUseGiveGiveonits">Give (on its own)</template>
-  <template name="EditorObjectUseGiveAction">Action</template>
-  <template name="EditorObjectUseGiveMenucaption">Menu caption (leave blank for default)</template>
   <template name="EditorObjectUseGiveGiveother">Give (other object) to this</template>
-  <template name="EditorObjectUseGiveAction">Action</template>
   <template name="EditorObjectUseGiveGiveanyother">Give any other object to this</template>
   <template name="EditorObjectUseGiveGivethisto">Give this to (other object)</template>
-  <template name="EditorObjectUseGiveAction">Action</template>
   <template name="EditorObjectUseGiveGivetoanyother">Give to any other object</template>
   <template name="EditorObjectVerbsVerbs">Verbs</template>
   <template name="EditorScriptsDarknessDarkness">Darkness</template>
@@ -416,7 +400,6 @@
   <template name="EditorScriptsEffectsms">ms</template>
   <template name="EditorScriptsEffectsUnscramble">Unscramble</template>
   <template name="EditorScriptsEffectsUpdateevery">Update every</template>
-  <template name="EditorScriptsEffectsms">ms</template>
   <template name="EditorScriptsEffectsReveal">Reveal</template>
   <template name="EditorScriptsEffectscharacters">characters at a time</template>
   <template name="EditorScriptsGameStateGameState">Game State</template>
@@ -453,9 +436,7 @@
   <template name="EditorScriptsObjectsYoumustenter">(You must enter a type if you enter an ID)</template>
   <template name="EditorScriptsObjectsLockexit">Lock exit</template>
   <template name="EditorScriptsObjectsUnlockexit">Unlock exit</template>
-  <template name="EditorScriptsObjectsMakevisible">Make visible</template>
   <template name="EditorScriptsObjectsMakeexitvisible">Make exit visible</template>
-  <template name="EditorScriptsObjectsMakeinvisible">Make invisible</template>
   <template name="EditorScriptsObjectsMakeexitinvisible">Make exit invisible</template>  
   <template name="EditorScriptsObjectsCloneobject">Clone object</template>
   <template name="EditorScriptsObjectsCloneobjectAndMove">Clone object and move</template>
@@ -496,7 +477,6 @@
   <template name="EditorScriptsOutputDisplaylink">Display link</template>
   <template name="EditorScriptsOutputhttp//">http://</template>
   <template name="EditorScriptsOutputUseHTTPS">Use HTTPS:</template>
-  <template name="EditorScriptsOutputDisplaylink">Display link</template>
   <template name="EditorScriptsOutputPrintemail">Print email link</template>  
   <template name="EditorScriptsOutputEmailaddress">Email address:</template>
   <template name="EditorScriptsOutputPrintalist">Print a list</template>  
@@ -510,10 +490,8 @@
   <template name="EditorScriptsOutputShowamenu">Show a menu</template>  
   <template name="EditorScriptsOutputShowmenuwith">Show menu with caption</template>
   <template name="EditorScriptsOutputOptionsfrom">Options from list/dictionary:</template>
-  <template name="EditorScriptsOutputAllowplayer">Allow player to cancel:</template>
+  <template name="EditorScriptsOutputAllowplayerCancel">Allow player to cancel:</template>
   <template name="EditorScriptsOutputAfterchoosing">After choosing, run script:</template>
-  <template name="EditorScriptsOutputShowmenuwith">Show menu with caption</template>
-  <template name="EditorScriptsOutputOptionsfrom">Options from list/dictionary:</template>
   <template name="EditorScriptsOutputAllowplayer">Allow player to ignore the menu:</template>
   <template name="EditorScriptsOutputAskaquestion">Ask a question</template>
   <template name="EditorScriptsOutputAskquestion">Ask question</template>
@@ -558,7 +536,6 @@
   <template name="EditorScriptsScriptsWhile2">While</template>
   <template name="EditorScriptsScriptsistrue">is true,</template>
   <template name="EditorScriptsScriptsCallfunction">Call function</template>
-  <template name="EditorScriptsScriptswithparameters">with parameters:</template>
   <template name="EditorScriptsScriptsParameters">Parameters</template>
   <template name="EditorScriptsScriptsRunanobjects">Run an object's script attribute</template>  
   <template name="EditorScriptsScriptsRunobject">Run object</template>
@@ -573,9 +550,7 @@
   <template name="EditorScriptsScriptsRundelegate">Run delegate implementation of object</template>
   <template name="EditorScriptsScriptsAttribute">Attribute:</template>
   <template name="EditorScriptsScriptsWithparameters">With parameters:</template>
-  <template name="EditorScriptsScriptsParameters">Parameters</template>
   <template name="EditorScriptsScriptsWhenready">When ready,</template>
-  <template name="EditorScriptsScriptsRunscript">Run script</template>
   <template name="EditorScriptsTimersTimers">Timers</template>
   <template name="EditorScriptsTimersEnabletimer">Enable timer</template>
   <template name="EditorScriptsTimersDisabletimer">Disable timer</template>
@@ -584,18 +559,13 @@
   <template name="EditorScriptsTimersintervalto">interval to</template>
   <template name="EditorScriptsTimersseconds">seconds</template>
   <template name="EditorScriptsTimersSettimerscript">Set timer script</template>  
-  <template name="EditorScriptsTimersSettimer">Set timer</template>
   <template name="EditorScriptsTimersscriptto">script to</template>
   <template name="EditorScriptsTimersAfter">After</template>
-  <template name="EditorScriptsTimersseconds">seconds</template>
   <template name="EditorScriptsTimersRunscript">Run script</template>
-  <template name="EditorScriptsTimersAfter">After</template>
-  <template name="EditorScriptsTimersseconds">seconds</template>
   <template name="EditorScriptsTimersRunscriptafter">Run script after a number of seconds</template>
   <template name="EditorScriptsTimersRunscriptafterName">Run script after a number of seconds (with name)</template>    
   <template name="EditorScriptsTimersName">Name:</template>
   <template name="EditorScriptsTimersPausefor">Pause for</template>
-  <template name="EditorScriptsTimersseconds">seconds</template>
   <template name="EditorScriptsTimersCreateatimer">Create a timer</template>
   <template name="EditorScriptsTimersCreatetimer">Create timer</template>
   <template name="EditorScriptsTurnScriptsTurnScripts">Turn Scripts</template>
@@ -607,8 +577,6 @@
   <template name="EditorScriptsTurnScriptsturns">turns</template>
   <template name="EditorScriptsTurnScriptsRunscriptafter">Run script after a number of turns</template>  
   <template name="EditorScriptsTurnScriptsRunscript">Run script</template>
-  <template name="EditorScriptsTurnScriptsAfter">After</template>
-  <template name="EditorScriptsTurnScriptsturns">turns</template>
   <template name="EditorScriptsTurnScriptsRunscriptafterName">Run script after a number of turns (with name)</template>  
   <template name="EditorScriptsTurnScriptsName">Name:</template>
   <template name="EditorScriptsTurnScriptsCreateaturn">Create a turn script</template>   
@@ -628,33 +596,26 @@
   <template name="EditorScriptsVariablesDecreasecounter">Decrease counter</template>
   <template name="EditorScriptsVariablesSetcounter">Set counter</template>
   <template name="EditorScriptsVariablesto">to</template>
-  <template name="EditorScriptsVariablesIncreasecounter">Increase counter</template>
-  <template name="EditorScriptsVariablesDecreasecounter">Decrease counter</template>
   <template name="EditorScriptsVariablesChangecounter">Change counter</template>
   <template name="EditorScriptsVariablesby">by</template>
   <template name="EditorScriptsVariablesSetavariable">Set a variable or attribute</template>
   <template name="EditorScriptsVariablesSetvariable">Set variable</template>
   <template name="EditorScriptsVariables">=</template>
   <template name="EditorScriptsVariablesSetavariableScript">Set a variable or attribute to a script</template>
-  <template name="EditorScriptsVariablesSetvariable">Set variable</template>
   <template name="EditorScriptsVariablesscript">= script:</template>
   <template name="EditorScriptsVariablesSetanobjects">Set an object's attribute (named by an expression)</template>
   <template name="EditorScriptsVariablesSetobject">Set object</template>
   <template name="EditorScriptsVariablesAttribute">Attribute:</template>
-  <template name="EditorScriptsVariablesValue">Value:</template>
+  <template name="EditorScriptsVariablesValue">Value</template>
   <template name="EditorScriptsVariablesAddavalueto">Add a value to a list</template>
   <template name="EditorScriptsVariablesAddtolist">Add to list</template>
-  <template name="EditorScriptsVariablesvalue">value</template>
   <template name="EditorScriptsVariablesRemoveavalue">Remove a value from a list</template>
   <template name="EditorScriptsVariablesRemovefrom">Remove from list</template>
-  <template name="EditorScriptsVariablesvalue">value</template>
   <template name="EditorScriptsVariablesAddavaluetoDic">Add a value to a dictionary</template>  
   <template name="EditorScriptsVariablesAddtodictionary">Add to dictionary</template>
-  <template name="EditorScriptsVariableskey">key</template>
-  <template name="EditorScriptsVariablesvalue">value</template>
+  <template name="EditorScriptsVariableskey">Key</template>
   <template name="EditorScriptsVariablesRemoveavalueDic">Remove a value from a dictionary</template>  
   <template name="EditorScriptsVariablesRemovefromDic">Remove from dictionary</template>
-  <template name="EditorScriptsVariableskey">key</template>
   <template name="EditorTemplateTemplate">Template</template>
   <template name="EditorTemplateName">Name</template>
   <template name="EditorTemplateText">Text</template>
