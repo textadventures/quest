@@ -144,6 +144,9 @@
     <Compile Include="KeepAlive.ashx.cs">
       <DependentUpon>KeepAlive.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Mobile\KeepAlive.ashx.cs">
+      <DependentUpon>KeepAlive.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Mobile\Play.aspx.cs">
       <DependentUpon>Play.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -204,6 +207,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="KeepAlive.ashx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Mobile\KeepAlive.ashx" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

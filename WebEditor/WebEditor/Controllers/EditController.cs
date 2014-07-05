@@ -16,10 +16,14 @@ namespace WebEditor.Controllers
         //
         // GET: /Edit/Game/1
 
-        public ActionResult Game(int id)
+        public ActionResult Game(int? id)
         {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
             Models.Editor model = new Models.Editor();
-            model.GameId = id;
+            model.GameId = id.Value;
             ViewBag.Title = "Quest";
             model.SimpleMode = GetSettingBool("simplemode", false);
             model.ErrorRedirect = ConfigurationManager.AppSettings["WebsiteHome"] ?? "http://www.textadventures.co.uk/";
@@ -251,6 +255,12 @@ namespace WebEditor.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!EditorDictionary.ContainsKey(fileModel.GameId))
+                {
+                    Logging.Log.ErrorFormat("FileUpload - game id {0} not in EditorDictionary", fileModel.GameId);
+                    return new HttpStatusCodeResult(500);
+                }
+
                 bool continueSave = true;
                 string ext = System.IO.Path.GetExtension(fileModel.File.FileName).ToLower();
                 List<string> controlPermittedExtensions = EditorDictionary[fileModel.GameId].GetPermittedExtensions(fileModel.Key, fileModel.Attribute);

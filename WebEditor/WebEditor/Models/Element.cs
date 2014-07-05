@@ -135,6 +135,25 @@ namespace WebEditor.Models
 
             Models.Element originalElement = editorDictionary[gameId].GetElementModelForView(gameId, key);
 
+            if (originalElement == null)
+            {
+                Logging.Log.ErrorFormat("BindModel failed for game {0} element '{1}' - originalElement is null", gameId, key);
+                result.Success = false;
+                return false;
+            }
+            if (originalElement.EditorDefinition == null)
+            {
+                Logging.Log.ErrorFormat("BindModel failed for game {0} element '{1}' - originalElement.EditorDefinition is null", gameId, key);
+                result.Success = false;
+                return false;
+            }
+            if (originalElement.EditorDefinition.Tabs == null)
+            {
+                Logging.Log.ErrorFormat("BindModel failed for game {0} element '{1}' - originalElement.EditorDefinition.Tabs is null", gameId, key);
+                result.Success = false;
+                return false;
+            }
+
             foreach (IEditorTab tab in originalElement.EditorDefinition.Tabs.Values)
             {
                 if (!tab.IsTabVisible(originalElement.EditorData)) continue;
