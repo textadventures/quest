@@ -3,8 +3,8 @@ obj/
 [Dd]ebug/
 [Rr]elease/
 TestResults/
-.*\.suo
-.*\.user
+*.suo
+*.user
 packages/*
 WebPlayer/playercore\..*
 WebPlayer/WebPlayerSettings\.xml
