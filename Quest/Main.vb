@@ -361,7 +361,7 @@ Public Class Main
     End Sub
 
     Private Sub LogBug()
-        LaunchURL("http://quest.codeplex.com/workitem/list/basic")
+        LaunchURL("https://github.com/textadventures/quest/issues")
     End Sub
 
     Private Sub Forums()

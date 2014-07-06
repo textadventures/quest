@@ -67,6 +67,6 @@ Public Class ErrorHandler
     End Sub
 
     Private Sub lblIssueTracker_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lblIssueTracker.LinkClicked
-        TextAdventures.Utility.Utility.LaunchURL("http://quest.codeplex.com/workitem/list/basic")
+        TextAdventures.Utility.Utility.LaunchURL("https://github.com/textadventures/quest/issues")
     End Sub
 End Class
