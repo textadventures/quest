@@ -12,7 +12,7 @@ You can view all the attributes of an object using the Debugger, which is access
 
 ![](Debugger.png "Debugger.png")
 
-Types are defined using a [<type> element](elements/type_element.html), and attributes are defined in the same way as for an object. Objects and types can both inherit from other types using an <inherit> tag.
+Types are defined using a [<type> element](elements/type.html), and attributes are defined in the same way as for an object. Objects and types can both inherit from other types using an <inherit> tag.
 
       <type name="food">
         <health type="int">0</health>

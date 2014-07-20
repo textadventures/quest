@@ -37,7 +37,7 @@ tags, as the file will be inserted into the existing HTML output. You can define
 Javascript
 ----------
 
-All Javascript references must be included using a [javascript element](../elements/javascript_element.html). You can add these in the Editor by going to "Javascript" under the "Advanced" section in the tree. The Editor features a built-in file editor so you can edit your .js file directly.
+All Javascript references must be included using a [javascript element](../elements/javascript.html). You can add these in the Editor by going to "Javascript" under the "Advanced" section in the tree. The Editor features a built-in file editor so you can edit your .js file directly.
 
 Turning off standard interface elements
 ---------------------------------------

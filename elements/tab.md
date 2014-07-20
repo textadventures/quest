@@ -5,9 +5,9 @@ title: tab element
 
     <tab>attributes</tab>
 
-This defines a tab within an [editor element](editor_element.html).
+This defines a tab within an [editor element](editor.html).
 
-It should have nested [control](control_element.html) elements.
+It should have nested [control](control.html) elements.
 
 Attributes:
 

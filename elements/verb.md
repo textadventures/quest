@@ -9,7 +9,7 @@ or
 
     <verboptional name="name">attributes</verb>
 
-Creates a verb, which is a specialised type of [command element](command_element.html) - so everything that applies to a command also applies to a verb. Underneath, verbs are just commands - if you look at them in the Debugger, they are the same thing. But they are designed to be easier to use than commands for the vast majority of commands which are of the form "command object", such as "look at thing", "eat food", "sit on bench" etc.
+Creates a verb, which is a specialised type of [command element](command.html) - so everything that applies to a command also applies to a verb. Underneath, verbs are just commands - if you look at them in the Debugger, they are the same thing. But they are designed to be easier to use than commands for the vast majority of commands which are of the form "command object", such as "look at thing", "eat food", "sit on bench" etc.
 
 In addition to any "defaultcommand" type, verbs also inherit "defaultverb". In Core.aslx this provides the standard verb implementation. We take the object the player entered, and look for the attribute as specified by "property". Then:
 

@@ -7,7 +7,7 @@ title: editor element
 
 This defines the Editor tabs and controls for a particular element type or script command.
 
-It should have nested [tab](tab_element.html) elements and [control](control_element.html) elements. "Name" is optional, but if specified it means the nested tab controls can set their [parent](../attributes/parent.html) attribute without having to be nested in the parent editor XML definition.
+It should have nested [tab](tab.html) elements and [control](control.html) elements. "Name" is optional, but if specified it means the nested tab controls can set their [parent](../attributes/parent.html) attribute without having to be nested in the parent editor XML definition.
 
 Attributes:
 

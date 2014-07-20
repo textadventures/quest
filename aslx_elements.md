@@ -8,38 +8,38 @@ Element Types
 
 The following elements may appear in an ASLX file:
 
--   [asl](elements/asl_element.html) or [library](elements/library_element.html) as the top level element
+-   [asl](elements/asl.html) or [library](elements/library.html) as the top level element
 
 Underneath this, the following may appear:
 
--   [include](elements/include_element.html)
--   [template](elements/template_element.html)
--   [dynamictemplate](elements/dynamictemplate_element.html)
--   [verbtemplate](elements/verbtemplate_element.html)
--   [function](elements/function_element.html)
--   [command](elements/command_element.html)
--   [verb](elements/verb_element.html)
--   [type](elements/type_element.html)
--   [game](elements/game_element.html)
--   [object](elements/object_element.html)
--   [exit](elements/exit_element.html)
--   [walkthrough](elements/walkthrough_element.html)
--   [timer](elements/timer_element.html)
--   [turnscript](elements/turnscript_element.html)
--   [implied](elements/implied_element.html)
--   [delegate](elements/delegate_element.html)
--   [javascript](elements/javascript_element.html)
--   [editor](elements/editor_element.html)
--   [tab](elements/tab_element.html)
--   [control](elements/control_element.html)
--   [resource](elements/resource_element.html)
+-   [include](elements/include.html)
+-   [template](elements/template.html)
+-   [dynamictemplate](elements/dynamictemplate.html)
+-   [verbtemplate](elements/verbtemplate.html)
+-   [function](elements/function.html)
+-   [command](elements/command.html)
+-   [verb](elements/verb.html)
+-   [type](elements/type.html)
+-   [game](elements/game.html)
+-   [object](elements/object.html)
+-   [exit](elements/exit.html)
+-   [walkthrough](elements/walkthrough.html)
+-   [timer](elements/timer.html)
+-   [turnscript](elements/turnscript.html)
+-   [implied](elements/implied.html)
+-   [delegate](elements/delegate.html)
+-   [javascript](elements/javascript.html)
+-   [editor](elements/editor.html)
+-   [tab](elements/tab.html)
+-   [control](elements/control.html)
+-   [resource](elements/resource.html)
 
-Within a [type](elements/type_element.html), [object](elements/object_element.html), [exit](elements/exit_element.html) or [command](elements/command_element.html) tag:
+Within a [type](elements/type.html), [object](elements/object.html), [exit](elements/exit.html) or [command](elements/command.html) tag:
 
--   [inherit](elements/inherit_element.html)
--   [command](elements/command_element.html)
--   [verb](elements/verb_element.html)
--   in an object element only, nested [object](elements/object_element.html) or [exit](elements/exit_element.html) elements may appear. Their "parent" attribute will be set to the parent object
+-   [inherit](elements/inherit.html)
+-   [command](elements/command.html)
+-   [verb](elements/verb.html)
+-   in an object element only, nested [object](elements/object.html) or [exit](elements/exit.html) elements may appear. Their "parent" attribute will be set to the parent object
 -   any other XML element will set an attribute of that name on the parent object/type/exit/command.
 
 XML file format

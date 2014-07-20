@@ -17,7 +17,7 @@ This will include the English template within yours. This means that if English.
 Translating default text
 ------------------------
 
-Default text appears within [template](../elements/template_element.html) and [dynamictemplate](../elements/dynamictemplate_element.html) tags.
+Default text appears within [template](../elements/template.html) and [dynamictemplate](../elements/dynamictemplate.html) tags.
 
 You can translate "template" tags directly, as they are simply static text.
 
@@ -34,7 +34,7 @@ If you want to know where a template is used, search through the Core library fi
 Translating commands
 --------------------
 
-Some commands are defined using a [verbtemplate](../elements/verbtemplate_element.html) - you can have as many of these as you wish for any particular command, so feel free to add more if there are more alternatives. Likewise, feel free to remove any additional ones you don't need - there are 4 "speakto" verbtemplates in English.aslx, but it's fine for there to be fewer in your translation.
+Some commands are defined using a [verbtemplate](../elements/verbtemplate.html) - you can have as many of these as you wish for any particular command, so feel free to add more if there are more alternatives. Likewise, feel free to remove any additional ones you don't need - there are 4 "speakto" verbtemplates in English.aslx, but it's fine for there to be fewer in your translation.
 
 Some commands are defined like this:
 
@@ -72,7 +72,7 @@ For example, in Deutsch.aslx the translation of this is:
 Language-specific object types
 ------------------------------
 
-English doesn't have the concept of "gender" for inanimate objects, but most other languages do. To handle this, you can define "masculine" and "feminine" [types](../elements/type_element.html) in your language file.
+English doesn't have the concept of "gender" for inanimate objects, but most other languages do. To handle this, you can define "masculine" and "feminine" [types](../elements/type.html) in your language file.
 
 For example, in French:
 

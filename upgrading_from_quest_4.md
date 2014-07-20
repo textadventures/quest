@@ -17,7 +17,7 @@ Basic concepts
 -   The player is itself an object in Quest 5.
 -   Every object has a parent - so objects inside a container are nothing special. To add an object to a container, make sure its parent is set to the containing object, not the room.
 -   Quest 4 let you add your own "properties" and "actions" to an object. It also had a separate concept of "tags" which were like "built-in" properties and actions. In Quest 5, these are all unified into attributes. Every aspect of an object is an attribute. Quest 4's properties are now [string](types/string.html) attributes, and Quest 4's actions are now [script](types/script.html) attributes.
--   Quest 4 had global strings and numeric variables. In Quest 5, these are simply attributes of the [game](elements/game_element.html) or [player](player.html) objects.
+-   Quest 4 had global strings and numeric variables. In Quest 5, these are simply attributes of the [game](elements/game.html) or [player](player.html) objects.
 -   Quest 4 had separate concepts of "procedures" and "functions". Quest 5 has only functions - these can optionally take parameters, and can optionally return a value. A function that returns no value is like a procedure in Quest 4.
 
 More power

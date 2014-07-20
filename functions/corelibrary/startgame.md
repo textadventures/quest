@@ -14,6 +14,6 @@ Quest will look for a function called StartGame, and if one exists then it will 
 Core.aslx defines an implementation of a StartGame function. It does the following:
 
 -   updates status attributes
--   if the [game](../../elements/game_element.html) object has a "start" script attribute, runs that
+-   if the [game](../../elements/game.html) object has a "start" script attribute, runs that
 -   displays the initial room description
 

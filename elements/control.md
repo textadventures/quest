@@ -5,7 +5,7 @@ title: control element
 
     <control>nameattributes</control>
 
-This defines the controls within a [tab element](tab_element.html).
+This defines the controls within a [tab element](tab.html).
 
 Attributes:
 

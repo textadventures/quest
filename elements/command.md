@@ -31,7 +31,7 @@ The "unresolved" attribute is the text to print if the user enters the name of a
 Template
 --------
 
-The "template" attribute specifies the command pattern to use, if the command pattern is defined by a [verbtemplate](verbtemplate_element.html).
+The "template" attribute specifies the command pattern to use, if the command pattern is defined by a [verbtemplate](verbtemplate.html).
 
 Multiple
 --------
