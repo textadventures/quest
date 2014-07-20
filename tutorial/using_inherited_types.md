@@ -3,7 +3,7 @@ layout: index
 title: Using inherited types
 ---
 
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: Inherited types can currently only be edited in the Windows desktop version of Quest.
 
 </div>

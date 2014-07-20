@@ -3,7 +3,7 @@ layout: index
 title: Changing templates
 ---
 
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: Templates can currently only be changed in the Windows desktop version of Quest.
 
 </div>

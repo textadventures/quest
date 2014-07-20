@@ -3,7 +3,7 @@ layout: index
 title: Custom attributes
 ---
 
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: The attributes editor is currently only available in the Windows desktop version of Quest.
 
 </div>

@@ -3,11 +3,11 @@ layout: index
 title: Using Javascript
 ---
 
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: The Javascript editor is currently only available in the Windows desktop version of Quest.
 
 </div>
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: This page is out of date - it contains references to an example source code file which is not part of the current code.
 
 </div>

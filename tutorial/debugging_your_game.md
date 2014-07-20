@@ -3,7 +3,7 @@ layout: index
 title: Debugging your game
 ---
 
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: The Debugger is currently only available in the Windows desktop version of Quest.
 
 </div>

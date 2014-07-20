@@ -3,7 +3,7 @@ layout: index
 title: Using walkthroughs
 ---
 
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: Walkthroughs are currently only available in the Windows desktop version of Quest.
 
 </div>

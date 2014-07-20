@@ -12,7 +12,7 @@ First, let's set up the timer. After we have done this, we will add the script c
 Setting up the Timer
 --------------------
 
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: There is a bug in the Quest 5.5 web player that means that timers do not work properly. Do not use this feature if you will want your game tro be played on-line.
 
 </div>
@@ -42,7 +42,7 @@ You've already seen how to do this - an "if" command can check "player is in roo
 Creating a turn counter
 -----------------------
 
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: The attributes editor is currently only available in the Windows desktop version of Quest.
 
 </div>

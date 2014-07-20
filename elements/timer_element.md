@@ -16,7 +16,7 @@ interval
 script  
 [script](../types/script.html) specifying what to do when timer ticks
 
-<div class=\"alert alert-info\">
+<div class="alert alert-info">
 Note: There is a bug in the Quest 5.5 web player that means that timers do not work properly. Do not use this feature if you will want your game tro be played on-line.
 
 </div>
