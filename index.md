@@ -31,7 +31,7 @@ Documentation
 
 ### Other information
 
--   Scopes
+-   [Scopes](scopes.html)
 -   [ASL Requirements](asl_requirements.html)
 -   [Expressions](expressions.html)
 -   ["Undo" support](undo_support.html)
