@@ -10,7 +10,7 @@ Step 1 - Downloads
 
 You need a library file and a JavaScript file written by jay Nabonne, and a library file by the Pixie. You can get them here:
 
-[InvPane2.aslx](http://quest5.net/downloads/InvPane2.aslx) | [InvPane2.js](http://quest5.net/downloads/InvPane2.js) | [ScopeLib.aslx](http://quest5.net/downloads/ScopeLib.aslx)
+[InvPane2.aslx]({{site.baseurl}/files/InvPane2.aslx) | [InvPane2.js]({{site.baseurl}/files/InvPane2.js) | [ScopeLib.aslx]({{site.baseurl}/files/ScopeLib.aslx)
 
 Step 1 - Infrastructure
 -----------------------
@@ -125,4 +125,4 @@ Everything Done
 
 The new combat library and demo can be downloaded here (but remember you still need the three files mentioned at the start as well):
 
-[CombatLibrary2.aslx](http://quest5.net/downloads/CombatLibrary2.aslx) | [CombatDemo2.aslx](http://quest5.net/downloads/CombatDemo2.aslx)
+[CombatLibrary2.aslx]({{site.baseurl}/files/CombatLibrary2.aslx) | [CombatDemo2.aslx]({{site.baseurl}/files/CombatDemo2.aslx)

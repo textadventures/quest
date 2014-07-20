@@ -62,7 +62,7 @@ Wouldn't this be easier in a library?
 
 Well, go on then.
 
-[Shipwise.aslx](http://quest5.net/downloads/Shipwise.aslx)
+[Shipwise.aslx]({{site.baseurl}/files/Shipwise.aslx)
 
 Save this file to your game's folder, and modify the code at the start of the file to this:
 
