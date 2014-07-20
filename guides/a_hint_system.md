@@ -123,4 +123,4 @@ Demo
 
 A demo of the system (the one mentioned in the text) is available here:
 
-[HintDemo.aslx]({{site.baseurl}/files/HintDemo.aslx)
+[HintDemo.aslx]({{site.baseurl}}/files//HintDemo.aslx)

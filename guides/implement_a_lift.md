@@ -9,7 +9,7 @@ This is a way to implement a system in which the player walks into the device, p
 
 The system is set up using the LiftLib library (right click and save to your computer):
 
-[LiftLib5-4.aslx]({{site.baseurl}/files/LiftLib5-4.aslx)
+[LiftLib5-4.aslx]({{site.baseurl}}/files//LiftLib5-4.aslx)
 
 ### Setting Up
 
@@ -57,4 +57,4 @@ A lift can go to as many floors as you like, and you can even add more floors du
 
 This very simple game shows the system in use (right click and save to your computer). It has a lift using buttons and a simple train using a control panel.
 
-[LiftDemo5-4.aslx]({{site.baseurl}/files/LiftDemo5-4.aslx)
+[LiftDemo5-4.aslx]({{site.baseurl}}/files//LiftDemo5-4.aslx)

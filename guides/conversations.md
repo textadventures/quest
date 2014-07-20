@@ -140,7 +140,7 @@ Or it could respond to changes in the world. The code below will make Philippa r
 
 This very simple game has all three options working (right click and save to your computer).
 
-[ConvTutorial.aslx]({{site.baseurl}/files/ConvTutorial.aslx)
+[ConvTutorial.aslx]({{site.baseurl}}/files//ConvTutorial.aslx)
 
 ### Dynamic Menus
 
