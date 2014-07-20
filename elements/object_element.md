@@ -9,7 +9,7 @@ Creates an object.
 
 Objects can contain nested object definitions. In that case, all sub-objects are children of the parent object. This is how rooms work - rooms are just objects which contain other objects.
 
-Object attributes handled by [Core.aslx](../core.aslx.html):
+Object attributes handled by Core.aslx:
 
 -   [alt](../attributes/alt.html)
 -   [alias](../attributes/alias.html)
@@ -106,7 +106,7 @@ Object attributes handled by [Core.aslx](../core.aslx.html):
 -   [visited](../attributes/visited.html)
 -   [volume](../attributes/volume.html)
 
-Object types defined by [Core.aslx](../core.aslx.html):
+Object types defined by Core.aslx:
 
 -   [container](../attributes/container.html)
 -   [container\_base](../attributes/container_base.html)

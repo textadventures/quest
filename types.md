@@ -27,7 +27,7 @@ Types are defined using a [<type> element](elements/type_element.html), and attr
 Default behaviour
 -----------------
 
-If the ASLX defines a type called "[defaultobject](attributes/defaultobject.html)", then it is applied to all objects – there is no need to specifically inherit from this type. [Core.aslx](core.aslx.html) uses this to define the default behaviour for objects:
+If the ASLX defines a type called "[defaultobject](attributes/defaultobject.html)", then it is applied to all objects – there is no need to specifically inherit from this type. Core.aslx uses this to define the default behaviour for objects:
 
 -   The [displayverbs](attributes/displayverbs.html) and [inventoryverbs](attributes/inventoryverbs.html) attributes are defaulted to give the standard buttons on the panes on the right-hand side of the Quest screen ("Look at", "Take" and "Speak to" for the objects list, and "Look at", "Use" and "Drop" for the inventory list)
 -   All objects are droppable by default

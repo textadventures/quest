@@ -14,7 +14,7 @@ Built-in types
 
 Quest makes extensive use of types internally. There is a [container](../attributes/container.html) type which gives all container objects standard functionality, such as being able to be opened, and so on. There is a [switchable](../attributes/switchable.html) type which allows objects to be switched on and off.
 
-You can see which types an object inherits by going to the Attributes tab and looking under Inherited Types. You can find the type definitions themselves by going Object Types in the tree (under the Advanced section) - click Filter and turn on "Show Library Elements" to show the types that [Core.aslx](../core.aslx.html) defines.
+You can see which types an object inherits by going to the Attributes tab and looking under Inherited Types. You can find the type definitions themselves by going Object Types in the tree (under the Advanced section) - click Filter and turn on "Show Library Elements" to show the types that Core.aslx defines.
 
 Note that types themselves can inherit other types.
 

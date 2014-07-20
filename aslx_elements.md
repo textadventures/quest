@@ -96,7 +96,7 @@ Libraries
 
 There are two libraries included in this example:
 
--   [Core.aslx](core.aslx.html) provides the default Quest functionality, including: showing room descriptions, implementing default verbs such as "take", "drop" and "use", opening and closing containers, and deciding which objects are currently available to the player.
+-   Core.aslx provides the default Quest functionality, including: showing room descriptions, implementing default verbs such as "take", "drop" and "use", opening and closing containers, and deciding which objects are currently available to the player.
 -   [English.aslx](guides/translating_quest.html) provides the English text for the built-in default responses, and the names of the verbs whose behaviour is defined in Core.aslx. This means Core.aslx is language-neutral – if you wanted to make a game in German or Spanish, just translate English.aslx and plug it in to your game.
 
 Attributes
@@ -106,7 +106,7 @@ Each object's attributes are defined in the XML. Attributes define all the behav
 
 The available types are listed on the [Attribute Types](attribute_types.html) page.
 
-The type of an attribute can determine the behaviour of an object. In the above example, the sofa's "take" attribute is a script, so that will run when the player types "take sofa". If the "take" attribute is a string, the object will be taken and the string will be printed. This behaviour is defined in [Core.aslx](core.aslx.html).
+The type of an attribute can determine the behaviour of an object. In the above example, the sofa's "take" attribute is a script, so that will run when the player types "take sofa". If the "take" attribute is a string, the object will be taken and the string will be printed. This behaviour is defined in Core.aslx.
 
 Attributes can change type while the game is running, by simply setting them to a new value.
 

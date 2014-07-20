@@ -7,7 +7,7 @@ title: game element
 
 Defines the name of the game and any global properties.
 
-Game attributes handled by [Core.aslx](../core.aslx.html):
+Game attributes handled by Core.aslx:
 
 -   [allobjects](../attributes/allobjects.html)
 -   [appendobjectdescription](../attributes/appendobjectdescription.html)

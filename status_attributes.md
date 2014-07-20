@@ -13,4 +13,4 @@ The key in the dictionary is the name of the attribute. The value can be left bl
 
 The status attributes "health" and "score" are build-in attributes. You can activate them in the game options tab.
 
-[Core.aslx](core.aslx.html) updates the status attributes using an UpdateStatusAttributes function. It populates a string and then sends it to the UI using a SetStatus [request](scripts/request.html).
+Core.aslx updates the status attributes using an UpdateStatusAttributes function. It populates a string and then sends it to the UI using a SetStatus [request](scripts/request.html).
