@@ -39,7 +39,7 @@ Documentation
 -   [Creating Libraries](creating_libraries.html)
 -   [Status Attributes](status_attributes.html)
 -   [Notes](notes.html)
--   Configuring Quest
+-   [Configuring Quest](configuring_quest.html)
 -   [WebEditor](webeditor.html)
 -   [Libraries](libraries.html)
 
