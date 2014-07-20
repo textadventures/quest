@@ -7,26 +7,26 @@ Much of the Editor user interface is defined by the core library itself, and the
 
 To add an Editor User Interface for a function defined in your library, add a section to your library like this:
 
-     &lt;editor&gt;
-        &lt;appliesto&gt;(function)EnableTimer&lt;/appliesto&gt;
-        &lt;display&gt;Enable timer #0&lt;/display&gt;
-        &lt;category&gt;Timers&lt;/category&gt;
-        &lt;create&gt;EnableTimer ()&lt;/create&gt;
-        &lt;add&gt;Enable timer&lt;/add&gt;
+     <editor>
+        <appliesto>(function)EnableTimer</appliesto>
+        <display>Enable timer #0</display>
+        <category>Timers</category>
+        <create>EnableTimer ()</create>
+        <add>Enable timer</add>
      
-        &lt;control&gt;
-          &lt;controltype&gt;label&lt;/controltype&gt;
-          &lt;caption&gt;Enable timer&lt;/caption&gt;
-        &lt;/control&gt;
+        <control>
+          <controltype>label</controltype>
+          <caption>Enable timer</caption>
+        </control>
      
-        &lt;control&gt;
-          &lt;controltype&gt;expression&lt;/controltype&gt;
-          &lt;attribute&gt;0&lt;/attribute&gt;
-          &lt;simple&gt;name&lt;/simple&gt;
-          &lt;simpleeditor&gt;objects&lt;/simpleeditor&gt;
-          &lt;source&gt;timer&lt;/source&gt;
-        &lt;/control&gt;
-     &lt;/editor&gt;
+        <control>
+          <controltype>expression</controltype>
+          <attribute>0</attribute>
+          <simple>name</simple>
+          <simpleeditor>objects</simpleeditor>
+          <source>timer</source>
+        </control>
+     </editor>
 
 The example above adds the "Enable timer" command to the "Timers" category:
 

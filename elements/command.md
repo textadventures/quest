@@ -3,11 +3,13 @@ layout: index
 title: command element
 ---
 
-    <commandoptional name="name"optional pattern="pattern"optional unresolved="unresolved text"optional template="template name">script</command>
+    <command name="name" pattern="pattern" unresolved="unresolved text" template="template name">script</command>
 
 or
 
-    <commandoptional name="name">attributes</command>
+    <command name="name">attributes</command>
+
+All XML attributes are optional.
 
 Creates a command. There are two syntaxes - one syntax lets you specify a pattern, some text to display when an object is unresolved, and the script to run. The second syntax is more open and flexible, and lets you specify everything by directly setting the attributes of the command object. The second syntax is preferred, although the first may be more concise.
 
