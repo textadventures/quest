@@ -35,3 +35,5 @@ Creating your own types
 You can create your own types via the Add menu. You can then add attributes and inherited types to it, in just the same way as you would for an object. You can then use this type in an object by going to the object's Attributes tab, and adding the type from the drop-down list.
 
 For more on creating your own types, see the [Using Types](../guides/using_types.html) page.
+
+[Next: Using libraries](using_libraries.html)

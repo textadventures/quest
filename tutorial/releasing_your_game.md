@@ -53,3 +53,4 @@ You can announce your game on:
 -   [IFDB](http://ifdb.tads.org/)
 -   [rec.games.int-fiction newsgroup](http://groups.google.com/group/rec.games.int-fiction)
 
+[Next: Creating functions which return a value](creating_functions_which_return_a_value.html)

@@ -139,3 +139,5 @@ Quest matches "say" and "to" directly. It then matches "hi" to the text, so now 
 The script uses a switch command so you get a different response for different characters, and a default too.
 
 You can set up commands with multiple objects just by giving them each their own name between the \# marks.
+
+[Next: More things to do with objects](more_things_to_do_with_objects.html)

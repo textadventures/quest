@@ -32,3 +32,5 @@ When you have finished, the Script Editor should look like this:
 This is much easier to read, edit and add to than if we had used lots of "if" and "else if" scripts.
 
 Launch the game and dial a few numbers to check that you see the correct response.
+
+[Next: Debugging your game](debugging_your_game.html)

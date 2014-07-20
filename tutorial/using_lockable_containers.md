@@ -44,3 +44,5 @@ It might be a good idea to tick the "List children when object is looked at or o
      Unlocked.
      You open it.
      It contains a defibrillator.
+
+[Next: Using walkthroughs](using_walkthroughs.html)

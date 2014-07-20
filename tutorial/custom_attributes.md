@@ -56,3 +56,5 @@ Always make sure that your object and attribute names match the expression exact
 Launch the game and verify that the correct response is displayed – it should read "A box of eggs, weighing 250 grams."
 
 Of course, we could have just manually entered this into the description of the eggs anyway – we didn't really need to use an attribute. The real power of this, though, is that you can easily change attributes while the game is running. We could change the "weight" attribute of the eggs for example, if the player used some of them to bake a cake (but, er, hopefully you'll have some slightly more exciting ideas for things that players can do in *your* game). After the attribute is updated, our "look" description would automatically reflect the current weight of the eggs.
+
+[Next: Custom commands](custom_commands.html)

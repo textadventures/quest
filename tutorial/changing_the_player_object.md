@@ -16,3 +16,5 @@ Objects can behave differently depending on whether they are the player or not. 
 To handle this, go to the object's Options tab and look at the "Player" section. If "Can be a player" is selected, options appear where you can set an override "look at" description to display when this object is the player.
 
 ![](Pov1.png "Pov1.png")
+
+[Next: Using timers and turn scripts](using_timers_and_turn_scripts.html)

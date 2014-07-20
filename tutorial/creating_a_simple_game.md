@@ -187,3 +187,5 @@ As an exercise, add the following objects to the lounge:
 Launch the game and verify that the objects you've just created have been set up and are working correctly – check that you can watch the TV, try to sit on the sofa, and read the newspaper.
 
 We're now on our way to making our first text adventure game. You may have noticed that, so far, we've only been walking around the game world and looking at things – we've not yet managed to interact with it and change it. We'll start to do that in the next section, where we look at taking and dropping objects.
+
+[Next: Interacting with objects](interacting_with_objects.html)

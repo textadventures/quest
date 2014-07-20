@@ -76,3 +76,5 @@ The "loop" option will cause the sound to continue playing until the "Stop sound
 You can also embed video in your game via the "Scripts" tab. The video will appear in-line with the game text. You can embed videos from [YouTube](http://www.youtube.com) or [Vimeo](http://www.vimeo.com). You will need to specify the video id - you can usually see this easily in the URL of a video on the YouTube or Vimeo sites. For example you can find Jason Scott, Director of GET LAMP, on [GoogleTechTalks Channel](http://youtu.be/LRhbcDzbGSU). the Youtube ID is "LRhbcDzbGSU."
 
 You can also find script commands to print an email or web address hyperlink.
+
+[Next: Using lockable exits](using_lockable_exits.html)

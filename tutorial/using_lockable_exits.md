@@ -36,3 +36,5 @@ Run the game and verify that the exit now works correctly:
      > south
      You are in a garden.
      You can go north.
+
+[Next: Using lockable containers](using_lockable_containers.html)

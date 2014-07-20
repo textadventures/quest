@@ -96,3 +96,5 @@ This will add 1 each time the script is called.
 ![](Turnscript.png "Turnscript.png")
 
 Launch the game now and verify that whenever you type a command, the "Turns" value is automatically updated.
+
+[Next: Changing templates](changing_templates.html)

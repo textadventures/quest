@@ -33,3 +33,5 @@ Run the game and type "test". You should get the correct output:
 
      > test
      1 + 2 = 3
+
+[Next: Using inherited types](using_inherited_types.html)

@@ -14,3 +14,5 @@ Fortunately, Quest provides you with the Debugger, which lets you keep an eye on
 ![](Debugger.png "Debugger.png")
 
 You can select any object in the game and view its current attributes. Any attributes inherited from a type are shown in grey - there will usually be quite a few of these, as every object implicitly inherits the "defaultobject" type, which includes many default attributes.
+
+[Next: Releasing your game](releasing_your_game.html)

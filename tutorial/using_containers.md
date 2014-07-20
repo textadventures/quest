@@ -49,3 +49,5 @@ Surfaces
 --------
 
 Surfaces act very much like containers - they act as an always-open container, and objects that are on a surface are visible in a room description even before the player has looked at the surface. For this reason they’re a good choice for implementing things like tables. As an exercise, change the table object in the lounge to make it a surface (or create it if you haven't already). Then move the newspaper so that it is on the table - in the Windows version, you can drag the newspaper object in the tree, and drop it on to the table to move it there. In the web version, select the newspaper object and click the Move button in the top right of the screen.
+
+[Next: Moving objects during the game](moving_objects_during_the_game.html)

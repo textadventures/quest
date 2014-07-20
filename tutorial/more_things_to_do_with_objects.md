@@ -107,3 +107,5 @@ Let's make Bob respond to a question about the massive heart attack he's just am
 A Script Editor will appear. It would make sense that the player can only ask questions of Bob when he's been brought back to life, so the first thing to do is add an "if" command and check that Bob's "alive" flag is set. If it is, he can say something like "Well, one moment I was sitting there, feeling pretty happy with myself after eating my afternoon snack - a cheeseburger, pizza and ice cream pie, smothered in bacon, which I'd washed down with a bucket of coffee and six cans of Red Bull - when all of a sudden, I was in terrible pain, and then everything was peaceful. Then you came along."
 
 ![](Asktell.png "Asktell.png")
+
+[Next: Using containers](using_containers.html)

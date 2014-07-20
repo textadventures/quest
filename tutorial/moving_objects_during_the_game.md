@@ -47,3 +47,5 @@ Removing an Object during Play
 As well as bringing an object into play, you can also remove an object from play using the "Remove object" command from the Objects category. This will set the object's parent to "null", so you can always bring it back into play again later. To destroy an object entirely, use the "Destroy an object" command - the object will be completely removed from the game. It is more efficient to simply remove the object from play though - it is less work for Quest to simply unset the object's parent than it is to remove *all* the object's attributes and destroy it - so it is recommended that you use "remove" in preference to "destroy".
 
 As an exercise, add an "apple" object, with a sensible description. Add an "eat" verb to the object which will print a message saying "You eat the apple. Tasty." and then remove the apple from play.
+
+[Next: Changing the player object](changing_the_player_object.html)

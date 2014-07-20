@@ -107,3 +107,5 @@ Exercise
 --------
 
 Add a "switchable" lamp to the lounge that is switched on at the start of the game.
+
+[Next: Anatomy of a Quest game](anatomy_of_a_quest_game.html)
