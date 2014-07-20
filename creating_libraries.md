@@ -3,7 +3,7 @@ layout: index
 title: Creating Libraries
 ---
 
-Libraries have the same format as a game ASLX file, except that the parent attribute is <library>.
+Libraries have the same format as a game ASLX file, except that the parent attribute is &lt;library&gt;.
 
 Because libraries are otherwise ordinary ASLX files, they can define objects, functions, types, and everything else that an ordinary game file can define. However, at present they cannot be edited using Quest - you will have to edit the code with a text editor.
 
