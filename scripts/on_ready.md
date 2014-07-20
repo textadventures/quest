@@ -7,7 +7,7 @@ title: on ready
 
 Runs the nested script when any callbacks have finished.
 
-For example, when you use an [ask](ask__script_command_.html) or [get input](get_input.html) script command, Quest will wait for a response from the player and then run the nested scripts from those commands. However, any other scripts at the same level will run immediately. If you don't want this to happen, use "on ready" to make the script only run after the user has entered a command or responded to the question.
+For example, when you use an [ask](ask.html) or [get input](get_input.html) script command, Quest will wait for a response from the player and then run the nested scripts from those commands. However, any other scripts at the same level will run immediately. If you don't want this to happen, use "on ready" to make the script only run after the user has entered a command or responded to the question.
 
 This is used by the Core library so that, for example, a room description is only displayed after any scripts which ask a question in "before enter" have run their nested scripts. This prevents the room description from being displayed while the question is still on-screen.
 

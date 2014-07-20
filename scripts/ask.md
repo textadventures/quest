@@ -1,6 +1,6 @@
 ---
 layout: index
-title: ask (script command)
+title: ask
 ---
 
     ask (string question) {script}

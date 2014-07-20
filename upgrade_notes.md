@@ -83,7 +83,7 @@ Please note that a few changes have been made to enable Quest games to be conver
 
 -   the [ShowMenu](functions/showmenu.html) function is deprecated - use the new [show menu](scripts/show_menu.html) script command instead
 -   the [WaitForKeyPress](functions/corelibrary/waitforkeypress.html) (and "Wait" [request](scripts/request.html)) is deprecated - use the new [wait](scripts/wait.html) script command instead
--   the [Ask](functions/ask.html) function is deprecated - use the new [ask](scripts/ask__script_command_.html) script command instead
+-   the [Ask](functions/ask.html) function is deprecated - use the new [ask](scripts/ask.html) script command instead
 -   the + and - operators on lists are deprecated - use the new [ListCombine](functions/listcombine.html) and [ListExclude](functions/listexclude.html) functions instead
 
 Some minor behaviour changes:

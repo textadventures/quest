@@ -5,7 +5,7 @@ title: Script commands
 
 [General information about Quest script commands](scripts.html)
 
--   [ask](ask__script_command_.html)
+-   [ask](ask.html)
 -   [create](create.html)
 -   [create exit](create_exit.html)
 -   [create timer](create_timer.html)

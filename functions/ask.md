@@ -19,4 +19,4 @@ Example:
 }
 
 </pre>
-Use the [ask](../scripts/ask__script_command_.html) script command for a popup menu.
+Use the [ask](../scripts/ask.html) script command for a popup menu.
