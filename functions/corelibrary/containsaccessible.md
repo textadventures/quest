@@ -7,4 +7,4 @@ title: ContainsAccessible
 
     ContainsAccessible (object parent, object child, boolean reachable)
 
-Returns a [boolean](../../../types/boolean.html).
+Returns a [boolean](../../types/boolean.html).

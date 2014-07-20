@@ -5,7 +5,7 @@ title: ScopeVisibleForRoom
 
     ScopeVisibleForRoom (room)
 
-Returns an [objectlist](../../../types/objectlist.html) containing all the objects in the specified room which the player could see.
+Returns an [objectlist](../../types/objectlist.html) containing all the objects in the specified room which the player could see.
 
 These objects can be looked at.
 

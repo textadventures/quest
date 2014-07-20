@@ -5,7 +5,7 @@ title: FormatExitList
 
     FormatExitList (string pre-list, objectlist exits, string pre-final, string post-list)
 
-Returns a [string](../../../types/string.html) containing a formatted list of exits.
+Returns a [string](../../types/string.html) containing a formatted list of exits.
 
 For example, this:
 

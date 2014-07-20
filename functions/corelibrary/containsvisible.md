@@ -7,4 +7,4 @@ title: ContainsVisible
 
     ContainsVisible (object parent, object child)
 
-Returns a [boolean](../../../types/boolean.html).
+Returns a [boolean](../../types/boolean.html).

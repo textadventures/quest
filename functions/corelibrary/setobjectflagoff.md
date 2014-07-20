@@ -5,7 +5,7 @@ title: SetObjectFlagOff
 
     SetObjectFlagOff (object, string flag name)
 
-Turns the object flag off - an object flag is simply a [boolean](../../../types/boolean.html) attribute, so:
+Turns the object flag off - an object flag is simply a [boolean](../../types/boolean.html) attribute, so:
 
      SetObjectFlagOff(myobject, "myflag")
 
