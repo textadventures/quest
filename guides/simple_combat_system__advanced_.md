@@ -277,4 +277,4 @@ So that is the basics of a fully working combat and magic system. However, the m
 
 If you want to see this all in action, you can download the library and demo game:
 
-[CombatLibrary1.aslx]({{site.baseurl}}/files//CombatLibrary1.aslx) [CombatDemo1.aslx‎]({{site.baseurl}}/files//CombatDemo1.aslx)
+[CombatLibrary1.aslx]({{site.baseurl}}/files/CombatLibrary1.aslx) [CombatDemo1.aslx‎]({{site.baseurl}}/files/CombatDemo1.aslx)

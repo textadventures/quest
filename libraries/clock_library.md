@@ -45,7 +45,7 @@ You can also have exits that can only be used at certain times (say for a shop o
        </script>
      </exit>
 
-[Download]({{site.baseurl}}/files//clock.zip)
+[Download]({{site.baseurl}}/files/clock.zip)
 [Discussion](http://www.axeuk.com/phpBB3/viewtopic.php?f=10&t=2580)
 
 #### Functions

@@ -9,7 +9,7 @@ This kind of follows on from the page on [Conversations](conversations.html), an
 
 The system is set up using the ConvLib library (right click and save to your computer):
 
-[ConvLib.aslx]({{site.baseurl}}/files//ConvLib.aslx) (now updated for Quest 5.4)
+[ConvLib.aslx]({{site.baseurl}}/files/ConvLib.aslx) (now updated for Quest 5.4)
 
 ### Setting Up
 
@@ -47,4 +47,4 @@ Both key topics will be hidden, as we do not know which wll be showing when the 
 
 This very simple game shows the system in use (right click and save to your computer).
 
-[ConvDemo.aslx]({{site.baseurl}}/files//ConvDemo.aslx)
+[ConvDemo.aslx]({{site.baseurl}}/files/ConvDemo.aslx)

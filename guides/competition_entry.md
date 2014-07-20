@@ -16,7 +16,7 @@ Why should you take my advice? Well, my game The Myothian Falcon was placed 24th
 
 I suggest you include this library, which will save some work for you. Its usefulness will become clear as you read down this page. You will probably need to right click on the link, and save it that way, and you may find your browser adds a .html extension, which will need to be removed before Quest will recognise it.
 
-[MetaLib.aslx]({{site.baseurl}}/files//MetaLib.aslx)
+[MetaLib.aslx]({{site.baseurl}}/files/MetaLib.aslx)
 
 Starting Out
 ------------

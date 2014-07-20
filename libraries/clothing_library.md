@@ -13,7 +13,7 @@ You are free to use this library in your own games, without crediting me, as lon
 
 Have garments inherit from “clothing\_type”. They will be set to be takeable, and when worn will appear in the inventory with “(being worn)” appended to the name. Check the attribute “being\_worn” to determine if the item is being worn in a script.
 
-[Download]({{site.baseurl}}/files//clothing_demo.zip)
+[Download]({{site.baseurl}}/files/clothing_demo.zip)
 [Discussion](http://www.axeuk.com/phpBB3/viewtopic.php?f=10&t=2567)
 
 #### Functions

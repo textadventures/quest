@@ -75,7 +75,7 @@ Example game
 
 Right-click the link and select save or something like that.
 
-[Events.aslx]({{site.baseurl}}/files//Events.aslx)
+[Events.aslx]({{site.baseurl}}/files/Events.aslx)
 
 There are only two rooms and three events. Event 1 initiates the countdown to event 2, which in turn sets off event 3. Event 2 has "auto" set to false, so it keeps going until a condition is met (player in room 2), and only then starts the countdown to event 3.
 
