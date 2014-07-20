@@ -12,7 +12,7 @@ Tutorial
 
 New to Quest? The tutorial will guide you through creating your first game.
 
-<span style="font-size:120%">**[Begin the Tutorial](tutorial/tutorial.html)**</span>
+<span style="font-size:120%">**[Begin the Tutorial](tutorial/)**</span>
 
 Documentation
 -------------

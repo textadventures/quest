@@ -3,8 +3,6 @@ layout: index
 title: Tutorial
 ---
 
-(There is also a downloadable PDF version of the tutorial - the wiki version below will be the most up-to-date though)
-
 Beginners
 ---------
 
