@@ -26,8 +26,8 @@ Documentation
 
 -   [Script Commands](scripts/)
 -   [Functions](functions/)
--   [Attribute Types](attribute_types.html)
--   [ASLX File Format](aslx_elements.html)
+-   [Attribute Types](types/)
+-   [ASLX File Format](elements/)
 
 ### Other information
 

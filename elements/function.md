@@ -9,7 +9,7 @@ Creates a function.
 
 If no type is specified, the function does not return a value.
 
-If the function does return a value, the type should be one of the valid [Attribute Types](../attribute_types.html). Return a value within the function using the [return](../scripts/return.html) command.
+If the function does return a value, the type should be one of the valid [Attribute Types](../types/). Return a value within the function using the [return](../scripts/return.html) command.
 
 If the function takes parameters, the parameters should be specified as a comma-delimited list.
 
