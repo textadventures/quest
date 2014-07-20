@@ -6,22 +6,20 @@ title: Developers
 Join In
 -------
 
-Quest is an open-source software project, hosted at <https://github.com/textadventures/quest>
+Quest is an open-source software project, [hosted on GitHub](https://github.com/textadventures/quest).
 
-To compile the source code, you will need Visual Studio 2010 or Visual Studio 2012. You can edit the desktop version of Quest for free using [Visual Studio Express 2012 for Windows Desktop](http://www.microsoft.com/visualstudio/eng/downloads#d-express-windows-desktop).
+To compile the source code, you will need Visual Studio 2010 or later. You can edit the desktop version of Quest for free using [Visual Studio Express for Windows Desktop](http://www.microsoft.com/visualstudio/eng/downloads#d-express-windows-desktop).
 
 The code is a mixture of C\# (for the internals) and VB.NET (for the GUI).
 
 Visual Studio may complain that it can't load the Setup project. This will happen if you do not have InstallShield installed. You can safely ignore this message. Also if you are using Visual Studio Express for Windows Desktop, you can safely ignore the warning that the WebPlayer and WebEditor projects cannot be loaded, as these are not required for loading and running the main Quest project.
-
-You will also need to have a Mercurial client installed - I recommend TortoiseHg (http://tortoisehg.bitbucket.org/). I'd recommend taking some time to familiarise yourself with Mercurial if you've not used it before - a good introduction (albeit command-line based) is Hg Init (http://hginit.com/)
 
 Developer Guidelines
 --------------------
 
 ### Issue Tracker
 
-The Issue Tracker (https://github.com/textadventures/quest/issues) contains all features which need to be implemented, and all bugs which need to be fixed.
+The [Issue Tracker](https://github.com/textadventures/quest/issues) contains all features which need to be implemented, and all bugs which need to be fixed.
 
 Assign yourself something that looks sensible. It is probably best to pick a small bug first, to give yourself a feel for the code before attempting something major.
 
@@ -30,10 +28,6 @@ You can also create items - if there's an obvious missing feature or bug, add it
 Please ask me for help! I'm happy to answer your questions about how things work, and why things are the way they are. Just send an email to me at <alex@axeuk.com> or ask in the Quest Forum: <http://www.textadventures.co.uk/forum/viewforum.php?f=10>
 
 You can create a fork in GitHub, clone it, and then push your changes to that fork. When you have finished working on your issue, send a Pull Request. I'll then review the code, and it can then be merged into the main repository.
-
-### Read the documentation
-
-If you can't find an issue that's right for you, make sure you familiarise yourself with the rest of the documentation on this wiki - and don't forget, because it's a wiki, you can edit it. So if you find gaps, mistakes, or things that could just be made clearer, please don't be scared to contribute here too.
 
 ### Translating Quest
 
