@@ -1,22 +1,19 @@
 ---
 layout: index
-title: Hs-addingquestion2
+title: Adding a Yes/No Question to a Container
 ---
-
-Adding a Yes/No Question to a Container
-=======================================
 
 *A key is inside a box but you have to answer the question correctly to get it – here is how*
 
 1. I have made a **box** container with the key inside it:
 
      
-     [[File:Hsaddingquestion21.jpg]]
+     ![](Hsaddingquestion21.jpg)
 
 2. I make the box a normal container and tick various options:
 
      
-     [[File:Hsaddingquestion22.jpg]]
+     ![](Hsaddingquestion22.jpg)
 
 3. I then add in an IF script on the **After Opening the object**: section
 
@@ -27,18 +24,17 @@ Adding a Yes/No Question to a Container
 6. I put in the answer if they choose “Yes” (the wrong answer)
 
      
-     [[File:Hsaddingquestion23.jpg]]
+     ![](Hsaddingquestion23.jpg)
 
 7. I used the **Game Over** command to end their chances..
 
 8. I then add the section if they say “Yes” (the wrong answer)
-
      
-     [[File:Hsaddingquestion24.jpg]]
+     ![](Hsaddingquestion24.jpg)
 
 Here are the screenshots of what the game now looks like:
 
-     [[File:Hsaddingquestion25.jpg]]  
+![](Hsaddingquestion25.jpg)  
 
 *The text “It contains a Magic Key” appears at the end*
 
@@ -46,4 +42,4 @@ Here are the screenshots of what the game now looks like:
 
 *To do this you need to make a hidden room first and put the key in there then adding a move command. Finally you need to delay the last message coming in using an “Run script after” command*
 
-     [[File:Hsaddingquestion26.jpg]]
+![](Hsaddingquestion26.jpg)

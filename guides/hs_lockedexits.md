@@ -1,70 +1,51 @@
 ---
 layout: index
-title: Hs-lockedexits
+title: Locked Exits and How to Open them?
 ---
-
-Locked Exits and How to Open them?
-==================================
 
 *You may want to have an exit that you cannot open without a key or other object*
 
 1. Go to the exit you want to lock
 
-     [[File:Hslockedexits1.jpg]]
+     ![](Hslockedexits1.jpg)
 
 2. Tick the **Locked** box:
 
-     [[File:Hslockedexits2.jpg]]
+     ![](Hslockedexits2.jpg)
 
 3. When you do you need to give a NAME for the “lock”:
 
-     [[File:Hslockedexits3.jpg]]
-
-     
+     ![](Hslockedexits3.jpg)
 
 4. Either write a message or script to explain why:
 
-     [[File:Hslockedexits4.jpg]]
-
-     
+     ![](Hslockedexits4.jpg)
 
 5. Next add in the object to open the door and write a description:
 
-     [[File:Hslockedexits5.jpg]]
-
-     
+     ![](Hslockedexits5.jpg)
 
 6. Click on the **Inventory** tab and tick the **Take** box and add a message:
 
-     [[File:Hslockedexits6.jpg]]
-
-      
+     ![](Hslockedexits6.jpg)
 
 7. Click on the **Use/Give** tab and select **Use (on its own)**:
 
 8. Scroll down the scripts and select **Unlock exit**:
 
-     [[File:Hslockedexits7.jpg]]
-
-     
+     ![](Hslockedexits7.jpg)
 
 9. Select the **name** you gave for the unlocking:
 
-     [[File:Hslockedexits8.jpg]]
-
-     
+     ![](Hslockedexits8.jpg)
 
 10. Add in another messages to make it more realistic. I have also added a sound effect:
 
-     [[File:Hslockedexits9.jpg]]
-
-     
+     ![](Hslockedexits9.jpg)
 
 11. Now when you use the Key in the game it will unlock the door:
 
-     [[File:Hslockedexits10.jpg]]
-
-     
+     ![](Hslockedexits10.jpg)
 
 12. Of course the game works much better if you use **ONE OBJECT ON ANOTHER OBJECT TO OPEN A DOOR**
 
@@ -72,4 +53,4 @@ Locked Exits and How to Open them?
 
 14. Here I have used chewing gum wrapper (OBJECT) on switch box (OBJECT) to unlock lift door (EXIT)
 
-     [[File:Hslockedexits11.jpg]]
+     ![](Hslockedexits11.jpg)

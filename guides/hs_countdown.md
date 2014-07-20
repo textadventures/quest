@@ -1,21 +1,17 @@
 ---
 layout: index
-title: Hs-countdown
+title: Creating a Countdown Timer
 ---
-
-Creating a Countdown Timer
-==========================
 
 *There used to be a TV program called the Crystal Maze where a team had to recover crystals from different rooms by doing certain challenges. Each person had to do a challenge and the difficult bit was that they only had 5 minutes to do it before the room was locked.*
 
-      Important note: in Quest 5.3 the object 'player' is replaced with 'game.pov' 
-      so if you are working with Q 5.3 or higher replace '''player''' with '''game.pov'''
+Important note: in Quest 5.3 the object 'player' is replaced with 'game.pov' so if you are working with Q 5.3 or higher replace 'player' with 'game.pov'
 
 1. I have set up two rooms in Quest. One room is called **Dungeon** where the challenge is set.
 
 In the room are lots of different objects:
 
-     [[File:hscountdown1.jpg]]
+![](hscountdown1.jpg)
 
 2. The first thing I need to do is make a Countdown variable and set it to the time I need
 
@@ -23,76 +19,74 @@ In the room are lots of different objects:
 
 4. I give the Attribute a single word name eg: **countdown** (CASE SENTITIVE!)
 
-     [[File:hscountdown2.jpg]]
+     ![](hscountdown2.jpg)
 
 5. When I click **OK** it appears at the bottom:
 
-     [[File:hscountdown3.jpg]]
-
-     
+     ![](hscountdown3.jpg)
 
 6. I now need to give the countdown variable a value.
 
 7. I click on the **String** drop down box and choose **Integer** and type the number of seconds I want the clock to run for in the box:
 
-     [[File:hscountdown4.jpg]]
+     ![](hscountdown4.jpg)
 
 8. When you click off you see that the **attribute** now says 30 next to it:
 
-     [[File:hscountdown5.jpg]]
+     ![](hscountdown5.jpg)
 
 9. Now I need to add a label so the value appears when you play.
 
 10. I go up to **status attributes** and click the **Add** button and type in the name of the attribute: (CASE SENTITIVE!)
 
-     [[File:hscountdown6.jpg]]
+     ![](hscountdown6.jpg)
 
 11. When I click OK I am asked for a Format string. You can leave this blank and the computer will put in countdown: 30
 
 12. If you want to have a different value, type in the words you want and put a ! where the seconds will go eg
 
      
-     [[File:hscountdown7.jpg]]
+     ![](hscountdown7.jpg)
 
 13. This would look like this when the game runs:
 
-     [[File:hscountdown8.jpg]]
+     ![](hscountdown8.jpg)
 
 14. When you click **OK** you will see the different attributes:
 
      
-     [[File:hscountdown9.jpg]]
+     ![](hscountdown9.jpg)
 
 15. The next step is to add the **Timer**
 
 16. I do this by going to **Add \> Timer** and giving it a name:
 
-     [[File:hscountdown10.jpg]]
+     ![](hscountdown10.jpg)
 
 17. Next I need to tell the computer to start on 30s and countdown in steps of 1.
 
 18. I do this by clicking on **Script** typing in **variable** and choosing **Set a variable or attribute**:
 
-     [[File:hscountdown11.jpg]]
+     ![](hscountdown11.jpg)
      
 
 19. I double click on the script to choose it and it looks like this:
 
-     [[File:hscountdown12.jpg]]
+     ![](hscountdown12.jpg)
 
 20. I now CAREFULLY type in the name of my variable – **player.countdown** (Q5.3: game.pov.countdown)
 
-     [[File:hscountdown13.jpg]]
+     ![](hscountdown13.jpg)
 
 21. In the **expression** box I type in the same variable but then with MINUS 1 eg **player.countdown -1** (Q5.3: game.pov.countdown -1)
 
-     [[File:hscountdown14.jpg]]
+     ![](hscountdown14.jpg)
 
 22. This basically tells the counter to countdown from 30 it steps of 1
 
 23. Now I add in another script using IF to say what happens if the counter gets to 0
 
-     [[File:hscountdown15.jpg]]
+     ![](hscountdown15.jpg)
 
 24. Next we need to tell the computer to start the timer when we go into the **Dungeon**.
 
@@ -100,7 +94,7 @@ In the room are lots of different objects:
 
 26. Add a script and search for **Enable**. Enable **Timer1** to start:
 
-     [[File:hscountdown16.jpg]]
+     ![](hscountdown16.jpg)
 
 27. Next we need to tell the computer to stop the time when the **Dungeon**.
 
@@ -108,29 +102,29 @@ In the room are lots of different objects:
 
 29. Find the **After leaving room** section and make up these scripts:
 
-     [[File:hscountdown17.jpg]]
+     ![](hscountdown17.jpg)
 
 30. This tells the computer to stop the timer running, write a message and then “reset” it back to 30 when you leave the **Dungeon**
 
 31. Run the game. When you go into the room, the timer starts automatically:
 
-     [[File:hscountdown18.jpg]]
+     ![](hscountdown18.jpg)
 
 32. Here is the timer counting down some more
 
-     [[File:hscountdown19.jpg]]
+     ![](hscountdown19.jpg)
 
 33. Here is the game finished when I did not get out in time
 
-     [[File:hscountdown20.jpg]]
+     ![](hscountdown20.jpg)
 
 34. Here is when I get out of the room and go back to the other room – the timer resets to 30s
 
-     [[File:hscountdown21.jpg]]
+     ![](hscountdown21.jpg)
 
 35. If you wanted the timer on for the entire game you would go back to the timer and tick the **start timer when game begins** box
 
      
-     [[File:hscountdown22.jpg]]
+     ![](hscountdown22.jpg)
 
 **I AM SURE THERE ARE LOTS OF OTHER THINGS YOU CAN DO WITH THIS CODE!**
