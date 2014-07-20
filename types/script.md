@@ -3,7 +3,7 @@ layout: index
 title: Script
 ---
 
-A script attribute contains one or more [script commands](../script_commands.html).
+A script attribute contains one or more [script commands](../scripts/).
 
 Example:
 
