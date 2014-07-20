@@ -15,12 +15,10 @@ If the function takes parameters, the parameters should be specified as a comma-
 
 For example:
 
-    &lt;function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList"&gt;
-    <pre>  ...
+    <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList">
+    ...
+	</function>
 
-\</function\>
-
-</pre>
 ### The attributes of a function
 
 **name:** This is the name of the function. Every function must have name, and that is the name you use to invoke the function in some other script.

@@ -76,15 +76,15 @@ English doesn't have the concept of "gender" for inanimate objects, but most oth
 
 For example, in French:
 
-     &lt;type name="masculine"&gt;
-       &lt;gender&gt;il&lt;/gender&gt;
-       &lt;article&gt;le&lt;/article&gt;
-     &lt;/type&gt;
+     <type name="masculine">
+       <gender>il</gender>
+       <article>le</article>
+     </type>
      
-     &lt;type name="feminine"&gt;
-       &lt;gender&gt;elle&lt;/gender&gt;
-       &lt;article&gt;la&lt;/article&gt;
-     &lt;/type&gt;
+     <type name="feminine">
+       <gender>elle</gender>
+       <article>la</article>
+     </type>
 
 Then the LanguageSpecificObjectTypes template should look like this:
 

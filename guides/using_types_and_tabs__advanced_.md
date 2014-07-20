@@ -72,11 +72,11 @@ Here is the basic code (paste this in before the </library> tag).
 
       <tab>
         <parent>_ObjectEditor</parent>
-        &lt;caption&gt;Spell&lt;/caption&gt;
+        <caption>Spell</caption>
         <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
         <control>
           <controltype>dropdowntypes</controltype>
-          &lt;caption&gt;Spell type&lt;/caption&gt;
+          <caption>Spell type</caption>
           <types>*=Not a spell; spell=Non-attack spell; attackspell=Attack spell</types>
           <width>150</width>
         </control>
@@ -97,7 +97,7 @@ Now we will put in a powerrating control. Try this (remember, it has to go befor
 
         <control>
           <controltype>number</controltype>
-          &lt;caption&gt;Power of attack (1-10)&lt;/caption&gt;
+          <caption>Power of attack (1-10)</caption>
           <attribute>powerrating</attribute>
           <width>100</width>
           <mustinherit>attackspell</mustinherit>
@@ -111,7 +111,7 @@ Now here is a text box, which is pretty straightforward. We can use this for des
 
         <control>
           <controltype>textbox</controltype>
-          &lt;caption&gt;Description&lt;/caption&gt;
+          <caption>Description</caption>
           <attribute>description</attribute>
           <mustinherit>attackspell</mustinherit>
         </control>
@@ -131,7 +131,7 @@ Now we can create the dropdown list just as we did before (inside the "tab" tags
 
         <control>
           <controltype>dropdowntypes</controltype>
-          &lt;caption&gt;Element&lt;/caption&gt;
+          <caption>Element</caption>
           <types>*=None; fire_type=Fire; frost_type=Frost; storm_type=Storm</types>
           <width>150</width>
           <mustinherit>attackspell</mustinherit>

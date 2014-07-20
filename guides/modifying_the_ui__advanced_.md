@@ -18,7 +18,7 @@ HTML
 
 HTML is a kind of computer language that tells a browser how to display a page. It uses *tags* to denote *mark-up*, and these tags give instructions on the style to use. Here is a simple example:
 
-      This sentence uses &lt;i>italic&lt;/i> text.
+      This sentence uses <i>italic</i> text.
 
 The word "italic" will be displayed in italic. As you can see, tags start with a *less than* symbol, and end with a *greater than* symbols (also know as angle brackets). You need tags at the start and the end, and the end tag also needs a slash. The "i" indicates italics. The start tag, the end tag and the text between are known as an element, so in the example we have an italic element.
 
@@ -44,7 +44,7 @@ CSS is the way to control how an HTML element is displayed. By default, the ital
 
 Then use it like this:
 
-      This sentence uses &lt;span>italic&lt;/span> text.
+      This sentence uses <span>italic</span> text.
 
 That will make all the span elements display as italic. You might want just some to, so you give the span element a class or id (an id is used for a specific span; there can only be one element with that id).
 
@@ -57,7 +57,7 @@ That will make all the span elements display as italic. You might want just some
 
 Then use it like this:
 
-      This sentence uses &lt;span id="ital">italic</span> and &lt;span class="bld">bold</span>text.
+      This sentence uses <span id="ital">italic</span> and <span class="bld">bold</span>text.
 
 Note that a class name uses a dot, and an id uses a hash in the CSS. After the element name, you need a pair of curly braces to enclose the style information. The styles are defined by the name of the attribute, a colon, the value to assign to it, and a semi-colon.
 

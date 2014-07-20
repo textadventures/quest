@@ -14,7 +14,7 @@ To add a new tab, put a tab element into your library. The basic format looks li
 
       <tab>
         <parent>_ObjectEditor</parent>
-        &lt;caption>My new tab</caption>
+        <caption>My new tab</caption>
       </tab>
 
 This will give a new blank tab for all object types.
@@ -26,7 +26,7 @@ Often, a tab is only applicable to certain types, or it not applicable to certai
 
       <tab>
         <parent>_ObjectEditor</parent>
-        &lt;caption>My new tab</caption>
+        <caption>My new tab</caption>
         <mustinherit>container</mustinherit>
       </tab>
 
@@ -34,7 +34,7 @@ This tab will not be be shown for rooms and the player object.
 
       <tab>
         <parent>_ObjectEditor</parent>
-        &lt;caption>My new tab</caption>
+        <caption>My new tab</caption>
         <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
       </tab>
 
@@ -47,12 +47,12 @@ Blank tabs are not much use, let us put something on it. Things are added to a t
 
           <control>
             <controltype>title</controltype>
-            &lt;caption>Colour</caption>
+            <caption>Colour</caption>
           </control>
 
           <control>
             <controltype>label</controltype>
-            &lt;caption>You can use any valid HTML colour name</caption>
+            <caption>You can use any valid HTML colour name</caption>
           </control>
 
 The controltype element tells Quest what type of control you want, the caption tab puts text on the page. Both of these should be present in all your controls.
@@ -64,19 +64,19 @@ These three examples show how to add controls for attributes that are Booleans, 
 
           <control>
             <controltype>checkbox</controltype>
-            &lt;caption>Underline hyperlinks</caption>
+            <caption>Underline hyperlinks</caption>
             <attribute>underlinehyperlinks</attribute>
           </control>
 
           <control>
             <controltype>number</controltype>
-            &lt;caption>Font size</caption>
+            <caption>Font size</caption>
             <attribute>menufontsize</attribute>
           </control>
 
           <control>
             <controltype>textbox</controltype>
-            &lt;caption>Version</caption>
+            <caption>Version</caption>
             <attribute>version</attribute>
           </control>
 
@@ -89,7 +89,7 @@ Here is a control for a script. Actually no more complicated than the last three
 
           <control>
             <controltype>script</controltype>
-            &lt;caption>Start script</caption>
+            <caption>Start script</caption>
             <attribute>start</attribute>
           </control>
 
@@ -97,7 +97,7 @@ This one will give a string, but the type is "richtext", allowing the user to fo
 
           <control>
             <controltype>richtext</controltype>
-            &lt;caption>Description</caption>
+            <caption>Description</caption>
             <attribute>description</attribute>
             <expand/>
           </control>
@@ -106,7 +106,7 @@ For a string list, use the "list" control. You should also add an "editprompt" e
 
           <control>
             <controltype>list</controltype>
-            &lt;caption>Parameters</caption>
+            <caption>Parameters</caption>
             <attribute>paramnames</attribute>
             <editprompt>Please enter an parameter name</editprompt>
           </control>
@@ -115,7 +115,7 @@ For a stringdictionary, you need two prompts, like this:
 
           <control>
             <controltype>stringdictionary</controltype>
-            &lt;caption>Status attributes</caption>
+            <caption>Status attributes</caption>
             <keyprompt>Please enter the attribute name</keyprompt>
             <valueprompt>Please enter the format string (blank for default)</valueprompt>
             <attribute>statusattributes</attribute>
@@ -125,7 +125,7 @@ The "objects" control allows the user to pick an existing object from the game a
 
         <control>
           <controltype>objects</controltype>
-          &lt;caption>Key</caption>
+          <caption>Key</caption>
           <attribute>key</attribute>
         </control>
 
@@ -136,7 +136,7 @@ You can add drop-down lists. There are two types, the first looks like this:
 
           <control>
             <controltype>dropdown</controltype>
-            &lt;caption>Category</caption>
+            <caption>Category</caption>
             <attribute>category</attribute>
             <validvalues type="simplestringlist">Comedy;Educational;Fantasy;Historical</validvalues>
             <freetext/>
@@ -146,7 +146,7 @@ The "validvalues" obviously supplies the list the user can pick from. The "freet
 
           <control>
             <controltype>dropdown</controltype>
-            &lt;caption>Font</caption>
+            <caption>Font</caption>
             <attribute>defaultfont</attribute>
             <source>basefonts</source>
             <freetext/>
@@ -156,7 +156,7 @@ The second type of drop-down is for selecting the type for an object. Here is an
 
         <control>
           <controltype>dropdowntypes</controltype>
-          &lt;caption>Container type</caption>
+          <caption>Container type</caption>
           <types>*=Not a container; container_open=Container; container_closed=Closed container</types>
         </control>
 
@@ -168,7 +168,7 @@ The multi type
 Sometimes you want to allow the user to decide what type the attribute will be. Use the multi control. As well as the usual elements, you also need a "types" element, a string dictionary that sets up the types:
 
           <control>
-            &lt;caption>Look</caption>
+            <caption>Look</caption>
             <controltype>multi</controltype>
             <attribute>look</attribute>
             <types>
@@ -185,7 +185,7 @@ Here is another example, this has boolean as one type, and the associated checkb
 
         <control>
           <controltype>multi</controltype>
-          &lt;caption>Take</caption>
+          <caption>Take</caption>
           <attribute>take</attribute>
           <types>
             boolean=Default behaviour; script=Run script
@@ -211,7 +211,7 @@ Further examples, for completeness:
 
         <control>
           <controltype>multi</controltype>
-          &lt;caption>Pattern</caption>
+          <caption>Pattern</caption>
           <attribute>pattern</attribute>
           <types>
             simplepattern=Command pattern; string=Regular expression
@@ -231,14 +231,14 @@ These seem to add a new child object to the object, rather than an attribute. He
         </control>
 
         <control>
-          &lt;caption>Turn scripts - run after every turn the player takes in this room</caption>
+          <caption>Turn scripts - run after every turn the player takes in this room</caption>
           <controltype>elementslist</controltype>
           <elementtype>object</elementtype>
           <objecttype>turnscript</objecttype>
         </control>
 
         <control>
-          &lt;caption>Commands</caption>
+          <caption>Commands</caption>
           <controltype>elementslist</controltype>
           <elementtype>object</elementtype>
           <objecttype>command</objecttype>
@@ -258,7 +258,7 @@ A couple more examples you will probably never need to see.
 
           <control>
             <controltype>gameid</controltype>
-            &lt;caption>Game ID</caption>
+            <caption>Game ID</caption>
             <attribute>gameid</attribute>
             <advanced/>
             <desktop/>

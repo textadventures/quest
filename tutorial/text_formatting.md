@@ -22,7 +22,7 @@ Bold, Italic, Underline
 
 You can use HTML-style formatting to set bold, italic and underline. For example, when printing a message, you can type this:
 
-     This text is &lt;b&gt;bold&lt;/b&gt;. This text is &lt;i&gt;italic&lt;/i&gt;. This text is &lt;u&gt;underlined&lt;/u&gt;.
+     This text is <b>bold</b>. This text is <i>italic</i>. This text is <u>underlined</u>.
 
 This will output:
 
@@ -30,7 +30,7 @@ This text is <b>bold</b>. This text is <i>italic</i>. This text is <u>underlined
 
 Up to Quest 5.3, you can also temporarily override colour using a "color" tag, for example:
 
-     This text is the current foreground colour, but &lt;color color="red"&gt;this is red&lt;/color&gt;.
+     This text is the current foreground colour, but <color color="red">this is red</color>.
 
 The "color" tag is not supported as of Quest 5.4, as all output is now plain HTML. This means you can use "span" tags with in-line CSS styles to set the colour of a range of text instead.
 
