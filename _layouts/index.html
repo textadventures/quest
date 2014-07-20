@@ -27,9 +27,10 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li {% if page.url == '/index.html' %}class="active"{% endif %}><a href="{{site.baseurl}}/">Home</a></li>
+            <li {% if page.url contains '/tutorial/' %}class="active"{% endif %}><a href="{{site.baseurl}}/tutorial/tutorial.html">Tutorial</a></li>
+            <li {% if page.url contains '/scripts/' %}class="active"{% endif %}><a href="{{site.baseurl}}/script_commands.html">Scripts</a></li>
+            <li {% if page.url contains '/functions/' %}class="active"{% endif %}><a href="{{site.baseurl}}/functions.html">Functions</a></li>
           </ul>
         </div>
       </div>
