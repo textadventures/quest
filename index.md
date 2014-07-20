@@ -25,7 +25,7 @@ Documentation
 ### Reference
 
 -   [Script Commands](scripts/)
--   [Functions](functions.html)
+-   [Functions](functions/)
 -   [Attribute Types](attribute_types.html)
 -   [ASLX File Format](aslx_elements.html)
 
