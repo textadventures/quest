@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Implement drop...</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Implement drop...</h1>
+      <p>Yes, I know drop is already implemented, but it could do better.</p>
+
+<p>The Quest &quot;drop&quot; command readily handles unusual objects (drop that vase and it will break), but cannot handle unusual places (drop something when up a tree, and there it is lying on the floor of the top of the tree).</p>
+
+<p>This will show you how drop can be extended to give three new options based on where the player is.</p>
+
+<h2>Drop an item here, it ends up over there</h2>
+
+<p>If the player is up a tree and he drops something, it should end up on the ground under the tree. On the top of the tree location, create an attribute &quot;drop_destination&quot;, as an object, and set it to the room that represents the bottom of the tree.</p>
+
+<h2>Drop an item, it is gone forever</h2>
+
+<p>If the player is flying over the ocean and drops something, it is gone forever. Have a room set up that the player cannot get to (I like to call it &quot;nowhere&quot;), and set the &quot;drop_destination&quot; attribute to there.</p>
+
+<h2>Give a message instead of dropping it</h2>
+
+<p>If the player is flying over the ocean and drops something, it is gone forever, so do not let him; explain he will lose it forever. On the location, create an attribute &quot;drop_prohibited&quot;, as a string, and set it to the message to display.</p>
+
+<h2>New Functions</h2>
+
+<p>To get this to work, you need to add two new functions to Quest. One of them, DoDrop, is actually replacing an existing function. One of the powers of Quest is that it will happily let you do that, so you can change how pretty much anything works by modifying existing functions.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;function name=&quot;DropRedirection&quot; parameters=&quot;object&quot; type=&quot;string&quot;&gt;
+    if (HasString(player.parent, &quot;drop_prohibited&quot;)) {
+      return (player.parent.drop_prohibited)
+    }
+    else if (HasObject(player.parent, &quot;drop_destination&quot;)) {
+      object.parent = player.parent.drop_destination
+      return (null)
+    }
+    else {
+      object.parent = player.parent.drop_destination
+      return (null)
+    }
+  &lt;/function&gt;
+
+  &lt;function name=&quot;DoDrop&quot; parameters=&quot;object, ismultiple&quot;&gt;&lt;![CDATA[
+    prefix = &quot;&quot;
+    if (ismultiple) {
+      prefix = GetDisplayAlias(object) + &quot;: &quot;
+    }
+    if (not ListContains(ScopeInventory(), object)) {
+      msg (prefix + DynamicTemplate(&quot;NotCarrying&quot;, object))
+    }
+    else if (not ListContains(ScopeReachable(), object)) {
+      msg (prefix + DynamicTemplate(&quot;ObjectNotOpen&quot;, GetBlockingObject(object)))
+    }
+    else {
+      found = true
+      dropmsg = object.dropmsg
+      switch (TypeOf(object, &quot;drop&quot;)) {
+        case (&quot;script&quot;) {
+          if (ismultiple) {
+            msg (prefix)
+          }
+          do (object, &quot;drop&quot;)
+          dropmsg = &quot;&quot;
+        }
+        case (&quot;boolean&quot;) {
+          if (object.drop = true) {
+            // -- start modification --
+            dropmsg = DropRedirection (object)
+            // -- end modification --
+            if (dropmsg = null) {
+              dropmsg = DynamicTemplate(&quot;DropSuccessful&quot;, object)
+            }
+          }
+          else {
+            found = false
+          }
+        }
+        case (&quot;string&quot;) {
+          object.parent = player.parent
+          dropmsg = object.drop
+        }
+        default {
+          found = false
+        }
+      }
+      if (not found and dropmsg = null) {
+        dropmsg = DynamicTemplate(&quot;DropUnsuccessful&quot;, object)
+      }
+      if (LengthOf(dropmsg) &gt; 0) {
+        msg (prefix + dropmsg)
+      }
+      if (HasScript(object, &quot;ondrop&quot;)) {
+        do (object, &quot;ondrop&quot;)
+      }
+    }
+  ]]&gt;&lt;/function&gt;
+</code></pre></div>
+<p>The DropRedirection function handles all the new stuff, but the existing DoDrop function had to be changed to call DropRedirection. I split it up so we can see at a glance what is new, and have tagged the modified part of DoDrop with comments so that is clear too. This means that if a later version of Quest modified DoDrop, it should be relatively easy to update the new version of DoDrop.</p>
+
+<p>You can see this all in action in this demo adventure (which includes a walk-though with assertions to confirm when the object is after dropping it):</p>
+
+<p><img src="DropDemo.aslx" alt="" title="DropDemo.aslx"></p>
+
+    </div>
+  </body>
+</html>

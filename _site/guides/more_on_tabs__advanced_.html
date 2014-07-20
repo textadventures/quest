@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>More on Tabs (Advanced)</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>More on Tabs (Advanced)</h1>
+      <p>This page describes how to create a new tab in the Quest GUI. The concept of tabs was introduced on this page, and it might be a good idea to read that first to understand why they are useful:</p>
+
+<p><a href="using_types_and_tabs__advanced_.html">Using Types and Tabs (Advanced)</a></p>
+
+<h2>Adding Tabs</h2>
+
+<p>To add a new tab, put a tab element into your library. The basic format looks like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;tab&gt;
+    &lt;parent&gt;_ObjectEditor&lt;/parent&gt;
+    &amp;lt;caption&gt;My new tab&lt;/caption&gt;
+  &lt;/tab&gt;
+</code></pre></div>
+<p>This will give a new blank tab for all object types.</p>
+
+<h2>Conditional Display</h2>
+
+<p>Often, a tab is only applicable to certain types, or it not applicable to certain types, and you can help keep the GUI tidy by having your tab only displayed when relevant. This tab will only be shown for objects with the &quot;container&quot; type:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;tab&gt;
+    &lt;parent&gt;_ObjectEditor&lt;/parent&gt;
+    &amp;lt;caption&gt;My new tab&lt;/caption&gt;
+    &lt;mustinherit&gt;container&lt;/mustinherit&gt;
+  &lt;/tab&gt;
+</code></pre></div>
+<p>This tab will not be be shown for rooms and the player object.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;tab&gt;
+    &lt;parent&gt;_ObjectEditor&lt;/parent&gt;
+    &amp;lt;caption&gt;My new tab&lt;/caption&gt;
+    &lt;mustnotinherit&gt;editor_room; defaultplayer&lt;/mustnotinherit&gt;
+  &lt;/tab&gt;
+</code></pre></div>
+<p>The same &quot;mustinherit&quot; and &quot;mustnotinherit&quot; elements can be used inside the controls themselves. This way the user can select the object to be a &quot;container&quot;, and the controls relevant to that type will suddenly appear on the tab.</p>
+
+<h2>Text controls</h2>
+
+<p>Blank tabs are not much use, let us put something on it. Things are added to a tab using the &quot;control&quot; element, you can have as many as you like, and they appear in the order you add them. Before getting to controls that do stuff, we will put text on the tab. Two control types are available: title and label. Here are examples of both:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &lt;controltype&gt;title&lt;/controltype&gt;
+        &amp;lt;caption&gt;Colour&lt;/caption&gt;
+      &lt;/control&gt;
+
+      &lt;control&gt;
+        &lt;controltype&gt;label&lt;/controltype&gt;
+        &amp;lt;caption&gt;You can use any valid HTML colour name&lt;/caption&gt;
+      &lt;/control&gt;
+</code></pre></div>
+<p>The controltype element tells Quest what type of control you want, the caption tab puts text on the page. Both of these should be present in all your controls.</p>
+
+<h2>Basic Controls</h2>
+
+<p>These three examples show how to add controls for attributes that are Booleans, integers and strings respectively.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &lt;controltype&gt;checkbox&lt;/controltype&gt;
+        &amp;lt;caption&gt;Underline hyperlinks&lt;/caption&gt;
+        &lt;attribute&gt;underlinehyperlinks&lt;/attribute&gt;
+      &lt;/control&gt;
+
+      &lt;control&gt;
+        &lt;controltype&gt;number&lt;/controltype&gt;
+        &amp;lt;caption&gt;Font size&lt;/caption&gt;
+        &lt;attribute&gt;menufontsize&lt;/attribute&gt;
+      &lt;/control&gt;
+
+      &lt;control&gt;
+        &lt;controltype&gt;textbox&lt;/controltype&gt;
+        &amp;lt;caption&gt;Version&lt;/caption&gt;
+        &lt;attribute&gt;version&lt;/attribute&gt;
+      &lt;/control&gt;
+</code></pre></div>
+<p>The controltype determines what the user sees, and dictates the type of the attribute, so a checkbox will give a Boolean attribute. There is a new element, &quot;attribute&quot;, and this contains the name of the attribute.</p>
+
+<h2>Not So Basic</h2>
+
+<p>Here is a control for a script. Actually no more complicated than the last three.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &lt;controltype&gt;script&lt;/controltype&gt;
+        &amp;lt;caption&gt;Start script&lt;/caption&gt;
+        &lt;attribute&gt;start&lt;/attribute&gt;
+      &lt;/control&gt;
+</code></pre></div>
+<p>This one will give a string, but the type is &quot;richtext&quot;, allowing the user to format the string (this also has the &quot;expand&quot; element; what does that do?).</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &lt;controltype&gt;richtext&lt;/controltype&gt;
+        &amp;lt;caption&gt;Description&lt;/caption&gt;
+        &lt;attribute&gt;description&lt;/attribute&gt;
+        &lt;expand/&gt;
+      &lt;/control&gt;
+</code></pre></div>
+<p>For a string list, use the &quot;list&quot; control. You should also add an &quot;editprompt&quot; element, this is the text the user will see as each item is added.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &lt;controltype&gt;list&lt;/controltype&gt;
+        &amp;lt;caption&gt;Parameters&lt;/caption&gt;
+        &lt;attribute&gt;paramnames&lt;/attribute&gt;
+        &lt;editprompt&gt;Please enter an parameter name&lt;/editprompt&gt;
+      &lt;/control&gt;
+</code></pre></div>
+<p>For a stringdictionary, you need two prompts, like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &lt;controltype&gt;stringdictionary&lt;/controltype&gt;
+        &amp;lt;caption&gt;Status attributes&lt;/caption&gt;
+        &lt;keyprompt&gt;Please enter the attribute name&lt;/keyprompt&gt;
+        &lt;valueprompt&gt;Please enter the format string (blank for default)&lt;/valueprompt&gt;
+        &lt;attribute&gt;statusattributes&lt;/attribute&gt;
+      &lt;/control&gt;
+</code></pre></div>
+<p>The &quot;objects&quot; control allows the user to pick an existing object from the game as an attribute:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;control&gt;
+      &lt;controltype&gt;objects&lt;/controltype&gt;
+      &amp;lt;caption&gt;Key&lt;/caption&gt;
+      &lt;attribute&gt;key&lt;/attribute&gt;
+    &lt;/control&gt;
+</code></pre></div>
+<h2>Dropdown lists</h2>
+
+<p>You can add drop-down lists. There are two types, the first looks like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &lt;controltype&gt;dropdown&lt;/controltype&gt;
+        &amp;lt;caption&gt;Category&lt;/caption&gt;
+        &lt;attribute&gt;category&lt;/attribute&gt;
+        &lt;validvalues type=&quot;simplestringlist&quot;&gt;Comedy;Educational;Fantasy;Historical&lt;/validvalues&gt;
+        &lt;freetext/&gt;
+      &lt;/control&gt;
+</code></pre></div>
+<p>The &quot;validvalues&quot; obviously supplies the list the user can pick from. The &quot;freetext&quot; element tells Quest that the user can also just type in a value. For fonts, you should assign a source. The &quot;basefonts&quot; gives the built-in fonts, or &quot;webfonts&quot; for web fonts:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &lt;controltype&gt;dropdown&lt;/controltype&gt;
+        &amp;lt;caption&gt;Font&lt;/caption&gt;
+        &lt;attribute&gt;defaultfont&lt;/attribute&gt;
+        &lt;source&gt;basefonts&lt;/source&gt;
+        &lt;freetext/&gt;
+      &lt;/control&gt;
+</code></pre></div>
+<p>The second type of drop-down is for selecting the type for an object. Here is an example:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;control&gt;
+      &lt;controltype&gt;dropdowntypes&lt;/controltype&gt;
+      &amp;lt;caption&gt;Container type&lt;/caption&gt;
+      &lt;types&gt;*=Not a container; container_open=Container; container_closed=Closed container&lt;/types&gt;
+    &lt;/control&gt;
+</code></pre></div>
+<p>So now the control type is &quot;dropdowntypes&quot;, and the different types are listed in the &quot;types&quot; element in the form of a string dictionary. Note that * is used to denote no selection (and this must be present); all other types (&quot;container_open&quot; and &quot;container_closed&quot; in this case) must be defined elsewhere in your game somewhere (and ideally in this same library). Also note there is no attribute element here.</p>
+
+<h2>The multi type</h2>
+
+<p>Sometimes you want to allow the user to decide what type the attribute will be. Use the multi control. As well as the usual elements, you also need a &quot;types&quot; element, a string dictionary that sets up the types:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &amp;lt;caption&gt;Look&lt;/caption&gt;
+        &lt;controltype&gt;multi&lt;/controltype&gt;
+        &lt;attribute&gt;look&lt;/attribute&gt;
+        &lt;types&gt;
+          null=No description; string=Text; script=Run script
+        &lt;/types&gt;
+        &lt;editors&gt;
+          string=textbox
+        &lt;/editors&gt;     
+      &lt;/control&gt;
+</code></pre></div>
+<p>The types here are &quot;null&quot; (no attribute to be set), &quot;string&quot; and &quot;script&quot;. Note that for the string option an editor is specified. I think &quot;textbox&quot; is actually the default, so is not required here; &quot;richtext&quot; is an alternative.</p>
+
+<p>Here is another example, this has boolean as one type, and the associated checkbox is set up as well.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;control&gt;
+      &lt;controltype&gt;multi&lt;/controltype&gt;
+      &amp;lt;caption&gt;Take&lt;/caption&gt;
+      &lt;attribute&gt;take&lt;/attribute&gt;
+      &lt;types&gt;
+        boolean=Default behaviour; script=Run script
+      &lt;/types&gt;
+      &lt;checkbox&gt;Object can be taken&lt;/checkbox&gt;
+    &lt;/control&gt;
+</code></pre></div>
+<p>You can also use &quot;stringlist&quot;.</p>
+
+<p>Further examples, for completeness:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;control&gt;
+      &lt;controltype&gt;multi&lt;/controltype&gt;
+      &lt;selfcaption&gt;Action&lt;/selfcaption&gt;
+      &lt;attribute&gt;useon&lt;/attribute&gt;
+      &lt;types&gt;
+        null=None;scriptdictionary=Handle objects individually;string=Print a message
+      &lt;/types&gt;
+      &lt;keyname&gt;Object&lt;/keyname&gt;
+      &lt;keyprompt&gt;Please enter the object name&lt;/keyprompt&gt;
+      &lt;source&gt;object&lt;/source&gt;
+    &lt;/control&gt;
+
+    &lt;control&gt;
+      &lt;controltype&gt;multi&lt;/controltype&gt;
+      &amp;lt;caption&gt;Pattern&lt;/caption&gt;
+      &lt;attribute&gt;pattern&lt;/attribute&gt;
+      &lt;types&gt;
+        simplepattern=Command pattern; string=Regular expression
+      &lt;/types&gt;
+    &lt;/control&gt;
+</code></pre></div>
+<h2>Element lists</h2>
+
+<p>These seem to add a new child object to the object, rather than an attribute. Here are some examples:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;control&gt;
+      &lt;controltype&gt;elementslist&lt;/controltype&gt;
+      &lt;elementtype&gt;object&lt;/elementtype&gt;
+      &lt;objecttype&gt;object&lt;/objecttype&gt;
+      &lt;expand/&gt;
+    &lt;/control&gt;
+
+    &lt;control&gt;
+      &amp;lt;caption&gt;Turn scripts - run after every turn the player takes in this room&lt;/caption&gt;
+      &lt;controltype&gt;elementslist&lt;/controltype&gt;
+      &lt;elementtype&gt;object&lt;/elementtype&gt;
+      &lt;objecttype&gt;turnscript&lt;/objecttype&gt;
+    &lt;/control&gt;
+
+    &lt;control&gt;
+      &amp;lt;caption&gt;Commands&lt;/caption&gt;
+      &lt;controltype&gt;elementslist&lt;/controltype&gt;
+      &lt;elementtype&gt;object&lt;/elementtype&gt;
+      &lt;objecttype&gt;command&lt;/objecttype&gt;
+    &lt;/control&gt;
+</code></pre></div>
+<p>Probably not so useful for your custom library - easier to create the object through the GUI normally.</p>
+
+<h2>For Completeness</h2>
+
+<p>A couple more examples you will probably never need to see.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;control&gt;
+        &lt;controltype&gt;attributes&lt;/controltype&gt;
+        &lt;expand/&gt;
+      &lt;/control&gt;
+
+      &lt;control&gt;
+        &lt;controltype&gt;gameid&lt;/controltype&gt;
+        &amp;lt;caption&gt;Game ID&lt;/caption&gt;
+        &lt;attribute&gt;gameid&lt;/attribute&gt;
+        &lt;advanced/&gt;
+        &lt;desktop/&gt;
+      &lt;/control&gt;
+</code></pre></div>
+    </div>
+  </body>
+</html>

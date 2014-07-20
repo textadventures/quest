@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Showing a map</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Showing a map</h1>
+      <p>A text adventure generally involves moving around the game world by following compass directions – north, south, east, and west, with the occasional use of up and down, or in and out. Many players like to map out a game as they play using pencil and paper, but you can help your players out by getting Quest to do that for them automatically!</p>
+
+<p>It&#39;s simple to enable the mapping feature - just select &quot;game&quot; from the tree, go to the Features tab, and turn on &quot;Map and Drawing Grid&quot;.</p>
+
+<p>After turning the feature on, you can customise the map size on the Interface tab. Leave the default scale and height settings - you can tweak these later if you want your map to be displayed at a different size. Quest draws the map on a hidden grid - the &quot;scale&quot; setting is the width and height of one grid square.</p>
+
+<p>Run your game now and move between the lounge and the kitchen. When the player first enters a room, it is drawn on the map. The yellow dot indicates where the player currently is.</p>
+
+<p><img src="Map.png" alt="" title="Map.png"></p>
+
+<p>By default, rooms are displayed as a 1x1 square. You can change this by selecting the room and going to the &quot;Map&quot; tab (which only appears when the map feature is turned on).</p>
+
+<p>Here you can change the size and colour of the grid square. You can change what borders are shown, and you can enter a label too. Here&#39;s what the game looks like with a 5x3 yellow lounge and a 2x2 sky blue kitchen, with labels added.</p>
+
+<p><img src="Map2.png" alt="" title="Map2.png"></p>
+
+<p>Exits are shown with a &quot;length&quot; of 1 grid pixel. You can change this by selecting the exit in the tree, and going to its Map tab. A length of 0 means that rooms will be displayed right next to each other, without a line. If you change the length of one exit, make sure you change the exit in the other direction too, or the layout engine may draw the map incorrectly.</p>
+
+    </div>
+  </body>
+</html>

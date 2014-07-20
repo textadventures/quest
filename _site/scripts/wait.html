@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>wait</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>wait</h1>
+      <div class="highlight"><pre><code class="text language-text" data-lang="text">wait {script}
+</code></pre></div>
+<p>Waits for the user to press a key or click on a &quot;Continue&quot; link, and then runs the nested script. Each successive part needs to be nested inside the one before, like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  msg (&quot;First bit&quot;)
+  wait {
+    msg (&quot;Second bit&quot;)
+    wait {
+      msg (&quot;Third bit&quot;)
+    }
+  }
+</code></pre></div>
+<p>This command was added in Quest 5.1.</p>
+
+    </div>
+  </body>
+</html>

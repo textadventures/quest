@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using lockable containers</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Using lockable containers</h1>
+      <p>We&#39;ve already covered <a href="using_containers.html">using containers</a>, but what if you don&#39;t want the container to be immediately openable? If it&#39;s part of a puzzle, you may want the player to have a particular &quot;key&quot; object before they can open it. To implement this, you can make the container lockable.</p>
+
+<p>Let&#39;s create a small (and, admittedly, tedious) puzzle - we&#39;re going to put the defibrillator in a locked box. The player must get the key from the kitchen, unlock the box, and then take the defibrillator from the box before they can revive Bob.</p>
+
+<p>Please bear in mind this is probably the most boring puzzle imaginable. It is just an example. Don&#39;t use it as a guide for something that would make your game more exciting - it&#39;s up to you to think of interesting puzzles!</p>
+
+<p>First, set up the objects:</p>
+
+<ul>
+<li>  create a &quot;box&quot; object in the lounge. Make it a closed container.</li>
+<li>  move the &quot;defibrillator&quot; object to the box (you can click and drag in the tree in the Windows version, or if you&#39;re using the web version you can select the defibrillator and then click the Move button in the top-right of the screen)</li>
+<li>  in the kitchen, add a &quot;key&quot; object, and make it takeable.</li>
+</ul>
+
+<p>Now, make the box lockable. Go to the Container tab and in the &quot;Locking&quot; section, choose &quot;Lockable&quot; from the lock types list. This will display the lock options. You can now choose the &quot;key&quot; object from the list.</p>
+
+<p><img src="Lockedcontainer.png" alt="" title="Lockedcontainer.png"></p>
+
+<p>By default we have the &quot;Automatically unlock if player has the key&quot; and &quot;Automatically open when unlocked&quot; options turned on. This is out of politeness to players really, as there&#39;s no need to force them to jump through hoops and perform additional steps - if they&#39;ve unlocked the object, it&#39;s a fair bet they want to open it, and if they type &quot;open box&quot; before unlocking it, then if they have the key, there&#39;s no point in forcing them to type &quot;unlock box&quot; first.</p>
+
+<p>It might be a good idea to tick the &quot;List children when object is looked at or opened&quot; option, in the main Container options. Now your game output will look like something this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &gt; open box
+ It is locked.
+
+ &gt; unlock box
+ You do not have the key.
+
+ &gt; s
+ You are in a kitchen.
+ [rest of kitchen description snipped...]
+
+ &gt; take key
+ You pick it up.
+
+ &gt; n
+ You are in a lounge.
+ [rest of lounge description snipped...]
+
+ &gt; unlock box
+ Unlocked.
+ You open it.
+ It contains a defibrillator.
+</code></pre></div>
+    </div>
+  </body>
+</html>

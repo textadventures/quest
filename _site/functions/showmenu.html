@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ShowMenu</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>ShowMenu</h1>
+      <p><strong>Note:</strong> This function was deprecated as of Quest 5.1 to display an inline menu, and redesigned for Quest 5.4.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">ShowMenu (string caption, stringdictionary or stringlist options, boolean allow ignore)  { script } 
+</code></pre></div>
+<p>Shows an inline menu of the specified options and returns a <a href="../types/string.html">string</a> variable <strong>result</strong> containing the user input. If a dictionary of options is passed in, the key is returned. If a list of options is passed in, the list item is returned.</p>
+
+<p>If the &quot;allow ignore&quot; parameter is set to <strong>true</strong>, the player can ignore the menu and interact with other objects. The menu is just closed then. If the &quot;allow ignore&quot; parameter is set to <strong>false</strong>, the player must choose one entry of the menu.</p>
+
+<p>Use the <a href="../scripts/show_menu.html">show menu</a> script command for a popup menu.</p>
+
+    </div>
+  </body>
+</html>

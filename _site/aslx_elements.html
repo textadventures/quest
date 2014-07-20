@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ASLX Elements</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>ASLX Elements</h1>
+      <h2>Element Types</h2>
+
+<p>The following elements may appear in an ASLX file:</p>
+
+<ul>
+<li>  <a href="elements/asl_element.html">asl</a> or <a href="elements/library_element.html">library</a> as the top level element</li>
+</ul>
+
+<p>Underneath this, the following may appear:</p>
+
+<ul>
+<li>  <a href="elements/include_element.html">include</a></li>
+<li>  <a href="elements/template_element.html">template</a></li>
+<li>  <a href="elements/dynamictemplate_element.html">dynamictemplate</a></li>
+<li>  <a href="elements/verbtemplate_element.html">verbtemplate</a></li>
+<li>  <a href="elements/function_element.html">function</a></li>
+<li>  <a href="elements/command_element.html">command</a></li>
+<li>  <a href="elements/verb_element.html">verb</a></li>
+<li>  <a href="elements/type_element.html">type</a></li>
+<li>  <a href="elements/game_element.html">game</a></li>
+<li>  <a href="elements/object_element.html">object</a></li>
+<li>  <a href="elements/exit_element.html">exit</a></li>
+<li>  <a href="elements/walkthrough_element.html">walkthrough</a></li>
+<li>  <a href="elements/timer_element.html">timer</a></li>
+<li>  <a href="elements/turnscript_element.html">turnscript</a></li>
+<li>  <a href="elements/implied_element.html">implied</a></li>
+<li>  <a href="elements/delegate_element.html">delegate</a></li>
+<li>  <a href="elements/javascript_element.html">javascript</a></li>
+<li>  <a href="elements/editor_element.html">editor</a></li>
+<li>  <a href="elements/tab_element.html">tab</a></li>
+<li>  <a href="elements/control_element.html">control</a></li>
+<li>  <a href="elements/resource_element.html">resource</a></li>
+</ul>
+
+<p>Within a <a href="elements/type_element.html">type</a>, <a href="elements/object_element.html">object</a>, <a href="elements/exit_element.html">exit</a> or <a href="elements/command_element.html">command</a> tag:</p>
+
+<ul>
+<li>  <a href="elements/inherit_element.html">inherit</a></li>
+<li>  <a href="elements/command_element.html">command</a></li>
+<li>  <a href="elements/verb_element.html">verb</a></li>
+<li>  in an object element only, nested <a href="elements/object_element.html">object</a> or <a href="elements/exit_element.html">exit</a> elements may appear. Their &quot;parent&quot; attribute will be set to the parent object</li>
+<li>  any other XML element will set an attribute of that name on the parent object/type/exit/command.</li>
+</ul>
+
+<h2>XML file format</h2>
+
+<p>Quest uses an XML-based file format, and files have an .aslx extension.</p>
+
+<p>Here is a simple example:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &lt;asl version=&quot;500&quot;&gt;
+   &lt;include ref=&quot;English.aslx&quot;/&gt;
+   &lt;include ref=&quot;Core.aslx&quot;/&gt;
+
+   &lt;game name=&quot;Test ASLX Game&quot;/&gt;
+
+   &lt;object name=&quot;lounge&quot;&gt;
+
+     &lt;object name=&quot;player&quot;&gt;
+       &lt;inherit name=&quot;defaultplayer&quot; /&gt;
+     &lt;/object&gt;
+
+     &lt;object name=&quot;sofa&quot;&gt;
+       &lt;prefix&gt;a&lt;/prefix&gt;
+       &lt;look&gt;Just a sofa.&lt;/look&gt;
+       &lt;take type=&quot;script&quot;&gt;
+          msg (&quot;Example script attribute&quot;)
+       &lt;/take&gt;
+     &lt;/object&gt;
+
+     &lt;exit name=&quot;east&quot; to=&quot;hall&quot;/&gt;
+   &lt;/object&gt;
+
+   &lt;object name=&quot;hall&quot;&gt;
+     &lt;exit name=&quot;east&quot; to=&quot;kitchen&quot;/&gt;
+     &lt;exit name=&quot;west&quot; to=&quot;lounge&quot;/&gt;
+   &lt;/object&gt;
+
+   &lt;object name=&quot;kitchen&quot;&gt;
+     &lt;object name=&quot;sink&quot;&gt;
+       &lt;look&gt;Just an ordinary sink&lt;/look&gt;
+     &lt;/object&gt;
+
+     &lt;exit name=&quot;west&quot; to=&quot;hall&quot;/&gt;
+   &lt;/object&gt;
+
+ &lt;/asl&gt;
+</code></pre></div>
+<p>This example defines three &quot;rooms&quot; – a lounge, a hall and a kitchen. These &quot;rooms&quot; are defined as objects, and they themselves contain the objects &quot;sofa&quot; and &quot;sink&quot;. The lounge also contains the &quot;player&quot; object.</p>
+
+<p>By nesting &lt;object&gt; elements, you can define further objects inside objects.</p>
+
+<h2>Libraries</h2>
+
+<p>There are two libraries included in this example:</p>
+
+<ul>
+<li>  <a href="core.aslx.html">Core.aslx</a> provides the default Quest functionality, including: showing room descriptions, implementing default verbs such as &quot;take&quot;, &quot;drop&quot; and &quot;use&quot;, opening and closing containers, and deciding which objects are currently available to the player.</li>
+<li>  <a href="guides/translating_quest.html">English.aslx</a> provides the English text for the built-in default responses, and the names of the verbs whose behaviour is defined in Core.aslx. This means Core.aslx is language-neutral – if you wanted to make a game in German or Spanish, just translate English.aslx and plug it in to your game.</li>
+</ul>
+
+<h2>Attributes</h2>
+
+<p>Each object&#39;s attributes are defined in the XML. Attributes define all the behaviour of an object. The XML &quot;type&quot; attribute used is to specify the type of the attribute. If no type is specified, the <a href="types/string.html">string</a> type is assumed, as with the sink&#39;s &quot;look&quot; attribute in the above example. An exception is if there is no data in the XML tag, in which case a <a href="types/boolean.html">boolean</a> &quot;true&quot; is assumed instead.</p>
+
+<p>The available types are listed on the <a href="attribute_types.html">Attribute Types</a> page.</p>
+
+<p>The type of an attribute can determine the behaviour of an object. In the above example, the sofa&#39;s &quot;take&quot; attribute is a script, so that will run when the player types &quot;take sofa&quot;. If the &quot;take&quot; attribute is a string, the object will be taken and the string will be printed. This behaviour is defined in <a href="core.aslx.html">Core.aslx</a>.</p>
+
+<p>Attributes can change type while the game is running, by simply setting them to a new value.</p>
+
+<h2>Additional attributes</h2>
+
+<p>When Quest loads the game, it will set the following additional attributes on objects:</p>
+
+<ul>
+<li>  name – string, from the &quot;name&quot; attribute specified for the &lt;object&gt; tag</li>
+<li>  parent – reference to the containing object, or null if the object has no parent</li>
+</ul>
+
+    </div>
+  </body>
+</html>

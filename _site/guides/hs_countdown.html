@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hs-countdown</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Hs-countdown</h1>
+      <h1>Creating a Countdown Timer</h1>
+
+<p><em>There used to be a TV program called the Crystal Maze where a team had to recover crystals from different rooms by doing certain challenges. Each person had to do a challenge and the difficult bit was that they only had 5 minutes to do it before the room was locked.</em></p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  Important note: in Quest 5.3 the object &#39;player&#39; is replaced with &#39;game.pov&#39; 
+  so if you are working with Q 5.3 or higher replace &#39;&#39;&#39;player&#39;&#39;&#39; with &#39;&#39;&#39;game.pov&#39;&#39;&#39;
+</code></pre></div>
+<ol>
+<li>I have set up two rooms in Quest. One room is called <strong>Dungeon</strong> where the challenge is set.</li>
+</ol>
+
+<p>In the room are lots of different objects:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> [[File:hscountdown1.jpg]]
+</code></pre></div>
+<ol>
+<li><p>The first thing I need to do is make a Countdown variable and set it to the time I need</p></li>
+<li><p>I highlight the player and go to <strong>Attributes</strong> and click the <strong>Add</strong> symbol.</p></li>
+<li><p>I give the Attribute a single word name eg: <strong>countdown</strong> (CASE SENTITIVE!)</p>
+
+<p>[[File:hscountdown2.jpg]]</p></li>
+<li><p>When I click <strong>OK</strong> it appears at the bottom:</p>
+
+<p>[[File:hscountdown3.jpg]]</p></li>
+<li><p>I now need to give the countdown variable a value.</p></li>
+<li><p>I click on the <strong>String</strong> drop down box and choose <strong>Integer</strong> and type the number of seconds I want the clock to run for in the box:</p>
+
+<p>[[File:hscountdown4.jpg]]</p></li>
+<li><p>When you click off you see that the <strong>attribute</strong> now says 30 next to it:</p>
+
+<p>[[File:hscountdown5.jpg]]</p></li>
+<li><p>Now I need to add a label so the value appears when you play.</p></li>
+<li><p>I go up to <strong>status attributes</strong> and click the <strong>Add</strong> button and type in the name of the attribute: (CASE SENTITIVE!)</p>
+
+<p>[[File:hscountdown6.jpg]]</p></li>
+<li><p>When I click OK I am asked for a Format string. You can leave this blank and the computer will put in countdown: 30</p></li>
+<li><p>If you want to have a different value, type in the words you want and put a ! where the seconds will go eg</p>
+
+<p>[[File:hscountdown7.jpg]]</p></li>
+<li><p>This would look like this when the game runs:</p>
+
+<p>[[File:hscountdown8.jpg]]</p></li>
+<li><p>When you click <strong>OK</strong> you will see the different attributes:</p>
+
+<p>[[File:hscountdown9.jpg]]</p></li>
+<li><p>The next step is to add the <strong>Timer</strong></p></li>
+<li><p>I do this by going to <strong>Add &gt; Timer</strong> and giving it a name:</p>
+
+<p>[[File:hscountdown10.jpg]]</p></li>
+<li><p>Next I need to tell the computer to start on 30s and countdown in steps of 1.</p></li>
+<li><p>I do this by clicking on <strong>Script</strong> typing in <strong>variable</strong> and choosing <strong>Set a variable or attribute</strong>:</p>
+
+<p>[[File:hscountdown11.jpg]]</p></li>
+<li><p>I double click on the script to choose it and it looks like this:</p>
+
+<p>[[File:hscountdown12.jpg]]</p></li>
+<li><p>I now CAREFULLY type in the name of my variable – <strong>player.countdown</strong> (Q5.3: game.pov.countdown)</p>
+
+<p>[[File:hscountdown13.jpg]]</p></li>
+<li><p>In the <strong>expression</strong> box I type in the same variable but then with MINUS 1 eg <strong>player.countdown -1</strong> (Q5.3: game.pov.countdown -1)</p>
+
+<p>[[File:hscountdown14.jpg]]</p></li>
+<li><p>This basically tells the counter to countdown from 30 it steps of 1</p></li>
+<li><p>Now I add in another script using IF to say what happens if the counter gets to 0</p>
+
+<p>[[File:hscountdown15.jpg]]</p></li>
+<li><p>Next we need to tell the computer to start the timer when we go into the <strong>Dungeon</strong>.</p></li>
+<li><p>Click on Dungeon then <strong>Scripts</strong> and find the <strong>After entering room</strong> section.</p></li>
+<li><p>Add a script and search for <strong>Enable</strong>. Enable <strong>Timer1</strong> to start:</p>
+
+<p>[[File:hscountdown16.jpg]]</p></li>
+<li><p>Next we need to tell the computer to stop the time when the <strong>Dungeon</strong>.</p></li>
+<li><p>Click in the <strong>Dungeon</strong> room and select scripts.</p></li>
+<li><p>Find the <strong>After leaving room</strong> section and make up these scripts:</p>
+
+<p>[[File:hscountdown17.jpg]]</p></li>
+<li><p>This tells the computer to stop the timer running, write a message and then “reset” it back to 30 when you leave the <strong>Dungeon</strong></p></li>
+<li><p>Run the game. When you go into the room, the timer starts automatically:</p>
+
+<p>[[File:hscountdown18.jpg]]</p></li>
+<li><p>Here is the timer counting down some more</p>
+
+<p>[[File:hscountdown19.jpg]]</p></li>
+<li><p>Here is the game finished when I did not get out in time</p>
+
+<p>[[File:hscountdown20.jpg]]</p></li>
+<li><p>Here is when I get out of the room and go back to the other room – the timer resets to 30s</p>
+
+<p>[[File:hscountdown21.jpg]]</p></li>
+<li><p>If you wanted the timer on for the entire game you would go back to the timer and tick the <strong>start timer when game begins</strong> box</p>
+
+<p>[[File:hscountdown22.jpg]]</p></li>
+</ol>
+
+<p><strong>I AM SURE THERE ARE LOTS OF OTHER THINGS YOU CAN DO WITH THIS CODE!</strong></p>
+
+    </div>
+  </body>
+</html>

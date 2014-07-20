@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using Types and Tabs (Advanced)</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Using Types and Tabs (Advanced)</h1>
+      <p>So you know all about types, from the <a href="using_types.html">Using Types</a> page, right? Let us do some more. By the way, we will be using code, rather than the GUI, mostly.</p>
+
+<h2>Use a library</h2>
+
+<p>If we are going to get serious, it is better to put your types in another file (and personally, I would put verbs, commands, functions, turnscripts and templates all in there too), so we will do that first.</p>
+
+<p>One reason to use a library is that Quest can actualy loose some code when going into the GUI, as mentioned on the &quot;Using Types&quot; page, but for things like functions you are (in my opinion) better just working with the code anyway, plus you can add XML comments (inside &lt;!-- and --&gt;) and put in line breaks to make it easier to read. Finally, you cannot create and edit tabs through the GUI.</p>
+
+<p>Quest cannot edit library files, so open up in a text editor like Notepad. Your basic library has a start tag and an end tag. I also put in an XML directive first, so I can use an online XML validator on it (such as <a href="http://validator.w3.org/#validate_by_input">1</a>), in case I have messed up the code so much Quest cannot handle it. So it looks like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;?xml version=&quot;1.0&quot;?&gt;
+  &lt;library&gt;
+  &lt;/library&gt;
+</code></pre></div>
+<p>Go into the code in Quest, and cut the type from there, and paste it into here (if you are following this as a tutorial from the previous page, you will see that I have improved the text here a little).</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;?xml version=&quot;1.0&quot;?&gt;
+  &lt;library&gt;
+    &lt;type name=&quot;spell&quot;&gt;
+      &lt;inventoryverbs type=&quot;list&quot;&gt;Cast&lt;/inventoryverbs&gt;
+      &lt;displayverbs type=&quot;list&quot;&gt;Learn&lt;/displayverbs&gt;
+      &lt;drop type=&quot;boolean&quot;&gt;false&lt;/drop&gt;
+      &lt;take type=&quot;boolean&quot;&gt;false&lt;/take&gt;
+      &lt;usedefaultprefix type=&quot;boolean&quot;&gt;false&lt;/usedefaultprefix&gt;
+      &lt;learn type=&quot;script&quot;&gt;&lt;![CDATA[
+        if (not this.parent = player) {
+          this.parent = player
+          msg (&quot;In a process that seems at once unfathomable, and yet familiar, the spell fades away, and you realise you are now able to cast the &lt;i&gt;&quot; + this.alias + &quot;&lt;/i&gt; spell.&quot;)
+        }
+        else {
+          msg (&quot;Er, you already know that one!&quot;)
+        }
+      ]]&gt;&lt;/learn&gt;
+    &lt;/type&gt;
+  &lt;/library&gt;
+</code></pre></div>
+<p>It is vital that you cut-and-paste everything from the start tag to the end tag, including both tags. Save this file as &quot;library.aslx&quot; in the same directory as your game.</p>
+
+<p>In your game file in Quest, you need an extra line at the top of the code, telling Quest to include your library. The top five lines will be like this, with your library after the two standard libraries.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;!--Saved by Quest 5.2.4515.34846--&gt;
+  &lt;asl version=&quot;520&quot;&gt;
+    &lt;include ref=&quot;English.aslx&quot; /&gt;
+    &lt;include ref=&quot;Core.aslx&quot; /&gt;
+    &lt;include ref=&quot;Library.aslx&quot; /&gt;
+    ...
+</code></pre></div>
+<p>Now go into the game, and check it still works.</p>
+
+<h2>More Types</h2>
+
+<p>We will now set up a new type, attackspell. The attackspell is a particular type of spell, so it needs all the properties of an ordinary spell, but perhaps some new ones too. So it wants to <em>inherit</em> those properties from spell. Here, then, is our new type:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;type name=&quot;attackspell&quot;&gt;
+    &lt;inherit name=&quot;spell&quot;/&gt;
+  &lt;/type&gt;
+</code></pre></div>
+<h2>New Tabs</h2>
+
+<p>For simplicity, an attack spell will affect everyone in the room (except the player character, of course), but different spells will use different elements and have different power ratings. The way to do that is to have attributes on each spell, powerrating and element. The cool way to do <em>that</em>, is to create new tabs in the editor.</p>
+
+<p>Here is the basic code (paste this in before the </library> tag).</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;tab&gt;
+    &lt;parent&gt;_ObjectEditor&lt;/parent&gt;
+    &amp;lt;caption&amp;gt;Spell&amp;lt;/caption&amp;gt;
+    &lt;mustnotinherit&gt;editor_room; defaultplayer&lt;/mustnotinherit&gt;
+    &lt;control&gt;
+      &lt;controltype&gt;dropdowntypes&lt;/controltype&gt;
+      &amp;lt;caption&amp;gt;Spell type&amp;lt;/caption&amp;gt;
+      &lt;types&gt;*=Not a spell; spell=Non-attack spell; attackspell=Attack spell&lt;/types&gt;
+      &lt;width&gt;150&lt;/width&gt;
+    &lt;/control&gt;
+  &lt;/tab&gt;
+</code></pre></div>
+<p>So what do we see here? It starts and ends with <tab> and </tab>, so Quest knows this is a tab, and <em>parent</em> tells Quest this is an editor for an object (I think they all are). The <em>caption</em> is the name on the tab, and <em>mustnotinherit</em> stops this tab appearing for rooms and the player.</p>
+
+<p>Then there is our control, and you can have several of these. This one gives a dropdown menu, allowing the user to select whether this is not spell, is a non-attack spell, or is an attack spell. The asterisk indicates the null choice, by the way.</p>
+
+<p>Quest will not realise you have changed your library file; to see a difference, you will need to go into code, make a trivial change (say to the version), then go back into the GUI, to force Quest to reload the editors. Hopefully, if you click on an object you will see something like this:</p>
+
+<p><img src="spelltab.png" alt="" title="spelltab.png"></p>
+
+<h2>More Controls</h2>
+
+<p>Now we will put in a powerrating control. Try this (remember, it has to go before the </tag> line, because that marks the end of the tag):</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;control&gt;
+      &lt;controltype&gt;number&lt;/controltype&gt;
+      &amp;lt;caption&amp;gt;Power of attack (1-10)&amp;lt;/caption&amp;gt;
+      &lt;attribute&gt;powerrating&lt;/attribute&gt;
+      &lt;width&gt;100&lt;/width&gt;
+      &lt;mustinherit&gt;attackspell&lt;/mustinherit&gt;
+      &lt;minimum&gt;0&lt;/minimum&gt;
+      &lt;maximum&gt;10&lt;/maximum&gt;
+    &lt;/control&gt;
+</code></pre></div>
+<p>The <em>controltype</em> says this is for an integer number, the <em>caption</em> is a label the user will see, the <em>attribute</em> is what is being set, and <em>width</em>, of course, is the size. By setting <em>mustinherit</em>, this is only visible for attackspells. Also, <em>minimum</em> and <em>maximum</em> values are set (but these are only for this tab, the values can change outside the tab by editing the code, or during play, so do not rely on them being in that range).</p>
+
+<p>Now here is a text box, which is pretty straightforward. We can use this for descriptions of what happens.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;control&gt;
+      &lt;controltype&gt;textbox&lt;/controltype&gt;
+      &amp;lt;caption&amp;gt;Description&amp;lt;/caption&amp;gt;
+      &lt;attribute&gt;description&lt;/attribute&gt;
+      &lt;mustinherit&gt;attackspell&lt;/mustinherit&gt;
+    &lt;/control&gt;
+</code></pre></div>
+<p>We also want to be able to select an element (fire for fireball, etc). This is a little more complicated, if we want a dropdown list, as these only work with types, but we can create some new types quickly enough (these need to be outside the &quot;tab&quot; tags, but inside the &quot;library&quot; tags).</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;type name=&quot;fire_type&quot;&gt;
+  &lt;/type&gt;
+
+  &lt;type name=&quot;frost_type&quot;&gt;
+  &lt;/type&gt;
+
+  &lt;type name=&quot;storm_type&quot;&gt;
+  &lt;/type&gt;
+</code></pre></div>
+<p>Now we can create the dropdown list just as we did before (inside the &quot;tab&quot; tags):</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;control&gt;
+      &lt;controltype&gt;dropdowntypes&lt;/controltype&gt;
+      &amp;lt;caption&amp;gt;Element&amp;lt;/caption&amp;gt;
+      &lt;types&gt;*=None; fire_type=Fire; frost_type=Frost; storm_type=Storm&lt;/types&gt;
+      &lt;width&gt;150&lt;/width&gt;
+      &lt;mustinherit&gt;attackspell&lt;/mustinherit&gt;
+    &lt;/control&gt;
+</code></pre></div>
+<p>Note that Quest will complain if there is no default value (with *).</p>
+
+<p><img src="spelltab2.png" alt="" title="spelltab2.png"></p>
+
+<p>Other control types available include title, script, checkbox and objects. For more details see this page:</p>
+
+<p><a href="more_on_tabs__advanced_.html">More on Tabs (Advanced)</a></p>
+
+<h2>What About the Monsters?</h2>
+
+<p>So we want monsters in our game too, and they need to interact with the spells. We will need a new type, monster, and add that to the list of options on the Spell&quot; tab (which we can rename as &quot;Magic&quot;). The tab can be set up to set hits, etc. for monsters.</p>
+
+<p>Now the attack spells can be set to only affect monsters, and to check if the monster is vulnerable to this element. This can be done on the <em>attackspell</em> type, so any new attack spell gets this automatically. The principles are all the same, so I am not going through them, but here is the start of a full game incorporating these features. I have also modified the types so spells can be learnt from items that are held.</p>
+
+    </div>
+  </body>
+</html>

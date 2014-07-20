@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>A Hint System</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>A Hint System</h1>
+      <p>Adding a hint system will allow more players to get to the end of your game, and so see more of your brilliant creation. but only if it works properly! So let us see how to do just that...</p>
+
+<h2>The HINT Command</h2>
+
+<p>You need to copy this into your game file, in code view. Insert it at the end, just before the last line (which will be &quot;</aslx>&quot;).</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;command name=&quot;Hint&quot;&gt;
+    &lt;pattern&gt;hint;clue&lt;/pattern&gt;
+    &lt;script&gt;
+      if (HasScript (game.pov.parent, &quot;hint&quot;)) {
+        game.pov.parent.hintflag = false
+        do (game.pov.parent, &quot;hint&quot;)
+      }
+      if (not GetBoolean(game.pov.parent, &quot;hintflag&quot;)) {
+        flag = false
+        foreach (hint, GetDirectChildren (hints)) {
+          if (not flag) {
+            if (not GetBoolean(hint, &quot;passed&quot;)) {
+              flag = true
+              hint.done = true
+              if (HasScript (hint, &quot;look&quot;)) {
+                do (hint, &quot;look&quot;)
+              }
+              if (HasString (hint, &quot;look&quot;)) {
+                msg (hint.look)
+              }
+            }
+          }
+        }
+        if (not flag) {
+          msg (&quot;Sorry, no more clues&quot;)
+        }
+      }
+    &lt;/script&gt;
+  &lt;/command&gt;
+</code></pre></div>
+<h2>Hint Set-up</h2>
+
+<p>Create a room called &quot;hints&quot;. This should have no exits and should not be accessible to the player.</p>
+
+<p>For each hint, create an object inside the &quot;hints&quot; room, and give it a &quot;look at&quot; description. These need to be in the order the player will need them (to change the order, you will need to go into code view, and do a cut-and-paste - make sure you get all the object).</p>
+
+<p>At each stage-gate, set the &quot;passed&quot; attribute of the appropriate hint to true.</p>
+
+<p>Note: Do not put anything else in the hints object - it will be taken as a hint</p>
+
+<h2>Naming Hints</h2>
+
+<p>Personally I like to prefix hints with h_, so the names are unique and it is obvious what it is.</p>
+
+<h2>Stage-gates?</h2>
+
+<p>So what are stage-gates? A stage-gate is where the player goes from one stage of the game, where one hint is relevant, to the next, where the next hint applies. Presumably that first hint indicates how to achieve that. It could be killing the goblin, getting to a certain room, unlocking a door, finding a vital item.</p>
+
+<p>In the demo, the first stage-gate is going into the second room, the next is picking up the key, the third is unlocking the door and the last is going into the last room. This is to show hints in action; in a real game you would not have a hint for each and every step.</p>
+
+<h2>Progressive hints</h2>
+
+<p>You can set up a series of hints for one stage gate, so that each time the player types HINT he gets a more obvious clue (pick up the key in the demo and type hint twice to see this in action). To set this up, you obviously need a hint object for each hint. Each of these hints except the last should have a &quot;look at&quot; <em>script</em>, rather than text, and in the script, as well as displaying a message, should set its &quot;passed&quot; value to true.</p>
+
+<p>Here is the code from the demo:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;object name=&quot;h_unlock1&quot;&gt;
+      &lt;inherit name=&quot;editor_object&quot; /&gt;
+      &lt;look type=&quot;script&quot;&gt;
+        msg (&quot;Now you have the key, what can you do with it?&quot;)
+        this.passed = true
+      &lt;/look&gt;
+    &lt;/object&gt;
+    &lt;object name=&quot;h_unlock2&quot;&gt;
+      &lt;inherit name=&quot;editor_object&quot; /&gt;
+      &lt;look&gt;Type UNLOCK to unlock the door.&lt;/look&gt;
+    &lt;/object&gt;
+</code></pre></div>
+<p>In addition, the stage-gate itself must set the &quot;passed&quot; value to true for all the hints.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">        msg (&quot;You unlock the door&quot;)
+        h_unlock1.passed = true
+        h_unlock2.passed = true
+        exit_to_room3.locked = false
+</code></pre></div>
+<h2>Local Hints</h2>
+
+<p>You can have local hints. If a room has a script called &quot;hint&quot; this will be run. If the script sets the attribute hintflag on the room to true, then no other hints are given. The script should test a condition - is the hint is relevant? If the condition is met, a hint is given, and the hintflag set. If the condition is not met, the flag is not set and the standard hint system comes into play.</p>
+
+<p>Here is an example:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      &lt;object name=&quot;room4&quot;&gt;
+        &lt;inherit name=&quot;editor_room&quot; /&gt;
+        &lt;hint type=&quot;script&quot;&gt;
+          if (exit_to_room3.locked) {
+            msg (&quot;Try unlocking the door in room2&quot;)
+            this.hintflag = true
+          }
+        &lt;/hint&gt;
+        &lt;exit alias=&quot;west&quot; to=&quot;room&quot;&gt;
+          &lt;inherit name=&quot;westdirection&quot; /&gt;
+        &lt;/exit&gt;
+      &lt;/object&gt;
+</code></pre></div>
+<p>If the player is in the room, and types HINT this script will run. If the door is locked, an appropriate message is displayed, and hintflag is set to stop any further processing of the hint system. If the door is not locked, the hint is not relevant. No message is displayed, and as hintflag is not set, the normal hint system comes into play.</p>
+
+<p>This would be useful in rooms off the main quest. Player can get a hint to solve the puzzle when in the room. However, if that puzzle is solved, the player gets a hint towards the main quest as usual.</p>
+
+<h2>Testing</h2>
+
+<p>Do make sure that each and every hint works. It is easy to spell the hint name one way in one place and another elsewhere. The game will only throw an error when it comes to display it.</p>
+
+<h2>Demo</h2>
+
+<p>A demo of the system (the one mentioned in the text) is available here:</p>
+
+<p><a href="http://quest5.net/downloads/HintDemo.aslx">HintDemo.aslx</a></p>
+
+    </div>
+  </body>
+</html>

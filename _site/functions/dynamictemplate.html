@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DynamicTemplate</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>DynamicTemplate</h1>
+      <div class="highlight"><pre><code class="text language-text" data-lang="text">DynamicTemplate (string  template name, object  object)
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">DynamicTemplate (string  template name, string  text)
+</code></pre></div>
+<p>Returns a <a href="../types/string.html">string</a> containing the requested text, based on the object or string passed in.</p>
+
+<p>You can pass in multiple objects. If you only pass in one, you can refer to it using the variable &quot;object&quot;. Otherwise you can use &quot;object1&quot;, &quot;object2&quot; etc.</p>
+
+<p>See <a href="../guides/using_templates.html">Using Templates</a></p>
+
+<p><em>Example:</em> We want to provide a templated message about a blocked exit.</p>
+
+<p>First the dynamic template is defined as:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;dynamictemplate name=&quot;BlockedExit&quot;&gt;&quot;Your exit &quot;+object.alias+&quot; is blocked&quot;&lt;/dynamictemplate&gt;
+</code></pre></div>
+<p>Now we could add a message expesssion to the script in an exit, something like:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">msg (DynamicTemplate(&quot;BlockedExit&quot;,this))
+</code></pre></div>
+<p>NOTE: As the script is defined in the <em>script</em> attribute of the <em>exit</em>, we use the &quot;this&quot; keyword to reference the current <em>exit</em> object</p>
+
+    </div>
+  </body>
+</html>

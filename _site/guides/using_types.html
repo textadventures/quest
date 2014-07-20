@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using Types</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Using Types</h1>
+      <h2>Using Object Types</h2>
+
+<p>Object types in Quest offer a way to give a group of things the same properties. Quest has several object types built in, such as the <em>editor_object</em> type and the <em>editor_room type</em>; it uses these two to flag whether something is an object or a room (incidentally, these types are only there when you are editing the game; when a game is published editor types are not included).</p>
+
+<p>You can see the type of an object by going to the &quot;Attributes&quot; tab; the top pane is a list of types. Here is an example for an openable container:</p>
+
+<p><img src="inherited_types.png" alt="" title="inherited_types.png"></p>
+
+<p>As you can see, something in quest can be more than one type. As well as being an <em>editor_object</em> type, this is also a <em>container_open</em> type. Also, in grey, it is a <em>container_base;</em> this is an inherited type, my object has this because <em>container_open</em> inherits from <em>container_base</em>. It is also a <em>defaultobject</em>, which is in grey because everything in Quest has the <em>defaultobject</em> type.</p>
+
+<p>My container gets all the properties of the types it has inherited, which is how it will work as a container with minimal effort from me. Note that <em>container_base</em> sets up a closed container, but that that value is overridden by <em>container_open</em>. I can further change any of the setting to suit my needs.</p>
+
+<p>You can do all that without knowing what types are, but sometimes we want to do more, and hopefully this tutorial will show you how.</p>
+
+<h2>Creating new types</h2>
+
+<p>Creating your own types is a great way to extend Quest for your own needs. Any time you have a bunch of things that are all pretty similar in what they do, but a bit different to anything already in Quest, consider creating a new type.</p>
+
+<p>As an example, we are going to create a <em>spell</em> type. So let us do that now. Right click in the Quest right pane, and select &quot;Add Object Type&quot;, in the box type &quot;spell&quot;, and click &quot;Okay&quot;.</p>
+
+<p>So far so good, but it does not do anything use. There are certain properties that spells have, so let us assign them to the spell type, then all spells will be like that.</p>
+
+<p>Firstly, you cannot drop a spell, and you cannot pick one up. So we can set both drop and take to false. Make sure you have your object type open, and look at the bottom half of the &quot;Attributes&quot; tab. This lists the attributes. Click on &quot;Add&quot;, and type &quot;drop&quot;, then set this to be a Boolean, and have the checkbox not ticked. Do the same again for a second attribute &quot;take&quot;. It should look something like this:</p>
+
+<p><img src="attributes2.png" alt="" title="attributes2.png"></p>
+
+<h2>Testing for Types</h2>
+
+<p>You can test if an object is of a certain type in a script or function using the DoesInherit function. In code, it might look like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  if (DoesInherit (fireball_spell, &quot;spell&quot;)) {
+    // do stuff
+  }
+</code></pre></div>
+<p>In the GUI, it looks like this:</p>
+
+<p><img src="doesinherit.png" alt="" title="doesinherit.png"></p>
+
+<h2>Adding Scripts</h2>
+
+<p>Something else we can do with spells is to learn them, so next we will add a &quot;learn&quot; script to the object type. We will do this in code, so click on the &quot;code&quot; icon at the right end of the tool bar, and look for some code like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;type name=&quot;spell&quot;&gt;
+    &lt;drop type=&quot;boolean&quot;&gt;false&lt;/drop&gt;
+    &lt;take type=&quot;boolean&quot;&gt;false&lt;/take&gt;
+  &lt;/type&gt;
+</code></pre></div>
+<p>The code behind Quest can look a bit intimidating, but is worth getting to know. The first line here is saying that this is an object type that we are dealing with, and its name is &quot;spell&quot;. The second line sets up an attribute, &quot;drop&quot;, as a Boolean with the value false, and the third line does the same for the take attribute. The last line closes off this thing.</p>
+
+<p>We want to change it, to this, inserting 9 new lines:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;type name=&quot;spell&quot;&gt;
+    &#39;&#39;&#39;&lt;learn type=&quot;script&quot;&gt;&#39;&#39;&#39;
+      &#39;&#39;&#39;if (not this.parent = game.pov) {&#39;&#39;&#39;
+        &#39;&#39;&#39;this.parent = player&#39;&#39;&#39;
+        &#39;&#39;&#39;msg (&quot;How about that? You can now cast &quot; + this.alias + &quot;.&quot;)&#39;&#39;&#39;
+      &#39;&#39;&#39;}&#39;&#39;&#39;
+      &#39;&#39;&#39;else {&#39;&#39;&#39;
+        &#39;&#39;&#39;msg (&quot;Er, you already know that one!&quot;)&#39;&#39;&#39;
+      &#39;&#39;&#39;}
+    &#39;&#39;&#39;&lt;/learn&gt;&#39;&#39;&#39;
+    &lt;drop type=&quot;boolean&quot;&gt;false&lt;/drop&gt;
+    &lt;take type=&quot;boolean&quot;&gt;false&lt;/take&gt;
+  &lt;/type&gt;
+</code></pre></div>
+<p>This is adding a third attribute, this time called &quot;learn&quot;, but this attribute is a script, and the next 7 lines are the code of the script.</p>
+
+<p>Briefly: The first line of the script checks that the player does not already hold the spell (&quot;this&quot; indicates the object the script is attached too, i.e., the spell; &quot;this.parent&quot; is the object or room holding the spell). The next line moves this spell to the player (we use game.pov for the player, in case you want to change the player object ever), and the next line lets the player know this happened.</p>
+
+<h2>Does it Work?</h2>
+
+<p>So let us see this work! Go back into the GUI, and create an object called spellbook. Set it to be a container that can be opened and closed, and will list children when opened or looked at. Then put some spells inside the spell book. Remember that on the &quot;Attributes&quot; tab, you must set each spell to be of the &quot;spell&quot; type.</p>
+
+<p>We also need to set up a couple of verbs. Still in the GUI, right click in the right pane and select Add verb; type in &quot;learn&quot;. Do the same for &quot;cast&quot;, ready for later.</p>
+
+<p>Now when you go in game you should be able to open the spell book and learn the spells, but not take or drop them.</p>
+
+<p>It would be worth while at this point setting up the cast verb for each spell. Each spell will be different, so you are on your own here, but to get you started: select the spell, and go to the &quot;Verbs&quot; tab; click &quot;Add&quot;, and type in &quot;cast&quot;. Now below this pane, select &quot;Script&quot;, and put in what you want it to do. In the trivial example below, it just prints a message, without actually affecting the world at all.</p>
+
+<p><img src="cast.png" alt="" title="cast.png"></p>
+
+<h2>Display and Inventory Verbs</h2>
+
+<p>Now we are going to change the type so that <em>Cast</em> and <em>Learn</em> appear as options in the right pane when the player clicks on the object. It is going to look like this:</p>
+
+<p><img src="verbs.png" alt="" title="verbs.png"></p>
+
+<p>First, I suggest that you untick &quot;Automatically generate object display verbs list&quot; on the Room Descriptions tab of the game object, so other verbs are not there. We do not want the play clicking on &quot;Drop&quot; for our fireball spell.</p>
+
+<p>Go to your type object, and the attributes section. Add a new attribute &quot;displayverbs&quot; (you need to get that exactly right, all lower case, no spaces); set it to be a string list, and add &quot;Learn&quot; to it. Then add another attribute &quot;inventoryverbs&quot; (again, needs to be exact); set it to be a string list, and add &quot;Cast&quot; to it. Should look like this:</p>
+
+<p><img src="verbs_for_type.png" alt="" title="verbs_for_type.png"></p>
+
+<p>In Quest, an inventory verb is a command for an object the player is holding (in our example, <em>cast</em>), while a display verb is a command for an object the player can see, but is not holding (such as <em>learn</em>).</p>
+
+<p>This is what the code for our type will now look like:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;type name=&quot;spell&quot;&gt;
+    &lt;displayverbs type=&quot;stringlist&quot;&gt;
+      &lt;value&gt;Learn&lt;/value&gt;
+    &lt;/displayverbs&gt;
+    &lt;inventoryverbs type=&quot;stringlist&quot;&gt;
+      &lt;value&gt;Cast&lt;/value&gt;
+    &lt;/inventoryverbs&gt;
+    &lt;learn type=&quot;script&quot;&gt;
+      if (not this.parent = game.pov) {
+        this.parent = game.pov
+        msg (&quot;How about that? You can now cast &quot; + this.alias + &quot;.&quot;)
+      }
+      else {
+        msg (&quot;Er, you already know that one!&quot;)
+      }
+    &lt;/learn&gt;
+  &lt;/type&gt;
+</code></pre></div>
+<p>By the way, if you pick up the spell book, the verb for the spells becomes <em>Cast</em>, even though you still have to learn them, which is a problem for a release game, but good enough here where I am just showing how these things work. See the downloads at the end of the <a href="using_types_and_tabs__advanced_.html">Using Types and Tabs (Advanced)</a> to see this resolved.</p>
+
+<h2>A Note About Attributes</h2>
+
+<p>Generally attributes that can be set on an object can be set just the same on a type. However, there are a couple of exceptions to this.</p>
+
+<p>It is also worth noting that attributes on types are not mutable - they cannot be changed. You might never notice this, because if you have an object and you attempt to assign a value to an attribute that is set in the object&#39;s type, it works fine, because when you assign it the attribute stops being on the type, and is not on the object. The problem only arises if you try to change a list or dictionary (see also <a href="../notes.html">Notes</a>).</p>
+
+<p>Quest sometimes uses &quot;implied&quot; values to determine the type of an attribute. This works fine for objects but not for types. This seems not to be used in Quest 5.4, but in earlier versions &quot;displayverbs&quot; and &quot;inventoryverbs&quot; were like this.</p>
+
+<h2>The Complete Example</h2>
+
+<p>This is the finished code from the above, which you can paste into Quest (in code mode), to see it all in action. Now updated for Quest 5.4.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;asl version=&quot;540&quot;&gt;
+  &lt;include ref=&quot;English.aslx&quot; /&gt;
+  &lt;include ref=&quot;Core.aslx&quot; /&gt;
+  &lt;game name=&quot;SpellDemo&quot;&gt;
+    &lt;gameid&gt;9b1b2320-14a1-4ae7-903c-5dd29b2c66ff&lt;/gameid&gt;
+    &lt;version&gt;1.1&lt;/version&gt;
+    &lt;autodisplayverbs type=&quot;boolean&quot;&gt;false&lt;/autodisplayverbs&gt;
+  &lt;/game&gt;
+  &lt;object name=&quot;room&quot;&gt;
+    &lt;inherit name=&quot;editor_room&quot; /&gt;
+    &lt;object name=&quot;player&quot;&gt;
+      &lt;inherit name=&quot;defaultplayer&quot; /&gt;
+      &lt;object name=&quot;aura_spell&quot;&gt;
+        &lt;inherit name=&quot;editor_object&quot; /&gt;
+        &lt;inherit name=&quot;spell&quot; /&gt;
+        &lt;alias&gt;Aura&lt;/alias&gt;
+        &lt;cast type=&quot;script&quot;&gt;
+          msg (&quot;You say &#39;&quot; + this.alias + &quot;.&#39;&quot;)
+        &lt;/cast&gt;
+      &lt;/object&gt;
+    &lt;/object&gt;
+    &lt;object name=&quot;spellbook&quot;&gt;
+      &lt;inherit name=&quot;editor_object&quot; /&gt;
+      &lt;inherit name=&quot;container_open&quot; /&gt;
+      &lt;open /&gt;
+      &lt;close /&gt;
+      &lt;transparent type=&quot;boolean&quot;&gt;false&lt;/transparent&gt;
+      &lt;hidechildren /&gt;
+      &lt;isopen type=&quot;boolean&quot;&gt;false&lt;/isopen&gt;
+      &lt;listchildren /&gt;
+      &lt;listchildrenprefix&gt;It contains&lt;/listchildrenprefix&gt;
+      &lt;object name=&quot;fireball_spell&quot;&gt;
+        &lt;inherit name=&quot;editor_object&quot; /&gt;
+        &lt;inherit name=&quot;spell&quot; /&gt;
+        &lt;alias&gt;Fireball&lt;/alias&gt;
+        &lt;cast type=&quot;script&quot;&gt;
+          msg (&quot;You say &#39;&quot; + this.alias + &quot; and a ball of fire shoots off.. somewhere.&#39;&quot;)
+        &lt;/cast&gt;
+      &lt;/object&gt;
+    &lt;/object&gt;
+  &lt;/object&gt;
+  &lt;verb&gt;
+    &lt;property&gt;learn&lt;/property&gt;
+    &lt;pattern&gt;learn&lt;/pattern&gt;
+    &lt;defaultexpression&gt;&quot;You can&#39;t learn &quot; + object.article + &quot;.&quot;&lt;/defaultexpression&gt;
+  &lt;/verb&gt;
+  &lt;verb&gt;
+    &lt;property&gt;cast&lt;/property&gt;
+    &lt;pattern&gt;cast&lt;/pattern&gt;
+    &lt;defaultexpression&gt;&quot;You can&#39;t cast &quot; + object.article + &quot;.&quot;&lt;/defaultexpression&gt;
+  &lt;/verb&gt;
+  &lt;type name=&quot;spell&quot;&gt;
+    &lt;displayverbs type=&quot;stringlist&quot;&gt;
+      &lt;value&gt;Learn&lt;/value&gt;
+    &lt;/displayverbs&gt;
+    &lt;inventoryverbs type=&quot;stringlist&quot;&gt;
+      &lt;value&gt;Cast&lt;/value&gt;
+    &lt;/inventoryverbs&gt;
+    &lt;learn type=&quot;script&quot;&gt;
+      if (not this.parent = game.pov) {
+        this.parent = game.pov
+        msg (&quot;How about that? You can now cast &quot; + this.alias + &quot;.&quot;)
+      }
+      else {
+        msg (&quot;Er, you already know that one!&quot;)
+      }
+    &lt;/learn&gt;
+  &lt;/type&gt;
+  &lt;function name=&quot;TestFunction&quot; parameters=&quot;obj&quot; type=&quot;boolean&quot;&gt;
+    return (DoesInherit (obj, &quot;spell&quot;))
+  &lt;/function&gt;
+  &lt;/asl&gt;
+</code></pre></div>
+<p>If you are feeling brave, you might like to see this extended on <a href="simple_combat_system__advanced_.html">this page</a></p>
+
+    </div>
+  </body>
+</html>

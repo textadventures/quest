@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>switch</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>switch</h1>
+      <div class="highlight"><pre><code class="text language-text" data-lang="text">switch (any type value) { case (any type value) { script } [ default { script } ] }
+</code></pre></div>
+<p>Switch is used with one or more <em>case</em> statements and an optional <em>default</em> statement. It is used to test a variable or object attribute against 2 or more possible values, it is used as a shortcut instead of writing many <em>if</em> statements. The switch statement identifies the variable or attribute to be tested e.g. <em>switch (</em><em>object.name</em><em>)</em>. We can then code for the various possible values for ‘<strong>object.name</strong>’ with &#39;&#39;case(“value”) {<strong>script}</strong> &#39;&#39;statement sets.</p>
+
+<p>If several values should cause the same action we can use this values in on case separated by commas:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> case ( 1, 2 )
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> case(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;)
+</code></pre></div>
+<p>If we need to handle the situation where no match is found by any of our <em>case</em> statements we can use the optional <em>default {</em><em>script</em><em>}</em> statement to end the switch block.</p>
+
+<p>&#39;&#39;Example: &#39;&#39;We want to respond differently to the <em>say #text#</em> command (See tutorial <a href="../tutorial/custom_commands.html">custom commands</a>) so that the response is dependent on what the user has typed.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> switch (text) {
+  case (&quot;hello&quot;) {
+    msg (&quot;You say hello and hear the echo... hello, ...hello, ...hello&quot;)
+  }
+  case (&quot;help&quot;, &quot;hint&quot;) {
+    msg (&quot;You say help me please!&quot;)
+  }
+  default {
+    msg (&quot;You say &#39;&quot; + text + &quot;&#39; but no one hears you&quot;)
+  }
+ } 
+</code></pre></div>
+    </div>
+  </body>
+</html>

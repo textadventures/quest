@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Undo support</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Undo support</h1>
+      <p>Every change to an attribute is internally logged, which makes it easy to go backwards and undo changes on a turn-by-turn basis.</p>
+
+<p>Core.aslx defines the &quot;undo&quot; command, which simply calls the script command &quot;undo&quot;. This gives the player unlimited access to the &quot;undo&quot; command, but you could override this in your own games to set certain conditions for undoing. Perhaps you would disable undo in certain locations by setting a certain attribute in the player&#39;s parent room, or maybe you would set a limit on the number of times the command can be called. Any of this is easily achievable by creating the appropriate script around the &quot;undo&quot; command.</p>
+
+<p>Every turn happens in the context of a <strong>transaction</strong>. When a turn begins, the previous transaction (if any) is finished and a new one is completed. &quot;Undo&quot; works by reversing the changes made in each transaction, so it will go back one turn at a time.</p>
+
+<p>If your game uses timers, &quot;undo&quot; will also affect changes made during a timer script. When a timer script runs, any changes are appended to the latest turn&#39;s transaction. This means that if the player types &quot;undo&quot;, all of the changes are reverted, so the effect is to &quot;travel back in time&quot; to the point at which the player originally entered the command.</p>
+
+<p>For example, if at time &quot;t1&quot;, the player types &quot;take thing&quot;, then the &quot;thing&quot; object is moved to the inventory. 10 seconds later, a timer fires, and &quot;thing&quot; explodes. Now if they player types &quot;undo&quot;, they&#39;re back at time &quot;t1&quot; again - the &quot;thing&quot; object is unexploded, and it&#39;s not in the inventory any more.</p>
+
+    </div>
+  </body>
+</html>

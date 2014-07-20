@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<library>
+
+
+
+  <!--
+  Title: ConvLib
+  Version: 1.1
+  Author: The Pixie
+  Requires: PrintLib, StringLib, UtilLib
+
+  A selection of functions, commands and types for interactive characters.
+
+  Version 1.1
+  topics are now flagged as scenery, so will not appear if you set the character to be a container.
+  -->
+
+
+
+  <!--
+
+  Conversations
+
+  Charcters must inherit the "talkingchar" type.
+
+  Add topic objects to a character.
+
+  * Set an alias
+  * Set them to the type "topic" or "startingtopic", the latter will be visible from the start.
+  * Give it a script called talk; this is run when the character is asked about the topic.
+  * The topic will automatically disappear once the player has seen it. Set hideafter to false to
+    stop this happening automatically (call the "hide" script to do it yourself).
+  * The count attribute notes how many times the character has been asked about this topic previously
+    (so is zero the first time).
+  * If you want new topics to be available after reading this one, put the names of the new topics in
+    the shownow list.
+
+  -->
+<!-- ========================================================================= -->
+<!-- Struct -->
+
+
+  <object name="conv_struct">
+    <library_comment>ConvLib by Pixie, V1.0</library_comment>
+  </object>
+
+
+<!-- ========================================================================= -->
+<!-- Templates-->
+
+  <!-- Dynamic templates are easier to override  -->
+  <dynamictemplate name="NothingToTalkAbout">"You don't really have anything to say to " + object.alias + " right now."</dynamictemplate>
+
+
+
+
+
+<!-- ========================================================================= -->
+<!-- Types/scripts -->
+
+
+
+
+  <type name="talkingchar">
+    <state type="int">0</state>
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
+    <nevermet />
+
+    <speak type="script">
+      if (this.alias = null) error ("ERROR: Trying to have conversation with talkingchar with no alias: " + this.name)
+      ol = NewObjectList ()
+      sl = NewStringList ()
+      foreach (obj, GetDirectChildren (this)) {
+        if (DoesInherit (obj, "topic") and GetBoolean (obj, "display")) {
+          if (obj.alias = null) error ("ERROR: Found topic with no alias: " + obj.name)
+          list add (ol, obj)
+          list add (sl, obj.alias)
+        }
+      }
+      if (not ListCount (sl) = 0) {
+        show menu ("Talk to " + this.alias + " about...", sl, true) {
+          if (not result = null) {
+            this.path_pause_once = true
+            if (this.nevermet) {
+              if (HasScript (this, "greet")) {
+                do (this, "greet")
+              }
+              this.nevermet = false
+            }
+            foreach (obj, ol) {
+              if (obj.alias = result) {
+                do (obj, "topictalk")
+              }
+            }
+          }
+        }
+      }
+      else {
+        msg (DynamicTemplate("NothingToTalkAbout", this))
+      }
+    </speak>
+  </type>
+
+
+  <type name="topic">
+    <count type="int">0</count>
+    <display type="boolean">false</display>
+    <hidden type="boolean">false</hidden>
+    <scenery type="boolean">true</scenery>
+    <hideafter type="boolean">true</hideafter>
+    <nowshow type="stringlist"></nowshow>
+    <show type="script">
+      if (not this.hidden) this.display = true
+    </show>
+    <hide type="script">
+      this.display = false
+      this.hidden = true
+    </hide>
+    <topictalk type="script">
+      do (this, "talk")
+      if (this.count = 0) {
+        foreach (t, this.nowshow) {
+          if (not t = "") {
+            to = GetObject (t)
+            if (to = null) error ("ERROR: Failed to find conversation topic \"" + t + "\" for " + this.name)
+            to.display = true
+          }
+        }
+      }
+      if (this.hideafter) {
+        do (this, "hide")
+      }
+      this.count = this.count + 1
+    </topictalk>
+  </type>
+
+
+  <type name="startingtopic">
+    <inherit name="topic" />
+    <display type="boolean">true</display>
+  </type>
+
+
+
+
+  <!-- Interface -->
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Conversation</caption>
+    <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Type</caption>
+      <types>*=None; talkingchar=Character; topic=Conversation Topic; startingtopic=Starting Conversation Topic</types>
+      <width>150</width>
+    </control>
+
+    <control>
+      <caption>Automatically hide after showing</caption>
+      <controltype>checkbox</controltype>
+      <attribute>hideafter</attribute>
+      <width>200</width>
+      <mustinherit>topic</mustinherit>
+    </control>
+
+    <control>
+      <caption>Show these after showing for the first time (must be the name, not the alias)</caption>
+      <controltype>list</controltype>
+      <attribute>nowshow</attribute>
+      <width>200</width>
+      <mustinherit>topic</mustinherit>
+    </control>
+
+    <control>
+      <caption>Run this script</caption>
+      <controltype>script</controltype>
+      <attribute>talk</attribute>
+      <mustinherit>topic</mustinherit>
+    </control>
+
+    <control>
+      <caption>Run this greeting script</caption>
+      <controltype>script</controltype>
+      <attribute>greet</attribute>
+      <mustinherit>talkingchar</mustinherit>
+    </control>
+  </tab>
+
+
+</library>

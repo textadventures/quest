@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>command element</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>command element</h1>
+      <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;commandoptional name=&quot;name&quot;optional pattern=&quot;pattern&quot;optional unresolved=&quot;unresolved text&quot;optional template=&quot;template name&quot;&gt;script&lt;/command&gt;
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;commandoptional name=&quot;name&quot;&gt;attributes&lt;/command&gt;
+</code></pre></div>
+<p>Creates a command. There are two syntaxes - one syntax lets you specify a pattern, some text to display when an object is unresolved, and the script to run. The second syntax is more open and flexible, and lets you specify everything by directly setting the attributes of the command object. The second syntax is preferred, although the first may be more concise.</p>
+
+<p>All commands automatically inherit a &quot;defaultcommand&quot; type if it exists.</p>
+
+<h2>Name</h2>
+
+<p>If a name is not specified, a unique name will be created. Using the first syntax allows Quest to try and create a user-friendly name by taking the first word(s) of the specified pattern; otherwise the name will be something like &quot;k1&quot;. I recommend you always specify a name, as it will make debugging easier - the Debugger will show you a sensible name for your command. It will also let you easily change the behaviour of the command by setting its attributes when the game is in progress.</p>
+
+<h2>Pattern</h2>
+
+<p>The &quot;pattern&quot; attribute of a command is a string - the regular expression that triggers the command. You can use friendlier syntax with type=&quot;simplepattern&quot;, which in Core.aslx is set as the implied type for a command &quot;pattern&quot; attribute, so you don&#39;t need to specify it. This will convert friendly syntax such as &quot;look at #object#&quot; into a regular expression. If you want to specify a regex yourself, you need to explicitly set type=&quot;string&quot;.</p>
+
+<h2>Unresolved</h2>
+
+<p>The &quot;unresolved&quot; attribute is the text to print if the user enters the name of an object which is not in the current visible scope.</p>
+
+<h2>Template</h2>
+
+<p>The &quot;template&quot; attribute specifies the command pattern to use, if the command pattern is defined by a <a href="verbtemplate_element.html">verbtemplate</a>.</p>
+
+<h2>Multiple</h2>
+
+<p>To handle &quot;take all&quot; and &quot;drop all&quot;, the &quot;take&quot; and &quot;drop&quot; commands have a &quot;multiple&quot; attribute. This is of implied delegate type AssociatedScope, which means that the &quot;multiple&quot; attribute is a function which returns an <a href="../types/objectlist.html">objectlist</a>.</p>
+
+<p>This means that the &quot;all&quot; can refer to different things - for &quot;take all&quot;, the &quot;all&quot; refers to the non-scenery objects in the current room. For &quot;drop all&quot;, the &quot;all&quot; refers to objects in the player&#39;s inventory.</p>
+
+    </div>
+  </body>
+</html>

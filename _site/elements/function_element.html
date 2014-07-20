@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>function element</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>function element</h1>
+      <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;function name=&quot;name&quot;optional type=&quot;type&quot;optional parameters=&quot;parameters&quot;&gt;script&lt;/function&gt;
+</code></pre></div>
+<p>Creates a function.</p>
+
+<p>If no type is specified, the function does not return a value.</p>
+
+<p>If the function does return a value, the type should be one of the valid <a href="../attribute_types.html">Attribute Types</a>. Return a value within the function using the <a href="../scripts/return.html">return</a> command.</p>
+
+<p>If the function takes parameters, the parameters should be specified as a comma-delimited list.</p>
+
+<p>For example:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">&amp;lt;function name=&quot;FormatObjectList&quot; type=&quot;string&quot; parameters=&quot;preList, parent, preFinal, postList&quot;&amp;gt;
+&lt;pre&gt;  ...
+</code></pre></div>
+<p>&lt;/function&gt;</p>
+
+<p></pre></p>
+
+<h3>The attributes of a function</h3>
+
+<p><strong>name:</strong> This is the name of the function. Every function must have name, and that is the name you use to invoke the function in some other script.</p>
+
+<p><strong>parameters:</strong> These are the values (if any) passed into the function. You give them names, and when the function is called, those parameters must be set by giving values in the function call (e.g. MyFunction(a, b) ). The values are mapped to the parameters in the order they are given. If your function does not take input parameters, then you can omit this or leave it as an empty string.</p>
+
+<p><strong>type:</strong> This is the return type of the function (the value passed out), if the function returns a value. Some functions do, and some don&#39;t. If you use a &quot;<a href="../scripts/return.html">return</a>&quot; statement in your function to send a value back to the caller, then you need to specify the return type, so that Quest knows what type the function is expected to return. If your function does not return a value, then you can omit this or leave it an empty string.</p>
+
+<p>Quest will object if there is a return statement, but no type specified; or if there is a type specified, but no return statement.</p>
+
+<h3>A Working Example</h3>
+
+<p>Here is a trivial example. It&#39;s a function to concatenate two strings and return the result. Clearly, you don&#39;t need this function (since you can just use the &quot;+&quot; yourself), but hopefully it illustrates how functions are set up.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;function name=&quot;ConcatStrings&quot; parameters=&quot;s1, s2&quot; type=&quot;string&quot;&gt;
+      return (s1 + s2)
+    &lt;/function&gt;
+</code></pre></div>
+<p>This basically says, &quot;We have a function called &#39;ConcatStrings&#39;, it takes two input parameters, which we will call &#39;s1&#39; and &#39;s2&#39; inside the function, and the function returns a string value.&quot;</p>
+
+<p>The function would be invoked as:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    s = ConcatStrings(&quot;Mama &quot;, &quot;Mia&quot;)
+</code></pre></div>
+<p>The resulting &quot;s&quot; would be &quot;Mama Mia&quot;</p>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Types</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Types</h1>
+      <h2>Overview</h2>
+
+<p>&quot;Types&quot; let you share sets of attributes between objects. Instead of copying the attributes to the object, the object just references the underlying the type if it doesn&#39;t have its own override for a attribute.</p>
+
+<p>You can view all the attributes of an object using the Debugger, which is accessed via the Tools menu. Attributes from an inherited type are shown in grey.</p>
+
+<p><img src="Debugger.png" alt="" title="Debugger.png"></p>
+
+<p>Types are defined using a <a href="elements/type_element.html"><type> element</a>, and attributes are defined in the same way as for an object. Objects and types can both inherit from other types using an <inherit> tag.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;type name=&quot;food&quot;&gt;
+    &lt;health type=&quot;int&quot;&gt;0&lt;/health&gt;
+    &lt;eat&gt;It looks tasty, but you&#39;re not hungry right now.&lt;/eat&gt;
+  &lt;/type&gt;
+
+  &lt;type name=&quot;fruit&quot;&gt;
+    &lt;inherit name=&quot;food&quot;/&gt;
+    &lt;health&gt;10&lt;/health&gt;
+  &lt;/type&gt;
+</code></pre></div>
+<h2>Default behaviour</h2>
+
+<p>If the ASLX defines a type called &quot;<a href="attributes/defaultobject.html">defaultobject</a>&quot;, then it is applied to all objects – there is no need to specifically inherit from this type. <a href="core.aslx.html">Core.aslx</a> uses this to define the default behaviour for objects:</p>
+
+<ul>
+<li>  The <a href="attributes/displayverbs.html">displayverbs</a> and <a href="attributes/inventoryverbs.html">inventoryverbs</a> attributes are defaulted to give the standard buttons on the panes on the right-hand side of the Quest screen (&quot;Look at&quot;, &quot;Take&quot; and &quot;Speak to&quot; for the objects list, and &quot;Look at&quot;, &quot;Use&quot; and &quot;Drop&quot; for the inventory list)</li>
+<li>  All objects are droppable by default</li>
+<li>  The neutral <a href="attributes/gender.html">gender</a> and <a href="attributes/article.html">article</a> (&quot;it&quot;) are set</li>
+<li>  Default container attributes are set – by default the object is not a container, cannot be opened or closed, etc. This is just for convenience really – if we didn’t set these in the default type, then attributes such as &quot;isopen&quot; would default to null instead of false, which would make the container logic messier.</li>
+</ul>
+
+<p>See also <a href="tutorial/using_inherited_types.html">Using inherited types</a> in the tutorial.</p>
+
+    </div>
+  </body>
+</html>

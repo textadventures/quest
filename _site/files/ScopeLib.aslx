@@ -1,0 +1,68 @@
+<library>
+
+  <!--
+  Handles commands that use an unusual scope. Parameters:
+  script       A string that gives the name of the script to call on the object
+  scope        An object list from which to get objects
+  text         The text variable from command
+  noobject     A string to display if no object is found
+  noscript     A string to display if the object is found, but it does not have the named script
+  
+  NOTE: Limited to single items
+  
+  -->
+
+  <function name="ProcessScopeCommand" parameters="script, scope, text, noobject, noscript"><![CDATA[
+    value = Trim (LCase (text))
+    fullmatches = NewObjectList()
+    partialmatches = NewObjectList()
+    foreach (obj, scope) {
+      name = LCase(GetDisplayAlias(obj))
+      CompareNames (name, value, obj, fullmatches, partialmatches)
+      if (obj.alt <> null) {
+        foreach (altname, obj.alt) {
+          CompareNames (LCase(altname), value, obj, fullmatches, partialmatches)
+        }
+      }
+    }
+    if (game.lastobjects <> null) {
+      foreach (obj, game.lastobjects) {
+        CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
+        CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
+      }
+    }
+    if (ListCount(fullmatches) = 1) {
+      game.scopecommandpending = ListItem(fullmatches, 0)
+    }
+    else if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 1) {
+      game.scopecommandpending = ListItem(partialmatches, 0)
+    }
+    else if (ListCount(fullmatches) + ListCount(partialmatches) = 0) {
+      game.scopecommandpending = null
+    }
+    else {
+      menu = NewStringDictionary()
+      GenerateMenuChoices (menu, fullmatches)
+      GenerateMenuChoices (menu, partialmatches)
+      show menu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
+        if (result <> null) {
+         game.scopecommandpending = GetObject(result)
+        }
+        else {
+          game.scopecommandpending = null
+        }
+      }
+    }
+    on ready {
+      if (game.scopecommandpending = null) {
+        msg (noobject)
+      }
+      else if (not HasScript (game.scopecommandpending, script)) {
+        msg (noscript)
+      }
+      else {
+        do (game.scopecommandpending, script)
+      }
+    }
+  ]]></function>
+</library>

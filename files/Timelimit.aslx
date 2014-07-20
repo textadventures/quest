@@ -1,0 +1,45 @@
+<!--Saved by Quest 5.1.4426.19610-->
+<asl version="510">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="timelimit">
+    <gameid>28c28b45-df74-4d58-99e8-9d6a90bd08af</gameid>
+    <version>1.0</version>
+    <description type="string"></description>
+    <author>Alex</author>
+    <category>Educational</category>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="cupboard">
+      <inherit name="editor_object" />
+      <inherit name="container_open" />
+      <isopen type="boolean">false</isopen>
+      <onopen type="script">
+        msg ("You have surprosed a sleeping alien! You appear to be deliciouse to him.")
+        SetTimeout (10) {
+          if (ListContains(ScopeVisible(), alien)) {
+            msg ("The alien eats you.")
+            finish
+          }
+        }
+      </onopen>
+      <object name="alien">
+        <inherit name="editor_object" />
+      </object>
+    </object>
+    <object name="flame thrower">
+      <inherit name="editor_object" />
+      <take />
+      <selfuseon type="scriptdictionary">
+        <item key="alien">
+          msg ("The alien explodes in a huge fireball.")
+          RemoveObject (alien)
+        </item>
+      </selfuseon>
+    </object>
+  </object>
+</asl>

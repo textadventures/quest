@@ -1,0 +1,92 @@
+<!--Saved by Quest 5.2.4515.34846-->
+<asl version="520">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <include ref="LiftLib.aslx" />
+  <game name="lift">
+    <gameid>3e40b0d8-936e-43cd-8c16-bccc58dc85b3</gameid>
+    <version>1.0</version>
+  </game>
+  <object name="room1">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="north" to="lift">
+      <inherit name="northdirection" />
+      <inherit name="liftentrance" />
+    </exit>
+    <exit alias="up" to="room2">
+      <inherit name="updirection" />
+    </exit>
+  </object>
+  <object name="room2">
+    <inherit name="editor_room" />
+    <exit alias="north" to="lift">
+      <inherit name="northdirection" />
+      <inherit name="liftentrance" />
+    </exit>
+    <exit alias="up" to="room3">
+      <inherit name="updirection" />
+    </exit>
+    <exit alias="down" to="room1">
+      <inherit name="downdirection" />
+    </exit>
+  </object>
+  <object name="room3">
+    <inherit name="editor_room" />
+    <exit alias="north" to="lift">
+      <inherit name="northdirection" />
+      <inherit name="liftentrance" />
+    </exit>
+    <exit alias="down" to="room2">
+      <inherit name="downdirection" />
+    </exit>
+  </object>
+  <object name="lift">
+    <inherit name="editor_room" />
+    <inherit name="liftroom" />
+    <samefloor>You press the button for floor ###, but nothing happens. Perhaps because you are already on floor ###.</samefloor>
+    <goingup>You press the button for floor ###. The lift doors closed, and with a slight jolt the lift moves up to floor ###.</goingup>
+    <goingdown>You press the button for floor ###. The lift doors closed, and with a slight jolt the lift moves down to floor ###.</goingdown>
+    <object name="button1">
+      <inherit name="editor_object" />
+      <inherit name="liftbutton" />
+      <alias>Button 1</alias>
+      <floor type="int">1</floor>
+      <to type="object">room1</to>
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+    </object>
+    <object name="button2">
+      <inherit name="editor_object" />
+      <inherit name="liftbutton" />
+      <alias>Button 2</alias>
+      <floor type="int">2</floor>
+      <to type="object">room2</to>
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+    </object>
+    <object name="button3">
+      <inherit name="editor_object" />
+      <inherit name="liftbutton" />
+      <alias>Button 3</alias>
+      <floor type="int">3</floor>
+      <to type="object">room3</to>
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+    </object>
+    <exit alias="south" to="room1">
+      <inherit name="southdirection" />
+    </exit>
+  </object>
+  <walkthrough name="test">
+    <steps type="list">
+      n
+      press button 1
+      press 2
+      s
+      u
+      n
+      press 1
+      s
+    </steps>
+  </walkthrough>
+</asl>

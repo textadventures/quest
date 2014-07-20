@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Implementing components of an object</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Implementing components of an object</h1>
+      <p>Occasionally with an object in an adventure you would like the player to be able to interact with a component of it, for example, a machine with a button on it. The player has to be able to press the button. If the machine cannot be moved, you can just have the button as scenery in the room, but what do we do for objects that can be carried around?</p>
+
+<p>Quest actually has this facility built-in, though it may not be obvious.</p>
+
+<p>Create you object first, let us say it is called &quot;machine&quot;. Create the component, &quot;button&quot;, as a child of that object (right click on machine, select &quot;Add object&quot;; alternatively you can drag an object on to another). In the object hierarchy it should look like this on the left.</p>
+
+<p><img src="component.png" alt="" title="component.png"></p>
+
+<p>The master object, in this case &quot;machine&quot; has to be set up as a type of container called a surface, as shown above. The component, you can have as many as you need, should be set up as scenery.</p>
+
+<p>That is all there is too it.</p>
+
+<p>Here is a brief example in code showing how pressing the button turns the machine on.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;asl version=&quot;520&quot;&gt;
+      &lt;include ref=&quot;English.aslx&quot; /&gt;
+      &lt;include ref=&quot;Core.aslx&quot; /&gt;
+      &lt;game name=&quot;components&quot;&gt;
+        &lt;gameid&gt;2a1ea913-dcf9-4af0-9390-5d78e8931971&lt;/gameid&gt;
+        &lt;version&gt;1.0&lt;/version&gt;
+      &lt;/game&gt;
+      &lt;object name=&quot;room&quot;&gt;
+        &lt;inherit name=&quot;editor_room&quot; /&gt;
+        &lt;object name=&quot;player&quot;&gt;
+          &lt;inherit name=&quot;defaultplayer&quot; /&gt;
+        &lt;/object&gt;
+        &lt;object name=&quot;machine&quot;&gt;
+          &lt;inherit name=&quot;editor_object&quot; /&gt;
+          &lt;inherit name=&quot;surface&quot; /&gt;
+          &lt;look type=&quot;script&quot;&gt;
+            if (GetBoolean (machine, &quot;switchedon&quot;)) {
+              msg (&quot;A big mechanism, humming with power and slightly warm, with a button on the side.&quot;)
+            }
+            else {
+              msg (&quot;A big mechanism, with a button on the side.&quot;)
+            }
+          &lt;/look&gt;
+          &lt;take /&gt;
+          &lt;object name=&quot;button&quot;&gt;
+            &lt;inherit name=&quot;editor_object&quot; /&gt;
+            &lt;scenery /&gt;
+            &lt;look&gt;A big red button.&lt;/look&gt;
+            &lt;press type=&quot;script&quot;&gt;
+              msg (&quot;The machine starts to hum; it feels distictly warm.&quot;)
+              machine.switchedon = True
+            &lt;/press&gt;
+          &lt;/object&gt;
+        &lt;/object&gt;
+      &lt;/object&gt;
+      &lt;verb&gt;
+        &lt;property&gt;press&lt;/property&gt;
+        &lt;pattern&gt;press;push&lt;/pattern&gt;
+        &lt;defaultexpression&gt;&quot;You can&#39;t press;push &quot; + object.article + &quot;.&quot;&lt;/defaultexpression&gt;
+      &lt;/verb&gt;
+      &lt;walkthrough name=&quot;test&quot;&gt;
+        &lt;steps type=&quot;list&quot;&gt;
+          x machine
+          x button
+          press button
+          x machine
+        &lt;/steps&gt;
+      &lt;/walkthrough&gt;
+    &lt;/asl&gt;
+</code></pre></div>
+    </div>
+  </body>
+</html>

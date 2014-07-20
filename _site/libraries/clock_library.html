@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clock Library</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Clock Library</h1>
+      <p>A relatively easy way to track and display time in a Quest adventure.</p>
+
+<p>Contributed by: <span class="author">The Pixie</span></p>
+
+<p>You are free to use this library in your own games, without crediting me, as long as the library is not modified. If you do want to modify the library, then you are free to do so, but please keep some attribution to me with it, at a minimum as a comment in the XML.</p>
+
+<h4>To use</h4>
+
+<p>Time is incremented whenever the player takes a turn, starting from midnight on day 1. By default, moving to another room will take 5 minutes, any other action will take 1 minute. If the player types “clock” she will discover the time.</p>
+
+<p>What you can also do:</p>
+
+<p>Set the start time<br>
+In the game.start script, call IncTime to set the time in game starts in minutes past midnight.</p>
+
+<p>Have the time displayed as a status variable<br>
+Add the attribute “clock” to the player, and set it to string. Then add it as a status variable. It will automatically track the time.</p>
+
+<p>Have long distance exits<br>
+You can change the time that passes when a specific exit is used by calling the LongExit function. Call the function in a script on the exit, with the parameters, this, and the time to elapse.</p>
+
+<!-- -->
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;exit alias=”north” to=”distance_room”&gt;
+   &lt;inherit name=”northdirection” /&gt;
+   &lt;script type=”script”&gt;
+     LongExit (this, 45)
+   &lt;/script&gt;
+ &lt;/exit&gt;
+</code></pre></div>
+<p>Have exits open at different times<br>
+You can also have exits that can only be used at certain times (say for a shop only open during the day). There is not a lot of control over this. The day is divided into six hour slots, and you can specify which are open with the third parameter to the BusinessExit function. This should be a 4 character string, each character corresponding to a six hour slot, n indicates not open, y indicates yes it is.</p>
+
+<!-- -->
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;exit alias=”west” to=”business_room”&gt;
+   &lt;inherit name=”westdirection” /&gt;
+   &lt;script type=”script”&gt;
+     BusinessExit (this, 5, “nynn”)
+   &lt;/script&gt;
+ &lt;/exit&gt;
+</code></pre></div>
+<p><a href="http://quest5.net/downloads/clock.zip">Download</a>
+<a href="http://www.axeuk.com/phpBB3/viewtopic.php?f=10&amp;t=2580">Discussion</a></p>
+
+<h4>Functions</h4>
+
+<p>In addition, there are a number of functions available that will hopefully make life easier.</p>
+
+<p>BusinessExit (<strong>object</strong> <em>exit</em>, <strong>integer</strong> <em>time</em>, <strong>string</strong> <em>opening</em>)</p>
+
+<p>Moves the player to the destination of the <em>exit</em>, incrementing time by <em>time</em>, if the exit is open, using the logic of IsBusinessClosed.</p>
+
+<p>GetTime</p>
+
+<p><em>Returns:</em>Get the current time, in minutes, as an integer</p>
+
+<p>IncTime (<strong>integer</strong> <em>increment</em>)</p>
+
+<p>Adds the increment to the current time.</p>
+
+<p>IsAfternoon</p>
+
+<p><em>Returns:</em>A boolean, true if the time is between 1200 and 1800.</p>
+
+<p>IsBusinessClosed (<strong>string</strong> <em>opening</em>)</p>
+
+<p><em>Returns:</em>A boolean, true if the current time is when the business is open. The business opening times are determined by the string, which should be four characters long, and made up on &quot;y&quot; and &quot;n&quot;, indicating whether the business is open during each quarter of the day.</p>
+
+<p>IsDusk</p>
+
+<p><em>Returns:</em>A boolean, true if the time is between 1800 and 1900.</p>
+
+<p>IsEvening</p>
+
+<p><em>Returns:</em>A boolean, true if the time is between 1800 and midnight.</p>
+
+<p>IsMorning</p>
+
+<p><em>Returns:</em>A boolean, true if the time is between 0600 and 1200.</p>
+
+<p>IsNight</p>
+
+<p><em>Returns:</em>A boolean, true if the time is between midnight and 0600.</p>
+
+<p>LongEXit (<strong>object</strong> <em>exit</em>, <strong>integer</strong> <em>time</em>)</p>
+
+<p>Moves the player to the destination of the <em>exit</em>, incrementing time by <em>time</em>.</p>
+
+<p>OnEnterRoom</p>
+
+<p>Overrides the existing method, to do all the same thing, but also to increment time by 5 minutes. Be aware that if the original changes, this will need to be updated to reflect that.</p>
+
+<p>PartOfDay</p>
+
+<p><em>Returns:</em>An integer denoting the quartyer of the day for the current time; night is 0, mornihg is 1, afternoon 2 and evening is 3.</p>
+
+<p>TimeAsString</p>
+
+<p><em>Returns:</em>The time as a string, in the form: Day 3, 4:23 pm.</p>
+
+<h4>Player Commands</h4>
+
+<p>clock</p>
+
+<p>Displays the current time.</p>
+
+    </div>
+  </body>
+</html>

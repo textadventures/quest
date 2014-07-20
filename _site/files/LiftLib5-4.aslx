@@ -1,0 +1,247 @@
+<?xml version="1.0"?>
+<library>
+
+  <!--
+  Using this library you can easily implement one or more lifts in your game. Each lift can stop at any number
+  of floors.
+
+  Of course, you could apply this to any transport system that involves pressing a button to get to a destination.
+
+
+  Instructions
+
+  To implement, create a room that will be the lift, and in it put a number of objects that will be buttons. You
+  will obviously need one button per floor. For each floor, create an exit that goes to the lift room (but not the other way),
+  also create a single exit for the lift room (does not matter where to).
+
+  On the lift tab, set all the exits from each floor to the lift to be "Lift Entance" (do not do this for the exit in the lift room).
+  Still on the lift tab, set the buttons to be "Lift Button", assign a floor number and a destination for each.
+  For the lift room itself, set it to be a "Lift", and type in messages the player will see when buttons are pressed.
+  You can use ### in these strings and this will be replaced by the destination name, or "floor n" if not set.
+  
+  The player can then press the button to be taken to the appropriate floor.
+  
+  Alternatively, you could set all the buttons to be scenery, and also put a liftcontrols item in the lift (that is not scenery).
+  If the player uses the controls, he will be presented with a menu of destinations.
+  
+  In either system, you can add new buttons during player to give more options to the player (whether that makes sense in game
+  you have to decide for yourself). It would probably be easy to move a buttyon into the lift, rather than trying to create one
+  on the fly.
+
+
+  Limitations:
+
+  Note that as implemented the player does not have to press a button to call the lift - the lift is automatically
+  at whatever floor the player wants to get on at. You might want to have the lift entrances locked, and require the
+  player to press a button to call the lift, which then unlocks the exit. Have the exit lock when the player goes that way.
+
+  The lift can have only one exit - it will get confused otherwise!
+
+  Do not start the player in the lift!
+
+  Version 1.1
+
+  This version allows floors to have names. You should still set numbers as these are used to determine if the lift
+  is going up or down. You could therefore have floor zero named as ground, and floor -1 as basement. You could also
+  use this to have destinations for a tram (say), but it will still need each destination numbered.
+  
+  Version 1.2
+  
+  This version adds a control panel option, and is compatible with Quest 5.4.
+
+  By The Pixie
+  -->
+
+
+  <object name="lift_struct">
+    <library_comment>LiftLib by Pixie, V1.2</library_comment>
+  </object>
+
+
+  <verb>
+    <property>press</property>
+    <pattern>press;push</pattern>
+    <defaultexpression>"You can't press " + object.article + "."</defaultexpression>
+  </verb>
+  
+  <function name="FloorAlias" parameters="button" type="string">
+    if (HasString (button, "floorname")) {
+      return (GetString (button, "floorname"))
+    }
+    else {
+      return ("floor " + button.floor)
+    }
+  </function>
+
+  <type name="liftroom">
+  </type>
+
+  <type name="liftcontrol">
+      <displayverbs type="stringlist">
+        <value>use</value>
+      </displayverbs>
+    <use type="script">
+      buttons = NewObjectList ()
+      options = NewStringList ()
+      foreach (obj, GetDirectChildren (this.parent)) {
+        if (DoesInherit (obj, "liftbutton")) {
+          list add (buttons, obj)
+          list add (options, FloorAlias (obj))
+        }
+      }
+      //msg ("Found: " + ListCount (buttons))
+      show menu ("Select distination", options, true) {
+        if (not result = null) {
+          //msg ("Selected: " + result)
+          foreach (obj, buttons) {
+            if (result = FloorAlias (obj)) {
+              result_obj = obj
+            }
+          }
+          if (not result_obj = null) {
+            do (result_obj, "press")
+          }
+          else {
+            msg ("ERROR: Failed to find menu option " + result + " in LiftLib/liftcontrol script")
+          }
+        }
+      }
+    </use>
+  </type>
+
+  <type name="liftbutton">
+    <displayverbs type="stringlist">
+      <value>Press</value>
+    </displayverbs>
+    <floor type="int">1</floor>
+    <press type="script">
+      exit = ObjectListItem (ScopeExitsForRoom (this.parent), 0)
+      if (exit.to = this.to) {
+        s = this.parent.samefloor
+      }
+      else {
+        exit.to = this.to
+        if (this.parent.current_floor > this.floor) {
+          s = this.parent.goingdown
+        }
+        else {
+          s = this.parent.goingup
+        }
+        this.parent.current_floor = this.floor
+        if (HasString (this, "firstarrival") and not GetBoolean (this, "been_here")) {
+          s = s + " " + this.firstarrival
+          this.been_here = True
+        }
+        else if (HasString (this, "arrival")) {
+          s = s + " " + this.arrival
+        }
+      }
+      msg (Replace (s, "###", FloorAlias (this)))
+    </press>
+  </type>
+
+  <type name="liftentrance">
+    <runscript />
+    <script type="script">
+      // Grab the exit of the destination (i.e. the lift)
+      exit = ObjectListItem (ScopeExitsForRoom (this.to), 0)
+      // Set the destination of that exit to be the parent of this exit
+      exit.to = game.pov.parent
+      // Move the player to the lift
+      MoveObject (game.pov, this.to)
+      flag = False
+      // Go though all the child objects of the lift
+      foreach (obj, GetDirectChildren (this.to)) {
+        // If it is a lift button
+        if (DoesInherit (obj, "liftbutton")) {
+          // and if it is the button for this floor
+          if (obj.to = this.parent) {
+            // set the current floor of the lift to the floor indicated by the button
+            this.to.current_floor = obj.floor
+            flag = True
+          }
+        }
+      }
+      if (not flag) {
+        msg ("WARNING: Current floor not set in liftentrance/script")
+      }
+    </script>
+  </type>
+
+
+ <!-- =================================================== -->
+  <!-- Tabs -->
+
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Lift</caption>
+    <mustnotinherit>defaultplayer</mustnotinherit>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Type</caption>
+      <types>*=None; liftroom=Lift; liftbutton=Lift Button; liftentrance=Lift Entrance; liftcontrol=Lift Control</types>
+      <width>150</width>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Same floor message</caption>
+      <attribute>samefloor</attribute>
+      <mustinherit>liftroom</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>The going up message</caption>
+      <attribute>goingup</attribute>
+      <mustinherit>liftroom</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>The going down message</caption>
+      <attribute>goingdown</attribute>
+      <mustinherit>liftroom</mustinherit>
+    </control>
+
+
+    <control>
+      <controltype>objects</controltype>
+      <caption>Destination</caption>
+      <attribute>to</attribute>
+      <mustinherit>liftbutton</mustinherit>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Floor</caption>
+      <attribute>floor</attribute>
+      <width>100</width>
+      <mustinherit>liftbutton</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Floor name (optional)</caption>
+      <attribute>floorname</attribute>
+      <width>100</width>
+      <mustinherit>liftbutton</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>The first arrival message (optional)</caption>
+      <attribute>firstarrival</attribute>
+      <mustinherit>liftbutton</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>The arrival message (optional)</caption>
+      <attribute>arrival</attribute>
+      <mustinherit>liftbutton</mustinherit>
+    </control>
+
+  </tab>
+</library>

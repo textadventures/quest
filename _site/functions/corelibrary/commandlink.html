@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CommandLink</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>CommandLink</h1>
+      <div class="highlight"><pre><code class="text language-text" data-lang="text">CommandLink (string command, string link text)
+</code></pre></div>
+<p>Returns a <a href="../../../types/string.html">string</a> containing the XML required to display a hyperlink. When the hyperlink is clicked, the specified player command will be run. For example:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> msg (CommandLink(&quot;undo&quot;, &quot;Click here to undo the previous turn&quot;))
+</code></pre></div>
+<p>outputs a link titled &quot;Click here to undo the previous turn&quot; - when clicked, the &quot;undo&quot; player command is run.</p>
+
+<p>See also: <a href="objectlink.html">ObjectLink</a></p>
+
+    </div>
+  </body>
+</html>

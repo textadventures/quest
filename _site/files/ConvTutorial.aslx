@@ -1,0 +1,91 @@
+<!--Saved by Quest 5.2.4515.34846-->
+<asl version="520">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="Conversation Tutorial">
+    <gameid>0be5c6ce-c7a0-43fb-836c-6ce248a2ef4d</gameid>
+    <version>1.0</version>
+    <turn type="int">0</turn>
+    <statusattributes type="stringdictionary">turn = </statusattributes>
+    <help type="list">There is no help for you!</help>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <usedefaultprefix />
+    <alias>Conversation Testing Room</alias>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="fred">
+      <inherit name="editor_object" />
+      <inherit name="male" />
+      <speak type="script">
+        topics = Split ("Where is key;Who is the Queen;How do I defeat the troll", ";")
+        show menu ("Talk to Fred about...", topics, true) {
+          switch (result) {
+            case ("Where is key") {
+              msg ("'You need to look in the bedroom.'")
+            }
+            case ("Who is the Queen") {
+              msg ("'Just some girl.'")
+            }
+            case ("How do I defeat the troll") {
+              msg ("'Use fire to stop it regenerating.'")
+            }
+          }
+        }
+      </speak>
+    </object>
+    <object name="philippa">
+      <inherit name="editor_object" />
+      <inherit name="female" />
+      <speak type="script">
+        msg ("'Hi,' you say to Philippa, 'can you help me find the key to this door?'")
+        msg ("'You need to look in the bedroom.'")
+      </speak>
+      <ask type="scriptdictionary">
+        <item key="Key lock">
+          if (not that_door.locked) {
+            msg ("'I see you finally managed to unlock the door then,' said Philippa sarcastically.'")
+          }
+          else if (key.parent = player) {
+            msg ("'You found the key then,' said Philippa sarcastically.'")
+          }
+          else if (not GetBoolean (philippa, "key_asked")) {
+            msg ("'Hi,' you say to Philippa, 'can you help me find the key to this door?'")
+            msg ("'Sure, you need to look in the bedroom.'")
+            philippa.key_asked = true
+          }
+          else {
+            msg ("'Hi again,' you say to Philippa, 'can you help me find the key to this door?'")
+            msg ("'Have you tried looking in the bedroom yet?'")
+          }
+        </item>
+      </ask>
+    </object>
+    <exit name="that_door" alias="east" to="secondroom">
+      <inherit name="eastdirection" />
+      <locked />
+    </exit>
+    <object name="key">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+  </object>
+  <turnscript />
+  <object name="secondroom">
+    <inherit name="editor_room" />
+    <exit alias="west" to="room">
+      <inherit name="westdirection" />
+    </exit>
+  </object>
+  <walkthrough name="pip">
+    <steps type="list">
+      talk to philippa
+      ask philippa about key
+      ask philippa about lock
+      talk to fred
+      menu:Where is key
+    </steps>
+  </walkthrough>
+</asl>

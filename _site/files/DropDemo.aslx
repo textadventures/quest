@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!--Saved by Quest 5.2.4515.34846-->
+<asl version="520">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="DropDemo">
+    <gameid>658567d6-bb3b-4336-937b-1aec41c51400</gameid>
+    <version>1.0</version>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <description>The start room. You can see a volcano to the west, a narrow strip of rock extends out over it. To the east is a small park. There is also a tree here.</description>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="west" to="over a volcano">
+      <inherit name="westdirection" />
+    </exit>
+    <exit alias="up" to="up_a_tree">
+      <inherit name="updirection" />
+    </exit>
+    <object name="cup">
+      <inherit name="editor_object" />
+      <take />
+    </object>
+    <exit alias="east" to="park">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+  <object name="up_a_tree">
+    <inherit name="editor_room" />
+    <description>You are up a tree.</description>
+    <drop_destination type="object">room</drop_destination>
+    <exit alias="down" to="room">
+      <inherit name="downdirection" />
+    </exit>
+  </object>
+  <object name="over a volcano">
+    <inherit name="editor_room" />
+    <description>You are stood on a rocky outcrop over a volcano. If you drop something here it is bound to be lost forever!</description>
+    <drop_destination type="object">nowhere</drop_destination>
+    <exit alias="east" to="room">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+  <object name="nowhere">
+    <inherit name="editor_room" />
+  </object>
+  <object name="park">
+    <inherit name="editor_room" />
+    <description>This is a pleasant park, with grass and stuff. A sign says "No littering".</description>
+    <drop_prohibited>The sign very clearly says "No Littering"</drop_prohibited>
+    <exit alias="west" to="room">
+      <inherit name="westdirection" />
+    </exit>
+  </object>
+  <function name="DropRedirection" parameters="object" type="string">
+    if (HasString(player.parent, "drop_prohibited")) {
+      return (player.parent.drop_prohibited)
+    }
+    else if (HasObject(player.parent, "drop_destination")) {
+      object.parent = player.parent.drop_destination
+      return (null)
+    }
+    else {
+      object.parent = player.parent.drop_destination
+      return (null)
+    }
+  </function>
+  <function name="DoDrop" parameters="object, ismultiple"><![CDATA[
+    prefix = ""
+    if (ismultiple) {
+      prefix = GetDisplayAlias(object) + ": "
+    }
+    if (not ListContains(ScopeInventory(), object)) {
+      msg (prefix + DynamicTemplate("NotCarrying", object))
+    }
+    else if (not ListContains(ScopeReachable(), object)) {
+      msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+    }
+    else {
+      found = true
+      dropmsg = object.dropmsg
+      switch (TypeOf(object, "drop")) {
+        case ("script") {
+          if (ismultiple) {
+            msg (prefix)
+          }
+          do (object, "drop")
+          dropmsg = ""
+        }
+        case ("boolean") {
+          if (object.drop = true) {
+            // -- start modification --
+            dropmsg = DropRedirection (object)
+            // -- end modification --
+            if (dropmsg = null) {
+              dropmsg = DynamicTemplate("DropSuccessful", object)
+            }
+          }
+          else {
+            found = false
+          }
+        }
+        case ("string") {
+          object.parent = player.parent
+          dropmsg = object.drop
+        }
+        default {
+          found = false
+        }
+      }
+      if (not found and dropmsg = null) {
+        dropmsg = DynamicTemplate("DropUnsuccessful", object)
+      }
+      if (LengthOf(dropmsg) > 0) {
+        msg (prefix + dropmsg)
+      }
+      if (HasScript(object, "ondrop")) {
+        do (object, "ondrop")
+      }
+    }
+  ]]></function>
+  <walkthrough name="test">
+    <steps type="list">
+      get cup
+      u
+      drop cup
+      assert:cup.parent = room
+      d
+      get cup
+      e
+      drop cup
+      assert:cup.parent = player
+      w
+      w
+      drop cup
+      assert:cup.parent = nowhere
+    </steps>
+  </walkthrough>
+</asl>

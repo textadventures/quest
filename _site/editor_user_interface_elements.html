@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Editor User Interface Elements</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Editor User Interface Elements</h1>
+      <p>Much of the Editor user interface is defined by the core library itself, and the sub-libraries linked via CoreEditor.aslx. Look at the CoreEditor*.aslx files for examples on creating a user interface for a library.</p>
+
+<p>To add an Editor User Interface for a function defined in your library, add a section to your library like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &amp;lt;editor&amp;gt;
+    &amp;lt;appliesto&amp;gt;(function)EnableTimer&amp;lt;/appliesto&amp;gt;
+    &amp;lt;display&amp;gt;Enable timer #0&amp;lt;/display&amp;gt;
+    &amp;lt;category&amp;gt;Timers&amp;lt;/category&amp;gt;
+    &amp;lt;create&amp;gt;EnableTimer ()&amp;lt;/create&amp;gt;
+    &amp;lt;add&amp;gt;Enable timer&amp;lt;/add&amp;gt;
+
+    &amp;lt;control&amp;gt;
+      &amp;lt;controltype&amp;gt;label&amp;lt;/controltype&amp;gt;
+      &amp;lt;caption&amp;gt;Enable timer&amp;lt;/caption&amp;gt;
+    &amp;lt;/control&amp;gt;
+
+    &amp;lt;control&amp;gt;
+      &amp;lt;controltype&amp;gt;expression&amp;lt;/controltype&amp;gt;
+      &amp;lt;attribute&amp;gt;0&amp;lt;/attribute&amp;gt;
+      &amp;lt;simple&amp;gt;name&amp;lt;/simple&amp;gt;
+      &amp;lt;simpleeditor&amp;gt;objects&amp;lt;/simpleeditor&amp;gt;
+      &amp;lt;source&amp;gt;timer&amp;lt;/source&amp;gt;
+    &amp;lt;/control&amp;gt;
+ &amp;lt;/editor&amp;gt;
+</code></pre></div>
+<p>The example above adds the &quot;Enable timer&quot; command to the &quot;Timers&quot; category:</p>
+
+<p><img src="Editorui1.png" alt="" title="Editorui1.png"></p>
+
+<p>When selected, the editor looks like this - the example above defines two controls, a label reading &quot;Enable timer&quot; and an expression control, which shows the &quot;timer&quot; dropdown:</p>
+
+<p><img src="Editorui2.png" alt="" title="Editorui2.png"></p>
+
+<p>appliesto<br>
+Should be of the format &quot;(function)YourFunctionName&quot;</p>
+
+<p>display<br>
+Text description of the command. &quot;#x&quot; represents the value of parameter x.</p>
+
+<p>category<br>
+The category to use in the script adder</p>
+
+<p>create<br>
+Blank version of the command created when the user selects this command in the adder</p>
+
+<p>add<br>
+Description of the command to display in the script adder</p>
+
+<p>control<br>
+Multiple <control> elements specify labels and input parameters.</p>
+
+<p>Within a <control> XML tag, you must specify a controltype from the list below. If the control corresponds to a parameter (and it usually will, except for a label), you must also use an <attribute> tag to specify which parameter.</p>
+
+<p>The following controltypes can be used:</p>
+
+<ul>
+<li>  checkbox</li>
+<li>  dropdown</li>
+<li>  dropdowntypes</li>
+<li>  elementslist</li>
+<li>  expression</li>
+<li>  file</li>
+<li>  filter</li>
+<li>  label</li>
+<li>  list</li>
+<li>  multi</li>
+<li>  number</li>
+<li>  objects</li>
+<li>  script</li>
+<li>  scriptdictionary</li>
+<li>  scriptexpander</li>
+<li>  stringdictionary</li>
+<li>  textbox</li>
+</ul>
+
+<p>The following additional controltypes are also available, but are probably not much use in extension libraries:</p>
+
+<ul>
+<li>  attributes</li>
+<li>  exits</li>
+<li>  richtext</li>
+<li>  pattern</li>
+<li>  texteditor</li>
+<li>  title</li>
+<li>  verbs</li>
+</ul>
+
+    </div>
+  </body>
+</html>

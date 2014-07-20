@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using scripts</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Using scripts</h1>
+      <p>We&#39;ll now start to play with the real power behind Quest – scripts. Scripts let you do things within the game, change the game world, show pictures and more. With a script, you can print different messages or run other actions depending on the state of any object in the game.</p>
+
+<p>In this example, we&#39;ll use a script to customise the &quot;watch&quot; verb we added to the TV in the previous section. We want to update it to provide a sensible response depending on whether the TV is switched on or not.</p>
+
+<p>Select the TV object and go to the Verbs tab. If you&#39;ve been following all the steps in this tutorial, you should already have a &quot;watch&quot; verb which prints a message. If you&#39;ve already got a &quot;watch&quot; verb, change it from &quot;Print a message&quot; to &quot;Run a script&quot; (or add a new &quot;watch&quot; verb if you don&#39;t already have one).</p>
+
+<p>Click the &quot;Add new script&quot; header and you&#39;ll see a list of all the commands you can add to a script. The commands are in broad categories - Output, Objects, Variables and so on - but you can also find a command by typing in the Search box, if you don&#39;t know the category.</p>
+
+<p>Go to the Scripts category and add the &quot;If&quot; command (you can click the &quot;Add&quot; button, or just double-click the command).</p>
+
+<p><img src="Addif.png" alt="" title="Addif.png"></p>
+
+<p>The &quot;if&quot; command is hugely powerful, because it lets us choose which script to run depending on a condition that we set.</p>
+
+<p>After adding the command, you&#39;ll see the following editor:</p>
+
+<p><img src="Addif2.png" alt="" title="Addif2.png"></p>
+
+<p>First, we need to add a condition. If you click the &quot;expression&quot; dropdown list next to the &quot;If&quot; label, you&#39;ll see a list of conditions that you can add. Select &quot;object is switched on&quot;.</p>
+
+<p>The editor template will then change, and next to the condition you will now see two more drop-down lists. Leave the first one set to &quot;object&quot;, and you&#39;ll be able to choose an object from the second list. Select &quot;TV&quot;.</p>
+
+<p><img src="Addif3.png" alt="" title="Addif3.png"></p>
+
+<p>That&#39;s our condition added - now we just need to say what happens when the condition is met. Click the &quot;Then&quot; header and you&#39;ll see that you can add script commands here too. These script commands will <em>only</em> be run <em>if</em> the TV is switched on. Add a &quot;Print a message&quot; command.</p>
+
+<p>This will be the text that will appear when the player types &quot;watch tv&quot; while the TV is switched on, so enter a message like &quot;You watch for a few minutes. As your will to live slowly ebbs away, you remember that you’ve always hated watching westerns.&quot;</p>
+
+<p>We&#39;re not done yet - what if the TV is <em>not</em> switched on? Fortunately we don&#39;t need to add a whole other condition - we can just add an &quot;Else&quot; script to the one we&#39;re working on. Click the &quot;Add Else&quot; button, then expand the &quot;Else&quot; header that appears. Add a &quot;Print a message&quot; command again, and this time add a message like &quot;You watch for a few minutes, thinking that the latest episode of ‘Big Brother’ is even more boring than usual. You then realise that the TV is in fact switched off.&quot;</p>
+
+<p>Your screen should now look like this:</p>
+
+<p><img src="Addif4.png" alt="" title="Addif4.png"></p>
+
+<p>Now would be a good time to play the game to test that it works properly. Switch the TV on and off, and verify that you get a sensible response when you type &quot;watch tv&quot;.</p>
+
+    </div>
+  </body>
+</html>

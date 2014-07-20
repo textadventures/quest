@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using Lists</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Using Lists</h1>
+      <p>Lists are made up of any number of strings (for a <a href="../types/stringlist.html">stringlist</a>) or objects (for an <a href="../types/objectlist.html">objectlist</a>).</p>
+
+<h2>Creating Lists</h2>
+
+<p>Lists can be created by the <a href="../functions/newstringlist.html">NewStringList</a> or <a href="../functions/newobjectlist.html">NewObjectList</a> functions, or can be returned by functions such as the scope functions.</p>
+
+<p>Example of generating an <a href="../types/objectlist.html">objectlist</a> called <em>myList</em> and an empty <a href="../types/stringlist.html">stringlist</a> called <em>MyStringList</em>:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> myList = ScopeVisibleNotHeld()
+ myStringList = NewStringList()
+</code></pre></div>
+<p>An object or string can be retrieved from a list by its index using <a href="../functions/objectlistitem.html">ObjectListItem</a> or <a href="../functions/stringlistitem.html">StringListItem</a>. For example, to retrieve the second item from the above list (remembering that they count from zero):</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> StringListItem(myStringList, 1)
+</code></pre></div>
+<p>A string list can be converted to a string using the <a href="../functions/string/join.html">Join</a> function. Conversely, a string can be broken up into a string list using the <a href="../functions/string/split.html">Split</a> function, and this can be the easiest way to create a new string list.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> myStringList = Split(&quot;First;Second;Third&quot;, &quot;;&quot;)
+</code></pre></div>
+<h2>Iterating through list elements</h2>
+
+<p>You can read a list in several ways. Note that lists are indexed from zero, so the item at index 2 will actually be the 3rd element.</p>
+
+<ul>
+<li>  <a href="../scripts/foreach.html">foreach</a>, the easiest method, will just iterate through the entire list.</li>
+</ul>
+
+<!-- -->
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> foreach (item, ScopeVisible()) {
+   msg (&quot;The item is &quot;+item.name)
+ }
+</code></pre></div>
+<ul>
+<li>  <a href="../scripts/for.html">for</a> is a general loop method which will need more details about the length of your list so that it will not exceed the bounds (go past the end) of the list.</li>
+</ul>
+
+<!-- -->
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> for (myItem, 0, ListCount(myList) - 1) {
+   msg (&quot;Current item is &quot; + ObjectListItem(myList,myItem).name)
+ }
+</code></pre></div>
+<h2>Adding and removing items</h2>
+
+<p>To manipulate the list use <em>add</em> and <em>remove</em> commands.</p>
+
+<ul>
+<li>  <a href="../scripts/list_remove.html">list remove</a> removes a named item from the list. <strong>Note:</strong> space between the word list and add/remove</li>
+</ul>
+
+<!-- -->
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> if (ListContains(myList, player) {
+   list remove(myList, player)            
+ }
+</code></pre></div>
+<ul>
+<li>  <a href="../scripts/list_add.html">list add</a> adds strings or objects to a list.</li>
+</ul>
+
+<!-- -->
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> list add(myStringList,&quot;Text item 1&quot;)
+ list add(myStringList,&quot;Text item 2&quot;)            
+</code></pre></div>
+<h2>Combining lists</h2>
+
+<p>To combine two lists into one, use the <a href="../functions/listcombine.html">ListCombine</a> function.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> firstStringList = NewStringList()
+ list add(firstStringList,&quot;mouse&quot;)
+ list add(firstStringList,&quot;cat&quot;) 
+ secondStringList = NewStringList()
+ list add(secondStringList,&quot;dog&quot;) 
+ resultList = ListCombine ( firstStringList , secondStringList ) 
+ foreach (item, resultList ) {
+    msg (item)
+ }
+ // resultList contains &quot;mouse&quot;, &quot;cat&quot;, &quot;dog&quot;
+</code></pre></div>
+<p>To return a copy of a list with one element removed, use the <a href="../functions/listexclude.html">ListExclude</a> function.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> firstStringList = NewStringList()
+ list add(firstStringList,&quot;mouse&quot;)
+ list add(firstStringList,&quot;cat&quot;) 
+ list add(firstStringList,&quot;dog&quot;)
+ secondStringList = NewStringList()
+ list add(secondStringList,&quot;cat&quot;) 
+ resultCombine = ListExclude ( firstStringList , secondStringList ) 
+ foreach (item, resultCombine ) {
+    msg (item)
+ }
+ // resultCombine contains &quot;mouse&quot; and &quot;dog&quot;
+</code></pre></div>
+<h2>Sorting lists</h2>
+
+<p>(added in Quest 5.3.)</p>
+
+<p>To sort a list, use the <a href="../functions/objectlistsort.html">ObjectListSort</a> or the <a href="../functions/objectlistsortdescending.html">ObjectListSortDescending</a> function.</p>
+
+    </div>
+  </body>
+</html>

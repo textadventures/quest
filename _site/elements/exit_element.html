@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>exit element</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>exit element</h1>
+      <div class="highlight"><pre><code class="text language-text" data-lang="text">&lt;exit alias=&quot;direction or displayed exit name&quot; name=&quot;name&quot; to=&quot;to room&quot;&gt;attributes&lt;/exit&gt;
+</code></pre></div>
+<p>Creates an exit from the exit&#39;s parent room to the specified room.</p>
+
+<p>The alias might be something like &quot;east&quot;, &quot;north&quot;, or the name of a room that the player can go to.</p>
+
+<p>The name is optional. If no name is specified, Quest will generate a name for the exit.</p>
+
+<p>Attributes:</p>
+
+<p>alias<br>
+<a href="../types/string.html">string</a> exit alias</p>
+
+<p>grid_length<br>
+<a href="../types/int.html">int</a> length of exit line on map in grid units</p>
+
+<p>grid_offset_x<br>
+X offset of exit position on grid</p>
+
+<p>grid_offset_y<br>
+Y offset of exit position on grid</p>
+
+<p>grid_render<br>
+see <a href="../attributes/grid_render.html">grid_render</a> object attribute</p>
+
+<p>lightstrength<br>
+see <a href="../attributes/lightstrength.html">lightstrength</a> object attribute</p>
+
+<p>locked<br>
+<a href="../types/boolean.html">boolean</a> specifying if exit is locked</p>
+
+<p>lockmessage<br>
+<a href="../types/string.html">string</a> to display when exit is locked</p>
+
+<p>look<br>
+<a href="../types/string.html">string</a> description to print when the player looks in this direction, or <a href="../types/script.html">script</a> to run</p>
+
+<p>lookonly<br>
+<a href="../types/boolean.html">boolean</a> - if true, the player can&#39;t move in this direction, only look</p>
+
+<p>prefix<br>
+<a href="../types/string.html">string</a> to print before exit name in room descriptions</p>
+
+<p>script<br>
+<a href="../types/script.html">script</a> to run instead of moving the player</p>
+
+<p>suffix<br>
+<a href="../types/string.html">string</a> to print after exit name in room descriptions</p>
+
+<p>visible<br>
+<a href="../types/boolean.html">boolean</a> - if false, exit is not available (as if the exit&#39;s parent was null)</p>
+
+    </div>
+  </body>
+</html>

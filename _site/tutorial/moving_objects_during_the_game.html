@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Moving objects during the game</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Moving objects during the game</h1>
+      <p>As your game unfolds and the player interacts with your world, you may want to bring additional objects into play, or remove others. In this example, we&#39;ll add a window to the kitchen. When the player opens it, a bee flies in. In the next section we&#39;ll make this bee quite irritating.</p>
+
+<h2>Creating a Hidden Object</h2>
+
+<p>First, let&#39;s create the &quot;bee&quot; object. We don&#39;t want this object to appear anywhere when the game starts, so create it outside of a room - set the parent to &quot;none&quot; when you add the new object. Give the bee a suitable description.</p>
+
+<h2>Bringing the Object into Play</h2>
+
+<p>Now, add a window object to the kitchen and give it a sensible description. We want to make this window openable, but it&#39;s not a container, as you can&#39;t put things in a window. We can&#39;t add &quot;open&quot; as a verb though, because the &quot;open&quot; command is handled by Quest&#39;s container logic. The solution is to go to the Container tab and select &quot;Openable/Closable&quot; from the Container Type list. This provides basic functionality for opening and closing an object, but it doesn&#39;t do anything else.</p>
+
+<p>Choose &quot;Openable/Closable&quot;, and now add script commands to the &quot;Script to run when opening object&quot;:</p>
+
+<ul>
+<li>  Open object: window</li>
+<li>  Print a message: &quot;You open the window and a bee flies into the kitchen.&quot;</li>
+<li>  Move object &quot;bee&quot; to &quot;kitchen&quot;</li>
+</ul>
+
+<p>For the close script, you just need to add:</p>
+
+<ul>
+<li>  Print a message: &quot;You close the window.&quot;</li>
+<li>  Close object: window</li>
+</ul>
+
+<p>Launch the game and go to the kitchen. Open the window and verify that you can now look at the bee.</p>
+
+<h2>Checking if the Object is Already There</h2>
+
+<p>What if the player closes the window and then opens it again? They&#39;ll be told that the bee has flown in again, which doesn&#39;t make sense as it is already there.</p>
+
+<p>One way to get around this might be to use an object flag, as we&#39;ve done before. However it&#39;s even simpler just to check if the bee is in the kitchen. Add an &quot;if&quot; command and choose &quot;object contains&quot;. Now you can select &quot;kitchen&quot; as the parent and &quot;bee&quot; as the child.</p>
+
+<p>For the &quot;then&quot; script, print a message such as &quot;You open the window. Not much happens.&quot;</p>
+
+<p>Now cut and paste the existing &quot;print a message&quot; (&quot;a bee flies in...&quot;) and &quot;move object&quot; to the &quot;Else&quot;.</p>
+
+<p><img src="Bee.png" alt="" title="Bee.png"></p>
+
+<h2>Removing an Object during Play</h2>
+
+<p>As well as bringing an object into play, you can also remove an object from play using the &quot;Remove object&quot; command from the Objects category. This will set the object&#39;s parent to &quot;null&quot;, so you can always bring it back into play again later. To destroy an object entirely, use the &quot;Destroy an object&quot; command - the object will be completely removed from the game. It is more efficient to simply remove the object from play though - it is less work for Quest to simply unset the object&#39;s parent than it is to remove <em>all</em> the object&#39;s attributes and destroy it - so it is recommended that you use &quot;remove&quot; in preference to &quot;destroy&quot;.</p>
+
+<p>As an exercise, add an &quot;apple&quot; object, with a sensible description. Add an &quot;eat&quot; verb to the object which will print a message saying &quot;You eat the apple. Tasty.&quot; and then remove the apple from play.</p>
+
+    </div>
+  </body>
+</html>

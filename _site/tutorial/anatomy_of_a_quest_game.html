@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anatomy of a Quest game</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Anatomy of a Quest game</h1>
+      <p>Every Quest game is made up of the following parts. Here are the main ones:</p>
+
+<h2>Elements</h2>
+
+<p>There are various types of element:</p>
+
+<p>Objects<br>
+Objects are the basic building blocks of the game. Everything &quot;physical&quot; in the game is an object - that includes rooms and the player themselves. So in a simple game where the player is in a lounge, and there is a cat and a table in the lounge, there are four objects in total - the lounge, the player, the cat and the table.</p>
+
+<p>Objects can contain other objects. This is done by setting the &quot;parent&quot; attribute. In our simple example, the lounge has no parent - it stands alone. The player is in the lounge, so the player&#39;s parent is &quot;lounge&quot;. If the cat is sitting on the table in the lounge, then the cat&#39;s parent is &quot;table&quot;, and the table&#39;s parent is &quot;lounge&quot;.</p>
+
+<p>Exits<br>
+Exits connect objects (usually rooms) together. The exit has a parent, so our simple game might have an exit from the lounge by setting the exit&#39;s parent to &quot;lounge&quot;. Exits also have a &quot;to&quot; direction, so this exit might point to another room, such as the kitchen. Or, it might point to an object inside the same room, such as a cupboard - this would allow the player to go inside a cupboard in the room.</p>
+
+<p>Commands and Verbs<br>
+Commands handle player input. They can exist globally, in which case the command will work everywhere. Commands can also exist inside a particular room, in which case that command will only work in that room. Commands have a pattern, such as &quot;look at #object#&quot;. When the player types something, it is compared to all the available command patterns. The best match is then used to process what the player typed in. So if the player typed &quot;look at cat&quot;, the &quot;look at&quot; command is matched, and it performs whatever action is necessary to print the description of the cat.</p>
+
+<p>Game<br>
+The game itself is a special kind of object - it contains attributes such as the name of the game, options such as how to print room descriptions, and display settings.</p>
+
+<h2>Attributes</h2>
+
+<p>All element data is stored in <strong>attributes</strong>. An element can have an unlimited number of attributes. Attributes can store things such as the object description, alternative object names, the behaviour when an object is taken, which objects can be used on the object, and much more. The attribute can be of many types:</p>
+
+<p>String<br>
+A sequence of letters/numbers, for example &quot;The cat is sitting quietly on the table&quot;. Obviously, strings are very common in text adventure games!</p>
+
+<p>Integer<br>
+A whole number, such as 1, 2, 3, 42 or 1 billion.</p>
+
+<p>Script<br>
+One or more script commands, which are instructions for Quest to carry out. Everything that happens in a game is controlled by script commands. Script commands can print messages, move objects around, show videos, start timers, change attributes, and much more.</p>
+
+<p>List<br>
+Lists of strings or objects</p>
+
+<p>Dictionary<br>
+A look-up table of strings or objects</p>
+
+<h2>Libraries</h2>
+
+<p>Libraries are used to include common functionality in a game. There is a standard &quot;Core&quot; library that is included by default with all Quest games. This is made up of the elements above - commands, scripts and so on - and provides a lot of the standard functionality that players will expect in your game, such as the &quot;look at&quot; command, printing room descriptions, and so on.</p>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Simple Combat System (Advanced)</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Simple Combat System (Advanced)</h1>
+      <p>A question that comes up frequently on the forums is how to implement a combat system. The page on <a href="using_types_and_tabs__advanced_.html">Using Types and Tabs</a> started to create such a system, implementing spells. Now we will build on that. If you want to follow along, start with the <a href="using_types.html">Using Types</a> page, then the <a href="using_types_and_tabs__advanced_.html">Using Types and Tabs</a> page, then come back here.</p>
+
+<p>This page has now been updated for Quest 5.4.</p>
+
+<h2>Design</h2>
+
+<p>The first step in designing any complicated system is to consider how the player will experience it. With that in mind, here is a snippet of interaction for a hypothetical combat.</p>
+
+<p>&#39;&#39;&gt;EXAMINE GOBLIN The Goblin is green and ugly.</p>
+
+<p>&gt;ATTACK GOBLIN You attack the goblin with your bare hands. You hit, doing 2 points of damage. The goblin attacks you with its axe. It hits, doing 7 points of damage.</p>
+
+<p>&gt;EQUIP GREAT SWORD You now have the great sword of Shalamaa in your hands. The goblin attacks you with its axe. It misses.</p>
+
+<p>&gt;ATTACK GOBLIN You attack the goblin with the great sword of Shalamaa. You hit, doing 12 points of damage. It is dead. &#39;&#39; From this, I am deciding: I want the system to allow different weapons with different capabilities. I want to tell the player exactly what has happened, how many hits damage are done, etc. (I might change my mind about that later, but during development, this is useful). Foes attack each round, once they have started to attack.</p>
+
+<p>I am going to break this into a number of parts, dealing with weapons, then with attacking foes, then handling those foes attacking the player character.</p>
+
+<h2>New Verbs</h2>
+
+<p>This involves implementing three new verbs, equip, unequip and attack.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;verb&gt;
+    &lt;property&gt;equip&lt;/property&gt;
+    &lt;pattern&gt;equip;draw&lt;/pattern&gt;
+    &lt;defaultexpression&gt;&quot;You can&#39;t draw &quot; + object.article + &quot;.&quot;&lt;/defaultexpression&gt;
+  &lt;/verb&gt;
+  &lt;verb&gt;
+    &lt;property&gt;unequip&lt;/property&gt;
+    &lt;pattern&gt;unequip;sheathe&lt;/pattern&gt;
+    &lt;defaultexpression&gt;&quot;You can&#39;t sheathe &quot; + object.article + &quot;.&quot;&lt;/defaultexpression&gt;
+  &lt;/verb&gt;
+  &lt;verb&gt;
+    &lt;property&gt;attack&lt;/property&gt;
+    &lt;pattern&gt;attack;fight;strike;kill&lt;/pattern&gt;
+    &lt;defaultexpression&gt;&quot;You can&#39;t attack &quot; + object.article + &quot;.&quot;&lt;/defaultexpression&gt;
+  &lt;/verb&gt;
+</code></pre></div>
+<p>I am using verbs here rather than commands because these are specific to a type of object, and only that type of object.</p>
+
+<h2>Player Object</h2>
+
+<p>We need a few attrbutes set on the player, and this is something that has to be done in the game file, rather than the library. You can just copy and paste this over the existing code for the player object if you are starting a new game. Otherwise, you will need to copy across each attribute.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;object name=&quot;player&quot;&gt;
+      &lt;inherit name=&quot;defaultplayer&quot; /&gt;
+      &lt;attack type=&quot;int&quot;&gt;2&lt;/attack&gt;
+      &lt;defence type=&quot;int&quot;&gt;0&lt;/defence&gt;
+      &lt;armour type=&quot;int&quot;&gt;0&lt;/armour&gt;
+      &lt;hitpoints type=&quot;int&quot;&gt;25&lt;/hitpoints&gt;
+      &lt;status&gt;-&lt;/status&gt;
+      &lt;statusattributes type=&quot;stringdictionary&quot;&gt;status = ;equippedstatus = !&lt;/statusattributes&gt;
+      &lt;equippedstatus&gt;Wielding: nothing&lt;/equippedstatus&gt;
+    &lt;/object&gt;
+</code></pre></div>
+<h2>Weapons</h2>
+
+<p>For the first two verbs, we need a new type, &quot;weapon&quot;. To work with the verbs, the weapon type needs a couple of scripts of the same name as the verbs. I have also chosen to set some attributes first. These are default values, and doing this means I can be sure that any weapon object has values set for these attributes (otherwise, I should really check if the attribute exists before using it, to avoid Quest errors). I have also set it up so all weapons can be taken by default.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;type name=&quot;weapon&quot;&gt;
+    &lt;attackbonus type=&quot;int&quot;&gt;0&lt;/attackbonus&gt;
+    &lt;damagebonus type=&quot;int&quot;&gt;0&lt;/damagebonus&gt;
+    &lt;damagedicenumber type=&quot;int&quot;&gt;1&lt;/damagedicenumber&gt;
+    &lt;damagedicesides type=&quot;int&quot;&gt;4&lt;/damagedicesides&gt;
+    &lt;take /&gt;
+    &lt;inventoryverbs type=&quot;stringlist&quot;&gt;
+      &lt;value&gt;Look at&lt;/value&gt;
+      &lt;value&gt;Drop&lt;/value&gt;
+      &lt;value&gt;Equip&lt;/value&gt;
+    &lt;/inventoryverbs&gt;
+    &lt;equip type=&quot;script&quot;&gt;&lt;![CDATA[
+      if (this.parent = game.pov) {
+        if (not game.pov.equipped = fists and not game.pov.equipped = null) {
+          msg (&quot;You put away your &quot; + game.pov.equipped.alias + &quot; and draw your &quot; + this.alias + &quot;.&quot;)
+        }
+        else {
+          msg (&quot;You draw your &quot; + this.alias + &quot;.&quot;)
+        }
+        game.pov.equipped = this
+        this.inventoryverbs = Split (&quot;Look at;Drop;Unequip&quot;, &quot;;&quot;)
+        game.pov.equippedstatus = &quot;Wielding: &quot; + this.alias
+      }
+      else {
+        msg (&quot;You don&#39;t have it.&quot;)
+      }
+    ]]&gt;&lt;/equip&gt;
+    &lt;unequip type=&quot;script&quot;&gt;&lt;![CDATA[
+      if (this.parent = game.pov) {
+        msg (&quot;You put away your &quot; + game.pov.equipped.alias + &quot;.&quot;)
+        game.pov.equipped = fists
+        this.inventoryverbs = Split (&quot;Look at;Drop;Equip&quot;, &quot;;&quot;)
+        game.pov.equippedstatus = &quot;Wielding: nothing&quot;
+      }
+      else {
+        msg (&quot;You don&#39;t have it.&quot;)
+      }
+    ]]&gt;&lt;/unequip&gt;
+  &lt;/type&gt;
+</code></pre></div>
+<p>These are pretty straightforward, they just set an attribute called &quot;equipped&quot; on the player object and do a little house-keeping. First, check the player has the weapon, if he does, set or unset <em>player.equipped</em>, and print a message that this has happened. Then change the inventory verbs and <em>player.equippedstatus</em> (this string was set as a status attribute in the player object, so the player can see what weapon is equipped).</p>
+
+<p>I am assuming there will be a weapon called &quot;fists&quot;; this is what the character uses when he has no weapon equipped. We can put the &quot;fists&quot; object into the library too, just to make sure it does exist. It uses the default values, so is very short.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;object name=&quot;fists&quot;&gt;
+    &lt;inherit name=&quot;weapon&quot; /&gt;
+  &lt;/object&gt;
+</code></pre></div>
+<p>Finally for weapons as a convenience, we can have the attributes set on a tab. I am modify the existing &quot;Magic&quot; tab for this, relabelling it a &quot;Combat&quot; tab, and adding weapon to the list of types. So the start is modified to look like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;tab&gt;
+    &lt;parent&gt;_ObjectEditor&lt;/parent&gt;
+    &lt;caption&gt;Combat&lt;/caption&gt;
+    &lt;mustnotinherit&gt;editor_room; defaultplayer&lt;/mustnotinherit&gt;
+    &lt;control&gt;
+      &lt;controltype&gt;dropdowntypes&lt;/controltype&gt;
+      &lt;caption&gt;Type&lt;/caption&gt;
+      &lt;types&gt;*=None; nonattackspell=Non-attack spell; lastingspell=Lasting spell; attackspell=Attack spell; monster=Monster; weapon=Weapon&lt;/types&gt;
+      &lt;width&gt;150&lt;/width&gt;
+    &lt;/control&gt;
+</code></pre></div>
+<p>And four new controls have been added.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;control&gt;
+      &lt;controltype&gt;number&lt;/controltype&gt;
+      &lt;caption&gt;Attack bonus&lt;/caption&gt;
+      &lt;attribute&gt;attackbonus&lt;/attribute&gt;
+      &lt;width&gt;100&lt;/width&gt;
+      &lt;mustinherit&gt;weapon&lt;/mustinherit&gt;
+      &lt;minimum&gt;0&lt;/minimum&gt;
+    &lt;/control&gt;
+    &lt;control&gt;
+      &lt;controltype&gt;number&lt;/controltype&gt;
+      &lt;caption&gt;Damage Dice No.&lt;/caption&gt;
+      &lt;attribute&gt;damagedicenumber&lt;/attribute&gt;
+      &lt;width&gt;100&lt;/width&gt;
+      &lt;mustinherit&gt;weapon&lt;/mustinherit&gt;
+      &lt;minimum&gt;1&lt;/minimum&gt;
+    &lt;/control&gt;
+    &lt;control&gt;
+      &lt;controltype&gt;number&lt;/controltype&gt;
+      &lt;caption&gt;Damage Dice Sides&lt;/caption&gt;
+      &lt;attribute&gt;damagedicesides&lt;/attribute&gt;
+      &lt;width&gt;100&lt;/width&gt;
+      &lt;mustinherit&gt;weapon&lt;/mustinherit&gt;
+      &lt;minimum&gt;4&lt;/minimum&gt;
+    &lt;/control&gt;
+    &lt;control&gt;
+      &lt;controltype&gt;number&lt;/controltype&gt;
+      &lt;caption&gt;Damage Bonus&lt;/caption&gt;
+      &lt;attribute&gt;damagebonus&lt;/attribute&gt;
+      &lt;width&gt;100&lt;/width&gt;
+      &lt;mustinherit&gt;weapon&lt;/mustinherit&gt;
+      &lt;minimum&gt;0&lt;/minimum&gt;
+    &lt;/control&gt;
+  &lt;/tab&gt;
+</code></pre></div>
+<p>You should be able to go in-game and equip and unequip weapons now to test this works.</p>
+
+<h2>Attacking a monster</h2>
+
+<p>For attacking the monster, the monster should have a few attributes set (these can also go on the &quot;combat&quot; tab; I will leave it to you to work out how). As before, I have set default values.</p>
+
+<p>Looking ahead a little, your monster is going to need the same attributes as a weapon to determine damage when we come to looking at the monster attacking, and the quick way to sort that out is to have monsters inherit from weapons. Okay, it feels wrong, but it works because they have these properties in common; just make sure monsters cannot be picked up.</p>
+
+<p>We also need an <em>attack</em> script that is run when the player attacks the monster.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;type name=&quot;monster&quot;&gt;
+    &lt;defence type=&quot;int&quot;&gt;0&lt;/defence&gt;
+    &lt;armour type=&quot;int&quot;&gt;0&lt;/armour&gt;
+    &lt;hitpoints type=&quot;int&quot;&gt;10&lt;/hitpoints&gt;
+    &lt;take type=&quot;boolean&quot;&gt;false&lt;/take&gt;
+    &lt;attack type=&quot;script&quot;&gt;&lt;![CDATA[
+      if (not HasAttribute (player, &quot;equipped&quot;)) {
+        player.equipped = fists
+      }
+      attackroll = GetRandomInt (1, 20) - this.defence + player.attack
+      attackroll = attackroll + player.equipped.attackbonus
+      if (attackroll &gt; 10) {
+        damage = player.equipped.damagebonus
+        for (i, 1, player.equipped.damagedicenumber) {
+          damage = damage + GetRandomInt (1, player.equipped.damagedicesides) - this.armour
+        }
+        this.hitpoints = this.hitpoints - damage
+        if (this.hitpointsyour  &gt; 0) {
+          msg (&quot;You swing &quot; + player.equipped.alias + &quot; and hit, doing &quot; + damage + &quot; points of damage; &quot; + this.hurt)
+        }
+        else {
+          msg (&quot;You swing your &quot; + player.equipped.alias + &quot; and hit, doing &quot; + damage + &quot; points of damage; &quot; + this.death)
+          Death (this)
+        }
+      }
+      else {
+        msg (&quot;You swing your &quot; + player.equipped.alias + &quot; and miss.&quot;)
+      }
+  ]]&gt;&lt;/attack&gt;
+  &lt;/type&gt;
+</code></pre></div>
+<p>The script first checks if player.equipped is null, and if it is, sets it to fists.</p>
+
+<p>Then it makes the attack roll. I am using a DnD style method to resolve the attack; roll d20, add your attack bonus, add your weapon attack bonus and deduct the foe&#39;s defence bonus.</p>
+
+<p>If the attack is successful, calculate the damage. We need to roll a number of dice, so this is done in a loop. I have chosen to subtract the armour inside the loop, so a d12 will do better again armoured foes, while 4d4 will do better against unarmoured foes; this gives a bit more scope to diffentiate weapons (as of 5.3 Quest has a RollDice function built in, but I think this way is easier).</p>
+
+<p>For a successful hit, it will check if the foe is dead, and if it is, call the <em>makedead</em> script that spell attacks already use (and this is the power of functions and script; we have already done the work).</p>
+
+<p>Go in-game and check that this is working okay.</p>
+
+<h2>Getting attacked by monsters</h2>
+
+<p>So the player can attack the monster, only fair that the monster gets to strike back.</p>
+
+<p>The complication here is that the monster or monsters will attack every turn, and we need some way of tracking which should be attacking and which should not. The solution is to maintain an object list that holds all the attacking monsters, and each turn go through that list.</p>
+
+<p>The library already has an object called element_struct for holding data, so the object list, <em>attackers</em>, can be added to that. We need a script added to monsters to add them to that list:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;settoattack type=&quot;script&quot;&gt;&lt;![CDATA[
+      if (not ListContains (element_struct.attackers, this) {
+        list add (element_struct.attackers, this)
+      }
+    ]]&gt;&lt;/settoattack&gt;
+</code></pre></div>
+<p>This script needs to be invoked in the <em>attack</em> script, so monsters will start to attack once they are attacked. We also need it in the spell attack function, and you could also do it in the script for a room to have monsters attack immediately. Here is the code to invoke a script on a given object.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  do (this, &quot;settoattack&quot;)
+</code></pre></div>
+<p>The <em>makedead</em> script needs updating too, so the monster is removed from the list when dead.</p>
+
+<p>Now we need the turnscript. This simply goes through the list of monsters, and invokes the <em>attackplayer</em> script on each. The <em>foreach</em> script command is very useful here!</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;turnscript name=&quot;attacktheplayerturnscript&quot;&gt;
+    &lt;enabled /&gt;
+    &lt;script&gt;
+      foreach (attacker, element_struct.attackers) {
+        do (attacker, &quot;attackplayer&quot;)
+      }
+    &lt;/script&gt;
+  &lt;/turnscript&gt;
+</code></pre></div>
+<p>So now we need an <em>attackplayer</em> script for the monster:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">    &lt;attackplayer type=&quot;script&quot;&gt;&lt;![CDATA[
+      attackroll = GetRandomInt (1, 20) - player.defence + this.attackbonus
+      if (attackroll &gt; 10) {
+        damage = this.damagebonus
+        for (i, 1, this.damagedicenumber) {
+          damage = damage + GetRandomInt (1, this.damagedicesides) - player.armour
+        }
+        player.hitpoints = player.hitpoints - damage
+        msg (this.alias + &quot; swings at you and hits, doing &quot; + damage + &quot; points of damage.&quot;)
+        if (this.hitpointsyour  &lt;= 0) {
+          msg (&quot;You are dead!&quot;)
+          finish
+        }
+      }
+      else {
+        msg (this.alias + &quot; swings at you and misses.&quot;)
+      }
+    ]]&gt;&lt;/attackplayer&gt;
+</code></pre></div>
+<p>As this is a script we could override it. Say there are archers, we could create a new type that inherits from monster, and give that a new &quot;attackplayer&quot; script where the text is about shotting an arrow.</p>
+
+<h2>Summary</h2>
+
+<p>So that is the basics of a fully working combat and magic system. However, the monster will still attack the player even if the player has just mistyped something or if he runs to a different room, and the player can still attack a dead monster, so there is room for improvement.</p>
+
+<p>If you want to see this all in action, you can download the library and demo game:</p>
+
+<p><a href="http://quest5.net/downloads/CombatLibrary1.aslx">CombatLibrary1.aslx</a> <a href="http://quest5.net/downloads/CombatDemo1.aslx">CombatDemo1.aslx‎</a></p>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stringlist</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Stringlist</h1>
+      <p>A stringlist is a <a href="list.html">list</a> that can contain a number of elements, all have to be of type <a href="string.html">string</a>. see <a href="../guides/using_lists.html">Using Lists</a> for more information.</p>
+
+<p>For Quest 5.3 and earlier, the format in an ASLX file is this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &lt;mylist type=&quot;list&quot;&gt;one; two; three&lt;/mylist&gt;
+</code></pre></div>
+<p>As of Quest 5.4, the same list is expressed like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &lt;mylist type=&quot;list&quot;&gt;
+   &lt;value&gt;one&lt;/value&gt;
+   &lt;value&gt;two&lt;/value&gt;
+   &lt;value&gt;three&lt;/value&gt;
+ &lt;/mylist&gt;
+</code></pre></div>
+<p>In Quest 5.4, you can still use the older semi-colon separate format with &quot;simplestringlist&quot;:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &lt;mylist type=&quot;simplestringlist&quot;&gt;one; two; three&lt;/mylist&gt;
+</code></pre></div>
+    </div>
+  </body>
+</html>

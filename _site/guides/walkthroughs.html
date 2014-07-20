@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Walkthroughs</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Walkthroughs</h1>
+      <p>You can specify a walkthrough to let you automatically test your game.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &lt;walkthrough name=&quot;main&quot;&gt;
+   &lt;steps&gt;
+     look at thing
+     take thing
+     drop thing
+     go east
+     speak to guard
+     give watch to guard
+   &lt;steps&gt;
+ &lt;walkthrough&gt;
+</code></pre></div>
+<p>You can then run the walkthrough by clicking Tools, Walkthrough.</p>
+
+<p>Walkthroughs can share steps - useful if you want to test multiple &quot;branches&quot; of your game. You can set up a hierarchy of walkthroughs. When you run a walkthrough, any steps in its parent(s) are also run.</p>
+
+<p>For example:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &lt;walkthrough name=&quot;root&quot;&gt;
+   &lt;steps&gt;
+     east
+     look at poison
+   &lt;steps&gt;
+   &lt;walkthrough name=&quot;death&quot;&gt;
+      &lt;steps&gt;
+         eat poison
+      &lt;/steps&gt;
+   &lt;/walkthrough&gt;
+   &lt;walkthrough name=&quot;life&quot;&gt;
+      &lt;steps&gt;
+         give poison to Jack the Ripper
+      &lt;/steps&gt;
+   &lt;/walkthrough&gt;
+ &lt;walkthrough&gt;
+</code></pre></div>
+<p>Here we have two walkthroughs &quot;life&quot; and &quot;death&quot; which descend from a common &quot;root&quot; walkthrough. Running the &quot;death&quot; walkthrough will run the sequence &quot;east/look at poison/eat poison&quot; while running &quot;life&quot; runs &quot;east/look at poison/give poison to Jack the Ripper&quot;.</p>
+
+<h2>Handling menus and questions</h2>
+
+<p>You can add a menu selection to a walkthrough by preceding it with &quot;menu:&quot;</p>
+
+<p>For example if you have two objects &quot;potato&quot; and &quot;potassium&quot;, you can put this in the walkthrough:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> take pot
+ menu:potato
+</code></pre></div>
+<p>You can also add an answer to a question by preceding it with &quot;answer:&quot;</p>
+
+<p>For example if somebody asks you a question when you speak to them, put this in the walkthrough:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> speak to Bill
+ answer:yes
+</code></pre></div>
+<p>If you forget to put in these two statements, the walkthrough will immediately stop.</p>
+
+<h2>Assertions</h2>
+
+<p>As of Quest 5.1, you can use walkthrough assertions to test your game. Simply include a line starting with &quot;assert:&quot;, and then any expression which should be true.</p>
+
+<p>For example, in the walkthrough below, the assert expression checks that the &quot;take biscuit&quot; command succeeded:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> &lt;walkthrough name=&quot;main&quot;&gt;
+   &lt;steps&gt;
+     look at tin
+     open tin
+     look at biscuit
+     take biscuit
+     assert:biscuit.parent = player
+   &lt;steps&gt;
+ &lt;walkthrough&gt;
+</code></pre></div>
+<p>If a walkthrough assert expression returns false, the walkthrough is immediately stopped.</p>
+
+<h2>Record</h2>
+
+<p>The easiest way to create a walk-through is to click the record button, and then just do in game what you want in the walk-through. What is particularly neat is that you can click record for an existing walk-through, and Quest will get you to the end of that, and then record after that, adding your new actions to the end of the old walk-through.</p>
+
+    </div>
+  </body>
+</html>

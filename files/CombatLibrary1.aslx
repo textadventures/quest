@@ -1,0 +1,720 @@
+<?xml version="1.0"?>
+<library>
+
+
+  <!--
+  This library adds a basic magic system to quest. It allows for three types of spells:
+
+  nonattackspell: Instant effect
+  lastingspell: An on-going spell. These last until another spell is cast
+  attackspell: Instant effect, attacking anything of the "monster" type that is not dead
+
+  Attack spells must be of an element, and eight are already set up. Monsters
+  can be assigned to elements too; they will be immune to that element, but take
+  four-fold damage from the opposed element.
+
+  A "Magic" tab is added to the editor to make setting up spells and monsters as easy as possible.
+  -->
+
+  <!--
+  Adding new elements involves a bit of effort. This system requires that elements are added in pairs or opposites,
+  such as fire and frost.
+  1. Create a new type for both elements, named [elemem]_type
+  2. In the data section, the object element_struct needs both elements added to both "elements" and
+      "opposedelements", and for the latter you need to put them in both ways around (look at existing entries)
+  3. You need to add both elements to the tab, both for "monster" and for "attackspell". Again, see existing
+      entries.
+  -->
+
+
+  <!-- =================================================== -->
+  <!-- Templates -->
+
+  <!--
+  Using templates makes it easier to convert to other languages, but also for other users to word it how they want it.
+  When templates are in the library that uses them (as here) the way to change the language is to
+  modify the template in the library, so really the only benefit is that all the text is together here.
+  Also modify the default responses in the verbs!
+  -->
+
+  <template name="Learn">learn</template>
+  <template name="Cast">cast</template>
+
+  <template name="LookDead">Oh, and it is dead.</template>
+  <template name="SpellAlreadyKnown">Er, you already know that one!</template>
+  <template name="SpellNotKnown">Er, you don't know that one!</template>
+  <template name="NoMonstersPresent">No monsters present</template>
+
+  <dynamictemplate name="SpellEnds"><![CDATA["The <i>" + GetDisplayAlias(object) + "</i> spell ends."]]></dynamictemplate>
+  <dynamictemplate name="SpellCast"><![CDATA["You cast <i>" + GetDisplayAlias(object) + "</i>."]]></dynamictemplate>
+  <dynamictemplate name="SpellLearnt"><![CDATA["In a process that seems at once unfathomable, and yet familiar, the spell fades away, and you realise you are now able to cast the <i>" + GetDisplayAlias(object) + "</i> spell."]]></dynamictemplate>
+
+
+
+  <!-- =================================================== -->
+  <!-- Verbs -->
+
+  <verb>
+    <property>learn</property>
+    <pattern>[Learn]</pattern>
+    <defaultexpression>"You can't learn " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>cast</property>
+    <pattern>[Cast]</pattern>
+    <defaultexpression>"You can't cast " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>attack</property>
+    <pattern>attack;fight;strike;kill</pattern>
+    <defaultexpression>"You can't attack " + object.article + "."</defaultexpression>
+  </verb>
+
+  <verb>
+    <property>equip</property>
+    <pattern>equip;draw</pattern>
+    <defaultexpression>"You can't draw " + object.article + "."</defaultexpression>
+  </verb>
+  <verb>
+    <property>unequip</property>
+    <pattern>unequip;sheathe</pattern>
+    <defaultexpression>"You can't sheathe " + object.article + "."</defaultexpression>
+  </verb>
+
+  <!-- =================================================== -->
+  <!-- Functions -->
+
+  <!--
+  Handles an attack on the given monster, using the given spell.
+  Monster loses hit points according to the spell's powerrating.
+  If they share an element, then no damage, if elements are opposed, damage is multplied by 4
+  Handles monsters with no elements too, but spell must have an element set.
+  -->
+  <function name="SpellAttackMonster" parameters="monster, spell"><![CDATA[
+    do (monster, "settoattack")
+    element = GetElement (monster)
+    handled = False
+    if (not element = Null) {
+      if (DoesInherit (spell, element + "_type")) {
+        msg ("... " + monster.ignoreselement)
+        handled = True
+      }
+      msg ("looking for " + element)
+      if (DoesInherit (spell, StringDictionaryItem (element_struct.opposedelements, element) + "_type")) {
+        monster.hitpoints = monster.hitpoints -  4 * spell.powerrating
+        handled = True
+        if (monster.hitpoints > 0) {
+          msg ("... " + monster.hurtbyelement)
+        }
+        else {
+          msg ("... " + monster.deathbyelement)
+          do (monster, "makedead")
+        }
+      }
+    }
+
+    if (not handled) {
+      monster.hitpoints = monster.hitpoints -  spell.powerrating
+      if (monster.hitpoints > 0) {
+        msg ("... " + monster.hurt)
+      }
+      else {
+        msg ("... " + monster.death)
+        do (monster, "makedead")
+      }
+    }
+  ]]></function>
+
+
+  <!--
+  Call this when a spell is cast, to ensure any on-going spells
+  are terminated.
+  -->
+  <function name="CancelSpell"><![CDATA[
+    if (HasObject (game.pov, "currentspell")) {
+      spell = game.pov.currentspell
+      msg (DynamicTemplate("SpellEnds", spell))
+      game.pov.currentspell = null
+      if (HasScript (spell, "terminate")) {
+        do (spell, "terminate")
+      }
+    }
+  ]]></function>
+
+
+
+
+  <!--
+  Returns as a string the name of this object's element (or null).
+  -->
+  <function name="GetElement" parameters="obj" type="string"><![CDATA[
+    result = Null
+    foreach (element, element_struct.elements) {
+     type = element + "_type"
+      if (DoesInherit (obj, type)) {
+        result = element
+      }
+    }
+    return (result)
+  ]]></function>
+
+
+  <!--
+  Describes casting
+  -->
+  <function name="DescribeCast" parameters="spell"><![CDATA[
+        if (HasString (spell, "description")) {
+          msg (DynamicTemplate("SpellCast", spell) + " " + spell.description)
+        }
+        else {
+          msg (DynamicTemplate("SpellCast", spell))
+        }
+  ]]></function>
+
+
+
+  <!-- =================================================== -->
+  <!-- Turn Scripts -->
+
+
+
+  <turnscript name="attacktheplayerturnscript">
+    <enabled />
+    <script>
+      foreach (attacker, element_struct.attackers) {
+        do (attacker, "attackplayer")
+      }
+    </script>
+  </turnscript>
+
+
+
+  <!-- =================================================== -->
+  <!-- Object types -->
+
+  <type name="spell">
+    <displayverbs type="stringlist">
+      <value>Learn</value>
+    </displayverbs>
+    <inventoryverbs type="stringlist">
+      <value>Learn</value>
+    </inventoryverbs>
+    <drop type="boolean">false</drop>
+    <take type="boolean">false</take>
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
+    <learn type="script"><![CDATA[
+      if (not this.parent = game.pov) {
+        this.parent = game.pov
+        this.inventoryverbs = Split ("Cast", " ")
+        msg (DynamicTemplate("SpellLearnt", this))
+      }
+      else {
+        msg ("[SpellAlreadyKnown]")
+      }
+    ]]></learn>
+  </type>
+
+
+
+  <type name="attackspell">
+    <inherit name="spell"/>
+    <cast type="script"><![CDATA[
+      // Check the player has the spell
+      // If so iterate through all objects in the room
+      // Apply attack to those with the monster type that are not dead
+      if (this.parent = game.pov) {
+        DescribeCast (this)
+        flag = False
+        foreach (obj, ScopeVisibleNotHeld ()) {
+          if (DoesInherit (obj, "monster") and not GetBoolean (obj, "dead")) {
+            SpellAttackMonster (obj, this)
+            flag = True
+          }
+        }
+        if (not flag) {
+          msg ("... [NoMonstersPresent]")
+        }
+        CancelSpell ()
+      }
+      else {
+        msg ("[SpellNotKnown]")
+      }
+    ]]></cast>
+  </type>
+
+
+  <type name="nonattackspell">
+    <inherit name="spell"/>
+    <cast type="script"><![CDATA[
+      if (this.parent = game.pov) {
+        DescribeCast (this)
+        do (this, "spelleffect")
+        CancelSpell ()
+      }
+      else {
+        msg ("[SpellNotKnown]")
+      }
+    ]]></cast>
+  </type>
+
+
+  <type name="lastingspell">
+    <inherit name="spell"/>
+    <cast type="script"><![CDATA[
+      if (this.parent = game.pov) {
+        DescribeCast (this)
+        do (this, "spelleffect")
+        CancelSpell ()
+        game.pov.currentspell = this
+        game.pov.status = this.status
+      }
+      else {
+        msg ("[SpellNotKnown]")
+      }
+    ]]></cast>
+  </type>
+
+  <type name="weapon">
+    <attackbonus type="int">0</attackbonus>
+    <damagebonus type="int">0</damagebonus>
+    <damagedicenumber type="int">1</damagedicenumber>
+    <damagedicesides type="int">4</damagedicesides>
+    <take />
+    <inventoryverbs type="stringlist">
+      <value>Look at</value>
+      <value>Drop</value>
+      <value>Equip</value>
+    </inventoryverbs>
+    <equip type="script"><![CDATA[
+      if (this.parent = game.pov) {
+        if (not game.pov.equipped = fists and not game.pov.equipped = null) {
+          msg ("You put away your " + game.pov.equipped.alias + " and draw your " + this.alias + ".")
+        }
+        else {
+          msg ("You draw your " + this.alias + ".")
+        }
+        game.pov.equipped = this
+        this.inventoryverbs = Split ("Look at;Drop;Unequip", ";")
+        game.pov.equippedstatus = "Wielding: " + this.alias
+      }
+      else {
+        msg ("You don't have it.")
+      }
+    ]]></equip>
+    <unequip type="script"><![CDATA[
+      if (this.parent = game.pov) {
+        msg ("You put away your " + game.pov.equipped.alias + ".")
+        game.pov.equipped = fists
+        this.inventoryverbs = Split ("Look at;Drop;Equip", ";")
+        game.pov.equippedstatus = "Wielding: nothing"
+      }
+      else {
+        msg ("You don't have it.")
+      }
+    ]]></unequip>
+  </type>
+
+  <type name="fire_type">
+  </type>
+
+  <type name="frost_type">
+  </type>
+
+  <type name="storm_type">
+  </type>
+
+  <type name="earthmight_type">
+  </type>
+
+  <type name="shadow_type">
+  </type>
+
+  <type name="rainbow_type">
+  </type>
+
+  <type name="divine_type">
+  </type>
+
+  <type name="necrotic_type">
+  </type>
+
+  <type name="monster">
+    <inherit name="weapon"/>
+    <defence type="int">0</defence>
+    <armour type="int">0</armour>
+    <hitpoints type="int">10</hitpoints>
+    <take type="boolean">false</take>
+    <displayverbs type="stringlist">
+      <value>Look at</value>
+      <value>Attack</value>
+    </displayverbs>
+    <!-- Call this when a monster dies for some housekeeping -->
+    <makedead type="script"><![CDATA[
+      if (not GetBoolean (this, "dead")) {
+        this.alias = this.alias + " (dead)"
+        if (HasString (this, "lookwhendead")) {
+          monster.look = this.lookwhendead
+        }
+        else {
+          this.look = this.look + " [LookDead]"
+        }
+        this.dead = True
+        list remove (element_struct.attackers, this)
+      }
+    ]]></makedead>
+    <attack type="script"><![CDATA[
+      if (not HasAttribute (game.pov, "equipped")) {
+        game.pov.equipped = fists
+      }
+      do (this, "settoattack")
+      attackroll = GetRandomInt (1, 20) - this.defence + game.pov.attack
+      attackroll = attackroll + game.pov.equipped.attackbonus
+      if (attackroll > 10) {
+        damage = game.pov.equipped.damagebonus
+        for (i, 1, game.pov.equipped.damagedicenumber) {
+          damage = damage + GetRandomInt (1, game.pov.equipped.damagedicesides) - this.armour
+        }
+        this.hitpoints = this.hitpoints - damage
+        if (this.hitpoints > 0) {
+          msg ("You swing " + game.pov.equipped.alias + " and hit, doing " + damage + " points of damage; " + this.hurt)
+        }
+        else {
+          msg ("You swing your " + game.pov.equipped.alias + " and hit, doing " + damage + " points of damage; " + this.death)
+          do (this, "makedead")
+        }
+      }
+      else {
+        msg ("You swing your " + game.pov.equipped.alias + " and miss.")
+      }
+    ]]></attack>
+    <attackplayer type="script"><![CDATA[
+      attackroll = GetRandomInt (1, 20) - game.pov.defence + this.attackbonus
+      if (attackroll > 10) {
+        damage = this.damagebonus
+        for (i, 1, this.damagedicenumber) {
+          damage = damage + GetRandomInt (1, this.damagedicesides) - game.pov.armour
+        }
+        game.pov.hitpoints = game.pov.hitpoints - damage
+        msg (this.alias + " swings at you and hits, doing " + damage + " points of damage.")
+        if (this.hitpoints <= 0) {
+          msg ("You are dead!")
+          finish
+        }
+      }
+      else {
+        msg (this.alias + " swings at you and misses.")
+      }
+    ]]></attackplayer>
+    <settoattack type="script"><![CDATA[
+      if (not ListContains (element_struct.attackers, this) and not GetBoolean (this, "dead")) {
+        list add (element_struct.attackers, this)
+      }
+    ]]></settoattack>
+  </type>
+
+  <type name="monsterarcher">
+    <inherit name="monster"/>
+    <attackplayer type="script"><![CDATA[
+      attackroll = GetRandomInt (1, 20) - game.pov.defence + this.attackbonus
+      if (attackroll > 10) {
+        damage = this.damagebonus
+        for (i, 1, this.damagedicenumber) {
+          damage = damage + GetRandomInt (1, this.damagedicesides) - game.pov.armour
+        }
+        game.pov.hitpoints = game.pov.hitpoints - damage
+        msg (this.alias + " shoots an arrow at you and hits, doing " + damage + " points of damage.")
+        if (this.hitpoints <= 0) {
+          msg ("You are dead!")
+          finish
+        }
+      }
+      else {
+        msg (this.alias + " shoots an arrow at you and misses.")
+      }
+    ]]></attackplayer>
+  </type>
+
+
+
+  <!-- =================================================== -->
+  <!-- Data -->
+
+  <!--
+  This is a data store for elements (I call it a "struct" after the keyword in the C programming language)
+  If you add more elements to the name, you need to add them to both lists as well as creating a new type.
+  Note that your new type must end "_type", but that must not be included on these lists.
+  -->
+  <object name="element_struct">
+    <elements type="stringlist">
+      <value>fire</value>
+      <value>frost</value>
+      <value>storm</value>
+      <value>earthmight</value>
+      <value>shadow</value>
+      <value>rainbow</value>
+      <value>divine</value>
+      <value>necrotic</value>
+    </elements>
+    <opposedelements type="stringdictionary">
+	    <item>
+	      <key>fire</key>
+	      <value>frost</value>
+	    </item>
+	    <item>
+	      <key>frost</key>
+	      <value>fire</value>
+	    </item>
+	    <item>
+	      <key>storm</key>
+	      <value>earthmight</value>
+	    </item>
+	    <item>
+	      <key>earthmight</key>
+	      <value>storm</value>
+	    </item>
+	    <item>
+	      <key>shadow</key>
+	      <value>rainbow</value>
+	    </item>
+	    <item>
+	      <key>rainbow</key>
+	      <value>shadow</value>
+	    </item>
+	    <item>
+	      <key>divine</key>
+	      <value>necrotic</value>
+	    </item>
+	    <item>
+	      <key>necrotic</key>
+	      <value>divine</value>
+	    </item>
+	  </opposedelements>
+    <attackers type="objectlist" />
+  </object>
+
+
+  <object name="fists">
+    <inherit name="weapon" />
+    <alias>fist</alias>
+  </object>
+
+
+
+  <!-- =================================================== -->
+  <!-- Tabs -->
+
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>Combat</caption>
+    <mustnotinherit>editor_room; defaultplayer</mustnotinherit>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Type</caption>
+      <types>*=None; nonattackspell=Non-attack spell; lastingspell=Lasting spell; attackspell=Attack spell; monster=Monster; monsterarcher=Monster with bow; weapon=Weapon</types>
+      <width>150</width>
+    </control>
+
+
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Non-Attack Spell</caption>
+      <mustinherit>nonattackspell</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description (optional)</caption>
+      <attribute>description</attribute>
+      <mustinherit>nonattackspell</mustinherit>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Spell effect</caption>
+      <attribute>spelleffect</attribute>
+      <mustinherit>nonattackspell</mustinherit>
+    </control>
+
+
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Lasting Spell</caption>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description (optional)</caption>
+      <attribute>description</attribute>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Status when active</caption>
+      <attribute>status</attribute>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Spell effect</caption>
+      <attribute>spelleffect</attribute>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+
+    <control>
+      <controltype>script</controltype>
+      <caption>Cacel spell effect</caption>
+      <attribute>terminate</attribute>
+      <mustinherit>lastingspell</mustinherit>
+    </control>
+
+
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Attack Spell</caption>
+      <mustinherit>attackspell</mustinherit>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Power of attack (1-10)</caption>
+      <attribute>powerrating</attribute>
+      <width>100</width>
+      <mustinherit>attackspell</mustinherit>
+      <minimum>0</minimum>
+      <maximum>10</maximum>
+    </control>
+
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description (optional)</caption>
+      <attribute>description</attribute>
+      <mustinherit>attackspell</mustinherit>
+    </control>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Element</caption>
+      <types>*=None; fire_type=Fire; frost_type=Frost; storm_type=Storm; earthmight_type=Earthmight; shadow_type=Shadow; rainbow_type=Rainbow; necrotic_type=Necrotic; divine_type=Divine</types>
+      <width>150</width>
+      <mustinherit>attackspell</mustinherit>
+    </control>
+
+
+
+    <control>
+      <controltype>title</controltype>
+      <caption>Monster</caption>
+      <mustinherit>monster</mustinherit>
+    </control>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>Element</caption>
+      <types>*=None; fire_type=Fire; frost_type=Frost; storm_type=Storm; earthmight_type=Earthmight; shadow_type=Shadow; rainbow_type=Rainbow; necrotic_type=Necrotic; divine_type=Divine</types>
+      <width>150</width>
+      <mustinherit>monster</mustinherit>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Hit points</caption>
+      <attribute>hitpoints</attribute>
+      <width>100</width>
+      <mustinherit>monster</mustinherit>
+      <minimum>1</minimum>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Defence</caption>
+      <attribute>defence</attribute>
+      <width>100</width>
+      <mustinherit>monster</mustinherit>
+      <minimum>0</minimum>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Armour</caption>
+      <attribute>armour</attribute>
+      <width>100</width>
+      <mustinherit>monster</mustinherit>
+      <minimum>0</minimum>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on injury</caption>
+      <attribute>hurt</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on death</caption>
+      <attribute>death</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on injury by opposed element</caption>
+      <attribute>hurtbyelement</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on death by opposed element</caption>
+      <attribute>deathbyelement</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Description on ignore</caption>
+      <attribute>ignoreselement</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+    <control>
+      <controltype>textbox</controltype>
+      <caption>Look (when dead)</caption>
+      <attribute>lookwhendead</attribute>
+      <mustinherit>monster</mustinherit>
+    </control>
+
+    <control>
+      <controltype>number</controltype>
+      <caption>Attack bonus</caption>
+      <attribute>attackbonus</attribute>
+      <width>100</width>
+      <mustinherit>weapon</mustinherit>
+      <minimum>0</minimum>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Damage Dice No.</caption>
+      <attribute>damagedicenumber</attribute>
+      <width>100</width>
+      <mustinherit>weapon</mustinherit>
+      <minimum>1</minimum>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Damage Dice Sides</caption>
+      <attribute>damagedicesides</attribute>
+      <width>100</width>
+      <mustinherit>weapon</mustinherit>
+      <minimum>4</minimum>
+    </control>
+    <control>
+      <controltype>number</controltype>
+      <caption>Damage Bonus</caption>
+      <attribute>damagebonus</attribute>
+      <width>100</width>
+      <mustinherit>weapon</mustinherit>
+      <minimum>0</minimum>
+    </control>
+  </tab>
+</library>

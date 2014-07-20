@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Using containers</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Using containers</h1>
+      <p>Containers are objects which can contain other objects. In this example, we&#39;ll create a &quot;fridge&quot; object in the kitchen, which contains several items of food and drink. The fridge is initially closed, so these items will only be visible once the player has opened the fridge.</p>
+
+<h2>Creating the Fridge</h2>
+
+<p>Create a &quot;fridge&quot; object in the kitchen and give it a description like &quot;A big old refrigerator sits in the corner, humming quietly.&quot;</p>
+
+<p>Now let&#39;s set the fridge up as a container. Click the Container tab. By default, &quot;Not a container&quot; is selected. Change this to &quot;Closed container&quot;. The Container options will now appear.</p>
+
+<p><img src="Container.png" alt="" title="Container.png"></p>
+
+<p>By default, the player can open and close the fridge. We&#39;re going to add some objects to the fridge in a moment, and it would be good if the contents were listed when the player opened the fridge, so tick the &quot;List children when object is looked at or opened&quot; option.</p>
+
+<h2>Adding objects to the fridge</h2>
+
+<p>Now let&#39;s create some objects inside the fridge. To do this, we just create these objects as normal, but on the &quot;Add object&quot; window we set the parent to &quot;fridge&quot;.</p>
+
+<p>Add the following objects: milk, cheese, beer. Give each object a sensible description. The prefix for each object should be &quot;some&quot;, so that the room description sounds natural. Allow each object to be taken.</p>
+
+<p>Now run the game and go to the kitchen. Notice that you can&#39;t see the milk, and if you type something like &quot;look at milk&quot;, Quest will tell you that it&#39;s not here. Now open the fridge, and the objects inside it will be revealed.</p>
+
+<p>By setting the &quot;List prefix&quot; you can change the &quot;It contains&quot; text which appears before the list of objects.</p>
+
+<p><img src="Containerfridge.png" alt="" title="Containerfridge.png"></p>
+
+<h2>Updating the description</h2>
+
+<p>In your &quot;look at&quot; description, you can check if the object is open by running a script. Add an &quot;if&quot; command and choose &quot;object is open&quot; - then you can print a different message depending on whether the fridge is open or closed.</p>
+
+<p>When the fridge is open, you might print &quot;The fridge is open, casting its light out into the gloomy kitchen&quot;. When it is closed, you might print &quot;A big old refrigerator sits in the corner, humming quietly&quot;.</p>
+
+<p>As an exercise, add a closed cupboard to the kitchen. Add a few items to the cupboard such as a tin of beans, a packet of rice etc. The player should be able to open and close the cupboard. When Quest lists the contents of the cupboard, it should say something like &quot;The cupboard is bare except for ...&quot;</p>
+
+<h2>Transparency</h2>
+
+<p>When you set the &quot;Transparent&quot; option, the player can see what objects are inside the container, even if it is closed.</p>
+
+<p>Although the player can see what&#39;s inside a transparent container, they still can&#39;t take objects from it or put objects in it unless it is open.</p>
+
+<h2>Surfaces</h2>
+
+<p>Surfaces act very much like containers - they act as an always-open container, and objects that are on a surface are visible in a room description even before the player has looked at the surface. For this reason they’re a good choice for implementing things like tables. As an exercise, change the table object in the lounge to make it a surface (or create it if you haven&#39;t already). Then move the newspaper so that it is on the table - in the Windows version, you can drag the newspaper object in the tree, and drop it on to the table to move it there. In the web version, select the newspaper object and click the Move button in the top right of the screen.</p>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,186 @@
+<!--Saved by Quest 5.3.4586.17090-->
+<asl version="520">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <include ref="ConvLib.aslx" />
+  <game name="Conversation Tester">
+    <gameid>0be5c6ce-c7a0-43fb-836c-6ce248a2ef4d</gameid>
+    <version>1.0</version>
+    <turn type="int">0</turn>
+    <statusattributes type="stringdictionary">turn = </statusattributes>
+    <help type="list">There is no help for you!</help>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <usedefaultprefix />
+    <alias>Conversation Testing Room</alias>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <object name="teapot">
+      <inherit name="editor_object" />
+    </object>
+    <object name="boris">
+      <inherit name="editor_object" />
+      <inherit name="talkingchar" />
+      <inherit name="male" />
+      <alias>Boris</alias>
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+      <start_from type="object">room</start_from>
+      <greet type="script">
+        msg ("'Hi, who are you,' you say to the man.")
+        msg ("'I'm Boris.'")
+      </greet>
+      <object name="boris_himself">
+        <inherit name="editor_object" />
+        <inherit name="startingtopic" />
+        <nowshow type="list">boris_dock_cranes; mary_dock_cranes</nowshow>
+        <alias>Himself</alias>
+        <talk type="script">
+          msg ("'Tell me about yourself.'")
+          msg ("'Well, there not much to tell really. I'm just a regular guy. Who like dock cranes.'")
+        </talk>
+      </object>
+      <object name="boris_dock_cranes">
+        <inherit name="editor_object" />
+        <inherit name="topic" />
+        <alias>Dock cranes</alias>
+        <nowshow type="list">; boris_cranes</nowshow>
+        <talk type="script">
+          msg ("'Sure, dock cranes. Cranes you see at the docks. What's wrong with that?'")
+        </talk>
+      </object>
+      <object name="boris_cranes">
+        <inherit name="editor_object" />
+        <inherit name="topic" />
+        <alias>Cranes</alias>
+        <hideafter type="boolean">false</hideafter>
+        <talk type="script">
+          msg ("'I like the ones that run on rails best.'")
+        </talk>
+      </object>
+    </object>
+    <object name="mary">
+      <inherit name="editor_object" />
+      <inherit name="talkingchar" />
+      <inherit name="female" />
+      <alias>Mary</alias>
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+      <object name="mary_herself">
+        <inherit name="editor_object" />
+        <inherit name="startingtopic" />
+        <alias>Herself</alias>
+        <talk type="script">
+          msg ("'Tell me about yourself.'")
+          msg ("'I'm 25, I'm a lawyer, and I like chocolate.'")
+        </talk>
+      </object>
+      <object name="mary_dock_cranes">
+        <inherit name="editor_object" />
+        <inherit name="topic" />
+        <alias>Dock cranes</alias>
+        <talk type="script">
+          msg ("'Dock cranes? seriously?'")
+        </talk>
+      </object>
+      <object name="mary_teapot">
+        <inherit name="editor_object" />
+        <inherit name="topic" />
+        <alias>Broken teapot</alias>
+        <talk type="script">
+          msg ("'You better clear up that mess.'")
+        </talk>
+      </object>
+      <object name="mary_weather">
+        <inherit name="editor_object" />
+        <inherit name="topic" />
+      </object>
+    </object>
+    <object name="philippa">
+      <inherit name="editor_object" />
+      <inherit name="female" />
+      <inherit name="talkingchar" />
+      <alias>Philippa</alias>
+      <ask type="scriptdictionary" />
+      <object name="philippa_key">
+        <inherit name="editor_object" />
+        <inherit name="startingtopic" />
+        <alias>Key</alias>
+        <nowshow type="list">philippa_key_again</nowshow>
+        <talk type="script">
+          msg ("'Hi,' you say to Philippa, 'can you help me find the key to this door?'")
+          msg ("'Sure, you need to look in the bedroom.'")
+        </talk>
+      </object>
+      <object name="philippa_key_again">
+        <inherit name="editor_object" />
+        <inherit name="topic" />
+        <alias>Key</alias>
+        <hideafter type="boolean">false</hideafter>
+        <talk type="script">
+          msg ("'Hi again,' you say to Philippa, 'can you help me find the key to this door?'")
+          msg ("'Have you tried looking in the bedroom yet?'")
+        </talk>
+      </object>
+      <object name="philippa_got_key">
+        <inherit name="editor_object" />
+        <inherit name="topic" />
+        <alias>Lock</alias>
+        <hideafter type="boolean">false</hideafter>
+        <talk type="script">
+          msg ("'Hi again,' you say to Philippa, 'I've got that key. Now I just need to find the lock.'")
+          msg ("'Good luck with that!'")
+        </talk>
+      </object>
+    </object>
+    <object name="key">
+      <inherit name="editor_object" />
+      <take />
+      <ontake type="script">
+        do (philippa_key, "hide")
+        do (philippa_key_again, "hide")
+        do (philippa_got_key, "show")
+      </ontake>
+    </object>
+  </object>
+  <command name="break_teapot">
+    <pattern>break teapot</pattern>
+    <script>
+      msg ("You break the teapot.")
+      do (mary_teapot, "show")
+    </script>
+  </command>
+  <walkthrough name="test">
+    <steps type="list">
+      talk to philippa
+      menu:Key
+      talk to philippa
+      menu:Key
+      talk to philippa
+      menu:Key
+      get key
+      talk to philippa
+      menu:Lock
+      speak to mary
+      menu:Herself
+      speak to mary
+      speak to boris
+      menu:Himself
+      speak to boris
+      menu:Dock cranes
+      speak to boris
+      menu:Cranes
+      speak to boris
+      menu:Cranes
+      speak to boris
+      menu:Cranes
+      speak to mary
+      menu:Dock cranes
+      break teapot
+      speak to mary
+      menu:Broken teapot
+      break teapot
+      speak to mary
+    </steps>
+  </walkthrough>
+</asl>

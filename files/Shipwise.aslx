@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<library>
+
+  <!--
+  Set of templates to change the horizonal directions to forward and aft, port and starboard.
+  This library must be included after English.aslx and before Core.aslx.
+
+
+  By The Pixie
+  -->
+
+  <template name="CompassN">forward</template>
+  <template name="CompassW">port</template>
+  <template name="CompassE">starboard</template>
+  <template name="CompassS">aft</template>
+  <template name="CompassNShort">f</template>
+  <template name="CompassWShort">p</template>
+  <template name="CompassEShort">s</template>
+  <template name="CompassSShort">a</template>
+  <template name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]></template>
+  <template name="lookdir"><![CDATA[^look (?<exit>forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]></template>
+
+</library>

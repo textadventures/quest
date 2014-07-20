@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scopes</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Scopes</h1>
+      <p>Core.aslx defines:</p>
+
+<ul>
+<li>  <a href="functions/corelibrary/scopeinventory.html">ScopeInventory</a>
+
+<ul>
+<li>  Used to populate the &quot;Inventory&quot; list, and the list of objects returned by the &quot;inventory&quot; command</li>
+</ul></li>
+<li>  <a href="functions/corelibrary/scopevisiblenotheld.html">ScopeVisibleNotHeld</a> = ScopeReachableNotHeld + ScopeVisibleNotReachable
+
+<ul>
+<li>  Used to populate the &quot;Objects&quot; part of the &quot;Places and Objects&quot; list</li>
+</ul></li>
+<li>  <a href="functions/corelibrary/scopereachable.html">ScopeReachable</a> = ScopeReachableNotHeld + ScopeInventory
+
+<ul>
+<li>  All objects in this scope can be interacted with directly by the player</li>
+</ul></li>
+<li>  <a href="functions/corelibrary/scopevisiblenotreachable.html">ScopeVisibleNotReachable</a>
+
+<ul>
+<li>  All objects in this scope can be seen, but can&#39;t be interacted with as they are either &quot;far away&quot; or inside a transparent container.</li>
+</ul></li>
+<li>  <a href="functions/corelibrary/scopereachablenotheld.html">ScopeReachableNotHeld</a>
+
+<ul>
+<li>  These objects are in the current room and can be interacted with, but they&#39;re not in the player&#39;s inventory.</li>
+</ul></li>
+<li>  <a href="functions/corelibrary/scopevisible.html">ScopeVisible</a> = ScopeVisibleNotHeld + ScopeInventory
+
+<ul>
+<li>  These objects can be looked at</li>
+</ul></li>
+<li>  <a href="functions/corelibrary/scopeexits.html">ScopeExits</a>
+
+<ul>
+<li>  Exits that the player can use from the current location</li>
+</ul></li>
+</ul>
+
+    </div>
+  </body>
+</html>

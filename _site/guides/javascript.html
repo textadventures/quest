@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Javascript</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Javascript</h1>
+      <p>As Quest uses HTML, you can implement new features in the user interface (UI) using Javascript.</p>
+
+<h3>Linking to the Javascript code</h3>
+
+<p>Your Javascript code needs to be in a separate file, and you need a link to that file from your game. Click on &quot;Advanced&quot; in the left hand pane, then on &quot;Javascript&quot;. In the left pane, click on &quot;Add&quot;, and browse to your Javascript file (Quest will automatically find it if it is the only one in the folder). The contents of the file will appear.</p>
+
+<p><img src="Javascript1.png" alt="" title="Javascript1.png"></p>
+
+<p>In code view, it looks like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;javascript src=&quot;test.js&quot; /&gt;
+</code></pre></div>
+<h3>Callback function</h3>
+
+<p>To get the Javascript code working for you, you need a way to invoke the Javascript from Quest, and then a way for the Javascript to call back to Quest. Let us set up the call back first. This is just a Quest function that accepts one parameter (and no more than one, and it will be a string). It might look like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;function name=&quot;Inputbox&quot; parameters=&quot;answer&quot;&gt;
+    msg (&quot;You are &quot; +answer + &quot; years old.&quot;)
+  &lt;/function&gt;
+</code></pre></div>
+<p>NOTE: There is an issue to be aware of that appears when games are played on line. It seems you can only have one callback function in operation at a time. Offline this is no proble, as they happen so fast, but online, you may find that only the last one called actually completes.</p>
+
+<h3>The Javascript code</h3>
+
+<p>Now we set up the Javascript (in the Javascript file, of course). A discussion of the language is beyond the scope of this tutorial, but broadly what we need here is a function that first does something useful, then invokes the callback function we created above. Here is an example:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  function inputbox(question,def) {
+    var answer = prompt(question,def);
+    ASLEvent(&quot;Inputbox&quot;, answer);
+  }
+</code></pre></div>
+<p>The first line defines the function as &quot;inputbox&quot;, with two parameters (note that these values will always be strings). The second line invokes the Javascript function &quot;prompt&quot;, which displays an input box. The third line does the callback, using the special function ASLEvent. The first parameter to this function is the name of the Quest function we just created; the second parameter is the value sent to that function.</p>
+
+<h3>Calling from Quest</h3>
+
+<p>Now back to Quest, and we need some way to invoke the Javascript function. This is done using the <a href="../scripts/request.html">request</a> script command, perhaps like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">      request (RunScript, &quot;inputbox;How old are you?;0&quot;)
+</code></pre></div>
+<p>This is a generic command that does all sorts of things, so the first parameter it needs says we are running a script. This is actually done with a <em>request</em> type rather than a string, so has no quotes around it. Because the request script command has only two parameters, all the other information we need to send gets wrapped up into a string, separated by semicolons. First the name of the Javascript function, then the parameters.</p>
+
+<h3>A working example</h3>
+
+<p>Here is a very simple game (by Pertex) that shows Javascript in action. You will also need the four lines of Javascript above in a file called &quot;prompt.js&quot; in the same directory.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;asl version=&quot;520&quot;&gt;
+    &lt;include ref=&quot;English.aslx&quot; /&gt;
+    &lt;include ref=&quot;Core.aslx&quot; /&gt;
+    &lt;game name=&quot;prompt&quot;&gt;
+      &lt;gameid&gt;e6a5586d-dc55-4a9d-953a-3c6b50a2d36e&lt;/gameid&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;start type=&quot;script&quot;&gt;
+        question = &quot;How old are you?&quot;
+        default = &quot;0&quot;
+        request (RunScript, &quot;inputbox;&quot;+ question +&quot;;&quot;+default)
+      &lt;/start&gt;
+    &lt;/game&gt;
+    &lt;object name=&quot;room&quot;&gt;
+      &lt;inherit name=&quot;editor_room&quot; /&gt;
+      &lt;object name=&quot;player&quot;&gt;
+        &lt;inherit name=&quot;defaultplayer&quot; /&gt;
+      &lt;/object&gt;
+    &lt;/object&gt;
+    &lt;function name=&quot;Inputbox&quot; parameters=&quot;answer&quot;&gt;
+      msg (&quot;You are &quot; + answer + &quot; years old.&quot;)
+    &lt;/function&gt;
+    &lt;javascript src=&quot;prompt.js&quot; /&gt;
+  &lt;/asl&gt;
+</code></pre></div>
+<h3>Finally</h3>
+
+<p>Using Javascript, you can do all sorts of fancy stuff with the UI; for more advanced methods see <a href="../tutorial/using_javascript.html">Using Javascript</a>.</p>
+
+    </div>
+  </body>
+</html>

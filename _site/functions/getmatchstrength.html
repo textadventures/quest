@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GetMatchStrength</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>GetMatchStrength</h1>
+      <div class="highlight"><pre><code class="text language-text" data-lang="text">GetMatchStrength (string regex, string input)
+</code></pre></div>
+<p>Optionally as of Quest 5.1 there is a new cache ID parameter:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">GetMatchStrength (string regex, string input, string cache ID)
+</code></pre></div>
+<p>Returns an <a href="../types/int.html">int</a> indicating how strongly the given input matches the regular expression.</p>
+
+<p>The strength is defined as the length of the &quot;required&quot; parts of the string, i.e. the total length of the string <em>minus</em> the total length of all named groups.</p>
+
+<p>Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to GetMatchStrength (or <a href="isregexmatch.html">IsRegexMatch</a> or <a href="populate.html">Populate</a> ) using the same cache ID.</p>
+
+<p>For example, given this regex which matches the text &quot;look at &quot; followed by any object name:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text"> look at (?&amp;lt;object&amp;gt;.*)
+</code></pre></div>
+<p>An input of &quot;look at dog&quot; has a strength of 8.</p>
+
+<p>This is calculated as follows:</p>
+
+<ul>
+<li>  The string &quot;look at dog&quot; has a length of 11</li>
+<li>  The named group &quot;object&quot; matches the substring &quot;dog&quot;, which has a length of 3</li>
+<li>  The strength therefore is 11 - 3 = 8</li>
+</ul>
+
+<p>The strength is used by the command handling functions in CoreCommands.aslx to determine which command is the best match for a given input.</p>
+
+<p>See also <a href="isregexmatch.html">IsRegexMatch</a>, <a href="populate.html">Populate</a></p>
+
+    </div>
+  </body>
+</html>

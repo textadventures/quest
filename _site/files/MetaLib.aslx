@@ -1,0 +1,298 @@
+<library>
+
+  <!--
+  Title: MetaLib
+  Version: 1.2
+  Author: The Pixie
+  Requires: None
+
+  A selection of commands and functions to provide meta-game commands and various aids to debugging.
+  Version 1.2 has been updated for Quest 5.4.
+  -->
+
+
+
+
+  <object name="pix_meta_struct">
+    <library_comment>MetaLib by Pixie, V1.1</library_comment>
+  </object>
+
+
+
+
+  <!-- A. Templates  -->
+
+  <dynamictemplate name="NoInfo">"Sorry, no further information available."</dynamictemplate>
+  <dynamictemplate name="NoWalkThrough">"Sorry, no walk-through available."</dynamictemplate>
+  <dynamictemplate name="NoTranscript">"Quest 5 does not have a transcript facility as such, however, you can get the same effect by just copy-and-pasting the whole text window into a text file (pick Select All from the Edit menu, then Copy). If you are beta-testing, the author should have arranged for transcripts to be forwarded automatically."</dynamictemplate>
+  <dynamictemplate name="Comments">"To add comments to the transcript, type * at the start of the line, and the rest of the line will be ignored (as long as you do not type a full stop)."</dynamictemplate>
+  <dynamictemplate name="WalkthroughLeadin">"There may be more than one way to complete the game, this is one possibility."</dynamictemplate>
+
+  <template templatetype="command" name="Transcript">^(tran)?script( on)?$</template>
+  <template templatetype="command" name="About">^(about|credits|version)$</template>
+  <template templatetype="command" name="Commands">^com(mand)?(s)?$</template>
+  <template templatetype="command" name="Walkthru">^walkthr(ough|u)$</template>
+  <template templatetype="command" name="Libraries">^lib(|rary|raries)$</template>
+
+  <dynamictemplate name="About">object.gamename + ", version " + object.version + " by " + object.author + " for Quest 5"</dynamictemplate>
+
+
+
+
+  <!--
+  Use this to print a point on a walk-through.
+  Used by the Walkthough command, and probably not much use otherwise.
+  -->
+  <function name="InvisiClue" parameters="no, str"><![CDATA[
+    if (HasAttribute(game, "defaultbackground")) {
+      bg = LCase (game.defaultbackground)
+    }
+    else {
+      bg = "white"
+    }
+    msg (" ")
+    msg ("" + no + ": <font color=\"" + bg + "\">" + str + "</font>")
+  ]]></function>
+
+
+
+
+<!--==============================================================-->
+<!-- B. Debugging commands and functions -->
+
+<!--
+Sorry, no language support!
+-->
+
+
+
+  <!--
+  Call this function in your start-up script, and the player will get a brief statement about the game (name, version, author).
+  This will be useful when you are beta-testing so you automatically have the version right there in the transcript. Also
+  useful for competition entries, as Inform users expect this.
+
+  If the version includes the phrase "beta" it will also give instructions to beta-testers.
+  If the category is "Adult",   it will also give a warning.
+
+  Make sure you set the name, author, version and category fields for the game object, and change the version with each release.
+  -->
+  <function name="BoilerPlate"><![CDATA[
+    msg (" ")
+    msg ("<i>" + game.gamename + ", version " + game.version + ", by " + game.author + "</i>")
+    msg ("<i>Type \"ABOUT\" for more details.</i>")
+    if (IsBeta()) {
+      msg (" ")
+      msg ("<i>WARNING: Version for beta-testing only</i>")
+      msg ("Transcripts will be saved automatically. Type any comments into Quest, start your comment with a * so Quest will ignore it and it will be easy to find.")
+      msg ("Your first comment should say who you get credited properly!")
+      msg ("Thanks for your help.")
+    }
+    if (HasString(game, "category")) {
+      if (GetString(game, "category") = "Adult") {
+        msg (" ")
+        msg ("<i>WARNING: This is an adult game</i>")
+        msg ("This is an ADULT game. If you are not legally an adult in your locale, you MUST NOT play it. If you are easily offended by anything of a sexual nature, you also should not play this game.")
+      }
+    }
+    msg (" ")
+  ]]></function>
+
+
+  <!--
+  Returns a [[boolean]], true if this is a beta version (i.e., the version includes the phrase "beta").
+  -->
+  <function name="IsBeta" type="boolean">
+    return (IsRegexMatch ("beta", game.version))
+  </function>
+
+
+
+
+
+  <!--
+  Type STATS at the command line and get a list of any object without an alias or description.
+  If you are using EnviroLib, and there is an environment object, you also get warning about rooms with
+  no environment set.
+  Also lists the number of rooms, non-character objects and characters.
+ 
+  Objects called "offstage", "nowhere" or "environment", or anything ending "_struct" are ignored, as are any with a parent
+  called "environment" (this allows for the conventions of other libraries, in case they are present).
+  Children of the environment object will be tested for the enviro attribute only.
+  -->
+  <command name="stats">
+    <pattern>stats</pattern>
+    <script>
+      enviro = (not GetObject ("environment") = null)
+      room_count = 0
+      object_count = 0
+      char_count = 0
+ 
+      foreach (obj, AllObjects ()) {
+        if (ForStats (obj)) {
+          if (enviro) {
+            if (DoesInherit(obj, "editor_room") and not HasObject(obj, "enviro") and not obj = environment) {
+              msg ("No environment for: " + obj.name)
+            }
+          }
+          if (not HasString(obj, "alias")) {
+            msg ("No alias for: " + obj.name)
+          }
+          if (DoesInherit(obj, "editor_room") and TypeOf(obj, "description") = "string") {
+            if (obj.description = "") {
+              msg ("No description for room: " + obj.name)
+            }
+          }
+          if (DoesInherit(obj, "editor_object") and not HasAttribute(obj, "look")) {
+            msg ("No 'look at' text for object: " + obj.name)
+          }
+        }
+        if (IsChar (obj)) char_count = char_count + 1
+        if (DoesInherit(obj, "editor_room")) room_count = room_count + 1
+        if (DoesInherit(obj, "editor_object")) object_count = object_count + 1
+      }
+ 
+      if (enviro) {
+        foreach (obj, GetDirectChildren (environment)) {
+          if (not HasObject (obj, "enviro")) {
+            msg ("No environment for: " + obj.name)
+          }
+        }
+      }
+ 
+      if (room_count = 0) {
+        msg ("No stats available in published game.")
+      }
+      else {
+        msg ("Things: " + ListCount (AllObjects ()))
+        msg ("Objects: " + (object_count - char_count))
+        msg ("Rooms: " + room_count)
+        msg ("Chars: " + char_count)
+      }
+    </script>
+  </command>
+ 
+  <!--
+  For internal use only. Determines if the given object should be included for stats.
+  -->
+  <function name="ForStats" parameters="obj" type="boolean"><![CDATA[
+    if (EndsWith (obj.name, "_struct")) {
+      return (false)
+    }
+    else if (obj.name = "nowhere") {
+      return (false)
+    }
+    else if (obj.name = "offstage") {
+      return (false)
+    }
+    else if (obj.name = "environment") {
+      return (false)
+    }
+    else if (obj.parent = null) {
+      return (true)
+    }
+    else if (obj.parent.name = "environment") {
+      return (false)
+    }
+    else {
+      return (true)
+    }
+  ]]></function>
+ 
+
+
+<!--==============================================================-->
+<!-- C. MetaGame Commands  -->
+
+
+
+  <command name="transcript" pattern="[Transcript]">
+    <script><![CDATA[
+      msg (DynamicTemplate ("NoTranscript", game))
+      msg (DynamicTemplate ("Comments", game))
+    ]]></script>
+  </command>
+
+
+
+
+
+
+  <!-- Requires the text to be in a StringList called about, attached to the game object  -->
+  <command name="about" pattern="[About]">
+    <script><![CDATA[
+      msg (DynamicTemplate ("About", game))
+      if (HasAttribute (game, "about")) {
+        foreach (item, game.about) {
+          msg (item)
+        }
+      }
+      else {
+        msg (DynamicTemplate ("NoInfo", game))
+      }
+    ]]></script>
+  </command>
+
+
+
+  <command name="libraries" pattern="[Libraries]">
+    <script><![CDATA[
+      foreach (obj, AllObjects ()) {
+        if (EndsWith (obj.name, "_struct") and HasString (obj, "library_comment")) {
+          msg ("- " + obj.library_comment)
+        }
+      }
+    ]]></script>
+  </command>
+
+
+
+  <!-- Requires the text to be in a StringList called walkthru (it assumes it is a walkthrough object if it is caled walkthrough), attached to the game object  -->
+  <command name="walkthrough" pattern="[Walkthru]">
+    <script>
+      if (HasAttribute (game, "walkthru")) {
+        msg (DynamicTemplate ("WalkthroughLeadin", game))
+        count = 0
+        foreach (item, game.walkthru) {
+          count = count + 1
+          InvisiClue (count, item)
+        }
+      }
+      else {
+        msg (DynamicTemplate ("NoWalkThrough", game))
+      }
+    </script>
+  </command>
+
+
+
+
+ 
+  <!--
+  Use this to print hidden text (i.e., in the background colour).
+  -->
+  <function name="Hidden" parameters="str"><![CDATA[
+    if (HasAttribute(game, "defaultbackground")) {
+      bg = LCase (game.defaultbackground)
+    }
+    else {
+      bg = "white"
+    }
+    msg ("<font color=\"" + bg + "\">" + str + "</font>")
+  ]]></function>
+
+
+
+  <!--
+  Returns a [boolean], True if the given object is a character (i.e., inherits from male or female), False otherwise.
+  Unit -tested in UtilLibTest.
+  -->
+  <function name="IsChar" parameters="obj" type="boolean">
+    if (DoesInherit(obj, "female") or DoesInherit(obj, "male") or DoesInherit(obj, "femaleplural") or DoesInherit(obj, "maleplural")) {
+      return (True)
+    }
+    else {
+      return (False)
+    }
+  </function>
+
+</library>

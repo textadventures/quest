@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>defaultobject</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>defaultobject</h1>
+      <p>The &quot;defaultobject&quot; type is defined in CoreTypes.aslx. It is automatically inherited by all objects so there is no need to inherit this directly.</p>
+
+<p>This type defines default behaviour for an object:</p>
+
+<ul>
+<li>  <a href="displayverbs.html">displayverbs</a> &quot;Look at&quot; and &quot;Take&quot;</li>
+<li>  <a href="inventoryverbs.html">inventoryverbs</a> &quot;Look at&quot;, &quot;Use&quot; and &quot;Drop&quot;</li>
+<li>  not <a href="take.html">takeable</a></li>
+<li>  <a href="drop.html">droppable</a></li>
+<li>  <a href="gender.html">gender</a> and <a href="article.html">article</a> use NeutralGender and NeutralArticle templates</li>
+<li>  not a <a href="container.html">container</a>, therefore not <a href="isopen.html">open</a>, <a href="open.html">openable</a> or <a href="close.html">closeable</a></li>
+<li>  default <a href="descprefix.html">descprefix</a>, <a href="objectslistprefix.html">objectslistprefix</a>, <a href="exitslistprefix.html">exitslistprefix</a>, <a href="contentsprefix.html">contentsprefix</a></li>
+<li>  empty <a href="description.html">description</a></li>
+<li>  not <a href="scenery.html">scenery</a></li>
+<li>  <a href="hidechildren.html">hidechildren</a> and <a href="listchildren.html">listchildren</a> both false</li>
+<li>  <a href="usedefaultprefix.html">usedefaultprefix</a> is true</li>
+<li>  implementation of <a href="onopen.html">onopen</a>, <a href="onclose.html">onclose</a>, <a href="onlock.html">onlock</a>, <a href="onunlock.html">onunlock</a>, <a href="onswitchon.html">onswitchon</a> and <a href="onswitchoff.html">onswitchoff</a> by triggering a script when the values of <a href="isopen.html">isopen</a>, <a href="locked.html">locked</a> and <a href="switchedon.html">switchedon</a> change</li>
+</ul>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Port and starboard</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Port and starboard</h1>
+      <p>So you have this plan for a game, but it is set on a ship or a starship, and north and south do not make any sense. The standard for marine ships is to use forward, starboard, aft and port, so why not implement that for your game? This is actually pretty easy to do using Quest&#39;s built-in language support.</p>
+
+<p>One limitation of the shipwise directions is that you lose four directions. While &quot;northeast&quot; is well established, I think people will find &quot;forwardport&quot; rather odd. Remember that when adding exits to your game!</p>
+
+<p>So what do we need to do? All that is needed is to change about a dozen templates. It is very import that these changes are done in the correct place in the code, and unfortunately the GUI fails to do that (as of version 5.2 to 5.4), so you really need to do this in the code.</p>
+
+<p>In code view, at the very top, it will look like this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;!--Saved by Quest 5.2.4515.34846--&gt;
+  &lt;asl version=&quot;520&quot;&gt;
+    &lt;include ref=&quot;English.aslx&quot; /&gt;
+    &lt;include ref=&quot;Core.aslx&quot; /&gt;
+</code></pre></div>
+<p>All the default templates are in English.aslx, and we want to override them, so our templates have to go after that third line. However, templates are used as the files are loaded (but note that dynamic templates are different; they are implemented during game play, so can appear in your code anywhere after the third line), so they have to be before the core library is called in the fourth line.</p>
+
+<p>So let us add some templates.</p>
+
+<p>This set changes the directions Quest uses in description when it says &quot;You can go&quot;</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;template name=&quot;CompassN&quot;&gt;forward&lt;/template&gt;
+  &lt;template name=&quot;CompassW&quot;&gt;port&lt;/template&gt;
+  &lt;template name=&quot;CompassE&quot;&gt;starboard&lt;/template&gt;
+  &lt;template name=&quot;CompassS&quot;&gt;aft&lt;/template&gt;
+</code></pre></div>
+<p>Also need to change the abbreviated versions.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;template name=&quot;CompassNShort&quot;&gt;f&lt;/template&gt;
+  &lt;template name=&quot;CompassWShort&quot;&gt;p&lt;/template&gt;
+  &lt;template name=&quot;CompassEShort&quot;&gt;s&lt;/template&gt;
+  &lt;template name=&quot;CompassSShort&quot;&gt;a&lt;/template&gt;
+</code></pre></div>
+<p>Quest uses these next two for pattern matching the player input. The specific direction is matched against the templates above.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;template templatetype=&quot;command&quot; name=&quot;go&quot;&gt;&lt;![CDATA[^go to (?&lt;exit&gt;.*)$|^go (?&lt;exit&gt;.*)$|^(?&lt;exit&gt;forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]&gt;&lt;/template&gt;
+  &lt;template templatetype=&quot;command&quot; name=&quot;lookdir&quot;&gt;&lt;![CDATA[^look (?&lt;exit&gt;forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]&gt;&lt;/template&gt;
+</code></pre></div>
+<p>You also need to change the help command. One way is to override the DefaultHelp template (which I am not doing here as it seriously messes with Wiki&#39;s formatting), but you might prefer to create your own help command and do it there. It may be useful to spell out the directions as people are somewhat less familiar with ship directions, and to point out they only have four directions instead of eight.</p>
+
+<p>So what does it look like now? The top of your code should now look like this (this is without the help template):</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;!--Saved by Quest 5.2.4515.34846--&gt;
+  &lt;asl version=&quot;520&quot;&gt;
+    &lt;include ref=&quot;English.aslx&quot; /&gt;
+    &lt;template name=&quot;CompassN&quot;&gt;forward&lt;/template&gt;
+    &lt;template name=&quot;CompassW&quot;&gt;port&lt;/template&gt;
+    &lt;template name=&quot;CompassE&quot;&gt;starboard&lt;/template&gt;
+    &lt;template name=&quot;CompassS&quot;&gt;aft&lt;/template&gt;
+    &lt;template name=&quot;CompassNShort&quot;&gt;f&lt;/template&gt;
+    &lt;template name=&quot;CompassWShort&quot;&gt;p&lt;/template&gt;
+    &lt;template name=&quot;CompassEShort&quot;&gt;s&lt;/template&gt;
+    &lt;template name=&quot;CompassSShort&quot;&gt;a&lt;/template&gt;
+    &lt;template name=&quot;go&quot;&gt;&lt;![CDATA[^go to (?&lt;exit&gt;.*)$|^go (?&lt;exit&gt;.*)$|^(?&lt;exit&gt;forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]&gt;&lt;/template&gt;
+    &lt;template name=&quot;lookdir&quot;&gt;&lt;![CDATA[^look (?&lt;exit&gt;forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]&gt;&lt;/template&gt;
+    &lt;include ref=&quot;Core.aslx&quot; /&gt;
+</code></pre></div>
+<p>Wouldn&#39;t this be easier in a library?</p>
+
+<p>Well, go on then.</p>
+
+<p><a href="http://quest5.net/downloads/Shipwise.aslx">Shipwise.aslx</a></p>
+
+<p>Save this file to your game&#39;s folder, and modify the code at the start of the file to this:</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;!--Saved by Quest 5.2.4515.34846--&gt;
+  &lt;asl version=&quot;520&quot;&gt;
+    &lt;include ref=&quot;English.aslx&quot; /&gt;
+    &lt;include ref=&quot;Shipwise.aslx&quot; /&gt;
+    &lt;include ref=&quot;Core.aslx&quot; /&gt;
+</code></pre></div>
+<p>One last note. After adding new templates, or a library with templates, you need to save the game, quit Quest, then open it up again to get the templates loaded up properly.</p>
+
+<hr>
+
+<p>It might be a good idea to implement a command so your game responds to NORTH, EAST, etc., explaining the system. Here is an example of such a command, but you will propbably want to tailor it to your game and style.</p>
+<div class="highlight"><pre><code class="text language-text" data-lang="text">  &lt;command name=&quot;compass_directions&quot;&gt;
+    &lt;pattern&gt;w;e;s;n;se;ne;sw;ne;west;south;east;north;northeast;southeast;northwest;southwest&lt;/pattern&gt;
+    &lt;script&gt;
+      msg (&quot;This story is set on a ship, and the standard compass directions make no sense in that context. Instead,directions are referenced shipwise. Looking towards the front of the ship, ahead of you is \&quot;forward\&quot; (where north would be on the compass rose to the right) and behind you is \&quot;aft\&quot;. To the left is \&quot;port\&quot;, and to the right is \&quot;starboard\&quot;.&quot;)
+      msg (&quot;If you get confused about port and starboard, remember that \&quot;port\&quot; and \&quot;left\&quot; are both four letters long. Or remember that starboard is a corruption of stearboard, an early form of rudder. Most people are right haneed so the stearboard was always on the right,&quot;)
+    &lt;/script&gt;
+  &lt;/command&gt;
+</code></pre></div>
+<p>Note that this will not work if included in the library above. I suspect it has to be after the core library is loaded. Put it in the main file or a library that appears after Core.aslx in the list.</p>
+
+    </div>
+  </body>
+</html>
