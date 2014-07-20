@@ -1,6 +1,6 @@
 ---
 layout: index
-title: ask (attribute)
+title: ask
 ---
 
 "ask" is a [scriptdictionary](../types/scriptdictionary.html). Keys are topics, and values are the scripts to run when the object is asked about that topic.

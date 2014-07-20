@@ -14,7 +14,7 @@ Object attributes handled by Core.aslx:
 -   [alt](../attributes/alt.html)
 -   [alias](../attributes/alias.html)
 -   [article](../attributes/article.html)
--   [ask](../ask_attribute.html)
+-   [ask](../attributes/ask.html)
 -   [askdefault](../attributes/askdefault.html)
 -   [autoopen](../attributes/autoopen.html)
 -   [autounlock](../attributes/autounlock.html)
