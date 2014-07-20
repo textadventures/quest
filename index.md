@@ -17,20 +17,17 @@ New to Quest? The tutorial will guide you through creating your first game.
 Documentation
 -------------
 
-### Guides
-
--   [How to...](how_to.html)
--   [Notes for users of previous versions of Quest](upgrade_notes.html)
-
 ### Reference
 
 -   [Script Commands](scripts/)
 -   [Functions](functions/)
 -   [Attribute Types](types/)
--   [ASLX File Format](elements/)
+-   [Elements](elements/)
 
 ### Other information
 
+-   [Notes for users of previous versions of Quest](upgrade_notes.html)
+-   [ASLX File Format](aslx.html)
 -   [Scopes](scopes.html)
 -   [ASL Requirements](asl_requirements.html)
 -   [Expressions](expressions.html)
@@ -42,6 +39,7 @@ Documentation
 -   [Configuring Quest](configuring_quest.html)
 -   [WebEditor](webeditor.html)
 -   [Libraries](libraries.html)
+-   [How to...](guides/)
 
 Contributing
 ------------
