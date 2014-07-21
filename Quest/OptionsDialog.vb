@@ -158,7 +158,7 @@ Public Class OptionsDialog
     End Sub
 
     Private Sub lnkShowAdultHelp_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkShowAdultHelp.LinkClicked
-        LaunchURL("http://quest5.net/wiki/Configuring_Quest")
+        LaunchURL("http://docs.textadventures.co.uk/quest/configuring_quest.html")
     End Sub
 
     Private Sub LaunchURL(url As String)

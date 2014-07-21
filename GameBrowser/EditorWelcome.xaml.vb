@@ -17,7 +17,7 @@
     End Sub
 
     Private Sub Hyperlink_Click(sender As System.Object, e As System.Windows.RoutedEventArgs)
-        LaunchURL("http://www.textadventures.co.uk/forum/")
+        LaunchURL("http://forum.textadventures.co.uk/")
     End Sub
 
     Private Sub LaunchURL(url As String)

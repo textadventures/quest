@@ -980,7 +980,7 @@ Public Class Editor
     End Sub
 
     Private Sub Help()
-        LaunchURL("http://quest5.net")
+        LaunchURL("http://docs.textadventures.co.uk/quest/")
     End Sub
 
     Private Sub LaunchURL(url As String)

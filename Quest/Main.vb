@@ -365,15 +365,15 @@ Public Class Main
     End Sub
 
     Private Sub Forums()
-        LaunchURL("http://www.textadventures.co.uk/forum/")
+        LaunchURL("http://forum.textadventures.co.uk/")
     End Sub
 
     Private Sub Help()
-        LaunchURL("http://quest5.net")
+        LaunchURL("http://docs.textadventures.co.uk/quest/")
     End Sub
 
     Private Sub Tutorial()
-        LaunchURL("http://quest5.net/wiki/Tutorial")
+        LaunchURL("http://docs.textadventures.co.uk/quest/tutorial/")
     End Sub
 
     Private Sub LaunchURL(url As String)

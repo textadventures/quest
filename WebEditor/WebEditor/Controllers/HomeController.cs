@@ -14,7 +14,7 @@ namespace WebEditor.Controllers
 
         public ActionResult Index()
         {
-            return new RedirectResult(ConfigurationManager.AppSettings["WebsiteHome"] ?? "http://www.textadventures.co.uk/");
+            return new RedirectResult(ConfigurationManager.AppSettings["WebsiteHome"] ?? "http://textadventures.co.uk/");
         }
     }
 }

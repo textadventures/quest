@@ -7,7 +7,7 @@ using TextAdventures.Quest.Functions;
 namespace TextAdventures.Quest.Scripts
 {
     // Any changes here should also be reflected in CoreEditorScriptsOutput.aslx (validvalues for "request" command)
-    // and also on the wiki http://quest5.net/wiki/Request
+    // and also in the documentation https://github.com/textadventures/quest/blob/gh-pages/scripts/request.md
     internal enum Request
     {
         Quit,

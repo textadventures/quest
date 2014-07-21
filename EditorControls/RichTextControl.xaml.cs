@@ -199,7 +199,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            Utility.Utility.LaunchURL("http://quest5.net/wiki/Text_processor");
+            Utility.Utility.LaunchURL("http://docs.textadventures.co.uk/quest/text_processor.html");
         }
     }
 }

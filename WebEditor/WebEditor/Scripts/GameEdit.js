@@ -223,7 +223,7 @@ function initialiseButtons() {
     $("#button-help").button({
         icons: { primary: "ui-icon-help" }
     }).click(function () {
-        window.open("http://quest5.net/wiki/WebEditor");
+        window.open("http://docs.textadventures.co.uk/quest/webeditor.html");
     });
     $("#button-save").button({
         icons: { primary: "ui-icon-disk" }
