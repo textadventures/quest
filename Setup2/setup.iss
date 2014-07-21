@@ -2,57 +2,43 @@
 ; github.com/stfx/innodependencyinstaller
 ; codeproject.com/Articles/20868/NET-Framework-1-1-2-0-3-5-Installer-for-InnoSetup
 
-#define MyAppSetupName 'MyProgram'
-#define MyAppVersion '5.0'
+#define QuestVersion '5.5.1'
+#define SetupVersion '551'
 
 [Setup]
-AppName={#MyAppSetupName}
-AppVersion={#MyAppVersion}
-AppVerName={#MyAppSetupName} {#MyAppVersion}
-AppCopyright=Copyright © stfx 2007-2014
-VersionInfoVersion={#MyAppVersion}
-VersionInfoCompany=stfx
-AppPublisher=stfx
-;AppPublisherURL=http://...
-;AppSupportURL=http://...
-;AppUpdatesURL=http://...
-OutputBaseFilename={#MyAppSetupName}-{#MyAppVersion}
-DefaultGroupName={#MyAppSetupName}
-DefaultDirName={pf}\{#MyAppSetupName}
-UninstallDisplayIcon={app}\MyProgram.exe
+AppName=Quest
+AppVersion={#QuestVersion}
+AppVerName=Quest {#QuestVersion}
+AppCopyright=Copyright © 2014 Alex Warren
+VersionInfoVersion={#QuestVersion}
+AppPublisher=Alex Warren
+AppPublisherURL=http://textadventures.co.uk/
+AppSupportURL=http://textadventures.co.uk/help
+AppUpdatesURL=http://textadventures.co.uk/quest/desktop
+OutputBaseFilename=quest{#SetupVersion}
+DefaultGroupName=Quest
+DefaultDirName={pf}\Quest 5
+UninstallDisplayIcon={app}\Quest.exe
 OutputDir=bin
 SourceDir=.
 AllowNoIcons=yes
-;SetupIconFile=MyProgramIcon
 SolidCompression=yes
-
-;MinVersion default value: "0,5.0 (Windows 2000+) if Unicode Inno Setup, else 4.0,4.0 (Windows 95+)"
-;MinVersion=0,5.0
 PrivilegesRequired=admin
-ArchitecturesAllowed=x86 x64 ia64
-ArchitecturesInstallIn64BitMode=x64 ia64
+;ChangesAssociations=yes
+MinVersion=5.1sp3
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"
 
-[Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-
 [Files]
-Source: "src\MyProgram-x64.exe"; DestDir: "{app}"; DestName: "MyProgram.exe"; Check: IsX64
-Source: "src\MyProgram-IA64.exe"; DestDir: "{app}"; DestName: "MyProgram.exe"; Check: IsIA64
-Source: "src\MyProgram.exe"; DestDir: "{app}"; Check: not Is64BitInstallMode
+Source: "..\Quest\bin\x86\Release\*.*"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Icons]
-Name: "{group}\MyProgram"; Filename: "{app}\MyProgram"
-Name: "{group}\{cm:UninstallProgram,MyProgram}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\MyProgram"; Filename: "{app}\MyProgram.exe"; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\MyProgram"; Filename: "{app}\MyProgram.exe"; Tasks: quicklaunchicon
+Name: "{group}\Quest"; Filename: "{app}\Quest.exe"
 
 [Run]
-Filename: "{app}\MyProgram.exe"; Description: "{cm:LaunchProgram,MyProgram}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\Quest.exe"; Description: "Launch Quest"; Flags: nowait postinstall skipifsilent
 
 #include "scripts\products.iss"
 #include "scripts\products\stringversion.iss"
