@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("Quest Game Browser")> 
 <Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("Text Adventures Ltd")> 
+<Assembly: AssemblyCompany("Alex Warren")> 
 <Assembly: AssemblyProduct("Quest")> 
-<Assembly: AssemblyCopyright("Copyright © 2014 Text Adventures Ltd")> 
+<Assembly: AssemblyCopyright("Copyright © 2014 Alex Warren")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>

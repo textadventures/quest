@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("QuestConsole")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Text Adventures Ltd")]
+[assembly: AssemblyCompany("Alex Warren")]
 [assembly: AssemblyProduct("Quest")]
-[assembly: AssemblyCopyright("Copyright © 2014 Text Adventures Ltd")]
+[assembly: AssemblyCopyright("Copyright © 2014 Alex Warren")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
