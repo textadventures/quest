@@ -29,7 +29,6 @@ MinVersion=5.1sp3
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
-Name: "de"; MessagesFile: "compiler:Languages\German.isl"
 
 [Files]
 Source: "..\Quest\bin\x86\Release\*.*"; DestDir: "{app}"; Flags: recursesubdirs
