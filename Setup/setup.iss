@@ -31,7 +31,7 @@ MinVersion=5.1sp3
 Name: "en"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "..\Quest\bin\x86\Release\*.*"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "..\Quest\bin\x86\Release\*.*"; Excludes: "*.vshost.*,*.pdb,\*.xml"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Icons]
 Name: "{group}\Quest"; Filename: "{app}\Quest.exe"
