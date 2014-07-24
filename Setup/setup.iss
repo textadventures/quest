@@ -26,6 +26,7 @@ SolidCompression=yes
 PrivilegesRequired=admin
 ChangesAssociations=yes
 MinVersion=5.1sp3
+SignTool=kSign /d $qQuest {#QuestVersion}$q /du $qhttp://textadventures.co.uk/$q $f
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
