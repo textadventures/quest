@@ -17,6 +17,23 @@ New to Quest? The tutorial will guide you through creating your first game.
 Documentation
 -------------
 
+<script>
+  (function() {
+    var cx = '015306987908116640949:jr9g5bqdxsa';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+
+<div>
+	<gcse:searchbox-only></gcse:searchbox-only>
+</div>
+
 ### Reference
 
 -   [Script Commands](scripts/)
