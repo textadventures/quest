@@ -30,7 +30,18 @@ Documentation
   })();
 </script>
 
-<div>
+<style>
+	.gcs,
+	.gcs *,
+	.gcs *:before,
+	.gcs *:after {
+	  -webkit-box-sizing: content-box;
+	     -moz-box-sizing: content-box;
+	          box-sizing: content-box;
+	}
+</style>
+
+<div class="gcs">
 	<gcse:searchbox-only></gcse:searchbox-only>
 </div>
 
