@@ -134,7 +134,11 @@ function disableMainScrollbar() {
     $("#divOutput").css("overflow", "hidden");
 }
 
+var _timerRunning = false;
+
 function startTimer() {
+    if (_timerRunning) return;
+    _timerRunning = true;
     tickCount = 0;
     tmrTick = setInterval(function () {
         timerTick();
@@ -142,6 +146,8 @@ function startTimer() {
 }
 
 function stopTimer() {
+    if (!_timerRunning) return;
+    _timerRunning = false;
     clearInterval(tmrTick);
 }
 
