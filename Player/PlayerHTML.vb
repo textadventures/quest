@@ -144,7 +144,6 @@ Public Class PlayerHTML
                              Select (GetScriptParameter(arg))
             script = String.Format("{0}({1})", functionName, String.Join(",", stringArgs))
         End If
-        Debug.WriteLine(script)
         SyncLock m_buffer
             m_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
         End SyncLock
