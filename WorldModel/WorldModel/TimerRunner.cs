@@ -33,6 +33,14 @@ namespace TextAdventures.Quest
             }
         }
 
+        private IEnumerable<Element> DisabledTimers
+        {
+            get
+            {
+                return m_worldModel.Elements.GetElements(ElementType.Timer).Where(t => !t.Fields[FieldDefinitions.Enabled]);
+            }
+        }
+
         private Element GameElement
         {
             get
@@ -54,6 +62,19 @@ namespace TextAdventures.Quest
         public void IncrementTime(int elapsedTime)
         {
             TimeElapsed += elapsedTime;
+
+            foreach (var timer in DisabledTimers)
+            {
+                // Disabled timers get their triggers pushed into the future, so they will run if they become enabled.
+                if (timer.Fields[FieldDefinitions.Trigger] < TimeElapsed)
+                {
+                    timer.Fields[FieldDefinitions.Trigger] = TimeElapsed + timer.Fields[FieldDefinitions.Interval];
+                }
+                else
+                {
+                    timer.Fields[FieldDefinitions.Trigger] += elapsedTime;
+                }
+            }
         }
 
         public IDictionary<Element, IScript> TickAndGetScripts(int elapsedTime)
