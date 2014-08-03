@@ -12,10 +12,6 @@ First, let's set up the timer. After we have done this, we will add the script c
 Setting up the Timer
 --------------------
 
-<div class="alert alert-info">
-Note: There is a bug in the Quest 5.5 web player that means that timers do not work properly. Do not use this feature if you will want your game tro be played on-line.
-
-</div>
 In the Windows desktop version, add the timer by right-clicking the tree, or using the Add menu. In the web version, select "Timers" from the tree and click Add.
 
 Enter the name "bee timer".
