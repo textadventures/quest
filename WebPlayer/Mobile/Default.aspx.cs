@@ -18,8 +18,20 @@ namespace WebPlayer.Mobile
             {
                 var origUrlValues = HttpUtility.ParseQueryString(origUrl.Substring(origUrl.IndexOf("?")));
                 string id = origUrlValues.Get("id");
-                Response.Redirect("Play.aspx?id=" + id);
-                return;
+
+                if (!string.IsNullOrEmpty(id))
+                {
+                    Response.Redirect("Play.aspx?id=" + id);
+                    return;
+                }
+
+                string load = origUrlValues.Get("load");
+
+                if (!string.IsNullOrEmpty(load))
+                {
+                    Response.Redirect("Play.aspx?load=" + load);
+                    return;
+                }
             }
 
             Response.Clear();
