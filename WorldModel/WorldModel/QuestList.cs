@@ -122,8 +122,7 @@ namespace TextAdventures.Quest
             {
                 m_list.Insert(index.Value, item);
             }
-            UndoLogAdd(item, index.Value);
-            NotifyAdd(item, source, index.Value);
+            ItemAdded(item, source, index.Value);
         }
 
         public void AddRange(IEnumerable<T> collection)
@@ -136,8 +135,7 @@ namespace TextAdventures.Quest
             m_list.AddRange(collection);
             foreach (T item in collection)
             {
-                UndoLogAdd(item, index);
-                NotifyAdd(item, UpdateSource.System, index);
+                ItemAdded(item, UpdateSource.System, index);
                 index++;
             }
         }
@@ -160,7 +158,7 @@ namespace TextAdventures.Quest
             CheckNotLocked();
             UndoLogRemove(item, index);
             m_list.RemoveAt(index);
-            NotifyRemove(item, source, index);
+            ItemRemoved(item, source, index);
         }
 
         public void RemoveByIndex(int index, UpdateSource source)
@@ -211,16 +209,28 @@ namespace TextAdventures.Quest
             }
         }
 
-        private void NotifyAdd(T item, UpdateSource source, int index)
+        private void ItemAdded(T item, UpdateSource source, int index)
         {
+            if (Config.StorageLog)
+            {
+                System.Diagnostics.Debug.WriteLine("LIST ADD ({0}) @{1} = {2}", Owner == null ? "none" : Owner.Name, index, item);
+            }
+
+            UndoLogAdd(item, index);
+
             if (Added != null)
             {
                 Added(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });
             }
         }
 
-        private void NotifyRemove(T item, UpdateSource source, int index)
+        private void ItemRemoved(T item, UpdateSource source, int index)
         {
+            if (Config.StorageLog)
+            {
+                System.Diagnostics.Debug.WriteLine("LIST REMOVE ({0}) @{1}", Owner == null ? "none" : Owner.Name, index);
+            }
+
             if (Removed != null)
             {
                 Removed(this, new QuestListUpdatedEventArgs<T> { UpdatedItem = item, Index = index, Source = source });

@@ -413,10 +413,18 @@ namespace TextAdventures.Quest
 
             if (m_worldModel.Version >= WorldModelVersion.v530 && value == null)
             {
+                if (Config.StorageLog && changed)
+                {
+                    System.Diagnostics.Debug.WriteLine("DELETE {2}{0}.{1}", m_element.Initialised ? m_element.Name : "(new)", name, m_isMeta ? "(meta) " : "");
+                }
                 m_attributes.Remove(name);
             }
             else
             {
+                if (Config.StorageLog && changed)
+                {
+                    System.Diagnostics.Debug.WriteLine("SET {3}{0}.{1} = {2}", m_element.Initialised ? m_element.Name : "(new)", name, value, m_isMeta ? "(meta) " : "");
+                }
                 m_attributes[name] = value;
             }
 

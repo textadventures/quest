@@ -35,7 +35,8 @@ namespace TextAdventures.Quest.Scripts
 
         public override string ToString()
         {
-            return m_implementation.Fields[FieldDefinitions.Script].ToString();
+            var script = m_implementation.Fields[FieldDefinitions.Script];
+            return script == null ? string.Empty : script.ToString();
         }
     }
 }

@@ -134,16 +134,14 @@ namespace TextAdventures.Quest
         {
             CheckNotLocked();
             m_dictionary.Add(key, value);
-            UndoLogAdd(key);
-            NotifyAdd(key, value, source, m_dictionary.IndexOfKey(key));
+            ItemAdded(key, value, source, m_dictionary.IndexOfKey(key));
         }
 
         public void Add(string key, T value, UpdateSource source, int index)
         {
             CheckNotLocked();
             m_dictionary.Insert(index, key, value);
-            UndoLogAdd(key);
-            NotifyAdd(key, value, source, index);
+            ItemAdded(key, value, source, index);
         }
 
         public bool ContainsKey(string key)
@@ -164,12 +162,10 @@ namespace TextAdventures.Quest
         public bool Remove(string key, UpdateSource source)
         {
             CheckNotLocked();
-            UndoLogRemove(key);
             T removedValue = m_dictionary[key];
             int removedIndex = m_dictionary.IndexOfKey(key);
-            bool result = m_dictionary.Remove(key);
-            NotifyRemove(key, removedValue, source, removedIndex);
-            return result;
+            ItemRemoved(key, removedValue, source, removedIndex);
+            return m_dictionary.Remove(key);
         }
 
         public bool TryGetValue(string key, out T value)
@@ -193,11 +189,9 @@ namespace TextAdventures.Quest
                 CheckNotLocked();
                 if (ContainsKey(key))
                 {
-                    UndoLogRemove(key);
-                    NotifyRemove(key, value, UpdateSource.System, m_dictionary.IndexOfKey(key));
+                    ItemRemoved(key, value, UpdateSource.System, m_dictionary.IndexOfKey(key));
                 }
-                UndoLogAdd(key);
-                NotifyAdd(key, value, UpdateSource.System, m_dictionary.IndexOfKey(key));
+                ItemAdded(key, value, UpdateSource.System, m_dictionary.IndexOfKey(key));
                 m_dictionary[key] = value;
             }
         }
@@ -210,8 +204,7 @@ namespace TextAdventures.Quest
         {
             CheckNotLocked();
             ((ICollection<KeyValuePair<string,T>>)m_dictionary).Add(item);
-            UndoLogAdd(item.Key);
-            NotifyAdd(item.Key, item.Value, UpdateSource.System, m_dictionary.IndexOfKey(item.Key));
+            ItemAdded(item.Key, item.Value, UpdateSource.System, m_dictionary.IndexOfKey(item.Key));
         }
 
         public void Clear()
@@ -242,8 +235,7 @@ namespace TextAdventures.Quest
         public bool Remove(KeyValuePair<string, T> item)
         {
             CheckNotLocked();
-            UndoLogRemove(item.Key);
-            NotifyRemove(item.Key, item.Value, UpdateSource.System, m_dictionary.IndexOfKey(item.Key));
+            ItemRemoved(item.Key, item.Value, UpdateSource.System, m_dictionary.IndexOfKey(item.Key));
             return ((ICollection<KeyValuePair<string, T>>)m_dictionary).Remove(item);
         }
 
@@ -285,8 +277,7 @@ namespace TextAdventures.Quest
             {
                 throw new Exception(string.Format("Error adding key '{0}' to dictionary: {1}", key, ex.Message), ex);
             }
-            UndoLogAdd(key);
-            NotifyAdd((string)key, (T)value, UpdateSource.System, m_dictionary.IndexOfKey((string)key));
+            ItemAdded((string)key, (T)value, UpdateSource.System, m_dictionary.IndexOfKey((string)key));
         }
 
         public bool Contains(object key)
@@ -312,8 +303,7 @@ namespace TextAdventures.Quest
         public void Remove(object key)
         {
             CheckNotLocked();
-            UndoLogRemove(key);
-            NotifyRemove((string)key, m_dictionary[(string)key], UpdateSource.System, m_dictionary.IndexOfKey((string)key));
+            ItemRemoved((string)key, m_dictionary[(string)key], UpdateSource.System, m_dictionary.IndexOfKey((string)key));
             m_dictionary.Remove((string)key);
         }
 
@@ -380,16 +370,30 @@ namespace TextAdventures.Quest
             return result;   
         }
 
-        private void NotifyAdd(string key, T value, UpdateSource source, int index)
+        private void ItemAdded(string key, T value, UpdateSource source, int index)
         {
+            if (Config.StorageLog)
+            {
+                System.Diagnostics.Debug.WriteLine("DICTIONARY ADD ({0}) ['{1}'] = {2}", Owner == null ? "none" : Owner.Name, key, value);
+            }
+
+            UndoLogAdd(key);
+
             if (Added != null)
             {
                 Added(this, new QuestDictionaryUpdatedEventArgs<T> { Key = key, Item = value, Index = index, Source = source });
             }
         }
 
-        private void NotifyRemove(string key, T value, UpdateSource source, int index)
+        private void ItemRemoved(string key, T value, UpdateSource source, int index)
         {
+            if (Config.StorageLog)
+            {
+                System.Diagnostics.Debug.WriteLine("DICTIONARY REMOVE ({0}) ['{1}']", Owner == null ? "none" : Owner.Name, key);
+            }
+
+            UndoLogRemove(key);
+
             if (Removed != null)
             {
                 Removed(this, new QuestDictionaryUpdatedEventArgs<T> { Key = key, Item = value, Index = index, Source = source });
