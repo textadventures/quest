@@ -100,7 +100,7 @@ Ask and Tell
 
 Ask and Tell work in the same way, so we'll only cover "ask" here.
 
-Click on Bob and go to the "Ask/tell" tab. Here you can add subjects to the list, and give a script for each subject. You can also give a script to run when the player asks Bob about something he doesn't know about.
+Click on Bob and go to the "Ask/tell" tab. (If you can't find this tab, you will have to activate this feature in the Features tab in the "game" section.) Here you can add subjects to the list, and give a script for each subject. You can also give a script to run when the player asks Bob about something he doesn't know about.
 
 Let's make Bob respond to a question about the massive heart attack he's just amazingly recovered from. Click the "Add" ![](Add.png "fig:Add.png") button and enter some topic keywords, for example "heart attack cardiac arrest". When the player asks Bob about anything, this list of keywords is checked for matches in the player's command. So the player could type "ask bob about heart" or "ask bob about cardiac arrest", and that will match this topic.
 
