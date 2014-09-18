@@ -529,10 +529,10 @@
 
   <function name="AllKeysAvailable" parameters="object" type="boolean">
     if (HasObject(object, "key")) {
-	  if (not HasInt(object,"keycount")) {
+      if (not HasInt(object,"keycount")) {
         object.keycount = 1
         object.key1 = object.key
-	  }
+      }
       if (not HasObject(object, "key1")) {	
 	    object.key1 = object.key
 	  }	
