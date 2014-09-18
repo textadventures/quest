@@ -528,9 +528,14 @@
   </function>
 
   <function name="AllKeysAvailable" parameters="object" type="boolean">
-    if (not HasInt(object,"keycount") and HasObject(object, "key")) {
-      object.keycount = 1
-      object.key1 = object.key
+    if (HasObject(object, "key")) {
+      if (not HasInt(object,"keycount")) {
+        object.keycount = 1
+        object.key1 = object.key
+      }
+      if (not HasObject(object, "key1")) {	
+	    object.key1 = object.key
+	  }	
     }
     for (x, 1, object.keycount) {
       keyname = "key" + ToString(x)

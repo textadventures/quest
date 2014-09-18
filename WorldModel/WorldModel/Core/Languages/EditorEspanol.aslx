@@ -536,7 +536,7 @@
   <template name="EditorScriptsScriptsWhile2">Mientras</template>
   <template name="EditorScriptsScriptsistrue">es verdad,</template>
   <template name="EditorScriptsScriptsCallfunction">Llamar función</template>
-  <template name="EditorScriptsScriptswithparameters">Con parámetros:</template>
+  <template name="EditorScriptsScriptsWithparameters">Con parámetros:</template>
   <template name="EditorScriptsScriptsParameters">Parámetros</template>
   <template name="EditorScriptsScriptsRunanobjects">Correr atributo de guión a un objeto</template>  
   <template name="EditorScriptsScriptsRunobject">Correr objeto</template>
