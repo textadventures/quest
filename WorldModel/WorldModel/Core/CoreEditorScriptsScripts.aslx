@@ -265,7 +265,7 @@
 
     <control>
       <controltype>label</controltype>
-      <caption>[EditorScriptsScriptswithparameters]</caption>
+      <caption>[EditorScriptsScriptsWithparameters]</caption>
     </control>
 
     <!-- TO DO: Popup needs to have ExpressionControl in it -->

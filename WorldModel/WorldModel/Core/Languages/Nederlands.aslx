@@ -113,7 +113,7 @@
   <verbtemplate name="open">open</verbtemplate>
   <verbtemplate name="close">sluit</verbtemplate>
   <dynamictemplate name="YouLooking">"U bent op zoek " + text +"."</dynamictemplate>
-  <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
+  <template templatetype="command" name="put"><![CDATA[^zet (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
 
   <verbtemplate name="buy">koop</verbtemplate>
   <dynamictemplate name="DefaultBuy">"Je kan " + object.article + " niet kopen."</dynamictemplate>
