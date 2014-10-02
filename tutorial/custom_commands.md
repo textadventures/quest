@@ -100,7 +100,7 @@ Additional example
 
 Quest can handle text and objects in the same command. Here the say command is extended to allow the plaer to specify who she is talking to.
 
-![](Say to troll.png "Say to troll.png")
+![](Say_to_troll.png "Say_to_troll.png")
 
 In code, it looks like this:
 
