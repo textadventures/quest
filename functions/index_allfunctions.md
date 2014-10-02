@@ -4,6 +4,8 @@ title: Functions
 ---
 
 
+## A
+
 *  [AddToInventory](corelibrary/addtoinventory.html)
 *  [AllCommands](allcommands.html)
 *  [AllExits](allexits.html)
@@ -11,6 +13,8 @@ title: Functions
 *  [AllTurnScripts](allturnscripts.html)
 *  [Asc](string/asc.html)
 *  [Ask](ask.html)
+
+## C
 
 *  [CanReachThrough](corelibrary/canreachthrough.html)
 *  [CanSeeThrough](corelibrary/canseethrough.html)
@@ -26,6 +30,8 @@ title: Functions
 *  [CommandLink](corelibrary/commandlink.html)
 *  [Contains](contains.html)
 
+## D
+
 *  [DecreaseHealth](corelibrary/decreasehealth.html)
 *  [DecreaseScore](corelibrary/decreasescore.html)
 *  [DiceRoll](corelibrary/diceroll.html)
@@ -40,13 +46,19 @@ title: Functions
 *  [DoesInherit](doesinherit.html)
 *  [DynamicTemplate](dynamictemplate.html)
 
+## E
+
 *  [EnableTimer](corelibrary/enabletimer.html)
 *  [EnableTurnScript](corelibrary/enableturnscript.html)
 *  [EndsWith](string/endswith.html)
 *  [Eval](eval.html)
 
+## F
+
 *  [FormatExitList](corelibrary/formatexitlist.html)
 *  [FormatObjectList](corelibrary/formatobjectlist.html)
+
+## G
 
 *  [GetAllChildObjects](getallchildobjects.html)
 *  [GetAttributeNames](getattributenames.html)
@@ -89,6 +101,8 @@ title: Functions
 *  [Grid_SetCentre](corelibrary/grid_setcentre.html)
 *  [Grid_ShowCustomLayer](corelibrary/grid_showcustomlayer.html)
 
+## H
+
 *  [HandleCommand](corelibrary/handlecommand.html)
 *  [HasAttribute](hasattribute.html)
 *  [HasBoolean](hasboolean.html)
@@ -100,6 +114,8 @@ title: Functions
 *  [HasString](hasstring.html)
 *  [HelperCloseObject](corelibrary/helpercloseobject.html)
 *  [HelperOpenObject](corelibrary/helperopenobject.html)
+
+## I
 
 *  [IncreaseHealth](corelibrary/increasehealth.html)
 *  [IncreaseScore](corelibrary/increasescore.html)
@@ -114,7 +130,11 @@ title: Functions
 *  [IsRegexMatch](isregexmatch.html)
 *  [IsSwitchedOn](corelibrary/isswitchedon.html)
 
+## J
+
 *  [Join](string/join.html)
+
+## L
 
 *  [LCase](string/lcase.html)
 *  [LTrim](string/ltrim.html)
@@ -129,12 +149,16 @@ title: Functions
 *  [LockExit](corelibrary/lockexit.html)
 *  [Log](corelibrary/log.html)
 
+## M
+
 *  [MakeExitInvisible](corelibrary/makeexitinvisible.html)
 *  [MakeExitVisible](corelibrary/makeexitvisible.html)
 *  [MakeObjectInvisible](corelibrary/makeobjectinvisible.html)
 *  [MakeObjectVisible](corelibrary/makeobjectvisible.html)
 *  [Mid](string/mid.html)
 *  [MoveObject](corelibrary/moveobject.html)
+
+## N
 
 *  [NewDictionary](newdictionary.html)
 *  [NewList](newlist.html)
@@ -144,15 +168,21 @@ title: Functions
 *  [NewStringDictionary](newstringdictionary.html)
 *  [NewStringList](newstringlist.html)
 
+## O
+
 *  [ObjectDictionaryItem](objectdictionaryitem.html)
 *  [ObjectLink](corelibrary/objectlink.html)
 *  [ObjectListItem](objectlistitem.html)
 *  [ObjectListSortDescending](objectlistsortdescending.html)
 *  [ObjectListSort](objectlistsort.html)
 
+## P
+
 *  [Pause](corelibrary/pause.html)
 *  [Populate](populate.html)
 *  [PrintCentered](corelibrary/printcentered.html)
+
+## R
 
 *  [RTrim](string/rtrim.html)
 *  [RandomChance](corelibrary/randomchance.html)
@@ -161,6 +191,8 @@ title: Functions
 *  [Replace](string/replace.html)
 *  [Right](string/right.html)
 *  [RunDelegateFunction](rundelegatefunction.html)
+
+## S
 
 *  [SafeXML](safexml.html)
 *  [ScopeAllExitsForRoom](corelibrary/scopeallexitsforroom.html)
@@ -218,6 +250,8 @@ title: Functions
 *  [SwitchOff](corelibrary/switchoff.html)
 *  [SwitchOn](corelibrary/switchon.html)
 
+## T
+
 *  [Template](template.html)
 *  [TextFX_Typewriter](corelibrary/textfx_typewriter.html)
 *  [TextFX_Unscramble](corelibrary/textfx_unscramble.html)
@@ -227,8 +261,12 @@ title: Functions
 *  [Trim](string/trim.html)
 *  [TypeOf](typeof.html)
 
+## U
+
 *  [UCase](string/ucase.html)
 *  [UnlockExit](corelibrary/unlockexit.html)
 *  [UpdateStatusAttributes](corelibrary/updatestatusattributes.html)
+
+## W
 
 *  [WaitForKeyPress](corelibrary/waitforkeypress.html)
