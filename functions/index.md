@@ -3,6 +3,8 @@ layout: index
 title: Functions
 ---
 
+[All functions in alphabetical order](index_allfunctions.html)
+
 ## Quest Functions
 
 * [AllCommands](allcommands.html)
