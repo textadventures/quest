@@ -10,7 +10,7 @@ This page is for "how to" guides which don't fit in to the tutorial.
 -   [Ask a question](ask_a_question.html) (like as a riddle)
 -   [Translating Quest into other languages](translating_quest.html)
 -   [Implementing a starting inventory](starting_inventory.html)
--   [Adding an introduction](introduction.html)
+-   [Adding an introduction](adding_introduction_text.html)
 -   [Implementing a journal](journal.html)
 -   [Organising rooms](organise_rooms.html)
 -   [Using Templates](using_templates.html)
