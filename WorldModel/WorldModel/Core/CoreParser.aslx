@@ -294,16 +294,22 @@
         if (game.command_newline) {
           msg ("")
         }
-        commands = Split(command, ".")
         game.pov.commandmetadata = metadata
-        if (ListCount(commands) = 1) {
-          game.pov.commandqueue = null
-          HandleSingleCommand (Trim(command))
-        }
+        if (game.multiplecommands){		
+          commands = Split(command, ".")
+          if (ListCount(commands) = 1) {
+            game.pov.commandqueue = null
+            HandleSingleCommand (Trim(command))
+          }
+          else {
+            game.pov.commandqueue = commands
+            HandleNextCommandQueueItem
+          }
+		}
         else {
-          game.pov.commandqueue = commands
-          HandleNextCommandQueueItem
-        }
+          game.pov.commandqueue = null
+          HandleSingleCommand (Trim(command))	
+        }		
       }
     }
     ]]>

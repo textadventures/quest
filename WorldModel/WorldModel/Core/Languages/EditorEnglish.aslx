@@ -88,6 +88,7 @@
   <template name="EditorGameLightnessand">Lightness and darkness: rooms can be dark, and objects can light them up</template>
   <template name="EditorGameAsk/Tellplayers">Ask/Tell: players can ask or tell characters about selected topics</template>
   <template name="EditorGameInroomdescriptions">In-room descriptions: additional text which each object contributes to a room description</template>
+  <template name="EditorGameMultipleCommands">Allow input of multiple commands in one line separated by "."</template>
   <template name="EditorGameDisplay">Display</template>
   <template name="EditorGameTheme">Theme</template>
   <template name="EditorGameFont">Font</template>

@@ -66,6 +66,7 @@
     <feature_limitinventory type="boolean">false</feature_limitinventory>
     <feature_asktell type="boolean">false</feature_asktell>
     <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
+    <multiplecommands type="boolean">false</multiplecommands>	
   </type>
 
   <type name="theme_novella">
