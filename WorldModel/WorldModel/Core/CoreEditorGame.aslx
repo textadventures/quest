@@ -167,6 +167,11 @@
         <attribute>appendobjectdescription</attribute>
       </control>
 
+      <control>
+        <controltype>checkbox</controltype>
+        <caption>[EditorGameMultipleCommands]</caption>
+        <attribute>multiplecommands</attribute>
+      </control>	  
     </tab>
 
     <tab>
