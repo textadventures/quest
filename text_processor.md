@@ -97,7 +97,7 @@ Displays a page hyperlink (displaying the page name)
 {page:name:link text}  
 Displays a page hyperlink (using text you specify)
 
-{counter.countername}  
+{counter:countername}  
 Displays the value of an counter
 
 {if flag:text}  
