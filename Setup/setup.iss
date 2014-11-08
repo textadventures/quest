@@ -36,6 +36,7 @@ Source: "..\Quest\bin\x86\Release\*.*"; Excludes: "*.vshost.*,*.pdb,\*.xml"; Des
 
 [Icons]
 Name: "{group}\Quest"; Filename: "{app}\Quest.exe"
+Name: "{commondesktop}\Quest"; Filename: "{app}\Quest.exe"
 
 [Run]
 Filename: "{app}\Quest.exe"; Description: "Launch Quest"; Flags: nowait postinstall skipifsilent
