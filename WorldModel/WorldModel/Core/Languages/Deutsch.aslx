@@ -181,9 +181,9 @@
   <verbtemplate name="climb">klettere</verbtemplate>
   <verbtemplate name="climb">erklettere</verbtemplate>
   <dynamictemplate name="DefaultClimb">"Du kannst " + object.article + " nicht erklettern."</dynamictemplate>
-  <verbtemplate name="drink">drink</verbtemplate>
-  <verbtemplate name="drink">drinke</verbtemplate>
-  <dynamictemplate name="DefaultDrink">"Du kannst " + object.article + " nicht drinken."</dynamictemplate>
+  <verbtemplate name="drink">trink</verbtemplate>
+  <verbtemplate name="drink">trinke</verbtemplate>
+  <dynamictemplate name="DefaultDrink">"Du kannst " + object.article + " nicht trinken."</dynamictemplate>
   <verbtemplate name="eat">iss</verbtemplate>
   <verbtemplate name="eat">esse</verbtemplate>
   <verbtemplate name="givesingle">gib</verbtemplate>
@@ -199,8 +199,8 @@
   <verbtemplate name="kiss">küsse</verbtemplate>
   <verbtemplate name="kiss">kuesse</verbtemplate>
   <dynamictemplate name="DefaultKiss">"Du küsst " + object.article + ", aber nichts passiert."</dynamictemplate>
-  <verbtemplate name="knock">schlage</verbtemplate>
-  <dynamictemplate name="DefaultKnock">"Du kannst " + object.article + " nicht schlagen."</dynamictemplate>
+  <verbtemplate name="knock">klopfe an</verbtemplate>
+  <dynamictemplate name="DefaultKnock">"Du kannst an " + object.article + " nicht klopfen."</dynamictemplate>
   <verbtemplate name="lick">lecke</verbtemplate>
   <dynamictemplate name="DefaultLick">"Du leckst daran und kannst nur darauf hoffen, dass nichts zurückbleibt als ein seltsamer Nachgeschmack."</dynamictemplate>
   <verbtemplate name="lie">legen auf</verbtemplate>
@@ -241,7 +241,7 @@
   <verbtemplate name="smell">rieche an</verbtemplate>
   <verbtemplate name="smell">rieche</verbtemplate>
   <dynamictemplate name="DefaultSmell">"Du schnüffelst, kannst aber nichts besonderes wahrnehmen."</dynamictemplate>
-  <verbtemplate name="taste">taste</verbtemplate>
+  <verbtemplate name="taste">probiere</verbtemplate>
   <dynamictemplate name="DefaultTaste">"Du willst " + object.article + " nicht probieren."</dynamictemplate>
   <verbtemplate name="throw">werfe</verbtemplate>
   <verbtemplate name="throw">wirf</verbtemplate>
