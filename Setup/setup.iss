@@ -26,6 +26,7 @@ SolidCompression=yes
 PrivilegesRequired=admin
 ChangesAssociations=yes
 MinVersion=5.1sp3
+UsePreviousSetupType=no
 SignTool=kSign /d $qQuest {#QuestVersion}$q /du $qhttp://textadventures.co.uk/$q $f
 
 [Languages]
@@ -34,8 +35,12 @@ Name: "en"; MessagesFile: "compiler:Default.isl"
 [Files]
 Source: "..\Quest\bin\x86\Release\*.*"; Excludes: "*.vshost.*,*.pdb,\*.xml"; DestDir: "{app}"; Flags: recursesubdirs
 
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
+
 [Icons]
 Name: "{group}\Quest"; Filename: "{app}\Quest.exe"
+Name: "{commondesktop}\Quest"; Filename: "{app}\Quest.exe"; Tasks: desktopicon; WorkingDir: {app}
 
 [Run]
 Filename: "{app}\Quest.exe"; Description: "Launch Quest"; Flags: nowait postinstall skipifsilent
