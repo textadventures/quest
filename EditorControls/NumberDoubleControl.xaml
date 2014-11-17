@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:ext="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <ext:DoubleUpDown Width="60" HorizontalAlignment="Left" ValueChanged="ctlNumber_ValueChanged" Name="ctlNumber"/>
+        <xctk:DoubleUpDown Width="60" HorizontalAlignment="Left" ValueChanged="ctlNumber_ValueChanged" Name="ctlNumber"/>
     </Grid>
 </UserControl>
