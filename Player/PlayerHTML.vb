@@ -51,7 +51,7 @@ Public Class PlayerHTML
         ' CefSharp writes a debug.log to the current directory, so set it to the Temp folder
         Directory.SetCurrentDirectory(Path.GetTempPath())
 
-        ctlWebView = New CefSharp.WinForms.ChromiumWebBrowser("about:blank")
+        ctlWebView = New CefSharp.WinForms.ChromiumWebBrowser("")
         ctlWebView.Dock = DockStyle.Fill
         Controls.Add(ctlWebView)
         ctlWebView.CreateControl()
