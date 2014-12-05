@@ -24,7 +24,7 @@ Public Class PlayerHTML
     Private WithEvents ctlWebView As CefSharp.WinForms.ChromiumWebBrowser
     Private m_schemeHandler As CefSchemeHandlerFactory
     Private m_resourceSchemeHandler As CefResourceSchemeHandlerFactory
-    'Private WithEvents m_interop As QuestCefInterop
+    Private WithEvents m_interop As QuestCefInterop
     Private WithEvents m_keyHandler As CefKeyboardHandler
     Private m_browserInitialized As Boolean = False
     Private m_browserInitializationLock As New Object()
@@ -58,13 +58,12 @@ Public Class PlayerHTML
         m_keyHandler = New CefKeyboardHandler()
         ctlWebView.KeyboardHandler = m_keyHandler
 
-        'm_interop = New QuestCefInterop()
-
-        'CEF.RegisterJsObject("questCefInterop", m_interop)
+        m_interop = New QuestCefInterop()
+        ctlWebView.RegisterJsObject("questCefInterop", m_interop)
     End Sub
 
     Private Sub PlayerHTML_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
-        'CEF.Shutdown()
+        CefSharp.Cef.Shutdown()
     End Sub
 
     Public Sub WriteText(text As String)
@@ -257,7 +256,7 @@ Public Class PlayerHTML
 
     Public Sub Finished()
         InvokeScript("gameFinished")
-        'ctlWebView.CloseDevTools()
+        ctlWebView.CloseDevTools()
     End Sub
 
     Private Shared s_regexHtml As New System.Text.RegularExpressions.Regex("\<.+?\>")
@@ -332,20 +331,6 @@ Public Class PlayerHTML
         ctlWebView.Load("about:blank")
     End Sub
 
-    'Private Sub ctlWebView_PropertyChanged(sender As Object, e As System.ComponentModel.PropertyChangedEventArgs) Handles ctlWebView.PropertyChanged
-    '    Select Case e.PropertyName
-    '        Case "IsLoading"
-    '            If Not ctlWebView.IsLoading Then
-    '                OnDocumentLoad()
-    '            End If
-    '        Case "IsBrowserInitialized"
-    '            m_browserInitialized = True
-    '            SyncLock m_browserInitializationLock
-    '                System.Threading.Monitor.Pulse(m_browserInitializationLock)
-    '            End SyncLock
-    '    End Select
-    'End Sub
-
     Private Sub ctlWebView_IsLoadingChanged() Handles ctlWebView.IsLoadingChanged
         If Not ctlWebView.IsLoading Then
             OnDocumentLoad()
@@ -359,17 +344,17 @@ Public Class PlayerHTML
         End SyncLock
     End Sub
 
-    'Private Sub m_interop_UIEventTriggered(command As String, parameter As String) Handles m_interop.UIEventTriggered
-    '    UIEvent(command, parameter)
-    'End Sub
+    Private Sub m_interop_UIEventTriggered(command As String, parameter As String) Handles m_interop.UIEventTriggered
+        UIEvent(command, parameter)
+    End Sub
 
     Public Sub ShowDevTools()
         ctlWebView.ShowDevTools()
     End Sub
 
-    'Private Sub m_keyHandler_KeyPressed(code As Integer) Handles m_keyHandler.KeyPressed
-    '    BeginInvoke(Sub() RaiseEvent ShortcutKeyPressed(CType(code, Keys)))
-    'End Sub
+    Private Sub m_keyHandler_KeyPressed(code As Integer) Handles m_keyHandler.KeyPressed
+        BeginInvoke(Sub() RaiseEvent ShortcutKeyPressed(CType(code, Keys)))
+    End Sub
 
     Public Sub MarkScrollPosition()
         InvokeScript("markScrollPosition")

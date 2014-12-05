@@ -28,7 +28,7 @@ function doSave() {
 }
 
 function UIEvent(cmd, parameter) {
-    questCefInterop.UIEvent(cmd, parameter);
+    questCefInterop.uiEvent(cmd, parameter);
 }
 
 function disableMainScrollbar() {
