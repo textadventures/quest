@@ -1,98 +1,113 @@
-﻿'Imports CefSharp
-'Imports System.IO
-'Imports System.Text
+﻿Imports CefSharp
+Imports System.IO
+Imports System.Text
 
-'Public Class CefSchemeHandlerFactory
-'    Implements ISchemeHandlerFactory
+Public Class CefSchemeHandlerFactory
+    Implements ISchemeHandlerFactory
 
-'    Public Sub New(parent As PlayerHTML)
-'        Me.Parent = parent
-'    End Sub
+    Public Sub New(parent As PlayerHTML)
+        Me.Parent = parent
+    End Sub
 
-'    Public Property Parent As PlayerHTML
+    Public Property Parent As PlayerHTML
 
-'    Public Function Create() As ISchemeHandler Implements ISchemeHandlerFactory.Create
-'        Return New CefSchemeHandler(Me)
-'    End Function
+    Public Function Create() As ISchemeHandler Implements ISchemeHandlerFactory.Create
+        Return New CefSchemeHandler(Me)
+    End Function
 
-'End Class
+End Class
 
-'Public Class CefSchemeHandler
-'    Implements ISchemeHandler
+Public Class CefSchemeHandlerResponse
+    Implements ISchemeHandlerResponse
 
-'    Private _parent As CefSchemeHandlerFactory
+    Public Property CloseStream As Boolean Implements ISchemeHandlerResponse.CloseStream
+    Public Property ContentLength As Integer Implements ISchemeHandlerResponse.ContentLength
+    Public Property MimeType As String Implements ISchemeHandlerResponse.MimeType
+    Public Property RedirectUrl As String Implements ISchemeHandlerResponse.RedirectUrl
+    Public Property ResponseHeaders As System.Collections.Specialized.NameValueCollection Implements ISchemeHandlerResponse.ResponseHeaders
+    Public Property ResponseStream As Stream Implements ISchemeHandlerResponse.ResponseStream
+    Public Property StatusCode As Integer Implements ISchemeHandlerResponse.StatusCode
+End Class
 
-'    Public Sub New(parent As CefSchemeHandlerFactory)
-'        _parent = parent
-'    End Sub
+Public Class CefSchemeHandler
+    Implements ISchemeHandler
 
-'    Public Function ProcessRequest(request As IRequest, ByRef mimeType As String, ByRef stream As IO.Stream) As Boolean Implements ISchemeHandler.ProcessRequest
-'        Dim uri = New Uri(request.Url)
-'        Dim filename = uri.UnescapeDataString(uri.AbsolutePath.Substring(1))
+    Private _parent As CefSchemeHandlerFactory
 
-'        stream = _parent.Parent.CurrentGame.GetResource(filename)
+    Public Sub New(parent As CefSchemeHandlerFactory)
+        _parent = parent
+    End Sub
 
-'        If (stream IsNot Nothing) Then
-'            mimeType = PlayerHelper.GetContentType(filename)
-'            Return True
-'        End If
+    Public Function ProcessRequestAsync(request As IRequest, response As ISchemeHandlerResponse, requestCompletedCallback As OnRequestCompletedHandler) As Boolean Implements ISchemeHandler.ProcessRequestAsync
+        Dim uri = New Uri(request.Url)
+        Dim filename = uri.UnescapeDataString(uri.AbsolutePath.Substring(1))
 
-'        Return False
-'    End Function
-'End Class
+        response = New CefSchemeHandlerResponse
 
-'Public Class CefResourceSchemeHandlerFactory
-'    Implements ISchemeHandlerFactory
+        response.ResponseStream = _parent.Parent.CurrentGame.GetResource(filename)
 
-'    Public Function Create() As ISchemeHandler Implements ISchemeHandlerFactory.Create
-'        Return New CefResourceSchemeHandler(Me)
-'    End Function
+        If (response.ResponseStream IsNot Nothing) Then
+            response.MimeType = PlayerHelper.GetContentType(filename)
+            Return True
+        End If
 
-'    Public Property HTML As String
-'End Class
+        Return False
+    End Function
+End Class
 
-'Public Class CefResourceSchemeHandler
-'    Implements ISchemeHandler
+Public Class CefResourceSchemeHandlerFactory
+    Implements ISchemeHandlerFactory
 
-'    Private _parent As CefResourceSchemeHandlerFactory
+    Public Function Create() As ISchemeHandler Implements ISchemeHandlerFactory.Create
+        Return New CefResourceSchemeHandler(Me)
+    End Function
 
-'    Public Sub New(parent As CefResourceSchemeHandlerFactory)
-'        _parent = parent
-'    End Sub
+    Public Property HTML As String
+End Class
 
-'    Public Function ProcessRequest(request As IRequest, ByRef mimeType As String, ByRef stream As Stream) As Boolean Implements ISchemeHandler.ProcessRequest
-'        Dim uri = New Uri(request.Url)
+Public Class CefResourceSchemeHandler
+    Implements ISchemeHandler
 
-'        If uri.AbsolutePath = "/ui" Then
-'            mimeType = "text/html"
-'            Dim bytes = Encoding.UTF8.GetBytes(_parent.HTML)
-'            stream = New MemoryStream(bytes)
-'            Return True
-'        End If
+    Private _parent As CefResourceSchemeHandlerFactory
 
-'        Dim filepath = Path.Combine(My.Application.Info.DirectoryPath(), uri.AbsolutePath.Substring(1))
+    Public Sub New(parent As CefResourceSchemeHandlerFactory)
+        _parent = parent
+    End Sub
 
-'        If File.Exists(filepath) Then
-'            System.Diagnostics.Debug.WriteLine("Served {0} from {1}", request.Url, filepath)
+    Public Function ProcessRequestAsync(request As IRequest, response As ISchemeHandlerResponse, requestCompletedCallback As OnRequestCompletedHandler) As Boolean Implements ISchemeHandler.ProcessRequestAsync
+        Dim uri = New Uri(request.Url)
 
-'            stream = New System.IO.FileStream(filepath, FileMode.Open, FileAccess.Read)
+        response = New CefSchemeHandlerResponse
 
-'            Select Case Path.GetExtension(filepath)
-'                Case ".js"
-'                    mimeType = "text/javascript"
-'                Case ".css"
-'                    mimeType = "text/css"
-'                Case ".png"
-'                    mimeType = "image/png"
-'                Case Else
-'                    Throw New Exception("Unknown MIME type")
-'            End Select
+        If uri.AbsolutePath = "/ui" Then
+            response.MimeType = "text/html"
+            Dim bytes = Encoding.UTF8.GetBytes(_parent.HTML)
+            response.ResponseStream = New MemoryStream(bytes)
+            Return True
+        End If
 
-'            Return True
-'        Else
-'            System.Diagnostics.Debug.WriteLine("Not found " + filepath)
-'            Return False
-'        End If
+        Dim filepath = Path.Combine(My.Application.Info.DirectoryPath(), uri.AbsolutePath.Substring(1))
 
-'    End Function
-'End Class
+        If File.Exists(filepath) Then
+            System.Diagnostics.Debug.WriteLine("Served {0} from {1}", request.Url, filepath)
+
+            response.ResponseStream = New System.IO.FileStream(filepath, FileMode.Open, FileAccess.Read)
+
+            Select Case Path.GetExtension(filepath)
+                Case ".js"
+                    response.MimeType = "text/javascript"
+                Case ".css"
+                    response.MimeType = "text/css"
+                Case ".png"
+                    response.MimeType = "image/png"
+                Case Else
+                    Throw New Exception("Unknown MIME type")
+            End Select
+
+            Return True
+        Else
+            System.Diagnostics.Debug.WriteLine("Not found " + filepath)
+            Return False
+        End If
+    End Function
+End Class

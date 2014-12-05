@@ -22,35 +22,44 @@ Public Class PlayerHTML
     Private m_buffer As New List(Of Action)
     Private m_resetting As Boolean = False
     Private WithEvents ctlWebView As CefSharp.WinForms.ChromiumWebBrowser
-    'Private m_schemeHandler As CefSchemeHandlerFactory
-    'Private m_resourceSchemeHandler As CefResourceSchemeHandlerFactory
+    Private m_schemeHandler As CefSchemeHandlerFactory
+    Private m_resourceSchemeHandler As CefResourceSchemeHandlerFactory
     'Private WithEvents m_interop As QuestCefInterop
-    'Private WithEvents m_keyHandler As CefKeyboardHandler
+    Private WithEvents m_keyHandler As CefKeyboardHandler
     Private m_browserInitialized As Boolean = False
     Private m_browserInitializationLock As New Object()
 
     Public Property CurrentGame As IASL
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
-        CefSharp.Cef.Initialize(New CefSharp.CefSettings)
+        Dim settings As New CefSharp.CefSettings
+
+        m_schemeHandler = New CefSchemeHandlerFactory(Me)
+        Dim questScheme As New CefSharp.CefCustomScheme
+        questScheme.SchemeHandlerFactory = m_schemeHandler
+        questScheme.SchemeName = "quest"
+        settings.RegisterScheme(questScheme)
+
+        m_resourceSchemeHandler = New CefResourceSchemeHandlerFactory()
+        Dim resScheme As New CefSharp.CefCustomScheme
+        resScheme.SchemeHandlerFactory = m_resourceSchemeHandler
+        resScheme.SchemeName = "res"
+        settings.RegisterScheme(resScheme)
+
+        CefSharp.Cef.Initialize(settings)
 
         ' CefSharp writes a debug.log to the current directory, so set it to the Temp folder
         Directory.SetCurrentDirectory(Path.GetTempPath())
 
-        ctlWebView = New CefSharp.WinForms.ChromiumWebBrowser("www.google.com")
+        ctlWebView = New CefSharp.WinForms.ChromiumWebBrowser("about:blank")
         ctlWebView.Dock = DockStyle.Fill
         Controls.Add(ctlWebView)
         ctlWebView.CreateControl()
-        'm_keyHandler = New CefKeyboardHandler()
-        'ctlWebView.KeyboardHandler = m_keyHandler
+        m_keyHandler = New CefKeyboardHandler()
+        ctlWebView.KeyboardHandler = m_keyHandler
 
-        'm_schemeHandler = New CefSchemeHandlerFactory(Me)
-        'm_resourceSchemeHandler = New CefResourceSchemeHandlerFactory()
         'm_interop = New QuestCefInterop()
 
-        'CEF.Initialize(New Settings)
-        'CEF.RegisterScheme("quest", m_schemeHandler)
-        'CEF.RegisterScheme("res", m_resourceSchemeHandler)
         'CEF.RegisterJsObject("questCefInterop", m_interop)
     End Sub
 
@@ -147,7 +156,7 @@ Public Class PlayerHTML
             script = String.Format("{0}({1})", functionName, String.Join(",", stringArgs))
         End If
         SyncLock m_buffer
-            'm_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
+            m_buffer.Add(Sub() ctlWebView.ExecuteScriptAsync(script))
         End SyncLock
     End Sub
 
@@ -233,17 +242,17 @@ Public Class PlayerHTML
         htmlContent = htmlContent.Replace(k_htmlUIPlaceholder, PlayerHelper.GetUIHTML())
         htmlContent = htmlContent.Replace(k_gridJSPlaceholder, gridJsContent)
 
-        'm_resourceSchemeHandler.HTML = htmlContent
+        m_resourceSchemeHandler.HTML = htmlContent
         WaitForBrowserInitialization()
-        'ctlWebView.Load("res://local/ui")
+        ctlWebView.Load("res://local/ui")
     End Sub
 
     Private Sub WaitForBrowserInitialization()
-        'If m_browserInitialized Then Return
+        If m_browserInitialized Then Return
 
-        'SyncLock m_browserInitializationLock
-        '    System.Threading.Monitor.Wait(m_browserInitializationLock)
-        'End SyncLock
+        SyncLock m_browserInitializationLock
+            System.Threading.Monitor.Wait(m_browserInitializationLock)
+        End SyncLock
     End Sub
 
     Public Sub Finished()
@@ -336,6 +345,17 @@ Public Class PlayerHTML
     '            End SyncLock
     '    End Select
     'End Sub
+
+    Private Sub ctlWebView_IsLoadingChanged() Handles ctlWebView.IsLoadingChanged
+        OnDocumentLoad()
+    End Sub
+
+    Private Sub ctlWebView_IsBrowserInitializedChanged() Handles ctlWebView.IsBrowserInitializedChanged
+        m_browserInitialized = True
+        SyncLock m_browserInitializationLock
+            System.Threading.Monitor.Pulse(m_browserInitializationLock)
+        End SyncLock
+    End Sub
 
     'Private Sub m_interop_UIEventTriggered(command As String, parameter As String) Handles m_interop.UIEventTriggered
     '    UIEvent(command, parameter)
