@@ -17,18 +17,6 @@ Public Class CefSchemeHandlerFactory
 
 End Class
 
-Public Class CefSchemeHandlerResponse
-    Implements ISchemeHandlerResponse
-
-    Public Property CloseStream As Boolean Implements ISchemeHandlerResponse.CloseStream
-    Public Property ContentLength As Integer Implements ISchemeHandlerResponse.ContentLength
-    Public Property MimeType As String Implements ISchemeHandlerResponse.MimeType
-    Public Property RedirectUrl As String Implements ISchemeHandlerResponse.RedirectUrl
-    Public Property ResponseHeaders As System.Collections.Specialized.NameValueCollection Implements ISchemeHandlerResponse.ResponseHeaders
-    Public Property ResponseStream As Stream Implements ISchemeHandlerResponse.ResponseStream
-    Public Property StatusCode As Integer Implements ISchemeHandlerResponse.StatusCode
-End Class
-
 Public Class CefSchemeHandler
     Implements ISchemeHandler
 
@@ -42,12 +30,11 @@ Public Class CefSchemeHandler
         Dim uri = New Uri(request.Url)
         Dim filename = uri.UnescapeDataString(uri.AbsolutePath.Substring(1))
 
-        response = New CefSchemeHandlerResponse
-
         response.ResponseStream = _parent.Parent.CurrentGame.GetResource(filename)
 
         If (response.ResponseStream IsNot Nothing) Then
             response.MimeType = PlayerHelper.GetContentType(filename)
+            requestCompletedCallback()
             Return True
         End If
 
@@ -77,12 +64,11 @@ Public Class CefResourceSchemeHandler
     Public Function ProcessRequestAsync(request As IRequest, response As ISchemeHandlerResponse, requestCompletedCallback As OnRequestCompletedHandler) As Boolean Implements ISchemeHandler.ProcessRequestAsync
         Dim uri = New Uri(request.Url)
 
-        response = New CefSchemeHandlerResponse
-
         If uri.AbsolutePath = "/ui" Then
             response.MimeType = "text/html"
             Dim bytes = Encoding.UTF8.GetBytes(_parent.HTML)
             response.ResponseStream = New MemoryStream(bytes)
+            requestCompletedCallback()
             Return True
         End If
 
@@ -104,6 +90,7 @@ Public Class CefResourceSchemeHandler
                     Throw New Exception("Unknown MIME type")
             End Select
 
+            requestCompletedCallback()
             Return True
         Else
             System.Diagnostics.Debug.WriteLine("Not found " + filepath)

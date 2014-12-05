@@ -138,7 +138,7 @@ Public Class PlayerHTML
     End Sub
 
     Public Sub Copy()
-        'ctlWebView.Copy()
+        ctlWebView.Copy()
     End Sub
 
     Public Sub SelectAll()
@@ -329,7 +329,7 @@ Public Class PlayerHTML
 
     Public Sub Reset()
         m_resetting = True
-        'ctlWebView.Load("about:blank")
+        ctlWebView.Load("about:blank")
     End Sub
 
     'Private Sub ctlWebView_PropertyChanged(sender As Object, e As System.ComponentModel.PropertyChangedEventArgs) Handles ctlWebView.PropertyChanged
@@ -347,7 +347,9 @@ Public Class PlayerHTML
     'End Sub
 
     Private Sub ctlWebView_IsLoadingChanged() Handles ctlWebView.IsLoadingChanged
-        OnDocumentLoad()
+        If Not ctlWebView.IsLoading Then
+            OnDocumentLoad()
+        End If
     End Sub
 
     Private Sub ctlWebView_IsBrowserInitializedChanged() Handles ctlWebView.IsBrowserInitializedChanged
@@ -362,7 +364,7 @@ Public Class PlayerHTML
     'End Sub
 
     Public Sub ShowDevTools()
-        'ctlWebView.ShowDevTools()
+        ctlWebView.ShowDevTools()
     End Sub
 
     'Private Sub m_keyHandler_KeyPressed(code As Integer) Handles m_keyHandler.KeyPressed
