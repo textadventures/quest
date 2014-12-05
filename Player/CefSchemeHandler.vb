@@ -26,14 +26,15 @@ Public Class CefSchemeHandler
         _parent = parent
     End Sub
 
-    Public Function ProcessRequest(request As IRequest, ByRef mimeType As String, ByRef stream As IO.Stream) As Boolean Implements ISchemeHandler.ProcessRequest
+    Public Function ProcessRequestAsync(request As IRequest, response As ISchemeHandlerResponse, requestCompletedCallback As OnRequestCompletedHandler) As Boolean Implements ISchemeHandler.ProcessRequestAsync
         Dim uri = New Uri(request.Url)
         Dim filename = uri.UnescapeDataString(uri.AbsolutePath.Substring(1))
 
-        stream = _parent.Parent.CurrentGame.GetResource(filename)
+        response.ResponseStream = _parent.Parent.CurrentGame.GetResource(filename)
 
-        If (stream IsNot Nothing) Then
-            mimeType = PlayerHelper.GetContentType(filename)
+        If (response.ResponseStream IsNot Nothing) Then
+            response.MimeType = PlayerHelper.GetContentType(filename)
+            requestCompletedCallback()
             Return True
         End If
 
@@ -60,13 +61,14 @@ Public Class CefResourceSchemeHandler
         _parent = parent
     End Sub
 
-    Public Function ProcessRequest(request As IRequest, ByRef mimeType As String, ByRef stream As Stream) As Boolean Implements ISchemeHandler.ProcessRequest
+    Public Function ProcessRequestAsync(request As IRequest, response As ISchemeHandlerResponse, requestCompletedCallback As OnRequestCompletedHandler) As Boolean Implements ISchemeHandler.ProcessRequestAsync
         Dim uri = New Uri(request.Url)
 
         If uri.AbsolutePath = "/ui" Then
-            mimeType = "text/html"
+            response.MimeType = "text/html"
             Dim bytes = Encoding.UTF8.GetBytes(_parent.HTML)
-            stream = New MemoryStream(bytes)
+            response.ResponseStream = New MemoryStream(bytes)
+            requestCompletedCallback()
             Return True
         End If
 
@@ -75,24 +77,24 @@ Public Class CefResourceSchemeHandler
         If File.Exists(filepath) Then
             System.Diagnostics.Debug.WriteLine("Served {0} from {1}", request.Url, filepath)
 
-            stream = New System.IO.FileStream(filepath, FileMode.Open, FileAccess.Read)
+            response.ResponseStream = New System.IO.FileStream(filepath, FileMode.Open, FileAccess.Read)
 
             Select Case Path.GetExtension(filepath)
                 Case ".js"
-                    mimeType = "text/javascript"
+                    response.MimeType = "text/javascript"
                 Case ".css"
-                    mimeType = "text/css"
+                    response.MimeType = "text/css"
                 Case ".png"
-                    mimeType = "image/png"
+                    response.MimeType = "image/png"
                 Case Else
                     Throw New Exception("Unknown MIME type")
             End Select
 
+            requestCompletedCallback()
             Return True
         Else
             System.Diagnostics.Debug.WriteLine("Not found " + filepath)
             Return False
         End If
-
     End Function
 End Class

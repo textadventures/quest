@@ -1,8 +1,6 @@
 ﻿Imports System.Xml
 Imports System.IO
 Imports Microsoft.Win32
-Imports CefSharp.WinForms
-Imports CefSharp
 
 Public Class PlayerHTML
 
@@ -21,7 +19,7 @@ Public Class PlayerHTML
 
     Private m_buffer As New List(Of Action)
     Private m_resetting As Boolean = False
-    Private WithEvents ctlWebView As WebView
+    Private WithEvents ctlWebView As CefSharp.WinForms.ChromiumWebBrowser
     Private m_schemeHandler As CefSchemeHandlerFactory
     Private m_resourceSchemeHandler As CefResourceSchemeHandlerFactory
     Private WithEvents m_interop As QuestCefInterop
@@ -32,28 +30,38 @@ Public Class PlayerHTML
     Public Property CurrentGame As IASL
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim settings As New CefSharp.CefSettings
+
+        m_schemeHandler = New CefSchemeHandlerFactory(Me)
+        Dim questScheme As New CefSharp.CefCustomScheme
+        questScheme.SchemeHandlerFactory = m_schemeHandler
+        questScheme.SchemeName = "quest"
+        settings.RegisterScheme(questScheme)
+
+        m_resourceSchemeHandler = New CefResourceSchemeHandlerFactory()
+        Dim resScheme As New CefSharp.CefCustomScheme
+        resScheme.SchemeHandlerFactory = m_resourceSchemeHandler
+        resScheme.SchemeName = "res"
+        settings.RegisterScheme(resScheme)
+
+        CefSharp.Cef.Initialize(settings)
+
         ' CefSharp writes a debug.log to the current directory, so set it to the Temp folder
         Directory.SetCurrentDirectory(Path.GetTempPath())
 
-        ctlWebView = New WebView()
+        ctlWebView = New CefSharp.WinForms.ChromiumWebBrowser("")
         ctlWebView.Dock = DockStyle.Fill
         Controls.Add(ctlWebView)
         ctlWebView.CreateControl()
         m_keyHandler = New CefKeyboardHandler()
         ctlWebView.KeyboardHandler = m_keyHandler
 
-        m_schemeHandler = New CefSchemeHandlerFactory(Me)
-        m_resourceSchemeHandler = New CefResourceSchemeHandlerFactory()
         m_interop = New QuestCefInterop()
-
-        CEF.Initialize(New Settings)
-        CEF.RegisterScheme("quest", m_schemeHandler)
-        CEF.RegisterScheme("res", m_resourceSchemeHandler)
-        CEF.RegisterJsObject("questCefInterop", m_interop)
+        ctlWebView.RegisterJsObject("questCefInterop", m_interop)
     End Sub
 
     Private Sub PlayerHTML_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
-        CEF.Shutdown()
+        CefSharp.Cef.Shutdown()
     End Sub
 
     Public Sub WriteText(text As String)
@@ -145,7 +153,7 @@ Public Class PlayerHTML
             script = String.Format("{0}({1})", functionName, String.Join(",", stringArgs))
         End If
         SyncLock m_buffer
-            m_buffer.Add(Sub() ctlWebView.ExecuteScript(script))
+            m_buffer.Add(Sub() ctlWebView.ExecuteScriptAsync(script))
         End SyncLock
     End Sub
 
@@ -321,18 +329,17 @@ Public Class PlayerHTML
         ctlWebView.Load("about:blank")
     End Sub
 
-    Private Sub ctlWebView_PropertyChanged(sender As Object, e As System.ComponentModel.PropertyChangedEventArgs) Handles ctlWebView.PropertyChanged
-        Select Case e.PropertyName
-            Case "IsLoading"
-                If Not ctlWebView.IsLoading Then
-                    OnDocumentLoad()
-                End If
-            Case "IsBrowserInitialized"
-                m_browserInitialized = True
-                SyncLock m_browserInitializationLock
-                    System.Threading.Monitor.Pulse(m_browserInitializationLock)
-                End SyncLock
-        End Select
+    Private Sub ctlWebView_IsLoadingChanged() Handles ctlWebView.IsLoadingChanged
+        If Not ctlWebView.IsLoading Then
+            OnDocumentLoad()
+        End If
+    End Sub
+
+    Private Sub ctlWebView_IsBrowserInitializedChanged() Handles ctlWebView.IsBrowserInitializedChanged
+        m_browserInitialized = True
+        SyncLock m_browserInitializationLock
+            System.Threading.Monitor.Pulse(m_browserInitializationLock)
+        End SyncLock
     End Sub
 
     Private Sub m_interop_UIEventTriggered(command As String, parameter As String) Handles m_interop.UIEventTriggered
