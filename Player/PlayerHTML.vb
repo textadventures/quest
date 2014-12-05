@@ -21,7 +21,7 @@ Public Class PlayerHTML
 
     Private m_buffer As New List(Of Action)
     Private m_resetting As Boolean = False
-    'Private WithEvents ctlWebView As WebView
+    Private WithEvents ctlWebView As CefSharp.WinForms.ChromiumWebBrowser
     'Private m_schemeHandler As CefSchemeHandlerFactory
     'Private m_resourceSchemeHandler As CefResourceSchemeHandlerFactory
     'Private WithEvents m_interop As QuestCefInterop
@@ -32,13 +32,15 @@ Public Class PlayerHTML
     Public Property CurrentGame As IASL
 
     Private Sub PlayerHTML_Load(sender As Object, e As EventArgs) Handles Me.Load
+        CefSharp.Cef.Initialize(New CefSharp.CefSettings)
+
         ' CefSharp writes a debug.log to the current directory, so set it to the Temp folder
         Directory.SetCurrentDirectory(Path.GetTempPath())
 
-        'ctlWebView = New WebView()
-        'ctlWebView.Dock = DockStyle.Fill
-        'Controls.Add(ctlWebView)
-        'ctlWebView.CreateControl()
+        ctlWebView = New CefSharp.WinForms.ChromiumWebBrowser("www.google.com")
+        ctlWebView.Dock = DockStyle.Fill
+        Controls.Add(ctlWebView)
+        ctlWebView.CreateControl()
         'm_keyHandler = New CefKeyboardHandler()
         'ctlWebView.KeyboardHandler = m_keyHandler
 
