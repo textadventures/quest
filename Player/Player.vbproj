@@ -116,12 +116,6 @@
   <ItemGroup>
     <Compile Include="CefKeyboardHandler.vb" />
     <Compile Include="CefSchemeHandler.vb" />
-    <Compile Include="Compass.Designer.vb">
-      <DependentUpon>Compass.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Compass.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Debugger.Designer.vb">
       <DependentUpon>Debugger.vb</DependentUpon>
     </Compile>
@@ -183,9 +177,6 @@
     <Compile Include="WalkthroughRunner.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Compass.resx">
-      <DependentUpon>Compass.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Debugger.resx">
       <DependentUpon>Debugger.vb</DependentUpon>
     </EmbeddedResource>
