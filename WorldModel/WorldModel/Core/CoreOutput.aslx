@@ -466,7 +466,6 @@
         lhs = Left(condition, operator - 1)
         rhs = Mid(condition, operator + operatorlength)
         op = Mid(condition, operator, operatorlength)
-      
         dot = Instr(lhs, ".")
         if (dot = 0) {
           objectname = ""
@@ -477,19 +476,22 @@
           }
           else {
             return ("{if " + command + "}")
-          }	
+          }
         }
         else {
           objectname = Left(lhs, dot - 1)
           attributename = Mid(lhs, dot + 1)
-        }  
-
+        }
         object = GetObject(objectname)
         if (object = null) {
           return ("{if " + command + "}")
         }
         else {
           value = GetAttribute(object, attributename)
+          // The next three lines added by The Pixie
+          if (TypeOf(value) = "object") {
+            value = value.name
+          }
           if (op = "=") {
             if (ToString(value) = rhs) {
               return (ProcessTextSection(text, data))
