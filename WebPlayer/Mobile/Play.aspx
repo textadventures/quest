@@ -149,6 +149,7 @@
 
         <div id="gameContent">
             <div id="divOutput">
+                <div id="outputData" style="display: none" data-divcount="0"></div>
                 <h1 id="gameTitle">
                     Loading...</h1>
             </div>
