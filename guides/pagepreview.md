@@ -15,7 +15,7 @@ First set the page type of the starting page to "Script + Text". Then insert the
 
 codeview of the script:
 
- ![](Gbpreview2.png "Gbpreview2.png") 
+![](Gbpreview2.png "Gbpreview2.png") 
  
  
 Before publishing the gamebook you can change the page type of the starting page to "Text" again.
