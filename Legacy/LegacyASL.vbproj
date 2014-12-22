@@ -97,6 +97,7 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
@@ -124,6 +125,7 @@
     <Compile Include="ChangeLog.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Config.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>

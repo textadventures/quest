@@ -60,7 +60,7 @@ namespace TextAdventures.Utility
             return CalculateMD5Hash(File.ReadAllBytes(filename));
         }
 
-        private static string CalculateMD5Hash(byte[] input)
+        public static string CalculateMD5Hash(byte[] input)
         {
             MD5 md5 = MD5.Create();
             var hash = md5.ComputeHash(input);

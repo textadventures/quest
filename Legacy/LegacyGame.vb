@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Collections.Generic
 Imports System.Linq
+Imports System.Net
 
 Public Class LegacyGame
 
@@ -1512,7 +1513,19 @@ Public Class LegacyGame
 
         If LCase(Right(Filename, 4)) = ".asl" Or LCase(Right(Filename, 4)) = ".txt" Then
             'Read file into Lines array
-            Dim fileData As String = System.IO.File.ReadAllText(Filename)
+            Dim fileData As String
+
+            If Config.ReadGameFileFromAzureBlob Then
+                Using client As New WebClient
+                    fileData = client.DownloadString(Filename)
+
+                    Dim fileBytes As Byte() = client.DownloadData(Filename)
+                    m_gameId = TextAdventures.Utility.Utility.CalculateMD5Hash(fileBytes)
+                End Using
+            Else
+                fileData = System.IO.File.ReadAllText(Filename)
+            End If
+
             Dim aslLines As String() = fileData.Split(Chr(13))
             ReDim Lines(aslLines.Length)
             Lines(0) = ""
@@ -2001,7 +2014,25 @@ ErrorHandler:
 
         ReDim Lines(0)
 
-        FileData = System.IO.File.ReadAllText(thefilename, System.Text.Encoding.GetEncoding(1252))
+        If Config.ReadGameFileFromAzureBlob Then
+            Using client As New WebClient
+                Dim url As String = Filename
+                Dim baseAddress As Uri = New Uri(url)
+                Dim directory As Uri = New Uri(baseAddress, ".")
+
+                Try
+                    FileData = client.DownloadString(url)
+                Catch ex As WebException
+                    url = directory.OriginalString + "_game.cas"
+                    FileData = client.DownloadString(url)
+                End Try
+
+                Dim parts As String() = directory.OriginalString.Split("/"c)
+                m_gameId = parts(parts.Length - 2)
+            End Using
+        Else
+            FileData = System.IO.File.ReadAllText(thefilename, System.Text.Encoding.GetEncoding(1252))
+        End If
 
         ChkVer = Left(FileData, 7)
         If ChkVer = "QCGF001" Then
@@ -13591,9 +13622,14 @@ ErrorHandler:
         Return New IO.FileStream(path, IO.FileMode.Open, IO.FileAccess.Read)
     End Function
 
+    Private m_gameId As String
+
     Public ReadOnly Property GameID() As String Implements IASL.GameID
         Get
             If String.IsNullOrEmpty(GameFileName) Then Return Nothing
+            If Config.ReadGameFileFromAzureBlob Then
+                Return m_gameId
+            End If
             Return TextAdventures.Utility.Utility.FileMD5Hash(GameFileName)
         End Get
     End Property
