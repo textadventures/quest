@@ -138,11 +138,21 @@ namespace WebPlayer.Mobile
 
             string rootPath = folder ?? ConfigurationManager.AppSettings["GameFolder"];
             string libPath = ConfigurationManager.AppSettings["LibraryFolder"];
-            var filename = WebPlayer.Play.GetGameFilename(gameFile, rootPath);
-            if (filename == null)
+            string filename;
+
+            if (Config.ReadGameFileFromAzureBlob)
             {
-                return "Invalid filename";
+                filename = gameFile;
             }
+            else
+            {
+                filename = WebPlayer.Play.GetGameFilename(gameFile, rootPath);
+                if (filename == null)
+                {
+                    return "Invalid filename";
+                }
+            }
+
             List<string> errors;
 
             try
@@ -227,6 +237,13 @@ namespace WebPlayer.Mobile
 
         string AddResource(string gameId, string filename)
         {
+            if (Config.ReadGameFileFromAzureBlob)
+            {
+                return string.Format("http://textadventures.blob.core.windows.net/gameresources/{0}/{1}",
+                gameId,
+                filename);
+            }
+
             return "../Resource.ashx?id=" + gameId + "&filename=" + filename;
         }
 

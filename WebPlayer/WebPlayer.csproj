@@ -142,6 +142,7 @@
   <ItemGroup>
     <Compile Include="Api.cs" />
     <Compile Include="AzureFileManager.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="DebugPlugins.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="Global.asax.cs">

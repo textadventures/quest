@@ -1,14 +1,13 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Web;
 
-namespace TextAdventures.Quest
+namespace WebPlayer
 {
-    static class Config
+    internal static class Config
     {
-        public static bool StorageLog
-        {
-            get { return false; }
-        }
-
         public static bool ReadGameFileFromAzureBlob
         {
             // TODO: Fix this ugliness

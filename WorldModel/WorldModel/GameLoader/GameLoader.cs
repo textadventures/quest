@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Xml;
 using System.Text.RegularExpressions;
 
@@ -61,21 +63,37 @@ namespace TextAdventures.Quest
 
         public bool Load(string filename)
         {
-            IsCompiledFile = false;
+            // defaults to false, but if we're reading from Azure it's always a compiled file
+            IsCompiledFile = Config.ReadGameFileFromAzureBlob;
 
-            if (System.IO.Path.GetExtension(filename) == ".quest")
+            if (Path.GetExtension(filename) == ".quest")
             {
+                if (Config.ReadGameFileFromAzureBlob)
+                {
+                    throw new InvalidOperationException("Not expecting a .quest file when loading file from Azure");
+                }
+
                 filename = LoadCompiledFile(filename);
             }
 
             try
             {
-                System.IO.FileStream stream = new System.IO.FileStream(filename,
-                    System.IO.FileMode.Open,
-                    System.IO.FileAccess.Read,
-                    System.IO.FileShare.ReadWrite);
+                string data = null;
+                FileStream stream = null;
 
-                using (XmlReader reader = new XmlTextReader(stream))
+                if (Config.ReadGameFileFromAzureBlob)
+                {
+                    using (var client = new WebClient())
+                    {
+                        data = client.DownloadString(filename);
+                    }
+                }
+                else
+                {
+                    stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+
+                using (XmlReader reader = stream != null ? new XmlTextReader(stream) : new XmlTextReader(new StringReader(data)))
                 {
                     do
                     {
