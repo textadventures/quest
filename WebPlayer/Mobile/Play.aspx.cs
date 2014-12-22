@@ -157,7 +157,9 @@ namespace WebPlayer.Mobile
 
             try
             {
-                m_player = new PlayerHandler(filename, m_buffer, id, SessionManagerLoader.GetSessionManager().GetUser());
+                var sessionManager = SessionManagerLoader.GetSessionManager();
+                var user = sessionManager != null ? sessionManager.GetUser() : null;
+                m_player = new PlayerHandler(filename, m_buffer, id, user);
                 m_player.GameId = m_gameId;
                 m_player.LibraryFolder = libPath;
                 Games[m_gameId] = m_player;
