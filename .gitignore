@@ -17,4 +17,5 @@ WebEditor/WebEditor/WebEditor.Publish.xml
 WebEditor/WebEditor/LogConfig.xml
 WebPlayer/paper.js
 WebPlayer/grid.js
+*.pubxml
 _site/
