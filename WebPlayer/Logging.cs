@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
+using log4net.Config;
 
 namespace WebPlayer
 {
@@ -11,10 +13,16 @@ namespace WebPlayer
 
         static Logging()
         {
-            string logConfig = System.Configuration.ConfigurationManager.AppSettings["LogConfig"];
+            if (ConfigurationManager.AppSettings["AzureLogTable"] != null)
+            {
+                BasicConfigurator.Configure(new TableStorageAppender());
+                return;
+            }
+
+            string logConfig = ConfigurationManager.AppSettings["LogConfig"];
             if (!string.IsNullOrEmpty(logConfig))
             {
-                log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo(logConfig));
+                XmlConfigurator.Configure(new System.IO.FileInfo(logConfig));
             }
         }
 
