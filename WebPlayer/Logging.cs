@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using log4net.Config;
+using log4net.Core;
 
 namespace WebPlayer
 {
@@ -15,7 +16,16 @@ namespace WebPlayer
         {
             if (ConfigurationManager.AppSettings["AzureLogTable"] != null)
             {
-                BasicConfigurator.Configure(new TableStorageAppender());
+                Level minLogLevel = null;
+
+                var minLogLevelName = ConfigurationManager.AppSettings["LogLevel"];
+                if (minLogLevelName != null)
+                {
+                    var map = LoggerManager.GetAllRepositories().First().LevelMap;
+                    minLogLevel = map[minLogLevelName];
+                }
+
+                BasicConfigurator.Configure(new TableStorageAppender(minLogLevel));
                 return;
             }
 

@@ -31,11 +31,13 @@ namespace WebPlayer
 
     public class TableStorageAppender : AppenderSkeleton
     {
+        private readonly Level m_minLevel;
         private readonly CloudTable m_table;
         private readonly string m_tableName = ConfigurationManager.AppSettings["AzureLogTable"];
 
-        public TableStorageAppender()
+        public TableStorageAppender(Level minLevel)
         {
+            m_minLevel = minLevel;
             var connectionString = ConfigurationManager.AppSettings["AzureConnectionString"];
             var account = CloudStorageAccount.Parse(connectionString);
 
@@ -48,6 +50,8 @@ namespace WebPlayer
         {
             try
             {
+                if (m_minLevel != null && m_minLevel > loggingEvent.Level) return;
+
                 var entity = new LogEventEntity
                 {
                     Message = loggingEvent.RenderedMessage,
