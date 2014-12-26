@@ -51,7 +51,7 @@ namespace WebPlayer
 
         public bool Initialise(out List<string> errors)
         {
-            Logging.Log.InfoFormat("{0} Initialising {1}", GameId, m_filename);
+            Logging.Log.DebugFormat("{0} Initialising {1}", GameId, m_filename);
 
             IASL game = GameLauncher.GetGame(m_filename, LibraryFolder);
             m_controller = new PlayerHelper(game, this);
@@ -70,11 +70,11 @@ namespace WebPlayer
             bool success = m_controller.Initialise(this, out errors);
             if (success)
             {
-                Logging.Log.InfoFormat("{0} Initialised successfully", GameId);
+                Logging.Log.DebugFormat("{0} Initialised successfully", GameId);
             }
             else
             {
-                Logging.Log.InfoFormat("{0} Failed to initialise game - errors found in file", GameId);
+                Logging.Log.WarnFormat("{0} Failed to initialise game - errors found in file", GameId);
             }
 
             return success;
@@ -118,7 +118,7 @@ namespace WebPlayer
 
         public void BeginGame()
         {
-            Logging.Log.InfoFormat("{0} Beginning game", GameId);
+            Logging.Log.DebugFormat("{0} Beginning game", GameId);
             m_controller.Game.Begin();
         }
 
@@ -297,7 +297,7 @@ namespace WebPlayer
 
         public void EndGame()
         {
-            Logging.Log.InfoFormat("{0} Ending game", GameId);
+            Logging.Log.DebugFormat("{0} Ending game", GameId);
             m_controller.Game.Finish();
         }
 
