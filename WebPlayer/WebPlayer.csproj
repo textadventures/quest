@@ -259,7 +259,6 @@
     <Content Include="Mobile\KeepAlive.ashx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="51Degrees.config" />
     <None Include="Properties\PublishProfiles\*.pubxml" />
   </ItemGroup>
   <PropertyGroup>
