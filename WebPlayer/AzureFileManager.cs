@@ -14,6 +14,7 @@ namespace WebPlayer
             public string UniqueId { get; set; }
             public int ASLVersion { get; set; }
             public string OnlineRef { get; set; }
+            public string SourceGameUrl { get; set; }
         }
 
         public string GetFileForID(string id)
@@ -22,15 +23,20 @@ namespace WebPlayer
 
             if (game == null) return null;
 
+            return GetSourceGameUrl(game);
+        }
+
+        private static string GetSourceGameUrl(ApiGame game)
+        {
             var gameFile = game.ASLVersion >= 500 ? "game.aslx" : System.IO.Path.GetFileName(game.OnlineRef);
             return string.Format("http://textadventures.blob.core.windows.net/gameresources/{0}/{1}", game.UniqueId, gameFile);
         }
 
-        public static int? GetGameASLVersion(string id)
+        public static ApiGame GetGameData(string id)
         {
-            var game = Api.GetData<ApiGame>("api/game/" + id);
-            if (game == null) return null;
-            return game.ASLVersion;
+            var result = Api.GetData<ApiGame>("api/game/" + id);
+            result.SourceGameUrl = GetSourceGameUrl(result);
+            return result;
         }
 
         public void NotifySave(IUser user, string gameId, string filename)

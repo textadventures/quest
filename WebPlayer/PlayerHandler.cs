@@ -48,7 +48,7 @@ namespace WebPlayer
         public string GameId { get; set; }
         public string LibraryFolder { get; set; }
         public string LoadData { get; set; }
-        public int LoadDataVersion { get; set; }
+        public AzureFileManager.ApiGame ApiGameData { get; set; }
 
         public bool Initialise(out List<string> errors)
         {
@@ -57,7 +57,7 @@ namespace WebPlayer
             IASL game;
             if (LoadData != null)
             {
-                game = GameLauncher.GetGame(LoadData, LoadDataVersion);
+                game = GameLauncher.GetGame(LoadData, ApiGameData.ASLVersion, ApiGameData.SourceGameUrl);
             }
             else
             {

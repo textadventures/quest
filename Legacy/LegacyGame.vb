@@ -463,6 +463,7 @@ Public Class LegacyGame
     Private m_listVerbs As New Dictionary(Of ListType, List(Of String))
     Private m_filename As String
     Private m_originalFilename As String
+    Private m_data As InitGameData
     Private m_player As IPlayer
     Private m_gameFinished As Boolean
     Private m_gameIsRestoring As Boolean
@@ -484,6 +485,16 @@ Public Class LegacyGame
         SkipCheckFile(1) = "bargain.cas"
         SkipCheckFile(2) = "easymoney.asl"
         SkipCheckFile(3) = "musicvf1.cas"
+    End Sub
+
+    Public Class InitGameData
+        Public Data As String
+        Public SourceFile As String
+    End Class
+
+    Public Sub New(data As InitGameData)
+        Me.New(Nothing, Nothing)
+        m_data = data
     End Sub
 
     Private Function StripCodes(InputString As String) As String
@@ -9056,7 +9067,11 @@ errhandle:
         FileNum = FreeFile()
         PrevQSGVersion = False
 
-        FileData = System.IO.File.ReadAllText(theGameFileName, System.Text.Encoding.GetEncoding(1252))
+        If m_data Is Nothing Then
+            FileData = System.IO.File.ReadAllText(theGameFileName, System.Text.Encoding.GetEncoding(1252))
+        Else
+            FileData = m_data.Data
+        End If
 
         ' Check version
         SavedQSGVersion = Left(FileData, 10)
@@ -9075,10 +9090,16 @@ errhandle:
         Else
             InitFileData(FileData)
             NullData = GetNextChunk()
-            GameFileName = GetNextChunk()
+
+            If m_data Is Nothing Then
+                GameFileName = GetNextChunk()
+            Else
+                GetNextChunk()
+                GameFileName = m_data.SourceFile
+            End If
         End If
 
-        If Not System.IO.File.Exists(GameFileName) Then
+        If m_data Is Nothing And Not System.IO.File.Exists(GameFileName) Then
             GameFileName = m_player.GetNewGameFile(GameFileName, "*.asl;*.cas;*.zip")
             If GameFileName = "" Then Exit Function
         End If
@@ -9096,114 +9117,114 @@ errhandle:
             m_gameLoading = False
             If Not result Then Return False
         Else
-        ' Open Quest 2.x saved game file
+            ' Open Quest 2.x saved game file
 
-        Input(FileNum, NullData)
-        Input(FileNum, CurrentRoom)
-        Input(FileNum, NullData) 'will be "!c"
+            Input(FileNum, NullData)
+            Input(FileNum, CurrentRoom)
+            Input(FileNum, NullData) 'will be "!c"
 
-        Do
-            Input(FileNum, CData)
-            If CData <> "!i" Then
-                SemiColonPos = InStr(CData, ";")
-                CName = Trim(Left(CData, SemiColonPos - 1))
-                CDat = CInt(Right(CData, Len(CData) - SemiColonPos))
+            Do
+                Input(FileNum, CData)
+                If CData <> "!i" Then
+                    SemiColonPos = InStr(CData, ";")
+                    CName = Trim(Left(CData, SemiColonPos - 1))
+                    CDat = CInt(Right(CData, Len(CData) - SemiColonPos))
 
-                For i = 1 To NumCollectables
-                    If Collectables(i).collectablename = CName Then
-                        Collectables(i).collectablenumber = CDat
-                        i = NumCollectables
-                    End If
-                Next i
-            End If
-        Loop Until CData = "!i"
+                    For i = 1 To NumCollectables
+                        If Collectables(i).collectablename = CName Then
+                            Collectables(i).collectablenumber = CDat
+                            i = NumCollectables
+                        End If
+                    Next i
+                End If
+            Loop Until CData = "!i"
 
-        Do
-            Input(FileNum, CData)
-            If CData <> "!o" Then
-                SemiColonPos = InStr(CData, ";")
-                CName = Trim(Left(CData, SemiColonPos - 1))
-                cdatb = IsYes(Right(CData, Len(CData) - SemiColonPos))
+            Do
+                Input(FileNum, CData)
+                If CData <> "!o" Then
+                    SemiColonPos = InStr(CData, ";")
+                    CName = Trim(Left(CData, SemiColonPos - 1))
+                    cdatb = IsYes(Right(CData, Len(CData) - SemiColonPos))
 
-                For i = 1 To NumberItems
-                    If Items(i).itemname = CName Then
-                        Items(i).gotitem = cdatb
-                        i = NumberItems
-                    End If
-                Next i
-            End If
-        Loop Until CData = "!o"
+                    For i = 1 To NumberItems
+                        If Items(i).itemname = CName Then
+                            Items(i).gotitem = cdatb
+                            i = NumberItems
+                        End If
+                    Next i
+                End If
+            Loop Until CData = "!o"
 
-        Do
-            Input(FileNum, CData)
-            If CData <> "!p" Then
-                SemiColonPos = InStr(CData, ";")
-                SC2Pos = InStr(SemiColonPos + 1, CData, ";")
-                SC3Pos = InStr(SC2Pos + 1, CData, ";")
+            Do
+                Input(FileNum, CData)
+                If CData <> "!p" Then
+                    SemiColonPos = InStr(CData, ";")
+                    SC2Pos = InStr(SemiColonPos + 1, CData, ";")
+                    SC3Pos = InStr(SC2Pos + 1, CData, ";")
 
-                CName = Trim(Left(CData, SemiColonPos - 1))
-                cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
-                CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
-                CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
+                    CName = Trim(Left(CData, SemiColonPos - 1))
+                    cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
+                    CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
+                    CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
 
-                For i = 1 To NumberObjs
-                    If Objs(i).ObjectName = CName And Not Objs(i).Loaded Then
-                        Objs(i).Exists = cdatb
-                        Objs(i).Visible = CurObjVisible
-                        Objs(i).ContainerRoom = CurObjRoom
-                        Objs(i).Loaded = True
-                        i = NumberObjs
-                    End If
-                Next i
-            End If
-        Loop Until CData = "!p"
+                    For i = 1 To NumberObjs
+                        If Objs(i).ObjectName = CName And Not Objs(i).Loaded Then
+                            Objs(i).Exists = cdatb
+                            Objs(i).Visible = CurObjVisible
+                            Objs(i).ContainerRoom = CurObjRoom
+                            Objs(i).Loaded = True
+                            i = NumberObjs
+                        End If
+                    Next i
+                End If
+            Loop Until CData = "!p"
 
-        Do
-            Input(FileNum, CData)
-            If CData <> "!s" Then
-                SemiColonPos = InStr(CData, ";")
-                SC2Pos = InStr(SemiColonPos + 1, CData, ";")
-                SC3Pos = InStr(SC2Pos + 1, CData, ";")
+            Do
+                Input(FileNum, CData)
+                If CData <> "!s" Then
+                    SemiColonPos = InStr(CData, ";")
+                    SC2Pos = InStr(SemiColonPos + 1, CData, ";")
+                    SC3Pos = InStr(SC2Pos + 1, CData, ";")
 
-                CName = Trim(Left(CData, SemiColonPos - 1))
-                cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
-                CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
-                CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
+                    CName = Trim(Left(CData, SemiColonPos - 1))
+                    cdatb = IsYes(Mid(CData, SemiColonPos + 1, (SC2Pos - SemiColonPos) - 1))
+                    CurObjVisible = IsYes(Mid(CData, SC2Pos + 1, (SC3Pos - SC2Pos) - 1))
+                    CurObjRoom = Trim(Mid(CData, SC3Pos + 1))
 
-                For i = 1 To NumberChars
-                    If Chars(i).ObjectName = CName Then
-                        Chars(i).Exists = cdatb
-                        Chars(i).Visible = CurObjVisible
-                        Chars(i).ContainerRoom = CurObjRoom
-                        i = NumberChars
-                    End If
-                Next i
-            End If
-        Loop Until CData = "!s"
+                    For i = 1 To NumberChars
+                        If Chars(i).ObjectName = CName Then
+                            Chars(i).Exists = cdatb
+                            Chars(i).Visible = CurObjVisible
+                            Chars(i).ContainerRoom = CurObjRoom
+                            i = NumberChars
+                        End If
+                    Next i
+                End If
+            Loop Until CData = "!s"
 
-        Do
-            CData = LineInput(FileNum)
-            If CData <> "!n" Then
-                SemiColonPos = InStr(CData, ";")
-                CName = Trim(Left(CData, SemiColonPos - 1))
-                CData = Right(CData, Len(CData) - SemiColonPos)
+            Do
+                CData = LineInput(FileNum)
+                If CData <> "!n" Then
+                    SemiColonPos = InStr(CData, ";")
+                    CName = Trim(Left(CData, SemiColonPos - 1))
+                    CData = Right(CData, Len(CData) - SemiColonPos)
 
-                SetStringContents(CName, CData, NullThread)
-            End If
-        Loop Until CData = "!n"
+                    SetStringContents(CName, CData, NullThread)
+                End If
+            Loop Until CData = "!n"
 
-        Do
-            CData = LineInput(FileNum)
-            If CData <> "!e" Then
-                SemiColonPos = InStr(CData, ";")
-                CName = Trim(Left(CData, SemiColonPos - 1))
-                CData = Right(CData, Len(CData) - SemiColonPos)
+            Do
+                CData = LineInput(FileNum)
+                If CData <> "!e" Then
+                    SemiColonPos = InStr(CData, ";")
+                    CName = Trim(Left(CData, SemiColonPos - 1))
+                    CData = Right(CData, Len(CData) - SemiColonPos)
 
-                SetNumericVariableContents(CName, Val(CData), NullThread)
-            End If
-        Loop Until CData = "!e"
+                    SetNumericVariableContents(CName, Val(CData), NullThread)
+                End If
+            Loop Until CData = "!e"
 
-        FileClose(FileNum)
+            FileClose(FileNum)
         End If
 
         SaveGameFile = theGameFileName
@@ -13346,7 +13367,7 @@ ErrorHandler:
 
     Public Function Initialise(player As IPlayer) As Boolean Implements IASL.Initialise
         m_player = player
-        If LCase(Right(m_filename, 4)) = ".qsg" Then
+        If LCase(Right(m_filename, 4)) = ".qsg" Or m_data IsNot Nothing Then
             Return OpenGame(m_filename)
         Else
             Return InitialiseGame(m_filename)

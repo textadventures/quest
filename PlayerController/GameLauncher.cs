@@ -5,19 +5,24 @@ using System.Text;
 using TextAdventures.Quest;
 using Ionic.Zip;
 using System.IO;
+using TextAdventures.Quest.LegacyASL;
 
 namespace TextAdventures.Quest
 {
     public static class GameLauncher
     {
-        public static IASL GetGame(string loadData, int loadDataVersion)
+        public static IASL GetGame(string loadData, int loadDataVersion, string legacyAslSourceFile)
         {
             if (loadDataVersion >= 500)
             {
                 return new WorldModel(loadData);
             }
-            throw new NotImplementedException("LegacyASL not yet supported");
-            //return new LegacyASL.LegacyGame();
+            
+            return new LegacyGame(new LegacyGame.InitGameData
+            {
+                Data = loadData,
+                SourceFile = legacyAslSourceFile,
+            });
         }
 
         public static IASL GetGame(string filename, string libraryFolder)
