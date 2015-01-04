@@ -61,8 +61,13 @@ namespace TextAdventures.Quest
             AddXMLLoaders(mode);
         }
 
-        public bool Load(string filename)
+        public bool Load(string filename = null, string data = null)
         {
+            if (filename == null && data == null)
+            {
+                throw new ArgumentException("Expected filename or data");
+            }
+
             // defaults to false, but if we're reading from Azure it's always a compiled file
             IsCompiledFile = Config.ReadGameFileFromAzureBlob;
 
@@ -78,19 +83,21 @@ namespace TextAdventures.Quest
 
             try
             {
-                string data = null;
                 FileStream stream = null;
 
-                if (Config.ReadGameFileFromAzureBlob)
+                if (data == null)
                 {
-                    using (var client = new WebClient())
+                    if (Config.ReadGameFileFromAzureBlob)
                     {
-                        data = client.DownloadString(filename);
+                        using (var client = new WebClient())
+                        {
+                            data = client.DownloadString(filename);
+                        }
                     }
-                }
-                else
-                {
-                    stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    else
+                    {
+                        stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    }
                 }
 
                 using (XmlReader reader = stream != null ? new XmlTextReader(stream) : new XmlTextReader(new StringReader(data)))

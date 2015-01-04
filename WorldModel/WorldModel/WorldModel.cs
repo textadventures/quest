@@ -49,6 +49,7 @@ namespace TextAdventures.Quest
         private UndoLogger m_undoLogger;
         private string m_filename;
         private string m_originalFilename;
+        private readonly string m_data;
         private string m_libFolder = null;
         private List<string> m_errors;
         private Dictionary<string, ObjectType> m_debuggerObjectTypes = new Dictionary<string, ObjectType>();
@@ -154,6 +155,12 @@ namespace TextAdventures.Quest
         public WorldModel()
             : this(null, null)
         {
+        }
+
+        public WorldModel(string data)
+            : this(null, null)
+        {
+            m_data = data;
         }
 
         public WorldModel(string filename, string originalFilename)
@@ -503,7 +510,17 @@ namespace TextAdventures.Quest
             loader.FilenameUpdated += loader_FilenameUpdated;
             loader.LoadStatus += loader_LoadStatus;
             m_state = GameState.Loading;
-            bool success = m_filename == null || loader.Load(m_filename);
+            
+            bool success;
+            if (m_data != null)
+            {
+                success = loader.Load(data: m_data);
+            }
+            else
+            {
+                success = m_filename == null || loader.Load(m_filename);    
+            }
+            
             DebugEnabled = !loader.IsCompiledFile;
             m_state = success ? GameState.Running : GameState.Finished;
             m_errors = loader.Errors;

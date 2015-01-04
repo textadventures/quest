@@ -26,6 +26,13 @@ namespace WebPlayer
             return string.Format("http://textadventures.blob.core.windows.net/gameresources/{0}/{1}", game.UniqueId, gameFile);
         }
 
+        public static int? GetGameASLVersion(string id)
+        {
+            var game = Api.GetData<ApiGame>("api/game/" + id);
+            if (game == null) return null;
+            return game.ASLVersion;
+        }
+
         public void NotifySave(IUser user, string gameId, string filename)
         {
             throw new NotImplementedException();

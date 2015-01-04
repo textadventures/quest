@@ -48,12 +48,22 @@ namespace WebPlayer
         public string GameId { get; set; }
         public string LibraryFolder { get; set; }
         public string LoadData { get; set; }
+        public int LoadDataVersion { get; set; }
 
         public bool Initialise(out List<string> errors)
         {
             Logging.Log.DebugFormat("{0} Initialising {1}", GameId, m_filename);
 
-            IASL game = GameLauncher.GetGame(m_filename, LibraryFolder);
+            IASL game;
+            if (LoadData != null)
+            {
+                game = GameLauncher.GetGame(LoadData, LoadDataVersion);
+            }
+            else
+            {
+                game = GameLauncher.GetGame(m_filename, LibraryFolder);
+            }
+            
             m_controller = new PlayerHelper(game, this);
             m_controller.UseGameColours = true;
             m_controller.UseGameFont = true;

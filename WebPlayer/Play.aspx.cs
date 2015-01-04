@@ -125,12 +125,25 @@ namespace WebPlayer
                     }
                 }
             }
+            
+            var loadDataVersion = 0;
+            
             var loadData = Session["LoadData"] as string;
             Session["LoadData"] = null;
-            return LoadGame(gameFile, id, folder, loadData);
+
+            if (loadData != null)
+            {
+                loadDataVersion = AzureFileManager.GetGameASLVersion(id) ?? 0;
+                if (loadDataVersion == 0)
+                {
+                    throw new InvalidOperationException("No ASL version returned for game id " + id);
+                }
+            }
+
+            return LoadGame(gameFile, id, folder, loadData, loadDataVersion);
         }
 
-        private string LoadGame(string gameFile, string id, string folder, string loadData)
+        private string LoadGame(string gameFile, string id, string folder, string loadData, int loadDataVersion)
         {
             if (string.IsNullOrEmpty(gameFile) && loadData == null)
             {
@@ -162,6 +175,7 @@ namespace WebPlayer
                 var user = sessionManager != null ? sessionManager.GetUser() : null;
                 m_player = new PlayerHandler(filename, m_buffer, id, user);
                 m_player.LoadData = loadData;
+                m_player.LoadDataVersion = loadDataVersion;
                 m_player.GameId = m_gameId;
                 m_player.LibraryFolder = libPath;
                 Games[m_gameId] = m_player;

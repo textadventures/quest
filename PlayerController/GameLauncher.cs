@@ -10,6 +10,16 @@ namespace TextAdventures.Quest
 {
     public static class GameLauncher
     {
+        public static IASL GetGame(string loadData, int loadDataVersion)
+        {
+            if (loadDataVersion >= 500)
+            {
+                return new WorldModel(loadData);
+            }
+            throw new NotImplementedException("LegacyASL not yet supported");
+            //return new LegacyASL.LegacyGame();
+        }
+
         public static IASL GetGame(string filename, string libraryFolder)
         {
             return GetGame(filename, libraryFolder, null);
