@@ -255,7 +255,6 @@
       <DependentUpon>Resource.ashx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\ResumeController.cs" />
-    <Compile Include="SessionManager.cs" />
     <Compile Include="SessionResources.cs" />
   </ItemGroup>
   <ItemGroup>

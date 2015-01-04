@@ -14,9 +14,6 @@ namespace WebPlayer
     {
         private PlayerHelper m_controller;
         private readonly string m_filename;
-        private readonly string m_gameId;
-        private readonly IUser m_user;
-        private string m_saveFilename;
 
         private InterfaceListHandler m_listHandler;
         private OutputBuffer m_buffer;
@@ -36,11 +33,9 @@ namespace WebPlayer
         public event EventHandler<PlayAudioEventArgs> PlayAudio;
         public event Action StopAudio;
 
-        public PlayerHandler(string filename, OutputBuffer buffer, string gameId, IUser user)
+        public PlayerHandler(string filename, OutputBuffer buffer)
         {
             m_filename = filename;
-            m_gameId = gameId;
-            m_user = user;
             m_buffer = buffer;
             m_listHandler = new InterfaceListHandler(buffer);
         }
@@ -413,32 +408,34 @@ namespace WebPlayer
 
         public void RequestSave(string html)
         {
-            if (m_user == null || string.IsNullOrEmpty(m_gameId))
-            {
-                m_controller.AppendText("Sorry, you are not logged in. You must be logged in to save your progress.");
-                return;
-            }
+            //if (m_user == null || string.IsNullOrEmpty(m_gameId))
+            //{
+            //    m_controller.AppendText("Sorry, you are not logged in. You must be logged in to save your progress.");
+            //    return;
+            //}
 
-            bool notifySave = false;
-            string fullPath = m_controller.Game.SaveFilename;
-            if (string.IsNullOrEmpty(fullPath))
-            {
-                m_saveFilename = Guid.NewGuid().ToString() + "." + m_controller.Game.SaveExtension;
-                fullPath = System.IO.Path.Combine(ConfigurationManager.AppSettings["GameSaveFolder"], m_saveFilename);
-                notifySave = true;
-            }
+            //bool notifySave = false;
+            //string fullPath = m_controller.Game.SaveFilename;
+            //if (string.IsNullOrEmpty(fullPath))
+            //{
+            //    m_saveFilename = Guid.NewGuid().ToString() + "." + m_controller.Game.SaveExtension;
+            //    fullPath = System.IO.Path.Combine(ConfigurationManager.AppSettings["GameSaveFolder"], m_saveFilename);
+            //    notifySave = true;
+            //}
 
-            m_controller.Game.Save(fullPath, html);
+            //m_controller.Game.Save(fullPath, html);
 
-            if (notifySave)
-            {
-                FileManagerLoader.GetFileManager().NotifySave(
-                    m_user,
-                    m_gameId,
-                    m_saveFilename);
-            }
+            //if (notifySave)
+            //{
+            //    FileManagerLoader.GetFileManager().NotifySave(
+            //        m_user,
+            //        m_gameId,
+            //        m_saveFilename);
+            //}
 
-            m_controller.AppendText("Saved.");
+            //m_controller.AppendText("Saved.");
+
+            throw new NotImplementedException();
         }
 
         public void SetLinkForeground(string colour)

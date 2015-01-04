@@ -42,8 +42,6 @@
     <Compile Include="IEditorFileManager.cs" />
     <Compile Include="IFileManager.cs" />
     <Compile Include="IHTMLManager.cs" />
-    <Compile Include="ISessionManager.cs" />
-    <Compile Include="IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

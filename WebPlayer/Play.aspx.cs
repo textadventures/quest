@@ -63,9 +63,6 @@ namespace WebPlayer
             {
                 m_buffer = new OutputBuffer();
                 OutputBuffers.Add(m_gameId, m_buffer);
-
-                bool saveVisible = IsLoggedIn && (!string.IsNullOrEmpty(Request["id"]) || !string.IsNullOrEmpty(Request["load"]));
-                m_buffer.AddJavaScriptToBuffer("showSaveButton", new BooleanParameter(saveVisible));
             }
         }
 
@@ -104,7 +101,7 @@ namespace WebPlayer
             string folder = null;
             string gameFile = Request["file"];
             string id = Request["id"];
-            string loadId = Request["load"];
+
             if (string.IsNullOrEmpty(gameFile))
             {
                 if (!string.IsNullOrEmpty(id))
@@ -113,15 +110,6 @@ namespace WebPlayer
                     if (fileManager != null)
                     {
                         gameFile = fileManager.GetFileForID(id);
-                    }
-                }
-                else if (!string.IsNullOrEmpty(loadId))
-                {
-                    IFileManager fileManager = FileManagerLoader.GetFileManager();
-                    if (fileManager != null)
-                    {
-                        gameFile = fileManager.GetSaveFileForID(SessionManagerLoader.GetSessionManager().GetUser(), loadId, out id);
-                        folder = ConfigurationManager.AppSettings["GameSaveFolder"];
                     }
                 }
             }
@@ -171,9 +159,7 @@ namespace WebPlayer
 
             try
             {
-                var sessionManager = SessionManagerLoader.GetSessionManager();
-                var user = sessionManager != null ? sessionManager.GetUser() : null;
-                m_player = new PlayerHandler(filename, m_buffer, id, user);
+                m_player = new PlayerHandler(filename, m_buffer);
                 m_player.LoadData = loadData;
                 m_player.ApiGameData = apiGameData;
                 m_player.GameId = m_gameId;
@@ -417,17 +403,6 @@ namespace WebPlayer
         {
             get { return Session["OutputBuffers"] as Dictionary<string, OutputBuffer>; }
             set { Session["OutputBuffers"] = value; }
-        }
-
-        private bool IsLoggedIn
-        {
-            get
-            {
-                ISessionManager sessionManager = SessionManagerLoader.GetSessionManager();
-                if (sessionManager == null) return false;
-                IUser user = sessionManager.GetUser();
-                return (user != null);
-            }
         }
 
         protected string GetHead()

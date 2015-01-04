@@ -18,11 +18,6 @@ namespace WebPlayer.Mobile
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Page.IsPostBack)
-            {
-                cmdSave.Visible = IsLoggedIn && (!string.IsNullOrEmpty(Request["id"]) || !string.IsNullOrEmpty(Request["load"]));
-            }
-
             // We store the game in the Session, but use a dictionary keyed by GUIDs which
             // are stored in the ViewState. This allows the same user in the same browser
             // to open multiple games in different browser tabs.
@@ -105,7 +100,7 @@ namespace WebPlayer.Mobile
             string folder = null;
             string gameFile = Request["file"];
             string id = Request["id"];
-            string loadId = Request["load"];
+
             if (string.IsNullOrEmpty(gameFile))
             {
                 if (!string.IsNullOrEmpty(id))
@@ -114,15 +109,6 @@ namespace WebPlayer.Mobile
                     if (fileManager != null)
                     {
                         gameFile = fileManager.GetFileForID(id);
-                    }
-                }
-                else if (!string.IsNullOrEmpty(loadId))
-                {
-                    IFileManager fileManager = FileManagerLoader.GetFileManager();
-                    if (fileManager != null)
-                    {
-                        gameFile = fileManager.GetSaveFileForID(SessionManagerLoader.GetSessionManager().GetUser(), loadId, out id);
-                        folder = ConfigurationManager.AppSettings["GameSaveFolder"];
                     }
                 }
             }
@@ -172,9 +158,7 @@ namespace WebPlayer.Mobile
 
             try
             {
-                var sessionManager = SessionManagerLoader.GetSessionManager();
-                var user = sessionManager != null ? sessionManager.GetUser() : null;
-                m_player = new PlayerHandler(filename, m_buffer, id, user);
+                m_player = new PlayerHandler(filename, m_buffer);
                 m_player.LoadData = loadData;
                 m_player.ApiGameData = apiGameData;
                 m_player.GameId = m_gameId;
@@ -388,17 +372,6 @@ namespace WebPlayer.Mobile
         {
             get { return Session["OutputBuffers"] as Dictionary<string, OutputBuffer>; }
             set { Session["OutputBuffers"] = value; }
-        }
-
-        private bool IsLoggedIn
-        {
-            get
-            {
-                ISessionManager sessionManager = SessionManagerLoader.GetSessionManager();
-                if (sessionManager == null) return false;
-                IUser user = sessionManager.GetUser();
-                return (user != null);
-            }
         }
 
         protected string GetHead()

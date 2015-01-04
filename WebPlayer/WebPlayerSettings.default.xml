@@ -11,9 +11,6 @@
 
   <!-- PLUGINS -->
   
-  <!-- To enable saving and loading, specify the type name of a class that implements ISessionManager -->
-  <!-- <add key="SessionManagerType" value="SomeSessionManager.SessionManager, SomeSessionManager"/> -->
-
   <!-- To enable loading a file by ID, specify the type name of a class that implements IFileManager -->
   <!-- <add key="FileManagerType" value="SomeFileManager.FileManager, SomeFileManager"/> -->
   <!-- <add key="GameSaveFolder" value="C:\Path\To\Save Game Folder"/> -->

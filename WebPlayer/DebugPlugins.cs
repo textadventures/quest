@@ -7,35 +7,11 @@ using WebInterfaces;
 
 namespace WebPlayer
 {
-    internal class DebugSessionManager : ISessionManager
-    {
-        private IUser m_user = new DebugUser();
-
-        public IUser GetUser()
-        {
-            return m_user;
-        }
-    }
-
-    internal class DebugUser : IUser
-    {
-    }
-
     internal class DebugFileManager : IFileManager
     {
         public string GetFileForID(string id)
         {
             return ConfigurationManager.AppSettings["DebugFileManagerFile"];
-        }
-
-        public void NotifySave(IUser user, string gameId, string filename)
-        {
-        }
-
-        public string GetSaveFileForID(IUser user, string id, out string gameId)
-        {
-            gameId = "1";
-            return ConfigurationManager.AppSettings["DebugFileManagerSaveFile"];
         }
     }
 

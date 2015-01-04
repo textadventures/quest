@@ -38,15 +38,5 @@ namespace WebPlayer
             result.SourceGameUrl = GetSourceGameUrl(result);
             return result;
         }
-
-        public void NotifySave(IUser user, string gameId, string filename)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetSaveFileForID(IUser user, string id, out string gameId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
