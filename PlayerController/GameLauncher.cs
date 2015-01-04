@@ -11,11 +11,11 @@ namespace TextAdventures.Quest
 {
     public static class GameLauncher
     {
-        public static IASL GetGame(string loadData, int loadDataVersion, string legacyAslSourceFile)
+        public static IASL GetGame(byte[] loadData, int loadDataVersion, string legacyAslSourceFile)
         {
             if (loadDataVersion >= 500)
             {
-                return new WorldModel(loadData);
+                return new WorldModel(Encoding.UTF8.GetString(loadData));
             }
             
             return new LegacyGame(new LegacyGame.InitGameData

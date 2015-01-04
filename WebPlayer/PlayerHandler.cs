@@ -57,7 +57,7 @@ namespace WebPlayer
             IASL game;
             if (LoadData != null)
             {
-                game = GameLauncher.GetGame(LoadData, ApiGameData.ASLVersion, ApiGameData.SourceGameUrl);
+                game = GameLauncher.GetGame(Convert.FromBase64String(LoadData), ApiGameData.ASLVersion, ApiGameData.SourceGameUrl);
             }
             else
             {

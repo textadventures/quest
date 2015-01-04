@@ -488,7 +488,7 @@ Public Class LegacyGame
     End Sub
 
     Public Class InitGameData
-        Public Data As String
+        Public Data As Byte()
         Public SourceFile As String
     End Class
 
@@ -9070,7 +9070,7 @@ errhandle:
         If m_data Is Nothing Then
             FileData = System.IO.File.ReadAllText(theGameFileName, System.Text.Encoding.GetEncoding(1252))
         Else
-            FileData = m_data.Data
+            FileData = System.Text.Encoding.GetEncoding(1252).GetString(m_data.Data)
         End If
 
         ' Check version
