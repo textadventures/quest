@@ -15,7 +15,7 @@ $(function () {
         success: function(result) {
             console.log(result);
             $.post("/Resume", result, function() {
-                console.log("posted");
+                window.location = "/Play.aspx";
             });
         },
         error: function() {

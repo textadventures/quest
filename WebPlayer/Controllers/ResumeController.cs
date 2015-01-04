@@ -13,7 +13,8 @@ namespace WebPlayer.Controllers
         [ValidateInput(false)]
         public ActionResult Index(string data)
         {
-            return View();
+            Session["LoadData"] = data;
+            return Json(new object());
         }
     }
 }

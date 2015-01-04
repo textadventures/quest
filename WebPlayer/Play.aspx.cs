@@ -125,12 +125,14 @@ namespace WebPlayer
                     }
                 }
             }
-            return LoadGame(gameFile, id, folder);
+            var loadData = Session["LoadData"] as string;
+            Session["LoadData"] = null;
+            return LoadGame(gameFile, id, folder, loadData);
         }
 
-        private string LoadGame(string gameFile, string id, string folder)
+        private string LoadGame(string gameFile, string id, string folder, string loadData)
         {
-            if (string.IsNullOrEmpty(gameFile))
+            if (string.IsNullOrEmpty(gameFile) && loadData == null)
             {
                 return "No game specified";
             }
@@ -159,6 +161,7 @@ namespace WebPlayer
                 var sessionManager = SessionManagerLoader.GetSessionManager();
                 var user = sessionManager != null ? sessionManager.GetUser() : null;
                 m_player = new PlayerHandler(filename, m_buffer, id, user);
+                m_player.LoadData = loadData;
                 m_player.GameId = m_gameId;
                 m_player.LibraryFolder = libPath;
                 Games[m_gameId] = m_player;

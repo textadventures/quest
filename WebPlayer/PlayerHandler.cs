@@ -46,8 +46,8 @@ namespace WebPlayer
         }
 
         public string GameId { get; set; }
-
         public string LibraryFolder { get; set; }
+        public string LoadData { get; set; }
 
         public bool Initialise(out List<string> errors)
         {
