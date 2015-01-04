@@ -1182,6 +1182,12 @@ namespace TextAdventures.Quest
             File.WriteAllText(filename, saveData);
         }
 
+        public byte[] Save(string html)
+        {
+            string saveData = Save(SaveMode.SavedGame, html: html);
+            return System.Text.Encoding.UTF8.GetBytes(saveData);
+        }
+
         public string Save(SaveMode mode, bool? includeWalkthrough = null, string html = null)
         {
             return m_saver.Save(mode, includeWalkthrough, html);

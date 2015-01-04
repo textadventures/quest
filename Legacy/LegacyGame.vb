@@ -9245,7 +9245,7 @@ errhandle:
 
     End Sub
 
-    Private Sub SaveGame(ByRef theGameFileName As String)
+    Private Function SaveGame(ByRef theGameFileName As String, Optional saveFile As Boolean = True) As Byte()
         Dim FileNum, i As Integer
         Dim NewThread As ThreadData
         NewThread = NullThread
@@ -9256,52 +9256,61 @@ errhandle:
 
         If GameASLVersion >= 280 Then
             Dim saveData As String = MakeRestoreData()
-            System.IO.File.WriteAllText(theGameFileName, saveData, System.Text.Encoding.GetEncoding(1252))
+            If saveFile Then
+                System.IO.File.WriteAllText(theGameFileName, saveData, System.Text.Encoding.GetEncoding(1252))
+            End If
+
             Print("Saved", NullThread)
-        Else
-            FileOpen(FileNum, theGameFileName, OpenMode.Output)
-            PrintLine(FileNum, "QUEST200.1")
-            PrintLine(FileNum, GetOriginalFilenameForQSG)
-            PrintLine(FileNum, GameName)
-            PrintLine(FileNum, CurrentRoom)
 
-            PrintLine(FileNum, "!c")
-            For i = 1 To NumCollectables
-                PrintLine(FileNum, Collectables(i).collectablename & ";" & Str(Collectables(i).collectablenumber))
-            Next i
+            SaveGameFile = theGameFileName
 
-            PrintLine(FileNum, "!i")
-            For i = 1 To NumberItems
-                PrintLine(FileNum, Items(i).itemname & ";" & YesNo(Items(i).gotitem))
-            Next i
-
-            PrintLine(FileNum, "!o")
-            For i = 1 To NumberObjs
-                PrintLine(FileNum, Objs(i).ObjectName & ";" & YesNo(Objs(i).Exists) & ";" & YesNo(Objs(i).Visible) & ";" & Objs(i).ContainerRoom)
-            Next i
-
-            PrintLine(FileNum, "!p")
-            For i = 1 To NumberChars
-                PrintLine(FileNum, Chars(i).ObjectName & ";" & YesNo(Chars(i).Exists) & ";" & YesNo(Chars(i).Visible) & ";" & Chars(i).ContainerRoom)
-            Next i
-
-            PrintLine(FileNum, "!s")
-            For i = 1 To NumberStringVariables
-                PrintLine(FileNum, StringVariable(i).VariableName & ";" & StringVariable(i).VariableContents(0))
-            Next i
-
-            PrintLine(FileNum, "!n")
-            For i = 1 To NumberNumericVariables
-                PrintLine(FileNum, NumericVariable(i).VariableName & ";" & Str(CDbl(NumericVariable(i).VariableContents(0))))
-            Next i
-
-            PrintLine(FileNum, "!e")
-
-            FileClose(FileNum)
+            Return System.Text.Encoding.GetEncoding(1252).GetBytes(saveData)
         End If
 
+        If Not saveFile Then Throw New NotImplementedException
+
+        FileOpen(FileNum, theGameFileName, OpenMode.Output)
+        PrintLine(FileNum, "QUEST200.1")
+        PrintLine(FileNum, GetOriginalFilenameForQSG)
+        PrintLine(FileNum, GameName)
+        PrintLine(FileNum, CurrentRoom)
+
+        PrintLine(FileNum, "!c")
+        For i = 1 To NumCollectables
+            PrintLine(FileNum, Collectables(i).collectablename & ";" & Str(Collectables(i).collectablenumber))
+        Next i
+
+        PrintLine(FileNum, "!i")
+        For i = 1 To NumberItems
+            PrintLine(FileNum, Items(i).itemname & ";" & YesNo(Items(i).gotitem))
+        Next i
+
+        PrintLine(FileNum, "!o")
+        For i = 1 To NumberObjs
+            PrintLine(FileNum, Objs(i).ObjectName & ";" & YesNo(Objs(i).Exists) & ";" & YesNo(Objs(i).Visible) & ";" & Objs(i).ContainerRoom)
+        Next i
+
+        PrintLine(FileNum, "!p")
+        For i = 1 To NumberChars
+            PrintLine(FileNum, Chars(i).ObjectName & ";" & YesNo(Chars(i).Exists) & ";" & YesNo(Chars(i).Visible) & ";" & Chars(i).ContainerRoom)
+        Next i
+
+        PrintLine(FileNum, "!s")
+        For i = 1 To NumberStringVariables
+            PrintLine(FileNum, StringVariable(i).VariableName & ";" & StringVariable(i).VariableContents(0))
+        Next i
+
+        PrintLine(FileNum, "!n")
+        For i = 1 To NumberNumericVariables
+            PrintLine(FileNum, NumericVariable(i).VariableName & ";" & Str(CDbl(NumericVariable(i).VariableContents(0))))
+        Next i
+
+        PrintLine(FileNum, "!e")
+
+        FileClose(FileNum)
+
         SaveGameFile = theGameFileName
-    End Sub
+    End Function
 
     Private Sub SetAvailability(ByRef ThingString As String, ByRef ThingExist As Boolean, ByRef Thread As ThreadData, Optional ByRef ThingType As Integer = QUEST_OBJECT)
         ' Sets availability of objects (and characters in ASL<281)
@@ -13299,6 +13308,10 @@ ErrorHandler:
     Public Sub Save(filename As String, html As String) Implements IASL.Save
         SaveGame(filename)
     End Sub
+
+    Public Function Save(html As String) As Byte() Implements IASL.Save
+        Return SaveGame(Filename, False)
+    End Function
 
     Public ReadOnly Property SaveFilename As String Implements IASL.SaveFilename
         Get

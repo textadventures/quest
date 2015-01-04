@@ -423,7 +423,9 @@ namespace WebPlayer
             //    notifySave = true;
             //}
 
-            //m_controller.Game.Save(fullPath, html);
+            var data = m_controller.Game.Save(html);
+
+            //m_buffer.AddJavaScriptToBuffer("console.log", new StringParameter(Convert.ToBase64String(data)));
 
             //if (notifySave)
             //{
@@ -434,8 +436,6 @@ namespace WebPlayer
             //}
 
             //m_controller.AppendText("Saved.");
-
-            throw new NotImplementedException();
         }
 
         public void SetLinkForeground(string colour)
