@@ -212,6 +212,7 @@
     <Compile Include="AzureFileManager.cs" />
     <Compile Include="AzureLogger.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DebugPlugins.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="Global.asax.cs">
@@ -303,7 +304,9 @@
     <Content Include="Views\Resume\Index.cshtml" />
     <Content Include="Views\Web.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Home\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
