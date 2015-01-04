@@ -10,12 +10,16 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 
 $(function () {
     var id = $_GET["id"];
-    console.log("getting...  " + "http://textadventures.co.uk/games/load/" + id);
     $.ajax({
         url: "http://textadventures.co.uk/games/load/" + id,
         success: function(result) {
             console.log(result);
-            console.log("done");
+            $.post("/Resume", result, function() {
+                console.log("posted");
+            });
+        },
+        error: function() {
+            $("#status").text("Failed to load game");
         },
         xhrFields: {
             withCredentials: true

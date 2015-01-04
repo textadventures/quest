@@ -8,5 +8,12 @@ namespace WebPlayer.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Index(string data)
+        {
+            return View();
+        }
     }
 }
