@@ -3,6 +3,18 @@
     if (width) {
         setGameWidth(width);
     }
+
+    $.ajax({
+        url: "http://textadventures.co.uk/games/cansave",
+        success: function (result) {
+            if (result) {
+                $("#cmdSave").show();
+            }
+        },
+        xhrFields: {
+            withCredentials: true
+        }
+    });
 });
 
 function ui_init() {
@@ -96,14 +108,4 @@ function finishSync() {
         $("#fldUIMsg").val("endwait");
         $("#cmdSubmit").click();
     }, 100);
-}
-
-function showSaveButton(show) {
-    if (show) {
-        $("#cmdSave").show();
-    }
-    else {
-        $("#cmdSave").hide();
-    }
-    updateStatusVisibility();
 }

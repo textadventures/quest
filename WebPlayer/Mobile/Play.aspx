@@ -138,7 +138,7 @@
             <h2 class="ui-widget-header">More</h2>
             <div>
                 <div id="controlButtons">
-                    <button type="button" id="cmdSave" runat="server">Save</button>
+                    <button type="button" id="cmdSave" style="display: none">Save</button>
                     <button type="button" id="cmdLook">Look</button>
                     <button type="button" id="cmdRestart">Restart</button>
                     <button type="button" id="cmdUndo">Undo</button>

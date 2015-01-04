@@ -13,7 +13,6 @@ $(function () {
     $.ajax({
         url: "http://textadventures.co.uk/games/load/" + id,
         success: function(result) {
-            console.log(result);
             $.post("/Resume", result, function() {
                 window.location = "/Play.aspx?id=" + id;
             });
