@@ -187,16 +187,20 @@ function saveGame() {
 }
 
 function saveGameResponse(data) {
-    console.log(data.length);
+    addText("Saving game...<br/>");
     $.ajax({
         url: "http://textadventures.co.uk/games/save/?id=" + $_GET["id"],
         success: function (result) {
-            console.log("ok");
+            if (result.Success) {
+                addText("Game saved successfully.<br/>");
+            } else {
+                addText("Failed to save game: " + result.Reason + "<br/>");
+            }
         },
         error: function (xhr, status, err) {
-            console.log("error");
             console.log(status);
             console.log(err);
+            addText("Failed to save game.<br/>");
         },
         xhrFields: {
             withCredentials: true
