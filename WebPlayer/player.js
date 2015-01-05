@@ -185,3 +185,25 @@ function saveGame() {
         $("#cmdSubmit").click();
     }, 100);
 }
+
+function saveGameResponse(data) {
+    console.log(data.length);
+    $.ajax({
+        url: "http://textadventures.co.uk/games/save/?id=" + $_GET["id"],
+        success: function (result) {
+            console.log("ok");
+        },
+        error: function (xhr, status, err) {
+            console.log("error");
+            console.log(status);
+            console.log(err);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        type: "POST",
+        data: {
+            data: data
+        }
+    });
+}

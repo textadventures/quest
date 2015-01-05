@@ -408,34 +408,8 @@ namespace WebPlayer
 
         public void RequestSave(string html)
         {
-            //if (m_user == null || string.IsNullOrEmpty(m_gameId))
-            //{
-            //    m_controller.AppendText("Sorry, you are not logged in. You must be logged in to save your progress.");
-            //    return;
-            //}
-
-            //bool notifySave = false;
-            //string fullPath = m_controller.Game.SaveFilename;
-            //if (string.IsNullOrEmpty(fullPath))
-            //{
-            //    m_saveFilename = Guid.NewGuid().ToString() + "." + m_controller.Game.SaveExtension;
-            //    fullPath = System.IO.Path.Combine(ConfigurationManager.AppSettings["GameSaveFolder"], m_saveFilename);
-            //    notifySave = true;
-            //}
-
             var data = m_controller.Game.Save(html);
-
-            //m_buffer.AddJavaScriptToBuffer("console.log", new StringParameter(Convert.ToBase64String(data)));
-
-            //if (notifySave)
-            //{
-            //    FileManagerLoader.GetFileManager().NotifySave(
-            //        m_user,
-            //        m_gameId,
-            //        m_saveFilename);
-            //}
-
-            //m_controller.AppendText("Saved.");
+            m_buffer.AddJavaScriptToBuffer("saveGameResponse", new StringParameter(Convert.ToBase64String(data)));
         }
 
         public void SetLinkForeground(string colour)
