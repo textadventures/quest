@@ -13,8 +13,6 @@ namespace WebPlayer
     {
         protected void Application_Start(object sender, EventArgs e)
         {
-            Logging.Log.Info("Application Start");
-
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
@@ -57,11 +55,6 @@ namespace WebPlayer
                     handler.EndGame();
                 }
             }
-        }
-
-        protected void Application_End(object sender, EventArgs e)
-        {
-            Logging.Log.Info("Application End");
         }
     }
 }
