@@ -9048,7 +9048,6 @@ errhandle:
 
     Private Function OpenGame(theGameFileName As String) As Boolean
 
-        Dim FileNum As Integer
         Dim cdatb, bResult As Boolean
         Dim CurObjVisible As Boolean
         Dim CurObjRoom As String
@@ -9061,10 +9060,10 @@ errhandle:
         Dim CName As String
         Dim SemiColonPos, CDat As Integer
         Dim SC2Pos, SC3Pos As Integer
+        Dim lines As String() = {}
 
         GameLoadMethod = "loaded"
 
-        FileNum = FreeFile()
         PrevQSGVersion = False
 
         If m_data Is Nothing Then
@@ -9083,10 +9082,8 @@ errhandle:
         End If
 
         If PrevQSGVersion Then
-            FileOpen(FileNum, theGameFileName, OpenMode.Input)
-
-            Input(FileNum, NullData)
-            Input(FileNum, GameFileName)
+            lines = FileData.Split({vbCrLf, vbLf}, StringSplitOptions.None)
+            GameFileName = lines(1)
         Else
             InitFileData(FileData)
             NullData = GetNextChunk()
@@ -9119,12 +9116,14 @@ errhandle:
         Else
             ' Open Quest 2.x saved game file
 
-            Input(FileNum, NullData)
-            Input(FileNum, CurrentRoom)
-            Input(FileNum, NullData) 'will be "!c"
+            CurrentRoom = lines(3)
+
+            ' Start at line 5 as line 4 is always "!c"
+            Dim lineNumber As Integer = 5
 
             Do
-                Input(FileNum, CData)
+                CData = lines(lineNumber)
+                lineNumber += 1
                 If CData <> "!i" Then
                     SemiColonPos = InStr(CData, ";")
                     CName = Trim(Left(CData, SemiColonPos - 1))
@@ -9140,7 +9139,8 @@ errhandle:
             Loop Until CData = "!i"
 
             Do
-                Input(FileNum, CData)
+                CData = lines(lineNumber)
+                lineNumber += 1
                 If CData <> "!o" Then
                     SemiColonPos = InStr(CData, ";")
                     CName = Trim(Left(CData, SemiColonPos - 1))
@@ -9156,7 +9156,8 @@ errhandle:
             Loop Until CData = "!o"
 
             Do
-                Input(FileNum, CData)
+                CData = lines(lineNumber)
+                lineNumber += 1
                 If CData <> "!p" Then
                     SemiColonPos = InStr(CData, ";")
                     SC2Pos = InStr(SemiColonPos + 1, CData, ";")
@@ -9180,7 +9181,8 @@ errhandle:
             Loop Until CData = "!p"
 
             Do
-                Input(FileNum, CData)
+                CData = lines(lineNumber)
+                lineNumber += 1
                 If CData <> "!s" Then
                     SemiColonPos = InStr(CData, ";")
                     SC2Pos = InStr(SemiColonPos + 1, CData, ";")
@@ -9203,7 +9205,8 @@ errhandle:
             Loop Until CData = "!s"
 
             Do
-                CData = LineInput(FileNum)
+                CData = lines(lineNumber)
+                lineNumber += 1
                 If CData <> "!n" Then
                     SemiColonPos = InStr(CData, ";")
                     CName = Trim(Left(CData, SemiColonPos - 1))
@@ -9214,7 +9217,8 @@ errhandle:
             Loop Until CData = "!n"
 
             Do
-                CData = LineInput(FileNum)
+                CData = lines(lineNumber)
+                lineNumber += 1
                 If CData <> "!e" Then
                     SemiColonPos = InStr(CData, ";")
                     CName = Trim(Left(CData, SemiColonPos - 1))
@@ -9224,7 +9228,6 @@ errhandle:
                 End If
             Loop Until CData = "!e"
 
-            FileClose(FileNum)
         End If
 
         SaveGameFile = theGameFileName
