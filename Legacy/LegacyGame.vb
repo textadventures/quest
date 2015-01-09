@@ -2027,7 +2027,7 @@ ErrorHandler:
 
         If Config.ReadGameFileFromAzureBlob Then
             Using client As New WebClient
-                Dim url As String = Filename
+                Dim url As String = thefilename
                 Dim baseAddress As Uri = New Uri(url)
                 Dim directory As Uri = New Uri(baseAddress, ".")
 

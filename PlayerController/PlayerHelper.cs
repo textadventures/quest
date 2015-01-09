@@ -282,7 +282,7 @@ namespace TextAdventures.Quest
             string style = "";
             if (UseGameFont)
             {
-                if (m_font.Length > 0)
+                if (!string.IsNullOrEmpty(m_font))
                 {
                     style += string.Format("font-family:{0};", m_font);
                 }
