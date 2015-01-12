@@ -3,18 +3,6 @@
     if (width) {
         setGameWidth(width);
     }
-
-    $.ajax({
-        url: "http://textadventures.co.uk/games/cansave",
-        success: function (result) {
-            if (result) {
-                $("#cmdSave").show();
-            }
-        },
-        xhrFields: {
-            withCredentials: true
-        }
-    });
 });
 
 function ui_init() {

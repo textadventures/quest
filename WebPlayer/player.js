@@ -21,6 +21,18 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 function init() {
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     setInterval(keepSessionAlive, 60000);
+
+    $.ajax({
+        url: "http://textadventures.co.uk/games/cansave",
+        success: function (result) {
+            if (result) {
+                $("#cmdSave").show();
+            }
+        },
+        xhrFields: {
+            withCredentials: true
+        }
+    });
 }
 
 function keepSessionAlive() {
