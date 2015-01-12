@@ -214,6 +214,7 @@
     <Compile Include="AzureLogger.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RedirectController.cs" />
     <Compile Include="DebugPlugins.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="Global.asax.cs">
@@ -306,6 +307,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Home\" />
+    <Folder Include="Views\Redirect\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
