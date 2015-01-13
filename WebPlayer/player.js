@@ -4,6 +4,7 @@ var tmrTick = null;
 var tickCount = 0;
 var sendNextGameTickerAfter = 0;
 var canSendCommand = true;
+var apiRoot = "http://textadventures.co.uk/";
 
 function pageLoad() {
     // triggered by ASP.NET every page load, including from the AJAX UpdatePanel
@@ -18,12 +19,13 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     $_GET[decode(arguments[1])] = decode(arguments[2]);
 });
 
-function init() {
+function init(url) {
+    apiRoot = url;
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     setInterval(keepSessionAlive, 60000);
 
     $.ajax({
-        url: "http://textadventures.co.uk/games/cansave",
+        url: apiRoot + "games/cansave",
         success: function (result) {
             if (result) {
                 $("#cmdSave").show();
@@ -201,7 +203,7 @@ function saveGame() {
 function saveGameResponse(data) {
     addText("Saving game...<br/>");
     $.ajax({
-        url: "http://textadventures.co.uk/games/save/?id=" + $_GET["id"],
+        url: apiRoot + "games/save/?id=" + $_GET["id"],
         success: function (result) {
             if (result.Success) {
                 addText("Game saved successfully.<br/>");

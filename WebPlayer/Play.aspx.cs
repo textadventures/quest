@@ -449,5 +449,10 @@ namespace WebPlayer
         {
             return file + "?c=" + (Convert.ToInt32((DateTime.Now - (new DateTime(2012, 1, 1))).TotalSeconds)).ToString();
         }
+
+        protected string ApiRoot()
+        {
+            return ConfigurationManager.AppSettings["BaseURI"] ?? "http://textadventures.co.uk/";
+        }
     }
 }
