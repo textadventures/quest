@@ -1,4 +1,5 @@
 ﻿var $_GET = {};
+var apiRoot = "http://textadventures.co.uk/";
 
 document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     function decode(s) {
@@ -11,7 +12,7 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 $(function () {
     var id = $_GET["id"];
     $.ajax({
-        url: "http://textadventures.co.uk/games/load/" + id,
+        url: apiRoot + "games/load/" + id,
         success: function(result) {
             $.post("/Resume", result, function() {
                 window.location = "/Play.aspx?id=" + id;
