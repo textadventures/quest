@@ -163,7 +163,7 @@
   <verbtemplate name="eat">manĝu</verbtemplate>
   <dynamictemplate name="DefaultEat">"Vi ne povas manĝi " + object.article + "."</dynamictemplate>
   <template templatetype="command" name="give"><![CDATA[^donu (?<object1>.*) al (?<object2>.*)$]]></template>
-  <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " ne volas + object2.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultGive">CapFirst(object1.gender) + " ne volas " + object2.article + "."</dynamictemplate>
   <verbtemplate name="hit">frapu</verbtemplate>
   <dynamictemplate name="DefaultHit">"Vi ne povas frapi " + object.article + "."</dynamictemplate>
   <verbtemplate name="kill">mortigu</verbtemplate>
