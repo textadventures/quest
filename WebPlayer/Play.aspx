@@ -19,7 +19,7 @@
     <script type="text/paperscript" src="<%= CacheBuster("grid.js") %>" canvas="gridCanvas"></script>
     <% Response.Write(GetHead()); %>
 </head>
-<body onload="init('<%= ApiRoot() %>');">
+<body onload="init('<%= ApiRoot() %>', '<%= GameSessionLogId() %>');">
     <% Response.Write(GetBodyHeader()); %>
     <div style="display: none">
         <form id="playerform" runat="server" defaultbutton="cmdSubmit">

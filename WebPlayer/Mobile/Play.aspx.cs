@@ -60,8 +60,9 @@ namespace WebPlayer.Mobile
             }
             else
             {
-                m_buffer = new OutputBuffer();
+                m_buffer = new OutputBuffer(m_gameId);
                 OutputBuffers.Add(m_gameId, m_buffer);
+                m_buffer.AddJavaScriptToBuffer("setOutputBufferId", new StringParameter(m_gameId));
             }
         }
 
@@ -335,7 +336,7 @@ namespace WebPlayer.Mobile
 
         void SessionTimeoutMessage()
         {
-            m_buffer = new OutputBuffer();
+            m_buffer = new OutputBuffer(null);
             m_buffer.AddJavaScriptToBuffer("sessionTimeout");
             ClearJavaScriptBuffer();
         }
@@ -404,5 +405,14 @@ namespace WebPlayer.Mobile
             return null;
         }
 
+        protected string ApiRoot()
+        {
+            return ConfigurationManager.AppSettings["BaseURI"] ?? "http://textadventures.co.uk/";
+        }
+
+        protected string InitGameSessionLog()
+        {
+            return string.IsNullOrEmpty(ConfigurationManager.AppSettings["AzureLogSessionsBlob"]) ? "false" : "true";
+        }
     }
 }

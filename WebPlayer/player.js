@@ -5,6 +5,8 @@ var tickCount = 0;
 var sendNextGameTickerAfter = 0;
 var canSendCommand = true;
 var apiRoot = "http://textadventures.co.uk/";
+var outputBufferId;
+var gameSessionLogData;
 
 function pageLoad() {
     // triggered by ASP.NET every page load, including from the AJAX UpdatePanel
@@ -19,7 +21,7 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
     $_GET[decode(arguments[1])] = decode(arguments[2]);
 });
 
-function init(url) {
+function init(url, gameSessionLogId) {
     apiRoot = url;
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     setInterval(keepSessionAlive, 60000);
@@ -35,6 +37,33 @@ function init(url) {
             withCredentials: true
         }
     });
+
+    if (gameSessionLogId) {
+        $.ajax({
+            url: apiRoot + "games/startsession/?gameId=" + $_GET["id"] + "&blobId=" + gameSessionLogId,
+            success: function (result) {
+                if (result) {
+                    gameSessionLogData = result;
+                    setUpSessionLog();
+                }
+            },
+            type: "POST",
+            xhrFields: {
+                withCredentials: true
+            }
+        });
+    }
+}
+
+function setOutputBufferId(id) {
+    outputBufferId = id;
+    setUpSessionLog();
+}
+
+function setUpSessionLog() {
+    if (outputBufferId && gameSessionLogData) {
+        $.post("/GameSession/Init/?userId=" + gameSessionLogData.UserId + "&sessionId=" + gameSessionLogData.SessionId + "&bufferId=" + outputBufferId);
+    }
 }
 
 function keepSessionAlive() {

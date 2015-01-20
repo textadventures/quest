@@ -303,6 +303,7 @@ namespace WebPlayer
         public void EndGame()
         {
             Logging.Log.DebugFormat("{0} Ending game", GameId);
+            m_buffer.Finish();
             m_controller.Game.Finish();
         }
 
