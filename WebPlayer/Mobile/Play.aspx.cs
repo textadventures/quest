@@ -410,9 +410,9 @@ namespace WebPlayer.Mobile
             return ConfigurationManager.AppSettings["BaseURI"] ?? "http://textadventures.co.uk/";
         }
 
-        protected string InitGameSessionLog()
+        protected string GameSessionLogId()
         {
-            return string.IsNullOrEmpty(ConfigurationManager.AppSettings["AzureLogSessionsBlob"]) ? "false" : "true";
+            return string.IsNullOrEmpty(ConfigurationManager.AppSettings["AzureLogSessionsBlob"]) ? "" : m_gameId;
         }
     }
 }
