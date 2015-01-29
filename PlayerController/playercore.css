@@ -185,7 +185,7 @@ h3 .ui-icon
 {
     position: absolute;
 }
-h3 a
+h3 .accordion-header-text
 {
     padding-left: 1.8em;
 }
