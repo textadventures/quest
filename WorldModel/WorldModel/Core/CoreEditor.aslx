@@ -18,7 +18,9 @@
 
   <type name="editor_room"/>
   <type name="editor_object"/>
-  <type name="editor_player"/>
+  <type name="editor_player">
+    <feature_player />
+  </type>
   
   <editor name="_RichTextControl_TextProcessorCommands">
     <data type="list">
