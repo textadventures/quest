@@ -103,7 +103,9 @@
       }
     }
     
-    if (game.lastobjects <> null) {
+    // allow referring to objects from the previous command by gender or article
+    
+    if (objtype = "object" and game.lastobjects <> null) {
       foreach (obj, game.lastobjects) {
         CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
         CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
