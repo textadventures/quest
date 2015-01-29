@@ -561,9 +561,8 @@ function updateVerbButtons(selectedItem, verbsArray, idprefix) {
 
 function beginWait() {
     _waitMode = true;
-    $("#txtCommand").fadeOut(400, function () {
-        $("#endWaitLink").fadeIn(400);
-    });
+    $("#txtCommand").hide();
+    $("#endWaitLink").show();
     markScrollPosition();
 }
 
@@ -574,11 +573,8 @@ function endWait() {
 
 function waitEnded() {
     _waitMode = false;
-    $("#endWaitLink").fadeOut(400, function () {
-        if (!_waitMode) {
-            $("#txtCommand").fadeIn(400);
-        }
-    });
+    $("#endWaitLink").hide();
+    $("#txtCommand").show();
 }
 
 function gameFinished() {

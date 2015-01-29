@@ -83,11 +83,8 @@ function resizeUI() {
 
 function beginWait() {
     _waitMode = true;
-    $("#inputBar").fadeOut(400, function () {
-        if (_waitMode) {
-            $("#endWaitLink").fadeTo(400, 1);
-        }
-    });
+    $("#inputBar").hide();
+    $("#endWaitLink").show();
     markScrollPosition();
 }
 
@@ -100,11 +97,8 @@ function endWait() {
     }, 100);
     window.setTimeout(function () {
         if (!_waitMode) {
-            $("#endWaitLink").fadeOut(400, function () {
-                if (!_waitMode) {
-                    $("#inputBar").fadeTo(400, 1);
-                }
-            });
+            $("#endWaitLink").hide();
+            $("#inputBar").show();
         }
     }, 200);
 }
