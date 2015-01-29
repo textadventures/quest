@@ -1,4 +1,6 @@
-﻿Public Class PublishWindow
+﻿Imports System.IO
+
+Public Class PublishWindow
 
     Private m_sourceFilename As String
     Private m_controller As EditorController
@@ -86,7 +88,18 @@
             EditorControls.PopupEditors.DisplayValidationError(result, String.Empty, "Unable to publish game")
         Else
             ' Show Output folder in a new Explorer window
-            System.Diagnostics.Process.Start("explorer.exe", "/n," + outputFolder)
+            Process.Start("explorer.exe", "/n," + outputFolder)
+
+            Try
+                ' warn if file size over 20MB
+                If New FileInfo(outputFilename).Length > 20 * 1024 * 1024 Then
+                    MsgBox("Output file size is over 20MB. Consider reducing the size of any image or sound files, and delete any unused files from the game folder." +
+                           Environment.NewLine + Environment.NewLine +
+                           "You may not be able to upload this file to textadventures.co.uk.", MsgBoxStyle.Exclamation, "Warning")
+                End If
+            Catch ex As Exception
+                ' ignore
+            End Try
         End If
 
         Me.Hide()
