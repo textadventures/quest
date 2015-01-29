@@ -285,7 +285,6 @@ function stopAudio() {
 
 function finishSync() {
     window.setTimeout(function () {
-        $("#txtCommandDiv").show();
         $("#fldUIMsg").val("endwait");
         $("#cmdSubmit").click();
     }, 100);

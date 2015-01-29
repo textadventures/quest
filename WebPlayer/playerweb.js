@@ -62,8 +62,8 @@ function playAudio(filename, format, sync, looped) {
     }
     else if (sync) {
         _waitingForSoundToFinish = true;
+        endFunction = function () { finishSync($("#txtCommandDiv").is(":visible")); };
         $("#txtCommandDiv").hide();
-        endFunction = function () { finishSync(); };
     }
     else {
         endFunction = null;
@@ -89,10 +89,10 @@ function stopAudio() {
     }
 }
 
-function finishSync() {
+function finishSync(showCommandDiv) {
     _waitingForSoundToFinish = false;
     window.setTimeout(function () {
-        $("#txtCommandDiv").show();
+        if (showCommandDiv) $("#txtCommandDiv").show();
         $("#fldUIMsg").val("endwait");
         $("#cmdSubmit").click();
     }, 100);
