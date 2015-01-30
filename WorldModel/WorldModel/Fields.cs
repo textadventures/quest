@@ -115,6 +115,7 @@ namespace TextAdventures.Quest
         public static IField<bool> IsBaseTemplate = new FieldDef<bool>("isbasetemplate");
         public static IField<string> DisplayVerb = new FieldDef<string>("displayverb");
         public static IField<string> Cover = new FieldDef<string>("cover");
+        public static IField<string> PublishFileExtensions = new FieldDef<string>("publishfileextensions");
     }
 
     public static class MetaFieldDefinitions

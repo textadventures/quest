@@ -27,7 +27,11 @@ namespace TextAdventures.Quest
                 using (ZipFile zip = new ZipFile(filename))
                 {
                     zip.AddEntry("game.aslx", data, Encoding.UTF8);
-                    foreach (string file in m_worldModel.GetAvailableExternalFiles("*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html"))
+
+                    var fileTypesToInclude = m_worldModel.Game.Fields[FieldDefinitions.PublishFileExtensions] ??
+                                             "*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg";
+
+                    foreach (string file in m_worldModel.GetAvailableExternalFiles(fileTypesToInclude))
                     {
                         zip.AddFile(System.IO.Path.Combine(baseFolder, file), "");
                     }
