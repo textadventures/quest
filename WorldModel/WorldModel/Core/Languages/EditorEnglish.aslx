@@ -390,6 +390,13 @@
   <template name="EditorScriptsDrawingDrawSvgAtY">, Y</template>
   <template name="EditorScriptsDrawingDrawSvgWidth">Width</template>
   <template name="EditorScriptsDrawingDrawSvgHeight">Height</template>
+  <template name="EditorScriptsDrawingDrawImage">Draw image</template>
+  <template name="EditorScriptsDrawingDrawImageId">Id</template>
+  <template name="EditorScriptsDrawingDrawImageUrl">From URL</template>
+  <template name="EditorScriptsDrawingDrawImageAtX">At X</template>
+  <template name="EditorScriptsDrawingDrawImageAtY">, Y</template>
+  <template name="EditorScriptsDrawingDrawImageWidth">Width</template>
+  <template name="EditorScriptsDrawingDrawImageHeight">Height</template>
   <template name="EditorScriptsDrawingAddNewShapePointAt">Add custom shape point at</template>
   <template name="EditorScriptsDrawingDrawShape">Draw custom shape</template>
   <template name="EditorScriptsDrawingDrawShapeId">Draw custom shape with ID</template>
