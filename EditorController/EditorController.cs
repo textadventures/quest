@@ -2067,6 +2067,26 @@ namespace TextAdventures.Quest
 
         public CanAddVerbResult CanAddVerb(string verbPattern)
         {
+            if (verbPattern == "ask")
+            {
+                return new CanAddVerbResult
+                {
+                    CanAdd = false,
+                    ClashingCommand = "ask",
+                    ClashingCommandDisplay = "ask"
+                };
+            }
+            
+            if (verbPattern == "tell")
+            {
+                return new CanAddVerbResult
+                {
+                    CanAdd = false,
+                    ClashingCommand = "tell",
+                    ClashingCommandDisplay = "tell"
+                };
+            }
+
             CanAddVerbResult result = new CanAddVerbResult();
             verbPattern += " object";
 
