@@ -2,14 +2,14 @@
 ; github.com/stfx/innodependencyinstaller
 ; codeproject.com/Articles/20868/NET-Framework-1-1-2-0-3-5-Installer-for-InnoSetup
 
-#define QuestVersion '5.5.1'
-#define SetupVersion '551'
+#define QuestVersion '5.6'
+#define SetupVersion '560'
 
 [Setup]
 AppName=Quest
 AppVersion={#QuestVersion}
 AppVerName=Quest {#QuestVersion}
-AppCopyright=Copyright © 2014 Alex Warren
+AppCopyright=Copyright © 2015 Alex Warren
 VersionInfoVersion={#QuestVersion}
 AppPublisher=Alex Warren
 AppPublisherURL=http://textadventures.co.uk/
@@ -27,7 +27,6 @@ PrivilegesRequired=admin
 ChangesAssociations=yes
 MinVersion=5.1sp3
 UsePreviousSetupType=no
-SignTool=kSign /d $qQuest {#QuestVersion}$q /du $qhttp://textadventures.co.uk/$q $f
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
