@@ -401,6 +401,8 @@ gridApi.drawCustomLayerSvg = function (id, symbolId, x, y, width, height) {
         placedSymbol.position = gridPoint(x, y) + placedSymbol.bounds.size / 2;
         if (!existing) addPathToCurrentLayerList(placedSymbol);
         customLayerSvg[id] = placedSymbol;
+    } else {
+        console.log("No symbol loaded with id '" + symbolId + "'");
     }
 };
 
