@@ -5,7 +5,7 @@ title: Quest 5 - Documentation
 
 Quest 5 is free, [open source](open_source.html) software for creating text adventure games. It is designed to be powerful, extensible and easy to learn. You can create games in any language - Quest currently has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Romanian and Esperanto.
 
-You can use Quest in your [web browser](http://textadventures.co.uk/create), or download a version for [Windows desktop](http://textadventures.co.uk/quest/desktop).
+You can [use Quest in your web browser](http://textadventures.co.uk/create), or [download a version for Windows](http://textadventures.co.uk/quest/desktop).
 
 Tutorial
 --------

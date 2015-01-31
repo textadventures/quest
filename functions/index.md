@@ -121,6 +121,7 @@ title: Functions
 * [Grid_ClearCustomLayer](corelibrary/grid_clearcustomlayer.html)
 * [Grid_DrawArrow](corelibrary/grid_drawarrow.html)
 * [Grid_DrawGridLines](corelibrary/grid_drawgridlines.html)
+* [Grid_DrawImage](corelibrary/grid_drawimage.html)
 * [Grid_DrawLine](corelibrary/grid_drawline.html)
 * [Grid_DrawShape](corelibrary/grid_drawshape.html)
 * [Grid_DrawSquare](corelibrary/grid_drawsquare.html)
