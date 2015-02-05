@@ -439,6 +439,16 @@ Public Class Player
         ctlSaveFile.Filter = "Saved Games|*." + m_game.SaveExtension + "|All files|*.*"
         ctlSaveFile.FileName = m_saveFile
         If ctlSaveFile.ShowDialog() = DialogResult.OK Then
+
+            If Not ctlSaveFile.FileName.EndsWith("." + m_game.SaveExtension) Then
+                Dim message As String = "Invalid save file name. Save file names must end with the extension '." + m_game.SaveExtension.ToUpper() + "'."
+                If m_fromEditor Then
+                    message += Environment.NewLine + Environment.NewLine + "If you are editing your game, you must save it from the Editor screen. The Save command in a game is for saving your play progress."
+                End If
+                MsgBox(message, MsgBoxStyle.Exclamation)
+                Return
+            End If
+
             m_saveFile = ctlSaveFile.FileName
             BeginSave()
         End If
