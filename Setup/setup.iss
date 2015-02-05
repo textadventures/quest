@@ -33,15 +33,17 @@ Name: "en"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: "..\Quest\bin\x86\Release\*.*"; Excludes: "*.vshost.*,*.pdb,\*.xml"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "..\Dependencies\vcredist_x86.exe"; DestDir: "{tmp}"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Icons]
 Name: "{group}\Quest"; Filename: "{app}\Quest.exe"
 Name: "{commondesktop}\Quest"; Filename: "{app}\Quest.exe"; Tasks: desktopicon; WorkingDir: {app}
 
 [Run]
+Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/quiet"; StatusMsg: "Installing components..."
 Filename: "{app}\Quest.exe"; Description: "Launch Quest"; Flags: nowait postinstall skipifsilent
 
 [Registry]
