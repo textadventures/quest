@@ -760,16 +760,16 @@ function addExternalStylesheet(source) {
 function setInterfaceString(name, text) {
     switch (name) {
         case "InventoryLabel":
-            $("#inventoryLabel a").html(text);
+            $("#inventoryLabel span.accordion-header-text").html(text);
             break;
         case "StatusLabel":
-            $("#statusVarsLabel a").html(text);
+            $("#statusVarsLabel span.accordion-header-text").html(text);
             break;
         case "PlacesObjectsLabel":
-            $("#placesObjectsLabel a").html(text);
+            $("#placesObjectsLabel span.accordion-header-text").html(text);
             break;
         case "CompassLabel":
-            $("#compassLabel a").html(text);
+            $("#compassLabel span.accordion-header-text").html(text);
             break;
         case "InButtonLabel":
             $("#cmdCompassIn span").html(text);
