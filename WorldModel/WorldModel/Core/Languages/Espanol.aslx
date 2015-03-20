@@ -117,8 +117,8 @@
   <template name="CompassSE">sureste</template>
   <template name="CompassUp">arriba</template>
   <template name="CompassDown">abajo</template>
-  <template name="CompassIn">dentro</template>
-  <template name="CompassOut">fuera</template>
+  <template name="CompassIn">adentro</template>
+  <template name="CompassOut">afuera</template>
   <template name="CompassDirectionPrefix">al</template>
 <template name="CompassDirectionSuffix"></template>
   <template name="UpDownDirectionPrefix"></template>
@@ -132,11 +132,11 @@
   <template name="CompassEShort">e</template>
   <template name="CompassSWShort">so</template>
   <template name="CompassSShort">s</template>
-  <template name="CompassSEShort">so</template>
+  <template name="CompassSEShort">se</template>
   <template name="CompassUpShort">a</template>
-  <template name="CompassDownShort">b</template>
-  <template name="CompassInShort">d</template>
-  <template name="CompassOutShort">f</template>
+  <template name="CompassDownShort">ab</template>
+  <template name="CompassInShort">entrar</template>
+  <template name="CompassOutShort">salir</template>
 
   <template name="InventoryLabel">Inventario</template>
 <template name="StatusLabel">Estado</template>
@@ -144,13 +144,13 @@
   <template name="CompassLabel">Direcciones</template>
   <template name="InButtonLabel">Entrar</template>
   <template name="OutButtonLabel">Salir</template>
-  <template name="EmptyListLabel">(vacio)</template>
+  <template name="EmptyListLabel">(vacío)</template>
   <template name="NothingSelectedLabel">(nada seleccionado)</template>
  <template name="TypeHereLabel">Escribe aquí...</template>
-  <template name="ContinueLabel">Continúa...</template>
+  <template name="ContinueLabel">Continuar...</template>
 
-  <template templatetype="command" name="go"><![CDATA[^ir (a|al) (?<exit>.*)$|^ve (a|al) (?<exit>.*)$|^vaya (a|al) (?<exit>.*)$|^vete (a|al) (?<exit>.*)$|^vayase (a|al) (?<exit>.*)$|^váyase (a|al) (?<exit>.*)$|^ir (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
-  <template templatetype="command" name="lookdir"><![CDATA[^mirar (al) (?<exit>.*)$|^mire (al) (?<exit>.*)$|^mira al (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|salir|arriba|abajo|n|e|s|o|ne|no|se|so|sal|sube|baja)$]]></template>
+  <template templatetype="command" name="go"><![CDATA[^ir (a|al) (?<exit>.*)$|^ve (a|al) (?<exit>.*)$|^vaya (a|al) (?<exit>.*)$|^vete (a|al) (?<exit>.*)$|^vayase (a|al) (?<exit>.*)$|^váyase (a|al) (?<exit>.*)$|^ir (?<exit>.*)$|^(?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|adentro|afuera|arriba|abajo|n|e|s|o|ne|no|se|so|entrar|salir|a|ab)$]]></template>
+  <template templatetype="command" name="lookdir"><![CDATA[^mirar (al) (?<exit>.*)$|^mire (al) (?<exit>.*)$|^mira al (?<exit>norte|este|sur|oeste|noreste|noroeste|sureste|suroeste|adentro|afuera|arriba|abajo|n|e|s|o|ne|no|se|so|entrar|salir|a|ab)$]]></template>
   <template templatetype="command" name="look">^mirar$|^mira$|^mire$|^vea$|^m$|^l$</template>
   <verbtemplate name="lookat">examinar</verbtemplate>
 <verbtemplate name="lookat">observa</verbtemplate>
