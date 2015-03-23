@@ -43,7 +43,7 @@
     <template name="SwitchOff">Apagar</template>
     <template name="Open">Abrir</template>
     <template name="Close">Cerrar</template> 
-    <template name="Eat">comer</template>
+    <template name="Eat">Comer</template>
     <dynamictemplate name="ObjectNotOpen">CapFirst(object.article)+ " " + object.name + " no está abierto."</dynamictemplate>
     <template name="NeutralGender">lo</template>
     <template name="MaleGender">lo</template>
@@ -184,6 +184,7 @@
     <verbtemplate name="speakto">hablar con</verbtemplate>
     <verbtemplate name="speakto">habla con</verbtemplate>
     <verbtemplate name="speakto">hable con</verbtemplate>
+	<verbtemplate name="speakto">dile a</verbtemplate>
     <verbtemplate name="speakto">dígale a</verbtemplate>
     <verbtemplate name="speakto">diga</verbtemplate>
     <verbtemplate name="speakto">decir</verbtemplate>
@@ -211,12 +212,14 @@
     <verbtemplate name="climb">escale</verbtemplate>
     <dynamictemplate name="DefaultClimb">"No puedes trepar" + object.gender + "."</dynamictemplate>
     <verbtemplate name="drink">beber</verbtemplate>
+	<verbtemplate name="drink">bebe</verbtemplate>
     <verbtemplate name="drink">beba</verbtemplate>
     <verbtemplate name="drink">bébete</verbtemplate>
     <dynamictemplate name="DefaultDrink">"No puedes bebérte" + object.gender + "."</dynamictemplate>
     <verbtemplate name="eat">comer</verbtemplate>
     <verbtemplate name="eat">come</verbtemplate>
     <verbtemplate name="eat">coma</verbtemplate>
+	<verbtemplate name="eat">cómete</verbtemplate>
     <dynamictemplate name="DefaultEat">"No puedes comérte" + object.gender + "."</dynamictemplate>
     <verbtemplate name="givesingle">dar</verbtemplate>
     <verbtemplate name="givesingle">da</verbtemplate>
@@ -242,10 +245,13 @@
     <verbtemplate name="kiss">besa</verbtemplate>
     <verbtemplate name="kiss">bese</verbtemplate>
     <dynamictemplate name="DefaultKiss">"No puedes besar" + object.gender + "."</dynamictemplate>
+	<verbtemplate name="knock">llamar</verbtemplate>
+	<verbtemplate name="knock">llamar a</verbtemplate>
+	<verbtemplate name="knock">llame a</verbtemplate>
     <verbtemplate name="knock">tocar a</verbtemplate>
     <verbtemplate name="knock">toca a</verbtemplate>
     <verbtemplate name="knock">toque a</verbtemplate>
-    <dynamictemplate name="DefaultKnock">"No puedes tocar" + object.gender + "."</dynamictemplate>
+    <dynamictemplate name="DefaultKnock">"No puedes llamar a eso."</dynamictemplate>
     <verbtemplate name="lick">chupar</verbtemplate>
     <verbtemplate name="lick">chupa</verbtemplate>
     <verbtemplate name="lick">chupe</verbtemplate>
@@ -396,7 +402,7 @@
     <verbtemplate name="untie">desamarra</verbtemplate>
     <dynamictemplate name="DefaultUntie">"No puedes desatar" + object.gender + "."</dynamictemplate>
     <template templatetype="command" name="useon"><![CDATA[^usa (?<object1>.*) (sobre|en|dentro de|encima de|con) (?<object2>.*)$|^usar (?<object1>.*) (sobre|en|dentro de|encima de|con) (?<object2>.*)$|^use (?<object1>.*) (sobre|en|dentro de|encima de|con) (?<object2>.*)$]]></template>
-    <dynamictemplate name="DefaultUseOn">"No puedes usar" + object2.article + " así."</dynamictemplate>
+    <dynamictemplate name="DefaultUseOn">"No puedes usar" + object2.gender + " así."</dynamictemplate>
     <verbtemplate name="wear">vestir</verbtemplate>
     <verbtemplate name="wear">viste</verbtemplate>
     <verbtemplate name="wear">vista</verbtemplate>
@@ -411,19 +417,19 @@
     <verbtemplate name="wear">vestirse</verbtemplate>
     <dynamictemplate name="DefaultWear">"No te " + object.gender + " puedes poner."</dynamictemplate>
     <template templatetype="command" name="listen">^escucha$|^escuche$|^oiga$|^oye$|^oir$|^escuchar$</template>
-    <template name="DefaultListen">No puedes oir mucho.</template>
+    <template name="DefaultListen">No oyes nada.</template>
     <template templatetype="command" name="jump">^salta$|^salte$|^saltar$</template>
     <template name="DefaultJump">Saltas, pero no pasa nada.</template>
     <template templatetype="command" name="sitdown">^siéntate$|^sientate$|^sentarse$</template>
-    <template name="DefaultSitDown">No es momento para sentarse ahora.</template>
+    <template name="DefaultSitDown">Ahora no es momento para sentarse.</template>
     <template templatetype="command" name="liedown">^acuéstate$|^acuestate$|^acostarse$</template>
-    <template name="DefaultLieDown">No es tiempo para echarte ahora.</template>
+    <template name="DefaultLieDown">Ahora no es el momento para tumbarse.</template>
     <template templatetype="command" name="sleep">^duerma$|^duerme$|^duermete$|^duérme$|^dormir$</template>
-    <template name="DefaultSleep">No es tiempo para echarte una siesta ahora.</template>
+    <template name="DefaultSleep">Ahora no es tiempo para echarse una siesta.</template>
     <template templatetype="command" name="wait">^espera$|^espere$|^esperar$</template>
     <template name="DefaultWait">El tiempo pasa.</template>
     <template templatetype="command" name="xyzzy">^xyzzy$</template>
-    <template name="DefaultXyzzy">Sorprendentemente, no pasa absolutamente nada.</template>
+    <template name="DefaultXyzzy">Sorprendentemente no pasa absolutamente nada.</template>
     <template templatetype="command" name="help">^ayuda$|^\?$</template>
     <template templatetype="command" name="save">^grabar$|^salvar$</template>
     <template name="DefaultHelp"><![CDATA[<u>Ayuda rápida</u><br/><br/>
