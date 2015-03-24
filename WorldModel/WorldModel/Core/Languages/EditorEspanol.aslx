@@ -68,7 +68,7 @@
   <template name="EditorGameAuthor">Autor</template>
   <template name="EditorGameDisplaytitle">Mostrar título y autor cuando el juego comienza</template>
   <template name="EditorGameVersion">Versión</template>
-  <template name="EditorGameTheGameIDbelow">El código del juego de más abajo sirve para identificar de forma única a tu juego. Solo deberías generar uno nuevo si has clonado un juego para crear otro nuevo.</template>
+  <template name="EditorGameTheGameIDbelow">El código del juego de más abajo sirve para identificar tu juego de forma única. Solo deberías generar uno nuevo si has clonado un juego con el fin de crear otro nuevo.</template>
   <template name="EditorGameGameID">Código del Juego</template>
   <template name="EditorGameCategory">Categoría</template>
   <template name="EditorGameYearofrelease">Año de publicación</template>
