@@ -198,7 +198,7 @@
   <template name="EditorObjectContainerTransparent">Transparente</template>
   <template name="EditorObjectContainerHidechildren">Ocultar contenido hasta que se mira el objeto</template>
   <template name="EditorObjectContainerListchildren">Listar contenido cuando se mira o se abre el objeto</template>
-  <template name="EditorObjectContainerListprefix">Prefijo de lista(P.Ej.: "Contiene...")</template>
+  <template name="EditorObjectContainerListprefix">Prefijo de listado (P.Ej.: "Contiene...")</template>
   <template name="EditorObjectContainerMaximumnumber">Máximo número de objetos</template>
   <template name="EditorObjectContainerFullcontainer">Mensaje recipiente lleno (dejar en blanco por defecto)</template>
   <template name="EditorObjectContainerMaximumvolume">Máximo volumen de objetos</template>
@@ -221,7 +221,7 @@
   <template name="EditorObjectExitsExits">Salidas</template>
   <template name="EditorObjectExitsExitslistprefix">Prefijo lista de salidas</template>
   <template name="EditorObjectFeaturesFeatures">Características</template>
-  <template name="EditorObjectFeaturesUse/Giveobject">Dar/Usar: el objeto puede ser usado por sí mismo o con otros objetos/personajes, o dado a otros objetos/personajes</template>
+  <template name="EditorObjectFeaturesUse/Giveobject">Dar/Usar: el objeto puede ser usado por sí mismo o con otros objetos/personajes, o entregado a otros objetos/personajes</template>
   <template name="EditorObjectFeaturesContainer">Recipiente: el objeto es un recipiente o superficie, o puede abrirse o cerrarse</template>
   <template name="EditorObjectFeaturesSwitchable">Conmutable: el objeto se puede encender o apagar</template>
   <template name="EditorObjectFeaturesEdibleobject">Comestible: el objeto puede ser comido (y da salud si la característica "Salud" esta activada en la pestaña de características del juego)</template>
@@ -230,14 +230,14 @@
   <template name="EditorObjectInventoryInventory">Inventario</template>
   <template name="EditorObjectInventoryTake">Coger</template>
   <template name="EditorObjectInventoryTake2">Coger</template>
-  <template name="EditorObjectInventoryTakemessage">Mensaje al coger (dejar en blanco por defecto)</template>
+  <template name="EditorObjectInventoryTakemessage">Mensaje al cogerlo (dejar en blanco por defecto)</template>
   <template name="EditorObjectInventoryAftertaking">Después de coger el objeto</template>
   <template name="EditorObjectInventoryDrop">Dejar</template>
   <template name="EditorObjectInventoryDrop2">Dejar</template>
-  <template name="EditorObjectInventoryDropmessage">Mensaje al dejar (dejar en blanco por defecto)</template>
+  <template name="EditorObjectInventoryDropmessage">Mensaje al soltarlo (dejar en blanco por defecto)</template>
   <template name="EditorObjectInventoryAfterdropping">Después de dejar el objeto</template>
   <template name="EditorObjectInventoryInventorylimitation">Limitación de inventario</template>
-  <template name="EditorObjectInventorySetmaximum">Cambiar "objetos máximos" a 0 para permitir inventario ilimitado de ítems.</template>
+  <template name="EditorObjectInventorySetmaximum">Establezca los "objetos máximos" a 0 para permitir un inventario ilimitado de elementos.</template>
   <template name="EditorObjectInventoryMaximumobjects">Objetos máximos</template>
   <template name="EditorObjectInventoryFullcontainer">Mensaje recipiente lleno (dejar en blanco por defecto)</template>
   <template name="EditorObjectInventoryVolume">Volumen</template>
@@ -262,13 +262,13 @@
   <template name="EditorObjectObjectAliastodisplay">Alias a mostrar en el panel de "Inventario" o "Lugares y Objetos"</template>
   <template name="EditorObjectObjectHyperlinkoptions">Opciones de hipervínculo</template>
   <template name="EditorObjectObjectIfyouspecify">Si especificas un color aquí, sobrescribirá el color por defecto especificado en la pestaña de Pantalla del juego.</template>
-  <template name="EditorObjectObjectLinkcolour">Color de vínculo</template>
+  <template name="EditorObjectObjectLinkcolour">Color del vínculo</template>
   <template name="EditorObjectObjectDisplayverbs">Mostrar verbos</template>
   <template name="EditorObjectObjectDisplayverbs2">Mostrar verbos cuando el hipervínculo del objeto es pulsado, y también como botones en la lista de "Lugares y Objetos".</template>
-  <template name="EditorObjectObjectVerbsadded">Los verbos agregados a la pestaña "Verbos" se agregarán automáticamente a la lista.  Para desactivar esto, deselecciona "Generar automáticamente lista de verbos para los objetos" en la pestaña "Descripciones del lugar" del juego.  También puedes desactivar esta opción solo para este objeto, al seleccionar una de las opciones más abajo.</template>
+  <template name="EditorObjectObjectVerbsadded">Los verbos añadidos a la pestaña "Verbos" se agregarán automáticamente a la lista.  Para desactivar este comportamiento, deselecciona "Generar automáticamente lista de verbos para los objetos" en la pestaña "Descripciones del lugar" del juego.  También puedes desactivar esta opción para este objeto en particular, si seleccionas una de las opciones de más abajo.</template>
   <template name="EditorObjectObjectDisableautomatically">Desactivar listas de verbos generadas automáticamente para este objeto</template>
   <template name="EditorObjectObjectOnlydisplay">Solo mostrar verbos desde la pestaña de verbos de este objeto</template>
-  <template name="EditorObjectObjectInventoryverbs">Los verbos de inventario aparecen cuando el hipervínculo del objeto es pulsado desde el comando "Inventario", y también desde los botones en el panel de "Inventario".</template>
+  <template name="EditorObjectObjectInventoryverbs">Los verbos de inventario aparecen cuando se hace clic en el hipervínculo del objeto desde el comando "Inventario", así como desde los botones del panel de "Inventario".</template>
   <template name="EditorObjectObjectInventoryverbs2">Verbos de inventario</template>
   <template name="EditorObjectOptionsSwitchable">Conmutable</template>
   <template name="EditorObjectOptionsSwitchable2">Conmutable</template>
@@ -306,7 +306,7 @@
   <template name="EditorObjectScriptsAfterleaving">Después de salir del lugar</template>
   <template name="EditorObjectScriptsBeforeenteringFirst">Antes de entrar al lugar por primera vez</template>
   <template name="EditorObjectScriptsAfterenteringFirst">Después de entrar al lugar por primera vez</template>
-  <template name="EditorObjectScriptsTurnscripts">Guiones por turno - se corren después de cada movida del jugador en este lugar</template>
+  <template name="EditorObjectScriptsTurnscripts">Guiones por turno - se ejecutan tras cada movimiento del jugador en este lugar</template>
   <template name="EditorObjectScriptsCommands">Comandos</template>
   <template name="EditorObjectSetupSetup">Configuración</template>
   <template name="EditorObjectSetupType">Tipo</template>
@@ -320,12 +320,12 @@
   <template name="EditorObjectSetupGender">Género</template>
   <template name="EditorObjectSetupArticle">Artículo</template>
   <template name="EditorObjectSetupDescription">Descripción</template>
-  <template name="EditorObjectSetupInroomdescription">Descripción en-sitio</template>
+  <template name="EditorObjectSetupInroomdescription">Descripción in-situ</template>
   <template name="EditorObjectUseGiveUse/Give">Dar/Usar</template>
   <template name="EditorObjectUseGiveUseonitsown">Usar (por sí solo)</template>
   <template name="EditorObjectUseGiveAction">Acción</template>
   <template name="EditorObjectUseGiveMenucaption">Mensaje menú (dejar en blanco por defecto)</template>
-  <template name="EditorObjectUseGiveUseotherobject">Usar(otro objeto) en este</template>
+  <template name="EditorObjectUseGiveUseotherobject">Usar (otro objeto) en este</template>
   <template name="EditorObjectUseGiveUseanyother">Usar cualquier objeto en este</template>
   <template name="EditorObjectUseGiveUsethisonother">Usar este en (otro objeto)</template>
   <template name="EditorObjectUseGiveUseonanyother">Usar en cualquier otro objeto</template>
@@ -584,12 +584,12 @@
 
 
   <template name="EditorScriptsVariablesVariables">Variables</template>
-  <template name="EditorScriptsVariablesSetobjectflag">Poner señal a un objeto</template>
-  <template name="EditorScriptsVariablesSetflag">Poner señal</template>
-  <template name="EditorScriptsVariablesUnsetobject">Quitar señal a un objeto</template> 
-  <template name="EditorScriptsVariablesUnsetflag">Quitar señal</template>
-  <template name="EditorScriptsVariablesSetflagon">Encender señal</template>
-  <template name="EditorScriptsVariablesSetflagoff">Apagar señal</template>
+  <template name="EditorScriptsVariablesSetobjectflag">Poner una bandera a un objeto</template>
+  <template name="EditorScriptsVariablesSetflag">Poner bandera</template>
+  <template name="EditorScriptsVariablesUnsetobject">Quitar una bandera a un objeto</template> 
+  <template name="EditorScriptsVariablesUnsetflag">Quitar bandera</template>
+  <template name="EditorScriptsVariablesSetflagon">Encender bandera</template>
+  <template name="EditorScriptsVariablesSetflagoff">Apagar bandera</template>
   <template name="EditorScriptsVariablesIncreaseobject">Aumentar contador a un objeto</template>  
   <template name="EditorScriptsVariablesIncreasecounter">Aumentar contador</template>
   <template name="EditorScriptsVariablesDecreaseobject">Reducir contador a un objeto</template>
@@ -647,8 +647,8 @@
   <template name="EditorWalkthroughName">Nombre</template> 
   <template name="EditorExpressionsplayeriscarrying">el jugador lleva el objeto</template>
   <template name="EditorExpressionsplayerisnotcarrying">el jugador no lleva el objeto</template>
-  <template name="EditorExpressionsobjecthasflag">el objeto tiene señal</template>
-  <template name="EditorExpressionsobjectdoes">el objeto no tiene señal</template>
+  <template name="EditorExpressionsobjecthasflag">el objeto tiene una bandera</template>
+  <template name="EditorExpressionsobjectdoes">el objeto no tiene una bandera</template>
   <template name="EditorExpressionsobjectcounter">el contador del objeto</template>
   <template name="EditorExpressionsplayerisin">el jugador está en el lugar</template>
   <template name="EditorExpressionsplayerobject">el objeto jugador es</template>
