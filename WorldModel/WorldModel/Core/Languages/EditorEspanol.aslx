@@ -68,7 +68,7 @@
   <template name="EditorGameAuthor">Autor</template>
   <template name="EditorGameDisplaytitle">Mostrar título y autor cuando el juego comienza</template>
   <template name="EditorGameVersion">Versión</template>
-  <template name="EditorGameTheGameIDbelow">El código del juego de más abajo sirve para identificar tu juego de forma única. Solo deberías generar uno nuevo si has clonado un juego con el fin de crear otro nuevo.</template>
+  <template name="EditorGameTheGameIDbelow">El código del juego de más abajo sirve para identificar tu juego de forma única. Solo deberías generar otro si has clonado un juego como base para crear uno nuevo.</template>
   <template name="EditorGameGameID">Código del Juego</template>
   <template name="EditorGameCategory">Categoría</template>
   <template name="EditorGameYearofrelease">Año de publicación</template>
@@ -175,11 +175,11 @@
   <template name="EditorObjectAttributesPleaseenter2">Por favor introduzca el formato de la cadena de texto (en blanco por defecto)</template>
   <template name="EditorScriptsScriptsPleaseenter">Por favor introduzca el caso de expresión</template>
   <template name="EditorScriptsScriptsPleaseenter2">Por favor introduzca el parámetro</template>
-  <template name="EditorObjectAskTellAsk/Tell">Decir/Preguntar</template>
+   <template name="EditorObjectAskTellAskTell">Preguntar/Decir</template>
   <template name="EditorObjectAskTellPleaseenter">Por favor introduzca las palabras clave de los temas, separados por espacios</template>
   <template name="EditorObjectAskTellAsk">Preguntar</template>
   <template name="EditorObjectAskTellAskabout">Preguntar sobre</template>
-  <template name="EditorObjectAskTellScripttorun">Guión a ejecutar cuando se le pregunta sobre un tema que no conoce</template>
+  <template name="EditorObjectAskScripttorun">Guión a ejecutar cuando se le pregunta sobre un tema que no conoce</template>
   <template name="EditorObjectAskTellTell">Decir</template>
   <template name="EditorObjectAskTellTellabout">Decir sobre</template>
   <template name="EditorObjectAskTellScripttorun">Guión a ejecutar cuando se le dice algo sobre un tema que no conoce</template>
@@ -354,7 +354,7 @@
   <template name="EditorScriptsDrawingDrawlinetoX2">hasta X2</template>  
   <template name="EditorScriptsDrawingDrawlinetoY2">, Y2</template> 
   <template name="EditorScriptsDrawingColour">Color</template>
-  <template name="EditorScriptsDrawingBorderwidth">Ancho de borde</template>
+  <template name="EditorScriptsDrawingBorderwidth">Grosor del borde</template>
   <template name="EditorScriptsDrawingDrawarrow">Dibujar flecha</template>
   <template name="EditorScriptsDrawingDrawarrowwithid">Dibujar flecha con Código</template>
   <template name="EditorScriptsDrawingArrowfromX1">Dibujar flecha desde X1</template>
@@ -686,7 +686,7 @@
   <template name="TypeThemeNovella">Novela</template> 
   <template name="TypeThemeRetro">Retro</template>
   <template name="TypeThemeTypewriter">Máquina de Escribir</template>
-  <template name="TypeThemeHotDog">Puesto de Perros Calientes</template>   
+  <template name="TypeThemeHotDog">Puesto de Perritos Calientes</template>   
   <template name="TypeContainerNot">No es un recipiente</template> 
   <template name="TypeContainer">Recipiente</template> 
   <template name="TypeContainerClosed">Recipiente cerrado</template> 
@@ -715,12 +715,12 @@
   <template name="TypeObjectAndOr">Objeto y/o lugar</template>
   <template name="TypeInanimateObject">Objeto inanimado</template>
   <template name="TypeMaleCharacter">Personaje masculino</template>
-  <template name="TypeMaleCharacterNamed">Personaje masculino (nombrado)</template>
+  <template name="TypeMaleCharacterNamed">Personaje masculino (con nombre propio)</template>
   <template name="TypeFemaleCharacter">Personaje femenino</template>
-  <template name="TypeFemaleCharacterNamed">Personaje femenino (nombrado)</template>
+  <template name="TypeFemaleCharacterNamed">Personaje femenino (con nombre propio)</template>
   <template name="TypeInanimateObjects">Objetos inanimados (plural)</template>
-  <template name="TypeMaleCharacters">Personaje masculino (plural)</template>
-  <template name="TypeFemaleCharacters">Personaje femenino (plural)</template>
+  <template name="TypeMaleCharacters">Objetos y/o Personajes masculinos (plural)</template>
+  <template name="TypeFemaleCharacters">Objetos y/o Personajes femeninos (plural)</template>
   <template name="TypeNone">Ninguna</template>
   <template name="TypeIndividually">Manipular objetos individualmente</template>
   <template name="TypePrintMessage">Imprimir un mensaje</template>
