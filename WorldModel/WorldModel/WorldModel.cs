@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using TextAdventures.Quest.Scripts;
 using System.Linq;
+using System.Net;
 using TextAdventures.Quest.Functions;
 
 namespace TextAdventures.Quest
@@ -1740,6 +1741,15 @@ namespace TextAdventures.Quest
 
         public string GetResourceData(string filename)
         {
+            if (Config.ReadGameFileFromAzureBlob)
+            {
+                var url = GetExternalURL(filename);
+                using (var client = new WebClient())
+                {
+                    return client.DownloadString(url);
+                }
+            }
+
             return File.ReadAllText(GetExternalPath(filename));
         }
 
