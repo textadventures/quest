@@ -273,7 +273,7 @@ namespace WebPlayer
         {
             if (Config.ReadGameFileFromAzureBlob)
             {
-                return string.Format("http://textadventures.blob.core.windows.net/gameresources/{0}/{1}",
+                return string.Format("https://textadventures.blob.core.windows.net/gameresources/{0}/{1}",
                 gameId,
                 filename);
             }
