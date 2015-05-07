@@ -20,3 +20,5 @@ Example:
 
 </pre>
 Use the [ask](../scripts/ask.html) script command for a popup menu.
+
+Note that the variable "this" becomes undefined when running the nested script (this is different to the "ask" script command, when "this" keeps its value inside the nested script).

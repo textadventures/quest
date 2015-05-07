@@ -1,0 +1,115 @@
+<library>
+  <!--
+
+A very simple module that lets the writer easily put a journal into the game.
+To use:
+
+1. Create at item to be used as a journal as normal
+2. In the start script on the game item, set up the journal
+  a. Call the SetJournalObject with the item you created in
+     step 1 as the parameter (as an object)
+  b. Optionally, call the SetJournalFont to define how the
+     journal text will be displayed. There are three parameters.
+     SetJournalFont(font name as string, font size as integer, colour as string)
+3. Anywhere in you game where you want an event noted (if the player
+   is carrying her journal), invoke the AddToJournal command, with
+   the string to be added as a parameter.
+
+Feel free to modify this code as you wish.
+
+The Pixie
+the_pix@hotmail.com
+
+  -->
+
+  <template name="ReadJournal">You read your journal:</template>
+  
+  <template name="WriteInJournal">You add the following text to your journal:</template>
+  
+  <dynamictemplate name="JournalNotHeld">"You're not holding your " + object.alias</dynamictemplate>
+  
+  <object name="journal_object">
+    <inherit name="editor_object" />
+    <entries type="list"></entries>
+    <alias type="string"></alias>
+    <held_object type="object">journal_object</held_object>
+  </object>
+
+  <command name="append">
+    <pattern>-#text#</pattern>
+    <script>
+      AddToJournal (text)
+    </script>
+  </command>
+
+  <command name="note">
+    <pattern>note</pattern>
+    <script>
+      msg (Template("WriteInJournal"))
+      get input {
+	    s = result
+        UserAddToJournal (s)
+        msg (s)
+	  }
+    </script>
+  </command>
+
+  <command name="journal_command">
+    <pattern>journal</pattern>
+    <script>
+      ReadJournal
+    </script>
+  </command>
+
+  <function name="SetJournalFont" parameters="font, size, colour">
+    journal_object.font = font
+    journal_object.size = size
+    journal_object.colour = colour
+  </function>
+  
+  <function name="AddToJournal" parameters="entry">
+    if (journal_object.held_object.parent = player) {
+      list add (journal_object.entries, entry)
+    }
+  </function>
+  
+  <function name="UserAddToJournal" parameters="entry"><![CDATA[
+    if (journal_object.held_object.parent <> player) {
+      msg (DynamicTemplate("JournalNotHeld", journal_object.held_object))
+    }
+    else {
+      list add (journal_object.entries, entry)
+    }
+  ]]></function>
+  
+  <function name="ReadJournal"><![CDATA[
+    if (journal_object.held_object.parent <> player) {
+      msg (DynamicTemplate("JournalNotHeld", journal_object.held_object))
+    }
+    else {
+      msg (Template("ReadJournal"))
+      if (HasString(journal_object, "font")) {
+        SetFontName (journal_object.font)
+        SetForegroundColour (journal_object.colour)
+        SetFontSize (journal_object.size)
+      }
+      else {
+        SetFontName ("Comic Sans MS")
+        SetForegroundColour ("Blue")
+      }
+      foreach (s, journal_object.entries) {
+        msg (s)
+      }
+      SetFontName (journal_object.defaultfont)
+      SetFontSize (journal_object.defaultfontsize)
+      SetForegroundColour (journal_object.defaultforeground)
+    }
+  ]]></function>
+  
+  <function name="SetJournalObject" parameters="obj">
+    journal_object.held_object = obj
+    journal_object.defaultforeground = game.defaultforeground
+    journal_object.defaultfontsize = game.defaultfontsize
+    journal_object.defaultfont = game.defaultfont
+  </function>
+</library>
