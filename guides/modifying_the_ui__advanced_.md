@@ -3,357 +3,288 @@ layout: index
 title: Modifying the UI (Advanced)
 ---
 
-As of Quest 5.3, there is a lot you can do to customise the player's user interface (UI).
+Quest sets up the User Interface (UI) in the InitInterface function, which is defined in Core.aslx. The last thing it does is call another function, InitUserInterface, which is empty by default. The best way to modify the UI, then, is to define your own InitUserInterface function.
 
-Look at the "Display" tab of the *game* object to see how to set a font and basic colours, including hyperlinks and hyperlink menus. You can also turn off the panes on the right here. On the "Room Descriptions" tab you can also turn off hyperlinks in the text. What if you want to do more? Well, you can modify the entire colour scheme if you want, though it is a little more complicated.
+The big advantage of doing it this way is that this will be called whenever Quest thinks the interface needs updating, which is not just at the start of the game (for example, when the screen is cleared). You also get the bonus of having all your interface stuff in the same place, which keeps it organised.
 
-This screenshot is from the example game listed at the end of this page to give an idea of what is possible.
+Unfortunately, this will not work if you are editing on-line, as the on-line editor will not let you create a function with the same name as one already in the game. The moral here is that if you want to do fancy stuff, use the off-line editor! If you are editing on-line, put the code in the start script on the game object, and make sure you do not clear the screen.
 
-![](Styles5.png "Styles5.png")
+To create the function, right click in the left pane, and select "New function". Call it "InitUserInterface" (no quotes, no spaces, exact capitalisation).
 
-The Quest UI is HTML, just like any web page, and this means you can change the style of each component. If you are playing a Quest game, try right-clicking on it; you will see an option "view source". Select it and you will see the HTML code used to create what you can see. It will help if you know a little HTML and CSS at this point...
 
-HTML
-----
+Rename the interface features
+-----------------------------
 
-HTML is a kind of computer language that tells a browser how to display a page. It uses *tags* to denote *mark-up*, and these tags give instructions on the style to use. Here is a simple example:
+*As of Quest 5.6, this seems to be broken, but should be fixed in 5.7.*
 
-      This sentence uses <i>italic</i> text.
+You can rename the features of the interface using the *request* script command. It takes two parameters, the first is SetInterfaceString (note that this is not a string, so has no quote marks), the second is the instruction, i.e, the name of the feature, an equals sign and the new text. That is a string, so needs to be in double quotes. Like this:
 
-The word "italic" will be displayed in italic. As you can see, tags start with a *less than* symbol, and end with a *greater than* symbols (also know as angle brackets). You need tags at the start and the end, and the end tag also needs a slash. The "i" indicates italics. The start tag, the end tag and the text between are known as an element, so in the example we have an italic element.
+    request (SetInterfaceString, "InventoryLabel=You are holding")
+    request (SetInterfaceString, "StatusLabel=How you are doing")
+    request (SetInterfaceString, "PlacesObjectsLabel=Things you can see")
+    request (SetInterfaceString, "CompassLabel=Directions you can go")
+    request (SetInterfaceString, "InButtonLabel=In")
+    request (SetInterfaceString, "OutButtonLabel=out")
+    request (SetInterfaceString, "EmptyListLabel=Stuff all")
+    request (SetInterfaceString, "NothingSelectedLabel=-")
+    request (SetInterfaceString, "TypeHereLabel=Now what?")
+    request (SetInterfaceString, "ContinueLabel=Just press a button to get on with it")
 
-The basic HTML document is a declaration and an "html" element, and the "html" element contains a "head" element, and a "body" element", and they in turn contain other elements. Something like this:
+Not sure when you see EmptyListLabel or NothingSelectedLabel, but the rest are obvious enough.
 
-      <!DOCTYPE html><html><head>
-      ...
-      </head>
-      <body>
-      ...
-      </body></html>
+You could also do this using templates, by the way.
 
-The head element contains JavaScript code, which we can ignore completely. The body element contains the actual content, and we need to pick out from that the various elements displayed on the screen.
 
-CSS
----
+Change the look and feel with built-in functions
+------------------------------------------------
 
-CSS is the way to control how an HTML element is displayed. By default, the italic element causes text to be displayed in italics, but using CSS you can change that. In practice it is better not to, instead, we commonly use *div* and *span* elements instead, as it is less confusing, and change them. The *div* element is used for blocks of text, the ''span' element for sections of text within a paragraph. So to put text in italics using CSS, first define the CSS like this:
+There are some built-in functions to change the UI.
 
-      span {
-        font-style: italic;
-      }
+    SetFramePicture (filename)
+    ClearFramePicture
+    SetBackgroundOpacity (opacity)
+    SetBackgroundColour(string colour)
+    SetBackgroundImage (filename)
+    SetAlignment(string alignment)
+    SetFontName
+    SetFontSize
+    SetForegroundColour
+    SetWebFontName
 
-Then use it like this:
+Then there are a set of options available through the request script command, allowing you to turn on or off the location at the top, the panes at the right and the command bar at the bottom (two slashes together indicates a comment, by the way, and causes Quest t ignore the rest of the line).
 
-      This sentence uses <span>italic</span> text.
+    // The panels on the right
+    request (Show, "Panes")
+    request (Hide, "Panes")
+    // The text input
+    request (Show, "Command")
+    request (Hide, "Command")
+    // the status bar at the top
+    request (Show, "Location")
+    request (Hide, "Location")
 
-That will make all the span elements display as italic. You might want just some to, so you give the span element a class or id (an id is used for a specific span; there can only be one element with that id).
+Most of these can be done by setting options on the game object, and that is generally a better way to do, unless you want to make changes during play.
 
-      .bld {
-        font-style: bold;
-      }
-      #ital {
-        font-style: italic;
-      }
 
-Then use it like this:
+Using the JS object
+-------------------
 
-      This sentence uses <span id="ital">italic</span> and <span class="bld">bold</span>text.
+The JS object (JavaScript) has a bunch of functions (or methods, they should probably be called).
 
-Note that a class name uses a dot, and an id uses a hash in the CSS. After the element name, you need a pair of curly braces to enclose the style information. The styles are defined by the name of the attribute, a colon, the value to assign to it, and a semi-colon.
+    JS.setGameWidth(width)
+    JS.hideBorder()
+    JS.showBorder()
+    JS.setGamePadding(top, bottom, left, right)
+    JS.addExternalStyleheet(stylesheet)
+    // I think the stylesheet should be a file name (or perhaps a URL) as the parameter
+    JS.SetMenuBackground(colour)
+    JS.SetMenuForeground(colour)
+    JS.SetMenuHoverBackground(colour)
+    JS.SetMenuHoverForeground(colour)
+    JS.SetMenuFontName(fontname)
+    // these refer to the menu that appears when the player clicks on a hyperlink in the text
+    JS.SetMenuFontSize(size)
+    // the size must be a string that is a number followed by "pt"
+    JS.TurnOffHyperlinksUnderline()
+    JS.TurnOnHyperlinksUnderline()
 
-Insert HTML
------------
-
-If you look at the Quest source HTML, you will see a huge number of HTML elements with class or id set on them. All we need to do is work out which we want to modify, and change it.
-
-The way to change it is to insert our CSS styles into the HTML code. To do that, we first need to create our own HTML file, inside the same folder as your game. We can call it test.html (but you can give it any name, as long as it ends .html). It should look like this:
-
-      <!DOCTYPE html>
-      <html>
-      <head>
-      <style type="text/css">
-        body {
-          background-color: blue;
-        }
-      </style>
-      </head>
-      </html>
-
-All this will do is to change background colour of the body element to be blue. You now need to tell Quest to use the file, and that is done through a startup script. Set it up like this:
-
-![](Styles2.png "Styles2.png")
-
-Or in code view:
-
-        <start type="script">
-          insert ("test.html")
-        </start>
-
-Play the game, and you should see a blue background (if you cannot make sure your Quest window is wide enough to see the edges).
-
-You can experiment with different colours, a full list of those available can be found [here](http://en.wikipedia.org/wiki/Web_colors).
-
-You can also the standard HTML notation, so \#0000FF for blue, for example.
-
-Changing Other Elements
------------------------
-
-You can potentially change the colour of all sorts of thing in the UI, you just need to know the element name, class or id. Here are some examples:
-
-      #location: This is the title bar at the top that has the room name in it.
-      #gameContent: Where the text goes, including the input box.
-      #divOutput: Inside gameContent, where the text goes, but excluding the input box,
-      #txtCommand: The input box.
-      .ui-widget: Border around each pane on the right
-      #gamePanesFinished: This is the pane on the right shown when the game ends
-      #msgbox, #msgboxCaption: For pop-ups.
-      #dialog, #dialogCaption, #dialogOptions: For menu pop-ups.
-
-As well as the background, you can set foreground colour (with the *color* attribute) and font too, among other things.
-
-To remove the focus box on the input box, do this:
-
-      *:focus {
-        outline: none;
-      }
-
-Notes
------
-
-Be aware that HTML and CSS spell colour as "color".
-
-Be careful what fonts you specify. If you use a web font in Quest, then you can be pretty sure that that one is on the players computer (I do not know how to get Quest to download more than one web font, though I imagine it is possible). There is no guarantee that any other font will be available; even a basic font like *Arial* is not on an Apple Mac, where it is called in *Helvetica*. You can, however, specify a list of fonts, and Quest will use the first one that is available (see, for example, [here](http://www.w3schools.com/cssref/css_websafe_fonts.asp).
-
-The rounded input box in the image about was achieved using the border-radius attribute. Unfortunately, this does not work on the box containing the input box and output text, I think because other parts of the display are covering it up, and only the bottom left corner is rounded.
-
-Although you can use background images in HTML/CSS, this is not readily feasible in Quest through JavaScipt, because of the way the interface references other files (i.e., the image file). If you want a background image (round the outside only), set it in the Quest UI, and make sure the *body* element is not changed. You can set other components to be transparent so the background shows through. That said, the *status* component (at the top, where the room name appears) adopts a blue wave image as its background when transparent, and the only way to get rid of it is to set the *status* component's *display* attribute to *none* - which means the room name is not then displayed.
 
 Using JavaScript
 ----------------
 
-Certain attributes seem to be hard coded in, such as the background colour for *gameBorder* and *gamePanes*, and the alignment of the output text. What we can do, however, is run a JavaScript function to override those settings.
+When you have exhausted those possibilities you are delving into the murky world of CSS and JQuery, via the eval method of JS. To understand how that fits together, we will look at each technology in turn.
 
-JavaScript goes in its own file, let us call it test.js. Here is some example text to put in it.
 
-      function setUI(){ 
-        document.getElementById("gameBorder").setAttribute("style" , "background: red;");
-        document.getElementById("gamePanes").setAttribute("style" , "background: yellow;");
-      }
+Using CSS
+---------
 
-In your game, you need to tell quest to load that file:
+Cascading style sheets (CSS) is the primary way for web pages to define the style, as opposed to the content; what font to use, colours, etc. An example might looks like this:
 
-![](Styles3.png "Styles3.png")
+    #gameBorder {
+      background-color: #800080;
+    }
 
-Or in code:
+The first line determines what is controlled - in this case an element with the ID gameBorder (the # indicates an ID rather than a class or element type). The second line defines the settings. There can be several lines, before we get to the close brace (this is the conventional way to layout CSS). For the second line, there are two parts, the name, in this case "background-color", and the value, "#800080" (which is a dark magenta).
 
-      <javascript src="test.js" />
+In summary, then this CSS code will set the background colour of something with the ID "gameBorder" to be dark magenta.
 
-Then you need to invoke the JavaScript function in your start-up script:
 
-![](Styles4.png "Styles4.png")
+Using JQuery
+------------
 
-Or in code:
+Static web pages use CSS like that, but it you want things to change, you need JavaScript, and JQuery is a quick way to access an element in JavaScript. To do the above in JavaScript/JQuery, you would do this:
 
-      request (RunScript, "setUI")
+    $('#gameBorder').css('background-color', '#800080');
 
-So hopefully you now see big blocks of red and yellow in your game.
+Notice that all the same information is there, just arranged differently, according to the syntax of JavaScript/JQuery. The $ at the start signifies this is JQuery, and $('#gameBorder') will grab the thing with the ID "gameBorder" (again, the # indicates this is an ID). Once we have that we call a method (function) called "css", and send it two parameters, the thing we want to change and the new value.
 
-Let us see that JavaScript in detail now. Here is a slightly more advanced example:
 
-      function setUI(){ 
-        document.getElementById("gameBorder").setAttribute("style" , "background: blue; border: blue;");
-        document.getElementById("gamePanes").setAttribute("style" , "background: blue;");
-      }
+Using JQuery in Quest
+---------------------
 
-The two important lines in the middle change two different HTML elements, *gameBorder* and *gamePanes*. Note that this technique will only work for elements with an id (you can use JavaScript to change other elements, but it gets complicated, and well beyond this discussion). For those elements we are modifying the style, and the bit in quotes at the end is what you want to change. This is in the same format as the CSS inside the curly braces earlier. You can put in as much style information in there as you want; you can see the first changes the background and the border.
+To do it is Quest, you have to send that as a string to the JS.eval function:
 
-This line of JavaScript will change the prompt:
+    JS.eval("$('#gameBorder').css('background-color', '#800080');")
 
-      document.getElementById("txtCommand").setAttribute("placeholder", "So now what?");
+Once you have that template, you can change a shed load of setting, you just need to know what each bit (like "gameBorder") is called, what the CSS property (like "background-color") is called and what value (like "#800080") is allowed. Simple...
 
-Note that while the HTML/CSS method adds style information to an element, the JavaScript method replaces the existing style information. If we do this:
 
-        document.getElementById("gameBorder").setAttribute("style" , "background: blue;");
-        document.getElementById("gameBorder").setAttribute("style" , "border: blue;");
+Elements
+--------
 
-... then the first instruction gets overwritten by the second, and will have no effect.
+Bits of an HTML page are called elements, and "gameBorder" is just one of them. All HTML documents have an "html" element that contains everything else, and inside that it has a "head" and a "body" elements. Quest then has a few dozen elements that make up the interface inside the "body" element.
 
-Changing on the Fly
+You can look at those elements as you play a game. In the off-line editor, click on HTML Tools (on-line, your browser will probably have the facility to do this too). On the left you will see a hierarchy of elements (you will need to expand them to see them all), and on the right a list of properties. Click on an element, and it will be highlighted in your game so you can see what it refers to.
+
+Most of the interesting elements are of the type "div", and each is identified by an "id". The gameBorder one looks like this:
+
+![](html-tools.png "html-tools.png")
+
+
+CSS Properties and Values
+-------------------------
+
+There are a large number of CSS properties, to get a full list, use the internet. I will mention some of the interesting ones. You do need to be careful that you supply the right type of value, but we will look at that too. Also, be aware that CSS uses America spelling for "center" and "color".
+
+
+###The color property
+
+The colour of text is determined by the "color" property. You can set colours in a number of ways, the easiest is to use a name. This Wiki page has a full list of available names (note that there are no spaces in the name; for once, capitalisation does not matter):
+
+[http://en.wikipedia.org/wiki/Web_colors](http://en.wikipedia.org/wiki/Web_colors)
+
+   JS.eval("$('#gameBorder').css('color', 'blueviolet');")
+
+You can also set colours by using the RGB code. These both set the colour to red.
+
+   JS.eval("$('#gameBorder').css('color', 'rgb(255, 0, 0)');")
+   JS.eval("$('#gameBorder').css('color', '#ff0000');")
+
+
+Each splits colours in to three components: red, green, blue. In the first, each component is a number from 0 to 255. In the second, it is a hexadecimal number from 00 to ff. If you do not know what hexadecimal is, use the other format.
+
+
+###The background-color property
+
+This works just the same as color, but changes the background for this element.
+
+   JS.eval("$('#gameBorder').css('background-color', 'blueviolet');")
+
+
+###The background-image property
+
+In theory, you should be able to set the background image for each element, but I have not got that to work. You can set it for the entire page using the SetBackgroundImage function. If anyone can do it with CSS/JQuery, let me know how!
+
+The status bar at the top uses an image. If you want to stop that image displaying, do this:
+
+   JS.eval("$('#status').css('background-image', 'none');")
+
+
+###The width property
+
+This will change the width of the element. You have the potential to mess up big time here, so change one element at a time and see what happens. Elements do impact on each other, so you may not see any difference. When experimenting, change the width of Quest itself to see what effect that has too.
+
+Note that the value must include "px", which says the units are pixels.
+
+   JS.eval("$('#gameBorder').css('width', '950px');")
+
+
+###The opacity property
+
+The opacity property defines how much this element covers the one below (the reverse of transparency). It can range from 0.0 (this element is not visible) to 1.0 (this element is completely opaque).
+
+   JS.eval("$('#gameBorder').css('opacity', '0.5');")
+
+
+###The border property
+
+The border property lets you set borders. You can set various aspects in one go, so in this example a dashed line, 5 px wide and blue, will be added.
+
+    JS.eval("$('#gameBorder').css('border', 'dashed 5px blue');")
+
+
+The status bar at the top has a blue border. If you want to remove it, do this (also set the width to 950px to keep it aligned):
+
+   JS.eval("$('#status').css('border', 'none');")
+
+   
+Fonts
+-----
+
+There are about a dozen "base fonts" available in Quest. These are fonts that are pretty much guaranteed to be available on any computer (or at least equivalents, so we have Arial on PC, or Helvetica on Mac or failing that sans-serif).
+
+If you want to change the font during a game, use the SetFontName function. This allows you to list the equivalent fonts, so will ensure users on other operating systems see more-or-less the same thing.
+
+    SetFontName("Arial, Heletica, sans-serif")
+    msg("This is in Heletica")
+    SetFontName("'Courier New', Courier, monospace")
+    msg("This is in Courier")
+    SetFontName("Impact, Charcoal, sans-serif")
+    msg("This is in Charcoal")
+
+The sans-serif and monospace are generic fonts; there are also serif, cursive and fantasy. They will all map to something on every computer, though the cursive and fantasy tend to fall well short of the names.
+
+You also have access to web fonts. These are provided on-line by Google, and by default you can access just one in your game. To use any more, you need to call the SetWebFontName to pull the font off the internet, and then SetFontName as normal to actually use it.
+
+    // Pull the fonts off the internet
+    SetWebFontName("Wallpoet")
+    SetWebFontName("Admina")
+
+    // Now we can swap between them as much as we like
+    SetFontName("Wallpoet")
+    msg("This is in Wallpoet")
+    SetFontName("Admina")
+    msg("This is in Admina")
+    SetFontName("Wallpoet")
+    msg("This is in Wallpoet again")
+
+
+Reordering the Panes
+--------------------
+
+You can use JQuery to rearrange the panes on the right. Why would you want to do that? If you put the compass rose a the top, then it will stay in the same place. The way it is set out normally, the compass rose jumps around depending on how many items are in the location and inventory and what the player is doing with them.
+
+The JQuery we are going to use looks like this:
+
+    $('#compassLabel').insertBefore('#inventoryLabel')
+
+As before, the $ flags this as JQuery, and then we grab the element with the ID "compassLabel". Then we invoke the "insertBefore" method (function), telling JQuery it want the element to go before the inventoryLabel element.
+
+In Quest, it will look like this (I am moving the status variables up as well, they they do not change their height much either):
+
+    JS.eval ("$('#compassLabel').insertBefore('#inventoryLabel')")
+    JS.eval ("$('#compassAccordion').insertBefore('#inventoryLabel')")
+    JS.eval ("$('#statusVarsLabel').insertBefore('#inventoryLabel')")
+    JS.eval ("$('#statusVarsAccordion').insertBefore('#inventoryLabel')")
+
+
+Changing the Ending
 -------------------
 
-You can call a JavaScript function at any point in the game, which means you can change the UI colour scheme as many times as you want during the course of play. I do suggest some restraint though!
+The "finish" script command terminates the game, and replaces the panes on the right with a message. You can change the default font using JQuery again, to make it consistent with your game:
 
-Here is a full example. You will need to copy and paste the code into their respective files (this Wiki does not allow these file types to be uploaded). This is the *colors.js* file content. The function *setUI* is called from Quest, and accepts four parameters; this then calls the other functions to set all the style attributes.
+    JS.eval ("$('#gamePanesFinished').css('font-family', 'Berkshire Swash');")
 
-      function setUI(font, panel, back, text){ 
-        setComponentBackground(panel);
-        setBackground(back);
-        setLocation(panel, font);
-        setInput(panel, font, 14);
-        setPanes(text, font, 14);
-      }
-      function setBackground(c){ 
-        document.getElementById("location").setAttribute("style" , "background: " + c + "; border: " + c + "; ");
-        document.getElementById("gameBorder").setAttribute("style" , "background: " + c + "; border: " + c + "; ");
-        document.getElementById("gamePanes").setAttribute("style" , "background: " + c + "; ");
-        document.getElementById("status").setAttribute("style" , "background: " + c + "; border: darkblue; ");
-        document.getElementById("gamePanesRunning").setAttribute("style" , "background: " + c + "; border: none; ");
-        document.body.setAttribute("style" , "background: " + c + "; ");
-      }
-      function setComponentBackground(c){ 
-        document.getElementById("gameContent").setAttribute("style" , "background: " + c + "; ");
-        document.getElementById("gamePanel").setAttribute("style" , "background: " + c + "; ");
-        document.getElementById("gridPanel").setAttribute("style" , "background: " + c + "; ");
-        document.getElementById("divOutput").setAttribute("style" , "background: " + c + ";");
-        document.getElementById("inventoryLabel").setAttribute("style" , "background: " + c + ";");
-        document.getElementById("statusVarsLabel").setAttribute("style" , "background: " + c + ";");
-        document.getElementById("placesObjectsLabel").setAttribute("style" , "background: " + c + ";");
-        document.getElementById("compassLabel").setAttribute("style" , "background: " + c + ";");
-      }
-      function setLocation(c, font, size){ 
-        document.getElementById("location").setAttribute("style" , "font-family: " + font + "; font-size: 18px; color: " + c + "; padding: 1px; ");
-      }
-      function setInput(c, font, size){ 
-        document.getElementById("txtCommand").setAttribute("style" , "font-family: " + font + "; font-size: " + size + "px; color: " + c + "; padding: 3px; border-radius: 15px; ");
-      }
-      function setPanes(c, font, size){ 
-        var s = "font-family: " + font + "; font-size: " + size + "px; color: " + c + "; "
-        document.getElementById("lstInventory").setAttribute("style" , s);
-        document.getElementById("lstPlacesObjects").setAttribute("style" , s);
-        document.getElementById("statusVars").setAttribute("style" , s);
-        for (var i = 1; i < 10; i++) {
-          document.getElementById("cmdPlacesObjects"+i).setAttribute("style" , s);
-          document.getElementById("cmdInventory"+i).setAttribute("style" , s);
-        }
-        s = "font-family: " + font + "; font-size: " + size + "px; color: white; "
-        document.getElementById("cmdCompassIn").setAttribute("style" , s);
-        document.getElementById("cmdCompassOut").setAttribute("style" , s);
-        s = document.getElementById("inventoryLabel").getAttribute("style") + " font-family: " + font + "; font-size: " + size + "px;";
-        document.getElementById("inventoryLabel").setAttribute("style" , s);
-        document.getElementById("statusVarsLabel").setAttribute("style" , s);
-        document.getElementById("placesObjectsLabel").setAttribute("style" , s);
-        document.getElementById("compassLabel").setAttribute("style" , s);
-      }
+You can also change what gets displayed, using the JQuery html method. In this example, I am modifying the text, and adding an image (and we have to use GetFileURL to do that). I am also building the string first, and then calling JS.eval.
 
-The HTML file, *nofocus.html*. All the wok is done in the JavaScript file; the only thing I could not work out how to do there was to stop the border on the input box when it has the focus.
+    s = "$('#gamePanesFinished').html('<h2>Game Over</h2>"
+    s = s + "<p>This game has finished and you are dead!".</p><img src=\""
+    s = s + GetFileURL("gravestone.png")
+    s = s + "\" />');"
+    JS.eval (s)
+    finish
 
-      <!DOCTYPE html>
-      <html>
-      <head>
-       <style type="text/css">
-      *:focus {
-          outline: none;
-      }
-      </style>
-      </head>
-      </html>
 
-And the Quest game code. You can use this to experiment with different colour schemes of your own. If you do not want hanging colour schemes, you just need to copy the startup script and the JavaScript import (the lines in bold) into your own game.
+Other Tricks
+------------
 
-      <!--Saved by Quest 5.3.4750.31396-->
-      <asl version="530">
-        <include ref="English.aslx" />
-        <include ref="Core.aslx" />
-        <game name="test">
-          <gameid>39fea4b4-586a-4c72-9404-501f5f3a0c18</gameid>
-          <version>1.0</version>
-          <firstpublished>2012</firstpublished>
-          <defaultwebfont>Calligraffitti</defaultwebfont>
-          <defaultfontsize type="int">12</defaultfontsize>
-          <defaultfont>'Arial Black', Gadget, sans-serif</defaultfont>
-          <showscore />
-          <showhealth />
-          <showpanes />
-          <setbackgroundopacity type="boolean">false</setbackgroundopacity>
-          <defaultbackground>Silver</defaultbackground>
-          <defaultlinkforeground>LightPink</defaultlinkforeground>
-          <echohyperlinks type="boolean">false</echohyperlinks>
-          <enablehyperlinks type="boolean">false</enablehyperlinks>
-          '''<start type="script">'''
-            '''insert ("nofocus.html")'''
-            '''request (RunScript, "setUI;" + game.defaultwebfont + ";LightSteelBlue;DarkSlateGrey;DarkSlateGrey")'''
-          '''</start>'''
-        </game>
-        <object name="room">
-          <inherit name="editor_room" />
-          <description>The first room of the game. Type a colour to change the UI.</description>
-          <alias>First Room</alias>
-          <object name="player">
-            <inherit name="editor_object" />
-            <inherit name="editor_player" />
-            <object name="aaa">
-              <inherit name="editor_object" />
-              <use />
-            </object>
-          </object>
-          <object name="ppp">
-            <inherit name="editor_object" />
-          </object>
-          <object name="ooo">
-            <inherit name="editor_object" />
-          </object>
-          <exit alias="east" to="room2">
-            <inherit name="eastdirection" />
-          </exit>
-        </object>
-        <object name="room2">
-          <inherit name="editor_room" />
-          <description>The second room</description>
-          <alias>Room 2</alias>
-          <exit alias="west" to="room">
-            <inherit name="westdirection" />
-          </exit>
-        </object>
-        <command name="blue">
-          <pattern>blue</pattern>
-          <script>
-            request (RunScript, "setUI;" + game.defaultwebfont + ";LightSteelBlue;DarkSlateGrey;DarkSlateGrey")
-            msg ("I'm feelin' blue...")
-          </script>
-        </command>
-        <command name="yellow">
-          <pattern>yellow</pattern>
-          <script>
-            request (RunScript, "setUI;" + game.defaultwebfont + ";LemonChiffon;Khaki;Tan")
-            msg ("Ah, mellow yellow")
-          </script>
-        </command>
-        <command name="green">
-          <pattern>green</pattern>
-          <script>
-            request (RunScript, "setUI;" + game.defaultwebfont + ";SpringGreen;DarkOliveGreen;DarkOliveGreen")
-            msg ("Hey, everything green, man!")
-          </script>
-        </command>
-        <command name="red">
-          <pattern>red</pattern>
-          <script>
-            request (RunScript, "setUI;" + game.defaultwebfont + ";Salmon;DarkRed;DarkRed")
-            msg ("It's all red")
-          </script>
-        </command>
-        <command name="white">
-          <pattern>white</pattern>
-          <script>
-            request (RunScript, "setUI;" + game.defaultwebfont + ";WhiteSmoke;AntiqueWhite;Tan")
-            msg ("It's so bright")
-          </script>
-        </command>
-        <command name="black">
-          <pattern>black</pattern>
-          <script>
-            request (RunScript, "setUI;" + game.defaultwebfont + ";Indigo;Black;Indigo")
-            msg ("It's all dark")
-          </script>
-        </command>
-        <command name="gray">
-          <pattern>gray;grey</pattern>
-          <script>
-            request (RunScript, "setUI;" + game.defaultwebfont + ";LightSlateGray;DarkSlateGray;SteelBlue")
-            msg ("It's all so boring")
-          </script>
-        </command>
-        '''<javascript src="colours.js" />'''
-      </asl>
+Some interesting threads from the forum.
 
-Play the game and type some colours at the prompt!
+["Classic" look](http://forum.textadventures.co.uk/viewtopic.php?f=10&t=4760&hilit=background&start=15#p31389)
+
+[Make a certain letter disappear and reappear](http://forum.textadventures.co.uk/viewtopic.php?f=10&t=5121)
+
+[Blurring text (getting drunk)](http://forum.textadventures.co.uk/viewtopic.php?f=10&t=4947)
+
+[Injecting stylesheets (CSS in a string attribute on the game object)](http://forum.textadventures.co.uk/viewtopic.php?f=18&t=4747)
+

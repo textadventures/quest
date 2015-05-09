@@ -33,21 +33,31 @@ GetRank
 
 *Returns:*The current rank of the player as a string
 
+---
+
 GetScore
 
 *Returns:*The player's current score, as an integer
+
+---
 
 IncScore (**string** *identifying\_string*, **object** *increment*)
 
 Increases the current score by *increment*, but only if it has not already been increased for this *identifying\_string*.
 
+---
+
 InitScore (**integer** *max*, **string** *ranks*, **boolean** *status*)
 
 Initialises the scoring system (so call in the start script). The value *max* is the number of points to achieve to win, *ranks* is a list of ranks, separated by commas. Set *status* to true is you are manually adding other status attributes, false otherwise.
 
+---
+
 PrintFullScore
 
 Prints out the score and rank of the player, with a list of achievements (*identifying\_string*s).
+
+---
 
 PrintScore
 
@@ -55,6 +65,6 @@ Prints out the score and rank of the player.
 
 #### Player Commands
 
-score
+SCORE
 
 Player's current score and rank are displayed.

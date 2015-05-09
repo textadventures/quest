@@ -83,9 +83,9 @@ In play this might look like this:
       'Hi,' you say to Boris, 'can you help me find the key to this door?'
       'Sure, you need to look in the bedroom.'
 
-This is the most open-ended approach, though in reality that flexibility is an illusion - the player is limited to asking about only the topics you have included, he just does not know it. This is also the major downfall of this method - the player might not guess the subjects you have coded for, and just get frustrated as the character fails to respond to guess after guess. This system is probably best suited to when you have a large number of topics you will include for every character in the game, as a menu will soon get unwieldly, and thematically, it feels righyt for a mystery.
+This is the most open-ended approach, though in reality that flexibility is an illusion - the player is limited to asking about only the topics you have included, he just does not know it. This is also the major downfall of this method - the player might not guess the subjects you have coded for, and just get frustrated as the character fails to respond to guess after guess. This system is probably best suited to when you have a large number of topics you will include for every character in the game, as a menu will soon get unwieldly, and thematically, it feels right for a mystery.
 
-Quest has a tab just for Ask/Tell, making it easy to set up each response.
+Quest has a tab just for Ask/Tell, making it easy to set up each response (but you need to activate in on the Features tab of the game object).
 
 ![](Talk3.png "Talk3.png")
 
@@ -136,12 +136,7 @@ Or it could respond to changes in the world. The code below will make Philippa r
           msg ("'Have you tried looking in the bedroom yet?'")
         }
 
-### Working Examples
-
-This very simple game has all three options working (right click and save to your computer).
-
-[ConvTutorial.aslx]({{site.baseurl}}/files/ConvTutorial.aslx)
 
 ### Dynamic Menus
 
-An alternative to the second method is to use [Dynamic Menus for Conversations](dynamic_menus_for_conversations.html); that is, the menu for a character changes over the course of the game. For example, once the player has the key, the menu choice "Where is key" is no longer displayed.
+An alternative to the second method is to use [Dynamic Menus for Conversations](../libraries/dynamic_menus_for_conversations.html); that is, the menu for a character changes over the course of the game. For example, once the player has the key, the menu choice "Where is key" is no longer displayed.

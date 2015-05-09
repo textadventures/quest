@@ -10,11 +10,9 @@ Here then is a simple framework for turn-based events.
 Set up the framework
 --------------------
 
-To use it:
-
 1. Set an int attribute on game called "turn".
 
-2. Create two dummy rooms, "active\_events" and "dead\_events". They should have no exits and should not be accessed by the player.
+2. Create two dummy rooms, "active\_events" and "dead\_events". They should have no exits and should not be accessible by the player.
 
 3. Copy this turnscript and type into your game code. Insert it at the end, just before the last line (which will be "</asl>")
 
@@ -68,18 +66,121 @@ You can set up one event to start the count down to another very easily. Just se
 Turn off auto
 -------------
 
-By default, events are automatically moved to "dead\_events" and start the next chained event (if set) when they trigger. Setting the "auto" attribute to false stops that behaviour. This may be desirable if you want to wait until the player is in a certain room, for example.
-
-Example game
-------------
-
-Right-click the link and select save or something like that.
-
-[Events.aslx]({{site.baseurl}}/files/Events.aslx)
-
-There are only two rooms and three events. Event 1 initiates the countdown to event 2, which in turn sets off event 3. Event 2 has "auto" set to false, so it keeps going until a condition is met (player in room 2), and only then starts the countdown to event 3.
+By default, events are automatically moved to "dead\_events" and start the next chained event (if set) when they trigger. Setting the "auto" attribute to false stops that behaviour. This may be desirable if you want to wait until the player is in a certain room, for example. In that case, turn off auto, and the event will fire every turn. Each time it fires, you can have it test to see if the player is in the room; if she is, perform the special action, and then move the event to dead\_events in the script.
 
 Note
 ----
 
-Quest counts each player input as a turn. If the player spending 10 turns typing commands that are not recognised, that is still 10 turns. Conversely, if the player types five commands in one line (eg "n.get spade.s.s.drop spade") then that is only one turn.
+Quest counts each player input as a turn. If the player spending 10 turns typing commands that are not recognised, that is still 10 turns.
+
+
+Example game
+------------
+
+There are only two rooms and three events. Event 1 initiates the countdown to event 2, which in turn sets off event 3. Event 2 has "auto" set to false, so it keeps going until a condition is met (player in room 2), and only then starts the countdown to event 3.
+
+    <!--Saved by Quest 5.4.4873.16527-->
+    <asl version="540">
+      <include ref="English.aslx" />
+      <include ref="Core.aslx" />
+      <dynamictemplate name="ObjectNotOpen">DoObjectNotOpen (object)</dynamictemplate>
+      <game name="events">
+        <gameid>17fa10af-9205-4eba-a5ad-65d3166864e7</gameid>
+        <version>1.0</version>
+        <firstpublished>2013</firstpublished>
+        <turn type="int">0</turn>
+        <statusattributes type="stringdictionary">
+          <item>
+            <key>turn</key>
+            <value></value>
+          </item>
+        </statusattributes>
+        <subtitle>A demonstration of simple turn-based events</subtitle>
+        <author>The Pixie</author>
+      </game>
+      <object name="room">
+        <inherit name="editor_room" />
+        <alias>First Room</alias>
+        <usedefaultprefix type="boolean">false</usedefaultprefix>
+        <object name="player">
+          <inherit name="editor_object" />
+          <inherit name="editor_player" />
+        </object>
+        <exit alias="west" to="room2">
+          <inherit name="westdirection" />
+        </exit>
+      </object>
+      <object name="room2">
+        <inherit name="editor_room" />
+        <alias>Second Room</alias>
+        <usedefaultprefix type="boolean">false</usedefaultprefix>
+        <exit alias="east" to="room">
+          <inherit name="eastdirection" />
+        </exit>
+      </object>
+      <object name="active_events">
+        <inherit name="editor_room" />
+        <object name="event1">
+          <inherit name="editor_object" />
+          <inherit name="event_type" />
+          <turn type="int">3</turn>
+          <nextturn type="int">2</nextturn>
+          <next type="object">event2</next>
+          <action type="script">
+            msg ("Event 1")
+          </action>
+        </object>
+      </object>
+      <turnscript name="eventhandler">
+        <enabled />
+        <script><![CDATA[
+          game.turn = game.turn + 1
+          foreach (evt, GetDirectChildren (active_events)) {
+            if (evt.turn <= game.turn) {
+              do (evt, "action")
+              if (evt.auto) {
+                evt.parent = dead_events
+                if (HasAttribute (evt, "next")) {
+                  evt.next.turn = evt.nextturn + game.turn
+                  evt.next.parent = active_events
+                }
+              }
+            }
+          }
+        ]]></script>
+      </turnscript>
+      <object name="dead_events">
+        <inherit name="editor_room" />
+        <object name="event2">
+          <inherit name="editor_object" />
+          <inherit name="event_type" />
+          <auto type="boolean">false</auto>
+          <action type="script">
+            if (player.parent = room2) {
+              msg ("Event 2")
+              event3.turn = 2 + game.turn
+              event3.parent = active_events
+              this.parent = dead_events
+            }
+            else {
+              msg ("... waiting")
+            }
+          </action>
+        </object>
+        <object name="event3">
+          <inherit name="editor_object" />
+          <inherit name="event_type" />
+          <action type="script">
+            msg ("Event 3")
+          </action>
+        </object>
+      </object>
+      <type name="event_type">
+        <done type="boolean">false</done>
+        <auto />
+        <turn type="int">-1</turn>
+        <action type="script">
+          msg ("TODO")
+        </action>
+      </type>
+    </asl>

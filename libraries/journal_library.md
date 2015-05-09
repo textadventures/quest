@@ -18,8 +18,8 @@ You are free to use this library in your own games, without crediting me, as lon
 
 3.  Anywhere in you game where you want an event noted (if the player is carrying her journal), invoke the AddToJournal command, with the string to be added as a parameter.
 
-[Download](http://forum.textadventures.co.uk/download/file.php?id=588)
-[Discussion](http://www.axeuk.com/phpBB3/viewtopic.php?f=10&t=2610)
+[Download]({{site.baseurl}}/files/journal_lib.aslx)
+[Discussion](http://forum.textadventures.co.uk/viewtopic.php?f=10&t=2610)
 
 #### Functions
 
@@ -27,17 +27,25 @@ AddToJournal (**string** *text*)
 
 Adds the given text as a new entry in the journal.
 
+---
+
 ReadJournal
 
 Displayers on the screen all the journal entries to date.
+
+---
 
 SetJournalFont (**string** *font*, **integer** *size*, **string** *colour*)
 
 Sets the font to display the journal entries in.
 
+---
+
 SetJournalObject (**object** *obj*)
 
 Sets an object to be the journal. There can be only one journal item; the player must be carrying the item to use the journal. If no item has been set, the journal can be used freely.
+
+---
 
 UserAddToJournal (**object** *obj*, **string** *my\_name*)
 
@@ -45,10 +53,16 @@ Allows the player to add a comment to the journal. The next line of text she typ
 
 #### Player Commands
 
-note
+NOTE
 
 Allows the player to add a comment to the journal. The next line of text she types will be appended.
 
-journal
+---
+
+JOURNAL
 
 Displays the current content of the journal.
+
+---
+
+Also, any text the player types that starts with a hyphen will get added to the journal, rather than treated as a command (as long as it does not match another command you have created; to avoid this issue, put your custm commands in a library that is listed before this one in your game code).

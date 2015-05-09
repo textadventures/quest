@@ -23,10 +23,12 @@ If you want to customize this library for other languages, open the file wearabl
 
 #### Player Commands
 
-wear \#object\#
+WEAR \#object\#
 
 Player puts on the given object.
 
-remove \#object\#
+---
+
+REMOVE \#object\#
 
 Player removes the given object.
