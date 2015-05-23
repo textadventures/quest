@@ -7,10 +7,10 @@ Public Class CefKeyboardHandler
 
     Public Function OnKeyEvent(browser As IWebBrowser, type As KeyType, code As Integer, modifiers As CefEventFlags, isSystemKey As Boolean) As Boolean Implements IKeyboardHandler.OnKeyEvent
         If type = KeyType.KeyUp Then
-            Dim result As Keys = CType(code, Keys)
-            If (modifiers And 1) = 1 Then result = result Or Keys.Shift
-            If (modifiers And 2) = 2 Then result = result Or Keys.Control
-            If (modifiers And 4) = 4 Then result = result Or Keys.Alt
+            Dim result = CType(code, Keys)
+            If (modifiers And CefEventFlags.ShiftDown) = CefEventFlags.ShiftDown Then result = result Or Keys.Shift
+            If (modifiers And CefEventFlags.ControlDown) = CefEventFlags.ControlDown Then result = result Or Keys.Control
+            If (modifiers And CefEventFlags.AltDown) = CefEventFlags.AltDown Then result = result Or Keys.Alt
             RaiseEvent KeyPressed(result)
         End If
     End Function
