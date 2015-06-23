@@ -1,0 +1,22 @@
+<html>
+<head>
+	<!-- This should be a full .aslx XML file, but for now we're just prototyping a script runner -->
+	<script id="test" type="aslx">
+		msg ("Hello world")
+	</script>
+
+	<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.4.min.js"></script>
+	<script src="quest.js"></script>
+
+	<script>
+		// quest.js will want a base url for image resources
+
+		var script = $("#test").text();
+		quest.load(script);
+	</script>
+</head>
+<body>
+	<div id="output">
+	</div>
+</body>	
+</html>
