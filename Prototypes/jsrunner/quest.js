@@ -11,9 +11,17 @@
     };
 
     var parseScript = function (text) {
-        var scriptLine = getScriptLine(text);
+        while (true) {
+            var scriptLine = getScriptLine(text);
 
-        console.log(scriptLine);
+            if (!scriptLine) break;
+            if (scriptLine.line.length !== 0) {
+                console.log(scriptLine.line);
+            }
+
+            if (!scriptLine.after) break;
+            text = scriptLine.after;
+        }
     };
 
     var getScriptLine = function (text) {
@@ -25,13 +33,13 @@
         var crlfPos = obscuredScript.indexOf('\n');
         var commentPos = obscuredScript.indexOf('//');
         if (crlfPos === -1) return {
-            line: text
+            line: text.trim()
         };
 
         if (bracePos === - 1 || crlfPos < bracePos || (commentPos !== -1 && commentPos < bracePos && commentPos < crlfPos)) {
             return {
-                line: text.substring(0, crlfPos),
-                remaining: text.substring(crlfPos + 1)
+                line: text.substring(0, crlfPos).trim(),
+                after: text.substring(crlfPos + 1)
             };
         }
 
@@ -47,7 +55,7 @@
         }
 
         return {
-            line: result,
+            line: result.trim(),
             after: parameterResult.after
         };
     };
