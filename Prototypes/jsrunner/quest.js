@@ -62,7 +62,6 @@
                             script: ctx.parameters.then,
                             index: 0,
                         });
-                        executeNext();
                     }
                     else {
                         // TODO: Run "else" script if it exists
@@ -350,6 +349,13 @@
         if (callstack.length === 0) return;
         
         var frame = callstack[callstack.length - 1];
+        
+        if (frame.index === frame.script.length) {
+            callstack.pop();
+            executeNext();
+            return;
+        }
+        
         var script = frame.script[frame.index++];
         
         // TODO: If current frame has no locals (e.g. inside an "if" script),
@@ -359,10 +365,6 @@
             parameters: script.parameters,
             locals: frame.locals,
             complete: function () {
-                if (frame.index === frame.script.length) {
-                    callstack.pop();
-                }
-                
                 executeNext();
             }
         });

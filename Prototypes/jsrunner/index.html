@@ -4,7 +4,20 @@
 	<script id="test" type="aslx">
 		msg ("Hello world")
 		if (2 = 2) {
-			msg ("two is two")
+			msg ("ok")
+			if (3=4) {
+				msg ("wrong")
+			}
+			if (3=3) {
+				msg ("right")
+				if (4=4) {
+					msg ("still good")
+				}
+				if (4=5) {
+					msg ("nope")
+				}
+			}
+			msg ("yep")
 		}
 		msg ("That's nice")
 	</script>
