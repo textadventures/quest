@@ -7,21 +7,66 @@
         // external libraries)
 
         var script = parseScript(data);
+        console.log(script);
         executeScript(script);
     };
 
+    var scripts = {
+        "msg": {
+            parameters: [1]
+        }
+    };
+
+    var getScript = function (line) {
+        // based on WorldModel.ScriptFactory.GetScriptConstructor
+
+        var script, keyword;
+
+        for (var candidate in scripts) {
+            if (line.substring(0, candidate.length) === candidate) {
+                // TODO: Must be non-word character afterwards, see original function
+                keyword = candidate;
+                script = scripts[candidate];
+            }
+        }
+
+        if (!script) return null;
+
+        var parameters = splitParameters(line);
+        if (script.parameters.indexOf(parameters.length) === -1) {
+            throw 'Expected ' + script.parameters.join(',') + ' parameters in script: ' + line;
+        }
+
+        return {
+            keyword: keyword,
+            script: script,
+            line: line,
+            parameters: parameters
+        };
+    };
+
     var parseScript = function (text) {
+        var result = [];
         while (true) {
             var scriptLine = getScriptLine(text);
 
             if (!scriptLine) break;
             if (scriptLine.line.length !== 0) {
-                console.log(scriptLine.line);
+                var script = getScript(scriptLine.line);
+                
+                if (!script) {
+                    console.log('Unrecognised script command: ' + scriptLine.line);
+                }
+                else {
+                    result.push(script);
+                }
             }
 
             if (!scriptLine.after) break;
             text = scriptLine.after;
         }
+
+        return result;
     };
 
     var getScriptLine = function (text) {
@@ -58,6 +103,56 @@
             line: result.trim(),
             after: parameterResult.after
         };
+    };
+
+    var splitParameters = function (text) {
+        var parameter = getParameter(text);
+        if (!parameter) return [];
+
+        // based on WorldModel.Utility.SplitParameter
+        var result = [];
+        var inQuote = false;
+        var processNextCharacter = true;
+        var bracketCount = 0;
+        var curParam = [];
+
+        for (var i = 0; i < parameter.length; i++) {
+            var c = parameter.charAt(i);
+            var processThisCharacter = processNextCharacter;
+            processNextCharacter = true;
+
+            if (processThisCharacter) {
+                if (c === '\\') {
+                    // Don't process the character after a backslash
+                    processNextCharacter = false;
+                }
+                else if (c === '"') {
+                    inQuote = !inQuote;
+                }
+                else {
+                    if (!inQuote) {
+                        if (c === '(') bracketCount++;
+                        if (c === ')') bracketCount--;
+                        if (bracketCount === 0 && c === ',') {
+                            result.push(curParam.join(''));
+                            curParam = [];
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            curParam.push(c);
+        }
+
+        result.push(curParam.join('').trim());
+        return result;
+    };
+
+    var getParameter = function (text) {
+        var result = getParameterInternal(text, '(', ')');
+        if (!result) return null;
+        return result.parameter;
     };
 
     var getParameterInternal = function (text, open, close) {
