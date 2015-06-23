@@ -100,6 +100,7 @@
         // based on WorldModel.Utility.GetScript
         // return one line of the script, and the remaining script
 
+        var result;
         var obscuredScript = obscureStrings(text);
         var bracePos = obscuredScript.indexOf('{');
         var crlfPos = obscuredScript.indexOf('\n');
@@ -185,7 +186,6 @@
     var getParameterInternal = function (text, open, close) {
         // based on WorldModel.Utility.GetParameterInt
 
-        var afterParameter = null;
         var obscuredText = obscureStrings(text);
         var start = obscuredText.indexOf(open);
         if (start === -1) return null;
@@ -209,7 +209,7 @@
         return {
             parameter: text.substring(start + 1, pos),
             after: text.substring(pos + 1)
-        }
+        };
     };
 
     var obscureStrings = function (input) {
