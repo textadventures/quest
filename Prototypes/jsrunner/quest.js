@@ -7,7 +7,6 @@
         // external libraries)
 
         var script = parseScript(data);
-        console.log(script);
         executeScript(script);
     };
 
@@ -273,8 +272,35 @@
         result.push(curParam.join(''));
         return result;
     };
+    
+    var callstack = [];
 
     var executeScript = function (script) {
-        console.log("executeScript not yet implemented");
+        if (callstack.length !== 0) {
+            throw 'Existing callstack is not empty';
+        }
+        
+        callstack = [{
+            script: script,
+            index: 0,
+            locals: [],
+        }];
+        
+        executeNext();
+    };
+    
+    var executeNext = function () {
+        if (callstack.length === 0) return;
+        
+        var frame = callstack[callstack.length - 1];
+        var script = frame.script[frame.index++];
+        
+        console.log(script);
+        
+        if (frame.index === frame.script.length) {
+            callstack.pop();
+        }
+        
+        executeNext();
     };
 })();
