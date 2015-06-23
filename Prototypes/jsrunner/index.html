@@ -4,10 +4,14 @@
 	<script id="test" type="aslx">
 		msg ("Hello world")
 		a = 3
+		msg ("a is " + a)
 		game.attr = "some value"
 		if (GetInput() = "test") {
 			msg ("get input ok")
+			a = 4
+			msg ("a is now " + a)
 		}
+		msg ("here, a is " + a)
 		if (GetInput() + GetInput() = "testtest") {
 			msg ("get input twice ok")
 			if (GetInput() + "blah" = "testblah") {

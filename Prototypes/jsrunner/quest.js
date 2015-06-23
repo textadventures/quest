@@ -74,11 +74,14 @@
             execute: function (ctx) {
                 if (ctx.parameters.elementExpr) {
                     console.log(ctx.parameters.elementExpr + " dot " + ctx.parameters.variable + " = " + ctx.parameters.value);
+                    ctx.complete();
                 }
                 else {
-                    console.log(ctx.parameters.variable + " = " + ctx.parameters.value);
+                    evaluateExpression(ctx.parameters.value, function (result) {
+                        ctx.locals[ctx.parameters.variable] = result;
+                        ctx.complete();
+                    });
                 }
-                ctx.complete();
             }
         },
         '=>': {
@@ -173,7 +176,7 @@
             parameters: {
                 elementExpr: elementExpr,
                 variable: variable,
-                value: line.substr(eqPos + 1 + offset).trim()
+                value: parseExpression(line.substr(eqPos + 1 + offset).trim())
             } 
         }
     };
@@ -430,17 +433,28 @@
         }
         
         var script = frame.script[frame.index++];
-        
-        // TODO: If current frame has no locals (e.g. inside an "if" script),
-        // navigate upwards to find the parent locals.
-        
+                
         script.command.execute({
             parameters: script.parameters,
-            locals: frame.locals,
+            locals: getLocals(),
             complete: function () {
                 executeNext();
             }
         });
+    };
+    
+    var getLocals = function () {
+        // If current frame has no locals (e.g. inside an "if" script),
+        // navigate upwards to find the parent locals.
+
+        var frameIndex = callstack.length - 1;
+        while (true) {
+            if (callstack[frameIndex].locals) return callstack[frameIndex].locals;
+            frameIndex--;
+            if (frameIndex === -1) {
+                throw 'Could not find local variables';
+            } 
+        }
     };
         
     var evaluateExpression = function (expr, complete) {
@@ -462,6 +476,13 @@
         switch (tree.type) {
             case 'Literal':
                 expressionFrame.complete(tree.value);
+                break;
+            case 'Identifier':
+                var locals = getLocals();
+                if (!(tree.name in locals)) {
+                    throw 'Unknown variable ' + tree.name;
+                }
+                expressionFrame.complete(locals[tree.name]);
                 break;
             case 'BinaryExpression':
                 frame.expressionStack.push({
