@@ -405,6 +405,16 @@
                 });
                 evaluateNext();
                 break;
+            case 'CallExpression':
+                if (tree.callee.type !== 'Identifier') {
+                    throw 'Function name must be an identifier';
+                }
+                // TODO: Evaluate function arguments
+                
+                callFunction(tree.callee.name, null, function (result) {
+                    expressionFrame.complete(result);
+                });
+                break;
             default:
                 throw 'Unknown expression tree type: ' + tree.type;
         }
@@ -429,5 +439,23 @@
             default:
                 throw 'Undefined operator ' + operator;
         }
+    };
+    
+    var functions = {
+        'GetInput': function (args, complete) {
+            // TODO: Override input handler
+            
+            setTimeout(function () {
+                complete("test");
+            }, 1000);
+        }
+    };
+    
+    var callFunction = function (name, args, complete) {
+        var fn = functions[name];
+        if (!fn) {
+            throw 'Unrecognised function ' + name;
+        }
+        fn(args, complete);
     };
 })();
