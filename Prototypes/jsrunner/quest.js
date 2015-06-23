@@ -57,6 +57,7 @@
             },
             execute: function (ctx) {
                 evaluateExpression(ctx.parameters.expression, function (result) {
+                    console.log("IF: " + result);
                     if (result) {
                         // TODO: Run "then" script (add it to the callstack)
                     }
@@ -360,34 +361,65 @@
             }
         });
     };
-    
-    var currentExpression;
-    
+        
     var evaluateExpression = function (expr, complete) {
-        currentExpression = {
-            stack: [expr.tree],
-            doneLeft: false,
-            stackResult: function (result) {
-                currentExpression.stack.pop();
-                currentExpression.doneLeft = false;
-                if (currentExpression.stack.length === 0) {
-                    complete(result);
-                }
-            }
-        };
+        var frame = callstack[callstack.length - 1];
+        frame.expressionStack = [{
+           tree: expr.tree,
+           complete: function (result) {
+                complete(result);
+           }
+        }];
         
         evaluateNext();
     };
     
     var evaluateNext = function () {
-        var tree = currentExpression.stack[currentExpression.stack.length - 1];
-        console.log(tree);
+        var frame = callstack[callstack.length - 1];
+        var expressionFrame = frame.expressionStack[frame.expressionStack.length - 1];
+        var tree = expressionFrame.tree;
         switch (tree.type) {
             case 'Literal':
-                currentExpression.stackResult(tree.value);
+                expressionFrame.complete(tree.value);
+                break;
+            case 'BinaryExpression':
+                frame.expressionStack.push({
+                    tree: tree.left,
+                    complete: function (leftResult) {
+                        frame.expressionStack.push({
+                            tree: tree.right,
+                            complete: function (rightResult) {
+                                expressionFrame.complete(binaryOperator(tree.operator, leftResult, rightResult));
+                            }
+                        });
+                        evaluateNext();
+                    }
+                });
+                evaluateNext();
                 break;
             default:
                 throw 'Unknown expression tree type: ' + tree.type;
+        }
+    };
+    
+    var binaryOperator = function (operator, left, right) {
+        switch (operator) {
+            case '=':
+                return left === right;
+            case '+':
+                return left + right;
+            case '-':
+                return left - right;
+            case '*':
+                return left * right;
+            case '/':
+                return left / right;
+            case 'and':
+                return left && right;
+            case 'or':
+                return left || right;
+            default:
+                throw 'Undefined operator ' + operator;
         }
     };
 })();
