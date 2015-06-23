@@ -37,7 +37,13 @@
 
     var scripts = {
         'msg': {
-            parameters: [1]
+            parameters: [1],
+            execute: function (ctx) {               
+                evaluateExpression(ctx.parameters[0], function (result) {
+                    console.log(result);
+                    ctx.complete();
+                });
+            }
         },
         'if': {
             create: function (line) {
@@ -48,6 +54,17 @@
                     expression: parseExpression(parameters.parameter),
                     then: thenScript
                 };
+            },
+            execute: function (ctx) {
+                evaluateExpression(ctx.parameters.expression, function (result) {
+                    if (result) {
+                        // TODO: Run "then" script (add it to the callstack)
+                    }
+                    else {
+                        // TODO: Run "else" script if it exists
+                    }
+                    ctx.complete();
+                })
             }
         }
     };
@@ -319,7 +336,7 @@
         callstack = [{
             script: script,
             index: 0,
-            locals: [],
+            locals: {},
         }];
         
         executeNext();
@@ -331,12 +348,22 @@
         var frame = callstack[callstack.length - 1];
         var script = frame.script[frame.index++];
         
-        console.log(script);
-        
-        if (frame.index === frame.script.length) {
-            callstack.pop();
-        }
-        
-        executeNext();
+        script.script.execute({
+            parameters: script.parameters,
+            locals: frame.locals,
+            complete: function () {
+                if (frame.index === frame.script.length) {
+                    callstack.pop();
+                }
+                
+                executeNext();
+            }
+        });
+    };
+    
+    var evaluateExpression = function (expr, complete) {
+        //console.log(expr);
+        var result = "TODO!";
+        complete(result);
     };
 })();
