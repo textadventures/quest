@@ -69,6 +69,23 @@
                     ctx.complete();
                 });
             }
+        },
+        '=': {
+            execute: function (ctx) {
+                if (ctx.parameters.elementExpr) {
+                    console.log(ctx.parameters.elementExpr + " dot " + ctx.parameters.variable + " = " + ctx.parameters.value);
+                }
+                else {
+                    console.log(ctx.parameters.variable + " = " + ctx.parameters.value);
+                }
+                ctx.complete();
+            }
+        },
+        '=>': {
+            execute: function (ctx) {
+                console.log(ctx.parameters.appliesTo + " => " + ctx.parameters.value);
+                ctx.complete();
+            }
         }
     };
 
@@ -84,13 +101,24 @@
                 command = commands[candidate];
             }
         }
+        
+        if (!command) {
+            // see if it's a set script
+            
+            var setScript = getSetScript(line);
+            if (setScript) {
+                command = setScript.command;
+                keyword = setScript.keyword;
+                parameters = setScript.parameters;
+            }
+        }
 
         if (!command) return null;
 
         if (command.create) {
             parameters = command.create(line);
         }
-        else {
+        else if (!parameters) {
             parameters = parseParameters(splitParameters(line));
             if (command.parameters.indexOf(parameters.length) === -1) {
                 throw 'Expected ' + command.parameters.join(',') + ' parameters in command: ' + line;
@@ -103,6 +131,51 @@
             line: line,
             parameters: parameters
         };
+    };
+    
+    var getSetScript = function (line) {
+        // based on SetScriptConstuctor
+        
+        var isScript = false;
+        var offset = 0;
+        
+        var obscuredScript = obscureStrings(line);
+        var bracePos = obscuredScript.indexOf('{');
+        if (bracePos !== - 1) {
+            // only want to look for = and => before any other scripts which may
+            // be defined on the same line, for example procedure calls of type
+            //     MyProcedureCall (5) { some other script }
+
+            obscuredScript = obscuredScript.substring(0, bracePos);
+        }
+        
+        var eqPos = obscuredScript.indexOf('=>');
+        if (eqPos !== -1) {
+            isScript = true;
+            offset = 1;
+        }
+        else {
+            eqPos = obscuredScript.indexOf('=');
+        }
+        
+        if (eqPos === -1) return null;
+        
+        var keyword = isScript ? '=>' : '=';
+        var appliesTo = line.substr(0, eqPos).trim();
+        var lastDot = appliesTo.lastIndexOf('.');
+        
+        var elementExpr = lastDot === - 1 ? null : appliesTo.substr(0, lastDot);
+        var variable = lastDot === -1 ? appliesTo : appliesTo.substr(lastDot + 1);
+
+        return {
+            keyword: keyword,
+            command: commands[keyword],
+            parameters: {
+                elementExpr: elementExpr,
+                variable: variable,
+                value: line.substr(eqPos + 1 + offset).trim()
+            } 
+        }
     };
 
     var parseScript = function (text) {
@@ -447,7 +520,7 @@
             
             setTimeout(function () {
                 complete("test");
-            }, 1000);
+            }, 200);
         }
     };
     
