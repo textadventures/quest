@@ -1,5 +1,30 @@
+/* global jsep */
+
 (function () {
     window.quest = window.quest || {};
+    
+    jsep.removeUnaryOp('~');
+    jsep.addUnaryOp('not');
+        
+    jsep.removeBinaryOp('>>>');
+    jsep.removeBinaryOp('<<');
+    jsep.removeBinaryOp('>>');
+    
+    jsep.removeBinaryOp('==');
+    jsep.removeBinaryOp('===');
+    jsep.removeBinaryOp('!==');
+    jsep.addBinaryOp('=', 6);
+    jsep.addBinaryOp('<>');
+    
+    jsep.addBinaryOp('^', 10);
+    
+    jsep.removeBinaryOp('||');
+    jsep.removeBinaryOp('|');
+    jsep.addBinaryOp('or', 1);
+    
+    jsep.removeBinaryOp('&&');
+    jsep.removeBinaryOp('&');
+    jsep.addBinaryOp('and', 2);
     
     window.quest.load = function (data) {
         // TODO: Eventually this will be called with a full .aslx file
@@ -11,16 +36,16 @@
     };
 
     var scripts = {
-        "msg": {
+        'msg': {
             parameters: [1]
         },
-        "if": {
+        'if': {
             create: function (line) {
                 var parameters = getParameterInternal(line, '(', ')');
                 var thenScript = parseScript(parameters.after);
 
                 return {
-                    expression: parameters.parameter,
+                    expression: parseExpression(parameters.parameter),
                     then: thenScript
                 };
             }
@@ -46,7 +71,7 @@
             parameters = script.create(line);
         }
         else {
-            parameters = splitParameters(line);
+            parameters = parseParameters(splitParameters(line));
             if (script.parameters.indexOf(parameters.length) === -1) {
                 throw 'Expected ' + script.parameters.join(',') + ' parameters in script: ' + line;
             }
@@ -271,6 +296,17 @@
 
         result.push(curParam.join(''));
         return result;
+    };
+    
+    var parseExpression = function (expr) {
+        return {
+            expr: expr,
+            tree: jsep(expr)
+        };
+    };
+    
+    var parseParameters = function (parameters) {
+        return parameters.map(parseExpression);
     };
     
     var callstack = [];
