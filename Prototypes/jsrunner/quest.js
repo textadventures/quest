@@ -361,9 +361,33 @@
         });
     };
     
+    var currentExpression;
+    
     var evaluateExpression = function (expr, complete) {
-        //console.log(expr);
-        var result = "TODO!";
-        complete(result);
+        currentExpression = {
+            stack: [expr.tree],
+            doneLeft: false,
+            stackResult: function (result) {
+                currentExpression.stack.pop();
+                currentExpression.doneLeft = false;
+                if (currentExpression.stack.length === 0) {
+                    complete(result);
+                }
+            }
+        };
+        
+        evaluateNext();
+    };
+    
+    var evaluateNext = function () {
+        var tree = currentExpression.stack[currentExpression.stack.length - 1];
+        console.log(tree);
+        switch (tree.type) {
+            case 'Literal':
+                currentExpression.stackResult(tree.value);
+                break;
+            default:
+                throw 'Unknown expression tree type: ' + tree.type;
+        }
     };
 })();
