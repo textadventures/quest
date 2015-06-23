@@ -57,9 +57,12 @@
             },
             execute: function (ctx) {
                 evaluateExpression(ctx.parameters.expression, function (result) {
-                    console.log("IF: " + result);
                     if (result) {
-                        // TODO: Run "then" script (add it to the callstack)
+                        callstack.push({
+                            script: ctx.parameters.then,
+                            index: 0,
+                        });
+                        executeNext();
                     }
                     else {
                         // TODO: Run "else" script if it exists
@@ -348,6 +351,9 @@
         
         var frame = callstack[callstack.length - 1];
         var script = frame.script[frame.index++];
+        
+        // TODO: If current frame has no locals (e.g. inside an "if" script),
+        // navigate upwards to find the parent locals.
         
         script.command.execute({
             parameters: script.parameters,
