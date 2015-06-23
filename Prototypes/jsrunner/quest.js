@@ -35,7 +35,7 @@
         executeScript(script);
     };
 
-    var scripts = {
+    var commands = {
         'msg': {
             parameters: [1],
             execute: function (ctx) {               
@@ -64,7 +64,7 @@
                         // TODO: Run "else" script if it exists
                     }
                     ctx.complete();
-                })
+                });
             }
         }
     };
@@ -72,31 +72,31 @@
     var getScript = function (line) {
         // based on WorldModel.ScriptFactory.GetScriptConstructor
 
-        var script, keyword, parameters;
+        var command, keyword, parameters;
 
-        for (var candidate in scripts) {
+        for (var candidate in commands) {
             if (line.substring(0, candidate.length) === candidate) {
                 // TODO: Must be non-word character afterwards, see original function
                 keyword = candidate;
-                script = scripts[candidate];
+                command = commands[candidate];
             }
         }
 
-        if (!script) return null;
+        if (!command) return null;
 
-        if (script.create) {
-            parameters = script.create(line);
+        if (command.create) {
+            parameters = command.create(line);
         }
         else {
             parameters = parseParameters(splitParameters(line));
-            if (script.parameters.indexOf(parameters.length) === -1) {
-                throw 'Expected ' + script.parameters.join(',') + ' parameters in script: ' + line;
+            if (command.parameters.indexOf(parameters.length) === -1) {
+                throw 'Expected ' + command.parameters.join(',') + ' parameters in command: ' + line;
             }
         }
 
         return {
             keyword: keyword,
-            script: script,
+            command: command,
             line: line,
             parameters: parameters
         };
@@ -348,7 +348,7 @@
         var frame = callstack[callstack.length - 1];
         var script = frame.script[frame.index++];
         
-        script.script.execute({
+        script.command.execute({
             parameters: script.parameters,
             locals: frame.locals,
             complete: function () {
