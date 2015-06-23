@@ -14,13 +14,24 @@
     var scripts = {
         "msg": {
             parameters: [1]
+        },
+        "if": {
+            create: function (line) {
+                var parameters = getParameterInternal(line, '(', ')');
+                var thenScript = parseScript(parameters.after);
+
+                return {
+                    expression: parameters.parameter,
+                    then: thenScript
+                };
+            }
         }
     };
 
     var getScript = function (line) {
         // based on WorldModel.ScriptFactory.GetScriptConstructor
 
-        var script, keyword;
+        var script, keyword, parameters;
 
         for (var candidate in scripts) {
             if (line.substring(0, candidate.length) === candidate) {
@@ -32,9 +43,14 @@
 
         if (!script) return null;
 
-        var parameters = splitParameters(line);
-        if (script.parameters.indexOf(parameters.length) === -1) {
-            throw 'Expected ' + script.parameters.join(',') + ' parameters in script: ' + line;
+        if (script.create) {
+            parameters = script.create(line);
+        }
+        else {
+            parameters = splitParameters(line);
+            if (script.parameters.indexOf(parameters.length) === -1) {
+                throw 'Expected ' + script.parameters.join(',') + ' parameters in script: ' + line;
+            }
         }
 
         return {
@@ -46,6 +62,8 @@
     };
 
     var parseScript = function (text) {
+        text = removeSurroundingBraces(text);
+
         var result = [];
         while (true) {
             var scriptLine = getScriptLine(text);
@@ -67,6 +85,16 @@
         }
 
         return result;
+    };
+
+    var removeSurroundingBraces = function (text) {
+        // based on WorldModel.Utility.RemoveSurroundingBraces
+
+        text = text.trim();
+        if (text.substring(0, 1) === '{' && text.substring(text.length - 1, text.length) === '}') {
+            return text.substring(1, text.length - 1);
+        }
+        return text;
     };
 
     var getScriptLine = function (text) {
