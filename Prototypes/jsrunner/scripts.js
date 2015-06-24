@@ -608,6 +608,24 @@
                     expressionFrame.complete(result);
                 });
                 break;
+            case 'MemberExpression':
+                if (tree.computed) {
+                    throw 'Unsupported expression';
+                }
+                if (tree.property.type !== 'Identifier') {
+                    throw 'Attribute name must be an identifier';
+                }
+                frame.expressionStack.push({
+                    tree: tree.object,
+                    complete: function (result) {
+                        if (result.type !== 'element') {
+                            throw 'Expected element, got ' + result;
+                        }
+                        expressionFrame.complete(quest.get(result.name, tree.property.name));
+                    }
+                });
+                evaluateNext();
+                break;
             default:
                 throw 'Unknown expression tree type: ' + tree.type;
         }
