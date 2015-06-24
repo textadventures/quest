@@ -96,6 +96,7 @@
                         }
                         
                         ctx.locals[ctx.parameters.variable] = fromResult;
+                        var iterations = 0;
                         
                         var runLoop = function () {
                             if (ctx.locals[ctx.parameters.variable] <= toResult) {
@@ -104,8 +105,16 @@
                                     command: {
                                         execute: function () {
                                             ctx.locals[ctx.parameters.variable] = ctx.locals[ctx.parameters.variable] + 1;
-                                            runLoop();
-                                            ctx.complete();
+                                            iterations++;
+                                            if (iterations < 1000) {
+                                                runLoop();
+                                            }
+                                            else {
+                                                setTimeout(function () {
+                                                    iterations = 0;
+                                                    runLoop();
+                                                }, 0);
+                                            }
                                         }
                                     }
                                 });
@@ -476,6 +485,8 @@
         executeNext();
     };
     
+    var nestedExecuteNextCount = 0;
+    
     var executeNext = function () {
         if (callstack.length === 0) return;
         
@@ -488,14 +499,27 @@
         }
         
         var script = frame.script[frame.index++];
-                
-        script.command.execute({
-            parameters: script.parameters,
-            locals: getLocals(),
-            complete: function () {
-                executeNext();
-            }
-        });
+        
+        var go = function () {
+            script.command.execute({
+                parameters: script.parameters,
+                locals: getLocals(),
+                complete: function () {
+                    executeNext();
+                }
+            });
+        };
+        
+        if (nestedExecuteNextCount < 1000) {
+            nestedExecuteNextCount++;
+            go();
+            nestedExecuteNextCount--;
+        }
+        else {
+            setTimeout(function () {
+                go();
+            }, 0);
+        }
     };
     
     var getLocals = function () {
