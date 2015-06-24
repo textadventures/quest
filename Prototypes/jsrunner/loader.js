@@ -5,9 +5,17 @@
     
     var allowedVersions = [500, 510, 520, 530, 540, 550];
     
+    var getAttribute = function (node, attributeName) {
+        var attribute = node.attributes[attributeName];
+        if (!attribute) return null;
+        return attribute.value;
+    };
+    
     var loaders = {
-        'game': function () {
-            console.log("load game...");
+        'game': function (node) {
+            quest.create('game');
+            var name = getAttribute(node, 'name');
+            quest.set('game', 'name', name);
         }
     };
     
@@ -32,11 +40,13 @@
             if (asl.childNodes[i].nodeType !== 1) continue;
             var loader = loaders[asl.childNodes[i].nodeName];
             if (loader) {
-                loader();
+                loader(asl.childNodes[i]);
             }
             else {
                 console.log('no loader for ' + asl.childNodes[i].nodeName);
             }
         }
+        
+        quest.dump();
     };
 })();

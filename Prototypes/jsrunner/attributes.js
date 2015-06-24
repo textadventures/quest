@@ -31,8 +31,13 @@
 		};
 	};
 	
+	var dump = function () {
+		console.log(elements);
+	};
+	
 	quest.set = set;
 	quest.get = get;
 	quest.isElement = isElement;
 	quest.create = create;
+	quest.dump = dump;
 })();
