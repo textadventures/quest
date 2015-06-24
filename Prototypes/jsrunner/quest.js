@@ -100,7 +100,7 @@
                     
                     var runLoop = function () {
                         if (ctx.locals[ctx.parameters.variable] <= toResult) {
-                            script = [].concat(ctx.parameters.loopScript);
+                            var script = [].concat(ctx.parameters.loopScript);
                             script.push({
                                 command: {
                                     execute: function () {
@@ -127,7 +127,7 @@
                     };
                     
                     runLoop();
-                }
+                };
                 
                 evaluateExpression(ctx.parameters.from, function (fromResult) {
                     evaluateExpression(ctx.parameters.to, function (toResult) {
