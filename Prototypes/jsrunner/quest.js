@@ -106,12 +106,20 @@
                                     command: {
                                         execute: function () {
                                             if (ctx.locals[ctx.parameters.variable] <= toResult) {
+                                                script = [].concat(ctx.parameters.loopScript);
+                                                script.push({
+                                                    command: {
+                                                        execute: function () {
+                                                            ctx.locals[ctx.parameters.variable] = ctx.locals[ctx.parameters.variable] + 1;
+                                                            runLoop();
+                                                            ctx.complete();
+                                                        }
+                                                    }
+                                                });
                                                 callstack.push({
-                                                    script: ctx.parameters.loopScript,
+                                                    script: script,
                                                     index: 0,
                                                 });
-                                                ctx.locals[ctx.parameters.variable] = ctx.locals[ctx.parameters.variable] + 1;
-                                                runLoop();                                                
                                             }
                                             ctx.complete();
                                         }
