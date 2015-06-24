@@ -1,0 +1,255 @@
+﻿body
+{
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-y: scroll;
+    background-attachment: fixed;
+}
+html,
+body
+{
+    margin: 0px;
+    height: 100%;
+}
+a.cmdlink
+{
+    text-decoration: underline;
+    color: Blue;
+    cursor: pointer;
+}
+a.cmdlink.disabled
+{
+    text-decoration: inherit;
+    color: inherit !important;
+    cursor: inherit;
+}
+div#gameBorder
+{
+    width: 950px;
+    margin-left: auto;
+    margin-right: auto;
+    border-left: 1px solid silver;
+    border-right: 1px solid silver;
+    margin-top: 0;
+    min-height: 100%;
+}
+div#gamePanel
+{
+    position: fixed;
+    top: 32px;
+    padding-top: 2px;
+    left: 50%;
+    margin-left: -456px;
+    width: 700px;
+    text-align: center;
+    display: none;
+}
+div#gridPanel
+{
+    position: fixed;
+    top: 32px;
+    padding: 0;
+    left: 50%;
+    margin-left: -456px;
+    width: 700px;
+    overflow: hidden;
+    display: none;
+}
+div#gameContent
+{
+    padding: 30px 20px 0px 20px;
+    width: 700px;
+    min-height: 100%;
+}
+div#gamePanes
+{
+    position: fixed;
+    float: right;
+    width: 216px;
+    top: 24px;
+    left: 50%;
+    margin-left: 255px;
+    padding: 2px;
+    background: #F9F9FF;
+    min-height: 100%;
+    display: none;
+}
+div#status
+{
+    height: 30px;
+    position: fixed;
+    top: 0px;
+    z-index: 100;
+    width: 948px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14pt;
+    padding: 0;
+    display: none;
+}
+div#location
+{
+    display: none;
+    padding-left: 4px;
+    padding-top: 4px;
+}
+div#controlButtons
+{
+    float: right;
+}
+.hiddenbutton
+{
+    display: none;
+}
+#dialog
+{
+    display: none;
+}
+#msgbox
+{
+    display: none;
+}
+.compassbutton
+{
+    margin-right: 0;
+    height: 35px;
+    width: 35px;
+}
+#statusVars
+{
+    padding: 4px;
+    max-height: 140px;
+}
+#gamePanesFinished
+{
+    display: none;
+}
+#cmdSave
+{
+    margin-top: 0px;
+}
+div#divOutput
+{
+    margin-top: 20px;
+    min-height: 100%;
+}
+div#txtCommandDiv
+{
+    height: 40px;
+    display: none;
+}
+#txtCommand
+{
+    width: 680px;
+    font-size: 20px;
+    vertical-align: bottom;
+    padding: 6px;
+}
+#txtCommandSpacer
+{
+    height: 10px;
+}
+div#controlButtons .ui-button
+{
+    font-size: 10px !important;
+}
+.verbButtons
+{
+    text-align: center;
+}
+.verbButtons .ui-button
+{
+    font-size: 10px !important;
+    margin: 5px;
+}
+#compassTable .ui-button
+{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px !important;
+    border: 2px solid #C5DBEC;
+}
+#compassTable .ui-button-disabled
+{
+    border: 1px solid #C5DBEC;
+    background: inherit;
+}
+.ui-accordion .ui-accordion-content
+{
+    padding: 0;
+}
+.ui-accordion-header
+{
+    font-size: 12px;
+    margin-top: 10px !important;
+}
+h3 .ui-icon
+{
+    position: absolute;
+}
+h3 .accordion-header-text
+{
+    padding-left: 1.8em;
+}
+#gamePanes .ui-widget
+{
+    font-size: 12px;
+}
+#endWaitLink
+{
+    font-size: 16px;
+    font-weight: bold;
+}
+.ui-selecting
+{
+    background: #FECA40;
+}
+.ui-selected
+{
+    background: #F39814;
+    color: white;
+}
+.elementListWrapper
+{
+    max-height: 200px;
+    overflow-y: scroll;
+}
+.elementList
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.elementList li
+{
+    padding: 3px;
+    cursor: default;
+}
+div#gamePanel img
+{
+    max-width: 100%;
+}
+div#divOutput img
+{
+    max-width: 100%;
+}
+div.jjmenu {
+    font-size:12px;
+    position:absolute;
+    background:#fffef0;
+    border-bottom:2px solid gray;
+    border-right:1px solid gray;
+    padding:0px;
+}
+div.jj_menu_item {
+    color:black;
+    border:1px solid gray;
+    border-bottom:none;
+    background: white;
+    cursor:pointer;
+}
+div.jj_menu_item span {
+    display:block;
+    padding:4px;
+}
+div.jj_menu_item_hover {
+    background:#e4e4e4;	
+}
