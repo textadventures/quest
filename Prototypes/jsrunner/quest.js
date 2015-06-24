@@ -70,6 +70,63 @@
                 });
             }
         },
+        'for': {
+            create: function (line) {
+                var parameterAndScript = getParameterInternal(line, '(', ')');
+                var loopScript = parseScript(parameterAndScript.after);
+                var parameters = splitParameters(parameterAndScript.parameter);
+                
+                if (parameters.length !== 3) {
+                    throw '"for" script should have 3 parameters: ' + line;
+                }
+
+                return {
+                    variable: parameters[0],
+                    from: parseExpression(parameters[1]),
+                    to: parseExpression(parameters[2]),
+                    loopScript: loopScript
+                };
+            },
+            execute: function (ctx) {
+                evaluateExpression(ctx.parameters.from, function (fromResult) {
+                    evaluateExpression(ctx.parameters.to, function (toResult) {
+                        if (toResult < fromResult) {
+                            ctx.complete();
+                            return;
+                        }
+                        
+                        console.log("Run script from " + fromResult + " to " + toResult);
+                        console.log(ctx);
+                        
+                        ctx.locals[ctx.parameters.variable] = fromResult;
+                        
+                        var runLoop = function () {
+                            callstack.push({
+                                script: [{
+                                    command: {
+                                        execute: function () {
+                                            if (ctx.locals[ctx.parameters.variable] <= toResult) {
+                                                callstack.push({
+                                                    script: ctx.parameters.loopScript,
+                                                    index: 0,
+                                                });
+                                                ctx.locals[ctx.parameters.variable] = ctx.locals[ctx.parameters.variable] + 1;
+                                                runLoop();                                                
+                                            }
+                                            ctx.complete();
+                                        }
+                                    }
+                                }],
+                                index: 0,
+                            });
+                            ctx.complete();
+                        };
+                        
+                        runLoop();
+                    });
+                });
+            }
+        },
         '=': {
             execute: function (ctx) {
                 if (ctx.parameters.elementExpr) {
@@ -122,7 +179,7 @@
             parameters = command.create(line);
         }
         else if (!parameters) {
-            parameters = parseParameters(splitParameters(line));
+            parameters = parseParameters(getAndSplitParameters(line));
             if (command.parameters.indexOf(parameters.length) === -1) {
                 throw 'Expected ' + command.parameters.join(',') + ' parameters in command: ' + line;
             }
@@ -178,7 +235,7 @@
                 variable: variable,
                 value: parseExpression(line.substr(eqPos + 1 + offset).trim())
             } 
-        }
+        };
     };
 
     var parseScript = function (text) {
@@ -254,10 +311,13 @@
         };
     };
 
-    var splitParameters = function (text) {
+    var getAndSplitParameters = function (text) {
         var parameter = getParameter(text);
         if (!parameter) return [];
-
+        return splitParameters(parameter);
+    };
+    
+    var splitParameters = function (parameter) {
         // based on WorldModel.Utility.SplitParameter
         var result = [];
         var inQuote = false;
@@ -283,7 +343,7 @@
                         if (c === '(') bracketCount++;
                         if (c === ')') bracketCount--;
                         if (bracketCount === 0 && c === ',') {
-                            result.push(curParam.join(''));
+                            result.push(curParam.join('').trim());
                             curParam = [];
                             continue;
                         }
