@@ -136,16 +136,21 @@
         },
         '=': {
             execute: function (ctx) {
-                if (ctx.parameters.elementExpr) {
-                    console.log(ctx.parameters.elementExpr + " dot " + ctx.parameters.variable + " = " + ctx.parameters.value);
-                    ctx.complete();
-                }
-                else {
-                    evaluateExpression(ctx.parameters.value, function (result) {
+                evaluateExpression(ctx.parameters.value, function (result) {
+                    if (ctx.parameters.elementExpr) {
+                        evaluateExpression(ctx.parameters.elementExpr, function (element) {
+                            if (element.type !== 'element') {
+                                throw 'Expected element, got ' + element;
+                            };
+                            quest.set(element.name, ctx.parameters.variable, result);
+                            ctx.complete();
+                        });
+                    }
+                    else {
                         ctx.locals[ctx.parameters.variable] = result;
                         ctx.complete();
-                    });
-                }
+                    }
+                });
             }
         },
         '=>': {
@@ -238,7 +243,7 @@
             keyword: keyword,
             command: commands[keyword],
             parameters: {
-                elementExpr: elementExpr,
+                elementExpr: elementExpr == null ? null : parseExpression(elementExpr),
                 variable: variable,
                 value: parseExpression(line.substr(eqPos + 1 + offset).trim())
             } 
@@ -540,6 +545,9 @@
     };
         
     var evaluateExpression = function (expr, complete) {
+        if (!expr.tree) {
+            throw 'Not an expression: ' + expr;
+        }
         var frame = callstack[callstack.length - 1];
         frame.expressionStack = [{
            tree: expr.tree,
@@ -561,10 +569,19 @@
                 break;
             case 'Identifier':
                 var locals = getLocals();
-                if (!(tree.name in locals)) {
+                if (tree.name in locals) {
+                    expressionFrame.complete(locals[tree.name]);                
+                }
+                else if (quest.isElement(tree.name)) {
+                    expressionFrame.complete({
+                        'type': 'element',
+                        'name': tree.name
+                    });
+                }
+                else {
                     throw 'Unknown variable ' + tree.name;
                 }
-                expressionFrame.complete(locals[tree.name]);
+                
                 break;
             case 'BinaryExpression':
                 frame.expressionStack.push({
