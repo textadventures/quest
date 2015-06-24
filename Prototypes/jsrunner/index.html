@@ -14,6 +14,7 @@
 	<script src="quest.js"></script>
 	<script src="scripts.js"></script>
 	<script src="attributes.js"></script>
+	<script src="loader.js"></script>
 
 	<script>
 		// quest.js will want a base url for image resources
@@ -22,7 +23,7 @@
 		//quest.load(script);
 		
 		$.get('test.aslx', function (data) {
-			console.log(data);
+			quest.load(data);
 		});
 	</script>
 </head>
