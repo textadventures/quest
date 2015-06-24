@@ -1,0 +1,27 @@
+<asl version="550">
+    <game name="Test Game">
+    </game>
+
+    <function name="ScopeInventory" type="objectlist">
+        result = NewObjectList()
+        return (result)
+    </function>
+
+    <function name="GetPlacesObjectsList" type="objectlist">
+        result = NewObjectList()
+        return (result)
+    </function>
+
+    <function name="ScopeExits" type="objectlist">
+        result = NewObjectList()
+        return (result)
+    </function>
+
+    <function name="HandleCommand" parameters="command">
+        msg (command)
+    </function>
+
+    <function name="InitInterface">
+        request (Show, "Command")
+    </function>
+</asl>

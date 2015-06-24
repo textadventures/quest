@@ -18,8 +18,12 @@
 	<script>
 		// quest.js will want a base url for image resources
 
-		var script = $("#test").text();
-		quest.load(script);
+		//var script = $("#test").text();
+		//quest.load(script);
+		
+		$.get('test.aslx', function (data) {
+			console.log(data);
+		});
 	</script>
 </head>
 <body>

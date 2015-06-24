@@ -1,4 +1,5 @@
 .settings/
+node_modules/
 [Bb]in/
 obj/
 [Dd]ebug/
