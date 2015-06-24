@@ -16,6 +16,9 @@
             quest.create('game');
             var name = getAttribute(node, 'name');
             quest.set('game', 'name', name);
+        },
+        'function': function (node) {
+            quest.addFunction(getAttribute(node, 'name'), quest.parseScript(node.textContent));
         }
     };
     

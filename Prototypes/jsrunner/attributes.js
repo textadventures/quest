@@ -2,6 +2,7 @@
 	window.quest = window.quest || {};
 	
 	var elements = {};
+	var functions = {};
 	
 	var getElement = function (elementName) {
 		var element = elements[elementName];
@@ -31,13 +32,21 @@
 		};
 	};
 	
+	var addFunction = function (functionName, script) {
+		functions[functionName] = script;
+	};
+	
 	var dump = function () {
+		console.log("Elements:")
 		console.log(elements);
+		console.log("Functions:")
+		console.log(functions);
 	};
 	
 	quest.set = set;
 	quest.get = get;
 	quest.isElement = isElement;
 	quest.create = create;
+	quest.addFunction = addFunction;
 	quest.dump = dump;
 })();
