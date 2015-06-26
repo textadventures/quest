@@ -795,13 +795,127 @@
         }
     };
     
-    var functions = {
+    var asyncFunctions = {
         'GetInput': function (args, complete) {
             // TODO: Override input handler
             
             setTimeout(function () {
                 complete("test");
             }, 200);
+        }
+    }
+    
+    var functions = {
+        // String Functions
+        'Left': function (args, complete) {
+            var input = args[0];
+            var length = args[1];
+            return input.substring(0, length);
+        },
+        'Right': function (args, complete) {
+            var input = args[0];
+            var length = args[1];
+            return input.substring(input.length - length - 1);
+        },
+        'Mid': function (args, complete) {
+            var input = args[0];
+            var start = args[1];
+            if (args.length > 2) {
+                var length = args[2];
+                return input.substr(start - 1, length);
+            }
+            return input.substr(start - 1);
+        },
+        'UCase': function (args, complete) {
+            var input = args[0];
+            return input.toUpperCase();
+        },
+        'LCase': function (args, complete) {
+            var input = args[0];
+            return input.toLowerCase();
+        },
+        'LengthOf': function (args, complete) {
+            var input = args[0];
+            if (typeof input === 'undefined') return 0;
+            return input.length;
+        },
+        'CapFirst': function (args, complete) {
+            var input = args[0];
+            return input.substring(0, 1).toUpperCase() + input.substring(1);
+        },
+        'Instr': function (args, complete) {
+            var input, search;
+            if (args.length > 2) {
+                var start = args[0];
+                input = args[1];
+                search = args[2];
+                return input.indexOf(search, start - 1) + 1;
+            }
+            input = args[0];
+            search = args[1];
+            return input.indexOf(search) + 1;
+        },
+        'InstrRev': function (args, complete) {
+            var input, search;
+            if (args.length > 2) {
+                var start = args[0];
+                input = args[1];
+                search = args[2];
+                return input.lastIndexOf(search, start - 1) + 1;
+            }
+            input = args[0];
+            search = args[1];
+            return input.lastIndexOf(search) + 1;
+        },
+        'StartsWith': function (args, complete) {
+            var input = args[0];
+            var search = args[1];
+            return input.indexOf(search) === 0;
+        },
+        'EndsWith': function (args, complete) {
+            var input = args[0];
+            var search = args[1];
+            return input.indexOf(search) === input.length - search.length;
+        },
+        'Split': function (args, complete) {
+            var input = args[0];
+            var splitChar = args[1];
+            return input.split(splitChar);
+        },
+        'Join': function (args, complete) {
+            var input = args[0];
+            var joinChar = args[1];
+            return input.join(joinChar);
+        },
+        'IsNumeric': function (args, complete) {
+            var input = args[0];
+            return !isNaN(parseFloat(input)) && isFinite(input);
+        },
+        'Replace': function (args, complete) {
+            var input = args[0];
+            var oldString = args[1];
+            var newString = args[2];
+            return input.split(oldString).join(newString);
+        },
+        'Trim': function (args, complete) {
+            var input = args[0];
+            return input.trim();
+        },
+        'LTrim': function (args, complete) {
+            var input = args[0];
+            return input.replace(/^\s+/,"");
+        },
+        'RTrim': function (args, complete) {
+            var input = args[0];
+            return input.replace(/\s+$/,"");
+        },
+        'Asc': function (args, complete) {
+            var input = args[0];
+            return input.charCodeAt(0);
+        },
+        'Chr': function (args, complete) {
+            var input = args[0];
+            return String.fromCharCode(input);
         }
     };
     
@@ -827,9 +941,14 @@
         
         fn = functions[name];
         if (!fn) {
-            throw 'Unrecognised function ' + name;
+            fn = asyncFunctions[name];
+            if (!fn) {
+                throw 'Unrecognised function ' + name;
+            }
+            fn(args, complete);
         }
-        fn(args, complete);
+        
+        complete(fn(args));
     };
     
     quest.parseScript = parseScript;
