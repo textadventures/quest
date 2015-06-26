@@ -775,6 +775,9 @@
         switch (operator) {
             case '=':
                 return left === right;
+            case '!=':
+            case '<>':
+                return left !== right;
             case '+':
                 return left + right;
             case '-':
