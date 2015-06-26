@@ -708,6 +708,18 @@
                 });
                 evaluateNext();
                 break;
+            case 'UnaryExpression':
+                if (tree.operator != 'not') {
+                    throw 'Unrecognised operator: ' + tree.operator;
+                }
+                frame.expressionStack.push({
+                    tree: tree.argument,
+                    complete: function (result) {
+                        expressionFrame.complete(!result);
+                    }
+                });
+                evaluateNext();
+                break;
             default:
                 throw 'Unknown expression tree type: ' + tree.type;
         }
