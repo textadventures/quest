@@ -990,9 +990,11 @@
         if (quest.functionExists(name)) {
             fn = quest.getFunctionDefinition(name);
             var arguments = {};
-            for (var i = 0; i < fn.parameters.length; i++) {
-                if (i >= args.length) break;
-                arguments[fn.parameters[i]] = args[i];
+            if (fn.parameters) {
+                for (var i = 0; i < fn.parameters.length; i++) {
+                    if (i >= args.length) break;
+                    arguments[fn.parameters[i]] = args[i];
+                }
             }
             callstack.push({
                 script: fn.script,
