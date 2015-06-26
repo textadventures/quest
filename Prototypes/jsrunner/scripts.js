@@ -270,6 +270,14 @@
                 keyword = setScript.keyword;
                 parameters = setScript.parameters;
             }
+            else {
+                // see if it's a function call
+                var functionCall = getFunctionCallScript(line);
+                if (functionCall) {
+                    command = functionCall.command;
+                    parameters = functionCall.parameters;
+                }
+            }
         }
 
         if (!command) {
@@ -343,6 +351,44 @@
                 variable: variable,
                 value: value
             } 
+        };
+    };
+    
+    var getFunctionCallScript = function (line) {
+        // based on FunctionCallScriptConstructor
+        
+        var paramExpressions, procName, afterParameter;
+        
+        var param = getParameterInternal(line, '(', ')');
+        // param.parameter, .after        
+        
+        if (param && param.after) {
+            // TODO: Handle functions of the form
+            //    SomeFunction (parameter) { script }
+            console.log("Not currently handled - functions with script parameters: " + line);
+            return null;
+        }
+        
+        if (!param) {
+            procName = line;
+        }
+        else {
+            var parameters = splitParameters(param.parameter);
+            procName = line.substr(0, line.indexOf('(')).trim();
+            if (param.parameter.trim().length > 0) {
+                paramExpressions = parseParameters(parameters);
+            }
+        }
+        
+        if (!quest.functionExists(procName)) {
+            throw 'Function not found: ' + procName;
+        }
+        
+        return {
+            command: function (ctx) {
+                console.log('CALL FUNCTION ' + procName);
+                ctx.complete();
+            }
         };
     };
 
