@@ -1,0 +1,4741 @@
+﻿<!--Saved by Quest 5.6.5652.22093-->
+<asl version="550">
+  <implied element="object" property="alt" type="simplestringlist" />
+  <implied element="command" property="pattern" type="simplepattern" />
+  <implied element="command" property="script" type="script" />
+  <implied element="command" property="multiple" type="AssociatedScope" />
+  <implied element="object" property="displayverbs" type="simplestringlist" />
+  <implied element="object" property="inventoryverbs" type="simplestringlist" />
+  <implied element="walkthrough" property="steps" type="simplestringlist" />
+  <implied element="timer" property="interval" type="int" />
+  <implied element="timer" property="script" type="script" />
+  <implied element="turnscript" property="script" type="script" />
+  <template name="LanguageId">en</template>
+  <template name="UnresolvedObject">I can't see that.</template>
+  <template name="UnresolvedLocation">You can't go there.</template>
+  <template name="DefaultObjectDescription">Nothing out of the ordinary.</template>
+  <template name="DefaultSelfDescription">Looking good.</template>
+  <template name="SeeListHeader">You can see</template>
+  <template name="GoListHeader">You can go</template>
+  <template name="And">and</template>
+  <template name="Or">or</template>
+  <template name="NothingToUndo">Nothing to undo!</template>
+  <template name="NotCarryingAnything">You are not carrying anything.</template>
+  <template name="CarryingListHeader">You are carrying</template>
+  <template name="UnrecognisedCommand">I don't understand your command.</template>
+  <template name="YouAreIn">You are in</template>
+  <template name="LookAt">Look at</template>
+  <template name="Take">Take</template>
+  <template name="SpeakTo">Speak to</template>
+  <template name="Use">Use</template>
+  <template name="Drop">Drop</template>
+  <template name="GoTo">Go to</template>
+  <template name="Go">Go</template>
+  <template name="SwitchOn">Switch on</template>
+  <template name="SwitchOff">Switch off</template>
+  <template name="Open">Open</template>
+  <template name="Close">Close</template>
+  <template name="Eat">Eat</template>
+  <template name="NeutralGender">it</template>
+  <template name="MaleGender">he</template>
+  <template name="FemaleGender">she</template>
+  <template name="SelfGender">you</template>
+  <template name="NeutralPluralGender">they</template>
+  <template name="MalePluralGender">they</template>
+  <template name="FemalePluralGender">they</template>
+  <template name="NeutralArticle">it</template>
+  <template name="MaleArticle">him</template>
+  <template name="FemaleArticle">her</template>
+  <template name="SelfArticle">yourself</template>
+  <template name="NeutralPluralArticle">them</template>
+  <template name="MalePluralArticle">them</template>
+  <template name="FemalePluralArticle">them</template>
+  <template name="SelfAlias">me</template>
+  <template name="SelfAlt">myself; self</template>
+  <template name="AllObjects">all; everything</template>
+  <template name="ParserIgnorePrefixes">the; a; an</template>
+  <template name="CannotDoThat">You can't do that.</template>
+  <template name="Done">Done.</template>
+  <template name="ContainerContentsPrefix">containing</template>
+  <template name="SurfaceContentsPrefix">on which there is</template>
+  <template name="LockedExit">That way is locked.</template>
+  <template name="NoKey">You do not have the key.</template>
+  <template name="UnlockMessage">Unlocked.</template>
+  <template name="LockMessage">Locked.</template>
+  <template name="DefaultOops">There is nothing to correct.</template>
+  <template name="VerbObjectSeparator">with; using</template>
+  <template name="DefaultMultiObjectVerb">That doesn't work.</template>
+  <template name="MultiObjectVerbMenu">With which object?</template>
+  <template name="UseOnMenu">On which object?</template>
+  <template name="GiveToMenu">To which object?</template>
+  <template name="NoObjectsAvailable">There are no objects available to do that with.</template>
+  <template name="Yes">Yes</template>
+  <template name="No">No</template>
+  <template name="By">by</template>
+  <template name="CompassNW">northwest</template>
+  <template name="CompassN">north</template>
+  <template name="CompassNE">northeast</template>
+  <template name="CompassW">west</template>
+  <template name="CompassE">east</template>
+  <template name="CompassSW">southwest</template>
+  <template name="CompassS">south</template>
+  <template name="CompassSE">southeast</template>
+  <template name="CompassUp">up</template>
+  <template name="CompassDown">down</template>
+  <template name="CompassIn">in</template>
+  <template name="CompassOut">out</template>
+  <template name="CompassDirectionPrefix"></template>
+  <template name="CompassDirectionSuffix"></template>
+  <template name="UpDownDirectionPrefix"></template>
+  <template name="UpDownDirectionSuffix"></template>
+  <template name="InOutDirectionPrefix"></template>
+  <template name="InOutDirectionSuffix"></template>
+  <template name="CompassNWShort">nw</template>
+  <template name="CompassNShort">n</template>
+  <template name="CompassNEShort">ne</template>
+  <template name="CompassWShort">w</template>
+  <template name="CompassEShort">e</template>
+  <template name="CompassSWShort">sw</template>
+  <template name="CompassSShort">s</template>
+  <template name="CompassSEShort">se</template>
+  <template name="CompassUpShort">u</template>
+  <template name="CompassDownShort">d</template>
+  <template name="CompassInShort"></template>
+  <template name="CompassOutShort">o</template>
+  <template name="InventoryLabel">Inventory</template>
+  <template name="StatusLabel">Status</template>
+  <template name="PlacesObjectsLabel">Places and Objects</template>
+  <template name="CompassLabel">Compass</template>
+  <template name="InButtonLabel">in</template>
+  <template name="OutButtonLabel">out</template>
+  <template name="EmptyListLabel">(empty)</template>
+  <template name="NothingSelectedLabel">(nothing selected)</template>
+  <template name="TypeHereLabel">Type here...</template>
+  <template name="ContinueLabel">Continue...</template>
+  <template name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template name="lookdir"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
+  <template name="look">^look$|^l$</template>
+  <template name="lookat">look at; x; examine; exam; ex</template>
+  <template name="take">take; get; pick up</template>
+  <template name="undo">^undo$</template>
+  <template name="inventory">^i$|^inv$|^inventory$</template>
+  <template name="quit">^quit$</template>
+  <template name="drop">drop</template>
+  <template name="use">use</template>
+  <template name="speakto">speak to; speak; talk to; talk</template>
+  <template name="open">open</template>
+  <template name="close">close</template>
+  <template name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
+  <template name="removefrom"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></template>
+  <template name="ask"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></template>
+  <template name="tell"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></template>
+  <template name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
+  <template name="buy">buy</template>
+  <template name="climb">climb</template>
+  <template name="drink">drink</template>
+  <template name="eat">eat</template>
+  <template name="givesingle">give</template>
+  <template name="give"><![CDATA[^give (?<object1>.*) to (?<object2>.*)$]]></template>
+  <template name="hit">hit</template>
+  <template name="kill">kill</template>
+  <template name="kiss">kiss</template>
+  <template name="knock">knock</template>
+  <template name="lick">lick</template>
+  <template name="lie">lie on; lie upon; lie down on; lie down upon</template>
+  <template name="listento">listen to</template>
+  <template name="lock">lock</template>
+  <template name="move">move</template>
+  <template name="pull">pull</template>
+  <template name="push">push</template>
+  <template name="read">read</template>
+  <template name="search">search</template>
+  <template name="show">show</template>
+  <template name="sit">sit on; sit upon; sit down on; sit down upon</template>
+  <template name="smell">smell; sniff</template>
+  <template name="taste">taste</template>
+  <template name="throw">throw</template>
+  <template name="tie">tie</template>
+  <template name="touch">touch</template>
+  <template name="turnon">turn on; turn #object# on; switch on; switch #object# on</template>
+  <template name="turnoff">turn off; turn #object# off; switch off; switch #object# off</template>
+  <template name="turn">turn</template>
+  <template name="unlock">unlock</template>
+  <template name="untie">untie</template>
+  <template name="useon"><![CDATA[^use (?<object1>.*) (on|with) (?<object2>.*)$]]></template>
+  <template name="wear">wear</template>
+  <template name="listen">^listen$</template>
+  <template name="DefaultListen">You can't hear much.</template>
+  <template name="jump">^jump$</template>
+  <template name="DefaultJump">You jump, but nothing happens.</template>
+  <template name="sitdown">^sit$|^sit down$</template>
+  <template name="DefaultSitDown">No time for lounging about now.</template>
+  <template name="liedown">^lie$|^lie down$</template>
+  <template name="DefaultLieDown">No time for lounging about now.</template>
+  <template name="sleep">^sleep$|^rest$</template>
+  <template name="DefaultSleep">No time for lounging about now.</template>
+  <template name="wait">^wait$|^z$</template>
+  <template name="DefaultWait">Time passes.</template>
+  <template name="xyzzy">^xyzzy$</template>
+  <template name="DefaultXyzzy">Surprisingly, absolutely nothing happens.</template>
+  <template name="help">^help$|^\?$</template>
+  <template name="save">^save$</template>
+  <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
+<b>- Objects:</b>  Try LOOK AT..., SPEAK TO..., TAKE..., DROP..., OPEN..., GIVE... TO..., USE... ON/WITH...<br/>
+<b>- Inventory:</b>  See which items you are carrying by typing I, INV or INVENTORY.<br/>
+<b>- Moving around:</b>  Press the compass buttons, or type GO NORTH, SOUTH, E, GO TO...<br/>
+<b>- Shortcuts:</b>  Press the up arrow and down arrow to scroll through commands you have already typed in. Try X... as a shortcut for LOOK AT...]]></template>
+  <template name="LanguageSpecificObjectTypes"></template>
+  <template name="EditorVerbDefaultExpression">"You can't #verb# " + object.article + "."</template>
+  <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
+  <dynamictemplate name="TakeUnsuccessful">"You can't take " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="FullInventory">WriteVerb(object, "be") + " too heavy to be taken."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInInventory">"You can't carry any more items."</dynamictemplate>
+  <dynamictemplate name="MaxObjectsInContainer">"You can't put more items in " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DropSuccessful">"You drop " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DropUnsuccessful">"You can't drop " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyTaken">"You are already carrying " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="NotCarrying">"You are not carrying " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantUse">"You can't use " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantGive">"You can't give " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "say") + " nothing."</dynamictemplate>
+  <dynamictemplate name="ObjectNotOpen">CapFirst(GetDisplayAlias(object)) + " " + Conjugate(object, "be") + " not open."</dynamictemplate>
+  <dynamictemplate name="AlreadyOpen">WriteVerb(object, "be") + " already open."</dynamictemplate>
+  <dynamictemplate name="AlreadyClosed">WriteVerb(object, "be") + " already closed."</dynamictemplate>
+  <dynamictemplate name="CantOpen">"You can't open " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CantClose">"You can't close " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="OpenSuccessful">"You open " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="CloseSuccessful">"You close " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="AlreadyThere">WriteVerb(object, "be") + " already there."</dynamictemplate>
+  <dynamictemplate name="ObjectContains">WriteVerb(object, "contain")</dynamictemplate>
+  <dynamictemplate name="ContainerFull">WriteVerb(object, "be") + " full."</dynamictemplate>
+  <dynamictemplate name="DisambiguateMenu">"Please choose which '" + text + "' you mean:"</dynamictemplate>
+  <dynamictemplate name="UndoTurn">"Undo: " + text</dynamictemplate>
+  <dynamictemplate name="DefaultAsk">WriteVerb(object, "do") + " not reply."</dynamictemplate>
+  <dynamictemplate name="DefaultTell">WriteVerb(object, "do") + " not reply."</dynamictemplate>
+  <dynamictemplate name="LockedObject">WriteVerb(object, "be") + " locked."</dynamictemplate>
+  <dynamictemplate name="AlreadyLocked">WriteVerb(object, "be") + " already locked."</dynamictemplate>
+  <dynamictemplate name="AlreadyUnlocked">WriteVerb(object, "be") + " already unlocked."</dynamictemplate>
+  <dynamictemplate name="CannotLockOpen">"You cannot lock " + object.article + " when " + object.gender + " " + Conjugate(object, "be") + " open."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOn">WriteVerb(object, "be") + " already switched on."</dynamictemplate>
+  <dynamictemplate name="AlreadySwitchedOff">WriteVerb(object, "be") + " already switched off."</dynamictemplate>
+  <dynamictemplate name="SwitchedOn">"You switch " + object.article + " on."</dynamictemplate>
+  <dynamictemplate name="SwitchedOff">"You switch " + object.article + " off."</dynamictemplate>
+  <dynamictemplate name="Eaten">"You eat " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " " + Conjugate(object1, "do") + " not contain " + GetDisplayAlias(object2) + "."</dynamictemplate>
+  <dynamictemplate name="YouLooking">"You are looking " + text +"."</dynamictemplate>
+  <dynamictemplate name="LookAtDarkness">"It is too dark to make anything out."</dynamictemplate>
+  <dynamictemplate name="DefaultBuy">"You can't buy " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultClimb">"You can't climb " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultDrink">"You can't drink " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultEat">"You can't eat " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultGive">WriteVerb(object1, "do") + " not want " + object2.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultHit">"You can't hit " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultKill">"You can't kill " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultKiss">"You can't kiss " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultKnock">"You can't knock " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultLick">"You can't lick " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultLie">"You can't lie on " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultListenTo">"You listen, but " + object.article + " makes no sound."</dynamictemplate>
+  <dynamictemplate name="DefaultLock">"You can't lock " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultMove">"You can't move " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultPull">"You can't pull " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultPush">"You can't push " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultRead">"You can't read " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultSearch">"You can't search " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultShow">"You can't show " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultSit">"You can't sit on " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultSmell">"You sniff, but " + object.article + " doesn't smell of much."</dynamictemplate>
+  <dynamictemplate name="DefaultTaste">"You can't taste " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultThrow">"You can't throw " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultTie">"You can't tie " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultTouch">"You can't touch " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultTurnOn">"You can't turn " + object.article + " on."</dynamictemplate>
+  <dynamictemplate name="DefaultTurnOff">"You can't turn " + object.article + " off."</dynamictemplate>
+  <dynamictemplate name="DefaultTurn">"You can't turn " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultUnlock">"You can't unlock " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultUntie">"You can't untie " + object.article + "."</dynamictemplate>
+  <dynamictemplate name="DefaultUseOn">"You can't use " + object2.article + " that way."</dynamictemplate>
+  <dynamictemplate name="DefaultWear">"You can't wear " + object.article + "."</dynamictemplate>
+  <delegate name="AddScript" parameters="object" type="" />
+  <delegate name="AssociatedScope" parameters="" type="objectlist" />
+  <game name="blank">
+    <gameid>ea721a30-3202-47dd-8013-847722d6af33</gameid>
+    <version>1.0</version>
+    <firstpublished>2015</firstpublished>
+  </game>
+  <command name="lookat">
+    <pattern>look at #object#; x #object#; examine #object#; exam #object#; ex #object#</pattern>
+    <script>
+      if (GetBoolean(object, "hidechildren")) {
+        object.hidechildren = false
+      }
+      if (TypeOf(object, "look") = "script") {
+        do (object, "look")
+      }
+      else {
+        lookdesc = ""
+        if (HasString(object, "look")) {
+          lookdesc = object.look
+        }
+        if (LengthOf(lookdesc) = 0) {
+          lookdesc = Template("DefaultObjectDescription")
+        }
+        if (GetBoolean(object, "switchedon")) {
+          if (HasString(object, "switchedondesc")) {
+            lookdesc = lookdesc + " " + object.switchedondesc
+          }
+        }
+        else {
+          if (HasString(object, "switchedoffdesc")) {
+            lookdesc = lookdesc + " " + object.switchedoffdesc
+          }
+        }
+        isDark = CheckDarkness()
+        if (isDark and not GetBoolean(object, "lightsource")) {
+          lookdesc = DynamicTemplate("LookAtDarkness", object)
+        }
+        msg (lookdesc)
+      }
+      ListObjectContents (object)
+    </script>
+  </command>
+  <command name="take">
+    <pattern>take #object#; get #object#; pick up #object#</pattern>
+    <multiple>
+      takeList = NewObjectList()
+      foreach (obj, ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov)) {
+        if (obj.parent = game.pov.parent) {
+          list add (takeList, obj)
+        }
+      }
+      return (takeList)
+    </multiple>
+    <script>
+      foreach (obj, object) {
+        DoTake (obj, multiple)
+      }
+    </script>
+  </command>
+  <command name="drop">
+    <pattern>drop #object#</pattern>
+    <multiple>
+      return (GetDirectChildren(game.pov))
+    </multiple>
+    <script>
+      foreach (obj, object) {
+        DoDrop (obj, multiple)
+      }
+    </script>
+  </command>
+  <command name="use">
+    <pattern>use #object#</pattern>
+    <script><![CDATA[
+      if (HasScript(object, "use")) {
+        do (object, "use")
+      }
+      else {
+        if (GetBoolean(object, "use")) {
+          menu = NewStringDictionary()
+          candidates = NewObjectList()
+          candidates = CreateUseMenuList (object)
+          if (ListCount(candidates) = 0) {
+            msg (Template("NoObjectsAvailable"))
+          }
+          else {
+            GenerateMenuChoices (menu, candidates)
+            game.pov.usemenuobject = object
+            if (HasString(object, "usemenuprompt")) {
+              menucaption = object.usemenuprompt
+            }
+            else {
+              menucaption = Template("UseOnMenu")
+            }
+            ShowMenu (menucaption, menu, true) {
+              if (result <> null) {
+                HandleUseOn (game.pov.usemenuobject, GetObject(result))
+                game.pov.usemenuobject = null
+              }
+            }
+          }
+        }
+        else {
+          msg (DynamicTemplate("CantUse", object))
+        }
+      }
+    ]]></script>
+  </command>
+  <command name="undo">
+    <pattern type="string">^undo$</pattern>
+    <isundo />
+    <script>
+      undo
+    </script>
+  </command>
+  <command name="inventory">
+    <pattern type="string">^i$|^inv$|^inventory$</pattern>
+    <script>
+      list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
+      if (list = "") {
+        msg (Template("NotCarryingAnything"))
+      }
+      else {
+        msg (list)
+      }
+    </script>
+  </command>
+  <command name="look">
+    <pattern type="string">^look$|^l$</pattern>
+    <script>
+      ShowRoomDescription
+    </script>
+  </command>
+  <command name="lookdir">
+    <pattern type="string"><![CDATA[^look (?<exit>north|east|south|west|northeast|northwest|southeast|southwest|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></pattern>
+    <script><![CDATA[
+      if (HasScript(exit, "look")) {
+        do (exit, "look")
+      }
+      else {
+        message = DynamicTemplate("YouLooking",exit.alias)
+        if (HasString(exit, "look")) {
+          if (exit.look <> "") {
+            message = exit.look
+          }
+        }
+        if (exit.locked) {
+          if (HasString(exit,"lockmessage")) {
+            lockmessage = exit.lockmessage
+          }
+          else {
+            lockmessage = Template("LockedExit")
+          }
+          msg (message+" "+lockmessage)
+        }
+        else {
+          msg (message)
+        }
+      }
+    ]]></script>
+  </command>
+  <command name="quit">
+    <pattern type="string">^quit$</pattern>
+    <script>
+      request (Quit, "")
+    </script>
+  </command>
+  <command name="go">
+    <pattern type="string"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></pattern>
+    <unresolved>You can't go there.</unresolved>
+    <script>
+      if (exit.visible) {
+        if (exit.locked) {
+          msg (exit.lockmessage)
+        }
+        else if (exit.runscript) {
+          if (HasScript(exit, "script")) {
+            do (exit, "script")
+          }
+        }
+        else if (exit.lookonly) {
+          msg ("You can't go there.")
+        }
+        else {
+          game.pov.parent = exit.to
+        }
+      }
+      else {
+        msg ("You can't go there.")
+      }
+    </script>
+  </command>
+  <command name="open">
+    <pattern>open #object#</pattern>
+    <script>
+      TryOpenClose (true, object)
+    </script>
+  </command>
+  <command name="close">
+    <pattern>close #object#</pattern>
+    <script>
+      TryOpenClose (false, object)
+    </script>
+  </command>
+  <command name="put">
+    <pattern type="string"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></pattern>
+    <script>
+      // put object1 in/on object 2
+      if (object1.parent = object2) {
+        msg (DynamicTemplate("AlreadyThere", object1))
+      }
+      else if (not ListContains(ScopeInventory(), object1)) {
+        msg (DynamicTemplate("NotCarrying", object1))
+      }
+      else if (not ListContains(ScopeReachable(), object1)) {
+        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object1)))
+      }
+      else if (not ListContains(ScopeReachable(), object2)) {
+        msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object2)))
+      }
+      else if (not object2.container) {
+        msg (Template("CannotDoThat"))
+      }
+      else if (not object2.isopen) {
+        msg (DynamicTemplate("ObjectNotOpen", object2))
+      }
+      else {
+        if (GetBoolean(object2, "hidechildren")) {
+          object2.hidechildren = false
+        }
+        if (HasDelegateImplementation(object2, "addscript")) {
+          rundelegate (object2, "addscript", object1)
+        }
+        else {
+          object1.parent = object2
+          msg (Template("Done"))
+        }
+      }
+      // must be carrying object1
+      // object1 must not be inside a closed container
+      // object2 must not be inside a closed container
+      // object2 must be an open container or surface
+    </script>
+  </command>
+  <command name="removefrom">
+    <pattern type="string"><![CDATA[^remove (?<object1>.*) from (?<object2>.*)$]]></pattern>
+    <script>
+      // remove object1 from object2
+      // if object2 does indeed contain object1, this is a synonym for "take object1"
+      if (not Contains(object2, object1)) {
+        msg (DynamicTemplate("ObjectDoesNotContain", object2, object1))
+      }
+      else {
+        DoTake (object1, false)
+      }
+    </script>
+  </command>
+  <command name="givesingle">
+    <pattern>give #object#</pattern>
+    <script><![CDATA[
+      if (HasScript(object, "givesingle")) {
+        do (object, "givesingle")
+      }
+      else {
+        if (GetBoolean(object, "givesingle")) {
+          menu = NewStringDictionary()
+          candidates = NewObjectList()
+          candidates = CreateGiveMenuList (object)
+          if (ListCount(candidates) = 0) {
+            msg (Template("NoObjectsAvailable"))
+          }
+          else {
+            GenerateMenuChoices (menu, candidates)
+            game.pov.givemenuobject = object
+            if (HasString(object, "givemenuprompt")) {
+              menucaption = object.givemenuprompt
+            }
+            else {
+              menucaption = Template("GiveToMenu")
+            }
+            ShowMenu (menucaption, menu, true) {
+              if (result <> null) {
+                HandleGiveTo (game.pov.givemenuobject, GetObject(result))
+                game.pov.givemenuobject = null
+              }
+            }
+          }
+        }
+        else {
+          msg (DynamicTemplate("CantGive", object))
+        }
+      }
+    ]]></script>
+  </command>
+  <command name="give">
+    <pattern type="string"><![CDATA[^give (?<object1>.*) to (?<object2>.*)$]]></pattern>
+    <script>
+      HandleGiveTo (object1, object2)
+    </script>
+  </command>
+  <command name="useon">
+    <pattern type="string"><![CDATA[^use (?<object1>.*) (on|with) (?<object2>.*)$]]></pattern>
+    <script>
+      HandleUseOn (object1, object2)
+    </script>
+  </command>
+  <command name="ask">
+    <pattern type="string"><![CDATA[^ask (?<object>.*) about (?<text>.*)$]]></pattern>
+    <script>
+      DoAskTell (object, text, "ask", "askdefault", "DefaultAsk")
+    </script>
+  </command>
+  <command name="tell">
+    <pattern type="string"><![CDATA[^tell (?<object>.*) about (?<text>.*)$]]></pattern>
+    <script>
+      DoAskTell (object, text, "tell", "telldefault", "DefaultTell")
+    </script>
+  </command>
+  <command name="oops">
+    <pattern type="string"><![CDATA[^oops (?<text>.*)$]]></pattern>
+    <isoops />
+    <script><![CDATA[
+      hasoops = false
+      if (HasAttribute(game, "unresolvedcommand")) {
+        if (game.unresolvedcommand <> null) {
+          hasoops = true
+        }
+      }
+      if (not hasoops) {
+        msg (Template("DefaultOops"))
+      }
+      else {
+        dictionary remove (game.unresolvedcommandvarlist, game.unresolvedcommandkey)
+        dictionary add (game.unresolvedcommandvarlist, game.unresolvedcommandkey, text)
+        HandleSingleCommandPattern ("", game.unresolvedcommand, game.unresolvedcommandvarlist)
+      }
+    ]]></script>
+  </command>
+  <verb name="speak">
+    <pattern>speak to #object#; speak #object#; talk to #object#; talk #object#</pattern>
+    <property>speak</property>
+    <defaulttemplate>DefaultSpeakTo</defaulttemplate>
+  </verb>
+  <verb name="buy">
+    <pattern>buy #object#</pattern>
+    <property>buy</property>
+    <defaulttemplate>DefaultBuy</defaulttemplate>
+  </verb>
+  <verb name="climb">
+    <pattern>climb #object#</pattern>
+    <property>climb</property>
+    <defaulttemplate>DefaultClimb</defaulttemplate>
+  </verb>
+  <verb name="drink">
+    <pattern>drink #object#</pattern>
+    <property>drink</property>
+    <defaulttemplate>DefaultDrink</defaulttemplate>
+  </verb>
+  <verb name="eat">
+    <pattern>eat #object#</pattern>
+    <property>eat</property>
+    <defaulttemplate>DefaultEat</defaulttemplate>
+  </verb>
+  <verb name="hit">
+    <pattern>hit #object#</pattern>
+    <property>hit</property>
+    <defaulttemplate>DefaultHit</defaulttemplate>
+  </verb>
+  <verb name="kill">
+    <pattern>kill #object#</pattern>
+    <property>kill</property>
+    <defaulttemplate>DefaultKill</defaulttemplate>
+  </verb>
+  <verb name="kiss">
+    <pattern>kiss #object#</pattern>
+    <property>kiss</property>
+    <defaulttemplate>DefaultKiss</defaulttemplate>
+  </verb>
+  <verb name="knock">
+    <pattern>knock #object#</pattern>
+    <property>knock</property>
+    <defaulttemplate>DefaultKnock</defaulttemplate>
+  </verb>
+  <verb name="lick">
+    <pattern>lick #object#</pattern>
+    <property>lick</property>
+    <defaulttemplate>DefaultLick</defaulttemplate>
+  </verb>
+  <verb name="lieon">
+    <pattern>lie on #object#; lie upon #object#; lie down on #object#; lie down upon #object#</pattern>
+    <property>lie</property>
+    <defaulttemplate>DefaultLie</defaulttemplate>
+  </verb>
+  <verb name="listento">
+    <pattern>listen to #object#</pattern>
+    <property>listen</property>
+    <defaulttemplate>DefaultListenTo</defaulttemplate>
+  </verb>
+  <verb name="lock">
+    <pattern>lock #object#</pattern>
+    <property>lock</property>
+    <defaulttemplate>DefaultLock</defaulttemplate>
+  </verb>
+  <verb name="move">
+    <pattern>move #object#</pattern>
+    <property>move</property>
+    <defaulttemplate>DefaultMove</defaulttemplate>
+  </verb>
+  <verb name="pull">
+    <pattern>pull #object#</pattern>
+    <property>pull</property>
+    <defaulttemplate>DefaultPull</defaulttemplate>
+  </verb>
+  <verb name="push">
+    <pattern>push #object#</pattern>
+    <property>push</property>
+    <defaulttemplate>DefaultPush</defaulttemplate>
+  </verb>
+  <verb name="read">
+    <pattern>read #object#</pattern>
+    <property>read</property>
+    <defaulttemplate>DefaultRead</defaulttemplate>
+  </verb>
+  <verb name="search">
+    <pattern>search #object#</pattern>
+    <property>search</property>
+    <defaulttemplate>DefaultSearch</defaulttemplate>
+  </verb>
+  <verb name="show">
+    <pattern>show #object#</pattern>
+    <property>show</property>
+    <defaulttemplate>DefaultShow</defaulttemplate>
+  </verb>
+  <verb name="siton">
+    <pattern>sit on #object#; sit upon #object#; sit down on #object#; sit down upon #object#</pattern>
+    <property>sit</property>
+    <defaulttemplate>DefaultSit</defaulttemplate>
+  </verb>
+  <verb name="smell">
+    <pattern>smell #object#; sniff #object#</pattern>
+    <property>smell</property>
+    <defaulttemplate>DefaultSmell</defaulttemplate>
+  </verb>
+  <verb name="taste">
+    <pattern>taste #object#</pattern>
+    <property>taste</property>
+    <defaulttemplate>DefaultTaste</defaulttemplate>
+  </verb>
+  <verb name="throw">
+    <pattern>throw #object#</pattern>
+    <property>throw</property>
+    <defaulttemplate>DefaultThrow</defaulttemplate>
+  </verb>
+  <verb name="tie">
+    <pattern>tie #object#</pattern>
+    <property>tie</property>
+    <defaulttemplate>DefaultTie</defaulttemplate>
+  </verb>
+  <verb name="touch">
+    <pattern>touch #object#</pattern>
+    <property>touch</property>
+    <defaulttemplate>DefaultTouch</defaulttemplate>
+  </verb>
+  <verb name="turnon">
+    <pattern>turn on #object#; turn #object# on; switch on #object#; switch #object# on</pattern>
+    <property>turnon</property>
+    <defaulttemplate>DefaultTurnOn</defaulttemplate>
+  </verb>
+  <verb name="turnoff">
+    <pattern>turn off #object#; turn #object# off; switch off #object#; switch #object# off</pattern>
+    <property>turnoff</property>
+    <defaulttemplate>DefaultTurnOff</defaulttemplate>
+  </verb>
+  <verb name="turn">
+    <pattern>turn #object#</pattern>
+    <property>turn</property>
+    <defaulttemplate>DefaultTurn</defaulttemplate>
+  </verb>
+  <verb name="unlock">
+    <pattern>unlock #object#</pattern>
+    <property>unlock</property>
+    <defaulttemplate>DefaultUnlock</defaulttemplate>
+  </verb>
+  <verb name="untie">
+    <pattern>untie #object#</pattern>
+    <property>untie</property>
+    <defaulttemplate>DefaultUntie</defaulttemplate>
+  </verb>
+  <verb name="wear">
+    <pattern>wear #object#</pattern>
+    <property>wear</property>
+    <defaulttemplate>DefaultWear</defaulttemplate>
+  </verb>
+  <command name="listen">
+    <pattern type="string">^listen$</pattern>
+    <script>
+      msg (Template("DefaultListen"))
+    </script>
+  </command>
+  <command name="jump">
+    <pattern type="string">^jump$</pattern>
+    <script>
+      msg (Template("DefaultJump"))
+    </script>
+  </command>
+  <command name="sit">
+    <pattern type="string">^sit$|^sit down$</pattern>
+    <script>
+      msg (Template("DefaultSitDown"))
+    </script>
+  </command>
+  <command name="lie">
+    <pattern type="string">^lie$|^lie down$</pattern>
+    <script>
+      msg (Template("DefaultLieDown"))
+    </script>
+  </command>
+  <command name="sleep">
+    <pattern type="string">^sleep$|^rest$</pattern>
+    <script>
+      msg (Template("DefaultSleep"))
+    </script>
+  </command>
+  <command name="wait">
+    <pattern type="string">^wait$|^z$</pattern>
+    <script>
+      msg (Template("DefaultWait"))
+    </script>
+  </command>
+  <command name="xyzzy">
+    <pattern type="string">^xyzzy$</pattern>
+    <script>
+      msg (Template("DefaultXyzzy"))
+    </script>
+  </command>
+  <command name="help">
+    <pattern type="string">^help$|^\?$</pattern>
+    <script>
+      msg (Template("DefaultHelp"))
+    </script>
+  </command>
+  <command name="save">
+    <pattern type="string">^save$</pattern>
+    <script>
+      request (RequestSave, "")
+    </script>
+  </command>
+  <object name="room">
+    <object name="player" />
+  </object>
+  <type name="defaultverb">
+    <separator>with; using</separator>
+    <multiobjectmenu>With which object?</multiobjectmenu>
+    <multiobjectdefault>That doesn't work.</multiobjectdefault>
+    <multiobjectmenuempty>There are no objects available to do that with.</multiobjectmenuempty>
+    <script type="script"><![CDATA[
+      if (not IsDefined("object2")) {
+        object2 = null
+      }
+      switch (TypeOf(object, this.property)) {
+        case ("script") {
+          if (object2 = null) {
+            do (object, this.property)
+          }
+          else {
+            msg (this.multiobjectdefault)
+          }
+        }
+        case ("string") {
+          if (object2 = null) {
+            msg (GetString(object, this.property))
+          }
+          else {
+            msg (this.multiobjectdefault)
+          }
+        }
+        case ("scriptdictionary") {
+          if (object2 <> null) {
+            HandleMultiVerb (object, this.property, object2, this.multiobjectdefault)
+          }
+          else {
+            menu = NewStringDictionary()
+            objectlist = ListCombine (ScopeReachableInventory(), ScopeReachableNotHeld())
+            excludelist = NewObjectList()
+            list add (excludelist, game.pov)
+            list add (excludelist, object)
+            candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+            if (ListCount(candidates) = 0) {
+              msg (this.multiobjectmenuempty)
+            }
+            else {
+              GenerateMenuChoices (menu, candidates)
+              game.pov.multiverb = this.property
+              game.pov.multiverbobject = object
+              game.pov.multiverbobjectdefault = this.multiobjectdefault
+              ShowMenu (this.multiobjectmenu, menu, true) {
+                if (result <> null) {
+                  HandleMultiVerb (game.pov.multiverbobject, game.pov.multiverb, GetObject(result), game.pov.multiverbobjectdefault)
+                  game.pov.multiverb = null
+                  game.pov.multiverbobject = null
+                  game.pov.multiverbobjectdefault = null
+                }
+              }
+            }
+          }
+        }
+        case ("null") {
+          if (this.defaulttext <> null) {
+            msg (this.defaulttext)
+          }
+          else if (this.defaulttemplate <> null) {
+            msg (DynamicTemplate(this.defaulttemplate, object))
+          }
+          else if (this.defaultexpression <> null) {
+            params = NewDictionary()
+            dictionary add (params, "object", object)
+            msg (Eval(this.defaultexpression, params))
+          }
+          else {
+            error ("No verb response defined")
+          }
+        }
+        default {
+          error ("No verb response defined")
+        }
+      }
+    ]]></script>
+  </type>
+  <type name="defaultgame">
+    <enablehyperlinks />
+    <echocommand />
+    <echohyperlinks />
+    <showdescriptiononenter />
+    <autodescription />
+    <defaultfont>Georgia, serif</defaultfont>
+    <defaultfontsize type="int">12</defaultfontsize>
+    <defaultbackground>White</defaultbackground>
+    <defaultforeground>Black</defaultforeground>
+    <defaultlinkforeground>Blue</defaultlinkforeground>
+    <backgroundimage type="string"></backgroundimage>
+    <setbackgroundopacity type="boolean">false</setbackgroundopacity>
+    <backgroundopacity type="double">0.5</backgroundopacity>
+    <menufont>Arial</menufont>
+    <menufontsize type="int">9</menufontsize>
+    <menubackground>White</menubackground>
+    <menuforeground>Black</menuforeground>
+    <menuhoverbackground>LightGrey</menuhoverbackground>
+    <menuhoverforeground>Black</menuhoverforeground>
+    <underlinehyperlinks />
+    <compassdirections type="stringlist">
+      <value>northwest</value>
+      <value>north</value>
+      <value>northeast</value>
+      <value>west</value>
+      <value>east</value>
+      <value>southwest</value>
+      <value>south</value>
+      <value>southeast</value>
+      <value>up</value>
+      <value>down</value>
+      <value>in</value>
+      <value>out</value>
+    </compassdirections>
+    <clearframe />
+    <timeelapsed type="int">0</timeelapsed>
+    <appendobjectdescription type="boolean">false</appendobjectdescription>
+    <allobjects type="stringlist">
+      <value>all</value>
+      <value>everything</value>
+    </allobjects>
+    <parserignoreprefixes type="stringlist">
+      <value>the</value>
+      <value>a</value>
+      <value>an</value>
+    </parserignoreprefixes>
+    <displayroomdescriptiononstart />
+    <showpanes />
+    <showcommandbar />
+    <showlocation />
+    <setcustomwidth type="boolean">false</setcustomwidth>
+    <customwidth type="int">950</customwidth>
+    <setcustompadding type="boolean">false</setcustompadding>
+    <custompaddingtop type="int">30</custompaddingtop>
+    <custompaddingbottom type="int">0</custompaddingbottom>
+    <custompaddingleft type="int">20</custompaddingleft>
+    <custompaddingright type="int">20</custompaddingright>
+    <showborder />
+    <showscore type="boolean">false</showscore>
+    <showhealth type="boolean">false</showhealth>
+    <showtitle />
+    <autodisplayverbs />
+    <attr name="autodescription_youarein" type="int">1</attr>
+    <attr name="autodescription_youcansee" type="int">2</attr>
+    <attr name="autodescription_youcango" type="int">3</attr>
+    <attr name="autodescription_description" type="int">4</attr>
+    <autodescription_youarein_useprefix />
+    <attr name="autodescription_youarein_newline" type="boolean">false</attr>
+    <attr name="autodescription_youcansee_newline" type="boolean">false</attr>
+    <attr name="autodescription_youcango_newline" type="boolean">false</attr>
+    <attr name="autodescription_description_newline" type="boolean">false</attr>
+    <changeroom_newline />
+    <attr name="command_newline" type="boolean">false</attr>
+    <description type="string"></description>
+    <languageid>en</languageid>
+    <gridmap type="boolean">false</gridmap>
+    <mapscale type="int">30</mapscale>
+    <mapsize type="int">300</mapsize>
+    <attr name="feature_lightdark" type="boolean">false</attr>
+    <attr name="feature_pictureframe" type="boolean">false</attr>
+    <attr name="feature_limitinventory" type="boolean">false</attr>
+    <attr name="feature_asktell" type="boolean">false</attr>
+    <deactivatecommandlinks type="boolean">false</deactivatecommandlinks>
+    <multiplecommands type="boolean">false</multiplecommands>
+    <publishfileextensions>*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg</publishfileextensions>
+    <changedpov type="script">
+      InitPOV (oldvalue, game.pov)
+    </changedpov>
+  </type>
+  <type name="theme_novella">
+    <setcustompadding />
+    <showborder type="boolean">false</showborder>
+    <showpanes type="boolean">false</showpanes>
+    <showlocation type="boolean">false</showlocation>
+    <setcustomwidth />
+    <customwidth type="int">650</customwidth>
+    <custompaddingtop type="int">60</custompaddingtop>
+  </type>
+  <type name="theme_retro">
+    <defaultbackground>Black</defaultbackground>
+    <defaultforeground>White</defaultforeground>
+    <defaultlinkforeground>White</defaultlinkforeground>
+    <defaultfont>'Lucida Console', Monaco, monospace</defaultfont>
+    <defaultwebfont>Press Start 2P</defaultwebfont>
+    <menufontsize type="int">14</menufontsize>
+    <menufont>'Lucida Console', Monaco, monospace</menufont>
+    <menubackground>Black</menubackground>
+    <menuforeground>White</menuforeground>
+    <menuhoverbackground>GreenYellow</menuhoverbackground>
+  </type>
+  <type name="theme_typewriter">
+    <setcustompadding />
+    <showborder type="boolean">false</showborder>
+    <showpanes type="boolean">false</showpanes>
+    <showlocation type="boolean">false</showlocation>
+    <setcustomwidth />
+    <customwidth type="int">650</customwidth>
+    <custompaddingtop type="int">60</custompaddingtop>
+    <defaultfont>'Courier New', Courier, monospace</defaultfont>
+    <defaultwebfont>Special Elite</defaultwebfont>
+  </type>
+  <type name="theme_hotdogstand">
+    <defaultbackground>Red</defaultbackground>
+    <defaultforeground>Yellow</defaultforeground>
+    <defaultlinkforeground>Yellow</defaultlinkforeground>
+    <defaultfont>'Comic Sans MS', cursive, sans-serif</defaultfont>
+    <menufontsize type="int">14</menufontsize>
+    <menufont>Impact, Charcoal, sans-serif</menufont>
+    <menubackground>Red</menubackground>
+    <menuforeground>Yellow</menuforeground>
+    <menuhoverbackground>Black</menuhoverbackground>
+    <menuhoverforeground>Yellow</menuhoverforeground>
+  </type>
+  <type name="defaultobject">
+    <visible />
+    <displayverbs type="stringlist">
+      <value>Look at</value>
+      <value>Take</value>
+    </displayverbs>
+    <inventoryverbs type="stringlist">
+      <value>Look at</value>
+      <value>Use</value>
+      <value>Drop</value>
+    </inventoryverbs>
+    <take type="boolean">false</take>
+    <use type="boolean">false</use>
+    <givesingle type="boolean">false</givesingle>
+    <drop />
+    <gender>it</gender>
+    <article>it</article>
+    <isopen type="boolean">false</isopen>
+    <open type="boolean">false</open>
+    <close type="boolean">false</close>
+    <container type="boolean">false</container>
+    <descprefix>You are in</descprefix>
+    <objectslistprefix>You can see</objectslistprefix>
+    <exitslistprefix>You can go</exitslistprefix>
+    <contentsprefix>containing</contentsprefix>
+    <description type="string"></description>
+    <scenery type="boolean">false</scenery>
+    <hidechildren type="boolean">false</hidechildren>
+    <listchildren type="boolean">false</listchildren>
+    <usedefaultprefix />
+    <volume type="int">0</volume>
+    <dark type="boolean">false</dark>
+    <lightstrength type="string"></lightstrength>
+    <darklevel type="boolean">false</darklevel>
+    <attr name="grid_width" type="int">1</attr>
+    <attr name="grid_length" type="int">1</attr>
+    <attr name="grid_fill">White</attr>
+    <attr name="grid_border">Black</attr>
+    <attr name="grid_borderwidth" type="int">1</attr>
+    <attr name="grid_bordersides" type="int">15</attr>
+    <attr name="grid_render" type="boolean">false</attr>
+    <attr name="grid_label" type="string"></attr>
+    <grid_parent_offset_auto />
+    <attr name="grid_parent_offset_x" type="int">0</attr>
+    <attr name="grid_parent_offset_y" type="int">0</attr>
+    <attr name="pov_alias">me</attr>
+    <pov_alt type="stringlist">
+      <value>myself</value>
+      <value>self</value>
+    </pov_alt>
+    <attr name="pov_look">Looking good.</attr>
+    <attr name="pov_gender">you</attr>
+    <attr name="pov_article">yourself</attr>
+    <attr name="feature_usegive" type="boolean">false</attr>
+    <attr name="feature_container" type="boolean">false</attr>
+    <attr name="feature_switchable" type="boolean">false</attr>
+    <attr name="feature_edible" type="boolean">false</attr>
+    <attr name="feature_player" type="boolean">false</attr>
+    <attr name="feature_lightdark" type="boolean">false</attr>
+    <changedparent type="script">
+      if (game.pov = this) {
+        if (IsDefined("oldvalue")) {
+          OnEnterRoom (oldvalue)
+        }
+        else {
+          OnEnterRoom (null)
+        }
+        if (game.gridmap) {
+          MergePOVCoordinates
+        }
+      }
+    </changedparent>
+    <changedisopen type="script">
+      if (this.isopen and HasScript(this, "onopen")) {
+        do (this, "onopen")
+      }
+      if (not this.isopen and HasScript(this, "onclose")) {
+        do (this, "onclose")
+      }
+    </changedisopen>
+    <changedlocked type="script">
+      if (this.locked and HasScript(this, "onlock")) {
+        do (this, "onlock")
+      }
+      if (not this.locked and HasScript(this, "onunlock")) {
+        do (this, "onunlock")
+      }
+    </changedlocked>
+    <changedswitchedon type="script">
+      if (this.switchedon and HasScript(this, "onswitchon")) {
+        do (this, "onswitchon")
+      }
+      if (not this.switchedon and HasScript(this, "onswitchoff")) {
+        do (this, "onswitchoff")
+      }
+    </changedswitchedon>
+  </type>
+  <type name="defaultexit">
+    <displayverbs type="stringlist">
+      <value>Go to</value>
+    </displayverbs>
+    <visible />
+    <scenery type="boolean">false</scenery>
+    <locked type="boolean">false</locked>
+    <lockmessage>That way is locked.</lockmessage>
+    <lookonly type="boolean">false</lookonly>
+    <runscript type="boolean">false</runscript>
+    <lightstrength type="string"></lightstrength>
+    <attr name="grid_length" type="int">1</attr>
+    <attr name="grid_render" type="boolean">false</attr>
+    <attr name="grid_offset_x" type="int">0</attr>
+    <attr name="grid_offset_y" type="int">0</attr>
+  </type>
+  <type name="direction">
+    <displayverbs type="stringlist">
+      <value>Go</value>
+    </displayverbs>
+  </type>
+  <type name="compassdirection">
+    <inherit name="direction" />
+    <prefix type="string"></prefix>
+    <suffix type="string"></suffix>
+  </type>
+  <type name="updowndirection">
+    <inherit name="direction" />
+    <prefix type="string"></prefix>
+    <suffix type="string"></suffix>
+  </type>
+  <type name="inoutdirection">
+    <inherit name="direction" />
+    <prefix type="string"></prefix>
+    <suffix type="string"></suffix>
+  </type>
+  <type name="northwestdirection">
+    <inherit name="compassdirection" />
+    <alias>northwest</alias>
+    <alt type="stringlist">
+      <value>nw</value>
+    </alt>
+  </type>
+  <type name="northdirection">
+    <inherit name="compassdirection" />
+    <alias>north</alias>
+    <alt type="stringlist">
+      <value>n</value>
+    </alt>
+  </type>
+  <type name="northeastdirection">
+    <inherit name="compassdirection" />
+    <alias>northeast</alias>
+    <alt type="stringlist">
+      <value>ne</value>
+    </alt>
+  </type>
+  <type name="westdirection">
+    <inherit name="compassdirection" />
+    <alias>west</alias>
+    <alt type="stringlist">
+      <value>w</value>
+    </alt>
+  </type>
+  <type name="eastdirection">
+    <inherit name="compassdirection" />
+    <alias>east</alias>
+    <alt type="stringlist">
+      <value>e</value>
+    </alt>
+  </type>
+  <type name="southwestdirection">
+    <inherit name="compassdirection" />
+    <alias>southwest</alias>
+    <alt type="stringlist">
+      <value>sw</value>
+    </alt>
+  </type>
+  <type name="southdirection">
+    <inherit name="compassdirection" />
+    <alias>south</alias>
+    <alt type="stringlist">
+      <value>s</value>
+    </alt>
+  </type>
+  <type name="southeastdirection">
+    <inherit name="compassdirection" />
+    <alias>southeast</alias>
+    <alt type="stringlist">
+      <value>se</value>
+    </alt>
+  </type>
+  <type name="updirection">
+    <inherit name="updowndirection" />
+    <alias>up</alias>
+    <alt type="stringlist">
+      <value>u</value>
+    </alt>
+  </type>
+  <type name="downdirection">
+    <inherit name="updowndirection" />
+    <alias>down</alias>
+    <alt type="stringlist">
+      <value>d</value>
+    </alt>
+  </type>
+  <type name="indirection">
+    <inherit name="inoutdirection" />
+    <alias>in</alias>
+    <alt type="stringlist">
+      <value></value>
+    </alt>
+  </type>
+  <type name="outdirection">
+    <inherit name="inoutdirection" />
+    <alias>out</alias>
+    <alt type="stringlist">
+      <value>o</value>
+    </alt>
+  </type>
+  <type name="defaultcommand">
+    <pattern type="simplepattern"></pattern>
+  </type>
+  <type name="male">
+    <displayverbs type="stringlist">
+      <value>Look at</value>
+      <value>Speak to</value>
+    </displayverbs>
+    <gender>he</gender>
+    <article>him</article>
+  </type>
+  <type name="namedmale">
+    <inherit name="male" />
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
+  </type>
+  <type name="female">
+    <displayverbs type="stringlist">
+      <value>Look at</value>
+      <value>Speak to</value>
+    </displayverbs>
+    <gender>she</gender>
+    <article>her</article>
+  </type>
+  <type name="namedfemale">
+    <inherit name="female" />
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
+  </type>
+  <type name="plural">
+    <gender>they</gender>
+    <article>them</article>
+  </type>
+  <type name="maleplural">
+    <displayverbs type="stringlist">
+      <value>Look at</value>
+      <value>Speak to</value>
+    </displayverbs>
+    <gender>they</gender>
+    <article>them</article>
+  </type>
+  <type name="femaleplural">
+    <displayverbs type="stringlist">
+      <value>Look at</value>
+      <value>Speak to</value>
+    </displayverbs>
+    <gender>they</gender>
+    <article>them</article>
+  </type>
+  <type name="openable">
+    <open />
+    <close />
+    <displayverbs type="stringlist">
+      <value>Open</value>
+      <value>Close</value>
+    </displayverbs>
+  </type>
+  <type name="container_base">
+    <container />
+  </type>
+  <type name="container_closed">
+    <inherit name="container_base" />
+    <open />
+    <close />
+    <displayverbs type="stringlist">
+      <value>Open</value>
+      <value>Close</value>
+    </displayverbs>
+  </type>
+  <type name="container_open">
+    <inherit name="container_base" />
+    <isopen />
+    <open />
+    <close />
+    <displayverbs type="stringlist">
+      <value>Open</value>
+      <value>Close</value>
+    </displayverbs>
+  </type>
+  <type name="surface">
+    <inherit name="container_base" />
+    <isopen />
+    <transparent />
+    <contentsprefix>on which there is</contentsprefix>
+  </type>
+  <type name="container">
+    <inherit name="container_open" />
+    <displayverbs type="stringlist">
+      <value>Open</value>
+      <value>Close</value>
+    </displayverbs>
+  </type>
+  <type name="container_limited">
+    <inherit name="container" />
+    <maxobjects type="int">1</maxobjects>
+    <maxvolume type="int">100</maxvolume>
+    <addscript type="AddScript"><![CDATA[
+      activecontainer = this
+      correct = true
+      while (DoesInherit(activecontainer, "container_base")) {
+        if (HasInt(activecontainer, "maxvolume")) {
+          if (GetVolume(object, true) + GetVolume(activecontainer, false) > activecontainer.maxvolume) {
+            correct = false
+            if (HasString(this, "containerfullmessage")) {
+              message = this.containerfullmessage
+            }
+            else {
+              message = DynamicTemplate("ContainerFull", this)
+            }
+          }
+        }
+        activecontainer = activecontainer.parent
+      }
+      children = GetDirectChildren(this)
+      if (listcount(children) >= this.maxobjects) {
+        correct = false
+        if (HasString(this, "containerfullmessage")) {
+          message = this.containerfullmessage
+        }
+        else {
+          message = DynamicTemplate("MaxObjectsInContainer", this)
+        }
+      }
+      if (correct = false) {
+        msg (message)
+      }
+      else {
+        object.parent = this
+        msg (Template("Done"))
+      }
+    ]]></addscript>
+    <displayverbs type="stringlist">
+      <value>Open</value>
+      <value>Close</value>
+    </displayverbs>
+  </type>
+  <type name="container_lockable">
+    <locked />
+    <nokeymessage>You do not have the key.</nokeymessage>
+    <unlockmessage>Unlocked.</unlockmessage>
+    <lockmessage>Locked.</lockmessage>
+    <canlockopen type="boolean">false</canlockopen>
+    <autoopen />
+    <autounlock />
+    <openscript type="script">
+      if (this.locked) {
+        if (this.autounlock and AllKeysAvailable(this)) {
+          do (this, "unlock")
+          if (not this.isopen) {
+            OpenObject (this)
+          }
+        }
+        else {
+          msg (DynamicTemplate("LockedObject", this))
+        }
+      }
+      else {
+        OpenObject (this)
+      }
+    </openscript>
+    <closescript type="script">
+      if (this.locked) {
+        msg (DynamicTemplate("LockedObject", this))
+      }
+      else {
+        CloseObject (this)
+      }
+    </closescript>
+    <lock type="script">
+      if (this.locked) {
+        msg (DynamicTemplate("AlreadyLocked", this))
+      }
+      else if (this.isopen and not this.canlockopen) {
+        msg (DynamicTemplate("CannotLockOpen", this))
+      }
+      else {
+        if (AllKeysAvailable(this)) {
+          msg (this.lockmessage)
+          this.locked = true
+        }
+        else {
+          msg (this.nokeymessage)
+        }
+      }
+    </lock>
+    <unlock type="script">
+      if (not this.locked) {
+        msg (DynamicTemplate("AlreadyUnlocked", this))
+      }
+      else {
+        if (AllKeysAvailable(this)) {
+          msg (this.unlockmessage)
+          this.locked = false
+          if (this.autoopen and not this.isopen) {
+            TryOpenClose (true, this)
+          }
+        }
+        else {
+          msg (this.nokeymessage)
+        }
+      }
+    </unlock>
+  </type>
+  <type name="defaultplayer" />
+  <type name="switchable">
+    <switchedon type="boolean">false</switchedon>
+    <turnon type="script">
+      if (ListContains(ScopeReachable(), this)) {
+        if (this.switchedon) {
+          msg (DynamicTemplate("AlreadySwitchedOn", this))
+        }
+        else {
+          if (HasString(this, "switchonmsg")) {
+            msg (this.switchonmsg)
+          }
+          else {
+            msg (DynamicTemplate("SwitchedOn", this))
+          }
+          this.switchedon = true
+        }
+      }
+      else {
+        msg (DynamicTemplate("DefaultTurnOn", this))
+      }
+    </turnon>
+    <turnoff type="script">
+      if (ListContains(ScopeReachable(), this)) {
+        if (not this.switchedon) {
+          msg (DynamicTemplate("AlreadySwitchedOff", this))
+        }
+        else {
+          if (HasString(this, "switchoffmsg")) {
+            msg (this.switchoffmsg)
+          }
+          else {
+            msg (DynamicTemplate("SwitchedOff", this))
+          }
+          this.switchedon = false
+        }
+      }
+      else {
+        msg (DynamicTemplate("DefaultTurnOff", this))
+      }
+    </turnoff>
+    <displayverbs type="stringlist">
+      <value>Switch on</value>
+      <value>Switch off</value>
+    </displayverbs>
+  </type>
+  <type name="edible">
+    <eathealth type="int">0</eathealth>
+    <eat type="script">
+      if (HasString(this, "eatmsg")) {
+        msg (this.eatmsg)
+      }
+      else {
+        msg (DynamicTemplate("Eaten", this))
+      }
+      if (HasInt(game.pov, "health")) {
+        game.pov.health = game.pov.health + this.eathealth
+      }
+      destroy (this.name)
+    </eat>
+    <displayverbs type="stringlist">
+      <value>Eat</value>
+    </displayverbs>
+  </type>
+  <type name="gridborder_path_ew">
+    <attr name="grid_bordersides" type="int">10</attr>
+  </type>
+  <type name="gridborder_path_e">
+    <attr name="grid_bordersides" type="int">11</attr>
+  </type>
+  <type name="gridborder_path_w">
+    <attr name="grid_bordersides" type="int">14</attr>
+  </type>
+  <type name="gridborder_path_ns">
+    <attr name="grid_bordersides" type="int">5</attr>
+  </type>
+  <type name="gridborder_path_n">
+    <attr name="grid_bordersides" type="int">7</attr>
+  </type>
+  <type name="gridborder_path_s">
+    <attr name="grid_bordersides" type="int">13</attr>
+  </type>
+  <function name="GetDefaultPrefix" parameters="obj" type="string"><![CDATA[
+    if (Instr("aeiou", LCase(Left(GetDisplayAlias(obj), 1))) > 0) {
+      return ("an")
+    }
+    else {
+      return ("a")
+    }
+  ]]></function>
+  <function name="WriteVerb" parameters="obj, verb" type="string">
+    return (CapFirst(obj.gender) + " " + Conjugate(obj, verb))
+  </function>
+  <function name="Conjugate" parameters="obj, verb" type="string">
+    gender = obj.gender
+    if (gender = "he" or gender = "she") {
+      gender = "it"
+    }
+    switch (verb) {
+      case ("be") {
+        switch (gender) {
+          case ("i") {
+            return ("am")
+          }
+          case ("you") {
+            return ("are")
+          }
+          case ("it") {
+            return ("is")
+          }
+          case ("we") {
+            return ("are")
+          }
+          case ("they") {
+            return ("are")
+          }
+          default {
+            return ("is")
+          }
+        }
+      }
+      case ("do") {
+        switch (gender) {
+          case ("i") {
+            return ("do")
+          }
+          case ("you") {
+            return ("do")
+          }
+          case ("it") {
+            return ("does")
+          }
+          case ("we") {
+            return ("do")
+          }
+          case ("they") {
+            return ("do")
+          }
+          default {
+            return ("do")
+          }
+        }
+      }
+      default {
+        if (gender = "it") {
+          return (verb + "s")
+        }
+        else {
+          return (verb)
+        }
+      }
+    }
+  </function>
+  <function name="ListObjectContents" parameters="object"><![CDATA[
+    if (GetBoolean(object, "isopen") and GetBoolean(object, "listchildren")) {
+      if (GetBoolean(object, "hidechildren")) {
+        object.hidechildren = false
+      }
+      if (HasString(object, "listchildrenprefix")) {
+        listprefix = object.listchildrenprefix
+      }
+      else {
+        listprefix = DynamicTemplate("ObjectContains", object)
+      }
+      list = FormatObjectList(listprefix, object, Template("And"), ".")
+      if (list <> "") {
+        msg (list)
+      }
+    }
+  ]]></function>
+  <function name="DoTake" parameters="object, ismultiple"><![CDATA[
+    prefix = ""
+    if (ismultiple) {
+      prefix = GetDisplayAlias(object) + ": "
+    }
+    if (object.parent = game.pov) {
+      msg (prefix + DynamicTemplate("AlreadyTaken", object))
+    }
+    else if (not ListContains(ScopeReachable(), object)) {
+      msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+    }
+    else {
+      volume = 0
+      continue = true
+      foreach (obj, GetAllChildObjects(game.pov)) {
+        if (HasInt(obj, "volume")) {
+          volume = volume + obj.volume
+        }
+      }
+      if (not Contains(game.pov, object)) {
+        volume = volume + GetVolume(object,true)
+      }
+      if (HasInt(game.pov, "maxvolume")) {
+        if (volume > game.pov.maxvolume) {
+          continue = false
+          if (HasString(game.pov, "containerfullmessage")) {
+            message = prefix + game.pov.containerfullmessage
+          }
+          else {
+            message = prefix + DynamicTemplate("FullInventory", object)
+          }
+        }
+      }
+      children = GetDirectChildren(game.pov)
+      if (HasInt(game.pov, "maxobjects")) {
+        if (game.pov.maxobjects > 0) {
+          if (ListCount(children) >= game.pov.maxobjects) {
+            continue = false
+            if (HasString(game.pov, "containermaxobjects")) {
+              message = prefix + game.pov.containermaxobjects
+            }
+            else {
+              message = prefix + DynamicTemplate("MaxObjectsInInventory", object)
+            }
+          }
+        }
+      }
+      if (continue = false) {
+        msg (message)
+      }
+      else {
+        found = true
+        takemsg = object.takemsg
+        switch (TypeOf(object, "take")) {
+          case ("script") {
+            if (ismultiple) {
+              OutputTextNoBr (prefix)
+            }
+            do (object, "take")
+            takemsg = ""
+          }
+          case ("boolean") {
+            if (object.take = true) {
+              object.parent = game.pov
+              if (takemsg = null) {
+                takemsg = DynamicTemplate("TakeSuccessful", object)
+              }
+            }
+            else {
+              found = false
+            }
+          }
+          case ("string") {
+            object.parent = game.pov
+            takemsg = object.take
+          }
+          default {
+            found = false
+          }
+        }
+        if (not found and takemsg = null) {
+          takemsg = DynamicTemplate("TakeUnsuccessful", object)
+        }
+        if (LengthOf(takemsg) > 0) {
+          msg (prefix + takemsg)
+        }
+        if (HasScript(object, "ontake")) {
+          do (object, "ontake")
+        }
+        if (found and GetBoolean (object, "scenery") and object.parent = game.pov) {
+          object.scenery = false
+        }
+      }
+    }
+  ]]></function>
+  <function name="DoDrop" parameters="object, ismultiple"><![CDATA[
+    prefix = ""
+    if (ismultiple) {
+      prefix = GetDisplayAlias(object) + ": "
+    }
+    if (not ListContains(ScopeInventory(), object)) {
+      msg (prefix + DynamicTemplate("NotCarrying", object))
+    }
+    else if (not ListContains(ScopeReachable(), object)) {
+      msg (prefix + DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+    }
+    else {
+      found = true
+      dropmsg = object.dropmsg
+      switch (TypeOf(object, "drop")) {
+        case ("script") {
+          if (ismultiple) {
+            OutputTextNoBr (prefix)
+          }
+          do (object, "drop")
+          dropmsg = ""
+        }
+        case ("boolean") {
+          if (object.drop = true) {
+            object.parent = game.pov.parent
+            if (dropmsg = null) {
+              dropmsg = DynamicTemplate("DropSuccessful", object)
+            }
+          }
+          else {
+            found = false
+          }
+        }
+        case ("string") {
+          object.parent = game.pov.parent
+          dropmsg = object.drop
+        }
+        default {
+          found = false
+        }
+      }
+      if (not found and dropmsg = null) {
+        dropmsg = DynamicTemplate("DropUnsuccessful", object)
+      }
+      if (LengthOf(dropmsg) > 0) {
+        msg (prefix + dropmsg)
+      }
+      if (HasScript(object, "ondrop")) {
+        do (object, "ondrop")
+      }
+    }
+  ]]></function>
+  <function name="CreateUseMenuList" parameters="object" type="objectlist">
+    objectlist = NewObjectList()
+    objectlist = ScopeReachableInventory()
+    objectlist = ListCombine (objectlist, ScopeReachableNotHeld())
+    excludelist = NewObjectList()
+    list add (excludelist, game.pov)
+    list add (excludelist, object)
+    candidates = NewObjectList()
+    candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+    return (candidates)
+  </function>
+  <function name="TryOpenClose" parameters="doopen, object">
+    if (doopen) {
+      action = "open"
+      scriptaction = "openscript"
+    }
+    else {
+      action = "close"
+      scriptaction = "closescript"
+    }
+    if (not ListContains(ScopeReachable(), object)) {
+      msg (DynamicTemplate("ObjectNotOpen", GetBlockingObject(object)))
+    }
+    else {
+      found = false
+      if (GetBoolean(object, action)) {
+        if (doopen) {
+          if (object.isopen) {
+            msg (DynamicTemplate("AlreadyOpen", object))
+          }
+          else {
+            if (HasScript(object, scriptaction)) {
+              do (object, scriptaction)
+            }
+            else {
+              OpenObject (object)
+            }
+          }
+        }
+        else {
+          if (not object.isopen) {
+            msg (DynamicTemplate("AlreadyClosed", object))
+          }
+          else {
+            if (HasScript(object, scriptaction)) {
+              do (object, scriptaction)
+            }
+            else {
+              CloseObject (object)
+            }
+          }
+        }
+      }
+      else {
+        if (doopen) {
+          msg (DynamicTemplate("CantOpen", object))
+        }
+        else {
+          msg (DynamicTemplate("CantClose", object))
+        }
+      }
+    }
+  </function>
+  <function name="OpenObject" parameters="object">
+    if (HasString(object, "openmsg")) {
+      msg (object.openmsg)
+    }
+    else {
+      msg (DynamicTemplate("OpenSuccessful", object))
+    }
+    object.isopen = true
+    ListObjectContents (object)
+  </function>
+  <function name="CloseObject" parameters="object">
+    if (HasString(object, "closemsg")) {
+      msg (object.closemsg)
+    }
+    else {
+      msg (DynamicTemplate("CloseSuccessful", object))
+    }
+    object.isopen = false
+  </function>
+  <function name="CreateGiveMenuList" parameters="object" type="objectlist">
+    objectlist = NewObjectList()
+    objectlist = ScopeReachableInventory()
+    objectlist = ListCombine (objectlist, ScopeReachableNotHeld())
+    excludelist = NewObjectList()
+    list add (excludelist, game.pov)
+    list add (excludelist, object)
+    candidates = NewObjectList()
+    candidates = ListExclude(RemoveSceneryObjects(objectlist), excludelist)
+    return (candidates)
+  </function>
+  <function name="HandleGiveTo" parameters="object1, object2">
+    handled = false
+    if (HasString(object2, "give")) {
+      msg (object2.give)
+      handled = true
+    }
+    else if (TypeOf(object2, "give") = "scriptdictionary") {
+      if (DictionaryContains(object2.give, object1.name)) {
+        parameters = NewObjectDictionary()
+        dictionary add (parameters, "this", object2)
+        dictionary add (parameters, "object", object1)
+        invoke (ScriptDictionaryItem(object2.give, object1.name), parameters)
+        handled = true
+      }
+      if (not handled) {
+        if (HasScript(object2, "giveanything")) {
+          // TO DO: Would be better to use a delegate for giveanything, but need to implement Editor support first
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "object", object1)
+          do (object2, "giveanything", parameters)
+          handled = true
+        }
+      }
+    }
+    if (not handled) {
+      if (HasString(object1, "giveto")) {
+        msg (object1.giveto)
+        handled = true
+      }
+      else if (TypeOf(object1, "giveto") = "scriptdictionary") {
+        if (DictionaryContains(object1.giveto, object2.name)) {
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "this", object1)
+          dictionary add (parameters, "object", object2)
+          invoke (ScriptDictionaryItem(object1.giveto, object2.name), parameters)
+          handled = true
+        }
+        else {
+          if (HasScript(object1, "givetoanything")) {
+            // TO DO: Would be better to use a delegate for givetoanything, but need to implement Editor support first
+            parameters = NewObjectDictionary()
+            dictionary add (parameters, "object", object2)
+            do (object1, "givetoanything", parameters)
+            handled = true
+          }
+        }
+      }
+    }
+    if (not handled) {
+      msg (DynamicTemplate("DefaultGive", object2, object1))
+    }
+  </function>
+  <function name="HandleUseOn" parameters="object1, object2">
+    handled = false
+    if (HasString(object2, "useon")) {
+      msg (object2.useon)
+      handled = true
+    }
+    else if (TypeOf(object2, "useon") = "scriptdictionary") {
+      if (DictionaryContains(object2.useon, object1.name)) {
+        parameters = NewObjectDictionary()
+        dictionary add (parameters, "this", object2)
+        dictionary add (parameters, "object", object1)
+        invoke (ScriptDictionaryItem(object2.useon, object1.name), parameters)
+        handled = true
+      }
+      else {
+        if (HasScript(object2, "useanything")) {
+          // TO DO: Would be better to use a delegate for useanything, but need to implement Editor support first
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "object", object1)
+          do (object2, "useanything", parameters)
+          handled = true
+        }
+      }
+    }
+    if (not handled) {
+      if (HasString(object1, "selfuseon")) {
+        msg (object1.selfuseon)
+        handled = true
+      }
+      else if (TypeOf(object1, "selfuseon") = "scriptdictionary") {
+        if (DictionaryContains(object1.selfuseon, object2.name)) {
+          parameters = NewObjectDictionary()
+          dictionary add (parameters, "this", object1)
+          dictionary add (parameters, "object", object2)
+          invoke (ScriptDictionaryItem(object1.selfuseon, object2.name), parameters)
+          handled = true
+        }
+        else {
+          if (HasScript(object1, "selfuseanything")) {
+            // TO DO: Would be better to use a delegate for selfuseanything, but need to implement Editor support first
+            parameters = NewObjectDictionary()
+            dictionary add (parameters, "object", object2)
+            do (object1, "selfuseanything", parameters)
+            handled = true
+          }
+        }
+      }
+    }
+    if (not handled) {
+      msg (DynamicTemplate("DefaultUseOn", object2, object1))
+    }
+  </function>
+  <function name="DoAskTell" parameters="object, text, property, defaultscript, defaulttemplate"><![CDATA[
+    handled = false
+    maxstrength = 0
+    match = null
+    text = LCase(text)
+    if (TypeOf(object, property) = "scriptdictionary") {
+      dictionary = GetAttribute(object, property)
+      foreach (keywords, dictionary) {
+        strength = GetKeywordsMatchStrength(LCase(keywords), text)
+        if (strength >= maxstrength and strength>0) {
+          match = ScriptDictionaryItem(dictionary, keywords)
+          maxstrength = strength
+        }
+      }
+      if (match <> null) {
+        parameters = NewObjectDictionary()
+        dictionary add (parameters, "this", object)
+        invoke (match, parameters)
+        handled = true
+      }
+    }
+    if (not handled) {
+      if (HasScript(object, defaultscript)) {
+        do (object, defaultscript)
+      }
+      else {
+        msg (DynamicTemplate(defaulttemplate, object))
+      }
+    }
+  ]]></function>
+  <function name="GetKeywordsMatchStrength" parameters="keywords, input" type="int">
+    // Keywords is the subject. We split it into individual words, and then see how well
+    // the words in the input match the keywords.
+    keywordlist = Split(keywords, " ")
+    inputlist = Split(input, " ")
+    strength = 0
+    foreach (word, inputlist) {
+      foreach (keyword, keywordlist) {
+        if (StartsWith(word, keyword)) {
+          strength = strength + LengthOf(keyword)
+        }
+      }
+    }
+    return (strength)
+  </function>
+  <function name="CompareNames" parameters="name, value, obj, fullmatches, partialmatches"><![CDATA[
+    if (name = value) {
+      if (not ListContains(fullmatches, obj)) {
+        list add (fullmatches, obj)
+      }
+    }
+    else {
+      if (StartsWith(name, value)) {
+        if (not ListContains(partialmatches, obj)) {
+          list add (partialmatches, obj)
+        }
+      }
+      else {
+        // check if input matches the start of any word in the name
+        if (Instr(name, " " + value) > 0) {
+          if (not ListContains(partialmatches, obj)) {
+            list add (partialmatches, obj)
+          }
+        }
+      }
+    }
+  ]]></function>
+  <function name="GenerateMenuChoices" parameters="dictionary, objects">
+    foreach (obj, objects) {
+      if (not DictionaryContains(dictionary, obj.name)) {
+        dictionary add (dictionary, obj.name, GetDisplayAlias(obj))
+      }
+    }
+  </function>
+  <function name="ResolveName" parameters="variable, value, objtype" type="object"><![CDATA[
+    found = false
+    if (game.pov.commandmetadata <> null) {
+      if (DictionaryContains(game.pov.commandmetadata, value)) {
+        result = GetObject(StringDictionaryItem(game.pov.commandmetadata, value))
+        if (result <> null) {
+          if (ListContains(ScopeVisible(), result)) {
+            found = true
+            return (result)
+          }
+        }
+      }
+    }
+    if (not found) {
+      value = LCase(value)
+      result = ResolveNameInternal(variable, value, objtype)
+      if (result <> null) {
+        return (result)
+      }
+      else {
+        // TO DO: Check this behaviour. We only want to try ignoring prefixes if we have definitely got an unresolved name.
+        foreach (prefix, game.parserignoreprefixes) {
+          if (StartsWith(value, prefix + " ")) {
+            result = ResolveNameInternal(variable, Mid(value, LengthOf(prefix) + 1), objtype)
+          }
+        }
+        if (result = null and LengthOf(variable) = 0 and not GetBoolean(game.pov, "currentcommandmultiobjectpending")) {
+          UnresolvedCommand (value, game.pov.currentcommandpendingvariable)
+        }
+        return (result)
+      }
+    }
+  ]]></function>
+  <function name="ResolveNameInternal" parameters="variable, value, objtype" type="object"><![CDATA[
+    fullmatches = NewObjectList()
+    partialmatches = NewObjectList()
+    game.pov.currentcommandmultiobjectpending = false
+    if (objtype = "object") {
+      scope = ScopeVisible()
+    }
+    else if (objtype = "exit") {
+      scope = ScopeExits()
+    }
+    value = Trim(value)
+    foreach (obj, scope) {
+      name = LCase(GetDisplayAlias(obj))
+      CompareNames (name, value, obj, fullmatches, partialmatches)
+      if (obj.alt <> null) {
+        foreach (altname, obj.alt) {
+          CompareNames (LCase(altname), value, obj, fullmatches, partialmatches)
+        }
+      }
+    }
+    // allow referring to objects from the previous command by gender or article
+    if (objtype = "object" and game.lastobjects <> null) {
+      foreach (obj, game.lastobjects) {
+        CompareNames (LCase(obj.article), value, obj, fullmatches, partialmatches)
+        CompareNames (LCase(obj.gender), value, obj, fullmatches, partialmatches)
+      }
+    }
+    if (ListCount(fullmatches) = 1) {
+      return (ListItem(fullmatches, 0))
+    }
+    else if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 1) {
+      return (ListItem(partialmatches, 0))
+    }
+    else if (ListCount(fullmatches) + ListCount(partialmatches) = 0) {
+      return (null)
+    }
+    else {
+      menu = NewStringDictionary()
+      GenerateMenuChoices (menu, fullmatches)
+      GenerateMenuChoices (menu, partialmatches)
+      if (LengthOf(variable) > 0) {
+        // single object command, so after showing the menu, add the object to game.pov.currentcommandresolvedelements
+        game.pov.currentcommandpendingvariable = variable
+        ShowMenu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
+          varname = game.pov.currentcommandpendingvariable
+          game.pov.currentcommandpendingvariable = null
+          if (result <> null) {
+            AddToResolvedNames (varname, GetObject(result))
+          }
+        }
+      }
+      else {
+        // multi-object command, so after showing the menu, add the object to the list
+        game.pov.currentcommandmultiobjectpending = true
+        ShowMenu (DynamicTemplate("DisambiguateMenu", value), menu, true) {
+          if (result <> null) {
+            list add (game.pov.currentcommandpendingobjectlist, GetObject(result))
+            ResolveNextNameListItem
+          }
+        }
+      }
+      return (null)
+    }
+  ]]></function>
+  <function name="ResolveNameList" parameters="value, scope, objtype">
+    game.pov.currentcommandpendingobjectlist = NewObjectList()
+    game.pov.currentcommandpendingobjectlistunresolved = NewStringList()
+    game.pov.currentcommandpendingobjectscope = scope
+    game.pov.currentcommandpendingobjecttype = objtype
+    inputlist = Split(value, ",")
+    foreach (inputbase, inputlist) {
+      inputlist2 = Split(inputbase, " " + Template("And") + " ")
+      foreach (input, inputlist2) {
+        list add (game.pov.currentcommandpendingobjectlistunresolved, input)
+      }
+    }
+    ResolveNextNameListItem
+  </function>
+  <function name="ResolveNextNameListItem"><![CDATA[
+    resolvedall = false
+    if (TypeOf(game.pov, "currentcommandpendingobjectlistunresolved") = "stringlist") {
+      queuelength = ListCount(game.pov.currentcommandpendingobjectlistunresolved)
+      if (queuelength > 0) {
+        thisitem = Trim(StringListItem(game.pov.currentcommandpendingobjectlistunresolved, 0))
+        if (queuelength = 1) {
+          game.pov.currentcommandpendingobjectlistunresolved = null
+        }
+        else {
+          newqueue = NewStringList()
+          for (i, 1, queuelength - 1) {
+            list add (newqueue, StringListItem(game.pov.currentcommandpendingobjectlistunresolved, i))
+          }
+          game.pov.currentcommandpendingobjectlistunresolved = newqueue
+        }
+        ResolveNameListItem (Trim(thisitem))
+      }
+      else {
+        resolvedall = true
+      }
+    }
+    else {
+      resolvedall = true
+    }
+    if (resolvedall) {
+      ResolveNameListItemFinished (game.pov.currentcommandpendingobjectlist)
+    }
+  ]]></function>
+  <function name="ResolveNameListItem" parameters="value"><![CDATA[
+    if (ListContains(game.allobjects, value)) {
+      // value is "all"
+      if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
+        dictionary add (game.pov.currentcommandresolvedelements, "multiple", true)
+      }
+      ResolveNameListItemFinished (game.pov.currentcommandpendingobjectscope)
+    }
+    else {
+      object = ResolveName("", value, game.pov.currentcommandpendingobjecttype)
+      if (object <> null) {
+        if (not ListContains(game.pov.currentcommandpendingobjectlist, object)) {
+          list add (game.pov.currentcommandpendingobjectlist, object)
+        }
+        ResolveNextNameListItem
+      }
+    }
+  ]]></function>
+  <function name="ResolveNameListItemFinished" parameters="result"><![CDATA[
+    if (ListCount(result) > 1) {
+      if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
+        dictionary add (game.pov.currentcommandresolvedelements, "multiple", true)
+      }
+    }
+    AddToResolvedNames (game.pov.currentcommandpendingvariable, result)
+  ]]></function>
+  <function name="HandleCommand" parameters="command, metadata"><![CDATA[
+    handled = false
+    if (game.menucallback <> null) {
+      if (HandleMenuTextResponse(command)) {
+        handled = true
+      }
+      else {
+        if (game.menuallowcancel) {
+          ClearMenu
+        }
+        else {
+          handled = true
+        }
+      }
+    }
+    if (not handled) {
+      StartTurnOutputSection
+      if (StartsWith (command, "*")) {
+        msg ("")
+        msg (SafeXML (command))
+      }
+      else {
+        shownlink = false
+        if (game.echocommand) {
+          if (metadata <> null and game.enablehyperlinks and game.echohyperlinks) {
+            foreach (key, metadata) {
+              if (EndsWith(command, key)) {
+                objectname = StringDictionaryItem(metadata, key)
+                object = GetObject(objectname)
+                if (object <> null) {
+                  msg ("")
+                  msg ("&gt; " + Left(command, LengthOf(command) - LengthOf(key)) + "{object:" + object.name + "}")
+                  shownlink = true
+                }
+              }
+            }
+          }
+          if (not shownlink) {
+            msg ("")
+            OutputTextRaw ("&gt; " + SafeXML(command))
+          }
+        }
+        if (game.command_newline) {
+          msg ("")
+        }
+        game.pov.commandmetadata = metadata
+        if (game.multiplecommands) {
+          commands = Split(command, ".")
+          if (ListCount(commands) = 1) {
+            game.pov.commandqueue = null
+            HandleSingleCommand (Trim(command))
+          }
+          else {
+            game.pov.commandqueue = commands
+            HandleNextCommandQueueItem
+          }
+        }
+        else {
+          game.pov.commandqueue = null
+          HandleSingleCommand (Trim(command))
+        }
+      }
+    }
+  ]]></function>
+  <function name="HandleNextCommandQueueItem"><![CDATA[
+    if (TypeOf(game.pov, "commandqueue") = "stringlist") {
+      queuelength = ListCount(game.pov.commandqueue)
+      if (queuelength > 0) {
+        thiscommand = Trim(StringListItem(game.pov.commandqueue, 0))
+        if (queuelength = 1) {
+          game.pov.commandqueue = null
+        }
+        else {
+          newqueue = NewStringList()
+          for (i, 1, queuelength - 1) {
+            list add (newqueue, StringListItem(game.pov.commandqueue, i))
+          }
+          game.pov.commandqueue = newqueue
+        }
+        if (LengthOf(thiscommand) > 0) {
+          HandleSingleCommand (thiscommand)
+        }
+        else {
+          HandleNextCommandQueueItem
+        }
+      }
+    }
+  ]]></function>
+  <function name="HandleSingleCommand" parameters="command"><![CDATA[
+    candidates = NewObjectList()
+    foreach (cmd, ScopeCommands()) {
+      if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
+        list add (candidates, cmd)
+      }
+    }
+    maxstrength = -1
+    thiscommand = null
+    foreach (candidate, candidates) {
+      strength = GetMatchStrength(candidate.pattern, command, candidate.name)
+      // favour commands defined later, so an author can override a library command...
+      if (strength >= maxstrength) {
+        // ... except if the command defined later (candidate) has no parent, and the current best
+        // match (thiscommand) does have a parent. We want to favour any commands defined in rooms
+        // over global candidates.
+        skip = false
+        if (thiscommand <> null) {
+          if (thiscommand.parent <> null and candidate.parent = null) {
+            skip = true
+          }
+        }
+        if (not skip) {
+          thiscommand = candidate
+          maxstrength = strength
+        }
+      }
+    }
+    if (thiscommand = null) {
+      if (HasScript(game, "unresolvedcommandhandler")) {
+        params = NewDictionary()
+        dictionary add (params, "command", command)
+        do (game, "unresolvedcommandhandler", params)
+      }
+      else {
+        msg (Template("UnrecognisedCommand"))
+      }
+      HandleNextCommandQueueItem
+    }
+    else {
+      varlist = Populate(thiscommand.pattern, command, thiscommand.name)
+      HandleSingleCommandPattern (command, thiscommand, varlist)
+    }
+  ]]></function>
+  <function name="FinishTurn">
+    RunTurnScripts
+    UpdateStatusAttributes
+    CheckDarkness
+    UpdateObjectLinks
+  </function>
+  <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
+    // current command string
+    game.pov.currentcommand = command
+    // current command object
+    game.pov.currentcommandpattern = thiscommand
+    // string dictionary of variables, e.g. object1="book"; object2="table"
+    game.pov.currentcommandvarlist = varlist
+    // string list of variables left to resolve
+    game.pov.currentcommandvarlistqueue = NewStringList()
+    foreach (key, varlist) {
+      list add (game.pov.currentcommandvarlistqueue, key)
+    }
+    // dictionary of resolved elements, e.g. object1=book_object; object2=table_object
+    game.pov.currentcommandresolvedelements = NewDictionary()
+    // list of resolved elements, e.g. book_object; table_object
+    game.pov.currentcommandresolvedobjects = NewObjectList()
+    game.pov.currentcommandunresolvedobject = null
+    game.pov.currentcommandpendingvariable = null
+    ResolveNextName
+  </function>
+  <function name="ResolveNextName"><![CDATA[
+    resolvedall = false
+    queuetype = TypeOf(game.pov, "currentcommandvarlistqueue")
+    if (queuetype = "stringlist") {
+      queuelength = ListCount(game.pov.currentcommandvarlistqueue)
+      if (queuelength > 0) {
+        // Pop next variable off the queue
+        var = StringListItem(game.pov.currentcommandvarlistqueue, 0)
+        if (queuelength = 1) {
+          game.pov.currentcommandvarlistqueue = null
+        }
+        else {
+          newqueue = NewStringList()
+          for (i, 1, queuelength - 1) {
+            list add (newqueue, StringListItem(game.pov.currentcommandvarlistqueue, i))
+          }
+          game.pov.currentcommandvarlistqueue = newqueue
+        }
+        // Resolve variable
+        value = StringDictionaryItem(game.pov.currentcommandvarlist, var)
+        if (value <> "") {
+          result = null
+          resolvinglist = false
+          if (StartsWith(var, "object")) {
+            if (HasDelegateImplementation(game.pov.currentcommandpattern, "multiple")) {
+              game.pov.currentcommandpendingobjectlist = NewObjectList()
+              game.pov.currentcommandpendingvariable = var
+              ResolveNameList (value, RunDelegateFunction(game.pov.currentcommandpattern, "multiple"), "object")
+              resolvinglist = true
+            }
+            else {
+              result = ResolveName(var, value, "object")
+            }
+          }
+          else if (StartsWith(var, "exit")) {
+            result = ResolveName(var, value, "exit")
+          }
+          else if (StartsWith(var, "text")) {
+            result = StringDictionaryItem(game.pov.currentcommandvarlist, var)
+          }
+          else {
+            error ("Unhandled command variable '" + var + "' - command variable names must begin with 'object', 'exit' or 'text'")
+          }
+          // at this point, ResolveName has returned - either an object name, unresolved, or pending
+          if (result = null) {
+            if ((not resolvinglist) and LengthOf(GetString(game.pov, "currentcommandpendingvariable")) = 0) {
+              UnresolvedCommand (value, var)
+            }
+          }
+          else {
+            AddToResolvedNames (var, result)
+          }
+        }
+        else {
+          ResolveNextName
+        }
+      }
+      else {
+        resolvedall = true
+      }
+    }
+    else if (queuetype = "null") {
+      resolvedall = true
+    }
+    else {
+      error ("Invalid queue type")
+    }
+    if (resolvedall) {
+      // TO DO: game.lastobjects should be game.pov.lastobjects
+      game.lastobjects = game.pov.currentcommandresolvedobjects
+      if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
+        dictionary add (game.pov.currentcommandresolvedelements, "multiple", false)
+      }
+      if (not GetBoolean(game.pov.currentcommandpattern, "isundo")) {
+        if (LengthOf(game.pov.currentcommand) > 0) {
+          start transaction (game.pov.currentcommand)
+        }
+      }
+      if (not GetBoolean(game.pov.currentcommandpattern, "isoops")) {
+        // TO DO: game.unresolved* should be game.pov.unresolved*
+        game.unresolvedcommand = null
+        game.unresolvedcommandvarlist = null
+        game.unresolvedcommandkey = null
+      }
+      if (HasScript(game.pov.currentcommandpattern, "script")) {
+        do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
+      }
+      HandleNextCommandQueueItem
+    }
+  ]]></function>
+  <function name="AddToResolvedNames" parameters="var, result">
+    if (TypeOf(result) = "object") {
+      if (result.type = "object") {
+        list add (game.pov.currentcommandresolvedobjects, result)
+      }
+    }
+    else if (TypeOf(result) = "objectlist") {
+      foreach (obj, result) {
+        if (obj.type = "object") {
+          list add (game.pov.currentcommandresolvedobjects, obj)
+        }
+      }
+    }
+    dictionary add (game.pov.currentcommandresolvedelements, var, result)
+    ResolveNextName
+  </function>
+  <function name="UnresolvedCommand" parameters="objectname, varname"><![CDATA[
+    // TO DO: Update names below, we don't need these two variables
+    unresolvedobject = objectname
+    unresolvedkey = varname
+    if (HasString(game.pov.currentcommandpattern, "unresolved")) {
+      if (ListCount(game.pov.currentcommandvarlist) > 1) {
+        msg (game.pov.currentcommandpattern.unresolved + " (" + unresolvedobject + ")")
+      }
+      else {
+        msg (game.pov.currentcommandpattern.unresolved)
+      }
+    }
+    else {
+      if (ListCount(game.pov.currentcommandvarlist) > 1) {
+        msg (Template("UnresolvedObject") + " (" + unresolvedobject + ")")
+      }
+      else {
+        msg (Template("UnresolvedObject"))
+      }
+    }
+    game.unresolvedcommand = game.pov.currentcommandpattern
+    game.unresolvedcommandvarlist = game.pov.currentcommandvarlist
+    game.unresolvedcommandkey = unresolvedkey
+  ]]></function>
+  <function name="HandleMultiVerb" parameters="object, property, object2, default">
+    dictionary = GetAttribute(object, property)
+    if (DictionaryContains(dictionary, object2.name)) {
+      parameters = NewDictionary()
+      dictionary add (parameters, "this", object)
+      dictionary add (parameters, "object", object2)
+      invoke (ScriptDictionaryItem(dictionary, object2.name), parameters)
+    }
+    else {
+      parameters = NewDictionary()
+      dictionary add (parameters, "this", object)
+      dictionary add (parameters, "object", object2)
+      if (DictionaryContains(dictionary, "default")) {
+        invoke (ScriptDictionaryItem(dictionary, "default"), parameters)
+      }
+      else {
+        msg (default)
+      }
+    }
+  </function>
+  <function name="GetPlacesObjectsList" type="objectlist">
+    return (ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov))
+  </function>
+  <function name="GetExitsList" type="objectlist">
+    return (RemoveLookOnlyExits(RemoveSceneryObjects(ScopeExits())))
+  </function>
+  <function name="ScopeInventory" type="objectlist">
+    result = NewObjectList()
+    foreach (obj, GetAllChildObjects(game.pov)) {
+      if (ContainsVisible(game.pov, obj)) {
+        list add (result, obj)
+      }
+    }
+    return (result)
+  </function>
+  <function name="ScopeReachableInventory" type="objectlist">
+    result = NewObjectList()
+    foreach (obj, GetAllChildObjects(game.pov)) {
+      if (ContainsReachable(game.pov, obj)) {
+        list add (result, obj)
+      }
+    }
+    return (result)
+  </function>
+  <function name="ScopeVisibleNotHeld" type="objectlist">
+    return (ScopeVisibleNotHeldForRoom(game.pov.parent))
+  </function>
+  <function name="ScopeVisibleNotHeldForRoom" parameters="room" type="objectlist">
+    if (room = game.pov.parent) {
+      result = ListCombine(ScopeReachableNotHeldForRoom(room), ScopeVisibleNotReachableForRoom(room))
+      list add (result, game.pov)
+      return (result)
+    }
+    else {
+      return (ListCombine(ScopeReachableNotHeldForRoom(room), ScopeVisibleNotReachableForRoom(room)))
+    }
+  </function>
+  <function name="ScopeVisibleNotHeldNotScenery" type="objectlist">
+    return (ScopeVisibleNotHeldNotSceneryForRoom(game.pov.parent))
+  </function>
+  <function name="ScopeVisibleNotHeldNotSceneryForRoom" parameters="room" type="objectlist">
+    return (RemoveSceneryObjects(ScopeVisibleNotHeldForRoom(room)))
+  </function>
+  <function name="ScopeReachable" type="objectlist">
+    return (ScopeReachableForRoom(game.pov.parent))
+  </function>
+  <function name="ScopeReachableForRoom" parameters="room" type="objectlist">
+    if (room = game.pov.parent) {
+      result = ListCombine(ScopeReachableNotHeldForRoom(room), ScopeReachableInventory())
+      list add (result, game.pov)
+    }
+    else {
+      result = ScopeReachableNotHeldForRoom(room)
+    }
+    return (result)
+  </function>
+  <function name="ScopeVisibleNotReachable" type="objectlist">
+    return (ScopeVisibleNotReachableForRoom(game.pov.parent))
+  </function>
+  <function name="ScopeVisibleNotReachableForRoom" parameters="room" type="objectlist">
+    result = NewObjectList()
+    exclude = ScopeReachableForRoom(room)
+    list add (exclude, game.pov)
+    newParent = GetNonTransparentParent(room)
+    foreach (obj, GetAllChildObjects(newParent)) {
+      if (ContainsVisible(newParent, obj) and not ListContains(exclude, obj)) {
+        list add (result, obj)
+      }
+    }
+    return (result)
+  </function>
+  <function name="GetNonTransparentParent" parameters="room" type="object">
+    if (GetBoolean(room, "transparent")) {
+      if (room.parent = null) {
+        return (room)
+      }
+      else {
+        return (GetNonTransparentParent(room.parent))
+      }
+    }
+    else {
+      return (room)
+    }
+  </function>
+  <function name="ScopeReachableNotHeld" type="objectlist">
+    return (ScopeReachableNotHeldForRoom(game.pov.parent))
+  </function>
+  <function name="ScopeVisibleLightsource" parameters="lightstrength" type="objectlist">
+    result = ScopeVisible()
+    lightobjects = NewObjectList()
+    foreach (obj, result) {
+      if (GetBoolean(obj, "lightsource") and GetString(obj, "lightstrength") = lightstrength) {
+        list add (lightobjects, obj)
+      }
+    }
+    exits = ScopeExits()
+    foreach (obj, exits) {
+      if (GetBoolean(obj, "lightsource") and GetString(obj, "lightstrength") = lightstrength) {
+        list add (lightobjects, obj)
+      }
+    }
+    return (lightobjects)
+  </function>
+  <function name="ScopeReachableNotHeldForRoom" parameters="room" type="objectlist"><![CDATA[
+    result = NewObjectList()
+    foreach (obj, GetAllChildObjects(room)) {
+      if (ContainsReachable(room, obj) and obj <> game.pov and not Contains(game.pov, obj)) {
+        list add (result, obj)
+      }
+    }
+    return (result)
+  ]]></function>
+  <function name="ScopeVisible" type="objectlist">
+    return (ScopeVisibleForRoom(game.pov.parent))
+  </function>
+  <function name="ScopeVisibleForRoom" parameters="room" type="objectlist">
+    if (room = game.pov.parent) {
+      return (ListCombine(ScopeVisibleNotHeldForRoom(room), ScopeInventory()))
+    }
+    else {
+      return (ScopeVisibleNotHeldForRoom(room))
+    }
+  </function>
+  <function name="ScopeExits" type="objectlist">
+    return (ScopeExitsForRoom(game.pov.parent))
+  </function>
+  <function name="ScopeExitsForRoom" parameters="room" type="objectlist">
+    result = NewObjectList()
+    foreach (exit, AllExits()) {
+      if (exit.parent = room) {
+        if (exit.visible) {
+          if (GetBoolean(room, "darklevel")) {
+            if (GetBoolean(exit, "lightsource")) {
+              list add (result, exit)
+            }
+          }
+          else {
+            list add (result, exit)
+          }
+        }
+      }
+    }
+    return (result)
+  </function>
+  <function name="ScopeCommands" type="objectlist">
+    result = NewObjectList()
+    foreach (command, AllCommands()) {
+      if (command.parent = null or command.parent = game.pov.parent) {
+        list add (result, command)
+      }
+    }
+    return (result)
+  </function>
+  <function name="GetBlockingObject" parameters="obj" type="object">
+    result = null
+    foreach (obj, ListParents(obj)) {
+      if (result = null and not CanReachThrough(obj)) {
+        result = obj
+      }
+    }
+    return (result)
+  </function>
+  <function name="ListParents" parameters="obj" type="objectlist"><![CDATA[
+    result = NewObjectList()
+    if (obj.parent <> null) {
+      parent_as_list = NewObjectList()
+      list add (parent_as_list, obj.parent)
+      result = ListCombine(parent_as_list, ListParents(obj.parent))
+    }
+    return (result)
+  ]]></function>
+  <function name="ContainsVisible" parameters="parentObj, searchObj" type="boolean">
+    return (ContainsAccessible(parentObj, searchObj, false))
+  </function>
+  <function name="ContainsReachable" parameters="parentObj, searchObj" type="boolean">
+    return (ContainsAccessible(parentObj, searchObj, true))
+  </function>
+  <function name="ContainsAccessible" parameters="parentObj, searchObj, onlyReachable" type="boolean">
+    if (not HasObject(searchObj, "parent")) {
+      return (false)
+    }
+    else if (not searchObj.visible) {
+      return (false)
+    }
+    else if (GetBoolean(parentObj, "darklevel") and not GetBoolean(searchObj, "lightsource")) {
+      return (false)
+    }
+    else {
+      if (searchObj.parent = null) {
+        return (false)
+      }
+      else if (searchObj.parent = parentObj) {
+        return (true)
+      }
+      else {
+        if (onlyReachable) {
+          canAdd = CanReachThrough(searchObj.parent)
+        }
+        else {
+          canAdd = CanSeeThrough(searchObj.parent)
+        }
+        if (canAdd) {
+          return (ContainsAccessible(parentObj, searchObj.parent, onlyReachable))
+        }
+        else {
+          return (false)
+        }
+      }
+    }
+  </function>
+  <function name="GetVolume" parameters="obj, allinclusive" type="int">
+    result = 0
+    foreach (object, GetAllChildObjects ( obj )) {
+      if (HasInt(object, "volume")) {
+        result = result + object.volume
+      }
+    }
+    if (allinclusive and HasInt(obj, "volume")) {
+      result = result + obj.volume
+    }
+    return (result)
+  </function>
+  <function name="CanSeeThrough" parameters="obj" type="boolean">
+    return ((GetBoolean(obj, "transparent") or CanReachThrough(obj)) and not GetBoolean(obj, "hidechildren"))
+  </function>
+  <function name="CanReachThrough" parameters="obj" type="boolean">
+    return (GetBoolean(obj, "isopen") and not GetBoolean(obj, "hidechildren"))
+  </function>
+  <function name="Got" parameters="obj" type="boolean">
+    return (ListContains(ScopeInventory(), obj))
+  </function>
+  <function name="UpdateObjectLinks">
+    if (game.enablehyperlinks) {
+      data = NewStringDictionary()
+      foreach (object, ScopeVisible()) {
+        dictionary add (data, object.name, Join(GetDisplayVerbs(object), "/"))
+      }
+      JS.updateObjectLinks (data)
+      exits = NewStringList()
+      foreach (exit, ScopeExits()) {
+        list add (exits, exit.name)
+      }
+      JS.updateExitLinks (exits)
+      commands = NewStringList()
+      foreach (cmd, ScopeCommands()) {
+        list add (commands, cmd.name)
+      }
+      JS.updateCommandLinks (commands)
+    }
+  </function>
+  <function name="ShowRoomDescription"><![CDATA[
+    isDark = CheckDarkness()
+    if (isDark) {
+      descriptionfield = "darkroomdescription"
+    }
+    else {
+      descriptionfield = "description"
+    }
+    if (game.autodescription) {
+      desc = ""
+      for (i, 1, 4) {
+        if (i = game.autodescription_youarein) {
+          if (game.autodescription_youarein_useprefix) {
+            youarein = game.pov.parent.descprefix
+            desc = AddDescriptionLine (desc, youarein + " " + GetDisplayName(game.pov.parent) + ".")
+          }
+          else {
+            desc = AddDescriptionLine (desc, "<b>" + CapFirst(GetDisplayName(game.pov.parent)) + "</b>")
+          }
+          if (game.autodescription_youarein_newline) {
+            msg (desc)
+            desc = ""
+          }
+        }
+        if (i = game.autodescription_youcansee) {
+          objects = FormatObjectList(game.pov.parent.objectslistprefix, GetNonTransparentParent(game.pov.parent), Template("And"), ".")
+          desc = AddDescriptionLine(desc, objects)
+          if (game.autodescription_youcansee_newline) {
+            msg (desc)
+            desc = ""
+          }
+        }
+        if (i = game.autodescription_youcango) {
+          exits = FormatExitList(game.pov.parent.exitslistprefix, GetExitsList(), Template("Or"), ".")
+          desc = AddDescriptionLine(desc, exits)
+          if (game.autodescription_youcango_newline) {
+            msg (desc)
+            desc = ""
+          }
+        }
+        if (i = game.autodescription_description) {
+          if (HasScript(game.pov.parent, descriptionfield)) {
+            if (LengthOf(desc) > 0) {
+              msg (desc)
+              desc = ""
+            }
+            do (game.pov.parent, descriptionfield)
+            if (game.autodescription_description_newline) {
+              msg ("")
+            }
+          }
+          else {
+            desc = AddDescriptionLine(desc, GetRoomDescription())
+            if (game.autodescription_description_newline) {
+              msg (desc)
+              desc = ""
+            }
+          }
+        }
+      }
+      if (LengthOf(desc) > 0) {
+        msg (desc)
+      }
+    }
+    else {
+      if (HasScript(game.pov.parent, descriptionfield)) {
+        do (game.pov.parent, descriptionfield)
+      }
+      else {
+        fulldesc = GetRoomDescription()
+        if (LengthOf(fulldesc) > 0) {
+          msg (fulldesc)
+        }
+      }
+    }
+  ]]></function>
+  <function name="AddDescriptionLine" parameters="desc, line" type="string"><![CDATA[
+    if (LengthOf(line) > 0) {
+      if (LengthOf(desc) > 0) {
+        msg (desc)
+        desc = ""
+      }
+      desc = desc + line
+    }
+    return (desc)
+  ]]></function>
+  <function name="GetRoomDescription" type="string"><![CDATA[
+    fulldesc = ""
+    if (CheckDarkness()) {
+      if (HasString(game.pov.parent, "darkroomdescription")) {
+        if (LengthOf(game.pov.parent.darkroomdescription) > 0) {
+          fulldesc = game.pov.parent.darkroomdescription
+        }
+      }
+    }
+    else {
+      if (HasString(game.pov.parent, "description")) {
+        if (LengthOf(game.pov.parent.description) > 0) {
+          fulldesc = game.pov.parent.description
+        }
+      }
+    }
+    if (game.appendobjectdescription) {
+      foreach (val, ScopeVisibleNotHeld()) {
+        if (HasString(val, "inroomdescription")) {
+          if (LengthOf(val.inroomdescription) > 0 and val <> game.pov) {
+            fulldesc = fulldesc + " " + val.inroomdescription
+          }
+        }
+      }
+    }
+    return (Trim(fulldesc))
+  ]]></function>
+  <function name="OnEnterRoom" parameters="oldRoom"><![CDATA[
+    game.displayroomdescriptiononstart = false
+    if (IsDefined("oldRoom")) {
+      if (oldRoom <> null) {
+        if (HasScript(oldRoom, "onexit")) {
+          do (oldRoom, "onexit")
+        }
+      }
+    }
+    on ready {
+      if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")) {
+        do (game.pov.parent, "beforefirstenter")
+      }
+      on ready {
+        if (HasScript(game.pov.parent, "beforeenter")) {
+          do (game.pov.parent, "beforeenter")
+        }
+        on ready {
+          if (game.gridmap) {
+            Grid_CalculateMapCoordinates (game.pov.parent, game.pov)
+            Grid_DrawPlayerInRoom (game.pov.parent)
+          }
+          if (IsDefined("oldRoom")) {
+            if (oldRoom <> null and game.changeroom_newline and not game.command_newline) {
+              msg ("")
+            }
+          }
+          request (UpdateLocation, CapFirst(GetDisplayName(game.pov.parent)))
+          roomFrameExists = false
+          if (HasString(game.pov.parent, "picture")) {
+            if (LengthOf(game.pov.parent.picture) > 0) {
+              roomFrameExists = true
+              SetFramePicture (game.pov.parent.picture)
+            }
+          }
+          if (game.clearframe and not roomFrameExists) {
+            ClearFramePicture
+          }
+          if (game.showdescriptiononenter) {
+            ShowRoomDescription
+          }
+          if (HasScript( game, "roomenter")) {
+            do (game, "roomenter")
+          }
+          on ready {
+            if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "firstenter")) {
+              do (game.pov.parent, "firstenter")
+            }
+            on ready {
+              if (HasScript(game.pov.parent, "enter")) {
+                do (game.pov.parent, "enter")
+              }
+            }
+            set (game.pov.parent, "visited", true)
+          }
+        }
+      }
+    }
+  ]]></function>
+  <function name="FormatObjectList" parameters="preList, parent, preFinal, postList" type="string"><![CDATA[
+    result = ""
+    count = 0
+    list = RemoveSceneryObjects(GetDirectChildren(parent))
+    if (CheckDarkness()) {
+      list = RemoveDarkObjects(list)
+    }
+    listLength = ListCount(list)
+    foreach (item, list) {
+      if (LengthOf(result) = 0) {
+        result = preList + " "
+      }
+      result = result + GetDisplayNameLink(item, "object")
+      if (CanSeeThrough(item)) {
+        result = result + FormatObjectList(" (" + item.contentsprefix, item, preFinal, ")")
+      }
+      count = count + 1
+      if (count = listLength - 1) {
+        result = result + " " + preFinal + " "
+      }
+      else if (count < listLength) {
+        result = result + ", "
+      }
+      else {
+        result = result + postList
+      }
+    }
+    return (result)
+  ]]></function>
+  <function name="RemoveSceneryObjects" parameters="list" type="objectlist"><![CDATA[
+    result = NewObjectList()
+    foreach (obj, list) {
+      if (not obj.scenery and obj <> game.pov and obj.visible) {
+        list add (result, obj)
+      }
+    }
+    return (result)
+  ]]></function>
+  <function name="RemoveLookOnlyExits" parameters="list" type="objectlist">
+    result = NewObjectList()
+    foreach (obj, list) {
+      if (not obj.lookonly) {
+        list add (result, obj)
+      }
+    }
+    return (result)
+  </function>
+  <function name="RemoveDarkObjects" parameters="list" type="objectlist">
+    result = NewObjectList()
+    foreach (obj, list) {
+      if (GetBoolean(obj, "lightsource") or obj.parent = game.pov) {
+        list add (result, obj)
+      }
+    }
+    return (result)
+  </function>
+  <function name="FormatExitList" parameters="preList, list, preFinal, postList" type="string"><![CDATA[
+    result = ""
+    listLength = ListCount(list)
+    if (listLength > 0) {
+      count = 0
+      result = preList + " "
+      foreach (item, list) {
+        result = result + GetDisplayNameLink(item, "exit")
+        count = count + 1
+        if (count = listLength - 1) {
+          result = result + " " + preFinal + " "
+        }
+        else if (count < listLength) {
+          result = result + ", "
+        }
+      }
+      result = result + postList
+    }
+    return (result)
+  ]]></function>
+  <function name="GetDisplayAlias" parameters="obj" type="string">
+    if (HasString(obj, "alias")) {
+      result = obj.alias
+    }
+    else {
+      result = obj.name
+    }
+    return (result)
+  </function>
+  <function name="GetDisplayName" parameters="obj" type="string">
+    return (GetDisplayNameLink(obj, ""))
+  </function>
+  <function name="GetDisplayNameLink" parameters="obj, type" type="string"><![CDATA[
+    verbs = GetDisplayVerbs(obj)
+    if (verbs <> null) {
+      verbCount = ListCount(verbs)
+    }
+    else {
+      verbCount = 0
+    }
+    if (type = "exit" and verbCount = 1) {
+      if (not game.enablehyperlinks) {
+        result = GetDisplayAlias(obj)
+      }
+      else {
+        result = "{exit:" + obj.name + "}"
+      }
+    }
+    else if (type = "") {
+      result = GetDisplayAlias(obj)
+    }
+    else {
+      result = "{object:" + obj.name + "}"
+    }
+    if (not GetBoolean(obj, "usedefaultprefix")) {
+      if (obj.prefix = null) {
+        prefix = ""
+      }
+      else {
+        prefix = obj.prefix
+      }
+    }
+    else if (type = "exit") {
+      prefix = ""
+    }
+    else {
+      prefix = GetDefaultPrefix(obj)
+    }
+    if (LengthOf(prefix) > 0) {
+      prefix = prefix + " "
+    }
+    result = prefix + result
+    if (not GetBoolean(obj, "usedefaultprefix") and HasString(obj, "suffix")) {
+      if (LengthOf(obj.suffix) > 0) {
+        result = result + " " + obj.suffix
+      }
+    }
+    return (result)
+  ]]></function>
+  <function name="ObjectLink" parameters="obj" type="string">
+    return ("{object:" + obj.name + "}")
+  </function>
+  <function name="GetListDisplayAlias" parameters="obj" type="string">
+    if (HasString(obj, "listalias")) {
+      result = obj.listalias
+    }
+    else {
+      result = GetDisplayAlias(obj)
+    }
+    return (result)
+  </function>
+  <function name="CheckDarkness" type="boolean"><![CDATA[
+    roomCheckDarkness = true
+    if (GetBoolean(game.pov.parent, "dark")) {
+      if (ListCount(ScopeVisibleLightsource("strong")) > 0) {
+        roomCheckDarkness = false
+      }
+    }
+    else {
+      roomCheckDarkness = false
+    }
+    game.pov.parent.darklevel = roomCheckDarkness
+    return (roomCheckDarkness)
+  ]]></function>
+  <function name="EnableTimer" parameters="timer">
+    timer.enabled = true
+    timer.trigger = game.timeelapsed + timer.interval
+  </function>
+  <function name="DisableTimer" parameters="timer">
+    timer.enabled = false
+  </function>
+  <function name="SetTimerInterval" parameters="timer, interval">
+    timer.interval = interval
+  </function>
+  <function name="SetTimerScript" parameters="timer, script">
+    timer.script = script
+  </function>
+  <function name="SetTimeout" parameters="interval, script">
+    SetTimeoutID (interval, "", script)
+  </function>
+  <function name="SetTimeoutID" parameters="interval, name, script">
+    timername = ""
+    if (name = "") {
+      timername = GetUniqueElementName("timeout")
+    }
+    else {
+      if (GetTimer(name) = null and GetObject(name) = null) {
+        timername = name
+      }
+      else {
+        error ("Error creating timer: There is already an existing object named " + name)
+      }
+    }
+    if (not timername = "") {
+      create timer (timername)
+      timer = GetTimer(timername)
+      SetTimerInterval (timer, interval)
+      timer.timeoutscript = script
+      SetTimerScript (timer) {
+        this.enabled = false
+        invoke (this.timeoutscript)
+        destroy (this.name)
+      }
+      EnableTimer (timer)
+    }
+  </function>
+  <function name="Pause" parameters="interval">
+    request (Pause, ToString(interval * 1000))
+  </function>
+  <function name="RunTurnScripts">
+    if (IsGameRunning()) {
+      if (game.menucallback = null) {
+        foreach (turnscript, AllTurnScripts()) {
+          if (GetBoolean(turnscript, "enabled")) {
+            inscope = false
+            if (turnscript.parent = game or turnscript.parent = null) {
+              inscope = true
+            }
+            else {
+              if (Contains(turnscript.parent, game.pov)) {
+                inscope = true
+              }
+            }
+            if (inscope) {
+              do (turnscript, "script")
+            }
+          }
+        }
+      }
+    }
+  </function>
+  <function name="EnableTurnScript" parameters="turnscript">
+    turnscript.enabled = true
+  </function>
+  <function name="DisableTurnScript" parameters="turnscript">
+    turnscript.enabled = false
+  </function>
+  <function name="SetTurnScript" parameters="turnscript, script">
+    turnscript.script = script
+  </function>
+  <function name="SetTurnTimeout" parameters="turncount, script">
+    SetTurnTimeoutID (turncount, "", script)
+  </function>
+  <function name="SetTurnTimeoutID" parameters="turncount, name, script"><![CDATA[
+    turnscriptname = ""
+    if (name = "") {
+      turnscriptname = GetUniqueElementName("turnscript")
+    }
+    else {
+      if (GetObject(name) = null and GetTimer(name) = null) {
+        turnscriptname = name
+      }
+      else {
+        error ("Error creating turnscript: There is already an existing object named " + name)
+      }
+    }
+    if (not turnscriptname="") {
+      create turnscript (turnscriptname)
+      turnscript = GetObject(turnscriptname)
+      turnscript.turncount = 0
+      turnscript.triggerturncount = turncount
+      turnscript.timeoutscript = script
+      SetTurnScript (turnscript) {
+        this.turncount = this.turncount + 1
+        if (this.turncount >= this.triggerturncount) {
+          this.enabled = false
+          invoke (this.timeoutscript)
+          destroy (this.name)
+        }
+      }
+      EnableTurnScript (turnscript)
+    }
+  ]]></function>
+  <function name="UpdateStatusAttributes">
+    status = AddStatusAttributesForElement("", game, game.statusattributes)
+    status = AddStatusAttributesForElement(status, game.pov, game.povstatusattributes)
+    status = AddStatusAttributesForElement(status, game.pov, game.pov.statusattributes)
+    request (SetStatus, status)
+  </function>
+  <function name="AddStatusAttributesForElement" parameters="status, element, statusAttributes" type="string"><![CDATA[
+    if (statusAttributes <> null) {
+      foreach (attr, statusAttributes) {
+        if (LengthOf(status) > 0) {
+          status = status + "\n"
+        }
+        status = status + FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(statusAttributes, attr))
+      }
+    }
+    return (status)
+  ]]></function>
+  <function name="FormatStatusAttribute" parameters="attr, value, format" type="string">
+    if (LengthOf(format) = 0) {
+      return (CapFirst(attr) + ": " + value)
+    }
+    else {
+      if (TypeOf(value) = "int" or TypeOf(value) = "double") {
+        value = ToString(value)
+      }
+      if (TypeOf(value) = "null") {
+        value = ""
+      }
+      return (Replace(format, "!", value))
+    }
+  </function>
+  <function name="InitStatusAttributes">
+    if (game.showscore) {
+      game.score = 0
+      if (game.statusattributes = null) {
+        game.statusattributes = NewStringDictionary()
+      }
+      dictionary add (game.statusattributes, "score", "Score: !")
+    }
+    if (game.showhealth) {
+      if (game.povstatusattributes = null) {
+        game.povstatusattributes = NewStringDictionary()
+      }
+      dictionary add (game.povstatusattributes, "health", "Health: !%")
+    }
+  </function>
+  <function name="IncreaseScore" parameters="amount">
+    if (not HasInt(game, "score")) {
+      error ("Score is not configured. To enable score, go to 'game' and tick 'Show score' on the Player tab.")
+    }
+    game.score = game.score + amount
+  </function>
+  <function name="DecreaseScore" parameters="amount">
+    if (not HasInt(game, "score")) {
+      error ("Score is not configured. To enable score, go to 'game' and tick 'Show score' on the Player tab.")
+    }
+    game.score = game.score - amount
+  </function>
+  <function name="IncreaseHealth" parameters="amount">
+    if (not HasInt(game.pov, "health")) {
+      error ("Health is not configured. To enable health, go to 'game' and tick 'Show health' on the Player tab.")
+    }
+    game.pov.health = game.pov.health + amount
+  </function>
+  <function name="DecreaseHealth" parameters="amount">
+    if (not HasInt(game.pov, "health")) {
+      error ("Health is not configured. To enable health, go to 'game' and tick 'Show health' on the Player tab.")
+    }
+    game.pov.health = game.pov.health - amount
+  </function>
+  <function name="OutputText" parameters="text">
+    data = NewDictionary()
+    dictionary add (data, "fulltext", text)
+    text = ProcessTextSection(text, data)
+    OutputTextRaw (text)
+  </function>
+  <function name="OutputTextRaw" parameters="text"><![CDATA[
+    format = GetCurrentTextFormat("")
+    JS.addText ("<span style=\"" + format + "\">" + text + "</span><br/>")
+    if (GetString(game, "commandbarformat") <> format) {
+      format = format + ";background:" + game.defaultbackground
+      game.commandbarformat = format
+      JS.setCommandBarStyle (format)
+    }
+    request (Speak, text)
+  ]]></function>
+  <function name="OutputTextNoBr" parameters="text">
+    data = NewDictionary()
+    dictionary add (data, "fulltext", text)
+    text = ProcessTextSection(text, data)
+    OutputTextRawNoBr (text)
+  </function>
+  <function name="OutputTextRawNoBr" parameters="text"><![CDATA[
+    JS.addText ("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
+    request (Speak, text)
+  ]]></function>
+  <function name="GetCurrentTextFormat" parameters="colour" type="string"><![CDATA[
+    style = ""
+    if (UIOptionUseGameFont()) {
+      font = GetCurrentFontFamily()
+    }
+    else {
+      font = GetUIOption("OverrideFontName")
+    }
+    if (LengthOf(font) > 0) {
+      style = style + "font-family:" + font + ";"
+    }
+    if (LengthOf(colour) = 0) {
+      if (UIOptionUseGameColours()) {
+        colour = game.defaultforeground
+      }
+      else {
+        colour = GetUIOption("OverrideForeground")
+      }
+    }
+    if (LengthOf(colour) > 0) {
+      style = style + "color:" + colour + ";"
+    }
+    if (UIOptionUseGameFont()) {
+      size = game.defaultfontsize
+    }
+    else {
+      size = ToDouble(GetUIOption("OverrideFontSize"))
+    }
+    if (size > 0) {
+      style = style + "font-size:" + ToString(size) + "pt;"
+    }
+    return (style)
+  ]]></function>
+  <function name="GetCurrentLinkTextFormat" type="string">
+    return (GetCurrentTextFormat(GetLinkTextColour()))
+  </function>
+  <function name="UIOptionUseGameFont" type="boolean">
+    value = GetUIOption("UseGameFont")
+    if (value = null or value = "true") {
+      return (true)
+    }
+    else {
+      return (false)
+    }
+  </function>
+  <function name="UIOptionUseGameColours" type="boolean">
+    value = GetUIOption("UseGameColours")
+    if (value = null or value = "true") {
+      return (true)
+    }
+    else {
+      return (false)
+    }
+  </function>
+  <function name="GetLinkTextColour" type="string">
+    if (UIOptionUseGameColours()) {
+      return (game.defaultlinkforeground)
+    }
+    else {
+      return (GetUIOption("OverrideLinkForeground"))
+    }
+  </function>
+  <function name="ProcessTextSection" parameters="text, data" type="string"><![CDATA[
+    containsUnprocessedSection = false
+    open = Instr(text, "{")
+      if (open > 0) {
+        nestCount = 1
+        searchStart = open + 1
+        finished = false
+        while (not finished) {
+          nextOpen = Instr(searchStart, text, "{")
+            nextClose = Instr(searchStart, text, "}")
+          if (nextClose > 0) {
+            if (nextOpen > 0 and nextOpen < nextClose) {
+              nestCount = nestCount + 1
+              searchStart = nextOpen + 1
+            }
+            else {
+              nestCount = nestCount - 1
+              searchStart = nextClose + 1
+              if (nestCount = 0) {
+                close = nextClose
+                containsUnprocessedSection = true
+                finished = true
+              }
+            }
+          }
+          else {
+            finished = true
+          }
+        }
+      }
+      if (containsUnprocessedSection) {
+        section = Mid(text, open + 1, close - open - 1)
+        value = ProcessTextCommand(section, data)
+        text = Left(text, open - 1) + value + ProcessTextSection(Mid(text, close + 1), data)
+      }
+      return (text)
+  ]]></function>
+  <function name="ProcessTextCommand" parameters="section, data" type="string">
+    if (StartsWith(section, "if ")) {
+      return (ProcessTextCommand_If(section, data))
+    }
+    else if (StartsWith(section, "object:")) {
+      return (ProcessTextCommand_Object(section, data))
+    }
+    else if (StartsWith(section, "command:")) {
+      return (ProcessTextCommand_Command(Mid(section, 9), data))
+    }
+    else if (StartsWith(section, "page:")) {
+      return (ProcessTextCommand_Command(Mid(section, 6), data))
+    }
+    else if (StartsWith(section, "exit:")) {
+      return (ProcessTextCommand_Exit(section, data))
+    }
+    else if (StartsWith(section, "once:")) {
+      return (ProcessTextCommand_Once(section, data))
+    }
+    else if (StartsWith(section, "random:")) {
+      return (ProcessTextCommand_Random(section, data))
+    }
+    else if (StartsWith(section, "rndalt:")) {
+      return (ProcessTextCommand_RandomAlias(section, data))
+    }
+    else if (StartsWith(section, "img:")) {
+      return (ProcessTextCommand_Img(section, data))
+    }
+    else if (StartsWith(section, "counter:")) {
+      return (ProcessTextCommand_Counter(Mid(section, 9), data))
+    }
+    else if (StartsWith(section, "select:")) {
+      return (ProcessTextCommand_Select(section, data))
+    }
+    else {
+      dot = Instr(section, ".")
+      if (dot = 0) {
+        return ("{" + ProcessTextSection(section, data) + "}")
+      }
+      else {
+        objectname = Left(section, dot - 1)
+        attributename = Mid(section, dot + 1)
+        object = GetObject(objectname)
+        if (object = null) {
+          return ("{" + ProcessTextSection(section, data) + "}")
+        }
+        else {
+          if (HasAttribute(object, attributename)) {
+            type = TypeOf(object, attributename)
+            switch (type) {
+              case ("string", "int", "double") {
+                return (ToString(GetAttribute(object, attributename)))
+              }
+              case ("boolean") {
+                result = GetAttribute(object, attributename)
+                if (result) {
+                  return ("true")
+                }
+                else {
+                  return ("false")
+                }
+              }
+              default {
+                return ("(" + type + ")")
+              }
+            }
+          }
+          else {
+            return ("")
+          }
+        }
+      }
+    }
+  </function>
+  <function name="ProcessTextCommand_Object" parameters="section, data" type="string"><![CDATA[
+    objectname = Mid(section, 8)
+    text = ""
+    colon = Instr(objectname, ":")
+    if (colon > 0) {
+      text = Mid(objectname, colon + 1)
+      objectname = Left(objectname, colon - 1)
+    }
+    object = GetObject(objectname)
+    if (object = null) {
+      return ("{" + ProcessTextSection(section, data) + "}")
+    }
+    else {
+      if (LengthOf(text) = 0) {
+        text = SafeXML(GetDisplayAlias(object))
+      }
+      if (game.enablehyperlinks) {
+        linkid = ProcessTextCommand_GetNextLinkId()
+        colour = ""
+        if (HasString(object, "linkcolour") and GetUIOption("UseGameColours") = "true") {
+          colour = object.linkcolour
+        }
+        else {
+          colour = GetLinkTextColour()
+        }
+        style = GetCurrentTextFormat(colour)
+        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-elementid=\"" + object.name + "\">" + text + "</a>")
+      }
+      else {
+        return (text)
+      }
+    }
+  ]]></function>
+  <function name="ProcessTextCommand_GetNextLinkId" type="string">
+    if (not HasInt(game, "lastlinkid")) {
+      game.lastlinkid = 0
+    }
+    game.lastlinkid = game.lastlinkid + 1
+    return ("verblink" + game.lastlinkid)
+  </function>
+  <function name="ProcessTextCommand_Command" parameters="command, data" type="string"><![CDATA[
+    text = command
+    colon = Instr(command, ":")
+    if (colon > 0) {
+      text = Mid(command, colon + 1)
+      command = Left(command, colon - 1)
+    }
+    style = GetCurrentLinkTextFormat()
+    candidates = NewObjectList()
+    foreach (cmd, ScopeCommands()) {
+      if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
+        list add (candidates, cmd)
+      }
+    }
+    elementid = ""
+    if (ListCount(candidates) = 1) {
+      cmd = ObjectListItem(candidates, 0)
+      elementid = cmd.name
+    }
+    linkid = ProcessTextCommand_GetNextLinkId()
+    dataattrs = ""
+    if (game.deactivatecommandlinks) {
+      dataattrs = dataattrs + "data-deactivateonclick=\"true\" "
+    }
+    dataattrs = dataattrs + "data-command=\"" + command + "\""
+    return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" " + dataattrs + ">" + ProcessTextSection(text, data) + "</a>")
+  ]]></function>
+  <function name="ProcessTextCommand_Exit" parameters="section, data" type="string"><![CDATA[
+    exitname = Mid(section, 6)
+    exit = GetObject(exitname)
+    if (exit = null) {
+      return ("{" + ProcessTextSection(section, data) + "}")
+    }
+    else {
+      verbs = GetDisplayVerbs(exit)
+      alias = GetDisplayAlias(exit)
+      command = LCase(StringListItem(verbs, 0)) + " " + alias
+      style = GetCurrentLinkTextFormat()
+      return ("<a style=\"" + style + "\" class=\"cmdlink exitlink\" data-elementid=\"" + exit.name + "\" data-command=\"" + command + "\">" + alias + "</a>")
+    }
+  ]]></function>
+  <function name="ProcessTextCommand_Once" parameters="section, data" type="string">
+    if (not HasAttribute(game, "textprocessor_seen")) {
+      game.textprocessor_seen = NewDictionary()
+    }
+    fulltext = StringDictionaryItem(data, "fulltext")
+    if (not DictionaryContains(game.textprocessor_seen, fulltext)) {
+      onceSectionsInThisText = NewList()
+      dictionary add (game.textprocessor_seen, fulltext, onceSectionsInThisText)
+    }
+    else {
+      onceSectionsInThisText = DictionaryItem(game.textprocessor_seen, fulltext)
+    }
+    if (not ListContains(onceSectionsInThisText, section)) {
+      list add (onceSectionsInThisText, section)
+      return (ProcessTextSection(Mid(section, 6), data))
+    }
+    else {
+      return ("")
+    }
+  </function>
+  <function name="ProcessTextCommand_Random" parameters="section, data" type="string">
+    elements = Mid(section, 8)
+    elementslist = Tsplit(elements)
+    index = GetRandomInt(0, ListCount(elementslist) - 1)
+    return (ProcessTextSection(ListItem(elementslist, index), data))
+  </function>
+  <function name="Tsplit" parameters="splittext" type="stringlist"><![CDATA[
+    itemlist = NewStringList()
+    sections = 0
+    startpos = 1
+    for (i, 1, LengthOf(splittext)) {
+      if (Mid(splittext, i, 1) = "{") {
+          sections = sections + 1
+        }
+        if (Mid(splittext, i, 1) = "}") {
+        sections = sections - 1
+      }
+      if (Mid(splittext, i, 1) = ":" and 0 >= sections) {
+        item = Mid(splittext, startpos, i - startpos)
+        list add (itemlist, item)
+        startpos = i + 1
+      }
+    }
+    item = Mid(splittext, startpos)
+    list add (itemlist, item)
+    return (itemlist)
+  ]]></function>
+  <function name="ProcessTextCommand_RandomAlias" parameters="section, data" type="string"><![CDATA[
+    objectname = Mid(section, 8)
+    object = GetObject(objectname)
+    if (object = null) {
+      return ("{" + ProcessTextSection(section, data) + "}")
+    }
+    else {
+      count = ListCount(object.alt)
+      if (count > 0) {
+        return (ListItem(object.alt, GetRandomInt(0, count - 1)))
+      }
+      else {
+        return ("")
+      }
+    }
+  ]]></function>
+  <function name="ProcessTextCommand_If" parameters="section, data" type="string"><![CDATA[
+    command = Mid(section, 4)
+    colon = Instr(command, ":")
+    if (colon = 0) {
+      return ("{if " + command + "}")
+    }
+    else {
+      text = Mid(command, colon + 1)
+      condition = Left(command, colon - 1)
+      operator = Instr(condition, "<=")
+      if (operator <> 0) {
+        operatorlength = 2
+      }
+      if (operator = 0) {
+        operator = Instr(condition, ">=")
+        if (operator <> 0) {
+          operatorlength = 2
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, "<>")
+        if (operator <> 0) {
+          operatorlength = 2
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, "<")
+        if (operator <> 0) {
+          operatorlength = 1
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, ">")
+        if (operator <> 0) {
+          operatorlength = 1
+        }
+      }
+      if (operator = 0) {
+        operator = Instr(condition, "=")
+        if (operator <> 0) {
+          operatorlength = 1
+        }
+      }
+      if (operator = 0) {
+        checkfor = true
+        if (StartsWith(condition, "not ")) {
+          checkfor = false
+          condition = Mid(condition, 5)
+        }
+        dot = Instr(condition, ".")
+        if (dot = 0) {
+          result = GetBoolean(game, condition)
+        }
+        else {
+          objectname = Left(condition, dot - 1)
+          attributename = Mid(condition, dot + 1)
+          object = GetObject(objectname)
+          if (object = null) {
+            result = false
+          }
+          else {
+            result = GetBoolean(object, attributename)
+          }
+        }
+        if (result = checkfor) {
+          return (ProcessTextSection(text, data))
+        }
+        else {
+          return ("")
+        }
+      }
+      else {
+        lhs = Left(condition, operator - 1)
+        rhs = Mid(condition, operator + operatorlength)
+        op = Mid(condition, operator, operatorlength)
+        dot = Instr(lhs, ".")
+        if (dot = 0) {
+          objectname = ""
+          attributename = ""
+          if (HasInt(game, lhs)) {
+            objectname = "game"
+            attributename = lhs
+          }
+          else {
+            return ("{if " + command + "}")
+          }
+        }
+        else {
+          objectname = Left(lhs, dot - 1)
+          attributename = Mid(lhs, dot + 1)
+        }
+        object = GetObject(objectname)
+        if (object = null) {
+          return ("{if " + command + "}")
+        }
+        else {
+          value = GetAttribute(object, attributename)
+          // The next three lines added by The Pixie
+          if (TypeOf(value) = "object") {
+            value = value.name
+          }
+          if (op = "=") {
+            if (ToString(value) = rhs) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = "<>") {
+            if (not ToString(value) = rhs) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = ">") {
+            if (ToDouble(ToString(value)) > ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = "<") {
+            if (ToDouble(ToString(value)) < ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = ">=") {
+            if (ToDouble(ToString(value)) >= ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+          else if (op = "<=") {
+            if (ToDouble(ToString(value)) <= ToDouble(rhs)) {
+              return (ProcessTextSection(text, data))
+            }
+            else {
+              return ("")
+            }
+          }
+        }
+      }
+    }
+  ]]></function>
+  <function name="ProcessTextCommand_Img" parameters="section, data" type="string"><![CDATA[
+    filename = Mid(section, 5)
+    return ("<img src=\"" + GetFileURL(filename) + "\" />")
+  ]]></function>
+  <function name="ProcessTextCommand_Counter" parameters="section, data" type="string">
+    if (HasAttribute(game, section)) {
+      return (ToString(GetAttribute(game, section)))
+    }
+    else {
+      return ("0")
+    }
+  </function>
+  <function name="ProcessTextCommand_Select" parameters="section, data" type="string"><![CDATA[
+    elements = Mid(section, 8)
+    elementslist = Split(elements, ":")
+    objectandatt = StringListItem (elementslist, 0)
+    list remove (elementslist, objectandatt)
+    objectandattlist = Split(objectandatt, ".")
+    if (not ListCount (objectandattlist) = 2) {
+      return ("{" + ProcessTextSection(section, data) + "}")
+    }
+    else {
+      object = GetObject(StringListItem(objectandattlist, 0))
+      if (object = null) {
+        return ("{" + ProcessTextSection(section, data) + "}")
+      }
+      else if (not HasInt (object, StringListItem(objectandattlist, 1))) {
+        return ("{" + ProcessTextSection(section, data) + "}")
+      }
+      else {
+        index = GetInt(object, StringListItem(objectandattlist, 1))
+        if ((0 > index) or (index >= Listcount(elementslist))) {
+          return ("{" + ProcessTextSection(section, data) + "}")
+        }
+        else {
+          return (ProcessTextSection(ListItem(elementslist, index), data))
+        }
+      }
+    }
+  ]]></function>
+  <function name="SetFramePicture" parameters="filename"><![CDATA[
+    request (SetPanelContents, "<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
+    game.panelcontents = filename
+  ]]></function>
+  <function name="ClearFramePicture">
+    request (SetPanelContents, "")
+    game.panelcontents = null
+  </function>
+  <function name="ClearScreen">
+    request (ClearScreen, "")
+  </function>
+  <function name="SetForegroundColour" parameters="colour">
+    request (Foreground, colour)
+    game.defaultforeground = colour
+  </function>
+  <function name="SetBackgroundColour" parameters="colour">
+    request (Background, colour)
+    game.defaultbackground = colour
+  </function>
+  <function name="SetFontName" parameters="font">
+    game.defaultfont = font
+    game.defaultwebfont = ""
+  </function>
+  <function name="SetWebFontName" parameters="font">
+    AddExternalStylesheet ("http://fonts.googleapis.com/css?family=" + Replace(font, " ", "+"))
+    game.defaultwebfont = font
+  </function>
+  <function name="AddExternalStylesheet" parameters="stylesheet">
+    if (game.externalstylesheets = null) {
+      game.externalstylesheets = NewStringList()
+    }
+    if (not ListContains(game.externalstylesheets, stylesheet)) {
+      list add (game.externalstylesheets, stylesheet)
+      JS.addExternalStylesheet (stylesheet)
+    }
+  </function>
+  <function name="SetFontSize" parameters="size">
+    game.defaultfontsize = size
+  </function>
+  <function name="PrintCentered" parameters="text">
+    SetAlignment ("center")
+    msg (text)
+    SetAlignment ("left")
+  </function>
+  <function name="ShowYouTube" parameters="id">
+    JS.AddYouTube (id)
+  </function>
+  <function name="ShowVimeo" parameters="id">
+    JS.AddVimeo (id)
+  </function>
+  <function name="WaitForKeyPress">
+    request (Wait, "")
+  </function>
+  <function name="DisplayHttpLink" parameters="text, url, https"><![CDATA[
+    pos = Instr(url, "://")
+    if (pos > 0) {
+      url = Mid(url, pos + 3)
+    }
+    if (https) {
+      url = "https://" + url
+    }
+    else {
+      url = "http://" + url
+    }
+    msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
+  ]]></function>
+  <function name="DisplayMailtoLink" parameters="text, url"><![CDATA[
+    if (Instr(url, "mailto:") = 0) {
+      url = "mailto:" + url
+    }
+    msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
+  ]]></function>
+  <function name="CommandLink" parameters="cmd, text" type="string">
+    return ("{command:" + cmd + ":" + text + "}")
+  </function>
+  <function name="Log" parameters="text">
+    request (Log, text)
+  </function>
+  <function name="SetBackgroundImage" parameters="filename">
+    JS.SetBackgroundImage (GetFileURL(filename))
+    game.backgroundimage = filename
+  </function>
+  <function name="SetBackgroundOpacity" parameters="opacity">
+    JS.SetBackgroundOpacity (opacity)
+    game.backgroundopacity = opacity
+    game.setbackgroundopacity = true
+  </function>
+  <function name="DisplayList" parameters="list, numbers"><![CDATA[
+    if (numbers) {
+      result = "<ol>"
+    }
+    else {
+      result = "<ul>"
+    }
+    foreach (item, list) {
+      result = result + "<li>" + item + "</li>"
+    }
+    if (numbers) {
+      result = result + "</ol>"
+    }
+    else {
+      result = result + "</ul>"
+    }
+    msg (result)
+  ]]></function>
+  <function name="SetAlignment" parameters="align">
+    JS.createNewDiv (align)
+  </function>
+  <function name="GetCurrentFontFamily" type="string">
+    if (game.defaultwebfont = null) {
+      return (game.defaultfont)
+    }
+    else {
+      if (game.defaultwebfont = "") {
+        return (game.defaultfont)
+      }
+      else {
+        return ("'" + game.defaultwebfont + "', " + game.defaultfont)
+      }
+    }
+  </function>
+  <function name="Grid_SetScale" parameters="scale">
+    JS.Grid_SetScale (scale)
+  </function>
+  <function name="Grid_CalculateMapCoordinates" parameters="room, playerobject"><![CDATA[
+    if (room.parent <> null) {
+      if (room.grid_parent_offset_auto) {
+        room.grid_parent_offset_x = (room.parent.grid_width - room.grid_width) /2.0
+        room.grid_parent_offset_y = (room.parent.grid_length - room.grid_length) /2.0
+      }
+      Grid_SetGridCoordinateForPlayer (playerobject, room.parent, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") - room.grid_parent_offset_x)
+      Grid_SetGridCoordinateForPlayer (playerobject, room.parent, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") - room.grid_parent_offset_y)
+      Grid_SetGridCoordinateForPlayer (playerobject, room.parent, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+      room.parent.grid_render = true
+      Grid_CalculateMapCoordinates (room.parent, playerobject)
+    }
+    // go through all exits in room, set x,y co-ordinates for the rooms they point to
+    foreach (exit, AllExits()) {
+      if (exit.parent = room and not GetBoolean(exit, "lookonly")) {
+        if (DoesInherit(exit, "northdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width/2.0)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "eastdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length/2.0)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y"))
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "southdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width/2.0)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "westdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length/2.0)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y"))
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "northwestdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "northeastdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.to.grid_length) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") - exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "southwestdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", (Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.to.grid_width) - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") - exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "southeastdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_x", Grid_GetGridCoordinateForPlayer(playerobject, exit, "x") + exit.grid_length)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit, "end_y", Grid_GetGridCoordinateForPlayer(playerobject, exit, "y") + exit.grid_length)
+          exit.grid_render = true
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "updirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z") + exit.grid_length)
+          exit.grid_render = false
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "downdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z") - exit.grid_length)
+          exit.grid_render = false
+          exit.to.grid_render = true
+        }
+        else if (DoesInherit(exit, "indirection") or DoesInherit(exit, "outdirection")) {
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 - exit.to.grid_width/2.0 + exit.grid_offset_x)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + room.grid_length/2.0 - exit.to.grid_length/2.0 + exit.grid_offset_y)
+          Grid_SetGridCoordinateForPlayer (playerobject, exit.to, "z", Grid_GetGridCoordinateForPlayer(playerobject, room, "z"))
+          exit.grid_render = false
+          exit.to.grid_render = true
+        }
+      }
+    }
+  ]]></function>
+  <function name="Grid_DrawPlayerInRoom" parameters="room">
+    if (room.grid_render) {
+      Grid_DrawRoom (room, false, game.pov)
+      player_x = Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width/2.0
+      player_y = Grid_GetGridCoordinateForPlayer(game.pov, room, "y") + room.grid_length/2.0
+      player_z = Grid_GetGridCoordinateForPlayer(game.pov, room, "z")
+      // Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill)
+      JS.Grid_DrawPlayer (player_x, player_y, player_z, 5, "black", 2, "yellow")
+    }
+  </function>
+  <function name="Grid_DrawRoom" parameters="room, redraw, playerobject"><![CDATA[
+    if (room.grid_render) {
+      if (redraw or not Grid_GetRoomBooleanForPlayer(playerobject, room, "grid_isdrawn")) {
+        if (room.parent <> null) {
+          Grid_DrawRoom (room.parent, redraw, playerobject)
+        }
+        JS.Grid_DrawBox (Grid_GetGridCoordinateForPlayer(game.pov, room, "x"), Grid_GetGridCoordinateForPlayer(game.pov, room, "y"), Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_width, room.grid_length, room.grid_border, room.grid_borderwidth, room.grid_fill, room.grid_bordersides)
+        if (LengthOf(room.grid_label) > 0) {
+          label_x = Grid_GetGridCoordinateForPlayer(game.pov, room, "x") + room.grid_width/2.0
+          label_y = (Grid_GetGridCoordinateForPlayer(game.pov, room, "y") + room.grid_length/2.0) - 0.5
+          JS.Grid_DrawLabel (label_x, label_y, Grid_GetGridCoordinateForPlayer(game.pov, room, "z"), room.grid_label)
+        }
+        foreach (exit, AllExits()) {
+          if (exit.grid_render and exit.parent = room and exit.grid_length > 0) {
+            Grid_DrawLine (Grid_GetGridCoordinateForPlayer(game.pov, exit, "x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "y"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_x"), Grid_GetGridCoordinateForPlayer(game.pov, exit, "end_y"), "black", 1)
+          }
+        }
+        Grid_SetRoomBooleanForPlayer (playerobject, room, "grid_isdrawn", true)
+      }
+    }
+  ]]></function>
+  <function name="Grid_ShowCustomLayer" parameters="visible">
+    if (visible) {
+      JS.Grid_ShowCustomLayer (true)
+    }
+    else {
+      JS.Grid_ShowCustomLayer (false)
+    }
+  </function>
+  <function name="Grid_ClearCustomLayer">
+    JS.Grid_ClearCustomLayer ()
+  </function>
+  <function name="Grid_DrawLine" parameters="x1, y1, x2, y2, border, borderWidth">
+    JS.Grid_DrawLine (x1, y1, x2, y2, border, borderWidth)
+  </function>
+  <function name="Grid_DrawArrow" parameters="id, x1, y1, x2, y2, border, borderWidth">
+    JS.Grid_DrawArrow (id, x1, y1, x2, y2, border, borderWidth)
+  </function>
+  <function name="Grid_DrawGridLines" parameters="x1, y1, x2, y2, border">
+    JS.Grid_DrawGridLines (x1, y1, x2, y2, border)
+  </function>
+  <function name="Grid_SetCentre" parameters="x, y">
+    JS.Grid_SetCentre (x, y)
+  </function>
+  <function name="Grid_DrawSquare" parameters="id, x, y, width, height, text, fill">
+    JS.Grid_DrawSquare (id, x, y, width, height, text, fill)
+  </function>
+  <function name="Grid_LoadSvg" parameters="data, id">
+    JS.Grid_LoadSvg (data, id)
+  </function>
+  <function name="Grid_DrawSvg" parameters="id, symbolid, x, y, width, height">
+    JS.Grid_DrawSvg (id, symbolid, x, y, width, height)
+  </function>
+  <function name="Grid_DrawImage" parameters="id, url, x, y, width, height">
+    JS.Grid_DrawImage (id, url, x, y, width, height)
+  </function>
+  <function name="Grid_AddNewShapePoint" parameters="x, y">
+    JS.Grid_AddNewShapePoint (x, y)
+  </function>
+  <function name="Grid_DrawShape" parameters="id, border, fill, opacity">
+    JS.Grid_DrawShape (id, border, fill, opacity)
+  </function>
+  <function name="JS_GridSquareClick" parameters="parameterstring">
+    parameters = Split(parameterstring, ";")
+    x = ToInt(StringListItem(parameters, 0))
+    y = ToInt(StringListItem(parameters, 1))
+    GridSquareClick (x, y)
+  </function>
+  <function name="GridSquareClick" parameters="x, y">
+    // Copy this function into your game to handle grid square clicks
+  </function>
+  <function name="Grid_Redraw">
+    foreach (object, AllObjects()) {
+      if (Grid_GetRoomBooleanForPlayer(game.pov, object, "grid_isdrawn")) {
+        Grid_DrawRoom (object, true, game.pov)
+      }
+    }
+  </function>
+  <function name="Grid_SetGridCoordinateForPlayer" parameters="playerobject, room, coordinate, value">
+    coordinates = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+    if (DictionaryContains(coordinates, coordinate)) {
+      dictionary remove (coordinates, coordinate)
+    }
+    dictionary add (coordinates, coordinate, value * 1.0)
+  </function>
+  <function name="Grid_GetGridCoordinateForPlayer" parameters="playerobject, room, coordinate" type="double">
+    coordinates = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+    return (DictionaryItem(coordinates, coordinate))
+  </function>
+  <function name="Grid_SetRoomBooleanForPlayer" parameters="playerobject, room, coordinate, value">
+    datadictionary = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+    if (DictionaryContains(datadictionary, coordinate)) {
+      dictionary remove (datadictionary, coordinate)
+    }
+    dictionary add (datadictionary, coordinate, value)
+  </function>
+  <function name="Grid_GetRoomBooleanForPlayer" parameters="playerobject, room, attribute" type="boolean">
+    coordinatedata = Grid_GetPlayerCoordinateDictionary(playerobject)
+    if (not DictionaryContains(coordinatedata, room.name)) {
+      return (false)
+    }
+    else {
+      datadictionary = Grid_GetPlayerCoordinatesForRoom(playerobject, room)
+      if (DictionaryContains(datadictionary, attribute)) {
+        return (DictionaryItem(datadictionary, attribute))
+      }
+      else {
+        return (false)
+      }
+    }
+  </function>
+  <function name="Grid_GetPlayerCoordinateDictionary" parameters="playerobject" type="dictionary">
+    if (HasAttribute(playerobject, "grid_coordinates_delegate")) {
+      return (Grid_GetPlayerCoordinateDictionary(playerobject.grid_coordinates_delegate))
+    }
+    else {
+      if (not HasAttribute(playerobject, "grid_coordinates")) {
+        playerobject.grid_coordinates = NewDictionary()
+        Grid_SetGridCoordinateForPlayer (playerobject, playerobject.parent, "x", 0)
+        Grid_SetGridCoordinateForPlayer (playerobject, playerobject.parent, "y", 0)
+        Grid_SetGridCoordinateForPlayer (playerobject, playerobject.parent, "z", 0)
+        playerobject.parent.grid_render = true
+        Grid_CalculateMapCoordinates (playerobject.parent, playerobject)
+      }
+      return (playerobject.grid_coordinates)
+    }
+  </function>
+  <function name="Grid_GetPlayerCoordinatesForRoom" parameters="playerobject, room" type="dictionary">
+    coordinatedata = Grid_GetPlayerCoordinateDictionary(playerobject)
+    if (not DictionaryContains(coordinatedata, room.name)) {
+      dictionary add (coordinatedata, room.name, NewDictionary())
+    }
+    return (DictionaryItem(coordinatedata, room.name))
+  </function>
+  <function name="MergePOVCoordinates"><![CDATA[
+    coordinateowner = GetCoordinateOwner(game.pov)
+    foreach (obj, GetDirectChildren(game.pov.parent)) {
+      if (obj <> game.pov and HasAttribute(obj, "grid_coordinates")) {
+        objcoordinateowner = GetCoordinateOwner(obj)
+        if (coordinateowner <> objcoordinateowner) {
+          MapPOVCoordinates (objcoordinateowner, coordinateowner)
+        }
+      }
+    }
+  ]]></function>
+  <function name="GetCoordinateOwner" parameters="playerobject" type="object">
+    if (HasAttribute(playerobject, "grid_coordinates_delegate")) {
+      return (GetCoordinateOwner(playerobject.grid_coordinates_delegate))
+    }
+    else {
+      return (playerobject)
+    }
+  </function>
+  <function name="MapPOVCoordinates" parameters="source, target">
+    sourcecoordinates = Grid_GetPlayerCoordinateDictionary(source)
+    targetcoordinates = Grid_GetPlayerCoordinateDictionary(target)
+    xoffset = Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "x") - Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "x")
+    yoffset = Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "y") - Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "y")
+    zoffset = Grid_GetGridCoordinateForPlayer(target, game.pov.parent, "z") - Grid_GetGridCoordinateForPlayer(source, game.pov.parent, "z")
+    foreach (roomname, sourcecoordinates) {
+      coordinatedata = DictionaryItem(sourcecoordinates, roomname)
+      if (not DictionaryContains(targetcoordinates, roomname)) {
+        newroomdata = NewDictionary()
+        dictionary add (targetcoordinates, roomname, newroomdata)
+        MapPOVCoordinate (coordinatedata, newroomdata, "x", xoffset)
+        MapPOVCoordinate (coordinatedata, newroomdata, "y", yoffset)
+        MapPOVCoordinate (coordinatedata, newroomdata, "z", zoffset)
+        MapPOVCoordinate (coordinatedata, newroomdata, "end_x", xoffset)
+        MapPOVCoordinate (coordinatedata, newroomdata, "end_y", yoffset)
+      }
+      else {
+        newroomdata = DictionaryItem(targetcoordinates, roomname)
+      }
+      if (DictionaryContains(coordinatedata, "grid_isdrawn")) {
+        if (DictionaryContains(newroomdata, "grid_isdrawn")) {
+          dictionary remove (newroomdata, "grid_isdrawn")
+        }
+        dictionary add (newroomdata, "grid_isdrawn", DictionaryItem(coordinatedata, "grid_isdrawn"))
+      }
+    }
+    source.grid_coordinates_delegate = target
+    Grid_Redraw
+    Grid_DrawPlayerInRoom (game.pov.parent)
+  </function>
+  <function name="MapPOVCoordinate" parameters="sourcedata, targetdata, name, offset">
+    if (DictionaryContains(sourcedata, name)) {
+      value = DictionaryItem(sourcedata, name)
+      dictionary add (targetdata, name, value + offset)
+    }
+  </function>
+  <function name="DiceRoll" parameters="dicetype" type="int">
+    dpos = Instr(dicetype, "d")
+    if (dpos = 0) {
+      error ("Invalid dice type: " + dicetype)
+    }
+    else {
+      number_string = Left(dicetype, dpos - 1)
+      sides_string = Mid(dicetype, dpos + 1)
+      if (not (IsNumeric(number_string) and IsNumeric(sides_string))) {
+        error ("Invalid dice type: " + dicetype)
+      }
+      else {
+        number = ToInt(number_string)
+        sides = ToInt(sides_string)
+        total = 0
+        for (i, 1, number) {
+          total = total + GetRandomInt(1, sides)
+        }
+        return (total)
+      }
+    }
+  </function>
+  <function name="TextFX_Typewriter" parameters="text, speed">
+    TextFX_Typewriter_Internal (text, speed, GetCurrentFontFamily(), game.defaultforeground, game.defaultfontsize)
+  </function>
+  <function name="TextFX_Typewriter_Internal" parameters="text, speed, font, color, size">
+    JS.TextFX.Typewriter (text, speed, font, color, size)
+  </function>
+  <function name="TextFX_Unscramble" parameters="text, speed, reveal">
+    TextFX_Unscramble_Internal (text, speed, reveal, GetCurrentFontFamily(), game.defaultforeground, game.defaultfontsize)
+  </function>
+  <function name="TextFX_Unscramble_Internal" parameters="text, speed, reveal, font, color, size">
+    JS.TextFX.Unscramble (text, speed, reveal, font, color, size)
+  </function>
+  <function name="InitInterface"><![CDATA[
+    if (game.setcustomwidth) {
+      JS.setGameWidth (game.customwidth)
+    }
+    if (not game.showborder) {
+      JS.hideBorder ()
+    }
+    if (game.setcustompadding) {
+      JS.setGamePadding (game.custompaddingtop, game.custompaddingbottom, game.custompaddingleft, game.custompaddingright)
+    }
+    if (game.externalstylesheets <> null) {
+      foreach (stylesheet, game.externalstylesheets) {
+        JS.addExternalStylesheet (stylesheet)
+      }
+    }
+    if (game.setbackgroundopacity) {
+      SetBackgroundOpacity (game.backgroundopacity)
+    }
+    request (Background, game.defaultbackground)
+    request (Foreground, game.defaultforeground)
+    request (LinkForeground, game.defaultlinkforeground)
+    if (LengthOf(game.backgroundimage) > 0) {
+      SetBackgroundImage (game.backgroundimage)
+    }
+    request (SetCompassDirections, Join(game.compassdirections, ";"))
+    request (SetInterfaceString, "InventoryLabel=Inventory")
+    request (SetInterfaceString, "StatusLabel=Status")
+    request (SetInterfaceString, "PlacesObjectsLabel=Places and Objects")
+    request (SetInterfaceString, "CompassLabel=Compass")
+    request (SetInterfaceString, "InButtonLabel=in")
+    request (SetInterfaceString, "OutButtonLabel=out")
+    request (SetInterfaceString, "EmptyListLabel=(empty)")
+    request (SetInterfaceString, "NothingSelectedLabel=(nothing selected)")
+    request (SetInterfaceString, "TypeHereLabel=Type here...")
+    request (SetInterfaceString, "ContinueLabel=Continue...")
+    JS.SetMenuBackground (game.menubackground)
+    JS.SetMenuForeground (game.menuforeground)
+    JS.SetMenuHoverBackground (game.menuhoverbackground)
+    JS.SetMenuHoverForeground (game.menuhoverforeground)
+    JS.SetMenuFontName (game.menufont)
+    JS.SetMenuFontSize (game.menufontsize + "pt")
+    if (not game.underlinehyperlinks) {
+      JS.TurnOffHyperlinksUnderline ()
+    }
+    if (game.showpanes) {
+      request (Show, "Panes")
+    }
+    else {
+      request (Hide, "Panes")
+    }
+    if (game.showcommandbar) {
+      request (Show, "Command")
+    }
+    else {
+      request (Hide, "Command")
+    }
+    if (game.showlocation) {
+      request (Show, "Location")
+    }
+    else {
+      request (Hide, "Location")
+    }
+    if (HasString(game, "panelcontents")) {
+      SetFramePicture (game.panelcontents)
+    }
+    if (game.gridmap) {
+      JS.ShowGrid (game.mapsize)
+      Grid_SetScale (game.mapscale)
+      if (game.pov <> null) {
+        if (game.pov.parent <> null) {
+          Grid_Redraw
+          Grid_DrawPlayerInRoom (game.pov.parent)
+        }
+      }
+    }
+    InitUserInterface
+  ]]></function>
+  <function name="InitUserInterface">
+  </function>
+  <function name="StartGame"><![CDATA[
+    StartTurnOutputSection
+    if (game.showtitle) {
+      JS.StartOutputSection ("title")
+      PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
+      if (game.subtitle <> null) {
+        if (LengthOf(game.subtitle) > 0) {
+          PrintCentered ("<span style=\"font-size:130%\">" + game.subtitle + "</span>")
+        }
+      }
+      if (game.author <> null) {
+        if (LengthOf(game.author) > 0) {
+          PrintCentered ("<br/><span style=\"font-size:140%\">by " + game.author + "</span>")
+        }
+      }
+      msg ("<div style=\"margin-top:20px\"></div>")
+      JS.EndOutputSection ("title")
+    }
+    if (game.pov = null) {
+      playerObject = GetObject("player")
+      if (playerObject = null) {
+        if (ListCount(AllObjects()) > 0) {
+          firstRoom = ObjectListItem(AllObjects(), 0)
+        }
+        else {
+          create ("room")
+          firstRoom = room
+        }
+        create ("player")
+        player.parent = firstRoom
+      }
+      game.pov = player
+    }
+    else {
+      InitPOV (null, game.pov)
+    }
+    InitStatusAttributes
+    UpdateStatusAttributes
+    InitVerbsList
+    if (HasScript(game, "start")) {
+      do (game, "start")
+    }
+    UpdateStatusAttributes
+    UpdateObjectLinks
+    on ready {
+      if (game.gridmap) {
+        Grid_DrawPlayerInRoom (game.pov.parent)
+      }
+      if (game.displayroomdescriptiononstart) {
+        OnEnterRoom (null)
+      }
+      UpdateStatusAttributes
+      UpdateObjectLinks
+    }
+  ]]></function>
+  <function name="RandomChance" parameters="percentile" type="boolean"><![CDATA[
+    return (GetRandomInt(1,100) <= percentile)
+  ]]></function>
+  <function name="SetObjectFlagOn" parameters="object, flag">
+    set (object, flag, true)
+  </function>
+  <function name="SetObjectFlagOff" parameters="object, flag">
+    set (object, flag, false)
+  </function>
+  <function name="IncreaseObjectCounter" parameters="object, counter">
+    if (not HasInt(object, counter)) {
+      set (object, counter, 0)
+    }
+    set (object, counter, GetInt(object, counter) + 1)
+  </function>
+  <function name="DecreaseObjectCounter" parameters="object, counter">
+    if (not HasInt(object, counter)) {
+      set (object, counter, 0)
+    }
+    set (object, counter, GetInt(object, counter) - 1)
+  </function>
+  <function name="IsSwitchedOn" parameters="object" type="boolean">
+    return (GetBoolean(object, "switchedon"))
+  </function>
+  <function name="AddToInventory" parameters="object">
+    object.parent = game.pov
+  </function>
+  <function name="MoveObject" parameters="object, parent">
+    object.parent = parent
+  </function>
+  <function name="MoveObjectHere" parameters="object">
+    object.parent = game.pov.parent
+  </function>
+  <function name="RemoveObject" parameters="object">
+    object.parent = null
+  </function>
+  <function name="MakeObjectVisible" parameters="object">
+    object.visible = true
+  </function>
+  <function name="MakeObjectInvisible" parameters="object">
+    object.visible = false
+  </function>
+  <function name="MakeExitVisible" parameters="object">
+    object.visible = true
+  </function>
+  <function name="MakeExitInvisible" parameters="object">
+    object.visible = false
+  </function>
+  <function name="HelperOpenObject" parameters="object">
+    object.isopen = true
+  </function>
+  <function name="HelperCloseObject" parameters="object">
+    object.isopen = false
+  </function>
+  <function name="CloneObject" parameters="object" type="object">
+    newobject = Clone(object)
+    if (not HasString(object, "alias")) {
+      newobject.alias = object.name
+    }
+    return (newobject)
+  </function>
+  <function name="CloneObjectAndMove" parameters="object, newparent" type="object">
+    newobject = CloneObject(object)
+    newobject.parent = newparent
+    return (newobject)
+  </function>
+  <function name="LockExit" parameters="exit">
+    exit.locked = true
+  </function>
+  <function name="UnlockExit" parameters="exit">
+    exit.locked = false
+  </function>
+  <function name="SwitchOn" parameters="object">
+    object.switchedon = true
+  </function>
+  <function name="SwitchOff" parameters="object">
+    object.switchedon = false
+  </function>
+  <function name="SetDark" parameters="object">
+    object.dark = true
+  </function>
+  <function name="SetLight" parameters="object">
+    object.dark = false
+  </function>
+  <function name="SetObjectLightstrength" parameters="object, strength">
+    if (LengthOf(strength) = 0) {
+      object.lightsource = false
+    }
+    else {
+      object.lightsource = true
+    }
+    object.lightstrength = strength
+  </function>
+  <function name="SetExitLightstrength" parameters="exit, strength">
+    if (LengthOf(strength) = 0) {
+      exit.lightsource = false
+    }
+    else {
+      exit.lightsource = true
+    }
+    exit.lightstrength = strength
+  </function>
+  <function name="ChangePOV" parameters="object"><![CDATA[
+    if (game.pov <> object) {
+      game.pov = object
+      if (game.gridmap) {
+        JS.Grid_ClearAllLayers ()
+        Grid_Redraw
+      }
+      OnEnterRoom (null)
+    }
+  ]]></function>
+  <function name="InitPOV" parameters="oldPOV, newPOV"><![CDATA[
+    if (oldPOV <> null) {
+      oldPOV.alias = oldPOV.external_alias
+      oldPOV.alt = oldPOV.external_alt
+      oldPOV.look = oldPOV.external_look
+      oldPOV.gender = oldPOV.external_gender
+      oldPOV.article = oldPOV.external_article
+    }
+    newPOV.external_alias = newPOV.alias
+    newPOV.external_alt = newPOV.alt
+    newPOV.external_look = newPOV.look
+    newPOV.external_gender = newPOV.gender
+    newPOV.external_article = newPOV.article
+    if (not GetBoolean(newPOV, "pov_used")) {
+      if (newPOV.alt = null) {
+        newPOV.pov_alt = newPOV.pov_alt
+      }
+      else {
+        newPOV.pov_alt = ListCombine(newPOV.alt, newPOV.pov_alt)
+      }
+      if (newPOV.alias <> null) {
+        list add (newPOV.pov_alt, newPOV.alias)
+      }
+      if (game.showhealth) {
+        newPOV.health = 100
+        newPOV.changedhealth => {
+          if (this.health > 100) {
+            this.health = 100
+          }
+          else if (this.health <= 0) {
+            this.health = 0
+            if (HasScript(game, "onhealthzero")) {
+              do (game, "onhealthzero")
+            }
+          }
+        }
+      }
+      newPOV.pov_used = true
+    }
+    newPOV.alias = newPOV.pov_alias
+    newPOV.alt = newPOV.pov_alt
+    newPOV.look = newPOV.pov_look
+    newPOV.gender = newPOV.pov_gender
+    newPOV.article = newPOV.pov_article
+  ]]></function>
+  <function name="InitVerbsList">
+    game.verbattributes = NewStringList()
+    game.verbattributeslookup = NewObjectDictionary()
+    foreach (cmd, AllCommands()) {
+      if (HasString(cmd, "property")) {
+        list add (game.verbattributes, cmd.property)
+        dictionary add (game.verbattributeslookup, cmd.property, cmd)
+      }
+    }
+  </function>
+  <function name="GetDisplayVerbs" parameters="object" type="stringlist">
+    if (Contains(game.pov, object)) {
+      baselist = object.inventoryverbs
+    }
+    else {
+      baselist = object.displayverbs
+    }
+    if (not game.autodisplayverbs or GetBoolean(object, "usestandardverblist")) {
+      return (baselist)
+    }
+    else {
+      if (HasAttribute(object, "generatedverbslist")) {
+        verbs = object.generatedverbslist
+      }
+      else {
+        verbs = NewStringList()
+        foreach (attr, GetAttributeNames(object, false)) {
+          if (ListContains(game.verbattributes, attr)) {
+            cmd = ObjectDictionaryItem(game.verbattributeslookup, attr)
+            if (HasString(cmd, "displayverb")) {
+              displayverb = CapFirst(cmd.displayverb)
+            }
+            else {
+              displayverb = CapFirst(attr)
+            }
+            if (not ListContains(baselist, displayverb)) {
+              list add (verbs, displayverb)
+            }
+          }
+        }
+        object.generatedverbslist = verbs
+      }
+      if (GetBoolean(object, "useindividualverblist")) {
+        return (verbs)
+      }
+      else {
+        return (ListCombine(baselist, verbs))
+      }
+    }
+  </function>
+  <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
+    outputsection = StartNewOutputSection()
+    msg (caption)
+    count = 0
+    game.menuoptionskeys = NewStringList()
+    foreach (option, options) {
+      list add (game.menuoptionskeys, option)
+      count = count + 1
+      if (TypeOf(options) = "stringlist") {
+        optionText = option
+      }
+      else {
+        optionText = StringDictionaryItem(options, option)
+      }
+      msg (count + ": <a class=\"cmdlink\" style=\"" + GetCurrentLinkTextFormat() + "\" onclick=\"ASLEvent('ShowMenuResponse','" + option + "')\">" + optionText + "</a>")
+    }
+    EndOutputSection (outputsection)
+    game.menuoptions = options
+    game.menuallowcancel = allowCancel
+    game.menucallback = callback
+    game.menuoutputsection = outputsection
+  ]]></function>
+  <function name="ShowMenuResponse" parameters="option">
+    if (game.menucallback = null) {
+      error ("Unexpected menu response")
+    }
+    else {
+      parameters = NewStringDictionary()
+      dictionary add (parameters, "result", option)
+      script = game.menucallback
+      ClearMenu
+      invoke (script, parameters)
+    }
+  </function>
+  <function name="HandleMenuTextResponse" parameters="input" type="boolean"><![CDATA[
+    handled = false
+    if (IsInt(input)) {
+      number = ToInt(input)
+      if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
+        handled = true
+        ShowMenuResponse (StringListItem(game.menuoptionskeys, number - 1))
+      }
+    }
+    return (handled)
+  ]]></function>
+  <function name="ClearMenu">
+    HideOutputSection (game.menuoutputsection)
+    game.menuoutputsection = null
+    game.menuoptions = null
+    game.menucallback = null
+  </function>
+  <function name="StartNewOutputSection" type="string">
+    if (not HasInt(game, "lastoutputsection")) {
+      game.lastoutputsection = 0
+    }
+    game.lastoutputsection = game.lastoutputsection + 1
+    name = "section" + game.lastoutputsection
+    JS.StartOutputSection (name)
+    return (name)
+  </function>
+  <function name="EndOutputSection" parameters="name">
+    JS.EndOutputSection (name)
+  </function>
+  <function name="HideOutputSection" parameters="name">
+    JS.HideOutputSection (name)
+  </function>
+  <function name="StartTurnOutputSection">
+    if (HasString(game, "currentturnoutputsection")) {
+      game.lastturnoutputsection = game.currentturnoutputsection
+      EndOutputSection (game.currentturnoutputsection)
+    }
+    game.currentturnoutputsection = StartNewOutputSection()
+  </function>
+  <function name="HidePreviousTurnOutput">
+    if (HasString(game, "lastturnoutputsection")) {
+      HideOutputSection (game.lastturnoutputsection)
+    }
+  </function>
+  <function name="Ask" parameters="question, callback">
+    options = NewStringList()
+    list add (options, "Yes")
+    list add (options, "No")
+    game.askcallback = callback
+    ShowMenu (question, options, false) {
+      parameters = NewDictionary()
+      if (result = "Yes") {
+        boolresult = true
+      }
+      else {
+        boolresult = false
+      }
+      dictionary add (parameters, "result", boolresult)
+      callback = game.askcallback
+      game.askcallback = null
+      invoke (callback, parameters)
+    }
+  </function>
+  <function name="AllKeysAvailable" parameters="object" type="boolean">
+    if (HasObject(object, "key")) {
+      if (not HasInt(object,"keycount")) {
+        object.keycount = 1
+        object.key1 = object.key
+      }
+      if (not HasObject(object, "key1")) {
+        object.key1 = object.key
+      }
+    }
+    for (x, 1, object.keycount) {
+      keyname = "key" + ToString(x)
+      if (HasObject(object, keyname)) {
+        if (not ListContains(ScopeInventory(), GetAttribute(object, keyname))) {
+          return (false)
+        }
+      }
+    }
+    return (true)
+  </function>
+</asl>
