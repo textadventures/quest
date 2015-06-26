@@ -23,7 +23,6 @@
     };
     
     var sendCommand = function (command, elapsedTime, metadata) {
-        console.log(command);
         // TODO: Increment time
         // TODO: Check if command override mode is on
         // TODO: Echo input for ASL <= 520
@@ -38,6 +37,15 @@
         // TODO: Send next timer request
     };
     
+    var print = function (text, linebreak) {
+        if (typeof linebreak === 'undefined') linebreak = true;
+        
+        // TODO: If ASL >= 540 and there is an OutputText function, use that
+        if (linebreak) text += '<br/>';
+        addTextAndScroll(text);
+    };
+    
     quest.begin = begin;
     quest.sendCommand = sendCommand;
+    quest.print = print;
 })();

@@ -151,11 +151,9 @@ function sendCommand(text, metadata) {
     if (_pauseMode || _waitingForSoundToFinish || _waitMode || !canSendCommand) return;
     canSendCommand = false;
     markScrollPosition();
-    window.setTimeout(function () {
-        var tickCount = getTickCountAndStopTimer();
-        quest.sendCommand(text, tickCount, metadata);
-        canSendCommand = true;
-    }, 100);
+    var tickCount = getTickCountAndStopTimer();
+    quest.sendCommand(text, tickCount, metadata);
+    canSendCommand = true;
     afterSendCommand();
 }
 

@@ -31,7 +31,7 @@
             parameters: [1],
             execute: function (ctx) {               
                 evaluateExpression(ctx.parameters[0], function (result) {
-                    console.log(result);
+                    quest.print(result);
                     ctx.complete();
                 });
             }
