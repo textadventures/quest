@@ -40,6 +40,9 @@
         request (Show, "Command")
     </function>
     
+    <function name="StartGame">
+    </function>
+    
     <function name="testfn" parameters="arg1, arg2" type="int">
         msg ("start fn")
         if (1 = 1) {

@@ -13,9 +13,10 @@
             quest.executeScript(quest.getFunction('InitInterface'));
         }
         
-        // InitInterface
+        // TODO: Only call StartGame if not loaded from saved game
+        quest.executeScript(quest.getFunction('StartGame'));
         
-        // TODO: StartGame
+        
         // TODO: Run on finally scripts
         // TODO: Update lists
         // TODO: If loaded from saved, load output etc.
