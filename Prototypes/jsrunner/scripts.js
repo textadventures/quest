@@ -499,7 +499,7 @@
     
     var callstack = [];
 
-    var executeScript = function (script) {
+    var executeScript = function (script, locals) {
         if (callstack.length !== 0) {
             throw 'Existing callstack is not empty';
         }
@@ -507,7 +507,7 @@
         callstack = [{
             script: script,
             index: 0,
-            locals: {},
+            locals: locals || {},
         }];
         
         executeNext();

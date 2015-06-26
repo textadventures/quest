@@ -28,7 +28,10 @@
         // TODO: Check if command override mode is on
         // TODO: Echo input for ASL <= 520
         
-        // HandleCommand
+        quest.executeScript(quest.getFunction('HandleCommand'), {
+            command: command,
+            metadata: metadata
+        });
         
         // TODO: TryFinishTurn
         // TODO: UpdateLists
