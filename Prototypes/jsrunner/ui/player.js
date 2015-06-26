@@ -152,14 +152,9 @@ function sendCommand(text, metadata) {
     canSendCommand = false;
     markScrollPosition();
     window.setTimeout(function () {
-        $("#fldUITickCount").val(getTickCountAndStopTimer());
-        var data = new Object();
-        data["command"] = text;
-        if (typeof metadata != "undefined") {
-            data["metadata"] = metadata;
-        }
-        $("#fldUIMsg").val("command " + JSON.stringify(data));
-        $("#cmdSubmit").click();
+        var tickCount = getTickCountAndStopTimer();
+        quest.sendCommand(text, tickCount, metadata);
+        canSendCommand = true;
     }, 100);
     afterSendCommand();
 }

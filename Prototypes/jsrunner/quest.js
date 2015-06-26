@@ -22,5 +22,19 @@
         // TODO: Send next timer request
     };
     
+    var sendCommand = function (command, elapsedTime, metadata) {
+        console.log(command);
+        // TODO: Increment time
+        // TODO: Check if command override mode is on
+        // TODO: Echo input for ASL <= 520
+        
+        // HandleCommand
+        
+        // TODO: TryFinishTurn
+        // TODO: UpdateLists
+        // TODO: Send next timer request
+    };
+    
     quest.begin = begin;
+    quest.sendCommand = sendCommand;
 })();
