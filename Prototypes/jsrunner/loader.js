@@ -25,7 +25,14 @@
     quest.load = function (data) {
         var parser = new DOMParser();
         var doc = parser.parseFromString(data, 'application/xml');
-        var asl = doc.childNodes[0];
+        var firstNode = 0;
+        for (var i = 0; i < doc.childNodes.length; i++) {
+            if (doc.childNodes[i].nodeType === 1) {
+                firstNode = i;
+                break;
+            }
+        }
+        var asl = doc.childNodes[firstNode];
         window.asl = asl;
         if (asl.nodeName !== 'asl') {
             throw 'File must begin with an ASL element';
