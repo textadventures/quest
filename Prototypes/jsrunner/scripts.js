@@ -299,7 +299,6 @@
         // based on SetScriptConstuctor
         
         var isScript = false;
-        var offset = 0;
         
         var obscuredScript = obscureStrings(line);
         var bracePos = obscuredScript.indexOf('{');
@@ -314,7 +313,6 @@
         var eqPos = obscuredScript.indexOf('=>');
         if (eqPos !== -1) {
             isScript = true;
-            offset = 1;
         }
         else {
             eqPos = obscuredScript.indexOf('=');
@@ -328,6 +326,14 @@
         
         var elementExpr = lastDot === - 1 ? null : appliesTo.substr(0, lastDot);
         var variable = lastDot === -1 ? appliesTo : appliesTo.substr(lastDot + 1);
+        
+        var value;
+        if (isScript) {
+            value = parseScript(line.substr(eqPos + 2).trim());
+        }
+        else {
+            value = parseExpression(line.substr(eqPos + 1).trim());
+        }
 
         return {
             keyword: keyword,
@@ -335,7 +341,7 @@
             parameters: {
                 elementExpr: elementExpr == null ? null : parseExpression(elementExpr),
                 variable: variable,
-                value: parseExpression(line.substr(eqPos + 1 + offset).trim())
+                value: value
             } 
         };
     };
