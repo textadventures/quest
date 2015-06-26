@@ -18,7 +18,12 @@
     </function>
 
     <function name="HandleCommand" parameters="command">
-        msg (command)
+        if (command = "help") {
+            msg ("This is just a test.")
+        }
+        else {
+            msg (command)
+        }
     </function>
 
     <function name="InitInterface">

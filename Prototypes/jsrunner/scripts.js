@@ -55,7 +55,13 @@
                         });
                     }
                     else {
-                        // TODO: Run "else" script if it exists
+                        // TODO: "else if"
+                        if (ctx.parameters.else) {
+                            callstack.push({
+                                script: ctx.parameters.else,
+                                index: 0,
+                            }); 
+                        }
                     }
                     ctx.complete();
                 });
@@ -181,10 +187,23 @@
         }
     };
 
-    var getScript = function (line) {
+    var getScript = function (line, lastIf) {
         // based on WorldModel.ScriptFactory.GetScriptConstructor
 
         var command, keyword, parameters;
+        
+        if (line.substring(0, 4) === 'else') {
+            if (!lastIf) {
+                throw 'Unexpected "else" (error with parent "if"?):' + line;
+            }
+            if (line.substring(0, 7) === 'else if') {
+                // TODO: Add
+            }
+            else {
+                lastIf.else = parseScript(line.substring(5));
+            }
+            return null;
+        }
 
         for (var candidate in commands) {
             if (line.substring(0, candidate.length) === candidate) {
@@ -205,7 +224,10 @@
             }
         }
 
-        if (!command) return null;
+        if (!command) {
+            console.log('Unrecognised script command: ' + line);
+            return null;
+        }
 
         if (command.create) {
             parameters = command.create(line);
@@ -271,6 +293,8 @@
     };
 
     var parseScript = function (text) {
+        var lastIf;
+        
         text = removeSurroundingBraces(text);
 
         var result = [];
@@ -279,13 +303,11 @@
 
             if (!scriptLine) break;
             if (scriptLine.line.length !== 0) {
-                var script = getScript(scriptLine.line);
+                var script = getScript(scriptLine.line, lastIf);
                 
-                if (!script) {
-                    console.log('Unrecognised script command: ' + scriptLine.line);
-                }
-                else {
+                if (script) {
                     result.push(script);
+                    if (script.keyword === 'if') lastIf = script.parameters;
                 }
             }
 
