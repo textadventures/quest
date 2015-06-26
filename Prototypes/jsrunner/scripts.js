@@ -215,6 +215,15 @@
                     ctx.complete();
                 });
             }
+        },
+        'return': {
+            parameters: [1],
+            execute: function (ctx) {
+                evaluateExpression(ctx.parameters[0], function (result) {
+                    ctx.finished = true;
+                    ctx.onReturn(result);
+                });
+            }
         }
     };
 
@@ -582,7 +591,7 @@
         
         var frame = callstack[callstack.length - 1];
         
-        if (frame.index === frame.script.length) {
+        if (frame.index === frame.script.length || frame.finished) {
             callstack.pop();
             executeNext();
             return;
@@ -594,6 +603,7 @@
             script.command.execute({
                 parameters: script.parameters,
                 locals: getLocals(),
+                onReturn: frame.onReturn,
                 complete: function () {
                     executeNext();
                 }
@@ -684,11 +694,27 @@
                 if (tree.callee.type !== 'Identifier') {
                     throw 'Function name must be an identifier';
                 }
-                // TODO: Evaluate function arguments
+                var index = 0;
+                var args = [];
+                var evaluateArgs = function () {
+                    if (index == tree.arguments.length) {
+                        callFunction(tree.callee.name, args, function (result) {
+                            expressionFrame.complete(result);
+                        });
+                        return;
+                    }
+                    frame.expressionStack.push({
+                        tree: tree.arguments[index],
+                        complete: function (result) {
+                            index++;
+                            args.push(result);
+                            evaluateArgs();
+                        }
+                    });
+                    evaluateNext();
+                };
+                evaluateArgs();
                 
-                callFunction(tree.callee.name, null, function (result) {
-                    expressionFrame.complete(result);
-                });
                 break;
             case 'MemberExpression':
                 if (tree.computed) {
@@ -757,7 +783,26 @@
     };
     
     var callFunction = function (name, args, complete) {
-        var fn = functions[name];
+        var fn;
+        
+        if (quest.functionExists(name)) {
+            fn = quest.getFunctionDefinition(name);
+            var arguments = {};
+            for (var i = 0; i < fn.parameters.length; i++) {
+                if (i >= args.length) break;
+                arguments[fn.parameters[i]] = args[i];
+            }
+            callstack.push({
+                script: fn.script,
+                locals: arguments,
+                index: 0,
+                onReturn: complete
+            });
+            executeNext();
+            return;
+        }
+        
+        fn = functions[name];
         if (!fn) {
             throw 'Unrecognised function ' + name;
         }

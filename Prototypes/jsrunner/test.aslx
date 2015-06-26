@@ -27,6 +27,10 @@
         else if (command = "hi") {
             msg ("Hello there!")
         }
+        else if (command = "fn") {
+            msg ("call fn")
+            msg ("Result " + testfn(5))
+        }
         else {
             msg (command)
         }
@@ -34,5 +38,10 @@
 
     <function name="InitInterface">
         request (Show, "Command")
+    </function>
+    
+    <function name="testfn" parameters="arg" type="int">
+        msg ("start fn")
+        return (arg + 2)
     </function>
 </asl>

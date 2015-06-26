@@ -18,7 +18,14 @@
             quest.set('game', 'name', name);
         },
         'function': function (node) {
-            quest.addFunction(getAttribute(node, 'name'), quest.parseScript(node.textContent));
+            var paramList;
+            var parameters = getAttribute(node, 'parameters');
+            if (parameters) {
+                paramList = parameters.split(/, ?/);
+            }
+            quest.addFunction(getAttribute(node, 'name'),
+                quest.parseScript(node.textContent),
+                paramList);
         }
     };
     

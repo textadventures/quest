@@ -32,8 +32,11 @@
 		};
 	};
 	
-	var addFunction = function (functionName, script) {
-		functions[functionName] = script;
+	var addFunction = function (functionName, script, parameters) {
+		functions[functionName] = {
+			script: script,
+			parameters: parameters
+		};
 	};
 	
 	var functionExists = function (functionName) {
@@ -41,8 +44,12 @@
 	};
 	
 	var getFunction = function (functionName) {
-		return functions[functionName];
+		return functions[functionName].script;
 	};
+	
+	var getFunctionDefinition = function (functionName) {
+		return functions[functionName];
+	}
 	
 	var dump = function () {
 		console.log("Elements:")
@@ -58,5 +65,6 @@
 	quest.addFunction = addFunction;
 	quest.functionExists = functionExists;
 	quest.getFunction = getFunction;
+	quest.getFunctionDefinition = getFunctionDefinition;
 	quest.dump = dump;
 })();
