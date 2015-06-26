@@ -53,17 +53,48 @@
                             script: ctx.parameters.then,
                             index: 0,
                         });
+                        ctx.complete();
                     }
                     else {
-                        // TODO: "else if"
-                        if (ctx.parameters.else) {
-                            callstack.push({
-                                script: ctx.parameters.else,
-                                index: 0,
-                            }); 
+                        var evaluateElse = function () {
+                            if (ctx.parameters.else) {
+                                callstack.push({
+                                    script: ctx.parameters.else,
+                                    index: 0,
+                                });
+                            }
+                            ctx.complete();
+                        };
+                        
+                        if (ctx.parameters.elseIf) {
+                            var index = 0;
+                            
+                            var evaluateElseIf = function () {
+                                evaluateExpression(ctx.parameters.elseIf[index].expression, function (result) {
+                                    if (result) {
+                                        callstack.push({
+                                            script: ctx.parameters.elseIf[index].script,
+                                            index: 0,
+                                        });
+                                        ctx.complete();
+                                    }
+                                    else {
+                                        index++;
+                                        if (index < ctx.parameters.elseIf.length) {
+                                            evaluateElseIf();
+                                        }
+                                        else {
+                                            evaluateElse();
+                                        }
+                                    }
+                                });
+                            };
+                            evaluateElseIf();
+                        }
+                        else {
+                            evaluateElse();
                         }
                     }
-                    ctx.complete();
                 });
             }
         },
@@ -197,7 +228,14 @@
                 throw 'Unexpected "else" (error with parent "if"?):' + line;
             }
             if (line.substring(0, 7) === 'else if') {
-                // TODO: Add
+                if (!lastIf.elseIf) lastIf.elseIf = [];
+                var elseIfParameters = getParameterInternal(line, '(', ')');
+                var elseIfExpression = parseExpression(elseIfParameters.parameter);
+                var elseIfScript = parseScript(elseIfParameters.after);
+                lastIf.elseIf.push({
+                    expression: elseIfExpression,
+                    script: elseIfScript
+                });
             }
             else {
                 lastIf.else = parseScript(line.substring(5));

@@ -21,6 +21,12 @@
         if (command = "help") {
             msg ("This is just a test.")
         }
+        else if (command = "hello") {
+            msg ("Greetings!")
+        }
+        else if (command = "hi") {
+            msg ("Hello there!")
+        }
         else {
             msg (command)
         }
