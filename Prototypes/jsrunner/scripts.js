@@ -158,6 +158,26 @@
                 console.log(ctx.parameters.appliesTo + " => " + ctx.parameters.value);
                 ctx.complete();
             }
+        },
+        'request': {
+            parameters: [2],
+            execute: function (ctx) {               
+                evaluateExpression(ctx.parameters[1], function (data) {
+                    var request = ctx.parameters[0].expr;
+                    switch (request) {
+                        case 'Show':
+                            quest.ui.show(data);
+                            break;
+                        case 'Hide':
+                            quest.ui.hide(data);
+                            break;
+                        default:
+                            console.log('Unhandled request type ' + request);
+                    }
+                    
+                    ctx.complete();
+                });
+            }
         }
     };
 

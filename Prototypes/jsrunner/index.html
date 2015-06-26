@@ -20,12 +20,14 @@
 	<script src="scripts.js"></script>
 	<script src="attributes.js"></script>
 	<script src="loader.js"></script>
+	<script src="ui.js"></script>
 
 	<script>
 		// quest.js will want a base url for image resources
 
 		$.get('test.aslx', function (data) {
 			quest.load(data);
+			quest.begin();
 		});
 	</script>
 </head>

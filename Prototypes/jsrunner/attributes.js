@@ -36,6 +36,14 @@
 		functions[functionName] = script;
 	};
 	
+	var functionExists = function (functionName) {
+		return functionName in functions;
+	};
+	
+	var getFunction = function (functionName) {
+		return functions[functionName];
+	};
+	
 	var dump = function () {
 		console.log("Elements:")
 		console.log(elements);
@@ -48,5 +56,7 @@
 	quest.isElement = isElement;
 	quest.create = create;
 	quest.addFunction = addFunction;
+	quest.functionExists = functionExists;
+	quest.getFunction = getFunction;
 	quest.dump = dump;
 })();
