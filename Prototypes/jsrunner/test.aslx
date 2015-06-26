@@ -41,6 +41,11 @@
     </function>
     
     <function name="StartGame">
+        Testing(123, 456)
+    </function>
+    
+    <function name="Testing" parameters="value1, value2">
+        msg ("Hello world " + value1 + ", " + value2)
     </function>
     
     <function name="testfn" parameters="arg1, arg2" type="int">

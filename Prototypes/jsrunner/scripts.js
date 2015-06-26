@@ -357,7 +357,7 @@
     var getFunctionCallScript = function (line) {
         // based on FunctionCallScriptConstructor
         
-        var paramExpressions, procName, afterParameter;
+        var paramExpressions, procName;
         
         var param = getParameterInternal(line, '(', ')');
         // param.parameter, .after        
@@ -380,14 +380,29 @@
             }
         }
         
-        if (!quest.functionExists(procName)) {
-            throw 'Function not found: ' + procName;
-        }
-        
         return {
-            command: function (ctx) {
-                console.log('CALL FUNCTION ' + procName);
-                ctx.complete();
+            command: {
+                execute: function (ctx) {
+                    var args = [];
+                    var index = 0;
+                    var evaluateArgs = function () {
+                        if (index == ctx.parameters.expressions.length) {
+                            callFunction(procName, args, function () {
+                                ctx.complete();
+                            });
+                            return;
+                        }
+                        evaluateExpression(ctx.parameters.expressions[index], function (result) {
+                            index++;
+                            args.push(result);
+                            evaluateArgs();
+                        });
+                    };
+                    evaluateArgs();
+                }
+            },
+            parameters: {
+                expressions: paramExpressions
             }
         };
     };
