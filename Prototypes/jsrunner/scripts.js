@@ -386,7 +386,7 @@
                     var args = [];
                     var index = 0;
                     var evaluateArgs = function () {
-                        if (index == ctx.parameters.expressions.length) {
+                        if (typeof ctx.parameters.expressions === 'undefined' || index === ctx.parameters.expressions.length) {
                             callFunction(procName, args, function () {
                                 ctx.complete();
                             });
