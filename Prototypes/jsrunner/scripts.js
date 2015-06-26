@@ -220,7 +220,6 @@
             parameters: [1],
             execute: function (ctx) {
                 evaluateExpression(ctx.parameters[0], function (result) {
-                    ctx.finished = true;
                     ctx.onReturn(result);
                 });
             }
@@ -589,9 +588,20 @@
     var executeNext = function () {
         if (callstack.length === 0) return;
         
+        // An "if" script is inside a child frame. The parent frame is the one
+        // with the local variables and any "return" script.
+        var parentFrameIndex = getParentFrameIndex();
+        var parentFrame = callstack[parentFrameIndex];
         var frame = callstack[callstack.length - 1];
         
-        if (frame.index === frame.script.length || frame.finished) {
+        if (parentFrame.finished) {
+            var framesToRemove = callstack.length - parentFrameIndex;
+            callstack.splice(-framesToRemove);
+            executeNext();
+            return;
+        }
+        
+        if (frame.index === frame.script.length) {
             callstack.pop();
             executeNext();
             return;
@@ -602,8 +612,11 @@
         var go = function () {
             script.command.execute({
                 parameters: script.parameters,
-                locals: getLocals(),
-                onReturn: frame.onReturn,
+                locals: parentFrame.locals,
+                onReturn: function (result) {
+                    parentFrame.finished = true;
+                    parentFrame.onReturn(result);
+                },
                 complete: function () {
                     executeNext();
                 }
@@ -622,18 +635,19 @@
         }
     };
     
-    var getLocals = function () {
-        // If current frame has no locals (e.g. inside an "if" script),
-        // navigate upwards to find the parent locals.
-
+    var getParentFrameIndex = function () {
         var frameIndex = callstack.length - 1;
         while (true) {
-            if (callstack[frameIndex].locals) return callstack[frameIndex].locals;
+            if (callstack[frameIndex].locals) return frameIndex;
             frameIndex--;
             if (frameIndex === -1) {
-                throw 'Could not find local variables';
+                throw 'Could not find parent frame';
             } 
         }
+    };
+    
+    var getParentFrame = function () {
+        return callstack[getParentFrameIndex()];
     };
         
     var evaluateExpression = function (expr, complete) {
@@ -660,7 +674,7 @@
                 expressionFrame.complete(tree.value);
                 break;
             case 'Identifier':
-                var locals = getLocals();
+                var locals = getParentFrame().locals;
                 if (tree.name in locals) {
                     expressionFrame.complete(locals[tree.name]);                
                 }

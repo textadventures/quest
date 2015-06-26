@@ -29,7 +29,7 @@
         }
         else if (command = "fn") {
             msg ("call fn")
-            msg ("Result " + testfn(5))
+            msg ("Result " + testfn(5, 1))
         }
         else {
             msg (command)
@@ -40,8 +40,16 @@
         request (Show, "Command")
     </function>
     
-    <function name="testfn" parameters="arg" type="int">
+    <function name="testfn" parameters="arg1, arg2" type="int">
         msg ("start fn")
-        return (arg + 2)
+        if (1 = 1) {
+            return (arg1 + arg2 + 2 + nestfn(1))
+            msg ("not this")
+        }
+        msg ("not here")
+    </function>
+    
+    <function name="nestfn" parameters="arg" type="int">
+        return (arg + 1)
     </function>
 </asl>
