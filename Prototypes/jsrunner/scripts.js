@@ -1010,7 +1010,11 @@
         if (!fn) {
             fn = asyncFunctions[name];
             if (!fn) {
-                throw 'Unrecognised function ' + name;
+                // TODO: Throw
+                //throw 'Unrecognised function ' + name;
+                console.log('Unrecognised function ' + name);
+                complete();
+                return;
             }
             fn(args, complete);
         }
