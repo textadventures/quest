@@ -244,8 +244,8 @@
         }
 
         for (var candidate in commands) {
-            if (line.substring(0, candidate.length) === candidate) {
-                // TODO: Must be non-word character afterwards, see original function
+            if (line.substring(0, candidate.length) === candidate
+                && (line.length === candidate.length || line.substr(candidate.length).match(/^\W/))) {
                 keyword = candidate;
                 command = commands[candidate];
             }
