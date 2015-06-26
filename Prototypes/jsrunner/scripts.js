@@ -223,6 +223,8 @@
 
         var command, keyword, parameters;
         
+        if (line.substring(0, 2) === '//') return null;
+        
         if (line.substring(0, 4) === 'else') {
             if (!lastIf) {
                 throw 'Unexpected "else" (error with parent "if"?):' + line;
