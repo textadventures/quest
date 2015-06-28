@@ -2,6 +2,7 @@
 
 (function () {
     window.quest = window.quest || {};
+    var quest = window.quest;
     
     jsep.removeUnaryOp('~');
     jsep.addUnaryOp('not');
@@ -223,6 +224,24 @@
                     ctx.onReturn(result);
                 });
             }
+        },
+        'JS.': {
+            create: function (line) {
+                var parameters = parseParameters(getAndSplitParameters(line));
+                var jsFunction = line.match(/^JS\.([\w\.\@]*)/)[1];
+
+                return {
+                    arguments: parameters,
+                    jsFunction: jsFunction
+                };
+            },
+            execute: function (ctx) {
+                evaluateExpressions(ctx.parameters.arguments, function (results) {
+                    var fn = window[ctx.parameters.jsFunction];
+                    fn.apply(window, results);
+                    ctx.complete();
+                });
+            }
         }
     };
 
@@ -255,7 +274,7 @@
 
         for (var candidate in commands) {
             if (line.substring(0, candidate.length) === candidate
-                && (line.length === candidate.length || line.substr(candidate.length).match(/^\W/))) {
+                && (line.length === candidate.length || line.substr(candidate.length).match(/^\W/) || candidate === 'JS.')) {
                 keyword = candidate;
                 command = commands[candidate];
             }
@@ -732,6 +751,24 @@
         evaluateNext();
     };
     
+    var evaluateExpressions = function (exprs, complete) {
+        var index = 0;
+        var results = [];
+        var go = function () {
+            if (index === exprs.length) {
+                complete(results);
+            }
+            else {
+                evaluateExpression(exprs[index], function (result) {
+                    results.push(result);
+                    index++;
+                    go();
+                });
+            }
+        };
+        go();
+    };
+    
     var evaluateNext = function () {
         var frame = callstack[callstack.length - 1];
         var expressionFrame = frame.expressionStack[frame.expressionStack.length - 1];
@@ -868,7 +905,7 @@
                 complete("test");
             }, 200);
         }
-    }
+    };
     
     var functions = {
         // String Functions
