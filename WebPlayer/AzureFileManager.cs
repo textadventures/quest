@@ -29,7 +29,7 @@ namespace WebPlayer
         private static string GetSourceGameUrl(ApiGame game)
         {
             var gameFile = game.ASLVersion >= 500 ? "game.aslx" : System.IO.Path.GetFileName(game.OnlineRef);
-            return string.Format("http://textadventures.blob.core.windows.net/gameresources/{0}/{1}", game.UniqueId, gameFile);
+            return string.Format("https://textadventures.blob.core.windows.net/gameresources/{0}/{1}", game.UniqueId, gameFile);
         }
 
         public static ApiGame GetGameData(string id)

@@ -624,7 +624,7 @@
   </function>
 
   <function name="SetWebFontName" parameters="font">
-    AddExternalStylesheet ("http://fonts.googleapis.com/css?family=" + Replace(font, " ", "+"))
+    AddExternalStylesheet ("https://fonts.googleapis.com/css?family=" + Replace(font, " ", "+"))
     game.defaultwebfont = font
   </function>
 

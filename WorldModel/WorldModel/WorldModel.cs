@@ -1020,7 +1020,7 @@ namespace TextAdventures.Quest
                 webFontsInUse.Add(defaultWebFont);
             }
             
-            var result = webFontsInUse.Select(f => "http://fonts.googleapis.com/css?family=" + f.Replace(' ', '+'));
+            var result = webFontsInUse.Select(f => "https://fonts.googleapis.com/css?family=" + f.Replace(' ', '+'));
             
             return result;
         }
