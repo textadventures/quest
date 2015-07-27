@@ -259,7 +259,7 @@ namespace WebPlayer
 
             if (functionName == null) return;
 
-            string url = AddResource(e.GameId, e.Filename);
+            string url = m_player.GetURL(e.Filename);
             
             m_buffer.AddJavaScriptToBuffer(
                 functionName,
