@@ -44,6 +44,7 @@ namespace WebPlayer
         public string LibraryFolder { get; set; }
         public string LoadData { get; set; }
         public AzureFileManager.ApiGame ApiGameData { get; set; }
+        public string ResourceUrlRoot { get; set; }
 
         public bool Initialise(out List<string> errors)
         {
@@ -194,7 +195,7 @@ namespace WebPlayer
         public void ShowPicture(string filename)
         {
             m_buffer.OutputText(ClearBuffer());
-            string url = AddResource(m_controller.Game.GameID, filename);
+            string url = GetURL(filename);
             m_buffer.OutputText(string.Format("<img src=\"{0}\" onload=\"scrollToEnd();\" /><br />", url));
         }
 
@@ -317,7 +318,7 @@ namespace WebPlayer
 
             foreach (string script in scripts)
             {
-                string url = AddResource(m_controller.Game.GameID, script);
+                string url = GetURL(script);
                 result.Add(url);
             }
 
@@ -456,6 +457,17 @@ namespace WebPlayer
 
         public string GetURL(string file)
         {
+            if (Config.ReadGameFileFromAzureBlob)
+            {
+                if (ResourceUrlRoot == null)
+                {
+                    return string.Format("http://textadventures.blob.core.windows.net/gameresources/{0}/{1}",
+                        m_controller.Game.GameID,
+                        file);
+                }
+                return ResourceUrlRoot + file;
+            }
+
             return AddResource(m_controller.Game.GameID, file);
         }
 

@@ -19,6 +19,11 @@ namespace WebPlayer
 
         public string GetFileForID(string id)
         {
+            if (id.StartsWith("editor/"))
+            {
+                return string.Format("https://textadventures.blob.core.windows.net/editorgames/{0}", id.Substring(7));
+            }
+
             var game = Api.GetData<ApiGame>("api/game/" + id);
 
             if (game == null) return null;
@@ -37,6 +42,12 @@ namespace WebPlayer
             var result = Api.GetData<ApiGame>("api/game/" + id);
             result.SourceGameUrl = GetSourceGameUrl(result);
             return result;
+        }
+
+        public static string GetResourceUrlRoot(string id)
+        {
+            if (!id.StartsWith("editor/")) return null;
+            return string.Format("https://textadventures.blob.core.windows.net/editorgames/{0}", id.Substring(7, id.LastIndexOf('/') - 6));
         }
     }
 }

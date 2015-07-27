@@ -172,7 +172,11 @@ namespace WebPlayer.Mobile
                 m_player.AddResource += AddResource;
                 m_player.PlayAudio += m_player_PlayAudio;
                 m_player.StopAudio += m_player_StopAudio;
-                
+                if (Config.ReadGameFileFromAzureBlob)
+                {
+                    m_player.ResourceUrlRoot = AzureFileManager.GetResourceUrlRoot(id);
+                }
+
                 if (m_player.Initialise(out errors))
                 {
                     Resources.AddGame(m_player.Game);
@@ -241,13 +245,6 @@ namespace WebPlayer.Mobile
 
         string AddResource(string gameId, string filename)
         {
-            if (Config.ReadGameFileFromAzureBlob)
-            {
-                return string.Format("http://textadventures.blob.core.windows.net/gameresources/{0}/{1}",
-                gameId,
-                filename);
-            }
-
             return "../Resource.ashx?id=" + gameId + "&filename=" + filename;
         }
 
