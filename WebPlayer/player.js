@@ -26,6 +26,8 @@ function init(url, gameSessionLogId) {
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     setInterval(keepSessionAlive, 60000);
 
+    if ($_GET["id"].substr(0, 7) === "editor/") return;
+
     $.ajax({
         url: apiRoot + "games/cansave",
         success: function (result) {
