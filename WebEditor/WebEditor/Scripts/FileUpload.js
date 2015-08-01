@@ -46,7 +46,8 @@ function fileUploadInit(element, key, extensions, currentValue) {
         $("#file-upload-imgPreview").empty();
         if ($("#existingFiles").val() != "<none>") {
             $("#file-upload-imgPreview").append($("<img />")
-            .attr("src", "/ImageProcessor.ashx?image=" + $("#existingFiles").val() + "&gameId=" + $("#GameId").val() + "&w=100&h=100"));
+                .attr("src", "/ImageProcessor.ashx?image=" + $("#existingFiles").val() + "&gameId=" + $("#GameId").val() + "&w=100&h=100")
+                .attr("style", "max-width: 100px; max-height: 100px"));
         }
     });
 

@@ -176,7 +176,7 @@
                 Func<int, object> button = @<text><button type="button" class="file-upload" data-key="@name-simpleeditor" data-extensions="@source">Choose file</button></text>;
                 Func<int, object> previewBtn = @<text>
                     <button type="button" class="img-preview" data-key="@name-simpleeditor" data-extensions="@source">
-                        <img src="/ImageProcessor.ashx?h=40&w=40&gameId=@Model.GameId&image=@simpleValue" />
+                        <img src="/ImageProcessor.ashx?h=40&w=40&gameId=@Model.GameId&image=@simpleValue" style="max-height: 40px; max-width: 40px;" />
                     </button>
                  </text>;
                 MvcHtmlString imageDiv = ctl.GetBool("preview") && source.Contains("jpg") && !string.IsNullOrEmpty(simpleValue) ? MvcHtmlString.Create(previewBtn(0).ToString()) : MvcHtmlString.Empty;

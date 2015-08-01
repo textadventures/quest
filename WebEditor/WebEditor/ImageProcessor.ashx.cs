@@ -19,15 +19,24 @@ namespace WebEditor
             // parse the filename
             int gameId = Int32.Parse(context.Request["gameId"]);
             string filename = context.Request["image"];
-            int width, height = 0;
-            Int32.TryParse(context.Request["w"], out width);
-            Int32.TryParse(context.Request["h"], out height);
+            
             string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(gameId);
-            string path = Path.Combine(uploadPath, filename);
+            
+            if (Config.AzureFiles)
+            {
+                context.Response.Redirect(uploadPath + "/" + filename, false);
+                context.ApplicationInstance.CompleteRequest();
+                return;
+            }
 
+            string path = Path.Combine(uploadPath, filename);
             if (!File.Exists(path)) return;
 
             Image fullsizeImg = Image.FromFile(path);
+
+            int width, height = 0;
+            Int32.TryParse(context.Request["w"], out width);
+            Int32.TryParse(context.Request["h"], out height);
 
             context.Response.Clear();
             context.Response.BufferOutput = true;
@@ -81,7 +90,7 @@ namespace WebEditor
 
             fullsizeImg.Dispose();
 
-            context.Response.Flush();            
+            context.Response.Flush();
         }
 
         public bool IsReusable

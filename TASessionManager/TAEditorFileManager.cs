@@ -160,6 +160,11 @@ namespace TASessionManager
             var filename = GetFile(id);
             if (filename == null) return null;
 
+            if (Config.AzureFiles)
+            {
+                return filename.Substring(0, filename.LastIndexOf("/"));
+            }
+
             return System.IO.Path.GetDirectoryName(filename);
         }
     }
