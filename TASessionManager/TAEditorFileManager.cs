@@ -162,6 +162,14 @@ namespace TASessionManager
 
             if (Config.AzureFiles)
             {
+                var pathRoot = ConfigurationManager.AppSettings["AzureFilesBase"];
+                if (!filename.StartsWith(pathRoot))
+                {
+                    throw new Exception("Expected filename to start with " + pathRoot);
+                }
+
+                filename = filename.Substring(pathRoot.Length);
+
                 return filename.Substring(0, filename.LastIndexOf("/"));
             }
 

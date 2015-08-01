@@ -256,7 +256,7 @@ namespace WebEditor.Controllers
         };
 
         [HttpPost]
-        public ActionResult FileUpload(WebEditor.Models.FileUpload fileModel)
+        public ActionResult FileUpload(FileUpload fileModel)
         {
             if (ModelState.IsValid)
             {
@@ -267,21 +267,23 @@ namespace WebEditor.Controllers
                 }
 
                 bool continueSave = true;
-                string ext = System.IO.Path.GetExtension(fileModel.File.FileName).ToLower();
+                string ext = Path.GetExtension(fileModel.File.FileName).ToLower();
                 List<string> controlPermittedExtensions = EditorDictionary[fileModel.GameId].GetPermittedExtensions(fileModel.Key, fileModel.Attribute);
                 if (fileModel.File != null
                     && fileModel.File.ContentLength > 0
                     && s_serverPermittedExtensions.Contains(ext)
                     && controlPermittedExtensions.Contains(ext))
                 {
-                    string filename = System.IO.Path.GetFileName(fileModel.File.FileName);
+                    string filename = Path.GetFileName(fileModel.File.FileName);
                     Logging.Log.DebugFormat("{0}: Upload file {1}", fileModel.GameId, filename);
                     string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
                     
+                    // TODO: If using AzureFiles, get the file from Azure for this check
+
                     // Check to see if file with same name exists
-                    if(System.IO.File.Exists(System.IO.Path.Combine(uploadPath, filename)))
+                    if(System.IO.File.Exists(Path.Combine(uploadPath, filename)))
                     {
-                        FileStream existingFile = new FileStream(System.IO.Path.Combine(uploadPath, filename), FileMode.Open);
+                        FileStream existingFile = new FileStream(Path.Combine(uploadPath, filename), FileMode.Open);
                         // if files different, rename the new file by appending a Guid to the name
                         if (!FileCompare(fileModel.File.InputStream, existingFile))
                         {
@@ -289,16 +291,34 @@ namespace WebEditor.Controllers
                             filename = EditorUtility.GetUniqueFilename(fileModel.File.FileName);                            
                         }
                         else
-                            continueSave = false; // skip saving if files are identical
+                        {
+                            // skip saving if files are identical
+                            continueSave = false;
+                        }
+                            
                         existingFile.Close();
                     }
 
-                    var saveFile = System.IO.Path.Combine(uploadPath, filename);
+                    if (continueSave)
+                    {
+                        if (Config.AzureFiles)
+                        {
+                            var connectionString = ConfigurationManager.AppSettings["AzureConnectionString"];
+                            var account = CloudStorageAccount.Parse(connectionString);
 
-                    if(continueSave)
-                        fileModel.File.SaveAs(saveFile);
-
-                    UploadOutputToAzure(saveFile);
+                            var blobClient = account.CreateCloudBlobClient();
+                            var container = blobClient.GetContainerReference("editorgames");
+                            var blob = container.GetBlockBlobReference(uploadPath + "/" + filename);
+                            blob.Properties.ContentType = "application/octet-stream";
+                            blob.UploadFromStream(fileModel.File.InputStream);
+                        }
+                        else
+                        {
+                            var saveFile = Path.Combine(uploadPath, filename);
+                            fileModel.File.SaveAs(saveFile);
+                            UploadOutputToAzure(saveFile);
+                        }
+                    }
 
                     ModelState.Remove("AllFiles");
                     fileModel.AllFiles = GetAllFilesList(fileModel.GameId);

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Web.SessionState;
+using System.Configuration;
 
 namespace WebEditor
 {
@@ -24,7 +25,7 @@ namespace WebEditor
             
             if (Config.AzureFiles)
             {
-                context.Response.Redirect(uploadPath + "/" + filename, false);
+                context.Response.Redirect(ConfigurationManager.AppSettings["AzureFilesBase"] + uploadPath + "/" + filename, false);
                 context.ApplicationInstance.CompleteRequest();
                 return;
             }
