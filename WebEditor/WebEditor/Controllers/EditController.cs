@@ -266,7 +266,6 @@ namespace WebEditor.Controllers
                     return new HttpStatusCodeResult(500);
                 }
 
-                bool continueSave = true;
                 string ext = Path.GetExtension(fileModel.File.FileName).ToLower();
                 List<string> controlPermittedExtensions = EditorDictionary[fileModel.GameId].GetPermittedExtensions(fileModel.Key, fileModel.Attribute);
                 if (fileModel.File != null
@@ -277,42 +276,67 @@ namespace WebEditor.Controllers
                     string filename = Path.GetFileName(fileModel.File.FileName);
                     Logging.Log.DebugFormat("{0}: Upload file {1}", fileModel.GameId, filename);
                     string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
-                    
-                    // TODO: If using AzureFiles, get the file from Azure for this check
 
-                    // Check to see if file with same name exists
-                    if(System.IO.File.Exists(Path.Combine(uploadPath, filename)))
+                    if (Config.AzureFiles)
                     {
-                        FileStream existingFile = new FileStream(Path.Combine(uploadPath, filename), FileMode.Open);
-                        // if files different, rename the new file by appending a Guid to the name
-                        if (!FileCompare(fileModel.File.InputStream, existingFile))
-                        {
-                            // rename the file by adding a number [count] at the end of filename
-                            filename = EditorUtility.GetUniqueFilename(fileModel.File.FileName);                            
-                        }
-                        else
-                        {
-                            // skip saving if files are identical
-                            continueSave = false;
-                        }
-                            
-                        existingFile.Close();
-                    }
+                        var connectionString = ConfigurationManager.AppSettings["AzureConnectionString"];
+                        var account = CloudStorageAccount.Parse(connectionString);
 
-                    if (continueSave)
-                    {
-                        if (Config.AzureFiles)
-                        {
-                            var connectionString = ConfigurationManager.AppSettings["AzureConnectionString"];
-                            var account = CloudStorageAccount.Parse(connectionString);
+                        var blobClient = account.CreateCloudBlobClient();
+                        var container = blobClient.GetContainerReference("editorgames");
+                        var blob = container.GetBlockBlobReference(uploadPath + "/" + filename);
 
-                            var blobClient = account.CreateCloudBlobClient();
-                            var container = blobClient.GetContainerReference("editorgames");
-                            var blob = container.GetBlockBlobReference(uploadPath + "/" + filename);
+                        var continueSave = true;
+
+                        if (blob.Exists())
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                blob.DownloadToStream(ms);
+                                ms.Position = 0;
+                                if (!FilesAreIdentical(fileModel.File.InputStream, ms))
+                                {
+                                    filename = Path.GetFileNameWithoutExtension(fileModel.File.FileName) + " " + DateTime.UtcNow.ToString("yyyy-MM-dd HH.mm.ss") + Path.GetExtension(fileModel.File.FileName);
+                                    blob = container.GetBlockBlobReference(uploadPath + "/" + filename);
+                                }
+                                else
+                                {
+                                    // skip saving if files are identical
+                                    continueSave = false;
+                                }
+                            }
+                        }
+
+                        if (continueSave)
+                        {
                             blob.Properties.ContentType = "application/octet-stream";
                             blob.UploadFromStream(fileModel.File.InputStream);
                         }
-                        else
+                    }
+                    else
+                    {
+                        var continueSave = true;
+
+                        // Check to see if file with same name exists
+                        if (System.IO.File.Exists(Path.Combine(uploadPath, filename)))
+                        {
+                            FileStream existingFile = new FileStream(Path.Combine(uploadPath, filename), FileMode.Open);
+
+                            if (!FilesAreIdentical(fileModel.File.InputStream, existingFile))
+                            {
+                                // rename the file by adding a number [count] at the end of filename
+                                filename = EditorUtility.GetUniqueFilename(fileModel.File.FileName);
+                            }
+                            else
+                            {
+                                // skip saving if files are identical
+                                continueSave = false;
+                            }
+
+                            existingFile.Close();
+                        }
+
+                        if (continueSave)
                         {
                             var saveFile = Path.Combine(uploadPath, filename);
                             fileModel.File.SaveAs(saveFile);
@@ -415,8 +439,7 @@ namespace WebEditor.Controllers
             return container;
         }
 
-        // Helper methods
-        private bool FileCompare(Stream file1, Stream file2)
+        private bool FilesAreIdentical(Stream file1, Stream file2)
         {
             int file1byte;
             int file2byte;
@@ -428,10 +451,11 @@ namespace WebEditor.Controllers
             }
 
             // do Byte by Byte Comparison
-            do{
-               file1byte = file1.ReadByte();
+            do
+            {
+                file1byte = file1.ReadByte();
                 file2byte = file2.ReadByte();
-            }while((file1byte == file2byte) && (file1byte != -1));
+            } while ((file1byte == file2byte) && (file1byte != -1));
             
             // return result of comparison
             return ((file1byte - file2byte) == 0);
