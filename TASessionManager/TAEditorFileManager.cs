@@ -71,6 +71,16 @@ namespace TASessionManager
 
         public void SaveFile(int id, string data)
         {
+            if (Config.AzureFiles)
+            {
+                var url = GetFile(id);
+                var container = GetAzureBlobContainer("editorgames");
+                var blob = container.GetBlockBlobReference(url);
+                blob.Properties.ContentType = "application/octet-stream";
+                blob.UploadText(data);
+                return;
+            }
+
             string savePath = GetFile(id);
             System.IO.File.WriteAllText(savePath, data);
 
