@@ -258,108 +258,107 @@ namespace WebEditor.Controllers
         [HttpPost]
         public ActionResult FileUpload(FileUpload fileModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (!EditorDictionary.ContainsKey(fileModel.GameId))
+                return View(fileModel);
+            }
+
+            if (!EditorDictionary.ContainsKey(fileModel.GameId))
+            {
+                Logging.Log.ErrorFormat("FileUpload - game id {0} not in EditorDictionary", fileModel.GameId);
+                return new HttpStatusCodeResult(500);
+            }
+
+            var ext = Path.GetExtension(fileModel.File.FileName).ToLower();
+            var controlPermittedExtensions = EditorDictionary[fileModel.GameId].GetPermittedExtensions(fileModel.Key, fileModel.Attribute);
+
+            if (fileModel.File == null
+                || fileModel.File.ContentLength == 0
+                || !s_serverPermittedExtensions.Contains(ext)
+                || !controlPermittedExtensions.Contains(ext))
+            {
+                ModelState.AddModelError("File", "Invalid file type");
+                return View(fileModel);
+            }
+
+            var filename = Path.GetFileName(fileModel.File.FileName);
+            Logging.Log.DebugFormat("{0}: Upload file {1}", fileModel.GameId, filename);
+            var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
+
+            if (Config.AzureFiles)
+            {
+                var container = GetAzureBlobContainer("editorgames");
+                var blob = container.GetBlockBlobReference(uploadPath + "/" + filename);
+
+                var continueSave = true;
+
+                if (blob.Exists())
                 {
-                    Logging.Log.ErrorFormat("FileUpload - game id {0} not in EditorDictionary", fileModel.GameId);
-                    return new HttpStatusCodeResult(500);
+                    using (var ms = new MemoryStream())
+                    {
+                        blob.DownloadToStream(ms);
+                        ms.Position = 0;
+                        if (!FilesAreIdentical(fileModel.File.InputStream, ms))
+                        {
+                            filename = Path.GetFileNameWithoutExtension(fileModel.File.FileName) + " " + DateTime.UtcNow.ToString("yyyy-MM-dd HH.mm.ss") + Path.GetExtension(fileModel.File.FileName);
+                            blob = container.GetBlockBlobReference(uploadPath + "/" + filename);
+                        }
+                        else
+                        {
+                            // skip saving if files are identical
+                            continueSave = false;
+                        }
+                    }
                 }
 
-                string ext = Path.GetExtension(fileModel.File.FileName).ToLower();
-                List<string> controlPermittedExtensions = EditorDictionary[fileModel.GameId].GetPermittedExtensions(fileModel.Key, fileModel.Attribute);
-                if (fileModel.File != null
-                    && fileModel.File.ContentLength > 0
-                    && s_serverPermittedExtensions.Contains(ext)
-                    && controlPermittedExtensions.Contains(ext))
+                if (continueSave)
                 {
-                    string filename = Path.GetFileName(fileModel.File.FileName);
-                    Logging.Log.DebugFormat("{0}: Upload file {1}", fileModel.GameId, filename);
-                    string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
+                    blob.Properties.ContentType = "application/octet-stream";
+                    blob.UploadFromStream(fileModel.File.InputStream);
+                }
+            }
+            else
+            {
+                var continueSave = true;
 
-                    if (Config.AzureFiles)
+                // Check to see if file with same name exists
+                if (System.IO.File.Exists(Path.Combine(uploadPath, filename)))
+                {
+                    FileStream existingFile = new FileStream(Path.Combine(uploadPath, filename), FileMode.Open);
+
+                    if (!FilesAreIdentical(fileModel.File.InputStream, existingFile))
                     {
-                        var connectionString = ConfigurationManager.AppSettings["AzureConnectionString"];
-                        var account = CloudStorageAccount.Parse(connectionString);
-
-                        var blobClient = account.CreateCloudBlobClient();
-                        var container = blobClient.GetContainerReference("editorgames");
-                        var blob = container.GetBlockBlobReference(uploadPath + "/" + filename);
-
-                        var continueSave = true;
-
-                        if (blob.Exists())
-                        {
-                            using (var ms = new MemoryStream())
-                            {
-                                blob.DownloadToStream(ms);
-                                ms.Position = 0;
-                                if (!FilesAreIdentical(fileModel.File.InputStream, ms))
-                                {
-                                    filename = Path.GetFileNameWithoutExtension(fileModel.File.FileName) + " " + DateTime.UtcNow.ToString("yyyy-MM-dd HH.mm.ss") + Path.GetExtension(fileModel.File.FileName);
-                                    blob = container.GetBlockBlobReference(uploadPath + "/" + filename);
-                                }
-                                else
-                                {
-                                    // skip saving if files are identical
-                                    continueSave = false;
-                                }
-                            }
-                        }
-
-                        if (continueSave)
-                        {
-                            blob.Properties.ContentType = "application/octet-stream";
-                            blob.UploadFromStream(fileModel.File.InputStream);
-                        }
+                        // rename the file by adding a number [count] at the end of filename
+                        filename = EditorUtility.GetUniqueFilename(fileModel.File.FileName);
                     }
                     else
                     {
-                        var continueSave = true;
-
-                        // Check to see if file with same name exists
-                        if (System.IO.File.Exists(Path.Combine(uploadPath, filename)))
-                        {
-                            FileStream existingFile = new FileStream(Path.Combine(uploadPath, filename), FileMode.Open);
-
-                            if (!FilesAreIdentical(fileModel.File.InputStream, existingFile))
-                            {
-                                // rename the file by adding a number [count] at the end of filename
-                                filename = EditorUtility.GetUniqueFilename(fileModel.File.FileName);
-                            }
-                            else
-                            {
-                                // skip saving if files are identical
-                                continueSave = false;
-                            }
-
-                            existingFile.Close();
-                        }
-
-                        if (continueSave)
-                        {
-                            var saveFile = Path.Combine(uploadPath, filename);
-                            fileModel.File.SaveAs(saveFile);
-                            UploadOutputToAzure(saveFile);
-                        }
+                        // skip saving if files are identical
+                        continueSave = false;
                     }
 
-                    ModelState.Remove("AllFiles");
-                    fileModel.AllFiles = GetAllFilesList(fileModel.GameId);
-                    ModelState.Remove("PostedFile");
-                    fileModel.PostedFile = filename;
+                    existingFile.Close();
                 }
-                else
+
+                if (continueSave)
                 {
-                    ModelState.AddModelError("File", "Invalid file type");
+                    var saveFile = Path.Combine(uploadPath, filename);
+                    fileModel.File.SaveAs(saveFile);
+                    UploadOutputToAzure(saveFile);
                 }
             }
+
+            ModelState.Remove("AllFiles");
+            fileModel.AllFiles = GetAllFilesList(fileModel.GameId);
+            ModelState.Remove("PostedFile");
+            fileModel.PostedFile = filename;
+
             return View(fileModel);
         }
 
         private string GetAllFilesList(int id)
         {
-            string path = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+            var path = Services.FileManagerLoader.GetFileManager().UploadPath(id);
             if (path == null) return null;  // this will be the case if there was no logged-in user
 
             if (Config.AzureFiles)
@@ -368,7 +367,7 @@ namespace WebEditor.Controllers
                 return null;
             }
 
-            IEnumerable<string> files = System.IO.Directory.GetFiles(path).Select(f => System.IO.Path.GetFileName(f)).OrderBy(f => f);
+            var files = Directory.GetFiles(path).Select(f => Path.GetFileName(f)).OrderBy(f => f);
             return string.Join(":", files);
         }
 
