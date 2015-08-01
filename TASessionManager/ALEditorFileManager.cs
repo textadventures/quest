@@ -44,6 +44,11 @@ namespace TASessionManager
             if (editorGame == null) return null;
             if (string.IsNullOrEmpty(editorGame.Filename)) return null;
 
+            if (Config.AzureFiles)
+            {
+                return ConfigurationManager.AppSettings["AzureFilesBase"] + editorGame.Filename.Replace(@"\", "/");
+            }
+
             string filePath = System.IO.Path.Combine(fileRoot, editorGame.Filename);
             return filePath;
         }
@@ -65,6 +70,16 @@ namespace TASessionManager
         }
         public void SaveFile(int id, string data)
         {
+            if (Config.AzureFiles)
+            {
+                var url = GetFile(id);
+                var container = GetAzureBlobContainer("editorgames");
+                var blob = container.GetBlockBlobReference(url);
+                blob.Properties.ContentType = "application/octet-stream";
+                blob.UploadText(data);
+                return;
+            }
+
             string savePath = GetFile(id);
             System.IO.File.WriteAllText(savePath, data);
             UploadOutputToAzure(savePath, data);
@@ -97,9 +112,18 @@ namespace TASessionManager
 
             string directory = Guid.NewGuid().ToString();
             string filePath = System.IO.Path.Combine(directory, filename);
-            string fullDirectoryPath = System.IO.Path.Combine(fileRoot, directory);
-            string fullPath = System.IO.Path.Combine(fullDirectoryPath, filename);
-            System.IO.Directory.CreateDirectory(fullDirectoryPath);
+            string fullPath = null;
+
+            if (!Config.AzureFiles)
+            {
+                string fullDirectoryPath = System.IO.Path.Combine(fileRoot, directory);
+                fullPath = System.IO.Path.Combine(fullDirectoryPath, filename);
+                System.IO.Directory.CreateDirectory(fullDirectoryPath);
+            }
+            else
+            {
+                fullPath = filePath;
+            }
 
             var newGame = Api.PostData<ApiEditorGame, ApiEditorGame>("api/editorgame", new ApiEditorGame
             {
@@ -116,6 +140,15 @@ namespace TASessionManager
 
         public void FinishCreatingNewFile(string filename, string data)
         {
+            if (Config.AzureFiles)
+            {
+                var container = GetAzureBlobContainer("editorgames");
+                var blob = container.GetBlockBlobReference(filename);
+                blob.Properties.ContentType = "application/octet-stream";
+                blob.UploadText(data);
+                return;
+            }
+
             UploadOutputToAzure(filename, data);
         }
 
@@ -123,6 +156,19 @@ namespace TASessionManager
         {
             var filename = GetFile(id);
             if (filename == null) return null;
+
+            if (Config.AzureFiles)
+            {
+                var pathRoot = ConfigurationManager.AppSettings["AzureFilesBase"];
+                if (!filename.StartsWith(pathRoot))
+                {
+                    throw new Exception("Expected filename to start with " + pathRoot);
+                }
+
+                filename = filename.Substring(pathRoot.Length);
+
+                return filename.Substring(0, filename.LastIndexOf("/"));
+            }
 
             return System.IO.Path.GetDirectoryName(filename);
         }
