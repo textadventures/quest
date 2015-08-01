@@ -2343,7 +2343,8 @@ namespace WebEditor.Services
         {
             string filename = EditorController.GenerateSafeFilename(gameName) + ".aslx";
             CreateNewFileData fileData = FileManagerLoader.GetFileManager().CreateNewFile(filename, gameName);
-            EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(gameType, templateName), gameName);
+            var data = EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(gameType, templateName), gameName);
+            FileManagerLoader.GetFileManager().FinishCreatingNewFile(fileData.FullPath, data);
             return fileData.Id;
         }
 

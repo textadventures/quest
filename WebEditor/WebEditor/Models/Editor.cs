@@ -10,7 +10,6 @@ namespace WebEditor.Models
         public int GameId { get; set; }
         public bool SimpleMode { get; set; }
         public string ErrorRedirect { get; set; }
-        public string PlayURL { get; set; }
         public int CacheBuster { get; set; }
     }
 }

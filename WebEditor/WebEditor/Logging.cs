@@ -11,11 +11,7 @@ namespace WebEditor
 
         static Logging()
         {
-            string logConfig = System.Configuration.ConfigurationManager.AppSettings["LogConfig"];
-            if (!string.IsNullOrEmpty(logConfig))
-            {
-                log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo(logConfig));
-            }
+            log4net.Config.XmlConfigurator.Configure();
         }
 
         public static log4net.ILog Log { get { return s_log; } }

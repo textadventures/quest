@@ -14,6 +14,11 @@ namespace WebEditor.Services
             return ConfigurationManager.AppSettings["DebugFileManagerFile"];
         }
 
+        public string GetPlayFilename(int id)
+        {
+            return ConfigurationManager.AppSettings["DebugFileManagerFile"];
+        }
+
         public void SaveFile(int id, string data)
         {
             string file = GetFile(id);
@@ -27,6 +32,10 @@ namespace WebEditor.Services
                 FullPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), filename),
                 Id = 1
             };
+        }
+
+        public void FinishCreatingNewFile(string filename, string data)
+        {
         }
 
         public string UploadPath(int id)

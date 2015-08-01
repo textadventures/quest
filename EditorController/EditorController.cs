@@ -2048,7 +2048,7 @@ namespace TextAdventures.Quest
             }
         }
 
-        public static void CreateNewGameFile(string filename, string template, string gameName)
+        public static string CreateNewGameFile(string filename, string template, string gameName)
         {
             string templateText = System.IO.File.ReadAllText(template);
             string initialFileText = templateText
@@ -2056,6 +2056,8 @@ namespace TextAdventures.Quest
                 .Replace("$ID$", GetNewGameId())
                 .Replace("$YEAR$", DateTime.Now.Year.ToString());
             System.IO.File.WriteAllText(filename, initialFileText);
+
+            return initialFileText;
         }
 
         public struct CanAddVerbResult

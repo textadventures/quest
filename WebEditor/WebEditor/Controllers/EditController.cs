@@ -7,6 +7,8 @@ using System.Configuration;
 using Ionic.Zip;
 using TextAdventures.Quest;
 using System.IO;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using WebEditor.Models;
 
 namespace WebEditor.Controllers
@@ -27,31 +29,34 @@ namespace WebEditor.Controllers
             ViewBag.Title = "Quest";
             model.SimpleMode = GetSettingBool("simplemode", false);
             model.ErrorRedirect = ConfigurationManager.AppSettings["WebsiteHome"] ?? "http://textadventures.co.uk/";
-            model.PlayURL = ConfigurationManager.AppSettings["PlayURL"] + "?id=" + id.ToString();
             model.CacheBuster = Convert.ToInt32((DateTime.Now - (new DateTime(2012, 1, 1))).TotalSeconds);
             return View(model);
         }
 
         public JsonResult Load(int id, bool simpleMode)
         {
-            Logging.Log.DebugFormat("{0}: Load (simpleMode={1})", id, simpleMode);
             Services.EditorService editor = new Services.EditorService();
             EditorDictionary[id] = editor;
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
             string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
             if (filename == null)
             {
+                Logging.Log.InfoFormat("Invalid game {0}", id);
                 return Json(new { error = "Invalid ID" }, JsonRequestBehavior.AllowGet);
             }
             var result = editor.Initialise(id, filename, libFolder, simpleMode);
             if (!result.Success)
             {
+                Logging.Log.InfoFormat("Failed to load game {0} - {1}", id, result.Error);
                 return Json(new { error = result.Error.Replace(Environment.NewLine, "<br/>") }, JsonRequestBehavior.AllowGet);
             }
-            
+
+            string playFilename = Services.FileManagerLoader.GetFileManager().GetPlayFilename(id);
+
             return Json(new {
                 tree = editor.GetElementTreeForJson(),
-                editorstyle = editor.Style
+                editorstyle = editor.Style,
+                playurl = ConfigurationManager.AppSettings["PlayURL"] + "?id=editor/" + playFilename,
             }, JsonRequestBehavior.AllowGet);
         }
 
@@ -93,7 +98,7 @@ namespace WebEditor.Controllers
             Logging.Log.DebugFormat("{0}: SaveElement {1}", element.GameId, element.Key);
             if (!element.Success)
             {
-                Logging.Log.DebugFormat("Element save failed");
+                Logging.Log.ErrorFormat("Element save failed");
                 return Timeout();
             }
             var result = EditorDictionary[element.GameId].SaveElement(element.Key, element);
@@ -288,8 +293,12 @@ namespace WebEditor.Controllers
                         existingFile.Close();
                     }
 
+                    var saveFile = System.IO.Path.Combine(uploadPath, filename);
+
                     if(continueSave)
-                        fileModel.File.SaveAs(System.IO.Path.Combine(uploadPath, filename));
+                        fileModel.File.SaveAs(saveFile);
+
+                    UploadOutputToAzure(saveFile);
 
                     ModelState.Remove("AllFiles");
                     fileModel.AllFiles = GetAllFilesList(fileModel.GameId);
@@ -314,16 +323,19 @@ namespace WebEditor.Controllers
 
         public ActionResult Publish(int id)
         {
+            Logging.Log.InfoFormat("Publishing game {0}", id);
             Services.EditorService editor = new Services.EditorService();
             string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
             string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
             if (filename == null)
             {
+                Logging.Log.InfoFormat("Publish failed for {0} - couldn't get file", id);
                 return View("Error");
             }
             var result = editor.Initialise(id, filename, libFolder, false);
             if (!result.Success)
             {
+                Logging.Log.InfoFormat("Publish failed for {0} - failed to initialise editor", id);
                 return View("Error");
             }
             
@@ -341,12 +353,39 @@ namespace WebEditor.Controllers
             {
                 System.IO.File.Delete(outputFilename);
             }
-            
+
+            Logging.Log.InfoFormat("Publishing {0} as {1}", id, outputFilename);
+
             editor.Publish(outputFilename);
+
+            UploadOutputToAzure(outputFilename);
 
             string url = ConfigurationManager.AppSettings["PublishURL"] + id;
 
+            Logging.Log.InfoFormat("Publish succeeded for {0}", id, outputFilename);
+
             return Redirect(url);
+        }
+
+        private void UploadOutputToAzure(string filename)
+        {
+            // filename will be like "D:\Editor Games\guid\Output\file.quest"
+            var container = GetAzureBlobContainer("editorgames");
+            var blob = container.GetBlockBlobReference(filename.Substring(16).Replace(@"\", "/"));
+            blob.Properties.ContentType = "application/octet-stream";
+            
+            var stream = System.IO.File.OpenRead(filename);
+            blob.UploadFromStream(stream);
+        }
+
+        private static CloudBlobContainer GetAzureBlobContainer(string containerName)
+        {
+            var connectionString = ConfigurationManager.AppSettings["AzureConnectionString"];
+            var account = CloudStorageAccount.Parse(connectionString);
+
+            var blobClient = account.CreateCloudBlobClient();
+            var container = blobClient.GetContainerReference(containerName);
+            return container;
         }
 
         // Helper methods
@@ -373,6 +412,7 @@ namespace WebEditor.Controllers
 
         public ActionResult Download(int id)
         {
+            Logging.Log.InfoFormat("Download game {0}", id);
             var file = Services.FileManagerLoader.GetFileManager().GetFile(id);
             var folder = Path.GetDirectoryName(file);
 

@@ -27,6 +27,7 @@
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
     <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,12 +57,45 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Data.Edm, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Data.Edm.5.6.2\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Data.OData.5.6.2\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services.Client, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Data.Services.Client.5.6.2\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.8.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=4.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\WindowsAzure.Storage.4.3.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -160,12 +194,15 @@
     <Content Include="Scripts\themes\default\d.png" />
     <Content Include="Scripts\themes\default\style.css" />
     <Content Include="Scripts\themes\default\throbber.gif" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
@@ -192,6 +229,10 @@
     <ProjectReference Include="..\..\EditorController\EditorController.csproj">
       <Project>{B3B92783-0D5E-43BB-833B-87DEA9B67D00}</Project>
       <Name>EditorController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TASessionManager\TASessionManager.csproj">
+      <Project>{7d6dcd70-0889-4fca-ad54-6892b432cf25}</Project>
+      <Name>TASessionManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WebInterfaces\WebInterfaces.csproj">
       <Project>{EAAFAF5A-3A08-440A-863A-D5FC79DBBCB7}</Project>
@@ -245,6 +286,388 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Edit\Controls\RichTextControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Core.aslx">
+      <Link>Core\Core.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreCombat.aslx">
+      <Link>Core\CoreCombat.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreCommands.aslx">
+      <Link>Core\CoreCommands.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreDescriptions.aslx">
+      <Link>Core\CoreDescriptions.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditor.aslx">
+      <Link>Core\CoreEditor.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorCommand.aslx">
+      <Link>Core\CoreEditorCommand.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorDynamicTemplate.aslx">
+      <Link>Core\CoreEditorDynamicTemplate.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorElements.aslx">
+      <Link>Core\CoreEditorElements.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorExit.aslx">
+      <Link>Core\CoreEditorExit.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorExpressions.aslx">
+      <Link>Core\CoreEditorExpressions.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorFunction.aslx">
+      <Link>Core\CoreEditorFunction.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorGame.aslx">
+      <Link>Core\CoreEditorGame.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorIncludedLibrary.aslx">
+      <Link>Core\CoreEditorIncludedLibrary.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorJavascript.aslx">
+      <Link>Core\CoreEditorJavascript.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObject.aslx">
+      <Link>Core\CoreEditorObject.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectAskTell.aslx">
+      <Link>Core\CoreEditorObjectAskTell.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectAttributes.aslx">
+      <Link>Core\CoreEditorObjectAttributes.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectChildren.aslx">
+      <Link>Core\CoreEditorObjectChildren.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectContainer.aslx">
+      <Link>Core\CoreEditorObjectContainer.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectExits.aslx">
+      <Link>Core\CoreEditorObjectExits.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectFeatures.aslx">
+      <Link>Core\CoreEditorObjectFeatures.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectInventory.aslx">
+      <Link>Core\CoreEditorObjectInventory.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectLightDark.aslx">
+      <Link>Core\CoreEditorObjectLightDark.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectMap.aslx">
+      <Link>Core\CoreEditorObjectMap.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectObject.aslx">
+      <Link>Core\CoreEditorObjectObject.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectOptions.aslx">
+      <Link>Core\CoreEditorObjectOptions.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectRoom.aslx">
+      <Link>Core\CoreEditorObjectRoom.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectScripts.aslx">
+      <Link>Core\CoreEditorObjectScripts.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectSetup.aslx">
+      <Link>Core\CoreEditorObjectSetup.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectUseGive.aslx">
+      <Link>Core\CoreEditorObjectUseGive.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorObjectVerbs.aslx">
+      <Link>Core\CoreEditorObjectVerbs.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScripts.aslx">
+      <Link>Core\CoreEditorScripts.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsDarkness.aslx">
+      <Link>Core\CoreEditorScriptsDarkness.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsDrawing.aslx">
+      <Link>Core\CoreEditorScriptsDrawing.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsEffects.aslx">
+      <Link>Core\CoreEditorScriptsEffects.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsGameState.aslx">
+      <Link>Core\CoreEditorScriptsGameState.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsObjects.aslx">
+      <Link>Core\CoreEditorScriptsObjects.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsOutput.aslx">
+      <Link>Core\CoreEditorScriptsOutput.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsPlayer.aslx">
+      <Link>Core\CoreEditorScriptsPlayer.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsScripts.aslx">
+      <Link>Core\CoreEditorScriptsScripts.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsTimers.aslx">
+      <Link>Core\CoreEditorScriptsTimers.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsTurnScripts.aslx">
+      <Link>Core\CoreEditorScriptsTurnScripts.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorScriptsVariables.aslx">
+      <Link>Core\CoreEditorScriptsVariables.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorTemplate.aslx">
+      <Link>Core\CoreEditorTemplate.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorTimer.aslx">
+      <Link>Core\CoreEditorTimer.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorTurnScript.aslx">
+      <Link>Core\CoreEditorTurnScript.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorType.aslx">
+      <Link>Core\CoreEditorType.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorVerb.aslx">
+      <Link>Core\CoreEditorVerb.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEditorWalkthrough.aslx">
+      <Link>Core\CoreEditorWalkthrough.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreEffects.aslx">
+      <Link>Core\CoreEffects.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreGrid.aslx">
+      <Link>Core\CoreGrid.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreOutput.aslx">
+      <Link>Core\CoreOutput.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreParser.aslx">
+      <Link>Core\CoreParser.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreScopes.aslx">
+      <Link>Core\CoreScopes.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreStatusAttributes.aslx">
+      <Link>Core\CoreStatusAttributes.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreTimers.aslx">
+      <Link>Core\CoreTimers.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreTurnScripts.aslx">
+      <Link>Core\CoreTurnScripts.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\CoreTypes.aslx">
+      <Link>Core\CoreTypes.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\GamebookCore.aslx">
+      <Link>Core\GamebookCore.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\GamebookCoreEditor.aslx">
+      <Link>Core\GamebookCoreEditor.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\GamebookCoreEditorExpressions.aslx">
+      <Link>Core\GamebookCoreEditorExpressions.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\GamebookCoreEditorScripts.aslx">
+      <Link>Core\GamebookCoreEditorScripts.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\GamebookCoreEditorScriptsPages.aslx">
+      <Link>Core\GamebookCoreEditorScriptsPages.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Deutsch.aslx">
+      <Link>Core\Languages\Deutsch.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\EditorEnglish.aslx">
+      <Link>Core\Languages\EditorEnglish.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\EditorEspanol.aslx">
+      <Link>Core\Languages\EditorEspanol.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\English.aslx">
+      <Link>Core\Languages\English.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Espanol.aslx">
+      <Link>Core\Languages\Espanol.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Esperanto.aslx">
+      <Link>Core\Languages\Esperanto.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Francais.aslx">
+      <Link>Core\Languages\Francais.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Italiano.aslx">
+      <Link>Core\Languages\Italiano.aslx</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Nederlands.aslx">
+      <Link>Core\Languages\Nederlands.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Portugues.aslx">
+      <Link>Core\Languages\Portugues.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Languages\Romana.aslx">
+      <Link>Core\Languages\Romana.aslx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Deutsch.template">
+      <Link>Core\Templates\Deutsch.template</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\English.template">
+      <Link>Core\Templates\English.template</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Espanol.template">
+      <Link>Core\Templates\Espanol.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Esperanto.template">
+      <Link>Core\Templates\Esperanto.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Francais.template">
+      <Link>Core\Templates\Francais.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Gamebook.template">
+      <Link>Core\Templates\Gamebook.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Italiano.template">
+      <Link>Core\Templates\Italiano.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Nederlands.template">
+      <Link>Core\Templates\Nederlands.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Portugues.template">
+      <Link>Core\Templates\Portugues.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\WorldModel\WorldModel\Core\Templates\Romana.template">
+      <Link>Core\Templates\Romana.template</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
