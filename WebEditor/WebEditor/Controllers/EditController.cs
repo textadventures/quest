@@ -363,8 +363,10 @@ namespace WebEditor.Controllers
 
             if (Config.AzureFiles)
             {
-                // TODO: Get list of uploaded files from Azure
-                return null;
+                var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+                var container = GetAzureBlobContainer("editorgames");
+                var blobs = container.ListBlobs(uploadPath + "/");
+                return string.Join(":", blobs.Select(b => Path.GetFileName(b.Uri.ToString())));
             }
 
             var files = Directory.GetFiles(path).Select(f => Path.GetFileName(f)).OrderBy(f => f);
