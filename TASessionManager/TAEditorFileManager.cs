@@ -44,6 +44,11 @@ namespace TASessionManager
             if (editorGame == null) return null;
             if (string.IsNullOrEmpty(editorGame.Filename)) return null;
 
+            if (Config.AzureFiles)
+            {
+                return ConfigurationManager.AppSettings["AzureFilesBase"] + editorGame.Filename.Replace(@"\", "/");
+            }
+
             string filePath = System.IO.Path.Combine(fileRoot, editorGame.Filename);
             return filePath;
         }

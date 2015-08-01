@@ -61,6 +61,7 @@
     <Compile Include="ALSessionManager.cs" />
     <Compile Include="Api.cs" />
     <Compile Include="AzureLogger.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TAEditorFileManager.cs" />
     <Compile Include="TASessionManager.cs" />

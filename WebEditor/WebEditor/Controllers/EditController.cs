@@ -317,6 +317,13 @@ namespace WebEditor.Controllers
         {
             string path = Services.FileManagerLoader.GetFileManager().UploadPath(id);
             if (path == null) return null;  // this will be the case if there was no logged-in user
+
+            if (Config.AzureFiles)
+            {
+                // TODO: Get list of uploaded files from Azure
+                return null;
+            }
+
             IEnumerable<string> files = System.IO.Directory.GetFiles(path).Select(f => System.IO.Path.GetFileName(f)).OrderBy(f => f);
             return string.Join(":", files);
         }

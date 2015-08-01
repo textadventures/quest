@@ -13,7 +13,7 @@ namespace TextAdventures.Quest
         {
             // TODO: Fix this ugliness
 
-            get { return ConfigurationManager.AppSettings["FileManagerType"] == "WebPlayer.AzureFileManager, WebPlayer"; }
+            get { return ConfigurationManager.AppSettings["FileManagerType"] == "WebPlayer.AzureFileManager, WebPlayer" || ConfigurationManager.AppSettings["AzureFiles"] == "true"; }
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -18,6 +19,12 @@ namespace TASessionManager
 
         public TAUser GetTAUser()
         {
+            var debugUser = ConfigurationManager.AppSettings["DebugUserId"];
+            if (debugUser != null)
+            {
+                return new TAUser { UserId = debugUser };
+            }
+
             if (HttpContext.Current == null) return null;
 
             HttpCookie cookie = HttpContext.Current.Request.Cookies.Get("ta_session2");
