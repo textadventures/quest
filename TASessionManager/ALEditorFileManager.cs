@@ -4,8 +4,8 @@ using System.Configuration;
 using System.Linq;
 using WebInterfaces;
 using System.Web;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage;
 
 namespace TASessionManager
 {
@@ -73,8 +73,17 @@ namespace TASessionManager
             if (Config.AzureFiles)
             {
                 var url = GetFile(id);
+
+                var pathRoot = ConfigurationManager.AppSettings["AzureFilesBase"];
+                if (!url.StartsWith(pathRoot))
+                {
+                    throw new Exception("Expected filename to start with " + pathRoot);
+                }
+
+                var filename = url.Substring(pathRoot.Length);
+
                 var container = GetAzureBlobContainer("editorgames");
-                var blob = container.GetBlockBlobReference(url);
+                var blob = container.GetBlockBlobReference(filename);
                 blob.Properties.ContentType = "application/octet-stream";
                 blob.UploadText(data);
                 return;
