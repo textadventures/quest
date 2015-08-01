@@ -1,12 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Globalization;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Web;
-using WebInterfaces;
 
 namespace TASessionManager
 {
@@ -27,7 +22,7 @@ namespace TASessionManager
 
             if (HttpContext.Current == null) return null;
 
-            HttpCookie cookie = HttpContext.Current.Request.Cookies.Get("ta_session2");
+            HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(ConfigurationManager.AppSettings["CookieName"]);
             if (cookie == null)
             {
                 return null;
