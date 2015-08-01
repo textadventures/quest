@@ -141,6 +141,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzureLogger.cs" />
     <Compile Include="Controllers\CreateController.cs" />
     <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

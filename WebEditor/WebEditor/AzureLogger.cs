@@ -1,13 +1,16 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using System.Linq;
+using System.Web;
 using log4net.Appender;
 using log4net.Core;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 
-namespace TASessionManager
+namespace WebEditor
 {
-    public sealed class LogEventEntity : TableServiceEntity
+    public sealed class LogEventEntity : TableEntity
     {
         public LogEventEntity()
         {
@@ -28,25 +31,27 @@ namespace TASessionManager
 
     public class TableStorageAppender : AppenderSkeleton
     {
-        private TableServiceContext _dataContext;
-        private string TableName = ConfigurationManager.AppSettings["AzureLogTable"];
+        private readonly Level m_minLevel;
+        private readonly CloudTable m_table;
+        private readonly string m_tableName = ConfigurationManager.AppSettings["AzureLogTable"];
 
-        public override void ActivateOptions()
+        public TableStorageAppender(Level minLevel)
         {
-            base.ActivateOptions();
+            m_minLevel = minLevel;
             var connectionString = ConfigurationManager.AppSettings["AzureConnectionString"];
             var account = CloudStorageAccount.Parse(connectionString);
 
             var tableClient = account.CreateCloudTableClient();
-            tableClient.CreateTableIfNotExist(TableName);
-
-            _dataContext = tableClient.GetDataServiceContext();
+            m_table = tableClient.GetTableReference(m_tableName);
+            m_table.CreateIfNotExists();
         }
 
         protected override void Append(LoggingEvent loggingEvent)
         {
             try
             {
+                if (m_minLevel != null && m_minLevel > loggingEvent.Level) return;
+
                 var entity = new LogEventEntity
                 {
                     Message = loggingEvent.RenderedMessage,
@@ -57,8 +62,9 @@ namespace TASessionManager
                     Identity = loggingEvent.Identity
                 };
 
-                _dataContext.AddObject(TableName, entity);
-                _dataContext.SaveChanges();
+                var operation = TableOperation.Insert(entity);
+
+                m_table.Execute(operation);
             }
             catch (Exception ex)
             {
