@@ -2055,7 +2055,6 @@ namespace TextAdventures.Quest
                 .Replace("$NAME$", Utility.SafeXML(gameName))
                 .Replace("$ID$", GetNewGameId())
                 .Replace("$YEAR$", DateTime.Now.Year.ToString());
-            System.IO.File.WriteAllText(filename, initialFileText);
 
             return initialFileText;
         }

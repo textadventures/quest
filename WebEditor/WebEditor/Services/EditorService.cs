@@ -2344,6 +2344,12 @@ namespace WebEditor.Services
             string filename = EditorController.GenerateSafeFilename(gameName) + ".aslx";
             CreateNewFileData fileData = FileManagerLoader.GetFileManager().CreateNewFile(filename, gameName);
             var data = EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(gameType, templateName), gameName);
+
+            if (!Config.AzureFiles)
+            {
+                System.IO.File.WriteAllText(fileData.FullPath, data);
+            }
+            
             FileManagerLoader.GetFileManager().FinishCreatingNewFile(fileData.FullPath, data);
             return fileData.Id;
         }

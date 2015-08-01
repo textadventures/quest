@@ -22,7 +22,8 @@ namespace EditorControllerTests
             {
                 string tempFile = System.IO.Path.GetTempFileName();
 
-                EditorController.CreateNewGameFile(tempFile, template.Filename, "Test");
+                var initialFileText = EditorController.CreateNewGameFile(tempFile, template.Filename, "Test");
+                System.IO.File.WriteAllText(tempFile, initialFileText);
                 EditorController controller = new EditorController();
                 string errorsRaised = string.Empty;
                 

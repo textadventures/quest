@@ -699,7 +699,8 @@ Public Class Editor
             System.IO.Directory.CreateDirectory(folder)
         End If
 
-        EditorController.CreateNewGameFile(filename, newGameWindow.GetSelectedTemplate().Filename, newGameWindow.txtGameName.Text)
+        Dim initialFileText = EditorController.CreateNewGameFile(filename, newGameWindow.GetSelectedTemplate().Filename, newGameWindow.txtGameName.Text)
+        IO.File.WriteAllText(filename, initialFileText)
 
         Return filename
     End Function
