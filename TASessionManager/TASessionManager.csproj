@@ -88,6 +88,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TAEditorFileManager.cs" />
     <Compile Include="TASessionManager.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebInterfaces\WebInterfaces.csproj">

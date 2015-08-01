@@ -33,7 +33,7 @@ namespace TASessionManager
 
         public string GetFile(int id)
         {
-            TAUser taUser = sessionManager.GetTAUser();
+            User taUser = sessionManager.GetTAUser();
             if (taUser == null)
             {
                 return null;
@@ -55,7 +55,7 @@ namespace TASessionManager
 
         public string GetPlayFilename(int id)
         {
-            TAUser taUser = sessionManager.GetTAUser();
+            User taUser = sessionManager.GetTAUser();
             if (taUser == null)
             {
                 return null;
@@ -119,7 +119,7 @@ namespace TASessionManager
         public CreateNewFileData CreateNewFile(string filename, string gameName)
         {
             CreateNewFileData result = new CreateNewFileData();
-            TAUser taUser = sessionManager.GetTAUser();
+            User taUser = sessionManager.GetTAUser();
             if (taUser == null) return result;
 
             string directory = Guid.NewGuid().ToString();

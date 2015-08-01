@@ -17,12 +17,12 @@ namespace TASessionManager
             public string UserId { get; set; }
         }
 
-        public TAUser GetTAUser()
+        public User GetTAUser()
         {
             var debugUser = ConfigurationManager.AppSettings["DebugUserId"];
             if (debugUser != null)
             {
-                return new TAUser { UserId = debugUser };
+                return new User { UserId = debugUser };
             }
 
             if (HttpContext.Current == null) return null;
@@ -33,7 +33,7 @@ namespace TASessionManager
                 return null;
             }
 
-            TAUser user = HttpContext.Current.Session["user"] as TAUser;
+            User user = HttpContext.Current.Session["user"] as User;
             string userSession = HttpContext.Current.Session["usersession"] as string;
             if (user != null && userSession != null && userSession == cookie.Value)
             {
@@ -43,17 +43,12 @@ namespace TASessionManager
             var userData = Api.GetData<ApiUser>("api/session/" + cookie.Value);
             if (userData == null) return null;
 
-            user = new TAUser { UserId = userData.UserId };
+            user = new User { UserId = userData.UserId };
 
             HttpContext.Current.Session["user"] = user;
             HttpContext.Current.Session["usersession"] = cookie.Value;
 
             return user;
         }
-    }
-
-    public class TAUser
-    {
-        public string UserId { get; set; }
     }
 }
