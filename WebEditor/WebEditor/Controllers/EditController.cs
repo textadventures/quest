@@ -391,30 +391,65 @@ namespace WebEditor.Controllers
                 return View("Error");
             }
             
-            string outputFolder = System.IO.Path.Combine(
-                System.IO.Path.GetDirectoryName(filename),
-                "Output");
-            
-            System.IO.Directory.CreateDirectory(outputFolder);
-            
-            string outputFilename = System.IO.Path.Combine(
-                outputFolder,
-                System.IO.Path.GetFileNameWithoutExtension(filename) + ".quest");
-
-            if (System.IO.File.Exists(outputFilename))
+            if (Config.AzureFiles)
             {
-                System.IO.File.Delete(outputFilename);
+                var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+                var container = GetAzureBlobContainer("editorgames");
+                var blobs = container.ListBlobs(uploadPath + "/");
+                var includeFiles = new List<EditorController.PackageIncludeFile>();
+                foreach (var blob in blobs.OfType<CloudBlockBlob>())
+                {
+                    if (blob.Name.EndsWith(".aslx")) continue;
+                    var blobReference = container.GetBlockBlobReference(blob.Name);
+                    var ms = new MemoryStream();
+                    blobReference.DownloadToStream(ms);
+                    ms.Position = 0;
+                    includeFiles.Add(new EditorController.PackageIncludeFile
+                    {
+                        Filename = Path.GetFileName(blob.Uri.ToString()),
+                        Content = ms
+                    });
+                }
+
+                using (var outputStream = new MemoryStream())
+                {
+                    editor.Publish(null, includeFiles, outputStream);
+                    outputStream.Position = 0;
+                    var blob = container.GetBlockBlobReference(uploadPath + "/Output/" + Path.GetFileNameWithoutExtension(filename) + ".quest");
+                    blob.UploadFromStream(outputStream);
+                }
+                
+                foreach (var stream in includeFiles.Select(i => i.Content))
+                {
+                    stream.Dispose();
+                }
             }
+            else
+            {
+                string outputFolder = Path.Combine(Path.GetDirectoryName(filename), "Output");
 
-            Logging.Log.InfoFormat("Publishing {0} as {1}", id, outputFilename);
+                Directory.CreateDirectory(outputFolder);
 
-            editor.Publish(outputFilename);
+                string outputFilename = Path.Combine(
+                    outputFolder,
+                    Path.GetFileNameWithoutExtension(filename) + ".quest");
 
-            UploadOutputToAzure(outputFilename);
+                if (System.IO.File.Exists(outputFilename))
+                {
+                    System.IO.File.Delete(outputFilename);
+                }
+
+                Logging.Log.InfoFormat("Publishing {0} as {1}", id, outputFilename);
+
+                editor.Publish(outputFilename, null, null);
+
+                UploadOutputToAzure(outputFilename);
+
+                Logging.Log.InfoFormat("Publish succeeded for {0}", id, outputFilename);
+            }
+            
 
             string url = ConfigurationManager.AppSettings["PublishURL"] + id;
-
-            Logging.Log.InfoFormat("Publish succeeded for {0}", id, outputFilename);
 
             return Redirect(url);
         }

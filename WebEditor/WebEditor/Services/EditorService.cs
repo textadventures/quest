@@ -2397,9 +2397,9 @@ namespace WebEditor.Services
             }
         }
 
-        public void Publish(string filename)
+        public void Publish(string filename, IEnumerable<EditorController.PackageIncludeFile> includeFiles, System.IO.Stream outputStream)
         {
-            m_controller.Publish(filename, false);
+            m_controller.Publish(filename, false, includeFiles, outputStream);
         }
 
         private string GetHiddenScripts()

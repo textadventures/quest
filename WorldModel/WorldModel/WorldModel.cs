@@ -1644,10 +1644,16 @@ namespace TextAdventures.Quest
             }
         }
 
-        public bool CreatePackage(string filename, bool includeWalkthrough, out string error)
+        public class PackageIncludeFile
+        {
+            public string Filename { get; set; }
+            public Stream Content { get; set; }
+        }
+
+        public bool CreatePackage(string filename, bool includeWalkthrough, out string error, IEnumerable<PackageIncludeFile> includeFiles, Stream outputStream)
         {
             Packager packager = new Packager(this);
-            return packager.CreatePackage(filename, includeWalkthrough, out error);
+            return packager.CreatePackage(filename, includeWalkthrough, out error, includeFiles, outputStream);
         }
 
         public string ResourcesFolder { get; internal set; }

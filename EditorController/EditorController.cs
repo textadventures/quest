@@ -1975,10 +1975,20 @@ namespace TextAdventures.Quest
             return FriendlyVerbDisplayName(simplePattern.Pattern);
         }
 
-        public ValidationResult Publish(string filename, bool includeWalkthrough)
+        public class PackageIncludeFile
+        {
+            public string Filename { get; set; }
+            public System.IO.Stream Content { get; set; }
+        }
+
+        public ValidationResult Publish(string filename, bool includeWalkthrough, IEnumerable<PackageIncludeFile> includeFiles = null, System.IO.Stream outputStream = null)
         {
             string error;
-            if (m_worldModel.CreatePackage(filename, includeWalkthrough, out error))
+            if (m_worldModel.CreatePackage(filename, includeWalkthrough, out error, includeFiles == null ? null : includeFiles.Select(f => new WorldModel.PackageIncludeFile
+            {
+                Filename = f.Filename,
+                Content = f.Content,
+            }), outputStream))
             {
                 return new ValidationResult { Valid = true, Message = ValidationMessage.OK };
             }
