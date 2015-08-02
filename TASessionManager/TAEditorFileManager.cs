@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using WebInterfaces;
-using System.Web;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage;
 
@@ -19,17 +18,7 @@ namespace TASessionManager
             public string GameName { get; set; }
         }
 
-        private string fileRoot;
         private TASessionManager sessionManager = new TASessionManager();
-
-        public TAEditorFileManager()
-        {
-            fileRoot = ConfigurationManager.AppSettings["TextAdvEditorFileRoot"];
-            if (string.IsNullOrEmpty(fileRoot))
-            {
-                fileRoot = @"D:\Editor Games";
-            }
-        }
 
         public string GetFile(int id)
         {
@@ -44,13 +33,7 @@ namespace TASessionManager
             if (editorGame == null) return null;
             if (string.IsNullOrEmpty(editorGame.Filename)) return null;
 
-            if (Config.AzureFiles)
-            {
-                return ConfigurationManager.AppSettings["AzureFilesBase"] + editorGame.Filename.Replace(@"\", "/");
-            }
-
-            string filePath = System.IO.Path.Combine(fileRoot, editorGame.Filename);
-            return filePath;
+            return ConfigurationManager.AppSettings["AzureFilesBase"] + editorGame.Filename.Replace(@"\", "/");
         }
 
         public string GetPlayFilename(int id)
@@ -71,38 +54,19 @@ namespace TASessionManager
 
         public void SaveFile(int id, string data)
         {
-            if (Config.AzureFiles)
+            var url = GetFile(id);
+
+            var pathRoot = ConfigurationManager.AppSettings["AzureFilesBase"];
+            if (!url.StartsWith(pathRoot))
             {
-                var url = GetFile(id);
-
-                var pathRoot = ConfigurationManager.AppSettings["AzureFilesBase"];
-                if (!url.StartsWith(pathRoot))
-                {
-                    throw new Exception("Expected filename to start with " + pathRoot);
-                }
-
-                var filename = url.Substring(pathRoot.Length);
-
-                var container = GetAzureBlobContainer("editorgames");
-                var blob = container.GetBlockBlobReference(filename);
-                blob.Properties.ContentType = "application/octet-stream";
-                blob.UploadText(data);
-                return;
+                throw new Exception("Expected filename to start with " + pathRoot);
             }
 
-            string savePath = GetFile(id);
-            System.IO.File.WriteAllText(savePath, data);
+            var filename = url.Substring(pathRoot.Length);
 
-            UploadOutputToAzure(savePath, data);
-        }
-
-        private void UploadOutputToAzure(string filename, string data)
-        {
-            // filename will be like "D:\Editor Games\guid\file.aslx"
             var container = GetAzureBlobContainer("editorgames");
-            var blob = container.GetBlockBlobReference(filename.Substring(16).Replace(@"\", "/"));
+            var blob = container.GetBlockBlobReference(filename);
             blob.Properties.ContentType = "application/octet-stream";
-
             blob.UploadText(data);
         }
 
@@ -124,18 +88,6 @@ namespace TASessionManager
 
             string directory = Guid.NewGuid().ToString();
             string filePath = System.IO.Path.Combine(directory, filename);
-            string fullPath = null;
-
-            if (!Config.AzureFiles)
-            {
-                string fullDirectoryPath = System.IO.Path.Combine(fileRoot, directory);
-                fullPath = System.IO.Path.Combine(fullDirectoryPath, filename);
-                System.IO.Directory.CreateDirectory(fullDirectoryPath);
-            }
-            else
-            {
-                fullPath = filePath;
-            }
 
             var newGame = Api.PostData<ApiEditorGame, ApiEditorGame>("api/editorgame", new ApiEditorGame
             {
@@ -145,23 +97,17 @@ namespace TASessionManager
             });
 
             result.Id = newGame.GameId;
-            result.FullPath = fullPath;
+            result.FullPath = filePath;
 
             return result;
         }
 
         public void FinishCreatingNewFile(string filename, string data)
         {
-            if (Config.AzureFiles)
-            {
-                var container = GetAzureBlobContainer("editorgames");
-                var blob = container.GetBlockBlobReference(filename);
-                blob.Properties.ContentType = "application/octet-stream";
-                blob.UploadText(data);
-                return;
-            }
-
-            UploadOutputToAzure(filename, data);
+            var container = GetAzureBlobContainer("editorgames");
+            var blob = container.GetBlockBlobReference(filename);
+            blob.Properties.ContentType = "application/octet-stream";
+            blob.UploadText(data);
         }
 
         public string UploadPath(int id)
@@ -169,20 +115,15 @@ namespace TASessionManager
             var filename = GetFile(id);
             if (filename == null) return null;
 
-            if (Config.AzureFiles)
+            var pathRoot = ConfigurationManager.AppSettings["AzureFilesBase"];
+            if (!filename.StartsWith(pathRoot))
             {
-                var pathRoot = ConfigurationManager.AppSettings["AzureFilesBase"];
-                if (!filename.StartsWith(pathRoot))
-                {
-                    throw new Exception("Expected filename to start with " + pathRoot);
-                }
-
-                filename = filename.Substring(pathRoot.Length);
-
-                return filename.Substring(0, filename.LastIndexOf("/"));
+                throw new Exception("Expected filename to start with " + pathRoot);
             }
 
-            return System.IO.Path.GetDirectoryName(filename);
+            filename = filename.Substring(pathRoot.Length);
+
+            return filename.Substring(0, filename.LastIndexOf("/"));
         }
     }
 }
