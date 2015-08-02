@@ -192,6 +192,7 @@
     <Content Include="player.css" />
     <Content Include="player.js" />
     <Content Include="playerweb.js" />
+    <Content Include="robots.txt" />
     <Content Include="Scripts\resume.js" />
     <Content Include="updating.gif" />
     <Content Include="Web.config">

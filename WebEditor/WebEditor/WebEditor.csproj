@@ -187,6 +187,7 @@
     <Content Include="Content\favicon.png" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="robots.txt" />
     <Content Include="Scripts\FileUpload.js" />
     <Content Include="Scripts\GameEdit.js" />
     <Content Include="Scripts\GameNew.js" />
