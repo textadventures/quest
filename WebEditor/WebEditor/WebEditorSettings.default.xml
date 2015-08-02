@@ -3,8 +3,6 @@
 <!-- After entering settings, this file should be saved as WebEditorSettings.xml -->
 
 <appSettings>
-  <add key="LibraryFolder" value="C:\Libraries\"/>
-  <add key="TemplatesFolder" value="C:\Libraries\Templates\"/>
   <add key="PlayURL" value="http://path/to/WebPlayer/Play.aspx"/>
   <add key="PublishURL" value="http://path/to/publish/app/"/>
 

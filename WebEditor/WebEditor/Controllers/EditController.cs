@@ -37,7 +37,7 @@ namespace WebEditor.Controllers
         {
             Services.EditorService editor = new Services.EditorService();
             EditorDictionary[id] = editor;
-            string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
+            string libFolder = Server.MapPath("~/bin/Core/");
             string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
             if (filename == null)
             {
@@ -377,7 +377,7 @@ namespace WebEditor.Controllers
         {
             Logging.Log.InfoFormat("Publishing game {0}", id);
             Services.EditorService editor = new Services.EditorService();
-            string libFolder = ConfigurationManager.AppSettings["LibraryFolder"];
+            string libFolder = Server.MapPath("~/bin/Core/");
             string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
             if (filename == null)
             {

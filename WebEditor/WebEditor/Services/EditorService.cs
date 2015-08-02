@@ -2307,43 +2307,43 @@ namespace WebEditor.Services
             return string.Join(";", result);
         }
 
-        public static Models.Create GetCreateModel()
+        public static Models.Create GetCreateModel(string templateFolder)
         {
             Models.Create model = new Models.Create
             {
                 SelectedTemplate = "English",
                 SelectedType = "Text adventure"
             };
-            PopulateCreateModelLists(model);
+            PopulateCreateModelLists(model, templateFolder);
             return model;
         }
 
-        public static void PopulateCreateModelLists(Models.Create model)
+        public static void PopulateCreateModelLists(Models.Create model, string templateFolder)
         {
-            Dictionary<string, TemplateData> templates = GetAvailableTemplates();
+            Dictionary<string, TemplateData> templates = GetAvailableTemplates(templateFolder);
             model.AllTemplates = templates.Values.Where(t => t.Type == EditorStyle.TextAdventure).Select(t => t.TemplateName);
             model.AllTypes = new List<string> { "Text adventure", "Gamebook" };
         }
 
-        private static Dictionary<string, TemplateData> GetAvailableTemplates()
+        private static Dictionary<string, TemplateData> GetAvailableTemplates(string folder)
         {
-            return EditorController.GetAvailableTemplates(ConfigurationManager.AppSettings["TemplatesFolder"]);
+            return EditorController.GetAvailableTemplates(folder);
         }
 
-        private static string GetTemplateFile(string gameType, string templateName)
+        private static string GetTemplateFile(string gameType, string templateName, string folder)
         {
             if (gameType == "Gamebook")
             {
-                return GetAvailableTemplates().Values.First(t => t.Type == EditorStyle.GameBook).Filename;
+                return GetAvailableTemplates(folder).Values.First(t => t.Type == EditorStyle.GameBook).Filename;
             }
-            return GetAvailableTemplates().Values.First(t => t.TemplateName == templateName).Filename;
+            return GetAvailableTemplates(folder).Values.First(t => t.TemplateName == templateName).Filename;
         }
 
-        public static int CreateNewGame(string gameType, string templateName, string gameName)
+        public static int CreateNewGame(string gameType, string templateName, string gameName, string templateFolder)
         {
             string filename = EditorController.GenerateSafeFilename(gameName) + ".aslx";
             CreateNewFileData fileData = FileManagerLoader.GetFileManager().CreateNewFile(filename, gameName);
-            var data = EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(gameType, templateName), gameName);
+            var data = EditorController.CreateNewGameFile(fileData.FullPath, GetTemplateFile(gameType, templateName, templateFolder), gameName);
 
             if (!Config.AzureFiles)
             {
