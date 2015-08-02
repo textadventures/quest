@@ -499,14 +499,19 @@ namespace WebEditor.Controllers
 
         public ActionResult Download(int id)
         {
-            Logging.Log.InfoFormat("Download game {0}", id);
-            var file = Services.FileManagerLoader.GetFileManager().GetFile(id);
-            var folder = Path.GetDirectoryName(file);
-
             ZipFile zip = new ZipFile();
-            foreach (var fileInFolder in Directory.GetFiles(folder))
+
+            var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+            var container = GetAzureBlobContainer("editorgames");
+            var blobs = container.ListBlobs(uploadPath + "/");
+            foreach (var blob in blobs.OfType<CloudBlockBlob>())
             {
-                zip.AddFile(fileInFolder, "");
+                var blobReference = container.GetBlockBlobReference(blob.Name);
+                var ms = new MemoryStream();
+                blobReference.DownloadToStream(ms);
+                ms.Position = 0;
+
+                zip.AddEntry(Path.GetFileName(blob.Uri.ToString()), ms);
             }
 
             return new FileGeneratingResult("game.zip", "application/zip", zip.Save);
