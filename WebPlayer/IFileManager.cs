@@ -1,4 +1,4 @@
-namespace WebInterfaces
+﻿namespace WebPlayer
 {
     public interface IFileManager
     {

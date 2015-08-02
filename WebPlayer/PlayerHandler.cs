@@ -6,7 +6,6 @@ using TextAdventures.Quest;
 using System.Xml;
 using System.Configuration;
 using TextAdventures.Utility.JSInterop;
-using WebInterfaces;
 
 namespace WebPlayer
 {

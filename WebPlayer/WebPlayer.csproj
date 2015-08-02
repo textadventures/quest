@@ -223,6 +223,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="IFileManager.cs" />
     <Compile Include="InterfaceListHandler.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="Mobile\Default.aspx.cs">
@@ -277,10 +278,6 @@
     <ProjectReference Include="..\Utility\Utility.csproj">
       <Project>{0E926905-F750-49F9-AEBD-CE14B2B231D8}</Project>
       <Name>Utility</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebInterfaces\WebInterfaces.csproj">
-      <Project>{eaafaf5a-3a08-440a-863a-d5fc79dbbcb7}</Project>
-      <Name>WebInterfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\WorldModel\WorldModel\WorldModel.csproj">
       <Project>{F8CA1A78-02F7-405B-B223-3EFBEFBD8A88}</Project>

@@ -7,7 +7,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
 using TextAdventures.Utility.JSInterop;
-using WebInterfaces;
 
 namespace WebPlayer
 {

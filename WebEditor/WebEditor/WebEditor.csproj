@@ -175,6 +175,11 @@
     <Compile Include="Services\DebugPlugins.cs" />
     <Compile Include="Services\EditorService.cs" />
     <Compile Include="Services\FileManager.cs" />
+    <Compile Include="Services\TextAdventures\Api.cs" />
+    <Compile Include="Services\IEditorFileManager.cs" />
+    <Compile Include="Services\TextAdventures\TAEditorFileManager.cs" />
+    <Compile Include="Services\TextAdventures\TASessionManager.cs" />
+    <Compile Include="Services\TextAdventures\User.cs" />
     <Compile Include="Views\Edit\ControlHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -231,14 +236,6 @@
     <ProjectReference Include="..\..\EditorController\EditorController.csproj">
       <Project>{B3B92783-0D5E-43BB-833B-87DEA9B67D00}</Project>
       <Name>EditorController</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TASessionManager\TASessionManager.csproj">
-      <Project>{7d6dcd70-0889-4fca-ad54-6892b432cf25}</Project>
-      <Name>TASessionManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\WebInterfaces\WebInterfaces.csproj">
-      <Project>{EAAFAF5A-3A08-440A-863A-D5FC79DBBCB7}</Project>
-      <Name>WebInterfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
