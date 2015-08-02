@@ -17,10 +17,8 @@
     <script type="text/javascript" src="<%= CacheBuster("playerweb.js") %>"></script>
     <script type="text/javascript" src="paper.js"></script>
     <script type="text/paperscript" src="<%= CacheBuster("grid.js") %>" canvas="gridCanvas"></script>
-    <% Response.Write(GetHead()); %>
 </head>
 <body onload="init('<%= ApiRoot() %>', '<%= GameSessionLogId() %>');">
-    <% Response.Write(GetBodyHeader()); %>
     <div style="display: none">
         <form id="playerform" runat="server" defaultbutton="cmdSubmit">
             <asp:ScriptManager ID="ctlScriptManager" runat="server">
@@ -49,6 +47,5 @@
     </div>
     <div id="audio_embed">
     </div>
-    <% Response.Write(GetBodyFooter()); %>
 </body>
 </html>

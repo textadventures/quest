@@ -14,22 +14,4 @@ namespace WebPlayer
             return ConfigurationManager.AppSettings["DebugFileManagerFile"];
         }
     }
-
-    internal class DebugHTMLManager : IHTMLManager
-    {
-        public string GetHead()
-        {
-            return "<!-- result of GetHead() -->";
-        }
-
-        public string GetBodyHeader()
-        {
-            return "<!-- result of GetBodyHeader() -->";
-        }
-
-        public string GetBodyFooter()
-        {
-            return "<!-- result of GetBodyFooter() -->";
-        }
-    }
 }

@@ -372,36 +372,6 @@ namespace WebPlayer.Mobile
             set { Session["OutputBuffers"] = value; }
         }
 
-        protected string GetHead()
-        {
-            IHTMLManager htmlManager = HTMLManagerLoader.GetHTMLManager();
-            if (htmlManager != null)
-            {
-                return htmlManager.GetHead();
-            }
-            return null;
-        }
-
-        protected string GetBodyHeader()
-        {
-            IHTMLManager htmlManager = HTMLManagerLoader.GetHTMLManager();
-            if (htmlManager != null)
-            {
-                return htmlManager.GetBodyHeader();
-            }
-            return null;
-        }
-
-        protected string GetBodyFooter()
-        {
-            IHTMLManager htmlManager = HTMLManagerLoader.GetHTMLManager();
-            if (htmlManager != null)
-            {
-                return htmlManager.GetBodyFooter();
-            }
-            return null;
-        }
-
         protected string ApiRoot()
         {
             return ConfigurationManager.AppSettings["BaseURI"] ?? "http://textadventures.co.uk/";
