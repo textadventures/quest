@@ -10,7 +10,7 @@ namespace TextAdventures.Utility.JSInterop
     {
         public static string StringParameter(string param)
         {
-            return string.Format("\"{0}\"", param.Replace("\"", "\\\"").Replace(Environment.NewLine, "\\n"));
+            return string.Format("\"{0}\"", param.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace(Environment.NewLine, "\\n"));
         }
     }
 
