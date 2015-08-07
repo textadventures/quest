@@ -8,7 +8,7 @@ obj/
 TestResults/
 *.suo
 *.user
-packages/*
+packages/
 WebPlayer/playercore\..*
 WebPlayer/WebPlayerSettings\.xml
 WebPlayer/WebPlayer\.Publish\.xml
