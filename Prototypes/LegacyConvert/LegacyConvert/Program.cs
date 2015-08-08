@@ -17,24 +17,19 @@ namespace LegacyConvert
             var tree = VisualBasicSyntaxTree.ParseText(text);
             var root = (CompilationUnitSyntax)tree.GetRoot();
 
-            var count = 0;
-
-            foreach (var node in root.ChildNodes())
-            {
-                Console.WriteLine(string.Format("{0}\t{1}", count++, node.Kind()));
-
-                if (node.Kind() == SyntaxKind.ClassBlock)
-                {
-                    foreach (var childNode in node.ChildNodes())
-                    {
-                        Console.WriteLine(string.Format("{0}\t{1}", count++, childNode.Kind()));
-                        Console.WriteLine(childNode);
-                        Console.WriteLine("************************\n\n\n");
-                    }
-                }
-            }
+            ProcessNode(root, 0);
 
             Console.ReadKey();
+        }
+
+        static void ProcessNode(SyntaxNode node, int depth)
+        {
+            var count = 0;
+            foreach (var childNode in node.ChildNodes())
+            {
+                Console.WriteLine(string.Format("{0}{1} {2}", new string('\t', depth), count++, childNode.Kind()));
+                ProcessNode(childNode, depth + 1);
+            }
         }
     }
 }
