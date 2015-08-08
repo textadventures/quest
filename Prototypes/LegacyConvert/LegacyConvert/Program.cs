@@ -18,10 +18,9 @@ namespace LegacyConvert
             var root = (CompilationUnitSyntax)tree.GetRoot();
 
             var prepend = new StringBuilder();
-            var append = new StringBuilder();
 
-            var result = ProcessNode(root, -1, append, prepend);
-            result = prepend.ToString() + result + append.ToString();
+            var result = ProcessNode(root, -1, prepend);
+            result = prepend.ToString() + result;
 
             System.IO.File.WriteAllText("output.ts", result);
 
@@ -29,12 +28,12 @@ namespace LegacyConvert
             Console.ReadKey();
         }
 
-        static string ProcessNode(SyntaxNode node, int depth, StringBuilder append, StringBuilder prepend)
+        static string ProcessNode(SyntaxNode node, int depth, StringBuilder prepend)
         {
             switch (node.Kind())
             {
                 case SyntaxKind.CompilationUnit:
-                    return ProcessChildNodes(node, depth, append, prepend);
+                    return ProcessChildNodes(node, depth, prepend);
                 case SyntaxKind.OptionStatement:
                 case SyntaxKind.ImportsStatement:
                 case SyntaxKind.ClassStatement:
@@ -46,9 +45,9 @@ namespace LegacyConvert
                     break;
                 case SyntaxKind.ClassBlock:
                     var className = ((ClassStatementSyntax)node.ChildNodes().First()).Identifier.Text;
-                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, depth, append, prepend));
+                    var classResult = string.Format("class {0} {{\n{1}}}\n", className, ProcessChildNodes(node, depth, prepend));
                     if (depth == 0) return classResult;
-                    append.Append(classResult);
+                    prepend.Append(classResult);
                     return null;
                 case SyntaxKind.EnumBlock:
                     var enumName = ((EnumStatementSyntax)node.ChildNodes().First()).Identifier.Text;
@@ -64,12 +63,12 @@ namespace LegacyConvert
             return null;
         }
 
-        static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder append, StringBuilder prepend)
+        static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder prepend)
         {
             var sb = new StringBuilder();
             foreach (var childNode in node.ChildNodes())
             {
-                sb.Append(ProcessNode(childNode, depth + 1, append, prepend));
+                sb.Append(ProcessNode(childNode, depth + 1, prepend));
             }
             return sb.ToString();
         }
