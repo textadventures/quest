@@ -52,7 +52,7 @@ namespace LegacyConvert
                     return null;
                 case SyntaxKind.EnumBlock:
                     var enumName = ((EnumStatementSyntax)node.ChildNodes().First()).Identifier.Text;
-                    var values = node.ChildNodes().OfType<EnumMemberDeclarationSyntax>().Select(n => n.Identifier.Text);
+                    var values = node.ChildNodes().OfType<EnumMemberDeclarationSyntax>().Select(n => n.Initializer == null ? n.Identifier.Text : n.Identifier.Text + " = " + n.Initializer.Value);
                     prepend.Append(string.Format("enum {0} {{{1}}};\n", enumName, string.Join(", ", values)));
                     return null;
                 case SyntaxKind.EnumMemberDeclaration:
