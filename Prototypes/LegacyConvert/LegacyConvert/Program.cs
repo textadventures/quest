@@ -17,19 +17,56 @@ namespace LegacyConvert
             var tree = VisualBasicSyntaxTree.ParseText(text);
             var root = (CompilationUnitSyntax)tree.GetRoot();
 
-            ProcessNode(root, 0);
+            var sb = new StringBuilder();
 
+            var result = ProcessNode(root, -1, sb) + sb.ToString();
+
+            System.IO.File.WriteAllText("output.ts", result);
+
+            Console.WriteLine("Done " + result.Length);
             Console.ReadKey();
         }
 
-        static void ProcessNode(SyntaxNode node, int depth)
+        static string ProcessNode(SyntaxNode node, int depth, StringBuilder append)
         {
+            switch (node.Kind())
+            {
+                case SyntaxKind.CompilationUnit:
+                    return ProcessChildNodes(node, depth, append);
+                case SyntaxKind.OptionStatement:
+                case SyntaxKind.ImportsStatement:
+                case SyntaxKind.ClassStatement:
+                case SyntaxKind.EndClassStatement:
+                case SyntaxKind.ImplementsStatement:
+                    // ignore;
+                    break;
+                case SyntaxKind.ClassBlock:
+                    var name = ((ClassStatementSyntax)node.ChildNodes().First()).Identifier.Text;
+                    var classResult = string.Format("class {0} {{\n{1}}}\n", name, ProcessChildNodes(node, depth, append));
+                    if (depth == 0) return classResult;
+                    append.Append(classResult);
+                    return null;
+                default:
+                    return string.Format("{0}// UNKNOWN {1}\n", Tabs(depth), node.Kind());
+            }
+
+            return null;
+        }
+
+        static string ProcessChildNodes(SyntaxNode node, int depth, StringBuilder append)
+        {
+            var sb = new StringBuilder();
             var count = 0;
             foreach (var childNode in node.ChildNodes())
             {
-                Console.WriteLine(string.Format("{0}{1} {2}", new string('\t', depth), count++, childNode.Kind()));
-                ProcessNode(childNode, depth + 1);
+                sb.Append(ProcessNode(childNode, depth + 1, append));
             }
+            return sb.ToString();
+        }
+
+        static string Tabs(int depth)
+        {
+            return new string('\t', depth);
         }
     }
 }
