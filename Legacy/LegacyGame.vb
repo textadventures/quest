@@ -1040,7 +1040,7 @@ Public Class LegacyGame
 
     End Function
 
-    Private Function GetAfterParameter(ByRef InputLine As String) As String
+    Private Function GetAfterParameter(InputLine As String) As String
         ' Returns everything after the end of the first parameter
         ' in a string, i.e. for "use <thing> do <myproc>" it
         ' returns "do <myproc>"
@@ -1055,7 +1055,7 @@ Public Class LegacyGame
 
     End Function
 
-    Private Function ObliterateParameters(ByRef InputLine As String) As String
+    Private Function ObliterateParameters(InputLine As String) As String
 
         Dim bInParameter As Boolean
         Dim ExitCharacter As String = ""
@@ -1130,7 +1130,7 @@ Public Class LegacyGame
 
     End Function
 
-    Private Function ObliterateVariableNames(ByRef InputLine As String) As String
+    Private Function ObliterateVariableNames(InputLine As String) As String
         Dim bInParameter As Boolean
         Dim ExitCharacter As String = ""
         Dim OutputLine As String = ""
@@ -1233,7 +1233,7 @@ Public Class LegacyGame
         Next i
     End Sub
 
-    Private Function ReportErrorLine(ByRef InputLine As String) As String
+    Private Function ReportErrorLine(InputLine As String) As String
         ' We don't want to see the "!intproc" in logged error reports lines.
         ' This function replaces these "do" lines with a nicer-looking "..." for error reporting.
 
@@ -1250,25 +1250,25 @@ Public Class LegacyGame
         ReportErrorLine = OutputLine
     End Function
 
-    Private Function YesNo(ByRef yn As Boolean) As String
+    Private Function YesNo(yn As Boolean) As String
         If yn = True Then YesNo = "Yes" Else YesNo = "No"
     End Function
 
-    Private Function OneZero(ByRef theValue As Boolean) As Integer
+    Private Function OneZero(theValue As Boolean) As Integer
         ' Used for check boxes where 1=true, 0=false
         If theValue = True Then OneZero = 1 Else OneZero = 0
     End Function
 
-    Private Function IsOne(ByRef theValue As Integer) As Boolean
+    Private Function IsOne(theValue As Integer) As Boolean
         ' Used for checkboxes
         If theValue = 1 Then IsOne = True Else IsOne = False
     End Function
 
-    Private Function IsYes(ByRef yn As String) As Boolean
+    Private Function IsYes(yn As String) As Boolean
         If LCase(yn) = "yes" Then IsYes = True Else IsYes = False
     End Function
 
-    Friend Function BeginsWith(ByRef s As String, ByRef T As String) As Boolean
+    Friend Function BeginsWith(s As String, T As String) As Boolean
         ' Compares the beginning of the line with a given
         ' string. Case insensitive.
 
@@ -1286,7 +1286,7 @@ Public Class LegacyGame
 
     End Function
 
-    Private Function ConvertCASKeyword(ByRef CASchar As String) As String
+    Private Function ConvertCASKeyword(CASchar As String) As String
 
         Dim c As Byte = System.Text.Encoding.GetEncoding(1252).GetBytes(CASchar)(0)
         Dim CK As String = CASkeywords(c)
@@ -1329,7 +1329,7 @@ Public Class LegacyGame
 
     End Sub
 
-    Private Function GetDefineBlock(ByRef blockname As String) As DefineBlock
+    Private Function GetDefineBlock(blockname As String) As DefineBlock
 
         ' Returns the start and end points of a named block.
         ' Returns 0 if block not found.
@@ -1413,7 +1413,7 @@ Public Class LegacyGame
 
     End Function
 
-    Friend Function GetEverythingAfter(ByRef TheString As String, ByRef thetext As String) As String
+    Friend Function GetEverythingAfter(TheString As String, thetext As String) As String
 
         Dim l As Integer
 
@@ -1425,7 +1425,7 @@ Public Class LegacyGame
         GetEverythingAfter = Right(TheString, Len(TheString) - l)
     End Function
 
-    Private Function Keyword2CAS(ByRef KWord As String) As String
+    Private Function Keyword2CAS(KWord As String) As String
 
         Dim k As String
         Dim i As Integer
@@ -1939,7 +1939,7 @@ ErrorHandler:
 
     End Function
 
-    Friend Sub LogASLError(TheError As String, Optional ByRef MessageType As Integer = LOGTYPE_MISC)
+    Friend Sub LogASLError(TheError As String, Optional MessageType As Integer = LOGTYPE_MISC)
 
         ' TO DO: This should raise an event so we can access logs from Player
 
@@ -1963,7 +1963,7 @@ ErrorHandler:
 
     End Sub
 
-    Friend Function RetrieveParameter(ByRef InputString As String, ByRef Thread As ThreadData, Optional ByRef bConvertStringVariables As Boolean = True) As String
+    Friend Function RetrieveParameter(InputString As String, Thread As ThreadData, Optional bConvertStringVariables As Boolean = True) As String
 
         ' Returns the parameters between < and > in a string
         Dim RetrParam As String
@@ -2001,7 +2001,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub AddLine(ByRef theline As String)
+    Private Sub AddLine(theline As String)
         'Adds a line to the game script
         Dim NumLines As Integer
 
@@ -2010,7 +2010,7 @@ ErrorHandler:
         Lines(NumLines) = theline
     End Sub
 
-    Private Function LoadCASFile(ByRef thefilename As String) As Boolean
+    Private Function LoadCASFile(thefilename As String) As Boolean
         Dim EndLineReached, ExitTheLoop As Boolean
         Dim TextMode, FinTheLoop As Boolean
         Dim CasVersion As Integer
@@ -2156,7 +2156,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function DecryptString(ByRef sString As String) As String
+    Private Function DecryptString(sString As String) As String
         Dim OS As String
         Dim Z As Integer
 
@@ -2191,11 +2191,11 @@ ErrorHandler:
         End If
     End Sub
 
-    Public Sub CreatePath(ByRef sPath As String)
+    Public Sub CreatePath(sPath As String)
         System.IO.Directory.CreateDirectory(sPath)
     End Sub
 
-    Private Sub DoAddRemove(ByRef ChildObjID As Integer, ByRef ParentObjID As Integer, ByRef DoAdd As Boolean, ByRef Thread As ThreadData)
+    Private Sub DoAddRemove(ChildObjID As Integer, ParentObjID As Integer, DoAdd As Boolean, Thread As ThreadData)
 
         If DoAdd Then
             AddToObjectProperties("parent=" & Objs(ParentObjID).ObjectName, ChildObjID, Thread)
@@ -2215,7 +2215,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub DoLook(ByRef ObjID As Integer, ByRef Thread As ThreadData, Optional ByRef ShowExamineError As Boolean = False, Optional ByRef ShowDefaultDescription As Boolean = True)
+    Private Sub DoLook(ObjID As Integer, Thread As ThreadData, Optional ShowExamineError As Boolean = False, Optional ShowDefaultDescription As Boolean = True)
 
         Dim FoundLook As Boolean
         Dim i, ErrMsgID As Integer
@@ -2300,7 +2300,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub DoOpenClose(ByRef ObjID As Integer, ByRef DoOpen As Boolean, ByRef ShowLook As Boolean, ByRef Thread As ThreadData)
+    Private Sub DoOpenClose(ObjID As Integer, DoOpen As Boolean, ShowLook As Boolean, Thread As ThreadData)
 
         If DoOpen Then
             AddToObjectProperties("opened", ObjID, Thread)
@@ -2313,7 +2313,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function EvaluateInlineExpressions(ByRef InputLine As String) As String
+    Private Function EvaluateInlineExpressions(InputLine As String) As String
 
         ' Evaluates in-line expressions e.g. msg <Hello, did you know that 2 + 2 = {2+2}?>
 
@@ -2378,7 +2378,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecAddRemove(ByRef CommandLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecAddRemove(CommandLine As String, Thread As ThreadData)
         Dim ChildObjID As Integer
         Dim ChildObjectName As String
         Dim DoAdd As Boolean
@@ -2615,7 +2615,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecAddRemoveScript(ByRef Parameter As String, ByRef DoAdd As Boolean, ByRef Thread As ThreadData)
+    Private Sub ExecAddRemoveScript(Parameter As String, DoAdd As Boolean, Thread As ThreadData)
 
         Dim ChildObjID, ParentObjID As Integer
         Dim CommandName As String
@@ -2663,7 +2663,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecOpenClose(ByRef CommandLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecOpenClose(CommandLine As String, Thread As ThreadData)
         Dim ObjID As Integer
         Dim ObjectName As String
         Dim DoOpen As Boolean
@@ -2781,7 +2781,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecuteSelectCase(ByRef ScriptLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteSelectCase(ScriptLine As String, Thread As ThreadData)
         Dim CaseBlockName As String
         Dim i As Integer
         Dim CaseBlock As DefineBlock
