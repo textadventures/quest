@@ -2852,7 +2852,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function ExecVerb(ByRef CommandString As String, ByRef Thread As ThreadData, Optional ByRef LibCommands As Boolean = False) As Boolean
+    Private Function ExecVerb(CommandString As String, Thread As ThreadData, Optional LibCommands As Boolean = False) As Boolean
         Dim gameblock As DefineBlock
         Dim FoundVerb As Boolean
         Dim VerbProperty As String = ""
@@ -3164,7 +3164,7 @@ ErrorHandler:
         NumberStringVariables = 0
     End Sub
 
-    Private Function ListContents(ByRef ObjID As Integer, ByRef Thread As ThreadData) As String
+    Private Function ListContents(ObjID As Integer, Thread As ThreadData) As String
 
         ' Returns a formatted list of the contents of a container.
         ' If the list action causes a script to be run instead, ListContents
@@ -3275,7 +3275,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function ObscureNumericExps(ByRef InputString As String) As String
+    Private Function ObscureNumericExps(InputString As String) As String
 
         ' Obscures + or - next to E in Double-type variables with exponents
         '   e.g. 2.345E+20 becomes 2.345EX20
@@ -3297,7 +3297,7 @@ ErrorHandler:
         ObscureNumericExps = OutputString
     End Function
 
-    Private Sub ProcessListInfo(ByRef ListLine As String, ByRef ObjID As Integer)
+    Private Sub ProcessListInfo(ListLine As String, ObjID As Integer)
         Dim ListInfo As New TextAction
         Dim PropName As String = ""
 
@@ -3349,7 +3349,7 @@ ErrorHandler:
         End If
     End Sub
 
-    Private Function GetHTMLColour(ByRef Colour As String, ByRef DefaultColour As String) As String
+    Private Function GetHTMLColour(Colour As String, DefaultColour As String) As String
 
         ' Converts a Quest foreground or background colour setting into an HTML colour
 
@@ -3376,11 +3376,11 @@ ErrorHandler:
 
     End Function
 
-    Private Sub DoPrint(ByRef OutputText As String)
+    Private Sub DoPrint(OutputText As String)
         RaiseEvent PrintText(m_textFormatter.OutputHTML(OutputText))
     End Sub
 
-    Private Sub DestroyExit(ByRef ExitData As String, ByRef Thread As ThreadData)
+    Private Sub DestroyExit(ExitData As String, Thread As ThreadData)
         Dim SCP As Integer
         Dim FoundID As Boolean
         Dim FromRoom As String = ""
@@ -3468,7 +3468,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecuteFlag(ByRef InputLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteFlag(InputLine As String, Thread As ThreadData)
         Dim PropertyString As String = ""
 
         If BeginsWith(InputLine, "on ") Then
@@ -3482,7 +3482,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function ExecuteIfFlag(ByRef flag As String) As Boolean
+    Private Function ExecuteIfFlag(flag As String) As Boolean
 
         ' Game ObjID is set to 1
 
@@ -3494,7 +3494,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecuteIncDec(ByRef InputLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteIncDec(InputLine As String, Thread As ThreadData)
         Dim SC As Integer
         Dim Param, Var As String
         Dim Change As Double
@@ -3526,7 +3526,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function ExtractFile(ByRef FileToExtract As String) As String
+    Private Function ExtractFile(FileToExtract As String) As String
         Dim Length, StartPos, i As Integer
         Dim FoundRes As Boolean
         Dim FileData As String
@@ -3574,7 +3574,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub AddObjectAction(ByRef ObjID As Integer, ByRef Actions As ActionType, Optional ByRef NoUpdate As Boolean = False)
+    Private Sub AddObjectAction(ObjID As Integer, Actions As ActionType, Optional NoUpdate As Boolean = False)
 
         ' Use NoUpdate in e.g. AddToGiveInfo, otherwise ObjectActionUpdate will call
         ' AddToGiveInfo again leading to a big loop
@@ -3607,7 +3607,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub AddToChangeLog(ByRef AppliesTo As String, ByRef ChangeData As String)
+    Private Sub AddToChangeLog(AppliesTo As String, ChangeData As String)
         With GameChangeData
             .NumberChanges = .NumberChanges + 1
             ReDim Preserve .ChangeData(.NumberChanges)
@@ -3616,7 +3616,7 @@ ErrorHandler:
         End With
     End Sub
 
-    Private Sub AddToOOChangeLog(ByRef lAppliesToType As ChangeLog.eAppliesToType, ByRef sAppliesTo As String, ByRef sElement As String, ByRef sChangeData As String)
+    Private Sub AddToOOChangeLog(lAppliesToType As ChangeLog.eAppliesToType, sAppliesTo As String, sElement As String, sChangeData As String)
 
         Dim oChangeLog As ChangeLog
 
@@ -3640,7 +3640,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub AddToGiveInfo(ByRef ObjID As Integer, ByRef GiveData As String)
+    Private Sub AddToGiveInfo(ObjID As Integer, GiveData As String)
         Dim ObjectName As String
         Dim DataID As Integer
         Dim Found As Boolean
@@ -3712,7 +3712,7 @@ ErrorHandler:
 
     End Sub
 
-    Friend Sub AddToObjectActions(ByRef ActionInfo As String, ByRef ObjID As Integer, ByRef Thread As ThreadData)
+    Friend Sub AddToObjectActions(ActionInfo As String, ObjID As Integer, Thread As ThreadData)
         Dim FoundExisting As Boolean
         Dim ActionName As String
         Dim ActionScript As String
@@ -3753,7 +3753,7 @@ ErrorHandler:
         End With
     End Sub
 
-    Private Sub AddToObjectAltNames(AltNames As String, ByRef ObjID As Integer)
+    Private Sub AddToObjectAltNames(AltNames As String, ObjID As Integer)
         Dim EndPos As Integer
         Dim CurName As String
 
@@ -3776,7 +3776,7 @@ ErrorHandler:
         End With
     End Sub
 
-    Friend Sub AddToObjectProperties(PropertyInfo As String, ByRef ObjID As Integer, ByRef Thread As ThreadData)
+    Friend Sub AddToObjectProperties(PropertyInfo As String, ObjID As Integer, Thread As ThreadData)
         Dim CurInfo As String
         Dim SCP, EP As Integer
         Dim CurName, CurValue As String
@@ -3919,7 +3919,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub AddToUseInfo(ByRef ObjID As Integer, ByRef UseData As String)
+    Private Sub AddToUseInfo(ObjID As Integer, UseData As String)
         Dim ObjectName As String
         Dim DataID As Integer
         Dim Found As Boolean
@@ -3974,15 +3974,15 @@ ErrorHandler:
 
     End Sub
 
-    Private Function CapFirst(ByRef InputString As String) As String
+    Private Function CapFirst(InputString As String) As String
         CapFirst = UCase(Left(InputString, 1)) & Mid(InputString, 2)
     End Function
 
-    Private Function ConvertVarsIn(ByRef InputString As String, ByRef Thread As ThreadData) As String
+    Private Function ConvertVarsIn(InputString As String, Thread As ThreadData) As String
         ConvertVarsIn = RetrieveParameter("<" & InputString & ">", Thread)
     End Function
 
-    Private Function DisambObjHere(ByRef Thread As ThreadData, ByRef ObjID As Integer, FirstPlace As String, Optional TwoPlaces As Boolean = False, Optional SecondPlace As String = "", Optional bExit As Boolean = False) As Boolean
+    Private Function DisambObjHere(Thread As ThreadData, ObjID As Integer, FirstPlace As String, Optional TwoPlaces As Boolean = False, Optional SecondPlace As String = "", Optional bExit As Boolean = False) As Boolean
 
         Dim OnlySeen, ObjIsSeen As Boolean
         Dim RoomObjID As Integer
@@ -4025,7 +4025,7 @@ ErrorHandler:
         End If
     End Function
 
-    Private Sub ExecClone(ByRef CloneString As String, ByRef Thread As ThreadData)
+    Private Sub ExecClone(CloneString As String, Thread As ThreadData)
         Dim SC2, SC, ObjID As Integer
         Dim NewObjName, ObjToClone, CloneTo As String
 
@@ -4075,7 +4075,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecOops(ByRef Correction As String, ByRef Thread As ThreadData)
+    Private Sub ExecOops(Correction As String, Thread As ThreadData)
 
         If BadCmdBefore <> "" Then
             If BadCmdAfter = "" Then
@@ -4087,7 +4087,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecType(ByRef TypeData As String, ByRef Thread As ThreadData)
+    Private Sub ExecType(TypeData As String, Thread As ThreadData)
         Dim SCP As Integer
         Dim ObjName, TypeName As String
         Dim ObjID As Integer
@@ -4138,7 +4138,7 @@ ErrorHandler:
         End With
     End Sub
 
-    Private Function ExecuteIfAction(ByRef ActionData As String) As Boolean
+    Private Function ExecuteIfAction(ActionData As String) As Boolean
         Dim SCP, ObjID As Integer
         Dim ObjName As String
         Dim ActionName As String
@@ -4188,7 +4188,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function ExecuteIfType(ByRef TypeData As String) As Boolean
+    Private Function ExecuteIfType(TypeData As String) As Boolean
         Dim SCP, ObjID As Integer
         Dim ObjName As String
         Dim TypeName As String
@@ -4238,7 +4238,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetArrayIndex(ByRef sVarName As String, ByRef Thread As ThreadData) As Integer
+    Private Function GetArrayIndex(sVarName As String, Thread As ThreadData) As Integer
         Dim BeginPos, EndPos As Integer
         Dim ArrayIndexData As String
         Dim ArrayIndex As Integer
@@ -4259,31 +4259,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function CurrentRoomOf(ByRef ThingName As String, ByRef ThingType As Integer) As String
-        ' Returns current room of global character/object
-        ' specified
-
-        Dim i As Integer
-
-        If ThingType = QUEST_CHARACTER Then
-            For i = 1 To NumberChars
-                If LCase(Chars(i).ObjectName) = LCase(ThingName) And Chars(i).IsGlobal = True Then
-                    Return Chars(i).ContainerRoom
-                End If
-            Next i
-        ElseIf ThingType = QUEST_OBJECT Then
-            For i = 1 To NumberObjs
-                If LCase(Objs(i).ObjectName) = LCase(ThingName) And Objs(i).IsGlobal = True Then
-                    Return Objs(i).ContainerRoom
-                End If
-            Next i
-        End If
-
-        Throw New ArgumentOutOfRangeException()
-
-    End Function
-
-    Friend Function Disambiguate(ObjectName As String, ByRef ContainedIn As String, ByRef Thread As ThreadData, Optional ByRef bExit As Boolean = False) As Integer
+    Friend Function Disambiguate(ObjectName As String, ContainedIn As String, Thread As ThreadData, Optional bExit As Boolean = False) As Integer
         ' Returns object ID being referred to by player.
         ' Returns -1 if object doesn't exist, calling function
         '   then expected to print relevant error.
@@ -4499,7 +4475,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function DisplayStatusVariableInfo(ByRef VarNum As Integer, ByRef VariableType As Integer, ByRef Thread As ThreadData) As String
+    Private Function DisplayStatusVariableInfo(VarNum As Integer, VariableType As Integer, Thread As ThreadData) As String
         Dim DisplayData As String = ""
         Dim ExcPos As Integer
         Dim FirstStar, SecondStar As Integer
@@ -4546,7 +4522,7 @@ ErrorHandler:
 
     End Function
 
-    Friend Function DoAction(ByRef ObjID As Integer, ByRef ActionName As String, ByRef Thread As ThreadData, Optional ByRef LogError As Boolean = True) As Boolean
+    Friend Function DoAction(ObjID As Integer, ActionName As String, Thread As ThreadData, Optional LogError As Boolean = True) As Boolean
 
         Dim FoundAction As Boolean
         Dim ActionScript As String = ""
@@ -4580,7 +4556,7 @@ ErrorHandler:
 
     End Function
 
-    Public Function HasAction(ByRef ObjID As Integer, ByRef ActionName As String) As Boolean
+    Public Function HasAction(ObjID As Integer, ActionName As String) As Boolean
         Dim i As Integer
 
         With Objs(ObjID)
@@ -4593,7 +4569,7 @@ ErrorHandler:
         End With
     End Function
 
-    Private Sub ExecForEach(ByRef ScriptLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecForEach(ScriptLine As String, Thread As ThreadData)
         Dim InLocation, ScriptToExecute As String
         Dim i, BracketPos As Integer
         Dim bExit As Boolean
@@ -4645,7 +4621,7 @@ ErrorHandler:
         Next i
     End Sub
 
-    Private Sub ExecuteAction(ByRef ActionData As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteAction(ActionData As String, Thread As ThreadData)
         Dim FoundExisting As Boolean
         Dim ActionName As String
         Dim ActionScript As String
@@ -4714,7 +4690,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function ExecuteCondition(Condition As String, ByRef Thread As ThreadData) As Boolean
+    Private Function ExecuteCondition(Condition As String, Thread As ThreadData) As Boolean
         Dim bThisResult, bThisNot As Boolean
 
         If BeginsWith(Condition, "not ") Then
@@ -4753,7 +4729,7 @@ ErrorHandler:
         ExecuteCondition = bThisResult
     End Function
 
-    Private Function ExecuteConditions(ByRef ConditionList As String, ByRef Thread As ThreadData) As Boolean
+    Private Function ExecuteConditions(ConditionList As String, Thread As ThreadData) As Boolean
         Dim Conditions() As String
         Dim iNumConditions As Integer
         Dim Operations() As String
@@ -4815,7 +4791,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecuteCreate(ByRef CreateData As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteCreate(CreateData As String, Thread As ThreadData)
         Dim NewName As String
         Dim SCP As Integer
         Dim ParamData As String
@@ -4889,7 +4865,7 @@ ErrorHandler:
         End If
     End Sub
 
-    Private Sub ExecuteCreateExit(ByRef CreateData As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteCreateExit(CreateData As String, Thread As ThreadData)
         Dim ExitData As String
         Dim SrcRoom As String
         Dim DestRoom As String = ""
@@ -5036,7 +5012,7 @@ ErrorHandler:
         End If
     End Sub
 
-    Private Sub ExecDrop(ByRef DropItem As String, ByRef Thread As ThreadData)
+    Private Sub ExecDrop(DropItem As String, Thread As ThreadData)
         Dim FoundItem, ObjectIsInContainer As Boolean
         Dim ParentID, ObjectID, i As Integer
         Dim Parent As String
@@ -5134,7 +5110,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecExamine(ByRef CommandInfo As String, ByRef Thread As ThreadData)
+    Private Sub ExecExamine(CommandInfo As String, Thread As ThreadData)
         Dim ExamineItem, ExamineAction As String
         Dim FoundItem As Boolean
         Dim FoundExamineAction As Boolean
@@ -5213,7 +5189,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecMoveThing(ByRef sThingData As String, ByRef sThingType As Integer, ByRef Thread As ThreadData)
+    Private Sub ExecMoveThing(sThingData As String, sThingType As Integer, Thread As ThreadData)
         Dim SemiColonPos As Integer
         Dim ThingName, MoveToPlace As String
 
@@ -5226,7 +5202,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecProperty(ByRef PropertyData As String, ByRef Thread As ThreadData)
+    Private Sub ExecProperty(PropertyData As String, Thread As ThreadData)
         Dim SCP As Integer
         Dim ObjName, Properties As String
         Dim ObjID, i As Integer
@@ -5258,7 +5234,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecuteDo(ByRef ProcedureName As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteDo(ProcedureName As String, Thread As ThreadData)
         Dim ProcedureBlock As DefineBlock
         Dim i, BracketPos As Integer
         Dim CloseBracketPos As Integer
