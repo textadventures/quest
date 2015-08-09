@@ -17,10 +17,10 @@ Public Class LegacyGame
         Finished    ' game is over
     End Enum
 
-    Private Structure DefineBlock
-        Dim StartLine As Integer
-        Dim EndLine As Integer
-    End Structure
+    Private Class DefineBlock
+        Public StartLine As Integer
+        Public EndLine As Integer
+    End Class
 
     Friend Class Context
         Public CallingObjectID As Integer
@@ -912,6 +912,7 @@ Public Class LegacyGame
 
                             NumberSections = NumberSections + 1
                             ReDim Preserve DefineBlocks(NumberSections)
+                            DefineBlocks(NumberSections) = New DefineBlock
                             DefineBlocks(NumberSections).StartLine = StartLine
                             DefineBlocks(NumberSections).EndLine = EndLineNum
 
@@ -1350,6 +1351,7 @@ Public Class LegacyGame
         Dim i As Integer
         Dim l, BlockType As String
 
+        GetDefineBlock = New DefineBlock
         GetDefineBlock.StartLine = 0
         GetDefineBlock.EndLine = 0
 
@@ -1385,6 +1387,8 @@ Public Class LegacyGame
         Dim oCache As Dictionary(Of String, String)
         Dim sBlockName As String
         Dim asBlock() As String
+
+        DefineBlockParam = New DefineBlock
 
         Param = "k" & Param ' protect against numeric block names
 
@@ -1891,6 +1895,7 @@ Public Class LegacyGame
                 ' curline. Remember where the section begins and ends:
 
                 ReDim Preserve DefineBlocks(NumberSections)
+                DefineBlocks(NumberSections) = New DefineBlock
                 DefineBlocks(NumberSections).StartLine = i
                 DefineBlocks(NumberSections).EndLine = CurLine
 
@@ -5868,6 +5873,7 @@ ErrorHandler:
         Dim f, i As Integer
 
         f = 0
+        GetThingBlock = New DefineBlock
 
         If ThingType = QUEST_CHARACTER Then
             For i = 1 To NumberChars
@@ -9466,12 +9472,15 @@ errhandle:
                     OrigCRoomName = ""
                 End If
 
+                Dim startLine As Integer = cdf.StartLine
+                Dim endLine As Integer = cdf.EndLine
+
                 If BeginsWith(Lines(cdf.StartLine), "define object ") Then
-                    cdf.StartLine = cdf.StartLine - 1
-                    cdf.EndLine = cdf.EndLine + 1
+                    startLine = startLine - 1
+                    endLine = endLine + 1
                 End If
 
-                For j = cdf.StartLine + 1 To cdf.EndLine - 1
+                For j = startLine + 1 To endLine - 1
                     If BeginsWith(Lines(j), "define object") Then
                         CRoomName = OrigCRoomName
 
