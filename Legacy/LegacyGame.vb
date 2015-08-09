@@ -6473,7 +6473,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecFor(ScriptLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecFor(ScriptLine As String, Thread As ThreadData)
         ' See if this is a "for each" loop:
         If BeginsWith(ScriptLine, "each ") Then
             ExecForEach(GetEverythingAfter(ScriptLine, "each "), Thread)
@@ -12106,14 +12106,6 @@ ErrorHandler:
     End Function
 
     Friend Sub Print(txt As String, Thread As ThreadData, Optional OutputTo As String = "normal", Optional NoTalk As Boolean = False)
-
-        ' Where we have |w (wait) and |c (clear screen) codes, we don't
-        ' send these to the client. Instead, we send the text without these codes. After
-        ' printing we then run the "wait <>" and "clear" script commands as appropriate.
-        ' This function removes the codes from InputString, passed ByRef. The output
-        ' of the function is a string e.g. "wc" means to run a wait command and then
-        ' clear the screen.
-
         Dim i As Integer
         Dim PrintString As String
         Dim PrintThis As Boolean
@@ -13026,7 +13018,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetGoToExits(ByRef RoomID As Integer, ByRef Thread As ThreadData) As String
+    Private Function GetGoToExits(RoomID As Integer, Thread As ThreadData) As String
 
         Dim i As Integer
         Dim PlaceID As Integer
@@ -13140,7 +13132,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecuteLock(sTag As String, ByRef bLock As Boolean)
+    Private Sub ExecuteLock(sTag As String, bLock As Boolean)
         Dim oExit As RoomExit
 
         oExit = FindExit(sTag)
