@@ -96,10 +96,10 @@ Public Class LegacyGame
         Public DisplayWhenZero As Boolean
     End Class
 
-    Friend Structure PropertyType
-        Dim PropertyName As String
-        Dim PropertyValue As String
-    End Structure
+    Friend Class PropertyType
+        Public PropertyName As String
+        Public PropertyValue As String
+    End Class
 
     Friend Structure ActionType
         Dim ActionName As String
@@ -3847,6 +3847,7 @@ ErrorHandler:
                 If Not Found Then
                     .NumberProperties = .NumberProperties + 1
                     ReDim Preserve .Properties(.NumberProperties)
+                    .Properties(.NumberProperties) = New PropertyType
                     CurNum = .NumberProperties
                 End If
 
