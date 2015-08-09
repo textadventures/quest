@@ -2539,7 +2539,7 @@ ErrorHandler:
         End If
 
         ' NEW: Check parent and child are accessible to player
-        If Not PlayerCanAccessObject(ChildObjID, , , ErrorMsg) Then
+        If Not PlayerCanAccessObject(ChildObjID, , ErrorMsg) Then
             If DoAdd Then
                 PlayerErrorMessage_ExtendInfo(ERROR_CANTPUT, Thread, ErrorMsg)
             Else
@@ -2547,7 +2547,7 @@ ErrorHandler:
             End If
             Exit Sub
         End If
-        If Not PlayerCanAccessObject(ParentObjID, , , ErrorMsg) Then
+        If Not PlayerCanAccessObject(ParentObjID, , ErrorMsg) Then
             If DoAdd Then
                 PlayerErrorMessage_ExtendInfo(ERROR_CANTPUT, Thread, ErrorMsg)
             Else
@@ -2726,7 +2726,7 @@ ErrorHandler:
 
         ' NEW: Check if it's accessible, i.e. check it's not itself inside another closed container
 
-        If Not PlayerCanAccessObject(ObjID, , , ErrorMsg) Then
+        If Not PlayerCanAccessObject(ObjID, , ErrorMsg) Then
             If DoOpen Then
                 PlayerErrorMessage_ExtendInfo(ERROR_CANTOPEN, Thread, ErrorMsg)
             Else
@@ -5295,7 +5295,7 @@ ErrorHandler:
         End If
     End Sub
 
-    Private Sub ExecuteDoAction(ByRef ActionData As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteDoAction(ActionData As String, Thread As ThreadData)
         Dim SCP As Integer
         Dim ObjName, ActionName As String
         Dim ObjID, i As Integer
@@ -5329,7 +5329,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function ExecuteIfHere(ByRef HereThing As String, ByRef Thread As ThreadData) As Boolean
+    Private Function ExecuteIfHere(HereThing As String, Thread As ThreadData) As Boolean
         Dim bResult, bFound As Boolean
         Dim i As Integer
 
@@ -5368,7 +5368,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function ExecuteIfExists(ByRef ExistsThing As String, ByRef RealCheckOnly As Boolean) As Boolean
+    Private Function ExecuteIfExists(ExistsThing As String, RealCheckOnly As Boolean) As Boolean
         Dim bResult, bFound As Boolean
         Dim bErrorReport As Boolean
         Dim i As Integer
@@ -5430,7 +5430,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function ExecuteIfProperty(ByRef PropertyData As String) As Boolean
+    Private Function ExecuteIfProperty(PropertyData As String) As Boolean
         Dim SCP, ObjID As Integer
         Dim ObjName As String
         Dim PropertyName As String
@@ -5471,7 +5471,7 @@ ErrorHandler:
         End If
     End Function
 
-    Private Sub ExecuteRepeat(ByRef RepeatData As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteRepeat(RepeatData As String, Thread As ThreadData)
         Dim RepeatWhileTrue As Boolean
         Dim RepeatScript As String = ""
         Dim BracketPos As Integer
@@ -5518,7 +5518,7 @@ ErrorHandler:
         Loop Until FinishedLoop Or m_gameFinished
     End Sub
 
-    Private Sub ExecuteSetCollectable(ByRef setparam As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteSetCollectable(setparam As String, Thread As ThreadData)
         Dim NewVal As Double
         Dim SemiColonPos As Integer
         Dim FoundCollectable As Boolean
@@ -5567,7 +5567,7 @@ ErrorHandler:
         UpdateItems(Thread)
     End Sub
 
-    Private Sub ExecuteWait(ByRef WaitLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteWait(WaitLine As String, Thread As ThreadData)
 
         If WaitLine <> "" Then
             Print(RetrieveParameter(WaitLine, Thread), Thread)
@@ -5607,7 +5607,7 @@ ErrorHandler:
         m_lIndex = m_lIndex + count
     End Function
 
-    Private Function GetObjectActions(ByRef ActionInfo As String) As ActionType
+    Private Function GetObjectActions(ActionInfo As String) As ActionType
         Dim ActionName As String
         Dim ActionScript As String
         Dim EP As Integer
@@ -5626,7 +5626,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetObjectID(ObjectName As String, ByRef Thread As ThreadData, Optional ByRef ObjectRoom As String = "") As Integer
+    Private Function GetObjectID(ObjectName As String, Thread As ThreadData, Optional ObjectRoom As String = "") As Integer
 
         Dim CurID, i As Integer
         Dim FoundItem As Boolean
@@ -5657,7 +5657,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetObjectIDNoAlias(ByRef ObjectName As String) As Integer
+    Private Function GetObjectIDNoAlias(ObjectName As String) As Integer
         Dim i, ID As Integer
         Dim Found As Boolean
 
@@ -5679,7 +5679,7 @@ ErrorHandler:
 
     End Function
 
-    Friend Function GetObjectProperty(ByRef PropertyName As String, ByRef ObjID As Integer, Optional ByRef ReturnExistsOnly As Boolean = False, Optional ByRef LogError As Boolean = True) As String
+    Friend Function GetObjectProperty(PropertyName As String, ObjID As Integer, Optional ReturnExistsOnly As Boolean = False, Optional LogError As Boolean = True) As String
         Dim bFound As Boolean
         Dim sResult As String = ""
         Dim i As Integer
@@ -5717,7 +5717,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetPropertiesInType(ByRef TypeName As String, Optional ByRef bError As Boolean = True) As PropertiesActions
+    Private Function GetPropertiesInType(TypeName As String, Optional bError As Boolean = True) As PropertiesActions
         Dim Found As Boolean
         Dim SecID As Integer
         Dim PropertyList As New PropertiesActions
@@ -5784,7 +5784,7 @@ ErrorHandler:
         GetPropertiesInType = PropertyList
     End Function
 
-    Friend Function GetRoomID(RoomName As String, ByRef Thread As ThreadData) As Integer
+    Friend Function GetRoomID(RoomName As String, Thread As ThreadData) As Integer
         Dim Found As Boolean
         Dim ArrayIndex, i As Integer
         Found = False
@@ -5806,7 +5806,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetTextOrScript(ByRef TextScript As String) As TextAction
+    Private Function GetTextOrScript(TextScript As String) As TextAction
         TextScript = Trim(TextScript)
 
         If Left(TextScript, 1) = "<" Then
@@ -5819,7 +5819,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetThingNumber(ByRef ThingName As String, ByRef ThingRoom As String, ByRef ThingType As Integer) As Integer
+    Private Function GetThingNumber(ThingName As String, ThingRoom As String, ThingType As Integer) As Integer
         ' Returns the number in the Chars() or Objs() array
         ' of the specified char/obj
 
@@ -5851,7 +5851,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetThingBlock(ByRef ThingName As String, ByRef ThingRoom As String, ByRef ThingType As Integer) As DefineBlock
+    Private Function GetThingBlock(ThingName As String, ThingRoom As String, ThingType As Integer) As DefineBlock
         ' Returns position where specified char/obj is defined
         ' in ASL code
 
@@ -6032,7 +6032,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub MoveThing(ByRef sThingName As String, ByRef sThingRoom As String, ByRef iThingType As Integer, ByRef Thread As ThreadData)
+    Private Sub MoveThing(sThingName As String, sThingRoom As String, iThingType As Integer, Thread As ThreadData)
         Dim i, iThingNum, ArrayIndex As Integer
         Dim OldRoom As String = ""
 
@@ -6067,7 +6067,7 @@ ErrorHandler:
 
     End Sub
 
-    Public Sub Pause(ByRef Duration As Integer)
+    Public Sub Pause(Duration As Integer)
         m_player.DoPause(Duration)
         ChangeState(State.Waiting)
 
@@ -6076,7 +6076,7 @@ ErrorHandler:
         End SyncLock
     End Sub
 
-    Private Function ConvertParameter(ByRef sParameter As String, ByRef sConvertChar As String, ByRef ConvertAction As Integer, ByRef Thread As ThreadData) As String
+    Private Function ConvertParameter(sParameter As String, sConvertChar As String, ConvertAction As Integer, Thread As ThreadData) As String
         ' Returns a string with functions, string and
         ' numeric variables executed or converted as
         ' appropriate, read for display/etc.
@@ -6136,7 +6136,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function DoFunction(ByRef FunctionData As String, ByRef Thread As ThreadData) As String
+    Private Function DoFunction(FunctionData As String, Thread As ThreadData) As String
         Dim FunctionName, FunctionParameter As String
         Dim sIntFuncResult As String = ""
         Dim bIntFuncExecuted As Boolean
@@ -6216,7 +6216,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function DoInternalFunction(ByRef FunctionName As String, ByRef FunctionParameter As String, ByRef Thread As ThreadData) As String
+    Private Function DoInternalFunction(FunctionName As String, FunctionParameter As String, Thread As ThreadData) As String
         ' Split FunctionParameter into individual parameters
         Dim iNumParameters, iCurPos As Integer
         Dim Parameter() As String
@@ -6473,7 +6473,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub ExecFor(ByRef ScriptLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecFor(ScriptLine As String, ByRef Thread As ThreadData)
         ' See if this is a "for each" loop:
         If BeginsWith(ScriptLine, "each ") Then
             ExecForEach(GetEverythingAfter(ScriptLine, "each "), Thread)
@@ -6519,7 +6519,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecSetVar(ByRef VarInfo As String, ByRef Thread As ThreadData)
+    Private Sub ExecSetVar(VarInfo As String, Thread As ThreadData)
         ' Sets variable contents from a script parameter.
         ' Eg <var1;7> sets numeric variable var1
         ' to 7
@@ -6598,7 +6598,7 @@ errhandle:
 
     Private m_questionResponse As Boolean
 
-    Private Function ExecuteIfAsk(ByRef askq As String) As Boolean
+    Private Function ExecuteIfAsk(askq As String) As Boolean
         m_player.ShowQuestion(askq)
         ChangeState(State.Waiting)
 
@@ -6624,7 +6624,7 @@ errhandle:
         End SyncLock
     End Sub
 
-    Private Function ExecuteIfGot(ByRef theitem As String) As Boolean
+    Private Function ExecuteIfGot(theitem As String) As Boolean
 
         Dim i As Integer
 
@@ -6678,7 +6678,7 @@ errhandle:
 
     End Function
 
-    Private Function ExecuteIfHas(ByRef hascond As String) As Boolean
+    Private Function ExecuteIfHas(hascond As String) As Boolean
 
         Dim checkval As Double
         Dim condresult As Boolean
@@ -6725,7 +6725,7 @@ errhandle:
 
     End Function
 
-    Private Function ExecuteIfIs(ByRef IsCondition As String) As Boolean
+    Private Function ExecuteIfIs(IsCondition As String) As Boolean
         Dim SCPos, SC2Pos As Integer
         Dim Value1, Value2 As String
         Dim Condition As String
@@ -6813,7 +6813,7 @@ errhandle:
         ExecuteIfIs = Satisfied
     End Function
 
-    Private Function GetNumericContents(NumericName As String, ByRef Thread As ThreadData, Optional ByRef NOERROR As Boolean = False) As Double
+    Private Function GetNumericContents(NumericName As String, Thread As ThreadData, Optional NOERROR As Boolean = False) As Double
         Dim bNumExists As Boolean
         Dim iNumNumber As Integer
         Dim ArrayIndex, i As Integer
@@ -6864,11 +6864,11 @@ errhandle:
         GetNumericContents = Val(NumericVariable(iNumNumber).VariableContents(ArrayIndex))
     End Function
 
-    Friend Sub PlayerErrorMessage(ByRef iErrorNumber As Integer, ByRef Thread As ThreadData)
+    Friend Sub PlayerErrorMessage(iErrorNumber As Integer, Thread As ThreadData)
         Print(GetErrorMessage(iErrorNumber, Thread), Thread)
     End Sub
 
-    Private Sub PlayerErrorMessage_ExtendInfo(ByRef iErrorNumber As Integer, ByRef Thread As ThreadData, ByRef sExtraInfo As String)
+    Private Sub PlayerErrorMessage_ExtendInfo(iErrorNumber As Integer, Thread As ThreadData, sExtraInfo As String)
         Dim sErrorMessage As String
 
         sErrorMessage = GetErrorMessage(iErrorNumber, Thread)
@@ -6884,7 +6884,7 @@ errhandle:
         Print(sErrorMessage, Thread)
     End Sub
 
-    Private Function GetErrorMessage(ByRef iErrorNumber As Integer, ByRef Thread As ThreadData) As String
+    Private Function GetErrorMessage(iErrorNumber As Integer, Thread As ThreadData) As String
         GetErrorMessage = ConvertParameter(ConvertParameter(ConvertParameter(PlayerErrorMessageString(iErrorNumber), "%", CONVERT_NUMERIC, Thread), "$", CONVERT_FUNCTIONS, Thread), "#", CONVERT_STRINGS, Thread)
     End Function
 
@@ -6913,15 +6913,15 @@ errhandle:
         End If
     End Sub
 
-    Private Sub PlayMidi(ByRef MidiFileName As String)
+    Private Sub PlayMidi(MidiFileName As String)
         PlayMedia(MidiFileName)
     End Sub
 
-    Private Sub PlayMP3(ByRef MP3File As String)
+    Private Sub PlayMP3(MP3File As String)
         PlayMedia(MP3File)
     End Sub
 
-    Private Sub PlayWav(ByRef parameter As String)
+    Private Sub PlayWav(parameter As String)
         Dim sync As Boolean = False
         Dim looped As Boolean = False
         Dim filename As String
@@ -6942,7 +6942,7 @@ errhandle:
         PlayMedia(filename, sync, looped)
     End Sub
 
-    Private Function RestoreGameData(ByRef InputFileData As String) As Boolean
+    Private Function RestoreGameData(InputFileData As String) As Boolean
         ' Return true if successful
         Dim i, NumData, j As Integer
         Dim AppliesTo As String
@@ -7119,11 +7119,11 @@ errhandle:
         RestoreGameData = True
     End Function
 
-    Private Sub SetBackground(ByRef Colour As String)
+    Private Sub SetBackground(Colour As String)
         m_player.SetBackground("#" + GetHTMLColour(Colour, "white"))
     End Sub
 
-    Private Sub SetForeground(ByRef Colour As String)
+    Private Sub SetForeground(Colour As String)
         m_player.SetForeground("#" + GetHTMLColour(Colour, "black"))
     End Sub
 
@@ -7168,17 +7168,17 @@ errhandle:
         PlayerErrorMessageString(ERROR_ALREADYTAKEN) = "You already have that."
     End Sub
 
-    Private Sub SetFont(ByRef FontName As String, ByRef Thread As ThreadData, Optional ByRef OutputTo As String = "normal")
+    Private Sub SetFont(FontName As String, Thread As ThreadData, Optional OutputTo As String = "normal")
         If FontName = "" Then FontName = DefaultFontName
         m_player.SetFont(FontName)
     End Sub
 
-    Private Sub SetFontSize(ByRef FontSize As Double, ByRef Thread As ThreadData, Optional ByRef OutputTo As String = "normal")
+    Private Sub SetFontSize(FontSize As Double, Thread As ThreadData, Optional OutputTo As String = "normal")
         If FontSize = 0 Then FontSize = DefaultFontSize
         m_player.SetFontSize(CStr(FontSize))
     End Sub
 
-    Private Sub SetNumericVariableContents(ByRef NumName As String, ByRef NumContent As Double, ByRef Thread As ThreadData, Optional ByRef ArrayIndex As Integer = 0)
+    Private Sub SetNumericVariableContents(NumName As String, NumContent As Double, Thread As ThreadData, Optional ArrayIndex As Integer = 0)
         Dim bNumExists As Boolean
         Dim iNumNumber As Integer
         Dim NumTitle, OnChangeScript As String
@@ -7241,7 +7241,7 @@ errhandle:
 
     End Sub
 
-    Private Sub SetOpenClose(ByRef ObjectName As String, ByRef DoOpen As Boolean, ByRef Thread As ThreadData)
+    Private Sub SetOpenClose(ObjectName As String, DoOpen As Boolean, Thread As ThreadData)
         Dim ObjID As Integer
         Dim CommandName As String
 
@@ -7261,7 +7261,7 @@ errhandle:
 
     End Sub
 
-    Private Sub SetTimerState(ByRef TimerName As String, ByRef TimerState As Boolean)
+    Private Sub SetTimerState(TimerName As String, TimerState As Boolean)
         Dim FoundTimer As Boolean
         Dim i As Integer
 
@@ -7281,7 +7281,7 @@ errhandle:
 
     End Sub
 
-    Private Function SetUnknownVariableType(ByRef VariableData As String, ByRef Thread As ThreadData) As Integer
+    Private Function SetUnknownVariableType(VariableData As String, Thread As ThreadData) As Integer
         Dim SCP As Integer
         Dim VariableName As String
         Dim VariableContents As String
@@ -7347,7 +7347,7 @@ errhandle:
 
     End Function
 
-    Private Function SetUpChoiceForm(ByRef choicesection As String, ByRef Thread As ThreadData) As String
+    Private Function SetUpChoiceForm(choicesection As String, Thread As ThreadData) As String
         ' Returns script to execute from choice block
         Dim choiceblock As DefineBlock
         Dim P As String
@@ -8080,7 +8080,7 @@ errhandle:
 
     End Sub
 
-    Private Sub SetVisibility(ByRef ThingString As String, ByRef ThingType As Integer, ByRef ThingVisible As Boolean, ByRef Thread As ThreadData)
+    Private Sub SetVisibility(ThingString As String, ThingType As Integer, ThingVisible As Boolean, Thread As ThreadData)
         ' Sets visibilty of objects and characters
 
         Dim i, AtPos As Integer
@@ -8142,7 +8142,7 @@ errhandle:
         UpdateObjectList(Thread)
     End Sub
 
-    Private Sub ShowPictureInText(ByRef sFileName As String)
+    Private Sub ShowPictureInText(sFileName As String)
         If Not m_useStaticFrameForPictures Then
             m_player.ShowPicture(sFileName)
         Else
@@ -8152,7 +8152,7 @@ errhandle:
         End If
     End Sub
 
-    Private Sub ShowRoomInfoV2(ByRef Room As String)
+    Private Sub ShowRoomInfoV2(Room As String)
         ' ShowRoomInfo for Quest 2.x games
         Dim i As Integer
 
@@ -8501,11 +8501,11 @@ errhandle:
 
     End Sub
 
-    Private Sub Speak(ByRef Text As String)
+    Private Sub Speak(Text As String)
         m_player.Speak(Text)
     End Sub
 
-    Private Sub AddToObjectList(objList As List(Of ListData), exitList As List(Of ListData), ObjName As String, ByRef ObjType As Integer, Optional ByRef DisplayType As String = "")
+    Private Sub AddToObjectList(objList As List(Of ListData), exitList As List(Of ListData), ObjName As String, ObjType As Integer, Optional DisplayType As String = "")
         ' Adds object, characters and places to the list on the
         ' main Quest window.
 
@@ -8533,7 +8533,7 @@ errhandle:
 
     End Sub
 
-    Private Function ConvertObjectType(ByRef ObjectType As Integer) As String
+    Private Function ConvertObjectType(ObjectType As Integer) As String
 
         Select Case ObjectType
             Case QUEST_OBJECT
@@ -8548,7 +8548,7 @@ errhandle:
 
     End Function
 
-    Private Sub ExecExec(ByRef ScriptLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecExec(ScriptLine As String, Thread As ThreadData)
         Dim EX, ExecLine, R As String
         Dim SemiColonPos As Integer
 
@@ -8599,7 +8599,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ExecSetString(ByRef StringInfo As String, ByRef Thread As ThreadData)
+    Private Sub ExecSetString(StringInfo As String, Thread As ThreadData)
         ' Sets string contents from a script parameter.
         ' Eg <string1;contents> sets string variable string1
         ' to "contents"
@@ -8631,7 +8631,7 @@ errhandle:
 
     End Sub
 
-    Private Function ExecUserCommand(ByRef thecommand As String, ByRef Thread As ThreadData, Optional ByRef LibCommands As Boolean = False) As Boolean
+    Private Function ExecUserCommand(thecommand As String, Thread As ThreadData, Optional LibCommands As Boolean = False) As Boolean
         'Executes a user-defined command. If unavailable, returns
         'false.
         Dim FoundCommand As Boolean
@@ -8718,11 +8718,11 @@ errhandle:
         ExecUserCommand = FoundCommand
     End Function
 
-    Private Sub ExecuteChoose(ByRef choicesection As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteChoose(choicesection As String, Thread As ThreadData)
         ExecuteScript(SetUpChoiceForm(choicesection, Thread), Thread)
     End Sub
 
-    Private Function GetCommandParameters(TestLine As String, RequiredLine As String, ByRef Thread As ThreadData) As Boolean
+    Private Function GetCommandParameters(TestLine As String, RequiredLine As String, Thread As ThreadData) As Boolean
         'Gets parameters from line. For example, if RequiredLine
         'is "read #1#" and TestLine is "read sign", #1# returns
         '"sign".
@@ -8833,7 +8833,7 @@ errhandle:
 
     End Function
 
-    Private Function GetGender(ByRef CharacterName As String, ByRef Capitalise As Boolean, ByRef Thread As ThreadData) As String
+    Private Function GetGender(CharacterName As String, Capitalise As Boolean, Thread As ThreadData) As String
         Dim G, GL As String
 
         If GameASLVersion >= 281 Then
@@ -8853,7 +8853,7 @@ errhandle:
 
     End Function
 
-    Private Function GetStringContents(ByRef StringName As String, ByRef Thread As ThreadData) As String
+    Private Function GetStringContents(StringName As String, Thread As ThreadData) As String
 
         Dim bStringExists As Boolean
         Dim iStringNumber As Integer
@@ -8941,7 +8941,7 @@ errhandle:
         End If
     End Function
 
-    Private Function IsAvailable(ByRef ThingString As String, ByRef ThingType As Integer, ByRef Thread As ThreadData) As Boolean
+    Private Function IsAvailable(ThingString As String, ThingType As Integer, Thread As ThreadData) As Boolean
         ' Returns availability of object/character
 
         ' split ThingString into character name and room
@@ -8979,7 +8979,7 @@ errhandle:
 
     End Function
 
-    Private Function IsCompatible(TestLine As String, ByRef RequiredLine As String) As Boolean
+    Private Function IsCompatible(TestLine As String, RequiredLine As String) As Boolean
         'Tests to see if TestLine "works" with RequiredLine.
         'For example, if RequiredLine = "read #text#", then the
         'TestLines of "read book" and "read sign" are compatible.
@@ -9224,7 +9224,7 @@ errhandle:
 
     End Sub
 
-    Private Function SaveGame(ByRef theGameFileName As String, Optional saveFile As Boolean = True) As Byte()
+    Private Function SaveGame(theGameFileName As String, Optional saveFile As Boolean = True) As Byte()
         Dim NewThread As ThreadData
         Dim saveData As String
 
@@ -9292,7 +9292,7 @@ errhandle:
         Return String.Join(vbCrLf, lines)
     End Function
 
-    Private Sub SetAvailability(ByRef ThingString As String, ByRef ThingExist As Boolean, ByRef Thread As ThreadData, Optional ByRef ThingType As Integer = QUEST_OBJECT)
+    Private Sub SetAvailability(ThingString As String, ThingExist As Boolean, Thread As ThreadData, Optional ThingType As Integer = QUEST_OBJECT)
         ' Sets availability of objects (and characters in ASL<281)
 
         Dim i, ObjID, AtPos As Integer
@@ -9354,7 +9354,7 @@ errhandle:
 
     End Sub
 
-    Friend Sub SetStringContents(ByRef StringName As String, ByRef StringContents As String, ByRef Thread As ThreadData, Optional ByRef ArrayIndex As Integer = 0)
+    Friend Sub SetStringContents(StringName As String, StringContents As String, Thread As ThreadData, Optional ArrayIndex As Integer = 0)
         Dim bStringExists As Boolean
         Dim iStringNumber, i As Integer
         Dim StringTitle, OnChangeScript As String
@@ -9723,7 +9723,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ShowGameAbout(ByRef Thread As ThreadData)
+    Private Sub ShowGameAbout(Thread As ThreadData)
         Dim GameAuthor, GameVersion, GameCopy As String
         Dim GameInfo As String
 
@@ -9744,7 +9744,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ShowPicture(ByRef sFileName As String, Optional ByRef Animated As Integer = ANIMATION_NONE)
+    Private Sub ShowPicture(sFileName As String, Optional Animated As Integer = ANIMATION_NONE)
 
         ' In Quest 4.x this function would be used for showing a picture in a popup window, but
         ' this is no longer supported - ALL images are displayed in-line with the game text. Any
@@ -9769,7 +9769,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ShowRoomInfo(ByRef Room As String, ByRef Thread As ThreadData, Optional ByRef NoPrint As Boolean = False)
+    Private Sub ShowRoomInfo(Room As String, Thread As ThreadData, Optional NoPrint As Boolean = False)
         If GameASLVersion < 280 Then
             ShowRoomInfoV2(Room)
             Exit Sub
@@ -10005,7 +10005,7 @@ errhandle:
 
     End Sub
 
-    Private Sub CheckCollectable(ByRef ColNum As Integer)
+    Private Sub CheckCollectable(ColNum As Integer)
         ' Checks to see whether a collectable item has exceeded
         ' its range - if so, it resets the number to the nearest
         ' valid number. It's a handy quick way of making sure that
@@ -10041,7 +10041,7 @@ errhandle:
 
     End Sub
 
-    Private Function DisplayCollectableInfo(ByRef ColNum As Integer) As String
+    Private Function DisplayCollectableInfo(ColNum As Integer) As String
 
         Dim FirstBit, D, NextBit As String
         Dim ExcPos As Integer
@@ -10085,7 +10085,7 @@ errhandle:
 
     End Function
 
-    Private Sub DisplayTextSection(ByRef sectionname As String, ByRef Thread As ThreadData, Optional ByRef OutputTo As String = "normal")
+    Private Sub DisplayTextSection(sectionname As String, Thread As ThreadData, Optional OutputTo As String = "normal")
         Dim textblock As DefineBlock
         textblock = DefineBlockParam("text", sectionname)
         Dim i As Integer
@@ -10108,7 +10108,7 @@ errhandle:
     ' Returns true if the system is ready to process a new command after completion - so it will be
     ' in most cases, except when ExecCommand just caused an "enter" script command to complete
 
-    Private Function ExecCommand(ByRef thecommand As String, ByRef Thread As ThreadData, Optional ByRef EchoCommand As Boolean = True, Optional ByRef RunUserCommand As Boolean = True, Optional ByRef DontSetIt As Boolean = False) As Boolean
+    Private Function ExecCommand(thecommand As String, Thread As ThreadData, Optional EchoCommand As Boolean = True, Optional RunUserCommand As Boolean = True, Optional DontSetIt As Boolean = False) As Boolean
         Dim cmd As String
         Dim EnteredHelpCommand As Boolean
         Dim RoomID As Integer
@@ -10446,7 +10446,7 @@ errhandle:
         CmdStartsWith = BeginsWith(Trim(sCommand), sCheck)
     End Function
 
-    Private Sub ExecGive(ByRef GiveString As String, ByRef Thread As ThreadData)
+    Private Sub ExecGive(GiveString As String, Thread As ThreadData)
         Dim characterblock As DefineBlock
         Dim ObjArticle As String
         Dim ToLoc As Integer
@@ -10633,7 +10633,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ExecLook(ByRef LookLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecLook(LookLine As String, Thread As ThreadData)
 
         Dim AtPos As Integer
         Dim LookStuff, LookItem, LookText As String
@@ -10734,7 +10734,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ExecSpeak(ByRef c As String, ByRef Thread As ThreadData)
+    Private Sub ExecSpeak(c As String, Thread As ThreadData)
         Dim i As Integer
         Dim l, s As String
 
@@ -10863,7 +10863,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ExecTake(ByRef TakeItem As String, ByRef Thread As ThreadData)
+    Private Sub ExecTake(TakeItem As String, Thread As ThreadData)
         Dim i As Integer
         Dim FoundItem, FoundTake As Boolean
         Dim OriginalTakeItem As String
@@ -10912,7 +10912,7 @@ errhandle:
 
         If GameASLVersion >= 391 Then
 
-            If Not PlayerCanAccessObject(ObjID, ObjectIsInContainer, ParentID, ContainerError) Then
+            If Not PlayerCanAccessObject(ObjID, ParentID, ContainerError) Then
                 PlayerErrorMessage_ExtendInfo(ERROR_BADTAKE, Thread, ContainerError)
                 Exit Sub
             End If
@@ -10975,7 +10975,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ExecUse(ByRef tuseline As String, ByRef Thread As ThreadData)
+    Private Sub ExecUse(tuseline As String, Thread As ThreadData)
         Dim OnWithPos, i, EndOnWith As Integer
         Dim UseLine As String
         Dim UseDeclareLine As String = "", UseOn, UseItem, ScriptLine As String
@@ -11199,7 +11199,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ObjectActionUpdate(ByRef ObjID As Integer, ByRef ActionName As String, ByRef ActionScript As String, Optional ByRef NoUpdate As Boolean = False)
+    Private Sub ObjectActionUpdate(ObjID As Integer, ActionName As String, ActionScript As String, Optional NoUpdate As Boolean = False)
         Dim ObjectName As String
         Dim SP, EP As Integer
         ActionName = LCase(ActionName)
@@ -11256,7 +11256,7 @@ errhandle:
 
     End Sub
 
-    Private Sub ExecuteIf(ByRef ScriptLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteIf(ScriptLine As String, Thread As ThreadData)
         Dim IfLine, Conditions, ObscuredLine As String
         Dim ElsePos, ThenPos, ThenEndPos As Integer
         Dim ThenScript As String, ElseScript As String = ""
@@ -11307,11 +11307,9 @@ errhandle:
 
     End Sub
 
-    Private Sub ExecuteScript(ByRef ScriptLine As String, ByRef Thread As ThreadData, Optional ByRef NewCallingObjectID As Integer = 0)
+    Private Sub ExecuteScript(ScriptLine As String, Thread As ThreadData, Optional NewCallingObjectID As Integer = 0)
 
         On Error GoTo ErrorHandler
-
-        Debug.Print(ScriptLine)
 
         Dim TranscriptLine As String
         Dim i As Integer
@@ -11538,7 +11536,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecuteEnter(ByRef ScriptLine As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteEnter(ScriptLine As String, Thread As ThreadData)
         CommandOverrideModeOn = True
         CommandOverrideVariable = RetrieveParameter(ScriptLine, Thread)
 
@@ -11558,7 +11556,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub ExecuteSet(ByRef SetInstruction As String, ByRef Thread As ThreadData)
+    Private Sub ExecuteSet(SetInstruction As String, Thread As ThreadData)
 
         Dim i As Integer
 
@@ -11611,7 +11609,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function FindStatement(ByRef searchblock As DefineBlock, ByRef statement As String) As String
+    Private Function FindStatement(searchblock As DefineBlock, statement As String) As String
         Dim i As Integer
 
         ' Finds a statement within a given block of lines
@@ -11636,7 +11634,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function FindLine(ByRef searchblock As DefineBlock, ByRef statement As String, ByRef statementparam As String) As String
+    Private Function FindLine(searchblock As DefineBlock, statement As String, statementparam As String) As String
         Dim i As Integer
         ' Finds a statement within a given block of lines
 
@@ -11661,7 +11659,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetCollectableAmount(ByRef colname As String) As Double
+    Private Function GetCollectableAmount(colname As String) As Double
         Dim n As Double
         Dim i As Integer
         Dim foundval As Boolean
@@ -11679,7 +11677,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function GetSecondChunk(ByRef l As String) As String
+    Private Function GetSecondChunk(l As String) As String
         Dim EndOfFirstBit, LengthOfKeyword As Integer
         Dim SecondChunk As String
 
@@ -11690,7 +11688,7 @@ ErrorHandler:
         GetSecondChunk = SecondChunk
     End Function
 
-    Private Sub GoDirection(ByRef Direction As String, ByRef Thread As ThreadData)
+    Private Sub GoDirection(Direction As String, Thread As ThreadData)
         ' leaves the current room in direction specified by
         ' 'direction'
 
@@ -11759,7 +11757,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub GoToPlace(ByRef placecheck As String, ByRef Thread As ThreadData)
+    Private Sub GoToPlace(placecheck As String, Thread As ThreadData)
         ' leaves the current room in direction specified by
         ' 'direction'
 
@@ -11798,7 +11796,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function InitialiseGame(ByRef afilename As String, Optional ByRef LoadedFromQSG As Boolean = False) As Boolean
+    Private Function InitialiseGame(afilename As String, Optional LoadedFromQSG As Boolean = False) As Boolean
         Dim GameType, ErrorString As String
         Dim i As Integer
         Dim ASLVersion As String
@@ -11939,12 +11937,12 @@ ErrorHandler:
 
     End Function
 
-    Private Sub LeaveRoom(ByRef Thread As ThreadData)
+    Private Sub LeaveRoom(Thread As ThreadData)
         ' leaves the current room
         GoDirection("out", Thread)
     End Sub
 
-    Private Function PlaceExist(ByRef PlaceName As String, ByRef Thread As ThreadData) As String
+    Private Function PlaceExist(PlaceName As String, Thread As ThreadData) As String
 
         ' Returns actual name of an available "place" exit, and if
         ' script is executed on going in that direction, that script
@@ -12000,7 +11998,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub PlayerItem(ByRef anitem As String, ByRef gotit As Boolean, ByRef Thread As ThreadData, Optional ByRef ObjID As Integer = 0)
+    Private Sub PlayerItem(anitem As String, gotit As Boolean, Thread As ThreadData, Optional ObjID As Integer = 0)
         ' Gives the player an item (if gotit=True) or takes an
         ' item away from the player (if gotit=False).
 
@@ -12067,7 +12065,7 @@ ErrorHandler:
 
     End Sub
 
-    Friend Function PlayGame(ByRef Room As String, ByRef Thread As ThreadData) As Boolean
+    Friend Function PlayGame(Room As String, Thread As ThreadData) As Boolean
         'plays the specified room
 
         Dim RoomID As Integer
@@ -12107,7 +12105,7 @@ ErrorHandler:
 
     End Function
 
-    Friend Sub Print(ByRef txt As String, ByRef Thread As ThreadData, Optional ByRef OutputTo As String = "normal", Optional ByRef NoTalk As Boolean = False)
+    Friend Sub Print(txt As String, Thread As ThreadData, Optional OutputTo As String = "normal", Optional NoTalk As Boolean = False)
 
         ' Where we have |w (wait) and |c (clear screen) codes, we don't
         ' send these to the client. Instead, we send the text without these codes. After
@@ -12163,7 +12161,7 @@ ErrorHandler:
         End If
     End Sub
 
-    Private Function RetrLine(ByRef BlockType As String, ByRef blockparam As String, ByRef lineret As String, ByRef Thread As ThreadData) As String
+    Private Function RetrLine(BlockType As String, blockparam As String, lineret As String, Thread As ThreadData) As String
         'retrieves the line lineret in the block of type blocktype
         'with parameter blockparam in the current room/game block
 
@@ -12203,7 +12201,7 @@ ErrorHandler:
 
     End Function
 
-    Private Function RetrLineParam(ByRef BlockType As String, ByRef blockparam As String, ByRef lineret As String, ByRef lineparam As String, ByRef Thread As ThreadData) As String
+    Private Function RetrLineParam(BlockType As String, blockparam As String, lineret As String, lineparam As String, Thread As ThreadData) As String
         'retrieves the line lineret with parameter lineparam
         'in the block of type blocktype with parameter blockparam
         'in the current room - of course.
@@ -12430,7 +12428,7 @@ ErrorHandler:
         Next a
     End Sub
 
-    Private Sub ShowHelp(ByRef Thread As ThreadData)
+    Private Sub ShowHelp(Thread As ThreadData)
         ' In Quest 4 and below, the help text displays in a separate window. In Quest 5, it displays
         ' in the same window as the game text.
         Print("|b|cl|s14Quest Quick Help|xb|cb|s00", Thread, "help")
@@ -12444,7 +12442,7 @@ ErrorHandler:
         Print("Further information is available by selecting |iQuest Documentation|xi from the |iHelp|xi menu.", Thread, "help")
     End Sub
 
-    Private Sub ReadCatalog(ByRef CatData As String)
+    Private Sub ReadCatalog(CatData As String)
         Dim i, Chr0Pos, ResourceStart As Integer
 
         Chr0Pos = InStr(CatData, Chr(0))
@@ -12474,7 +12472,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub UpdateDirButtons(ByRef AvailableDirs As String, ByRef Thread As ThreadData)
+    Private Sub UpdateDirButtons(AvailableDirs As String, Thread As ThreadData)
 
         Dim compassExits As New List(Of ListData)
 
@@ -12531,7 +12529,7 @@ ErrorHandler:
         exitList.Add(New ListData(name, m_listVerbs(ListType.ExitsList)))
     End Sub
 
-    Private Function UpdateDoorways(ByRef RoomID As Integer, ByRef Thread As ThreadData) As String
+    Private Function UpdateDoorways(RoomID As Integer, Thread As ThreadData) As String
         Dim RoomDisplayText As String = "", OutPlace As String = ""
         Dim SCP As Integer
         Dim Directions As String = "", NSEW As String = "", OutPlaceName As String = ""
@@ -12676,7 +12674,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub UpdateItems(ByRef Thread As ThreadData)
+    Private Sub UpdateItems(Thread As ThreadData)
 
         ' displays the items a player has
         Dim i, j As Integer
@@ -12732,7 +12730,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub FinishGame(ByRef wingame As Integer, ByRef Thread As ThreadData)
+    Private Sub FinishGame(wingame As Integer, Thread As ThreadData)
 
         If wingame = STOPGAME_WIN Then
             DisplayTextSection("win", Thread)
@@ -12744,7 +12742,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Sub UpdateObjectList(ByRef Thread As ThreadData)
+    Private Sub UpdateObjectList(Thread As ThreadData)
 
         ' Updates object list
         Dim i, PlaceID As Integer
@@ -12879,7 +12877,7 @@ ErrorHandler:
         RaiseEvent UpdateList(ListType.ExitsList, mergedList)
     End Sub
 
-    Private Sub UpdateStatusVars(ByRef Thread As ThreadData)
+    Private Sub UpdateStatusVars(Thread As ThreadData)
         Dim DisplayData As String
         Dim i As Integer
         Dim status As String = ""
@@ -12910,7 +12908,7 @@ ErrorHandler:
     End Sub
 
 
-    Private Sub UpdateVisibilityInContainers(ByRef Thread As ThreadData, Optional OnlyParent As String = "")
+    Private Sub UpdateVisibilityInContainers(Thread As ThreadData, Optional OnlyParent As String = "")
         ' Use OnlyParent to only update objects that are contained by a specific parent
 
         Dim i, ParentID As Integer
@@ -12963,7 +12961,7 @@ ErrorHandler:
 
     End Sub
 
-    Private Function PlayerCanAccessObject(ByRef ObjID As Integer, Optional ByRef ObjectIsInContainer As Boolean = False, Optional ByRef ParentID As Integer = 0, Optional ByRef ErrorMsg As String = "", Optional ByRef colObjects As List(Of Integer) = Nothing) As Boolean
+    Private Function PlayerCanAccessObject(ObjID As Integer, Optional ParentID As Integer = 0, Optional ErrorMsg As String = "", Optional colObjects As List(Of Integer) = Nothing) As Boolean
         ' Called to see if a player can interact with an object (take it, open it etc.).
         ' For example, if the object is on a surface which is inside a closed container,
         ' the object cannot be accessed.
@@ -13016,13 +13014,12 @@ ErrorHandler:
 
             colObjects.Add(ParentID)
 
-            If Not PlayerCanAccessObject(ParentID, , , ErrorMsg, colObjects) Then
+            If Not PlayerCanAccessObject(ParentID, , ErrorMsg, colObjects) Then
                 PlayerCanAccessObject = False
                 Exit Function
             End If
 
             PlayerCanAccessObject = True
-            ObjectIsInContainer = True
         Else
             PlayerCanAccessObject = True
         End If
