@@ -3592,7 +3592,7 @@ ErrorHandler:
 
     End Function
 
-    Private Sub AddObjectAction(ObjID As Integer, Actions As ActionType, Optional NoUpdate As Boolean = False)
+    Private Sub AddObjectAction(ObjID As Integer, name As String, script As String, Optional NoUpdate As Boolean = False)
 
         ' Use NoUpdate in e.g. AddToGiveInfo, otherwise ObjectActionUpdate will call
         ' AddToGiveInfo again leading to a big loop
@@ -3604,7 +3604,7 @@ ErrorHandler:
         With Objs(ObjID)
 
             For i = 1 To .NumberActions
-                If .Actions(i).ActionName = Actions.ActionName Then
+                If .Actions(i).ActionName = name Then
                     FoundExisting = True
                     ActionNum = i
                     i = .NumberActions
@@ -3617,9 +3617,10 @@ ErrorHandler:
                 ActionNum = .NumberActions
             End If
 
-            .Actions(ActionNum) = Actions
+            .Actions(ActionNum).ActionName = name
+            .Actions(ActionNum).Script = script
 
-            ObjectActionUpdate(ObjID, Actions.ActionName, Actions.Script, NoUpdate)
+            ObjectActionUpdate(ObjID, name, script, NoUpdate)
 
         End With
 
@@ -3664,7 +3665,8 @@ ErrorHandler:
         Dim Found As Boolean
         Dim EP As Integer
         Dim CurGiveType, i As Integer
-        Dim ThisAction As ActionType
+        Dim actionName As String
+        Dim actionScript As String
 
         With Objs(ObjID)
 
@@ -3673,33 +3675,29 @@ ErrorHandler:
                 If BeginsWith(GiveData, "anything ") Then
                     .GiveToAnything = GetEverythingAfter(GiveData, "anything ")
 
-                    ThisAction.ActionName = "give to anything"
-                    ThisAction.Script = .GiveToAnything
-                    AddObjectAction(ObjID, ThisAction, True)
+                    AddObjectAction(ObjID, "give to anything", .GiveToAnything, True)
                     Exit Sub
                 Else
                     CurGiveType = GIVE_TO_SOMETHING
 
-                    ThisAction.ActionName = "give to "
+                    actionName = "give to "
                 End If
             Else
                 If BeginsWith(GiveData, "anything ") Then
                     .GiveAnything = GetEverythingAfter(GiveData, "anything ")
 
-                    ThisAction.ActionName = "give anything"
-                    ThisAction.Script = .GiveAnything
-                    AddObjectAction(ObjID, ThisAction, True)
+                    AddObjectAction(ObjID, "give anything", .GiveAnything, True)
                     Exit Sub
                 Else
                     CurGiveType = GIVE_SOMETHING_TO
-                    ThisAction.ActionName = "give "
+                    actionName = "give "
                 End If
             End If
 
             If Left(Trim(GiveData), 1) = "<" Then
                 ObjectName = RetrieveParameter(GiveData, _nullContext)
 
-                ThisAction.ActionName = ThisAction.ActionName & "'" & ObjectName & "'"
+                actionName = actionName & "'" & ObjectName & "'"
 
                 Found = False
                 For i = 1 To .NumberGiveData
@@ -3721,8 +3719,8 @@ ErrorHandler:
                 .GiveData(DataID).GiveObject = ObjectName
                 .GiveData(DataID).GiveScript = Mid(GiveData, EP + 2)
 
-                ThisAction.Script = .GiveData(DataID).GiveScript
-                AddObjectAction(ObjID, ThisAction, True)
+                actionScript = .GiveData(DataID).GiveScript
+                AddObjectAction(ObjID, actionName, actionScript, True)
 
             End If
 
@@ -4144,7 +4142,7 @@ ErrorHandler:
             PropertyData = GetPropertiesInType(TypeName)
             AddToObjectProperties(PropertyData.Properties, ObjID, ctx)
             For i = 1 To PropertyData.NumberActions
-                AddObjectAction(ObjID, PropertyData.Actions(i))
+                AddObjectAction(ObjID, PropertyData.Actions(i).ActionName, PropertyData.Actions(i).Script)
             Next i
 
             ' New as of Quest 4.0. Fixes bug that "if type" would fail for any
@@ -4836,7 +4834,7 @@ ErrorHandler:
             If GameASLVersion >= 410 Then
                 AddToObjectProperties(m_oDefaultRoomProperties.Properties, NumberObjs, ctx)
                 For j = 1 To m_oDefaultRoomProperties.NumberActions
-                    AddObjectAction(NumberObjs, m_oDefaultRoomProperties.Actions(j))
+                    AddObjectAction(NumberObjs, m_oDefaultRoomProperties.Actions(j).ActionName, m_oDefaultRoomProperties.Actions(j).Script)
                 Next j
 
                 Rooms(NumberRooms).Exits = New RoomExits(Me)
@@ -4872,7 +4870,7 @@ ErrorHandler:
             If GameASLVersion >= 410 Then
                 AddToObjectProperties(m_oDefaultProperties.Properties, NumberObjs, ctx)
                 For j = 1 To m_oDefaultProperties.NumberActions
-                    AddObjectAction(NumberObjs, m_oDefaultProperties.Actions(j))
+                    AddObjectAction(NumberObjs, m_oDefaultProperties.Actions(j).ActionName, m_oDefaultProperties.Actions(j).Script)
                 Next j
             End If
 
@@ -7533,7 +7531,7 @@ errhandle:
                         PropertyData = GetPropertiesInType(RetrieveParameter(Lines(i), _nullContext))
                         AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
                         For k = 1 To PropertyData.NumberActions
-                            AddObjectAction(NumberObjs, PropertyData.Actions(k))
+                            AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
                         Next k
                     ElseIf BeginsWith(Lines(i), "action ") Then
                         AddToObjectActions(GetEverythingAfter(Lines(i), "action "), NumberObjs, _nullContext)
@@ -7619,7 +7617,6 @@ errhandle:
         Dim PropertyData As PropertiesActions
         Dim DefaultProperties As New PropertiesActions
         Dim DefaultExists As Boolean
-        Dim ThisAction As ActionType
         Dim k, i, j As Integer
 
         ' see if define type <defaultroom> exists:
@@ -7666,7 +7663,7 @@ errhandle:
                     If DefaultExists Then
                         AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
                         For k = 1 To DefaultProperties.NumberActions
-                            AddObjectAction(NumberObjs, DefaultProperties.Actions(k))
+                            AddObjectAction(NumberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
                         Next k
                     End If
 
@@ -7692,9 +7689,7 @@ errhandle:
                             .Description = GetTextOrScript(GetEverythingAfter(Lines(j), "description "))
                             If GameASLVersion >= 350 Then
                                 If .Description.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "description"
-                                    ThisAction.Script = .Description.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "description", .Description.Data)
                                 Else
                                     AddToObjectProperties("description=" & .Description.Data, NumberObjs, _nullContext)
                                 End If
@@ -7704,9 +7699,7 @@ errhandle:
                             .out.Script = Trim(Mid(Lines(j), InStr(Lines(j), ">") + 1))
                             If GameASLVersion >= 350 Then
                                 If .out.Script <> "" Then
-                                    ThisAction.ActionName = "out"
-                                    ThisAction.Script = .out.Script
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "out", .out.Script)
                                 End If
 
                                 AddToObjectProperties("out=" & .out.Text, NumberObjs, _nullContext)
@@ -7715,9 +7708,7 @@ errhandle:
                             .East = GetTextOrScript(GetEverythingAfter(Lines(j), "east "))
                             If GameASLVersion >= 350 Then
                                 If .East.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "east"
-                                    ThisAction.Script = .East.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "east", .East.Data)
                                 Else
                                     AddToObjectProperties("east=" & .East.Data, NumberObjs, _nullContext)
                                 End If
@@ -7726,9 +7717,7 @@ errhandle:
                             .West = GetTextOrScript(GetEverythingAfter(Lines(j), "west "))
                             If GameASLVersion >= 350 Then
                                 If .West.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "west"
-                                    ThisAction.Script = .West.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "west", .West.Data)
                                 Else
                                     AddToObjectProperties("west=" & .West.Data, NumberObjs, _nullContext)
                                 End If
@@ -7737,9 +7726,7 @@ errhandle:
                             .North = GetTextOrScript(GetEverythingAfter(Lines(j), "north "))
                             If GameASLVersion >= 350 Then
                                 If .North.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "north"
-                                    ThisAction.Script = .North.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "north", .North.Data)
                                 Else
                                     AddToObjectProperties("north=" & .North.Data, NumberObjs, _nullContext)
                                 End If
@@ -7748,9 +7735,7 @@ errhandle:
                             .South = GetTextOrScript(GetEverythingAfter(Lines(j), "south "))
                             If GameASLVersion >= 350 Then
                                 If .South.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "south"
-                                    ThisAction.Script = .South.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "south", .South.Data)
                                 Else
                                     AddToObjectProperties("south=" & .South.Data, NumberObjs, _nullContext)
                                 End If
@@ -7759,9 +7744,7 @@ errhandle:
                             .NorthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "northeast "))
                             If GameASLVersion >= 350 Then
                                 If .NorthEast.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "northeast"
-                                    ThisAction.Script = .NorthEast.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "northeast", .NorthEast.Data)
                                 Else
                                     AddToObjectProperties("northeast=" & .NorthEast.Data, NumberObjs, _nullContext)
                                 End If
@@ -7770,9 +7753,7 @@ errhandle:
                             .NorthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "northwest "))
                             If GameASLVersion >= 350 Then
                                 If .NorthWest.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "northwest"
-                                    ThisAction.Script = .NorthWest.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "northwest", .NorthWest.Data)
                                 Else
                                     AddToObjectProperties("northwest=" & .NorthWest.Data, NumberObjs, _nullContext)
                                 End If
@@ -7781,9 +7762,7 @@ errhandle:
                             .SouthEast = GetTextOrScript(GetEverythingAfter(Lines(j), "southeast "))
                             If GameASLVersion >= 350 Then
                                 If .SouthEast.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "southeast"
-                                    ThisAction.Script = .SouthEast.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "southeast", .SouthEast.Data)
                                 Else
                                     AddToObjectProperties("southeast=" & .SouthEast.Data, NumberObjs, _nullContext)
                                 End If
@@ -7792,9 +7771,7 @@ errhandle:
                             .SouthWest = GetTextOrScript(GetEverythingAfter(Lines(j), "southwest "))
                             If GameASLVersion >= 350 Then
                                 If .SouthWest.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "southwest"
-                                    ThisAction.Script = .SouthWest.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "southwest", .SouthWest.Data)
                                 Else
                                     AddToObjectProperties("southwest=" & .SouthWest.Data, NumberObjs, _nullContext)
                                 End If
@@ -7803,9 +7780,7 @@ errhandle:
                             .Up = GetTextOrScript(GetEverythingAfter(Lines(j), "up "))
                             If GameASLVersion >= 350 Then
                                 If .Up.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "up"
-                                    ThisAction.Script = .Up.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "up", .Up.Data)
                                 Else
                                     AddToObjectProperties("up=" & .Up.Data, NumberObjs, _nullContext)
                                 End If
@@ -7814,9 +7789,7 @@ errhandle:
                             .Down = GetTextOrScript(GetEverythingAfter(Lines(j), "down "))
                             If GameASLVersion >= 350 Then
                                 If .Down.Type = TA_SCRIPT Then
-                                    ThisAction.ActionName = "down"
-                                    ThisAction.Script = .Down.Data
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "down", .Down.Data)
                                 Else
                                     AddToObjectProperties("down=" & .Down.Data, NumberObjs, _nullContext)
                                 End If
@@ -7832,9 +7805,7 @@ errhandle:
                             If GameASLVersion >= 350 Then AddToObjectProperties("prefix=" & .Prefix, NumberObjs, _nullContext)
                         ElseIf BeginsWith(Lines(j), "script ") Then
                             .Script = GetEverythingAfter(Lines(j), "script ")
-                            ThisAction.ActionName = "script"
-                            ThisAction.Script = .Script
-                            AddObjectAction(NumberObjs, ThisAction)
+                            AddObjectAction(NumberObjs, "script", .Script)
                         ElseIf BeginsWith(Lines(j), "command ") Then
                             .NumberCommands = .NumberCommands + 1
                             ReDim Preserve .Commands(.NumberCommands)
@@ -7867,7 +7838,7 @@ errhandle:
                             PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
                             AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
                             For k = 1 To PropertyData.NumberActions
-                                AddObjectAction(NumberObjs, PropertyData.Actions(k))
+                                AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
                             Next k
                         ElseIf BeginsWith(Lines(j), "action ") Then
                             AddToObjectActions(GetEverythingAfter(Lines(j), "action "), NumberObjs, _nullContext)
@@ -9446,7 +9417,6 @@ errhandle:
         Dim DefaultExists As Boolean
         Dim PropertyData As PropertiesActions
         Dim DefaultProperties As New PropertiesActions
-        Dim ThisAction As ActionType
         Dim RestOfLine As String
         Dim i As Integer
         Dim OrigCRoomName, CRoomName As String
@@ -9502,7 +9472,7 @@ errhandle:
                             If DefaultExists Then
                                 AddToObjectProperties(DefaultProperties.Properties, NumberObjs, _nullContext)
                                 For k = 1 To DefaultProperties.NumberActions
-                                    AddObjectAction(NumberObjs, DefaultProperties.Actions(k))
+                                    AddObjectAction(NumberObjs, DefaultProperties.Actions(k).ActionName, DefaultProperties.Actions(k).Script)
                                 Next k
                             End If
 
@@ -9542,14 +9512,10 @@ errhandle:
                                     If GameASLVersion >= 311 Then AddToObjectProperties("article=" & .Article, NumberObjs, _nullContext)
                                 ElseIf BeginsWith(Lines(j), "gain ") Then
                                     .GainScript = GetEverythingAfter(Lines(j), "gain ")
-                                    ThisAction.ActionName = "gain"
-                                    ThisAction.Script = .GainScript
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "gain", .GainScript)
                                 ElseIf BeginsWith(Lines(j), "lose ") Then
                                     .LoseScript = GetEverythingAfter(Lines(j), "lose ")
-                                    ThisAction.ActionName = "lose"
-                                    ThisAction.Script = .LoseScript
-                                    AddObjectAction(NumberObjs, ThisAction)
+                                    AddObjectAction(NumberObjs, "lose", .LoseScript)
                                 ElseIf BeginsWith(Lines(j), "displaytype ") Then
                                     .DisplayType = RetrieveParameter(Lines(j), _nullContext)
                                     If GameASLVersion >= 311 Then AddToObjectProperties("displaytype=" & .DisplayType, NumberObjs, _nullContext)
@@ -9559,9 +9525,7 @@ errhandle:
                                         If Left(RestOfLine, 1) = "<" Then
                                             AddToObjectProperties("look=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                         Else
-                                            ThisAction.ActionName = "look"
-                                            ThisAction.Script = RestOfLine
-                                            AddObjectAction(NumberObjs, ThisAction)
+                                            AddObjectAction(NumberObjs, "look", RestOfLine)
                                         End If
                                     End If
                                 ElseIf BeginsWith(Lines(j), "examine ") Then
@@ -9570,9 +9534,7 @@ errhandle:
                                         If Left(RestOfLine, 1) = "<" Then
                                             AddToObjectProperties("examine=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                         Else
-                                            ThisAction.ActionName = "examine"
-                                            ThisAction.Script = RestOfLine
-                                            AddObjectAction(NumberObjs, ThisAction)
+                                            AddObjectAction(NumberObjs, "examine", RestOfLine)
                                         End If
                                     End If
                                 ElseIf GameASLVersion >= 311 And BeginsWith(Lines(j), "speak ") Then
@@ -9580,9 +9542,7 @@ errhandle:
                                     If Left(RestOfLine, 1) = "<" Then
                                         AddToObjectProperties("speak=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
-                                        ThisAction.ActionName = "speak"
-                                        ThisAction.Script = RestOfLine
-                                        AddObjectAction(NumberObjs, ThisAction)
+                                        AddObjectAction(NumberObjs, "speak", RestOfLine)
                                     End If
                                 ElseIf BeginsWith(Lines(j), "properties ") Then
                                     AddToObjectProperties(RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
@@ -9594,7 +9554,7 @@ errhandle:
                                     PropertyData = GetPropertiesInType(RetrieveParameter(Lines(j), _nullContext))
                                     AddToObjectProperties(PropertyData.Properties, NumberObjs, _nullContext)
                                     For k = 1 To PropertyData.NumberActions
-                                        AddObjectAction(NumberObjs, PropertyData.Actions(k))
+                                        AddObjectAction(NumberObjs, PropertyData.Actions(k).ActionName, PropertyData.Actions(k).Script)
                                     Next k
 
                                     ReDim Preserve .TypesIncluded(.NumberTypesIncluded + PropertyData.NumberTypesIncluded)
@@ -9622,9 +9582,7 @@ errhandle:
                                         RestOfLine = GetEverythingAfter(Lines(j), "take ")
                                         .take.Data = RestOfLine
 
-                                        ThisAction.ActionName = "take"
-                                        ThisAction.Script = RestOfLine
-                                        AddObjectAction(NumberObjs, ThisAction)
+                                        AddObjectAction(NumberObjs, "take", RestOfLine)
                                     End If
                                 ElseIf Trim(Lines(j)) = "container" Then
                                     If GameASLVersion >= 391 Then AddToObjectProperties("container", NumberObjs, _nullContext)
@@ -9644,10 +9602,7 @@ errhandle:
                                         AddToObjectProperties("open=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         RestOfLine = GetEverythingAfter(Lines(j), "open ")
-
-                                        ThisAction.ActionName = "open"
-                                        ThisAction.Script = RestOfLine
-                                        AddObjectAction(NumberObjs, ThisAction)
+                                        AddObjectAction(NumberObjs, "open", RestOfLine)
                                     End If
                                 ElseIf Trim(Lines(j)) = "close" Then
                                     AddToObjectProperties("close", NumberObjs, _nullContext)
@@ -9656,10 +9611,7 @@ errhandle:
                                         AddToObjectProperties("close=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         RestOfLine = GetEverythingAfter(Lines(j), "close ")
-
-                                        ThisAction.ActionName = "close"
-                                        ThisAction.Script = RestOfLine
-                                        AddObjectAction(NumberObjs, ThisAction)
+                                        AddObjectAction(NumberObjs, "close", RestOfLine)
                                     End If
                                 ElseIf Trim(Lines(j)) = "add" Then
                                     AddToObjectProperties("add", NumberObjs, _nullContext)
@@ -9668,10 +9620,7 @@ errhandle:
                                         AddToObjectProperties("add=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         RestOfLine = GetEverythingAfter(Lines(j), "add ")
-
-                                        ThisAction.ActionName = "add"
-                                        ThisAction.Script = RestOfLine
-                                        AddObjectAction(NumberObjs, ThisAction)
+                                        AddObjectAction(NumberObjs, "add", RestOfLine)
                                     End If
                                 ElseIf Trim(Lines(j)) = "remove" Then
                                     AddToObjectProperties("remove", NumberObjs, _nullContext)
@@ -9680,10 +9629,7 @@ errhandle:
                                         AddToObjectProperties("remove=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
                                     Else
                                         RestOfLine = GetEverythingAfter(Lines(j), "remove ")
-
-                                        ThisAction.ActionName = "remove"
-                                        ThisAction.Script = RestOfLine
-                                        AddObjectAction(NumberObjs, ThisAction)
+                                        AddObjectAction(NumberObjs, "remove", RestOfLine)
                                     End If
                                 ElseIf BeginsWith(Lines(j), "parent ") Then
                                     AddToObjectProperties("parent=" & RetrieveParameter(Lines(j), _nullContext), NumberObjs, _nullContext)
